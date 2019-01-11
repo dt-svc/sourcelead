@@ -2,12 +2,15 @@ package com.bis.sourcelead.dao.impl;
 
 import java.math.BigInteger;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
@@ -28,12 +31,14 @@ import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -50,6 +55,9 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	
 	@Autowired
 	CandidateDao candidateDao;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -538,7 +546,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		}
 		
 		
-		response.setData(tasksList);
+		response.setData(projectTasksList);
 		return response;
 		}
 
@@ -599,6 +607,100 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		String query = "from ProjectTasks pt where "+quey+" ";
 		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("lookupId", lookupId).list(); 
 		return projectTasksList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<ProjectTasks> getOverdueTaskReportListByOrglocationId(ProjectTasksDTO  projectTasksDTO,Date[] searchDates) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Long> countlist = null;
+		Integer filterCount = 0;
+		ResponseList<ProjectTasks> response = new ResponseList<>();
+		Date startDate = new java.sql.Date(searchDates[0].getTime());
+		Date endDate = new java.sql.Date(searchDates[1].getTime());
+		
+		OrgLocations orgLoc = orgLocationService.getOrgLocations(projectTasksDTO.getOrgLocationId());
+		SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+		Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+		   Matcher matcher = pattern.matcher(projectTasksDTO.getSearchValue());
+		   java.sql.Date sqlDate = null;
+		    if(matcher.matches() == true) {
+						if(projectTasksDTO.getSearchValue().contains("/")||(projectTasksDTO.getSearchValue().contains("-"))) {
+							String replacedValue = projectTasksDTO.getSearchValue().replaceAll("/", "-");
+						        java.util.Date utilDate = format.parse(replacedValue);
+						        sqlDate = new java.sql.Date(utilDate.getTime());
+						}
+		    }
+		    
+		StringBuilder query1 = new StringBuilder("");
+		if(projectTasksDTO.getSearchValue() !=null && !"".equalsIgnoreCase(projectTasksDTO.getSearchValue())) {
+		 query1.append("and (pt.taskName like '%" + projectTasksDTO.getSearchValue() + "%' ")
+		       .append("OR pt.priority.name like '%" + projectTasksDTO.getSearchValue() + "%' ")
+		       .append("OR pt.taskType.name like '%" + projectTasksDTO.getSearchValue() + "%' ")
+		       .append("OR pt.projectId.projectName like '%" + projectTasksDTO.getSearchValue() + "%' )");
+		    if(sqlDate != null) {
+		    	query1.append("OR pt.dueDate like '%" + sqlDate + "%' ");
+			 }
+		}
+		
+		//usertList sorting order
+				String sortingQry = "";
+				if(StringUtils.isNotBlank(projectTasksDTO.getSortColumn())) {
+					if(projectTasksDTO.getSortColumn().equalsIgnoreCase("projectName")) {
+						sortingQry = "order by pt.projectId."+ projectTasksDTO.getSortColumn() +" "+projectTasksDTO.getSortOrder();
+					}else {
+						sortingQry = "order by pt."+ projectTasksDTO.getSortColumn() +" "+projectTasksDTO.getSortOrder();
+					}
+				}
+				
+				 String subQueryStr = "";
+				 if(StringUtils.isNotEmpty(projectTasksDTO.getPriorityFilter())) {
+					 subQueryStr = subQueryStr+" and pt.priority.id IN ("+projectTasksDTO.getPriorityFilter()+") ";
+				 }
+				  
+				 if(StringUtils.isNotEmpty(projectTasksDTO.getTaskTypeFilter())) {
+					 subQueryStr = subQueryStr+" and pt.taskType.id IN ("+projectTasksDTO.getTaskTypeFilter()+") ";
+				 }
+				 if(StringUtils.isNotEmpty(projectTasksDTO.getProjectFilter())) {
+					 subQueryStr = subQueryStr+" and pt.projectId.id IN ("+projectTasksDTO.getProjectFilter()+") ";
+				 }
+				 
+				 if(StringUtils.isNotEmpty(projectTasksDTO.getToDate()) && StringUtils.isNotEmpty(projectTasksDTO.getFromDate())) {
+					 Date fromDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), projectTasksDTO.getFromDate());
+					 java.sql.Date customeStartDate = new java.sql.Date(fromDate.getTime()); 
+					 Date toDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), projectTasksDTO.getToDate());
+					 java.sql.Date  customeEndDate = new java.sql.Date(toDate.getTime()); 
+					 
+					 subQueryStr = subQueryStr+" and date(pt.dueDate) BETWEEN '"+customeStartDate+"' and '"+customeEndDate+"' ";
+				 }
+				 
+		String query = "from ProjectTasks pt where pt.projectId.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId.id = :orgLocationId) and pt.status='1'"
+				+ " and pt.dueDate < :dt and pt.createdDate >= :startDateUTC and pt.createdDate <= :endDateUTC "+query1+" "+subQueryStr+" "+sortingQry+" " ;
+		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("orgLocationId", projectTasksDTO.getOrgLocationId()).setDate("dt", commonUtil.currentDate()).setDate("startDateUTC", startDate).setDate("endDateUTC", endDate).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list(); 
+		
+		String queryStrForCount = "Select count (*) from ProjectTasks pt "
+				+ " where pt.projectId.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId.id = :orgLocationId)  and pt.status='1' "
+				+ "and pt.dueDate < :dt and pt.createdDate >= :startDateUTC and pt.createdDate <= :endDateUTC "+query1+" "+subQueryStr+" "+sortingQry+" ";
+		countlist = session.createQuery(queryStrForCount.toString()).setLong("orgLocationId", projectTasksDTO.getOrgLocationId()).setDate("dt", commonUtil.currentDate()).setDate("startDateUTC", startDate).setDate("endDateUTC", endDate).list();
+
+		filterCount = countlist.iterator().next().intValue();
+		
+		int totalCount = 0;
+		if (projectTasksDTO != null) {
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		} 
+		response.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(filterCount);
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}
+		
+		response.setData(projectTasksList);
+		return response;
 	}
 	 
 }

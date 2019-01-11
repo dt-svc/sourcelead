@@ -8,6 +8,18 @@ $(document).ready(function(){
 	$("#approveDiv").hide();
 	$("#submitButtonDiv").hide();
 	$("#historySearchDiv").hide();
+	var redirectValue = "${redirect}";
+	if(redirectValue != null && redirectValue != '' && redirectValue != 'undefined'){
+		if(redirectValue == "draft"){
+			$("#draftAId").parent().addClass("current");
+	        $("#draftAId").parent().siblings().removeClass("current");
+			getDraftData();
+		}else if(redirectValue == "history"){
+			$("#historyAId").parent().addClass("current");
+	        $("#historyAId").parent().siblings().removeClass("current");
+	        getPayPeriodData();
+		}
+	}
 });
 </script>
 
@@ -29,19 +41,21 @@ function approvePayrollDiv(){
   <div class="pull-left">
     <h2>Payroll</h2>
   </div>
-<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;Payroll</div>
+<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payroll</div>
 </section>
 
+<div id="initiateLoading"></div>
    <div class="project_side_wrap_inn_tabs">
    	<ul class="project-tabs-menu">
-   	    
-	   <li class="current"><a href="javascript:void(0)" class="active" onclick="getOverviewdata();">Overview</a></li>
-	   <li><a onclick="getDraftData();">Draft</a></li>
+   	    <li id="dashId" class="current"><a class="active" onclick="dashboardTab();">Dashboard</a></li>
+	   <li id="overId"><a id="overViewAId" onclick="getOverviewdata();">Overview</a></li>
+	   <li><a onclick="getDraftData();" id="draftAId">Draft</a></li>
+
 <%-- 	   <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}"> --%>
-	        <li><a onclick="getPayPeriodData();">History</a></li>
+	        <li><a onclick="getPayPeriodData();" id="historyAId">History</a></li>
 <%-- 	   </c:if> --%>
 	   
-	   <li><a onclick="getUserGroupList('DASHBOARD');">Employees</a></li>
+	   <li><a onclick="getUserGroupList('DASHBOARD');" id="employeesAId">Employees</a></li>
 <!-- 	   <li><a href="javascript:void(0)">Contractors</a></li> -->
 <!-- 	   <li><a href="javascript:void(0)">Tax Forms</a></li> -->
 <!-- 	   <li><a href="javascript:void(0)">Settings</a></li> -->
@@ -55,7 +69,7 @@ function approvePayrollDiv(){
     
     <div id="overViewDiv">
 <div class="clearfix"></div>
-<div class="timesheet_out" id="reviewPayrollDiv">
+<div class="timesheet_out" id="reviewPayrollDiv" style = "display : none">
 
 <div class="tablelist-wrap">
 <div class="timesheet_head minHeight">
@@ -102,37 +116,33 @@ function approvePayrollDiv(){
 </form:form>
 </div>
 
-  
  
 <div class="clearfix">
 <form:form id="submit_for_approver"  name="submit_for_approver" method="post">
  <div class="tableScroll styleTables clearfix mt">
  <!-- <div id="USPayrollDiv"></div> -->
  <div id="payrollDataDiv"></div>
- <div id="initiateLoading"></div>
 </div> 
 
 <div class="clearfix mt"></div>
 
 <div class="clearfix">
 <!-- <div class="col-md-2"><a href="javascript:void(0)" class="btn anchorBlue">Exclude</a></div> -->
-	<div id="submitButtonDiv">
+	<div id="submitButtonDiv" style="display:none">
 	
 <div class="col-md-7">
 	<div class="row">
 	
 	<div class="col-md-5">
-		<div class="row">
-			<label class="col-md-7">No. of Payroll Generated  :</label>
-			<div class="col-md-5" id="totalNoPayroll"><strong>00.00</strong></div>
+		<div>
+			<label class="pull-left">No. of Payroll Generated  :</label>
+			<div id="totalNoPayroll" class="pull-left ml"><strong>00.00</strong></div>
 		</div>
 	</div>
 	
 	<div class="col-md-7">
-			<div class="row">
-			<label class="col-md-3">Total Net Pay  :</label>
-			<div class="col-md-9" id="totalPayrollAmount"><strong>00.00</strong></div>
-		</div>
+			<label class="pull-left">Total Net Pay  :</label>
+			<div class="pull-left ml" id="totalPayrollAmount"><strong>00.00</strong></div>
 	</div>
 	
 	</div>
@@ -145,7 +155,7 @@ function approvePayrollDiv(){
 		 <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
 		<li><a href="#" class="btn btn-default ml mr" id="Confirm" onclick="confirmPayroll();">Confirm</a></li>
 		</c:if>
-		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
+		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList?&redirect=draft'">Cancel</a></li>
 	</ul>
 	</div>
 	
@@ -164,7 +174,7 @@ function approvePayrollDiv(){
 	</div>
 	<div class="clearfix"></div>
 		
-	 <div class='reportHead' id="historySearchDiv">
+	 <div class='reportHead' id="historySearchDiv" style = "display : none">
 		<ul class='pull-right'>
 		<li><input type='text' placeholder='Search' class='repSearchBar' id='historyDataTableSearch'/><span class='repSearchIcon' onClick=''></span></li>
 		</ul>
@@ -229,7 +239,7 @@ function approvePayrollDiv(){
 <!--   Error Message   --> 
 
 
-
+<jsp:include page="uSPayrollDashboard.jsp" />
 <jsp:include page="usPayrollApprove.jsp" />
 <jsp:include page="payrollAdjustment.jsp" />
 <jsp:include page="usPayrollDashboardEmployees.jsp" />
@@ -248,6 +258,8 @@ $(document).ready(function() {
   <script>
   function getOverviewdata(){
 	  
+	  $("#approveDiv").hide();
+	  $("#dashboardDiv").hide();
 	  $("#userGroupDiv").hide();
 	  $("#draftFrequencyDiv").hide();
 	  $("#payrollFrequencyDiv").hide();
@@ -255,6 +267,10 @@ $(document).ready(function() {
 	  $("#overViewDiv").show();
 	  $("#searchDivForEmployee").hide();
 	  $("#reviewPayrollDiv").show();
+	  $('#payrollPayDateDivId').find('p.jquery_form_error_message').remove();
+	  $('#payTypeIdDiv').find('p.jquery_form_error_message').remove();
+	  $('#payPeriodDiv').find('p.jquery_form_error_message').remove();
+	  $('#groupIdDiv').find('p.jquery_form_error_message').remove();
   }
   </script>
   
@@ -295,6 +311,7 @@ $(document).ready(function() {
 		$("#approveDiv").hide();
 		$("#userGroupDiv").hide();
 		$("#searchDivForEmployee").hide();
+		$("#dashboardDiv").hide();
 		$("#historySearchDiv").show();
 		$("#historyDataTableSearch").show();
 		$("#payrollFrequencyDiv").show();
@@ -518,7 +535,7 @@ function runUSPayroll(){
 				        	result += '<th>Emp ID</th>';
 				        	result += '<th>Emp Name</th>';
 				        	result += '<th>Regular<br>Hours</th>';
-				        	result += '<th>Payrate</th>';
+				        	result += '<th>Pay Per Salary</th>';
 				        	result += '<th>Pay Type</th>';
 				        	result += '<th>OT<br>Hours</th>';
 				        	result += '<th>Gross<br>Pay</th>';
@@ -556,7 +573,7 @@ function runUSPayroll(){
 						        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
  						        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
 						        	/* result += '<td><div class="tblminwidth-125 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>'; */
-						        	result += '<td><div class="tbldata-dotdot-vsm">$ '+opt.payRate+'</div></td>';
+						        	result += '<td><div class="tbldata-dotdot-vsm">$ '+opt.payPerSal+'</div></td>';
 						        	if(opt.payType != null && opt.payType != ''){
 						        		result += '<td><div class="tbldata-dotdot-vsm">'+opt.payType+'</div></td>';
 						        	}else{
@@ -668,7 +685,7 @@ function sendPayrollForApprover(){
           } else if (result.response === "AWKWARD") {
               location.href = "/errorPage";
           } else if (result.response === "SUCCESS") {
-        	  location.replace(sourceleadUrl+ "/payrollList"); 
+        	  location.replace(sourceleadUrl+ "/payrollList?&redirect=history"); 
         	  $("#msgDiv").html("Submited Successfully");
           } else if (result.indexOf('Sign In') !== -1) {
             location.replace(sourceleadUrl);
@@ -685,8 +702,9 @@ function confirmPayroll(){
 	$("#reviewPayrollDiv").hide();
 	$("#approveDiv").show();
 	 var confirmType = "DRAFT";
+	 var payType = $("#payType").val();
 	 var formData = $($('#submit_for_approver')[0]).serialize();
-	 calculateTotalPay(formData,confirmType);
+	 calculateTotalPay(formData,confirmType,"",payType);
 }
 </script>
 
@@ -784,16 +802,20 @@ function getDraftData(){
 			        	}
 			        	result += '</tbody>';
 			        	result += '</table>';
-			        	$("#draftFrequencyDiv").empty();
-			        	$("#draftFrequencyDiv").append(result);
+			        	
 			        	$("#overViewDiv").hide();
 			        	$("#payrollFrequencyDiv").hide();
 			        	$("#approveDiv").hide();
 			        	$("#historyDataTableSearch").hide();
 			        	$("#userGroupDiv").hide();
 			        	$("#searchDivForEmployee").hide();
-			        	$("#draftFrequencyDiv").show();
+			        	$("#dashboardDiv").hide();
+			        	
 			        	$("#initiateLoading").removeAttr('style');
+			        	
+			        	$("#draftFrequencyDiv").empty();
+			        	$("#draftFrequencyDiv").show();
+			        	$("#draftFrequencyDiv").append(result);
 			        	draftPagination();
 	        }
 	 }); 
@@ -815,5 +837,20 @@ function draftPagination(){
 
 </script>
 
-  
+<script>
+function dashboardTab(){
+	  $("#overViewDiv").hide();
+	  $("#userGroupDiv").hide();
+	  $("#draftFrequencyDiv").hide();
+	  $("#payrollFrequencyDiv").hide();
+	  $("#historySearchDiv").hide();
+	  $("#searchDivForEmployee").hide();
+	  $("#dashboardDiv").show();
+	  
+	  location.replace(sourceleadUrl+ "/uSPayrollDashboard"); 
+	
+}
+</script>
+
+
 <jsp:include page="../masterFooter.jsp" />

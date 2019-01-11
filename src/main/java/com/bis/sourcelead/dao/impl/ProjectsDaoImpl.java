@@ -650,7 +650,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		}
 		
 		if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
-			approverQuery = " and (pc.id IN (select pah.projectClientsId.id from ProjectApproverHierarchy pah where pah.approverUserId = "+userId+") OR "
+			approverQuery = " and (pc.id IN (select pah.projectClientsId.id from ProjectApproverHierarchy pah where pah.approverUserId = "+userId+" and pah.status ='1') OR "
 					+ " pc.id IN (select pex.projectClientsId.id from ExpenseProjectApproverHierarchy pex where pex.approverUserId = "+userId+") OR pc.createdBy.id = "+userId+" "
 					+ " OR pc.id IN (select pm.projectClientsId.id from ProjectMembers pm where pm.projectMemberCandidteId.id = "+candidateId+" and pm.status = '1') ) ";
 		}
@@ -1583,6 +1583,26 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 			if (projectReportDTO.getProjectStatus() != null && !projectReportDTO.getProjectStatus().isEmpty()) {
 				query +=  " and ps.projectStatus in (:projectStatus)";
 			}
+			if(projectReportDTO.isRefreshFlag()) {
+				query += "and ps.id IN(select pm.projects.id from ProjectMembers pm where pm.status ='1')";
+			} else if(projectReportDTO.getAssociateStatus() != null && projectReportDTO.getAssociateStatus().length > 0) {
+				boolean activeFlag = false, inactiveFlag = false;
+				for(String status : projectReportDTO.getAssociateStatus()) {
+					if(status.equalsIgnoreCase("ACTIVE")) {
+						activeFlag = true;
+					}
+					if(status.equalsIgnoreCase("INACTIVE")) {
+						inactiveFlag = true;
+					}
+				}
+				if (activeFlag && inactiveFlag) {
+					
+				} else if (inactiveFlag) {
+					query += "and ps.id IN(select pm.projects.id from ProjectMembers pm where pm.status ='0')";
+				} else if (activeFlag) {
+					query += "and ps.id IN(select pm.projects.id from ProjectMembers pm where pm.status ='1')";
+				}
+			}
 			if (projectReportDTO.getProjectIds() != null && !projectReportDTO.getProjectIds().isEmpty()) {
 				query += " and ps.id in (:projectIds)";
 			}
@@ -1604,6 +1624,12 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 			if (projectReportDTO.getProjectIds() != null && !projectReportDTO.getProjectIds().isEmpty()) {
 				queryObj.setParameterList("projectIds", projectReportDTO.getProjectIds());
 			}
+			
+			/*if (projectReportDTO.getAssociateStatus() != null && !projectReportDTO.getAssociateStatus().isEmpty()) {
+				queryObj.setParameter("associateStatus", projectReportDTO.getAssociateStatus());
+			}*/
+			
+			
 			queryObj.setLong("orgLocationsId", orgLocationId);
 
 			List<Projects> projectList = queryObj.list();

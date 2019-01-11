@@ -386,7 +386,7 @@ public class RequirementOfferRestController {
 						    RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 							requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.OFFERMADE.toString());
 							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED);
-							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 					  }
 			    	
 			    	  //Changing the status of offerTable 
@@ -551,7 +551,7 @@ public class RequirementOfferRestController {
 							requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
 							requirementSubmission.setSubmissionRequestUser(user.getFirstName() + ""	+ user.getLastName());
 							requirementSubmission = requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 							requirementSubmissionService.sendEmailtoApplicant(loginOrg, user, requirementSubmission, orgLocation);
 							requirementSubmissionService.sendEmailtoAssignedMemberApplicantAuthorization(loginOrg, user, requirementSubmission, orgLocation);
 						}
@@ -569,7 +569,7 @@ public class RequirementOfferRestController {
 								requirementSubmission.setRejectedCategoryOther(applicantAuthorizationDTO.getRejectedCategoryOther());
 							}
 							requirementSubmission = requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 						}
 					}
 					response.setObject("success");

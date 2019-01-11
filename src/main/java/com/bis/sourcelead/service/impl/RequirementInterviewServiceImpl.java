@@ -255,7 +255,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					           }
 					           requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 					           requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-					           requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+					           requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 					           
 					           if(requirementSubmission.getSourceSubmission() != null){
 					        	   RequirementSubmission parentSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
@@ -2255,7 +2255,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	    				 emailScenerioUtil.sendNotification(actionLink,spoc.getVendorUser(), interviewrUser, spoc.getClientLocationId(), noificationEmailScenario,new HashMap<String,String>());	 
 	    				 }else{
 	    				 User fromuser = userService.getUserById(Constants.USERID);
-	    				 emailScenerioUtil.sendNotification(actionLink,fromuser,interviewrUser, requirementSubmission.getOrgLocations(), noificationEmailScenario,new HashMap<String,String>());
+	    				 emailScenerioUtil.sendNotification(actionLink,fromuser,interviewScheduler, requirementSubmission.getOrgLocations(), noificationEmailScenario,new HashMap<String,String>());
 	    				 } 
 	    	  }
 //	      }

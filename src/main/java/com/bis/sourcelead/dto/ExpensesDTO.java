@@ -58,6 +58,27 @@ private static final long serialVersionUID = 1L;
 	private String expensesRejectedReason;
 	
 	private String projectStatus;
+	
+	private String billingStatus;
+	
+	
+	public String getBillingStatus() {
+		return billingStatus;
+	}
+
+	public void setBillingStatus(String billingStatus) {
+		this.billingStatus = billingStatus;
+	}
+
+	private BigDecimal totalsubmittedAmount;
+
+	public BigDecimal getTotalsubmittedAmount() {
+		return totalsubmittedAmount;
+	}
+
+	public void setTotalsubmittedAmount(BigDecimal totalsubmittedAmount) {
+		this.totalsubmittedAmount = totalsubmittedAmount;
+	}
 
 	public Long getId() {
 		return id;

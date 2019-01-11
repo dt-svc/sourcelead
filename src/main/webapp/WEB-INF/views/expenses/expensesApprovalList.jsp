@@ -124,11 +124,11 @@ margin-top: 3px;
 					<li><i class="filtIcon"  id="appro-pop"></i>
 	                	<div class="approved_pop">
 	                    	<ul>
-	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesApprovalDataList('dateSearch');"><label >All</label></li>
-								<li><input id="expenseSubmitForApproval" type="checkbox" name="expenseStatus" value ="SUBMITTEDFORAPPROVAL" onclick="getExpensesApprovalDataList('dateSearch');"><label >Sub for Approval</label></li>
-								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesApprovalDataList('dateSearch');"><label >Approved</label></li>
-								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesApprovalDataList('dateSearch');"><label >Rejected</label></li>
-								<li><input id="expenseReopened" type="checkbox" name="expenseStatus" value ="REOPENED" onclick="getExpensesApprovalDataList('dateSearch');"><label >Reopened</label></li>
+	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesApprovalDataList();"><label >All</label></li>     <!-- 'dateSearch' -->
+								<li><input id="expenseSubmitForApproval" type="checkbox" name="expenseStatus" value ="SUBMITTEDFORAPPROVAL" onclick="getExpensesApprovalDataList();"><label >Sub for Approval</label></li>
+								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesApprovalDataList();"><label >Approved</label></li>
+								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesApprovalDataList();"><label >Rejected</label></li>
+								<li><input id="expenseReopened" type="checkbox" name="expenseStatus" value ="REOPENED" onclick="getExpensesApprovalDataList();"><label >Reopened</label></li>
 								<!-- <li><input id="expenseReopned" type="checkbox" name="expenseStatus" value ="REOPENED" onclick="getExpensesApprovalDataList();"><label >Re-Opened</label></li> -->
 	                        </ul>
 	                    </div>                	
@@ -335,6 +335,7 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 	function cancelRejectExpense(expenseId){
 			 $(".mask_time").fadeOut(200);
 			 $("#reject"+expenseId+"panel").slideUp(200);
+			 window.location.reload();
 	}
 	function rejectExpenseByExpenseId(expenseId,tdSpanSize,from){ 
 	    $("#rejectReasonDiv").empty();
@@ -675,6 +676,21 @@ $("#appro-pop").click(function(){
 	
 });
 
+$(document).ready(function() {
+	$("#SearchExpensesData").keyup(function(event) {
+	    if (event.keyCode === 13) {
+	    	$('#SearchExpensesData').parent().find('p.jquery_form_error_message').remove();
+	    	var searchData = $('#SearchExpensesData').val();
+	    	var regex =  new RegExp(/[\\]/g);
+	    	if(regex.test(searchData) == false){
+	    		getExpensesApprovalDataList();
+	    	}else{
+	    		$("#SearchExpensesData").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
+	    	}
+	    	$('#SearchExpensesData').val(searchData);
+	    }
+	});	
+});
 </script>
 
 

@@ -1104,7 +1104,7 @@ function openFilterTaskPop(){
 					<a href="javascript:void(0)" class="close-div" onClick="closeFilterTaskPop()"><i
 						class="fa fa-close"></i></a>
 				</h5>
-				<div class="addInner">
+				<div class="addInner paddingBtm">
 					<div class="row">
 						<div class="col-md-2">
 						<div class="row">
@@ -1120,7 +1120,7 @@ function openFilterTaskPop(){
 						  </div>
 							  
 						 <div class="row">
-						   <div class="col-md-12 mb">
+						   <div class="col-md-12 mb5">
 							  <label><strong>Task Type</strong></label>
 								 <div class="clearfix">
 									<ul class="list-unstyled" id="taskTypeFilter">
@@ -1159,7 +1159,7 @@ function openFilterTaskPop(){
 						        </div>
 						     </div>
 						     
-						     <div class="col-md-3 mb positionRelative">
+						     <div class="col-md-3 mb10 positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
 										<input type="text" id="myAssignedInput" onkeyup="myAssignedFunction()" placeholder="Assigned To" title="Type in a managers">
 										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -1168,13 +1168,13 @@ function openFilterTaskPop(){
 										<ul class="list-unstyled positionRelative filterSearch mt5" id="myAssignedUL">
 <!-- 									        <li class="checkBox positionRelative clearfix" ><input   name="assignedtaskId" value ="unAssigned"  type="checkbox" class="pull-left"><label title="Un-Assigned"  class="tbldata-dotdot-me pull-left mt5">Un Assigned</label></li> -->
 										<c:forEach var="assignedMembers" items="${projectAssignMemberList}">  
-										    <li class="checkBox positionRelative clearfix" ><input   name="assignedtaskId" value ="${assignedMembers.id}"  type="checkbox" class="pull-left"><label for="assignedtaskId${assignedMembers.id}" title="${assignedMembers.candidateName}"  class="tbldata-dotdot-me pull-left mt5">${assignedMembers.candidateName}</label></li>
+										    <li class="checkBox positionRelative clearfix" ><input   name="assignedtaskId" value ="${assignedMembers.id}"  type="checkbox" class="pull-left"><label for="assignedtaskId${assignedMembers.id}" title="${assignedMembers.candidateName}"  class="tbldata-dotdot-me pull-left">${assignedMembers.candidateName}</label></li>
 										</c:forEach>
 										</ul>
 									 </div> 
 							 </div> 
 							 
-							 <div class="col-md-3 mb positionRelative">
+							 <div class="col-md-3 mb10	 positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
 										<input type="text" id="myTaskTeamInput" onkeyup="myTaskTeamFunction()" placeholder="Team" title="Type in a managers">
 										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -1203,7 +1203,7 @@ function openFilterTaskPop(){
 							 </div> 
 							 <div class="clearfix"></div>
 							 
-							 <div class="col-md-4 mb positionRelative">
+							 <div class="col-md-4 positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
 										<input type="text" id="myTagsInput" onkeyup="myTagsFunction()" placeholder="Tags" title="Type in a tags">
 										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -1217,7 +1217,7 @@ function openFilterTaskPop(){
 									 </div> 
 							 </div> 
 							 
-							 <div class="col-md-4 mb positionRelative">
+							 <div class="col-md-4 positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
 										<input type="text" id="myCreatedByInput" onkeyup="myCreatedByFunction()" placeholder="Created By" title="Type in a created By">
 										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -1225,13 +1225,13 @@ function openFilterTaskPop(){
 									 <div class="clearfix filterSearch-ul">
 										<ul class="list-unstyled positionRelative filterSearch mt5" id="myCreatedByUL">
 											<c:forEach var="assignedMembers" items="${projectAssignMemberList}">  
-											    <li class="checkBox positionRelative clearfix" ><input   name="createdByFilter" value ="${assignedMembers.id}"  type="checkbox" class="pull-left"><label for="createdBy${assignedMembers.id}" title="${assignedMembers.candidateName}"  class="tbldata-dotdot-me pull-left mt5">${assignedMembers.candidateName}</label></li>
+											    <li class="checkBox positionRelative clearfix" ><input   name="createdByFilter" value ="${assignedMembers.id}"  type="checkbox" class="pull-left"><label for="createdBy${assignedMembers.id}" title="${assignedMembers.candidateName}"  class="tbldata-dotdot-me pull-left">${assignedMembers.candidateName}</label></li>
 											</c:forEach>
 										</ul>
 									 </div> 
 							 </div>  
 							 
-							 <div class="col-md-3 mb positionRelative">
+							 <div class="col-md-3 positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
 										<input type="text" id="mySeverityInput" onkeyup="mySeverityFunction()" placeholder="Severity" title="Type in a severity">
 										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>

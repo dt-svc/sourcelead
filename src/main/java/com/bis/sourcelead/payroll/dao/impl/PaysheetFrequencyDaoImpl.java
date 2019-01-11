@@ -1,9 +1,7 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -11,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,15 +19,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.PaysheetFrequencyDao;
+import com.bis.sourcelead.payroll.dto.CommonPayrollDataDTO;
+import com.bis.sourcelead.payroll.dto.IntiateUSPayrollDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
+import com.bis.sourcelead.payroll.entity.USPayScheduleDate;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -88,11 +89,11 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<EmployeePayroll> employeePayrollYTD(Candidate candidate, OrgLocations orgLocation,String approverStatus)
+	public List<EmployeePayroll> employeePayrollYTD(Candidate candidate, OrgLocations orgLocation,String approverStatus,int periodYear)
 	{
 		List<EmployeePayroll> payrollList = null;
 		try {
-			Date[] ytdDates = payrollUtil.getYTDDates(orgLocation);
+			Date[] ytdDates = payrollUtil.getYTDDatesPerYear(orgLocation,periodYear);
 			java.sql.Date startDate = new java.sql.Date(ytdDates[0].getTime());
 			java.sql.Date endDate = new java.sql.Date(ytdDates[1].getTime());
 			Session session = this.sessionFactory.getCurrentSession();
@@ -115,7 +116,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		
 		PaysheetFrequency paysheetFrequency = null;
 		try {
-			String[] dts = dates.split(" ");
+			String[] dts = dates.split("#");
 			
 			Date startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dts[0]);
 			Date endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dts[1]);
@@ -168,9 +169,27 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 				}
 			}
 			
+			//department Ids
+			Long[] data = null;
+			String departmentQuery = "";
+			if(payrollReportDTO.getDepartment() != null && !"null".equalsIgnoreCase(payrollReportDTO.getDepartment()) ) {
+				
+				String[] idsValues = payrollReportDTO.getDepartment().split(",");
+				// convert string array to long array
+				 data = new Long[idsValues.length];
+				for (int i = 0; i < idsValues.length; i++) {
+				  data[i] = Long.valueOf(idsValues[i]);
+				}
+				
+				departmentQuery = " and payroll.employee.departmentId.id IN ( :ids )";
+				
+			}
+			
+			
+			
 			String query = "" , countQuery = "";
 			if(payrollReportDTO.getPayGroup() != null && payrollReportDTO.getPayGroup() != 0l) {
-				query = "from EmployeePayroll payroll left join fetch payroll.employee left join fetch payroll.employee.user where payroll.paysheetFrequency.userGroup.id = :groupId and payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.paysheetFrequency.frequencyStartDate = :freqStartDate and payroll.paysheetFrequency.frequencyEndDate = :freqEndDate and payroll.submitForAproverStatus = 'APPROVED'";
+				query = "from EmployeePayroll payroll left join fetch payroll.employee left join fetch payroll.employee.user where payroll.paysheetFrequency.userGroup.id = :groupId and payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.paysheetFrequency.frequencyStartDate = :freqStartDate and payroll.paysheetFrequency.frequencyEndDate = :freqEndDate and payroll.submitForAproverStatus = 'APPROVED'"+departmentQuery;
 				countQuery = "from EmployeePayroll payroll where payroll.paysheetFrequency.userGroup.id = :groupId and payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.paysheetFrequency.frequencyStartDate = :freqStartDate and payroll.paysheetFrequency.frequencyEndDate = :freqEndDate and payroll.submitForAproverStatus = 'APPROVED'";
 			}else {
 				query = "from EmployeePayroll payroll left join fetch payroll.employee left join fetch payroll.employee.user where payroll.paysheetFrequency.orgLocation.id = :orgLocationId and date(payroll.payCheckDate) BETWEEN :freqStartDate and :freqEndDate and payroll.submitForAproverStatus = 'APPROVED'";
@@ -201,6 +220,9 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			if(StringUtils.isNotBlank(payrollReportDTO.getFromDate()) && StringUtils.isNotBlank(payrollReportDTO.getToDate())) {
 				queryObj.setParameter("fromDate", fromDate);
 				queryObj.setParameter("toDate", toDate);
+			}
+			if(StringUtils.isNotBlank(payrollReportDTO.getDepartment()) && !"null".equalsIgnoreCase(payrollReportDTO.getDepartment())) {
+				queryObj.setParameterList("ids", data);
 			}
 			queryObj.setLong("orgLocationId", payrollReportDTO.getOrgLocationid());
 			if(payrollReportDTO.getPayGroup() != null && payrollReportDTO.getPayGroup() != 0l) {
@@ -246,6 +268,13 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	@Transactional
 	public YTDPayrollDTO getContributionYTD(EmployeePayroll payroll,Long contributionId,OrgLocations orgLocation, String reportType)
 	{
+		
+		//passing frequency year to calculate ytd
+		Date date = payroll.getPaysheetFrequency().getFrequencyStartDate();
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		int year = c.get(Calendar.YEAR);
+		
 		YTDPayrollDTO yTDPayrollDTO = new YTDPayrollDTO();
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -253,7 +282,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			BigDecimal contributionMTD = BigDecimal.ZERO;
 			BigDecimal contributionQTD = BigDecimal.ZERO;
 			// YTD Dates
-			Date[] ytdDates = payrollUtil.getYTDDates(orgLocation);
+			Date[] ytdDates = payrollUtil.getYTDDatesPerYear(orgLocation,year);
 			java.sql.Date startDate = new java.sql.Date(ytdDates[0].getTime());
 			java.sql.Date endDate = new java.sql.Date(ytdDates[1].getTime());
 			String qry = "from DeductionHistory dedHis where dedHis.payroll.candidate.id= :candidateId and dedHis.contributionId.id = :contributionId and dedHis.deductionDate >= :startDate and dedHis.deductionDate <= :endDate ";
@@ -351,10 +380,17 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	@Transactional
 	public YTDPayrollDTO getDeductionYTD(EmployeePayroll payroll, Long deductionId, OrgLocations orgLocation,String reportType) {
 		
+		
+		//passing frequency year to calculate ytd
+		Date date = payroll.getPaysheetFrequency().getFrequencyStartDate();
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		int year = c.get(Calendar.YEAR);
+		
 		YTDPayrollDTO yTDPayrollDTO = new YTDPayrollDTO();
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			Date[] ytdDates = payrollUtil.getYTDDates(orgLocation);
+			Date[] ytdDates = payrollUtil.getYTDDatesPerYear(orgLocation,year);
 			java.sql.Date startDate = new java.sql.Date(ytdDates[0].getTime());
 			java.sql.Date endDate = new java.sql.Date(ytdDates[1].getTime());
 			String qry = "from DeductionHistory dedHis where dedHis.payroll.candidate.id= :candidateId and dedHis.deductionId.id = :deductionId and dedHis.deductionDate >= :startDate and dedHis.deductionDate <= :endDate";
@@ -413,8 +449,16 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	@Transactional
 	public List<EmployeePayroll> getPayrollTaxesYTD(EmployeePayroll payroll, OrgLocations orgLocation)
 	{
+		
+		
+		//passing frequency year to calculate ytd
+		Date date = payroll.getPaysheetFrequency().getFrequencyStartDate();
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		int year = c.get(Calendar.YEAR);
+		
 		Session session = this.sessionFactory.getCurrentSession();
-		Date[] ytdDates = payrollUtil.getYTDDates(orgLocation);
+		Date[] ytdDates = payrollUtil.getYTDDatesPerYear(orgLocation,year);
 		java.sql.Date startDate = new java.sql.Date(ytdDates[0].getTime());
 		java.sql.Date endDate = new java.sql.Date(ytdDates[1].getTime());
 		String qry = "from EmployeePayroll payroll where payroll.id = :payrollId and payroll.payCheckDate >= :startDate and payroll.payCheckDate <= :endDate";
@@ -531,5 +575,95 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			p.setPaidAmount(Double.valueOf(p.getPaymentAmount()));
 		}
 		return invoicePaymentList;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public CommonPayrollDataDTO getNextPayrollDate(IntiateUSPayrollDTO intiateUSPayrollDTO, Long orgLocationId,String orgDateFormat)
+	{
+		List<IntiateUSPayrollDTO> recentRunRecord = null;
+		CommonPayrollDataDTO commonPayrollDataDTO = new CommonPayrollDataDTO();
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			StringBuilder sb = new StringBuilder();
+			sb.append("SELECT ugr.GROUP_NAME as groupName,") 
+			  .append("ugr.PAY_FREQUENCY as payFrequency,")
+			  .append("psheet.FREQUENCY_START_DATE as payrollFreqStartDate,")
+			  .append("psheet.FREQUENCY_END_DATE as payrollFreqEndDate ")
+			  .append("FROM USER_GROUP ugr, PAY_SHEET_FREQUENCY psheet ")
+			  .append("where ugr.ID = psheet.GROUP_ID ")
+			  .append("AND ugr.PAY_FREQUENCY = :payFrequency ")
+			  .append("AND psheet.ORG_LOCATION_ID = :orgLocationId  order by psheet.CREATED_DATE desc limit 1");
+			Query queryObj = session.createSQLQuery(sb.toString());
+			queryObj.setString("payFrequency", intiateUSPayrollDTO.getPayFrequency());
+			queryObj.setLong("orgLocationId", orgLocationId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(IntiateUSPayrollDTO.class));
+			recentRunRecord = queryObj.list();
+//			System.out.println(recentRunRecord.get(0).getPayrollFreqStartDate() +" / " +recentRunRecord.get(0).getPayrollFreqEndDate());
+			if(recentRunRecord != null && recentRunRecord.size() >0) {
+				Calendar c = Calendar.getInstance(); 
+				c.setTime(recentRunRecord.get(0).getPayrollFreqEndDate()); 
+				c.add(Calendar.DATE, 1);
+				Date nextForEndDate = c.getTime();
+				java.sql.Date freqStartDate = new java.sql.Date(nextForEndDate.getTime());
+				
+				String qry = "from USPayScheduleDate scheduleDate where scheduleDate.payPeriodStartDate = :payrollFreqStartDate";
+				List<USPayScheduleDate> uSPayScheduleDate = session.createQuery(qry).setDate("payrollFreqStartDate", freqStartDate).list();
+				
+				if(uSPayScheduleDate != null && uSPayScheduleDate.size() > 0) {
+					StringBuilder payFreq = new StringBuilder();
+					commonPayrollDataDTO.setPayrollFreqStartDate(commonUtil.dateStrFromOrgDateFormatter(orgDateFormat, uSPayScheduleDate.get(0).getPayPeriodStartDate()));
+					commonPayrollDataDTO.setPayrollFreqEndDate(commonUtil.dateStrFromOrgDateFormatter(orgDateFormat, uSPayScheduleDate.get(0).getPayPeriodEndDate()));
+					commonPayrollDataDTO.setPayrollCheckDate(commonUtil.dateStrFromOrgDateFormatter(orgDateFormat, uSPayScheduleDate.get(0).getCheckDate()));
+					commonPayrollDataDTO.setPayrollRunDate(commonUtil.dateStrFromOrgDateFormatter(orgDateFormat, uSPayScheduleDate.get(0).getPayRunDate()));
+					payFreq.append(commonPayrollDataDTO.getPayrollFreqStartDate()).append(" to ").append(commonPayrollDataDTO.getPayrollFreqEndDate());
+					commonPayrollDataDTO.setPayrollFrequency(payFreq.toString());
+				}	
+			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return commonPayrollDataDTO;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<PaysheetFrequency> getRecentlyRunPayrollListByFrequency(IntiateUSPayrollDTO intiateUSPayrollDTO, Long orgLocationId, String dateFormat)
+	{
+		List<PaysheetFrequency> paysheetFreqList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from PaysheetFrequency freq where freq.orgLocation.id  =:orgLocationId and freq.userGroup.payFrequency =:payFrequency order by freq.createdDate desc"; //limit 10";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			queryObj.setString("payFrequency", intiateUSPayrollDTO.getPayFrequency());
+			queryObj.setMaxResults(10);
+			paysheetFreqList = queryObj.list();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return paysheetFreqList;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<PaysheetFrequency> getRecentlyRunPayrollData(Long orgLocationId)
+	{
+		List<PaysheetFrequency> paysheetFreqList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from PaysheetFrequency freq where freq.orgLocation.id  =:orgLocationId order by freq.createdDate desc"; //limit 10";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			queryObj.setMaxResults(10);
+			paysheetFreqList = queryObj.list();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return paysheetFreqList;
 	}
 }

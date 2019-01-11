@@ -1,9 +1,11 @@
 package com.bis.sourcelead.dao;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
+import com.bis.sourcelead.dto.AssociateJoineReportDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
@@ -236,5 +238,31 @@ public interface RequirementSubmissionDao {
 	
 	List<ApplicantsJoinedReportDTO> getRequirementIncentiveByRequirementIdAndLocation(Long requirementId,String usercode,Long orgLocationId, Date[] searchDates) throws Exception;
 
+	ResponseList<AssociateJoineReportDTO> getAssociateJoineReport(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception;
 
+	ResponseList<AssociateJoineReportDTO> getAssociateTerminateReport(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception;
+	
+	ResponseList<AssociateJoineReportDTO> getAssociateJoinedGraph(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception;
+
+	List<RequirementSubmission> getCandidateForInvoiceDashBoard(OrgLocations orgLocations,User user);
+	
+	List<RequirementSubmission> getCandidateForInvoiceJobClosure(OrgLocations orgLocations,User user,Long orgRelationId);
+	
+	List<RequirementSubmission> getCandidateInvoiceJobClosureDashboard(OrgLocations orgLocations,Long orgRelationId,Long summissionId,Long candidateId);
+	
+	List<RequirementSubmission> getCandidateForInvoiceJobClosureEdit(OrgLocations orgLocations,User user,Long orgRelationId,List<Long> selectedAssociates);
+
+    List<RequirementSubmission> getCandidateForBillJobClosure(OrgLocations orgLocations, User user,Long orgRelationId);
+    
+    List<RequirementSubmission> getCandidateForBillJobClosureEdit(OrgLocations orgLocations, User user,Long orgRelationId, List<Long> selectedAssociates);
+
+    long getRequirementClientCountByRequirementIdAndUserIdAndDates(BigInteger requirementID, BigInteger userId, Date[] searchDates);
+
+	long getRequirementCountByUserIdAndDates(BigInteger userId, Date[] searchDates);
+
+	long getOfferCountByUserIdAndDates(String userCode, Date[] searchDates);
+
+	long getJoinedCountByUserIdAndDates(String userCode, Date[] searchDates);
+
+	List<RequirementSubmission> getSubmissionListByOrgLocationAndSubmissionStatusAndJoiningDate(Long orgLocationId, String submissionStatus, Date joiningDate);
 }

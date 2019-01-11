@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +26,8 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.beans.BillingReportDTO;
@@ -43,17 +48,22 @@ import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dto.BillingDTO;
 import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
+import com.bis.sourcelead.dto.CustomInvoiceTemplateDTO;
+import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoicePaymentDTO;
 import com.bis.sourcelead.dto.InvoiceTimelineDTO;
 import com.bis.sourcelead.dto.PaymentAccountDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SearchDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.CreditDebitLineItems;
 import com.bis.sourcelead.entity.CreditDebitNote;
+import com.bis.sourcelead.entity.CustomInvoiceTemplate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -71,6 +81,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -90,19 +101,25 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.CustomInvoicePDFHelper;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 
 @RestController
 @RequestMapping("/app")
 public class InvoiceRestController {
+	
+	@Value("${system.default.font}")
+	private String systemDefaultFont;
 	
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceRestController.class);
 	@Autowired
@@ -159,6 +176,9 @@ public class InvoiceRestController {
 	private OrgRelationsService orgRelationsService;
 	@Autowired
 	private ExpensesService expensesService;
+	
+	@Autowired
+	private RequirementSubmissionService requirementSubmissionService;
 	
 	protected static boolean isNullOrEmpty(String str)
 	{
@@ -223,6 +243,10 @@ public class InvoiceRestController {
 	 * } catch (FileNotFoundException e) {
 	 * logger.error(ExceptionUtils.getFullStackTrace(e)); } }
 	 */
+	
+	@Autowired
+	private CustomInvoicePDFHelper customInvoicePDFHelper;
+	
 	@RequestMapping(value = "/saveInvoice", method = RequestMethod.POST)
 	public @ResponseBody Response<String> saveInvoice(InvoiceDTO invoiceDTO, @RequestParam(value = "saveType", required = false) String saveType, @RequestParam(value = "invoiceType", required = false) String invoiceType, HttpServletRequest request) throws Exception
 	{
@@ -235,7 +259,7 @@ public class InvoiceRestController {
 					String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 					invoiceDTO.setStaticPath(staticPath);
-					Invoice invoice = invoiceService.saveInvoice(user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceDTO);
+					Invoice invoice = invoiceService.saveInvoice(user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceDTO, systemDefaultFont);
 					if (null != invoice) {
 						if (null != invoice.getProjectID()) {
 							invoiceService.updateSubmissionApproverHiearachy(invoice, invoiceType);
@@ -243,6 +267,122 @@ public class InvoiceRestController {
 						response.setResponse(Result.SUCCESS.name());
 						response.setResponseMessage(Result.SUCCESS.getValue());
 					}
+				}
+				else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			 }else if (user == null) {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+		
+		return response;
+	}
+	
+	@RequestMapping(value = "/saveInvoiceForJobClosure", method = RequestMethod.POST)
+	public @ResponseBody Response<String> saveInvoiceForJobClosure(InvoiceDTO invoiceDTO, 
+			@RequestParam(value = "saveType", required = false) String saveType, 
+			@RequestParam(value = "invoiceType", required = false) String invoiceType,
+			@RequestParam(value = "isJobClosure", required = false) String isJobClosure,
+			HttpServletRequest request) throws Exception
+	{
+		Response<String> response = new Response<>();
+			try {
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				if (user != null) {
+				if (Validator.validate(invoiceDTO)) {
+					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+					invoiceDTO.setStaticPath(staticPath);
+					if(StringUtils.isNotBlank(isJobClosure)){
+						invoiceDTO.setIsJobClosure(isJobClosure);	
+					}
+					Invoice invoice = invoiceService.saveInvoice(user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceDTO, systemDefaultFont);
+					// update requirement submission 
+					if(invoice !=null){
+					Set<InvoiceLineItems> lineItemsList = invoice.getInvoiceLineItems();
+					lineItemsList.forEach(list->{
+						if(list.getRequirementSubmissionId() !=null){
+					try {
+						RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(list.getRequirementSubmissionId().getId());
+						submission.setInvoiceGenerated(Constants.YES);
+						requirementSubmissionService.storeRequirementSubmission(submission);
+						
+					} catch (Exception e) {
+						
+						e.printStackTrace();
+					}
+						}
+					});
+					}
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			 }else if (user == null) {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+		
+		return response;
+	}
+	
+	@RequestMapping(value = "/saveBillForJobClosure", method = RequestMethod.POST)
+	public @ResponseBody Response<String> saveBillForJobClosure(InvoiceDTO invoiceDTO, 
+			@RequestParam(value = "saveType", required = false) String saveType, 
+			@RequestParam(value = "invoiceType", required = false) String invoiceType,
+			@RequestParam(value = "isJobClosure", required = false) String isJobClosure,
+			HttpServletRequest request) throws Exception
+	{
+		Response<String> response = new Response<>();
+			try {
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				if (user != null) {
+				if (Validator.validate(invoiceDTO)) {
+					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+					invoiceDTO.setStaticPath(staticPath);
+					if(StringUtils.isNotBlank(isJobClosure)){
+						invoiceDTO.setIsJobClosure(isJobClosure);	
+					}
+					Invoice invoice = invoiceService.saveInvoice(user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceDTO, systemDefaultFont);
+					// update requirement submission 
+					if(invoice !=null){
+					Set<InvoiceLineItems> lineItemsList = invoice.getInvoiceLineItems();
+					lineItemsList.forEach(list->{
+						if(list.getRequirementSubmissionId() !=null){
+					try {
+						RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(list.getRequirementSubmissionId().getId());
+						submission.setInvoiceGenerated(Constants.YES);
+						requirementSubmissionService.storeRequirementSubmission(submission);
+						
+					} catch (Exception e) {
+						
+						e.printStackTrace();
+					}
+						}
+					});
+					}
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
 				}
 				else {
 					response.setObject("DataMissing");
@@ -324,18 +464,50 @@ public class InvoiceRestController {
 				associateIds.add(Long.parseLong(selectedAssoicatesIds[i]));
 			}
 			associateList = candidateService.getAllActiveAssociatesByLocationAndAssoicatesList(loginOrgLocation.getId(), associateIds);
-			for (Candidate candidate : associateList) {
-				List<Contracts> contractsList = getSowContract(candidate.getId(), loginOrgLocation, orgRelationId, contractType);
-				if (null != contractsList && contractsList.size() > 0) {
-					candidate.setContractsList(contractsList);
-				}
-			}
+			
 		}
 		else {
 			associateList = candidateService.getAllActiveAssociatesByLocation(loginOrgLocation.getId());
 		}
+		for (Candidate candidate : associateList) {
+			List<Contracts> contractsList = getSowContract(candidate.getId(), loginOrgLocation, orgRelationId, contractType);
+			if (null != contractsList && contractsList.size() > 0) {
+				candidate.setContractsList(contractsList);
+			}
+		}
 //		resultJson = commonUtil.toJSON(associateList);
 		responseList.setData(associateList);
+		return responseList;
+	}
+	
+	
+	@RequestMapping(value = "/getInvoiceCandidatesListForJobClosure", method = RequestMethod.GET)
+	public @ResponseBody ResponseList<RequirementSubmissionsDTO> getInvoiceCandidatesListForJobClosure(@RequestParam(value = "selectedAssociates", required = false) String selectedAssociates, 
+			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
+			@RequestParam(value = "contractType", required = false) String contractType,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ResponseList<RequirementSubmissionsDTO> responseList = new ResponseList<>();
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<RequirementSubmissionsDTO> applicantsList = requirementSubmissionService.getCandidateForInvoiceJobClosure(loginOrgLocation, user, orgRelationId,contractType,selectedAssociates);
+		
+		responseList.setData(applicantsList);
+		return responseList;
+	}
+	
+	@RequestMapping(value = "/getVendorInvoiceAssociatesListForJobClosure", method = RequestMethod.GET)
+	public @ResponseBody ResponseList<RequirementSubmissionsDTO> getVendorInvoiceAssociatesList(@RequestParam(value = "selectedAssociates", required = false) String selectedAssociates, 
+			@RequestParam(value = "vendorOrgRelationId", required = false) Long vendorOrgRelationId,
+			@RequestParam(value = "contractType", required = false) String contractType,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ResponseList<RequirementSubmissionsDTO> responseList = new ResponseList<>();
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<RequirementSubmissionsDTO> applicantsList = requirementSubmissionService.getCandidateForBillsJobClosure(loginOrgLocation, user, vendorOrgRelationId,contractType,selectedAssociates);
+		
+		responseList.setData(applicantsList);
 		return responseList;
 	}
 	
@@ -623,8 +795,8 @@ return responseList;
 				}
 			}
 			billingDto.setInvoiceUUID(invoice.getInvoiceUUID());
-			billingDto.setTotal(String.format("%.2f", Float.valueOf(invoice.getTotal())));
-			billingDto.setDueAmount(String.format("%.2f", Float.valueOf(invoice.getDueAmount())));
+			billingDto.setTotal(String.format("%.3f", Float.valueOf(invoice.getTotal())));
+			billingDto.setDueAmount(String.format("%.3f", Float.valueOf(invoice.getDueAmount())));
 			billingDto.setInvoiceStatus(invoice.getInvoiceStatus());
 			billingDto.setPaymentStatus(invoice.getPaymentStatus());
 			if (null != invoice.getProjectID()) {
@@ -635,7 +807,7 @@ return responseList;
 						|| Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())) {
 					draftCount = draftCount + 1;
 					draftTotalAmount = draftTotalAmount + Float.parseFloat(invoice.getDueAmount());
-					billingDto.setDraftInvoiceAmount(String.format("%.2f", draftTotalAmount));
+					billingDto.setDraftInvoiceAmount(String.format("%.3f", draftTotalAmount));
 				}
 				if (!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())
 						&& !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())
@@ -647,7 +819,7 @@ return responseList;
 					Float paidAmount = Float.parseFloat(invoice.getTotal())
 							- Float.parseFloat(invoice.getDueAmount());
 					paidTotalAmount = paidTotalAmount + paidAmount;
-					billingDto.setPaidInvoiceAmount(String.format("%.2f", paidTotalAmount));
+					billingDto.setPaidInvoiceAmount(String.format("%.3f", paidTotalAmount));
 				}
 				if (!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())
 						&& !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())
@@ -664,14 +836,14 @@ return responseList;
 							overDueInvoiceCount = overDueInvoiceCount + 1;
 							dueAfterInvoiceAmount = dueAfterInvoiceAmount
 									+ Float.parseFloat(invoice.getDueAmount());
-							billingDto.setDueAfterInvoiceAmount(String.format("%.2f", dueAfterInvoiceAmount));
+							billingDto.setDueAfterInvoiceAmount(String.format("%.3f", dueAfterInvoiceAmount));
 							isInvoiceDueDate = true;
 						}
 						else {
 							openInvoiceCount = openInvoiceCount + 1;
 							dueBeforeInvoiceAmount = dueBeforeInvoiceAmount
 									+ Float.parseFloat(invoice.getDueAmount());
-							billingDto.setDueBeforeInvoiceAmount(String.format("%.2f", dueBeforeInvoiceAmount));
+							billingDto.setDueBeforeInvoiceAmount(String.format("%.3f", dueBeforeInvoiceAmount));
 						}
 					}
 				}
@@ -843,8 +1015,8 @@ return responseList;
 			}
 		}
 		billingDto.setInvoiceUUID(invoice.getInvoiceUUID());
-		billingDto.setTotal(String.format("%.2f", Float.valueOf(invoice.getTotal())));
-		billingDto.setDueAmount(String.format("%.2f", Float.valueOf(invoice.getDueAmount())));
+		billingDto.setTotal(String.format("%.3f", Float.valueOf(invoice.getTotal())));
+		billingDto.setDueAmount(String.format("%.3f", Float.valueOf(invoice.getDueAmount())));
 		billingDto.setInvoiceStatus(invoice.getInvoiceStatus());
 		billingDto.setPaymentStatus(invoice.getPaymentStatus());
 		if (null != invoice.getProjectID()) {
@@ -855,7 +1027,7 @@ return responseList;
 					|| Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())) {
 				draftCount = draftCount + 1;
 				draftTotalAmount = draftTotalAmount + Float.parseFloat(invoice.getDueAmount());
-				billingDto.setDraftInvoiceAmount(String.format("%.2f", draftTotalAmount));
+				billingDto.setDraftInvoiceAmount(String.format("%.3f", draftTotalAmount));
 			}
 			if (!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())
 					&& !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())
@@ -867,7 +1039,7 @@ return responseList;
 				Float paidAmount = Float.parseFloat(invoice.getTotal())
 						- Float.parseFloat(invoice.getDueAmount());
 				paidTotalAmount = paidTotalAmount + paidAmount;
-				billingDto.setPaidInvoiceAmount(String.format("%.2f", paidTotalAmount));
+				billingDto.setPaidInvoiceAmount(String.format("%.3f", paidTotalAmount));
 			}
 			
 		}
@@ -1025,6 +1197,9 @@ return responseList;
 				}
 				if (null != inviceLine.getContract()) {
 					inviceLine.setSowName(inviceLine.getContract().getContractTitle());
+				}
+				if(inviceLine.getRequirementSubmissionId() !=null){
+					inviceLine.setRequirementName(inviceLine.getRequirementSubmissionId().getRequirement().getJobTitle());
 				}
 				inviceLine.setRate(inviceLine.getRate());
 				inviceLine.setInlineDescription(inviceLine.getInlineDescription());
@@ -2045,6 +2220,28 @@ return responseList;
 		return response;
 	}
 	
+	@RequestMapping(value = "/generateAutomaticInvoiceForJobClosure", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<InvoiceDTO> generateAutomaticInvoiceForJobClosure(@RequestParam(value = "invoiceType", required = false) String invoiceType, 
+			@RequestParam(value = "contractType", required = false) String contractType,
+			HttpServletRequest request) throws Exception
+	{
+		Response<InvoiceDTO> response = new Response<>();
+		InvoiceDTO invoiceDTO = new InvoiceDTO();
+		
+//		String resultJson = "";
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Integer savedInvoiceCount = invoiceService.getAutomaticInvoiceForJobClosure(orgLocation, loginOrgCurrencyCode, invoiceType, user,contractType,isGlobalAccess);
+//		resultJson = commonUtil.toJSON(savedInvoiceCount);
+		invoiceDTO.setCount(String.valueOf(savedInvoiceCount));
+		response.setObject(invoiceDTO);
+		return response;
+	}
+	
 	@RequestMapping(value = "/getBillingReportByFrequency", method = RequestMethod.GET)
 	@ResponseBody
 	public Response<BillingReportDTO> getBillingReportByFrequency(@RequestParam(value = "billingReportType", required = false) String billingReportType, @RequestParam(value = "invoiceType", required = false) String invoiceType, @RequestParam(value = "startDate", required = false) String startDate, @RequestParam(value = "endDate", required = false) String endDate, HttpServletRequest request) throws Exception
@@ -2372,7 +2569,7 @@ return responseList;
 		User user = userService.getUserById(Long.parseLong(userId));
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(orgLocationId));
 		Org org = orgLocation.getOrg();
-		Invoice invoice = invoiceService.saveExpenseInvoice(invoiceDTO, user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceCategory);
+		Invoice invoice = invoiceService.saveExpenseInvoice(invoiceDTO, user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceCategory, systemDefaultFont);
 		if (invoice != null && invoice.getExpensesId() != null) {
 			invoiceService.updateExpensesForinvoice(invoice, invoiceType);
 		}
@@ -2547,5 +2744,146 @@ return responseList;
 		CreditDebitLineItems lineItem = invoiceService.getCreditDebitLineItemById(Long.parseLong(id));
 		invoiceService.deleteCreditDebitLineItem(lineItem);
 		return "Success";
+	}
+	
+	/**
+	 * @author Mahaveer Manoj
+	 */
+	/*@RequestMapping(value="/generateCustomInvoicePDF")
+	public void generateCustomInvoicePDF(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(36L);
+			OrgLocations vendorOrgLocation = null;
+			if (orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+				vendorOrgLocation = orgRelation.getLocationId();
+			}
+			if (orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+				vendorOrgLocation = orgRelation.getResponderLocationId();
+			}
+			Invoice invoice =  invoiceDao.getInvoicetById(149L);
+			
+			String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
+			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(8L);
+			File file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "client/project", systemDefaultFont, sourceleadUrl);
+			if(file!= null){
+				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+				mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				StringBuilder fileNameSB = new StringBuilder();
+				response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();
+				file.delete();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}*/
+	
+	@RequestMapping(value = "/invoiceTemplateList", method = RequestMethod.POST)
+	public ResponseList<CustomInvoiceTemplateDTO> customizeInvoice(HttpServletRequest request, SearchDTO searchDTO,
+			@RequestParam(defaultValue = "0") Long orgLocationId, @RequestParam(defaultValue = "0") Long orgRelationId) {
+		ResponseList<CustomInvoiceTemplateDTO> responseList = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loggedInOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (user != null) {
+				responseList = invoiceService.getCustomInvoiceTemplateListByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocationId, searchDTO, loggedInOrgLocations);
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(Result.SUCCESS.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return responseList;
+	}
+	
+	@RequestMapping(value = "/saveCustomInvoiceTemplate", method = RequestMethod.POST)
+	public Response<String> saveDashboardItems(HttpServletRequest request,
+			@RequestParam(defaultValue="0") Long orgLocationId,
+			@RequestParam(defaultValue="0") Long orgRelationId,
+			CustomInvoiceTemplateDTO customInvoiceTemplateDTO) {
+		Response<String> response = new Response<>();
+		try {
+			User loggedInUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (loggedInUser != null) {
+				JSONArray jsonArray = new JSONArray(customInvoiceTemplateDTO.getJsonData());
+				if(jsonArray!=null) {
+					for(int i=0;i<jsonArray.length();i++) {
+						JSONObject jsonObject = jsonArray.getJSONObject(i);
+						/*if (!jsonObject.has("name") || !jsonObject.has("checked") || !jsonObject.has("order") || !jsonObject.has("size")) {
+							response.setResponse(Result.INVALID_DATA.name());
+							response.setResponseMessage(Result.INVALID_DATA.getValue());
+							return response;
+						}*/
+					}
+				}
+				OrgLocations loggedInOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
+				OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsByResponderLocationdIdAndOrgRelationId(orgLocationId,orgRelationId,loggedInOrgLocations.getId());
+				if(orgLocation != null && orgRelation != null) {
+					if (Validator.validate(customInvoiceTemplateDTO)) {
+						response = invoiceService.saveCustomInvoiceTemplate(customInvoiceTemplateDTO, orgRelation, orgLocation, loggedInUser, loggedInOrgLocations);
+					} else {
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+				} else {
+					response.setResponse(Result.INVALID_USER.name());
+					response.setResponseMessage(Result.INVALID_USER.getValue());
+				}
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+	
+	@RequestMapping(value = "/changeCustomInvoiceTemplateStatus", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Boolean> changeJobFairStatus(HttpServletRequest request, 
+			@RequestParam(defaultValue = "0") long templateId,
+			@RequestParam(defaultValue="0") Long orgLocationId,
+			@RequestParam(defaultValue="0") Long orgRelationId,
+			@RequestParam(defaultValue = "0") int status) {
+		Response<Boolean> response = new Response<>();
+		try {
+			User loggedInUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (loggedInUser != null) {
+				boolean result = false;
+				if(status == -1) {
+					result = invoiceService.deleteCustomInvoiceTemplate(templateId);
+				} else {
+					OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
+					result = invoiceService.changeCustomInvoiceTemplateStatus(templateId, status, loggedInUser, orgLocation);
+				}
+				response.setObject(result);
+				response.setResponse(result ? Result.SUCCESS.name() : Result.FAILED.name());
+				response.setResponseMessage(result ? Result.SUCCESS.getValue() : Result.FAILED.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
 	}
 }

@@ -4102,7 +4102,7 @@ box-shadow: 0 8px 6px -6px rgba(0,0,0,0.2);
 	margin: 0; text-align: left;
 }
 .paddingBtm {
-	padding-bottom: 8px;
+	padding-bottom: 8px !important;
 }	
 #statusDropDown {
 	position: relative; top:5px;
@@ -4505,7 +4505,6 @@ margin-bottom: 0;
 }
 .applicant_accept {
     padding: 15px; background: rgba(241,240,240,1.00); margin:0; border-radius: 5px;
-
 }
 .applicant_accept h2{
     font-size: 20px; margin-top: 10px; margin-bottom: 10px; color: #333; font-weight: normal;
@@ -5027,7 +5026,7 @@ padding: 5px 5px;
     padding-bottom:5px; width: 29%;
 }
 .user_summary_edit.user_summaryEdit .user_summary_edit_cta p{
-margin: 0; bottom: -10px;
+margin: 0; bottom: -10px !important;
 }
 .user_summary_edit.user_summaryEdit .user_summary_edit_cta select.rate_sele {
     width: 25% !important;
@@ -7971,9 +7970,8 @@ display: initial;
 	margin-bottom: 0;
 }
 .signatoryFormDiv {
-    padding:20px; width: 950px; min-height: 150px;  left: 15%; top:15%;
-    background-color: #fff; display: none; position: fixed; z-index: 9999;
-    border-radius:5px;
+    padding:20px; width: 950px; min-height: 150px;  left: 15%; top:15%; background-color: #fff; display: none;
+	position: fixed; z-index: 9999; border-radius:5px;
 }
 .signatoryFormDiv .close {
     position: absolute; right: 10px; top: 10px; opacity: 1;
@@ -8009,8 +8007,7 @@ content: '\f00d'; font-family: fontawesome;
 color: green;
 }
 .passHintNew p.actTe:before {
-position: relative; display:inline-block;
-right:0px; width:18px;
+position: relative; display:inline-block; right:0px; width:18px;
 content: '\f00c'; font-family: fontawesome;
 }
 ul.actionIcons li{
@@ -8502,7 +8499,7 @@ table.tableNetpay thead > tr >  th {
 	border:1px solid #A8B7C7; padding-right: 5px; 
 }
 .tablePayslip .formControl {
-	border: transparent; width: 100%; padding:0px; text-align: left;
+	border: transparent; width: 95%; padding:0px; text-align: left;
 }
 .tablePayslip .formControl.activeEdit {
 	border:1px solid #A8B7C7; padding:1px 5px; 
@@ -8550,7 +8547,7 @@ table.tableNetpay thead > tr >  th {
 .radioStyles [type="radio"]:checked + label:before,
 .radioStyles [type="radio"]:not(:checked) + label:before {
     content: ''; position: absolute; left: 0; top: 0; width: 18px; height: 18px;
-    border: 1px solid #ddd; border-radius: 100%; background: #fff;
+    border: 1px solid #848484; border-radius: 100%; background: #fff;
 }
 .radioStyles [type="radio"]:checked + label:after,
 .radioStyles [type="radio"]:not(:checked) + label:after {
@@ -9182,6 +9179,9 @@ margin: 5px 0; font-size: 16px; color: #606060;
 .rewardImage {
 	width: 55px; height: 55px; padding-right: 0;
 }
+/*.profileDetails-Widget .media-object {
+	width: 55px; height: 65px; margin: 5px 0px 0px 0px;
+}*/
 .prfileImg img, .profilesummarywidgetImg img, .grid-prfileImg img, .cartImg img, .rewardImage img {
 	max-height: 100%; border-radius:0px; margin: 0 auto;
 }
@@ -9268,6 +9268,30 @@ content: '\f00c'; color: #f60; border-color: #f60;
 	background-image: url(../images/sortIcon.svg); background-repeat: no-repeat; width: 25px; height: 28px;
 	background-position: top; background-size: 100%; display: inline-block;
 }
+.walletSvg {
+	background-image: url(../images/walletexpenses.svg); background-repeat: no-repeat; width: 50px; height: 50px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.submissionShare {
+	background-image: url("../images/submission-share.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.shortlilstedIC {
+	background-image: url("../images/shortlilstedIC.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.invterviewIC {
+	background-image: url("../images/interviewIC.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.jobOfferIC {
+	background-image: url("../images/jobOfferIC.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.joinedIC {
+	background-image: url("../images/joinedIC.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
 .jobSucces_list a {
 	position: relative; right:0px; top:0px; color: #f60;
 }
@@ -9307,7 +9331,7 @@ a.removeSelected:hover, .removeSelectedAll  {
 	background: #eb4d4b; color: #fff;
 }
 .profileDetails-headerFixed {
-	position: fixed; width: 92.5%; background-color: #f5f5f5; z-index: 99; top: 55px;
+	position: fixed; width: 92.5%; background-color: #f5f5f5; z-index:100; top: 55px;
 	box-shadow: 0px 2px 2px 0px #ddd; border-bottom: 1px solid #fff;
 }
 .fontSmall {
@@ -9408,6 +9432,27 @@ background: url("../images/invitationSVG.svg"); background-repeat: no-repeat; ba
 .tagSVG {
 background: url("../images/tagSVG.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
 }
+.assenDesendingIC {
+background: url("../images/sortIC.svg"); background-repeat: no-repeat; background-size: 30px; background-position: center; width:22px; text-align: center; display: block; height: 32px;
+}
+.printIC {
+background: url("../images/printIC.svg"); background-repeat: no-repeat; background-size: 22px; background-position: center; width:25px; text-align: center; display: block; height: 32px;
+}
+.downloadIC {
+background: url("../images/download.svg"); background-repeat: no-repeat; background-size: 30px; background-position: center; width:25px; text-align: center; display: block; height: 32px;
+}
+.payrollSVG {
+background: url("../images/payroll.svg"); background-repeat: no-repeat; background-size: 90px; background-position: 0 -17px; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.projectAttributesSVG {
+background: url("../images/project.svg"); background-repeat: no-repeat; background-size: 90px; background-position: 0 -17px; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.reminderconfigSVG {
+background: url("../images/head-icons.svg"); background-repeat: no-repeat; background-size: 410px; background-position: -240px -4px; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.guestactionroleSVG {
+background: url("../images/candidates.svg"); background-repeat: no-repeat; background-size: 90px; background-position: 0 -17px; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
 .settingConfigure .btn {
 	padding: 1px 8px; background: #fbfbfb;
 }
@@ -9436,13 +9481,16 @@ background: url("../images/tagSVG.svg"); background-repeat: no-repeat; backgroun
 	min-height: 75px; max-height: 325px; overflow:auto;
 }
 .circular-chart {
-  display: block; margin:0 auto; max-width: 50%; max-height: 50px;
+display: block; margin:0 auto; max-width: 50%; max-height: 50px;
 }
 .circle-bg {
-  fill: none; stroke: #fff; stroke-width: 4;
+fill: none; stroke: #ccc; stroke-width: 4;
 }
 .circle {
-  fill: none; stroke-width: 3; stroke-linecap: round; animation: progress 1s ease-out forwards;
+fill: none; stroke-width: 3; stroke-linecap: round; animation: progress 1s ease-out forwards;
+}
+.circle0 {
+fill: none; stroke-width: 0; stroke-linecap: round; animation: progress 1s ease-out forwards;
 }
 @keyframes progress {
   0% {
@@ -9543,7 +9591,151 @@ input[type=range]::-moz-range-track {
   min-height: 150px; max-height: 250px;
 }
 
-
+.media-object {
+    width: 55px; height: 65px; margin: 5px 0px 0px 0px;
+}
+.mediaObject {
+    width: 45px; height: 45px; margin: 5px 0px 0px 0px; position: absolute; right: 10%; top: 0px;
+}
+.tdVmiddle tr td {
+	vertical-align: middle !important;
+}
+.fullTimebg {
+	min-height: 30px; color: #fff; font-size: 18px; background-color: #f5f5f5;
+}
+.fullTimebg .joinedTime {
+	background-color: #2980b9; padding:0px; min-height: 30px;
+}
+.fullTimebg .joinedValue {
+background-color: #e84393; padding:0px; min-height: 30px;
+}
+.assignedImages {
+	width: 35px; height:35px; display: inline-block; margin: 0 auto;
+}
+.assignedImages img {
+	max-height: 100%; max-width: 100%; border-radius: 50%;
+}
+.headerCartCountShow {
+position: absolute; top: 2px; font-size: 10px; right: 0; width: 50px; text-align: center; 
+}
+ul.timelineDots {
+    list-style-type: none;
+}
+ul.timelineDots > li {
+    padding-left: 25px; margin-bottom: 15px; position: relative;
+}
+ul.timelineDots::before {
+    content: ''; background: #d4d9df; display: inline-block;
+    position: absolute; left: 0px; width: 2px; height: 60%; z-index: 400;
+}
+ul.timelineDots > li::before {
+    content: ''; background: #ddd; display: inline-block; position: absolute; border-radius: 50%;
+    width: 10px; height: 10px; z-index: 400; left: -4px; top: 15px;
+}
+ul.timelineDots li .media-object {
+    width: 50px; height: 50px;
+}
+ul.timelineDots li .media-object img {
+    border-radius: 50%; max-height: 100%;
+}
+.customeProjectDetails .project_details_cta strong {
+    text-align: left; width:150px;
+}
+.customeProjectDetails .project_details_cta span {
+    width: 50%;
+}
+.payRate .input-group-addon {
+	background:#d5d5d5 !important; color: #101010 !important; border: 1px solid #d5d5d5; border-radius: 2px 0 0 2px;
+}
+.payRate .form-control {
+	border: 1px solid #d5d5d5 !important; border-radius: 3px; font-size: 100%;
+}
+.billRate .input-group-addon {
+	background: #dbdaef !important; color: #101010 !important; border: 1px solid #dbdaef; border-radius: 2px 0 0 2px;
+}
+.billRate .form-control {
+	border: 1px solid #dbdaef !important; border-radius: 3px; font-size: 100%;
+}
+.marginWidget .input-group-addon {
+	background: #f6e3df !important; color: #101010 !important; border: 1px solid #f6e3df; border-radius: 2px 0 0 2px;
+}
+.marginWidget .form-control {
+	border: 1px solid #f6e3df !important; border-radius: 3px; font-size: 100%;
+}
+.innerPadding {
+	padding: 15px;
+}
+.calendarFrequency {
+background: url("../images/calendarFrequency.svg"); background-repeat: no-repeat; background-size: 38px; background-position: center; width:40px; text-align: center; display: block; height: 40px;
+}
+.calendarRundate {
+background: url("../images/calendarRundate.svg"); background-repeat: no-repeat; background-size: 38px; background-position: center; width:40px; text-align: center; display: block; height: 40px;
+}
+.calendarPaydate {
+background: url("../images/calendarPaydate.svg"); background-repeat: no-repeat; background-size: 38px; background-position: center; width:40px; text-align: center; display: block; height: 40px;
+}
+.customCalendar-brdnon .ui-widget.ui-widget-content {
+ width: 100% !important;	
+}
+.customCalendar-brdnon .ui-widget-header {
+	border: none !important; background: transparent !important; color:#333;
+}
+.customCalendar-brdnon .ui-state-default, .customCalendar-brdnon .ui-widget-content .ui-state-default, .customCalendar-brdnon .ui-widget-header .ui-state-default {
+	background: transparent; border: 1px solid #ededed; color: #808080; font-weight: 400;
+}
+.navIcons.svgReport  {
+background-size: 60px !important; width: 55px !important; height: 50px !important; top: 13px !important;
+padding-right: 10px;
+}
+.widgetDivLi {
+	cursor: pointer;
+}
+.widgetDivLi li.widgetDiv:nth-child(even) {
+	padding: 15px; transition:all linear 0.2s;background: #fff; border: 1px solid #d5d5d5;
+}
+.widgetDivLi li.widgetDiv:nth-child(odd) {
+	padding: 15px; transition: all linear 0.2s; background: rgb(239, 239, 239); border: 1px solid rgb(203, 203, 203);
+}
+.widgetDiv:hover {
+background: #fff !important; padding: 15px; -webkit-box-shadow: 0 1px 4px rgba(57,73,76,0.35);
+box-shadow: 0 1px 4px rgba(57,73,76,0.35);
+}
+.widgetDiv h4 {
+	font-size: 14px; transition:all linear 0.2s; color: #404040; font-weight: 400;
+}
+.widgetDiv:hover h4{
+	font-weight: 600;
+}
+input.inputDisable {
+border: none; width: 100%; padding-left: 0; font-weight: 500;
+}
+.payslipTable table td, .payslipTable table th {
+border-collapse:border; border:1px solid #d6d6d6 !important;
+}
+.payslipTable table thead {
+border:1px solid #6C7686 !important; background-color: #6C7686 !important;
+}
+.payslipTable table thead th {
+color: #fff !important; padding: 3px 10px !important;
+}
+.payslipTable table tbody th, .payslipTable table tbody td, .payslipTable table tfoot td, .payslipTable table tfoot th {
+padding: 3px 10px !important; vertical-align: middle;
+}
+.payslipTable table tbody td, .payslipTable table tfoot td {
+text-align: right !important;
+}
+.payslipTable table tfoot {
+background-color: #ededed; color: #333; font-weight: 600;
+}
+.calenderView_col-md-3 .col-md-3 {
+min-height: 260px;
+}
+.tableNoborder table thead, .tableNoborder table thead th, .tableNoborder table tbody td {
+	border: none;
+}
+.tableNoborder table tfoot {
+	background-color: #f5f5f5;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
@@ -9972,9 +10164,6 @@ transition: all ease-in-out 0.5s; display: none;
 .level-second.level-second-active {
 display: block;
 }
-
-
-
 .browseProgress {
         position: absolute; width: 100%; height: 100%; z-index: 100;
         border-radius: 3px; display:none;

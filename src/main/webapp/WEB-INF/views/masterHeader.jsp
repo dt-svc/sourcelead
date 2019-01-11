@@ -48,7 +48,7 @@ $(document).ready(function(){
  
 <c:set scope="request" var="viewPage" value='${pageContext.request.servletPath.toString().replaceFirst("/WEB-INF/views/","").replaceFirst(".jsp","")}'></c:set>
  <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${SourceLeadWeb_googleMapsLocationApiKey}" type="text/javascript"></script>
- 
+
 <jsp:include page="masterJs.jsp" />
 
 <!-- This requirement.css for only requirement.jsp  -->
@@ -189,6 +189,7 @@ z-index: 1000000000 !important;
 <script type="text/javascript">
 $(document).ready(function(){
 //   getNotificationsByuserId();
+	updateMarketplaceCartCountAndPrice();
 });
 </script>
 <!-- notification related include jsp -->
@@ -300,7 +301,6 @@ function preventTabkey(e){
 			document.getElementById("logoutForm").submit();
 		}
 </script>
-
 
 <body>
 <c:url var="logoutUrl" value="/logout"/>
@@ -541,8 +541,16 @@ function preventTabkey(e){
 		
         <c:if test="${SourceLeadWeb_reportsTabConfigured == 'Y'}"> 
         	 <li><a title="Reports" href="<c:url value='${appPath}/reportsDashboard'/>"><i class="headNavIcon reporIcon"></i></a></li>
-         </c:if>		
-		
+         </c:if>
+         
+         <sec:authorize access="hasRole('ROLE_VIEW_CART')">
+         <li>
+         		<a id = "headerCartCountLink" href="${appPath}/candidateMarketplaceCart" class="" href="javascript:void(0)">
+         		<b id="headerCartCount" class="headerCartCountShow mt2"></b><i class="shopping-cart" title="Cart"></i>
+         		</a>
+         </li>	
+        </sec:authorize>
+        
          <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
          	<li><a href="<c:url value='${sourceleadUrl}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
          </sec:authorize>		
@@ -550,125 +558,11 @@ function preventTabkey(e){
           <li> 
           <a id="notiPopId" href="#" title="Alerts" onclick="getNotificationsByuserId()"><i class="headNavIcon notiIcon"></i> <c:if test="${SourceLeadWeb_notificationCount > 0}"><span class="label-warning">${SourceLeadWeb_notificationCount}</span></c:if></a>
           <div class="headPop headPopnoti" id="notificationPopup"></div>
-          </li>		
-
-
-		  <sec:authorize access="!hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')"> 
-           <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_EDIT_ORG_SETTINGS','ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE','ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')"> 
-	            
-	            <li><a href="javascript:void(0)" title="Settings" id="settingPopId"><i class="headNavIcon setiIcon"></i></a>
-
-				<div class="headPop" id="settingPopup">
-					<div class="headPopInn">
-						<div class="headPopSear"><input type="text" class="" id="settingSearch" placeholder="Search"></div>
-						<ul>
-	                     
-	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
-	                     <li title="Schedule Maintenance"><a href="<c:url value='${sourceleadUrl}/loadScheduleMaintenance'/>" id="scheduleMPopup">Schedule Maintenance</a></li>
-	                     </sec:authorize>
-	                     
-	                     <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
-	                        <li title="License Upgrade"><a href="<c:url value="/app/orgLicenseSubscriptionList" />">License Upgrade</a></li>
-	                     </c:if>
-	                     
-	                     <sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
-	                      <li title="Bulk Import"><a id="subMenu" href="javascript:void(0)">Bulk Import<i class="fa fa-caret-down arrRight"></i></a>
-						 	<div class="subMenuView">
-		                     <a href="<c:url value="/app/bulk-resume-import.html" />" target="_blank">Bulk Import</a>
-		                     <a data-toggle="modal" href="javascript:void(0)" id='bulkImport'>Process File(s)</a>
-	                     	</div>
-	                     </li>
-
-                       </sec:authorize>
-	                     
-
-	                     <li title="Org Chart"><a href="<c:url value="/app/orgChart" />">Org Chart</a></li>
-	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-	                        <li title="Role Configuration"><a href="<c:url value="/app/orgRolesList" />">Role Configuration</a></li>
-	                     </sec:authorize>
-	                      <sec:authorize access="hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')"> 
-	               		      <li title="Org Settings"><a href="<c:url value="/app/orgSettings" />">Org Settings</a></li>
-	               		 </sec:authorize>
-	                     
-	                     <sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
-	                     <li title="Templates"><a href="<c:url value="/app/orgTemplates" />">Templates</a></li>
-						 </sec:authorize>
-
-						  <sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')">
-						  	<li title="Expense Category"><a href="<c:url value="/app/expenseCategory" />">Expense Category</a></li>
-						  </sec:authorize>
-						  <li title="Bank Accounts"><a href="<c:url value="/app/bankAccountDetails" />">Bank Accounts</a></li>
-						  
-						  <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
-						  	<li title="Leave Configuration"><a href="<c:url value="/app/leaveConfiguration" />">Leave Configuration</a></li>
-						  </sec:authorize>
-						  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-                              <li title="Job Board Configuration"><a href="<c:url value="/app/job-boards" />">Job Board Configuration</a></li>
-                           </sec:authorize>
-					  	<sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
-					  	<li title="Custom Fields"><a href="<c:url value="/app/customFields" />">Custom Fields</a></li>
-					  	</sec:authorize>
-						 
-						 <li><a href="<c:url value="/app/projectAttributes" />">Project Attributes</a></li>
-						 
-						 <sec:authorize access="hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')">
-							 <li><a id="campSubMenu" href="javascript:void(0)">Campaigns <i class="fa fa-caret-down arrRight"></i></a>
-							 	<div class="campsubMenuView">
-				                    <a title="Senders" href="<c:url value='${appPath}/campaignSendersList'/>">Senders</a>
-									<a title="Recipients" href="<c:url value='${appPath}/recipientsList'/>">Recipients</a>
-									
-								</div>
-							 </li> 	
-						   </sec:authorize>
-						   
-					   <sec:authorize access="hasRole('ROLE_PAYROLL_CONFIGURATION')">
-						   	<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-						  		<li title="Payroll Configuration"><a href="<c:url value="/app/payrollConfiguration" />">Payroll Configuration</a></li>
-						  	</c:if>
-						  	<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-						  		<li title="Payroll Configuration"><a href="<c:url value='${appPath}/indPayrollConfiguration'/>" >Payroll Configuration</a></li>
-						  	</c:if>
-                      </sec:authorize>
-                         
-                       <li><a href="<c:url value='${sourceleadUrl}/tagList'/>"title="Tags" data-toggle="modal" id="tagsPop">Tags</a></li>
-					  
-					   <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
-	                     <li title="Guest Action Roles"><a href="<c:url value='${sourceleadUrl}/guestOrgActionRoles'/>" >Guest Action Roles</a></li>
-                       </sec:authorize>
-                       <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
-	                     <li title="Email Templates"><a href="<c:url value='${sourceleadUrl}/emailTemplates'/>" >Email Templates</a></li>
-                       </sec:authorize>
-	                   
-	              </ul>
-	              
-	              <div class="noDate noDateSm" style="display: none;"></div>
-	            </div>
-	            </div>
-	          </li>
-          </sec:authorize>
-         </sec:authorize>
+          </li>	
+          
+         <!--  Setting page 	 -->
          
-         <sec:authorize access="hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')">
-            	<li><a href="javascript:void(0)" title="Settings" id="settingPopId"><i class="headNavIcon setiIcon"></i></a>
-				<div class="headPop" id="settingPopup">
-					<div class="headPopInn">
-						<div class="headPopSear"><input type="text" class="" placeholder="Search"></div>
-						<ul>
-	            	
-		            	 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}"> 
-		            	<li title="Bulk Import"><a href="<c:url value="/app/bulk-resume-import.html" />" target="_blank">Bulk Import</a></li>
-		            	</c:if> 
-		            	
-		            	<li title="Account"><a href="<c:url value="/app/bankAccountDetails" />">Account</a></li>
-		            	
-		            	<li title="Alerts"><a class="logColor" href="<c:url value="/app/jobAlertList" />">Alerts</a></li>
-		            	</ul>
-		            	<div class="noDate noDateSm" style="display: none;"></div>
-	            	</div>
-            	</div>
-            	
-            	</li>
-         </sec:authorize>		
+           <li><a href="<c:url value='${sourceleadUrl}/settings'/>" title="Settings" id=""><i class="headNavIcon setiIcon"></i></a></li>
 		
 	</ul>
 </div>    
@@ -1929,3 +1823,19 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+function updateMarketplaceCartCountAndPrice(){
+	var totalPriceInCurrency;
+	$.ajax({
+		 	url: sourceleadUrl + "/updateMarketplaceCartCountAndPrice",
+	        type: 'GET',
+	        success: function (object) {
+	        	if(object != null){
+	        		$("#headerCartCount").html(object[0]);
+	        		$("#cartCount").html(object[0]);
+	        		totalPriceInCurrency = new Intl.NumberFormat('en-US', { minimumFractionDigits : 2 }).format(object[1]);
+	        		$("#totalPrice").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
+	        	}}
+	        });
+	}
+</script>

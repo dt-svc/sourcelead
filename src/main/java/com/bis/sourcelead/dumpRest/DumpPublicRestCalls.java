@@ -9,18 +9,26 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dao.AppliedLeaveDateDao;
 import com.bis.sourcelead.dao.HolidayDAO;
+import com.bis.sourcelead.dao.PayrollPaySlipIndDao;
 import com.bis.sourcelead.dao.PayrollPayheadDao;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectClientDao;
@@ -29,12 +37,14 @@ import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.entity.AppliedLeaveDate;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
-import com.bis.sourcelead.entity.PayrollPayhead;
+import com.bis.sourcelead.entity.PayrollPaySlipInd;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -57,7 +67,10 @@ import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
 import com.bis.sourcelead.payroll.service.HrDeductionsService;
 import com.bis.sourcelead.payroll.service.UserPayrollService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
+import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ExpensesEntriesService;
+import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
@@ -134,6 +147,22 @@ public class DumpPublicRestCalls {
 	@Autowired
 	PayrollPayheadDao payrollPayheadDao;
 	
+	@Autowired
+	ExpensesEntriesService expensesEntriesService;
+	
+	@Autowired
+	ExpensesService expensesService;
+	
+	@Autowired
+	AddExpensesDao addExpensesDao;
+	
+	@Autowired
+	PayrollPaySlipIndDao payrollPaySlipIndDao;
+	
+	
+	@Autowired
+	AssetService assetService;
+	
 	@RequestMapping(value = "/ws/dumpAllAppliedLeaveDatesData", method = RequestMethod.GET)
 	@ResponseBody
 	public List<AppliedLeaveDate> dumpAllAppliedLeaveDatesData() {
@@ -151,7 +180,53 @@ public class DumpPublicRestCalls {
 		return list;
 		
 	}
+	@RequestMapping(value = "/ws/updateAllExpensesStatus", method = RequestMethod.GET)
+	@ResponseBody
+	public String updateAllExpensesStatus() throws Exception {
+		List<Expenses> expensesList = expensesService.getAllExpenses();
+		int count =0;
+		if(expensesList != null && !expensesList.isEmpty()) {
+			for(Expenses expenses :expensesList) {
+				List<String> expenseStatus = new ArrayList<>();
+				expenseStatus =   expenses.getApproverHierarchyList().stream().map(hierarchy -> hierarchy.getExpenseApprovalStatus().getValue()).collect(Collectors.toList());
+				if(expenseStatus.contains(Submission_ApprovalStatus.REJECTED.getValue())){
+					expenses.setExpenseStatus(Submission_Status.REJECTED);
+					addExpensesDao.storeAddExpensesData(expenses);
+					count++;
+				}else if(expenseStatus.contains(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL.getValue())){
+					expenses.setExpenseStatus(Submission_Status.SUBMITTED);
+					addExpensesDao.storeAddExpensesData(expenses);
+					count++;
+				}else if(expenseStatus.contains(Submission_ApprovalStatus.REOPENED.getValue())){
+					expenses.setExpenseStatus(Submission_Status.REOPENED);
+					addExpensesDao.storeAddExpensesData(expenses);
+					count++;
+				}
+			}
+		}
+		return  count+" Records updated SuccessFully";
+	}
 	
+	/*Expenses expenses = expensesDao.getExpenseById(expenseId);
+	List<String> expenseStatus = new ArrayList<>();
+	expenseStatus =   expenses.getApproverHierarchyList().stream().map(hierarchy -> hierarchy.getExpenseApprovalStatus().getValue()).collect(Collectors.toList());
+	if(expenseStatus.contains(Submission_Status.REJECTED.getValue())){
+		expenses.setExpenseStatus(Submission_Status.REJECTED);
+	}else if(expenseStatus.contains(Submission_Status.SUBMITTED.getValue())){
+		expenses.setExpenseStatus(Submission_Status.SUBMITTED);
+	}else{
+		expenses.setExpenseStatus(Submission_Status.APPROVED);
+	}
+	addExpensesDao.storeAddExpensesData(expenses);*/
+	
+	@RequestMapping(value = "/ws/dumpExpenseCategorySubmittedAmount", method = RequestMethod.GET)
+	@ResponseBody
+	public String updateExpenseSubmittedAmount() {
+		logger.info("Start Time" + java.time.LocalDateTime.now());
+//		List<ExpensesEntries> expensesEntriesList = expensesEntriesService.getAllEntries();
+		int count = expensesEntriesService.dumpExpenceCategoryAmountToOldRecords();
+		return count + " Records updated";
+	}
 	
 	@RequestMapping(value = "/ws/updateAllAppliedLeaveDatesDataForWeekOffs", method = RequestMethod.GET)
 	@ResponseBody
@@ -479,7 +554,7 @@ public class DumpPublicRestCalls {
 	}
 	
 	
-	@RequestMapping(value = "/ws/generateINDPayrollPayheadForOldOrgs", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/ws/generateINDPayrollPayheadForOldOrgs", method = RequestMethod.GET)
 	@ResponseBody
 	public void generateINDPayrollPayheadForOldOrgs() throws Exception {
 		logger.info("Start Time"+java.time.LocalDateTime.now());
@@ -490,8 +565,15 @@ public class DumpPublicRestCalls {
 		for(OrgLocations loc : orgLocList){
 			List<PayrollPayhead> existed = payrollPayheadDao.getPayrollPayheadList(loc);
 			for(PayrollPayhead payHead : payheadList) {
-				if (existed.stream().filter(o -> o.getShortCode().equals(payHead.getShortCode())).findFirst().isPresent()) {
-				}else {
+				boolean phNew = true;
+				if(existed.size() > 0) {
+					for(PayrollPayhead pHeadOld : existed) {
+						if(payHead.getShortCode().equalsIgnoreCase(pHeadOld.getShortCode())) {
+							phNew = false;
+						}
+					}
+				}
+				if(phNew) {
 					PayrollPayhead newPayhead = new PayrollPayhead();
 					newPayhead.setName(payHead.getName());
 					newPayhead.setShortCode(payHead.getShortCode());
@@ -522,5 +604,66 @@ public class DumpPublicRestCalls {
 			logger.info("Org Payhead>> "+java.time.LocalDateTime.now());
 		}
 		logger.info("End Time"+java.time.LocalDateTime.now());
-	}
+	}*/
+	
+	
+	@RequestMapping(value = "/ws/dumpDefaultPayslipAllOrgs", method = RequestMethod.GET)
+    public void dumpSubmissionTemplateFileds(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		System.out.println("Start the method");
+		List<OrgLocations> locationsList = orgLocationService.getAllOrgLocations();
+        for (OrgLocations orgLocation : locationsList) {
+    	 
+        	     PayrollPaySlipInd	 pps = new PayrollPaySlipInd();
+    			 pps.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+    			 pps.setIsActive(Constants.YES);
+    			 pps.setDeletePermission(Constants.NO);
+    		
+    		     pps.setPaySlipName("Default Payslip");
+    		     pps.setPaySlipDescription("Default Payslip");
+    		
+    	     	//Company releated code
+    			pps.setCompanyName(Constants.YES);
+    			pps.setCompanyAddress(Constants.YES);
+    			pps.setCompanyLogo(Constants.YES);
+    		
+    		    //Employee Reated code
+    			pps.setEmployeeId(Constants.YES);
+    			pps.setEmployeeType(Constants.YES);
+    			pps.setEmployeeUanNumber(Constants.YES);
+    			pps.setEmployeePfNumber(Constants.YES);
+    			pps.setEmployeeBankDetails(Constants.YES);
+    			pps.setEmployeeDesignation(Constants.YES);
+    			pps.setEmployeeName(Constants.YES);
+    			pps.setEmployeeContactDetails(Constants.YES);
+    			pps.setEmployeeJoinDate(Constants.YES);
+    			pps.setEmployeeLocation(Constants.YES);
+    			pps.setEmployeePanNumber(Constants.YES);
+    		
+    		    //Leave Related code
+    			pps.setLeaveAttended(Constants.YES);
+    			pps.setLeaveLeaves(Constants.YES);
+    			
+    			pps.setOrgLocationId(orgLocation);
+    			pps.setStatus(Constants.RECORD_ACTIVE);
+    			pps.setCreatedDate(new Date());
+    		
+    		payrollPaySlipIndDao.savePayrollPaySlipInd(pps);
+        }
+		System.out.println("End the method");
+
+    }
+	
+	
+	@RequestMapping(value = "/ws/deleteAssetManagement/{orgLocationId}", method = RequestMethod.GET)
+    public void deleteAssetManagement(@PathVariable Long orgLocationId,
+    		HttpServletRequest request, HttpServletResponse response) throws Exception {
+		    System.out.println("Start the method");
+        	List<Asset> assetList = assetService.getAssetListByLocationId(orgLocationId);
+        	for(Asset asset:assetList) {
+        		assetService.deleteAsset(asset);
+        	}
+		System.out.println("End the method");
+
+    }
+	
 }

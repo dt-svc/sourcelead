@@ -1,14 +1,17 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -46,6 +50,8 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
+import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
+import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
@@ -55,9 +61,12 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
+import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -94,6 +103,8 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PrimarySkillUtil;
+import com.bis.sourcelead.util.ReportsUtil;
+import com.bis.sourcelead.util.CandidateMarketplaceExportUtil;
 import com.bis.sourcelead.util.ResumeParserJsonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -169,6 +180,12 @@ public class CandidateRestController {
 
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
+	
+	@Autowired
+	CandidateMarketplaceExportUtil candidateMarketplaceExportUtil;
+	
+	@Autowired
+	ReportsUtil reportsUtil;
 
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -925,7 +942,6 @@ public class CandidateRestController {
 	@RequestMapping(value = "/app/ws/dumpCandidateProfilePercentage", method = RequestMethod.GET)
 	public void dumpCandidateProfilePercentage(HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		System.out.println("Dumping Profile percentage to candidates starts.....");
 		List<Candidate> candidatesList = candidateService.getAllCandidatesList();
 		for (Candidate can : candidatesList) {
 
@@ -1007,7 +1023,6 @@ public class CandidateRestController {
 			}
 		}
 
-		System.out.println("Dumping Profile percentage to candidates ends.....");
 	}
 
 	public String toJSON(Object obj) {
@@ -1043,11 +1058,10 @@ public class CandidateRestController {
 		return marketCandidates;
 	}
 
-	// @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	@PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
 	@RequestMapping(value = "/app/saveMarketPlaceData", method = RequestMethod.POST)
 	public Response<String> saveMarketPlaceData(@RequestBody List<CandidateMarketPlaceDTO> marketPlaceList,
 			HttpServletRequest request) throws NumberFormatException, Exception {
-		// System.out.println(marketPlaceList.size());
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Response<String> response = new Response<>();
 		if (user != null) {
@@ -1078,25 +1092,103 @@ public class CandidateRestController {
 	@RequestMapping(value = "/app/globalMarketplacePage")
 	public ModelAndView goToGlobalMarketplace(HttpServletRequest request) throws Exception {
 		logger.debug("inisde goToGlobalMarketplace  conroller =========>");
-		System.out.println("inisde goToGlobalMarketplace  conroller =========>");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		//candidateService.updateMarketplaceDataFromCandidateGlobal(orgLocations.getId(),user);
 		ModelAndView model = new ModelAndView();
 		model.setViewName("candidates/candidateGlobalMarketPlaceList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
 
+	 
 	// Note this method is Global marketplace Candidate method
 	 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
 	@RequestMapping(value = "/app/OrgMarketplace")
 	public ModelAndView goToOrgMarketplace(HttpServletRequest request) throws Exception {
 		logger.debug("inisde OrgMarketplace  conroller =========>");
-		System.out.println("inisde OrgMarketplace  conroller =========>");
 		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		//candidateService.updateMarketplaceDataFromCandidate(orgLocations.getId(),user);
 		model.setViewName("candidates/candidateMarketPlaceView");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
+	 
+	 
+		 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
+		 @RequestMapping(value = "/app/PurchaseOrderList")
+		 public ModelAndView goToPurchaseOrderList(HttpServletRequest request) throws Exception {
+			logger.debug("inside PurchaseOrderList  controller =========>");
+			ModelAndView model = new ModelAndView();		
+			model.setViewName("candidates/purchaseOrderList");
+			model.addObject("sourceleadUrl", sourceleadUrl);			
+			return model;
+		}
+		 
+		 //response list for purchaseList table
+		 @RequestMapping(value = "/app/getPurchasedOrderList")
+		 public ResponseList<MarketplacePurchaseSalesDTO> getPurchasedOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, HttpServletRequest request) throws Exception {
+			
+			 ResponseList<MarketplacePurchaseSalesDTO> res = new ResponseList<>();
+			logger.debug("inside PurchaseOrderList  controller =========>");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			marketplacePurchaseSalesDTO.setOrglocationId(orgLocations.getId());
+			try{
+			  	String[] tableColumns = { "orderNo", "createdDate", "companyName", "totalResumes", "totalPrice", "discount"    };
+			  	int sortColumnIndex = -1; 
+		  		String sortColumnOrder = "desc"; 
+		  		if (marketplacePurchaseSalesDTO.getOrder() != null && !marketplacePurchaseSalesDTO.getOrder().isEmpty()) {
+		  		sortColumnIndex = Integer.parseInt(marketplacePurchaseSalesDTO.getOrder().get(0).get("column"));
+		  		sortColumnOrder = marketplacePurchaseSalesDTO.getOrder().get(0).get("dir"); 
+		  		marketplacePurchaseSalesDTO.setSortOrder(sortColumnOrder);
+		  		}
+		  		if (sortColumnIndex != -1){
+		  			marketplacePurchaseSalesDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		  		}
+		  		}catch(Exception e){
+		  			e.printStackTrace();
+		  			return null;
+		  		}
+			ResponseList<MarketplacePurchaseSalesDTO>  marketplacePurchaseOrder = candidateService.getMarketplacePurchaseOrder(orgLocations, marketplacePurchaseSalesDTO);			
+			return marketplacePurchaseOrder;
+			/*res.setData(marketplacePurchaseOrder);
+			return res;*/
+		}
+		 
 	
+		 
+		// fetching record from marketplace purchase table
+		 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
+		 @RequestMapping(value = "/app/PurchaseOrder")
+		 public ModelAndView goToPurchaseOrder(@RequestParam(value = "purchaseUuid", required = true) String purchaseUuid,HttpServletRequest request) throws Exception {
+			logger.debug("inside PurchaseOrder  controller =========>");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			MarketplacePurchaseSalesDTO marketplacePurchaseOrder = candidateService.getPurchaseDetailByPurchaseUuid(purchaseUuid, orgLocations);
+			ModelAndView model = new ModelAndView();
+			model.setViewName("candidates/purchaseOrder");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("marketplacePurchaseOrder", marketplacePurchaseOrder);
+				return model;
+		}
+				 
+
+		 
+			// Note this method is sales orderlist  method
+		 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
+		 @RequestMapping(value = "/app/SalesOrderList")
+		 public ModelAndView goToSalesOrderList(HttpServletRequest request) throws Exception {
+			logger.debug("inisde SalesOrderList  conroller =========>");
+			ModelAndView model = new ModelAndView();
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			model.setViewName("candidates/salesOrderList");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+		}
+		 
+		 
 	@PreAuthorize("hasRole('ROLE_VIEW_CART')")
 	@RequestMapping(value = "/app/getAddedMarketplaceCandidates", method = RequestMethod.POST)
 	public Map<String, Object[]> getAddedMarketplaceCandidates(
@@ -1106,6 +1198,7 @@ public class CandidateRestController {
 		if (candidateIdsVal != null) {
 			candidateIds = candidateService.getAddedMarketplaceCandidates(candidateIdsVal);
 		}
+		
 		return candidateIds;
 	}
 
@@ -1169,6 +1262,41 @@ public class CandidateRestController {
 		}
 		return response;
 	}	
+	
+	@PreAuthorize("hasRole('ROLE_WITHDRAW_PROFILE')")
+	@RequestMapping(value = "/app/withdrawCandidatesFromMarketPlace")
+	public Response<String> withdrawCandidatesFromMarketPlace(@RequestParam(value = "id", required = true) List<Long> candidateIds,
+			@RequestParam(value = "withdrawReason", required = true) String withdrawReason, HttpServletRequest request)
+			throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<CandidateMarketPlace> marketplace = candidateService.getCandidateListMarketPlaceDetailsByIdAndOrgLocationId(candidateIds, orgLocation.getId());
+		Response<String> response = new Response<>();
+		if (user != null) {
+			try {
+				if (null != marketplace) {
+					for(CandidateMarketPlace cmp:marketplace){
+						candidateService.withdrawCandidateFromMarketplace(cmp, withdrawReason);
+					}
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				logger.error("Exception caugth in withdrawCandidateFromMarketPlace controller" + e.getMessage());
+				e.printStackTrace();
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}	
+	
+	
 
 	 @PreAuthorize("hasRole('ROLE_ADD_PROFILE')")
 	@RequestMapping(value = "/app/addCandidateToMarketCart")
@@ -1180,7 +1308,7 @@ public class CandidateRestController {
 		if (user != null) {
 			try {
 				if (null != marketplace) {
-					candidateService.addCandidateToMarketCart(user, marketplace, orgLocation.getId());
+					candidateService.addCandidateToMarketCart(user, marketplace, orgLocation);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				}else {
@@ -1269,5 +1397,141 @@ public class CandidateRestController {
 		return response;
 	 	}
 	
+	@PreAuthorize("hasRole('WITHDRAW_PROFILE')")
+	@RequestMapping(value = "/app/deleteAllCandidatesFromMarketcart")
+	public Response<String> deleteAllCandidatesFromMarketcart(HttpServletRequest request)throws Exception{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Response<String> response = new Response<>();
+		if (user != null) {
+			try {
+				if(orgLocation.getId() != null){	
+					candidateService.deleteAllCandidatesFromMarketcart(orgLocation.getId());
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+				} catch (Exception e) {
+				logger.error("Exception caugth in deleteAllCandidateFromMarketCart controller" + e.getMessage());
+				e.printStackTrace();
+				}
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		return response;
+	 	}
+	
+	@RequestMapping(value = {"/app/getDynamicSalesOrderList", "/app/exportSalesOrderToPdfOrExcel"} )
+	 public ResponseList<MarketplacePurchaseSalesDTO> getDynamicSalesOrderList
+	 		(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,
+			 @RequestParam(value = "searchValue", required = false)String searchValue,
+			 @RequestParam(value = "salesOrderFromDate", required = false)String salesOrderFromDate,
+			 @RequestParam(value = "salesOrderToDate", required = false)String salesOrderToDate,
+			 @RequestParam(value = "salesOrderFilterDate", required = false)String salesOrderFilterDate,
+			 HttpServletRequest request, HttpServletResponse response)  {
+
+		try{
+			ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		  	String[] tableColumns = { "orderNo", "orderDate", "companyName", "noOfResumes", "totalResumePrice", "paymentStatus" };
+		  	int sortColumnIndex = -1; 
+	  		String sortColumnOrder = "desc"; 
+	  		if (marketplacePurchaseSalesDTO.getOrder() != null && !marketplacePurchaseSalesDTO.getOrder().isEmpty()) {
+	  		sortColumnIndex = Integer.parseInt(marketplacePurchaseSalesDTO.getOrder().get(0).get("column"));
+	  		sortColumnOrder = marketplacePurchaseSalesDTO.getOrder().get(0).get("dir"); 
+	  		marketplacePurchaseSalesDTO.setSortOrder(sortColumnOrder);
+	  		}
+	  		if (sortColumnIndex != -1){
+	  			marketplacePurchaseSalesDTO.setSortColumn(tableColumns[sortColumnIndex]);
+	  		}
+	  		responseList = candidateService.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue, salesOrderFromDate, salesOrderToDate, salesOrderFilterDate);
+	  		File file = null;
+	  		if(marketplacePurchaseSalesDTO.getExportType() != null){
+		    if(marketplacePurchaseSalesDTO.getExportType().equalsIgnoreCase("pdf")) {
+		    	 file = candidateMarketplaceExportUtil.exportSalesOrderToPdf(responseList,orgLocations);
+		    }else {
+		    	 file = candidateMarketplaceExportUtil.exportSalesOrderToExcel(responseList,orgLocations);
+		    }
+			
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			StringBuilder fileNameSB = new StringBuilder();
+			response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();	
+			if(file!= null){
+				file.delete();
+			}
+	  		}
+	  		return responseList;
+		}catch(Exception e){
+  			e.printStackTrace();
+  			return null;
+  		}
+	}
+	
+	/*
+     *  walletList
+     */
+	 @RequestMapping(value = "/app/walletList")
+	 public ModelAndView goToWalletList(HttpServletRequest request) throws Exception {
+		logger.debug("inisde walletList  conroller =========>");
+		ModelAndView model = new ModelAndView();
+		model.setViewName("candidates/walletList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	 
+	    @RequestMapping(value = "/app/getWalletList", method = RequestMethod.POST)
+		public @ResponseBody ResponseList<MarketplaceWalletDTO> getWalletList(
+				MarketplaceWalletDTO marketplaceWalletDTO,
+				@RequestParam(value = "searchValue", required = false) String searchValue,
+				@RequestParam(value = "selectedTime", required = false) String selectedTime,
+				@RequestParam(value = "transactionType", required = false) String transactionType,
+				@RequestParam(value = "fromDate", required = false) String fromDate,
+				@RequestParam(value = "toDate", required = false) String toDate,HttpServletRequest request) {
+			ResponseList<MarketplaceWalletDTO> marketWalletDTOList = null;
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			marketplaceWalletDTO.setOrgLocationId(orgLocations.getId());
+			marketplaceWalletDTO.setOrgLocations(orgLocations);
+			logger.debug("inisde getWalletList  conroller =========> --> ");
+			try {
+				String[] tableColumns = { "openDate", "orderNo", "totalPrice"};
+																															
+				// entity names
+				int sortColumnIndex = -1; // by default sorting using updated date
+				String sortColumnOrder = "desc"; // by default ascending order
+				if (marketplaceWalletDTO.getOrder() != null && !marketplaceWalletDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(marketplaceWalletDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = marketplaceWalletDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means
+					marketplaceWalletDTO.setSortOrder(sortColumnOrder); // direction
+				}
+
+				if (sortColumnIndex != -1){
+					marketplaceWalletDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				}
+				marketWalletDTOList = candidateService.getWalletList(marketplaceWalletDTO,searchValue,selectedTime,transactionType,fromDate,toDate);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			logger.debug("after controller  getWalletList  --> " + marketWalletDTOList.getRecordsTotal());
+			
+			return marketWalletDTOList;
+		}
+	    
+	    
+
 }
 

@@ -69,6 +69,7 @@
          		 <li><a href="#tab-2" data-toggle="tab" id="indBankingDetails" onclick="getIndAssociateBankingDetails();">Banking Details</a></li>
        		     <li><a href="#tab-3" data-toggle="tab" id="indInformationDetails" onclick="getIndAssociateInformationDetails();">Information</a></li>
        		     <li><a href="#tab-4" data-toggle="tab" id="indLoanAndAdvancesDetails" onclick="loanAdv.getIndAssociateLoanAndAdvancesDetails();">Loan / Advances</a></li>
+       		     <li><a href="#tab-6" data-toggle="tab" id="indLeaveTypeDetails" onclick="getIndAssociateLeaveTypeDetails();">Leave Type</a></li>
        		     <li><a href="#tab-5" data-toggle="tab" id="indSalaryDetails" onClick="indAssociateSalarySummary();">Salary</a></li>
           </c:if>
 
@@ -141,7 +142,7 @@
                 </div>
                 <div class="form-group">
                       <label class="col-md-3">Date of Joining  <span class="text-danger">*</span></label>
-                         <div class="col-md-9">
+                         <div class="col-md-9" id=DateofJoinDiv>
                            <div class="input-group errorInptgroup">
                               <input type="text" value="" name="dateofJoin" class="form-control calendar" id="DateofJoin" readonly="readonly" field-name="Date of join" data-validation="required">
                               <span class="input-group-addon" onClick="clearDateofJoin();"><i class="colorRed fa fa-times cursorPointer"></i></span>
@@ -149,7 +150,7 @@
                         </div>
                   </div>
                   
-                 <div class="form-group" id="EmailIdDiv">
+                   <div class="form-group" id="EmailIdDiv">
                   <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
 	                  <div class="input-group errorInptgroup">
@@ -160,11 +161,58 @@
 	                  </div>
                   </div>
                   </div>
+                  
+             <div class="form-group">
+                  <label class="col-md-3">Probation Period <i class='fa fa-info-circle' title='This will represent the probation period for a associate in organisation'></i></label>
+                  <div class="col-md-9">
+                      <select class="form-control chosen-select" name="probationPeriod" id="probationPeriod" field-name="Probation Period" onchange="calculateConfirmationDate();">
+                        <option value="">-Select Probation Period-</option>
+                        <c:if test="${!empty probationPeriod}">
+	                        <option value="15 Days" ${probationPeriod  == '15 Days' ? 'selected' : ''}>15 Days</option>
+	                        <option value="30 Days" ${probationPeriod  == '30 Days' ? 'selected' : ''}>1 Month</option>
+	                        <option value="60 Days" ${probationPeriod  == '60 Days' ? 'selected' : ''}>2 Months</option>
+	                        <option value="90 Days" ${probationPeriod  == '90 Days' ? 'selected' : ''}>3 Months</option>
+                        </c:if>
+                        <c:if test="${empty probationPeriod}">
+	                        <option value="15 Days">15 Days</option> 
+	                  		<option value="30 Days">1 Month</option>
+	                  		<option value="60 Days" selected>2 Months</option> 
+	                        <option value="90 Days">3 Months</option>
+                        </c:if>
+                        
+                      </select>
+                  </div>
+            </div>
+            
+                  
+              <div class="form-group">
+                  <label class="col-md-3">Status</label>
+                  <div class="col-md-9">
+                      <select class="form-control chosen-select" name="probationStatus" id="probationStatus" field-name="Status">
+                        <option value="">-Select Status-</option>
+                        <option value="Probation" selected>Probation</option>
+                        <option value="Confirmed">Confirmed</option>
+                      </select>
+                  </div>
+            </div>
+            
+            
+              <div class="form-group">
+                      <label class="col-md-3">Confirmation Date</label>
+                         <div class="col-md-9">
+                           <div class="input-group errorInptgroup">
+                              <input type="text" value="" name="confirmationDate" class="form-control calendar" id="confirmationDate" field-name="Confirmation Date" readonly="readonly">
+                              <span class="input-group-addon" onClick="clearConfirmationDate();"></span>
+                           </div>
+                        </div>
+                  </div>
+                  
+                  
                   <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
                   <div class="form-group" id="ssnNumberDiv">
                   <label class="col-md-3">SSN<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="ssnNumber" name="ssn" field-name="SSN" onblur="validateSSNNumber();">
+                    <input type="text" class="form-control" id="ssnNumber" name="ssn" field-name="SSN number" onblur="validateSSNNumber();">
                   </div>
                   </div>
                   </c:if>
@@ -274,6 +322,15 @@
                            </div>
                         </div>
                   </div>
+                  
+                  <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+		         		<div class="form-group">
+		                  <label class="col-md-3">PAN Number<span class="text-danger">&nbsp;*</span></label>
+		                  <div class="col-md-9">
+		                    <input type="text" class="form-control" id="panNumber" name="panNumber" field-name="PAN Number" data-validation="required validate_Space validate_Alphanumeric fixed_length length10" value="">
+		                    </div>
+		                </div>
+		          </c:if>
                   
                <div class="form-group">
                   <label class="col-md-3">Department <span class="text-danger">*</span></label>
@@ -419,7 +476,7 @@
                       </select>
                   </div>
             </div>
-            		
+            
                  <div class="form-group">
                      <label class="col-md-3">Rate</label>
                      <div class="col-md-9">
@@ -480,6 +537,18 @@
 		                </div>
 		                 </div>
                </div>
+               <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+               <div class="form-group">
+		             <label class="col-md-3"></label>
+		              <div class="col-md-9">
+		                <div class="checkbox checkBox">
+		                  <label>
+		                    <input type="checkbox" value="Y" name="allowEmployeeToFill" checked="checked" id="allowEmployeeToFill">
+		                    Allow Employee To Fill</label>
+		                </div>
+		                 </div>
+               </div>
+               </c:if>
                 <c:if test="${!empty sourceleadSectionList}">
 	            	<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	               		<c:if test="${sectionOrder.index == 0}">
@@ -517,6 +586,7 @@
               <jsp:include page="associateIndiaBankingDetails.jsp" />
               <jsp:include page="associateIndiaInformationDetails.jsp" />
               <jsp:include page="associateIndiaLoanAndAdvancesDetails.jsp" />
+              <jsp:include page="associateIndLeaveType.jsp" />
               <jsp:include page="associateIndiaSalaryDetails.jsp" />
          </c:if> 
         
@@ -567,8 +637,11 @@ function validateSSNNumber(){
 	}else{
 		calculateSSNLength(length,ssnNumber);
 	}
+	
 }
 function calculateSSNLength(length,ssnNumber){
+	$('#ssnNumberDiv').find('p.jquery_form_error_message').remove();
+	$("#ssnNumber").removeAttr("data-validation");
 	if(length == 0){
 		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
 		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number is required</span>");
@@ -591,8 +664,39 @@ function calculateSSNLength(length,ssnNumber){
 		}else{
 			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
 		}
+		
 	}
+	validateSSNDuplicate($("#ssnNumber").val());
 }
+ </script>
+ 
+ <script>
+ function validateSSNDuplicate(ssnNumber){
+	 var associateId = $("#associateId").val();
+	 $('#ssnNumberDiv').find('p.jquery_form_error_message').remove();
+	 if(ssnNumber != null && ssnNumber != ""){
+		 $("#create_user").attr("disabled", "disabled");
+         //$("#create_user" ).addClass('button').val('Processing..');
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateSSNDuplicate?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber+"&userId="+associateId, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#ssnNumberDiv').find('p.jquery_form_error_message').remove();
+						  $("input#ssnNumber").after("<p class='jquery_form_error_message'>"+ssnNumber+" is Already Existed</span>");
+						  document.getElementById("ssnNumber").setAttribute('record-exist','yes');
+						  document.getElementById("ssnNumber").setAttribute('record-exist-errorMsg',ssnNumber+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#ssnNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#ssnNumberDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#create_user" ).addClass('us-btn').val('Save');
+                         $("#create_user").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }	 
+ }
  </script>
 
 <script>
@@ -735,9 +839,8 @@ function getEmployeementType(designationType){
 })(jQuery);
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
  function createUser() {
-	 
 	 var loginCurrencyCode = '${SourceLeadWeb_currencyCode}'; 
 	 var loginLocationCountry = '${SourceLeadWeb_orgLocations.country}';
 	 var country = '${SourceLeadWeb_loginCountryName}'; 
@@ -766,7 +869,6 @@ function getEmployeementType(designationType){
 // 			$("#create_user").attr("disabled", "disabled");
 			$("#loading").attr('style','position:absolute; width:100%; height:210%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 //             $( "#create_user" ).addClass('button').val('Processing..');	
-            
             $.ajax({
 				type : "POST",
         	    data: formData,
@@ -778,7 +880,6 @@ function getEmployeementType(designationType){
 						showError("Invalid data");
 						$("#loading").removeAttr('style');
 					} 
-
 					else if(loginLocationCountry == 'India'){
 						    $("#associateId").val(result.object.userId);
 						    $("#associateCandidateId").val(result.object.candidateId); 
@@ -788,9 +889,7 @@ function getEmployeementType(designationType){
 							 indBankingDetails.href="#tab-2";
 							 $("#indBankingDetails").click();
 					}
-					
 					else if(loginLocationCountry == 'United States') {
-
 						$("#associateId").val(result.object.userId);
 						$("#empType").val(result.object.designationType);
 						var associateSalary = document.getElementById("associateSalary");
@@ -799,8 +898,8 @@ function getEmployeementType(designationType){
 						$("#associateSalary").click();
 						 getPayItemList();
 					}
-				
-			});
+				}
+            });
 	        return true;
 		
 	  }else{
@@ -814,7 +913,7 @@ function getEmployeementType(designationType){
    });
   
  
-</script>  
+</script>   -->
 
 
 
@@ -1279,13 +1378,30 @@ function getAssociateUserDetails(){
 	      dateFormat: finalDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true, 
-	  	  maxDate:0
+	  	  maxDate:0,
+	  	  onSelect : function(selected) {
+	  		calculateConfirmationDate();
+	  		removeDateofJoinValid();
+	 	  }
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
+	  
+	/*   $('#confirmationDate').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+// 	  	  maxDate:0
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  }); */
 	  
   } );
 </script>
 <!-- end script for datepicker -->
+<script>
+function removeDateofJoinValid(){
+	$('#DateofJoinDiv').find('p.jquery_form_error_message').remove();
+	}
+</script>
 
  
 <script type="text/javascript">
@@ -1528,6 +1644,10 @@ function refreshGradesList(){
 function clearDateofJoin(){
 	$("#DateofJoin").val("");
 	};
+	
+ /*  function clearConfirmationDate(){
+	  $("#confirmationDate").val("");
+  } */
 </script>
 
 <script>
@@ -1604,7 +1724,13 @@ var loginLocationCountry = '${SourceLeadWeb_orgLocations.country}';
 			if(indLoanAndAdvancesDetails){
 				indLoanAndAdvancesDetails.href = "#";
 				indLoanAndAdvancesDetails.className = "disabledLink";
-			}  
+			}
+			
+			var indLeaveTypeDetails = document.getElementById("indLeaveTypeDetails");
+			if(indLeaveTypeDetails){
+				indLeaveTypeDetails.href = "#";
+				indLeaveTypeDetails.className = "disabledLink";
+			}
 			
 			var indSalaryDetails =  document.getElementById("indSalaryDetails");
 			if(indSalaryDetails){
@@ -1626,8 +1752,33 @@ $(document).ready(function() {
         $("#loading").removeAttr('style');
         $(tab).fadeIn();
     });
-})
+});
 </script> 
+
+
+<script>
+function calculateConfirmationDate(){
+
+	 var joiningDate = document.getElementById("DateofJoin").value;
+	 var probationperiod = document.getElementById("probationPeriod").value;
+	 if(joiningDate && probationperiod){
+	    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	    $.ajax({
+			type : "GET",
+			url: sourceleadUrl+"/getConfirmationDateBasedOnJoiningDate?"+tokenParamName+"="+tokenValue+"&joiningDate="+joiningDate+"&probationperiod="+probationperiod,
+			success :function(confirmationDate) {
+				$("#loading").removeAttr("style");
+				$("#confirmationDate").val(confirmationDate);
+			}
+		});
+		
+	}else{
+		$("#confirmationDate").val('');
+	}
+
+}
+
+</script>
 
 
 

@@ -31,16 +31,17 @@ $(document).ready(function(){
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Debit Note List</div>
     </section>
     
+    
+    <div class="project_wrap clearfix">
+    
     <div class="project_side_wrap_inn_tabs clearfix">
 	    <ul class="project-tabs-menu">
 		    <li class=""><a href="${appPath}/payablesList">Bill List</a></li>
 		    <li class="current"><a href="${appPath}/debitNoteList">Debit Note List</a></li>
 		    
 	    </ul>
-    </div>
+    </div>    
     
-    
-    <div class="content-area content-new clearfix">
       <div class="billing_dashboard noPad">
           <div class="tab-content"> 
             <div id="invoiceLoading"></div>
@@ -206,7 +207,7 @@ function prepareDebitNoteList(url,locationdateForList){
 	result = result +'         <th>ID</th>                    ';
 	result = result +'         <th>Reference Number</th>           ';
 	result = result +'         <th>Vendor Name</th>               ';
-	result = result +'         <th>Invoice ID</th>   ';
+	result = result +'         <th>Bill ID</th>   ';
 	result = result +'         <th>Total</th>                 ';
 	result = result +'         <th>Balance</th>                   ';
 	result = result +'         <th>Status</th>                ';

@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,6 +46,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,24 +62,29 @@ import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dao.InvoiceLineItemDao;
 import com.bis.sourcelead.dao.InvoiceTaxDao;
+import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.UserDao;
-
 import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.CreditDebitNoteLineItemsDTO;
 import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
-
+import com.bis.sourcelead.dto.CustomInvoiceTemplateDTO;
+import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoiceExpensesDTO;
 import com.bis.sourcelead.dto.InvoiceLineItemsDTO;
 import com.bis.sourcelead.dto.InvoiceTaxDTO;
 import com.bis.sourcelead.dto.InvoiceTimelineDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SearchDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.CreditDebitLineItems;
 import com.bis.sourcelead.entity.CreditDebitNote;
+import com.bis.sourcelead.entity.CustomInvoiceTemplate;
+import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -89,6 +96,7 @@ import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.InvoiceTax;
 import com.bis.sourcelead.entity.InvoiceTimelineHistory;
+import com.bis.sourcelead.entity.JobFair;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -96,10 +104,13 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.RequirementOffers;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -111,13 +122,16 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.CustomInvoicePDFHelper;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.ExpensesInvoicePdfHelper;
 import com.bis.sourcelead.util.FileUploadUtil;
@@ -159,7 +173,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 	
 	@Autowired
 	private UserDao userDao;
-
+	
+	@Autowired
+	private RequirementSubmissionDao requirementSubmissionDao;
+	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 
@@ -205,6 +222,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Autowired
 	private InvoicePdfHelper invoicePdfHelper;
+	
+	@Autowired
+	private CustomInvoicePDFHelper customInvoicePDFHelper;
 
 	@Autowired
 	private ProjectsService projectsService;
@@ -243,7 +263,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	@Override
-	public Invoice saveInvoice(User user, OrgLocations orgLocation,String saveType,String invoiceType,Org org,String loginOrgCurrencyCode,InvoiceDTO invoiceDTO) throws Exception {
+	public Invoice saveInvoice(User user, OrgLocations orgLocation,String saveType,String invoiceType,Org org,String loginOrgCurrencyCode,InvoiceDTO invoiceDTO, String defaultFont) throws Exception {
 		
         Invoice invoice = null;
         String savedInvoiceId = null;
@@ -257,7 +277,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         	invoice.setCreatedDate(commonUtil.currentDate());
         }
         String generatedId = null;
-		OrgLocations vendorOrgLocation = null;;
+		OrgLocations vendorOrgLocation = null;
         if(Constants.PAYABLE.equalsIgnoreCase(invoiceType)){
         	if(StringUtils.isNotBlank(invoiceDTO.getVendorOrgRelationId())){
       			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(invoiceDTO.getVendorOrgRelationId()));
@@ -325,6 +345,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 		}
 		if (StringUtils.isNotBlank(invoiceDTO.getBillingAddress())) {
 			invoice.setBillingAddress(invoiceDTO.getBillingAddress());
+		}
+		
+		if (StringUtils.isNotBlank(invoiceDTO.getIsJobClosure())) {
+			invoice.setIsJobClosure(invoiceDTO.getIsJobClosure());
 		}
 		/*
 		 * if(StringUtils.isNotBlank(invoiceDTO.getAccountDetails())){
@@ -428,10 +452,21 @@ public class InvoiceServiceImpl implements InvoiceService {
 		}
 
 		// store attached Documents (after)
-		File file = invoicePdfHelper.createPdfTableForInvoice(invoice, orgLocation, user, org, invoiceType,
-				vendorCurrencyCode, loginOrgCurrencyCode);
-
-		if (file.exists() && !file.isDirectory()) {
+		boolean invoiceTemplateConfigured = false;
+		File file = null;
+		if(invoiceDTO.getInvoiceTemplateId() > 0) {
+			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(invoiceDTO.getInvoiceTemplateId());
+			if(customInvoiceTemplate != null) {
+				file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "client/project", defaultFont, sourceleadUrl);
+				invoiceTemplateConfigured = true;
+				
+				invoice.setCustomInvoiceTemplate(customInvoiceTemplate);
+			}
+		} 
+		if(!invoiceTemplateConfigured)
+			file = invoicePdfHelper.createPdfTableForInvoice(invoice, orgLocation, user, org, invoiceType, vendorCurrencyCode, loginOrgCurrencyCode);
+		
+		if (file != null && file.exists() && !file.isDirectory()) {
 			invoice.setFileName(file.getName());
 			invoice.setFileUrl(FileUploadUtil.moveFile(staticPath, org.getId(), orgLocation.getId(), "InvoicePdf", file));
 		}
@@ -557,6 +592,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		parentInvoice.setDiscountValue(invoice.getDiscountValue());
 		parentInvoice.setAfterDiscountValue(invoice.getAfterDiscountValue());
 		parentInvoice.setSubTotal(invoice.getSubTotal());
+		parentInvoice.setIsJobClosure(invoice.getIsJobClosure());
 		parentInvoice.setInvoiceComment(invoice.getInvoiceComment());
 		parentInvoice.setPaymentFrequency(invoice.getPaymentFrequency());
 		parentInvoice.setDiscountType(invoice.getDiscountType());
@@ -691,6 +727,17 @@ public class InvoiceServiceImpl implements InvoiceService {
 					updatedInvoiceLineItems.add(Long.valueOf(invoiceLineItemsDTO.getLineItemId()));
 				}
 
+				if(StringUtils.isNotBlank(invoiceLineItemsDTO.getBillRateType())){
+					invoiceLineItems.setBillRateType(invoiceLineItemsDTO.getBillRateType());
+				}else{
+					invoiceLineItems.setBillRateType(null);	
+				}
+				
+				if(StringUtils.isNotBlank(invoiceLineItemsDTO.getRequirementSubmissionId())){
+					RequirementSubmission requirementSubmission = requirementSubmissionDao.getRequirementSubmissionById(Long.parseLong(invoiceLineItemsDTO.getRequirementSubmissionId()));
+					invoiceLineItems.setRequirementSubmissionId(requirementSubmission);
+				}
+				
 				if (StringUtils.isNotBlank(invoiceLineItemsDTO.getInvoiceStartDate())) {
 					Date invoiceStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),
 							invoiceLineItemsDTO.getInvoiceStartDate());
@@ -729,7 +776,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 				} else {
 					invoiceLineItems.setContract(null);
 				}
-
+				
+				if(StringUtils.isNotBlank(invoiceLineItemsDTO.getQuantity())){
+					invoiceLineItems.setQuantity(invoiceLineItemsDTO.getQuantity());	
+				}
+				
 				if (StringUtils.isNotBlank(invoiceLineItemsDTO.getRate())) {
 					invoiceLineItems.setRate(invoiceLineItemsDTO.getRate());
 				}
@@ -1727,6 +1778,7 @@ public class InvoiceServiceImpl implements InvoiceService {
   	  		  		      	invoice.setInvoiceFrequency(frequency);
   	  		  		        Invoice savedInvoice = invoiceDao.saveInvoce(invoice);
   	  		  		        updateSubmissionApproverHierachy(savedInvoice,invoiceType);
+  	  		  		        saveInvoiceTimelineHistory(invoice, user, null, null, null, null);
   	  		  		        if(savedInvoice !=null){
   	  		  		         count++;
   	  		  		        }
@@ -1737,6 +1789,230 @@ public class InvoiceServiceImpl implements InvoiceService {
   	  			}
   			}
 		}
+		return count;
+	}
+	
+	
+	@Override
+	public Integer getAutomaticInvoiceForJobClosure(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType,
+			User user,String contractType, String globalUser) throws Exception {
+		int count = 0;
+		List<OrgRelations> clientVendorList = null;
+		OrgLocations vendorOrgLocation = null;
+		if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
+			clientVendorList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId());
+		} else {
+			clientVendorList = getVendorsList(orgLocation);
+		}
+		User contactUser = null;
+		for (OrgRelations client : clientVendorList) {
+			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(client.getId());
+
+			if (orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+				List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(orgRelation.getId());
+				vendorOrgLocation = orgRelation.getLocationId();
+				if (orgSpocList != null && !orgSpocList.isEmpty()) {
+					if (Constants.VENDOR.equalsIgnoreCase(orgRelation.getResponderType())) {
+						contactUser = orgSpocList.get(0).getClientUser();
+					} else {
+						contactUser = orgSpocList.get(0).getVendorUser();
+					}
+
+				}
+				// populateClientDetails(vendorOrgLocation,invoice);
+			}
+			if (orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+				List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(orgRelation.getId());
+				vendorOrgLocation = orgRelation.getResponderLocationId();
+				if (orgSpocList != null && !orgSpocList.isEmpty()) {
+					if (Constants.VENDOR.equalsIgnoreCase(orgRelation.getResponderType())) {
+						contactUser = orgSpocList.get(0).getVendorUser();
+					} else {
+						contactUser = orgSpocList.get(0).getClientUser();
+					}
+
+				}
+			}
+			List<RequirementSubmission> applicantsList = null;
+			String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
+			if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
+			 applicantsList = requirementSubmissionDao.getCandidateForInvoiceJobClosure(orgLocation, user, client.getId());
+			 if(orgRelation.getGenerateInvoice().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL) && applicantsList!=null && applicantsList.size() >0){
+ 					List<RequirementSubmission> applicant = new ArrayList<RequirementSubmission>();
+ 					applicant.add(applicantsList.get(0));
+ 				   applicantsList = applicant;
+ 				}	
+			}else{
+				applicantsList = requirementSubmissionDao.getCandidateForBillJobClosure(orgLocation, user, client.getId());
+				 if(orgRelation.getGenerateBill().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL) && applicantsList!=null && applicantsList.size() >0){
+	 					List<RequirementSubmission> applicant = new ArrayList<RequirementSubmission>();
+	 					applicant.add(applicantsList.get(0));
+	 				   applicantsList = applicant;
+	 				}
+			}
+			 
+			if(applicantsList.size()>0){
+				Invoice invoice = new Invoice();
+				populateClientDetails(vendorOrgLocation,invoice,orgRelation);
+					invoice.setOrgRelationID(orgRelation);
+					invoice.setOrgLocation(orgLocation);
+					invoice.setInvoiceType(invoiceType);
+					invoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+					invoice.setInvoiceId(SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode());
+					Set<InvoiceLineItems> invoiceLineItemSet = populateInvoiceInlineItemsForJobClosure(applicantsList,orgLocation,client.getId(),loginOrgCurrencyCode,invoice,user,contractType);
+					invoice.setInvoiceLineItems(invoiceLineItemSet);
+					invoice.setCurrencyCode(loginOrgCurrencyCode);
+					invoice.setContactUser(contactUser);
+					invoice.setContactUsers(contactUser.getId().toString());
+					invoice.setOwnerUsers(user.getId().toString());
+					invoice.setCreatedBy(user.getUserCode());
+					invoice.setStatus(Constants.RECORD_ACTIVE.toString());
+					invoice.setInvoiceStatus(Constants.DRAFT);
+					invoice.setUpdatedBy(user.getUserCode());
+					invoice.setCreatedDate(commonUtil.currentDate());
+					invoice.setUpdatedDate(commonUtil.currentDate());
+					invoice.setInvoiceDate(commonUtil.currentDate());
+					invoice.setPaymentStatus("Unpaid");
+					invoice.setIsJobClosure(Constants.YES);
+					invoice.setDiscountType(Constants.PERCENTAGE);
+					invoice.setIsAutomaticGenerateInvoice(Constants.YES);
+					float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.valueOf(invoice.getTotal()));
+					float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode,vendorCurrencyCode,1f);
+	  		      	float roundAmount = Float.parseFloat((new DecimalFormat(".###").format(((convertedAmount * 100.0) / 100.0))));
+	  		      	exchangeRate = roundAmount *Float.valueOf(invoice.getTotal());
+	  		      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
+	  		      	invoice.setConvertAmount(String.valueOf(roundAmount));
+	  		      	invoice.setExchangeRate(String.valueOf(exchangeRate));
+	  		        Invoice savedInvoice = invoiceDao.saveInvoce(invoice);
+	  		   // update requirement submission 
+					if(savedInvoice !=null){
+					Set<InvoiceLineItems> lineItemsList = savedInvoice.getInvoiceLineItems();
+					lineItemsList.forEach(list->{
+						if(list.getRequirementSubmissionId() !=null){
+					try {
+						RequirementSubmission submission = requirementSubmissionDao.getRequirementSubmissionById(list.getRequirementSubmissionId().getId());
+						submission.setInvoiceGenerated(Constants.YES);
+						requirementSubmissionDao.storeRequirementSubmission(submission);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+						}
+					});
+					}
+					saveInvoiceTimelineHistory(invoice, user, null, null, null, null);
+	  		      if(savedInvoice !=null){
+ 		  		         count++;
+ 		  		        }
+			}
+  			
+		}
+		return count;
+	}
+	
+	
+	@Override
+	public Integer generateInvoiceJobClosureFromDashboard(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType,
+			User user,String contractType, Long orgrelationId,Long submissionId,Long candidateId) throws Exception {
+		int count = 0;
+		
+		OrgRelations orgRelation = orgRelationsService.getOrRelationsById(orgrelationId);
+		User contactUser = null;
+		OrgLocations vendorOrgLocation = null;
+		if (orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+			List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(orgRelation.getId());
+			vendorOrgLocation = orgRelation.getLocationId();
+			if (orgSpocList != null && !orgSpocList.isEmpty()) {
+				if (Constants.VENDOR.equalsIgnoreCase(orgRelation.getResponderType())) {
+					contactUser = orgSpocList.get(0).getClientUser();
+				} else {
+					contactUser = orgSpocList.get(0).getVendorUser();
+				}
+
+			}
+		}if (orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+			List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(orgRelation.getId());
+			vendorOrgLocation = orgRelation.getResponderLocationId();
+			if (orgSpocList != null && !orgSpocList.isEmpty()) {
+				if (Constants.VENDOR.equalsIgnoreCase(orgRelation.getResponderType())) {
+					contactUser = orgSpocList.get(0).getVendorUser();
+				} else {
+					contactUser = orgSpocList.get(0).getClientUser();
+				}
+
+			}
+		}
+		
+			List<RequirementSubmission> applicants = null;
+			String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
+			 
+			applicants = requirementSubmissionDao.getCandidateInvoiceJobClosureDashboard(orgLocation, orgrelationId,submissionId,candidateId);
+			 
+			for(RequirementSubmission reqSubmission : applicants){
+				 if (reqSubmission.getRequirement().getClientId() != null && reqSubmission.getJoinedDate() != null) {
+						
+					 	int result = Integer.parseInt(reqSubmission.getRequirement().getClientId().getPaymentTerm());
+						Date generatedInvoiceDate = CalendarUtil.addDaysForGenerateInvoice(reqSubmission.getJoinedDate(), result);
+						DateTime dtOrg = new DateTime(generatedInvoiceDate);
+						reqSubmission.setInvoiceGenerateDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), dtOrg.toDate()));
+						reqSubmission.setJoinedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),reqSubmission.getJoinedDate()));
+				
+						if(StringUtils.isNotBlank(reqSubmission.getInvoiceGenerateDate())){
+							 if(applicants.size()>0){
+									Invoice invoice = new Invoice();
+									populateClientDetails(vendorOrgLocation,invoice,orgRelation);
+										invoice.setOrgRelationID(orgRelation);
+										invoice.setOrgLocation(orgLocation);
+										invoice.setInvoiceType(invoiceType);
+										invoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+										invoice.setInvoiceId(SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode());
+										Set<InvoiceLineItems> invoiceLineItemSet = populateInvoiceInlineItemsForJobClosure(applicants,orgLocation,orgrelationId,loginOrgCurrencyCode,invoice,user,contractType);
+										invoice.setInvoiceLineItems(invoiceLineItemSet);
+										invoice.setCurrencyCode(loginOrgCurrencyCode);
+										invoice.setContactUsers(contactUser.getId().toString());
+										invoice.setOwnerUsers(user.getId().toString());
+										invoice.setCreatedBy(user.getUserCode());
+										invoice.setStatus(Constants.RECORD_ACTIVE.toString());
+										invoice.setInvoiceStatus(Constants.DRAFT);
+										invoice.setUpdatedBy(user.getUserCode());
+										invoice.setCreatedDate(commonUtil.currentDate());
+										invoice.setUpdatedDate(commonUtil.currentDate());
+										invoice.setInvoiceDate(commonUtil.currentDate());
+										invoice.setPaymentStatus("Unpaid");
+										invoice.setIsJobClosure(Constants.YES);
+										invoice.setDiscountType(Constants.PERCENTAGE);
+										invoice.setIsAutomaticGenerateInvoice(Constants.YES);
+										float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.valueOf(invoice.getTotal()));
+										float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode,vendorCurrencyCode,1f);
+						  		      	float roundAmount = Float.parseFloat((new DecimalFormat(".###").format(((convertedAmount * 100.0) / 100.0))));
+						  		      	exchangeRate = roundAmount *Float.valueOf(invoice.getTotal());
+						  		      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
+						  		      	invoice.setConvertAmount(String.valueOf(roundAmount));
+						  		      	invoice.setExchangeRate(String.valueOf(exchangeRate));
+						  		        Invoice savedInvoice = invoiceDao.saveInvoce(invoice);
+						  		   // update requirement submission 
+										if(savedInvoice !=null){
+										Set<InvoiceLineItems> lineItemsList = savedInvoice.getInvoiceLineItems();
+										lineItemsList.forEach(list->{
+											if(list.getRequirementSubmissionId() !=null){
+										try {
+											RequirementSubmission submission = requirementSubmissionDao.getRequirementSubmissionById(list.getRequirementSubmissionId().getId());
+											submission.setInvoiceGenerated(Constants.YES);
+											requirementSubmissionDao.storeRequirementSubmission(submission);
+										} catch (Exception e) {
+											e.printStackTrace();
+										}
+											}
+										});
+										}
+						  		      if(savedInvoice !=null){
+					 		  		         count++;
+					 		  		        }
+								}
+							 }
+				 } 
+				 
+			 }
+  			
 		return count;
 	}
 
@@ -1856,6 +2132,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 			invoiceLineItems.setStatus(Constants.RECORD_ACTIVE.toString());
 			invoiceLineItems.setCreatedBy(user.getUserCode());
 			invoiceLineItems.setCreatedDate(commonUtil.currentDate());
+			invoiceLineItems.setUpdatedBy(user.getUserCode());
+			invoiceLineItems.setUpdatedDate(commonUtil.currentDate());
 			invoiceLineItems.setInvoice(invoice);
 			invoiceLineItemsSet.add(invoiceLineItems);
 			submissionApproverHiearachyIds.add(String.valueOf(projectMember.getSubmissionApproverHierarchyId()));
@@ -1869,6 +2147,55 @@ public class InvoiceServiceImpl implements InvoiceService {
 		invoice.setDueAmount(String.valueOf(subTotal));
 		invoice.setTotal(String.valueOf(subTotal));
 		invoice.setSubmissionApproverHierarchyIds(submissionApproverHiearachyIds);
+		return invoiceLineItemsSet;
+	}
+	
+	private Set<InvoiceLineItems> populateInvoiceInlineItemsForJobClosure(List<RequirementSubmission> submissionList,
+			OrgLocations orgLocation, Long orgRelationId, String loginOrgCurrencyCode, Invoice invoice, User user,String contratType)
+			throws Exception {
+		Set<InvoiceLineItems> invoiceLineItemsSet = new HashSet<>();
+		float subTotal = 0;
+		for (RequirementSubmission submission : submissionList) {
+			InvoiceLineItems invoiceLineItems = new InvoiceLineItems();
+			
+			if (submission.getCandidate() != null) {
+				Candidate candidate = candidateService.getCandidateByCandidateId(submission.getCandidate().getId());
+				invoiceLineItems.setCandidate(candidate);
+				
+				invoiceLineItems.setRequirementSubmissionId(submission);
+				
+				if(submission.getRequirementOffersList().size()>0){
+					for(RequirementOffers offer : submission.getRequirementOffersList()){
+						if(offer.getOfferStatus().equals("OFFERACCEPTED")){
+							invoiceLineItems.setRate(offer.getAmount());	
+						}
+					}
+					
+				}
+				try{
+					List<Contracts> contractsList = getSowContract(submission.getCandidate().getId(), orgLocation, orgRelationId, contratType);
+					if (null != contractsList && contractsList.size() > 0) {
+						Contracts contract = contractsList.get(0);
+						invoiceLineItems.setContract(contract);
+					}	
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			invoiceLineItems.setOrgLocation(orgLocation);
+			invoiceLineItems.setBillRateType("Flat");
+			invoiceLineItems.setStatus(Constants.RECORD_ACTIVE.toString());
+			invoiceLineItems.setCreatedBy(user.getUserCode());
+			invoiceLineItems.setCreatedDate(commonUtil.currentDate());
+			invoiceLineItems.setInvoice(invoice);invoiceLineItems.setUpdatedBy(user.getUserCode());
+			invoiceLineItems.setUpdatedDate(commonUtil.currentDate());
+			invoiceLineItemsSet.add(invoiceLineItems);
+		}
+		
+		invoice.setSubTotal(String.valueOf(subTotal));
+		invoice.setDueAmount(String.valueOf(subTotal));
+		invoice.setTotal(String.valueOf(subTotal));
+		}
 		return invoiceLineItemsSet;
 	}
 
@@ -2706,6 +3033,20 @@ public class InvoiceServiceImpl implements InvoiceService {
 		boolean result = false;
 		Invoice invoice = invoiceDao.getInvoicetByInvoiceUUID(invoiceUUID);
 		Date date = new Date();
+		// for jobclosure invoice deleted.
+		List<InvoiceLineItems> lineItemsList = invoiceLineItemDao.getInvoiceLineItemsByInvoiceId(invoice.getId());
+		lineItemsList.forEach(items->{
+			if(items.getRequirementSubmissionId() !=null){
+			try {
+				RequirementSubmission submission = requirementSubmissionDao.getRequirementSubmissionById(items.getRequirementSubmissionId().getId());
+				submission.setInvoiceGenerated(null);
+				requirementSubmissionDao.storeRequirementSubmission(submission);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			}
+		});
+		
 		if(invoice.getProjectID() != null){
 				invoice.setRejectReason(reason);
 				invoice.setStatus(Constants.MEMBER_IN_ACTIVE);
@@ -2739,7 +3080,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Override
 	public Invoice saveExpenseInvoice(InvoiceDTO invoiceDTO, User user, OrgLocations orgLocation, String saveType,
-			String invoiceType, Org org, String loginOrgCurrencyCode, String invoiceCategory) throws Exception {
+			String invoiceType, Org org, String loginOrgCurrencyCode, String invoiceCategory, String defaultFont) throws Exception {
 
 		Invoice invoice = null;
 		String savedInvoiceId = null;
@@ -2946,13 +3287,22 @@ public class InvoiceServiceImpl implements InvoiceService {
 		}
 
 		// store attached Documents (after)
-		File file = expensesInvoicePdfHelper.createPdfTableForExpensesInvoice(invoice, orgLocation, user, org,
-				invoiceType, vendorCurrencyCode, loginOrgCurrencyCode);
+		boolean invoiceTemplateConfigured = false;
+		File file = null;
+		if(invoiceDTO.getInvoiceTemplateId() > 0) {
+			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(invoiceDTO.getInvoiceTemplateId());
+			if(customInvoiceTemplate != null) {
+				file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "other", defaultFont, sourceleadUrl);
+				invoiceTemplateConfigured = true;
+			}
+		}
+		if(!invoiceTemplateConfigured)
+			file = expensesInvoicePdfHelper.createPdfTableForExpensesInvoice(invoice, orgLocation, user, org, invoiceType, vendorCurrencyCode, loginOrgCurrencyCode);
+		
 		invoice.setFileName(file.getName());
 		if (file.exists() && !file.isDirectory()) {
 			invoice.setFileName(file.getName());
-			invoice.setFileUrl(
-					FileUploadUtil.moveFile(staticPath, org.getId(), orgLocation.getId(), "InvoicePdf", file));
+			invoice.setFileUrl(FileUploadUtil.moveFile(staticPath, org.getId(), orgLocation.getId(), "InvoicePdf", file));
 		}
 		if (null != file) {
 			file.delete();
@@ -4252,6 +4602,153 @@ public class InvoiceServiceImpl implements InvoiceService {
 	@Override
 	public void deleteCreditDebitLineItem(CreditDebitLineItems creditDebitLineItems) {
 		invoiceDao.deleteCreditDebitLineItem(creditDebitLineItems);
+	}
+
+	@Override
+	public Response<String> saveCustomInvoiceTemplate(CustomInvoiceTemplateDTO customInvoiceTemplateDTO, OrgRelations orgRelations, OrgLocations orgLocations, User loggedInUser, OrgLocations loggedInOrgLocations) {
+		Response<String> response = new Response<>();
+		try {
+			CustomInvoiceTemplate customInvoiceTemplate = null;
+			CustomInvoiceTemplate savedTemplate = invoiceDao.getCustomInvoiceTemplateByNameAndOrgRelationIdAndOrgLocationId(customInvoiceTemplateDTO.getName(), orgRelations.getId(), orgLocations.getId());
+			if(savedTemplate != null && customInvoiceTemplateDTO.getId() != savedTemplate.getId()) {
+				response.setResponse(Result.DUPLICATE_NAME.name());
+				response.setResponseMessage(Result.DUPLICATE_NAME.getValue());
+				return response;
+			}
+			if (customInvoiceTemplateDTO.getId() > 0) {
+				customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(customInvoiceTemplateDTO.getId());
+				customInvoiceTemplate.setUpdatedBy(loggedInUser);
+				customInvoiceTemplate.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), loggedInOrgLocations));
+			} else {
+				customInvoiceTemplate = new CustomInvoiceTemplate();
+				customInvoiceTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				customInvoiceTemplate.setCreatedBy(loggedInUser);
+				customInvoiceTemplate.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), loggedInOrgLocations));
+			}
+			customInvoiceTemplate.setName(customInvoiceTemplateDTO.getName());
+			customInvoiceTemplate.setDescription(customInvoiceTemplateDTO.getDescription());
+			customInvoiceTemplate.setItems(customInvoiceTemplateDTO.getJsonData());
+			customInvoiceTemplate.setStatus(1);
+			customInvoiceTemplate.setOrgRelations(orgRelations);
+			customInvoiceTemplate.setOrgLocations(orgLocations);
+			
+			long result = invoiceDao.saveCustomInvoiceTemplate(customInvoiceTemplate);
+			if (result > 0) {
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.FAILED.name());
+				response.setResponseMessage(Result.FAILED.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+
+	@Override
+	public ResponseList<CustomInvoiceTemplateDTO> getCustomInvoiceTemplateListByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId, SearchDTO searchDTO, OrgLocations loggedInOrgLocations) {
+		ResponseList<CustomInvoiceTemplateDTO> responseList = new ResponseList<>();
+		try {
+			List<CustomInvoiceTemplateDTO> customInvoiceTemplateDTOList = new LinkedList<>();
+			ResponseList<CustomInvoiceTemplate> customInvoiceTemplateList = invoiceDao.getCustomInvoiceTemplateByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocationId, searchDTO);
+			if (customInvoiceTemplateList != null &&  customInvoiceTemplateList.getData() != null && !customInvoiceTemplateList.getData().isEmpty()) {
+				for(CustomInvoiceTemplate customInvoiceTemplate : customInvoiceTemplateList.getData()) {
+					customInvoiceTemplateDTOList.add(getCustomInvoiceTemplateDetails(customInvoiceTemplate, loggedInOrgLocations));
+				}
+			}
+			responseList.setData(customInvoiceTemplateDTOList);
+			responseList.setRecordsFiltered(customInvoiceTemplateList.getRecordsFiltered());
+			responseList.setRecordsTotal(customInvoiceTemplateList.getRecordsTotal());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return responseList;
+	}
+
+	@Override
+	public CustomInvoiceTemplateDTO getCustomInvoiceTemplateListByUUIDAndOrgRelationIdAndOrgLocationId(String uuid, Long orgRelationId, Long orgLocationId, OrgLocations loggedInOrgLocations) {
+		try {
+			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateListByUUIDAndOrgRelationIdAndOrgLocationId(uuid, orgRelationId, orgLocationId);
+			if(customInvoiceTemplate != null) {
+				return getCustomInvoiceTemplateDetails(customInvoiceTemplate, loggedInOrgLocations);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	private CustomInvoiceTemplateDTO getCustomInvoiceTemplateDetails(CustomInvoiceTemplate customInvoiceTemplate, OrgLocations loggedInOrgLocations) {
+		CustomInvoiceTemplateDTO customInvoiceTemplateDTO = new CustomInvoiceTemplateDTO();
+		try {
+			customInvoiceTemplateDTO.setId(customInvoiceTemplate.getId());
+			customInvoiceTemplateDTO.setUuid(customInvoiceTemplate.getUuid());
+			customInvoiceTemplateDTO.setName(customInvoiceTemplate.getName());
+			customInvoiceTemplateDTO.setDescription(customInvoiceTemplate.getDescription());
+			customInvoiceTemplateDTO.setStatus(customInvoiceTemplate.getStatus());
+			customInvoiceTemplateDTO.setOrgLocationId(customInvoiceTemplate.getOrgLocations().getId());
+			customInvoiceTemplateDTO.setOrgRelationId(customInvoiceTemplate.getOrgRelations().getId());
+			if(customInvoiceTemplate.getCreatedBy() != null) {
+				customInvoiceTemplateDTO.setCreatedByUserId(customInvoiceTemplate.getCreatedBy().getId() + "");
+				customInvoiceTemplateDTO.setCreatedByUserName(customInvoiceTemplate.getCreatedBy().getFullName());
+			}
+			if(customInvoiceTemplate.getCreatedDate() != null) {
+				customInvoiceTemplateDTO.setCreatedDate(customInvoiceTemplate.getCreatedDate().toString());
+			}
+			if(customInvoiceTemplate.getUpdatedBy() != null) {
+				customInvoiceTemplateDTO.setUpdatedByUserId(customInvoiceTemplate.getUpdatedBy().getId() + "");
+				customInvoiceTemplateDTO.setUpdatedByUserName(customInvoiceTemplate.getUpdatedBy().getFullName());
+			}
+			if(customInvoiceTemplate.getUpdatedDate() != null) {
+				customInvoiceTemplateDTO.setUpdatedDate(customInvoiceTemplate.getUpdatedDate().toString());
+			}
+			
+			JSONArray jsonArray = new JSONArray(customInvoiceTemplate.getItems());
+			if (jsonArray != null && jsonArray.length() > 0) {
+				List<JSONObject> itemsObjectList = new LinkedList<>();
+				for (int i = 0; i < jsonArray.length(); i++) {
+					JSONObject jsonObject = jsonArray.getJSONObject(i);
+					itemsObjectList.add(jsonObject.getInt("order") - 1, jsonObject);
+				}
+				customInvoiceTemplateDTO.setItemObjectList(itemsObjectList);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return customInvoiceTemplateDTO;
+	}
+
+	@Override
+	public boolean changeCustomInvoiceTemplateStatus(Long templateId, int status, User user, OrgLocations orgLocations) {
+		try {
+			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(templateId);
+			if(customInvoiceTemplate != null) {
+				customInvoiceTemplate.setStatus(status);
+				customInvoiceTemplate.setUpdatedBy(user);
+				customInvoiceTemplate.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
+			}
+			long result = invoiceDao.saveCustomInvoiceTemplate(customInvoiceTemplate);;
+			return result > 0;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean deleteCustomInvoiceTemplate(Long templateId) {
+		try {
+			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(templateId);
+			if(customInvoiceTemplate != null) {
+				return invoiceDao.deleteCustomInvoiceTemplate(customInvoiceTemplate);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 

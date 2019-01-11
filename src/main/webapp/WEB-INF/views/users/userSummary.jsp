@@ -11,22 +11,11 @@
 
 
 <style>
-.user_summary_edit_cta p{
-    margin: -5px 15px;
-}
-.remove_user_pop input{
-	color: #333;
-}
-#editUserDiv .user_summary_edit_cta {
-min-height: 65px;
-}
-.edit_role_pop.editrole-custom {
-height: 450px; overflow-y: auto;
-}
-.assignroles.changeRole {
-max-height: inherit !important;
-}
-
+.user_summary_edit_cta p{ margin: -5px 15px;}
+.remove_user_pop input{ color: #333;}
+#editUserDiv .user_summary_edit_cta { min-height: 65px;}
+.edit_role_pop.editrole-custom { height: 450px; overflow-y: auto;}
+.assignroles.changeRole { max-height: inherit !important;}
 </style>
 
 <div class="wraper">
@@ -61,7 +50,10 @@ $(document).ready(function(){
 			 dateFormat: finalDateFormat,
 			 changeMonth: true,
 			 changeYear: true, 
-		  	  maxDate:0
+		  	  maxDate:0,
+		  		onSelect : function(selected) {
+		  		calculateConfirmationDate();
+		 	  }
 			});
 	 });
 	 
@@ -78,31 +70,30 @@ $(document).ready(function(){
 	 
 });
 </script>
- 
-		<div class="cearfix">
-				  <div class="newTagsWrap">
-					 <ul class="clearfix tagsWrap tagsWrapBor">
-						<select multiple class="chosen-select form-control" name="tagName" id="associateTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">11111111
-						</select>
-					</ul>
-					 <div class="clearfix"></div>
-				  </div>
-		     </div>
-	     <div class="success_pop tagStyles" id="addProjectTagAlert">
-				<i class="fa fa-check-circle"></i>
-		   		<span></span>
-	     </div>
-		 <div class="remove_pop tagStyles" id="deleteProjectTagAlert">
-			<i class="fa fa-times"></i>
-			<span></span>
-		 </div>
 
-
-
-		<div id="loadingSummary"></div>
-		<div id="projectSideDiv"></div>
-		<div id="baningDetailsDiv"></div> 
-		<div id="candidateSideDiv" class="project_tabs clearfix"></div> 
+<div class="project_wrap">
+	<div id="loadingSummary"></div>
+	<div id="projectSideDiv"></div>
+	<div id="baningDetailsDiv"></div> 
+	<div id="candidateSideDiv" class="project_tabs clearfix"></div> 
+</div>	
+<div class="cearfix">
+  <div class="newTagsWrap">
+	 <ul class="clearfix tagsWrap tagsWrapBor">
+		<select multiple class="chosen-select form-control" name="tagName" id="associateTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">11111111
+		</select>
+	</ul>
+	 <div class="clearfix"></div>
+  </div>
+   </div>
+  <div class="success_pop tagStyles" id="addProjectTagAlert">
+		<i class="fa fa-check-circle"></i>
+ 		<span></span>
+  </div>
+ <div class="remove_pop tagStyles" id="deleteProjectTagAlert">
+	<i class="fa fa-times"></i>
+	<span></span>
+ </div>		
 
 
 
@@ -242,7 +233,7 @@ window.onload = function () {
 		 result  = result + '<div class="success_pop" id="selectoruser" style="display: none;">';
 		 result  = result + '<i class="fa fa-check-circle"></i><span id="userMsgDiv"></span>';
 		 result  = result + '</div>';
-		 result = result + '<ul class="project-tabs-menu">';
+		 result = result + '<ul class="project-tabs-menu project-tabs-menu-custom">';
 		 
 		 result = result + '<li class="current"><a href="#tab-18" onClick="userDetails('+userId+');" >Details</a></li>';
 		 
@@ -471,6 +462,14 @@ window.onload = function () {
 				    '</sec:authorize>';	     
 				    }
 				     result = result + ' </div>';  
+				     
+				     
+				     // Confirm Probation
+				     if(json.probationStatus != null && json.probationStatus != '' && json.probationStatus != 'undefined' && json.probationStatus == 'Probation'){
+				     	result = result + '<div class="clearfix"><input class="btn btn-primary btn-sm pull-right" id="confirmButton" type="button" value="Confirm Probation" onclick="confirmProbation('+userId+',\''+json.confirmationDateStr+'\',\''+json.designation+'\');"/></div>';
+				     }else if(json.probationStatus != null && json.probationStatus != '' && json.probationStatus != 'undefined' && json.probationStatus == 'Confirmed'){
+				    	 result = result + '<div class="clearfix"><label class="textSuccess pull-right textBold" id="confirmButton" value="Probation Confirmed">Probation Confirmed</label></div>';
+				     }
 				     result = result + ' <div id="edit_role_pop" class="edit_role_pop editrole-custom" >';
 				     result = result + ' <div id="editRoleLoading" ></div>';
 				     result = result + ' <div class="user_summary_edit_cta">';
@@ -494,15 +493,41 @@ window.onload = function () {
 			}
 				
 				
-				result = result + '	 <div class="user_details_cta_img">';
-				result = result + '		       <div class="user_change_img">';
+				result = result + '	 <div class="user_details_cta_img profile-image">';
+				result = result + '<form  id="associate_Image_form"  name="associate_Image_form" method="post" >';
+				
 				if(json.user.fileUrl != null && json.user.fileUrl != "" && json.user.fileUrl !="undefiend"){
-					result = result +                  "<img data-id= 'userProfileImage' src='"+json.user.fileUrl+"' alt='image'>";
+					result = result + '<div class="user_change_img">';
+					result = result +"<img data-id= 'userProfileImage' src='"+json.user.fileUrl+"' alt='image'>";
+					result = result + '</div>';
+					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">'
+					result=result + '<div class="btn-group uploadfile uploadfile-candidate">';
+					result=result+'<button type="button" class="btn btn-sm btn-primary">';
+					result=result+'<i class="fa fa-upload"></i></button>';
+					result=result+'<label class="btn btn-sm btn-primary">';
+		            result=result+'Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, \'associate_Image_form\', '+json.user.id+', true);" style="display: none;">';
+		            result=result+'</label>';
+		            result=result+'<button type="button" class="btn btn-sm btn-danger" onclick="deleteAssociateImage('+json.user.id+')">';
+					result=result+'<i class="fa fa-trash"></i></button>';
+					result=result+'</div>';
+					'</sec:authorize>';
 				}else{
-					result = result +                  "<img data-id= 'userProfileImage'  src='/resources/images/userprofile-img.png' alt='image'>";
+					result = result + '<div class="user_change_img">';
+					result = result +"<img data-id= 'userProfileImage'  src='/resources/images/userprofile-img.png' alt='image'>";
+					result = result + ' 		  </div>';
+					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">'
+					result=result+'<div class="btn-group uploadfile uploadfile-candidate">';
+					result=result+'  <button type="button" class="btn btn-sm btn-primary">';
+					result=result+'  <i class="fa fa-upload"></i></button>';
+					result=result+'  <label class="btn btn-sm btn-primary">';
+		            result=result+'   Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, \'associate_Image_form\', '+json.user.id+', true);" style="display: none;" >';
+		            result=result+'  </label>';
+					result=result+'  </div>';
+					'</sec:authorize>';
 				}
 				
-				result = result + ' 		  </div>';
+				
+				result = result +  '</form>';
 				result = result + '             <span>'+userName+'</span>';
 				result = result + ' <div class="user_badg" id="counts">';
 				result = result +socialLinks;
@@ -580,6 +605,15 @@ window.onload = function () {
 					result = result + '				 <strong>Extension:</strong><span class="fix">'+json.user.extensionNumber+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
 					result = result + '<div class="clearfix"></div>';
+				}
+				
+				if("${SourceLeadWeb_orgLocations.country}" == 'India'){
+					if(json.panNumber != null && json.panNumber !='' && json.panNumber !='undefined'){
+						result = result + '			<div class="project_details_cta">';
+						result = result + '				 <strong>PAN Number:</strong><span class="fix">'+json.panNumber+'</span><div class="clearfix"></div>';
+						result = result + ' 		</div>';
+						result = result + '<div class="clearfix"></div>';
+					}
 				}
 				
 		if(json.reportingManager != null && json.reportingManager.id == '${SourceLeadWeb_userId}'){
@@ -686,6 +720,27 @@ window.onload = function () {
 			if(json.hireDateStr != null && json.hireDateStr != "" && json.hireDateStr != 'undefined'){
 				result = result + '			<div class="project_details_cta">';
 				result = result + '				<strong>Date of joining:</strong><span class="fix">'+json.hireDateStr+'</span><div class="clearfix"></div>';
+				result = result + '			</div>';
+				result = result + '<div class="clearfix"></div>';
+			}
+			
+			if(json.probationPeriod != null && json.probationPeriod != "" && json.probationPeriod != 'undefined'){
+				result = result + '			<div class="project_details_cta">';
+				result = result + '				<strong>Probation Period:</strong><span class="fix">'+json.probationPeriod+'</span><div class="clearfix"></div>';
+				result = result + '			</div>';
+				result = result + '<div class="clearfix"></div>';
+			}
+			
+			if(json.probationStatus != null && json.probationStatus != "" && json.probationStatus != 'undefined'){
+				result = result + '			<div class="project_details_cta">';
+				result = result + '				<strong>Status:</strong><span class="fix">'+json.probationStatus+'</span><div class="clearfix"></div>';
+				result = result + '			</div>';
+				result = result + '<div class="clearfix"></div>';
+			}
+			
+			if(json.confirmationDateStr != null && json.confirmationDateStr != "" && json.confirmationDateStr != 'undefined'){
+				result = result + '			<div class="project_details_cta">';
+				result = result + '				<strong>Confirmation Date:</strong><span class="fix">'+json.confirmationDateStr+'</span><div class="clearfix"></div>';
 				result = result + '			</div>';
 				result = result + '<div class="clearfix"></div>';
 			}
@@ -918,6 +973,40 @@ window.onload = function () {
 	      },
 	});
  }
+</script>
+
+<script type="text/javascript">
+function deleteAssociateImage(userId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure you want to delete this image ?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteAssociateProfileImage("+userId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script type="text/javascript">
+function deleteAssociateProfileImage(userId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	 $.ajax({
+		    type: "GET",
+            url: sourceleadUrl+"/deleteProfileImage?&userId="+userId,
+	        success: function(data) {
+	        	 var result = data;
+     		if(result == "success"){
+     			location.reload();
+        	 }
+	        
+	       },
+	        
+     }); 
+}
 </script>
 
 <script type="text/javascript">
@@ -1963,7 +2052,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' </div>';
 					result = result + ' <div class="col-md-5 errBotValEdit">';
 					result = result + ' <label>Extension</label>';
-					result = result + ' <input type="text" value="'+extensionNumber+'" name="extensionNumber" data-validation="validate_Space validate_extno validate_length length1-5" data-validation-optional="true">';
+					result = result + ' <input type="text" value="'+extensionNumber+'" name="extensionNumber" data-validation="validate_Space validate_extno validate_int length1-5" data-validation-optional="true" maxLength=5>';
 					result = result + ' </div>';
 					result = result + ' </div>';
 					
@@ -1975,6 +2064,13 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <label>Email Id<span class="text-danger">&nbsp;*</span></label>';
 					result = result + ' <input type="text" value="'+json.user.email+'" '+readonly+' id="EmailId" name="email" field-name="EmailId" onblur="validateUserUpdatedEmail('+userId+');" data-validation="required validate_Space validate_email validate_length length2-100"/>';
 					result = result + ' </div>';
+					
+					if("${SourceLeadWeb_orgLocations.country}" == 'India'){
+						result = result + ' <div class="user_summary_edit_cta" >';
+						result = result + ' <label>PAN Number<span class="text-danger">&nbsp;*</span></label>';
+						result = result + ' <input type="text" value="'+json.panNumber+'"  id="panNumber" name="panNumber" field-name="PAN Number" data-validation="required validate_Space fixed_length length10"/>';
+						result = result + ' </div>';
+					}
 					
 					if("${SourceLeadWeb_orgLocations.country}" == 'United States'){
 					var ssn = '';	
@@ -2154,8 +2250,8 @@ $("#editRoleDetailsList").empty();
 					
 					// moving date bottom to top
 					    result = result + ' <div class="user_summary_edit_cta">';
-					    result = result + ' <label>Department</label>';
-						result = result + '<select class="form-control chosen-select" id="department" name="department"  field-name="Department" '+json.departmentName+'>';
+					    result = result + ' <label>Department <span class="text-danger">*</span></label>';
+						result = result + '<select class="form-control chosen-select" id="department" name="department"  data-validation="required" field-name="Department" '+json.departmentName+'>';
 						result = result + '</select>';
 						result = result + '<input type="hidden" name="updatedepartment" id="updatedepartment" value="'+json.departmentName+'">';
 						result = result + '<input type="hidden" name="updateDepartmentOrgRelationId" id="updateDepartmentOrgRelationId" value="'+json.department+'">';	
@@ -2265,6 +2361,68 @@ $("#editRoleDetailsList").empty();
 					}
 					result = result + ' </div></div>';	
 					
+					if(json.probationStatus == "Confirmed"){
+						
+						result = result + ' <div class="user_summary_edit_cta">';
+						result = result + ' <label>Probation Period </label>';
+							result = result + '<input class="form-control" id="probationPeriod" value="'+json.probationPeriod+'" name="probationPeriod" readonly="readonly" field-name="Probation Period">';
+						result = result + ' </div>';	
+						
+						result = result + ' <div class="user_summary_edit_cta">';
+						result = result + ' <label>Status</label>';
+							
+							result = result + '<input class="form-control" id="probationStatus" value="'+json.probationStatus+'" name="probationStatus" readonly="readonly" field-name="Status">';
+						result = result + ' </div>';
+						
+						
+							result = result + ' <div class="user_summary_edit_cta">';
+							result = result + ' <label>Confirmation Date</label>';
+							result = result + ' <div class="input-group">';
+							result = result + ' <input type="text" value="'+json.confirmationDateStr+'" name="confirmationDate" id="confirmationDate" class="calendar" readonly="readonly" field-name="Confirmation Date">';
+							result = result + '   <span class="input-group-addon" onClick=""></span> ';
+							result = result + ' </div>';
+							result = result + ' </div>';
+						
+					}else{
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Probation Period </label>';
+// 					if(json.probationPeriod != null && json.probationPeriod != "" && json.probationPeriod != "undefined"){
+						result = result + '<select class="form-control" id="probationPeriod" name="probationPeriod" field-name="Probation Period" onchange="calculateConfirmationDate();">';
+						result = result + '<option value="">--Select Probation Period--</option>';
+						result = result + ' <option value="15 Days" '+(json.probationPeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
+						result = result + ' <option value="30 Days" '+(json.probationPeriod == "30 Days" ? "selected" : '') +'>1 Month</option>';
+						result = result + '	<option  value="60 Days" '+ (json.probationPeriod == "60 Days" ? "selected" : '') +'>2 Months</option>';
+						result = result + ' <option value="90 Days" '+(json.probationPeriod == "90 Days" ? "selected" : '') +'>3 Months</option>';
+						result = result + ' </select>';
+
+// 					}
+					result = result + ' </div>';	
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Status</label>';
+// 					if(json.probationStatus != null && json.probationStatus != "" && json.probationStatus != "undefined"){
+						
+						result = result + '<select class="form-control" id="probationStatus" name="probationStatus" field-name="Status">';
+						result = result + '<option value="">--Select Status--</option>';
+						result = result + ' <option value="Probation" '+(json.probationStatus == "Probation" ? "selected" : '') +'>Probation</option>';
+						result = result + ' <option value="Confirmed" '+(json.probationStatus == "Confirmed" ? "selected" : '') +'>Confirmed</option>';
+						result = result + ' </select>';
+// 					}
+					result = result + ' </div>';
+					
+					
+						result = result + ' <div class="user_summary_edit_cta">';
+						result = result + ' <label>Confirmation Date</label>';
+						result = result + ' <div class="input-group">';
+// 					if(json.confirmationDateStr != null && json.confirmationDateStr != "" && json.confirmationDateStr != "undefined"){
+						result = result + ' <input type="text" value="'+json.confirmationDateStr+'" name="confirmationDate" id="confirmationDate" readonly="readonly" class="calendar" field-name="Confirmation Date">';
+						result = result + '   <span class="input-group-addon" onClick=""></span> ';
+// 					}
+						result = result + ' </div>';
+						result = result + ' </div>';
+					
+					}
+					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Date of Birth</label>';
 					result = result + '<div class="input-group">';
@@ -2284,7 +2442,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <input type="text" value="'+dailyHours+'" id="dayHoursEdit" placeholder="HH:MM" name="DayHours"  data-validation="validate_Space validate_dayHours validate_length length1-9" data-validation-optional="true" onblur="editMe(this);validateDayHours();">';
 					result = result + ' </div>';
 					
-					result = result + '<div class="col-md-4">';
+					result = result + '<div class="col-md-4 ml">';
 					result = result + ' <label>&nbsp;</label>';
 					result = result + '<div class="clearfix">';
 					result = result + '<div class="checkbox checkBox">';
@@ -2347,6 +2505,7 @@ $("#editRoleDetailsList").empty();
 			    getVendorsByOrgLocationId();
 			    getDepartmentsList();
 			    maskme(); 
+			    calculateConfirmationDate();
 			   
 	        },
 		});
@@ -3009,46 +3168,6 @@ $(document).ready(function() {
 
 </script>
 
-<!-- <script>
-function validateSSNNumber(){
-	var ssnNumber = $("#ssnNumber").val();
-	var length  = $("#ssnNumber").val().length;
-	if(ssnNumber.search("-") > 0){
-		ssnNumber = ssnNumber.replace(/-/g, "");
-		length = ssnNumber.length;
-		calculateSSNLength(length,ssnNumber);
-	}else{
-		calculateSSNLength(length,ssnNumber);
-	}
-}
-function calculateSSNLength(length,ssnNumber){
-	if(length == 0){
-		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
-		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number is required</span>");
-		$("#update_user").attr("disabled", "disabled");
-	}else if(length != 9){
-		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
-		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number should be 9 digits</span>");
-		$("#update_user").attr("disabled", "disabled");
-	}else{
-		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
-		var value = "";
-		var ssn = ssnNumber.substring(0,3);
-		value += ssn+"-";
-		ssn = ssnNumber.substring(3,5);
-		value += ssn+"-";
-		ssn = ssnNumber.substring(5,9);
-		value += ssn;
-		$("#ssnNumber").val(value);
-		if(value.match(/^(?!000|666)[0-8][0-9]{2}-(?!00)[0-9]{2}-(?!0000)[0-9]{4}$/) === null){
-			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
-			$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>Invalid SSN number</span>");
-		}else{
-			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
-		}
-	}
-}
- </script> -->
 
 <script type="text/javascript">
 function flushProject(){
@@ -3212,7 +3331,38 @@ function getStartandEndDate(){
 				$("#update_user").removeAttr("disabled", "disabled");
 			}
 		}
+		validateSSNDuplicate($("#SSN").val());
 	}
+	 </script>
+	 
+	 <script>
+	 function validateSSNDuplicate(ssnNumber){
+		 /* var associateId = $("#associateId").val(); */
+		 var associateId = '${userId}';
+		 $('#ssnnum').find('p.jquery_form_error_message').remove();
+		 if(ssnNumber != null && ssnNumber != ""){
+			 $("#update_user").attr("disabled", "disabled");
+	         //$("#update_user" ).addClass('button').val('Processing..');
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/validateSSNDuplicate?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber+"&userId="+associateId, 
+			        success: function(data) {
+			        	if(data == true){
+	        				  $('#ssnnum').find('p.jquery_form_error_message').remove();
+							  $("input#SSN").after("<p class='jquery_form_error_message'>"+ssnNumber+" is Already Existed</span>");
+							  document.getElementById("SSN").setAttribute('record-exist','yes');
+							  document.getElementById("SSN").setAttribute('record-exist-errorMsg',ssnNumber+' is Already Existed'); 
+			        	}
+			        	else{
+			        		 $('input#SSN').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#ssnnum').find('p.jquery_form_error_message').remove(); 
+			        		 $("#update_user" ).addClass('us-btn').val('Update');
+	                         $("#update_user").removeAttr("disabled");
+			        	}
+			        },
+			    });
+		 }
+	 }
 	 </script>
 
 
@@ -4268,7 +4418,6 @@ function deleteProfileImage(candidateId){
      }); 
 }
 </script>
-s')
 <%-- 
      @author : Laxman.
      this script is for refresh image block
@@ -4637,6 +4786,86 @@ function getShiftList(shiftId){
 
 
 </script>
+
+
+<script>
+function calculateConfirmationDate(){
+
+	var joiningDate = document.getElementById("DateofJoin").value;
+	 var probationperiod = document.getElementById("probationPeriod").value;
+	 if(joiningDate && probationperiod){
+	    $("#loadingSummary").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	    $.ajax({
+			type : "GET",
+			url: sourceleadUrl+"/getConfirmationDateBasedOnJoiningDate?"+tokenParamName+"="+tokenValue+"&joiningDate="+joiningDate+"&probationperiod="+probationperiod,
+			success :function(confirmationDate) {
+				$("#loadingSummary").removeAttr("style");
+				$("#confirmationDate").val(confirmationDate);
+			}
+		});
+		
+	}else{
+		$("#confirmationDate").val('');
+	}
+}
+
+</script>
+
+
+<script>
+function confirmProbation(userId,confirmationDate,designation){
+    $.ajax({
+		type : "POST",
+		url: sourceleadUrl+"/confirmProbation?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+		success :function() {
+		//$("#confirmButton").removeClass("btn btn-primary").addClass("btn btn-success");
+  	    $("#confirmButton").text("Probation Confirmed");
+  	    //$("#confirmButton").attr("onclick", "").unbind("click");
+    	  confirmPopUp(userId,confirmationDate,designation);
+    	  
+		}
+	});
+}
+
+function confirmPopUp(userId,confirmationDate,designation){
+	var result = "";
+	result = result + "	<div class='project_inn_mask'></div>";
+	result = result + "	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a positionRelative'>";
+	result = result +"		<p>Send Confirmation Email</p>";
+	result = result + "		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='confirm' onclick='sendMailConfirmation("+userId+",\""+confirmationDate+"\",\""+designation+"\")'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelRejectPopup();'></b>";
+	result = result + "	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+	
+}
+
+function sendMailConfirmation(userId,confirmationDate,designation){
+	$.ajax({  
+        type : "POST",
+        url: sourceleadUrl+"/sendMailConfirmationToAssociate?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&confirmationDate="+confirmationDate+"&designation="+designation,        
+        success :function() {
+        $("#selectoruser").removeAttr("style");
+        $("#selectoruser").css({ display: "block" });
+ 		$("#userMsgDiv").html("Mail Sent Sucessfully");
+  	  	userMsgFadein();
+  	  	cancelRejectPopup();
+        },
+	});
+	
+}
+
+function cancelRejectPopup() {
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+
+}
+</script>
+<script>
+
+</script>
+
+
+
 <jsp:include page="candidatesProfile.jsp"></jsp:include>
 <jsp:include page="candidatesResumes.jsp"></jsp:include>
 <jsp:include page="candidatesExperience.jsp"></jsp:include>

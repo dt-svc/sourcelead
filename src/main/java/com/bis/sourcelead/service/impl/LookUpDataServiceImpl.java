@@ -118,5 +118,15 @@ public class LookUpDataServiceImpl implements LookUpDataService {
 	public LookUpData validateTaskTypeNameByTaskNameAndLookupId(String taskTypeName, Long lookupId,String category,Long orgLocationId) {
 		return lookUpDataDao.validateTaskTypeNameByTaskNameAndLookupId(taskTypeName, lookupId,category,orgLocationId);
 	}
+
+	@Override
+	public List<String> getListOfStringLookUpdataByCategoryAndOrgLocationId(String category, Long orgLocation) throws Exception {
+		return lookUpDataDao.getListOfStringLookUpdataByCategoryAndOrgLocationId(category, orgLocation);
+	}
+
+	@Override
+	public List<String> getCategoriesListByCategoryType(String category) throws Exception {
+		return lookUpDataDao.getCategoriesListByCategoryType(category);
+	}
 	
 }

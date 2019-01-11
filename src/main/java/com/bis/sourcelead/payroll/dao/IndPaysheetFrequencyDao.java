@@ -1,5 +1,7 @@
 package com.bis.sourcelead.payroll.dao;
 
+import java.util.List;
+
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -24,4 +26,10 @@ public interface IndPaysheetFrequencyDao {
 	ResponseList<IndEmployeePayroll> getIndPayrollApprovedEmployeeListByPaysheetFrequencyUuidAndEmpApproveStatus(String paysheetFrequencyUuid, String empApproveStatus) throws Exception;
 	
 	ResponseList<IndEmployeePayroll> getEmployeePaysByOrgLocationIdAndUserId(OrgLocations orgLocation, User user, IndEmployeePayrollDTO indEmployeePayrollDTO) throws Exception;
+	
+	IndEmployeePayroll  indEmployeePayrollByEmpPayrollUUID(String empPayrollUUID) throws Exception;
+
+	ResponseList<IndEmployeePayroll> getPayrollRegisterReports(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations);
+	
+	List<IndEmployeePayroll> getYTDIndEmployeePayrollList(String employeePayRollUUID)throws Exception;
 }

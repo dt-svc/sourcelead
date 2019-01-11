@@ -43,13 +43,13 @@ public class ImmigrationConstants {
 	
 	
 	public static final String[] IMPORT_IMMIGRATION_EXCEL_HEADERS = {"Beneficiary First Name","Beneficiary Last Name",
-            "Beneficiary Email", "Experience", "SSN", "I-94 Number",    "I-20 SEVIS Number If Student", "EAD Number If Student", "DOB",    
+            "Beneficiary Email", "Phone Number", "Experience", "SSN", "I-94 Number",    "I-20 SEVIS Number If Student", "EAD Number If Student", "DOB",    
             "Marital status", "Petition Type", "Template", "Date of arrival", "Open on", "Status","Passport No","Passport Country","Passport Start Date","Passport End Date","Visa No.","Visa Type", "Visa Country","Visa Start Date", "Visa End Date","Company",
             "Attorney/Contact email", "Receipt No.", "Location", "LCA Start Date", "LCA End Date","LCA Number", "LCA Rate Currency","LCA Rate","LCA Rate Per", "LCA Location","LCA Title","Job ID",
             "Previous LCA Start Date", "Previous LCA end Date","Previous LCA Number","Previous LCA Title","Previous LCA Location"};
    
    public static final String[] IMPORT_DOWNLOAD_IMMIGRATION_EXCEL_HEADERS = {"Beneficiary First Name*","Beneficiary Last Name*",
-            "Beneficiary Email*", "Experience", "SSN", "I-94 Number",    "I-20 SEVIS Number If Student", "EAD Number If Student", "DOB*",    
+            "Beneficiary Email*", "Phone Number", "Experience", "SSN", "I-94 Number",    "I-20 SEVIS Number If Student", "EAD Number If Student", "DOB*",    
             "Marital status", "Petition Type*", "Template*", "Date of arrival", "Open on*", "Status*","Passport No","Passport Country","Passport Start Date","Passport End Date","Visa No.","Visa Type", "Visa Country","Visa Start Date", "Visa End Date","Company*",
             "Attorney/Contact email*", "Receipt No.", "Location", "LCA Start Date", "LCA End Date","LCA Number", "LCA Rate Currency","LCA Rate","LCA Rate Per", "LCA Location","LCA Title","Job ID*",
             "Previous LCA Start Date", "Previous LCA end Date","Previous LCA Number","Previous LCA Title","Previous LCA Location"};
@@ -66,12 +66,12 @@ public class ImmigrationConstants {
    
    @SuppressWarnings("serial")
    public static final Map HEADERS_NAMES_MAP = new HashMap<Integer, String>(){{
-       put(1,"beneficiaryFirstName");put(2,"beneficiaryLastName");put(3,"beneficiaryEmail");put(4,"experience");put(5,"ssn");put(6,"i94Number");put(7,"i20Number");
-       put(8,"eadNumber");put(9,"dateOfBirth");put(10,"maritalStatus");put(11,"petitionType");put(12,"template");
-       put(13,"dateOfArrival");put(14,"openOn");put(15,"status");put(16,"passportNo");put(17,"passportCountry");put(18,"passportStartDate");
-       put(19,"passportEndDate");put(20,"visaNo");put(21,"visaType"); put(22,"visaCountry");put(23,"visaStartDate");put(24,"visaEndDate");put(25,"company");put(26,"companyContactEmail");put(27,"receiptNo");
-       put(28,"benficiarylocation");put(29,"lcaStartDate");put(30,"lcaEndDate");put(31,"lcaNumber");put(32,"lcaRateCurrency");put(33,"lcaRate");put(34,"lcaRatePer");put(35,"lcaLocation");put(36,"lcaTitle");put(37,"immigrationJobId");put(38,"prevLcaStartDate");put(39,"prevLcaEndDate");
-       put(40,"prevLcaNumber");put(41,"prevLcaTitle");put(42,"prevLcaLocation");
+       put(1,"beneficiaryFirstName");put(2,"beneficiaryLastName");put(3,"beneficiaryEmail");put(4,"beneficiaryPhone");put(5,"experience");put(6,"ssn");put(7,"i94Number");put(8,"i20Number");
+       put(9,"eadNumber");put(10,"dateOfBirth");put(11,"maritalStatus");put(12,"petitionType");put(13,"template");
+       put(14,"dateOfArrival");put(15,"openOn");put(16,"status");put(17,"passportNo");put(18,"passportCountry");put(19,"passportStartDate");
+       put(20,"passportEndDate");put(21,"visaNo");put(22,"visaType"); put(23,"visaCountry");put(24,"visaStartDate");put(25,"visaEndDate");put(26,"company");put(27,"companyContactEmail");put(28,"receiptNo");
+       put(29,"benficiarylocation");put(30,"lcaStartDate");put(31,"lcaEndDate");put(32,"lcaNumber");put(33,"lcaRateCurrency");put(34,"lcaRate");put(35,"lcaRatePer");put(36,"lcaLocation");put(37,"lcaTitle");put(38,"immigrationJobId");put(39,"prevLcaStartDate");put(40,"prevLcaEndDate");
+       put(41,"prevLcaNumber");put(42,"prevLcaTitle");put(43,"prevLcaLocation");
    }};
    
    @SuppressWarnings("serial")

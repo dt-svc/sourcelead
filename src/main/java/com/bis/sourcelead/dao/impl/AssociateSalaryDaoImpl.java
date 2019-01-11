@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
+import com.bis.sourcelead.entity.CreditDebitNote;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.payroll.dao.impl.AssociateBankDataDaoImpl;
@@ -279,6 +280,58 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 		return response;
 		
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public ResponseList<AssociateSalaryInd> getAssociateSalaryIndListByLocationIdAndGroupId(OrgLocations orgLocation, Long groupId,CandidateDTO candidateDto) {
+		List<AssociateSalaryInd> assSalList = null;
+		ResponseList<AssociateSalaryInd> response = new ResponseList<>();
+		Session session = this.sessionFactory.getCurrentSession();
+		String qry = "from AssociateSalaryInd ass where ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.status = '1'";
+		
+		StringBuilder query1 = new StringBuilder("");
+		if (StringUtils.isNotBlank(candidateDto.getSearchValue())) {
+					query1.append(" and (ass.candidate.firstName like '%" + candidateDto.getSearchValue() + "%' ")
+							.append("OR ass.candidate.lastName like '%"
+									+ candidateDto.getSearchValue() + "%' ")
+							.append("OR ass.candidate.email like '%" + candidateDto.getSearchValue()
+									+ "%' ")
+							.append("OR ass.candidate.designationType like '%" + candidateDto.getSearchValue()
+									+ "%' ")
+							.append("OR ass.candidate.mobilePhone like '%" + candidateDto.getSearchValue() + "%' )");
+			}
+		Query queryObj = session.createQuery(qry + query1.toString());
+		
+		if (candidateDto != null && candidateDto.getLength() > 0) {
+			queryObj.setFirstResult(candidateDto.getStart());
+			queryObj.setMaxResults(candidateDto.getLength());
+		}
+		assSalList = queryObj.setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).list();
+		int count = 0;
+		int filteredCount = 0;
+
+		List<Long> countlist = session.createQuery("select count(*) " + qry)
+				.setLong("orgLocationId", orgLocation.getId())
+				.setLong("groupId", groupId).list();
+
+		if (countlist != null && !countlist.isEmpty()) {
+			count = countlist.iterator().next().intValue();
+		}
+		response.setRecordsTotal(count);
+		if (candidateDto != null) {
+			List<Long> filteredCountlist = session.createQuery("select count(*) " + qry + query1.toString())
+					.setLong("orgLocationId", orgLocation.getId())
+					.setLong("groupId", groupId).list();
+			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
+				filteredCount = filteredCountlist.iterator().next().intValue();
+			}
+			response.setRecordsFiltered(filteredCount);
+		}
+		response.setData(assSalList);
+		return response;
+	}
 
 
 	@SuppressWarnings("unchecked")
@@ -286,14 +339,14 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 	@Transactional
 	public SalaryDTO getSalaryByGroupId(OrgLocations orgLocation, Long candidateId,Date freqStartDate, Date freqEndDate)
 	{
-		SalaryDTO salarylist = null;
+		SalaryDTO salaryDTO = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			java.sql.Date startDate = new java.sql.Date(freqStartDate.getTime());
 			java.sql.Date endDate = new java.sql.Date(freqEndDate.getTime());
 			StringBuilder sb = new StringBuilder();
-			sb.append("SELECT ")
-			.append("sal.CANDIDATE_ID as candidateId,")
+			sb.append("SELECT distinct ")
+			.append(" sal.CANDIDATE_ID as candidateId,")
 			.append("sal.PAY_FREQUENCY as payFrequency,")
 			.append("can.FIRST_NAME as firstName,")
 			.append("can.LAST_NAME as lastName,")
@@ -304,7 +357,8 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 			.append(" where usr.ID = role.USER_ID")
 			.append(" AND  can.CONSULTANT_USER_ID = usr.ID")
 			.append(" AND emp.USER_ID = can.CONSULTANT_USER_ID")
-			.append(" AND sal.CANDIDATE_ID = can.ID")
+			.append(" AND sal.CANDIDATE_ID = can.ID")  //
+			.append(" AND emp.ORG_LOCATIONS_ID = can.ORG_LOCATION_ID")
 			.append(" AND can.ID =:candidateId AND sal.ORG_LOCATION_ID = :locationId ");
 			//.append(" AND role.TERMINATE_DATE >= :startDate AND role.TERMINATE_DATE <= :endDate");// OR (role.TERMINATE_DATE IS NULL OR role.TERMINATE_DATE IS NULL))");
 			Query queryObj = session.createSQLQuery(sb.toString());
@@ -313,11 +367,14 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 //			.setDate("startDate", startDate)
 //			.setDate("endDate", endDate);
 			queryObj.setResultTransformer(Transformers.aliasToBean(SalaryDTO.class));
-			salarylist = (SalaryDTO) queryObj.uniqueResult();
+			List<SalaryDTO> list = queryObj.list();
+			if(list != null && list.size() >0) {
+				salaryDTO = list.get(0);
+			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		return salarylist;
+		return salaryDTO;
 	}
 	
 	@Override
@@ -367,5 +424,15 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 			return assList;
 		else
 			return null;
+	}
+
+
+	@Override
+	@Transactional
+	public AssociateSalary getAssociateSalaryBySalaryId(Long salaryId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String qry = "from AssociateSalary aSal where aSal.id =:salaryId";
+		AssociateSalary assSalary = (AssociateSalary) session.createQuery(qry).setLong("salaryId", salaryId).uniqueResult();
+		return assSalary;
 	}
 }

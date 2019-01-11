@@ -70,10 +70,11 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 		ResponseList<RequirementAssignTo> response = new ResponseList<>();
 		String query = "from RequirementAssignTo rat    where  rat.requirementId.id =:requirementId and rat.status <> '0'";
 		Query queryObj = session.createQuery(query);
-		if (requirementAssignToDTO != null && requirementAssignToDTO.getLength() > 0) {
+		if(requirementAssignToDTO.getStart() > 0) {
 			queryObj.setFirstResult(requirementAssignToDTO.getStart());
-			queryObj.setMaxResults(requirementAssignToDTO.getLength());
-			queryObj.setLong("requirementId", requirementAssignToDTO.getRequirementId()).list();
+		}
+		if (requirementAssignToDTO != null && requirementAssignToDTO.getLength() > 0) {
+			queryObj.setLong("requirementId", requirementAssignToDTO.getRequirementId()).setMaxResults(requirementAssignToDTO.getLength()).list();
 		}
 		assignedToList = queryObj.list();
 		int count = 0;
@@ -218,7 +219,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementAssignTo> getAssignedToMembersByRequirementIdAndOrgLocationId(Long requirementId,Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementAssignTo rato   where rato.requirementId.id = :requirementId and rato.status <> '0' and rato.requirementId.id IN ( select req.id from Requirement req where req.orgLocationId.id =:orgLocationId)";
+		String query = "from RequirementAssignTo rato left join fetch rato.teamId  where rato.requirementId.id = :requirementId and rato.status <> '0' and rato.requirementId.id IN ( select req.id from Requirement req where req.orgLocationId.id =:orgLocationId)";
 		return session.createQuery(query).setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).list();
 	}
 

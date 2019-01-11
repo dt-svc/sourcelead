@@ -2,12 +2,19 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.List;
+
+import com.bis.sourcelead.entity.Contracts;
 
 public class RequirementSubmissionsDTO extends SearchDTO implements Serializable {
 
 	private long requirementId;
 	private long orgLocationId;
 	private long userId;
+	private long id;
+	private long submissionId;
+	private long orgRelationId;
+	private long spocId;
 	private String submissionType;
 	private String loginUserRole;
 	private String userCode;
@@ -48,6 +55,12 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	
 	private String submissionStatus;
 	
+	private String invoiceGenerateDate;
+	
+	private String paymentTerm;
+	
+	private String joinedDate;
+	
 	private String submissionDate;
 	
 	private String submissionTime;
@@ -55,6 +68,12 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	private String generatedId;
 	
 	private String submittedBy;
+	
+	private String clientOrVendorName;
+	
+	private List<Contracts>contractsList;
+	
+	private Boolean generateDate = false;
 		
 	public long getRequirementId()
 	{
@@ -341,4 +360,67 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	public void setSubmittedBy(String submittedBy) {
 		this.submittedBy = submittedBy;
 	}
+	public String getInvoiceGenerateDate() {
+		return invoiceGenerateDate;
+	}
+	public void setInvoiceGenerateDate(String invoiceGenerateDate) {
+		this.invoiceGenerateDate = invoiceGenerateDate;
+	}
+	public String getPaymentTerm() {
+		return paymentTerm;
+	}
+	public void setPaymentTerm(String paymentTerm) {
+		this.paymentTerm = paymentTerm;
+	}
+	public String getJoinedDate() {
+		return joinedDate;
+	}
+	public void setJoinedDate(String joinedDate) {
+		this.joinedDate = joinedDate;
+	}
+	public String getClientOrVendorName() {
+		return clientOrVendorName;
+	}
+	public void setClientOrVendorName(String clientOrVendorName) {
+		this.clientOrVendorName = clientOrVendorName;
+	}
+	public long getId() {
+		return id;
+	}
+	public void setId(long id) {
+		this.id = id;
+	}
+	public long getSubmissionId() {
+		return submissionId;
+	}
+	public void setSubmissionId(long submissionId) {
+		this.submissionId = submissionId;
+	}
+	public List<Contracts> getContractsList() {
+		return contractsList;
+	}
+	public void setContractsList(List<Contracts> contractsList) {
+		this.contractsList = contractsList;
+	}
+	public long getOrgRelationId() {
+		return orgRelationId;
+	}
+	public void setOrgRelationId(long orgRelationId) {
+		this.orgRelationId = orgRelationId;
+	}
+	public long getSpocId() {
+		return spocId;
+	}
+	public void setSpocId(long spocId) {
+		this.spocId = spocId;
+	}
+	public Boolean getGenerateDate() {
+		return generateDate;
+	}
+	public void setGenerateDate(Boolean generateDate) {
+		this.generateDate = generateDate;
+	}
+	
+	
+	
 }

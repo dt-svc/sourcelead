@@ -133,6 +133,7 @@ public class ExpensesApprovalRestController {
 		model.addObject("expApperoverHierarchydto",expApperoverdto.getExpensesApproverHierarchyDTO());
 		model.setViewName("expenses/expensesApprovalListDataTable");
 		}catch(Exception e) {
+			e.printStackTrace();
 			 model.addObject("AWKWARD", true);
 			  model.setViewName("expenses/expensesApprovalListDataTable");
 		}

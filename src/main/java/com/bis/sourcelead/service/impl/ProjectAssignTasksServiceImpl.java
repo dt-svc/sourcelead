@@ -6,6 +6,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.ProjectassignTasksDTO;
+import com.bis.sourcelead.dto.ResponseList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -120,7 +123,9 @@ public class ProjectAssignTasksServiceImpl implements ProjectAssignTasksService{
 									assignTask.setUpdatedBy(user.getUserCode());
 									projectAssignTasksDao.saveProjectAssignTask(assignTask);
 									if(orgLocations.getId().longValue() == members.getProjectMemberCandidteId().getOrgLocationId().getId()) {
-										projectTasksService.SendMailtoAssigntoMembersaboutAddingTask(assignTask,projectTasksDTO,projectTask,orgLocations,user);
+										String redirectURL = "/projectTaskSummary-params-taskUUID="+projectTask.getProjectTasksUUID()+"-and-projectClientUUID="+projectTasksDTO.getProjectClientUUID();
+										long redirectOrgLocationId = projectTask.getProjectId().getOrgLocationsId().getId();
+										projectTasksService.SendMailtoAssigntoMembersaboutAddingTask(assignTask,projectTasksDTO,projectTask,orgLocations,user, redirectURL, redirectOrgLocationId);
 										 //this code is Assigned to user Activity
 										 activity = new StringBuffer();
 									     activitySummary = new StringBuffer();
@@ -153,6 +158,16 @@ public class ProjectAssignTasksServiceImpl implements ProjectAssignTasksService{
 					}
 				}
 			}
+	}
+
+	@Override
+	public List<ProjectassignTasksDTO> getProjectAssignTaskListByOrglocationId(Long orglocationId) throws Exception {
+		return projectAssignTasksDao.getProjectAssignTaskListByOrglocationId(orglocationId);
+	}
+
+	@Override
+	public ResponseList<ProjectAssignTask> getProjectAssignTaskListByCandidateIdOrglocationId(ProjectassignTasksDTO projectassignTasksDTO) throws Exception {
+		return projectAssignTasksDao.getProjectAssignTaskListByCandidateIdOrglocationId(projectassignTasksDTO);
 	}
 	
 	 

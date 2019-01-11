@@ -229,6 +229,70 @@ $(function(){
 					<div id="stateTaxesList"></div>
 					
 		         	</div>
+		         	
+		         	
+		         	<h3 class=".margin-top0">Tax Deposit</h3>
+		         	
+		         	<h3 class=".margin-top0">FederaL Taxes</h3>
+		         	
+		         			<div class="col-md-6">
+		         			
+		         			<div class="form-group clearfix">
+								<label class="col-md-4 noPad">Filler Type</label>
+								<div class="col-md-8 padding_right">
+					              
+					              <c:if test="${empty SourceLeadWeb_orglocationDepositTaxes.fillerType}">
+					                <label class="col-md-5 noPad">
+					                <input name="fillerType" type="radio" value="940"  >
+					                <strong class="paddingLeft">940</strong></label>
+					                <label class="col-md-5 noPad">
+					                <input name="fillerType" type="radio" value="941"  >
+					                <strong class="paddingLeft">941</strong></label>
+					              </c:if>
+					              
+					              <c:if test="${!empty SourceLeadWeb_orglocationDepositTaxes.fillerType}">
+					               <label class="col-md-5 noPad">
+					                <input name="fillerType" type="radio" value="940" ${SourceLeadWeb_orglocationDepositTaxes.fillerType  == '940' ? 'checked' : ''} >
+					                <strong class="paddingLeft">940</strong></label>
+					                <label class="col-md-5 noPad">
+					                <input name="fillerType" type="radio" value="941" ${SourceLeadWeb_orglocationDepositTaxes.fillerType  == '941' ? 'checked' : ''} >
+					                <strong class="paddingLeft">941</strong></label> 
+					              </c:if>
+					            
+					            </div>
+							</div>
+					   		
+							
+							<div class="form-group clearfix">
+								<label class="col-md-4 noPad">Federal Deposit</label>
+								<div class="col-md-8 padding_right">
+								<select  class="chosen-select form-control" name="federalDeposit" id="federalDeposit"  field-name="Federal Deposit">
+											<option value="">--Select Federal Deposit--</option>
+											<option value="Semi weekly" ${SourceLeadWeb_orglocationDepositTaxes.federalDeposit  == 'Semi weekly' ? 'selected' : ''}>Semi weekly</option>
+											<option value="Semi Monthly" ${SourceLeadWeb_orglocationDepositTaxes.federalDeposit  == 'Semi Monthly' ? 'selected' : ''}>Semi Monthly</option>
+											<option value="Quarterly" ${SourceLeadWeb_orglocationDepositTaxes.federalDeposit  == 'Quarterly' ? 'selected' : ''}>Quarterly</option>
+					                 </select>
+								</div>
+							</div>
+							
+							
+							<h3 class=".margin-top0">State Taxes</h3>
+							
+							<div class="form-group clearfix">
+								<label class="col-md-4 noPad">Deposit Schedule</label>
+								<div class="col-md-8 padding_right">
+								<select  class="chosen-select form-control" name="taxDepositSchedule" id="depositSchedule" field-name="Deposit Schedule">
+									<option value="">--Select Deposit Schedule--</option>
+									<option value="Monthly"  ${SourceLeadWeb_orglocationDepositTaxes.taxDepositSchedule  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+									<option value="Quarterly"  ${SourceLeadWeb_orglocationDepositTaxes.taxDepositSchedule  == 'Quarterly' ? 'selected' : ''}>Quarterly</option>
+									<option value="Semi Annually" ${SourceLeadWeb_orglocationDepositTaxes.taxDepositSchedule  == 'Semi Annually' ? 'selected' : ''}>Semi Annually</option>
+								  </select>
+								</div>
+							</div>
+							
+			     </div>	
+		         	
+		         	
 		       </div>
 			       
 			         

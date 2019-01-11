@@ -267,7 +267,27 @@
 							result = result + '	<span>Expenses</span><div class="clearfix"></div>';
 						}
 						result = result + '	</div>';
-
+						
+				 		
+						 result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Timesheet Approval Mechanism:</strong><span>';
+						   if (json.projectApprovalType != null && json.projectApprovalType != "" && json.projectApprovalType != "undefined") {
+								result = result + '	<span>'+json.projectApprovalType+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '	<span>----</span><div class="clearfix"></div>';
+							}
+						result = result + '	</div>';
+						
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Expemse Approval Mechanism:</strong><span>';
+						   if (json.expenseApprovalType != null && json.expenseApprovalType != "" && json.expenseApprovalType != "undefined") {
+								result = result + '	<span>'+json.expenseApprovalType+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '	<span>----</span><div class="clearfix"></div>';
+							}
+						result = result + '	</div>';  
+ 
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client:</strong>';
 						
@@ -446,6 +466,19 @@ function editClientProjectDetails(projectId){
 		type : "POST",
 		url : sourceleadUrl	+ "/getClientProjectApprovers?${_csrf.parameterName}=${_csrf.token}&projectClientUUID="+ projectClientUUID,
 		success : function(json) {
+			
+			var projectApprovalType = '';
+			var expenseApprovalType = '';
+			
+			
+			if(json.projectApprovalType != null && json.projectApprovalType != '' && json.projectApprovalType != 'undefined'){
+				projectApprovalType = json.projectApprovalType
+			}
+			
+			if(json.expenseApprovalType != null && json.expenseApprovalType != '' && json.expenseApprovalType != 'undefined'){
+				expenseApprovalType = json.expenseApprovalType
+			}
+			
 			var result = "";
 			result = result	+ '<div id="projectEditDetailsLoading"></div>';
 			result = result	+ ' <form id="editClientProject_form"  name="editClientProject_form" method="post">';
@@ -613,6 +646,8 @@ function editClientProjectDetails(projectId){
 				result = result + '<label class="paddingRight"><input type="radio" id="timesheetsandexpenses" '+(json.isProjectForTimeSheets == "Y" && json.isProjectForExpenses == "Y" ? "checked=checked" : '')+' value="TimesheetsAndExpences"  name="projectFor" onclick="projectForCheckValidation(this)"><span class="mr5"></span>Timesheets & Expenses</label>';
 				result = result + '<input type="hidden"  id="projectForValue" name="projectForValue"  field-name="Project For"/>';
 				result = result + '</div>';
+				
+				
 		  }		
 				
 		    result = result + '<div class="clearfix"></div>';
@@ -680,6 +715,17 @@ function editClientProjectDetails(projectId){
 						var taskCommentsRequired = "";
 						var projectShortCode = "";
 						var projectShortCodeDisabled = "";
+						var projectApprovalType = '';
+						var expenseApprovalType = '';
+						
+						
+						if(json.projectApprovalType != 'null' && json.projectApprovalType != '' && json.projectApprovalType != 'undefined'){
+							projectApprovalType = json.projectApprovalType
+						}
+						
+						if(json.expenseApprovalType != 'null' && json.expenseApprovalType != '' && json.expenseApprovalType != 'undefined'){
+							expenseApprovalType = json.expenseApprovalType
+						}
 						
                         
                         <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
@@ -895,7 +941,7 @@ function editClientProjectDetails(projectId){
 							result = result+ '<div class="user_summary_edit_cta projectdetails_edit_cta" style="display:none;" id="demo">';
 						}
 							result = result + '<label> Manager 2 </label>';
-							result = result	+ '<select class="form-control chosen-select" id="level2Manager" name="level2Manager">';
+							result = result	+ '<select class="form-control chosen-select" id="level2Manager" name="level2Manager" onChange="manager2()">';
 							result = result    +'<option value="">-Select Manager-</option>';
 							if(json.managersListwithoutManager1 != null){
 							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
@@ -1099,8 +1145,8 @@ function editClientProjectDetails(projectId){
 								result = result + '<input type="hidden"  id="projectForValue" name="projectForValue"  field-name="Project For"/>';
 								result = result + '</div>';
 						  }
-						
-						
+					   
+					   
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta projectdetails_checkbox">';
 						result = result + '<label>&nbsp;</label>';
 							
@@ -1124,7 +1170,25 @@ function editClientProjectDetails(projectId){
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div id="customFieldDataId" class="customFieldDataId-3column"></div>';
 						
-					
+						
+					     result = result+' <div class="col-md-4">';
+						result = result + '<label>Timesheet Approval Mechanism</label>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '<label class="paddingLeft paddingRight"><input type="radio" id="parallelTimesheetsApproval" value="Parallel" '+(json.projectApprovalType == "Parallel"? "checked=checked" : '')+' name="projectApprovalType" onclick="projectApprovalForCheckValidation(this)"><span class="mr5"></span>Parallel</label>';
+						result = result + '<label class="paddingRight"><input type="radio" id="sequentialTimesheetsApproval"  value="Sequential" '+(json.projectApprovalType == "Sequential" ? "checked=checked" : '')+' name="projectApprovalType" onclick="projectApprovalForCheckValidation(this)"><span class="mr5"></span>Sequential</label>';
+						result = result + '<input type="hidden"  id="projectApprovalTypeValue" name="projectApprovalTypeValue" value="'+projectApprovalType+'" data-validation="required" field-name="Timesheet Approval"/>';
+						result = result + '</div>';
+						
+						
+						result = result+' <div class="col-md-4">';
+						result = result + '<label>Expense Approval Mechanism</label>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '<label class="paddingLeft paddingRight"><input type="radio" id="parallerExpenseApproval" value="Parallel" '+(json.expenseApprovalType == "Parallel"? "checked=checked" : '')+' name="expenseApprovalType" onclick="expenseApprovalForCheckValidation(this)"><span class="mr5"></span>Parallel</label>';
+						result = result + '<label class="paddingRight"><input type="radio" id="sequentialExpenseApproval"  value="Sequential" '+(json.expenseApprovalType == "Sequential" ? "checked=checked" : '')+' name="expenseApprovalType" onclick="expenseApprovalForCheckValidation(this)"><span class="mr5"></span>Sequential</label>';
+						result = result + '<input type="hidden"  id="expenseApprovalTypeValue" name="expenseApprovalTypeValue" value="'+expenseApprovalType+'" data-validation="required"  field-name="Expense Approval"/>';
+						result = result + '</div>';  
+						
+						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="width100percnt col-md-12 mb txtEditor_p">';
 						result = result + '<label>Description</label>';
@@ -1213,12 +1277,28 @@ function editClientProjectDetails(projectId){
 				});
 
 	}
+	
+	function manager2(){
+		var manager2 = $("#level2Manager").val();
+		if(manager2 == ""){
+			$('#level2ExpenseApprover').val('').trigger("chosen:updated");
+		} 
+		
+	}
 </script>
 
 
 <script type="text/javascript">
 	function projectForCheckValidation(id){
 		document.getElementById("projectForValue").value = id.value;
+	} 
+	
+	function projectApprovalForCheckValidation(id){
+		document.getElementById("projectApprovalTypeValue").value = id.value;
+	} 
+	
+	function expenseApprovalForCheckValidation(id){
+		document.getElementById("expenseApprovalTypeValue").value = id.value;
 	} 
 </script>
 
@@ -1400,8 +1480,8 @@ function validateShortCode(){
 <script type="text/javascript">
 	function updateClientProjectDetails(projectId) {
 		var projectClientUUID = '${projectClientUUID}';
-		$("#projectEditDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 if ($('#editClientProject_form').validate(false, validationSettings)) {
+			 $("#projectEditDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			var formData = getFormData("editClientProject_form");
 			$.ajax({
 						type : "POST",

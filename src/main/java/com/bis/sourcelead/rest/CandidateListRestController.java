@@ -57,6 +57,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.CandidateSearchDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
@@ -64,19 +65,23 @@ import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadTags;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.service.CandidateCustomFieldDataService;
@@ -742,12 +747,10 @@ public class CandidateListRestController {
 
 					}
 					candidateIndex.setCreatedBy(candidateIndex.getCreatedBy());
-					Candidate can = candidateService.getCandidateByCandidateId(candidateIndex.getCandidateId());
+					/*Candidate can = candidateService.getCandidateByCandidateId(candidateIndex.getCandidateId());
 					if(can.getCandidateProfilePercentage() != null) {
 						candidateIndex.setProfilePercentage(can.getCandidateProfilePercentage());
-					}
-					Integer submittedJobCount = requirementSubmissionService.getRequirementSubmissionCountByCandiateIdAndOrgLocationId(candidateIndex.getCandidateId(), loginOrgLocation.getId());
-					candidateIndex.setSubmittedJobsCount(submittedJobCount);
+					}*/
 					candidatesList.add(candidateIndex);
 				}
 				response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
@@ -828,6 +831,20 @@ public class CandidateListRestController {
 		}
 
 		return QueryBuilderList;
+	}
+	
+	
+	
+	@RequestMapping(value = "/getCandidateSubmittedRequirementCount" , method = RequestMethod.GET)
+	 public @ResponseBody CandidateDTO getCandidateSubmittedRequirementCount(@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
+			
+		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		     CandidateDTO candidateDTO = new CandidateDTO();
+		     Integer submittedJobCount = requirementSubmissionService.getRequirementSubmissionCountByCandiateIdAndOrgLocationId(candidateId, orgLocation.getId());
+		     Integer profilePercentage = candidateService.getCandidateProfilePercentageByCandidateId(candidateId);
+		     candidateDTO.setSubmittedJobsCount(submittedJobCount);
+		     candidateDTO.setProfilePercentage(profilePercentage);
+			 return candidateDTO;
 	}
 
 	@PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
@@ -2308,6 +2325,62 @@ public class CandidateListRestController {
 			return candidateDTOList;
 			
 		}
+	@PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
+	@RequestMapping(value = "/getGlobalDataRecommendations", method = RequestMethod.POST)
+	public @ResponseBody ResponseList<CandidateMarketPlaceDTO> getGlobalDataRecommendations(CandidateMarketPlaceDTO candidateMarketPlaceDTO, @RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request) throws Exception {
+
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		String[] tableColumns = { "firstName", "designation", "skillsName", "currentRate", "expectedRate", "experienceYears", "location", "candidateProfilePercentage", "marketPrice"};
+		
+		int sortColumnIndex = 1; // by default sorting using updated date
+		String sortColumnOrder = "desc"; // by default descending order
+		if (candidateMarketPlaceDTO.getOrder() != null && !candidateMarketPlaceDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(candidateMarketPlaceDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = candidateMarketPlaceDTO.getOrder().get(0).get("dir");
+		}
+		candidateMarketPlaceDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		candidateMarketPlaceDTO.setSortOrder(sortColumnOrder);
+		ResponseList<CandidateMarketPlaceDTO> candidateDTOList = candidateService.getGlobalDataRecommendations(candidateMarketPlaceDTO, orgLocations, searchValue);
+		return candidateDTOList;
+		
+	}
 	
+	@RequestMapping(value = "/getPurchaseCandidatesExportList")
+	public void getPurchaseCandidatesExportList(@RequestParam(value = "exportType", required = false) String exportType,
+			HttpServletRequest request,HttpServletResponse response) throws Exception {
+		OrgLocations OrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<MarketplacePurchaseOrder> 	purchaseCandidatesList = candidateService.getPurchaseCandidateListByOrglocation(OrgLocation.getId());
+
+		File file = null;
+		if (!"pdf".equalsIgnoreCase(exportType)) 
+		{
+     		file = candidateService.getPurchaseCandidateExcelFile(purchaseCandidatesList ,OrgLocation.getId());
+		} 
+		else 
+		{
+			file = candidateService.getPurchaseCandidatePdf(purchaseCandidatesList,OrgLocation.getId());
+		}
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+
+		StringBuilder filename = new StringBuilder();
+	
+		response.setHeader("Content-Disposition",
+				filename.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+		if (file != null) {
+			file.delete();
+		}
+	}
+
 
 }

@@ -279,13 +279,14 @@ function clearAlldata(){
 	$('#requirementTitle').val('').trigger('chosen:updated');
 	$('#jobId').val('').trigger('chosen:updated');
 } */
+var reqTable = "";
 function jpagination(url,sourceleadUrl){ 
 	var selectedColumns = "";
 	$("#jobCustomColumns").each(function () {
 		
 	});
 	var colIndex = 0;
-    $('#requirementPagination').DataTable( { 
+	reqTable =  $('#requirementPagination').DataTable( { 
    		"processing": true,
        "serverSide": true,
        "searching": false,
@@ -329,6 +330,7 @@ function jpagination(url,sourceleadUrl){
 	   	   	  	"targets": colIndex++,
 	   		  	"data": "requirementId",
 	   		  	"sortable": true,
+	   		    "visible": false,
 	   		  	"render": function(data, type, opt, meta) {
 	   		  		 var result = "";
 	   		  		 result = result +"<td>";
@@ -923,7 +925,8 @@ function jpagination(url,sourceleadUrl){
 			         				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
 			         					result = result +"<option value='CANCEL'>CANCEL</option>";
 			         				'</sec:authorize>';
-			         			}else if(opt.requirementSubmissionStatus == "CLOSED"){
+			         			}
+			                   else if(opt.requirementSubmissionStatus == "CLOSED"){
 			         				result = result +"<option disabled selected >CLOSED</option>";
 			         				result = result +"<option value='OPEN'>OPEN</option>";
 			         			}
@@ -980,20 +983,19 @@ function jpagination(url,sourceleadUrl){
 			         				'</sec:authorize>';
 			         				
 			         			}else if(opt.requirementSubmissionStatus == "ONHOLD"){
+			         				
 			         				if(opt.requirementSubmissionPreviousStatus == "OPEN" || opt.requirementSubmissionPreviousStatus == null || opt.requirementSubmissionPreviousStatus == '' || opt.requirementSubmissionPreviousStatus == 'undefined' ){
 			         					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 			         					result = result +"<option value='OPEN'>OPEN</option>";
-			         					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
+ 			         					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
 			         						result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
 			         					'</sec:authorize>';
 			         					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
 			         						result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
 			         					'</sec:authorize>';
-			         					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-			         						result = result +"<option value='CANCEL'>CANCEL</option>";
-			         					'</sec:authorize>';
+			         					 
 			         				}
-			         				if(opt.requirementSubmissionPreviousStatus == "DRAFT"){
+			         					if(opt.requirementSubmissionPreviousStatus == "DRAFT"){
 			         					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 			         					result = result +"<option value='DRAFT'>DRAFT</option>";
 			         					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';

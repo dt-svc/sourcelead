@@ -20,6 +20,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadTaxSubmissionMasterDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
@@ -47,11 +48,12 @@ public class IndianPayrollController {
 	private CommonUtil commonUtil;
 
 	@RequestMapping(value = "/myPayrollInd")
-	public ModelAndView paySlips(HttpServletRequest request) {
+	public ModelAndView paySlips(HttpServletRequest request, @RequestParam(defaultValue = "") String redirectionTab) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			commonUtil.highLightMenu(Constants.MYPAYROLL, request);
 			modelAndView.addObject("activeTaxTab", "myPayrollInd");
+			modelAndView.addObject("redirectionTab", redirectionTab);
 			modelAndView.setViewName("payroll_india/payroll/myPayrollInd");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -59,7 +61,6 @@ public class IndianPayrollController {
 		}
 		return modelAndView;
 	}
-
 	
 	/*@RequestMapping(value = "/forms")
 	public ModelAndView forms(HttpServletRequest request) {

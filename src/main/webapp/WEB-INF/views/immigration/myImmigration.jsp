@@ -12,7 +12,7 @@
 <script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
 <!-- <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script> -->
 <!-- <script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script> -->
-<%-- <c:set var ="myImmigrationPage" value = "Y" scope="session"/> --%>
+ <c:set var ="myImmigrationPage" value = "Y" scope="session"/> 
 <title>Insert title here</title>
     <section class="content-wraper">
    
@@ -22,6 +22,7 @@
 	<div class="clearfix"></div>
     </section>    
     
+    <div class="project_wrap">
     <div class="immigrationWrap noPad">
 		<div class="immigraInnWrap">
 		
@@ -117,6 +118,7 @@
 			 
     </div>
   </div>
+   </div>
   </section>
   <!-- Content Area -->
 

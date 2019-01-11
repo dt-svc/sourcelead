@@ -38,8 +38,10 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
+import com.bis.sourcelead.dto.ProbationDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SalaryDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.Employees;
@@ -1801,7 +1803,6 @@ public class UserDaoImpl implements UserDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
 		
-		
 /*		 String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
 	     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).list();
 */	     
@@ -2256,7 +2257,7 @@ public class UserDaoImpl implements UserDao {
 						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}
 					userDTO = associatesListMap.get(reportDTO.getPrimaryUserId());
-					if(userDTO != null && !primaryUserjobIds.contains(reportDTO.getRequirementId()) && reportDTO.getAssignedUserStatus() ==null ){
+					if(userDTO != null && !primaryUserjobIds.contains(reportDTO.getRequirementId())){
 							primaryUserjobIds.add(reportDTO.getRequirementId());
 							/*BigDecimal bd = new BigDecimal(primaryUserjobIds.size());
 							if(userDTO.getUserRequirementsCount() != null) {
@@ -2275,12 +2276,28 @@ public class UserDaoImpl implements UserDao {
 						}
 						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}*/
-						
-					if(reportDTO.getAssignedUserId() != null && reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")) {
+					
+					//for reference
+					/*if(reportDTO.getAssignedUserId() != null && reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")
+							&& (reportDTO.getPrimaryUserId().longValue() !=reportDTO.getAssignedUserId().longValue() 
+							&& reportDTO.getManagerUserId().longValue() !=reportDTO.getAssignedUserId().longValue())) {
 						userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
 						if(userDTO != null){
 								jobIds.add(reportDTO.getRequirementId());
+								System.out.println("assign");
 								userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
+						}
+					}*/
+					
+					if(reportDTO.getAssignedUserId() != null){
+						if(reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")
+								&& ((reportDTO.getPrimaryUserId() != null &&  reportDTO.getPrimaryUserId().longValue() !=reportDTO.getAssignedUserId().longValue()) ||(reportDTO.getPrimaryUserId() == null)) 
+								&& (reportDTO.getManagerUserId() != null && reportDTO.getManagerUserId().longValue() !=reportDTO.getAssignedUserId().longValue())) {
+							userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
+							if(userDTO != null){
+									jobIds.add(reportDTO.getRequirementId());
+									userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
+							}
 						}
 					}
 					
@@ -2311,6 +2328,8 @@ public class UserDaoImpl implements UserDao {
 						userDTO.setUserInterviewedApplicantsCount(userDTO.getUserInterviewedApplicantsCount().add(recuiterReportView.getApplicantInterviewCount()));
 						userDTO.setUserApplicantsBackOutCount(userDTO.getUserApplicantsBackOutCount().add(recuiterReportView.getApplicantBackOutCount()));
 						userDTO.setUserApplicantsJoinedCount(userDTO.getUserApplicantsJoinedCount().add(recuiterReportView.getApplicantJoinedCount()));
+						userDTO.setUserOnHoldApplicantsCount(userDTO.getUserOnHoldApplicantsCount().add(recuiterReportView.getUserOnHoldApplicantsCount()));
+						userDTO.setUserNoResponseApplicantsCount(userDTO.getUserNoResponseApplicantsCount().add(recuiterReportView.getUserNoResponseApplicantsCount()));
 					}
 					
 				}
@@ -2422,11 +2441,17 @@ public class UserDaoImpl implements UserDao {
 			.append("OR e.EMPLOYMENT_TYPE like '%" + searchValue + "%' ) ");
 
 		}
-			
+			String query="";
+		if("yes".equalsIgnoreCase(topleave)) {
+			 query ="select distinct CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) AS empName ,e.EMPLOYMENT_TYPE AS empType,u.ID AS userId,ur.USER_TYPE AS role from USER u,USER_ROLE ur,EMPLOYEE e, USER_LEAVE ul where u.ID=ur.USER_ID and u.ID = ul.USER_ID and u.ID=e.USER_ID and ur.ORG_LOCATIONS_ID=e.ORG_LOCATIONS_ID and ur.USER_STATE = 'ACTIVE' and ur.ORG_LOCATIONS_ID =:orgLocationId "+subQuery8.toString()+subQuery4+subQuery3+subQuery5+subQuery6+subQuery7;
+		}
+		else {
+			 query ="select distinct CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) AS empName ,e.EMPLOYMENT_TYPE AS empType,u.ID AS userId,ur.USER_TYPE AS role from USER u,USER_ROLE ur,EMPLOYEE e where u.ID=ur.USER_ID and u.ID=e.USER_ID and ur.ORG_LOCATIONS_ID=e.ORG_LOCATIONS_ID and ur.USER_STATE = 'ACTIVE' and ur.ORG_LOCATIONS_ID =:orgLocationId "+subQuery8.toString()+subQuery4+subQuery3+subQuery5+subQuery6+subQuery7;
+		}
 					
 		
 	
-		String query ="select distinct CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) AS empName ,e.EMPLOYMENT_TYPE AS empType,u.ID AS userId,ur.USER_TYPE AS role from USER u,USER_ROLE ur,EMPLOYEE e, USER_LEAVE ul where u.ID=ur.USER_ID and u.ID = ul.USER_ID and u.ID=e.USER_ID and ur.ORG_LOCATIONS_ID=e.ORG_LOCATIONS_ID and ur.USER_STATE = 'ACTIVE' and ur.ORG_LOCATIONS_ID =:orgLocationId "+subQuery8.toString()+subQuery4+subQuery3+subQuery5+subQuery6+subQuery7;
+//		String query ="select distinct CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) AS empName ,e.EMPLOYMENT_TYPE AS empType,u.ID AS userId,ur.USER_TYPE AS role from USER u,USER_ROLE ur,EMPLOYEE e, USER_LEAVE ul where u.ID=ur.USER_ID and u.ID = ul.USER_ID and u.ID=e.USER_ID and ur.ORG_LOCATIONS_ID=e.ORG_LOCATIONS_ID and ur.USER_STATE = 'ACTIVE' and ur.ORG_LOCATIONS_ID =:orgLocationId "+subQuery8.toString()+subQuery4+subQuery3+subQuery5+subQuery6+subQuery7;
 		//Query queryString = (Query) session.createSQLQuery(query).setLong("orgLocationId",orgLocationId).setResultTransformer(Transformers.aliasToBean(LeaveBalanceReportDTO.class)).list();
 		Query queryString = session.createSQLQuery(query);
 		queryString.setParameter("orgLocationId", orgLocationId);
@@ -2549,7 +2574,7 @@ String sortingQry ="";
 				applicantsJoinedReportDTO.getOrgTeams().isEmpty()) { 
 			groupSubQuery=" group by u.ID,req.ID";
 		}
-		if(StringUtils.isNotBlank(applicantsJoinedReportDTO.getSortColumn())) {
+		/*if(StringUtils.isNotBlank(applicantsJoinedReportDTO.getSortColumn())) {
 			sortingQry = " order by "+ applicantsJoinedReportDTO.getSortColumn() +" "+applicantsJoinedReportDTO.getSortOrder();
 		}
 		query = "SELECT" + " u.ID as userId," + "req.ID as requirementID,"
@@ -2570,6 +2595,17 @@ String sortingQry ="";
 				+ "FROM USER u, USER_ROLE ur, REQUIREMENT_SUBMISSION reqSub, REQUIREMENT req where ur.ORG_LOCATIONS_ID = req.ORG_LOCATION_ID and ur.USER_ID = u.ID and u.USER_CODE = reqSub.CREATED_BY and req.ORG_LOCATION_ID= "
 				+ orgLocationId + "  and reqSub.REQUIREMENT_ID = req.ID " + dateQury
 				+ query1
+				+groupSubQuery;*/
+		
+		query = "SELECT" + " u.ID as userId," + "req.ID as requirementID,"
+				+ "req.ORG_LOCATION_ID as orglocationId,"
+				+ "reqSub.CREATED_DATE as reqSubCreatedDate," + "req.ORG_RELATION_ID as clientId,"
+				+ "reqSub.CREATED_BY as createdBy, "
+			
+				+ "(SELECT  CONCAT(FIRST_NAME,LAST_NAME) AS EMPLOYEE_NAME) AS name "
+				+ "FROM USER u, USER_ROLE ur, REQUIREMENT_SUBMISSION reqSub, REQUIREMENT req where ur.ORG_LOCATIONS_ID = req.ORG_LOCATION_ID and ur.USER_ID = u.ID and u.USER_CODE = reqSub.CREATED_BY and req.ORG_LOCATION_ID= "
+				+ orgLocationId + "  and reqSub.REQUIREMENT_ID = req.ID " + dateQury
+				+ query1+" group by u.ID "
 				+groupSubQuery;
 		/*
 		 * if (applicantsJoinedReportDTO.getOrgTeams() != null &&
@@ -2586,7 +2622,7 @@ String sortingQry ="";
 		
 		if (applicantsJoinedReportDTO.getOrgTeams() != null &&
 				 !applicantsJoinedReportDTO.getOrgTeams().isEmpty()) { 
-			teamSubQuery = " and u.ID IN (SELECT tm.MEMBER_USER_ID FROM TEAM_MEMBERS tm where tm.MEMBER_USER_ID = u.ID and tm.TEAM_ID IN(:teamsList)) group by u.ID,req.ID"; 
+			teamSubQuery = " and u.ID IN (SELECT tm.MEMBER_USER_ID FROM TEAM_MEMBERS tm where tm.MEMBER_USER_ID = u.ID and tm.TEAM_ID IN(:teamsList) group by u.ID,req.ID)"; 
 				 }
 		
        
@@ -2688,6 +2724,69 @@ String sortingQry ="";
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	@Transactional
+	public List<ProbationDTO> getAllProbationUsersListForResourceManager(Long resourcemanagerId, Date futureDate,Long orgLocationId) {
+		
+		List<ProbationDTO> usersList = null;
+		try {
+			
+			java.sql.Date startDate = new java.sql.Date(futureDate.getTime()); 
+			
+			Session session = this.sessionFactory.getCurrentSession();
+
+			String query = "SELECT " + 
+					"(select u.FIRST_NAME from USER u where u.ID = urole.USER_ID) as associateFirstName," + 
+					"(select u.LAST_NAME from USER u where u.ID = urole.USER_ID) as associateLastName," + 
+					"(select dep.DEPARTMENT_NAME from DEPARTMENT dep where dep.ID = emp.DEPARTMENT_ID) as departmentName, " + 
+					"urole.USER_TYPE as associateRole," + 
+					"emp.HIRE_DATE as hireDate," + 
+					"emp.PROBATION_PERIOD as probationPeriod," + 
+					"emp.CONFIRMATION_DATE as confirmationDate," + 
+					"urole.RESOURCE_MANAGER_ID as resourceManagerId " + 
+					" from EMPLOYEE emp, USER_ROLE urole where emp.USER_ID = urole.USER_ID and emp.ORG_LOCATIONS_ID = urole.ORG_LOCATIONS_ID and " +
+					" urole.RESOURCE_MANAGER_ID = :resourcemanagerId and emp.CONFIRMATION_DATE =:futureDate and urole.ORG_LOCATIONS_ID =:orgLocationId" ; 
+			
+			Query queryObj = session.createSQLQuery(query);
+			queryObj.setLong("resourcemanagerId", resourcemanagerId)
+			.setLong("orgLocationId", orgLocationId)
+			.setDate("futureDate", startDate);
+			queryObj.setResultTransformer(Transformers.aliasToBean(ProbationDTO.class));
+			
+			usersList = queryObj.list();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	return usersList;
+	
+	}
+
+	@Override
+	@Transactional
+	public User validateSSNDuplicate(String ssnNumber, Long locationId,String userId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		User user = null;
+		String subQry = " and user.id <> :userId";
+		if(StringUtils.isNotBlank(userId)) {
+			String query = "from User user where user.ssn = :ssnNumber "+subQry;
+			List<User> list = session.createQuery(query).setString("ssnNumber", ssnNumber.trim()).setLong("userId", Long.parseLong(userId)).list();
+			if(list != null && list.size() >0) {
+				user = list.get(0);
+			}
+		}else {
+			String query = "from User user where user.ssn = :ssnNumber ";
+			List<User> list = session.createQuery(query).setString("ssnNumber", ssnNumber.trim()).list();
+			if(list != null && list.size() >0) {
+				user = list.get(0);
+			}
+		}
+		
+		return user;
 	}
 
 	

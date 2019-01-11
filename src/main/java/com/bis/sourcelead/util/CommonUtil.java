@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -92,6 +94,7 @@ import com.bis.sourcelead.entity.OrgLicenseSubscriptionHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.PayrollPaySlipInd;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -122,6 +125,7 @@ import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
 import com.bis.sourcelead.service.ExpenseProjectApproverHierarchyService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.PayrollPaySlipIndService;
 import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
@@ -268,6 +272,8 @@ public class CommonUtil {
 	@Autowired
 	ExpenseProjectApproverHierarchyService expenseProjectApproverHierarchyService;
 	
+	@Autowired
+	PayrollPaySlipIndService payrollPaySlipIndService;
 	/**
 	 * This method is used to convert JSON String to HashMap<Key,Value>
 	 * @author: Naresh Bolisetty
@@ -2677,7 +2683,7 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 				requirementSubmission.setJoinedDate(null);
 			}
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 		}
 		return "success";
 	}
@@ -2757,6 +2763,111 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 		}
 		// System.out.println(" before file return list size ");
 		return fileInfoList;
+	}
+	
+	public Date calculateBeforeDate(Date date, int before) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.DATE, -before);
+		return cal.getTime();
+	}
+	
+	 public static String convertToIndianCurrency(BigDecimal num) {
+	        long number = num.longValue();
+	        long no = num.longValue();
+	        int decimal = (int) (num.remainder(BigDecimal.ONE).doubleValue() * 100);
+	        int digits_length = String.valueOf(no).length();
+	        int i = 0;
+	        ArrayList<String> str = new ArrayList<>();
+	        HashMap<Integer, String> words = new HashMap<>();
+	        words.put(0, "");
+	        words.put(1, "One");
+	        words.put(2, "Two");
+	        words.put(3, "Three");
+	        words.put(4, "Four");
+	        words.put(5, "Five");
+	        words.put(6, "Six");
+	        words.put(7, "Seven");
+	        words.put(8, "Eight");
+	        words.put(9, "Nine");
+	        words.put(10, "Ten");
+	        words.put(11, "Eleven");
+	        words.put(12, "Twelve");
+	        words.put(13, "Thirteen");
+	        words.put(14, "Fourteen");
+	        words.put(15, "Fifteen");
+	        words.put(16, "Sixteen");
+	        words.put(17, "Seventeen");
+	        words.put(18, "Eighteen");
+	        words.put(19, "Nineteen");
+	        words.put(20, "Twenty");
+	        words.put(30, "Thirty");
+	        words.put(40, "Forty");
+	        words.put(50, "Fifty");
+	        words.put(60, "Sixty");
+	        words.put(70, "Seventy");
+	        words.put(80, "Eighty");
+	        words.put(90, "Ninety");
+	        String digits[] = {"", "Hundred", "Thousand", "Lakh", "Crore"};
+	        while (i < digits_length) {
+	            int divider = (i == 2) ? 10 : 100;
+	            number = no % divider;
+	            no = no / divider;
+	            i += divider == 10 ? 1 : 2;
+	            if (number > 0) {
+	                int counter = str.size();
+	                String plural = (counter > 0 && number > 9) ? "s" : "";
+	                String tmp = (number < 21) ? words.get(Integer.valueOf((int) number)) + " " + digits[counter] + plural : words.get(Integer.valueOf((int) Math.floor(number / 10) * 10)) + " " + words.get(Integer.valueOf((int) (number % 10))) + " " + digits[counter] + plural;                
+	                str.add(tmp);
+	            } else {
+	                str.add("");
+	            }
+	        }
+	 
+	        Collections.reverse(str);
+	        String Rupees = String.join(" ", str).trim();
+	 
+	        String paise = (decimal) > 0 ? " and " + words.get(Integer.valueOf((int) (decimal - decimal % 10))) + " " + words.get(Integer.valueOf((int) (decimal % 10))) +"paise": "";
+	        return Rupees + " rupees"+ paise + " only";
+	    }
+
+	public void saveDefaultPayslipTemplate(OrgLocations orgLocations, User user) throws Exception {
+		 PayrollPaySlipInd	 pps = new PayrollPaySlipInd();
+		 pps.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		 pps.setIsActive(Constants.YES);
+		 pps.setDeletePermission(Constants.NO);
+	
+	     pps.setPaySlipName("Default Payslip");
+	     pps.setPaySlipDescription("Default Payslip");
+	
+    	//Company releated code
+		pps.setCompanyName(Constants.YES);
+		pps.setCompanyAddress(Constants.YES);
+		pps.setCompanyLogo(Constants.YES);
+	
+	    //Employee Reated code
+		pps.setEmployeeId(Constants.YES);
+		pps.setEmployeeType(Constants.YES);
+		pps.setEmployeeUanNumber(Constants.YES);
+		pps.setEmployeePfNumber(Constants.YES);
+		pps.setEmployeeBankDetails(Constants.YES);
+		pps.setEmployeeDesignation(Constants.YES);
+		pps.setEmployeeName(Constants.YES);
+		pps.setEmployeeContactDetails(Constants.YES);
+		pps.setEmployeeJoinDate(Constants.YES);
+		pps.setEmployeeLocation(Constants.YES);
+		pps.setEmployeePanNumber(Constants.YES);
+		
+	
+	    //Leave Related code
+		pps.setLeaveAttended(Constants.YES);
+		pps.setLeaveLeaves(Constants.YES);
+		
+		pps.setOrgLocationId(orgLocations);
+		pps.setStatus(Constants.RECORD_ACTIVE);
+		pps.setCreatedDate(new Date());
+		pps.setCreatedBy(user);
+		payrollPaySlipIndService.savePayrollPaySlipInd(pps);
 	}
 }
 

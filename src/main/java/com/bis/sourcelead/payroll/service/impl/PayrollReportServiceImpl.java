@@ -2,6 +2,8 @@ package com.bis.sourcelead.payroll.service.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,7 +103,14 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 					dto.setTaxes(payroll.getTaxes());
 					dto.setNetPay(payroll.getNetPay());
 					dto.setGrossPay(payroll.getGrossPay());
-					YTDPayrollDTO ytd = payrollUtil.getEmployeeYTDPayroll(payroll.getCandidate(), orgLocation, "APPROVED");
+					
+					//passing frequency year to calculate ytd
+					Date date = payroll.getPaysheetFrequency().getFrequencyStartDate();
+					Calendar c = Calendar.getInstance();
+					c.setTime(date);
+					int year = c.get(Calendar.YEAR);
+					
+					YTDPayrollDTO ytd = payrollUtil.getEmployeeYTDPayroll(payroll.getCandidate(), orgLocation, "APPROVED",year);
 					dto.setYtdNet(ytd.getYtdNet());
 					list.add(dto);
 				}
@@ -127,7 +136,14 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 //					Candidate candidate = candidateService.getCandidateByCandidateId(data.getCandidateId().longValue());
 					Candidate candidate = new Candidate();
 					candidate.setId(data.getCandidateId().longValue());
-					YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(candidate, orgLocation, Constants.APPROVED);
+					
+					//passing frequency year to calculate ytd
+					Date date = data.getFreqStartDate();
+					Calendar c = Calendar.getInstance();
+					c.setTime(date);
+					int year = c.get(Calendar.YEAR);
+					
+					YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(candidate, orgLocation, Constants.APPROVED,year);
 					resDTO.setYtdNet(ytdDTO.getYtdNet());
 					resDTO.setEmpId(data.getEmpId());
 					
@@ -141,6 +157,7 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 					resDTO.setDepartmentId(data.getDepartmentId());
 					resDTO.setNetPay(data.getNetPay());
 					resDTO.setTotalChecks(data.getTotalChecks());
+					resDTO.setEmployeeId(data.getEmployeeId());
 					list.add(resDTO);
 					res.setData(list);
 				} catch (Exception e) {
@@ -208,8 +225,8 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 		PayrollComparisonDTO compare = new PayrollComparisonDTO();
 		try {
 			String [] compareDates = new String[2];
-			compareDates[0] = payrollComparisonDTO.getCompareDate1();
-			compareDates[1] = payrollComparisonDTO.getCompareDate2();
+			compareDates[0] = payrollComparisonDTO.getPayPeriod();
+			compareDates[1] = payrollComparisonDTO.getPayPeriod2();
 			int i=0;
 			for(String freqDates : compareDates) {
 				CompareDataDTO compareData1 = new CompareDataDTO();

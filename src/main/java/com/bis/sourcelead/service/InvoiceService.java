@@ -10,10 +10,12 @@ import com.bis.sourcelead.beans.BillingReportDTO;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
+import com.bis.sourcelead.dto.CustomInvoiceTemplateDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoiceTimelineDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SearchDTO;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.CreditDebitLineItems;
 import com.bis.sourcelead.entity.CreditDebitNote;
@@ -21,6 +23,7 @@ import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceAmount;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
 
@@ -40,7 +43,7 @@ public interface InvoiceService {
 	
 	List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId,String contractType)throws Exception;
 
-	Invoice saveInvoice(User user, OrgLocations orgLocation, String saveType,String invoiceType, Org org, String currencyCode, InvoiceDTO invoiceDTO)throws Exception;
+	Invoice saveInvoice(User user, OrgLocations orgLocation, String saveType,String invoiceType, Org org, String currencyCode, InvoiceDTO invoiceDTO, String defaultFont)throws Exception;
 	
 	CreditDebitNote saveCreditDebitNote(User user, OrgLocations orgLocation, String saveType,String noteType, CreditDebitNoteDTO creditDebitNoteDTO,String currencyCode)throws Exception;
 	
@@ -75,6 +78,8 @@ public interface InvoiceService {
 
 	Integer getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType, User user, String contractType,String globalUser)throws Exception;
 
+	Integer getAutomaticInvoiceForJobClosure(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType, User user,String contractType,String globalUser)throws Exception;
+
 	List<Invoice> getInvoiceByOrgLocationId(Long idorgLocationId, Date startDateUTC, Date endDateUTC, String invoiceTYpe)throws Exception;
 
 	List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocationId, String invoiceType);
@@ -101,7 +106,7 @@ public interface InvoiceService {
 	
 	boolean reactiveCreditDebitNote(String noteUUID,String noteType,User user,OrgLocations orgLocations)throws Exception;
 
-	Invoice saveExpenseInvoice(InvoiceDTO invoiceDTO, User user, OrgLocations orgLocation, String saveType,String invoiceType, Org org, String currencyCode, String invoiceCategory)throws Exception;
+	Invoice saveExpenseInvoice(InvoiceDTO invoiceDTO, User user, OrgLocations orgLocation, String saveType,String invoiceType, Org org, String currencyCode, String invoiceCategory, String defaultFont)throws Exception;
 
 	void updateExpensesForinvoice(Invoice invoice, String invoiceType)throws Exception;
 
@@ -118,5 +123,18 @@ public interface InvoiceService {
 	CreditDebitLineItems getCreditDebitLineItemById(Long id);
 	
 	void deleteCreditDebitLineItem(CreditDebitLineItems creditDebitLineItems);
+	
+	Integer generateInvoiceJobClosureFromDashboard(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType, User user,String contractType,Long orgRlelationId,Long submissionId,Long candidateId)throws Exception;
+
+
+	Response<String> saveCustomInvoiceTemplate(CustomInvoiceTemplateDTO customInvoiceTemplateDTO, OrgRelations orgRelations, OrgLocations orgLocations, User loggedInUser, OrgLocations loggedInOrgLocations);
+
+	public ResponseList<CustomInvoiceTemplateDTO> getCustomInvoiceTemplateListByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId, SearchDTO searchDTO, OrgLocations loggedInOrgLocations);
+	
+	public CustomInvoiceTemplateDTO getCustomInvoiceTemplateListByUUIDAndOrgRelationIdAndOrgLocationId(String uuid, Long orgRelationId, Long orgLocationId, OrgLocations loggedInOrgLocations);
+
+	public boolean changeCustomInvoiceTemplateStatus(Long templateId, int status, User user, OrgLocations orgLocations);
+	
+	public boolean deleteCustomInvoiceTemplate(Long templateId);
 
 }

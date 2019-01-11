@@ -85,6 +85,10 @@ private static final long serialVersionUID = 1L;
 	@Transient
 	private Long loginUserId;
     
+    @JsonProperty
+	@Transient
+	private String fileUrl;
+    
 	public Long getId() {
 		return id;
 	}
@@ -200,5 +204,13 @@ private static final long serialVersionUID = 1L;
 
 	public void setTaskStatus(LookUpData taskStatus) {
 		this.taskStatus = taskStatus;
+	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
 	}
 }

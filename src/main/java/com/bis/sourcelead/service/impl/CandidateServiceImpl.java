@@ -9,6 +9,8 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,26 +42,34 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateCertificationsDao;
 import com.bis.sourcelead.dao.CandidateDao;
+import com.bis.sourcelead.dao.CandidateEducationDao;
+import com.bis.sourcelead.dao.CandidateEmployersDao;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
 import com.bis.sourcelead.dao.EmployeesDao;
+import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.dao.RolesDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AssociateDTO;
+import com.bis.sourcelead.dto.CandidateCertificationDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CandidateEducationDTO;
+import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
-import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
-import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
+import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
+import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.CandidateCustomFieldData;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
@@ -68,12 +78,16 @@ import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
+import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
+import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateTimelineActivity;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
+import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -118,6 +132,8 @@ import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.bis.sourcelead.web.RegistrationController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import edu.emory.mathcs.backport.java.util.Arrays;
+
 /**
  * 
  * @author prasad K
@@ -137,6 +153,9 @@ public class CandidateServiceImpl implements CandidateService {
 	@Autowired
 	UserDao userDao;
 
+	@Autowired
+	OrgLocationsDao orgLocationsDao;
+	
 	@Autowired
 	private CommonUtil commonUtil;
 	
@@ -239,7 +258,15 @@ public class CandidateServiceImpl implements CandidateService {
     
     @Autowired
     CandidateTimelineActivityService candidateTimelineActivityService;
+    
+    @Autowired
+    CandidateCertificationsDao candidateCertificationsDao;
+    
+    @Autowired
+    CandidateEmployersDao candidateEmployersDao;
 
+    @Autowired
+    CandidateEducationDao candidateEducationDao;
     
        
     protected boolean isNullOrEmpty(String str) {
@@ -559,6 +586,7 @@ public class CandidateServiceImpl implements CandidateService {
 		}
 		return candidateList;
 	}
+	
 	
 	/**
 	 * to get Candidate By CandidateId
@@ -1394,7 +1422,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setEmail(candidateUser.getEmail());
 			candidate.setStatus(Constants.RECORD_ACTIVE);
 			candidate.setCreatedBy(loginUser.getUserCode());
-			candidate.setProfilePercentage(Constants.MIN_PROFILE_PERCENETAGE);
+			candidate.setCandidateProfilePercentage(Constants.MIN_PROFILE_PERCENETAGE);
 			
 			if(StringUtils.isNotBlank(addUserDTO.getRate())){
 				candidate.setCurrentRate(addUserDTO.getRate());
@@ -1465,6 +1493,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		if(candidateUser.getDateOfBirth() != null){
 			candidate.setDateOfBirth(commonUtil.orgLocationCommonDate(candidateUser.getDateOfBirth(),orgLocations));
 			}
+		if(StringUtils.isNotBlank(candidateDTO.getPanNumber())){
+			candidate.setPanNumber(candidateDTO.getPanNumber());
+		}else{
+			candidate.setPanNumber(null);
+		}
 		if(StringUtils.isNotBlank(candidateUser.getMaritalStatus())) {
 			candidate.setMaritalStatus(candidateUser.getMaritalStatus());
 		}
@@ -1487,11 +1520,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	    	candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
 	    	candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
 	    	
-	    	
-	    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
-	    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
-	    	if(stateCode != null) {
-	    		candidate.setResidenceStateCode(stateCode);
+	    	if(StringUtils.isNotBlank(addUserDTO.getResidenceState()) && StringUtils.isNotBlank(addUserDTO.getResidenceCountry())) {
+	    		Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
+		    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
+		    	if(stateCode != null) {
+		    		candidate.setResidenceStateCode(stateCode);
+		    	}
 	    	}
 	    	
 	    }
@@ -2668,32 +2702,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			marketPlace.setCandidateId(candidate);
 			marketPlace.setCandidateUUID(candidate.getCandidateUUID());
 			marketPlace.setOrgLocationId(candidate.getOrgLocationId());
-			marketPlace.setFullName(candidate.getFullName());
-			marketPlace.setGender(candidate.getGender());
-			marketPlace.setEmail(candidate.getEmail());
-			marketPlace.setAlternateEmail(candidate.getAlternateEmail());
-			marketPlace.setMobilePhone(candidate.getMobilePhone());
-			marketPlace.setAlternateMobilePhone(candidate.getAlternateMobilePhone());
-			marketPlace.setDesignation(candidate.getDesignation());
-			marketPlace.setEmploymentType(candidate.getDesignationType());
-			marketPlace.setLocation(candidate.getLocation());
-			marketPlace.setProfilePercentage(candidate.getCandidateProfilePercentage());
-			marketPlace.setSkillsName(candidate.getSkillsName());
-			marketPlace.setExperienceYears(candidate.getExperienceYears());
-			marketPlace.setExperienceMonths(candidate.getExperienceMonths());
-			marketPlace.setCurrentRate(candidate.getCurrentRate());
-			marketPlace.setCurrentRateType(candidate.getCurrentRateType());
-			marketPlace.setCurrentRateCurrency(candidate.getCurrentRateCurrency());
-			marketPlace.setExpectedRate(candidate.getExpectedRate());
-			marketPlace.setExpectedRateType(candidate.getRateType());
-			marketPlace.setExpectedRateCurrencey(candidate.getExpectedRateCurrencey());
-			marketPlace.setNoticePeriod(candidate.getNoticePeriod());
 			marketPlace.setMarketPrice(null);
 			marketPlace.setMarketRateCurrencey(null);
-			marketPlace.setSummary(candidate.getSummary());
 			marketPlace.setCandidateMarketStatus(Constants.DRAFT);
-			marketPlace.setNationality(candidate.getNationality());
-			marketPlace.setMaritalStatus(candidate.getMaritalStatus());
 			marketPlace.setStatus(Constants.CANDIDATE_ACTIVE);
 			marketPlace.setCreatedDate(new Date());
 			marketPlace.setCreatedBy(user);
@@ -2733,32 +2744,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			marketPlace.setMarketplaceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			marketPlace.setCandidateUUID(candidate.getCandidateUUID());
 			marketPlace.setOrgLocationId(candidate.getOrgLocationId());
-			marketPlace.setFullName(candidate.getFullName());
-			marketPlace.setGender(candidate.getGender());
-			marketPlace.setEmail(candidate.getEmail());
-			marketPlace.setAlternateEmail(candidate.getAlternateEmail());
-			marketPlace.setMobilePhone(candidate.getMobilePhone());
-			marketPlace.setAlternateMobilePhone(candidate.getAlternateMobilePhone());
-			marketPlace.setDesignation(candidate.getDesignation());
-			marketPlace.setEmploymentType(candidate.getDesignationType());
-			marketPlace.setLocation(candidate.getLocation());
-			marketPlace.setProfilePercentage(candidate.getCandidateProfilePercentage());
-			marketPlace.setSkillsName(candidate.getSkillsName());
-			marketPlace.setExperienceYears(candidate.getExperienceYears());
-			marketPlace.setExperienceMonths(candidate.getExperienceMonths());
-			marketPlace.setCurrentRate(candidate.getCurrentRate());
-			marketPlace.setCurrentRateType(candidate.getCurrentRateType());
-			marketPlace.setCurrentRateCurrency(candidate.getCurrentRateCurrency());
-			marketPlace.setExpectedRate(candidate.getExpectedRate());
-			marketPlace.setExpectedRateType(candidate.getRateType());
-			marketPlace.setExpectedRateCurrencey(candidate.getExpectedRateCurrencey());
-			marketPlace.setNoticePeriod(candidate.getNoticePeriod());
-			marketPlace.setNationality(candidate.getNationality());
-			marketPlace.setMaritalStatus(candidate.getMaritalStatus());
-			marketPlace.setImageUrl(candidate.getFileUrl());
+			marketPlace.setCompanyName(candidate.getOrgLocationId().getOrg().getOrgName()); // added company name for the candidate
+			marketPlace.setShowCompanyName(candidate.getOrgLocationId().getShowCompanyNameInMarkeplace());// ORG level setting to display org name in market place.
 			marketPlace.setCandidateMarketStatus(Constants.ACTIVE);
 			marketPlace.setMarketPrice(dto.getMarketPrice());
-			marketPlace.setSummary(candidate.getSummary());
 			marketPlace.setMarketRateCurrencey(dto.getMarketRateCurrencey());
 			marketPlace.setStatus(Constants.CANDIDATE_ACTIVE);
 			marketPlace.setCreatedDate(new Date());
@@ -2782,16 +2771,25 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public void updateMarketPlacePrice(Long id, String priceVal, String priceValType) {
+	public void updateMarketPlacePrice(Long id, String priceVal, String priceValType)throws Exception {
 		CandidateMarketPlace marketPlace= candidateDao.getCandidateMarketPlaceById(id);
+		CandidateMarketCart marketCart = candidateDao.getCandidateFromMarketCartByMarketplaceId(id);
 		marketPlace.setMarketPrice(priceVal);
 		marketPlace.setMarketRateCurrencey(priceValType);
 		candidateDao.updateMarketPlacePrice(marketPlace);
+		//updating cart price in global marketplace after it is edited and saved in local marketplace.
+		marketCart.setAmount(Double.parseDouble(priceVal));
+		candidateDao.addCandidateToMarketCart(marketCart);
 	}
 	
 	@Override
 	public CandidateMarketPlace getCandidateMarketPlaceDetailsByIdAndOrgLocationId(Long id, Long orgLocationId) throws Exception{
 		return candidateDao.getCandidateMarketPlaceDetailsByIdAndOrgLocationId(id, orgLocationId);
+	}
+	
+	@Override
+	public List<CandidateMarketPlace> getCandidateListMarketPlaceDetailsByIdAndOrgLocationId(List<Long> id, Long orgLocationId)throws Exception{
+		return candidateDao.getCandidateListMarketPlaceDetailsByIdAndOrgLocationId(id, orgLocationId);
 	}
 	
 	@Override
@@ -2803,7 +2801,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		saveOrUpdateCandidateElkDocument(candidate);
 		candidateDao.storeCandidate(candidate);
 		candidateDao.withdrawCandidateFromMarketplace(marketplace);
-		
+		//Deleting the record from the cart if already added in cart by the user.
+		candidateDao.deleteCandidateFromMarketcartByCandidateUuid(marketplace.getCandidateUUID());
 	}
 
 	@Override
@@ -2813,17 +2812,20 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, Long orgLocationId) throws Exception {
+	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, OrgLocations orgLocations) throws Exception {
 		// TODO Auto-generated method stub
 		CandidateMarketCart newMarketCart = new CandidateMarketCart();
 		newMarketCart.setMarketplaceId(marketplace);
 		newMarketCart.setCandidateId(marketplace.getCandidateId());
+		newMarketCart.setEmail(marketplace.getCandidateId().getEmail());
 		newMarketCart.setCandidateUUID(marketplace.getCandidateUUID());
 		newMarketCart.setMarketplaceUUID(marketplace.getMarketplaceUUID());
 		newMarketCart.setMarketCartUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		OrgLocations orgLocation = new OrgLocations();
-		orgLocation.setId(orgLocationId);
+		orgLocation.setId(orgLocations.getId());
 		newMarketCart.setSourceOrgLocationId(marketplace.getOrgLocationId());
+		newMarketCart.setSourceOrgId(marketplace.getOrgLocationId().getOrg());
+		newMarketCart.setTargetOrgId(orgLocations.getOrg());
 		newMarketCart.setTargetOrgLocationId(orgLocation);
 		newMarketCart.setAmount(Double.valueOf(marketplace.getMarketPrice()));
 		newMarketCart.setCurrency(marketplace.getMarketRateCurrencey());
@@ -2845,7 +2847,27 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			for(CandidateMarketPlace marketPlace : candidateMarketPlaces){
 				CandidateMarketPlaceDTO marketPlaceDTO = new CandidateMarketPlaceDTO();
 				BeanUtils.copyProperties(marketPlace, marketPlaceDTO);
-				int count = candidateDao.getMarketCartStatusByMarketIdOrgId(marketPlace.getId(), marketPlace.getOrgLocationId().getId());
+				marketPlaceDTO.setFullName(marketPlace.getCandidateId().getFullName());
+				marketPlaceDTO.setImageUrl(marketPlace.getCandidateId().getFileUrl());
+				marketPlaceDTO.setDesignation(marketPlace.getCandidateId().getDesignation());
+				marketPlaceDTO.setCurrentRateCurrency(marketPlace.getCandidateId().getCurrentRateCurrency());
+				marketPlaceDTO.setCurrentRate(marketPlace.getCandidateId().getCurrentRate());
+				marketPlaceDTO.setCurrentRateType(marketPlace.getCandidateId().getCurrentRateType());
+				marketPlaceDTO.setExpectedRateCurrencey(marketPlace.getCandidateId().getExpectedRateCurrencey());
+				marketPlaceDTO.setExpectedRate(marketPlace.getCandidateId().getExpectedRate());
+				marketPlaceDTO.setExpectedRateType(marketPlace.getCandidateId().getRateType());
+				marketPlaceDTO.setExperienceYears(marketPlace.getCandidateId().getExperienceYears());
+				marketPlaceDTO.setExperienceMonths(marketPlace.getCandidateId().getExperienceMonths());
+				marketPlaceDTO.setLocation(marketPlace.getCandidateId().getLocation());
+				marketPlaceDTO.setShowCompanyName(marketPlace.getShowCompanyName());
+				marketPlaceDTO.setCompanyName(marketPlace.getCompanyName());
+				marketPlaceDTO.setSkillsName(marketPlace.getCandidateId().getSkillsName());
+				marketPlaceDTO.setSummary(marketPlace.getCandidateId().getSummary());
+				marketPlaceDTO.setMarketRateCurrencey(marketPlace.getMarketRateCurrencey());
+				marketPlaceDTO.setMarketPrice(marketPlace.getMarketPrice());
+				marketPlaceDTO.setMarketplaceUUID(marketPlace.getMarketplaceUUID());
+				marketPlaceDTO.setProfilePercentage(marketPlace.getCandidateId().getCandidateProfilePercentage());
+				int count = candidateDao.getMarketCartStatusByMarketIdOrgId(marketPlace.getId(), orgLocations.getId());
 				if(count != 0){
 					marketPlaceDTO.setMarketCartStatus(Constants.ADDED_CART);
 				}
@@ -2874,8 +2896,67 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
-	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations)throws Exception {
-	return candidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations);
+	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations, String creationStartDate, String creationEndDate, String checkedDate, String searchValue)throws Exception {
+		Date today = new Date();
+		Date formattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), today);
+		Calendar calendar = Calendar.getInstance();
+		Map<String, Date> dateValue = new HashMap<>();
+		if(checkedDate.equalsIgnoreCase("today")){
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", formattedDate);
+		}
+		if(checkedDate.equalsIgnoreCase("1_week")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.DAY_OF_YEAR, -7);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(checkedDate.equalsIgnoreCase("Last_Week")){
+			//calendar.setTime(formattedDate);
+			calendar.add(Calendar.DAY_OF_YEAR, -14);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			calendar.add(Calendar.DAY_OF_YEAR, -7);
+			Date newDate1 = calendar.getTime();
+			Date newFormattedDate1 = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate1);
+			dateValue.put("fromDate", newFormattedDate);
+			dateValue.put("toDate", newFormattedDate1);
+		}
+		if(checkedDate.equalsIgnoreCase("1_month")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.MONTH, -1);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(checkedDate.equalsIgnoreCase("1_Month_Ago")){
+			calendar.add(Calendar.MONTH, -2);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			calendar.add(Calendar.MONTH, -1);
+			Date newDate1 = calendar.getTime();
+			Date newFormattedDate1 = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate1);
+			dateValue.put("fromDate", newFormattedDate);
+			dateValue.put("toDate", newFormattedDate1);
+		}
+		if(checkedDate.equalsIgnoreCase("YTD")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.YEAR, -1);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(checkedDate.equalsIgnoreCase("custom")){
+			Date fromDateVal = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), creationStartDate);
+			Date toDateVal = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), creationEndDate);
+			dateValue.put("fromDate", toDateVal);
+			dateValue.put("toDate", fromDateVal);
+		}
+		return candidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations, creationStartDate, creationEndDate, dateValue, searchValue);
 	}
 
 	@Override
@@ -2883,6 +2964,541 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		candidateDao.deleteCandidateFromMarketcartByCandidateUuid(candidateUuid);
 		
 	}
+	
+	@Override
+	public ResponseList<CandidateMarketPlaceDTO> getGlobalDataRecommendations(
+			CandidateMarketPlaceDTO candidateMarketPlaceDTO, OrgLocations orgLocations, String searchValue) {
+		return candidateDao.getGlobalDataRecommendations(candidateMarketPlaceDTO, orgLocations, searchValue);
+	}
+	
+	@Override
+	public int updateMarketplaceCandidates(OrgLocations orgLocations, String companyNameFlag) throws Exception {
+		return candidateDao.updateMarketplaceCandidates(orgLocations,companyNameFlag);
+	}
+	
 
+	@Override
+	public CandidateMarketPlaceDTO getCandidateMarketPlaceDTODetailsByUUId(String marketplaceUUID, OrgLocations orgLocations) throws Exception {
+		CandidateMarketPlace marketPlace = candidateDao.getCandidateMarketPlaceDetailsByUUId(marketplaceUUID);
+		CandidateMarketPlaceDTO marketPlaceDTO = new CandidateMarketPlaceDTO();
+		BeanUtils.copyProperties(marketPlace, marketPlaceDTO);
+		marketPlaceDTO.setImageUrl(marketPlace.getCandidateId().getFileUrl());
+		marketPlaceDTO.setFullName(marketPlace.getCandidateId().getFullName());
+		marketPlaceDTO.setLocation(marketPlace.getCandidateId().getLocation());
+		marketPlaceDTO.setProfilePercentage(marketPlace.getCandidateId().getCandidateProfilePercentage());
+		marketPlaceDTO.setDesignation(marketPlace.getCandidateId().getDesignation());
+		marketPlaceDTO.setSummary(marketPlace.getCandidateId().getSummary());
+		marketPlaceDTO.setCurrentRateCurrency(marketPlace.getCandidateId().getCurrentRateCurrency());
+		marketPlaceDTO.setCurrentRate(marketPlace.getCandidateId().getCurrentRate());
+		marketPlaceDTO.setCurrentRateType(marketPlace.getCandidateId().getCurrentRateType());
+		marketPlaceDTO.setExpectedRateCurrencey(marketPlace.getCandidateId().getExpectedRateCurrencey());
+		marketPlaceDTO.setExpectedRate(marketPlace.getCandidateId().getExpectedRate());
+		marketPlaceDTO.setExpectedRateType(marketPlace.getCandidateId().getRateType());
+		marketPlaceDTO.setExperienceYears(marketPlace.getCandidateId().getExperienceYears());
+		marketPlaceDTO.setExperienceMonths(marketPlace.getCandidateId().getExperienceMonths());
+		if(marketPlace.getCandidateId().getSkillsName() != null){
+			String[] skills = marketPlace.getCandidateId().getSkillsName().split(",");
+			marketPlaceDTO.setSkills(skills);
+		}
+		List<CandidateEmployers> candidateEmployers = candidateEmployersDao.getCandidatesEmployersListByCandidateIdAndOrgLocationID(marketPlace.getCandidateId().getId(), marketPlace.getOrgLocationId().getId());
+		List<CandidateEmployerDTO> candidateEmployerDTOs = new ArrayList<>();
+		for(CandidateEmployers employers : candidateEmployers){
+			CandidateEmployerDTO employerDTO = new CandidateEmployerDTO();
+			BeanUtils.copyProperties(employers, employerDTO);
+			if(employers.getStartMonth()!= null && !employers.getStartMonth().equals("")){
+				String[] startMonth = employers.getStartMonth().split("&");
+				employerDTO.setStartMonth(startMonth[1]);
+			}
+			if(employers.getEndMonth() != null && !employers.getEndMonth().equals("")){
+				String[] endMonth = employers.getEndMonth().split("&");
+				employerDTO.setEndMonth(endMonth[1]);
+			}
+			if(employers.getIsCurrentPosition().equalsIgnoreCase("Y")){
+				employerDTO.setEndMonth("Present");
+				employerDTO.setEndYear("");
+			}
+			candidateEmployerDTOs.add(employerDTO);
+		}
+		marketPlaceDTO.setCandidateEmployers(candidateEmployerDTOs);
+		List<CandidateEducation> educations = candidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(marketPlace.getCandidateId().getId(), marketPlace.getOrgLocationId().getId());
+		List<CandidateEducationDTO> educationDTOs = new ArrayList<>();
+		for(CandidateEducation education : educations){
+			CandidateEducationDTO educationDTO = new CandidateEducationDTO();
+			BeanUtils.copyProperties(education, educationDTO);
+			SimpleDateFormat dtf = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat dtf2 = new SimpleDateFormat("MMM");
+			SimpleDateFormat dtf3 = new SimpleDateFormat("yyyy");
+			if(education.getStartDate() != null  && !education.getStartDate().equals("")){
+				String startDateString = dtf.format(education.getStartDate());
+				String startMonthName = dtf2.format(dtf.parse(startDateString));
+				String startYear = dtf3.format(dtf3.parse(startDateString));
+				educationDTO.setStartYear(startYear);
+				educationDTO.setStartMonth(startMonthName);
+			}
+			if(education.getEndDate() != null  && !education.getEndDate().equals("")){
+				String endDateString = dtf.format(education.getEndDate());
+				String endMonthName = dtf2.format(dtf.parse(endDateString));
+				String endYear = dtf3.format(dtf3.parse(endDateString));
+				educationDTO.setEndYear(endYear);
+				educationDTO.setEndMonth(endMonthName);
+			}
+			educationDTOs.add(educationDTO);
+		}
+		marketPlaceDTO.setCandidateEducation(educationDTOs);
+		//Set<CandidateCertifications> certifications = marketPlace.getCandidateId().getCandidateCertifications();
+		List<CandidateCertifications> certifications = candidateCertificationsDao.getCandidateCertificationListByCandidateIdAndOrgLocationID(marketPlace.getCandidateId().getId(), marketPlace.getOrgLocationId().getId());
+		List<CandidateCertificationDTO> certificationDTOs = new ArrayList<>();
+		for(CandidateCertifications certification : certifications){
+			CandidateCertificationDTO certificationDTO = new CandidateCertificationDTO();
+			BeanUtils.copyProperties(certification, certificationDTO);
+			SimpleDateFormat dtf = new SimpleDateFormat("yyyy-MM-dd");
+			if(certification.getValidFrom()!= null  && !certification.getValidFrom().equals("")){
+				certificationDTO.setValidFrom(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),certification.getValidFrom()));
+			}
+			if(certification.getValidTo()!= null  && !certification.getValidTo().equals("")){
+				certificationDTO.setValidTo(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),certification.getValidTo()));
+			}
+			certificationDTOs.add(certificationDTO);
+		}
+		marketPlaceDTO.setCandidateCertifications(certificationDTOs);
+		int count = candidateDao.getMarketCartStatusByMarketIdOrgId(marketPlace.getId(), marketPlace.getOrgLocationId().getId());
+		if(count != 0){
+			marketPlaceDTO.setMarketCartStatus(Constants.ADDED_CART);
+		}
+		if(marketPlace.getCandidateId().getSkillsName() != null && !marketPlace.getCandidateId().getSkillsName().equals("")){
+			List<CandidateMarketPlaceDTO> marketPlaceDTOs = new ArrayList<>();
+			List<CandidateMarketPlace> globalCandidatesMarketplaceData = candidateDao.getGlobalMarketplaceDataByOrgId(orgLocations.getId(), marketPlace.getId());
+			marketPlaceDTO.setSkillsName(marketPlace.getCandidateId().getSkillsName());
+			String[] marketPlaceSkills = marketPlace.getCandidateId().getSkillsName().split(",");
+			for (int j = 0; j < marketPlaceSkills.length; j++){
+				marketPlaceSkills[j] = marketPlaceSkills[j].trim();
+			}
+			for(CandidateMarketPlace place : globalCandidatesMarketplaceData){
+				String[] placeSkills = null;
+				if(place.getCandidateId().getSkillsName() != null && !place.getCandidateId().getSkillsName().equals("")){
+					placeSkills = place.getCandidateId().getSkillsName().split(",");
+					for (int i = 0; i < placeSkills.length; i++){
+						placeSkills[i] = placeSkills[i].trim();
+					}
+				if(!Collections.disjoint(Arrays.asList(placeSkills), Arrays.asList(marketPlaceSkills))){
+					CandidateMarketPlaceDTO dto = new CandidateMarketPlaceDTO();
+					BeanUtils.copyProperties(place, dto);
+					dto.setImageUrl(place.getCandidateId().getFileUrl());
+					dto.setFullName(place.getCandidateId().getFullName());
+					dto.setLocation(place.getCandidateId().getLocation());
+					marketPlaceDTOs.add(dto);
+				}
+			}
+			}
+			marketPlaceDTO.setCandidateMarketPlaceDTOs(marketPlaceDTOs);
+		}
+		return marketPlaceDTO;
+	}
+	
+	@Override
+	public List<CandidateMarketCart> getMarketCartIdsFromMarketcart(Long orgLocationId) throws Exception {
+		List<CandidateMarketCart> marketCartIds = candidateDao.getMarketCartIdsFromMarketcart(orgLocationId);
+		return marketCartIds;
+	}
+	
+	@Override
+	public List<CandidateDTO> getCandidatesListByIds(List<Long> Ids) throws Exception {
+		return candidateDao.getCandidatesListByIds(Ids);
+	}
+
+	@Override
+	public Boolean updateMarketCartStatus(List<Long> marketCartIds, Long orgLocationId) throws Exception {
+		return candidateDao.updateMarketCartStatus(marketCartIds, orgLocationId);
+	}
+	
+	@Override
+	public CandidateMarketPlacePaymentTransactionHistory getMarketplaceTransactionDetails(Long orgLocationId) throws Exception{
+		return candidateDao.getMarketplaceTransactionDetails(orgLocationId);
+	}
+	
+	@Override
+	public User getUserDetailsBySourceOrgLocationId(Long sourceOrgLocationId)throws Exception{
+		return candidateDao.getUserDetailsBySourceOrgLocationId(sourceOrgLocationId);
+	}
+
+	@Override
+	public CandidateMarketPlace getCandidateDetailsByCandidateId(Long candidateId) throws Exception{
+		return candidateDao.getCandidateDetailsByCandidateId(candidateId);
+	}
+	
+
+	@Override
+	public void saveCandidateMarketplacePaymentTranscationHistory(CandidateMarketPlacePaymentTransactionHistory tranHistory) throws Exception {
+		 candidateDao.saveCandidateMarketplacePaymentTranscationHistory(tranHistory);
+	}
+
+	@Override
+	public void saveTransactionCompletedCandidates(CandidateDTO candidateDto, OrgLocations orgLocations, User user)throws Exception {
+			storeCandidate(candidateDto, orgLocations, user);
+	}
+
+	@Override
+	public void saveToMarketplacePurchaseOrder(List<CandidateMarketCart> marketCartList,OrgLocations orgLocations, String orderNo,String purchasedOrgName,String paymentId) throws Exception {
+		
+		
+		for (CandidateMarketCart candidateMarketCart : marketCartList) {
+			
+			
+			MarketplacePurchaseOrder newMarketplacePurchaseorder = new MarketplacePurchaseOrder();
+			newMarketplacePurchaseorder.setOrderNo(orderNo);
+			newMarketplacePurchaseorder.setCompanyName(purchasedOrgName);
+			newMarketplacePurchaseorder.setPurchaseUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			newMarketplacePurchaseorder.setTotalPrice(candidateMarketCart.getAmount());			
+			newMarketplacePurchaseorder.setOrderDate(candidateMarketCart.getCreatedDate());
+			newMarketplacePurchaseorder.setCandidateMarketplace(candidateMarketCart.getMarketplaceId());
+			newMarketplacePurchaseorder.setOrgLocationId(orgLocations);
+			newMarketplacePurchaseorder.setPaymentStatus(Constants.SUCCESS);
+         	candidateDao.saveToMarketplacePurchaseOrder(newMarketplacePurchaseorder);
+			
+		}
+		
+	}
+
+	@Override
+	public void saveToMarketplaceSalesOrder(List<CandidateMarketCart> marketCartList, String orderNo,String paymentId) throws Exception {
+	
+		
+		String sourceOrgName ;
+		for (CandidateMarketCart candidateMarketCart : marketCartList) {
+			
+		 sourceOrgName = candidateMarketCart.getSourceOrgId().getOrgName();	
+		 MarketplaceSalesOrder newMarketplaceSalesorder = new MarketplaceSalesOrder();
+		 newMarketplaceSalesorder.setOrderNo(orderNo);
+		 newMarketplaceSalesorder.setTotalResumePrice(candidateMarketCart.getAmount());
+		 newMarketplaceSalesorder.setSalesUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		 newMarketplaceSalesorder.setOrgLocationId(candidateMarketCart.getSourceOrgLocationId());
+		 newMarketplaceSalesorder.setOrderDate(candidateMarketCart.getCreatedDate());
+		 newMarketplaceSalesorder.setCandidateMarketPlace(candidateMarketCart.getMarketplaceId());
+		 newMarketplaceSalesorder.setPaymentStatus(Constants.SUCCESS);
+		 newMarketplaceSalesorder.setCompanyName(sourceOrgName);
+		 
+			candidateDao.saveToMarketplaceSalesOrder(newMarketplaceSalesorder);
+	}
 
 }
+
+	@Override
+	public CandidateMarketPlacePaymentTransactionHistory getOrderNo(Long id) throws Exception {
+		
+		return candidateDao.getOrderNo(id);
+	}
+
+
+	@Override
+	public void deleteAllCandidatesFromMarketcart(Long orgLocationId) throws Exception {
+		candidateDao.deleteAllCandidatesFromMarketcart(orgLocationId);
+		
+	}
+
+	//Changed this method to a new one which returns ResponseList..
+	/*@Override
+	public List<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO)  throws Exception{
+		
+		List<MarketplacePurchaseOrder> purchaseOrder =   candidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO);
+		List<MarketplacePurchaseSalesDTO> list = new ArrayList<>();
+		for (MarketplacePurchaseOrder mps : purchaseOrder) {
+			
+			MarketplacePurchaseSalesDTO mpsDto = new MarketplacePurchaseSalesDTO();
+			 String startTime =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),mps.getOrderDate());
+			
+			mpsDto.setOrderNo(mps.getOrderNo());
+			mpsDto.setOrderDate(startTime);
+			mpsDto.setPurchaseUuid(mps.getPurchaseUuid());
+			mpsDto.setDiscount(mps.getDiscount());
+			mpsDto.setGrandTotal(mps.getGrandTotal());
+			mpsDto.setTotalPrice(mps.getTotalPrice());
+			mpsDto.setPaymentStatus(mps.getPaymentStatus());
+			mpsDto.setTotalresume(mps.getTotalresume());
+			mpsDto.setCompanyName(mps.getCompanyName());
+			mpsDto.setServiceFee(mps.getServiceFee());	
+			list.add(mpsDto);
+		}			
+		return list;
+	}*/
+	
+	@Override
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO)  throws Exception{
+		ResponseList<MarketplacePurchaseSalesDTO> responseList =   candidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO);
+		return responseList;
+	}
+
+	@Override
+	public MarketplacePurchaseSalesDTO getPurchaseDetailByPurchaseUuid(String purchaseUuid, OrgLocations orgLocations) throws Exception {
+		
+		
+		MarketplacePurchaseOrder mps = candidateDao.getPurchaseDetailByPurchaseUuid(purchaseUuid,orgLocations.getId());
+		
+		MarketplacePurchaseSalesDTO mpsDto = new MarketplacePurchaseSalesDTO();
+		String startTime =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),mps.getOrderDate());
+		mpsDto.setOrderNo(mps.getOrderNo());
+		mpsDto.setOrderDate(startTime);
+		mpsDto.setPurchaseUuid(mps.getPurchaseUuid());
+		mpsDto.setDiscount(mps.getDiscount());
+		mpsDto.setGrandTotal(mps.getGrandTotal());
+		mpsDto.setTotalPrice(mps.getTotalPrice());
+		mpsDto.setPaymentStatus(mps.getPaymentStatus());
+		mpsDto.setTotalresume(mps.getTotalresume());
+		mpsDto.setCompanyName(mps.getCompanyName());
+		mpsDto.setServiceFee(mps.getServiceFee());
+		mpsDto.setCandidateName(mps.getCandidateMarketplace().getCandidateId().getFullName());
+		 return mpsDto;      
+	}
+
+	@Override
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String searchValue, String salesOrderFromDate, String salesOrderToDate, String salesOrderFilterDate)throws Exception {
+		Date today = new Date();
+		Date formattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), today);
+		Calendar calendar = Calendar.getInstance();
+		Map<String, Date> dateValue = new HashMap<>();
+		if(salesOrderFilterDate.equalsIgnoreCase("today")){
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", formattedDate);
+		}
+		if(salesOrderFilterDate.equalsIgnoreCase("1_week")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.DAY_OF_YEAR, -7);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(salesOrderFilterDate.equalsIgnoreCase("1_month")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.MONTH, -1);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(salesOrderFilterDate.equalsIgnoreCase("3_months")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.MONTH, -3);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(salesOrderFilterDate.equalsIgnoreCase("6_months")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.MONTH, -6);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(salesOrderFilterDate.equalsIgnoreCase("YTD")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.YEAR, -1);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(salesOrderFilterDate.equalsIgnoreCase("custom")){
+			Date fromDateVal = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), salesOrderFromDate);
+			Date toDateVal = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), salesOrderToDate);
+			dateValue.put("fromDate", toDateVal);
+			dateValue.put("toDate", fromDateVal);
+		}
+		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue, salesOrderFromDate, salesOrderToDate, dateValue);
+		return responseList;
+		}
+
+	@Override
+	public MarketplacePurchaseSalesDTO getMarketplaceSalesOrderBySalesUuid(OrgLocations orgLocations, String salesUuid) throws Exception {
+		MarketplaceSalesOrder salesOrder = candidateDao.getMarketplaceSalesOrderBySalesUuid(orgLocations.getId(), salesUuid);
+		MarketplacePurchaseSalesDTO salesOrderDto = null;
+		String formattedDate =  null;
+			salesOrderDto = new MarketplacePurchaseSalesDTO();
+			BeanUtils.copyProperties(salesOrder, salesOrderDto);
+			formattedDate =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), salesOrder.getOrderDate());
+			salesOrderDto.setOrderDate(formattedDate);
+			salesOrderDto.setTotalresume(salesOrder.getNoOfResumes());
+			salesOrderDto.setTotalPrice(salesOrder.getTotalResumePrice());
+			salesOrderDto.setCandidateName(salesOrder.getCandidateMarketPlace().getCandidateId().getFullName());
+		return salesOrderDto;
+	}
+
+	@Override
+	public ResponseList<MarketplaceWalletDTO> getWalletList(MarketplaceWalletDTO marketplaceWalletDTO,
+			String searchValue, String selectedTime, String transactionType, String fromDate, String toDate) throws Exception {
+		Date today = new Date();
+		Date formattedDate = commonUtil.getOrgLocationCurrentDate(marketplaceWalletDTO.getOrgLocations().getDateFormat(), today);
+		Calendar calendar = Calendar.getInstance();
+		Map<String, Date> dateValue = new HashMap<>();
+		if(selectedTime.equalsIgnoreCase("today")){
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", formattedDate);
+		}
+		
+		if(selectedTime.equalsIgnoreCase("weekAgo")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.DAY_OF_YEAR, -7);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(marketplaceWalletDTO.getOrgLocations().getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(selectedTime.equalsIgnoreCase("thisMonth")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.MONTH, -1);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(marketplaceWalletDTO.getOrgLocations().getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(selectedTime.equalsIgnoreCase("3monthsAgo")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.MONTH, -3);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(marketplaceWalletDTO.getOrgLocations().getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(selectedTime.equalsIgnoreCase("6monthsAgo")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.MONTH, -6);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(marketplaceWalletDTO.getOrgLocations().getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(selectedTime.equalsIgnoreCase("oneYearAgo")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.YEAR, -1);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(marketplaceWalletDTO.getOrgLocations().getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(selectedTime.equalsIgnoreCase("customDates")){
+			Date fromDateVal = commonUtil.orgLocationDateFormat(marketplaceWalletDTO.getOrgLocations().getDateFormat(), fromDate);
+			Date toDateVal = commonUtil.orgLocationDateFormat(marketplaceWalletDTO.getOrgLocations().getDateFormat(), toDate);
+			dateValue.put("fromDate", toDateVal);
+			dateValue.put("toDate", fromDateVal);
+		}
+		return candidateDao.getWalletList(marketplaceWalletDTO, searchValue, transactionType, dateValue);
+	}
+
+	@Override
+	public List<MarketplacePurchaseOrder> getPurchaseCandidateListByOrglocation(Long id) throws Exception{
+		return candidateDao.getPurchaseCandidateListByOrglocation( id);
+	}
+
+	@Override
+	public File getPurchaseCandidatePdf(List<MarketplacePurchaseOrder> purchaseCandidatesList, Long orgLocationId)
+			throws Exception {
+		return pdfUtil.createCandidatePdfTable(purchaseCandidatesList,orgLocationId);
+	}
+
+	@Override
+	public File getPurchaseCandidateExcelFile(List<MarketplacePurchaseOrder> purchaseCandidatesList, Long orgLocationId)throws Exception {
+		
+		OrgLocations orgLocation = orgLocationsDao.getOrgLocations(orgLocationId);
+		Workbook createExcelworkbook =  new XSSFWorkbook();
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+        
+		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		 StringBuilder excelSheet = new StringBuilder();
+		 Sheet createExcelsheet;		
+			 createExcelsheet = createExcelworkbook.createSheet(excelSheet.append("").append("Purchased Candidate").append(dateFormat.format(new Date())).toString());	 
+		
+		 
+    	Row writeRow = null;
+		String headers [] = Constants.PURCHASE_CANDIDATE_HEADERS;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
+		 int column=0;
+	        for(MarketplacePurchaseOrder candidate : purchaseCandidatesList){
+	       	 writeRow = createExcelsheet.createRow(column+1);
+	       	 createExcelsheet = createXlsSheet(createExcelsheet,candidate,writeRow,purchaseCandidatesList,orgLocation);
+	       	 column++;
+	        }
+	        StringBuilder orgNameSB = new StringBuilder();
+	        File file;        
+	        	 file = File.createTempFile(orgNameSB.append("").append("Purchased Candidates").append(dateFormat.format(new Date())).toString(),".xls");		     
+	        
+	        file.setReadable(true);
+			 FileOutputStream fos = new FileOutputStream(file);
+			 try {
+				 createExcelworkbook.write(fos);
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}	 	
+		return file;
+	}
+
+	private Sheet createXlsSheet(Sheet createExcelsheet, MarketplacePurchaseOrder candidate, Row writeRow,
+			List<MarketplacePurchaseOrder> purchaseCandidatesList,OrgLocations orgLocation ) {
+			if(candidate.getOrderNo() !=null && !"".equalsIgnoreCase(candidate.getOrderNo())){
+				 writeRow.createCell(0).setCellValue(candidate.getOrderNo());}
+			else {
+				writeRow.createCell(0).setCellValue("--");
+			}
+			if(candidate.getOrderDate() !=null && !"".equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getOrderDate()))) {
+				
+				writeRow.createCell(1).setCellValue(candidate.getOrderDate());}
+			else {
+				writeRow.createCell(1).setCellValue("--");
+			}
+			if(candidate.getCompanyName() !=null && !"".equalsIgnoreCase(candidate.getCompanyName())){
+				writeRow.createCell(2).setCellValue(candidate.getCompanyName());}
+				else {
+					writeRow.createCell(2).setCellValue("--");
+			}
+			if(candidate.getTotalresume() !=null && !"".equalsIgnoreCase(candidate.getTotalresume())){
+				writeRow.createCell(3).setCellValue(candidate.getTotalresume());}
+				else {
+					writeRow.createCell(3).setCellValue("--");
+			}
+			if(candidate.getTotalPrice() !=null && !"".equalsIgnoreCase(candidate.getTotalPrice().toString())){
+				writeRow.createCell(4).setCellValue(candidate.getTotalPrice());}
+				else {
+					writeRow.createCell(4).setCellValue("--");
+			}
+			if(candidate.getServiceFee() !=null && !"".equalsIgnoreCase(candidate.getServiceFee())){
+				writeRow.createCell(5).setCellValue(candidate.getServiceFee());}
+				else {
+					writeRow.createCell(5).setCellValue("--");
+			}
+			if(candidate.getDiscount() !=null && !"".equalsIgnoreCase(candidate.getDiscount())){
+				writeRow.createCell(6).setCellValue(candidate.getDiscount());}
+				else {
+					writeRow.createCell(6).setCellValue("--");
+			}
+			if(candidate.getGrandTotal() !=null && !"".equalsIgnoreCase(candidate.getGrandTotal().toString())){
+				writeRow.createCell(7).setCellValue(candidate.getGrandTotal());}
+				else {
+					writeRow.createCell(7).setCellValue("--");
+			}
+			if(candidate.getPaymentStatus() !=null && !"".equalsIgnoreCase(candidate.getPaymentStatus())){
+				writeRow.createCell(8).setCellValue(candidate.getPaymentStatus());}
+				else {
+					writeRow.createCell(8).setCellValue("--");
+			}
+			
+			return createExcelsheet;
+	}
+
+	@Override
+	public void saveCandidateMarketPlaceWallet(CandidateMarketWallet wallet) throws Exception {
+		candidateDao.saveCandidateMarketPlaceWallet(wallet);
+	}
+
+	@Override
+	public Double getBalanceAmountFromWallet(Long id) {
+		return candidateDao.getBalanceAmountFromWallet(id);
+	}
+
+	@Override
+	public void updateMarketWalletAmount(Double balanceAmountValue, Long id) {
+		candidateDao.updateMarketWalletAmount(balanceAmountValue, id);
+	}
+	
+}
+

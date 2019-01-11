@@ -313,6 +313,7 @@ public class ProjectsRestController {
 			   @RequestParam(value="saveType", required=true) String saveType,HttpServletRequest request) throws Exception {
 		       User user = userService.getUserById(userId);
 		       Response<String> response = new Response<>();
+		       
 				try {
 					if(user != null) {
 						if(Validator.validate(projectAdditionalDetailsDTO)) {
@@ -684,6 +685,7 @@ public class ProjectsRestController {
 	    	  
 	    	  projectMebersDTO.setEstHours(projectMebers.getEstimatedHours());
 	    	  projectMebersDTO.setEstBudget(projectMebers.getEstimatedBudget());
+	    	  projectMebersDTO.setPercentageOfWork(projectMebers.getPercentageOfWork());
 	    	  
 	    	  projectMebersDTO.setProjectMemberId(projectMebers.getId());
 	    	  
@@ -774,6 +776,12 @@ public class ProjectsRestController {
 	    			projectMembers.setEstimatedHours(projectMembersDTO.getEstHours());
 	    		}else {
 	    			projectMembers.setEstimatedHours(null);
+	    		}
+	    		
+	    		if(projectMembersDTO.getPercentageOfWork() != null){
+	    			projectMembers.setPercentageOfWork(projectMembersDTO.getPercentageOfWork());
+	    		}else {
+	    			projectMembers.setPercentageOfWork(null);
 	    		}
 	    		
 	    		projectMembersService.saveProjectMember(projectMembers);

@@ -28,7 +28,7 @@
 		<div class="col-md-12">
 			<div class="row">
 				<div class="col-md-3">
-					<div class="company-logo">
+					<div class="company-logo jobComLogo">
 						<div class="imageParent">
 							<img onerror="predefineOrgImage(this);" data-id="orgLogoImage" src="${requirement.orgLocationId.org.fileUrl}"
 								alt="Company" title="Company Logo" class="img-responsive">
@@ -51,7 +51,7 @@
 									</c:forEach>
 									</li> --%>
 									
-									<li><i class="fa fa-map-marker pull-left mt5" title="Locations"></i>
+									<li class="clearfix"><i class="fa fa-map-marker pull-left mt5" title="Locations"></i>
 									<ul class="list-unstyled joblocations-public col-md-10">
 									<c:forEach var ="reqLocs" items="${locationsList}">
 									 <li title="${reqLocs.location}">${reqLocs.location}</li>
@@ -119,13 +119,16 @@
 			<sec:authorize access="hasAnyRole('ROLE_RECOMMENDATIONS')">
 			    <li id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'recommendationsTab':''}"><a  href="#tab-3" onclick="requirementRecommendations('${requirement.id}', '${requirement.requirementSubmissionStatus}');">Recommendations</a></li>
 			</sec:authorize>
+			<sec:authorize access="hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')">
+			 <li id=""><a  href="#tab-5" onclick="globalDataRecommendations();">Global Data Recommendations</a></li>
+			 </sec:authorize>
 			<li><a  href="#tab-4" onclick="requirementNotes('${requirement.id}');">Notes</a></li>
 		</c:if>
 	</ul>
 	<div class="clearfix"></div>
 	<div class="project_tabs">
       <div id="tab-1" class="project_tabs_inn">
-        <div id="details-div" class="require_wrap_details">
+        <div id="details-div" class="require_wrap_details paddingTop">
             	<c:if test="${requirement.requirementSubmissionStatus == 'REJECTED' }">
             	    <div class="anchor-inline">
             	     <h5>Rejected Reason:</h5> 
@@ -298,7 +301,7 @@
 			            	</sec:authorize>
 			            </c:if>
 
-			            <c:if test="${(isAdmin == 'true' || requirement.isLoginUserAsApprover == 'true') && requirement.requirementSubmissionStatus  != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD' && requirement.requirementSubmissionStatus != 'CLOSED'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementSubmissionStatus != 'APPROVED' &&  requirement.requirementSubmissionStatus != 'REJECTED'  &&  requirement.requirementSubmissionStatus != 'OPEN' && requirement.requirementSubmissionStatus  !='NEW' && requirement.requirementSubmissionStatus  != 'UNFILLEDCLOSED' && requirement.requirementSubmissionStatus  != 'FILLEDCLOSED'}">
+			            <c:if test="${(isAdmin == 'true' || requirement.isLoginUserAsApprover == 'true') && !approvedByLoginUser && requirement.requirementSubmissionStatus  != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD' && requirement.requirementSubmissionStatus != 'CLOSED'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementSubmissionStatus != 'APPROVED' &&  requirement.requirementSubmissionStatus != 'REJECTED'  &&  requirement.requirementSubmissionStatus != 'OPEN' && requirement.requirementSubmissionStatus  !='NEW' && requirement.requirementSubmissionStatus  != 'UNFILLEDCLOSED' && requirement.requirementSubmissionStatus  != 'FILLEDCLOSED'}">
 			            	  <button  class="btn btn-success mr ml btn-sm" type="button" id = "approverbut" onClick ="updateReuqirementStatus('APPROVED');hideButtonOnClick();"  >Approve</button> 
 
          		              <button  class="btn btn-danger btn-sm" id = "rejectedbut" type="button" onClick ="rejectRequirementAlertMessage('REJECTED');hideButtonOnClick();">Reject</button>
@@ -795,6 +798,9 @@
 	<div id="tab-3" class="project_tabs_inn overflow-data datatable_filter"></div>
 	<div id="recommendationsLoading"></div>
 	<div id="tab-4" class="project_tabs_inn overflow-data datatable_filter"></div>
+	<div id="globalRecommendationsLoading"></div>
+	<div id="tab-5" class="project_tabs_inn overflow-data datatable_filter"></div>
+	
 	
 	<input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
 </div>
@@ -885,7 +891,7 @@ function changeStatus(requirementId, requirementStatus){
 		                } else if (result.response === "SUCCESS") {
 		                	$("#changeStatusId" +requirementId).val(status);
 		                	$(".success_pop").show();
-		                	$(".success_pop span").html("Changed Requirement status to " + status);
+		                	$(".success_pop span").html("Changed Job status to " + status);
 		                	 setTimeout(function(){
 				                	$(".success_pop").hide();
 				                	location.reload();
@@ -909,7 +915,7 @@ function changeStatus(requirementId, requirementStatus){
 		                } else if (result.response === "SUCCESS") {
 		                	$("#changeStatusId" +requirementId).val(status);
 		                	$(".success_pop").show();
-		                	$(".success_pop span").html("Changed Requirement status to " + status);
+		                	$(".success_pop span").html("Changed Job status to " + status);
 		                	 setTimeout(function(){
 				                	$(".success_pop").hide();
 				                	location.reload();

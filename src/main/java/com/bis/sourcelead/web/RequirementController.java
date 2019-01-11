@@ -120,6 +120,7 @@ import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 //import org.apache.commons.collections.ListUtils;
+import com.ibm.icu.util.Calendar;
 
 @Controller
 @RequestMapping("/app")
@@ -330,7 +331,7 @@ public class RequirementController {
 			}
 			
 			model.addObject("requirementAssignedIds",requirementAssignedIds);
-			if(StringUtils.isNotBlank(requirement.getJobType())){
+			if(requirement.getJobType() != null && StringUtils.isNotBlank(requirement.getJobType())){
 			requirement.setJobType(requirement.getJobType().replaceAll("\n", " ").replaceAll("\r", "").replaceAll("\t", ""));
 			}
 			model.addObject("requirement",requirement);
@@ -739,6 +740,7 @@ public class RequirementController {
 			@RequestParam(value="type", required=false) String type,@RequestParam(value="candidateUUID", required=false) String candidateUUID,
 			@RequestParam(value="submissionId", required=false) String submissionId,@RequestParam(value="candidateKeyword", required=false)String candidateKeyword,@RequestParam(value="submissionStatus", required=false)String submissionStatus) throws Exception {
 
+		logger.info("EXECUTION START TIME>>>>>" + Calendar.getInstance().getTime());
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request,"isAdmin");
@@ -821,12 +823,17 @@ public class RequirementController {
 				//requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirement.getId(), loginUser.getId());
 			}
 			Boolean isLoginUserAsApprover = false;
+			Boolean approvedByLoginUser = false;
 			RequirementApproverHierarchy requirementApproverHierarchy = null;
 			if(isAdmin || isManager){
 				requirementApproverHierarchy = requirementApproverHierarchyService.getRejectedApproverHierarchyByRequirementId(requirement.getId());
 			}else{
 				requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), loginUser.getId());
+				if (requirementApproverHierarchy != null && requirementApproverHierarchy.getRequirementApproverStatus().getValue().equalsIgnoreCase("APPROVED")) {
+					approvedByLoginUser = true;
+				}
 			}
+			model.addObject("approvedByLoginUser",approvedByLoginUser);
 			if (requirementApproverHierarchy != null) {
 				isLoginUserAsApprover = true;
 				requirement.setRejectReasonForRequirement(requirementApproverHierarchy.getRejectedReason());
@@ -988,6 +995,8 @@ public class RequirementController {
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}
+		
+		logger.info("EXECUTION END TIME>>>>>" + Calendar.getInstance().getTime());
 		return model;
 	}
 	
@@ -1263,7 +1272,7 @@ public class RequirementController {
 							requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
 							requirementSubmissionHistory.setFromStage("OFFERMADE");
 							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
-							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 					  }
 			    	
 					

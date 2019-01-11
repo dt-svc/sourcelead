@@ -11,7 +11,7 @@
 	      <!-- <h2>Submission Templates</h2> -->
 	      <h2 class="pull-left">Payroll Configure</h2>
 	    </div>
-	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payroll Configure</div>
+	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; Payroll Configure</div>
 	 	<div class="clearfix"></div>
     </section>
     
@@ -37,8 +37,8 @@
           <h4 class="text-muted">Pay Slips</h4>
           <small class="text-muted">Manage your pay slips</small>
           <div class="clearfix mt10"> 
-          	<a href="<c:url value='#'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
-          	<a href="<c:url value='#'/>" class="btn btn-primary btn-sm" title="View">View</a>
+          	<a href="<c:url value='${appPath}/payrollPaySlip'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+          	<a href="<c:url value='${appPath}/payrollPaySlipView'/>" class="btn btn-primary btn-sm" title="View">View</a>
           </div>
         </div>
         <div class="clearfix"></div>

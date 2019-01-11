@@ -1056,6 +1056,9 @@ jQueryFormUtils.validateAlphaNumericSpecialChar = function(val) {
 	return val.trim().match(/^[a-zA-Z][a-zA-Z0-9 .,$;@#]*$/) !== null;
 };
 
+jQueryFormUtils.validateNumber = function(val) {
+	return val.trim().match(/^-?\d+\.?\d*$/) !== null;
+};
 
 jQueryFormUtils.validatespace = function(val) {
    // return val.match(/[^\s-]/) !== null;
@@ -1166,12 +1169,25 @@ jQueryFormUtils.validateName = function(val) {
         if (validationRules.indexOf('validate_max_length') > -1 && value.length > jQueryFormUtils.attrInt(validationRules, 'length')) {
             return validationErrorMsg || language.tooLongStart + jQueryFormUtils.attrInt(validationRules, 'length') + language.tooLongEnd;
         }
+        
+     	// fixed length
+        if ((validationRules.indexOf('fixed_length') > -1 && value.length < jQueryFormUtils.attrInt(validationRules, 'length')) || (validationRules.indexOf('fixed_length') > -1 && value.length > jQueryFormUtils.attrInt(validationRules, 'length'))) {
+            return validationErrorMsg || fieldname + language.fixedSizeStart + jQueryFormUtils.attrInt(validationRules, 'length') + language.tooLongEnd;
+        }
 
         // Length range
         if (validationRules.indexOf('validate_length') > -1) {
             var range = jQueryFormUtils.attrInt(validationRules, 'length').split('-');
             if (value.length < parseInt(range[0],10) || value.length > parseInt(range[1],10)) {
                 return validationErrorMsg || language.badLength + jQueryFormUtils.attrInt(validationRules, 'length') + language.tooLongEnd;
+            }
+        }
+        
+        // Between values
+        if (validationRules.indexOf('validate_between') > -1) {
+        	var range = jQueryFormUtils.attrInt(validationRules, 'between').split('-');
+            if (parseInt(value,10) < parseInt(range[0],10) || parseInt(value,10) > parseInt(range[1],10)) {
+                return validationErrorMsg || language.badLimitStart + jQueryFormUtils.attrInt(validationRules, 'between') + language.badLimitEnd;
             }
         }
 
@@ -1227,6 +1243,11 @@ jQueryFormUtils.validateName = function(val) {
         // Phone number
         else if (validationRules.indexOf('validate_phone') > -1 && !jQueryFormUtils.validatePhoneNumber(value)) {
             return validationErrorMsg || language.badTelephone;
+        }
+        
+        // Number
+        else if (validationRules.indexOf('validate_number') > -1 && !jQueryFormUtils.validateNumber(value)) {
+            return validationErrorMsg || language.badNumber;
         }
         
         //ExtNo
@@ -1438,14 +1459,18 @@ jQueryFormUtils.LANG =  {
 	badzipcode: 'Zip code is invalid for the Selected Country',
 	badCphone: 'Phone Number is invalid for the Selected Country',
     badTelephone : 'you entered is in improper format',
+    badNumber : 'you entered invalid number',
     badExtno : 'Only numbers allowed',
     badSecurityAnswer : 'You have not given a correct answer to the security question',
     badDate : 'You have not given a correct date',
+    fixedSizeStart : ' length should be ',
     tooLongStart : 'You have given an answer longer than ',
     tooLongEnd : ' characters',
     tooShortStart : 'You have given an answer shorter than ',
     tooShortEnd : ' characters',
     badLength : 'The values should be between ',
+    badLimitStart : 'The value should be ',
+    badLimitEnd : ' range only',
     notConfirmed : 'Values could not be confirmed',
     badDomain : 'Incorrect domain value',
 	badspace : 'Must not Start With Space',
