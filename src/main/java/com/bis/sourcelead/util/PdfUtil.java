@@ -3262,10 +3262,8 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 		        	dataList.add(prepareRecruiterReportsApplicantsListStringArray(data,headers,loginOrgLocations,toStage));
 		        	}else if(toStage.equals("SUBMIT_TO_CLIENT") || toStage.equals("JOINED") || toStage.equals("OFFERMADE")){
 			        dataList.add(prepareRecruiterReportsApplicantsListStringArrayOne(data,headers,loginOrgLocations,toStage));	
-			        }else if(toStage.equals("INTERVIEW")){
-			        dataList.add(prepareRecruiterReportsApplicantsListStringArrayTwo(data,headers,loginOrgLocations,toStage));	
 			        }else if(toStage.equals("REJECTED") || toStage.equals("BACKOUT")){
-			        dataList.add(prepareRecruiterReportsApplicantsListStringArray(data,headers,loginOrgLocations,toStage));	
+			        dataList.add(prepareRecruiterReportsApplicantsListStringArrayTwo(data,headers,loginOrgLocations,toStage));	
 			        }
 		        }
 		        for (String[] userArray: dataList) {
@@ -3322,7 +3320,7 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 			 userArray[7] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getCreatedDate());
 			 }else if(toStage.equals("SHORTLIST")){
 			 userArray[7] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getCreatedDate());
-			 }{
+			 }else{
 			 userArray[7] = "0";
 			 }
 			 userArray[8] = submissionHistory.getSubmissionId().getSubmissionStatus().toString();
