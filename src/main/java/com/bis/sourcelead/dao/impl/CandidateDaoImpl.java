@@ -2945,7 +2945,6 @@ public class CandidateDaoImpl implements CandidateDao {
 			String countQuery = "select count(*) from MarketplacePurchaseOrder cmpth  where  cmpth.orgLocationId =:orgLocationId "+query1+"";
 			Query qeury =  session.createQuery(query + dateQuery1.toString()).setLong("orgLocationId", id);
 			Query q = session.createQuery(countQuery + dateQuery1.toString()).setLong("orgLocationId", id);
-			
 			if(!dateValue.isEmpty()){
 				Iterator it = dateValue.entrySet().iterator();
 			    while (it.hasNext()) {
@@ -2953,10 +2952,12 @@ public class CandidateDaoImpl implements CandidateDao {
 			        if(pair.getKey().equals("fromDate")){
 			        	qeury.setDate("startDate", dateValue.get("fromDate"));
 			        	q.setDate("startDate", dateValue.get("fromDate"));
+			        	System.out.println("purchase start date "+dateValue.get("fromDate"));
 			        }
 			        if(pair.getKey().equals("toDate")){
 			        	qeury.setDate("endDate", dateValue.get("toDate"));
 			        	q.setDate("endDate", dateValue.get("toDate"));
+			        	System.out.println("purchase end date "+dateValue.get("toDate"));
 			        }
 			    }
 			}

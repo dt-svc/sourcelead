@@ -241,32 +241,42 @@ $(document).ready(function(){
   		 createPurchaseOrderFromDate();
   		 createPurchaseOrderToDate();
   	 });
-  	
-  	function validatePurchaseOrderFilter(){
-  		var customDate = $("#purchaseOrderCustomDate").val();
-  		var otherDate = $('input[name=dateCheckBox]:checked').val();
-  		var fromDate = $("#purchaseOrderFromDate").val();
-  		var toDate = $("#purchaseOrderToDate").val();
-  		if(customDate === "custom"){
-  			if(fromDate === ''){
-  				//$("#purchaseOrderFromDate").focus();
-  			}
-  			if(toDate === '' && fromDate !== ''){
-				//$("#purchaseOrderToDate").focus();  				
-	  		}
-  	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
-  	        	closePop();
-  	        	getPurchaseOrderList();
-        	}
-  			}
-  		if(otherDate != null && otherDate != 'undefined' && otherDate != ''){
-  				closePop();
-  				getPurchaseOrderList();
-  		}
-  		if(otherDate === '' && customDate != 'custom'){
-  			alert('Kindly Select a Check Box.');
-  		}
-  	}
+
+  	function validatePurchaseOrderFilter(){ 
+		   var customDate = $("#purchaseOrderCustomDate").val(); 
+		   var purchaseOrderFilterDate = $('input[name=dateCheckBox]:checked').val(); 
+		   var purchaseOrderFromDate = $("#purchaseOrderFromDate").val(); 
+		   var purchaseOrderToDate = $("#purchaseOrderToDate").val(); 
+		   if(customDate === "custom"){ 
+		   if(purchaseOrderFromDate === '' && purchaseOrderToDate != null){ 
+		   $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
+		   $("input#purchaseOrderFromDate").after( "<p class='jquery_form_error_message'>From Date is required.</span>"); 
+		   $("input#purchaseOrderFromDate").empty(); 
+		   //return false; 
+		   } 
+		   if(purchaseOrderToDate === '' && purchaseOrderFromDate !== ''){ 
+		   $('#custToDateDiv').find('p.jquery_form_error_message').remove(); 
+		   $("input#purchaseOrderToDate").after( "<p class='jquery_form_error_message'>To Date is required.</span>"); 
+		   $("input#purchaseOrderToDate").empty(); 
+		   //return false; 
+		   } 
+		   if((purchaseOrderFromDate != '' && purchaseOrderFromDate != 'undefined' && purchaseOrderFromDate != null) && 
+		   (purchaseOrderToDate != '' && purchaseOrderToDate != 'undefined' && purchaseOrderToDate != null)){ 
+		   closePop(); 
+		   getPurchaseOrderList(purchaseOrderFilterDate, purchaseOrderFromDate, purchaseOrderToDate); 
+		   $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
+		   $('#custToDateDiv').find('p.jquery_form_error_message').remove(); 
+		   } 
+		   } 
+		   if(purchaseOrderFilterDate != null && purchaseOrderFilterDate != 'undefined' && purchaseOrderFilterDate != ''){ 
+		   closePop(); 
+		   getPurchaseOrderList(purchaseOrderFilterDate, purchaseOrderFromDate, purchaseOrderToDate); 
+		   $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
+		   $('#custToDateDiv').find('p.jquery_form_error_message').remove(); 
+		   //return false; 
+		   } 
+		   } 
+ 	
  </script>
    <script>	
    function closePop(){
@@ -309,11 +319,11 @@ $(document).ready(function(){
   
   <script>
   
-   function getPurchaseOrderList(){
+   function getPurchaseOrderList(purchaseOrderFilterDate, purchaseOrderFromDate, purchaseOrderToDate){
 	   var paymentStatus = "";
-	   var purchaseOrderFilterDate = $('input[name=dateCheckBox]:checked').val();
+	  /*  var purchaseOrderFilterDate = $('input[name=dateCheckBox]:checked').val();
 	 	var purchaseOrderFromDate = $("#purchaseOrderFromDate").val();
-		var purchaseOrderToDate = $("#purchaseOrderToDate").val(); 
+		var purchaseOrderToDate = $("#purchaseOrderToDate").val(); */ 
 	    var searchValue = $("#purchaseOrderDataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
 	   	var url = sourceleadUrl+"/getPurchasedOrderList?searchValue="+searchValue+"&purchaseOrderFromDate="+purchaseOrderFromDate+"&purchaseOrderToDate="+purchaseOrderToDate+"&purchaseOrderFilterDate="+purchaseOrderFilterDate;
