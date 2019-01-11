@@ -122,7 +122,6 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  *
  */
 @RestController
-// @RequestMapping("/app")
 public class CandidateRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(CandidateRestController.class);
@@ -208,7 +207,7 @@ public class CandidateRestController {
 	 * @return Candidate
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_VIEW_CANDIDATE','ROLE_VIEW_EDIT_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_CANDIDATES')")
-	@RequestMapping(value = "/app/storeCandidate", method = RequestMethod.POST)
+	@RequestMapping(value = "/storeCandidate", method = RequestMethod.POST)
 	@ResponseBody
 	public Response<String> storeCandidate(CandidateDTO candidateDto, HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
@@ -244,7 +243,7 @@ public class CandidateRestController {
 		return response;
 	}
 
-	@RequestMapping(value = { "/parseResume", "/app/parseResume" }, method = RequestMethod.POST)
+	@RequestMapping(value = { "/parseResume", "/parseResume" }, method = RequestMethod.POST)
 	public @ResponseBody Response<ResumeParserJsonUtil> parseResume(
 			@RequestParam(value = "json", required = false) String json, MultipartHttpServletRequest request,
 			@RequestParam(value = "locationMapFile", required = false) CommonsMultipartFile locationMapFileData) {
@@ -278,7 +277,7 @@ public class CandidateRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/app/validateCandidateEmail", method = RequestMethod.POST)
+	@RequestMapping(value = "/validateCandidateEmail", method = RequestMethod.POST)
 	public @ResponseBody Response<String> validateCandidateEmail(
 			@RequestParam(value = "email", required = false) String email,
 			@RequestParam(value = "candidateType", required = false) String candidateType, HttpServletRequest request)
@@ -315,7 +314,7 @@ public class CandidateRestController {
 	 * skillName); if(null != candidateSkills){ flag =
 	 * candidateSkillsService.validateSkillName(skillName); } return flag; }
 	 */
-	@RequestMapping(value = "/app/getCandidatesList", method = RequestMethod.POST)
+	@RequestMapping(value = "/getCandidatesList", method = RequestMethod.POST)
 	public @ResponseBody ResponseList<CandidateDTO> getCandidatesList(
 			@RequestParam(value = "requirementId", required = false) Long requirementId, HttpServletRequest request)
 			throws Exception {
@@ -345,7 +344,7 @@ public class CandidateRestController {
 	 *
 	 * @throws NullPointer
 	 */
-	@RequestMapping(value = "/app/checkCandidateState", method = RequestMethod.POST)
+	@RequestMapping(value = "/checkCandidateState", method = RequestMethod.POST)
 	public @ResponseBody Response<Boolean> checkCandidateState(
 			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request)
 			throws Exception {
@@ -376,7 +375,7 @@ public class CandidateRestController {
 	 * @return string
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/app/downloadCandidateResume", method = RequestMethod.GET)
+	@RequestMapping(value = "/downloadCandidateResume", method = RequestMethod.GET)
 	public @ResponseBody void downloadCandidateResume(
 			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -402,7 +401,7 @@ public class CandidateRestController {
 		}
 	}
 
-	@RequestMapping(value = "/app/getUserByRoleId", method = RequestMethod.POST)
+	@RequestMapping(value = "/getUserByRoleId", method = RequestMethod.POST)
 	public @ResponseBody ResponseList<User> getUserByRoleId(
 			@RequestParam(value = "roleId", required = false) Long roleId, HttpServletRequest request)
 			throws Exception {
@@ -423,7 +422,7 @@ public class CandidateRestController {
 		return response;
 	}
 
-	@RequestMapping(value = "/app/getAllRoleUsers", method = RequestMethod.POST)
+	@RequestMapping(value = "/getAllRoleUsers", method = RequestMethod.POST)
 	public @ResponseBody ResponseList<User> getAllRoleUsers(HttpServletRequest request) throws Exception {
 		ResponseList<User> response = new ResponseList<>();
 		try {
@@ -449,7 +448,7 @@ public class CandidateRestController {
 		return response;
 	}
 
-	@RequestMapping(value = "/app/getConsultantUserDetailsById", method = RequestMethod.POST)
+	@RequestMapping(value = "/getConsultantUserDetailsById", method = RequestMethod.POST)
 	public @ResponseBody ResponseList<String> getConsultantUserDetailsById(
 			@RequestParam(value = "userId", required = false) Long userId) {
 		ResponseList<String> response = new ResponseList<>();
@@ -481,7 +480,7 @@ public class CandidateRestController {
 		return response;
 	}
 
-	@RequestMapping(value = "/app/getCandidatesListByCandidateType", method = RequestMethod.POST)
+	@RequestMapping(value = "/getCandidatesListByCandidateType", method = RequestMethod.POST)
 	public @ResponseBody Response<String> getCandidatesListByCandidateType(
 			@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "candidateType", required = false) String candidateType,
@@ -519,7 +518,7 @@ public class CandidateRestController {
 	}
 
 	@PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
-	@RequestMapping(value = "/app/getTeams", method = RequestMethod.POST)
+	@RequestMapping(value = "/getTeams", method = RequestMethod.POST)
 	public @ResponseBody ResponseList<Team> getTeams(HttpServletRequest request) throws Exception {
 		ResponseList<Team> responseList = new ResponseList<>();
 		try {
@@ -544,7 +543,7 @@ public class CandidateRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/app/verifyCoolingOffPeriod")
+	@RequestMapping(value = "/verifyCoolingOffPeriod")
 	public Response<Boolean> verifyCoolingOffPeriod(
 			@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "candidateEmail", required = false) String candidateEmail,
@@ -616,7 +615,7 @@ public class CandidateRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/app/getRequirementHistoryListByCandidateId")
+	@RequestMapping(value = "/getRequirementHistoryListByCandidateId")
 
 	public ResponseList<RequirementSubmission> getRequirementHistoryListByCandidateId(
 			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request)
@@ -684,7 +683,7 @@ public class CandidateRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/app/getRequirementHistoryDetailsByCandidateId")
+	@RequestMapping(value = "/getRequirementHistoryDetailsByCandidateId")
 	public ResponseList<RequirementSubmissionHistory> getRequirementHistoryDetailsByCandidateId(
 			@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "requirementId", required = false) Long requirementId,
@@ -921,7 +920,7 @@ public class CandidateRestController {
 		return null;
 	}
 
-	@RequestMapping(value = { "/app/ws/profileBySkillSet", "/app/profileBySkillSet" }, method = RequestMethod.POST)
+	@RequestMapping(value = { "/ws/profileBySkillSet", "/profileBySkillSet" }, method = RequestMethod.POST)
 	public @ResponseBody Response<String> profileBySkillSet(
 			@RequestParam(value = "allSkills", required = false) String allSkills, HttpServletRequest request)
 			throws Exception {
@@ -939,7 +938,7 @@ public class CandidateRestController {
 		return response;
 	}
 
-	@RequestMapping(value = "/app/ws/dumpCandidateProfilePercentage", method = RequestMethod.GET)
+	@RequestMapping(value = "/ws/dumpCandidateProfilePercentage", method = RequestMethod.GET)
 	public void dumpCandidateProfilePercentage(HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		List<Candidate> candidatesList = candidateService.getAllCandidatesList();
@@ -1034,7 +1033,7 @@ public class CandidateRestController {
 		return xstream.toXML(obj);
 	}
 
-	@RequestMapping(value = "/app/navigateMarketPlaceAjax", method = RequestMethod.POST)
+	@RequestMapping(value = "/navigateMarketPlaceAjax", method = RequestMethod.POST)
 	public String goToMarketplace(
 			@RequestParam(value = "candidateIdsVal[]", required = false) List<Long> candidateIdsVal,
 			HttpServletRequest request) throws Exception {
@@ -1043,7 +1042,7 @@ public class CandidateRestController {
 	}
 
 	// @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
-	@RequestMapping(value = "/app/navigateMarketPlaceList")
+	@RequestMapping(value = "/navigateMarketPlaceList")
 	public ModelAndView goToMarketplace(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("candidates/candidateMarketPlaceList");
@@ -1051,7 +1050,7 @@ public class CandidateRestController {
 		return model;
 	}
 
-	@RequestMapping(value = "/app/getMarketPlaceCandidateMovedList", method = RequestMethod.POST)
+	@RequestMapping(value = "/getMarketPlaceCandidateMovedList", method = RequestMethod.POST)
 	public @ResponseBody ResponseList<CandidateDTO> getMarketPlaceDraftList(HttpServletRequest request) {
 		List<String> candidateIds = (List<String>) request.getSession().getAttribute("candidateIds");
 		ResponseList<CandidateDTO> marketCandidates = candidateService.getCandidatesByCandidateIds(candidateIds);
@@ -1059,7 +1058,7 @@ public class CandidateRestController {
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
-	@RequestMapping(value = "/app/saveMarketPlaceData", method = RequestMethod.POST)
+	@RequestMapping(value = "/saveMarketPlaceData", method = RequestMethod.POST)
 	public Response<String> saveMarketPlaceData(@RequestBody List<CandidateMarketPlaceDTO> marketPlaceList,
 			HttpServletRequest request) throws NumberFormatException, Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -1089,7 +1088,7 @@ public class CandidateRestController {
 
 	// Note this method is Global marketplace Candidate method
 	 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
-	@RequestMapping(value = "/app/globalMarketplacePage")
+	@RequestMapping(value = "/globalMarketplacePage")
 	public ModelAndView goToGlobalMarketplace(HttpServletRequest request) throws Exception {
 		logger.debug("inisde goToGlobalMarketplace  conroller =========>");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1104,7 +1103,7 @@ public class CandidateRestController {
 	 
 	// Note this method is Global marketplace Candidate method
 	 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
-	@RequestMapping(value = "/app/OrgMarketplace")
+	@RequestMapping(value = "/OrgMarketplace")
 	public ModelAndView goToOrgMarketplace(HttpServletRequest request) throws Exception {
 		logger.debug("inisde OrgMarketplace  conroller =========>");
 		ModelAndView model = new ModelAndView();
@@ -1118,7 +1117,7 @@ public class CandidateRestController {
 	 
 	 
 		 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
-		 @RequestMapping(value = "/app/PurchaseOrderList")
+		 @RequestMapping(value = "/PurchaseOrderList")
 		 public ModelAndView goToPurchaseOrderList(HttpServletRequest request) throws Exception {
 			logger.debug("inside PurchaseOrderList  controller =========>");
 			ModelAndView model = new ModelAndView();		
@@ -1128,7 +1127,7 @@ public class CandidateRestController {
 		}
 		 
 		 //response list for purchaseList table
-		 @RequestMapping(value = "/app/getPurchasedOrderList")
+		 @RequestMapping(value = "/getPurchasedOrderList")
 		 public ResponseList<MarketplacePurchaseSalesDTO> getPurchasedOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, HttpServletRequest request) throws Exception {
 			
 			 ResponseList<MarketplacePurchaseSalesDTO> res = new ResponseList<>();
@@ -1161,7 +1160,7 @@ public class CandidateRestController {
 		 
 		// fetching record from marketplace purchase table
 		 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
-		 @RequestMapping(value = "/app/PurchaseOrder")
+		 @RequestMapping(value = "/PurchaseOrder")
 		 public ModelAndView goToPurchaseOrder(@RequestParam(value = "purchaseUuid", required = true) String purchaseUuid,HttpServletRequest request) throws Exception {
 			logger.debug("inside PurchaseOrder  controller =========>");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1177,7 +1176,7 @@ public class CandidateRestController {
 		 
 			// Note this method is sales orderlist  method
 		 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
-		 @RequestMapping(value = "/app/SalesOrderList")
+		 @RequestMapping(value = "/SalesOrderList")
 		 public ModelAndView goToSalesOrderList(HttpServletRequest request) throws Exception {
 			logger.debug("inisde SalesOrderList  conroller =========>");
 			ModelAndView model = new ModelAndView();
@@ -1190,7 +1189,7 @@ public class CandidateRestController {
 		 
 		 
 	@PreAuthorize("hasRole('ROLE_VIEW_CART')")
-	@RequestMapping(value = "/app/getAddedMarketplaceCandidates", method = RequestMethod.POST)
+	@RequestMapping(value = "/getAddedMarketplaceCandidates", method = RequestMethod.POST)
 	public Map<String, Object[]> getAddedMarketplaceCandidates(
 			@RequestParam(value = "candidateIdsVal[]", required = false) List<Long> candidateIdsVal,
 			HttpServletRequest request) throws Exception {
@@ -1203,7 +1202,7 @@ public class CandidateRestController {
 	}
 
 	@PreAuthorize("hasRole('ROLE_SHARE_PROFILE')")
-	@RequestMapping(value = "/app/updateMarketPlacePrice", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateMarketPlacePrice", method = RequestMethod.POST)
 	public Response<String> updateMarketPlacePrice(@RequestParam(value = "marketPlaceId", required = false) Long id,
 			@RequestParam(value = "priceValType", required = false) String priceValType,
 			@RequestParam(value = "priceVal", required = false) String priceVal, HttpServletRequest request)
@@ -1233,7 +1232,7 @@ public class CandidateRestController {
 	}
 
 	@PreAuthorize("hasRole('ROLE_WITHDRAW_PROFILE')")
-	@RequestMapping(value = "/app/withdrawCandidateFromMarketPlace")
+	@RequestMapping(value = "/withdrawCandidateFromMarketPlace")
 	public Response<String> withdrawCandidateFromMarketPlace(@RequestParam(value = "id", required = true) Long id,
 			@RequestParam(value = "withdrawReason", required = true) String withdrawReason, HttpServletRequest request)
 			throws Exception {
@@ -1264,7 +1263,7 @@ public class CandidateRestController {
 	}	
 	
 	@PreAuthorize("hasRole('ROLE_WITHDRAW_PROFILE')")
-	@RequestMapping(value = "/app/withdrawCandidatesFromMarketPlace")
+	@RequestMapping(value = "/withdrawCandidatesFromMarketPlace")
 	public Response<String> withdrawCandidatesFromMarketPlace(@RequestParam(value = "id", required = true) List<Long> candidateIds,
 			@RequestParam(value = "withdrawReason", required = true) String withdrawReason, HttpServletRequest request)
 			throws Exception {
@@ -1299,7 +1298,7 @@ public class CandidateRestController {
 	
 
 	 @PreAuthorize("hasRole('ROLE_ADD_PROFILE')")
-	@RequestMapping(value = "/app/addCandidateToMarketCart")
+	@RequestMapping(value = "/addCandidateToMarketCart")
 	public Response<String> addCandidateToMarketCart(@RequestParam(value = "id", required = true) String uuid, HttpServletRequest request)throws Exception{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1328,7 +1327,7 @@ public class CandidateRestController {
 	 }
 	
 	 @PreAuthorize("hasRole('ROLE_ADD_PROFILE')")
-	@RequestMapping(value = "/app/deleteCandidateMarketCart")
+	@RequestMapping(value = "/deleteCandidateMarketCart")
 	public Response<String> deleteCandidateMarketCart(@RequestParam(value = "marketUUID", required = true) String candidatgeMarketUUID, HttpServletRequest request)throws Exception{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1356,7 +1355,7 @@ public class CandidateRestController {
 	 	}
 	 
 	@PreAuthorize("hasRole('ROLE_VIEW_CART')") 
-	@RequestMapping(value = "/app/updateMarketplaceCartCountAndPrice")
+	@RequestMapping(value = "/updateMarketplaceCartCountAndPrice")
 	public Object[] updateMarketplaceCartCountAndPrice( HttpServletRequest request)throws Exception{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
@@ -1370,7 +1369,7 @@ public class CandidateRestController {
 		return countAndSum;
 	}
 	@PreAuthorize("hasRole('WITHDRAW_PROFILE')")
-	@RequestMapping(value = "/app/deleteCandidateFromMarketcartByCandidateUuid")
+	@RequestMapping(value = "/deleteCandidateFromMarketcartByCandidateUuid")
 	public Response<String> deleteCandidateFromMarketcartByCandidateUuid(@RequestParam(value = "candidateUuid", required = true) String candidateUuid, HttpServletRequest request)throws Exception{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1398,7 +1397,7 @@ public class CandidateRestController {
 	 	}
 	
 	@PreAuthorize("hasRole('WITHDRAW_PROFILE')")
-	@RequestMapping(value = "/app/deleteAllCandidatesFromMarketcart")
+	@RequestMapping(value = "/deleteAllCandidatesFromMarketcart")
 	public Response<String> deleteAllCandidatesFromMarketcart(HttpServletRequest request)throws Exception{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1425,7 +1424,7 @@ public class CandidateRestController {
 		return response;
 	 	}
 	
-	@RequestMapping(value = {"/app/getDynamicSalesOrderList", "/app/exportSalesOrderToPdfOrExcel"} )
+	@RequestMapping(value = {"/getDynamicSalesOrderList", "/exportSalesOrderToPdfOrExcel"} )
 	 public ResponseList<MarketplacePurchaseSalesDTO> getDynamicSalesOrderList
 	 		(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,
 			 @RequestParam(value = "searchValue", required = false)String searchValue,
@@ -1484,7 +1483,7 @@ public class CandidateRestController {
 	/*
      *  walletList
      */
-	 @RequestMapping(value = "/app/walletList")
+	 @RequestMapping(value = "/walletList")
 	 public ModelAndView goToWalletList(HttpServletRequest request) throws Exception {
 		logger.debug("inisde walletList  conroller =========>");
 		ModelAndView model = new ModelAndView();
@@ -1493,7 +1492,7 @@ public class CandidateRestController {
 		return model;
 	}
 	 
-	    @RequestMapping(value = "/app/getWalletList", method = RequestMethod.POST)
+	    @RequestMapping(value = "/getWalletList", method = RequestMethod.POST)
 		public @ResponseBody ResponseList<MarketplaceWalletDTO> getWalletList(
 				MarketplaceWalletDTO marketplaceWalletDTO,
 				@RequestParam(value = "searchValue", required = false) String searchValue,

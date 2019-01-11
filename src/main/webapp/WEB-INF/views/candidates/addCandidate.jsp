@@ -15,6 +15,8 @@
         initLocationAuto('candidateLocation', 'candidateCountry', 'candidateState', 'candidateCity', 'candidateZipCode', 'candidateLatitude', 'candidateLongitude', '', 'address');
         disableMonths();
     };
+    
+    var atsUrl = '${SourceLeadWeb_atsUrl}';
 </script>
 
 <script>
@@ -651,7 +653,7 @@
 						<input type="button" value="Save" id="store_candidate"
 							onclick="storeCandidate();" class="btn btn-primary"> <input
 							type="button" value="Cancel"
-							onClick="javascript:window.location.href = '<c:url value='${appPath}/candidatesList'/>'"
+							onClick="javascript:window.location.href = '<c:url value='/ats/candidatesList'/>'"
 							class="btn btn-default ml">
 					</div>
 				</div>
@@ -714,7 +716,7 @@
             //It will escape all the special characters
             $("#store_candidate").attr("disabled", "disabled");
             $("#store_candidate").addClass('button').val('Processing..');
-			$.post(sourceleadUrl + "/storeCandidate?" + tokenParamName + "=" + tokenValue + "", formData, function(result) {
+			$.post(atsUrl + "/storeCandidate?" + tokenParamName + "=" + tokenValue + "", formData, function(result) {
 				
 				if (result && result.response === "INVALID_DATA") {
                     $("#store_candidate").removeAttr("disabled");
@@ -723,7 +725,7 @@
                 } else if (result.response === "AWKWARD") {
                     location.href = "/errorPage";
                 } else if (result.response === "SUCCESS") {
-                    location.replace(sourceleadUrl + "/candidatesList");
+                    location.replace(atsUrl + "/candidatesList");
                 } else if (result.indexOf('Sign In') !== -1) {
 					location.replace(sourceleadUrl);
 				} else {
@@ -857,7 +859,7 @@
         if (email != null && email != "") {
             $.ajax({
                 type: "POST",
-                url: sourceleadUrl + "/validateCandidateEmail?" + tokenParamName + "=" + tokenValue + "&email=" + email + "&candidateType=N",
+                url: atsUrl + "/validateCandidateEmail?" + tokenParamName + "=" + tokenValue + "&email=" + email + "&candidateType=N",
                 success: function (response) {
                 	if (response.response === "AWKWARD") {
                 	    location.href = "/errorPage";

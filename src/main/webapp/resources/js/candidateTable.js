@@ -107,7 +107,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	  			searchValue=searchValue.split('%')[0];
 	  		}
 	  		
-	  		var url = sourceleadUrl+"/searchCandidate?"+_csrfParam+"="+_csrfToken+"&candidateStatus="+candidateStatus+"&searchValue="+searchValue+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType+"&employmnetTypes="+employmnetTypes+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&createdByFilter="+createdByFilter;
+	  		var url = atsUrl+"/searchCandidate?"+_csrfParam+"="+_csrfToken+"&candidateStatus="+candidateStatus+"&searchValue="+searchValue+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType+"&employmnetTypes="+employmnetTypes+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&createdByFilter="+createdByFilter;
 	  		url += "&"+$($('#candidatelist_form')[0]).serialize();
 	  		if(type == 'gMarketPlace'){
 	  			callMarketPlaceCandidates(url)
@@ -462,7 +462,7 @@ function getCandidateSubmittedJobsCount(){
 		 if(candidateId != null &&  candidateId !='undefined' && candidateId != ''){
 			 $.ajax({
 		           type : "GET",
-		           url: sourceleadUrl+"/getCandidateSubmittedRequirementCount?candidateId="+candidateId,    
+		           url: atsUrl+"/getCandidateSubmittedRequirementCount?candidateId="+candidateId,    
 		            success :function(data) {
 		            	  $("#"+candidateId+"submittedRequirementCount").empty();
 		             	  $("#"+candidateId+"submittedRequirementCount").html(data.submittedJobsCount);
@@ -487,7 +487,7 @@ function getCandidateSubmittedJobsCount(){
 function getSubmittedJobsList(candidateId){
 	$.ajax({
 		  type: "GET",
-		    url: sourceleadUrl+"/getCandidateSubmittedJobsList?candidateId="+candidateId,
+		    url: atsUrl+"/getCandidateSubmittedJobsList?candidateId="+candidateId,
 		     success :function(response) {
 		    	    $("#candidateSubmittedJobsDiv").empty();  
 		    	    $("#candidateSubmittedJobsDiv").append(response);
