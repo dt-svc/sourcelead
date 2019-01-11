@@ -2124,6 +2124,12 @@ public class EMailJobScheduler {
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(contracts.getOrgLocationId().getId());
 			EmailMessage emailMessage = new EmailMessage();
 			 emailMessage.setFirstName(owner.getFirstName());
+			 
+			 
+			//Url for redirection 			 
+		     String redirectURL = "/contractListbyStatus-params-"+"contractType="+contracts.getContractType()+"-and-status=waiting";
+			 Long redirectOrgLocationId = orgLocations.getId();
+
 			 if(owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
 				 
 				 emailMessage.setLastName(owner.getLastName());
@@ -2165,8 +2171,6 @@ public class EMailJobScheduler {
 				 emailMessage.setFromEmail(fromEmail);
 			 }
 	         
-			 
-			 
 			 
 			 String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),contracts.getEndDate());
 			 String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),contracts.getStartDate());
@@ -2227,7 +2231,8 @@ public class EMailJobScheduler {
 			}
 			
 			StringBuilder loginBuilder = new StringBuilder();
-			globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append
+                           ("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reminder</div></a>").toString());
 			
 			 if(contracts.getContactUser().getFirstName() != null && contracts.getContactUser().getLastName()!=null && !"".equalsIgnoreCase(contracts.getContactUser().getFirstName()) && !"".equalsIgnoreCase(contracts.getContactUser().getLastName())){
 				 StringBuilder userBuild = new StringBuilder();
@@ -2260,9 +2265,10 @@ public class EMailJobScheduler {
 			 if(StringUtils.isNotBlank(fromMail)){
 				 emailMessage.setFromEmail(fromMail);
 			 } 
-			 
+			 StringBuilder notificationLink = new StringBuilder();
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			 String actionLink="";
+			 actionLink = notificationLink.append(sourceleadUrl).append("/").append("contractListbyStatus?"+"contractType="+contracts.getContractType()+"&status=waiting").toString();
 			 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 //			 emailScenerioUtil.sendNotification(actionLink, null,owner, contracts.getOrgLocationId(), notificationScenario);
 		

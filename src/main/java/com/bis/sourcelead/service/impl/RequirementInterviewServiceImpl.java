@@ -1899,11 +1899,12 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 
 
 	@Override
-	public void applicantInterviewAcceptmailToInterviewInitiator(String requirementInterviewId) throws Exception {
+	public void applicantInterviewAcceptmailToInterviewInitiator(String requirementInterviewId, Long redirectOrgLocationId) throws Exception {
 		RequirementInterview reqnterview = getRequirementInterviewById(requirementInterviewId);
 		User interviewCreactorUser =  userService.getUserByUserCode(reqnterview.getCreatedBy());
 		RequirementSubmission reqSubmission = requirementSubmissionService.getRequirementSubmissionById(reqnterview.getSubmissionId().getId());
 		OrgLocations orglo = orgLocationService.getOrgLocations(reqSubmission.getOrgLocations().getId());
+		
 		EmailMessage emailMessage = new EmailMessage();
 		User interviewScheduler=userService.getUserByUserCode(reqnterview.getCreatedBy());
 		 OrgSpoc spoc= null;
@@ -1954,6 +1955,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			globalVarsMap.put("ApplicantName", "--");
 		}
 		Requirement requirement = requirementService.getRequirementByRequirementId(reqSubmission.getRequirement().getId());
+		
+		String redirectURL = "/requirementSummary-params-requirementUUID="+requirement.getRequirementUUID();
 
 		if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())) {
 			StringBuilder sbv = new StringBuilder();
@@ -2032,6 +2035,20 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			globalVarsMap.put("Details", "--");
 		}
 		}
+		
+		
+		StringBuilder linkBuild = new StringBuilder();
+		if(reqnterview.getInterviewStatus().equalsIgnoreCase("Not_Attending")){
+		globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Rejected Interview</div></a>").toString());
+				
+		}
+		else {
+			globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append(
+					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View</div></a>").toString());
+			
+		}
+		
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
 		 StringBuilder actionLinkBuilder = new StringBuilder();
