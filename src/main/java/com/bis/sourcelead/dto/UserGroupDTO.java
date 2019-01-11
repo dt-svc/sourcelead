@@ -40,6 +40,8 @@ public class UserGroupDTO extends SearchDTO{
 	
 	private String fromType;
 	
+	private int totalEmpCount;
+	
 	private List<User> userList;
 	
 	public Long getId()
@@ -200,4 +202,11 @@ public class UserGroupDTO extends SearchDTO{
 		this.fromType = fromType;
 	}
 
+	public int getTotalEmpCount() {
+		return totalEmpCount;
+	}
+
+	public void setTotalEmpCount(int totalEmpCount) {
+		this.totalEmpCount = totalEmpCount;
+	}
 }
