@@ -171,14 +171,12 @@
  				$("input#salesOrderFromDate").after( "<p class='jquery_form_error_message'>FromDate is required.</span>");
 	            $("input#salesOrderFromDate").empty();
 	            return false;
- 				//$("#salesOrderFromDate").focus();
  			}
  			if(toDate === '' && fromDate !== ''){
  				$('#custToDateDiv').find('p.jquery_form_error_message').remove();
  				$("input#salesOrderToDate").after( "<p class='jquery_form_error_message'>ToDate is required.</span>");
 	            $("input#salesOrderToDate").empty();
 	            return false;
-				//$("#salesOrderToDate").focus();  				
 	  		}
  	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
  	        	$('#custFromDateDiv').find('p.jquery_form_error_message').remove();
@@ -196,7 +194,6 @@
 	        	getDynamicSalesOrderList();
  		}
  		if(otherDate === ''){
- 			//alert('Kindly Select a Check Box.');
  		}
  	}
    
