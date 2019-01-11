@@ -34,11 +34,11 @@
           <c:set var="timesheetTabExist" scope="session" value="N"/>
           <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
                     <c:if test="${userTabs.tabName == 'Clients'}">
-                 	  <li class="${sessionData.nav == 'Clients' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/clientDashboard'/>" title="Clients"><span class="navIcons assIcon"></span><b>Clients</b></a></li>
+                 	  <li class="${sessionData.nav == 'Clients' ? 'navActive' : ''}"><a href="<c:url value='/vms/clientDashboard'/>" title="Clients"><span class="navIcons assIcon"></span><b>Clients</b></a></li>
                     </c:if>
 	                <c:if test="${userTabs.tabName == 'Jobs'}"> 
 	                <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}"> 
-	                   <li class="${sessionData.nav == 'Requirement' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/jobs'/>" title="Jobs"><span class="navIcons jobIcon"></span><b>Jobs</b></a></li>
+	                   <li class="${sessionData.nav == 'Requirement' ? 'navActive' : ''}"><a href="<c:url value='/ats/jobs'/>" title="Jobs"><span class="navIcons jobIcon"></span><b>Jobs</b></a></li>
 	                </c:if> 
 	                
 	                <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER' }">
@@ -50,16 +50,16 @@
 	                
 	                <c:if test="${userTabs.tabName == 'Candidates'}">
 	                 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-	                   <li class="${sessionData.nav == 'Candidates' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/candidatesList'/>" title="Candidates"><span class="navIcons canIcon"></span><b>Candidates</b></a></li>
+	                   <li class="${sessionData.nav == 'Candidates' ? 'navActive' : ''}"><a href="<c:url value='/ats/candidatesList'/>" title="Candidates"><span class="navIcons canIcon"></span><b>Candidates</b></a></li>
 	                 </c:if>
 	                 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-	                   <li class="${sessionData.nav == 'Candidates' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/candidatesList'/>" title="Candidates"><span class="navIcons canIcon"></span><b>Candidates</b></a></li>
+	                   <li class="${sessionData.nav == 'Candidates' ? 'navActive' : ''}"><a href="<c:url value='/ats/candidatesList'/>" title="Candidates"><span class="navIcons canIcon"></span><b>Candidates</b></a></li>
 	                 </c:if>
 	                </c:if> 
 	                
                 
 	                <c:if test="${userTabs.tabName == 'Vendors'}">
-	                   <li class="${sessionData.nav == 'Vendors' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/vendorsList'/>" title="Vendors"><span class="navIcons venIcon"></span><b>Vendors</b></a></li>
+	                   <li class="${sessionData.nav == 'Vendors' ? 'navActive' : ''}"><a href="<c:url value='/vms/vendorsList'/>" title="Vendors"><span class="navIcons venIcon"></span><b>Vendors</b></a></li>
 	                </c:if> 
 	                 
 	                 <c:if test="${userTabs.tabName == 'Associates'}">
@@ -67,7 +67,7 @@
 	                 </c:if>
 	                 
 	                 <c:if test="${userTabs.tabName == 'Projects'}">
-	                	  <li class="${sessionData.nav == 'Projects' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/projectDashboard'/>" title="Projects"><span class="navIcons projIcon"></span><b>Projects</b></a></li>
+	                	  <li class="${sessionData.nav == 'Projects' ? 'navActive' : ''}"><a href="<c:url value='/pms/projectDashboard'/>" title="Projects"><span class="navIcons projIcon"></span><b>Projects</b></a></li>
 	                 </c:if>
 	                 
 	                 <c:if test="${timesheetTabExist == 'N' && (userTabs.tabName == 'My Timesheets' || userTabs.tabName == 'Timesheet Approval')}">

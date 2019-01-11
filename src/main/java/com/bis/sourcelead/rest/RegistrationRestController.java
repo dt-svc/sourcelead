@@ -1398,7 +1398,7 @@ public class RegistrationRestController {
 	}
 	   
 	@RequestMapping(value = "/app/ws/verificationDone", method = RequestMethod.POST)
-	public String verificationDone(@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password, @RequestParam(value = "userRoleId", required = false) long userRoleId,@RequestParam(value = "verfDone", required = false) String verfDone,HttpServletRequest request) throws Exception
+	public String verificationDone(@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password, @RequestParam(value = "userRoleId", required = false) long userRoleId, @RequestParam(value = "verfDone", required = false) String verfDone, HttpServletRequest request) throws Exception
 	{
 		UserRole userRole = null;
 		if (userRoleId > 0)
@@ -1407,16 +1407,17 @@ public class RegistrationRestController {
 			User user = userService.findByUserName(userName);
 			userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 		}
-		if("".equalsIgnoreCase(userName) || userName == null){
+		if ("".equalsIgnoreCase(userName) || userName == null) {
 			UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
-			if(userLoginSession != null){
-				if(Constants.YES.equalsIgnoreCase(verfDone))
+			if (userLoginSession != null) {
+				if (Constants.YES.equalsIgnoreCase(verfDone))
 					userLoginSession.setAuthenticated(Constants.YES);
 				request.getSession().setAttribute("userLoginSession", userLoginSession);
 			}
 		}
 		SecurityContextHolder.clearContext();
-		SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(userRole, userName, password,verfDone));
+		SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, userName
+				+ "##" + userRole.getId(), password, verfDone));
 		return "true";
 	}
 	
