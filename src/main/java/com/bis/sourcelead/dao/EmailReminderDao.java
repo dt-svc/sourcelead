@@ -7,6 +7,8 @@ import com.bis.sourcelead.entity.EmailReminder;
 public interface EmailReminderDao {
 	
 	EmailReminder saveEmailReminderDetails(EmailReminder emailReminder);
+	
+	EmailReminder getEmailReminderById(Long id);
 
 	List<EmailReminder> getEmailReminderList();
 
