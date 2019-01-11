@@ -3310,6 +3310,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		Date formattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), today);
 		Calendar calendar = Calendar.getInstance();
 		Map<String, Date> dateValue = new HashMap<>();
+		if(salesOrderFilterDate != null){
 		if(salesOrderFilterDate.equalsIgnoreCase("today")){
 			dateValue.put("fromDate", formattedDate);
 			dateValue.put("toDate", formattedDate);
@@ -3359,6 +3360,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			Date toDateVal = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), salesOrderToDate);
 			dateValue.put("fromDate", toDateVal);
 			dateValue.put("toDate", fromDateVal);
+		}
 		}
 		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue, salesOrderFromDate, salesOrderToDate, dateValue);
 		return responseList;

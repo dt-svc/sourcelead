@@ -160,6 +160,43 @@
 	   getDynamicSalesOrderList();
 	 });
   
+   function validateSalesOrderFilter(){
+ 		var customDate = $("#salesOrderCustomDate").val();
+ 		var otherDate = $('input[name=dateCheckBox]:checked').val();
+ 		var fromDate = $("#salesOrderFromDate").val();
+ 		var toDate = $("#salesOrderToDate").val();
+ 		if(customDate === "custom"){
+ 			if(fromDate === ''){
+ 				$('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+ 				$("input#salesOrderFromDate").after( "<p class='jquery_form_error_message'>FromDate is required.</span>");
+	            $("input#salesOrderFromDate").empty();
+	            return false;
+ 			}
+ 			if(toDate === '' && fromDate !== ''){
+ 				$('#custToDateDiv').find('p.jquery_form_error_message').remove();
+ 				$("input#salesOrderToDate").after( "<p class='jquery_form_error_message'>ToDate is required.</span>");
+	            $("input#salesOrderToDate").empty();
+	            return false;
+	  		}
+ 	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
+ 	        	$('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+ 	        	$('#custToDateDiv').find('p.jquery_form_error_message').remove();
+ 	        	closePop();
+ 	        	getDynamicSalesOrderList();
+       	}
+ 			}else{
+ 				$('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+ 	        	$('#custToDateDiv').find('p.jquery_form_error_message').remove();
+ 	        	
+ 			}
+ 		if(otherDate != null && otherDate != 'undefined' && otherDate != ''){
+ 				closePop();
+	        	getDynamicSalesOrderList();
+ 		}
+ 		if(otherDate === ''){
+ 		}
+ 	}
+   
    function getDynamicSalesOrderList(){
 	   var salesOrderFilterDate = $('input[name=dateCheckBox]:checked').val();
 	 	var salesOrderFromDate = $("#salesOrderFromDate").val();
@@ -403,31 +440,6 @@
   		 createSalesOrderToDate();
   	 });
   	
-  	function validateSalesOrderFilter(){
-  		var customDate = $("#salesOrderCustomDate").val();
-  		var otherDate = $('input[name=dateCheckBox]:checked').val();
-  		var fromDate = $("#salesOrderFromDate").val();
-  		var toDate = $("#salesOrderToDate").val();
-  		if(customDate === "custom"){
-  			if(fromDate === ''){
-  				$("#salesOrderFromDate").focus();
-  			}
-  			if(toDate === '' && fromDate !== ''){
-				$("#salesOrderToDate").focus();  				
-	  		}
-  	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
-  	        	closePop();
-  	        	getDynamicSalesOrderList();
-        	}
-  			}
-  		if(otherDate != null && otherDate != 'undefined' && otherDate != ''){
-  				closePop();
-	        	getDynamicSalesOrderList();
-  		}
-  		if(otherDate === '' && customDate != 'custom'){
-  			alert('Kindly Select a Check Box.');
-  		}
-  	}
  </script>
    <script>	
    function closePop(){
