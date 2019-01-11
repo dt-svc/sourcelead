@@ -238,7 +238,7 @@ public class RequirementServiceTest {
 			Org org= new Org();
 			org.setOrgCode("12456");
 			loginOrgLocation.setOrg(org);
-			requirementService.approverEmailScenario(user, approverUser, requirement, location, loginOrgLocation);
+			//requirementService.approverEmailScenario(user, approverUser, requirement, location, loginOrgLocation);
 		}
 		@Test
 		public void approverTwoEmailScenario() throws Exception{

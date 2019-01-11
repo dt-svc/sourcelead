@@ -48,7 +48,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/app")
 public class ClientController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ClientController.class);

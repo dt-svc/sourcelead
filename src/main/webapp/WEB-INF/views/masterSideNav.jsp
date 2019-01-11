@@ -34,7 +34,7 @@
           <c:set var="timesheetTabExist" scope="session" value="N"/>
           <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
                     <c:if test="${userTabs.tabName == 'Clients'}">
-                 	  <li class="${sessionData.nav == 'Clients' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/clientDashboard'/>" title="Clients"><span class="navIcons assIcon"></span><b>Clients</b></a></li>
+                 	  <li class="${sessionData.nav == 'Clients' ? 'navActive' : ''}"><a href="<c:url value='/vms/clientDashboard'/>" title="Clients"><span class="navIcons assIcon"></span><b>Clients</b></a></li>
                     </c:if>
 	                <c:if test="${userTabs.tabName == 'Jobs'}"> 
 	                <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}"> 
@@ -59,7 +59,7 @@
 	                
                 
 	                <c:if test="${userTabs.tabName == 'Vendors'}">
-	                   <li class="${sessionData.nav == 'Vendors' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/vendorsList'/>" title="Vendors"><span class="navIcons venIcon"></span><b>Vendors</b></a></li>
+	                   <li class="${sessionData.nav == 'Vendors' ? 'navActive' : ''}"><a href="<c:url value='/vms/vendorsList'/>" title="Vendors"><span class="navIcons venIcon"></span><b>Vendors</b></a></li>
 	                </c:if> 
 	                 
 	                 <c:if test="${userTabs.tabName == 'Associates'}">

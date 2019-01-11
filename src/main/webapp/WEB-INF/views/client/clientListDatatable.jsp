@@ -24,7 +24,6 @@
 	
 function getClientList(){
 	var responderType = "Client";
-	var sourceleadUrl ='${sourceleadUrl}';
 	var values = [];
 	$('input:checkbox[name=clinetLevel]:checked').each(function() 
     {
@@ -46,7 +45,7 @@ function getClientList(){
 	  		var formData = new FormData(form); 
 	  		var searchValue = $("#dataTableSearch").val();
 	  		searchValue = searchValue ? searchValue : "";
-	  		var url = sourceleadUrl+"/searchClientDetails?responderType="+responderType+"&searchValue="+searchValue+"&values="+values;
+	  		var url = vmsUrl+"/searchClientDetails?responderType="+responderType+"&searchValue="+searchValue+"&values="+values;
 	  	    url += "&"+$($('#clientlist_form')[0]).serialize();  
 	  		prepareClientList(url);
 	  		closePop();
