@@ -3237,7 +3237,7 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 		        cell1.setColspan(14);
 		        headerCellStyle(cell1);
 		        table.setWidthPercentage(100);
-		        if(toStage.equals("SUBMISSION") || toStage.equals("SHORTLIST")){
+		        if(toStage.equals("SUBMISSION") || toStage.equals("SHORTLIST") || toStage.equals("INTERVIEW")){
 		        table.setWidths(new int[]{4,4,4,4,4,4,4,4,4});
 		        }else if(toStage.equals("SUBMIT_TO_CLIENT") || toStage.equals("JOINED") || toStage.equals("OFFERMADE")){
 		         table.setWidths(new int[]{4,4,4,4,4,4,4,4,4,4});	
@@ -3258,7 +3258,7 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 		        java.util.List<String[]> dataList = new ArrayList<>();
 		        java.util.List<RequirementSubmissionHistory> list = historyList.getData();
 		        for(RequirementSubmissionHistory data : list){
-		        	if(toStage.equals("SUBMISSION") || toStage.equals("SHORTLIST")){
+		        	if(toStage.equals("SUBMISSION") || toStage.equals("SHORTLIST") || toStage.equals("INTERVIEW")){
 		        	dataList.add(prepareRecruiterReportsApplicantsListStringArray(data,headers,loginOrgLocations,toStage));
 		        	}else if(toStage.equals("SUBMIT_TO_CLIENT") || toStage.equals("JOINED") || toStage.equals("OFFERMADE")){
 			        dataList.add(prepareRecruiterReportsApplicantsListStringArrayOne(data,headers,loginOrgLocations,toStage));	
@@ -3322,8 +3322,9 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 			 userArray[7] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getCreatedDate());
 			 }else if(toStage.equals("SHORTLIST")){
 			 userArray[7] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getCreatedDate());
+			 }{
+			 userArray[7] = "0";
 			 }
-			 
 			 userArray[8] = submissionHistory.getSubmissionId().getSubmissionStatus().toString();
 			   
 			return userArray;
