@@ -353,7 +353,7 @@ public class IndPaySlipPdf {
 				addEmployeeAttribute(list, "Income Tax Number (PAN) ", candidate.getPanNumber());
 			}
 		}
-		if(ape.getEligibleForPf().equalsIgnoreCase("Y")) {
+		if(ape != null && ape.getEligibleForPf() != null && ape.getEligibleForPf().equalsIgnoreCase("Y")) {
 			if(ape.getUanNumber() != null) {
 				if(ppsi.getEmployeeUanNumber() != null && ppsi.getEmployeeUanNumber().equalsIgnoreCase("Y")) {
 					addEmployeeAttribute(list, "Universal Account Number (UAN) ", ape.getUanNumber());
@@ -365,7 +365,7 @@ public class IndPaySlipPdf {
 				}
 			}
 		}
-		if(ape.getEligibleForEsi() != null) {
+		if(ape != null && ape.getEligibleForEsi() != null) {
 			if(ape.getEsinumber() != null) {
 				if(ppsi.getEmployeeEsiNumber() != null && ppsi.getEmployeeEsiNumber().equalsIgnoreCase("Y")) {
 					addEmployeeAttribute(list, "ESI Number ", ape.getEsinumber());
