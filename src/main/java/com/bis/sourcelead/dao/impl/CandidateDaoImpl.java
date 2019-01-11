@@ -2693,7 +2693,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			marketPlaceDTO.setLocation(candidateMarketPlace.getCandidateId().getLocation());
 			marketPlaceDTO.setProfilePercentage(candidateMarketPlace.getCandidateId().getCandidateProfilePercentage());
 			int count = getMarketCartStatusByMarketIdOrgId(candidateMarketPlace.getId(),
-					candidateMarketPlace.getOrgLocationId().getId());
+					orgLocations.getId());
 			if (count != 0) {
 				marketPlaceDTO.setMarketCartStatus(Constants.ADDED_CART);
 			}
