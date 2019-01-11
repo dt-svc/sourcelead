@@ -10,6 +10,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -559,6 +560,17 @@ public class IndianPayrollRestController {
    	    if(sessionObj != null) {
    	    	try {
    	    		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = (IndPaysheetFrequencyDTO) sessionObj;
+   	    		
+   	    		//exclude employees logic start
+   	    		List<INDPayrollDTO> ipDTOList = new ArrayList<>();
+	   	 	    for(INDPayrollDTO ipDTO : indPaysheetFrequencyDTO.getIndPayrollDTO()) {
+	   	 	    	if(!Arrays.asList(indApprovePayrollDTO.getExcludeEmpPayrollUUID()).contains(ipDTO.getIndEmpPayrollUUID())) {
+	   	 	    		ipDTOList.add(ipDTO);
+	   	 	    	}
+	   	 	    }
+	   	 	    indPaysheetFrequencyDTO.setIndPayrollDTO(ipDTOList);
+	   	 	    //exclude employees logic end
+   	    		
    	   	        Response<IndApprovePayrollDTO> res = indPaysheetFrequencyService.sentForApproveIndPayroll(indApprovePayrollDTO,indPaysheetFrequencyDTO, orgLocation,loginUser);
    	   	        SourceLeadSessionManager.removeSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
    	   	        return res.getObject();
@@ -568,6 +580,17 @@ public class IndianPayrollRestController {
 	    }else {
 	    	 Response<IndPaysheetFrequencyDTO> resp = indPaysheetFrequencyService.getIndPaysheetFrequencyByEmpPayrollUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID(),orgLocation);
 	    	 IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = resp.getObject();
+	    	 
+	    	//exclude employees logic start
+    		List<INDPayrollDTO> ipDTOList = new ArrayList<>();
+   	 	    for(INDPayrollDTO ipDTO : indPaysheetFrequencyDTO.getIndPayrollDTO()) {
+   	 	    	if(!Arrays.asList(indApprovePayrollDTO.getExcludeEmpPayrollUUID()).contains(ipDTO.getIndEmpPayrollUUID())) {
+   	 	    		ipDTOList.add(ipDTO);
+   	 	    	}
+   	 	    }
+   	 	    indPaysheetFrequencyDTO.setIndPayrollDTO(ipDTOList);
+   	 	    //exclude employees logic end
+	   	 	    
 	    	 Response<IndApprovePayrollDTO> res = indPaysheetFrequencyService.sentForApproveIndPayroll(indApprovePayrollDTO,indPaysheetFrequencyDTO, orgLocation,loginUser);
    	         SourceLeadSessionManager.removeSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
    	         return res.getObject();
@@ -592,10 +615,14 @@ public class IndianPayrollRestController {
 	    	Response<IndPaysheetFrequencyDTO> freqResponse = indPaysheetFrequencyService.getIndPaysheetFrequencyByEmpPayrollUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID(), orgLocation);
 	    	indPaysheetFrequencyDTO =freqResponse.getObject();
 	    }
-	
+	    List<INDPayrollDTO> ipDTOList = new ArrayList<>();
+	    for(INDPayrollDTO ipDTO : indPaysheetFrequencyDTO.getIndPayrollDTO()) {
+	    	if(!Arrays.asList(indApprovePayrollDTO.getExcludeEmpPayrollUUID()).contains(ipDTO.getIndEmpPayrollUUID())) {
+	    		ipDTOList.add(ipDTO);
+	    	}
+	    }
+	    indPaysheetFrequencyDTO.setIndPayrollDTO(ipDTOList);
    		model.addObject("freqResponse",indPaysheetFrequencyDTO);
-   		
-   		
    		
    		List<AssociatePayrollPayheadHistoryDTO> allAssociatesPayrollPayheadList =indPaysheetFrequencyDTO.getIndPayrollDTO().stream().map(empPayrollDTO->empPayrollDTO.getPayHeadHistoryDTOList()).flatMap(List::stream).collect(Collectors.toList());
    		
@@ -722,7 +749,7 @@ public class IndianPayrollRestController {
 					dto.setDeducationAmount(iepdt.getGrossPay().subtract(iepdt.getNetPay()));
 					dto.setNetPay(iepdt.getNetPay());
 					
-					List<IndEmployeePayroll> ytdList = indPaysheetFrequencyService.getYTDIndEmployeePayrollList(iepdt.getIndEmpPayrollUUID());
+					/*List<IndEmployeePayroll> ytdList = indPaysheetFrequencyService.getYTDIndEmployeePayrollList(iepdt.getIndEmpPayrollUUID());
 					
 					double ytdPT = ytdList.stream().mapToDouble(ap->ap.getProfessionalTax().doubleValue()).sum();
 					double ytdTDS = ytdList.stream().mapToDouble(ap->ap.getTds().doubleValue()).sum();
@@ -730,7 +757,9 @@ public class IndianPayrollRestController {
 							
 							
 					dto.setYtdTaxes(new BigDecimal(ytdPT).add(new BigDecimal(ytdTDS)));
-					dto.setYtdNetPay(new BigDecimal(ytdNetPay));
+					dto.setYtdNetPay(new BigDecimal(ytdNetPay));*/
+					dto.setYtdTaxes(new BigDecimal(0.00));
+					dto.setYtdNetPay(new BigDecimal(0.00));
 					indEmployeePayrollList.add(dto);
 				}
 				responseList.setData(indEmployeePayrollList);
