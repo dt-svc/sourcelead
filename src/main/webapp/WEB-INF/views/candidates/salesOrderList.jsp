@@ -93,7 +93,7 @@
                 <label>Today</label>
             </li>
 			<li class="checkBox positionRelative">
-                <input name="dateCheckBox" value="1_week" type="radio" class="mt2">
+                <input name="dateCheckBox" value="1_week" type="radio"  class="mt2">
                 <label>Week Ago</label>
             </li>
 			  <li class="checkBox positionRelative">
@@ -161,44 +161,37 @@
 	 });
   
 	   function validateSalesOrderFilter(){ 
-		   var customDate = $("#salesOrderCustomDate").val(); 
 		   var salesOrderFilterDate = $('input[name=dateCheckBox]:checked').val(); 
 		   var salesOrderFromDate = $("#salesOrderFromDate").val(); 
 		   var salesOrderToDate = $("#salesOrderToDate").val(); 
-		   if(customDate === "custom"){ 
+		   if(salesOrderFilterDate === "custom"){ 
 		   if(salesOrderFromDate === '' && salesOrderToDate != null){ 
 		   $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
 		   $("input#salesOrderFromDate").after( "<p class='jquery_form_error_message'>From Date is required.</span>"); 
 		   $("input#salesOrderFromDate").empty(); 
-		   //return false; 
+		   return false; 
 		   } 
 		   if(salesOrderToDate === '' && salesOrderFromDate !== ''){ 
 		   $('#custToDateDiv').find('p.jquery_form_error_message').remove(); 
 		   $("input#salesOrderToDate").after( "<p class='jquery_form_error_message'>To Date is required.</span>"); 
 		   $("input#salesOrderToDate").empty(); 
-		   //return false; 
+		   return false; 
 		   } 
 		   if((salesOrderFromDate != '' && salesOrderFromDate != 'undefined' && salesOrderFromDate != null) && 
 		   (salesOrderToDate != '' && salesOrderToDate != 'undefined' && salesOrderToDate != null)){ 
-		   closePop(); 
-		   getDynamicSalesOrderList(salesOrderFilterDate, salesOrderFromDate, salesOrderToDate); 
 		   $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
 		   $('#custToDateDiv').find('p.jquery_form_error_message').remove(); 
 		   } 
 		   } 
-		   if(salesOrderFilterDate != null && salesOrderFilterDate != 'undefined' && salesOrderFilterDate != ''){ 
-		   closePop(); 
-		   getDynamicSalesOrderList(salesOrderFilterDate, salesOrderFromDate, salesOrderToDate); 
+		   else{
 		   $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
 		   $('#custToDateDiv').find('p.jquery_form_error_message').remove(); 
-		   //return false; 
-		   } 
+		   }
+		   closePop(); 
+		   getDynamicSalesOrderList(salesOrderFilterDate, salesOrderFromDate, salesOrderToDate);
 		   } 
    
    function getDynamicSalesOrderList(salesOrderFilterDate, salesOrderFromDate, salesOrderToDate){
-	  /*  var salesOrderFilterDate = $('input[name=dateCheckBox]:checked').val();
-	 	var salesOrderFromDate = $("#salesOrderFromDate").val();
-		var salesOrderToDate = $("#salesOrderToDate").val();  */
 	  	var result = "";
 	  	var searchValue = $("#searchByValue").val();
 	  	var url = "";
@@ -453,39 +446,25 @@
     	$("#modalSalesOrder, .advancedsearch-mask").fadeOut();
     }
   
-	 
-	/* $("#paymentSuccessCheckBox").click(function() {
-		if($(this).is(":checked")){
-			paymentStatus = 'success';
-		}
-	});
-	$("#paymentFailureCheckBox").click(function() {
-		if($(this).is(":checked")){
-			paymentStatus = 'failure';
-		}
-	}); */
-	//Custom Dates
-	$("#salesOrderCustomDate").click(function() {
-	if($(this).is(":checked")){
-		$("#customDates").show();
-	}else {
-		$("#customDates").hide();
-	}
+	$('input[name=dateCheckBox]').on('change', function() {
+   		if($(this).val() == "custom"){
+   			$("#customDates").show();
+	   		$('#salesOrderFromDate').attr('data-validation',"required");
+	        $('#salesOrderToDate').attr('data-validation',"required");
+   		}else{
+   			$("#customDates").hide();
+   			$('#salesOrderFromDate').removeAttr('data-validation');
+   	        $('#salesOrderToDate').removeAttr('data-validation');
+   	     	$('#salesOrderToDate, #salesOrderFromDate').val('').datepicker('setDate', null);
+   		}
+		
 	});
 	
 	function resetSalesOrderFilter(){
-		emptySalesOrderSearchValues();
+		$('#salesOrderFromDate, #salesOrderToDate').val('').datepicker('setDate', null);
 		$("#customDates").hide();
 		$("ul#salesOrderCheckBox > li input:radio").prop("checked", false);
 		$("ul#salesOrderPaymentStatus > li input:checkbox").prop("checked", false);
-	}
-	
-	function emptySalesOrderSearchValues(){
-		$("#salesOrderCustomDate").val('');
-		$("#salesOrderFromDate").val('');
-		$("#salesOrderToDate").val('');
-		salesOrderFilterDate = '';
-		paymentStatus = '';
 	}
 	
 	function getActions(){
@@ -530,5 +509,4 @@
 		$(".project_inn_mask").fadeOut(200);
 	}
   </script>
-  
   <jsp:include page="../masterFooter.jsp" /> 
