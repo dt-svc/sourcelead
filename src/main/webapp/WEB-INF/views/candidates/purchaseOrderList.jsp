@@ -243,38 +243,34 @@ $(document).ready(function(){
   	 });
 
   	function validatePurchaseOrderFilter(){ 
-		   var customDate = $("#purchaseOrderCustomDate").val(); 
 		   var purchaseOrderFilterDate = $('input[name=dateCheckBox]:checked').val(); 
 		   var purchaseOrderFromDate = $("#purchaseOrderFromDate").val(); 
 		   var purchaseOrderToDate = $("#purchaseOrderToDate").val(); 
-		   if(customDate === "custom"){ 
+		   if(purchaseOrderFilterDate === "custom"){ 
 		   if(purchaseOrderFromDate === '' && purchaseOrderToDate != null){ 
 		   $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
 		   $("input#purchaseOrderFromDate").after( "<p class='jquery_form_error_message'>From Date is required.</span>"); 
 		   $("input#purchaseOrderFromDate").empty(); 
-		   //return false; 
+		   return false; 
 		   } 
 		   if(purchaseOrderToDate === '' && purchaseOrderFromDate !== ''){ 
 		   $('#custToDateDiv').find('p.jquery_form_error_message').remove(); 
 		   $("input#purchaseOrderToDate").after( "<p class='jquery_form_error_message'>To Date is required.</span>"); 
 		   $("input#purchaseOrderToDate").empty(); 
-		   //return false; 
+		   return false; 
 		   } 
 		   if((purchaseOrderFromDate != '' && purchaseOrderFromDate != 'undefined' && purchaseOrderFromDate != null) && 
 		   (purchaseOrderToDate != '' && purchaseOrderToDate != 'undefined' && purchaseOrderToDate != null)){ 
-		   closePop(); 
-		   getPurchaseOrderList(purchaseOrderFilterDate, purchaseOrderFromDate, purchaseOrderToDate); 
 		   $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
 		   $('#custToDateDiv').find('p.jquery_form_error_message').remove(); 
 		   } 
 		   } 
 		   if(purchaseOrderFilterDate != null && purchaseOrderFilterDate != 'undefined' && purchaseOrderFilterDate != ''){ 
-		   closePop(); 
-		   getPurchaseOrderList(purchaseOrderFilterDate, purchaseOrderFromDate, purchaseOrderToDate); 
 		   $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
 		   $('#custToDateDiv').find('p.jquery_form_error_message').remove(); 
-		   //return false; 
 		   } 
+		   closePop(); 
+		   getPurchaseOrderList(purchaseOrderFilterDate, purchaseOrderFromDate, purchaseOrderToDate); 
 		   } 
  	
  </script>
@@ -292,27 +288,26 @@ $(document).ready(function(){
     	$("#modalPurchaseOrder, .advancedsearch-mask").fadeOut();
     }
     
-    $("#purchaseOrderCustomDate").click(function() {
-    	if($(this).is(":checked")){
-    		$("#customDates").show();
-    	}else {
-    		$("#customDates").hide();
-    	}
-    	});
     	
+    $('input[name=dateCheckBox]').on('change', function() {
+   		if($(this).val() == "custom"){
+   			$("#customDates").show();
+	   		$('#purchaseOrderFromDate').attr('data-validation',"required");
+	        $('#purchaseOrderToDate').attr('data-validation',"required");
+   		}else{
+   			$("#customDates").hide();
+   			$('#purchaseOrderFromDate').removeAttr('data-validation');
+   	        $('#purchaseOrderToDate').removeAttr('data-validation');
+   	     	$('#purchaseOrderToDate, #purchaseOrderFromDate').val('').datepicker('setDate', null);
+   		}
+		
+	});
+    
     	function resetPurchaseOrderFilter(){
-    		emptyPurchaseOrderSearchValues();
+    		$('#purchaseOrderFromDate, #purchaseOrderToDate').val('').datepicker('setDate', null);
     		$("#customDates").hide();
     		$("ul#purchaseOrderCheckBox > li input:radio").prop("checked", false);
     		$("ul#purchaseOrderPaymentStatus > li input:checkbox").prop("checked", false);
-    	}
-    	
-    	function emptyPurchaseOrderSearchValues(){
-    		$("#purchaseOrderCustomDate").val('');
-    		$("#purchaseOrderFromDate").val('');
-    		$("#purchaseOrderToDate").val('');
-    		purchaseOrderFilterDate = '';
-    		paymentStatus = '';
     	}
     	
  </script>   	 
@@ -321,9 +316,6 @@ $(document).ready(function(){
   
    function getPurchaseOrderList(purchaseOrderFilterDate, purchaseOrderFromDate, purchaseOrderToDate){
 	   var paymentStatus = "";
-	  /*  var purchaseOrderFilterDate = $('input[name=dateCheckBox]:checked').val();
-	 	var purchaseOrderFromDate = $("#purchaseOrderFromDate").val();
-		var purchaseOrderToDate = $("#purchaseOrderToDate").val(); */ 
 	    var searchValue = $("#purchaseOrderDataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
 	   	var url = sourceleadUrl+"/getPurchasedOrderList?searchValue="+searchValue+"&purchaseOrderFromDate="+purchaseOrderFromDate+"&purchaseOrderToDate="+purchaseOrderToDate+"&purchaseOrderFilterDate="+purchaseOrderFilterDate;
