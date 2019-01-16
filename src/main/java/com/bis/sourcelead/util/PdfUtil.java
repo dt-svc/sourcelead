@@ -3323,9 +3323,9 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 			 if(toStage.equals("SUBMISSION")){
 			 userArray[7] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getCreatedDate());
 			 }else if(toStage.equals("SHORTLIST")){
-			 userArray[7] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getCreatedDate());
+			 userArray[7] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getCreatedDate());
 			 }else{
-			 userArray[7] = "0";
+			 userArray[7] = "1";
 			 }
 			 userArray[8] = submissionHistory.getSubmissionId().getSubmissionStatus().toString();
 			   
@@ -3372,9 +3372,9 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 					 userArray[8] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getCreatedDate());
 					 }else if(toStage.equals("OFFERMADE")){
 					 userArray[7] = submissionHistory.getSubmissionId().getOfferRate();
-					 userArray[8] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getCreatedDate());
+					 userArray[8] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getCreatedDate());
 					 }else{
-					 userArray[7] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getCreatedDate());
+					 userArray[7] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getCreatedDate());
 					 userArray[8] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getJoinedDate());
 					 }
 					 userArray[9] = submissionHistory.getSubmissionId().getSubmissionStatus().toString(); 
@@ -3415,11 +3415,11 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 					 }
 					 
 					 if(toStage.equals("REJECTED")){
-					 userArray[7] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getCreatedDate());
+					 userArray[7] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getCreatedDate());
 					 userArray[8] = submissionHistory.getSubmissionId().getRejectedCategoryType();
 					 userArray[9] = submissionHistory.getSubmissionId().getRejectedReason();
 					 }else{
-					 userArray[7] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getCreatedDate());
+					 userArray[7] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getCreatedDate());
 					 userArray[8] = submissionHistory.getSubmissionId().getBackOutCategoryType();
 					 userArray[9] = submissionHistory.getSubmissionId().getBackOutReason(); 
 					 }

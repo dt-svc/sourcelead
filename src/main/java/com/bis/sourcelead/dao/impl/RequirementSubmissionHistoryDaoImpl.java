@@ -307,7 +307,7 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 			for(RequirementLocations location :locationsList){
 				sb = sb.append(location.getLocation()).append(",");
 			}
-			history.setOrgLocationName(sb.toString());
+			history.setOrgLocationName(sb.deleteCharAt(sb.length()-1).toString());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
