@@ -69,6 +69,8 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateMarketCart;
+import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
@@ -1485,7 +1487,9 @@ public class CandidateListRestController {
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),
 						loginOrgLocation.getId());
+				
 				StringBuffer activitySummary = new StringBuffer();
+				Boolean flag;
 				if (candidate != null) {
 					if (Constants.Associates.equalsIgnoreCase(candidateType)) {
 						candidate.setIsAssociate(Constants.NO);
@@ -1513,6 +1517,12 @@ public class CandidateListRestController {
 					candidateService.saveOrUpdateCandidate(candidate);
 					candidateService.saveOrUpdateCandidateElkDocument(candidate);
 
+					//deleting candidate from marketplace and cart.
+					flag = candidateService.deleteCandidateFromMarketcartByCandidateUuid(candidate.getCandidateUUID());
+					if(flag == true){
+						candidateService.deleteCandidateFromMarketplaceByCandidateUuid(candidate.getCandidateUUID());
+					}
+					
 					candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
 					candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "", Constants.CANDIDATE_DELETED,
 							activitySummary.toString(), "CANDIDATE");

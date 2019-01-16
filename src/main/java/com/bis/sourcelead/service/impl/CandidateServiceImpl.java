@@ -2962,8 +2962,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public void deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid) throws Exception {
-		candidateDao.deleteCandidateFromMarketcartByCandidateUuid(candidateUuid);
+	public Boolean deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid) throws Exception {
+		return candidateDao.deleteCandidateFromMarketcartByCandidateUuid(candidateUuid);
 		
 	}
 	
@@ -3557,6 +3557,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public void updateMarketWalletAmount(Double balanceAmountValue, Long id) {
 		candidateDao.updateMarketWalletAmount(balanceAmountValue, id);
+	}
+
+	@Override
+	public void deleteCandidateFromMarketplaceByCandidateUuid(String candidateUuid) throws Exception {
+		candidateDao.deleteCandidateFromMarketplaceByCandidateUuid(candidateUuid);
 	}
 	
 }
