@@ -422,8 +422,8 @@ function associateCandidateListPagination(url,sourceleadUrl){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
 	    	  	   	 result = result +"<td>";
-	    	  	   if(opt.orgLocationName !=null && opt.orgLocationName !="" && opt.orgLocationName !="undefined"){
-	    	  	   	result = result +"<div class='tbldata-dotdot-me' title='"+opt.orgLocationName+"'>"+opt.orgLocationName+"</div>"; 
+	    	  	   if(opt.clientName !=null && opt.clientName !="" && opt.clientName !="undefined"){
+	    	  	   	result = result +"<div class='tbldata-dotdot-me' title='"+opt.clientName+"'>"+opt.clientName+"</div>"; 
 	    	  	   	 }else{
 	    	  	   	result = result +"<div class='tbldata-dotdot'> <span>---</span></div>"; 	 
 	    	  	   	 }

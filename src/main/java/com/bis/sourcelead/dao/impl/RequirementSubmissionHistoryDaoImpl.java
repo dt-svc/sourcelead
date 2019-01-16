@@ -16,11 +16,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.RequirementLocationsDao;
 import com.bis.sourcelead.dao.RequirementSubmissionHistoryDao;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.RecruiterReportView;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
@@ -36,6 +38,9 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private RequirementLocationsDao requirementLocationsDao;
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -292,17 +297,29 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 			history.setEmail(history.getSubmissionId().getCandidate().getEmail());
 			history.setCandidateName(history.getSubmissionId().getCandidate().getFirstName());
 			history.setJobTitle(history.getSubmissionId().getRequirement().getJobTitle());
-			history.setMobilePhone(history.getSubmissionId().getCandidate().getPanNumber());
-			
+			history.setMobilePhone(history.getSubmissionId().getCandidate().getMobilePhone());
+			if (history.getSubmissionId().getFinalizedRate() !=null){
+				history.setFinalizedRate(history.getSubmissionId().getFinalizedRate());	
+			}
+			StringBuilder sb = new StringBuilder();
+			try {
+				List<RequirementLocations> locationsList = requirementLocationsDao.getRequirementLocationsListByRequirementId(history.getSubmissionId().getRequirement().getId());
+			for(RequirementLocations location :locationsList){
+				sb = sb.append(location.getLocation()).append(",");
+			}
+			history.setOrgLocationName(sb.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			if(history.getSubmissionId().getRequirement().getClientId() != null) {
 				if (history.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
 					if (history.getSubmissionId().getRequirement().getClientId().getResponderLocationId() != null) {
-						history.setOrgLocationName(history.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
+						history.setClientName(history.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
 					}
 				}
 				if (history.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")) {
 					if (history.getSubmissionId().getRequirement().getClientId().getLocationId() != null) {
-						history.setOrgLocationName(history.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
+						history.setClientName(history.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
 					}
 				}
 			}

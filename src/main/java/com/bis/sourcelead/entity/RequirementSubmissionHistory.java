@@ -213,6 +213,11 @@ public class RequirementSubmissionHistory implements Serializable{
    @Transient
    @JsonProperty
    private String generateInvoice;
+   
+   @Transient
+   @JsonProperty
+   private String finalizedRate;
+	
 	
 	public Long getId() {
 		return id;
@@ -631,6 +636,14 @@ public class RequirementSubmissionHistory implements Serializable{
 
 	public void setMasterUserCode(String masterUserCode) {
 		this.masterUserCode = masterUserCode;
+	}
+
+	public String getFinalizedRate() {
+		return finalizedRate;
+	}
+
+	public void setFinalizedRate(String finalizedRate) {
+		this.finalizedRate = finalizedRate;
 	}
 	
 

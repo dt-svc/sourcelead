@@ -3306,15 +3306,19 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 			 
 			 userArray[3] = submissionHistory.getJobTitle();
 			 
-			 if(submissionHistory.getOrgLocationName() !=null){
-				 userArray[4] = submissionHistory.getOrgLocationName();
+			 if(submissionHistory.getClientName() !=null){
+				 userArray[4] = submissionHistory.getClientName();
 				 }else{
 				 userArray[4] = "---";	 
 				 }
 			 
-			 userArray[5] = "---";
+			 userArray[5] = submissionHistory.getOrgLocationName();
 			 
-			 userArray[6] = "---"; 
+			 if(submissionHistory.getFinalizedRate() !=null){
+				 userArray[6] = submissionHistory.getFinalizedRate();
+			 }else{
+				 userArray[6] = "---"; 
+			 }
 			 
 			 if(toStage.equals("SUBMISSION")){
 			 userArray[7] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getCreatedDate());
@@ -3345,15 +3349,19 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 					 
 					 userArray[3] = submissionHistory.getJobTitle();
 					 
-					 if(submissionHistory.getOrgLocationName() !=null){
-					 userArray[4] = submissionHistory.getOrgLocationName();
+					 if(submissionHistory.getClientName() !=null){
+					 userArray[4] = submissionHistory.getClientName();
 					 }else{
 					 userArray[4] = "---";	 
 					 }
 					 
-					 userArray[5] = "---";
+					 userArray[5] = submissionHistory.getOrgLocationName();
 					 
-					 userArray[6] = "---"; 
+					 if(submissionHistory.getFinalizedRate() !=null){
+						 userArray[6] = submissionHistory.getFinalizedRate();
+					 }else{
+						 userArray[6] = "---"; 
+					 }
 					 
 					 if(toStage.equals("SUBMIT_TO_CLIENT")){
 					 if(submissionHistory.getSubmissionId().getFinalizedRate() !=null){
@@ -3392,15 +3400,19 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 					 
 					 userArray[3] = submissionHistory.getJobTitle();
 					 
-					 if(submissionHistory.getOrgLocationName() !=null){
-					 userArray[4] = submissionHistory.getOrgLocationName();
+					 if(submissionHistory.getClientName() !=null){
+					 userArray[4] = submissionHistory.getClientName();
 					 }else{
 					 userArray[4] = "---";	 
 					 }
 					 
-					 userArray[5] = "---";
+					 userArray[5] = submissionHistory.getOrgLocationName();
 					 
-					 userArray[6] = "---"; 
+					 if(submissionHistory.getFinalizedRate() !=null){
+						 userArray[6] = submissionHistory.getFinalizedRate();
+					 }else{
+						 userArray[6] = "---"; 
+					 }
 					 
 					 if(toStage.equals("REJECTED")){
 					 userArray[7] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getCreatedDate());
