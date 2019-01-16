@@ -2774,12 +2774,14 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public void updateMarketPlacePrice(Long id, String priceVal, String priceValType)throws Exception {
 		CandidateMarketPlace marketPlace= candidateDao.getCandidateMarketPlaceById(id);
 		CandidateMarketCart marketCart = candidateDao.getCandidateFromMarketCartByMarketplaceId(id);
+		if(marketPlace != null && marketCart != null){
 		marketPlace.setMarketPrice(priceVal);
 		marketPlace.setMarketRateCurrencey(priceValType);
 		candidateDao.updateMarketPlacePrice(marketPlace);
 		//updating cart price in global marketplace after it is edited and saved in local marketplace.
 		marketCart.setAmount(Double.parseDouble(priceVal));
 		candidateDao.addCandidateToMarketCart(marketCart);
+		}
 	}
 	
 	@Override
