@@ -2610,13 +2610,15 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public void deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid) {
+	public Boolean deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "delete from CandidateMarketCart marketCart where marketCart.candidateUUID = :candidateUuid";
 			session.createQuery(query).setParameter("candidateUuid", candidateUuid).executeUpdate();
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
@@ -3287,6 +3289,18 @@ public class CandidateDaoImpl implements CandidateDao {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteCandidateFromMarketplaceByCandidateUuid(String candidateUuid) throws Exception {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "delete from CandidateMarketPlace marketPlace where marketPlace.candidateUUID = :candidateUuid";
+			session.createQuery(query).setParameter("candidateUuid", candidateUuid).executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
 	}
 	
 }

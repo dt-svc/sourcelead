@@ -280,7 +280,7 @@ public interface CandidateService {
 	
 	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations, String creationStartDate, String creationEndDate, String checkedDate, String searchValue)throws Exception;
 	
-	public void deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid)throws Exception;
+	public Boolean deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid)throws Exception;
 	
 	public int updateMarketplaceCandidates(OrgLocations orgLocations, String companyNameFlag) throws Exception;
 
@@ -335,4 +335,5 @@ public interface CandidateService {
 
 	public void updateMarketWalletAmount(Double balanceAmountValue, Long id);
 
+	public void deleteCandidateFromMarketplaceByCandidateUuid(String candidateUuid)throws Exception;
 }
