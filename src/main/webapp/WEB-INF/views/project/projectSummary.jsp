@@ -17,6 +17,10 @@
 		 </c:forEach> 
 	});
 </script> -->
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
  
 
       <!-- Content Area -->
@@ -28,7 +32,7 @@
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/projectDashboard'/>">Projects List</a> &raquo;Project Summary</div>
+          <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="/pms/projectDashboard">Projects List</a> &raquo;Project Summary</div>
         </section>
 	   
 <div id="projectSideDiv" class="project_wrap"></div>   	   
@@ -110,7 +114,7 @@ $("#projectTagName_chosen").find('ul.chosen-choices > li input').attr("placehold
 function getProjectsTagsList(projectId){
 	$.ajax({  
         type : "POST",
-        url: sourceleadUrl+"/getProjectsTags?"+tokenParamName+"="+tokenValue+"&projectId="+projectId,        
+        url: pmsUrl+"/getProjectsTags?"+tokenParamName+"="+tokenValue+"&projectId="+projectId,        
         success :function(json) {
         	var result = "";
 			$.each( json.tagsList, function( i, tags ) {
@@ -143,9 +147,9 @@ function saveProjectsTags(type){
 	 var jsonData = encodeURIComponent(tagName);
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 if(tagName != null && tagName != '' && tagName !='undefined') {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByProjectId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&projectId="+projectId+"&tagName="+jsonData
+		 Urlcheck = pmsUrl+"/saveOrUpdateTagsByProjectId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&projectId="+projectId+"&tagName="+jsonData
 	 } else {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByProjectId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&projectId="+projectId+"&tagName="+""
+		 Urlcheck = pmsUrl+"/saveOrUpdateTagsByProjectId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&projectId="+projectId+"&tagName="+""
 	 } 
 	 $.ajax({  
          type : "POST",
@@ -163,7 +167,7 @@ function saveProjectsTags(type){
         		}
         		getProjectsTagsList(projectId)
         	} else if (result.indexOf('Sign In') !== -1) {
-        		location.replace(sourceleadUrl);
+        		location.replace(pmsUrl);
         	} else {
         	    showError("Operation failed, please try again");
         	}

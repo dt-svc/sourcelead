@@ -30,7 +30,7 @@ function Projects() {
 						data: formData,
 		  		        processData: false,
 		  		        contentType:false, 
-						url : sourceleadUrl+ "/storeProject",
+						url : pmsUrl+ "/storeProject",
 						success : function(result) {
 								if (result && result.response === "INVALID_DATA") {
 	  								$("#projectDetailsloading").removeAttr("style");
@@ -50,7 +50,7 @@ function Projects() {
 									 assignedMembers.href="#tab-b"; 
 									 $("#assignedMembers").click();
 	  			                } else if (result.indexOf('Sign In') !== -1) {
-	  								location.replace(sourceleadUrl);
+	  								location.replace(pmsUrl);
 	  							} else {
 	  			                    showError("Operation failed, please try again");
 	  			                }
@@ -77,7 +77,7 @@ function Projects() {
 			$("#projectDetailsloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getProjectDetailsByProjectId?projectId="+projectId, 
+		    	 url: pmsUrl+"/getProjectDetailsByProjectId?projectId="+projectId, 
 		        success: function(json) {
 		        	
 		        	var level1ApproverUser = '';
@@ -314,7 +314,7 @@ function Projects() {
 		$("#level1Manager").empty();
 			 $.ajax({
 			    	type: "GET",
-			        url: sourceleadUrl+"/getProjectLevel1Approvers",
+			        url: pmsUrl+"/getProjectLevel1Approvers",
 			        success: function(json) {
 			        	var output = "";
 			        	output = output + "<option value=''>-- Select Level1 Manager --</option>";
@@ -410,7 +410,7 @@ function Projects() {
 			 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
 				 $.ajax({
 				    	type: "POST",
-				        url: sourceleadUrl+"/getApproversByUserId?currentApproverId="+currentApproverId,
+				        url: pmsUrl+"/getApproversByUserId?currentApproverId="+currentApproverId,
 				        success: function(json) {
 				        	var output = "";
 				        	output = output + "<option value=''>-Select Manager-</option>"; 
@@ -439,7 +439,7 @@ function Projects() {
 			 if(currentExpenseApproverId != null && currentExpenseApproverId != ''  && currentExpenseApproverId != 'undefined'){
 				 $.ajax({
 				    	type: "POST",
-				        url: sourceleadUrl+"/getApproversByUserId?currentApproverId="+currentExpenseApproverId,
+				        url: pmsUrl+"/getApproversByUserId?currentApproverId="+currentExpenseApproverId,
 				        success: function(json) {
 				        	var output = "";
 				        	output = output + "<option value=''>-Select Approver-</option>"; 
@@ -470,7 +470,7 @@ function Projects() {
 	  	 $("#level1ExpenseApprover").empty();
 	  		 $.ajax({
 	  		    	type: "GET",
-	  		        url: sourceleadUrl+"/getProjectLevel1Approvers",
+	  		        url: pmsUrl+"/getProjectLevel1Approvers",
 	  		        success: function(json) {
 	  		        	var output = "";
 	  		        	output = output + "<option value=''>-- Select Level1 Approver --</option>";
@@ -500,7 +500,7 @@ function Projects() {
 			if (ProjectSequeneNumber != null && ProjectSequeneNumber != "") {
 				$.ajax({
 							type : "POST",
-							url : sourceleadUrl+ "/validateProjectSequeneNumberById?ProjectSequeneNumber="+ ProjectSequeneNumber+"&orgLocId="+orgLocId,
+							url : pmsUrl+ "/validateProjectSequeneNumberById?ProjectSequeneNumber="+ ProjectSequeneNumber+"&orgLocId="+orgLocId,
 							success : function(data) {
 								if (data == true) {
 									$("input#projectSequeneNumber").after("<p class='jquery_form_error_message'>"+ ProjectSequeneNumber+ " is Already Existed</span>");
@@ -526,7 +526,7 @@ function Projects() {
 			var actionType = "ROLE_BUDGET_APPROVER";
 			 $.ajax({
 			    	type: "GET",
-			        url: sourceleadUrl+"/getSourceLeadActionApproversList?orgLocationId="+orgLocationId+"&actionType="+actionType,
+			        url: pmsUrl+"/getSourceLeadActionApproversList?orgLocationId="+orgLocationId+"&actionType="+actionType,
 			        success: function(json) {
 			        	var output = "";
 			        	for (var i=0; i<json.length; i++)
@@ -553,7 +553,7 @@ function Projects() {
 			
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl+ "/validateOrgLocationProjectName?projectUUID="+projectUUID+"&projectName="+projectName,
+				url : pmsUrl+ "/validateOrgLocationProjectName?projectUUID="+projectUUID+"&projectName="+projectName,
 				success : function(data) {
 					if (data == true) {
 						$("input#projectName").after("<p class='jquery_form_error_message'>"+ projectName+ " is Already Existed</span>");
@@ -575,7 +575,7 @@ function Projects() {
 			var orgLocId = document.getElementById("loginOrgLocationId").value;
 			$.ajax({
 				type : "POST",
-				url : sourceleadUrl+ "/validateProjectShortCodeByOrgLocationId?projectShortCode="+projectShortCode+"&orgLocId="+orgLocId,
+				url : pmsUrl+ "/validateProjectShortCodeByOrgLocationId?projectShortCode="+projectShortCode+"&orgLocId="+orgLocId,
 				success : function(data) {
 					if (data == true) {
 						$("input#projectShortCode").after("<p class='jquery_form_error_message'>"+ projectShortCode+ " is Already Existed</span>");
@@ -596,7 +596,7 @@ function Projects() {
 		this.removeProjectDocuments = function(documentId,projectId){
 			$.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/terminateProjectDoc?porjectDocumentId="+documentId, 	   
+			    url: pmsUrl+"/terminateProjectDoc?porjectDocumentId="+documentId, 	   
 				    success: function(data) {
 				    	$("#projectDocument"+documentId).remove();
 				    },

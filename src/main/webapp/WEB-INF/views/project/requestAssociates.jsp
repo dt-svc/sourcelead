@@ -5,6 +5,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
+	
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
 
 <script type="text/javascript">
 		window.onload = function () {
@@ -24,9 +28,9 @@
 			<h2>Request Associates</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/projectDashboard'/>">Home</a>
+			<a href="/app/projectDashboard">Home</a>
 			&raquo; <a
-				href="<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers'/>">Planning</a>
+				href="/pms/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers">Planning</a>
 			&raquo; Request Associates
 		</div>
 	</section>
@@ -365,12 +369,11 @@ function emptyRecordsList(){
 
 <script>
 function getApproversList(approverId){
-var sourceleadUrl ='${sourceleadUrl}';
 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 var actionType = "ROLE_RESOURCE_REQUEST_APPROVER";
 	$.ajax({
 	    	type: "GET",
-	    	 url: sourceleadUrl+"/getSourceLeadActionApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&actionType="+actionType,
+	    	 url: pmsUrl+"/getSourceLeadActionApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&actionType="+actionType,
 	    		success: function(json) {
 	     		var output = "";
 	     			output = output + "<option value=''>--Select Approver--</option>";
@@ -398,10 +401,9 @@ var actionType = "ROLE_RESOURCE_REQUEST_APPROVER";
 <script>
 function loadRequestDetails(){
 	var requestUUID = '${requestUUID}';
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/getResourceRequestDetailsByRequestUUID?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID, 
+	    	 url: pmsUrl+"/getResourceRequestDetailsByRequestUUID?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID, 
 	         success: function(json) {
 	        	 $("#requestId").val(json.requestId);
 	        	 $("textarea[name = 'description']").val(json.description);
@@ -878,10 +880,9 @@ function getOrgLocationRoles(){
 		    {
 		orgLocations.push($(this).val());
 	    });
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getOrgLocationRoles?${_csrf.parameterName}=${_csrf.token}&orgLocations="+orgLocations, 
+	        url: pmsUrl+"/getOrgLocationRoles?${_csrf.parameterName}=${_csrf.token}&orgLocations="+orgLocations, 
 	        success: function(json) {
 	        	var output = "";
 	        	for (var i=0; i<json.length; i++)
@@ -979,15 +980,15 @@ function candidatesDataTableList(){
 	  }
 	  var searchValue = $("#candidateDataTableSearch").val();
 		 searchValue = searchValue ? searchValue : "";
-		 var url = sourceleadUrl+"/getRequestedAssociatesList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&roles="+roles+"&resourceType="+resourceType+"&selectedAssociates="+selectedAssociates+"&projectUUID="+projectUUID;
-		 candidatesPagination(sourceleadUrl,url);
+		 var url = pmsUrl+"/getRequestedAssociatesList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&roles="+roles+"&resourceType="+resourceType+"&selectedAssociates="+selectedAssociates+"&projectUUID="+projectUUID;
+		 candidatesPagination(pmsUrl,url);
 	  
 	
 }
 </script>
 
 <script>
-function candidatesPagination(sourceleadUrl,url){
+function candidatesPagination(pmsUrl,url){
 	var colIndex = 0;
     $('#associatesListPagination').DataTable( { 
 	  "processing": true,
@@ -1166,7 +1167,7 @@ function candidatesPagination(sourceleadUrl,url){
 	            	    var candidateResume = "";
 	            	    
 	            	    if(report.resumeUUID != null && report.resumeUUID != '' && report.resumeUUID != 'undefined'){
-		        			candidateResume = '<a  class="fa fa-download" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"title="Download"></a>';
+		        			candidateResume = '<a  class="fa fa-download" href=\"'+pmsUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"title="Download"></a>';
 		        		}else{
 		        			candidateResume = "-----";
 		        		} 
@@ -1303,7 +1304,6 @@ function requestAssociate(saveType){
  			var form = $('#requestAssociates_form')[0];
  		    var formData = new FormData(form);
  		  	
-      		var sourceleadUrl ='${sourceleadUrl}';
       		var projectUUID = '${projectUUID}';
       		var userId = '${SourceLeadWeb_user.id}';
       		var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
@@ -1315,7 +1315,7 @@ function requestAssociate(saveType){
 	  	    	    data: formData,
 	  		        processData: false,
 	  		        contentType:false, 
-					url : sourceleadUrl+"/saveResourceRequest?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&saveType="+saveType+"&loginuserId="+userId+"&loginOrglocationId="+orgLocationId, 
+					url : pmsUrl+"/saveResourceRequest?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&saveType="+saveType+"&loginuserId="+userId+"&loginOrglocationId="+orgLocationId, 
 					success : function(result) {
 						if (result && result.response === "INVALID_DATA") {
 								$("#associateRequestLoading").removeAttr("style");
@@ -1323,9 +1323,9 @@ function requestAssociate(saveType){
 			                } else if (result.response === "AWKWARD") {
 			                    location.href = "/errorPage";
 			                } else if (result.response === "SUCCESS") {
-								location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=resources");
+								location.replace(pmsUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=resources");
 			                } else if (result.indexOf('Sign In') !== -1) {
-								location.replace(sourceleadUrl);
+								location.replace(pmsUrl);
 							} else {
 			                    showError("Operation failed, please try again");
 			                }
@@ -1632,12 +1632,11 @@ function getEstimatedHours(rowId){
 	var endDate = document.getElementById(rowId+"edate-input").value;
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	if(startDate && endDate){
-		 var sourceleadUrl ='${sourceleadUrl}';
 		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
 		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getEstimatedHoursForResourceRequest?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId, 
+		        url: pmsUrl+"/getEstimatedHoursForResourceRequest?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId, 
 		        success: function(estimatedHours) {
 		        	
 		        	$('#'+rowId+'estHours').val(estimatedHours);

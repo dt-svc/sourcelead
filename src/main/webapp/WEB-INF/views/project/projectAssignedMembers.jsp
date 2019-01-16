@@ -213,10 +213,9 @@ function getAssociates(){
 <script>
 function getOrgLocationRoles(){
 	var orgLocations = '${SourceLeadWeb_orgLocations.id}';
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getOrgLocationRoles?${_csrf.parameterName}=${_csrf.token}&orgLocations="+orgLocations, 
+	        url: pmsUrl+"/getOrgLocationRoles?${_csrf.parameterName}=${_csrf.token}&orgLocations="+orgLocations, 
 	        success: function(json) {
 	        	
 	        	var output = "";
@@ -234,12 +233,10 @@ function getOrgLocationRoles(){
 }
 
 function getOrgLocationTeams(){
-	var orgLocations = '${SourceLeadWeb_orgLocations.id}';
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getOrgLocationTeamList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,  
+	        url: pmsUrl+"/getOrgLocationTeamList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,  
 	        success: function(json) {
 	        	
 	        	var output = "";
@@ -305,7 +302,6 @@ function getAssociatesFilter(){
 
 <script>
 function candidatesDataTableList(){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var projectUUID =  document.getElementById("projectUUID").value;
 	var roles = [];
 	$('input:checkbox[name=roles]:checked').each(function() 
@@ -344,8 +340,8 @@ function candidatesDataTableList(){
 	  
 	  var searchValue = $("#candidateDataTableSearch").val();
 		 searchValue = searchValue ? searchValue : "";
-		 var url = sourceleadUrl+"/getRequestedAssociatesList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&roles="+roles+"&teams="+teams+"&resourceType="+resourceType+"&selectedAssociates="+selectedAssociates+"&projectUUID="+projectUUID;
-		 candidatesPagination(sourceleadUrl,url);
+		 var url = pmsUrl+"/getRequestedAssociatesList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&roles="+roles+"&teams="+teams+"&resourceType="+resourceType+"&selectedAssociates="+selectedAssociates+"&projectUUID="+projectUUID;
+		 candidatesPagination(pmsUrl,url);
 	  
 	
 }
@@ -354,7 +350,7 @@ function candidatesDataTableList(){
 
 
 <script>
-function candidatesPagination(sourceleadUrl,url){
+function candidatesPagination(pmsUrl,url){
 	var colIndex = 0;
     $('#associatesListPagination').DataTable( { 
 	  "processing": true,
@@ -834,10 +830,9 @@ function toggleAssociates(source) {
   
   <script>
   function loadProjectAssignedMembers(projectId){
-	  var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getProjectAssignedMembesListByProjectId?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 
+		        url: pmsUrl+"/getProjectAssignedMembesListByProjectId?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 
 		        success: function(json) {
 		        	if(json.length > 0){
 		        		
@@ -1067,12 +1062,11 @@ function getEstimatedHours(rowId){
 	var endDate = document.getElementById(rowId+"memberEndDate").value;
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	if(startDate && endDate){
-		 var sourceleadUrl ='${sourceleadUrl}';
 		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
 		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getEstimatedHoursForResourceRequest?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId, 
+		        url: pmsUrl+"/getEstimatedHoursForResourceRequest?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId, 
 		        success: function(estimatedHours) {
 		        	
 		        	$('#'+rowId+'estHours').val(estimatedHours);
@@ -1192,7 +1186,6 @@ function assignMembers(){
  	      	
  	        var formData = getFormData("assignMembers_form");
  	        
-      		var sourceleadUrl ='${sourceleadUrl}';
       		var projectUUID =  document.getElementById("projectUUID").value;
       		var userId = '${SourceLeadWeb_user.id}';
       		var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
@@ -1201,7 +1194,7 @@ function assignMembers(){
       		$.ajax({
 					type : "POST",
 	  	    	    data : formData,
-					url : sourceleadUrl+"/assignProjectMembersToProject?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&userId="+userId+"&orgLocationId="+orgLocationId, 
+					url : pmsUrl+"/assignProjectMembersToProject?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&userId="+userId+"&orgLocationId="+orgLocationId, 
 					success : function(result) {
 						if (result && result.response === "INVALID_DATA") {
 								$("#associateRequestLoading").removeAttr("style");
@@ -1215,7 +1208,7 @@ function assignMembers(){
 							 additionalDetails.href="#tab-c"; 
 							 $("#additionalDetails").click();
 			                }else if (result.indexOf('Sign In') !== -1) {
-  								location.replace(sourceleadUrl);
+  								location.replace(pmsUrl);
   							} else {
   			                    showError("Operation failed, please try again");
   			                }
@@ -1322,7 +1315,6 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 		projectId  = document.getElementById("projectId").value;
 		startDateStr  = document.getElementById("startDateStr").value;
 	}
-	var sourceleadUrl ='${sourceleadUrl}';
 	var startDateStr = startDateStr;
 	if(endDateStr == null ||  endDateStr == "" || endDateStr == "undefined"){
 		endDateStr = "";
@@ -1342,7 +1334,7 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 	
 	$.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/getTeamMembersList?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&searchByName="+searchByName, 
+        url: pmsUrl+"/getTeamMembersList?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&searchByName="+searchByName, 
         success: function(data) {
         	var json = JSON.parse(data);
         	var output = "";

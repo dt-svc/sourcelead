@@ -26,6 +26,10 @@
 }
 </style>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
@@ -193,11 +197,10 @@
 
 <script>
 function getEndClientProjects(){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var clientOrgLocationId = document.getElementById("clientOrgLocId").value;
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getEndClientProjects?${_csrf.parameterName}=${_csrf.token}&clientOrgLocationId="+clientOrgLocationId,
+	        url: pmsUrl+"/getEndClientProjects?${_csrf.parameterName}=${_csrf.token}&clientOrgLocationId="+clientOrgLocationId,
 	        success: function(json) {
 	        	var output = "";
 	        	output = output + "<option value=''>-- Select Project --</option>";
@@ -221,11 +224,10 @@ function getEndClientProjects(){
 
 <script type="text/javascript">
 function getProjectLevel1Approvers(approverUserId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $("#level1Manager").empty();
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getProjectLevel1Approvers?${_csrf.parameterName}=${_csrf.token}",
+		        url: pmsUrl+"/getProjectLevel1Approvers?${_csrf.parameterName}=${_csrf.token}",
 		        success: function(json) {
 		        	var output = "";
 		        	output = output + "<option value=''>-- Select Level1 Manager --</option>";
@@ -320,7 +322,7 @@ function getChildLevel1ExpenseApprovers(currentExpenseApproverId,level2ExpenseAp
 	 if(currentExpenseApproverId != null && currentExpenseApproverId != ''  && currentExpenseApproverId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentExpenseApproverId,
+		        url: pmsUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentExpenseApproverId,
 		        success: function(json) {
 		        	var output = "";
 		        	output = output + "<option value=''>-Select Approver-</option>"; 
@@ -351,7 +353,7 @@ function getProjectLevel1ExpenseApprovers(approverUserId){
 	 $("#level1ExpenseApprover").empty();
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getProjectLevel1Approvers?${_csrf.parameterName}=${_csrf.token}",
+		        url: pmsUrl+"/getProjectLevel1Approvers?${_csrf.parameterName}=${_csrf.token}",
 		        success: function(json) {
 		        	var output = "";
 		        	output = output + "<option value=''>-- Select Level1 Approver --</option>";
@@ -375,11 +377,10 @@ function getProjectLevel1ExpenseApprovers(approverUserId){
 
 <script type="text/javascript">
 function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,
+		        url: pmsUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentApproverId,
 		        success: function(json) {
 		        	var output = "";
 		        	output = output + "<option value=''>-Select Manager-</option>"; 
@@ -414,13 +415,12 @@ function saveClientProject(){
 	 if ($('#project_form').validate(false, validationSettings)){ 
 		 
 		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		 var sourceleadUrl ='${sourceleadUrl}';
 		 var formData = getFormData("project_form");
 		 
 	 		$.ajax({
 				type : "POST",
   	    	    data : formData,
-				url : sourceleadUrl+"/storeClientProject?${_csrf.parameterName}=${_csrf.token}", 
+				url : pmsUrl+"/storeClientProject?${_csrf.parameterName}=${_csrf.token}", 
 				success : function(result) {
 					if (result && result.response === "INVALID_DATA") {
 							$("#loading").removeAttr("style");
@@ -429,10 +429,10 @@ function saveClientProject(){
 		                    location.href = "/errorPage";
 		                } else if (result.response === "SUCCESS") {
 		                	var project = result.object;
-		                	 location.replace(sourceleadUrl+"/projectSummary?projectUUID="+project.projectUUID+"&projectClientUUID="+project.projectClientUUID+"&tabType=team");
+		                	 location.replace(pmsUrl+"/projectSummary?projectUUID="+project.projectUUID+"&projectClientUUID="+project.projectClientUUID+"&tabType=team");
 							 $("#loading").removeAttr("style");
 		                } else if (result.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
+							location.replace(pmsUrl);
 						} else {
 		                    showError("Operation failed, please try again");
 		                }

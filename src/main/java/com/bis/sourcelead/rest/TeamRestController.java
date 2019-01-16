@@ -105,13 +105,6 @@ public class TeamRestController {
 	
 	
 	
-	@RequestMapping(value = "/getOrgLocationTeamList")
-	public List<Team> getOrgLocationTeamList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId,HttpServletRequest request) throws Exception
-	{
-		List<Team> teamList = teamService.getTeamListByOrgLocationID(orgLocationId);
-		return teamList;
-	}
-	
 	/**
 	 * @author sarath kumar
 	 * @since sep 14 2016

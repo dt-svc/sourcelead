@@ -356,7 +356,7 @@ function submitBtn(projectId){
 function taskReports(projectId,reportType,startDate,endDate){
 	$.ajax({
         type : "POST",
-         url: sourceleadUrl+"/ProjectTasks/getProjectTasksReportsListByProjectId?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,
+         url: pmsUrl+"/ProjectTasks/getProjectTasksReportsListByProjectId?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,
          success :function(data) {
         		 getDonutChartDetails(data)
         	 
@@ -367,7 +367,7 @@ function taskReports(projectId,reportType,startDate,endDate){
 function stackTaskReport(projectId,reportType,startDate,endDate){
 	$.ajax({
         type : "POST",
-         url: sourceleadUrl+"/ProjectTasks/getProjectTasksAStackedReportsListByProjectId?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,
+         url: pmsUrl+"/ProjectTasks/getProjectTasksAStackedReportsListByProjectId?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,
          success :function(data) {
         		 getStackedAreaChartDetails(data)
          }
@@ -821,7 +821,7 @@ function getDonutChartDetails(data){
  function budgetStatusReport(projectId,reportType,startDate,endDate){
 		$.ajax({
 	        type : "POST",
-	         url: sourceleadUrl+"/ProjectTasks/geBudgetStatusReport?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,
+	         url: pmsUrl+"/ProjectTasks/geBudgetStatusReport?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,
 	         success :function(data) {
 	        	 var remainingBudget = 0;
 	        	 var  remainingHours = 0;
@@ -1004,7 +1004,7 @@ function getDonutChartDetails(data){
  
  <script>
  function tasksprogressChart(projectId,reportType,startDate,endDate) {
-	 $.post(sourceleadUrl+"/ProjectTasks/getTasksProgressByProjectId?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, function(data) {
+	 $.post(pmsUrl+"/ProjectTasks/getTasksProgressByProjectId?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, function(data) {
 		 getTaskPercentge(data)
 	 });
 	 
@@ -1113,7 +1113,7 @@ function getTaskPercentge(data){
  <script>
  function overdueTask(projectId,reportType,startDate,endDate){
 	 var projectClientUUID = '${projectClientUUID}';
-	 $.post(sourceleadUrl+"/ProjectTasks/getOverdueTaskListByProjectId?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, function(json) {
+	 $.post(pmsUrl+"/ProjectTasks/getOverdueTaskListByProjectId?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, function(json) {
 		var result = "";
 	    result = result + '  <div class="col-md-6 mb">';
 		result = result + '      <!-- Overdue Work Items -->';
@@ -1150,7 +1150,7 @@ function getTaskPercentge(data){
 					   result = result + '                     <td><i class="fa fa-spinner text-warning" title="General Task"></i></td>';
 				   }
 				   
-					result = result + '                     <td><span title="'+generatedId+' '+report.taskName+'" ><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+report.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'">'+generatedId+' '+report.taskName+'</a></span></td>';
+					result = result + '                     <td><span title="'+generatedId+' '+report.taskName+'" ><a href="'+pmsUrl+'/projectTaskSummary?taskUUID='+report.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'">'+generatedId+' '+report.taskName+'</a></span></td>';
 					result = result + '                     <td>  '+report.actionTimeStr+' </td>';
 					result = result + '                     <td> '+report.percentage+'% </td>';
 					result = result + '                     <td>';
@@ -1194,7 +1194,7 @@ function getTaskPercentge(data){
  
  <script>
  function timesheetReport(projectId,reportType,startDate,endDate){
-	 $.post(sourceleadUrl+"/ProjectTasks/getTimesheetTotatalHoursByProjectId?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, function(data) {
+	 $.post(pmsUrl+"/ProjectTasks/getTimesheetTotatalHoursByProjectId?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, function(data) {
 		 timesheetReportChart(data);
 	 });
  }
@@ -1288,7 +1288,7 @@ function getTaskPercentge(data){
  
  <script>
  function expensesReport(projectId,reportType,startDate,endDate){
-	 $.post(sourceleadUrl+"/ProjectTasks/getExpensesByProjectId?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, function(data) {
+	 $.post(pmsUrl+"/ProjectTasks/getExpensesByProjectId?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, function(data) {
 		 expensesReportCahrt(data);
 	 });
  }

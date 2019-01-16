@@ -47,7 +47,6 @@ left: 115px !important;
  function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
 	 
 	 var projectUUID = '${projectUUID}';
-	 var sourceleadUrl = '${sourceleadUrl}';
 	 var postedOrgLocationId = '${postedOrgLocationId}';
 	 var loginOrgLocationId = '${SourceLeadWeb_orgLocations.id}'
 	 var projectClientUUID = '${projectClientUUID}';
@@ -158,7 +157,6 @@ function toDate(selector) {
 <!-- ====================================Resource RequestsTab Start=============================================== -->
 <script>
 function resourceRequestsTab(){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var projectUUID = '${projectUUID}';
 	 var projectClientUUID = '${projectClientUUID}';
 	 
@@ -178,7 +176,7 @@ function resourceRequestsTab(){
 	  }
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getPlanningRequestListByProjectUUID?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID, 
+	        url: pmsUrl+"/getPlanningRequestListByProjectUUID?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID, 
 	        success: function(data) {
 	        	
 	        	if (data && data.response === "INVALID_DATA") {
@@ -197,12 +195,12 @@ function resourceRequestsTab(){
 	    		if('${isClientOrgActive}' == "N" || postedOrgLocationId == loginOrgLocationId || postedSharedProjectOrgLocationId == loginOrgLocationId){  
 	    			+	    
 	    		 '<sec:authorize access="hasRole(\'ROLE_ADD_RESOURCE_REQUEST\')">';
-		    		result = result + '	      <li><a href="'+sourceleadUrl+'/requestAssociates?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
+		    		result = result + '	      <li><a href="'+pmsUrl+'/requestAssociates?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
 		    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>Associate Request</a></li>';
 	    		 '</sec:authorize>';
 	    		
 	    		 '<sec:authorize access="hasRole(\'ROLE_ADD_REQUEST_ASSOCIATE\')">';
-		    		result = result + '	      <li><a href="'+sourceleadUrl+'/newResourceRequest?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
+		    		result = result + '	      <li><a href="'+pmsUrl+'/newResourceRequest?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
 		    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>New Resource Request</a>&nbsp; &nbsp;</li>';
 	    		 '</sec:authorize>';
 	    		}
@@ -232,7 +230,7 @@ function resourceRequestsTab(){
 	    			if(report.requestType == 'Associate Request'){
 						if(report.requestStatus == 'Draft' || report.requestStatus == 'Rejected'){
 							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_RESOURCE_REQUEST\',\'ROLE_VIEW_EDIT_REQUEST_ASSOCIATE\')">';
-							    result = result + '<td><div><a href="'+sourceleadUrl+'/editResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
+							    result = result + '<td><div><a href="'+pmsUrl+'/editResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
 							'</sec:authorize>';
 							
 							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_RESOURCE_REQUEST\',\'ROLE_VIEW_EDIT_REQUEST_ASSOCIATE\')">';
@@ -240,7 +238,7 @@ function resourceRequestsTab(){
 							'</sec:authorize>';
 						}else{
 							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_RESOURCE_REQUEST\',\'ROLE_VIEW_EDIT_REQUEST_ASSOCIATE\')">';
-							     result = result + '<td><div><a href="'+sourceleadUrl+'/viewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
+							     result = result + '<td><div><a href="'+pmsUrl+'/viewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
 							'</sec:authorize>';
 							
 							'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_RESOURCE_REQUEST\',\'ROLE_VIEW_EDIT_REQUEST_ASSOCIATE\')">';
@@ -249,9 +247,9 @@ function resourceRequestsTab(){
 						}
 	    			}else{
 	    				if(report.requestStatus == 'Draft' || report.requestStatus == 'Rejected'){
-	    					result = result + '<td><div><a href="'+sourceleadUrl+'/editNewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
+	    					result = result + '<td><div><a href="'+pmsUrl+'/editNewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
 						}else{
-							result = result + '<td><div><a href="'+sourceleadUrl+'/viewNewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
+							result = result + '<td><div><a href="'+pmsUrl+'/viewNewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">'+report.requestId+'</a></div></td>';
 						}
 	    				
 	    			}
@@ -280,7 +278,7 @@ function resourceRequestsTab(){
 	    	    planningRequestsPagination();
 	    	    
                }else if (data.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
+					location.replace(pmsUrl);
 				} else {
                    showError("Operation failed, please try again");
                }
@@ -363,12 +361,11 @@ function getOrgLocationProjects(){
 		orgLocations.push($(this).val());
 	    });
 	
-	 var sourceleadUrl = '${sourceleadUrl}';
 	 var projectClientUUID = '${projectClientUUID}';
 	 $("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getProjectsListByOrgLocationForTransfer?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocations+"&projectClientUUID="+projectClientUUID, 
+	        url: pmsUrl+"/getProjectsListByOrgLocationForTransfer?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocations+"&projectClientUUID="+projectClientUUID, 
 	        success: function(json) {
 	        
 	        	var output = "";
@@ -401,10 +398,9 @@ function getProjectDetails(){
 	
 	if(orgLocationProjects){
 		$("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getProjectDetailsForResouceTransfer?${_csrf.parameterName}=${_csrf.token}&projectId="+ orgLocationProjects+"&orgLocationId="+orgLocations,
+					url : pmsUrl	+ "/getProjectDetailsForResouceTransfer?${_csrf.parameterName}=${_csrf.token}&projectId="+ orgLocationProjects+"&orgLocationId="+orgLocations,
 					success : function(json) {
 						var endDateStr = "";
 						var description = "";
@@ -591,15 +587,14 @@ function transferToProject(){
 		 
 		 $("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 var projectUUID = '${projectUUID}';
-		 var sourceleadUrl = '${sourceleadUrl}';
 		 var projectClientUUID = '${projectClientUUID}';
 		 
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/transferProjectMembers?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&projectId="+projectId+"&projectOrgLocationId="+orgLocations+"&projectMembers="+projectMembers, 
+		        url: pmsUrl+"/transferProjectMembers?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&projectId="+projectId+"&projectOrgLocationId="+orgLocations+"&projectMembers="+projectMembers, 
 		        success: function() {
 		        
-		        	location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=team");
+		        	location.replace(pmsUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=team");
 			        $("#projectDetailsLoading").removeAttr("style"); 
 		        }
 		   
@@ -712,11 +707,10 @@ function planningRequestsPagination(){
 function budgetRequests(){
 	$(".countClose").hide();
 	$(".countShow").show();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var projectUUID = '${projectUUID}';
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getBudgetRequestListByProjectUUID?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID, 
+	        url: pmsUrl+"/getBudgetRequestListByProjectUUID?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID, 
 	        success: function(data) {
 	        	if (data && data.response === "INVALID_DATA") {
 						$("#associateRequestLoading").removeAttr("style");
@@ -822,7 +816,7 @@ function budgetRequests(){
 			    	    $("#projectBudgetCount").val(json.length); 
 	    	             budgetRequestPagination();
 	                }else if (data.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
+							location.replace(pmsUrl);
 					} else {
 	                    showError("Operation failed, please try again");
 	                }
@@ -882,14 +876,13 @@ function CancelTermination(){
 	}
 function saveBudgetReason(budgetRequestedId){
 	if ($('#deleteBudget_form').validate(false, validationSettings)) {
-	var sourceleadUrl = '${sourceleadUrl}';
      $("#delete_budget").attr("disabled", "disabled");
 	 $("#delete_budget").attr("disabled", "disabled");
 	 var formData = getFormData("deleteBudget_form");
 	 $.ajax({
 				type : "POST",
 				data :formData,
-				url : sourceleadUrl+"/saveBudgetRequestReason?${_csrf.parameterName}=${_csrf.token}",
+				url : pmsUrl+"/saveBudgetRequestReason?${_csrf.parameterName}=${_csrf.token}",
 				success : function(result) {
 					$("#popUp").empty();
 	   			 	$(".project_inn_mask").fadeOut(200);
@@ -907,11 +900,10 @@ function saveBudgetReason(budgetRequestedId){
 }); 
  */
 function acceptBudgetRequset(budgetRequestedId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var userId = '${SourceLeadWeb_user.id}';
 	 $.ajax({
 				type : "POST",
-				url : sourceleadUrl+"/acceptBudgetRequest?${_csrf.parameterName}=${_csrf.token}&budgetRequestedId="+budgetRequestedId+"&userId="+userId,
+				url : pmsUrl+"/acceptBudgetRequest?${_csrf.parameterName}=${_csrf.token}&budgetRequestedId="+budgetRequestedId+"&userId="+userId,
 				success : function(result) {
 					budgetRequests();
 				},
@@ -937,14 +929,13 @@ function onholdBudgetRequaet(budgetRequestedId){
 }
 function onHoldBudgetRequest(budgetRequestedId){
 	if ($('#onHoldBudget_form').validate(false, validationSettings)) {
-		var sourceleadUrl = '${sourceleadUrl}';
 	     $("#onHold_budget").attr("disabled", "disabled");
 		 $("#onHold_budget").attr("disabled", "disabled");
 		 var formData = getFormData("onHoldBudget_form");
 	 $.ajax({
 				type : "POST",
 				data :formData,
-				url : sourceleadUrl+"/onHoldBudgetRequest?${_csrf.parameterName}=${_csrf.token}",
+				url : pmsUrl+"/onHoldBudgetRequest?${_csrf.parameterName}=${_csrf.token}",
 				success : function(result) {
 					$("#popUp").empty();
 	   			 	$(".project_inn_mask").fadeOut(200);
@@ -957,11 +948,10 @@ function onHoldBudgetRequest(budgetRequestedId){
 }}
 function editBudgetrequest(budgetRequestedId){
 	 $("#budgetRequestPopUpid").empty();
-	var sourceleadUrl = '${sourceleadUrl}';
 	 
 	 $.ajax({
 				type : "POST",
-				url : sourceleadUrl+"/getBudgetRequestDetailsById?${_csrf.parameterName}=${_csrf.token}&budgetRequestedId="+budgetRequestedId,
+				url : pmsUrl+"/getBudgetRequestDetailsById?${_csrf.parameterName}=${_csrf.token}&budgetRequestedId="+budgetRequestedId,
 				success : function(json) {
 					var result = "";
 					result = result + '	<div class="collapse-div-adduser prRight col-md-4 show-div prRight_new"> <i class="fa fa-close close-div" onClick="editCloseDiv();"></i>';
@@ -1138,13 +1128,12 @@ function removeErrMsg(){
 </script>
 <script>
 function getApproversList(approverUserId){
-var sourceleadUrl ='${sourceleadUrl}';
 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 var actionType = "ROLE_BUDGET_APPROVER";
 
 	$.ajax({
 	    	type: "GET",
-	    	 url: sourceleadUrl+"/getSourceLeadActionApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&actionType="+actionType,
+	    	 url: pmsUrl+"/getSourceLeadActionApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&actionType="+actionType,
 	    		success: function(json) {
     			var output = "";
      			output = output + "<option value=''>--Select Approver--</option>";
@@ -1175,14 +1164,13 @@ function saveBudgetRequest(){
 		}; 
 	
 	 if ($('#budgetRequest-form').validate(false, validationSettings)) {
-			 var sourceleadUrl = '${sourceleadUrl}';
 			 $("#save_budget").attr("disabled", "disabled");
 			 $("#save_budget").attr("disabled", "disabled");
 			 var formData = getFormData("budgetRequest-form");
 			 $.ajax({
 						type : "POST",
 						data :formData,
-						url : sourceleadUrl+"/saveBudgetRequest?${_csrf.parameterName}=${_csrf.token}",
+						url : pmsUrl+"/saveBudgetRequest?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
 							if (result && result.response === "INVALID_DATA") {
   								$("#associateRequestLoading").removeAttr("style");
@@ -1192,7 +1180,7 @@ function saveBudgetRequest(){
   			                } else if (result.response === "SUCCESS") {
   			                	budgetRequests();
   			                } else if (result.indexOf('Sign In') !== -1) {
-  								location.replace(sourceleadUrl);
+  								location.replace(pmsUrl);
   							} else {
   			                    showError("Operation failed, please try again");
   			                }

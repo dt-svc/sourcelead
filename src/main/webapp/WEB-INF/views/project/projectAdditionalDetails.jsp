@@ -241,10 +241,9 @@ function getAdditionalDetails(){
 	var projectId = document.getElementById("projectId").value;
 	if(projectId != null && projectId != 'unedfined' && projectId != ''){
 		$("#additionalDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		var sourceleadUrl ='${sourceleadUrl}';
 			 $.ajax({
 			    	type: "GET",
-			        url: sourceleadUrl+"/getProjectQuestionnaireDetails?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 
+			        url: pmsUrl+"/getProjectQuestionnaireDetails?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 
 			        success: function(json) {
 			        	if(json != null){
 			        		if(json.projectLocation != null && json.projectLocation != 'undefined'){
@@ -505,9 +504,7 @@ function getAdditionalDetails(){
 		
 		if ($('#project_additional_form').validate(false, validationSettings)) {
 		  	
-// 			var formData = $($('#project_additional_form')[0]).serialize();
 			var formData = getFormData("project_additional_form");
-			var sourceleadUrl = '${sourceleadUrl}';
      		$("#additionalDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 
 	        var userId = '${SourceLeadWeb_user.id}';
@@ -516,7 +513,7 @@ function getAdditionalDetails(){
 			$.ajax({
 						 type : "POST",
 						 data: formData,
-						 url : sourceleadUrl+ "/storeProjectAdditionalDetails?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType,
+						 url : pmsUrl+ "/storeProjectAdditionalDetails?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType,
 						 success : function(result) {
 							 if (result && result.response === "INVALID_DATA") {
 	  								$("#additionalDetailsLoading").removeAttr("style");
@@ -528,10 +525,10 @@ function getAdditionalDetails(){
 	  									 $("#additionalDetailsLoading").removeAttr("style");
 	  									 getAdditionalDetails();
 	  								 }else{
-	  									 location.replace(sourceleadUrl+"/projectDashboard");  
+	  									 location.replace(pmsUrl+"/projectDashboard");  
 	  								 }
 	  			                } else if (result.indexOf('Sign In') !== -1) {
-	  								location.replace(sourceleadUrl);
+	  								location.replace(pmsUrl);
 	  							} else {
 	  			                    showError("Operation failed, please try again");
 	  			                }

@@ -68,7 +68,7 @@ overflow-x: auto;
           <div class="pull-left">
             <h2>Projects</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Projects</div>
+          <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Projects</div>
         </section>
 
         
@@ -86,9 +86,9 @@ overflow-x: auto;
 			<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 			<div class="action-pop">
 				<span> 
-					<a href="<c:url value='${appPath}/project'/>" > Internal Project</a>
-                    <a href="<c:url value='${appPath}/clientProject'/>" >Client Project </a>	
-                    <a href="<c:url value='${appPath}/project?projectType=sharedProject'/>" > Client Project(Managed) </a>			
+					<a href="/pms/project" > Internal Project</a>
+                    <a href="/pms/clientProject" >Client Project </a>	
+                    <a href="/pms/project?projectType=sharedProject" > Client Project(Managed) </a>			
 				</span>
 			</div>
 			</sec:authorize>

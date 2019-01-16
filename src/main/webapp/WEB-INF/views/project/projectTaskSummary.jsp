@@ -8,9 +8,13 @@
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
 <link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+<script src="/resources/js/summernote.min.js?staticTime=${staticTime}"></script>
+<link href="/resources/css/summernote.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+<script src="/resources/js/static-web/bootstrap-select.js"></script>
+
 
 <script>
-var sourceleadUrl = '${sourceleadUrl}';
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 </script>
 <script>
 	$(document).ready(function(){ 
@@ -47,7 +51,6 @@ var sourceleadUrl = '${sourceleadUrl}';
 		tasksAssignList(projectId);
 		getprojectTaskMembersByProjectId(projectId);
 		getSubTaskList();
-		getSavedTaskDetails();
 		getProjectTaskTagsList();
 		maskme();
 		var taskType = '${taskStatus}';
@@ -58,8 +61,9 @@ var sourceleadUrl = '${sourceleadUrl}';
 			getSelectSubEpicsByUserStory();
 		}
 		priorityColorPic();
-		severityColorPic();
-		description(${projectTask.id});
+		severityColorPic(); 
+	    description('${projectTask.id}');  
+	    
 	});
 function priorityColorPic(){
 	var colorValue= $('select#taskpriorityId option:selected').attr("colorProp");
@@ -76,12 +80,11 @@ function severityColorPic(){
  <script>
  function getSelectUserStoryByBug(){
 	 var projectId = '${projectId}';
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var taskType = "UserStory";
 	 var parentTaskId = '${parentTaskId}';
 	 $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/ProjectTasks/getProjectTasksByTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
+	    	 url: pmsUrl+"/ProjectTasks/getProjectTasksByTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
 	    		success: function(json) {
 	    			var output = "";
 	    				output = output + "<option value=''>--Select User Story--</option>";
@@ -111,7 +114,7 @@ function severityColorPic(){
 	 var parentTaskId = '${parentTaskId}';
 	 $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/ProjectTasks/getProjectTasksByTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
+	    	 url: pmsUrl+"/ProjectTasks/getProjectTasksByTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
 	    		success: function(json) {
 	    			var output = "";
 	    				output = output + "<option value=''>--Select Epic--</option>";
@@ -150,7 +153,7 @@ function severityColorPic(){
 			<h2 class="pull-left paddingRight">${projectName} - Task</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/projectDashboard'/>">Projects List</a> &raquo;<a href="<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=tasks'/>">Project Task</a>&raquo;Project Task Summary</div>
+			  <div class="pull-right brud-crum"><a href="/pms/projectDashboard">Projects List</a> &raquo;<a href="/pms/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=tasks">Project Task</a>&raquo;Project Task Summary</div>
 		</div>
 		
 	</section>
@@ -340,7 +343,7 @@ function severityColorPic(){
 		          <div class="row dropdown-select mb10">
 			              <label class="col-md-4">Parent Task Id :</label> 
 			              <div class="col-md-8 paddingLefet textBold">
-			              <a href="${sourceleadUrl}/projectTaskSummary?taskUUID=${parentProjectTaskUUID}&projectClientUUID=${projectClientUUID}" title="${parentGeneratedId}">${parentGeneratedId}</a>
+			              <a href="/pms/projectTaskSummary?taskUUID=${parentProjectTaskUUID}&projectClientUUID=${projectClientUUID}" title="${parentGeneratedId}">${parentGeneratedId}</a>
 			              </div>
 			              </div>
 		          </c:if>
@@ -499,7 +502,7 @@ function inlinesaveProjectTaskCustomFieldDetails(){
 		$.ajax({
 			type : "POST",
 			 data: formData,
-			 url : sourceleadUrl+"/ProjectTasks/saveProjectTaskCustomFieldDetails?&id="+projectTaskId,
+			 url : pmsUrl+"/ProjectTasks/saveProjectTaskCustomFieldDetails?&id="+projectTaskId,
 			  success : function(data) {
 			}, 
 		});
@@ -511,9 +514,10 @@ function inlinesaveProjectTaskCustomFieldDetails(){
 
 <script>
 function preapareCustomFieldDetails(projecttaskId,sectionId){
+	var sourcleadUrl = '${sourcleadUrl}';
 	 $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getAllASectionCustomFields?&projectTask="+projecttaskId+"&requestFrom=projectTask"+"&sectionId="+sectionId,        
+         url: sourcleadUrl+"/getAllASectionCustomFields?&projectTask="+projecttaskId+"&requestFrom=projectTask"+"&sectionId="+sectionId,        
          success :function(data) {
         	 $('#projectTaskCustomId').empty();
         	 $('#projectTaskCustomId').append(data);
@@ -532,7 +536,7 @@ function preapareCustomFieldDetails(projecttaskId,sectionId){
 </script>
 <script>
 $(function() {
-	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	var projectStartDate = '${projectStartDate}';
 	var finalDateFormatProjectSave = '';
 	if(locationDate.match("yyyy-MM-dd")){
@@ -568,7 +572,7 @@ function getprojectTaskMembersByProjectId(projectId){
 		 //$("#projectTaskDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/ProjectTasks/getprojectTaskMembersByProjectId?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskUUID="+taskUUID, 	   
+		    url: pmsUrl+"/ProjectTasks/getprojectTaskMembersByProjectId?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskUUID="+taskUUID, 	   
 		    success: function(data) {
 		    	$('#tab-task1').empty();
 		    	$('#tab-task1').append(data);
@@ -594,7 +598,7 @@ $('.chosen-select').chosen().on('change', function() {
 	var projectId =  "${projectId}";
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/ProjectTasks/updateAssignTaskUsers?${_csrf.parameterName}=${_csrf.token}&assignValue="+assignValue+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID+"&projectId="+projectId, 	   
+		    url: pmsUrl+"/ProjectTasks/updateAssignTaskUsers?${_csrf.parameterName}=${_csrf.token}&assignValue="+assignValue+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID+"&projectId="+projectId, 	   
 	 		    success: function(data) {
 		    }
 	 });  
@@ -610,12 +614,10 @@ function tasksAssignList(projectId){
       <c:forEach var="assign" items="${assignedUsers}">
       	assignedUsers.push('${assign.projectMemberId.id}');
       </c:forEach>
-     /*  $.post(sourceleadUrl + "/getProjectEmployeeListById?" + tokenParamName + "=" + tokenValue + "&projectId="+projectId+"&status="+values, formData, function(json) {
-    	  
-      } */
+   
 	$.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
+        url: pmsUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
         success: function(json) {
         	var output = "";
         	for (var i=0; i<json.length; i++)
@@ -661,7 +663,7 @@ function inlineditTaskName(){
 			$.ajax({
 			   	type: "POST",
 			   	data: formData,
-			    url: sourceleadUrl+"/ProjectTasks/updateTaskName?${_csrf.parameterName}=${_csrf.token}&taskId="+projectTaskId+"&userId="+userId, 	   
+			    url: pmsUrl+"/ProjectTasks/updateTaskName?${_csrf.parameterName}=${_csrf.token}&taskId="+projectTaskId+"&userId="+userId, 	   
 			    success: function(data) {
 			    	$(".showTaskname").show();
 			    	$(".editTaskname").hide();
@@ -716,7 +718,7 @@ function inlineEditTaskStatus(taskId){
 	var userId = '${SourceLeadWeb_userId}';
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/ProjectTasks/updateTaskStatus?${_csrf.parameterName}=${_csrf.token}&taskStatusId="+taskStatusId+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID+"&editOwnerId="+editOwnerId+"&assignValue="+assignValue, 	   
+		    url: pmsUrl+"/ProjectTasks/updateTaskStatus?${_csrf.parameterName}=${_csrf.token}&taskStatusId="+taskStatusId+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID+"&editOwnerId="+editOwnerId+"&assignValue="+assignValue, 	   
   		    success: function(data) {
   		    	$("#statusLabel").fadeIn("slow");
   		    	$("#statusSpin").fadeOut("slow");
@@ -744,7 +746,7 @@ function inlineEditTaskPriority(taskId){
       $("#prioritySpin").fadeIn("slow");
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/ProjectTasks/updateTaskPriority?${_csrf.parameterName}=${_csrf.token}&taskpriorityId="+taskpriorityId+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID+"&editOwnerId="+editOwnerId+"&assignValue="+assignValue,  	   
+		    url: pmsUrl+"/ProjectTasks/updateTaskPriority?${_csrf.parameterName}=${_csrf.token}&taskpriorityId="+taskpriorityId+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID+"&editOwnerId="+editOwnerId+"&assignValue="+assignValue,  	   
   		    success: function(data) {
   		    	$("#priorityLabel").fadeIn("slow");
   		    	$("#prioritySpin").fadeOut("slow");
@@ -773,7 +775,7 @@ function inlineEditTaskSeverity(taskId){
     $("#severitySpin").fadeIn("slow");
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/ProjectTasks/updateTaskSeverity?${_csrf.parameterName}=${_csrf.token}&taskSeverityId="+taskSeverityId+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID+"&editOwnerId="+editOwnerId+"&assignValue="+assignValue, 	   
+		    url: pmsUrl+"/ProjectTasks/updateTaskSeverity?${_csrf.parameterName}=${_csrf.token}&taskSeverityId="+taskSeverityId+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID+"&editOwnerId="+editOwnerId+"&assignValue="+assignValue, 	   
   		    success: function(data) {
   		    	$("#severityLabel").fadeIn("slow");
   		    	$("#severitySpin").fadeOut("slow");
@@ -792,7 +794,7 @@ function inlineEditDescription(taskId){
 			 data: formData,
 	         processData: false,
 	         contentType:false, 
-	         url : sourceleadUrl+"/ProjectTasks/updateTaskDescription?${_csrf.parameterName}=${_csrf.token}&id="+taskId+"&loginUserId="+userId,
+	         url : pmsUrl+"/ProjectTasks/updateTaskDescription?${_csrf.parameterName}=${_csrf.token}&id="+taskId+"&loginUserId="+userId,
 			  success : function(data) {
 				   $("#jobAlert2").removeAttr("style");
 	    			$("#jobAlert2").css({ display: "block" });
@@ -814,7 +816,7 @@ function inlineEditTaskPercentage(taskId){
     $("#percentageSpin").fadeIn("slow");
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/ProjectTasks/updateTaskPercentage?${_csrf.parameterName}=${_csrf.token}&percentage="+percentageId+"&taskId="+taskId+"&userId="+userId,    
+		    url: pmsUrl+"/ProjectTasks/updateTaskPercentage?${_csrf.parameterName}=${_csrf.token}&percentage="+percentageId+"&taskId="+taskId+"&userId="+userId,    
 		    success: function(data) {
 		    	$("#percentageLabel").fadeIn("slow");
   		    	$("#percentageSpin").fadeOut("slow");
@@ -829,7 +831,7 @@ function inlineEditBillingType(taskId){
     $("#billingSpin").fadeIn("slow");
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/ProjectTasks/updateBillingType?${_csrf.parameterName}=${_csrf.token}&billingId="+billingId+"&taskId="+taskId+"&userId="+userId,    
+		    url: pmsUrl+"/ProjectTasks/updateBillingType?${_csrf.parameterName}=${_csrf.token}&billingId="+billingId+"&taskId="+taskId+"&userId="+userId,    
 		    success: function(data) {
 		    	$("#billingLabel").fadeIn("slow");
   		    	$("#billingSpin").fadeOut("slow");
@@ -846,11 +848,10 @@ function inlineEditBillingType(taskId){
 </script> 
  <script>
  function description(projectTaskId){
-	 var sourceleadUrl = '${sourceleadUrl}';
 	 $("#descrptionid").empty();
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/ProjectTasks/getProjectTasksDescrption?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId, 	   
+		    url: pmsUrl+"/ProjectTasks/getProjectTasksDescrption?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId, 	   
 		    success: function(json) {
 		    	 result = "";
 		    	 result = result +' <div class="success_pop" id="jobAlert2" style="display: none;">';
@@ -917,10 +918,10 @@ $(document).ready(function() {
 });	
 </script>
 <script>
-    // Description Custom Script
 	$('#summernote, #description_note').summernote();
 </script>      
-    <script>
+    
+<script>
     // Add Task side bar
 $(document).ready(function() {
     $("#addTask").click(function(){
@@ -1014,7 +1015,7 @@ function inlineEditDueDate(taskId){
 	var editDueDate = $("#editDueDate").val();
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/ProjectTasks/updateDueDate?${_csrf.parameterName}=${_csrf.token}&editDueDate="+editDueDate+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID+"&editOwnerId="+editOwnerId+"&assignValue="+assignValue,    
+	    url: pmsUrl+"/ProjectTasks/updateDueDate?${_csrf.parameterName}=${_csrf.token}&editDueDate="+editDueDate+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID+"&editOwnerId="+editOwnerId+"&assignValue="+assignValue,    
 	    success: function(data) {
 		    	getTaskActivities();
 	    }
@@ -1038,7 +1039,7 @@ function inlineEditEstimatedTime(taskId){
 	var editEstimatedTime = $("#editEstimatedTime").val();
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/ProjectTasks/updateEstimatedTime?${_csrf.parameterName}=${_csrf.token}&estimatedTime="+editEstimatedTime+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID+"&editOwnerId="+editOwnerId+"&assignValue="+assignValue,
+	    url: pmsUrl+"/ProjectTasks/updateEstimatedTime?${_csrf.parameterName}=${_csrf.token}&estimatedTime="+editEstimatedTime+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID+"&editOwnerId="+editOwnerId+"&assignValue="+assignValue,
 	    success: function(data) {
 		    	getTaskActivities();
 	    }
@@ -1057,7 +1058,7 @@ function inlineEditOwner(taskId){
 	var editOwnerId = $("#editOwnerId").val();
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/ProjectTasks/updateTaskOwner?${_csrf.parameterName}=${_csrf.token}&ownerId="+editOwnerId+"&taskId="+taskId+"&userId="+userId,    
+	    url: pmsUrl+"/ProjectTasks/updateTaskOwner?${_csrf.parameterName}=${_csrf.token}&ownerId="+editOwnerId+"&taskId="+taskId+"&userId="+userId,    
 	    success: function(data) {
 		    	getTaskActivities();
 	    }
@@ -1069,7 +1070,7 @@ function inlineEditEpic(taskId){
 	var editEepicId = $("#editEepicId").val();
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/ProjectTasks/updateEpic?${_csrf.parameterName}=${_csrf.token}&epicId="+editEepicId+"&taskId="+taskId+"&userId="+userId,    
+	    url: pmsUrl+"/ProjectTasks/updateEpic?${_csrf.parameterName}=${_csrf.token}&epicId="+editEepicId+"&taskId="+taskId+"&userId="+userId,    
 	    success: function(data) {
 		    	getTaskActivities();
 	    }
@@ -1081,7 +1082,7 @@ function inlineEditUserStory(taskId){
 	var editUserStroyId = $("#editUserStroyId").val();
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/ProjectTasks/updateUserStroy?${_csrf.parameterName}=${_csrf.token}&userStoryId="+editUserStroyId+"&taskId="+taskId+"&userId="+userId,    
+	    url: pmsUrl+"/ProjectTasks/updateUserStroy?${_csrf.parameterName}=${_csrf.token}&userStoryId="+editUserStroyId+"&taskId="+taskId+"&userId="+userId,    
 	    success: function(data) {
 		    	getTaskActivities();
 	    }
@@ -1171,11 +1172,10 @@ function taskUploadFile(){
 }
 
 function documentTableList(){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var projectTaskId = ${projectTask.id}
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+ "/ProjectTasks/getProjectTasksDocuments?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId,
+		url : pmsUrl+ "/ProjectTasks/getProjectTasksDocuments?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId,
 		success : function(data) {
 			 if (data && data.response === "INVALID_DATA") {
                  showError(result.responseMessage);
@@ -1238,7 +1238,7 @@ function documentTableList(){
 		        $("#documentTableId").append(result);
 		        taskDocumentPagination();
              }else if (result.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
+					location.replace(pmsUrl);
 				} else {
                  showError("Operation failed, please try again");
              }
@@ -1252,7 +1252,7 @@ function getEditTaskDocument(projectTaskDocId){
 	
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/ProjectTasks/getProjectTaskDocument?${_csrf.parameterName}=${_csrf.token}&projectTaskDocId="+projectTaskDocId, 	   
+		    url: pmsUrl+"/ProjectTasks/getProjectTaskDocument?${_csrf.parameterName}=${_csrf.token}&projectTaskDocId="+projectTaskDocId, 	   
 			    success: function(json) {
 			    	if(json.description != null && json.description != "" && json.description != "undefined"){
 			    		description = json.description;
@@ -1367,7 +1367,6 @@ function saveDocument(){
 			var form = $('#addDocument_form')[0];
 			var formData = new FormData(form);
 			var projectTaskId = '${projectTask.id}';
-		  	var sourceleadUrl = '${sourceleadUrl}';
 		  	var userId = '${SourceLeadWeb_userId}';
 		  	$("#save_document").attr("disabled", "disabled");
 			$("#save_document").addClass('button').val('Processing..');
@@ -1376,7 +1375,7 @@ function saveDocument(){
 				 data: formData,
 		         processData: false,
 		         contentType:false, 
-				 url : sourceleadUrl + "/ProjectTasks/saveProjectTaskDocuments?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId+"&loginUserId="+userId,
+				 url : pmsUrl + "/ProjectTasks/saveProjectTaskDocuments?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId+"&loginUserId="+userId,
 				  success : function(result) {
 					  if (result && result.response === "INVALID_DATA") {
 		                    showError(result.responseMessage);
@@ -1386,7 +1385,7 @@ function saveDocument(){
 		                	  closeTimeEntry();
 							  documentTableList();
 		                }else if (result.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
+							location.replace(pmsUrl);
 						} else {
 		                    showError("Operation failed, please try again");
 		                }
@@ -1409,7 +1408,6 @@ $('body').on('blur', '#addDocument_form', function() {
 function updateDocument(documentId){
 	if ($('#updateDocument_form').validate(false, validationSettings)) {
 		var projectTaskId = '${projectTask.id}';
-	  	var sourceleadUrl = '${sourceleadUrl}';
 	  	var userId = '${SourceLeadWeb_userId}';
 	  	$("#save_document").attr("disabled", "disabled");
 		$("#save_document").addClass('button').val('Processing..');
@@ -1420,7 +1418,7 @@ function updateDocument(documentId){
 	         processData: false,
 	         contentType:false, 
    	         dataType : 'json',
-			 url : sourceleadUrl + "/ProjectTasks/saveProjectTaskDocuments?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId+"&documentId="+documentId+"&loginUserId="+userId,
+			 url : pmsUrl + "/ProjectTasks/saveProjectTaskDocuments?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId+"&documentId="+documentId+"&loginUserId="+userId,
 			  success : function(result) {
 				  if (result && result.response === "INVALID_DATA") {
 	                    showError(result.responseMessage);
@@ -1430,7 +1428,7 @@ function updateDocument(documentId){
 	                	closeTimeEntry();
 	  				  documentTableList();
 	                }else if (result.indexOf('Sign In') !== -1) {
-						location.replace(sourceleadUrl);
+						location.replace(pmsUrl);
 					} else {
 	                    showError("Operation failed, please try again");
 	                }
@@ -1451,7 +1449,7 @@ function updateDocument(documentId){
 function projectTaskDocumentView(documentId,title){
 	 
 		if(documentId != null && documentId != ""){
-			window.open(sourceleadUrl+'/ProjectTasks/viewProjectTaskDocument/'+title+'?documentId='+documentId,title,"height=600,width=600");
+			window.open(pmsUrl+'/ProjectTasks/viewProjectTaskDocument/'+title+'?documentId='+documentId,title,"height=600,width=600");
 		}
 }
 </script>
@@ -1461,7 +1459,7 @@ function removeProjectTaskDocuments(documentId){
 	var userId = '${SourceLeadWeb_userId}';
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/ProjectTasks/deleteProjectTaskDocument?${_csrf.parameterName}=${_csrf.token}&porjectTaskDocumentId="+documentId+"&userId="+userId, 	   
+	    url: pmsUrl+"/ProjectTasks/deleteProjectTaskDocument?${_csrf.parameterName}=${_csrf.token}&porjectTaskDocumentId="+documentId+"&userId="+userId, 	   
 		    success: function(data) {
 		    	closeTimeEntry();
 		    	documentTableList();
@@ -1712,7 +1710,7 @@ function addSubTasks(){
 				$('#ownerId').trigger("chosen:updated");
 				$('.selectpicker').selectpicker('refresh');
 		
-				  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+				  var locationDate ='${SourceLeadWeb_dateFormat}'; 
 				  var finalDateFormatProjectSave = '';
 				  if(locationDate.match("yyyy-MM-dd")){
 					  finalDateFormatProjectSave = 'yy-mm-dd';
@@ -1775,11 +1773,11 @@ function cleartprojectdueDate(){
  </script>
 <script>
 function getOwnerList(){
-	var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var ownerUserId = '${projectTask.ownerUserId.id}';
 	$.ajax({
 	    	type: "GET",
-	    	 url: sourceleadUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+	    	 url: pmsUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
 	    		success: function(json) {
 	     		var output = "";
 	     			output = output + "<option value=''>--Select Owner--</option>";
@@ -1819,7 +1817,7 @@ function subTasksAssignList(projectId){
 	var values = "Active";
 	$.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
+        url: pmsUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
         success: function(json) {
         	var output = "";
         	for (var i=0; i<json.length; i++)
@@ -1876,7 +1874,7 @@ function subTasksAssignList(projectId){
 	 var taskType = "Epic";
 	 $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/ProjectTasks/getProjectTasksByTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
+	    	 url: pmsUrl+"/ProjectTasks/getProjectTasksByTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
 	    		success: function(json) {
 	    			var output = "";
 	    				output = output + "<option value=''>--Select Epic--</option>";
@@ -1903,7 +1901,7 @@ function subTasksAssignList(projectId){
 	 var taskType = "UserStory";
 	 $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/ProjectTasks/getProjectTasksByTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
+	    	 url: pmsUrl+"/ProjectTasks/getProjectTasksByTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
 	    		success: function(json) {
 	    			var output = "";
 	    				output = output + "<option value=''>--Select User Story--</option>";
@@ -1934,7 +1932,7 @@ function subTasksAssignList(projectId){
 	taskType = "SubTask";
 	$.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/ProjectTasks/getProjectTasksBySubTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
+	    	 url: pmsUrl+"/ProjectTasks/getProjectTasksBySubTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
 	    		success: function(json) {
 	     		var output = "";
 	     		for (var i=0; i<json.length; i++)
@@ -1970,7 +1968,6 @@ function saveTasks(){
 		var form = $('#projectTask_form')[0];
 		var formData = new FormData(form);
 		var projectId =  "${projectId}";
-	  	var sourceleadUrl = '${sourceleadUrl}';
 	  	$("#save_task").attr("disabled", "disabled");
 	  	var userId = '${SourceLeadWeb_userId}';
 	  	var projectClientUUID = '${projectClientUUID}';
@@ -1980,7 +1977,7 @@ function saveTasks(){
 			 data: formData,
 	         processData: false,
 	         contentType:false, 
-			 url : sourceleadUrl + "/ProjectTasks/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId+"&projectClientUUID="+projectClientUUID,
+			 url : pmsUrl + "/ProjectTasks/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId+"&projectClientUUID="+projectClientUUID,
 			  success : function(result) {
 				  if (result && result.response === "INVALID_DATA") {
 	                    showError(result.responseMessage);
@@ -1990,7 +1987,7 @@ function saveTasks(){
 	  				  getSubTaskList();
 	  				  cancelTask();
 	                }else if (result.indexOf('Sign In') !== -1) {
-						location.replace(sourceleadUrl);
+						location.replace(pmsUrl);
 					} else {
 	                    showError("Operation failed, please try again");
 	                }
@@ -2012,12 +2009,11 @@ $('body').on('blur', '#projectTask_form', function() {
 <script>
 function getSubTaskList(){
 	var projectClientUUID = '${projectClientUUID}';
-	var sourceleadUrl = '${sourceleadUrl}';
 	var projectId =  "${projectId}";
 	var projectTaskId = "${projectTask.id}";
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl	+ "/ProjectTasks/getsubTasksList?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&subTaskId="+projectTaskId,
+		url : pmsUrl	+ "/ProjectTasks/getsubTasksList?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&subTaskId="+projectTaskId,
 		success : function(json) {
 			var result = "";
 			result = result + '<table id="subTasksPagination" class="display" cellspacing="0" width="100%">';
@@ -2049,7 +2045,7 @@ function getSubTaskList(){
 				result = result + '<tr>';
 				
 				'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_SUB_TASK\')">'; 
-				   result = result+ '<td><div class="proj_show tblminwidth-100"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+ opt.taskName+ '" class="pull-left anchorBlack" >'+ opt.taskName+ '<i class="fa fa-binoculars" style="position:absolute; right:0;"></i></a></div></td>';
+				   result = result+ '<td><div class="proj_show tblminwidth-100"><a href="'+pmsUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+ opt.taskName+ '" class="pull-left anchorBlack" >'+ opt.taskName+ '<i class="fa fa-binoculars" style="position:absolute; right:0;"></i></a></div></td>';
 				'</sec:authorize>';
 				
 				'<sec:authorize access="!hasRole(\'ROLE_VIEW_EDIT_SUB_TASK\')">'; 
@@ -2059,7 +2055,7 @@ function getSubTaskList(){
 				result = result	+ '<td><div><span>'+taskStaus+'</span></div></td>';
 				result = result	+ '<td>';
 				result = result	+ '<div class="tbldata-dotdot-100 text-center">';
-				result = result	+ '<a class="glyphicon glyphicon-edit" title="Edit" href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" ></a> <a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteProjectTaskPopUp('+opt.id+');"></a>';
+				result = result	+ '<a class="glyphicon glyphicon-edit" title="Edit" href="'+pmsUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" ></a> <a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteProjectTaskPopUp('+opt.id+');"></a>';
 				result = result	+ '</div></td>';
 				result = result + '</tr>';
 
@@ -2089,10 +2085,9 @@ function deleteProjectTaskPopUp(projectTaskId){
 }
 
 function deleteProjectTask(projectTaskId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl	+ "/ProjectTasks/deleteProjectSubTasks?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId,
+		url : pmsUrl	+ "/ProjectTasks/deleteProjectSubTasks?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId,
 		success : function(json) {
 			    $("#taskDeletePopUp").empty();
 			 	$(".project_inn_mask").fadeOut(200);
@@ -2127,11 +2122,10 @@ function subTaskPagination(){
 <!-- ============================ Activity related Script Start ========================================== -->
 <script>
 function getTaskActivities(){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var projectTaskId = "${projectTask.id}";
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl	+ "/ProjectTasks/getTaskActivityList?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId,
+		url : pmsUrl	+ "/ProjectTasks/getTaskActivityList?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId,
 		success : function(json) {
 			var result = "";
 			if(json != null && json != 'undefined' && json != "" && json != '[]'){
@@ -2202,33 +2196,7 @@ function addComment(){
 	$("#commnetPopUpDivId").append(result); 
 	 
 }
-/* function commentMembers(event){
-// 	onkeypress="commentMembers(event)"
-var value = $("#taskComment").val();
-	if(event.keyCode === 64){
-		var projectId = "${projectId}";
-		var values = "Active";
-		$.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
-	        success: function(json) {
-	        	var output = "";
-	        	output = output + "<ul>";
-	        	for (var i=0; i<json.length; i++)
-				{
-	        		var opt = json[i];
-	        		output = output + "<li value='" +opt.id+ "'>"+opt.empName+"</li>";
-				}
-	        	output = output + "</ul>";
-	        	$("#taskComment").val(value + output)
-	        	alert(value)
-	        	alert(output)
-	        }
-		});	
-		
-		
-	}
-} */
+
 </script>
 <script>
 function saveComment(){
@@ -2248,7 +2216,6 @@ function saveComment(){
 			var projectClientUUID = '${projectClientUUID}';
 			
  			var projectTaskId = '${projectTask.id}';
-		  	var sourceleadUrl = '${sourceleadUrl}';
 		  	var userId = '${SourceLeadWeb_userId}';
 			var formData = getFormData("addComment_form");
 		  	$("#save_comment").attr("disabled", "disabled");
@@ -2256,7 +2223,7 @@ function saveComment(){
 			$.ajax({
 				 type : "POST",
 				 data: formData,
-				 url : sourceleadUrl + "/ProjectTasks/saveProjectTaskComment?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId+"&loginUserId="+userId+"&projectClientUUID="+projectClientUUID+"&editOwnerId="+editOwnerId+"&assignValue="+assignValue,
+				 url : pmsUrl + "/ProjectTasks/saveProjectTaskComment?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId+"&loginUserId="+userId+"&projectClientUUID="+projectClientUUID+"&editOwnerId="+editOwnerId+"&assignValue="+assignValue,
 				  success : function(result) {
 					  if (result && result.response === "INVALID_DATA") {
 		                    showError(result.responseMessage);
@@ -2266,7 +2233,7 @@ function saveComment(){
 		                	 closeComment();
 							  commentTableList();
 		                }else if (result.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
+							location.replace(pmsUrl);
 						} else {
 		                    showError("Operation failed, please try again");
 		                }
@@ -2293,11 +2260,10 @@ $('body').on('blur', '#addComment_form', function() {
 
 <script>
 function commentTableList(){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var projectTaskId = "${projectTask.id}";
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl	+ "/ProjectTasks/getTaskCommentList?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId,
+		url : pmsUrl	+ "/ProjectTasks/getTaskCommentList?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId,
 		success : function(json) {
 			var result = "";
 			if(json != null && json != 'undefined' && json != "" && json != '[]'){
@@ -2331,6 +2297,7 @@ function commentTableList(){
 </script>
 <script>
 function getCustomDependentFieldProjectSubTask(sectionId){
+	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 			type : "POST" , 
 				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
@@ -2389,7 +2356,7 @@ function getProjectTaskTagsList(){
 	var projectTaskId = "${projectTask.id}";
 	$.ajax({  
         type : "POST",
-        url: sourceleadUrl+"/getTaskTags?"+tokenParamName+"="+tokenValue+"&projectTaskId="+projectTaskId,        
+        url: pmsUrl+"/getTaskTags?"+tokenParamName+"="+tokenValue+"&projectTaskId="+projectTaskId,        
         success :function(json) {
         	var result = "";
 			$.each( json.tagsList, function( i, tags ) {
@@ -2422,9 +2389,9 @@ function saveTaskTags(type){
 	 var jsonData = encodeURIComponent(tagName);
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 if(tagName != null && tagName != '' && tagName !='undefined') {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByProjectTaskId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&projectTaskId="+projectTaskId+"&tagName="+jsonData
+		 Urlcheck = pmsUrl+"/saveOrUpdateTagsByProjectTaskId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&projectTaskId="+projectTaskId+"&tagName="+jsonData
 	 } else {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByProjectTaskId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&projectTaskId="+projectTaskId+"&tagName="+""
+		 Urlcheck = pmsUrl+"/saveOrUpdateTagsByProjectTaskId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&projectTaskId="+projectTaskId+"&tagName="+""
 	 } 
 	 $.ajax({  
          type : "POST",
@@ -2442,7 +2409,7 @@ function saveTaskTags(type){
         		}
         		getProjectTaskTagsList(clientId);
         	} else if (result.indexOf('Sign In') !== -1) {
-        		location.replace(sourceleadUrl);
+        		location.replace(pmsUrl);
         	} else {
         	    showError("Operation failed, please try again");
         	}

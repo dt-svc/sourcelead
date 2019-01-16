@@ -30,6 +30,10 @@
 }
 </style>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <!-- Content Area -->
 <section class="content-wraper">
 	<section class="content-header clearfix">
@@ -37,8 +41,8 @@
 			<h2>Create Project</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo;<a href="<c:url value='${appPath}/projectDashboard'/>"> Projects List</a>
+			<a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>
+			&raquo;<a href="/pms/projectDashboard"> Projects List</a>
 			&raquo; Create Project
 	</section>
 	<div class="content-area clearfix">
@@ -536,7 +540,7 @@
 </section>
 <!-- Content Area Ends-->
 
-<script type="text/javascript" src="/resources/js/projects.js"></script>
+<script type="text/javascript" src="/pms/resources/js/projects.js"></script>
 
 
 <script type="text/javascript">
@@ -666,6 +670,7 @@ function getStatus(){
 				additionalDetails.href = "#";
 				additionalDetails.className = "disabledLink";
 			}
+			
 			projects.getProjectLevel1Approvers();
 			projects.getProjectLevel1ExpenseApprovers();
 			projects.getBudgetApprover();
@@ -893,6 +898,7 @@ $(window).load(function() {
 <script>
 function getCustomDependentField(sectionId){
 	var projectId = $('#projectId').val();
+	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 			type : "POST" , 
 				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId+"&projectId="+projectId+"&requestFrom=project",

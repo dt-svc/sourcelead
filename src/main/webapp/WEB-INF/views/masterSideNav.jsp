@@ -11,7 +11,7 @@
 		<ul>
         
         <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER' && SourceLeadWeb_prodSupportLoginUserRole == null}">
-        <li class="${sessionData.nav == 'Dashboard' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>" title="Dashboard"><span class="navIcons"></span><b>Dashboard</b></a></li>
+        <li class="${sessionData.nav == 'Dashboard' ? 'navActive' : ''}"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}" title="Dashboard"><span class="navIcons"></span><b>Dashboard</b></a></li>
         </c:if>
         
          <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == 'ROLE_PRODUCTION_SUPPORT'}">
@@ -67,7 +67,7 @@
 	                 </c:if>
 	                 
 	                 <c:if test="${userTabs.tabName == 'Projects'}">
-	                	  <li class="${sessionData.nav == 'Projects' ? 'navActive' : ''}"><a href="<c:url value='/pms/projectDashboard'/>" title="Projects"><span class="navIcons projIcon"></span><b>Projects</b></a></li>
+	                	  <li class="${sessionData.nav == 'Projects' ? 'navActive' : ''}"><a href="/pms/projectDashboard" title="Projects"><span class="navIcons projIcon"></span><b>Projects</b></a></li>
 	                 </c:if>
 	                 
 	                 <c:if test="${timesheetTabExist == 'N' && (userTabs.tabName == 'My Timesheets' || userTabs.tabName == 'Timesheet Approval')}">

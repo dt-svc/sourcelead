@@ -9,12 +9,16 @@ import java.io.InputStream;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -65,10 +69,13 @@ import com.bis.sourcelead.entity.ProjectQuestionnaire;
 import com.bis.sourcelead.entity.ProjectTaskActivity;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.SourceleadTags;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -87,6 +94,8 @@ import com.bis.sourcelead.service.ProjectTaskActivityService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadTagsService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -180,6 +189,12 @@ public class ProjectsRestController {
 	
 	@Autowired
 	private ProjectTaskActivityService projectTaskActivityService;
+	
+	@Autowired
+	private TeamService teamService;
+	
+	@Autowired
+	SourceleadTagsService sourceleadTagsService;
 	/**
 	 * This method for save the project by json
 	 * 
@@ -905,6 +920,7 @@ public class ProjectsRestController {
 			 globalVarsMap.put("projectName", projects.getProjectName());
 			 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrg().getOrgName());
 			 
+			 
 			 //calling the sendEmail method of emailScenerioUtil
 			 if(null != projects.getOrgLocationsId())
 			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,projects.getOrgLocationsId().getOrg(),projects.getOrgLocationsId(),Constants.EDITPROJECT_MAIL_TEAMMEMBER,new ArrayList<EmailAttachment>());
@@ -1295,6 +1311,540 @@ public class ProjectsRestController {
 	 		return flag;
 	 	}
 	 	
+	 /**
+	  * To get the Project Manager Name by using projectId
+	  * @param currentApproverId
+	  * @param request
+	  * @return
+	  * @throws Exception
+	  */
+	@RequestMapping(value = "/getApproversByUserId", method = RequestMethod.POST)
+	public @ResponseBody List<User> getApproversByUserId(
+			@RequestParam(value = "currentApproverId", required = false) Long currentApproverId,
+			HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,
+				"org");
+		List<User> usersList = new CopyOnWriteArrayList<>();
+		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId,orgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+		List<User> globalUserList = userService.getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId,org.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+		if(userList != null && !userList.isEmpty()) {
+			usersList.addAll(userList);
+		}
+		if(globalUserList != null && !globalUserList.isEmpty()) {
+			usersList.addAll(globalUserList);
+		}
 		
 		
+		HashMap<Long,User> userMap = new HashMap<>();
+		for (User user : usersList) {
+			User tempUser = userMap.get(user.getId());
+			if(tempUser == null) {
+				userMap.put(user.getId(),user);
+			}else {
+				usersList.remove(user);
+				continue;
+			}
+			UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+			if(userRole != null){
+				user.setUserType(userRole.getUserType());
+			}else {
+				UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+				user.setUserType(primaryRole.getUserType());
+			}
+		}
+		
+		return usersList;
+	}
+
+	@RequestMapping(value = "/getOrgLocationTeamList")
+	public List<Team> getOrgLocationTeamList(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId,HttpServletRequest request) throws Exception
+	{
+		List<Team> teamList = teamService.getTeamListByOrgLocationID(orgLocationId);
+		return teamList;
+	}
+	
+	
+	
+	/**
+	 * @author Laxman
+	 * @param projectId
+	 * @param request
+	 * @param response
+	 * @return project
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getProjectsTags", method = RequestMethod.POST)
+	public Projects getProjectsTags(@RequestParam(value = "projectId", required = false) Long projectId , HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 Projects project = projectsService.getProjectById(projectId);
+		 System.out.println("projectId : "+projectId);
+	    Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(loginOrgLocation.getId());
+	    request.getSession().setAttribute("tagsList", tagsList);
+	    project.setTagsList(tagsList);
+		Set<String> projectTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(loginOrgLocation.getId(), TagEntites.PROJECTS.getValue(), project.getId());
+		if(projectTagsList != null && !projectTagsList.isEmpty()) {
+			StringBuilder projectTagsStr = new StringBuilder();
+			for(String tags : projectTagsList) {
+				projectTagsStr = projectTagsStr.append(tags).append(",");
+			}
+			projectTagsStr.toString();
+			project.setProjectsTags(projectTagsStr.substring(0,projectTagsStr.length()-1));
+		}
+		return project;
+
+	}
+	
+	/**
+	 * @author Laxman
+	 * @param loginUserId
+	 * @param projectId
+	 * @param tagName
+	 * @param request
+	 * @return response
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/saveOrUpdateTagsByProjectId")
+	public Response<String> saveOrUpdateTagsByProjectId(@RequestParam(value = "loginUserId", required = false) Long loginUserId,
+			@RequestParam(value = "projectId", required = false) long projectId,
+			@RequestParam(value = "tagName", required = false) String tagName, HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+
+		try {
+			User user = userService.getUserById(loginUserId);
+			if (user != null) {
+				Projects project = projectsService.getProjectById(projectId);
+					Set<String> projectTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(orgLocations.getId(), TagEntites.PROJECTS.getValue(), project.getId());
+					ArrayList<String> newTags = new ArrayList<>(Arrays.asList(tagName.split("\\s*,\\s*")));
+					ArrayList<String> actualNewTags = new ArrayList<>();
+					actualNewTags.addAll(newTags);
+				    Set<String> newTagsSet = new HashSet<String>(actualNewTags);
+				    newTagsSet.removeAll(projectTagsList);
+				    projectTagsList.removeAll(actualNewTags);
+				    project.setProjectsTags(tagName);
+				    
+				    if(newTagsSet != null && !newTagsSet.isEmpty() && newTagsSet.size() > 0) {
+				    	for(String tag : newTagsSet) {
+				    		if(StringUtils.isNotBlank(tag)) {
+				    			SourceleadTags tags = new SourceleadTags();
+					    		tags.setEntityType(TagEntites.PROJECTS);
+					    		tags.setEntityId(project.getId());
+					    		tags.setTagName(tag);
+					    		tags.setOrgLocationId(orgLocations);
+					    		tags.setStatus(Constants.CANDIDATE_ACTIVE);
+					    		tags.setCreatedBy(user);
+					    		tags.setCreatedDate(new Date());
+					    		sourceleadTagsService.saveSourceleadTags(tags);
+				    		}
+				    	}
+				    }
+				    
+				    if(projectTagsList != null && !projectTagsList.isEmpty() && projectTagsList.size() > 0) {
+				    	for(String removedTags : projectTagsList) {
+				    		SourceleadTags tags = sourceleadTagsService.getSourceleadTagsByEntityIdAndTagNameAndOrgLocationId(orgLocations.getId(), TagEntites.PROJECTS.getValue(), project.getId(),removedTags);
+				    		if(tags != null) {
+				    			tags.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+				    			tags.setUpdatedBy(user);
+				    			tags.setUpdatedDate(new Date());
+				    			sourceleadTagsService.saveSourceleadTags(tags);
+				    		}
+				    	}
+				    }
+			    Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(orgLocations.getId());
+			    SourceLeadSessionManager.removeSessionAttribute(request, "tagsList");
+			    SourceLeadSessionManager.setSessionAttribute(request, "tagsList", tagsList);
+				response.setResponse(Result.SUCCESS.name());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+
+	
+	@RequestMapping(value = "/getTaskTags", method = RequestMethod.POST)
+	public ProjectTasks getProjectTaskIdTags(@RequestParam(value = "projectTaskId", required = false) Long projectTaskId , HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 ProjectTasks pt = projectTasksService.getTasksId(String.valueOf(projectTaskId));
+			    Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(loginOrgLocation.getId());
+			    request.getSession().setAttribute("tagsList", tagsList);
+			    pt.setTagsList(tagsList);
+				Set<String> tasksTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(loginOrgLocation.getId(), TagEntites.TASKS.getValue(), pt.getId());
+				if(tasksTagsList != null && !tasksTagsList.isEmpty()) {
+					StringBuilder tasksTagsStr = new StringBuilder();
+					for(String tags : tasksTagsList) {
+						tasksTagsStr = tasksTagsStr.append(tags).append(",");
+					}
+					tasksTagsStr.toString();
+					pt.setTaskTags(tasksTagsStr.substring(0,tasksTagsStr.length()-1));
+				} 
+		return pt;
+
+	}
+	
+	@RequestMapping(value = "/saveOrUpdateTagsByProjectTaskId")
+	public Response<String> saveOrUpdateTagsByProjectTaskId(@RequestParam(value = "loginUserId", required = false) Long loginUserId,
+			@RequestParam(value = "projectTaskId", required = false) long projectTaskId,
+			@RequestParam(value = "tagName", required = false) String tagName, HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		try {
+			User user = userService.getUserById(loginUserId);
+			if (user != null) {
+				ProjectTasks pt = projectTasksService.getTasksId(String.valueOf(projectTaskId));
+					Set<String> taskTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(orgLocations.getId(), TagEntites.TASKS.getValue(), pt.getId());
+					ArrayList<String> newTags = new ArrayList<>(Arrays.asList(tagName.split("\\s*,\\s*")));
+					ArrayList<String> actualNewTags = new ArrayList<>();
+					actualNewTags.addAll(newTags);
+				    Set<String> newTagsSet = new HashSet<String>(actualNewTags);
+				    newTagsSet.removeAll(taskTagsList);
+				    taskTagsList.removeAll(actualNewTags);
+				    pt.setTaskTags(tagName);
+				    
+				    if(newTagsSet != null && !newTagsSet.isEmpty() && newTagsSet.size() > 0) {
+				    	for(String tag : newTagsSet) {
+				    		if(StringUtils.isNotBlank(tag)) {
+				    			SourceleadTags tags = new SourceleadTags();
+					    		tags.setEntityType(TagEntites.TASKS);
+					    		tags.setEntityId(pt.getId());
+					    		tags.setTagName(tag);
+					    		tags.setOrgLocationId(orgLocations);
+					    		tags.setStatus(Constants.CANDIDATE_ACTIVE);
+					    		tags.setCreatedBy(user);
+					    		tags.setCreatedDate(new Date());
+					    		sourceleadTagsService.saveSourceleadTags(tags);
+				    		}
+				    	}
+				    }
+				    
+				    if(taskTagsList != null && !taskTagsList.isEmpty() && taskTagsList.size() > 0) {
+				    	for(String removedTags : taskTagsList) {
+				    		SourceleadTags tags = sourceleadTagsService.getSourceleadTagsByEntityIdAndTagNameAndOrgLocationId(orgLocations.getId(), TagEntites.TASKS.getValue(), pt.getId(),removedTags);
+				    		if(tags != null) {
+				    			tags.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+				    			tags.setUpdatedBy(user);
+				    			tags.setUpdatedDate(new Date());
+				    			sourceleadTagsService.saveSourceleadTags(tags);
+				    		}
+				    	}
+				    }
+			    Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(orgLocations.getId());
+			    SourceLeadSessionManager.removeSessionAttribute(request, "tagsList");
+			    SourceLeadSessionManager.setSessionAttribute(request, "tagsList", tagsList);
+				response.setResponse(Result.SUCCESS.name());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+	
+	
+	@RequestMapping(value = "/updateEndDateByProjectMemberId", method = RequestMethod.POST)
+	public String updateEndDateByProjectMemberId(@RequestParam(value = "endDate", required = false) String endDate,
+
+			@RequestParam(value = "projectMemberId", required = false) Long projectMemberId,HttpServletRequest request) throws Exception {
+				
+		
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+				ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
+				//SimpleDateFormat sdf = orgLocations.getLocFullFormDateFormatter();
+				
+				if (endDate != null && !"".equals(endDate) && !endDate.equalsIgnoreCase("--")) {
+					ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+					
+					 //List<ProjectMembers> pmList = projectMembersService.getAllProjectMembersByMasterCandidateId(projectMembers.getMasterCandidateId().getId(), projectMembers.getProjects().getId());
+					if(pmh == null){
+						pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
+					}
+					Date endDate1=commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate);
+					if(pmh.getProjectTerminationDate()== null){
+						/*projectMembersService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);*/
+						projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
+					}
+
+					if (pmh.getProjectTerminationDate() != null && pmh.getProjectTerminationDate().compareTo(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate)) != 0) {
+						projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
+						
+					}
+					// mail forward to members inline end date edit
+					projectEnddatechangetoEmployee(projectMembers,user, orgLocations, endDate );
+					
+					Date terminationDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate);
+					Date currentDate = new  Date();
+					
+					if(currentDate.after(terminationDate) && !currentDate.equals(terminationDate)){
+						commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId,Primary.Yes);
+					}
+					else{
+						commonUtil.inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(projectMemberId, terminationDate);
+					}
+				}else{
+					ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+					if(pmh == null){
+						pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
+					}
+					Date endDate1=null;
+					if(pmh.getProjectTerminationDate()== null){
+						/*projectMembersService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);*/
+						projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
+					}
+
+					if (pmh.getProjectTerminationDate() != null) {
+						projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
+						
+					}
+					// mail forward to members inline end date edit
+					projectEnddatechangetoEmployee(projectMembers,user, orgLocations, endDate );
+					
+					Date terminationDate = null;
+						commonUtil.inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(projectMemberId, terminationDate);
+				}
+				return "updated";
+	       }
+	
+	
+	
+	/**
+	 * to save the reason when we terminate the user from project 
+	 * @param projectMemberId
+	 * @param reason
+	 * @return
+	 */
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_PROJECT_EMPLOYEES')")
+	@RequestMapping(value = "/saveReason", method = RequestMethod.POST)
+	@ResponseBody String saveReason(
+			@RequestParam(value = "projectMemberId", required = true) Long projectMemberId,
+			@RequestParam(value = "projectId", required = true) Long projectId,
+			@RequestParam(value = "reason", required = true) String reason,HttpServletRequest request) {
+		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+		   Integer updatedCount =  0;
+		   try {
+			   ProjectMembers pm = projectMembersService.getProjectMemberById(projectMemberId);
+			   List<ProjectMembers> pmList = projectMembersService.getAllProjectMembersByMasterCandidateId(pm.getMasterCandidateId().getId(), projectId);
+			   Projects projects = projectsService.getProjectById(projectId);
+		  	 if(pmList != null && !pmList.isEmpty()) {
+			   for(ProjectMembers projectMembers: pmList) {
+			  		  String status = Constants.MEMBER_IN_ACTIVE;
+				  	  projectMembers.setTerminateReason(reason);
+					  projectMembers.setUpdatedDate(new Date());
+					  projectMembers.setUpdatedBy(user.getUserCode());
+					  projectMembers.setStatus(status);
+					  projectMembersService.saveProjectMember(projectMembers);
+				  	  
+					  List<ProjectMembersHistory> pmhList = projectMembersHistoryService.getProjectMembersHistoryListByProjectMemberId(projectMembers.getId());
+					  int sendEmailCount = 1;
+					  if(pmhList != null && pmhList.size() > 0){
+						  for(ProjectMembersHistory pmh : pmhList){
+							  pmh.setProjectTerminationDate(new Date());
+							  pmh.setUpdatedDate(new Date());
+							  pmh.setUpdatedBy(user.getUserCode());
+							  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_CLOSED);
+							  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
+							  if(sendEmailCount == 1){
+								  commonUtil.terminatedMailToEmployee(user,pmh,projects.getOrgLocationsId());
+							  }
+							  
+							  if(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getId().equals(projects.getOrgLocationsId().getId())){
+								  commonUtil.employeeTerminationMailToProjectManager(user,pmh,projects.getOrgLocationsId());
+							  }else{
+								  commonUtil.employeeTerminationMailToProjectManager(pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId().getUser(),pmh,pmh.getProjectMemberId().getProjectClientsId().getOrgLocationsId());
+							  }
+							  commonUtil.inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(projectMemberId,new Date());
+							  sendEmailCount = sendEmailCount+1;
+						  }
+					  }
+					
+				      
+						if(null != projects){
+							Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
+							ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(projects, null, projectMembersList);
+							//Elastic Search Document Saving
+							sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,projects.getId().toString());
+						}
+		  	  }
+		  	 }
+		    } catch (Exception e) {
+		   }
+		return "success";
+	}
+	
+	
+	
+	/**
+	 * to assign the project to the particular user
+	 * @param json
+	 * @param userId
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/saveReAssignProject", method = RequestMethod.POST)
+	@ResponseBody String saveReAssignProject(ProjectsDTO projectsDTO,
+			@RequestParam(value = "projectMemberId", required = false) Long projectMemberId, HttpServletRequest request)
+					throws Exception {
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 try {
+		  	  ProjectMembers pm =	projectMembersService.getProjectMemberById(projectMemberId);
+		  	  List<ProjectMembers> pmList = projectMembersService.getAllProjectMembersListByMasterCandidateId(pm.getMasterCandidateId().getId(), pm.getProjects().getId());
+		  	  
+		  	 int sendEmailCount = 1;
+		  	 if(pmList != null && !pmList.isEmpty()) {
+				   for(ProjectMembers projectMembers: pmList) {
+					    String status = Constants.MEMBER_ACTIVE;
+						  projectMembers.setUpdatedDate(new Date());
+						  projectMembers.setUpdatedBy(user.getUserCode());
+						  projectMembers.setStatus(status);
+						  projectMembers =  projectMembersService.saveProjectMember(projectMembers);
+						  projectMembers = projectMembersService.getProjectMemberById(projectMembers.getId());
+						  ProjectMembersHistory pmh = new  ProjectMembersHistory();  
+						  pmh.setProjectMemberId(projectMembers);
+				  		  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
+			    	      if(!isNullOrEmpty(projectsDTO.getReStartDate())){
+			    	    	  Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectsDTO.getReStartDate());
+							  pmh.setProjectAssignedDate(startDate);
+			    	      }
+			    	      if(!isNullOrEmpty(projectsDTO.getReEndDate())){
+			    	    	  Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectsDTO.getReEndDate());
+							  pmh.setProjectTerminationDate(endDate);
+			    	      }
+			    	      pmh.setCreatedDate(commonUtil.currentDate());
+			    	    	if(user.getUserCode() != null){
+			    	    		pmh.setCreatedBy(user.getUserCode());	
+			    	    	}
+			    	    	
+						  pmh.setUpdatedDate(commonUtil.currentDate());
+						  pmh.setProjectTerminationDate(null);
+						  pmh.setUpdatedBy(user.getUserCode());
+						  pmh =  projectMembersHistoryService.updateProjectMembersHistory(pmh);
+						  if(sendEmailCount == 1) {
+							  reAssignMailToEmployee(user,pmh,orgLocations);
+						  }
+						  sendEmailCount = sendEmailCount+1;
+					  }
+						
+			  	 }
+		  	  
+		 }catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return "success";
+	}
+	
+	
+	private void reAssignMailToEmployee(User loginUser, ProjectMembersHistory pmh, OrgLocations orgLocations) throws Exception {
+
+		 User user=null;
+		 if(null != pmh.getProjectMemberId()){
+		 user = userService.getUserByUserCode(pmh.getProjectMemberId().getCreatedBy());
+		 }
+		 
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName());
+		 emailMessage.setLastName(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName());
+		 emailMessage.setToEmail(pmh.getProjectMemberId().getProjectMemberCandidteId().getEmail());
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 
+		// StringBuilder msgBuild = new StringBuilder();
+		// emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		//setting the class filed values
+		//SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();    
+		 String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectAssignedDate());
+		 String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectTerminationDate());
+		
+		 
+		 StringBuilder employeeName = new StringBuilder();
+	 	 if(StringUtils.isNotBlank(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName())) {
+	 		 employeeName = employeeName.append(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName()).append(" ").append(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName());
+	 	 }else {
+	 		 employeeName = employeeName.append(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName());
+	  		 }
+	  		 
+	 	 globalVarsMap.put("EmployeeName", employeeName.toString());
+		 
+		 
+		 if(null != pmh.getProjectMemberId().getProjects()){
+			 if(null != pmh.getProjectMemberId().getProjects().getProjectName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getProjects().getProjectName())){
+			 globalVarsMap.put("Project Name", pmh.getProjectMemberId().getProjects().getProjectName());
+			}else{
+				 globalVarsMap.put("Project Name", "--");
+			 }
+		 }
+		 
+		 if(null != pmh.getProjectAssignedDate()){
+			 globalVarsMap.put("ProjectStartDate",startDate);
+		 }else{
+			 globalVarsMap.put("ProjectStartDate", "--");
+		 }
+		 
+		 if(null != pmh.getProjectTerminationDate()){
+			 globalVarsMap.put("ProjectEndDate",endDate);
+		 }else{
+			 globalVarsMap.put("ProjectEndDate", "--");
+		 }
+		 
+		 if (null != user.getLastName() && !"".equalsIgnoreCase(user.getLastName())) {
+			 StringBuilder mangerName = new StringBuilder();
+			 globalVarsMap.put("Manager", mangerName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+			 } else {
+				 globalVarsMap.put("Manager", user.getFirstName());
+			}
+		
+		 if (null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())) {
+			 StringBuilder loginName = new StringBuilder();
+			 globalVarsMap.put("LoginUser", loginName.append(loginUser.getFirstName()).append(loginUser.getLastName()).toString());
+			 } else {
+				 globalVarsMap.put("LoginUser", loginUser.getFirstName());
+			}
+		 StringBuilder Locations = new StringBuilder();
+		 if(orgLocations.getState() !=null && orgLocations.getState() !="undefined" && orgLocations.getCity() !=null && orgLocations.getCity() !="undefined"){
+		 globalVarsMap.put("location",Locations.append(orgLocations.getCity()).append(",").append(orgLocations.getState()).append(",").append(orgLocations.getCountry()).toString());
+		 }
+		 else{
+			 
+			 globalVarsMap.put("location", orgLocations.getCountry()); 
+		 }
+		 /*if (null != orgLocations.getOrg()) {
+		  * 
+			 globalVarsMap.put("LoginOrg", orgLocations.getOrg().getOrgName());
+			 } else {
+				 globalVarsMap.put("LoginOrg", "--");
+			}*/
+		 
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 //using same migration which has been already used in updatedRequirementMailToManager method
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EMPLOYEE_REASSIGN,Constants.ENTITY_TYPE_NOTIFICATION);
+		 
+		 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
+		 notificationScenario.setBody(notificationbody);
+		 
+		 if(pmh.getProjectMemberId().getProjectMemberCandidteId().getConsultantUser() != null) {
+			 User toUser = pmh.getProjectMemberId().getProjectMemberCandidteId().getConsultantUser();
+			 StringBuilder notificationLink = new StringBuilder();
+			 String actionLink="";
+		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"&projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()).toString();
+		     emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getProjectMemberCandidteId().getOrgLocationId(), notificationScenario,new HashMap<String,String>());
+		  
+	       }
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.EMPLOYEE_REASSIGN,new ArrayList<EmailAttachment>());
+
+	}
 }

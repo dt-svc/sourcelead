@@ -5,6 +5,12 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
  <script type="text/javascript">
 		window.onload = function () {
 // 			getRequestedAssociateListDiv();
@@ -165,7 +171,7 @@
 		         <i class="fa fa-check-circle"></i><span>${msg}</span> 
 			</div>
 	     </c:if>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/projectDashboard'/>">Projects List</a> &raquo;<a href="<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources'/>">Project Summary</a> &raquo; New Resource Request</div>
+          <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="/pms/projectDashboard">Projects List</a> &raquo;<a href="/pms/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources">Project Summary</a> &raquo; New Resource Request</div>
         </section>
 	   
 		   <div class="content-area content-new clearfix">
@@ -868,7 +874,6 @@ function saveNewResourceRequest(saveType){
 	if ($('#add_newResource_form').validate(false, validationSettings)) {
 			var form = $('#add_newResource_form')[0];
 		    var formData = new FormData(form);
-  			var sourceleadUrl ='${sourceleadUrl}';
   			var projectUUID = '${projectUUID}';
   			var projectClientUUID = '${projectClientUUID}';
 	  		
@@ -881,7 +886,7 @@ function saveNewResourceRequest(saveType){
   		  	    	    data: formData,
   		  		        processData: false,
   		  		        contentType:false, 
-  						url : sourceleadUrl+"/saveNewResourceRequest?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&saveType="+saveType, 
+  						url : pmsUrl+"/saveNewResourceRequest?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&saveType="+saveType, 
   						success : function(result) {
   							if (result && result.response === "INVALID_DATA") {
   								$("#associateRequestLoading").removeAttr("style");
@@ -889,9 +894,9 @@ function saveNewResourceRequest(saveType){
   			                } else if (result.response === "AWKWARD") {
   			                    location.href = "/errorPage";
   			                } else if (result.response === "SUCCESS") {
-  	  							location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=resources");
+  	  							location.replace(pmsUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=resources");
   			                } else if (result.indexOf('Sign In') !== -1) {
-  								location.replace(sourceleadUrl);
+  								location.replace(pmsUrl);
   							} else {
   			                    showError("Operation failed, please try again");
   			                }
@@ -958,10 +963,9 @@ function cancel(){
 <script>
 function loadRequestDetails(){
 	var requestUUID = '${requestUUID}';
-	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/getResourceRequestDetailsByRequestUUID?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID, 
+	    	 url: pmsUrl+"/getResourceRequestDetailsByRequestUUID?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID, 
 	         success: function(json) {
 	        	 $("#requestId").val(json.requestId);
 	        	 $("textarea[name = 'description']").val(json.description);
@@ -1156,12 +1160,11 @@ function loadResourceRequestsList(newResourceRequestList,estimatedHoursTotal,est
 </script>
 <script>
 function getApproversList(approverId){
-var sourceleadUrl ='${sourceleadUrl}';
 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 var actionType = "ROLE_RESOURCE_REQUEST_APPROVER";
 	$.ajax({
 	    	type: "GET",
-	    	 url: sourceleadUrl+"/getSourceLeadActionApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&actionType="+actionType,
+	    	 url: pmsUrl+"/getSourceLeadActionApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&actionType="+actionType,
 	    		success: function(json) {
 	     		var output = "";
 	     			output = output + "<option value=''>--Select Approver--</option>";

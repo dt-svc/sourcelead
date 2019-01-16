@@ -16,7 +16,7 @@ width: auto !important;
 }
 </style>
 <script>
-var sourceleadUrl = '${sourceleadUrl}';
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 </script>
 <script type="text/javascript">
 function taskNameValidation(){
@@ -25,7 +25,7 @@ function taskNameValidation(){
 	
 	$.ajax({
 		type : "GET",
-		url : sourceleadUrl+ "/validateTasksNameById?${_csrf.parameterName}=${_csrf.token}&TaskName="+ TaskName+"&ProjectId="+projectId,
+		url : pmsUrl+ "/validateTasksNameById?${_csrf.parameterName}=${_csrf.token}&TaskName="+ TaskName+"&ProjectId="+projectId,
 		success : function(data) {
 			 if (data == true) {
 				$("#save_task").hide();
@@ -207,7 +207,7 @@ $("#exportTaskPop, #export-pop, .userExp").click(function(e) {
 		
 		var searchValue = $("#taskDataTableSearch").val();
 		 searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl	+"/getAllProjectTasks?searchValue="+searchValue+"&projectId="+projectId+"&projectTaskStatus="+projectTaskStatus+"&projectTaskType="+projectTaskType+"&assignedMembers="+assignedMembers+"&teams="+teams+"&tags="+tags+"&tasksFilter="+tasksFilter+"&createdByFilter="+createdByFilter+"&severityFilter="+severityFilter+"&priorityFilter="+priorityFilter;
+		var url = pmsUrl +"/getAllProjectTasks?searchValue="+searchValue+"&projectId="+projectId+"&projectTaskStatus="+projectTaskStatus+"&projectTaskType="+projectTaskType+"&assignedMembers="+assignedMembers+"&teams="+teams+"&tags="+tags+"&tasksFilter="+tasksFilter+"&createdByFilter="+createdByFilter+"&severityFilter="+severityFilter+"&priorityFilter="+priorityFilter;
 		prepareTasksList(url);
 	}
 </script>
@@ -282,7 +282,7 @@ function projectTaskPaginations(url){
 					}else{
 						generatedId = "";
 					}
-	    	  		result = result+ '<td><div class="proj_show width215px"><a href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+generatedId+' '+ opt.taskName+ '" class="tbldata-dotdot pull-left anchorBlack">'+generatedId+' '+ opt.taskName+ '<i class="fa fa-binoculars pull-right"></i></a></div></td>';
+	    	  		result = result+ '<td><div class="proj_show width215px"><a href="'+pmsUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" title="'+generatedId+' '+ opt.taskName+ '" class="tbldata-dotdot pull-left anchorBlack">'+generatedId+' '+ opt.taskName+ '<i class="fa fa-binoculars pull-right"></i></a></div></td>';
 		             return result;
 	    	  	}
 	      },{
@@ -356,7 +356,7 @@ function projectTaskPaginations(url){
               	var result = "";
               	result = result	+ '<td><div class="tbldata-dotdot_50" title="'+opt.taskStaus+'">';
               	'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">'
-	              	result = result	+ '<a class="glyphicon glyphicon-edit" title="Edit" href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" ></a>'; 
+	              	result = result	+ '<a class="glyphicon glyphicon-edit" title="Edit" href="'+pmsUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" ></a>'; 
 	            '</sec:authorize>';
 	            
               	'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PROJECT_TASK\')">'
@@ -404,10 +404,9 @@ function deleteProjectTaskPopUp(projectTaskId){
 }
 
 function deleteProjectTask(projectTaskId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl	+ "/ProjectTasks/deleteProjectSubTasks?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId,
+		url : pmsUrl	+ "/ProjectTasks/deleteProjectSubTasks?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId,
 		success : function(json) {
 			    var projectId = $("#projectId").val();
 			    var projectStatus = $("#projectStatus").val();
@@ -458,35 +457,7 @@ function taskPagination(){
 }
 </script>
  
-<script>
-function saveUpdateTask(taskId,projectId,status){
-	if ($('#editTask_form').validate(false, validationSettings)) {
-		var frm = $('#editTask_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, "");
-		//It will escape all the special characters
-		var jsonData = encodeURIComponent(con);
-		
-		$.ajax({
-			type : "POST",
-			url : sourceleadUrl+ "/updateEditProjectTask?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&taskId="+taskId,
-			success : function(result) {
-				editCancel();
-				$("#tab-3").show();
-				projectTask(projectId,status);
-				
-			},
-		});
-		return true;
-	}else {
-		return false;
-	}
-}
-$('body').on('blur', '#editTask_form', function() {
-	$("#editTask_form").showHelpOnFocus();
-	$("#editTask_form").validateOnBlur(false, validationSettings);
-});
-</script>
+
 <script>
 function validateTaskName(projectId,taskId){
 	var TaskName = document.getElementById("editTaskName").value.trim();
@@ -494,7 +465,7 @@ function validateTaskName(projectId,taskId){
 	$('#editTaskNamesDIV').find('p.jquery_form_error_message').remove();
 	$.ajax({
 		type : "GET",
-		url : sourceleadUrl+ "/taskNameValidation?${_csrf.parameterName}=${_csrf.token}&TaskName="+TaskName+"&ProjectId="+projectId+"&taskId="+taskId,
+		url : pmsUrl+ "/taskNameValidation?${_csrf.parameterName}=${_csrf.token}&TaskName="+TaskName+"&ProjectId="+projectId+"&taskId="+taskId,
 		success : function(data) {
 			 if (data == true) {
 				$("input#editTaskName").after("<p class='jquery_form_error_message'>"+ TaskName+ " is Already Existed</span>");
@@ -562,11 +533,10 @@ function editCancel(){
  <script>
  function getSubEpicsByUserStory(type){
 	 var projectId = $("#projectId").val();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var taskType = "Epic";
 	 $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/ProjectTasks/getProjectTasksByTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
+	    	 url: pmsUrl+"/ProjectTasks/getProjectTasksByTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
 	    		success: function(json) {
 	    			var output = "";
 	    				output = output + "<option value=''>--Select Epic--</option>";
@@ -589,11 +559,10 @@ function editCancel(){
  }
  function getUserStoryByBug(){
 	 var projectId = $("#projectId").val();
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var taskType = "UserStory";
 	 $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/ProjectTasks/getProjectTasksByTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
+	    	 url: pmsUrl+"/ProjectTasks/getProjectTasksByTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
 	    		success: function(json) {
 	    			var output = "";
 	    				output = output + "<option value=''>--Select User Story--</option>";
@@ -618,12 +587,11 @@ function editCancel(){
  <script>
  function getSubTasks(taskType){
 	 var projectId =  "${projectId}";
-	var sourceleadUrl ='${sourceleadUrl}';
 	var projectTaskId = "${projectTask.id}";
 	taskType = "SubTask";
 	$.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/ProjectTasks/getProjectTasksBySubTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
+	    	 url: pmsUrl+"/ProjectTasks/getProjectTasksBySubTaskType?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&taskType="+taskType,
 	    		success: function(json) {
 	     		var output = "";
 	     		for (var i=0; i<json.length; i++)
@@ -932,11 +900,10 @@ function uploadButton(id){
  
  <script>
 function getOwnerList(){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	$.ajax({
 	    	type: "GET",
-	    	 url: sourceleadUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+	    	 url: pmsUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
 	    		success: function(json) {
 	     		var output = "";
 	     			output = output + "<option value=''>--Select Owner--</option>";
@@ -961,11 +928,10 @@ function getOwnerList(){
 </script>
 <script>
 function tasksAssignList(projectId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var values = "Active";
 	$.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
+        url: pmsUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
         success: function(json) {
         	var output = "";
         	for (var i=0; i<json.length; i++)
@@ -984,6 +950,7 @@ function tasksAssignList(projectId){
 
 <script>
 function saveTasks(){
+	alert(pmsUrl);
 	var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 	 if ($('#projectTask_form').validate(false, validationSettings)) {
 		var form = $('#projectTask_form')[0];
@@ -999,7 +966,7 @@ function saveTasks(){
 			 data: formData,
 	         processData: false,
 	         contentType:false, 
-	         url : sourceleadUrl + "/ProjectTasks/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId+"&projectClientUUID="+projectClientUUID,
+	         url : pmsUrl + "/ProjectTasks/saveProjectTasks?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId+"&projectClientUUID="+projectClientUUID,
 			  success : function(result) {
 				  if (result && result.response === "INVALID_DATA") {
 	                    showError(result.responseMessage);
@@ -1010,7 +977,7 @@ function saveTasks(){
 	    				projectTask(projectId, status);
 	    				cancelTask();
 	                }else if (result.indexOf('Sign In') !== -1) {
-						location.replace(sourceleadUrl);
+						location.replace(pmsUrl);
 					} else {
 	                    showError("Operation failed, please try again");
 	                }
@@ -1068,6 +1035,7 @@ function clearDueDate(){
 
 <script>
 function getCustomDependentFieldProjectTask(sectionId){
+	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 			type : "POST" , 
 				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
@@ -1436,7 +1404,7 @@ function projectTaskExport(type){
 	
 	var searchValue = $("#taskDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 window.location.href = sourceleadUrl + "/getExportTasks?searchValue="+searchValue+"&projectId="+projectId+"&projectTaskStatus="+projectTaskStatus+"&projectTaskType="+projectTaskType+"&assignedMembers="+assignedMembers+"&teams="+teams+"&exportType="+exportType+"&tasksFilter="+tasksFilter+"&createdByFilter="+createdByFilter+"&severityFilter="+severityFilter+"&priorityFilter="+priorityFilter;
+	 window.location.href = pmsUrl + "/getExportTasks?searchValue="+searchValue+"&projectId="+projectId+"&projectTaskStatus="+projectTaskStatus+"&projectTaskType="+projectTaskType+"&assignedMembers="+assignedMembers+"&teams="+teams+"&exportType="+exportType+"&tasksFilter="+tasksFilter+"&createdByFilter="+createdByFilter+"&severityFilter="+severityFilter+"&priorityFilter="+priorityFilter;
 
 	
 }

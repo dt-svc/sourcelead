@@ -165,7 +165,6 @@ function filterStatus() {
  <script>
  function projectTeam(projectId,startDateStr,endDateStr,status,projectName){
 	 var projectUUID = '${projectUUID}';
-	 var sourceleadUrl = '${sourceleadUrl}';
 	 var postedOrgLocationId = '${postedOrgLocationId}';
 	 var loginOrgLocationId = '${SourceLeadWeb_orgLocations.id}'
 	 var projectClientUUID = '${projectClientUUID}';
@@ -200,7 +199,7 @@ function filterStatus() {
 	 		 } */
 	 		
 	 	     if('${isClientOrgActive}' == "N" || postedOrgLocationId == loginOrgLocationId || postedSharedProjectOrgLocationId == loginOrgLocationId){   
-	 			 result = result + '<a href="'+sourceleadUrl+'/addNewProjectMembers?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
+	 			 result = result + '<a href="'+pmsUrl+'/addNewProjectMembers?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
 	 		     result = result + '<i class="glyphicon glyphicon-plus"></i>Assign Emp</a></li>';
 	 		}  
 	 		   
@@ -334,10 +333,9 @@ function filterStatus() {
 	  }if(locationList.match("yyyy-dd-MM")){
 		  projectempListDate = 'YYYY-DD-MM'; 
 	  }
-	 var sourceleadUrl ='${sourceleadUrl}';
 	    $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values+"&roleIds="+roleIds+"&teamIds="+teamIds, 
+	        url: pmsUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values+"&roleIds="+roleIds+"&teamIds="+teamIds, 
 	        success: function(json) {
 	        	
 	        	var result = "";
@@ -636,11 +634,10 @@ function selectAllMembers(){
 <!-- this script is for Employee EndDate Inline functionality at Projects screen -->
 <script> 
 function inlineEditForEndDate(id,projectMemberId){
-	var sourceleadUrl = '${sourceleadUrl}';
 	 var endDate = document.getElementById(id).value;
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/updateEndDateByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&endDate="+endDate+"&projectMemberId="+projectMemberId, 	   
+		    url: pmsUrl+"/updateEndDateByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&endDate="+endDate+"&projectMemberId="+projectMemberId, 	   
    		    success: function(data) {
    			   
    		    }
@@ -652,10 +649,9 @@ function inlineEditForEndDate(id,projectMemberId){
 <script>
 function getRateTable(projectMemberId,candidateName){
 	$("#projectMemberDetailsPopUp").empty();
-	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getProjectMemberRateTablesList?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId,
+		    url: pmsUrl+"/getProjectMemberRateTablesList?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId,
 		    success: function(data) {
 		    	
 		    	  var result = "";
@@ -762,10 +758,9 @@ function closerateHistorydiv(){
 
 <script>
 function editProjectAssignedMember(projectMemberId,candidateName){
-	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/editProjectAssignedProjectMember?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId,
+		    url: pmsUrl+"/editProjectAssignedProjectMember?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId,
 		    success: function(data) {
 		    	loadProjectMembersDetails(data,candidateName);
 		    }
@@ -1118,12 +1113,11 @@ function getEstimatedHours(){
 	var endDate = document.getElementById("projectEndDate").value;
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	if(startDate && endDate){
-		 var sourceleadUrl ='${sourceleadUrl}';
 		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
 		 $("#editMemberLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getEstimatedHoursForResourceRequest?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId, 
+		        url: pmsUrl+"/getEstimatedHoursForResourceRequest?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId, 
 		        success: function(estimatedHours) {
 		        	
 		        	$('#estHours').val(estimatedHours);
@@ -1148,7 +1142,6 @@ function updateProjectMember(){
 			}; 
 		
 		 if ($('#editProjectMemberform').validate(false, validationSettings)) {
-				 var sourceleadUrl = '${sourceleadUrl}';
 				 var formData = getFormData("editProjectMemberform");
 				
 				 var projectUUID = '${projectUUID}';
@@ -1159,10 +1152,10 @@ function updateProjectMember(){
 			 	 $.ajax({
 							type : "POST",
 							data :formData,
-							url : sourceleadUrl+"/updateProjectMemberDetails?${_csrf.parameterName}=${_csrf.token}",
+							url : pmsUrl+"/updateProjectMemberDetails?${_csrf.parameterName}=${_csrf.token}",
 							success : function(result) {
 							
-								location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=team");
+								location.replace(pmsUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=team");
 							},
 						}); 
 				return true;
@@ -1204,7 +1197,6 @@ function cancelTeamTermination(){
 }
 
 function saveReason(projectMemberId,projectId,startDateStr,endDateStr){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = $("#reasonForProject").val();
 	var con = JSON.stringify(reason);
 	con = con.replace(/[{}]/g, "");
@@ -1217,7 +1209,7 @@ function saveReason(projectMemberId,projectId,startDateStr,endDateStr){
 		}else{
 			 $.ajax({
 				   	type: "POST",
-				    url: sourceleadUrl+"/saveReason?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&projectId="+projectId+"&reason="+jsonData,
+				    url: pmsUrl+"/saveReason?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&projectId="+projectId+"&reason="+jsonData,
 		   		    success: function(data) {
 		   		    	$("#teampopUp").empty();
 		   			 	$(".project_inn_mask").fadeOut(200);
@@ -1253,7 +1245,6 @@ function saveReason(projectMemberId,projectId,startDateStr,endDateStr){
 
 <script>
 function exportToPdf(projectId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var employeeEmptyCount = $("#employeeEmptyListId").val();
 	if(employeeEmptyCount > 0 ){
 		var values = [];
@@ -1267,7 +1258,7 @@ function exportToPdf(projectId){
 			 values = "Active";
 		 } 
 		 
-	   window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&status="+values+"&exportType=pdf";
+	   window.location.href = pmsUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&status="+values+"&exportType=pdf";
 	}else{
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -1293,7 +1284,6 @@ function empCancelTermination(){
 </script>
 <script>
 function exportToExcel(projectId){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var employeeEmptyCount = $("#employeeEmptyListId").val();
 	if(employeeEmptyCount > 0 ){
 		var values = [];
@@ -1306,7 +1296,7 @@ function exportToExcel(projectId){
 		 }else{
 			 values = "Active";
 		 }
-		window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&status="+values+"&exportType=xls";
+		window.location.href = pmsUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&status="+values+"&exportType=xls";
 	}else{
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -1523,15 +1513,11 @@ function removevalidation(){
 		   }; 
 	 if ($('#reAssignProject_form').validate(false, validationSettings)){ 
 		 var projectMemberId = $("#projectMemberId").val();
-	       /*  var frm = $('#reAssignProject_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        var sourceleadUrl ='${sourceleadUrl}'; */
 	        var formData = getFormData("reAssignProject_form");
 	        $.ajax({
 		    	type: "POST",
 		    	data: formData,
-		        url: sourceleadUrl+"/saveReAssignProject?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId, 
+		        url: pmsUrl+"/saveReAssignProject?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId, 
 		        success: function(data) {
 		        	if(data="success"){
 		        	 	//$("#Re-AssignProject").modal('hide');

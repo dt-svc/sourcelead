@@ -146,10 +146,10 @@ function saveTaskDetails(){
 				 data: formData,
   		         processData: false,
   		         contentType:false, 
-				 url : sourceleadUrl+"/addTimeSheetDayEntries",
+				 url : pmsUrl+"/addTimeSheetDayEntries",
 				  		success : function(data) {
 				  			if(data.response === "SESSION_TIMEDOUT") {
-					    			location.replace(sourceleadUrl);
+					    			location.replace(pmsUrl);
 					    	 } else if (data.response === "AWKWARD") {
 			                        location.href = "/errorPage";
 					    	 } else if (data.response === "SUCCESS") {
@@ -177,7 +177,7 @@ function saveTaskDetails(){
 			$("#projectTaskErrorMsgDiv").find('p.jquery_form_error_message').remove();
 			$.ajax({
 				 type : "POST",
-				 	 url : sourceleadUrl+"/ProjectTasks/calculateTotalTaskHoursForADay?&timeDate="+timeDate+"&projectMember="+projectMember+"&timesheetHour="+timesheetHour+"&editTaskTime="+editTaskTime,
+				 	 url : pmsUrl+"/ProjectTasks/calculateTotalTaskHoursForADay?&timeDate="+timeDate+"&projectMember="+projectMember+"&timesheetHour="+timesheetHour+"&editTaskTime="+editTaskTime,
 				  		success : function(data) {
 				  			if(data == "false"){   
 				  				$("#projectTaskErrorMsgDiv").append("<p class='jquery_form_error_message'>Day hours should not be more than 24</p>");
@@ -220,7 +220,7 @@ function editProjectTaskTimesheetDayEntry(timesheetDate,type){
 	var taskUUID = '${taskUUID}';
 	$.ajax({
 		 type : "POST",
-		 	 url : sourceleadUrl+"/ProjectTasks/editProjectTaskTimesheetDayEntry?&timeDate="+timeDate+"&projectMember="+projectMember+"&taskUUID="+taskUUID,
+		 	 url : pmsUrl+"/ProjectTasks/editProjectTaskTimesheetDayEntry?&timeDate="+timeDate+"&projectMember="+projectMember+"&taskUUID="+taskUUID,
 		  		success : function(data) {
 		  			if(data != null && data !='' && data !='undefined'){
 		  				$('#timesheetHours').val('');
@@ -241,7 +241,7 @@ function editProjectTaskTimesheetDayEntry(timesheetDate,type){
 function deleteProjectTaskEntry(timesheetEntryId){
 $.ajax({
 	 type : "POST",
-	 	 url : sourceleadUrl+"/ProjectTasks/deleteProjectTaskTimesheetDayEntry?&timesheetEntryId="+timesheetEntryId,
+	 	 url : pmsUrl+"/ProjectTasks/deleteProjectTaskTimesheetDayEntry?&timesheetEntryId="+timesheetEntryId,
 	  		success : function(data) {
 	  			getSavedTaskDetails();
 	  		},
@@ -263,7 +263,7 @@ function getSavedTaskDetails(){
     $("#projectTaskDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 		 type : "POST",
-		 	 url : sourceleadUrl+"/ProjectTasks/getSavedTaskDetails?&taskUUID="+taskUUID+"&searchValue="+searchValue,
+		 	 url : pmsUrl+"/ProjectTasks/getSavedTaskDetails?&taskUUID="+taskUUID+"&searchValue="+searchValue,
 		  		success : function(data) {
 		  			$('#timeDayEntriesData').empty();
 		  			$('#timeDayEntriesData').append(data);
@@ -312,7 +312,6 @@ $("#projectTaskSearch").keyup(function(event) {
     	  getTableData(1);
       }
 	  function getTableData(pageNo) {
-		  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 		  var searchData = $('#projectTaskSearch').val();
 		  var taskUUID = '${taskUUID}';
           var pageSize = $("#pageSize").val();
@@ -326,7 +325,7 @@ $("#projectTaskSearch").keyup(function(event) {
           $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	      	$.ajax({
 	      		 type : "POST",
-	      		 	 url : sourceleadUrl+"/ProjectTasks/getSavedTaskDetails?&taskUUID="+taskUUID+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,
+	      		 	 url : pmsUrl+"/ProjectTasks/getSavedTaskDetails?&taskUUID="+taskUUID+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,
 	      		  		success : function(data) {
 	      		  			$('#timeDayEntriesData').empty();
 	      		  			$('#timeDayEntriesData').append(data);

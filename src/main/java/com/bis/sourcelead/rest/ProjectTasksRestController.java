@@ -92,7 +92,7 @@ import com.ibm.icu.text.DateFormat;
 import com.ibm.icu.text.SimpleDateFormat;
 
 @RestController
-@RequestMapping("/app/ProjectTasks")
+@RequestMapping("/ProjectTasks")
 public class ProjectTasksRestController {
 
 	@Value("${static.path}")

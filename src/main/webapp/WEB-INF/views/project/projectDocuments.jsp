@@ -26,11 +26,10 @@
 		var userId = '${SourceLeadWeb_userId}';
 		var result = "";
 		$("#tasksLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		var sourceleadUrl = '${sourceleadUrl}';
 		var status = status;
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getProjectDocumentsFolderList?${_csrf.parameterName}=${_csrf.token}&projectId="+ projectId+"&userId="+userId,
+					url : pmsUrl	+ "/getProjectDocumentsFolderList?${_csrf.parameterName}=${_csrf.token}&projectId="+ projectId+"&userId="+userId,
 					success : function(json) {
 						var result = "";
 						result = result + '<input type="hidden" id="projectId" name="projectId" value="'+projectId+'">';
@@ -141,7 +140,7 @@
 		var userId = '${SourceLeadWeb_userId}';
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl	+ "/getEachProjectDocumentsFolderList?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&folderId="+folderId+"&userId="+userId,
+			url : pmsUrl	+ "/getEachProjectDocumentsFolderList?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&folderId="+folderId+"&userId="+userId,
 			success : function(json) {
 				var result = "";
 				result = result + '	 		<div class="col-md-8">                                                                    ';
@@ -310,7 +309,7 @@
 		});
 		 $.ajax({
 				type : "POST",
-				url : sourceleadUrl+"/deleteDocuments?${_csrf.parameterName}=${_csrf.token}&documentIds="+documentIds,
+				url : pmsUrl+"/deleteDocuments?${_csrf.parameterName}=${_csrf.token}&documentIds="+documentIds,
 				success : function(data) {
 					getdocumentListById();
 				}
@@ -319,6 +318,7 @@
 	}
 	
 	function getAllDocumentDownload(){
+		var sourceleadUrl = '${sourceleadUrl}';
 		var projectId = $("#projectId").val();
 		var documentIds = [];
 		 $("input[name='documentIds[]']:checked").each( function (i) {
@@ -326,7 +326,7 @@
 		}); 	 
 		 $.ajax({
 				type : "POST",
-				url : sourceleadUrl+"/getAllDocumentDownload?${_csrf.parameterName}=${_csrf.token}&documentIds="+documentIds,
+				url : pmsUrl+"/getAllDocumentDownload?${_csrf.parameterName}=${_csrf.token}&documentIds="+documentIds,
 				success : function(data) {
 					 if(data && data.endsWith(".zip")){
 						location.href=sourceleadUrl+"/downloadFile.html?file="+data;
@@ -362,7 +362,7 @@
 		var projectId = $("#projectId").val();
  			 $.ajax({
 					type : "POST",
-	 				url : sourceleadUrl+"/eachDeleteDocuments?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId,
+	 				url : pmsUrl+"/eachDeleteDocuments?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId,
 					success : function(data) {
 						closeDeleteModal();
 						projectDocuments(projectId);
@@ -401,7 +401,7 @@
  		var userId = '${SourceLeadWeb_userId}';
  		 $.ajax({
  				type : "POST",
- 				url : sourceleadUrl+"/deleteProjectDcoumentFolder?${_csrf.parameterName}=${_csrf.token}&folderId="+folderId+"&projectId="+projectId+"&userId="+userId,
+ 				url : pmsUrl+"/deleteProjectDcoumentFolder?${_csrf.parameterName}=${_csrf.token}&folderId="+folderId+"&projectId="+projectId+"&userId="+userId,
  				success : function(data) {
  					closeDeleteModal();
  					projectDocuments(projectId);
@@ -440,7 +440,7 @@ function saveReNameFolder(folderId){
 	if ($('#reNameFolder_form').validate(false, validationSettings)){
 		$.ajax({
 			type : "POST",
-				url : sourceleadUrl+"/projectDocumentFolderRename?${_csrf.parameterName}=${_csrf.token}&folderId="+folderId+"&folderName="+folderName,
+				url : pmsUrl+"/projectDocumentFolderRename?${_csrf.parameterName}=${_csrf.token}&folderId="+folderId+"&folderName="+folderName,
 			success : function(data) {
 				closeFolder();
 				projectDocuments(projectId);
@@ -481,11 +481,10 @@ function permissionDocumentPopUp(folderId,documentId){
 	$("#folderPermission").fadeIn();
 	$(".advancedsearch-mask").fadeIn();
 	var projectId = $("#projectId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var values = "Active";
 	$.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/getProjectDocumentPermissions?folderId="+folderId+"&projectId="+projectId+"&status="+values+"&documentId="+documentId, 
+        url: pmsUrl+"/getProjectDocumentPermissions?folderId="+folderId+"&projectId="+projectId+"&status="+values+"&documentId="+documentId, 
         success: function(data) {
         	$("#foderPermissionDivId").empty();
         	$("#foderPermissionDivId").append(data);
@@ -497,12 +496,11 @@ function permissionPopUp(folderId){
 	$("#folderPermission").fadeIn();
 	$(".advancedsearch-mask").fadeIn();
 	var projectId = $("#projectId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var documentId = "";
 	var values = "Active";
 	$.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/getProjectDocumentPermissions?folderId="+folderId+"&projectId="+projectId+"&status="+values+"&documentId="+documentId, 
+        url: pmsUrl+"/getProjectDocumentPermissions?folderId="+folderId+"&projectId="+projectId+"&status="+values+"&documentId="+documentId, 
         success: function(data) {
         	$("#foderPermissionDivId").empty();
         	$("#foderPermissionDivId").append(data);
@@ -599,7 +597,6 @@ function permissionPopUp(folderId){
 	function saveFolderNamePermission(folderId,documentId){
 		 if ($('#projectFolderPermission_form').validate(false, validationSettings)){
 			 var projectId = $("#projectId").val();
-			var sourceleadUrl = '${sourceleadUrl}';
 			//It will escape all the special characters
 	        var formData =  getFormData1('projectFolderPermission_form'); 
 			$.ajax({
@@ -607,7 +604,7 @@ function permissionPopUp(folderId){
 	        	    data: formData,
 	  		        processData: false,
 	  		        contentType:false, 
-					url : sourceleadUrl+"/saveProjectNamePermissions?"+tokenParamName+"="+tokenValue+"&folderId="+folderId+"&documentId="+documentId,
+					url : pmsUrl+"/saveProjectNamePermissions?"+tokenParamName+"="+tokenValue+"&folderId="+folderId+"&documentId="+documentId,
 					success : function(result) {
 	                        $("#folderPermission").fadeOut();
 							$(".advancedsearch-mask").fadeOut();
@@ -629,12 +626,11 @@ function permissionPopUp(folderId){
 <script>
 function getUserRoleList(){
 	var projectId = $("#projectId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var readRoleIds = $("#readRoleIds").val();
 	var values = "Active";
 	$.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
+        url: pmsUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
         success: function(json) {
         	var output = "";
         	for (var i=0; i<json.length; i++)
@@ -658,11 +654,10 @@ function getUserRoleList(){
 <script>
 function getProjectMemberlist(){
 	var projectId = $("#projectId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var values = "Active";
 	$.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
+        url: pmsUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
         success: function(json) {
         	var output = "";
         	for (var i=0; i<json.length; i++)
@@ -688,14 +683,13 @@ function getProjectMemberlist(){
 	function saveFolderName(){
 		var projectId = $("#projectId").val();
 			 if ($('#projectFolder_form').validate(false, validationSettings)){
-				var sourceleadUrl = '${sourceleadUrl}';
 				$("#save_folder").attr("disabled", "disabled");
 				//It will escape all the special characters
 		        var formData =  getFormData('projectFolder_form'); 
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-						url : sourceleadUrl+"/saveProjectDocumentFolder?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,
+						url : pmsUrl+"/saveProjectDocumentFolder?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,
 						success : function(result) {
 							    closeFolder();
 								$("#save_folder").removeAttr("disabled");
@@ -801,13 +795,12 @@ function saveRenameFile(documentId){
 	var projectId = $("#projectId").val();
 	var fileName = $("#reNamefile").val();
 	 if ($('#reNameFile_form').validate(false, validationSettings)){
-			var sourceleadUrl = '${sourceleadUrl}';
 			//It will escape all the special characters
 	        var formData =  getFormData('reNameFile_form'); 
 			$.ajax({
 					type : "POST",
 	        	    data: formData,
-					url : sourceleadUrl+"/saveReNameProjectDocument?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId+"&fileName="+fileName,
+					url : pmsUrl+"/saveReNameProjectDocument?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId+"&fileName="+fileName,
 					success : function(result) {
 						$("#fmRename").modal("hide");
 						projectDocuments(projectId);
@@ -879,7 +872,7 @@ function renameFolder(){
 	 $('#errMsgReDocument').find('p.jquery_form_error_message').remove();
 	 $.ajax({
 			type : "GET",
-			url : sourceleadUrl+ "/validateDocumentName?${_csrf.parameterName}=${_csrf.token}&documentName="+documentName+"&projectId="+projectId,
+			url : pmsUrl+ "/validateDocumentName?${_csrf.parameterName}=${_csrf.token}&documentName="+documentName+"&projectId="+projectId,
 			success : function(data) {
 				 if (data == true) {
 					 $("#save_rename").attr("disabled", "disabled");
@@ -900,7 +893,7 @@ function renameFolder(){
 	 $('#rmoveErrMsgCF').find('p.jquery_form_error_message').remove();
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl+ "/validateFolderName?${_csrf.parameterName}=${_csrf.token}&folderName="+FolderName+"&projectId="+projectId,
+			url : pmsUrl+ "/validateFolderName?${_csrf.parameterName}=${_csrf.token}&folderName="+FolderName+"&projectId="+projectId,
 			success : function(data) {
 				 if (data == true) {
 					 $("#save_folder").attr("disabled", "disabled");
@@ -920,7 +913,7 @@ function renameFolder(){
 	 $('#rmoveErrMsgEditCF').find('p.jquery_form_error_message').remove();
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl+ "/validateFolderName?${_csrf.parameterName}=${_csrf.token}&folderName="+FolderName+"&projectId="+projectId+"&folderId="+folderId,
+			url : pmsUrl+ "/validateFolderName?${_csrf.parameterName}=${_csrf.token}&folderName="+FolderName+"&projectId="+projectId+"&folderId="+folderId,
 			success : function(data) {
 				 if (data == true) {
 					 $("#save_reNmaeFolder").attr("disabled", "disabled");
@@ -976,7 +969,6 @@ function uploadProjectDocument(){
 	function storeProjectDocument(){
 		var projectId = $("#projectId").val();
 			 if ($('#projectDocumentType_form').validate(false, validationSettings)){
-				var sourceleadUrl = '${sourceleadUrl}';
 				$("#save_doc").attr("disabled", "disabled");
          		$("#save_doc" ).addClass('button').val('Processing..');
          		
@@ -985,7 +977,7 @@ function uploadProjectDocument(){
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-						url : sourceleadUrl+"/saveProjectDocument?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,
+						url : pmsUrl+"/saveProjectDocument?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,
 						success : function(result) {
 							//$(".modal-backdrop, .modal").fadeOut();
 							$('#uploadFile_fm').modal('hide');
@@ -1066,14 +1058,13 @@ function uploadProjectDocument(){
 	function sendEmail(documentId){
 		var projectId = $("#projectId").val();
 			 if ($('#sendEmail_form').validate(false, validationSettings)){
-				var sourceleadUrl = '${sourceleadUrl}';
 				//It will escape all the special characters
 		        var formData =  getFormData('sendEmail_form'); 
 				
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-						url : sourceleadUrl+"/projectDocumentMailSending?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId,
+						url : pmsUrl+"/projectDocumentMailSending?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId,
 						success : function(result) {
 							   $("#fmEmail").modal("hide");
 								projectDocuments(projectId);

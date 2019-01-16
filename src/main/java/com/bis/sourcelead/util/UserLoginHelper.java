@@ -146,6 +146,7 @@ public class UserLoginHelper {
 		  }
 		  req.getSession().setAttribute("userRoleId", userRole.getId());
 		  SourceLeadSessionManager.setSessionAttribute(req, "user", loginUser);
+		  SourceLeadSessionManager.setSessionAttribute(req, "userId", loginUser.getId());
 		  SourceLeadSessionManager.setSessionAttribute(req, "org", orgLocations.getOrg());
 		  SourceLeadSessionManager.setSessionAttribute(req, "orgLocations", orgLocations);
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginOrgLocation", orgLocations);
@@ -158,7 +159,11 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "pmsUrl", pmsUrl);
 		  SourceLeadSessionManager.setSessionAttribute(req, "googleMapsLocationApiKey", googleMapsLocationApiKey);
 		  SourceLeadSessionManager.setSessionAttribute(req, "userRoleId", userRoleId);
-		   
+			SourceLeadSessionManager.setSessionAttribute(req, "roleHierarchyId",
+					userRole.getRoles().getRoleHierarchy().getId());
+			 SourceLeadSessionManager.setSessionAttribute(req, "dateFormat", orgLocations.getDateFormat());  
+			 SourceLeadSessionManager.setSessionAttribute(req, "orgLocationId", orgLocations.getId());
+			 SourceLeadSessionManager.setSessionAttribute(req, "country", orgLocations.getCountry());
 		Candidate candidate;
 		try {
 			candidate = candidateService.getCandidateByConsultantUserId(userRole.getUser().getId(), orgLocations.getId());

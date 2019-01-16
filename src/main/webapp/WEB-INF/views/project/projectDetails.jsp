@@ -30,11 +30,11 @@
 <script>
 	function projectDetails(projectId) {
 		var projectClientUUID = '${projectClientUUID}';
+		var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 		$("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&projectClientUUID="+projectClientUUID,
+					url : pmsUrl + "/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&projectClientUUID="+projectClientUUID,
 					success : function(json) {
 						var endDateStr = "";
 						var description = "";
@@ -293,7 +293,7 @@
 						
 						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
 						 if (json.client != null && json.client != '' && json.client != 'undefined') {
-							 result = result + '<span><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+json.orgRelationUUID+'" title="'+clientName+'">'+clientName+' </a></span>';
+							 result = result + '<span><a href="'+vmsUrl+'/clientDashboard?orgRelationUUID='+json.orgRelationUUID+'" title="'+clientName+'">'+clientName+' </a></span>';
 						 }else{
 							 result = result + '<span>'+clientName+'</span>';
 						 }
@@ -464,7 +464,7 @@ function editClientProjectDetails(projectId){
     var postedSharedProjectOrgLocationId = '${postedSharedProjectOrgLocationId}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl	+ "/getClientProjectApprovers?${_csrf.parameterName}=${_csrf.token}&projectClientUUID="+ projectClientUUID,
+		url : pmsUrl	+ "/getClientProjectApprovers?${_csrf.parameterName}=${_csrf.token}&projectClientUUID="+ projectClientUUID,
 		success : function(json) {
 			
 			var projectApprovalType = '';
@@ -688,13 +688,12 @@ function editClientProjectDetails(projectId){
 <script type="text/javascript">
 	function editProjectDetails(projectId) {
 		var projectClientUUID = '${projectClientUUID}';
-		var sourceleadUrl = '${sourceleadUrl}';
 		 var postedOrgLocationId = '${postedOrgLocationId}';
 		 var loginOrgLocationId = '${SourceLeadWeb_orgLocations.id}'
 			 var postedSharedProjectOrgLocationId = '${postedSharedProjectOrgLocationId}';
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&projectClientUUID="+projectClientUUID,
+					url : pmsUrl	+ "/getProjectById?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&projectClientUUID="+projectClientUUID,
 					success : function(json) {
 						
 						var endDateStr = "";
@@ -1304,6 +1303,7 @@ function editClientProjectDetails(projectId){
 
 <script>
 function preapareCustomFieldDetails(projectId,sectionId){
+	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
         type : "POST",
          url: sourceleadUrl+"/getAllASectionCustomFields?&projectId="+projectId+"&requestFrom=project"+"&sectionId="+sectionId,        
@@ -1321,7 +1321,7 @@ function validateProjectName(projectUUID){
 	
 	 $.ajax({
 		type : "GET",
-		url : sourceleadUrl+ "/validateOrgLocationProjectName?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&projectName="+projectName,
+		url : pmsUrl+ "/validateOrgLocationProjectName?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&projectName="+projectName,
 		success : function(data) {
 			if (data == true) {
 				$("input#projectName").after("<p class='jquery_form_error_message'>"+ projectName+ " is Already Existed</span>");
@@ -1343,10 +1343,9 @@ function validateProjectName(projectUUID){
 
 <script>
 function getEditProjectDesc(projectId){
-	var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/getProjectDescriptionById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,
+			url : pmsUrl + "/getProjectDescriptionById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,
 			success : function(data) {
 				var json = JSON.parse(data);
 				$(".Editor-container").find('.Editor-editor').html(json['description']);
@@ -1408,7 +1407,7 @@ function projectStatus(){
 			$.ajax({
 						type : "POST",
 						data: formData,
-						url : sourceleadUrl + "/updateProjectByProjectId?${_csrf.parameterName}=${_csrf.token}&ProjectId=" + projectId,
+						url : pmsUrl + "/updateProjectByProjectId?${_csrf.parameterName}=${_csrf.token}&ProjectId=" + projectId,
 						success : function(result) {
 							if (result && result.response === "INVALID_DATA") {
   								$("#projectEditDetailsLoading").removeAttr("style");
@@ -1459,7 +1458,7 @@ function validateShortCode(){
 	var orgLocId = '${SourceLeadWeb_orgLocations.id}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+ "/validateProjectShortCodeByOrgLocationId?${_csrf.parameterName}=${_csrf.token}&projectShortCode="+projectShortCode+"&orgLocId="+orgLocId,
+		url : pmsUrl+ "/validateProjectShortCodeByOrgLocationId?${_csrf.parameterName}=${_csrf.token}&projectShortCode="+projectShortCode+"&orgLocId="+orgLocId,
 		success : function(data) {
 			if (data == true) {
 				$("input#projectShortCode").after("<p class='jquery_form_error_message'>"+ projectShortCode+ " is Already Existed</span>");
@@ -1486,7 +1485,7 @@ function validateShortCode(){
 			$.ajax({
 						type : "POST",
 						data: formData,
-						url : sourceleadUrl + "/updateClientProjectApprovers?${_csrf.parameterName}=${_csrf.token}&projectClientUUID=" + projectClientUUID,
+						url : pmsUrl + "/updateClientProjectApprovers?${_csrf.parameterName}=${_csrf.token}&projectClientUUID=" + projectClientUUID,
 						success : function(data) {
 							$("#selector2").removeAttr("style");
 	            			$("#selector2").css({ display: "block" });
@@ -1527,13 +1526,12 @@ function validateShortCode(){
 				.getElementById("ProjectSequeneNumber").value;
 		//space value  consider this condition 
 		if (ProjectSequeneNumber.match(/^[^\s-](.*)*$/) != null) {
-			var sourceleadUrl = '${sourceleadUrl}';
 			$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 			if (ProjectSequeneNumber != null && ProjectSequeneNumber != "") {
 				$
 						.ajax({
 							type : "POST",
-							url : sourceleadUrl + "/validateProjectSequeneNumberById?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber=" + ProjectSequeneNumber,
+							url : pmsUrl + "/validateProjectSequeneNumberById?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber=" + ProjectSequeneNumber,
 							success : function(data) {
 								if (data == true) {
 									$("input#ProjectSequeneNumber") .after( "<p class='jquery_form_error_message'>" + ProjectSequeneNumber + " is Already Existed</span>");
@@ -1553,7 +1551,6 @@ function validateShortCode(){
 	function projectIdValidate(projectId, localFieldName) {
 		var ProjectSequeneNumber = document
 				.getElementById("projectSequeneNumber").value;
-		var sourceleadUrl = '${sourceleadUrl}';
 		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 		if (ProjectSequeneNumber.trim().match(/^\S*$/) == '') {
 			if (ProjectSequeneNumber != "") {
@@ -1566,7 +1563,7 @@ function validateShortCode(){
 				$
 						.ajax({
 							type : "POST",
-							url : sourceleadUrl
+							url : pmsUrl
 									+ "/validateProjectSequeneNumberById?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="
 									+ ProjectSequeneNumber,
 							success : function(data) {
@@ -1609,12 +1606,11 @@ function validateShortCode(){
 </script>
 <script type="text/javascript">
 	function getApproversLevel2(currentApproverId, manager2) {
-		var sourceleadUrl = '${sourceleadUrl}';
 		var currentApproverId = currentApproverId;
 		var manager2 = manager2;
 		$ .ajax({
 					type : "POST",
-					url : sourceleadUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+ currentApproverId,
+					url : pmsUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+ currentApproverId,
 					success : function(json) {
 						var output = "";
 						output = output + "<option value=''>-Select Manager-</option>";
@@ -1640,12 +1636,11 @@ function validateShortCode(){
 
 <script type="text/javascript">
 	function getExpenseApproversLevel2(currentApproverId, manager2) {
-		var sourceleadUrl = '${sourceleadUrl}';
 		var currentApproverId = currentApproverId;
 		var manager2 = manager2;
 		$ .ajax({
 					type : "POST",
-					url : sourceleadUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+ currentApproverId,
+					url : pmsUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+ currentApproverId,
 					success : function(json) {
 						var output = "";
 						output = output + "<option value=''>-Select Manager-</option>";
@@ -1718,13 +1713,12 @@ function showExpenseLevel2Div(){
 </script>
 <script type="text/javascript">
 	function getChildLevel1Approvers(currentApproverId, manager2) {
-		var sourceleadUrl = '${sourceleadUrl}';
 		if (currentApproverId == manager2) {
 			if (currentApproverId != null && currentApproverId != ''
 					&& currentApproverId != 'undefined') {
 				$.ajax({ 
 					type : "POST",
-					url : sourceleadUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId=" + currentApproverId,
+					url : pmsUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId=" + currentApproverId,
 					success : function(json) {
 						var output = "";
 						output = output + "<option value=''>-Select Manager-</option>";
@@ -1775,13 +1769,12 @@ function showExpenseLevel2Div(){
 </script>
 <script type="text/javascript">
 	function getChildLevel1ExpenseApprovers(currentApproverId, manager2) {
-		var sourceleadUrl = '${sourceleadUrl}';
 		if (currentApproverId == manager2) {
 			if (currentApproverId != null && currentApproverId != ''
 					&& currentApproverId != 'undefined') {
 				$.ajax({ 
 					type : "POST",
-					url : sourceleadUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId=" + currentApproverId,
+					url : pmsUrl + "/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId=" + currentApproverId,
 					success : function(json) {
 						var output = "";
 						output = output + "<option value=''>-Select Manager-</option>";
@@ -1807,12 +1800,11 @@ function showExpenseLevel2Div(){
 <script type="text/javascript">
 	function emailVerification() {
 		var EmailId = document.getElementById("EmailId").value;
-		var sourceleadUrl = '${sourceleadUrl}';
 		$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
 		if (EmailId != null && EmailId != "") {
 			$ .ajax({
 						type : "POST",
-						url : sourceleadUrl + "/getEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId=" + EmailId,
+						url : pmsUrl + "/getEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId=" + EmailId,
 						success : function(data) {
 							if (data == 'true') {
 								$("input#EmailId").after( "<p class='jquery_form_error_message'>" + EmailId + " is Already Existed</span>");
