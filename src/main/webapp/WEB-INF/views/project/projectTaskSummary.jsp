@@ -8,9 +8,6 @@
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
 <link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
-<script src="/resources/js/summernote.min.js?staticTime=${staticTime}"></script>
-<link href="/resources/css/summernote.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
-<script src="/resources/js/static-web/bootstrap-select.js"></script>
 
 
 <script>
