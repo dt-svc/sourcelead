@@ -608,9 +608,12 @@ public class CandidateServiceTest {
 				MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO = new MarketplacePurchaseSalesDTO();
 				orgLocations.setId(123l);
 				ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
+				String purchaseOrderFromDate = "";
+				String purchaseOrderToDate = ""; 
+				Map<String, Date> dateValue = new HashMap<>();
 				ResponseList<MarketplacePurchaseSalesDTO> responseList1 = null;
-				when(mockCandidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO)).thenReturn(responseList);
-				responseList1 = mockCandidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO);
+				when(mockCandidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO, purchaseOrderFromDate, purchaseOrderToDate, dateValue)).thenReturn(responseList);
+				responseList1 = mockCandidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO,  purchaseOrderFromDate, purchaseOrderToDate, dateValue);
 				assertNotNull(responseList1);
 			
 		}

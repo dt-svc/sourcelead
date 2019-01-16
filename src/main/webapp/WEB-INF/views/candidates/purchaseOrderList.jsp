@@ -67,7 +67,102 @@ $(document).ready(function(){
     </div>
   </section>
   
-  
+    <div id="emptyPopup"></div>
+<div class="advancedsearch-mask"></div>
+<div class="popupWrap" id="modalPurchaseOrder">
+      <div class="popupHead"><span>Task Type</span><i class="closePop pull-right popClose" onclick = "closePop();"></i></div>
+        <form id="#" name="" action="" method="post">
+        <div class="popupContent">
+			<div class="addInner">
+      <div class="row">
+        <div class="col-md-6 mb positionRelative">
+        <div class="clearfix dynamic_search filterDynamicsearch">
+        	<h5>Payment Status</h5>
+		</div>
+          <div class="clearfix filterSearch-ul">
+            <ul class="list-unstyled positionRelative filterSearch mt5" id="purchaseOrderPaymentStatus">
+              <li class="checkBox positionRelative">
+                <input name="orgManagers" value="" type="checkbox" class="mt2" id = "paymentSuccessCheckBox">
+                <label>Success</label>
+              </li>
+              <li class="checkBox positionRelative">
+                <input name="orgManagers" value="" type="checkbox" class="mt2" id = "paymentFailureCheckBox">
+                <label>Failure</label>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="col-md-6 positionRelative">
+          <!-- <div class="clearfix dynamic_search filterDynamicsearch">
+            <input id="myRolesInput" onkeyup="myRolesFunction()" placeholder="By Date" title="Type in a roles" type="text">
+            <span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span> </div> -->
+          <div class="clearfix filterSearch-ul">
+            <ul class="list-unstyled positionRelative filterSearch mt5" id="purchaseOrderCheckBox">
+			<li class="checkBox positionRelative">
+                <input name="dateCheckBox" value="today" type="radio" class="mt2">
+                <label>Today</label>
+            </li>
+			<li class="checkBox positionRelative">
+                <input name="dateCheckBox" value="1_week" type="radio" class="mt2">
+                <label>Week Ago</label>
+            </li>
+			  <li class="checkBox positionRelative">
+				<input name="dateCheckBox" value="1_month" type="radio" class="mt2">
+				<label>This Month</label>
+			  </li>
+			  <li class="checkBox positionRelative">
+				<input name="dateCheckBox" value="3_months" type="radio" class="mt2">
+				<label>3 months ago</label>
+			  </li>
+			  <li class="checkBox positionRelative">
+				<input name="dateCheckBox" value="6_months" type="radio" class="mt2">
+				<label>6 Months ago</label>
+			  </li>
+			  <li class="checkBox positionRelative">
+				<input name="dateCheckBox" value="YTD" type="radio" class="mt2">
+				<label>1 Year ago</label>
+			  </li>
+			  <li class="checkBox positionRelative">
+				<input name="dateCheckBox" value="custom" type="radio" id = "purchaseOrderCustomDate" class="mt2">
+				<label>Custom Dates</label>
+			  </li>
+			  </ul>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+		  <div class="clearfix" id="customDates" style="display: none;">
+		<div class="col-md-12 positionRelative">
+          <div class="clearfix dynamic_search filterDynamicsearch" >
+          <h5 class="margin-top0">Custom Dates<span class="text-danger paddingLeft">*</span></h5>
+            <ul class="list-unstyled positionRelative filterSearch mb0">
+              <li class="positionRelative">
+                <div class="row">
+                <div class="col-md-6" id="custFromDateDiv">
+                	<input type="text" value="" class="form-control calendar input-sm" field-name="From Date" placeholder="From Date"  id="purchaseOrderFromDate">
+                </div>
+                <div class="col-md-6" id="custToDateDiv">
+                	<input type="text" value="" class="form-control calendar input-sm" field-name="To Date" placeholder="To Date"  id="purchaseOrderToDate">
+				</div>
+             </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+	</div>
+      </div>
+    </div>			
+		</div>
+        
+        <div class="popupFoot text-right">
+         <button type="button" class="slBtn md colorBtn" onclick="validatePurchaseOrderFilter();">Apply</button>
+          <button type="button" class="slBtn md" onclick="resetPurchaseOrderFilter()">Reset</button>
+        </div>
+        
+        <div>
+</div></form>
+ </div>
+   
   <script>
   
   function goToCandidateList(){
@@ -102,13 +197,136 @@ $(document).ready(function(){
 	}
 
   </script>
+    <script>
+  
+  	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+  	var locationDateFormat = '';
+  	if(locationDate.match("yyyy-MM-dd")){
+  		locationDateFormat = 'yy-mm-dd';
+    }if(locationDate.match("dd-MM-yyyy")){
+    	locationDateFormat = 'dd-mm-yy'; 
+    }if(locationDate.match("MM-dd-yyyy")){
+    	locationDateFormat = 'mm-dd-yy'; 
+    }if(locationDate.match("yyyy-dd-MM")){
+    	locationDateFormat = 'yy-dd-mm'; 
+    }
+  
+  	function createPurchaseOrderFromDate(){
+  		$("#purchaseOrderFromDate").datepicker({
+  	   		dateFormat: locationDateFormat,
+  	   		changeMonth: true,
+  	  		changeYear: true, 
+  	   		onSelect: function (selected) {
+  	         	var dt = $(this).datepicker('getDate', '+1d');
+  	         	dt.setDate(dt.getDate() + 1);
+  	         	$("#purchaseOrderToDate").datepicker("option", "minDate", dt);
+  	     		}
+  	  	})	
+  	}
+  	
+  	function createPurchaseOrderToDate(){
+  		$("#purchaseOrderToDate").datepicker({
+  	   		dateFormat: locationDateFormat,
+  	   		changeMonth: true,
+  	  	  	changeYear: true, 
+  	     	onSelect: function (selected) {
+  	         	var dt = $(this).datepicker('getDate', '-1d');
+  	         	dt.setDate(dt.getDate() - 1);
+  	         	$("#purchaseOrderFromDate").datepicker("option", "maxDate", dt);
+  	     		}
+  	  	})
+  	}
+  	
+  	$(function(){
+  		 createPurchaseOrderFromDate();
+  		 createPurchaseOrderToDate();
+  	 });
+
+  	function validatePurchaseOrderFilter(){ 
+		   var customDate = $("#purchaseOrderCustomDate").val(); 
+		   var purchaseOrderFilterDate = $('input[name=dateCheckBox]:checked').val(); 
+		   var purchaseOrderFromDate = $("#purchaseOrderFromDate").val(); 
+		   var purchaseOrderToDate = $("#purchaseOrderToDate").val(); 
+		   if(customDate === "custom"){ 
+		   if(purchaseOrderFromDate === '' && purchaseOrderToDate != null){ 
+		   $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
+		   $("input#purchaseOrderFromDate").after( "<p class='jquery_form_error_message'>From Date is required.</span>"); 
+		   $("input#purchaseOrderFromDate").empty(); 
+		   //return false; 
+		   } 
+		   if(purchaseOrderToDate === '' && purchaseOrderFromDate !== ''){ 
+		   $('#custToDateDiv').find('p.jquery_form_error_message').remove(); 
+		   $("input#purchaseOrderToDate").after( "<p class='jquery_form_error_message'>To Date is required.</span>"); 
+		   $("input#purchaseOrderToDate").empty(); 
+		   //return false; 
+		   } 
+		   if((purchaseOrderFromDate != '' && purchaseOrderFromDate != 'undefined' && purchaseOrderFromDate != null) && 
+		   (purchaseOrderToDate != '' && purchaseOrderToDate != 'undefined' && purchaseOrderToDate != null)){ 
+		   closePop(); 
+		   getPurchaseOrderList(purchaseOrderFilterDate, purchaseOrderFromDate, purchaseOrderToDate); 
+		   $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
+		   $('#custToDateDiv').find('p.jquery_form_error_message').remove(); 
+		   } 
+		   } 
+		   if(purchaseOrderFilterDate != null && purchaseOrderFilterDate != 'undefined' && purchaseOrderFilterDate != ''){ 
+		   closePop(); 
+		   getPurchaseOrderList(purchaseOrderFilterDate, purchaseOrderFromDate, purchaseOrderToDate); 
+		   $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
+		   $('#custToDateDiv').find('p.jquery_form_error_message').remove(); 
+		   //return false; 
+		   } 
+		   } 
+ 	
+ </script>
+   <script>	
+   function closePop(){
+		$("div.popupWrap").hide();
+		$(".advancedsearch-mask").hide();
+	}
+  
+   function openPop(){
+		$("#modalPurchaseOrder, .advancedsearch-mask").fadeIn();
+	}
+    
+    function closePop(){
+    	$("#modalPurchaseOrder, .advancedsearch-mask").fadeOut();
+    }
+    
+    $("#purchaseOrderCustomDate").click(function() {
+    	if($(this).is(":checked")){
+    		$("#customDates").show();
+    	}else {
+    		$("#customDates").hide();
+    	}
+    	});
+    	
+    	function resetPurchaseOrderFilter(){
+    		emptyPurchaseOrderSearchValues();
+    		$("#customDates").hide();
+    		$("ul#purchaseOrderCheckBox > li input:radio").prop("checked", false);
+    		$("ul#purchaseOrderPaymentStatus > li input:checkbox").prop("checked", false);
+    	}
+    	
+    	function emptyPurchaseOrderSearchValues(){
+    		$("#purchaseOrderCustomDate").val('');
+    		$("#purchaseOrderFromDate").val('');
+    		$("#purchaseOrderToDate").val('');
+    		purchaseOrderFilterDate = '';
+    		paymentStatus = '';
+    	}
+    	
+ </script>   	 
   
   <script>
   
-   function getPurchaseOrderList(){
+   function getPurchaseOrderList(purchaseOrderFilterDate, purchaseOrderFromDate, purchaseOrderToDate){
+	   var paymentStatus = "";
+	  /*  var purchaseOrderFilterDate = $('input[name=dateCheckBox]:checked').val();
+	 	var purchaseOrderFromDate = $("#purchaseOrderFromDate").val();
+		var purchaseOrderToDate = $("#purchaseOrderToDate").val(); */ 
 	    var searchValue = $("#purchaseOrderDataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-	   	var url = sourceleadUrl+"/getPurchasedOrderList?searchValue="+searchValue;
+	   	var url = sourceleadUrl+"/getPurchasedOrderList?searchValue="+searchValue+"&purchaseOrderFromDate="+purchaseOrderFromDate+"&purchaseOrderToDate="+purchaseOrderToDate+"&purchaseOrderFilterDate="+purchaseOrderFilterDate;
 	   	getPurchaseOrderListPagin(url);	  
   }
   </script>

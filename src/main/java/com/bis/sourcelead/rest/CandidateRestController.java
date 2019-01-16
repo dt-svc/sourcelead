@@ -1129,7 +1129,11 @@ public class CandidateRestController {
 		 
 		 //response list for purchaseList table
 		 @RequestMapping(value = "/app/getPurchasedOrderList")
-		 public ResponseList<MarketplacePurchaseSalesDTO> getPurchasedOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, HttpServletRequest request) throws Exception {
+		 public ResponseList<MarketplacePurchaseSalesDTO> getPurchasedOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,
+				 @RequestParam(value = "purchaseOrderFromDate", required = false)String purchaseOrderFromDate,
+				 @RequestParam(value = "purchaseOrderToDate", required = false)String purchaseOrderToDate,
+				 @RequestParam(value = "purchaseOrderFilterDate", required = false)String purchaseOrderFilterDate,
+				 HttpServletRequest request) throws Exception {
 			
 			 ResponseList<MarketplacePurchaseSalesDTO> res = new ResponseList<>();
 			logger.debug("inside PurchaseOrderList  controller =========>");
@@ -1151,7 +1155,7 @@ public class CandidateRestController {
 		  			e.printStackTrace();
 		  			return null;
 		  		}
-			ResponseList<MarketplacePurchaseSalesDTO>  marketplacePurchaseOrder = candidateService.getMarketplacePurchaseOrder(orgLocations, marketplacePurchaseSalesDTO);			
+			ResponseList<MarketplacePurchaseSalesDTO>  marketplacePurchaseOrder = candidateService.getMarketplacePurchaseOrder(orgLocations, marketplacePurchaseSalesDTO, purchaseOrderFromDate, purchaseOrderToDate,purchaseOrderFilterDate);			
 			return marketplacePurchaseOrder;
 			/*res.setData(marketplacePurchaseOrder);
 			return res;*/
