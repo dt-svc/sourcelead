@@ -645,7 +645,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				 candidateResumes.setFileName(jsonObj.get("fileInfo[0].fileName").toString());
 				 candidateResumes.setTitle(jsonObj.get("fileInfo[0].fileName").toString());
 				 candidateResumes.setFileContentType(jsonObj.get("fileInfo[0].contentType").toString());
-				 candidateResumes.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString());
+				 candidateResumes.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString().replaceAll(" ", "_"));
  				 candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
  				 candidateResumes.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
  				 candidateResumes.setCreatedDate(new Date());
