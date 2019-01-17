@@ -2,6 +2,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <c:forEach var="subDetails" items="${timesheetReportsDTO.timeReportsSubmissionDetails}" varStatus="subDetailsStatus">
 <tr id="row${subDetails.projectMemberId}" role="row" class="odd">
 	<td class="sorting_1">

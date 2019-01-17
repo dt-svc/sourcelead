@@ -54,7 +54,6 @@ import com.bis.sourcelead.util.TimeSheetPdfUtil;
 import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
 
 @RestController 
-@RequestMapping("/app")
 public class TimesheetApprovalRestController {
 
 	@Value("${sourceleadUrl}")

@@ -1,6 +1,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <style>
 .timeNewSe_week_date .chosen-drop{
    width : 225px !important;
@@ -369,7 +374,7 @@ function getTimesheetFrequencyForFilter(){
 	var timesheetFrequency = $('input[id=timesheetFrequency]:checked').val();
 	  $.ajax({
 	          type : "POST",
-      	  	  url: sourceleadUrl+"/getTimesheetFrequencyForFilter?&frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency,		
+      	  	  url: pmsUrl+"/getTimesheetFrequencyForFilter?&frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency,		
 	      	  success :function(data) {
 		    	  $("#timesheetWeekFrequencyFilter").empty();
 		    	  $("#timesheetWeekFrequencyFilter").append(data);

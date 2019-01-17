@@ -6,6 +6,10 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
+<script>
 	$(document).ready(function() {
 		    if ('${notifyLink}' == 'true') 
 			{
@@ -22,7 +26,6 @@
 
 <script>
 	function timesheetApprovalDetils(filter){ 
-	               var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	               var locationCode ='${SourceLeadWeb_locationCode}';
 	               var userId = '${SourceLeadWeb_user.id}';
 	               
@@ -88,7 +91,7 @@
 		      	          data: formData,
 		  		          processData: false,
 		  		          contentType:false, 
-	        	      	  url: sourceleadUrl+"/timesheetApprovalDetails",		
+	        	      	  url: pmsUrl+"/timesheetApprovalDetails",		
 	        		      success :function(data) {
 	        		    	  $("#loadTimeHead").removeAttr('style');
 	        		    	  $("#timeApprovaldiv").empty();
@@ -106,7 +109,7 @@
 <section class="content-wraper">
 		  <section class="content-header clearfix">
 		       <div class="pull-left"><h2>Timesheets approval</h2></div>
-		            <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> » Timesheets approval</div>
+		            <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> » Timesheets approval</div>
 		       <div class="clearfix"></div>
 		   </section>
 		    <div  id="loadTimeHead"></div>

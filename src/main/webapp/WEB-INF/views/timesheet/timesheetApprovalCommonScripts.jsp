@@ -1,4 +1,9 @@
 <input type="hidden" id="timesheetApproverCurrentPageNumber">
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <script>
 $(document).ready(function() {
     $(".glyphicon-comment").mouseenter(function(){
@@ -49,7 +54,6 @@ function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,
 	 }else{
 		  tableFor = $("#tableFor").val();
 	 }
-	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	 $("#projectMemberId").val('');
 	 $("#projectMemberId").val(projectMemberId);
 	 
@@ -66,7 +70,7 @@ function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,
 	 $("#totalHours").val(totalHours);
      $.ajax({
 	          type : "POST",
-	      	  url: sourceleadUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+currentTimeFrequency+"&redirectionRequestFrom="+requestFrom+"&timeSheetsFor=approver",		
+	      	  url: pmsUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+currentTimeFrequency+"&redirectionRequestFrom="+requestFrom+"&timeSheetsFor=approver",		
 		      success :function(data) {
 		    	  $("#timesheetDivByFrequency").empty();
 	 	    	     var closeElement = $('.proj_close');
@@ -130,12 +134,11 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 	$("#row"+projectMemberId).html("<td colspan='"+tdSpanSize+"'  id='loading"+projectMemberId+"'></td>");
     $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; '); 
     var rejectedReason = '';
-    var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
     $('#hedderAcceptRejectButton').hide();
     $('#selectAllTimeSheetCheckBoxForSubmitForApproval').removeProp('checked');
      $.ajax({
     type: "POST",
-    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
+    url: pmsUrl+"/saveSubmissionApprovalStatusByProjectMemberId?&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 	    success: function(data) {
 	    	 if (data.response === "AWKWARD") {
                     location.href = "/errorPage";
@@ -156,7 +159,7 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
          	        });
 	        	   }
 	    	 }else if (result.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
+					location.replace(pmsUrl);
 			 }
         	 
 	    	 
@@ -178,7 +181,6 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	 if(encodeMsg !== ""){
 		 var encodeMsg = encodeURIComponent(msg);
 		 $("#rejectReasonDiv").empty();
-		 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	     var rowHtmlContent =  $("#row"+projectMemberId).html();
 	     
 	     var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
@@ -192,7 +194,7 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 		 $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
 	    $.ajax({
 	    type: "POST",
-	    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+(encodeMsg.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&approvalStatus=REJECTED",       
+	    url: pmsUrl+"/saveSubmissionApprovalStatusByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+(encodeMsg.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&approvalStatus=REJECTED",       
 	    success: function(data) { 
 	    	 if (data.response === "AWKWARD") {
                     location.href = "/errorPage";
@@ -216,7 +218,7 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	  	   	     cancelRejectSubmission(projectMemberId);
 	  	   	    pagination();
 	    	 }else if (result.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
+					location.replace(pmsUrl);
 			 }
 	      }
 	    }); 
@@ -266,7 +268,7 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 		 $("#loadingCotentDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 		     $.ajax({
 		    type: "POST",
-		    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
+		    url: pmsUrl+"/saveSubmissionApprovalStatusByProjectMemberId?&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 			    success: function(data) {
 			    	 if (data.response === "AWKWARD") {
 		                    location.href = "/errorPage";
@@ -288,7 +290,7 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 	             	    });
 			    	}
 			    }else if (result.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
+					location.replace(pmsUrl);
 				 }
 			  }
 		  });  
@@ -338,7 +340,6 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 	 	if(encodeMsg !== ""){
 		var encodeMsg = encodeURIComponent(msg);
 		$("#rejectReasonDiv").empty();
-		var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	    var rowHtmlContent =  $("#row"+projectMemberId).html();
 	    var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
 		if(locationName == '' || locationName == 'undefined' || locationName == null ){
@@ -347,7 +348,7 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 		$("#loadingCotentDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;'); 
 	    $.ajax({
 	    type: "POST",
-	    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+(encodeMsg.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&approvalStatus=REJECTED",       
+	    url: pmsUrl+"/saveSubmissionApprovalStatusByProjectMemberId?&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+(encodeMsg.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&approvalStatus=REJECTED",       
 	    success: function(data) { 
 	    	 if (data.response === "AWKWARD") {
                  location.href = "/errorPage";
@@ -372,7 +373,7 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 	        	    	selectedRecords[$(this).val()] = $(this).is(":checked");
 	        	    });
 		      }else if (result.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
+					location.replace(pmsUrl);
 			  }
 	    }
 	    }); 

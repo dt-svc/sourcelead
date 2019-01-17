@@ -6,13 +6,18 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="/resources/js/jquery.simplePagination.js"></script>
 
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
   <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Daywise Timesheet Report</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> » <a href="<c:url value='${appPath}/daywiseTimeSheetReports'/>">Daywise Timesheet Report</a> » Daywise Timesheet Report List</div>
+      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> » <a href="/pms/daywiseTimeSheetReports">Daywise Timesheet Report</a> » Daywise Timesheet Report List</div>
     </section>
     <div id="loadingId"></div>
     <div class="clearfix"></div>
@@ -169,7 +174,7 @@ function getTableDataByPageSizeEmployee(){
 	  var exportType = type;
 		
 		if(startDate != null && startDate !='' && startDate !='undefined' && endDate != null && endDate !='' && endDate !='undefined'){
-			window.location.href = sourceleadUrl+"/exportDaywiseTimesheetReport?&startDate="+startDate+"&endDate="+endDate+"&projectIds="+projectIds+"&exportType="+exportType+"&employmentType="+employmentType+"&projectMemberListId="+projectMemberList;
+			window.location.href = pmsUrl+"/exportDaywiseTimesheetReport?&startDate="+startDate+"&endDate="+endDate+"&projectIds="+projectIds+"&exportType="+exportType+"&employmentType="+employmentType+"&projectMemberListId="+projectMemberList;
 		}
 	}
  </script>
@@ -205,7 +210,7 @@ function getTableDataTimeSheetReports(pageNo){
 	    	searchValue = '';
 	      }
 		  $.ajax({
-	            url: sourceleadUrl+"/dayEntriesReportList?&startDate="+startDate+"&endDate="+endDate+"&projectIds="+projectIds+"&employmentType="+employmentType+"&projectMemberListId="+projectMemberList+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,
+	            url: pmsUrl+"/dayEntriesReportList?&startDate="+startDate+"&endDate="+endDate+"&projectIds="+projectIds+"&employmentType="+employmentType+"&projectMemberListId="+projectMemberList+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,
 	            type: "POST",
 	            success: function (data) {
 	            	 $("#dayEntryformData").hide();

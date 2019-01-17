@@ -5,6 +5,12 @@
 <script src="/resources/js/jquery.simplePagination.js"></script>
 <!-- <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script> -->
 
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
+
 <c:if test="${!empty timesheetApprovalDTO.timesheetSubmission}">
 <div id="loadingCotentDiv"></div>
 <div id="tableContent" class="timesheetRep-table timesheet_appr_table timesheet_apprTable" style="overflow: auto;">
@@ -82,7 +88,6 @@ function datatableBody(){
 
 <script>
 function exportTimeSheetToPdfOrExcel(exportType){
-	 	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 		
 	    var frequencyMonth = $('input[id=frequencyMonth]:checked').val();
         var timesheetFrequency = $('input[id=timesheetFrequency]:checked').val();
@@ -102,7 +107,7 @@ function exportTimeSheetToPdfOrExcel(exportType){
 		var startDate = date[0];
 		var endDate = date[1];
 		}
-		window.location.href = sourceleadUrl
+		window.location.href = pmsUrl
 				+ "/getExportTimeSheetForApprovalMechanizm?&startDate="
 				+ startDate + "&endDate=" + endDate + "&client=" + client+ "&project=" + project
 				+ "&stage=" + stage + "&timesheetFrequency="
@@ -154,7 +159,6 @@ function displayAcceptRejectButtonOnHedder() {
     	  getTableData(1);
       }
 	  function getTableData(pageNo) {
-		  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           var locationCode ='${SourceLeadWeb_locationCode}';
           var userId = '${SourceLeadWeb_user.id}';
           
@@ -186,7 +190,7 @@ function displayAcceptRejectButtonOnHedder() {
           $("#loadTime1").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 		  $.ajax({
           	          type : "POST",
-          	        url: sourceleadUrl+"/timesheetEmployeeSubmissionDetails?frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&project="+project+"&stage="+stage+"&frequencyStartDate="+frequencyStartDate+"&frequencyEndDate="+frequencyEndDate+"&locationCode="+locationCode+"&userId="+userId+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,		
+          	        url: pmsUrl+"/timesheetEmployeeSubmissionDetails?frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&project="+project+"&stage="+stage+"&frequencyStartDate="+frequencyStartDate+"&frequencyEndDate="+frequencyEndDate+"&locationCode="+locationCode+"&userId="+userId+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,		
         		      success :function(data) {
         		    	  $("#approvalTableData").empty();
         		    	  $("#approvalTableData").append(data);

@@ -4,6 +4,12 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
+
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <div class="time_pop" id="timeSheetErrorMsg"></div>
  <c:if test="${timesheetEntryDetailsDTO.timesheetFor == 'approver'}">
    <div class='data_loading' id="loadTime"></div>
@@ -1139,14 +1145,13 @@ function timesheetComment(local){
 <script type="text/javascript">
 function withdrawMyTimesheet(){ 
 	/* var frm = $('#timesheet_form').serializeFormJSON(); */
-	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	 var projectMemberId = $("#projectMemberId").val();
 	 var timesheetFrequency  = $("#currentTimeFrequency").val();
 	var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';
 	  $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	      type : "POST",
-     	  url: sourceleadUrl+"/withDrawTimesheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&dateFormat="+dateFormat,		
+     	  url: pmsUrl+"/withDrawTimesheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&dateFormat="+dateFormat,		
 	      success :function(result) {
 	    	  $("#loadTime").removeAttr("style"); 
 	    	  timesheetDivByFrequency();
@@ -1431,7 +1436,6 @@ function addTimeSheetRow(projectId,leaveIndex) {
         }
 	   //get project tasks 
 	   function getProjectTasks(projectTaskId){
-		   var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 		   if($("#" + projectTaskId).val() != null && $("#" + projectTaskId).val() != "" && $("#" + projectTaskId).val() !="undefined"){
 			   var taskId = $("#" + projectTaskId).val().split(",");
 			   $("#" + projectTaskId + "BillableTypeId").val(taskId[1]);
@@ -1498,7 +1502,6 @@ function removeTimeSheetRow(rowId) {
  
 <script type="text/javascript">	
 function removeHolidayRow(rowId,holidayId,holidayUserId,holidayUserLocationId) { 
-	         var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	         var rowNum = $("#maxRowNumber").val();
 		     var maxRowNum = parseInt(rowNum);
 				
@@ -1515,7 +1518,7 @@ function removeHolidayRow(rowId,holidayId,holidayUserId,holidayUserLocationId) {
 		 	  $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 		  	  $.ajax({
 		 	      type : "POST",
-		      	  url: sourceleadUrl+"/dropHoliday?${_csrf.parameterName}=${_csrf.token}&holidayId="+holidayId+"&holidayUserId="+holidayUserId+"&holidayUserLocationId="+holidayUserLocationId,		
+		      	  url: pmsUrl+"/dropHoliday?${_csrf.parameterName}=${_csrf.token}&holidayId="+holidayId+"&holidayUserId="+holidayUserId+"&holidayUserLocationId="+holidayUserLocationId,		
 		 	      success :function(result) {
 		 	    	   $("#choicepopUp").empty();
 		 	    	  $(".project_inn_mask").fadeOut(200);
@@ -1840,7 +1843,6 @@ function cancel(){
 <!-- this script is for delete document -->
 <script type="text/javascript">
 function deleteSubmissionDocument(submissionDocumentId){  
-	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
     var projectExistingValue = $("#dbIsTimesheetAttachmentRequired").val();
     
     var strongTagCount = document.getElementById('timesheetDocumentsId').getElementsByTagName('strong').length;
@@ -1848,7 +1850,7 @@ function deleteSubmissionDocument(submissionDocumentId){
 	var navigation;
     $.ajax({
           type : "POST",
-      	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionDocumentId="+submissionDocumentId,		
+      	  url: pmsUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionDocumentId="+submissionDocumentId,		
 	      success :function(result) {
 	    	  $("#"+submissionDocumentId+"document").remove();
 	    	  if(projectExistingValue != null && projectExistingValue != "" && projectExistingValue !="undefined" && projectExistingValue == "1"
@@ -1863,8 +1865,7 @@ function deleteSubmissionDocument(submissionDocumentId){
 </script>
 <script type="text/javascript">
 function viewSubmissionDocument(submissionDocumentId,title){
-	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-		window.open(sourceleadUrl+'/viewDocument/'+title+'?submissionDocumentId='+submissionDocumentId,title,"height=600,width=600");
+		window.open(pmsUrl+'/viewDocument/'+title+'?submissionDocumentId='+submissionDocumentId,title,"height=600,width=600");
 }
 </script>
 <script>
@@ -1881,7 +1882,6 @@ function timesheetEntriesExport(exportType){
 	var projectMemberId = $("#projectMemberId").val();
 	var startDate = dateFrequency[0];
 	var endDate = dateFrequency[1];
-	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var status = '${timesheetSubmissionDTO.timesheetStatus}';
 	 var tableFor = $("#tableFor").val();
 	 var requestFrom = "employee";
@@ -1889,7 +1889,7 @@ function timesheetEntriesExport(exportType){
 		 requestFrom = tableFor;
 	 }
 	if(status != null && status != 'undefined' && status != '' && status != 'NEW' && status != 'new'){
-		window.location.href = sourceleadUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&requestFrom="+requestFrom;
+		window.location.href = pmsUrl+"/exportTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&requestFrom="+requestFrom;
 	}else{
 		alert("Please fill the TimeSheets..");
 	}
@@ -2016,11 +2016,10 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
    		     getStatusListData(""+currentPageNumber+"","");
 		 }
 		 else if(from != null && from != '' && from != 'undefined' && (from == 'approver' || from == 'approverClose' ||  from == 'dashboardClose')){
-			 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 			 var dates = timesheetFrequency.split("To");
 				$.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/timesheetApprovalRowDetails?projectMembersId="+projectMembersId+"&frequencyStartDate="+dates[0]+"&frequencyEndDate="+dates[1]+"&tableRowFor="+from, 	   
+			    url: pmsUrl+"/timesheetApprovalRowDetails?projectMembersId="+projectMembersId+"&frequencyStartDate="+dates[0]+"&frequencyEndDate="+dates[1]+"&tableRowFor="+from, 	   
 					    success: function(data) {
 						    	 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
 		     		    		 $(".side_mask").fadeOut(200); 
@@ -2054,7 +2053,6 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
     	 var tableFor = $("#tableFor").val();
     	 var currentTimeSubFrequency = $("#currentTimeSubFrequency").val();
     	 var projectMemberId = $("#projectMemberId").val();
-    	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
     	 $("#loadTime").removeAttr('style');
     	 $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	   $.ajax({
@@ -2062,7 +2060,7 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
    	        data: formData,
 	        processData: false,
 	        contentType:false,
-	      	  url: sourceleadUrl+"/saveTimesheetEntries?timesheetSubmission.timesheetStatus="+status+"&timesheetFor="+savingType,		
+	      	  url: pmsUrl+"/saveTimesheetEntries?timesheetSubmission.timesheetStatus="+status+"&timesheetFor="+savingType,		
 		      success :function(data) {
 		    	  if($("#timesheet_form input[data-id*=docFile]").length > 0) {
 		  			 $("#timesheet_form input[data-id*=docFile]").remove();
@@ -2112,7 +2110,7 @@ function timesheetActivityList(){
 	var timesheetFrequency= $("#currentTimeFrequency").val();
 	$.ajax({
 		    type : "POST",
-	      	url: sourceleadUrl+"/timesheetActivity?&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency,		
+	      	url: pmsUrl+"/timesheetActivity?&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency,		
 		    success :function(data) {
 		    	 $('#activityDiv').empty();
 		    	 $('#activityDiv').append(data);
@@ -2145,23 +2143,22 @@ function reOpenMyTimesheet(){
 
 <script>
 function notifyReopenTimeSheet(projectMemberId,timesheetFrequency,totalHours){
-    var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var reason = document.getElementById("reOpenReason").value;
 	if(reason !== ""){
 		$("#reOpenReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/notifyReopenTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&totalHours="+totalHours,	    	   
+		    url: pmsUrl+"/notifyReopenTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&totalHours="+totalHours,	    	   
 		    success: function(data) {
 		    	if(data.response === "SESSION_TIMEDOUT") {
-		    		location.replace(sourceleadUrl);
+		    		location.replace(pmsUrl);
 		    	 } else if (data.response === "AWKWARD") {
                         location.href = "/errorPage";
 		    	 } else if (data.response === "SUCCESS") {
 			    		cancelReOpen();
 	   			    	timesheetDivAfterSaving();
 		    	 }else if (result.indexOf('Sign In') !== -1) {
-	  					location.replace(sourceleadUrl);
+	  					location.replace(pmsUrl);
 				 }
 		    }
 	   });
@@ -2179,7 +2176,6 @@ function timesheetDivAfterSaving(){
 	var notificationCurrentFrequency ='${notificationCurrentFrequency}';
 	var notificationProMemberId ='${notificationProMemberId}';
 	var notificationCurrentSubTimeFrequency ='${notificationCurrentSubTimeFrequency}';
-	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	
 	if(notificationCurrentFrequency != null && notificationCurrentFrequency !='' && notificationCurrentFrequency !='undefined'){
 		currentTimeFrequency = notificationCurrentFrequency;
@@ -2205,7 +2201,7 @@ function timesheetDivAfterSaving(){
     $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
     $.ajax({
 	          type : "POST",
-	      	  url: sourceleadUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+currentTimeFrequency+"&timeSheetsFor="+timeSheetsFor+subFrParam,		
+	      	  url: pmsUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+currentTimeFrequency+"&timeSheetsFor="+timeSheetsFor+subFrParam,		
 		      success :function(data) {
 		    	  $("#timesheetDivByFrequency").empty();
 		    	  $("#timesheetDivByFrequency").append(data);
@@ -2245,14 +2241,13 @@ function rejectReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
 
 <script>
 function storeReopenRejectedReason(projectMemberId,reOpenedUserId,timesheetFrequency){
-	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	var superUserId = '${SourceLeadWeb_superUserId}';
 	var reason = document.getElementById("reOpenRejectedReason").value;
 	if(reason != ""){
 		$("#reOpenRejectedReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		   	url : sourceleadUrl+"/ws/acceptOrRejectReopenTimeSheetBySuperUser?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reOpenedUserId="+reOpenedUserId+"&timesheetFrequency="+timesheetFrequency+"&type=reject"+"&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>')),	    	   
+		   	url : pmsUrl+"/ws/acceptOrRejectReopenTimeSheetBySuperUser?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reOpenedUserId="+reOpenedUserId+"&timesheetFrequency="+timesheetFrequency+"&type=reject"+"&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>')),	    	   
 		    success: function(data) {
 		    	$("#reOpenRejectedPopup").empty();
    			 	$(".project_inn_mask").fadeOut(200);
@@ -2279,7 +2274,6 @@ $(".project_inn_mask").fadeOut(200);
 <script>
 function acceptReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
 	
-	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	var timesheetFrequency = '';
 		var notificationCurrentFrequency =  $("#notificationCurrentFrequency").val();
 		if(notificationCurrentFrequency != null && notificationCurrentFrequency !='' && notificationCurrentFrequency !='undefined'){
@@ -2292,7 +2286,7 @@ function acceptReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
 	 
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/ws/acceptOrRejectReopenTimeSheetBySuperUser?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reOpenedUserId="+reOpenedUserId+"&timesheetFrequency="+timesheetFrequency+"&type=accept",
+		url : pmsUrl+"/ws/acceptOrRejectReopenTimeSheetBySuperUser?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reOpenedUserId="+reOpenedUserId+"&timesheetFrequency="+timesheetFrequency+"&type=accept",
 		success : function(data) {
 			timesheetDivAfterSaving();
 		},
@@ -2303,7 +2297,6 @@ function acceptReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
 <!-- Tab Switching -->
  <script>
 	function timesheetDivByFrequency(currentTimeSubFrequency){ 
-	               var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	               var projectMemberId = $("#projectMemberId").val();
 	               var currentTimeFrequency = $("#currentTimeFrequency").val();
 	               if(currentTimeFrequency ==  null || currentTimeFrequency == '' || currentTimeFrequency == 'undefined'){
@@ -2317,7 +2310,7 @@ function acceptReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
 	               $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	               $.ajax({
 		      	          type : "POST",
-	        	      	  url: sourceleadUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+currentTimeFrequency+"&timeSheetsFor="+timeSheetsFor+subFrParam,		
+	        	      	  url: pmsUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+currentTimeFrequency+"&timeSheetsFor="+timeSheetsFor+subFrParam,		
 	        		      success :function(data) {
 	        		    	  $("#timesheetDivByFrequency").empty();
 	        		    	  $("#timesheetDivByFrequency").append(data);

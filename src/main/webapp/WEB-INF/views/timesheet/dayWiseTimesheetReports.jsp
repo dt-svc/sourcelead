@@ -13,6 +13,10 @@ $( document ).ready(function() {
 });
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <body>
     <div id="loadingId"></div>
 	<div id="dayEntryformData">
@@ -158,7 +162,7 @@ function validateDayEntriesReport(){
 		  $("#loadingId").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 		  var formData = getFormData1("timesheetExportForm");
 		  $.ajax({
-	            url: sourceleadUrl+"/dayEntriesReportList",
+	            url: pmsUrl+"/dayEntriesReportList",
 	            type: "POST",
 	            data: formData,
  		        processData: false,
@@ -247,7 +251,7 @@ function getProjectListBasedOnStartAndEndDate(){
 		typeOfProject = projectType;
 	}
 		$.ajax({
-            url: sourceleadUrl + "/getProjectListBasedOnStartAndEndDate?startDate=" + startDate +"&endDate="+ endDate+"&typeOfProject="+typeOfProject,
+            url: pmsUrl + "/getProjectListBasedOnStartAndEndDate?startDate=" + startDate +"&endDate="+ endDate+"&typeOfProject="+typeOfProject,
             type: "POST",
             success: function (json) {
             	var output = "";
@@ -291,7 +295,7 @@ function getProjectMemberFromProjectId(){
 	}
 	var projectType = $('#projectType').val();
 	$.ajax({
-        url: sourceleadUrl + "/getProjectMembersBasedOnProjectId?&projectIds="+projectIds+"&startDate="+startDate+"&endDate="+endDate+"&employmentType="+designationType+"&typeOfProject="+projectType+"&associateStatus="+associateStatus,
+        url: pmsUrl + "/getProjectMembersBasedOnProjectId?&projectIds="+projectIds+"&startDate="+startDate+"&endDate="+endDate+"&employmentType="+designationType+"&typeOfProject="+projectType+"&associateStatus="+associateStatus,
         type: "POST",
         success: function (result) {
         	var output = "";
@@ -328,7 +332,7 @@ function runExport(){
 	}
 	if ($('#timesheetExportForm').validate(false, validationSettings)){
 		if(startDate != null && startDate !='' && startDate !='undefined' && endDate != null && endDate !='' && endDate !='undefined'){
-			window.location.href = sourceleadUrl+"/exportDaywiseTimesheetReport?&projectIds="+projectIds+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&projectMemberListId="+projectMemberList+"&templateType="+templateType;
+			window.location.href = pmsUrl+"/exportDaywiseTimesheetReport?&projectIds="+projectIds+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&projectMemberListId="+projectMemberList+"&templateType="+templateType;
 		}
 			return true;
 		}else{
@@ -338,7 +342,7 @@ function runExport(){
 
 function getAllUserListBasedOnOrgLocationId(){
 	$.ajax({
-        url: sourceleadUrl + "/getAllUserListBasedOnOrgLocationId",
+        url: pmsUrl + "/getAllUserListBasedOnOrgLocationId",
         type: "POST",
         success: function (obj) {
         	 var output = "";

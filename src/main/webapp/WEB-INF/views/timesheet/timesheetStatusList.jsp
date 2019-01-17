@@ -9,6 +9,10 @@
 
 <script src="/resources/js/jquery.simplePagination.js"></script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <jsp:include page="timesheetApprovalCommonScripts.jsp" />
 <div id="TimeshgeetStatusListId"></div>
 
@@ -111,12 +115,11 @@ window.onload = function () {
  <script type="text/javascript">
 function filter(){
 	var status = '${status}';
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var pageSize = $("#pageSize").val();
 		$("#TimeshgeetStatusListIdLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getTimesheetListByStatus?${_csrf.parameterName}=${_csrf.token}&dashboardTimeStatus="+status,
+		        url: pmsUrl+"/getTimesheetListByStatus?${_csrf.parameterName}=${_csrf.token}&dashboardTimeStatus="+status,
 		        success: function(data) {
 		        	   if(data != null && data != 'undefined' && data != ""){
 			                	 $("#timesheetApprList").empty();
@@ -146,7 +149,6 @@ function filter(){
 	
 				function getStatusListData(pageNo,searchValue){
 					 var status = '${status}';
-					 var sourceleadUrl ='${sourceleadUrl}';
 					 var pageSize = $("#pageSize").val();
 					 var start = parseInt(pageNo*pageSize)-parseInt(pageSize);
 					if(searchValue == null || searchValue == '' || searchValue == 'undefined'){
@@ -155,7 +157,7 @@ function filter(){
 					$("#TimeshgeetStatusListIdLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 					$.ajax({
 						    	type: "POST",
-						        url: sourceleadUrl+"/getTimesheetListByStatus?${_csrf.parameterName}=${_csrf.token}&dashboardTimeStatus="+status+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,
+						        url: pmsUrl+"/getTimesheetListByStatus?${_csrf.parameterName}=${_csrf.token}&dashboardTimeStatus="+status+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,
 						        success: function(data) {
 						        	   if(data != null && data !='undefined' && data != ''){
 							                	 $("#timesheetApprList").empty();

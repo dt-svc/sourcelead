@@ -38,6 +38,11 @@
 		});
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
+
 <style>
 body {
 background-color:#e1e6fa;
@@ -118,7 +123,6 @@ width: auto;
 
 <script type="text/javascript">
 	function saveRejectedReason() {
-			var sourceleadUrl = '${sourceleadUrl}';
 			var projectMemberId = '${projectMemberId}';
 			var userId = '${userId}';
 			var timesheetFrequency = '${timesheetFrequency}';
@@ -130,7 +134,7 @@ width: auto;
 			
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/ws/acceptOrRejectReopenTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&userId="+userId+"&timesheetFrequency="+timesheetFrequency+"&type=reject&reason="+reason,
+						url : pmsUrl+"/ws/acceptOrRejectReopenTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&userId="+userId+"&timesheetFrequency="+timesheetFrequency+"&type=reject&reason="+reason,
 						success : function(data) {
 							if("success"){
 								$('#rejectIdDiv').empty();

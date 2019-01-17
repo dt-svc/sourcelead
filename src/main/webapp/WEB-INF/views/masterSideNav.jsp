@@ -82,14 +82,14 @@
 							   <c:set var ="timesheetTabExist" scope="session" value="Y"/> 
 							  <ul class="collapses" style="display: none">
 							  	    <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/pms/timesheet'/>" title="My TimeSheets"><i class="fa fa-chevron-right"></i> Self</a></li>
-									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/timesheetApproval'/>" title="TimeSheet Approval"><i class="fa fa-chevron-right"></i> Employees</a></li>
+									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="/pms/timesheetApproval" title="TimeSheet Approval"><i class="fa fa-chevron-right"></i> Employees</a></li>
 							  </ul>
 							  </c:if>
 							  <c:if test="${sessionData.nav != 'TimeSheet' || sessionData.nav != 'TimeSheetApproval'}">
 							  <c:set var ="timesheetTabExist" scope="session" value="Y"/>
 							  <ul class="collapses" style="display: none">
 							  		<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/pms/timesheet'/>" title="My TimeSheets"><i class="fa fa-chevron-right"></i> Self</a></li>
-									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/timesheetApproval'/>" title="TimeSheet Approval"><i class="fa fa-chevron-right"></i> Employees</a></li> 
+									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="/pms/timesheetApproval" title="TimeSheet Approval"><i class="fa fa-chevron-right"></i> Employees</a></li> 
 							  </ul>
 							  </c:if>
 						  </li>

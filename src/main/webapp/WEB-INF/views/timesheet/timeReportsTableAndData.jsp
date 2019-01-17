@@ -3,6 +3,12 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <script src="/resources/js/jquery.simplePagination.js"></script>
+
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <!-- <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script> -->
 <div id="reportTableData"></div>
 <div class="timesheetRepTab timesheetRep-table">
@@ -80,7 +86,6 @@ function datatableBody(){
       }
 	  function getTableData(pageNo) {
 		  $("#reportTableData").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
-		  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           var frequencyYear = $("#frequencyYear").val();
           var pageSize = $("#pageSize").val();
           if(frequencyYear != null && frequencyYear != '' &&  frequencyYear != 'undefined'){
@@ -89,7 +94,7 @@ function datatableBody(){
         		  var start = parseInt(pageNo*pageSize)-parseInt(pageSize);
         		  $.ajax({
           	          type : "POST",
-        	      	  url: sourceleadUrl+"/getMemberReports?frequencyYear="+frequencyYear+"&frequencyMonth="+frequencyMonth+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,		
+        	      	  url: pmsUrl+"/getMemberReports?frequencyYear="+frequencyYear+"&frequencyMonth="+frequencyMonth+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,		
         		      success :function(data) {
         		    	  $("#tableData").empty();
         		    	  $("#tableData").append(data);
