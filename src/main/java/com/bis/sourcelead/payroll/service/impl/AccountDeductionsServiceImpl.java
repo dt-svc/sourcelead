@@ -422,12 +422,44 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 				 List<InvoiceData> invoiceDataList = invoiceDataService.getInvoiceDetailsByEmpId(empId, orgLocations);
 				 if(invoiceDataList !=null && invoiceDataList.size() >0){
 					 if("Employee".equalsIgnoreCase(loginUserRole)){
+						 
+						 for(InvoiceData i : invoiceDataList) {
+							 if(i.getPayRate() != null && "Paid".equalsIgnoreCase(i.getArPaid())) {
+								 try {
+									 double payRate = Double.parseDouble(i.getPayRate());
+									 double qty = Double.parseDouble(i.getQty());
+									 billRateIncome = billRateIncome + (payRate * qty);
+								} catch (Exception e) {
+									System.out.println(i.getPayRate());
+									System.out.println(i.getQty());
+									e.printStackTrace();
+								}
+							 }
+						 }
+						 
 						 payRateIncome = invoiceDataList.stream().filter(i->i.getPayRate() !=null && "Paid".equalsIgnoreCase(i.getArPaid())).mapToDouble(i->Double.parseDouble(i.getPayRate())*Double.parseDouble(i.getQty())).sum();
+						 due = invoiceDataList.stream().filter(i->(i.getAmount() !=null && "Unpaid".equalsIgnoreCase(i.getArPaid()))).mapToDouble(i-> Double.parseDouble(i.getPayRate())*Double.parseDouble(i.getQty())).sum();
 					 }else if("Admin".equalsIgnoreCase(loginUserRole)){
+						 
+						 for(InvoiceData i : invoiceDataList) {
+							 if(i.getAmount() != null && "Paid".equalsIgnoreCase(i.getArPaid())) {
+								try {
+									 double rate = Double.parseDouble(i.getRate());
+									 double qty = Double.parseDouble(i.getQty());
+									 billRateIncome = billRateIncome + (rate * qty);
+								} catch (Exception e) {
+									System.out.println(i.getRate());
+									System.out.println(i.getQty());
+									e.printStackTrace();
+								}
+							 }
+						 }
+						 
 						 billRateIncome = invoiceDataList.stream().filter(i->(i.getAmount() !=null && "Paid".equalsIgnoreCase(i.getArPaid()))).mapToDouble(i-> Double.parseDouble(i.getRate())*Double.parseDouble(i.getQty())).sum();
-						 payRateIncome = invoiceDataList.stream().filter(i->i.getPayRate() !=null && "Paid".equalsIgnoreCase(i.getArPaid())).mapToDouble(i->Double.parseDouble(i.getPayRate())*Double.parseDouble(i.getQty())).sum();
+//						 payRateIncome = invoiceDataList.stream().filter(i->i.getPayRate() !=null && "Paid".equalsIgnoreCase(i.getArPaid())).mapToDouble(i->Double.parseDouble(i.getPayRate())*Double.parseDouble(i.getQty())).sum();
+						 // we are calculating admin due amount
+						 due = invoiceDataList.stream().filter(i->(i.getAmount() !=null && "Unpaid".equalsIgnoreCase(i.getArPaid()))).mapToDouble(i-> Double.parseDouble(i.getRate())*Double.parseDouble(i.getQty())).sum();
 					 }
-					 due = invoiceDataList.stream().filter(i->(i.getAmount() !=null && "Unpaid".equalsIgnoreCase(i.getArPaid()))).mapToDouble(i-> Double.parseDouble(i.getAmount())).sum();
 				 }
 				 
 				 List<WageTaxSummary> wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxListByEmployeeId(orgLocations,empId);
@@ -486,10 +518,16 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 			payrollBalance.setVendorPayment(df.format(vendorPayment));
 			payrollBalance.setHealthcareInsurance(df.format(healthcareInsurance));
 			payrollBalance.setImmigration(df.format(immigration));
-			payrollBalance.setDirectDepositAdvanceNegetive(df.format(directDepositAdvanceNegetive));
+			double ddAdvanceVal = 0;
+			if(directDepositAdvanceNegetive < 0) {
+				ddAdvanceVal = -(directDepositAdvanceNegetive);
+			}else {
+				ddAdvanceVal = directDepositAdvanceNegetive;
+			}
+			payrollBalance.setDirectDepositAdvanceNegetive(df.format(ddAdvanceVal));
 			payrollBalance.setDirectDepositDeductionPositive(df.format(directDepositDeductionPositive));
 			payrollBalance.setDue(df.format(due));
-			double deductionTotal = directDepositGross + actualChecksDepositedNet + manualAdvance + generalExpenses + vendorPayment + healthcareInsurance + immigration + directDepositAdvanceNegetive;
+			double deductionTotal = directDepositGross + processedWithCheckOptionGross + manualAdvance + generalExpenses + vendorPayment + healthcareInsurance + immigration + ddAdvanceVal;
 			//
 			double total =0;
 			double empTotal =0;
@@ -499,7 +537,7 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 				 total = billRateIncome + directDepositDeductionPositive;
 				 empTotal = payRateIncome + directDepositDeductionPositive;
 			 }
-			double balance = total - deductionTotal;
+			double balance = total - deductionTotal + (processedWithCheckOptionNet - actualChecksDepositedNet);
 			double empBalance = empTotal - deductionTotal;
 			//
 			double billed = 0;
