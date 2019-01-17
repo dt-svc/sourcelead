@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dto;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 
@@ -26,6 +27,8 @@ public class DepartmentDTO {
 	private String updatedBy;
 	   	
 	private OrgLocations orgLocationId;
+	
+	private BigInteger deptId;
 
 	public String getDepartmentName()
 	{
@@ -115,6 +118,14 @@ public class DepartmentDTO {
 	public void setOrgLocationId(OrgLocations orgLocationId)
 	{
 		this.orgLocationId = orgLocationId;
+	}
+
+	public BigInteger getDeptId() {
+		return deptId;
+	}
+
+	public void setDeptId(BigInteger deptId) {
+		this.deptId = deptId;
 	}
 	
 	

@@ -498,73 +498,75 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		if(payheadList != null && !payheadList.isEmpty()) {
 			HashSet<AssociatePayrollPayheadHistory> payHeadHistoryList = new HashSet<>();
 			for(AssociateSalaryPayheadInd payHead : payheadList) {
-				AssociatePayrollPayheadHistory payHeadHistory = new AssociatePayrollPayheadHistory();
-				payHeadHistory.setIndEmployeePayrollId(empPayroll);
-				payHeadHistory.setPayrollPayhead(payHead.getPayrollPayhead());
-				
-				if(payHead.getPayrollPayhead() != null 
-					&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getShortCode())
-					&& payHead.getPayrollPayhead().getShortCode().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_TDS)) {
+				if(payHead.getMonthly() != null && payHead.getAnnualy() != null) {
+					AssociatePayrollPayheadHistory payHeadHistory = new AssociatePayrollPayheadHistory();
+					payHeadHistory.setIndEmployeePayrollId(empPayroll);
+					payHeadHistory.setPayrollPayhead(payHead.getPayrollPayhead());
 					
-					if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
-						tds = payHead.getAnnualy();
-					}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
-						tds = payHead.getMonthly();
-					}else  {
-						tds = payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2);
-					}
-					   
-				}else if(payHead.getPayrollPayhead() != null 
+					if(payHead.getPayrollPayhead() != null 
 						&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getShortCode())
-						&& payHead.getPayrollPayhead().getShortCode().equalsIgnoreCase(Constants.IND_PAYROLL_PROFESSIONAL_TAX)) {
-						if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
-							pt = payHead.getAnnualy();
-						}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
-							pt = payHead.getMonthly();
-						}else  {
-							pt = payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2);
-						}
+						&& payHead.getPayrollPayhead().getShortCode().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_TDS)) {
 						
-				}
-				
-				if(payHead.getPayrollPayhead() != null 
-						&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getType())
-						&& payHead.getPayrollPayhead().getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)) {
+						if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
+							tds = payHead.getAnnualy();
+						}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
+							tds = payHead.getMonthly();
+						}else  {
+							tds = payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2);
+						}
+						   
+					}else if(payHead.getPayrollPayhead() != null 
+							&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getShortCode())
+							&& payHead.getPayrollPayhead().getShortCode().equalsIgnoreCase(Constants.IND_PAYROLL_PROFESSIONAL_TAX)) {
+							if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
+								pt = payHead.getAnnualy();
+							}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
+								pt = payHead.getMonthly();
+							}else  {
+								pt = payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2);
+							}
+							
+					}
 					
-					if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
-						grossPay = grossPay.add(payHead.getAnnualy());
-					}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
-						grossPay = grossPay.add(payHead.getMonthly());
-					}else  {
-						grossPay = grossPay.add(payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2));
+					if(payHead.getPayrollPayhead() != null 
+							&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getType())
+							&& payHead.getPayrollPayhead().getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)) {
+						
+						if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
+							grossPay = grossPay.add(payHead.getAnnualy());
+						}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
+							grossPay = grossPay.add(payHead.getMonthly());
+						}else  {
+							grossPay = grossPay.add(payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2));
+						}
 					}
-				}
-				
-				if(payHead.getPayrollPayhead() != null 
-						&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getType())
-						&& payHead.getPayrollPayhead().getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)) {
-					if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY) && payHead.getAnnualy() != null) {
-						allDeductions = allDeductions.add(payHead.getAnnualy());
-					}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY) && payHead.getMonthly() != null) {
-						allDeductions = allDeductions.add(payHead.getMonthly());
-					}else  {
-						if(payHead.getAnnualy() != null)
-						allDeductions = allDeductions.add(payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2));
+					
+					if(payHead.getPayrollPayhead() != null 
+							&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getType())
+							&& payHead.getPayrollPayhead().getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)) {
+						if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY) && payHead.getAnnualy() != null) {
+							allDeductions = allDeductions.add(payHead.getAnnualy());
+						}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY) && payHead.getMonthly() != null) {
+							allDeductions = allDeductions.add(payHead.getMonthly());
+						}else  {
+							if(payHead.getAnnualy() != null)
+							allDeductions = allDeductions.add(payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2));
+						}
 					}
+					
+					payHeadHistory.setMonthly(payHead.getMonthly().multiply(payAdjustmentConst).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+					payHeadHistory.setAnnualy(payHead.getAnnualy());
+					payHeadHistory.setStatus(payHead.getStatus());
+					
+					payHeadHistory.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		
+					payHeadHistory.setCreatedBy(loginUser);
+					payHeadHistory.setUpdatedBy(loginUser);
+					
+					payHeadHistory.setCreatedDate(new Date());
+					payHeadHistory.setUpdatedDate(new Date());
+					payHeadHistoryList.add(payHeadHistory);
 				}
-				
-				payHeadHistory.setMonthly(payHead.getMonthly().multiply(payAdjustmentConst).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-				payHeadHistory.setAnnualy(payHead.getAnnualy());
-				payHeadHistory.setStatus(payHead.getStatus());
-				
-				payHeadHistory.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-
-				payHeadHistory.setCreatedBy(loginUser);
-				payHeadHistory.setUpdatedBy(loginUser);
-				
-				payHeadHistory.setCreatedDate(new Date());
-				payHeadHistory.setUpdatedDate(new Date());
-				payHeadHistoryList.add(payHeadHistory);
 			}
 			utilDTO.setAssociatePayrollPayheadHistory(payHeadHistoryList);
 			utilDTO.setTds(tds);

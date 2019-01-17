@@ -196,6 +196,12 @@
 			</div>
 			</sec:authorize>
 			
+			<!-- Dont remove this comment. Work in progress -->
+			<%-- <div class="col-md-2">
+				<ul class="repSearchList list-unstyled">
+				 <li><a href="<c:url value="${appPath}/performanceManagementConfiguration"/>">Performance Management</a></li>
+				</ul>
+			</div> --%>
 			
 			<div class="col-md-2">
 				<h5>Tags</h5>
