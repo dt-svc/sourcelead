@@ -260,7 +260,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 					<div class="pull-right">
 					  <input type="button" value="Draft" class="btn btn-warning mr" onclick="saveNewResourceRequest('Draft');">
 					  <input type="button" value="Send" class="btn btn-primary" onclick="saveNewResourceRequest('Send');">
-					  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources'/>'" class="btn btn-default ml">
+					  <input type="button" value="Cancel" onClick="javascript:window.location.href = '/pms/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources'" class="btn btn-default ml">
 					</div>
 				  </div>
 			</div>    	    

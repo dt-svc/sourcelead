@@ -7,8 +7,6 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -18,7 +16,6 @@ import com.bis.sourcelead.dao.OrgDocumentsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
-import com.bis.sourcelead.rest.CandidateResumeRestController;
 
 
 /**
@@ -30,8 +27,6 @@ import com.bis.sourcelead.rest.CandidateResumeRestController;
 public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 	
 
-	private static final Logger logger = LoggerFactory.getLogger(CandidateResumeRestController.class);
-	
 	@Autowired
 	private SessionFactory sessionFactory;
 	
@@ -51,13 +46,11 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public void saveDocuments(OrgDocuments orgDocuments) throws SourceLeadConstraintViolationException {
-		logger.debug("Storing orgDocuments");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (orgDocuments != null) {
 				session.saveOrUpdate(orgDocuments);
 			}
-			logger.debug("orgDocuments Stored Successfully");
 		} catch (Exception exception) {
 			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"orgDocuments"));
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
@@ -86,7 +79,6 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public OrgDocuments getOrgDocumentsById(Long Id) throws Exception {
-		logger.debug("In getOrgDocumentsById");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from OrgDocuments od where od.id = :Id" ;
 		List<OrgDocuments> orgDocumentsList = session.createQuery(query).setLong("Id", Id).list(); 
@@ -111,12 +103,10 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public OrgDocuments updateDocumnet(OrgDocuments orgDocuments) throws Exception {
-		logger.debug("In Terminate OrgDocument Update method");
 		Session session = this.sessionFactory.getCurrentSession();
 		try{
 			if(orgDocuments != null){
 				session.saveOrUpdate(orgDocuments);
-				logger.info("Record updated successfully..!");
 			}
 		}catch(ConstraintViolationException exception)
 		{
@@ -129,7 +119,6 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public OrgDocuments getOrgDocumentsByIdAndSpocId(Long docId, Long userId) {
-		logger.debug("In getOrgDocumentsByIdAndSpocId");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from OrgDocuments od where od.id = :Id and od.spocUser.id =:userId" ;
 		List<OrgDocuments> orgDocumentsList = session.createQuery(query).setLong("Id", docId).setLong("userId", userId).list(); 
@@ -145,7 +134,6 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 	public Integer getDocumentOwnerCountByUserIdAndOrgLocationIdAndSourceType(Long userId, Long orgLocationId,
 			String sourceType) throws Exception {
 		
-		logger.debug("getDocumentOwnerCountByUserIdAndOrgLocationIdAndSourceType start");
 		Session session = this.sessionFactory.getCurrentSession();
 			String query = "select count(orgDocuments.id) from OrgDocuments orgDocuments "
 					+ " where orgDocuments.ownerUser.id = :userId and orgDocuments.locationId.id = :orgLocationId "
@@ -175,7 +163,6 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public OrgDocuments getOrgDocumentsByDocIdAndLocationId(Long Id, Long locationId) throws Exception
 	{
-		logger.debug("In getOrgDocumentsById");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from OrgDocuments od where od.id = :Id and od.locationId= :locationId" ;
 		List<OrgDocuments> orgDocumentsList = session.createQuery(query).setLong("Id", Id).setLong("locationId", locationId).list(); 

@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -17,16 +16,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.bis.sourcelead.entity.Campaign;
-import com.bis.sourcelead.entity.CampaignList;
-import com.bis.sourcelead.entity.CampaignRecipient;
-import com.bis.sourcelead.entity.CreateSender;
 import com.bis.sourcelead.dto.CampaignListDTO;
 import com.bis.sourcelead.dto.CreateSenderDTO;
 import com.bis.sourcelead.dto.JobListEmailCampaignDTO;
+import com.bis.sourcelead.entity.Campaign;
+import com.bis.sourcelead.entity.CampaignList;
+import com.bis.sourcelead.entity.CampaignRecipient;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.rest.CampaignRestController;
-import com.google.gson.JsonObject;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;

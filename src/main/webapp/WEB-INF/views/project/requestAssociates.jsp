@@ -114,7 +114,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 									type="button" value="Send" class="btn btn-primary"
 									onclick="requestAssociate('Send');"> <input
 									type="button" value="Cancel"
-									onClick="javascript:window.location.href = '<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers'/>'"
+									onClick="javascript:window.location.href = '/pms/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers'"
 									class="btn btn-default ml">
 							</div>
 						</div>
