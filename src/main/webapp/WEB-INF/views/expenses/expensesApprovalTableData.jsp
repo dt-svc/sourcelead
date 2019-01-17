@@ -72,7 +72,7 @@
 <td>
 	<div class="sm" title="${expApproverHierarchy.totalAmount}">
 	<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\',\'ROLE_VIEW_EMPLOYEE_EXPENSES\')">
-		<a  href="/app/addApprovalExpense?expenseId=${expApproverHierarchy.expenseId}&expenseLocationCode=${expApproverHierarchy.locationsCode}&type=view" class="ExpAmount">${expApproverHierarchy.totalAmount}</a>
+		<a  href="/pms/addApprovalExpense?expenseId=${expApproverHierarchy.expenseId}&expenseLocationCode=${expApproverHierarchy.locationsCode}&type=view" class="ExpAmount">${expApproverHierarchy.totalAmount}</a>
 	</sec:authorize>
 	<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\',\'ROLE_VIEW_EMPLOYEE_EXPENSES\')">
 		<span>${expApproverHierarchy.totalAmount}</span>
