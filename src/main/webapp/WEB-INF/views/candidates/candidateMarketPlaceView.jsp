@@ -87,13 +87,13 @@
 
 	     $("#dynamicGlobalMarketCandidateViewDiv").html(result);
 	     
-         var sourceleadUrl = '${SourceLeadWeb_atsUrl}';
+         var atsUrl = '${SourceLeadWeb_atsUrl}';
 	     
 	     var searchValue = $("#globalMarketSearh").val();
 	     searchValue = searchValue ? searchValue : "";
 	     
 	     var url ="";
-	     url = sourceleadUrl + "/getOrgMarketplaceList?searchValue="+searchValue;  
+	     url = atsUrl + "/getOrgMarketplaceList?searchValue="+searchValue;  
 	     
 	     dynamicGlobalMarketCandidateListPagination(url);
 	 }
@@ -428,7 +428,7 @@ function saveEditMarketPriceFun(id, obj){
 	
 	$.ajax({
    		type: "POST",
-	 	url : sourceleadUrl+"/updateMarketPlacePrice?marketPlaceId="+id+"&priceVal="+marketPrice+"&priceValType="+marketPriceCurrency,
+	 	url : atsUrl+"/updateMarketPlacePrice?marketPlaceId="+id+"&priceVal="+marketPrice+"&priceValType="+marketPriceCurrency,
 		success: function(result) {
 			if (result.response === "AWKWARD") {
                 location.href = "/errorPage";
@@ -509,7 +509,7 @@ function withdrawCandidates() {
     if(reason.match(/^[^\s-](.*)*$/) != null && reason !="" && reason.length <= 250){
     $("#reasonForMarketPlaceDiv").empty();
    $.ajax({
-        url: sourceleadUrl + "/withdrawCandidatesFromMarketPlace?id="+candidateIds+"&withdrawReason="+reason,
+        url: atsUrl + "/withdrawCandidatesFromMarketPlace?id="+candidateIds+"&withdrawReason="+reason,
         type: "GET",
         data: candidateIds,
         success: function (result) {
@@ -518,7 +518,7 @@ function withdrawCandidates() {
             }else if(result.response === "SUCCESS") {
               	$("#remove_marketPlace_pop").fadeOut(200);
 	    		$(".project_inn_mask").fadeOut(200);
-	    		dynamicGlobalMarketCandidateListPagination(sourceleadUrl + "/getOrgMarketplaceList?searchValue="+$("#globalMarketSearh").val());
+	    		dynamicGlobalMarketCandidateListPagination(atsUrl + "/getOrgMarketplaceList?searchValue="+$("#globalMarketSearh").val());
 	    		location.reload();
             }else{
            	 showError("Operation failed, please try again");
@@ -551,7 +551,7 @@ function withdrawCandidate(id) {
     if(reason.match(/^[^\s-](.*)*$/) != null && reason !="" && reason.length <= 250){
     $("#reasonForMarketPlaceDiv").empty();
    $.ajax({
-        url: sourceleadUrl + "/withdrawCandidateFromMarketPlace?id="+id+"&withdrawReason="+reason,
+        url: atsUrl + "/withdrawCandidateFromMarketPlace?id="+id+"&withdrawReason="+reason,
         type: "GET",
         data: id,
         success: function (result) {
@@ -560,7 +560,7 @@ function withdrawCandidate(id) {
             }else if(result.response === "SUCCESS") {
               	$("#remove_marketPlace_pop").fadeOut(200);
 	    		$(".project_inn_mask").fadeOut(200);
-	    		dynamicGlobalMarketCandidateListPagination(sourceleadUrl + "/getOrgMarketplaceList?searchValue="+$("#globalMarketSearh").val());
+	    		dynamicGlobalMarketCandidateListPagination(atsUrl + "/getOrgMarketplaceList?searchValue="+$("#globalMarketSearh").val());
             }else{
            	 showError("Operation failed, please try again");
            }}

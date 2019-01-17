@@ -19,7 +19,7 @@
     <div class="clearfix"></div>
 	  <div class="clearfix">
 			<ul class="project-tabs-menu projecttabs-custom clearfix">
-		         <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
+		         <li id="" ><a href="/ats/candidatesList">Candidate List</a></li>
 		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
 		         <li id="" class="current"><a href="javascript:void(0)">Global Marketplace</a></li>
 		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToCartList();">Cart</a></li>
@@ -66,7 +66,7 @@
                 <div class="col-md-9">
 				 <ul class="pull-right mb0 list-unstyled list-inline ulliBorder">
 				 <sec:authorize access="hasRole('ROLE_VIEW_CART')">
-				  <li><i class="shopping-cart inlineBlock pull-left mr10" title="Cart"></i><a id = "cartCount" href="${appPath}/candidateMarketplaceCart" class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0</a></li>
+				  <li><i class="shopping-cart inlineBlock pull-left mr10" title="Cart"></i><a id = "cartCount" href="/ats/candidateMarketplaceCart" class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0</a></li>
 				  <li><i class="dollarSvg inlineBlock pull-left mr10" title="Cart"></i><a id = "totalPrice" class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0.00</a></li>
 				  </sec:authorize>
                   <li> <a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a> </li>
@@ -527,6 +527,7 @@
 
 <!-- Footer Area --> 
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 function deleteCandidateMarketplaceCart(candidateName, marketPlaceUUID, gridType){ // only stauts updated with reason. active 1 , deactive 0.
 	 $(".project_inn_mask").remove();
 		var result = "";
@@ -564,7 +565,7 @@ function mySkillsFunction() {
 
 
   function goToCandidateList(){
-		location.href = "${appPath}/candidatesList";
+		location.href = "/ats/candidatesList";
 	}
   $(document).ready(function () {
 	 getGloblaMarketPlaceCandidates('listModel'); 
@@ -579,7 +580,7 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 	candidateLocation = (candidateLocation.length != null) ? candidateLocation : "" ;
 	$.ajax({
 			type : "POST",
-			url : sourceleadUrl +"/getGlobalMarketplaceListGridCard?searchValue="+searchValue+"&candidateLocation="+candidateLocation+"&searchCandidateIds="+globalCandidateIds,
+			url : atsUrl +"/getGlobalMarketplaceListGridCard?searchValue="+searchValue+"&candidateLocation="+candidateLocation+"&searchCandidateIds="+globalCandidateIds,
 			success : function(object) {
 				if(object != null){
 					var result = "";
@@ -798,7 +799,7 @@ function deleteCandidateMarketCart(candidateName, candidateMarketUUID, viewModel
 
 function addCandidateToMarketCart(candidateName, UUID, viewModel) {
 	  $.ajax({
-	        url: sourceleadUrl + "/addCandidateToMarketCart?id="+UUID,
+	        url: atsUrl + "/addCandidateToMarketCart?id="+UUID,
 	        type:'GET',
 	        success: function (result) {
 	        	 if (result.response === "AWKWARD") {
@@ -840,19 +841,19 @@ function cardModel() {
 }
 
 function goToOrgMarketPlaceList(){
-	location.href = "${appPath}/OrgMarketplace";
+	location.href = "/ats/OrgMarketplace";
 }
 function goToCartList(){
-	location.href = "${appPath}/candidateMarketplaceCart";
+	location.href = "/ats/candidateMarketplaceCart";
 }
 function goToPurchaseOrderList(){
-	location.href ="${appPath}/PurchaseOrderList";
+	location.href ="/ats/PurchaseOrderList";
 	}
 function goToSalesOrderList(){
-	location.href = "${appPath}/SalesOrderList";
+	location.href = "/ats/SalesOrderList";
 }
 function goToWalletList(){
-    location.href = "${appPath}/walletList";
+    location.href = "/ats/walletList";
 }
 
 </script>
@@ -1043,7 +1044,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: atsUrl+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -1077,7 +1078,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: atsUrl+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#citySearch').empty();
