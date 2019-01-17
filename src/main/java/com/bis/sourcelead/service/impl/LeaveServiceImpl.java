@@ -89,7 +89,6 @@ import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PayrollLopHis;
 import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
-import com.bis.sourcelead.rest.TimesheetRestController;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
@@ -175,9 +174,6 @@ public class LeaveServiceImpl implements LeaveService{
     
     @Autowired
     EmployeesService employeesService;
-    
-    @Autowired
-    private TimesheetRestController timesheetRestController;
     
     @Autowired
 	EmailScenarioConfigurationService emailScenarioconService;

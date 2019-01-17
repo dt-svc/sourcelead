@@ -86,7 +86,7 @@ import com.ibm.icu.text.SimpleDateFormat;
 @RequestMapping("/app")
 public class CandidateOnBoardRestController {
 
-	private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(CandidateOnBoardRestController.class);
 
 	@Value("${static.path}")
 	private String staticPath;

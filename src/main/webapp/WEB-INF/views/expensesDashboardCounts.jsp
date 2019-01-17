@@ -4,13 +4,18 @@
 
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<jsp:include page="../views/expenses/expensesCommonList.jsp" />
 
 <script> 
 $(document).ready(function(){
 		expensesCount("myExpenses");
 });
 </script>
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
+
 <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES', 'ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">
 <div class="col-md-6 mb10">
 
@@ -204,8 +209,33 @@ function expensesCount(expenseType){
 	}
 </script>
 
-<!-- <script type="text/javascript">
-	function forEachCountOfExpense(expenseType){
-	location.replace(sourceleadUrl+ "/expenses");
+<script type="text/javascript">
+ 
+function myExpensesListByStage(expenseStatus){
+	if(expenseStatus !='' && expenseStatus != null && expenseStatus !='undefined'){
+		expenseStatus = expenseStatus.toUpperCase();
 	}
-</script> -->
+	$.ajax({
+		    type : "POST",
+		    url: pmsUrl+"/getExpensesList?expenseStatus="+expenseStatus+"&expenseDashboardStatus=dashboard",
+		    success :function(json) {
+		    		localStorage.setItem("myExpensesListGrid",json);
+		    		window.location.replace(pmsUrl+'/expenses/'+expenseStatus);
+		     }
+		});
+}
+		
+function employeeExpensesListByStage(expenseStatus){
+	if(expenseStatus !='' && expenseStatus != null && expenseStatus !='undefined'){
+		expenseStatus = expenseStatus.toUpperCase();
+	}
+$.ajax({
+	    type : "GET",
+	    url: pmsUrl+"/getExpensesApprovalList?expenseStatus="+expenseStatus,
+	    success :function(json) {
+	    		localStorage.setItem("empExpensesListGrid",json);
+	    		window.location.replace(pmsUrl+'/expensesApprovalList/'+expenseStatus);
+	     }
+	});
+}
+</script>

@@ -72,7 +72,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @RequestMapping("/app")
 public class CandidateOffBoardRestController {
 
-	private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(CandidateOffBoardRestController.class);
 
 	@Value("${static.path}")
 	private String staticPath;

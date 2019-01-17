@@ -22,7 +22,11 @@
 	});
 </script>
  
- 
+ <script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+var sourceleadUrl = '${sourceleadUrl}';
+</script>
+
       <div class="mb clearfix col-md-12 noPad"> 
       	  <div class="dashNewWrap mb10">
       	  
@@ -103,10 +107,9 @@
  
  <script>
  function getProjectResourceReqestsListCount(){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getProjectResourceRequestsCounts?${_csrf.parameterName}=${_csrf.token}", 
+	        url: pmsUrl+"/getProjectResourceRequestsCounts?${_csrf.parameterName}=${_csrf.token}", 
 	        success: function(json) {
 	        	$("#waitingCount").html(json.waitingCount);
 	        	$("#approvedCount").html(json.approvedCount);
@@ -165,14 +168,13 @@ function resourceRequestList(requestType){
 
 <script>
 function requestAssociatesDataTableList(requestType){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var approverUserId = '${SourceLeadWeb_user.id}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	 
 	 var searchValue = $("#requestAssociatesTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getProjectPlanningResourceRequestList?searchValue="+searchValue+"&resourceStatus="+requestType;
-	 resourceRequestPagination(url,requestType,sourceleadUrl);
+	 var url = pmsUrl+"/getProjectPlanningResourceRequestList?searchValue="+searchValue+"&resourceStatus="+requestType;
+	 resourceRequestPagination(url,requestType,pmsUrl);
 	 
 	   if(requestType == 'Waiting For Approval'){
 	    	 $("#waiting").addClass("activeIcon");
@@ -207,7 +209,7 @@ function requestAssociatesDataTableList(requestType){
 </script>
 
 <script>
-function resourceRequestPagination(url,requestType,sourceleadUrl){
+function resourceRequestPagination(url,requestType,pmsUrl){
 	var colIndex = 0;
     $('#requestAssociates').DataTable( { 
 	  "processing": true,
@@ -234,7 +236,7 @@ function resourceRequestPagination(url,requestType,sourceleadUrl){
     	  	"render": function(data, type, opt, meta) {
     	  		 var result = "";
     	  		 var flag = false;
-    	  		 result = result + '<td><div  class="tbldata-dotdot-vsm"><a href="'+sourceleadUrl+'/requestedAssociatesList?requestUUID='+opt.projectPlanningRequestUUID+'">'+opt.projectPlanningRequestId+'</a></div></td>';
+    	  		 result = result + '<td><div  class="tbldata-dotdot-vsm"><a href="'+pmsUrl+'/requestedAssociatesList?requestUUID='+opt.projectPlanningRequestUUID+'">'+opt.projectPlanningRequestId+'</a></div></td>';
                  return result;
     	  	}
          },{
@@ -243,7 +245,7 @@ function resourceRequestPagination(url,requestType,sourceleadUrl){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
 	    	  		  if(opt.projectClientUUID != null && opt.projectClientUUID != '' && opt.projectClientUUID != 'undefined'){
-	    	  			result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'&tabType=resources" title="'+opt.projectName+'">'+opt.projectName+'</a></div></td>';
+	    	  			result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+pmsUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'&tabType=resources" title="'+opt.projectName+'">'+opt.projectName+'</a></div></td>';
 	    	  		  }else{
 	    	  			result = result + '<td><div  class="tbldata-dotdot-sm"><a href="javascript:void(0)" onclick="#">'+opt.projectName+'</a></div></td>';
 	    	  			/* result = result + '<td><div  class="tbldata-dotdot-sm"><a href="javascript:void(0)" onclick="openProjectDetailsPopup(\''+opt.projectUUID+'\','+opt.requestedOrgLocationId+');">'+opt.projectName+'</a></div></td>'; */
@@ -356,7 +358,7 @@ function acceptAssociate(requestUUID,requestType){
 	 $("#requestedAssociatesDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	 $.ajax({
 		    type : "POST",
-	    	url: sourceleadUrl+"/acceptRequestedAssociate?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId, 
+	    	url: pmsUrl+"/acceptRequestedAssociate?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId, 
 	        success: function(result) {
 	        	$("#action"+requestUUID).html("<span>Accepted</span>");
 	        	getProjectResourceReqestsListCount();
@@ -436,7 +438,6 @@ function saveRejectAssociate(requestUUID){
 	  	formData.append("json",jsonData)
 	  	 var userId = '${SourceLeadWeb_userId}';
         var orglocationId = '${SourceLeadWeb_orgLocationId}';
-        var sourceleadUrl ='${sourceleadUrl}';
       
         $("#submit_rejectedReason").attr("disabled", "disabled");
 		
@@ -448,7 +449,7 @@ function saveRejectAssociate(requestUUID){
 		        processData: false,
 		        contentType:false, 
 	    	    dataType : 'json',
-		    	url: sourceleadUrl+"/rejectRequestedAssociate?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orglocationId="+orglocationId, 
+		    	url: pmsUrl+"/rejectRequestedAssociate?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orglocationId="+orglocationId, 
 		        success: function(result) {
 		        	cancelRejectedReason();
 		        	$("#action"+requestUUID).html("<span>Rejected</span>")
@@ -511,7 +512,7 @@ function acceptAssociateRequest(requestUUID){
 	 $("#resourceRequestsDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	 $.ajax({
 		    type : "POST",
-	    	url: sourceleadUrl+"/acceptAssociateRequest?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId, 
+	    	url: pmsUrl+"/acceptAssociateRequest?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId, 
 	        success: function(result) {
 	        	location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");  
 	        },
@@ -571,7 +572,6 @@ if ($('#onHold_form').validate(false, validationSettings)){
 	    var formData = new FormData(form);
 	  	formData.append("json",jsonData)
 	  	
-        var sourceleadUrl ='${sourceleadUrl}';
         var userId = '${SourceLeadWeb_userId}';
         var orglocationId = '${SourceLeadWeb_orgLocationId}';
         
@@ -584,7 +584,7 @@ if ($('#onHold_form').validate(false, validationSettings)){
 		        processData: false,
 		        contentType:false, 
 	    	    dataType : 'json',
-		    	url: sourceleadUrl+"/onholdRequestedAssociate?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId,
+		    	url: pmsUrl+"/onholdRequestedAssociate?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId,
 		        success: function(result) {
 		        	
 		        	cancelRequestOnholdReason();
@@ -682,7 +682,7 @@ function saveRejectAssociateRequest(requestUUID){
 		        processData: false,
 		        contentType:false, 
 	    	    dataType : 'json',
-		    	url: sourceleadUrl+"/rejectAssociatesRequest?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orglocationId="+orglocationId,
+		    	url: pmsUrl+"/rejectAssociatesRequest?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orglocationId="+orglocationId,
 		        success: function(result) {
 		        	cancelRejectedReason();
 		        	location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");  
