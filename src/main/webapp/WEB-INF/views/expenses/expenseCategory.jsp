@@ -6,6 +6,10 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+ 
  
 <!-- Content Area -->
       <section class="content-wraper">
@@ -183,7 +187,7 @@ function expenseCategoryList(){
 	  $("#expenseCategoryLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
           type : "GET",
-          url: sourceleadUrl+"/getExpensesCategoryList",    
+          url: pmsUrl+"/getExpensesCategoryList",    
            success :function(result) {
            	var json = result.data;
            	if (result.response === "AWKWARD") {
@@ -275,7 +279,7 @@ function expenseCategoryList(){
                    expenseCategoryPagenation(); 
 	        		
 	        	} else if (result.indexOf('Sign In') !== -1) {
-	        		location.replace(sourceleadUrl);
+	        		location.replace(pmsUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}
@@ -326,7 +330,7 @@ function storeExpensesCategory(){
 			 $("#save_button").attr("disabled", "disabled");
 			 $.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/storeExpensesCategory?"+tokenParamName+"="+tokenValue+"&json="+con,
+					url : pmsUrl+"/storeExpensesCategory?"+tokenParamName+"="+tokenValue+"&json="+con,
 					success :function(result) { 
 						if (result.response === "AWKWARD") {
 			        	    location.href = "/errorPage";
@@ -339,7 +343,7 @@ function storeExpensesCategory(){
 	            			 expenseCategoryList();
 		               		 eduMsgFadeinFunction();
 			        	} else if (result.indexOf('Sign In') !== -1) {
-			        		location.replace(sourceleadUrl);
+			        		location.replace(pmsUrl);
 			        	} else {
 			        	    showError("Operation failed, please try again");
 			        	}
@@ -472,7 +476,7 @@ function deleteExpenseCategory(categoryId){
 	
 	  $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/removeExpensesCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,        
+          url: pmsUrl+"/removeExpensesCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,        
           success :function(result) {
 
         	  if (result.response === "AWKWARD") {
@@ -486,7 +490,7 @@ function deleteExpenseCategory(categoryId){
       				expenseCategoryList();
       				eduMsgFadeinFunction();
 	        	} else if (result.indexOf('Sign In') !== -1) {
-	        		location.replace(sourceleadUrl);
+	        		location.replace(pmsUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}
@@ -507,7 +511,7 @@ function reActiveExpenseCategory(categoryId){
 		};
 	  $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/reActiveExpenseCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,        
+          url: pmsUrl+"/reActiveExpenseCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,        
           success :function(result) {
         	  if (result.response === "AWKWARD") {
 	        	    location.href = "/errorPage";
@@ -520,7 +524,7 @@ function reActiveExpenseCategory(categoryId){
 					expenseCategoryList();
 					eduMsgFadeinFunction();
 	        	} else if (result.indexOf('Sign In') !== -1) {
-	        		location.replace(sourceleadUrl);
+	        		location.replace(pmsUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}
@@ -534,7 +538,7 @@ function reActiveExpenseCategory(categoryId){
  <script type="text/javascript">
  function editExpenseCategory(categoryId) {
 		$.ajax({	type : "POST",
-					url : sourceleadUrl+ "/getExpensesCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,
+					url : pmsUrl+ "/getExpensesCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,
 					success : function(data) {
 						
 						var json = data.object;
@@ -698,7 +702,7 @@ function reActiveExpenseCategory(categoryId){
 				
 				}
 			        	} else if (data.indexOf('Sign In') !== -1) {
-			        		location.replace(sourceleadUrl);
+			        		location.replace(pmsUrl);
 			        	} else {
 			        	    showError("Operation failed, please try again");
 			        	}
@@ -730,7 +734,7 @@ function reActiveExpenseCategory(categoryId){
 			var jsonData = encodeURIComponent(con);
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl
+						url : pmsUrl
 								+ "/upDateExpensesCategoryByCategoryId?"+tokenParamName+"="+tokenValue+"&json="+ jsonData + "&categoryId="+categoryId,
 						success : function(result) {
 							if (result.response === "AWKWARD") {
@@ -744,7 +748,7 @@ function reActiveExpenseCategory(categoryId){
 		            				expenseCategoryList();
 		            				eduMsgFadeinFunction();
 				        	} else if (result.indexOf('Sign In') !== -1) {
-				        		location.replace(sourceleadUrl);
+				        		location.replace(pmsUrl);
 				        	} else {
 				        	    showError("Operation failed, please try again");
 				        	}
@@ -769,7 +773,7 @@ function reActiveExpenseCategory(categoryId){
  	  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/validateExpenseCategoryType?name="+name, 
+		        url: pmsUrl+"/validateExpenseCategoryType?name="+name, 
 		        success: function(result) {
 		        	if (result.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -787,7 +791,7 @@ function reActiveExpenseCategory(categoryId){
 			        	}
 		        		
 		        	} else if (result.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
+		        		location.replace(pmsUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}

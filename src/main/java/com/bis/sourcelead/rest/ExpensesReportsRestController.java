@@ -38,7 +38,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/app")
 public class ExpensesReportsRestController {
 
 	@Value("${sourceleadUrl}")

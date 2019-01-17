@@ -79,7 +79,6 @@ import gherkin.lexer.Is;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/app")
 public class ExpensesRestController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -194,13 +193,8 @@ public class ExpensesRestController {
                         }
                     }
                 }
-        		//Submission_Status submissionStatus = eah.getExpenseStatus();
-        		//expenses.setExpenseStatus(submissionStatus);
             }
-            /*if(expenses.getOrgRelationId() != null && !expenses.getOrgRelationId().isEmpty()){
-    			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(Long.parseLong(expenses.getOrgRelationId()));
-    			expenses.setOrgRelationUUID(orgRelations.getUUID());
-    		}*/
+           
             ExpensesDTO expDate =  ExpensesDTOConverter.getExpensesDTOFromExpenses(orgLoc,expenses,new ExpensesDTO());
             expDate.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getStartDate()));
             expDate.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getEndDate()));	

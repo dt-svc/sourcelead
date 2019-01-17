@@ -190,15 +190,15 @@
 						   
 						   <c:if test="${sessionData.nav == 'My Expenses' || sessionData.nav == 'Expenses Approval'}">
                               <ul class="collapses" style="display: none">
-                                  <li class="${sessionData.nav == 'My Expenses' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/expenses'/>" title="My Expenses"><i class="fa fa-chevron-right"></i> Self</a></li>
-                                  <li class="${sessionData.nav == 'Expenses Approval' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/expensesApprovalList'/>" title="Expenses Approval"><i class="fa fa-chevron-right"></i> Employees</a></li>
+                                  <li class="${sessionData.nav == 'My Expenses' ? 'treview-active' : ''}"><a href="/pms/expenses" title="My Expenses"><i class="fa fa-chevron-right"></i> Self</a></li>
+                                  <li class="${sessionData.nav == 'Expenses Approval' ? 'treview-active' : ''}"><a href="/pms/expensesApprovalList" title="Expenses Approval"><i class="fa fa-chevron-right"></i> Employees</a></li>
                               </ul>
                            </c:if>
                               
                            <c:if test="${sessionData.nav != 'My Expenses' || sessionData.nav != 'Expenses Approval'}">
                            <ul class="collapses" style="display: none">
-                               <li class="${sessionData.nav == 'My Expenses' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/expenses'/>" title="My Expenses"><i class="fa fa-chevron-right"></i> Self</a></li>
-                               <li class="${sessionData.nav == 'Expenses Approval' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/expensesApprovalList'/>" title="Expenses Approval"><i class="fa fa-chevron-right"></i> Employees</a></li>
+                               <li class="${sessionData.nav == 'My Expenses' ? 'treview-active' : ''}"><a href="/pms/expenses" title="My Expenses"><i class="fa fa-chevron-right"></i> Self</a></li>
+                               <li class="${sessionData.nav == 'Expenses Approval' ? 'treview-active' : ''}"><a href="/pms/expensesApprovalList" title="Expenses Approval"><i class="fa fa-chevron-right"></i> Employees</a></li>
                            </ul>
                            </c:if>
                               
@@ -206,11 +206,11 @@
 	                 </c:if>
 	                 
 	                 <c:if test="${SourceLeadWeb_expensesTabCount < 2 && userTabs.tabName == 'My Expenses'}">
-	                   <li class="${sessionData.nav == 'My Expenses' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/expenses'/>" title="My Expenses"><span class="navIcons expIcon"></span><b>Expenses</b></a></li>
+	                   <li class="${sessionData.nav == 'My Expenses' ? 'navActive' : ''}"><a href="/pms/expenses" title="My Expenses"><span class="navIcons expIcon"></span><b>Expenses</b></a></li>
 	                 </c:if>
 	                 
 	                 <c:if test="${SourceLeadWeb_expensesTabCount < 2 && userTabs.tabName == 'Expenses Approval'}">
-	                 <li class="${sessionData.nav == 'Expenses Approval' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/expensesApprovalList'/>" title="Expenses Approval"><span class="navIcons expIcon"></span><b>Expenses Approval</b></a></li>
+	                 <li class="${sessionData.nav == 'Expenses Approval' ? 'navActive' : ''}"><a href="/pms/expensesApprovalList" title="Expenses Approval"><span class="navIcons expIcon"></span><b>Expenses Approval</b></a></li>
 	                 </c:if>
 	                 
 	                 <c:if test="${userTabs.tabName == 'Asset Management'}">

@@ -44,7 +44,7 @@
 </script>
 
 <script>
-  var sourceleadUrl = '${sourceleadUrl}';
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 </script>
 
 <script type="text/javascript">
@@ -172,7 +172,7 @@ width: auto;
 			
 			$.ajax({
 						type : "GET",
-						url : sourceleadUrl+"/ws/acceptOrRejectReopenExpense?"+tokenParamName+"="+tokenValue+"&type="+type+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&reason="+reason+"&orgLocId="+orgLocation+"&rejectReason="+rejectReason,
+						url : pmsUrl+"/ws/acceptOrRejectReopenExpense?"+tokenParamName+"="+tokenValue+"&type="+type+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&reason="+reason+"&orgLocId="+orgLocation+"&rejectReason="+rejectReason,
 						success : function(data) {
 							if("success"){
 								$('#rejectIdDiv').empty();

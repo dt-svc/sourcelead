@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 */
 
 @Controller
-@RequestMapping("/app")
 public class ExpensesEntryDocmentsController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesEntryDocmentsController.class);

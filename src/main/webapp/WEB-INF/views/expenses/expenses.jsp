@@ -6,6 +6,10 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+ 
  <jsp:include page="expensesCommonList.jsp"></jsp:include>
 
  <script type="text/javascript">
@@ -41,7 +45,7 @@
           <div class="pull-left">
             <h2>My Expenses</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; My Expenses</div>
+          <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; My Expenses</div>
         </section>
         
         
@@ -68,7 +72,7 @@
       </span>
       <ul class="pull-right list-unstyled list-inline">
                <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES')">
-			   		<li><a href="<c:url value='${appPath}/addExpense'/>" class="newAdBtn mr5">+ Expenses</a></li>
+			   		<li><a href="/pms/addExpense" class="newAdBtn mr5">+ Expenses</a></li>
 			   </sec:authorize>	      		
 			
         		<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_MY_EXPENSES')">
@@ -177,7 +181,7 @@ function getExpensesList(dateSearch){
 	var locationCode = '${SourceLeadWeb_orgLocations.locationCode}'
 	$.ajax({
 	    type : "POST",
-	     url: sourceleadUrl+"/getExpensesList?&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate+"&searchValue="+searchValue+"&userId="+userId+"&locationCode="+locationCode,      
+	     url: pmsUrl+"/getExpensesList?&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate+"&searchValue="+searchValue+"&userId="+userId+"&locationCode="+locationCode,      
 	     success :function(data) {
 	    	 $("#expensesListDiv").empty();
 			 $("#expensesListDiv").append(data);
@@ -198,7 +202,7 @@ function expenseView(expenseId){
 	        $("body").css('overflow-y', 'hidden');
 	        $.ajax({
 	            type : "GET",
-	             url: sourceleadUrl+"/getIndividualExpense?expenseId="+expenseId,       
+	             url: pmsUrl+"/getIndividualExpense?expenseId="+expenseId,       
 	             success :function(data) {
 	           	  var result = "";
 	           	  
@@ -447,7 +451,7 @@ function activeTab(){
 
 <script>
 function getEditExpense(eId){
-	window.location.replace(sourceleadUrl+'/addExpense?expenseId='+eId);
+	window.location.replace(pmsUrl+'/addExpense?expenseId='+eId);
 }
 </script>
 
@@ -462,7 +466,7 @@ function exportToPdf(type){
 		});
 		var startDate = $("#filterStartDate").val();
 		var endDate = $("#filterEndDate").val();
-		window.location.href = sourceleadUrl + "/exportAllMyExpensesList?&type="+type+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate;
+		window.location.href = pmsUrl + "/exportAllMyExpensesList?&type="+type+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate;
 	}else{
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";

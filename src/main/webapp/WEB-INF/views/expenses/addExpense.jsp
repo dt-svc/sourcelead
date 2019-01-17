@@ -6,6 +6,11 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
+ 
   <jsp:include page="addExpenseEntries.jsp"></jsp:include>
  
   <style type="text/css">
@@ -419,10 +424,10 @@ function removeWhiteSpacesMyExp(rowCount){
 	        	    data: formData,
 	    	        processData: false,
 	    	        contentType:false,
-					url : sourceleadUrl+"/storeAddExpensesData?"+tokenParamName+"="+tokenValue+"&expenseStatus="+status,
+					url : pmsUrl+"/storeAddExpensesData?"+tokenParamName+"="+tokenValue+"&expenseStatus="+status,
 					success : function(data) {
 						$( "#submitForApprovalExpensesId" ).addClass('button').val('Submit for Approval');
-						window.location.replace(sourceleadUrl+'/expenses');
+						window.location.replace(pmsUrl+'/expenses');
 					},
 				});
 				return true;
@@ -532,9 +537,9 @@ function withdrawMyExpense(id){
 	$("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	      type : "POST",
-   	       url: sourceleadUrl+"/withDrawExpense?"+tokenParamName+"="+tokenValue+"&expenseId="+'${expenses.id}',		
+   	       url: pmsUrl+"/withDrawExpense?"+tokenParamName+"="+tokenValue+"&expenseId="+'${expenses.id}',		
 	      success :function(result) {
-	    	  location.replace(sourceleadUrl+"/addExpense?expenseId="+'${expenses.expenseAutoId}'+"&expenseLocationCode="+'${expenses.expenseLocationCode}'+"&type=view"); 
+	    	  location.replace(pmsUrl+"/addExpense?expenseId="+'${expenses.expenseAutoId}'+"&expenseLocationCode="+'${expenses.expenseLocationCode}'+"&type=view"); 
 	      }
  }); 
 }
@@ -622,13 +627,6 @@ function deleteAttchment(documentId){
 	var html = "<input type='hidden' name='removedDocumentIds["+i+"]' data-id='removedDocument' value='"+documentId+"'/>";
 	$("#timesheetDocumentsId").append(html);
 	
-/* $.ajax({
-	type : "POST",
-	url : sourceleadUrl+"/deleteDocumentByDocumentId?"+tokenParamName+"="+tokenValue+"&documentId="+documentId,
-	success : function(data) {
-		return true;
-	},
-}); */
 }
 </script>
 

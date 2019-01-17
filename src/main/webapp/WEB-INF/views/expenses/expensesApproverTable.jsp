@@ -4,9 +4,13 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
  
  <script>
-function expensesApprovalList(sourceleadUrl){
+function expensesApprovalList(pmsUrl){
     var url = '';
     var searchValue = $("#dataTableSearchExpenses").val();
 	searchValue = searchValue ? searchValue : "";
@@ -21,16 +25,16 @@ function expensesApprovalList(sourceleadUrl){
 	$("#approverDataExpensesDiv").empty();
 	
 	/* $("#approverDataExpensesDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); */
-	url = sourceleadUrl+"/getExpensesApprovalList?expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate+"&searchValue="+searchValue;
+	url = pmsUrl+"/getExpensesApprovalList?expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate+"&searchValue="+searchValue;
 
 	$('#dataTableSearchExpenses').removeAttr('disabled');
     $('#dataTableSearchExpenses').attr('disabled','disabled');
-     prepareExpensesApprovalData(url,sourceleadUrl); 
+     prepareExpensesApprovalData(url,pmsUrl); 
 } 
 
 
 
- function prepareExpensesApprovalData(url,sourceleadUrl){
+ function prepareExpensesApprovalData(url,pmsUrl){
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  var expensesApprvListDate = 'YYYY-MM-DD';
@@ -64,12 +68,12 @@ function expensesApprovalList(sourceleadUrl){
 	    result = result+" </table>"; 
 	    
    $("#approverDataExpensesDiv").append(result); 
-   Approvalpagination(url,sourceleadUrl); 
+   Approvalpagination(url,pmsUrl); 
    
    /* to call requirement conformation saving message */
 }
 
-function Approvalpagination(url,sourceleadUrl){
+function Approvalpagination(url,pmsUrl){
 	var colIndex = 0;
 	 	   $('#example').DataTable( {
 	   	   "processing": true,
@@ -184,7 +188,7 @@ function Approvalpagination(url,sourceleadUrl){
 	    	  		var result = "";
 	    	  		    result = result+' <td><div class="sm" title="'+opt.expenseId.totalAmount.toFixed(2)+'">';
 	    	  		  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
-	    	  			result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+opt.expenseId.expenseId+'&expenseLocationCode='+opt.expenseId.locationsCode+'&type=view" class="ExpAmount">';
+	    	  			result = result+'<a  href="'+pmsUrl+'/addApprovalExpense?expenseId='+opt.expenseId.expenseId+'&expenseLocationCode='+opt.expenseId.locationsCode+'&type=view" class="ExpAmount">';
 	    	  			'</sec:authorize>';
 	    	  			 var  numb = opt.expenseId.totalAmount.toFixed(2);
 	    	  			result = result+numb;
@@ -246,7 +250,7 @@ function Approvalpagination(url,sourceleadUrl){
 		            }
 		            if(opt.expenseApprovalStatus !=null && opt.expenseApprovalStatus  == 'REOPEN'){
 		            	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
-		            	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+opt.expenseId.expenseId+'&expenseLocationCode='+opt.expenseId.locationsCode+'&type=view" class="ExpAmount">';
+		            	result = result+'<a  href="'+pmsUrl+'/addApprovalExpense?expenseId='+opt.expenseId.expenseId+'&expenseLocationCode='+opt.expenseId.locationsCode+'&type=view" class="ExpAmount">';
 		            	'</sec:authorize>'; 
 		           }
 		             result = result+' </td>'; 
@@ -274,7 +278,7 @@ function Approvalpagination(url,sourceleadUrl){
 		  
 		   $("#dataTableSearchExpenses").keyup(function(e) {
 		   	   if(e.which === 13) {
-		   		expensesApprovalList(sourceleadUrl);
+		   		expensesApprovalList(pmsUrl);
 		   	   }
 		   	});	 
 		   $("#temp").val("temp");

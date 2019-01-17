@@ -11,6 +11,10 @@
     top: 5px;
 }
 </style>
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
  
 <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
@@ -52,7 +56,7 @@
 					 
 					      <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">
 					     <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED' || submissionStatus == 'REOPENED'}">
-					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="btn btn-default ml10 mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
+					        <a href="${SourceLeadWeb_pmsUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="btn btn-default ml10 mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
 					     </c:if>
 					     </sec:authorize>
 					     
@@ -311,13 +315,13 @@ $(".export_pop, #export-pop").click(function(e) {
     
 <script>
 function viewDocument(title,id){
-		window.open(sourceleadUrl+'/viewExpensesEntryDocument/'+title+'?entryDocumentId='+id,title,"height=600,width=600");
+		window.open(pmsUrl+'/viewExpensesEntryDocument/'+title+'?entryDocumentId='+id,title,"height=600,width=600");
 }
 </script>     
     
 <script>
 function exportMyExpenses(type,Expid,ApproverType){
-	window.location.href = sourceleadUrl + "/exportMyExpensesList?&type="+type+"&Expid="+Expid+"&ApproverType="+ApproverType;
+	window.location.href = pmsUrl + "/exportMyExpensesList?&type="+type+"&Expid="+Expid+"&ApproverType="+ApproverType;
 }
 </script>
 
@@ -325,7 +329,7 @@ function exportMyExpenses(type,Expid,ApproverType){
 function changeStatusToBillable(ExpenseEntriesId,billableStatus){
 	 $.ajax({
          type : "POST",
-         url: sourceleadUrl+"/changeStatusToBillable?&ExpenseEntriesId="+ExpenseEntriesId+"&billableStatus="+billableStatus,     
+         url: pmsUrl+"/changeStatusToBillable?&ExpenseEntriesId="+ExpenseEntriesId+"&billableStatus="+billableStatus,     
           success :function(result) {
 			var checkboxes = $("input[name='expenses']");
 			$(checkboxes).each(function(){

@@ -2,6 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <script src="/resources/js/jquery.simplePagination.js"></script>
 <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script>
 
@@ -132,7 +136,7 @@ function searchExpensesDataIcon(){
           $("#loadingId").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 		  $.ajax({
 		       type : "POST",
-		       url: sourceleadUrl+"/getExpensesApprovalList?"+tokenParamName+"="+tokenValue+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,      
+		       url: pmsUrl+"/getExpensesApprovalList?"+tokenParamName+"="+tokenValue+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,      
 		       success :function(data) {
 		      	  $("#approverDataExpensesDiv").empty();
 		  		  $("#approverDataExpensesDiv").append(data);
@@ -189,7 +193,7 @@ function changeBillingStatus(id, ele){
 	 var billingStatus = $(ele).val();
 	  $.ajax({
 		    type : "POST",
-		     url: sourceleadUrl+"/updateBillingStatus?billingStatus="+billingStatus+"&expenseId="+id,      
+		     url: pmsUrl+"/updateBillingStatus?billingStatus="+billingStatus+"&expenseId="+id,      
 		     success :function(data) {
 		    	 if(data && data.response === "SUCCESS") {
 					if(data.object === true)			    		 

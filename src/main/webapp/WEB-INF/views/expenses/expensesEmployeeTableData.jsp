@@ -5,6 +5,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
+
 <tr style="display:none">
 	       <input type="hidden" id="totalRows" name="totalRows" value="${totalRows}">
 	       <input type="hidden" id="pageCount" name="totalRowsPage" value="${pageCount}">
@@ -13,7 +14,7 @@
 <tr id="row${expensesDTO.id}">
 
 <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">
-	<td><a href='${sourceleadUrl}/addExpense?expenseId=${expensesDTO.expenseAutoId}&expenseLocationCode=${expensesDTO.expenseLocationCode}&type=view'><div class='proj_show'><span>${expensesDTO.expenseAutoId}</span><i class='fa fa-binoculars'></i></div></a></td>
+	<td><a href='${SourceLeadWeb_pmsUrl}/addExpense?expenseId=${expensesDTO.expenseAutoId}&expenseLocationCode=${expensesDTO.expenseLocationCode}&type=view'><div class='proj_show'><span>${expensesDTO.expenseAutoId}</span><i class='fa fa-binoculars'></i></div></a></td>
 </sec:authorize>
 <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">
 	<td><div class='proj_show tblminwidth-75'><span>${expensesDTO.expenseId}</span></div></td>
@@ -31,7 +32,7 @@
 	<c:if test="${not empty expensesDTO.projectUUID and  not empty expensesDTO.projectClientUUID and not empty expensesDTO.projectName and expensesDTO.projectStatus ne 'COMPLETED'}">
 		<td>
 			<div class="tbldata-dotdot-vsm">
-				<a class="btnNoBg" href="${sourceleadUrl}/projectSummary?projectUUID=${expensesDTO.projectUUID}&projectClientUUID=${expensesDTO.projectClientUUID}" title="${expensesDTO.projectName}">${expensesDTO.projectName}</a>
+				<a class="btnNoBg" href="${SourceLeadWeb_pmsUrl}/projectSummary?projectUUID=${expensesDTO.projectUUID}&projectClientUUID=${expensesDTO.projectClientUUID}" title="${expensesDTO.projectName}">${expensesDTO.projectName}</a>
 			</div>
 		</td>
 	</c:if>
@@ -53,7 +54,7 @@
  <c:if test="${not empty expensesDTO.orgRelationUUID and not empty expensesDTO.clientName}">
  <td>
  	<div title="" class="tbldata-dotdot-100">
- 		<a class="btnNoBg" href="${sourceleadUrl}/clientDashboard?orgRelationUUID=${expensesDTO.orgRelationUUID}" title="${expensesDTO.clientName}">${expensesDTO.clientName}</a>
+ 		<a class="btnNoBg" href="${SourceLeadWeb_vmsUrl}/clientDashboard?orgRelationUUID=${expensesDTO.orgRelationUUID}" title="${expensesDTO.clientName}">${expensesDTO.clientName}</a>
  	</div>
  </td>
  </c:if>

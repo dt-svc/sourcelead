@@ -4,6 +4,10 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <script type="text/javascript">
 		window.onload = function () {
 			if("" != localStorage.getItem("empExpensesListGrid") && null != localStorage.getItem("empExpensesListGrid")){
@@ -252,7 +256,7 @@ if(searchData != null && searchData !='' && searchData!='undefined'){
 $("#loadingId").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 $.ajax({
     type : "POST",
-     url: sourceleadUrl+"/getExpensesApprovalList?"+tokenParamName+"="+tokenValue+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate+"&searchValue="+searchValue,      
+     url: pmsUrl+"/getExpensesApprovalList?"+tokenParamName+"="+tokenValue+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate+"&searchValue="+searchValue,      
      success :function(data) {
     	 $("#approverDataExpensesDiv").empty(); 
 		$("#approverDataExpensesDiv").append(data);
@@ -282,10 +286,10 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 		     $("#loading"+expenseId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
 		    $.ajax({
 		    type: "POST",
-		    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&approvalStatus=REJECTED"+"&rejectedReason="+(encodeMsg.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>')),       
+		    url: pmsUrl+"/saveExpenseApprovalStatusByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&approvalStatus=REJECTED"+"&rejectedReason="+(encodeMsg.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>')),       
 		    success: function(data) {
 		    	if(data.response === "SESSION_TIMEDOUT") {
-		    		location.replace(sourceleadUrl);
+		    		location.replace(pmsUrl);
 		    	 } else if (data.response === "AWKWARD") {
                         location.href = "/errorPage";
 		    	 } else if (data.response === "SUCCESS"){ 
@@ -301,7 +305,7 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 			 	    	  $("#action"+expenseId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+expenseId+"' onclick='rejectedMessage(\"rejectedMessage"+expenseId+"\");'><div class='app_error_mes' id='rejectedMessage"+expenseId+"'>"+msg+"</div></i><b class='Rname'>By :"+locationName+"</b>");
 			   	   }
 		    	}else if (result.indexOf('Sign In') !== -1) {
-  					location.replace(sourceleadUrl);
+  					location.replace(pmsUrl);
 				 }
 		      }
 		    }); 
@@ -382,10 +386,10 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 	    var rejectedReason = '' ;
 	     $.ajax({
 	    type: "POST",
-	    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
+	    url: pmsUrl+"/saveExpenseApprovalStatusByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
 		    success: function(data) {
 		    	if(data.response === "SESSION_TIMEDOUT") {
-		    		location.replace(sourceleadUrl);
+		    		location.replace(pmsUrl);
 		    	 } else if (data.response === "AWKWARD") {
                         location.href = "/errorPage";
 		    	 } else if (data.response === "SUCCESS"){  
@@ -400,7 +404,7 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 			    	 $("#action"+expenseId).html("<h3>Approved</h3><b class='Rname'>By :"+locationName+"</b>"); 
 	        	   }
 		    	}else if (result.indexOf('Sign In') !== -1) {
-  					location.replace(sourceleadUrl);
+  					location.replace(pmsUrl);
 				 }
 		    	 
 		    }
@@ -408,84 +412,6 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 }
 </script>
     
-<!-- <script>
-function prepareCategoryDivForApprovalPopUp(expenseId){
-	    var locationCode ='${SourceLeadWeb_locationCode}'; 
-	 $.ajax({
-         type : "POST",
-         url: sourceleadUrl+"/getExpensesApprovalCategoryByExpenseId?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&locationCode="+locationCode,       
-         success :function(jsonList) {
-        		//var jsonList = JSON.parse(data);
-        		var result = '';
-        		result = result +'<table>';
-        		result = result +'<thead>';
-        		result = result +'<tr>';
-        		result = result +'<th>Date</th>';
-        		result = result +'<th>Exp Category</th>';
-        		result = result +'<th>Description</th>';
-        		result = result +'<th>Amount</th>';
-        		result = result +'<th>Currency</th>';
-        		result = result +'<th>Payment Mode</th>';
-        		result = result +'</tr>';
-        		result = result +'</thead>';	
-        		result = result +'<tbody>';
-        		for(var i=0;i<jsonList.length;i++){
-            	var json = jsonList[i];
-        		result = result +'<tr>';
-        		if(json.expenseDateString != null && json.expenseDateString !='' && json.expenseDateString !='undefined'){
-           		result = result +'<td><div>'+json.expenseDateString+'</div></td>';
-           		}else{
-           		result = result +'<td><div>--</div></td>';
-           		}
-        		result = result +'<td><div class="ExpShow"><i class="fa fa-plus-square-o" aria-hidden="true"></i>Category 1</div></td>';
-        		if(json.description != null && json.description !='' && json.description !='undefined'){
-           		result = result +'<td><div class="tbldata-dotdot-me">'+json.description+'</div></td>';
-           		}else{
-           		result = result +'<td><div>--</div></td>';	
-           		}
-           		if(json.amount != null && json.amount !='' && json.amount !='undefined'){
-           		result = result +'<td><div>'+json.amount+'</div></td>';
-           		}else{
-           		result = result +'<td><div>--</div></td>';	
-           		}
-           		if(json.currencyType != null && json.currencyType !='' && json.currencyType !='undefined'){
-           		result = result +'<td><div>'+json.currencyType+'</div></td>';
-           		}else{
-           		result = result +'<td><div>--</div></td>';	
-           		}
-        		if(json.paymentMode != null && json.paymentMode !='' && json.paymentMode !='undefined'){
-        		result = result +'<td><div>'+json.paymentMode+'</div></td>';
-        		}else{
-        		result = result +'<td><div>--</div></td>';	
-        		}
-        		result = result +'</tr>';
-        		}
-        		result = result +'<tr class="ExpDe">';
-        		result = result +'<td colspan="6">';
-        		result = result +'<div class="expDetails">';
-        		result = result +'<ul>';
-        		result = result +'<li><strong>Date :</strong><span> 20/09/2017</span><div class="clearfix"></div></li>';
-        		result = result +'<li><strong>Exp Category :</strong><span> Category 1</span><div class="clearfix"></div></li>';
-        		result = result +'<li><strong>Amount :</strong><span> 20,000</span><div class="clearfix"></div></li>';
-        		result = result +'<li><strong>Purpose :</strong><span> Purpose text</span><div class="clearfix"></div></li>';
-        		result = result +'<li><strong>Description :</strong><p> Description Description Description Description</p>';
-        		result = result +'<li><strong>Currency :</strong><span> USD</span><div class="clearfix"></div></li>';
-        		result = result +'<li><strong>Payment Mode :</strong><span> Cash</span><div class="clearfix"></div></li>';
-        		result = result +'<div class="clearfix"></div>';
-        		result = result +'</li>';
-        		result = result +'<div class="clearfix"></div>';
-        		result = result +'</ul>';
-        		result = result +'</div>';
-        		result = result +'</td>';			
-        		result = result +'</tr>';						
-        		result = result +'</tbody>';
-        		result = result +'</table>';
-        		$("#expensesApprovalCategoryDiv").val('');
-           	    $("#expensesApprovalCategoryDiv").append(result);
-       }
-	 });
-}    
-</script> -->
     
  <script>
 function activeTabExpenseApproval(){
@@ -553,7 +479,6 @@ function pagination(){
 <script>
 function exportToPdf(type){
 	var temp = $("#tempVar").val();
-	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	 if(temp != null && temp != ''){ 
 		 var expenseStatus = $('#expenseStatusDivId').val();
 		 if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
@@ -567,7 +492,7 @@ function exportToPdf(type){
 			}
 		var startDate = $("#filterStartDate").val();
 		var endDate = $("#filterEndDate").val();
-		window.location.href = sourceleadUrl + "/getExpensesApprovalListForExports?&type="+type+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate;
+		window.location.href = pmsUrl + "/getExpensesApprovalListForExports?&type="+type+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate;
 	 }else{
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";

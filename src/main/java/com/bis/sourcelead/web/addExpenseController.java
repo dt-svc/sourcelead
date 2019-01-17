@@ -41,7 +41,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import aj.org.objectweb.asm.Type;
 
 @Controller
-@RequestMapping("/app")
 public class addExpenseController {
 	
 	@Value("${sourceleadUrl}")

@@ -6,6 +6,10 @@
 <script src="/resources/js/jquery.simplePagination.js"></script>
 <!-- <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script> -->
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <input type="hidden" id="tempVar" value="tempVar">
 <input type="hidden" value="${expenseDashBoardStatus}" id="expenseStatusDivId">
 <table id='example' class='display'>                
@@ -128,7 +132,7 @@ function getTableData(pageNo){
     }
 	$.ajax({
 	    type : "POST",
-	     url: sourceleadUrl+"/getExpensesList?&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue+"&userId="+userId+"&locationCode="+locationCode,
+	     url: pmsUrl+"/getExpensesList?&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue+"&userId="+userId+"&locationCode="+locationCode,
 	    	success :function(data) {
 	    	 $("#expensesListDiv").empty();
 			 $("#expensesListDiv").append(data);
