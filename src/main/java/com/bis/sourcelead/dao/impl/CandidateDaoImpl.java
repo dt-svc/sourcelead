@@ -2190,12 +2190,8 @@ public class CandidateDaoImpl implements CandidateDao {
 			Query hqlQuery = session.createQuery(listQuery);
 			globalMarketCandList = hqlQuery.setFirstResult(candidateMarketPlaceDTO.getStart())
 					.setMaxResults(candidateMarketPlaceDTO.getLength()).list();
-			// System.out.println(" after executing query result list size is
-			// :::>>"+globalMarketCandList.size());
 			Query hqlQuery1 = session.createQuery(listQueryCount);
 			countlist = hqlQuery1.list();
-			// System.out.println(" after executing query countlist
-			// :::>>"+countlist);
 			int totalCount = 0;
 			if (candidateMarketPlaceDTO != null) {
 				if (countlist != null && !countlist.isEmpty()) {
@@ -2462,10 +2458,8 @@ public class CandidateDaoImpl implements CandidateDao {
 			queryList = new ArrayList<>();
 		} else {
 			String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = 'Active' and marketplace.orgLocationId.id <> :candidateOrgLocId and marketplace.candidateId.isSharedInMarketplace = 'Y' and marketplace.candidateId.email not in (select Email from CandidateMarketCart cart where cart.targetOrgLocationId = :candidateOrgLocId and cart.cartStatus = 'Purchased')";
-				//System.out.println(listQuery+query1+query2);
 			//Query queryObject = session.createQuery(listQuery+query1+query2).setParameter("candidateOrgLocId", orgId);
 			//if(searchCandidateIds.length != 0 && !searchCandidateIds[0].equals("undefined") ){
-			//System.out.println(listQuery + query1 + query2);
 			Query queryObject = session.createQuery(listQuery + query1 + query2).setParameter("candidateOrgLocId",
 					orgId);
 			
@@ -2954,12 +2948,10 @@ public class CandidateDaoImpl implements CandidateDao {
 			        if(pair.getKey().equals("fromDate")){
 			        	qeury.setDate("startDate", dateValue.get("fromDate"));
 			        	q.setDate("startDate", dateValue.get("fromDate"));
-			        	System.out.println("purchase start date "+dateValue.get("fromDate"));
 			        }
 			        if(pair.getKey().equals("toDate")){
 			        	qeury.setDate("endDate", dateValue.get("toDate"));
 			        	q.setDate("endDate", dateValue.get("toDate"));
-			        	System.out.println("purchase end date "+dateValue.get("toDate"));
 			        }
 			    }
 			}

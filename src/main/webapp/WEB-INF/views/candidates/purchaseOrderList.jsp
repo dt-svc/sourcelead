@@ -185,10 +185,6 @@ $(document).ready(function(){
 	function goToSalesOrderList(){
 		location.href = "${appPath}/SalesOrderList";
 	}
-	function refreshPage(){
-		$("#purchaseOrderDataTableSearch").val('');
-		getPurchaseOrderList();
-	}
 	function goToWalletList(){
 	    location.href = "${appPath}/walletList";
 	}
