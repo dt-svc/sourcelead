@@ -25,7 +25,7 @@
   </section>
   <div class="clearfix">
 	<ul class="project-tabs-menu projecttabs-custom clearfix">
-            <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
+            <li id="" ><a href="/ats/candidatesList">Candidate List</a></li>
             <li id="" class="current"><a href="javascript:void(0)" >Marketplace</a></li>
             <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
             <li id=""><a href="javascript:void(0)" onclick="javascript:goToCartList();">Cart</a></li>
@@ -56,7 +56,7 @@
     </section>
   <script>
   function goToCandidateList(){
-		location.href = "${appPath}/candidatesList";
+		location.href = "ats/candidatesList";
 	}
   
   </script>
@@ -87,7 +87,7 @@
 
 	     $("#dynamicGlobalMarketCandidateViewDiv").html(result);
 	     
-         var sourceleadUrl = '${sourceleadUrl}';
+         var sourceleadUrl = '${SourceLeadWeb_atsUrl}';
 	     
 	     var searchValue = $("#globalMarketSearh").val();
 	     searchValue = searchValue ? searchValue : "";
@@ -460,20 +460,20 @@ function cardModel() {
 	$("#cardDesign").show();
 }
 function goToGlobalMarketPlaceList(){
-	location.href = "${appPath}/globalMarketplacePage";
+	location.href = "/ats/globalMarketplacePage";
 }
 function goToCartList(){
-	location.href = "${appPath}/candidateMarketplaceCart";
+	location.href = "/ats/candidateMarketplaceCart";
 }
 function goToPurchaseOrderList(){
-	location.href ="${appPath}/PurchaseOrderList";
+	location.href ="/ats/PurchaseOrderList";
 	}
 function goToSalesOrderList(){
-	location.href = "${appPath}/SalesOrderList";
+	location.href = "/ats/SalesOrderList";
 }
 
 function goToWalletList(){
-    location.href = "${appPath}/walletList";
+    location.href = "/ats/walletList";
 }
 function cancelMarketPlace(){
 	$("#remove_marketPlace_pop, .project_inn_mask").fadeOut();

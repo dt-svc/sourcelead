@@ -3162,27 +3162,27 @@ $(".overIcon, .newActPop").click(function(e){
 		}); 
 	}  */
 function goToCandidateList(){
-	location.href = "/candidatesList";
+	location.href = "/ats/candidatesList";
 }
 	
 function goToGlobalMarketPlaceList(){
-	location.href = "/globalMarketplacePage";
+	location.href = "/ats/globalMarketplacePage";
 }
 
 function goToOrgMarketPlaceList(){
-	location.href = "/OrgMarketplace";
+	location.href = "/ats/OrgMarketplace";
 }
 function goToPurchaseOrderList(){
-	location.href ="/PurchaseOrderList";
+	location.href ="/ats/PurchaseOrderList";
 	}
 function goToSalesOrderList(){
-	location.href = "/SalesOrderList";
+	location.href = "/ats/SalesOrderList";
 }
 function goToCartList(){
-	location.href = "/candidateMarketplaceCart";
+	location.href = "/ats/candidateMarketplaceCart";
 }
 function goToWalletList(){
-	location.href = "/walletList";
+	location.href = "/ats/walletList";
 }
 
 </script> 
