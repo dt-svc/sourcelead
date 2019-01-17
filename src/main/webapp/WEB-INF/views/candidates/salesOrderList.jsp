@@ -382,8 +382,7 @@
 	    location.href = "${appPath}/walletList";
 	}
 	function refreshPage(){
-		$("#searchByValue").val('');
-		getDynamicSalesOrderList();
+		location.reload();
 	}
   </script>
   <script>
