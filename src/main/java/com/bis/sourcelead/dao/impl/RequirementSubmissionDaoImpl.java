@@ -4367,16 +4367,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			String betweenDateQuery = "";
 			String resultQuery = "";
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "select count(*) from Requirement requirement where requirement.id = :requirementID and (requirement.managerUserId = :userId OR requirement.primaryRecruiterUserId = :userId)";
+			String query = "select count(*) from Requirement requirement where (requirement.managerUserId = :userId OR requirement.primaryRecruiterUserId = :userId) and  DATE_FORMAT(requirement.createdDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate";
 			
-			if (fromDate != null && toDate != null) {
-				betweenDateQuery = " and  date(requirement.createdDate) BETWEEN :fromDate AND :toDate ";
-			}
-			resultQuery = query.concat(betweenDateQuery);
-		     List<Long> appliedCount = session.createQuery(resultQuery).setLong("requirementID", requirementID.intValue()).setLong("userId", userId.intValue())
-		    		 .setDate("fromDate", fromDate)
-		    		 .setDate("toDate", toDate).list();
-			
+		     List<Long> appliedCount = session.createQuery(query).setLong("userId", userId.intValue()).setDate("fromDate", fromDate).setDate("toDate", toDate).list();
 			 
 			 if(appliedCount != null && !appliedCount.isEmpty()){
 					count = appliedCount.get(0).intValue();
@@ -4406,7 +4399,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			String query = "select count(*) from RequirementAssignTo reqAssign where reqAssign.assignUserId = :userId";
 			
 			if (fromDate != null && toDate != null) {
-				betweenDateQuery = " and date(reqAssign.createdDate) BETWEEN :fromDate AND :toDate ";
+				betweenDateQuery = " and DATE_FORMAT(reqAssign.createdDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate ";
 			}
 			resultQuery = query.concat(betweenDateQuery);
 		     List<Long> appliedCount = session.createQuery(resultQuery).setLong("userId", userId.intValue())
@@ -4442,7 +4435,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				String query = "select count(*) from RequirementSubmission reqSub where (reqSub.submissionStatus = 'OFFERMADE' or reqSub.submissionStatus='OFFERACCEPTED' or reqSub.previousSubmissionStatus='OFFERMADE' or reqSub.previousSubmissionStatus='OFFERACCEPTED') and reqSub.createdBy = :userCode ";
 				
 				if (fromDate != null && toDate != null) {
-					betweenDateQuery = " and date(reqSub.updatedDate) BETWEEN :fromDate AND :toDate ";
+					betweenDateQuery = " and DATE_FORMAT(reqSub.updatedDate,'%Y-%m-%d') BETWEEN :fromDate AND :toDate ";
 				}
 				resultQuery = query.concat(betweenDateQuery);
 			     List<Long> appliedCount = session.createQuery(resultQuery).setString("userCode", userCode)

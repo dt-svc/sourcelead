@@ -1569,6 +1569,7 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 			orgRelations.setInitiatorLevel("Tier-5");
 			orgRelations.setResponderLevel("Tier-5");
 			orgRelations.setStatus("ACTIVE");
+			orgRelations.setGenerateInvoice("Bulk");
 			orgRelations.setCreatedBy(user.getUserCode());
 			orgRelations.setCreatedDate(new Date());
 			orgRelations.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());

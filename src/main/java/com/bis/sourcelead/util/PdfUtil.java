@@ -2234,7 +2234,7 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 			 userArray[cellCount++] = "--";
 		 }
 		   if(lrv.getRequirementCount() != null){
-			   userArray[cellCount++] = lrv.getRequirementCount().toString();
+			   userArray[cellCount++] = lrv.getTotalRequirementCount().toString();
 		   }else{
 			   userArray[cellCount++] = "0";
 		   }
