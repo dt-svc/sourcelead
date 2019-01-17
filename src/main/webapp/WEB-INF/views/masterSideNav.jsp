@@ -38,7 +38,7 @@
                     </c:if>
 	                <c:if test="${userTabs.tabName == 'Jobs'}"> 
 	                <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}"> 
-	                   <li class="${sessionData.nav == 'Requirement' ? 'navActive' : ''}"><a href="<c:url value='/ats/jobs'/>" title="Jobs"><span class="navIcons jobIcon"></span><b>Jobs</b></a></li>
+	                   <li class="${sessionData.nav == 'Requirement' ? 'navActive' : ''}"><a href="/app/jobs" title="Jobs"><span class="navIcons jobIcon"></span><b>Jobs</b></a></li>
 	                </c:if> 
 	                
 	                <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER' }">
@@ -50,7 +50,7 @@
 	                
 	                <c:if test="${userTabs.tabName == 'Candidates'}">
 	                 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-	                   <li class="${sessionData.nav == 'Candidates' ? 'navActive' : ''}"><a href="<c:url value='/ats/candidatesList'/>" title="Candidates"><span class="navIcons canIcon"></span><b>Candidates</b></a></li>
+	                   <li class="${sessionData.nav == 'Candidates' ? 'navActive' : ''}"><a href="/app/candidatesList" title="Candidates"><span class="navIcons canIcon"></span><b>Candidates</b></a></li>
 	                 </c:if>
 	                 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
 	                   <li class="${sessionData.nav == 'Candidates' ? 'navActive' : ''}"><a href="<c:url value='/ats/candidatesList'/>" title="Candidates"><span class="navIcons canIcon"></span><b>Candidates</b></a></li>
@@ -81,15 +81,15 @@
 							  <c:if test="${sessionData.nav == 'TimeSheet' || sessionData.nav == 'TimeSheetApproval'}">
 							   <c:set var ="timesheetTabExist" scope="session" value="Y"/> 
 							  <ul class="collapses" style="display: none">
-							  	    <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/timesheet'/>" title="My TimeSheets"><i class="fa fa-chevron-right"></i> Self</a></li>
-									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/timesheetApproval'/>" title="TimeSheet Approval"><i class="fa fa-chevron-right"></i> Employees</a></li>
+							  	    <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/pms/timesheet'/>" title="My TimeSheets"><i class="fa fa-chevron-right"></i> Self</a></li>
+									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='/pms/timesheetApproval'/>" title="TimeSheet Approval"><i class="fa fa-chevron-right"></i> Employees</a></li>
 							  </ul>
 							  </c:if>
 							  <c:if test="${sessionData.nav != 'TimeSheet' || sessionData.nav != 'TimeSheetApproval'}">
 							  <c:set var ="timesheetTabExist" scope="session" value="Y"/>
 							  <ul class="collapses" style="display: none">
-							  		<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/timesheet'/>" title="My TimeSheets"><i class="fa fa-chevron-right"></i> Self</a></li>
-									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/timesheetApproval'/>" title="TimeSheet Approval"><i class="fa fa-chevron-right"></i> Employees</a></li> 
+							  		<li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/pms/timesheet'/>" title="My TimeSheets"><i class="fa fa-chevron-right"></i> Self</a></li>
+									<li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='/pms/timesheetApproval'/>" title="TimeSheet Approval"><i class="fa fa-chevron-right"></i> Employees</a></li> 
 							  </ul>
 							  </c:if>
 						  </li>
@@ -97,12 +97,12 @@
 	                 </c:if>
 	                 <c:if test="${userTabs.tabName == 'My Timesheets'}">
 	                 <sec:authorize access="hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS') && !hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')">
-	                       <li class="${sessionData.nav == 'TimeSheet' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/timesheet'/>"><span class="navIcons timIcon"></span><b>TimeSheets</b></a></li>
+	                       <li class="${sessionData.nav == 'TimeSheet' ? 'navActive' : ''}"><a href="<c:url value='/pms/timesheet'/>"><span class="navIcons timIcon"></span><b>TimeSheets</b></a></li>
 	                 </sec:authorize>
 	                 </c:if>
 	                 <c:if test="${userTabs.tabName == 'Timesheet Approval'}">
 	                 <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS') && hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')">
-	                       <li class="${sessionData.nav == 'TimeSheetApproval' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/timesheetApproval'/>"><span class="navIcons timIcon"></span><b>TimeSheets</b></a></li>
+	                       <li class="${sessionData.nav == 'TimeSheetApproval' ? 'navActive' : ''}"><a href="<c:url value='/pms/timesheetApproval'/>"><span class="navIcons timIcon"></span><b>TimeSheets</b></a></li>
 	                 </sec:authorize>
 	                 </c:if>
 	                 
@@ -190,15 +190,15 @@
 						   
 						   <c:if test="${sessionData.nav == 'My Expenses' || sessionData.nav == 'Expenses Approval'}">
                               <ul class="collapses" style="display: none">
-                                  <li class="${sessionData.nav == 'My Expenses' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/expenses'/>" title="My Expenses"><i class="fa fa-chevron-right"></i> Self</a></li>
-                                  <li class="${sessionData.nav == 'Expenses Approval' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/expensesApprovalList'/>" title="Expenses Approval"><i class="fa fa-chevron-right"></i> Employees</a></li>
+                                  <li class="${sessionData.nav == 'My Expenses' ? 'treview-active' : ''}"><a href="/pms/expenses" title="My Expenses"><i class="fa fa-chevron-right"></i> Self</a></li>
+                                  <li class="${sessionData.nav == 'Expenses Approval' ? 'treview-active' : ''}"><a href="/pms/expensesApprovalList" title="Expenses Approval"><i class="fa fa-chevron-right"></i> Employees</a></li>
                               </ul>
                            </c:if>
                               
                            <c:if test="${sessionData.nav != 'My Expenses' || sessionData.nav != 'Expenses Approval'}">
                            <ul class="collapses" style="display: none">
-                               <li class="${sessionData.nav == 'My Expenses' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/expenses'/>" title="My Expenses"><i class="fa fa-chevron-right"></i> Self</a></li>
-                               <li class="${sessionData.nav == 'Expenses Approval' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/expensesApprovalList'/>" title="Expenses Approval"><i class="fa fa-chevron-right"></i> Employees</a></li>
+                               <li class="${sessionData.nav == 'My Expenses' ? 'treview-active' : ''}"><a href="/pms/expenses" title="My Expenses"><i class="fa fa-chevron-right"></i> Self</a></li>
+                               <li class="${sessionData.nav == 'Expenses Approval' ? 'treview-active' : ''}"><a href="/pms/expensesApprovalList" title="Expenses Approval"><i class="fa fa-chevron-right"></i> Employees</a></li>
                            </ul>
                            </c:if>
                               
@@ -206,11 +206,11 @@
 	                 </c:if>
 	                 
 	                 <c:if test="${SourceLeadWeb_expensesTabCount < 2 && userTabs.tabName == 'My Expenses'}">
-	                   <li class="${sessionData.nav == 'My Expenses' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/expenses'/>" title="My Expenses"><span class="navIcons expIcon"></span><b>Expenses</b></a></li>
+	                   <li class="${sessionData.nav == 'My Expenses' ? 'navActive' : ''}"><a href="/pms/expenses" title="My Expenses"><span class="navIcons expIcon"></span><b>Expenses</b></a></li>
 	                 </c:if>
 	                 
 	                 <c:if test="${SourceLeadWeb_expensesTabCount < 2 && userTabs.tabName == 'Expenses Approval'}">
-	                 <li class="${sessionData.nav == 'Expenses Approval' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/expensesApprovalList'/>" title="Expenses Approval"><span class="navIcons expIcon"></span><b>Expenses Approval</b></a></li>
+	                 <li class="${sessionData.nav == 'Expenses Approval' ? 'navActive' : ''}"><a href="/pms/expensesApprovalList" title="Expenses Approval"><span class="navIcons expIcon"></span><b>Expenses Approval</b></a></li>
 	                 </c:if>
 	                 
 	                 <c:if test="${userTabs.tabName == 'Asset Management'}">

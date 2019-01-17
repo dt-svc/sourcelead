@@ -20,15 +20,18 @@
  </style>
  
     <div id="editBudgetRequestPopUpid"></div>
+    
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
  
  <script>
  function getBudgetRequestListCount(){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var approverUserId = '${SourceLeadWeb_user.id}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getBudgetRequestListCount?${_csrf.parameterName}=${_csrf.token}&approverUserId="+approverUserId+"&orgLocationId="+orgLocationId, 
+	        url: pmsUrl+"/getBudgetRequestListCount?${_csrf.parameterName}=${_csrf.token}&approverUserId="+approverUserId+"&orgLocationId="+orgLocationId, 
 	        success: function(json) {
 	        	$("#budgetWaitingCount").html(json.waitingCount);
 	        	$("#budgetApprovedCount").html(json.approvedCount);
@@ -51,7 +54,6 @@ function getBudgetRequestList(requestType){
 	  $("#newResourceDiv").removeClass("active");
  	  $("#budgetDiv").addClass("active");
 	  
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var approverUserId = '${SourceLeadWeb_user.id}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	
@@ -67,7 +69,7 @@ function getBudgetRequestList(requestType){
 	  }  
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getBudgetRequsetListByBudgetStatusAndOrgLocationId?${_csrf.parameterName}=${_csrf.token}&approverUserId="+approverUserId+"&orgLocationId="+orgLocationId+"&requestType="+requestType, 
+	        url: pmsUrl+"/getBudgetRequsetListByBudgetStatusAndOrgLocationId?${_csrf.parameterName}=${_csrf.token}&approverUserId="+approverUserId+"&orgLocationId="+orgLocationId+"&requestType="+requestType, 
 	        success: function(json) {
 	        	var result = "";
 	        	
@@ -226,11 +228,10 @@ function rejectedMessage(local){
 	}
 	
 function acceptBudgetRequset(budgetRequestedId,requestType){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var userId = '${SourceLeadWeb_user.id}';
 	 $.ajax({
 				type : "POST",
-				url : sourceleadUrl+"/acceptBudgetRequest?${_csrf.parameterName}=${_csrf.token}&budgetRequestedId="+budgetRequestedId+"&userId="+userId,
+				url : pmsUrl+"/acceptBudgetRequest?${_csrf.parameterName}=${_csrf.token}&budgetRequestedId="+budgetRequestedId+"&userId="+userId,
 				success : function(result) {
 					getBudgetRequestList(requestType);
 					getBudgetRequestListCount();
@@ -261,14 +262,13 @@ function cancelTermination(){
 }
 function saveBudgetReason(budgetRequestedId,requestType){
 	if ($('#deleteBudget_form').validate(false, validationSettings)) {
-	var sourceleadUrl = '${sourceleadUrl}';
      $("#delete_budget").attr("disabled", "disabled");
 	 $("#delete_budget").attr("disabled", "disabled");
 	 var formData = getFormData("deleteBudget_form");
 	 $.ajax({
 				type : "POST",
 				data :formData,
-				url : sourceleadUrl+"/saveBudgetRequestReason?${_csrf.parameterName}=${_csrf.token}",
+				url : pmsUrl+"/saveBudgetRequestReason?${_csrf.parameterName}=${_csrf.token}",
 				success : function(result) {
 					$("#popUp").empty();
 					$(".project_inn_mask").fadeOut(200);
@@ -287,10 +287,9 @@ return true;
 });  */
 
 function editBudgetrequest(budgetRequestedId,requestType){
-	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
 				type : "POST",
-				url : sourceleadUrl+"/getBudgetRequestDetailsById?${_csrf.parameterName}=${_csrf.token}&budgetRequestedId="+budgetRequestedId,
+				url : pmsUrl+"/getBudgetRequestDetailsById?${_csrf.parameterName}=${_csrf.token}&budgetRequestedId="+budgetRequestedId,
 				success : function(json) {
 					var result = "";
 					result = result + '	<div class="budgetModalpop"> <i class="fa fa-close close-div" onClick="editCloseDiv();"></i>';
@@ -399,14 +398,13 @@ function onholdBudgetRequaet(budgetRequestedId,requestType){
 	}
 function saveOnHoldBudgetReason(requestType){
 	if ($('#onHoldBudget_form').validate(false, validationSettings)) {
-	var sourceleadUrl = '${sourceleadUrl}';
      $("#onHold_budget").attr("disabled", "disabled");
 	 $("#onHold_budget").attr("disabled", "disabled");
 	 var formData = getFormData("onHoldBudget_form");
 	 $.ajax({
 				type : "POST",
 				data :formData,
-				url : sourceleadUrl+"/onHoldBudgetRequest?${_csrf.parameterName}=${_csrf.token}",
+				url : pmsUrl+"/onHoldBudgetRequest?${_csrf.parameterName}=${_csrf.token}",
 				success : function(result) {
 					$("#popUp").empty();
 	   			 	//$(".project_inn_mask").fadeOut(200);
@@ -434,14 +432,13 @@ function saveBudgetRequest(requestType){
 			scrollToTopOnError : true,
 		}; 
 	 if ($('#budgetRequest-form').validate(false, validationSettings)) {
-			 var sourceleadUrl = '${sourceleadUrl}';
 			 $("#save_budget").attr("disabled", "disabled");
 			 $("#save_budget").attr("disabled", "disabled");
 			 var formData = getFormData("budgetRequest-form");
 			 $.ajax({
 						type : "POST",
 						data :formData,
-						url : sourceleadUrl+"/saveBudgetRequest?${_csrf.parameterName}=${_csrf.token}",
+						url : pmsUrl+"/saveBudgetRequest?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
 							getBudgetRequestList(requestType);
 							getBudgetRequestListCount();
@@ -478,11 +475,10 @@ function budgetRequsetPagination(){
 </script>
 <script>
 function getApproversList(approverUserId){
-var sourceleadUrl ='${sourceleadUrl}';
 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	$.ajax({
 	    	type: "GET",
-	    	 url: sourceleadUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+	    	 url: pmsUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
 	    		success: function(json) {
 	     		var output = "";
 	     			output = output + "<option value=''>--Select Approver--</option>";
