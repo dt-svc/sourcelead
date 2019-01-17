@@ -1826,8 +1826,9 @@ $(document).ready(function(){
 <script>
 function updateMarketplaceCartCountAndPrice(){
 	var totalPriceInCurrency;
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	$.ajax({
-		 	url: sourceleadUrl + "/updateMarketplaceCartCountAndPrice",
+		 	url: atsUrl + "/updateMarketplaceCartCountAndPrice",
 	        type: 'GET',
 	        success: function (object) {
 	        	if(object != null){
