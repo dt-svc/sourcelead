@@ -807,4 +807,73 @@ public class IndianPayrollRestController {
 				}
 			}
 	}
+    
+    
+    
+    
+    @RequestMapping(value = { "app/indPayrollBankTranseferReport","app/rest/indPayrollBankTranseferReport" }, method = RequestMethod.POST)
+   	@ResponseBody
+   	public ResponseList<IndEmployeePayrollDTO> indPayrollBankTranseferReport(IndEmployeePayrollDTO indEmployeePayrollDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+   	{
+   		ResponseList<IndEmployeePayrollDTO> responseList = new ResponseList<>();
+   		try {
+   			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+   			if (orgLocations != null) {
+   				String[] tableColumns = {"empId", "empName", "department", "", "", "", "", "", ""};
+   			    int sortColumnIndex = 1;		 //by default sorting using updated date
+   				String sortColumnOrder = "asc";  //by default descending order
+   				if(indEmployeePayrollDTO.getOrder() != null && !indEmployeePayrollDTO.getOrder().isEmpty()) {
+   					sortColumnIndex = Integer.parseInt(indEmployeePayrollDTO.getOrder().get(0).get("column"));
+   					sortColumnOrder = indEmployeePayrollDTO.getOrder().get(0).get("dir");
+   				}
+   				indEmployeePayrollDTO.setSortColumn(tableColumns[sortColumnIndex]);
+   				indEmployeePayrollDTO.setSortOrder(sortColumnOrder);
+   				
+   				ResponseList<IndEmployeePayroll> payResponseList = indPaysheetFrequencyService.getPayrollRegisterReports(indEmployeePayrollDTO,orgLocations);
+   				List<IndEmployeePayrollDTO> indEmployeePayrollList = new ArrayList<>();
+   				for(IndEmployeePayroll iepdt :payResponseList.getData()) {
+   					IndEmployeePayrollDTO dto = new IndEmployeePayrollDTO();
+   					dto.setEmployeeid(iepdt.getEmployee().getEmployeeId());
+   					dto.setEmployeeName(iepdt.getCandidate().getFullName());
+   					dto.setDepartmentName(iepdt.getEmployee().getDepartmentId().getDepartmentName());
+   					BigDecimal currentHours = new BigDecimal("0");
+   					if(iepdt.getRegularHours() != null) {
+   						currentHours.add(new BigDecimal(iepdt.getRegularHours()));
+   					}
+   					if(iepdt.getOverTimeHours() != null) {
+   						currentHours.add(new BigDecimal(iepdt.getOverTimeHours()));
+   					}
+   					dto.setCurrentHours(currentHours);
+   					dto.setGrossPay(iepdt.getGrossPay());
+   					dto.setDeducationAmount(iepdt.getGrossPay().subtract(iepdt.getNetPay()));
+   					dto.setNetPay(iepdt.getNetPay());
+   					
+   					List<IndEmployeePayroll> ytdList = indPaysheetFrequencyService.getYTDIndEmployeePayrollList(iepdt.getCandidate().getId(), orgLocations.getStartMonth());
+   					if(ytdList != null && ytdList.size() > 0) {
+   						double ytdPT = ytdList.stream().mapToDouble(ap->ap.getProfessionalTax().doubleValue()).sum();
+   						double ytdTDS = ytdList.stream().mapToDouble(ap->ap.getTds().doubleValue()).sum();
+   						double ytdNetPay = ytdList.stream().mapToDouble(ap->ap.getNetPay().doubleValue()).sum();
+   						dto.setYtdTaxes(new BigDecimal(ytdPT).add(new BigDecimal(ytdTDS)));
+   						dto.setYtdNetPay(new BigDecimal(ytdNetPay));
+   					}else {
+   						dto.setYtdTaxes(new BigDecimal(0.00));
+   						dto.setYtdNetPay(new BigDecimal(0.00));
+   					}
+   					indEmployeePayrollList.add(dto);
+   				}
+   				responseList.setData(indEmployeePayrollList);
+   				responseList.setResponse(Result.SUCCESS.name());
+   				responseList.setResponseMessage(Result.SUCCESS.getValue());
+   			}else{
+   				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+   				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+   			}
+   		} catch (Exception e) {
+   			e.printStackTrace();
+   			responseList.setResponse(Result.AWKWARD.name());
+   			responseList.setResponseMessage(Result.AWKWARD.getValue());
+   		}
+   		return responseList;
+   	}
+       
 }
