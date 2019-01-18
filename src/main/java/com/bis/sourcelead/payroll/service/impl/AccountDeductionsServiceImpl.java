@@ -428,7 +428,7 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 								 try {
 									 double payRate = Double.parseDouble(i.getPayRate());
 									 double qty = Double.parseDouble(i.getQty());
-									 billRateIncome = billRateIncome + (payRate * qty);
+									 payRateIncome = payRateIncome + (payRate * qty);
 								} catch (Exception e) {
 									System.out.println(i.getPayRate());
 									System.out.println(i.getQty());
@@ -437,7 +437,7 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 							 }
 						 }
 						 
-						 payRateIncome = invoiceDataList.stream().filter(i->i.getPayRate() !=null && "Paid".equalsIgnoreCase(i.getArPaid())).mapToDouble(i->Double.parseDouble(i.getPayRate())*Double.parseDouble(i.getQty())).sum();
+//						 payRateIncome = invoiceDataList.stream().filter(i->i.getPayRate() !=null && "Paid".equalsIgnoreCase(i.getArPaid())).mapToDouble(i->Double.parseDouble(i.getPayRate())*Double.parseDouble(i.getQty())).sum();
 						 due = invoiceDataList.stream().filter(i->(i.getAmount() !=null && "Unpaid".equalsIgnoreCase(i.getArPaid()))).mapToDouble(i-> Double.parseDouble(i.getPayRate())*Double.parseDouble(i.getQty())).sum();
 					 }else if("Admin".equalsIgnoreCase(loginUserRole)){
 						 
@@ -455,7 +455,7 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 							 }
 						 }
 						 
-						 billRateIncome = invoiceDataList.stream().filter(i->(i.getAmount() !=null && "Paid".equalsIgnoreCase(i.getArPaid()))).mapToDouble(i-> Double.parseDouble(i.getRate())*Double.parseDouble(i.getQty())).sum();
+//						 billRateIncome = invoiceDataList.stream().filter(i->(i.getAmount() !=null && "Paid".equalsIgnoreCase(i.getArPaid()))).mapToDouble(i-> Double.parseDouble(i.getRate())*Double.parseDouble(i.getQty())).sum();
 //						 payRateIncome = invoiceDataList.stream().filter(i->i.getPayRate() !=null && "Paid".equalsIgnoreCase(i.getArPaid())).mapToDouble(i->Double.parseDouble(i.getPayRate())*Double.parseDouble(i.getQty())).sum();
 						 // we are calculating admin due amount
 						 due = invoiceDataList.stream().filter(i->(i.getAmount() !=null && "Unpaid".equalsIgnoreCase(i.getArPaid()))).mapToDouble(i-> Double.parseDouble(i.getRate())*Double.parseDouble(i.getQty())).sum();
