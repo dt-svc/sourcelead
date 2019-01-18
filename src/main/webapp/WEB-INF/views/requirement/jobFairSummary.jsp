@@ -228,7 +228,11 @@
 			                     if(orgATS == 'Y') {
 			    	             	if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined') {
 			    	                    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
-			    	                    	result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+opt.orgRelationUUID+'" title="'+opt.clientName+'">'+opt.clientName+'</a></div></td>';
+			    	                    	if(opt.clientId != null) {
+				    	                    	result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+opt.clientId.uuid+'" title="'+opt.clientName+'">'+opt.clientName+'</a></div></td>';
+			    	                    	} else {
+				    	                    	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.clientName+'</div></td>';
+			    	                    	}
 			    		           	    '</sec:authorize>';
 			      	         
 			    			           	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';

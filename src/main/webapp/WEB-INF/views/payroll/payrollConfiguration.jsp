@@ -9,7 +9,7 @@
       <div class="pull-left">
         <h2>Payroll Configure</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a> &raquo; Payroll Configure</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; Payroll Configure</div>
     </section>
     <div class="clearfix"></div>
     <div class="leaveConfigure clerfix">

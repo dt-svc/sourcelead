@@ -644,6 +644,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 			return model;
 		}
 	 
+
 		@RequestMapping(value = "/availableAssociatesReport")
 		public ModelAndView availableAassociatesReport(HttpServletRequest request,HttpServletResponse response) throws Exception{
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -658,4 +659,23 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		}
 	
 		
+
+		
+		 @RequestMapping(value = "/indPayrollReportList")
+			public ModelAndView indPayrollReportList(HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 ModelAndView model = new ModelAndView();
+			 model.addObject("sourceleadUrl", sourceleadUrl);
+			 model.setViewName("reports/indPayrollReportList");
+			 return model;
+		 }
+		 
+		 
+		 @RequestMapping(value = "/indPayrollRegisterReport")
+			public ModelAndView indPayrollRegisterReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 ModelAndView model = new ModelAndView();
+			 model.addObject("sourceleadUrl", sourceleadUrl);
+			 model.setViewName("reports/indPayrollRegisterReport");
+			 return model;
+		 }
+
 }

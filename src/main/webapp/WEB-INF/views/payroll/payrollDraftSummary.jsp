@@ -87,7 +87,7 @@ function approvePayrollTab(){
 		<c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
 		<li><a href="#" class="btn btn-default ml mr" id="Confirm" onclick="confirmPayroll('FROMDRAFT');">Confirm</a></li>
 		</c:if>
-		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList?&redirect=draft'">Cancel</a></li>
+		<li><a class="btn btn-default" href="<c:url value='${appPath}/payrollList?&redirect=draft'/>">Cancel</a></li>
 	</ul>
 	</div>
 <div class="clearfix"></div>
@@ -241,7 +241,7 @@ function sendPayrollForApprover(){
           } else if (result.response === "AWKWARD") {
               location.href = "/errorPage";
           } else if (result.response === "SUCCESS") {
-        	  location.replace(sourceleadUrl+ "/payrollList"); 
+        	  location.replace(sourceleadUrl+ "/payrollList?&redirect=history"); 
         	  $("#msgDiv").html("Submited Successfully");
           } else if (result.indexOf('Sign In') !== -1) {
             location.replace(sourceleadUrl);
@@ -257,6 +257,7 @@ function sendPayrollForApprover(){
 function confirmPayroll(fromState){
 	$("#cativeId").attr("onClick","approvePayrollTab();");
 	$("#reviewId").removeClass('current'); 
+	$("#draftApproveDiv").removeClass('disabled');
 	$("#cativeId").addClass('current'); 
 	
 	$("#reviewPayrollDiv").hide();

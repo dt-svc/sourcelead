@@ -2867,8 +2867,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				marketPlaceDTO.setMarketPrice(marketPlace.getMarketPrice());
 				marketPlaceDTO.setMarketplaceUUID(marketPlace.getMarketplaceUUID());
 				marketPlaceDTO.setProfilePercentage(marketPlace.getCandidateId().getCandidateProfilePercentage());
-				
-				int count = candidateDao.getMarketCartStatusByMarketIdOrgId(marketPlace.getId(), marketPlace.getOrgLocationId().getId());
+				int count = candidateDao.getMarketCartStatusByMarketIdOrgId(marketPlace.getId(), orgLocations.getId());
 				if(count != 0){
 					marketPlaceDTO.setMarketCartStatus(Constants.ADDED_CART);
 				}

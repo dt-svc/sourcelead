@@ -4102,7 +4102,7 @@ box-shadow: 0 8px 6px -6px rgba(0,0,0,0.2);
 	margin: 0; text-align: left;
 }
 .paddingBtm {
-	padding-bottom: 8px;
+	padding-bottom: 8px !important;
 }	
 #statusDropDown {
 	position: relative; top:5px;
@@ -8547,7 +8547,7 @@ table.tableNetpay thead > tr >  th {
 .radioStyles [type="radio"]:checked + label:before,
 .radioStyles [type="radio"]:not(:checked) + label:before {
     content: ''; position: absolute; left: 0; top: 0; width: 18px; height: 18px;
-    border: 1px solid #ddd; border-radius: 100%; background: #fff;
+    border: 1px solid #848484; border-radius: 100%; background: #fff;
 }
 .radioStyles [type="radio"]:checked + label:after,
 .radioStyles [type="radio"]:not(:checked) + label:after {
@@ -9441,6 +9441,18 @@ background: url("../images/printIC.svg"); background-repeat: no-repeat; backgrou
 .downloadIC {
 background: url("../images/download.svg"); background-repeat: no-repeat; background-size: 30px; background-position: center; width:25px; text-align: center; display: block; height: 32px;
 }
+.payrollSVG {
+background: url("../images/payroll.svg"); background-repeat: no-repeat; background-size: 90px; background-position: 0 -17px; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.projectAttributesSVG {
+background: url("../images/project.svg"); background-repeat: no-repeat; background-size: 90px; background-position: 0 -17px; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.reminderconfigSVG {
+background: url("../images/head-icons.svg"); background-repeat: no-repeat; background-size: 410px; background-position: -240px -4px; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.guestactionroleSVG {
+background: url("../images/candidates.svg"); background-repeat: no-repeat; background-size: 90px; background-position: 0 -17px; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
 .settingConfigure .btn {
 	padding: 1px 8px; background: #fbfbfb;
 }
@@ -9578,6 +9590,13 @@ input[type=range]::-moz-range-track {
 .descriptionTxtarea .note-editable {
   min-height: 150px; max-height: 250px;
 }
+
+.media-object {
+    width: 55px; height: 65px; margin: 5px 0px 0px 0px;
+}
+.mediaObject {
+    width: 45px; height: 45px; margin: 5px 0px 0px 0px; position: absolute; right: 10%; top: 0px;
+}
 .tdVmiddle tr td {
 	vertical-align: middle !important;
 }
@@ -9710,6 +9729,12 @@ background-color: #ededed; color: #333; font-weight: 600;
 }
 .calenderView_col-md-3 .col-md-3 {
 min-height: 260px;
+}
+.tableNoborder table thead, .tableNoborder table thead th, .tableNoborder table tbody td {
+	border: none;
+}
+.tableNoborder table tfoot {
+	background-color: #f5f5f5;
 }
 @media (max-width: 320px) {
 .uasrch-selectpicker {
@@ -10139,9 +10164,6 @@ transition: all ease-in-out 0.5s; display: none;
 .level-second.level-second-active {
 display: block;
 }
-
-
-
 .browseProgress {
         position: absolute; width: 100%; height: 100%; z-index: 100;
         border-radius: 3px; display:none;

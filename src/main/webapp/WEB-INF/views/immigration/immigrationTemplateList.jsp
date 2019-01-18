@@ -128,7 +128,7 @@
 						<span>
 						<div class="dropdown mr">
 					<span class="dropdown-toggle" id="" data-toggle="dropdown" aria-expanded="false">
-						<i class="fa fa-filter"></i><span>Country</span><i class="fa fa-caret-down paddingLeft"></i></span>
+						<i class="fa fa-filter"></i><span class="noPad ml5">Country</span><i class="fa fa-caret-down paddingLeft"></i></span>
 					<div id="showListCountry" class="dropdown-menu bootstrap_dropdownMenu" role="menu" aria-labelledby="menu1">
 					<ul class="list-unstyled ml10 mr10">
 					  <li>

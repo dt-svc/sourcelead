@@ -1,6 +1,5 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,6 +7,7 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +15,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RoleHierarchyDao;
 import com.bis.sourcelead.dao.RolesDao;
+import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.SourceleadActions;
-import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.enums.Status;
-import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Repository
@@ -452,6 +448,24 @@ public class RolesDaoImpl implements RolesDao{
 		List<String> rolesList = (List<String>)queryObj.list();
 		
 		return rolesList;
+	}
+
+	@Override
+	@Transactional
+	public List<RoleDTO> getRolesDTOListByOrgLocationId(Long orgLocationId) throws Exception {
+
+		List<RoleDTO> rolesDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query = "SELECT R.ID AS rolesId, "
+				+ " R.DISPLAY_NAME AS displayName "
+				+ " FROM ROLES R WHERE R.ORG_LOCATION_ID = :orgLocationId AND R.ACTION_ID IS NOT NULL ";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("orgLocationId", orgLocationId);
+		queryObj.setResultTransformer(Transformers.aliasToBean(RoleDTO.class));
+		rolesDTOList = queryObj.list();
+		return rolesDTOList;
+	
 	}
 
 

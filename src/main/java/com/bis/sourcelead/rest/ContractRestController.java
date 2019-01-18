@@ -658,17 +658,25 @@ public class ContractRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/validateContractTemplateName", method = RequestMethod.POST)
-	public @ResponseBody String validateContractTemplateName(@RequestParam(value = "templateName", required = false) String templateName, @RequestParam(value = "contractType", required = false) String contractType, HttpServletRequest request) throws Exception
+	public @ResponseBody String validateContractTemplateName(@RequestParam(value = "templateName", required = false) String templateName, 
+															 @RequestParam(value = "contractType", required = false) String contractType, 
+															 @RequestParam(value = "templateUUID", required = false) String templateUUID,
+															 HttpServletRequest request) throws Exception
 	{
 		String result = null;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ContractsTemplate contractsTemplate = contractsTemplateService.findByContractTemplateName(templateName, contractType, orgLocation.getId());
-		if (null != contractsTemplate) {
-			result = "true";
-		}
-		else {
+		
+		if(contractsTemplate != null) {
+			if(StringUtils.isNotBlank(templateUUID) && contractsTemplate.getTemplateUUID().equalsIgnoreCase(templateUUID)) {
+				result = "false";
+			}else {
+				result = "true";
+			}
+		}else {
 			result = "false";
 		}
+	
 		return result;
 	}
 	

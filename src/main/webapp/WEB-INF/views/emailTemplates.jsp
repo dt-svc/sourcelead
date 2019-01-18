@@ -103,8 +103,8 @@ function templatepagination(){
   <section class="content-header clearfix">
     <div class="pull-left" id="emailtemplate" style="display:block"><h2>Email Templates</h2> </div>
     <div class="pull-left" id="emailSummary" style="display:none"><h2>Email Template Summary</h2></div>
-    <div class="pull-right brud-crum"  id="emailTemplates" style="display:block"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a>&raquo; <a href="<c:url value='${appPath}/orgTemplates'/>">Templates </a>&raquo; Email Templates</div>
-    <div class="pull-right brud-crum" id="emailSumm" style="display:none"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>" class="paddingLeft">Home </a>&raquo; <a href="<c:url value='${appPath}/orgTemplates'/>">Templates </a>&raquo; <a href="<c:url value='${appPath}/emailTemplates'/>" class="paddingLeft">Email TemplatesList</a> &raquo; emailTemplateSummary </div>
+    <div class="pull-right brud-crum"  id="emailTemplates" style="display:block"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; <a href="<c:url value='${appPath}/orgTemplates'/>">Templates </a>&raquo; Email Templates</div>
+    <div class="pull-right brud-crum" id="emailSumm" style="display:none"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>" class="paddingLeft">Home </a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; <a href="<c:url value='${appPath}/orgTemplates'/>">Templates </a>&raquo; <a href="<c:url value='${appPath}/emailTemplates'/>" class="paddingLeft">Email TemplatesList</a> &raquo; emailTemplateSummary </div>
   </section>
   	
   	

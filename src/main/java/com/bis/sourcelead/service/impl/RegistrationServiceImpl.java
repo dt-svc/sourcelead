@@ -983,29 +983,35 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Override
 	public void sendResetPasswordEmail(User user,Long locationsId, String verificationCode) throws Exception {
 		
-		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), locationsId);
-		 if(userRole == null){
-		    userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
-		 }
-		OrgLocations locations= orgLocationService.getOrgLocations(locationsId);
-		
-		EmailMessage emailMessage = new EmailMessage();
-		 emailMessage.setFirstName(user.getFirstName());
-		 emailMessage.setLastName(user.getLastName());
-		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
-		 emailMessage.setFromName("SourceLead");
-		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		try {
+			UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), locationsId);
+			 if(userRole == null){
+			    userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+			 }
+			OrgLocations locations= orgLocationService.getOrgLocations(locationsId);
+			
+			EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(user.getFirstName());
+			 emailMessage.setLastName(user.getLastName());
+			 emailMessage.setToEmail(user.getEmail());
+			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+			 emailMessage.setFromName("SourceLead");
+			 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 
-		//setting the class filed values
-		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 globalVarsMap.put("FirstName", emailMessage.getFirstName());
-		 globalVarsMap.put("LastName",emailMessage.getLastName());
-		 globalVarsMap.put("verificationCode",verificationCode);
-		 StringBuilder resetPasswordURLStringBuilder=new StringBuilder();
-		 String mailUrl = sourceleadUrl.replace("/app", "");
-		 globalVarsMap.put("ResetPasswordURL",resetPasswordURLStringBuilder.append("<a href=").append(mailUrl).append("/resetPassword").append(" style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>").toString());
-		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.FORGOT_PASSWORD,new ArrayList<EmailAttachment>());
+			//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("FirstName", emailMessage.getFirstName());
+			 globalVarsMap.put("LastName",emailMessage.getLastName());
+			 globalVarsMap.put("verificationCode",verificationCode);
+			 StringBuilder resetPasswordURLStringBuilder=new StringBuilder();
+			 String mailUrl = sourceleadUrl.replace("/app", "");
+			 globalVarsMap.put("ResetPasswordURL",resetPasswordURLStringBuilder.append("<a href=").append(mailUrl).append("/resetPassword").append(" style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>").toString());
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.FORGOT_PASSWORD,new ArrayList<EmailAttachment>());
+		}catch(Exception e) {
+			
+		}
+		
+		
 
 		
 	}

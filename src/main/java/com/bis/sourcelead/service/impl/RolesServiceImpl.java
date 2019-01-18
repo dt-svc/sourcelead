@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.RolesDao;
+import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.service.RolesService;
@@ -141,6 +142,12 @@ public class RolesServiceImpl implements RolesService{
 	@Override
 	public List<String> getRolesListByOrgLocationId(Long orgLocationId) throws Exception {
 		return rolesDao.getRolesListByOrgLocationId(orgLocationId);
+	}
+
+
+	@Override
+	public List<RoleDTO> getRolesDTOListByOrgLocationId(Long orgLocationId) throws Exception {
+		return rolesDao.getRolesDTOListByOrgLocationId(orgLocationId);
 	}
 	
 

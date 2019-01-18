@@ -1938,11 +1938,13 @@ public class USPayrollRestController {
 			Calendar cal = Calendar.getInstance();
 			int year = cal.get(Calendar.YEAR);
 			SimpleDateFormat sds = new SimpleDateFormat("MMM-YYYY");
-			cal.set(Calendar.YEAR,year);
-			for(int i=0;i<12;i++) {
-				cal.set(Calendar.MONTH, i);
-				cal.set(Calendar.DATE,1);
-				month.add(sds.format(cal.getTime()).toUpperCase());
+			for(int h=0;h<2;h++) {
+				cal.set(Calendar.YEAR,year-h);
+				for(int i=0;i<12;i++) {
+					cal.set(Calendar.MONTH, i);
+					cal.set(Calendar.DATE,1);
+					month.add(sds.format(cal.getTime()).toUpperCase());
+				}
 			}
 			payrollScheduleDTO.setMonth(month);
 			return payrollScheduleDTO;
