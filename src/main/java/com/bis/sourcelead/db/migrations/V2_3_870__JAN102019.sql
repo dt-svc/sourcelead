@@ -43,13 +43,10 @@ set SQL_SAFE_UPDATES=0;
 UPDATE `EMAIL_SCENARIO` SET `BODY`= 'Dear [Interview_Creator_Name],\n\nWe are sorry to say [Applicant_Name] is not attending for interview.\nGo through the brief details.\n\nJob Title :[Requirement_Name]\nInterview Date :[Interview_Date]\nInterview Time :[Interview_Time]\nInterview Type :[Interview_Type]\nDetails :[Details].\n\n[Login_URL]' WHERE `UNIQUE_SCENARIO_NAME`='VendorApplicantRejectMailToInterviewCreator' and `ENTITY_TYPE`='Email';
 set SQL_SAFE_UPDATES=1;
 
-#VendorApplicantAcceptMailToInterviewCreator
-INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` where UNIQUE_SCENARIO_NAME = 'VendorApplicantAcceptMailToInterviewCreator' and `ENTITY_TYPE` = 'Email' and `IS_TEMPLATE_MODIFIED` = 'N'), 'loginURL', '[Login_URL]');
+#Client to Vendor Acceptence
 set SQL_SAFE_UPDATES=0;
-UPDATE `EMAIL_SCENARIO` SET `BODY`= 'Dear {{VendorApplicantAcceptMailToInterviewCreator.InterviewCreatorName}},\n\n{{ApplicantAcceptMailToInterviewCreator.ApplicantName}} is attending for interview.\nGo through the brief details.\n\nJob Title :{{VendorApplicantAcceptMailToInterviewCreator.requirementName}}\nInterview Date :{{VendorApplicantAcceptMailToInterviewCreator.InterviewDate}}\nInterview Time :{{VendorApplicantAcceptMailToInterviewCreator.InterviewTime}}\nInterview Type :{{VendorApplicantAcceptMailToInterviewCreator.InterviewType}}\nDetails :{{VendorApplicantAcceptMailToInterviewCreator.Details}}' WHERE `UNIQUE_SCENARIO_NAME`='VendorApplicantAcceptMailToInterviewCreator' and `ENTITY_TYPE`='Email';
+UPDATE `EMAIL_SCENARIO` SET `BODY`= 'Dear [Vendor_Contact],\n\n We are pleased to inform you that the applicant sent by you have been selected for [Requirement_Name]. \n\n If you would like to release offer, Please click here \n\n[Link]' WHERE `UNIQUE_SCENARIO_NAME`='Client to Vendor Acceptence' and `ENTITY_TYPE`='Email';
 set SQL_SAFE_UPDATES=1;
-
-
 
 
 

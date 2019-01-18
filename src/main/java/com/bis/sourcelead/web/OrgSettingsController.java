@@ -647,7 +647,7 @@ public class OrgSettingsController {
 	       }
 	    
 	    //for setting page redirection
-	    @RequestMapping(value = "/app/settings")
+	    @RequestMapping(value = "/settings")
 		 public ModelAndView goToSettings(HttpServletRequest request) throws Exception {
 			ModelAndView model = new ModelAndView();		
 			model.setViewName("settings");
