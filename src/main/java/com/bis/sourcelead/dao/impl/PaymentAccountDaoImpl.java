@@ -78,7 +78,7 @@ public class PaymentAccountDaoImpl implements PaymentAccountDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<PaymentAccount> paymentAccount = new ArrayList<PaymentAccount>();
 		logger.debug("getPaymentAccountDetailsByCandidateId start");
-		paymentAccount = session.createQuery("from PaymentAccount pa left join fetch pa.candidateId where pa.candidateId.id = :candidateId" ).setLong( "candidateId", candidateId ).list();
+		paymentAccount = session.createQuery("from PaymentAccount pa left join fetch pa.candidateId where pa.candidateId.id = :candidateId and pa.defaultAccount = 1 " ).setLong( "candidateId", candidateId ).list();
 		logger.debug("getPaymentAccountDetailsByCandidateId end");
 		if (paymentAccount.size() > 0) {
 			return paymentAccount.get(0);

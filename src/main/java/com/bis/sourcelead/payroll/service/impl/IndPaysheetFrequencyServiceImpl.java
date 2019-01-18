@@ -30,6 +30,7 @@ import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
+import com.bis.sourcelead.service.PaymentAccountService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.INDPayrollCommonUtil;
 
@@ -49,6 +50,9 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 	
 	@Autowired
 	ConfigurePayrollApproverService configurePayrollApproverService;
+	
+	@Autowired
+	PaymentAccountService paymentAccountService;
 	
 	@Override
 	public ResponseList<IndPaysheetFrequency> getIndPaysheetFrequencyListByOrgLocationId(OrgLocations orgLocation,
@@ -184,6 +188,9 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 				Set<IndEmployeePayroll> payrollList = indPaysheetFrequency.getIndEmployeepayroll();
 				for (IndEmployeePayroll payroll : payrollList) {
 						payroll.setSubmitForAproverStatus(PayrollConstant.APPROVE);
+						if(payroll.getCandidate() != null) {
+							payroll.setPaymentAccount(paymentAccountService.getPaymentAccountDetailsByCandidateId(payroll.getCandidate().getId()));
+						}
 						payroll.setUpdatedBy(loginUser.getId());
 						payroll.setUpdatedDate(new Date());
 				}
@@ -194,7 +201,7 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 					res.setResponseMessage(Result.SUCCESS.getValue());
 					res.setObject(indApprovePayrollDTO);
 					
-					indPayrollCommonUtil.generatePdfForEmployeeInd(payrollList, orgLocation);
+					//indPayrollCommonUtil.generatePdfForEmployeeInd(payrollList, orgLocation);
 					indPayrollCommonUtil.sendApprovedMailToRequestedUserInd(orgLocation,savedPF,loginUser);
 				}
 			}catch (Exception e) {
