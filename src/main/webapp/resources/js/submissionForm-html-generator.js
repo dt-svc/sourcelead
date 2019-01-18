@@ -6,12 +6,12 @@
  */
 
 //generates the form HTML
-function generateForm(sourceleadUrl,templateId) {
+function generateForm(vmsUrl,templateId) {
     //empty out the preview area
     $("#sjfb-fields").empty();
     $.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/loadSavedSubmissionTemplate?templateId="+templateId, 
+        url: vmsUrl+"/loadSavedSubmissionTemplate?templateId="+templateId, 
         success: function(data) {
         	 var data = eval(data);
         	 
@@ -180,12 +180,12 @@ function generateForm(sourceleadUrl,templateId) {
 
 // To Generate Org SubmissionForm
 
-function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript) {
+function generateOrgSubmissionForm(vmsUrl,requirementId,finalDateFormatScript) {
     //empty out the preview area
     $("#sjfb-fields").empty();
     $.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getRequirmentOrgSubmissionTemplate?requirementId="+requirementId, 
+        url: vmsUrl+"/getRequirmentOrgSubmissionTemplate?requirementId="+requirementId, 
         success: function(data) {
         	 var data = eval(data);
         	 
@@ -198,7 +198,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
                      var labelTitle = v['label'];
 
                      //Add the field
-                     $('#sjfb-fields').append(addFieldHTML(fieldType,v['req'],v['label'],sourceleadUrl));
+                     $('#sjfb-fields').append(addFieldHTML(fieldType,v['req'],v['label'],vmsUrl));
                      var $currentField = $('#sjfb-fields .sjfb-field').last();
                      
                      var reqSymbol = '';
@@ -260,7 +260,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
              }
         	 
         	  //HTML templates for rendering frontend form fields
-             function addFieldHTML(fieldType,required,label,sourceleadUrl) {
+             function addFieldHTML(fieldType,required,label,vmsUrl) {
             	 
             	 var datavalidation = '';	
             	 var novalidation = '';

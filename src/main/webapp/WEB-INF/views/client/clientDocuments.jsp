@@ -457,9 +457,10 @@ function closeDocPopup(){
 
 <script>
 function getSpocsList(orgRelationId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Client", 
+        url: vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Client", 
         success: function(json) {
         	//var json = JSON.parse(data);
         	var output = "";

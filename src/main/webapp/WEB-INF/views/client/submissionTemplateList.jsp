@@ -72,10 +72,10 @@ function clientSubmissionTemplate(clientLocationId){
 <script type="text/javascript">
 	function submissionTemplateList(clientLocationId) {
 		
-		var sourceleadUrl = '${sourceleadUrl}';
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getSubmissionTemplatesList?"+tokenParamName+"="+tokenValue+"&clientLocationId="+clientLocationId, 
+	    	url : vmsUrl+"/getSubmissionTemplatesList?"+tokenParamName+"="+tokenValue+"&clientLocationId="+clientLocationId, 
 	        success: function(data) {
 	        	
 	        var json = JSON.parse(data);
@@ -268,8 +268,8 @@ function templatepagination(){
 <script type="text/javascript">
 	function viewSubmissionTemplate(clientLocationId,templateId,templateName) {
 		
-		var sourceleadUrl ='${sourceleadUrl}';
-		generateForm(sourceleadUrl,templateId);
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+		generateForm(vmsUrl,templateId);
 		
 		var result = "";
 		result = result + '<div class="clearfix templateName">';
@@ -300,10 +300,10 @@ function validateTemplateName(clientLocationId){
 		templateId = '';
 	}
 	if(templateName){
-		var sourceleadUrl = '${sourceleadUrl}';
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/validateTemplateName?"+tokenParamName+"="+tokenValue+"&clientLocationId="+clientLocationId+"&templateName="+templateName+"&templateId="+templateId, 
+	    	url : vmsUrl+"/validateTemplateName?"+tokenParamName+"="+tokenValue+"&clientLocationId="+clientLocationId+"&templateName="+templateName+"&templateId="+templateId, 
 	        success: function(result) {
 	        	if (result == 'invalid') {
 	        		$("#save_button").attr("disabled", "disabled");
@@ -442,7 +442,7 @@ function validateTemplateName(clientLocationId){
 	        if(templateId == 'undefined'){
 	        	templateId = '';
 	        }
-	        var sourceleadUrl ='${sourceleadUrl}';
+	        var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	        //Save form to database
 	        //Demo doesn't actually save. Download project files for save
 	        var con2 = JSON.stringify(fields);
@@ -451,7 +451,7 @@ function validateTemplateName(clientLocationId){
 	        	 $( "#save_button" ).addClass('button').val('Processing..');
 	        	    $.ajax({
 	     	    	type: "POST",
-	     	        url: sourceleadUrl+"/saveClientSubmissionTemplate?"+tokenParamName+"="+tokenValue+"&clientLocationId="+clientLocationId+"&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+	     	        url: vmsUrl+"/saveClientSubmissionTemplate?"+tokenParamName+"="+tokenValue+"&clientLocationId="+clientLocationId+"&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
 	     	        success: function(result) {
 	     	        	if((result == 'home')){
 	     	        		clientSubmissionTemplate(clientLocationId);  

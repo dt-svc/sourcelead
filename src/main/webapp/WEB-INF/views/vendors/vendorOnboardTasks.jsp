@@ -182,7 +182,7 @@ function getVendorOnboardTasksList(){
 		 $("#onboardTasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 			   	type: "GET",
-			    url: sourceleadUrl+"/getVendorOnboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&vendorOnboardId="+vendorOnboardId,	    	   
+			    url: vmsUrl+"/getVendorOnboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&vendorOnboardId="+vendorOnboardId,	    	   
 			    success: function(json) {
 		        	 var result = "";
 		        	if(json.length > 0){ 
@@ -270,7 +270,7 @@ function getVendorOnboardTasksList(){
 function deleteTask(taskId){
 	   $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/deleteVendorOnboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
+	    	 url: vmsUrl+"/deleteVendorOnboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
 	        success: function(result) {
 	        	if (result && result.response === "INVALID_DATA") {
           		    showError(result.responseMessage);
@@ -280,7 +280,7 @@ function deleteTask(taskId){
           			document.getElementById("onboardTask"+taskId).remove();
 	        		getVendorOnboardTasksList();
           		} else if (result.indexOf('Sign In') !== -1) {
-          			location.replace(sourceleadUrl);
+          			location.replace(vmsUrl);
           		} else {
           		    showError("Operation failed, please try again");
           		}
@@ -318,7 +318,7 @@ function saveOnboardTask(){
   	    	    data: formData,
   	    	    processData: false,
 		         contentType:false, 
-	    	    url: sourceleadUrl+"/saveVendorOnBoardTasks?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId, 
+	    	    url: vmsUrl+"/saveVendorOnBoardTasks?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId, 
 		        success: function(result) {
 		        	
 		        	if(result == 'success'){
@@ -361,10 +361,10 @@ function saveAndFinishVendorOnbord(){
       $.ajax({
     	type : "POST",
   	    data: formData,
-	    url: sourceleadUrl+"/saveAndFinishVendorOnboard?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId, 
+	    url: vmsUrl+"/saveAndFinishVendorOnboard?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId, 
         success: function(result) {
         	
-        	location.replace(sourceleadUrl+"/vendorsList"); 
+        	location.replace(vmsUrl+"/vendorsList"); 
         },
     }); 
 }
@@ -374,9 +374,10 @@ function saveAndFinishVendorOnbord(){
 
 <script>
 function getAssignToUsersList(){
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
+	    url: atsUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
 	    success: function(response) {
 	    	if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
@@ -391,7 +392,7 @@ function getAssignToUsersList(){
 	           	 $("#onboardAssignedTo").append(result); 
 	           	 $('#onboardAssignedTo').trigger("chosen:updated");
 	    	} else if (response.indexOf('Sign In') !== -1) {
-	    		location.replace(sourceleadUrl);
+	    		location.replace(vmsUrl);
 	    	} else {
 	    	    showError("Operation failed, please try again");
 	    	}

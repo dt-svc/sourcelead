@@ -9,6 +9,7 @@ window.onload = function () {
  };
 </script>
  <script>
+ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$(document).ready(function() {
 		document.getElementById("client_form").reset();
 		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
@@ -40,7 +41,7 @@ margin-top: -50px;
 		<div class="pull-left">
 			<h2>Create Client</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/clientDashboard'/>"> Clients List</a>
+		<div class="pull-right brud-crum"><a href="<c:url value='app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/clientDashboard'/>"> Clients List</a>
 			&raquo; Add Client</div>
 	</section>
 	
@@ -375,7 +376,7 @@ margin-top: -50px;
         <div class="col-lg-12">
           <div class="pull-right">
             <input type="button" value="Save" id="save_client" onclick="saveClient(); flushSaveClient()" class="btn btn-primary"> 
-			<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/clientDashboard'/>'" class="btn btn-default ml">
+			<input type="button" value="Cancel" onClick="javascript:window.location.href = '/vms/clientDashboard'" class="btn btn-default ml">
           </div>
         </div>
       </div>
@@ -414,6 +415,7 @@ function allowInvoiceEmailSent(){
 }
 
 function getCustomDependentField(sectionId){
+	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
 			type : "POST" , 
 				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
@@ -432,7 +434,7 @@ function getOrgName(){
 	
 	$.ajax({                           
     	type: "POST",
-    	url : sourceleadUrl+"/getOrgs?"+tokenParamName+"="+tokenValue+"&orgCode="+orgCode,
+    	url : vmsUrl+"/getOrgs?"+tokenParamName+"="+tokenValue+"&orgCode="+orgCode,
         success: function(data) {
         	var json = JSON.parse(data);
         	var org = [];
@@ -515,7 +517,7 @@ $( "#orgLocationId" ).val( '' );
 	if(orgName){
    	 $.ajax({
    	    	type: "POST",
-   	    	url : sourceleadUrl+"/getOrgDetails?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&orgName="+orgName,
+   	    	url : vmsUrl+"/getOrgDetails?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&orgName="+orgName,
    	        contentType: "application/json; charset=utf-8",
    	        dataType: "json",
    	        success: function(data) {
@@ -578,7 +580,7 @@ function getRolesList(){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getRolesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&moduleType=VMS", 
+	        url: vmsUrl+"/getRolesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&moduleType=VMS", 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
@@ -632,8 +634,8 @@ function getRolesList(){
 			var orgLocationId = document.getElementById("orgLocationId").value;
 		  	var formData = $($('#client_form')[0]).serialize();
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			$.post(sourceleadUrl+"/saveClient?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Client", formData, function(data) {
-				location.replace(sourceleadUrl+ "/clientDashboard");
+			$.post(vmsUrl+"/saveClient?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Client", formData, function(data) {
+				location.replace(vmsUrl+ "/clientDashboard");
 			});
 			return true;
 		} else {
@@ -652,7 +654,7 @@ function validateEmail(){
 	if(email != null && email != ''){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmails?"+tokenParamName+"="+tokenValue+"&email="+email,
+			url : vmsUrl + "/validateClientOrVendorEmails?"+tokenParamName+"="+tokenValue+"&email="+email,
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {
@@ -686,7 +688,7 @@ function getSpocUserDetails(){
 	if(email){
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getSpocUserDetails?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgLocationId="+orgLocationId,
+	    	url : vmsUrl+"/getSpocUserDetails?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgLocationId="+orgLocationId,
 	        contentType: "application/json; charset=utf-8",
 	        dataType: "json",
 	        success: function(data) {
@@ -763,7 +765,7 @@ function validateClientName(){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+client+"&responderType=Client",
+			url : vmsUrl + "/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+client+"&responderType=Client",
 			success : function(data) {
 				var result = data;
 				if (result == 'true') {
@@ -820,7 +822,7 @@ function validateOrgName(){
 		
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/isInvitedClientOrVendorOrgValid?"+tokenParamName+"="+tokenValue+"&orgName="+client,
+			url : vmsUrl + "/isInvitedClientOrVendorOrgValid?"+tokenParamName+"="+tokenValue+"&orgName="+client,
 			success : function(data) {
 				var result = data;
 				if (result == 'invalid') {
@@ -850,38 +852,6 @@ function validateOrgName(){
 }
 </script>
 
-
-<!-- <script type="text/javascript">
- function validateClientEmail() {
-	 var EmailId = document.getElementById("EmailId").value; 
-	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 if(EmailId != null && EmailId != ""){
-		/*$("#save_client").attr("disabled", "disabled");
-         $("#save_client" ).addClass('button').val('Processing..'); */
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/getClientEmailVerification?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId, 
-		        success: function(data) {
-		        	if(data == 'true'){
-		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-						  $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
-						  document.getElementById("EmailId").setAttribute('record-exist','yes');
-						  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
-		        	}
-		        	else{
-		        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#save_client" ).addClass('button').val('Save');
-                         $("#save_client").removeAttr("disabled");
-		        	}
-		        },
-		    });
-	 }
- }
- </script>     
- -->
- 
  
  <script type="text/javascript">
 	function validateWebsite() {
@@ -894,7 +864,7 @@ function validateOrgName(){
 
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
+				url : vmsUrl + "/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
 				success : function(data) {
 					var result = data;
 					if (result == "Website Duplicated" || result == "Invalid Website") {

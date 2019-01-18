@@ -33,10 +33,10 @@ margin-bottom: 15px;
  
 <script type="text/javascript">
 	function clientDetails(clientLocationId,orgRelationID) {
-		var sourceleadUrl = '${sourceleadUrl}';
+		var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationID+"&requestType=Client",
+					url : vmsUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationID+"&requestType=Client",
 					success : function(json) {
 					//	var json = JSON.parse(data);
 						getClientNeworgname(json.orgName);
@@ -250,10 +250,10 @@ margin-bottom: 15px;
 
 <script type="text/javascript">
 	function editClientDetails(clientLocationId,orgRelationID) {
-		var sourceleadUrl = '${sourceleadUrl}';
+		var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 		      $.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationID+"&requestType=Client",
+						url : vmsUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationID+"&requestType=Client",
 						success : function(json) {
 					//	var json = JSON.parse(data);
 					
@@ -571,6 +571,7 @@ margin-bottom: 15px;
 
 <script type="text/javascript">
 function preapareClientCustomFieldDetails(clientLocationId,orgRelationID,sectionId){
+	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
         type : "POST",
          url: sourceleadUrl+"/getAllASectionCustomFields?&clientLocationId="+clientLocationId+"&orgRelationID="+orgRelationID+"&requestFrom=clientAndVendor"+"&sectionId="+sectionId,        
@@ -589,11 +590,11 @@ function preapareClientCustomFieldDetails(clientLocationId,orgRelationID,section
             // var formData = getFormData("editClient_form");
             //for custom fields changed serilized method.
              var formData = $($('#editClient_form')[0]).serialize();
-             var sourceleadUrl ='${sourceleadUrl}';
-		 $.post(sourceleadUrl+"/clientDetailsUpdateUsingId?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationId, formData, function(data) {
+             var vmsUrl = '${SourceLeadWeb_vmsUrl}';
+		 $.post(vmsUrl+"/clientDetailsUpdateUsingId?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationId, formData, function(data) {
 			 clientDetails(clientLocationId,orgRelationId);
 			 
-			 //location.replace(sourceleadUrl+ "/clientDashboard");
+			 //location.replace(vmsUrl+ "/clientDashboard");
 			});
 	     	return true;
          }else{
@@ -615,7 +616,7 @@ function clientEditMsgFadein(){
 <script type="text/javascript">
 	function validateWebsite() {
 		var website = document.getElementById("companyWebsite").value;
-		var sourceleadUrl = '${sourceleadUrl}';
+		 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 		if(website.match(/^[^\s-](.*)*$/) != null){
 		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
 		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
@@ -626,7 +627,7 @@ function clientEditMsgFadein(){
 			// $( "#save_client" ).addClass('button').val('Processing..');
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
+				url : vmsUrl + "/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
 				success : function(data) {
 					var result = data;
 					if (result == "Website Duplicated" || result == "Invalid Website") {
@@ -656,11 +657,11 @@ function clientEditMsgFadein(){
  function validateClientEmail() {
 	 var EmailId = document.getElementById("EmailId").value; 
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 if(EmailId != null && EmailId != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getClientEmailVerification?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId, 
+		        url: vmsUrl+"/getClientEmailVerification?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();

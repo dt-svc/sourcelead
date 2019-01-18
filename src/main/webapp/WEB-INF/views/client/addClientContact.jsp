@@ -4,10 +4,15 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+
+<script type="text/javascript">
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+</script>
+
 <script type="text/javascript">
 function getOrgName(){
 	var orgCode = '${SourceLeadWeb_orgCode}';
-	var sourceleadUrl = '${sourceleadUrl}';
+	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	
 	
 	$( "#orgName" ).val( '' );
@@ -23,7 +28,7 @@ function getOrgName(){
 	
 	$.ajax({                           
     	type: "POST",
-    	url : sourceleadUrl+"/getOrgs?"+tokenParamName+"="+tokenValue+"&orgCode="+orgCode,
+    	url : vmsUrl+"/getOrgs?"+tokenParamName+"="+tokenValue+"&orgCode="+orgCode,
         success: function(data) {
         	var json = JSON.parse(data);
         	var org = [];
@@ -78,11 +83,11 @@ function getOrgDetails()
 {
 	var orgName = document.getElementById("orgName").value;
 	var orgLocationId = document.getElementById("orgLocationId").value;
-	var sourceleadUrl = '${sourceleadUrl}';
+	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	if(orgName && orgLocationId){
    	 $.ajax({
    	    	type: "POST",
-   	    	url : sourceleadUrl+"/getOrgDetails?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId,
+   	    	url : vmsUrl+"/getOrgDetails?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId,
    	        contentType: "application/json; charset=utf-8",
    	        dataType: "json",
    	        success: function(data) {
@@ -372,10 +377,10 @@ function allowInvoiceEmailSent(){
 		
 			if ($('#client_contact_form').validate(false, validationSettings)) {
 		        var formData = $($('#client_contact_form')[0]).serialize();
-				var sourceleadUrl = '${sourceleadUrl}';
+				var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-				$.post(sourceleadUrl+"/saveClinentAndVendorContact?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Client", formData, function(data) {
-					location.replace(sourceleadUrl+ "/clientDashboard");
+				$.post(vmsUrl+"/saveClinentAndVendorContact?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Client", formData, function(data) {
+					location.replace(vmsUrl+ "/clientDashboard");
 				});
 				return true;
 			} else {
@@ -398,7 +403,7 @@ function validateEmail(){
 	if(email != null  && email != ''){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmails?"+tokenParamName+"="+tokenValue+"&email="+email,
+			url : vmsUrl + "/validateClientOrVendorEmails?"+tokenParamName+"="+tokenValue+"&email="+email,
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {
@@ -431,13 +436,13 @@ function validateEmail(){
  function validateClientEmail() {
 	 var EmailId = document.getElementById("EmailId").value; 
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 if(EmailId != null && EmailId != ""){
 		/*  $("#save_client").attr("disabled", "disabled");
          $("#save_client" ).addClass('button').val('Processing..'); */
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getClientEmailVerification?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId, 
+		        url: vmsUrl+"/getClientEmailVerification?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
@@ -479,9 +484,9 @@ function validateEmail(){
 		if ($('#client_form').validate(false, validationSettings)) {  
 			var orgLocationId = document.getElementById("orgLocationId").value;
 			var formData = $($('#client_form')[0]).serialize();
-			var sourceleadUrl = '${sourceleadUrl}';
-					$.post(sourceleadUrl+"/saveClient?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Client", formData, function(data) {
-						location.replace(sourceleadUrl+ "/addClientContact");
+			var vmsUrl = '${SourceLeadWeb_vmsUrl}';
+					$.post(vmsUrl+"/saveClient?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Client", formData, function(data) {
+						location.replace(vmsUrl+ "/addClientContact");
 					});
 			return true;
 		} else {   
@@ -497,7 +502,7 @@ function validateEmail(){
 <script type="text/javascript">
 function validateClientName(){
 	var clientName = document.getElementById("orgName").value;
-	var sourceleadUrl = '${sourceleadUrl}';
+	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
 	if(clientName.match(/^[^\s-](.*)*$/) != null){
 		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
@@ -505,7 +510,7 @@ function validateClientName(){
 	/* 	$("#save_client").attr("disabled", "disabled"); */
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+clientName+"&responderType=Client",
+			url : vmsUrl + "/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+clientName+"&responderType=Client",
 			success : function(data) {
 				var result = data;
 				if (result == true) {
@@ -559,13 +564,13 @@ function flusAddClint(){
 <script type="text/javascript">
 function getSpocUserDetails(){
 	var email = document.getElementById("emailId").value;
-	var sourceleadUrl = '${sourceleadUrl}';
+	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	var vendorName = document.getElementById("vendorName").value;
 	var orgLocationId = vendorName.split(',');
 	if(email){
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getSpocUserDetails?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgLocationId="+orgLocationId[1],
+	    	url : vmsUrl+"/getSpocUserDetails?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgLocationId="+orgLocationId[1],
 	        contentType: "application/json; charset=utf-8",
 	        dataType: "json",
 	        success: function(data) {
@@ -644,13 +649,13 @@ function getRolesList(){
 	var vendorName = document.getElementById("vendorName").value;
 	var array = vendorName.split(',');
 	var orgLocationId = array[1];
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	
 	if(vendorName){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getRolesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&moduleType=VMS", 
+	        url: vmsUrl+"/getRolesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&moduleType=VMS", 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
@@ -683,13 +688,13 @@ function getRolesList(){
 	 var vendorName = document.getElementById("vendorName").value;
 	 var orgLocationId = vendorName.split(',');
 	 var orgRelationId = orgLocationId[0];
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var SourceLeadWeb_userId= '${SourceLeadWeb_userId}';
 	
 	 if(email != null && email != "" && email != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllOwners?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&type=client",  
+		        url: vmsUrl+"/getAllOwners?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&type=client",  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -739,11 +744,11 @@ function getRolesList(){
  function getOwnersList() {
 	 var email = document.getElementById("emailId").value; 
 	 var SourceLeadWeb_userId= '${SourceLeadWeb_userId}';
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 if(email != null && email != "" && email != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getOwnersList?"+tokenParamName+"="+tokenValue+"&email="+email+"&type=Client", 
+		        url: vmsUrl+"/getOwnersList?"+tokenParamName+"="+tokenValue+"&email="+email+"&type=Client", 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -802,14 +807,14 @@ function getRolesList(){
 </script> 
 <script>
 function refreshClientList(){
-		 var sourceleadUrl ='${sourceleadUrl}';
+		 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 var selectedOrgId = '${contract.orgRelations.id}';
 		 $.ajax({
 	      type : "POST",
-	       url: sourceleadUrl+"/refreshRequirementClientList",       
+	       url: vmsUrl+"/refreshRequirementClientList",       
 	       success: function(result) {
 	    	   	  if (result.response === "SESSION_TIMEDOUT") {
-	  				 location.replace(sourceleadUrl);
+	  				 location.replace(vmsUrl);
 	              } else if (result.response === "AWKWARD") {
 	                  location.href = "/errorPage";
 	              } else if (result.response === "SUCCESS") {
@@ -827,7 +832,7 @@ function refreshClientList(){
 			        $("#vendorName").append(output);
 			        $('#vendorName').trigger("chosen:updated");
 	              } else if (result.indexOf('Sign In') !== -1) {
-						location.replace(sourceleadUrl);
+						location.replace(vmsUrl);
 				  } else {
 	                  showError("Operation failed, please try again");
 	              }

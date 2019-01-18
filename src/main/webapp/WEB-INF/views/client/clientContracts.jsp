@@ -177,7 +177,7 @@ function clientContractsList(orgRelationId){
 		contractStatus.push($(this).val());
     });
 	
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  contractClientDate = 'YYYY-MM-DD';
@@ -190,7 +190,7 @@ function clientContractsList(orgRelationId){
 	  } 
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getClientOrVendorContracts?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Client&contractStatus="+contractStatus,        
+          url: vmsUrl+"/getClientOrVendorContracts?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Client&contractStatus="+contractStatus,        
           success :function(data) {
              			var json = JSON.parse(data);
 	                	 $("#clientContractsList").empty();
@@ -300,7 +300,7 @@ function clientContractsList(orgRelationId){
 		                		     		  
 		                		     		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		                		     		 if((output.typeOfContract == "New" || output.typeOfContract == "Custom") && (output.templateSubmissionStatus == "WAITING_TO_BE_SIGNED") && (null != output.parentContractId && '' != output.parentContractId && 'undefined' != output.parentContractId)){
-		                		     			 opt = opt + '<a class="mrTop" href="#" title="Preview"><small class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></small></a><a href="<c:url value="/app/docusign?contractUUID='+output.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a>'; 
+		                		     			 opt = opt + '<a class="mrTop" href="#" title="Preview"><small class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></small></a><a href="<c:url value="/vms/docusign?contractUUID='+output.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a>'; 
 		                			         }else if((output.typeOfContract == "New" || output.typeOfContract == "Custom") && (output.templateSubmissionStatus == "PENDING") && (null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId)){
 		                			        	 opt = opt + '<a class="mrTop" href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></small></a>'; 
 		                			         }else if(output.typeOfContract == "Existing"){
@@ -319,9 +319,9 @@ function clientContractsList(orgRelationId){
 		                	       			if(output.templateSubmissionStatus == "DRAFT" || output.templateSubmissionStatus == "WAITING_FOR_APPROVER" || output.templateSubmissionStatus == "REJECTED" ){
 		                	       				'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		                	     	     		if(output.typeOfContract == "New"){
-		                	     	     			opt = opt + '<a class="mrTop" href="<c:url value="/app/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a>';
+		                	     	     			opt = opt + '<a class="mrTop" href="<c:url value="/vms/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a>';
 		                	     	     		}else if(output.typeOfContract == "Custom"){
-		                	     	     			opt = opt + '<a href="<c:url value="/app/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a>';
+		                	     	     			opt = opt + '<a href="<c:url value="/vms/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a>';
 		                	     	     		}
 		                	       			'</sec:authorize>';
 		                	       			}
@@ -380,22 +380,23 @@ function contractpagination(){
 
 <script type="text/javascript">
 function previewContractPDF(uuid, templateName) {
-	var sourceleadUrl ='${sourceleadUrl}';
-	window.open(sourceleadUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	window.open(vmsUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
 }
 function previewNewContractPDF(uuid, templateName) {
- 	window.open(sourceleadUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+ 	window.open(vmsUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
 }
 </script>
 
 <script>
 function approveContract(recordId,status,orgRelationId){
 	 var rowHtmlContent =  $("#row"+recordId).html();
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$("#contractloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/approveContract?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&status="+status,       
+        url: vmsUrl+"/approveContract?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&status="+status,       
         success :function(data) {
         	if(data == 'REJECTED'){
         		$("#row"+recordId).empty();
@@ -416,11 +417,11 @@ function approveContract(recordId,status,orgRelationId){
 
 function finalizeContract(recordId,status){
 	 var rowHtmlContent =  $("#row"+recordId).html();
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$("#contractloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
       type : "POST",
-       url: sourceleadUrl+"/updateContractStatus?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&status="+status,       
+       url: vmsUrl+"/updateContractStatus?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&status="+status,       
        success :function(data) {
        	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -436,11 +437,11 @@ function finalizeContract(recordId,status){
 function CountClick(contractUUID,parentId){
 	$(".mask_time").fadeIn(200);
 	$(".DocAccPopup").fadeIn(100);	
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$("#DocAccPopupDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/getDocsByContractUUID?contractUUID="+contractUUID,       
+       url: vmsUrl+"/getDocsByContractUUID?contractUUID="+contractUUID,       
        success :function(data) {
     	   $("#DocAccPopupDiv").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     	    var json = JSON.parse(data);
@@ -518,10 +519,10 @@ function CountClick(contractUUID,parentId){
 function removeResumeNameDiv(id){
 	$("#removeDiv"+id).hide();
 	
-		 var sourceleadUrl ='${sourceleadUrl}';
+		 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 $.ajax({
 	     type : "POST",
-	      url: sourceleadUrl+"/updateDocument?${_csrf.parameterName}=${_csrf.token}&docuId="+id,       
+	      url: vmsUrl+"/updateDocument?${_csrf.parameterName}=${_csrf.token}&docuId="+id,       
 	      success :function(data) {
 	      	  //  $("#tr"+id).empty();
 	    	  $("#uploadDocumentDiv"+id).show();
@@ -553,7 +554,7 @@ document.getElementById("uploadBtn"+id).onchange = function () {
 }
 
 function uploadRequestedDocuments(id){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	fileUpload("uploadBtn"+id+"", "Requested Documents", "contractDoc_form");
 }
 </script>
@@ -568,7 +569,7 @@ function uploadRequestedDocuments(id){
 	        var jsonData = encodeURIComponent(con);
 	        var form = $('#contractDoc_form')[0];
  	 	    var formData = new FormData(form); 
-			var sourceleadUrl = '${sourceleadUrl}';
+			var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 			$("#save_Doc").attr("disabled", "disabled");
 			$("#contractDoc_form").attr("disabled", "disabled");
 			$("#loadingDoc").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -580,13 +581,13 @@ function uploadRequestedDocuments(id){
 		         processData: false,
 		         contentType:false,
 			     dataType : 'json',
-						url : sourceleadUrl+ "/saveDocContracts?"+tokenParamName+"="+tokenValue+"&json="+jsonData,
+						url : vmsUrl+ "/saveDocContracts?"+tokenParamName+"="+tokenValue+"&json="+jsonData,
 						success : function(result) { */
 							
 			var formData = getFormData("contractDoc_form");
 			var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 			$("#loadingDoc").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-            $.post( sourceleadUrl+ "/saveDocContracts?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId, formData, function(data) {
+            $.post( vmsUrl+ "/saveDocContracts?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId, formData, function(data) {
 				clientContracts(orgRelationId);
 				contPopClose();
 			}); 
@@ -605,11 +606,11 @@ function uploadRequestedDocuments(id){
 function PopUp(contractUUID){
 	$(".mask_time").fadeIn(200);
 	$(".contPopup").fadeIn(100);
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$("#viewPopupDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/getContractByContractUUID?contractUUID="+contractUUID,       
+       url: vmsUrl+"/getContractByContractUUID?contractUUID="+contractUUID,       
        success :function(data) {
     	   $("#viewPopupDiv").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     	   
@@ -621,11 +622,11 @@ function PopUp(contractUUID){
 			
 			if(json.templateSubmissionStatus == 'DRAFT' || json.templateSubmissionStatus == 'REJECTED' || json.templateSubmissionStatus == 'WAITING_FOR_APPROVER'){
 				if('New' == json.typeOfContract){
-					result = result +	'	<a href="/app/addNewContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>  <i class="fa fa-times" onclick="contPopClose();"></i>';
+					result = result +	'	<a href="/vms/addNewContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>  <i class="fa fa-times" onclick="contPopClose();"></i>';
 				}else if('Existing' == json.typeOfContract){
 					result = result +	'	<i class="fa fa-times" onclick="contPopClose();"></i>';
 				}else if('Custom' == json.typeOfContract){
-					result = result +	'	<a href="/app/addCustomContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>  <i class="fa fa-times" onclick="contPopClose();"></i>';
+					result = result +	'	<a href="/vms/addCustomContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>  <i class="fa fa-times" onclick="contPopClose();"></i>';
 				}
 			}else{
 				result = result +	'	<i class="fa fa-times" onclick="contPopClose();"></i>';
@@ -904,9 +905,9 @@ function PopUp(contractUUID){
 
 
 function previewTemplatePDF(uuid, templateName){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	if(uuid != null && uuid != ""){
-		window.open(sourceleadUrl+'/viewContractTemplatePdf/'+uuid+'/'+templateName+'','_newtab');
+		window.open(vmsUrl+'/viewContractTemplatePdf/'+uuid+'/'+templateName+'','_newtab');
 	}
 }
 </script>
@@ -966,10 +967,10 @@ function editClo(contractId){
 	var orgRelationId = $("#contractRelationId").val();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#endDate").val();
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
     type : "POST",
-     url: sourceleadUrl+"/updateContractEndDate?"+tokenParamName+"="+tokenValue+"&contractId="+contractId+"&endDate="+endDate,       
+     url: vmsUrl+"/updateContractEndDate?"+tokenParamName+"="+tokenValue+"&contractId="+contractId+"&endDate="+endDate,       
      success :function(data) {
     	 $("#endVal").empty();
 		  $("#endVal").append(": "+endDate);

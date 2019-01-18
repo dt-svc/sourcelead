@@ -18,6 +18,10 @@ margin:10px 220px 0;
 </style>
   
   
+<script>
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+</script>
+  
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -27,7 +31,7 @@ margin:10px 220px 0;
 	         <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
       <%-- <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="clientDashboard">Client & Contact List</a> &raquo; Client & Contact Import </div> --%>
-    <div class="pull-right brud-crum"><a href="#">Home</a> &raquo; <a href="${appPath}/clientDashboard">Client & Contact List</a> &raquo; Import Client & Contacts </div>
+    <div class="pull-right brud-crum"><a href="#">Home</a> &raquo; <a href="/vms/clientDashboard">Client & Contact List</a> &raquo; Import Client & Contacts </div>
     </section>
     <form:form id="upload_form" name="upload_form" enctype="multipart/form-data">
     <%-- <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="clientFileUpload?${_csrf.parameterName}=${_csrf.token}&type=Client"> --%>
@@ -40,7 +44,7 @@ margin:10px 220px 0;
 		  <div class="clearfix mb row">
 
 			<div class="col-xs-8 col-md-8">
-			 <a href="<c:url value='${appPath}/downloadClientTemplate?name=Contact'/>" class="btn btn-success btn-block">
+			 <a href="/vms/downloadClientTemplate?name=Contact" class="btn btn-success btn-block">
 					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Client Template
 			</a>
 			</div>
@@ -50,7 +54,7 @@ margin:10px 220px 0;
 			  <input type="button" class="btn btn-primary" id="upload_button" name="upload_button"  onclick = "saveBulkImport();" value="Import">
 				</div>
 				<div class="btn-group">
-			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '<c:url value='${appPath}/clientDashboard'/>'">
+			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '/vms/clientDashboard'">
 				</div>
 			  </div>
 			</div>
@@ -198,7 +202,7 @@ if ($('#upload_form').validate(false, validationSettings)){
 	        processData: false,
 	        contentType:false,
     	    dataType : 'json',
-		    url : sourceleadUrl+"/clientExcelFileUpload?"+tokenParamName+"="+tokenValue+"&responderType=Client&isMailCheck="+isMailCheck, 	   
+		    url : vmsUrl+"/clientExcelFileUpload?"+tokenParamName+"="+tokenValue+"&responderType=Client&isMailCheck="+isMailCheck, 	   
  		    success : function(json) {
  		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  		    	
@@ -359,7 +363,7 @@ function removeRecord(recordId){
 	var rowHtmlContent =  $("#row"+recordId).html();
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/deleteRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Client", 	       
+        url: vmsUrl+"/deleteRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Client", 	       
         success :function(data) {
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -376,7 +380,7 @@ function terminateRecord(recordId){
 	var rowHtmlContent =  $("#row"+recordId).html();
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/deleteRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Client",      
+        url: vmsUrl+"/deleteRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Client",      
         success :function(data) {
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -391,7 +395,7 @@ function addRecord(recordId){
 	var rowHtmlContent =  $("#row"+recordId).html();
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/addRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Client",        
+        url: vmsUrl+"/addRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Client",        
         success :function(data) {
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -416,7 +420,7 @@ function mergeWithRecord(){
 	var rowHtmlContent =  $("#row"+recordIdVal[1]).html();
 	 $.ajax({
 	   type : "POST",
-	    url: sourceleadUrl+"/mergeRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Client",       
+	    url: vmsUrl+"/mergeRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Client",       
 	    success :function(data) {
 	    	$("#row"+recordIdVal[1]).empty();
 	    	$("#row"+recordIdVal[1]).html(rowHtmlContent);
@@ -442,7 +446,7 @@ function mergeRecord(recordId){
 	$('#clientListIds').empty();
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/getMatchedClientList?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Client",       
+        url: vmsUrl+"/getMatchedClientList?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Client",       
         success :function(data) {
         	var json = JSON.parse(data);
         	var result = "";

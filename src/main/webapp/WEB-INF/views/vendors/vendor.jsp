@@ -7,11 +7,9 @@ window.onload = function () {
 	initLocationAuto('vendorLocation','vendorCountry','vendorState','vendorCity','vendorZipCode','clientLatitude','clientLongitude','invite','addressId');
  };
 </script>
-<!-- <script>
-	$(document).ready(function() {
-		document.getElementById("client_form").reset();
-	});
-</script> -->
+<script>
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+</script>
 
 <style>
 .project_tabs {
@@ -112,7 +110,7 @@ function getVendorDetails(){
 			
 	        $.ajax({
 		    	type: "GET",
-		    	 url: sourceleadUrl+"/getOrgRelationDetailsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
+		    	 url: vmsUrl+"/getOrgRelationDetailsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
 		        success: function(json) {
 		        	
 		        	   $("input[name=orgName]").val(json.orgName);
@@ -256,8 +254,8 @@ function getVendorDetails(){
 			<h2>Create Vendor</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/vendorsList'/>"> Vendor List</a> &raquo; Create
+			<a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;<a
+				href="/vms/vendorsList"> Vendor List</a> &raquo; Create
 			Vendor
 		</div>
 	</section>
@@ -672,7 +670,7 @@ function getVendorDetails(){
 							onclick="updateVendor(); flushSaveClient()" class="btn btn-primary">
 						
 						<input type="button" value="Cancel"
-							onClick="javascript:window.location.href = '<c:url value='${appPath}/vendorsList'/>'"
+							onClick="javascript:window.location.href = '/vms/vendorsList'"
 							class="btn btn-default ml">
 					</div>
 				</div>
@@ -755,7 +753,7 @@ function getOrgName(){
 	var orgCode = '${SourceLeadWeb_orgCode}';
 	$.ajax({                           
     	type: "POST",
-    	url : sourceleadUrl+"/getOrgs?"+tokenParamName+"="+tokenValue+"&orgCode="+orgCode,
+    	url : vmsUrl+"/getOrgs?"+tokenParamName+"="+tokenValue+"&orgCode="+orgCode,
         success: function(data) {
         	var json = JSON.parse(data);
         	var org = [];
@@ -837,7 +835,7 @@ $( "#orgLocationId" ).val( '' );
 	if(orgName){
    	 $.ajax({
    	    	type: "POST",
-   	    	url : sourceleadUrl+"/getOrgDetails?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&orgName="+orgName,
+   	    	url : vmsUrl+"/getOrgDetails?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&orgName="+orgName,
    	        contentType: "application/json; charset=utf-8",
    	        dataType: "json",
    	        success: function(data) {
@@ -899,7 +897,7 @@ function validateEmail(){
 	if(email != null && email != ''){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmails?"+tokenParamName+"="+tokenValue+"&email="+email,
+			url : vmsUrl + "/validateClientOrVendorEmails?"+tokenParamName+"="+tokenValue+"&email="+email,
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {
@@ -925,42 +923,7 @@ function validateEmail(){
 </script>
 
 
-<!-- <script type="text/javascript">
-function getRolesList(){
-	var orgName = document.getElementById("orgName").value;
-	var orgLocationId = document.getElementById("orgLocationId").value;
-	var sourceleadUrl ='${sourceleadUrl}';
-	
-	if(orgName){
-		$("#vendorDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/getRolesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&moduleType=ATS", 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	var output = "";
-	        	output = output + "<option value=''>-- Select Role --</option>"; 
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		output = output + "<option value='" +opt.id+ "'>"+opt.displayName+"</option>";
-				}
-	        	$("#role").empty();
-		        $("#role").append(output);
-		        $('#role').trigger("chosen:updated");
-		        $("#vendorDetailsLoading").removeAttr("style"); 
-	        },
-	    });
-	}else{
-		var output = "";
-    	 output = output + "<option value=''>-- Select Role --</option>"; 
-    	 $("#role").empty();
-	     $("#role").append(output);
-	     $('#role').trigger("chosen:updated");
-	}
-	 
-}
-</script> -->
+
 
 <script type="text/javascript">
 	(function($) {
@@ -988,7 +951,7 @@ function getRolesList(){
 			var orgLocationId = document.getElementById("orgLocationId").value;
 		  	var formData = $($('#client_form')[0]).serialize();
 			$("#vendorDetailsLoading").attr('style','position:absolute; width:100%; height:195%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-					$.post(sourceleadUrl+"/saveVendor?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Vendor", formData, function(data) {
+					$.post(vmsUrl+"/saveVendor?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Vendor", formData, function(data) {
 						$("#vendorOrgLocationId").val(data.id); 
 						$("#orgRelationId").val(data.vendorOrgRelationId);
 						$("#vendorOnboardId").val(data.vendorOnboardId);
@@ -1023,7 +986,7 @@ function updateVendor(){
 		var orgRelationId = document.getElementById("orgRelationId").value;
 	  	var formData = $($('#client_form')[0]).serialize();
 		$("#vendorDetailsLoading").attr('style','position:absolute; width:100%; height:185%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-				$.post(sourceleadUrl+"/updateVendor?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId, formData, function(data) {
+				$.post(vmsUrl+"/updateVendor?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId, formData, function(data) {
 					 $("#vendorDetailsLoading").removeAttr("style");
 					 var vendorDocuments = document.getElementById("vendorDocuments");
 					 $("#vendorDocuments").removeClass("disabledLink");
@@ -1055,7 +1018,7 @@ function getSpocUserDetails(){
 	if(email){
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getSpocUserDetails?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgLocationId="+orgLocationId,
+	    	url : vmsUrl+"/getSpocUserDetails?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgLocationId="+orgLocationId,
 	        contentType: "application/json; charset=utf-8",
 	        dataType: "json",
 	        success: function(data) {
@@ -1140,7 +1103,7 @@ function validateClientName(){
 		
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+vendor+"&responderType=Vendor",
+			url : vmsUrl + "/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+vendor+"&responderType=Vendor",
 			success : function(data) {
 				var result = data;
 				if (result == 'true') {
@@ -1198,7 +1161,7 @@ function validateOrgName(){
 		
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/isInvitedClientOrVendorOrgValid?"+tokenParamName+"="+tokenValue+"&orgName="+vendor,
+			url : vmsUrl + "/isInvitedClientOrVendorOrgValid?"+tokenParamName+"="+tokenValue+"&orgName="+vendor,
 			success : function(data) {
 				var result = data;
 				if (result == 'invalid') {
@@ -1241,7 +1204,7 @@ function validateOrgName(){
 
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
+				url : vmsUrl + "/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
 				success : function(data) {
 					var result = data;
 					if (result == "Website Duplicated" || result == "Invalid Website") {

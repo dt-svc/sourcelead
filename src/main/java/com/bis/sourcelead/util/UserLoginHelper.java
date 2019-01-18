@@ -38,6 +38,8 @@ import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
@@ -83,6 +85,12 @@ public class UserLoginHelper {
 	
 	@Value("${vmsUrl}")
 	private String vmsUrl;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
+	@Autowired
+	OrgService orgService;
 	
 	   
 
@@ -166,7 +174,24 @@ public class UserLoginHelper {
 			SourceLeadSessionManager.setSessionAttribute(req, "candidateId", candidate.getId());
 		} catch (Exception e) {}
 		SourceLeadSessionManager.setSessionAttribute(req, "isGlobalAccess", userRole.getIsGlobal());
-		
+		SourceLeadSessionManager.setSessionAttribute(req, "userId", loginUser.getId());
+		boolean isSuperUser;
+		boolean isSuperAdmin;
+		try {
+		isSuperUser = orgLocationService.isLoginUserIsSuperUser(userRole.getUser().getId(),
+		orgLocations.getId());
+		SourceLeadSessionManager.setSessionAttribute(req, "isSuperUser", isSuperUser);
+
+		isSuperAdmin = orgService.isLoginUserIsSuperAdmin(userRole.getUser().getId(), orgLocations.getOrg().getId());
+		if (isSuperAdmin == true) {
+		SourceLeadSessionManager.setSessionAttribute(req, "isSuperAdmin", Constants.YES);
+		} else {
+		SourceLeadSessionManager.setSessionAttribute(req, "isSuperAdmin", Constants.NO);
+		}
+
+		} catch (Exception e1) {
+		e1.printStackTrace();
+		}
 		
        List<SourceleadActions> actionsList = null;
        Collection<Tabs> tabsList = null;

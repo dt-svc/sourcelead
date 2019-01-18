@@ -7,10 +7,10 @@
 
 <script type="text/javascript">
 	function clientDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId,orgRelationId,spocLocationId) {
-		
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&orgRelationId="+orgRelationId+"&spocLocationId="+spocLocationId+"&type=Client",
+					url : vmsUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&orgRelationId="+orgRelationId+"&spocLocationId="+spocLocationId+"&type=Client",
 					success : function(json) {
 						/* var json = JSON.parse(data); */
 						getClientSpocname(json.spocName);
@@ -157,9 +157,11 @@
 </script> 
 <script type="text/javascript">
 	function editVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId,orgRelationId,spocLocationId) {
+		
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		      $.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&spocLocationId="+spocLocationId+"&orgRelationId="+orgRelationId+"&type=Client",
+						url : vmsUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&spocLocationId="+spocLocationId+"&orgRelationId="+orgRelationId+"&type=Client",
 						success : function(json) {
 						/* var json = JSON.parse(data); */
 						var result = "";
@@ -409,6 +411,7 @@ function allowInvoiceEmailSent(){
 }
 
  function validateClientEmail(spocId) {
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var EmailId = document.getElementById("EmailId").value; 
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
 	 if(EmailId != null && EmailId != ""){
@@ -416,7 +419,7 @@ function allowInvoiceEmailSent(){
          $("#save_client" ).addClass('button').val('Processing..'); */
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getVendorClientEmailVerification?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId+"&spocId="+spocId, 
+		        url: vmsUrl+"/getVendorClientEmailVerification?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId+"&spocId="+spocId, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
@@ -445,9 +448,10 @@ function allowInvoiceEmailSent(){
 </script>
  <script type="text/javascript">
 	function storeClientContactDetails(spocId,ownerId,spocUserId,tempOwnerId,orgRelationId,spocLocationId) {
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
          if ($('#editVendorContact_form').validate(false, validationSettings)){
              var formData = getFormData("editVendorContact_form");
-		 $.post(sourceleadUrl+"/vendorContactDetailsUpdateUsingId?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&type=Client", formData, function(data) {
+		 $.post(vmsUrl+"/vendorContactDetailsUpdateUsingId?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&type=Client", formData, function(data) {
 			 var ownerId = data;
 		    	
 		    	$("#spocDetailsId").removeAttr("onClick")

@@ -16,7 +16,10 @@ margin:10px 220px 0;
 }
 </style>
   
-  
+ <script>
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+</script>
+
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -25,29 +28,18 @@ margin:10px 220px 0;
       <div class="remove_pop" id="selector"  style="display: none;">
 	         <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/vendorsList">Vendor & Contact List</a> &raquo; Import Vendor & Contacts </div>
+      <div class="pull-right brud-crum"><a href="/vms/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; 
+      <a href="/vms/vendorsList">Vendor & Contact List</a> &raquo; Import Vendor & Contacts </div>
     </section>
      <form:form id="upload_form" name="upload_form" enctype="multipart/form-data">
-    <%-- <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="clientFileUpload?${_csrf.parameterName}=${_csrf.token}&type=Client"> --%>
     <div class="content-area clearfix">
     <div id="loadinggif"></div> 
       <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
         <div class="row minHyewtriuwe rwrghek	fghjqwehjgfwej tkjreight">
           <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-		  <!-- Download File button -->
 		  <div class="clearfix mb row">
-		 <%--  <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS')"> --%>
-		<%-- 	<div class="col-xs-12 col-md-6 hidden">
-			 <a href="<c:url value='/downloadClientTemplate?name=client'/>">
-			 <button class="btn btn-success btn-block" type="button">
-					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Client Template
-			</button>
-			</a>
-			</div> --%>
-			<%-- </sec:authorize> --%>
-			<%-- <sec:authorize access="hasAnyRole('ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> --%>
 			<div class="col-xs-3 col-md-3">
-			 <a href="<c:url value='${appPath}/downloadVendorTemplate?name=Contact'/>"  class="btn btn-success btn-block" >
+			 <a href="/vms/downloadVendorTemplate?name=Contact"  class="btn btn-success btn-block" >
 					<i class="fa fa-download"></i>&nbsp;&nbsp;Vendor Template
 			</a>
 			</div>
@@ -68,7 +60,7 @@ margin:10px 220px 0;
 			  <input type="button" class="btn btn-primary" id="upload_button" name="upload_button"  onclick = "saveBulkImport();" value="Import">
 				</div>
 				<div class="btn-group">
-			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '<c:url value='${appPath}/vendorsList'/>'">
+			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '/vms/vendorsList'">
 				</div>
 			  </div>
 			</div>
@@ -228,7 +220,7 @@ function saveBulkImport(){
 	        processData: false,
 	        contentType:false,
     	    dataType : 'json',
-		    url : sourceleadUrl+"/clientExcelFileUpload?"+tokenParamName+"="+tokenValue+"&responderType=Vendor", 	   
+		    url : vmsUrl+"/clientExcelFileUpload?"+tokenParamName+"="+tokenValue+"&responderType=Vendor", 	   
  		    success : function(json) {
  		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 
@@ -389,7 +381,7 @@ function removeRecord(recordId){
 	var rowHtmlContent =  $("#row"+recordId).html();
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/deleteRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Vendor",       
+        url: vmsUrl+"/deleteRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Vendor",       
         success :function(data) {
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -406,7 +398,7 @@ function terminateRecord(recordId){
 	var rowHtmlContent =  $("#row"+recordId).html();
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/deleteRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Vendor",       
+        url: vmsUrl+"/deleteRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Vendor",       
         success :function(data) {
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -422,7 +414,7 @@ function addRecord(recordId){
 	var templateId = $("#templateId").val();
 	 $.ajax({
        type : "POST",
-       url: sourceleadUrl+"/addRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Vendor&templateId="+templateId,       
+       url: vmsUrl+"/addRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Vendor&templateId="+templateId,       
         success :function(data) {
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -447,7 +439,7 @@ function mergeWithRecord(){
 	var rowHtmlContent =  $("#row"+recordIdVal[1]).html();
 	 $.ajax({
 	   type : "POST",
-	    url: sourceleadUrl+"/mergeRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Vendor",       
+	    url: vmsUrl+"/mergeRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Vendor",       
 	    success :function(data) {
 	    	$("#row"+recordIdVal[1]).empty();
 	    	$("#row"+recordIdVal[1]).html(rowHtmlContent);
@@ -473,7 +465,7 @@ function mergeRecord(recordId){
 	$('#vendorListIds').empty();
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/getMatchedClientList?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Vendor",       
+        url: vmsUrl+"/getMatchedClientList?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Vendor",       
         success :function(data) {
         	var json = JSON.parse(data);
         	var result = "";

@@ -77,6 +77,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.ClientCustomFieldDataService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.ClientVendorExport;
@@ -354,6 +355,12 @@ public class ClientRestController {
 			 return result;
 		 }
 		 
+		 /**
+		  * Validate Client Or Vendor Email
+		  * @param email
+		  * @return
+		  * @throws Exception
+		  */
 		 @RequestMapping(value = "/validateClientOrVendorEmails",  method = RequestMethod.POST)
 		    public @ResponseBody String validateClientOrVendorEmails(@RequestParam(value="email", required=true) String email ) throws Exception {
 			 
@@ -374,7 +381,13 @@ public class ClientRestController {
 		 }
 		 
 		
-		 
+		 /**
+		  * Get Spoc Details By email
+		  * @param email
+		  * @param orgLocationId
+		  * @param json
+		  * @return @ResponseBody
+		  */
 		 @RequestMapping(value = "/getSpocUserDetails",  method = RequestMethod.POST)
 		    public @ResponseBody String getSpocUserDetails(@RequestParam(value="email", required=false) String email,
 		    		@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
@@ -648,7 +661,6 @@ public class ClientRestController {
 					orgSpoc.setSpocStatus(spocStatus);
 					orgSpocService.addOrgSpoc(orgSpoc);
 				}
-			
 				return "success";
 		}
 	 
@@ -1367,7 +1379,16 @@ public class ClientRestController {
 	}
 	
 	
-	
+	/**
+	 * Get All Owners
+	 * 
+	 * @param email
+	 * @param orgRelationId
+	 * @param type
+	 * @param request
+	 * @return @ResponseBody
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/getAllOwners")
 	public @ResponseBody String getAllOwners(@RequestParam(value="email", required=false) String email,@RequestParam(value="orgRelationId", required=false) Long orgRelationId,
 			                                 @RequestParam(value="type", required=false) String type,HttpServletRequest request) throws Exception {
@@ -2564,5 +2585,67 @@ public class ClientRestController {
 	    	}
 			return clientsList;
 	 }
+	 
+	 /**
+	  * Validate Client website
+	  * @param website
+	  * @param sourceleadBLockedwebsites
+	  * @return @ResponseBody
+	  */
+	 @RequestMapping(value = "/validateClientWebsite", method = RequestMethod.GET)
+		public @ResponseBody String validateOrgWebsite(@RequestParam(value = "website", required = false) String website,
+				@RequestParam(value = "sourceleadBLockedwebsites", required = false) String sourceleadBLockedwebsites) {
+			String status = "success";
+			String orgInfo = orgService.websiteValidation(website, sourceleadBLockedwebsites);
+			if (orgInfo != null && !"".equalsIgnoreCase(orgInfo)) {
+				if ("Website Duplicated".equalsIgnoreCase(orgInfo)) {
+					status = "Website Duplicated";
+				} else if ("Invalid Website".equalsIgnoreCase(orgInfo)) {
+					status = "Invalid Website";
+				}
+			}
+			return status;
+		}
+	 
+	 /**
+	  * refreshRequirementClientList
+	  * 
+	  * @param request
+	  * @return
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/refreshRequirementClientList", method = RequestMethod.POST)
+		public @ResponseBody ResponseList<OrgRelations> refreshClientList(HttpServletRequest request) throws Exception {
+			ResponseList<OrgRelations> response = new ResponseList<>();
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if(user != null) {
+				try {
+					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					List<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+					for(OrgRelations ocl :orgClientList){
+						/*ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
+						ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());*/
+						if(orgLocations.getId().equals(ocl.getLocationId().getId())){
+							ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
+							ocl.setLocationID(ocl.getResponderLocationId().getId().toString());
+		        		}if(orgLocations.getId().equals(ocl.getResponderLocationId().getId())){
+		        			ocl.setOrgName(ocl.getLocationId().getOrgLocationName());
+		        			ocl.setLocationID(ocl.getLocationId().getId().toString());
+		        		}
+					 }
+					response.setData(orgClientList);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}catch (Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+				}
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		   return response;
+		}
+	    
 
 }

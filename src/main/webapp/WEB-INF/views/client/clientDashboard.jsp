@@ -4,18 +4,18 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<jsp:include page="editClientSpocDetails.jsp" />
+<jsp:include page="editClientSpocDetails.jsp" /> 
 <jsp:include page="clientDetails.jsp" />	
 <jsp:include page="clientContacts.jsp" />
 <jsp:include page="clientDocuments.jsp" />	
-<jsp:include page="clientSpocDocuments.jsp" />	
+<jsp:include page="clientSpocDocuments.jsp" />
 <jsp:include page="submissionTemplateList.jsp" /> 
 <jsp:include page="clientContracts.jsp" />
 <jsp:include page="clientBilling.jsp" /> 
 <jsp:include page="requirementReleasedList.jsp" /> 
 <jsp:include page="clientNotes.jsp" /> 
 <jsp:include page="clientListDatatable.jsp" />
-<jsp:include page="clientContactsDataTable.jsp" />
+<jsp:include page="clientContactsDataTable.jsp" /><!-- not done -->
 <style type="text/css">
 clients_wrap {
 overflow-x: auto;
@@ -60,7 +60,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 				</span>
 				</h2>
 			</div>
-                  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home &raquo;</a> Clients List </div>
+                  <div class="pull-right brud-crum"><a href="<c:url value='/app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home &raquo;</a> Clients List </div>
     
 	 	</section>
 
@@ -292,14 +292,14 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 				<div class="action-pop">
 					<span> 
 					  <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-						<a href="<c:url value='${appPath}/client'/>">Add Client</a>
+						<a href="/vms/client">Add Client</a>
 					 </sec:authorize>
 					 <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
-                        <a href="<c:url value='${appPath}/addClientContact'/>">Add Contact</a>
+                        <a href="/vms/addClientContact">Add Contact</a>
                      </sec:authorize>		
                      
 						<sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> 
-							<a href="<c:url value='${appPath}/uploadClientForm'/>">Import</a>
+							<a href="/vms/uploadClientForm">Import</a>
 						 </sec:authorize>                     			
 					</span>
 				</div>

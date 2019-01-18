@@ -115,7 +115,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 
 @RestController
-@RequestMapping("/app")
 public class InvoiceRestController {
 	
 	@Value("${system.default.font}")

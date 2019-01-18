@@ -8,10 +8,10 @@
 <script>
 	function loadVendorDatatable(searchValue,universalvendorSearchList,searchType,responderLocationId,orgRelationId,orgName,vendorKeyword) {
 		if(universalvendorSearchList=="universalVendorList")	 {
-			var sourceleadUrl ='${sourceleadUrl}';
+			var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 				 $.ajax({
 			         type : "POST",
-			          url: sourceleadUrl+"/getUniversalSearchVendorList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&searchType="+searchType,   
+			          url: vmsUrl+"/getUniversalSearchVendorList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&searchType="+searchType,   
 			          success :function(data) {
 			        	  getVendorList();
 			         },
@@ -33,7 +33,7 @@
 
 function getVendorList(){
 	var responderType = "Vendor";
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var values = [];
 	$('input:checkbox[name=clinetLevel]:checked').each(function() 
     {
@@ -55,7 +55,7 @@ function getVendorList(){
 	  		var formData = new FormData(form); 
 	  		var searchValue = $("#dataTableSearch").val();
 	  		searchValue = searchValue ? searchValue : "";
-	  		var url = sourceleadUrl+"/searchClientDetails?responderType="+responderType+"&searchValue="+searchValue+"&values="+values;
+	  		var url = vmsUrl+"/searchClientDetails?responderType="+responderType+"&searchValue="+searchValue+"&values="+values;
 	  	    url += "&"+$($('#vendorList_form')[0]).serialize();  
 	  		prepareVendorList(url);
 	  		closePop();
@@ -118,12 +118,12 @@ function getVendorList(){
 		    	  		var pattern = new RegExp(/["'"]/g);
 				   		var orgName = (report.orgName).replace(pattern, "\\'");
 		    	  		var result = "";
-		    	  		var sourceleadUrl = '${sourceleadUrl}';
+		    	  		var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 		    	  		
 	    	  		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
 			   			result = result +'<td>';
 			   			if(report.vendorRelationStatus == 'Draft'){
-			   				result = result +'<div class="proj_show"><a href="'+sourceleadUrl+'/addVendor?orgRelationUUID='+report.orgRelationUUID+'" class="pull-left"><span  class="tbldata-dotdot-me pull-left" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars pull-right"></a></i>';
+			   				result = result +'<div class="proj_show"><a href="'+vmsUrl+'/addVendor?orgRelationUUID='+report.orgRelationUUID+'" class="pull-left"><span  class="tbldata-dotdot-me pull-left" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars pull-right"></a></i>';
 			   			}else if(report.vendorRelationStatus == null || report.vendorRelationStatus != 'Draft' ){
 			   				result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+orgName+'\');"><span class="tbldata-dotdot-me pull-left" title="'+report.orgName+'"><a>'+report.orgName+'</a></span><i class="fa fa-binoculars pull-right"></i>';
 			   			}

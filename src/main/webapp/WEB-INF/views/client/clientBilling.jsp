@@ -54,16 +54,19 @@ z-index: 9999999;
   </div>
 <script>
 function getClientInvoiceList(orgRelationId,clientLocationId){
-var result = "";
-result = result  +'<div class="">';
-result = result  +'    <div class="billingArea"> ';  
- result = result + '			    <div class="clearfix">																																				                   ';
- result = result + '			      <div class="billing_dashboard">                                                                                                                                                                             ';
- result = result + '			        <div class="tabbable positionRelative">                                                                                                                                                                    ';
- result = result + '			          <div class="onboardcreateButtons">                                                                                                                                                                       ';
+	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	
+	var result = "";
+	result = result  +'<div class="">';
+	result = result  +'    <div class="billingArea"> ';  
+ 	result = result + '			    <div class="clearfix">																																				                   ';
+ 	result = result + '			      <div class="billing_dashboard">                                                                                                                                                                             ';
+ 	result = result + '			        <div class="tabbable positionRelative">                                                                                                                                                                    ';
+ 	result = result + '			          <div class="onboardcreateButtons">                                                                                                                                                                       ';
 
  result = result + '			            <div class="pull-right select-field ml">                                                                                                                                                               ';
- result = result + '							<a class="pull-left newAdBtn mr" href="' + sourceleadUrl + '/customizeInvoice?orgLocationId=' + clientLocationId + '&orgRelationId=' + orgRelationId +'">Templates</a>'; 
+ result = result + '							<a class="pull-left newAdBtn mr" href="' + vmsUrl + '/customizeInvoice?orgLocationId=' + clientLocationId + '&orgRelationId=' + orgRelationId +'">Templates</a>'; 
  result = result + '			              <select class="form-control input-sm" id="dayWiseTypeId" onchange="getInvoiceListBasedonClient('+orgRelationId+','+clientLocationId+');customInvoiceList('+orgRelationId+','+clientLocationId+');">                                                                                           ';
  result = result + '			                <option value="month">Last 30 days</option>                                                                                                                                                        ';
  result = result + '			                <option value="twomonths">Last 60 Days</option>                                                                                                                                                    ';
@@ -232,7 +235,7 @@ result = result + '</div>';
 
 <script type="text/javascript">
 	function getInvoiceListBasedonClient(orgRelationId,clientLocationId) {
-		var sourceleadUrl = '${sourceleadUrl}';
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
 			  billingClientDate = 'YYYY-MM-DD';
@@ -273,7 +276,7 @@ result = result + '</div>';
 		
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getInvoiceListBasedOnOrgrelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceStatus="+invoice+"&paymentStatus="+payment+"&invoiceType=receivable", 
+	    	url : vmsUrl+"/getInvoiceListBasedOnOrgrelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceStatus="+invoice+"&paymentStatus="+payment+"&invoiceType=receivable", 
 	        success: function(json) {
 	        
 	        var draftCount = 0;
@@ -402,7 +405,7 @@ result = result + '</div>';
 					result = result +'         <td>';
 					if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_INVOICE\')">';
-						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+vmsUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
 						'</sec:authorize>' ;
 					}
 					if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked" ){
@@ -504,6 +507,8 @@ function cancelTermination(){
 }
 
 function saveInvoiceRejectedReason(invoiceUUID){
+	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';	
 	var reason = $("#reasonForInvoice").val();
 	if(reason != null && reason != ''){
 		 $("#reasonForInvoiceDiv").empty();
@@ -512,11 +517,11 @@ function saveInvoiceRejectedReason(invoiceUUID){
 		}else{
 			 $.ajax({
 				   	type: "POST",
-				    url: sourceleadUrl+"/deleteInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=Receivable&invoiceUUID="+invoiceUUID+"&reason="+reason,
+				    url: vmsUrl+"/deleteInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=Receivable&invoiceUUID="+invoiceUUID+"&reason="+reason,
 		   		    success: function(data) {
 		   		    	$("#popUp").empty();
 		   			 	$(".project_inn_mask").fadeOut(200);
-		   			 	location.replace(sourceleadUrl+"/invoiceList");	
+		   			 	location.replace(vmsUrl+"/invoiceList");	
 		   		    }
 			     });
 		}
@@ -659,18 +664,19 @@ function searchResults(orgRelationId,clientLocationId){
 
 <script type="text/javascript">
 function generateAutomaticInvoice(){
-	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+   $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
-	    	 url: sourceleadUrl+"/generateAutomaticInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=Receivable&contractType=clientSow", 
+	    	 url: vmsUrl+"/generateAutomaticInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=Receivable&contractType=clientSow", 
              success: function(json) {
             	  $("#invoiceLoading").removeAttr("style");
 					$("#selector12").removeAttr("style");
 					$("#selector12").css("display", "block");
 					$("#msgdiv").html(json.object.count+" Invoice(s) Generated Successfully.");
 					msgFadein();
-            	 location.replace(sourceleadUrl+"/invoiceList");	            	 
+            	 location.replace(vmsUrl+"/invoiceList");	            	 
         },
     });  
 }
@@ -775,11 +781,11 @@ function clientInvoicePagination(){
 		       }
 		       
 		       function createClientInvoice(orgRelationId,type){
-		    	   var sourceleadUrl = '${sourceleadUrl}';
+		    	   var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		    	   if(type == 'project'){
-		    			window.location.href = sourceleadUrl + "/createInvoiceProjectBased?&orgRelationId="+orgRelationId;
+		    			window.location.href = vmsUrl + "/createInvoiceProjectBased?&orgRelationId="+orgRelationId;
 		    	   }else{
-		    		   window.location.href = sourceleadUrl + "/createInvoice?&orgRelationId="+orgRelationId;
+		    		   window.location.href = vmsUrl + "/createInvoice?&orgRelationId="+orgRelationId;
 		    	   }
 		       }
 		    </script> 
@@ -918,7 +924,7 @@ function saveReceivePayment(invoiceId){
 	        
 	        var form = $('#receivePayment-form')[0];
 	 	   var formData = new FormData(form); 
-	        var sourceleadUrl ='${sourceleadUrl}';
+	 	  var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	        $.ajax({
 		    	type: "POST",
 		    	 data: formData,
@@ -927,16 +933,16 @@ function saveReceivePayment(invoiceId){
 		        processData: false,
 		        contentType:false,
 			      dataType : 'json',
-		    	 url: sourceleadUrl+"/saveInvoicePayment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&invoiceId="+invoiceId, 
+		    	 url: vmsUrl+"/saveInvoicePayment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&invoiceId="+invoiceId, 
 		        success: function(result) {
 		        	 if (result && result.response === "INVALID_DATA") {
 		          		    showError(result.responseMessage);
 		          		} else if (result.response === "AWKWARD") {
 		          		    location.href = "/errorPage";
 		          		} else if (result.response === "SUCCESS") {
-		          			location.replace(sourceleadUrl+"/invoiceList");
+		          			location.replace(vmsUrl+"/invoiceList");
 		          		} else if (result.indexOf('Sign In') !== -1) {
-		          			location.replace(sourceleadUrl);
+		          			location.replace(vmsUrl);
 		          		} else {
 		          		    showError("Operation failed, please try again");
 		          		}
@@ -958,20 +964,20 @@ $('body').on('blur', '#receivePayment-form', function() {
 
 <script>
 function acceptedInvoice(invoiceUUID){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
-	    	 url: sourceleadUrl+"/acceptedInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
+	    	 url: vmsUrl+"/acceptedInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
              success: function(result) {
             	 if (result && result.response === "INVALID_DATA") {
 	          		    showError(result.responseMessage);
 	          		} else if (result.response === "AWKWARD") {
 	          		    location.href = "/errorPage";
 	          		} else if (result.response === "SUCCESS") {
-	          			location.replace(sourceleadUrl+"/invoiceList");
+	          			location.replace(vmsUrl+"/invoiceList");
 	          		} else if (result.indexOf('Sign In') !== -1) {
-	          			location.replace(sourceleadUrl);
+	          			location.replace(vmsUrl);
 	          		} else {
 	          		    showError("Operation failed, please try again");
 	          		} 
@@ -1000,7 +1006,7 @@ function rejectInvoice(invoiceUUID){
 
 <script>
 function saveReasonforReceivable(invoiceUUID){
-	var sourceleadUrl = '${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var reason = document.getElementById("reasonForDelete").value;
 	if(reason == null || reason == '' || reason == 'undefined'){
 	      
@@ -1011,7 +1017,7 @@ function saveReasonforReceivable(invoiceUUID){
 		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
 		$.ajax({
 		   	type: "POST",
-		   	url: sourceleadUrl+"/rejectInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&reason="+reason,	    	   
+		   	url: vmsUrl+"/rejectInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&reason="+reason,	    	   
 		    success: function(data) {
 		    	if (result && result.response === "INVALID_DATA") {
           		    showError(result.responseMessage);
@@ -1020,9 +1026,9 @@ function saveReasonforReceivable(invoiceUUID){
           		} else if (result.response === "SUCCESS") {
           			$("#popUp").empty();
    	 			    $(".project_inn_mask").fadeOut(200);
-   		    	    location.replace(sourceleadUrl+"/invoiceList");
+   		    	    location.replace(vmsUrl+"/invoiceList");
           		} else if (result.indexOf('Sign In') !== -1) {
-          			location.replace(sourceleadUrl);
+          			location.replace(vmsUrl);
           		} else {
           		    showError("Operation failed, please try again");
           		}
@@ -1165,11 +1171,11 @@ function removePopup(){
 
 <script>
 function sendReminder(invoiceUUID){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
-	    	 url: sourceleadUrl+"/sendReminder?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
+	    	 url: vmsUrl+"/sendReminder?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
              success: function(result) {
             	 if (result && result.response === "INVALID_DATA") {
            		    showError(result.responseMessage);
@@ -1178,7 +1184,7 @@ function sendReminder(invoiceUUID){
            		} else if (result.response === "SUCCESS") {
            			
            		} else if (result.indexOf('Sign In') !== -1) {
-           			location.replace(sourceleadUrl);
+           			location.replace(vmsUrl);
            		} else {
            		    showError("Operation failed, please try again");
            		}
@@ -1190,26 +1196,26 @@ function sendReminder(invoiceUUID){
 
 <script type="text/javascript">
 function getPrint(invoiceUUID) {
-	var sourceleadUrl ='${sourceleadUrl}';
-	window.open(sourceleadUrl+'/getPrint/'+invoiceUUID+'','_newtab');
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	window.open(vmsUrl+'/getPrint/'+invoiceUUID+'','_newtab');
 }
 </script>
 
 <script>
 function downloadInvoice(invoiceUUID){
-	var sourceleadUrl ='${sourceleadUrl}';
-	window.location.href = sourceleadUrl+"/downloadInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID;
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	window.location.href = vmsUrl+"/downloadInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID;
 }
 
 </script>
 
 <script type="text/javascript">
 function linkInvoice(invoiceUUID,totalAmount){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
-	     url : sourceleadUrl+"/getClientBasedInvoiceList?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&invoiceType=receivable",
+	     url : vmsUrl+"/getClientBasedInvoiceList?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&invoiceType=receivable",
 			success: function(json) {
 			var result = "";
 			result = result +'  <div class="modal-dialog modal-lg">                                                                                         ';
@@ -1346,7 +1352,7 @@ function mergeInvoice(parentTotalAmount){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var linkRadio = $('input[name=linkedInvoice]');
 	var checkVal = linkRadio.filter(':checked').val();
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var total = $('#linkedReceivableTotalId'+checkVal+'').text();
 	var calculatedAmount = 	parentTotalAmount - total;
 	
@@ -1355,7 +1361,7 @@ function mergeInvoice(parentTotalAmount){
 	 $.ajax({
    	 type: "POST",
 	     dataType : 'json',
-	    	 url: sourceleadUrl+"/linkInvoice?"+tokenParamName+"="+tokenValue+"&checkVal="+checkVal+"&invoiceType=Receivable&invoiceUUID="+invoiceUUID, 
+	    	 url: vmsUrl+"/linkInvoice?"+tokenParamName+"="+tokenValue+"&checkVal="+checkVal+"&invoiceType=Receivable&invoiceUUID="+invoiceUUID, 
             success: function(json) {
            	
        },
@@ -1387,8 +1393,8 @@ function showDiffAmountPopup(calculatedAmount,currencyCode){
 function cancel(){
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
-	var sourceleadUrl ='${sourceleadUrl}';
-	location.replace(sourceleadUrl+"/invoiceList");	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	location.replace(vmsUrl+"/invoiceList");	
 }
 </script>
 
@@ -1398,9 +1404,9 @@ function unLinkInvoice(invoiceUUID){
 	$.ajax({
 	   	 type: "POST",
 		     dataType : 'json',
-		    	 url: sourceleadUrl+"/unLinkInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
+		    	 url: vmsUrl+"/unLinkInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
 	            success: function(data) {
-	            	location.replace(sourceleadUrl+"/invoiceList");	
+	            	location.replace(vmsUrl+"/invoiceList");	
 	       },
 	   });  
 }

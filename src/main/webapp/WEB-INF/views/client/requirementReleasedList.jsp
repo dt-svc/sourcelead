@@ -75,7 +75,7 @@ function clientRequirementList(orgRelationId){
 	function clientReqList(orgRelationId) {
 		
 		var orgRelationId =$("#orgRelationId").val();
-		var sourceleadUrl = '${sourceleadUrl}';
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
 			  reqListClientDate = 'YYYY-MM-DD';
@@ -94,7 +94,7 @@ function clientRequirementList(orgRelationId){
 		
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getClientReleasedRequirementList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&status="+status, 
+	    	url : vmsUrl+"/getClientReleasedRequirementList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&status="+status, 
 	        success: function(json) {
 	        	
     			$("#clientSubmissionRequirementList").empty();
