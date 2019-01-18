@@ -67,10 +67,10 @@ function vendorContacts(orgRelationID,clientLocationId){
 
 <script type="text/javascript">
 	function vendorContactList(orgRelationID,vendorLocationId) {
-		var sourceleadUrl = '${sourceleadUrl}';
+		var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor", 
+	    	url : vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor", 
 	        success: function(json) {
 	        	
 	        	
@@ -216,10 +216,10 @@ function vendorContacts(orgRelationID,clientLocationId){
 <script>
 function changeSpocStatus(spocId,vendorLocationId){
 	var spocStatus = $('#spocStatus'+spocId).val();
-	var sourceleadUrl = '${sourceleadUrl}';
+	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/changeSpocStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
+	    url: vmsUrl+"/changeSpocStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
 	    success: function(data) {
 	    	vendorContactList(orgRelationID,vendorLocationId);
 	    }
@@ -263,7 +263,7 @@ function terminateVendorSpoc(spocId, orgRelationID,vendorLocationId,spocName){
 </script>
 <script>
 function saveReasonForVendorSpocTermination(spocId, orgRelationID,vendorLocationId,spocName){
-	var sourceleadUrl = '${sourceleadUrl}';
+	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	var userId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var reason = document.getElementById("reasonForSpoc").value;
@@ -284,8 +284,8 @@ function saveReasonForVendorSpocTermination(spocId, orgRelationID,vendorLocation
 	          data: formData,
 	          processData: false,
 	          contentType:false, 
-	     	  url: sourceleadUrl+"/terminateSpoc",
-// 		   	url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Vendor",   	   
+	     	  url: vmsUrl+"/terminateSpoc",
+// 		   	url: vmsUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Vendor",   	   
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
@@ -315,12 +315,12 @@ $(".project_inn_mask").fadeOut(200);
 <!-- This script is for resending the invitation mail -->
 <script type="text/javascript">
 function resendSpocInvitation(spocUserId,orgRelationID,vendorLocationId,spocId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	if(spocUserId != null && spocUserId != ""){
 	//	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/resendSpocInvitationEmail?"+tokenParamName+"="+tokenValue+"&spocUserId="+spocUserId+"&orgSpocId="+spocId+"&responderType=Vendor&orgRelationID="+orgRelationID, 
+			        url: vmsUrl+"/resendSpocInvitationEmail?"+tokenParamName+"="+tokenValue+"&spocUserId="+spocUserId+"&orgSpocId="+spocId+"&responderType=Vendor&orgRelationID="+orgRelationID, 
 			        success: function(result) {
 			        	//$("#loading").removeAttr("style"); 
 			        	vendorContactList(orgRelationID,vendorLocationId);
@@ -533,10 +533,10 @@ $('html').click(function(){
 	function checkVendorContactAdd(orgRelationId,vendorLocationId) {
 		if ($('#clinetContact_form').validate(false, validationSettings)) {
 			var formData = $($('#clinetContact_form')[0]).serialize();
-			var sourceleadUrl = '${sourceleadUrl}';
+			var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 			$("#addClientContact").attr("disabled", "disabled");
 			$("#addClientContact").addClass('button').val('Processing..');
-			$.post(sourceleadUrl+"/saveClinentAndVendorContact?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&clientLocationId="+vendorLocationId+"&responderType=Vendor", formData, function(data) {
+			$.post(vmsUrl+"/saveClinentAndVendorContact?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&clientLocationId="+vendorLocationId+"&responderType=Vendor", formData, function(data) {
 				$("#popUpDivContact").removeClass("edit-details-active");
 				$("#vendorConactTerminateMsgDiv").removeAttr("style");
 	 			$("#vendorConactTerminateMsgDiv").css({ display: "block" });
@@ -570,13 +570,13 @@ $('html').click(function(){
  function validateSpocEmail(orgRelationId) {
 	 var EmailId = document.getElementById("EmailId").value; 
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 if(EmailId != null && EmailId != ""){
 		 $("#addClientContact").attr("disabled", "disabled");
          $("#addClientContact" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateSpocEmailId?"+tokenParamName+"="+tokenValue+"&email="+EmailId+"&orgRelationId="+orgRelationId, 
+		        url: vmsUrl+"/validateSpocEmailId?"+tokenParamName+"="+tokenValue+"&email="+EmailId+"&orgRelationId="+orgRelationId, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
@@ -601,11 +601,11 @@ $('html').click(function(){
 function getSpocUserDetails(orgLocationId,orgRelationID){
 	getOwners(orgRelationID);
 	var email = document.getElementById("EmailId").value;
-	var sourceleadUrl = '${sourceleadUrl}';
+	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	if(email){
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getSpocUserDetails?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgLocationId="+orgLocationId,
+	    	url : vmsUrl+"/getSpocUserDetails?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgLocationId="+orgLocationId,
 	        contentType: "application/json; charset=utf-8",
 	        dataType: "json",
 	        success: function(data) {
@@ -680,10 +680,10 @@ function getSpocUserDetails(orgLocationId,orgRelationID){
 
 <script>
 function acceptSpocInvitation(spocId,orgRelationId,clientLocationId){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/saveInvitationStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&invitationStaus=Accepted",	    	   
+		    url: vmsUrl+"/saveInvitationStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&invitationStaus=Accepted",	    	   
 		    success: function(data) {
 		    	$("#vendorConactTerminateMsgDiv").removeAttr("style");
 	 			$("#vendorConactTerminateMsgDiv").css({ display: "block" });
@@ -697,10 +697,10 @@ function acceptSpocInvitation(spocId,orgRelationId,clientLocationId){
 
 <script>
 function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/saveInvitationStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&invitationStaus=Rejected",
+		    url: vmsUrl+"/saveInvitationStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&invitationStaus=Rejected",
 		    success: function(data) {
 		    	$("#vendorConactTerminateMsgDiv").removeAttr("style");
 	 			$("#vendorConactTerminateMsgDiv").css({ display: "block" });
@@ -716,12 +716,12 @@ function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
  function getOwners(orgRelationID) {
 	 var email = document.getElementById("EmailId").value; 
 	 var orgRelationId = orgRelationID;
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var SourceLeadWeb_userId= '${SourceLeadWeb_userId}';
 	 if(email != null && email != "" && email != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllOwners?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&type=vendor",  
+		        url: vmsUrl+"/getAllOwners?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&type=vendor",  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	/* var output = "";
@@ -779,11 +779,11 @@ function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
 function validateEmail1(orgRelationId){
 	 //getOwners(orgRelationID);
 	var email = document.getElementById("EmailId").value;
-	var sourceleadUrl = '${sourceleadUrl}';
+	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	if(email != null){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&contactType=vendor",
+			url : vmsUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&contactType=vendor",
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {
@@ -825,11 +825,11 @@ function validateEmail1(orgRelationId){
 <script type="text/javascript">
  function getOwnersList() {
 	 var email = document.getElementById("email").value; 
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 if(email != null && email != "" && email != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getOwnersList?"+tokenParamName+"="+tokenValue+"&email="+email+"&type=Vendor", 
+		        url: vmsUrl+"/getOwnersList?"+tokenParamName+"="+tokenValue+"&email="+email+"&type=Vendor", 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";

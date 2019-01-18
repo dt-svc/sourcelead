@@ -93,7 +93,7 @@ function vendorRequirementListInclude(orgRelationID){
 <script type="text/javascript">
 	function vendorReqListFunction(orgRelationID) {
 		// var orgRelationId =$("#orgRelationId").val();
-	        var sourceleadUrl = '${sourceleadUrl}';
+	        var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	        var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  	  if(locationList.match("yyyy-MM-dd")){
 	  		  reqVendorDatePattern = 'YYYY-MM-DD';
@@ -112,7 +112,7 @@ function vendorRequirementListInclude(orgRelationID){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	   url: sourceleadUrl+"/getVendorJobs?"+tokenParamName+"="+tokenValue+"&orgRelationID="+orgRelationID+"&status="+status, 	
+	    	   url: vmsUrl+"/getVendorJobs?"+tokenParamName+"="+tokenValue+"&orgRelationID="+orgRelationID+"&status="+status, 	
 	    	success: function(json) {
 	        	
 	        
@@ -207,23 +207,6 @@ function vendorRequirementListInclude(orgRelationID){
 			            	result = result +"<td><div>"+opt.requirementSubmissionStatus+"</div></td>";
 			            	
 			            	result = result +"</div></td>";
-			            	/* if(opt.requirementSubmissionStatus == "OPEN"){
-			            		openCount = openCount+1;       
-       		        	 }else if(opt.requirementSubmissionStatus == "NEW"){
-       		        		newCount = newCount +1;    
-       		        	 }else if(opt.requirementSubmissionStatus == "FILLEDCLOSED"){
-       		        		filledClosedCount = filledClosedCount +1; 
-       		        	 }else if(opt.requirementSubmissionStatus == "UNFILLEDCLOSED"){
-       		        		unfilledCount = unfilledCount +1;   
-       		        	 }else if(opt.requirementSubmissionStatus == "ONHOLD"){
-       		        		onHoldCount = onHoldCount +1;   
-       		        	 }else if(opt.requirementSubmissionStatus == "CANCEL"){
-       		        		cancelCount = cancelCount +1;   
-       		        	 }else if(opt.requirementSubmissionStatus == "REJECTED"){
-       		        		rejectedCount = rejectedCount +1;   
-       		        	 }else if(opt.requirementSubmissionStatus == "CLOSED"){
-       		        		closedCount = closedCount +1;     
-       		        	 } */
 			            	
 			            	result = result +"</tr>";
 					  }

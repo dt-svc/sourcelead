@@ -15,7 +15,7 @@
 	function vendorDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId,spocLocationId,orgRelationId){
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&spocLocationId="+spocLocationId+"&orgRelationId="+orgRelationId+"&type=Vendor",
+					url : vmsUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&spocLocationId="+spocLocationId+"&orgRelationId="+orgRelationId+"&type=Vendor",
 					success : function(json) {
 // 						var json = JSON.parse(data);
 						getVendorDashboardName(json.spocName);
@@ -85,18 +85,6 @@
 							result = result + '<div class="clearfix"></div>';
 							result = result + '</div>';
 							
-							/* spoc Status */
-							
-					       /*  result = result + ' <td><div>';
-							result = result + ' <select id="spocStatus" name="spocStatus">';
-							result = result + ' <option value="">-Select Status-</option>';
-							result = result + ' <option '+selected1+'>Active</option>';
-							result = result + ' <option '+selected2+'>In-Active</option>';
-							result = result + ' <option '+selected3+'>New</option>';
-							result = result + ' <option '+selected4+'>Negotiation</option>';
-							result = result + ' <option '+selected5+'>Contracted</option>';
-							result = result + ' </select>';
-							result = result + ' </div></td>'; */
 							
 							/* Owners */
 							result = result + '<div class="project_details_cta">';
@@ -183,7 +171,7 @@ function getCustomDependentFieldVedorContact(clientLocationId,orgRelationID,sect
 	function editVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId,orgRelationId,spocLocationId) {
 		      $.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&spocLocationId="+spocLocationId+"&orgRelationId="+orgRelationId+"&type=Vendor",
+						url : vmsUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&spocLocationId="+spocLocationId+"&orgRelationId="+orgRelationId+"&type=Vendor",
 						success : function(json) {
 						var result = "";
 						var selected1 = '';
@@ -448,7 +436,7 @@ function allowInvoiceEmailSent(){
 	 if(EmailId != null && EmailId != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getVendorClientEmailVerification?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId+"&spocId="+spocId, 
+		        url: vmsUrl+"/getVendorClientEmailVerification?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId+"&spocId="+spocId, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
@@ -479,7 +467,7 @@ function allowInvoiceEmailSent(){
 	function storeVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId,spocLocationId,orgRelationId) {
          if ($('#editVendorContact_form').validate(false, validationSettings)){
 	      	 var formData = getFormData("editVendorContact_form");
-		 $.post(sourceleadUrl+"/vendorContactDetailsUpdateUsingId?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&type=Vendor", formData, function(data) {
+		 $.post(vmsUrl+"/vendorContactDetailsUpdateUsingId?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&type=Vendor", formData, function(data) {
 			 var newOwner = data;
 		    	$("#spocDetailsId").removeAttr("onClick")
 		    	$("#spocDetailsId").attr("onclick","vendorDetailsbySpocId('"+spocId+"', '"+newOwner+"', '"+spocUserId+"', '"+ownerId+"','"+spocLocationId+"','"+orgRelationId+"')");

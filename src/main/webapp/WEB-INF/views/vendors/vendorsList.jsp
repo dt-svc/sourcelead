@@ -1335,22 +1335,22 @@ $(".addcon-pop").click(function(){
 </script> 
 
 
-<jsp:include page="editVendor.jsp" />
-<jsp:include page="editSpocDetails.jsp" />
-<jsp:include page="vendorContacts.jsp" />
-<jsp:include page="vendorDocuments.jsp" />
-<jsp:include page="vendorContracts.jsp" />
-<jsp:include page="vendorSpocDocuments.jsp" />
+<jsp:include page="editVendor.jsp" /> <!-- done -->
+<jsp:include page="editSpocDetails.jsp" /> <!-- done -->
+<jsp:include page="vendorContacts.jsp" />  <!-- done -->
+<jsp:include page="vendorDocuments.jsp" /><!-- done But pointing Admin--> 
+<jsp:include page="vendorContracts.jsp" /> <!-- done -->
+<jsp:include page="vendorSpocDocuments.jsp" /><!-- done But pointing Admin--> 
 
-<jsp:include page="vendorRequirmentList.jsp" />
+<jsp:include page="vendorRequirmentList.jsp" /> <!-- done -->
 
-<jsp:include page="vendorBilling.jsp" /> 
-<jsp:include page="vendorAssociatesList.jsp" /> 
-<jsp:include page="vendorNotesList.jsp" />
-<jsp:include page="vendorListDatatable.jsp" />
-<jsp:include page="vendorContactsDataTable.jsp" />
-<jsp:include page="vendorOnboardSubmittedDocuments.jsp" />
-<jsp:include page="vendorOnboardSubmittedTasks.jsp" />
+<jsp:include page="vendorBilling.jsp" /> <!-- done -->
+<jsp:include page="vendorAssociatesList.jsp" /> <!-- done -->
+<jsp:include page="vendorNotesList.jsp" /> <!-- done But pointing Admin--> 
+<jsp:include page="vendorListDatatable.jsp" /> <!-- done -->
+<jsp:include page="vendorContactsDataTable.jsp" />  <!-- done -->
+<jsp:include page="vendorOnboardSubmittedDocuments.jsp" />  <!-- done -->
+<jsp:include page="vendorOnboardSubmittedTasks.jsp" />  <!-- done -->
 
 
 <!-- Scripts for invitations  -->

@@ -196,21 +196,6 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                    
 	                     $("#vendorDocumentsList").append(result); 
 	                     vendorNewPagination(); 
-               /* }else{
-	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Documents Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#vendorDocumentsList").empty();
-				    $("#vendorDocumentsList").append(result); 
-               } */
         },
           
      }); 
@@ -480,7 +465,7 @@ function closeDocPopup(){
 function getSpocsList(orgRelationId){
 	$.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Vendor",  
+        url: vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Vendor",  
         success: function(json) {
         	//var json = JSON.parse(data);
         	var output = "";
