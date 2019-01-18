@@ -3,8 +3,10 @@ package com.bis.sourcelead.payroll.dao.impl;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +29,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.IndPaysheetFrequencyDao;
 import com.bis.sourcelead.payroll.dto.IndEmployeePayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.entity.Checks;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.util.CommonUtil;
@@ -358,8 +361,41 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 
 
 	@Override
-	public List<IndEmployeePayroll> getYTDIndEmployeePayrollList(String employeePayRollUUID) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public List<IndEmployeePayroll> getYTDIndEmployeePayrollList(Long candidateId, String startMonth) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		Date date = null;
+		if(StringUtils.isNotBlank(startMonth)) {
+			date = new SimpleDateFormat("MMMM").parse(startMonth);
+		}else {
+			date = new SimpleDateFormat("MMMM").parse("January");
+		}
+		
+		int fysMonth = date.getMonth() + 1;
+		Date cDate = new Date();
+ 		int cMonth = cDate.getMonth() + 1;
+ 		
+ 		int totalMonths = 0;
+ 		
+ 		if(cMonth < fysMonth) {
+ 			totalMonths = 12 - fysMonth + cMonth;
+ 		}
+ 		if(cMonth > fysMonth) {
+ 			totalMonths = cMonth - fysMonth;
+ 		}
+ 		
+ 		Calendar cal = Calendar.getInstance();
+ 		cal.setTime(cDate);
+ 		cal.add(Calendar.MONTH, -totalMonths);
+ 		cal.add(Calendar.DATE, -(cal.get(Calendar.DATE)-1));
+ 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String updatedDateStr     = dateFormat.format(cal.getTime());
+        Date updatedDate = dateFormat.parse(updatedDateStr);
+        java.sql.Date sqlDate = new java.sql.Date(updatedDate.getTime());
+       
+		List<IndEmployeePayroll> indEmpPayrollList = null;
+		String query = "";
+		query = "from IndEmployeePayroll iep where iep.candidate =:candidateId and iep.indPaysheetFrequency.frequencyStartDate <= :sqlDate";
+		indEmpPayrollList = session.createQuery(query).setLong("candidateId", candidateId).setDate("sqlDate", sqlDate).list();
+		return indEmpPayrollList;
 	}
 }

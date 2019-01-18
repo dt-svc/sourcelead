@@ -31,5 +31,5 @@ public interface IndPaysheetFrequencyDao {
 
 	ResponseList<IndEmployeePayroll> getPayrollRegisterReports(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations);
 	
-	List<IndEmployeePayroll> getYTDIndEmployeePayrollList(String employeePayRollUUID)throws Exception;
+	List<IndEmployeePayroll> getYTDIndEmployeePayrollList(Long candidateId, String startMonth)throws Exception;
 }

@@ -313,7 +313,7 @@ function payrollRegisterPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		if(opt.grossPay !=null && opt.grossPay != '' && opt.grossPay !='undefined'){
-	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.grossPay+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.grossPay+'</div>';
+	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.grossPay+'" ><i class="fa fa-inr"style="color:#454545;"></i> '+opt.grossPay+'</div>';
 	        		}else{
 	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
 	        		}
@@ -325,7 +325,7 @@ function payrollRegisterPagination(url){
                   "sorting":false,
                   "render": function ( data, type, opt, meta ) {
                 	var result = "";
-  	    	  		result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdTaxes+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.ytdTaxes+'</div>';
+  	    	  		result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdTaxes+'" ><i class="fa fa-inr"style="color:#454545;"></i> '+opt.ytdTaxes+'</div>';
   	    	  		return result; 
                   }
                }, {
@@ -334,7 +334,7 @@ function payrollRegisterPagination(url){
                     "sorting":false,
                     "render": function ( data, type, opt, meta ) {
                   		var result = "";
-    	    	  		result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.deducationAmount+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.deducationAmount+'</div>';
+    	    	  		result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.deducationAmount+'" ><i class="fa fa-inr"style="color:#454545;"></i> '+opt.deducationAmount+'</div>';
     	    	  		return result; 
                     }
                 }, {
@@ -344,7 +344,7 @@ function payrollRegisterPagination(url){
                       "render": function ( data, type, opt, meta ) {
                    		var result = "";
       	    	  		if(opt.netPay !=null && opt.netPay != '' && opt.netPay !='undefined'){
-      	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.netPay+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.netPay+'</div>';
+      	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.netPay+'" ><i class="fa fa-inr"style="color:#454545;"></i> '+opt.netPay+'</div>';
       	        		}else{
       	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
       	        		}
@@ -356,7 +356,7 @@ function payrollRegisterPagination(url){
                     "sorting":false,
                     "render": function ( data, type, opt, meta ) {
                  		var result = "";
-    	    	  		result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdNetPay+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.ytdNetPay+'</div>';
+    	    	  		result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdNetPay+'" ><i class="fa fa-inr"style="color:#454545;"></i> '+opt.ytdNetPay+'</div>';
     	    	  		return result; 
                     }
                 }],

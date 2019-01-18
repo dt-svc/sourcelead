@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -622,9 +623,11 @@ public class OrgSettingsController {
 			//model.addObject("emailReminderList", emailReminderList);
 			
 			for(EmailReminder emailReminder : emailReminderList) {
+				emailReminder.setEmailReminderHierarchyList(emailReminder.getEmailReminderHierarchyList().stream().filter(h->h.getStatus() != 0).collect(Collectors.toList()));
 				if(emailReminder.getScenarionName().equalsIgnoreCase("ApplicantJoining")) {
-					model.addObject("emailReminder", emailReminder);
+					model.addObject("applicantJoining", emailReminder);
 				}
+				
 				
 			}
 			
