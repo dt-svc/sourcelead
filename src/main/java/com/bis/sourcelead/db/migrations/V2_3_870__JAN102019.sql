@@ -48,9 +48,31 @@ set SQL_SAFE_UPDATES=0;
 UPDATE `EMAIL_SCENARIO` SET `BODY`= 'Dear [Vendor_Contact],\n\n We are pleased to inform you that the applicant sent by you have been selected for [Requirement_Name]. \n\n If you would like to release offer, Please click here \n\n[Link]' WHERE `UNIQUE_SCENARIO_NAME`='Client to Vendor Acceptence' and `ENTITY_TYPE`='Email';
 set SQL_SAFE_UPDATES=1;
 
+#Offer Accepted
+INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` where UNIQUE_SCENARIO_NAME = 'Offer Accepted' and `ENTITY_TYPE` = 'Email' and `IS_TEMPLATE_MODIFIED` = 'N'), 'loginURL', '[Login_URL]');
+set SQL_SAFE_UPDATES=0;
+UPDATE `EMAIL_SCENARIO` SET `BODY`= ' Dear [Client_Contact_Name],\n\n[Offered_Applicant_Name] accepted the offer for [Offered_Requirement_Name].\nJoin Date :[Offered_Join_Date]\nJob Details : [Requirement_Description]\nRate : [Offered_Rate].\n Please click here \n\n[Login_URL]' WHERE `UNIQUE_SCENARIO_NAME`='Offer Accepted' and `ENTITY_TYPE`='Email';
+set SQL_SAFE_UPDATES=1;
 
 
+#Offer Rejected
+INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` where UNIQUE_SCENARIO_NAME = 'Offer Rejected' and `ENTITY_TYPE` = 'Email' and `IS_TEMPLATE_MODIFIED` = 'N'), 'loginURL', '[Login_URL]');
+set SQL_SAFE_UPDATES=0;
+UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Client_Contact_Name],\n\n [Offer_Rejected_Applicant_Name] rejected the offer for [Requirement_Name]. \n Join Date :  [Join_Date] \n Rate : [Rate] \n Reject Reason: [Reject_Reason]\n Please click here \n\n[Login_URL] '  WHERE `UNIQUE_SCENARIO_NAME`='Offer Rejected' and `ENTITY_TYPE`='Email';
+set SQL_SAFE_UPDATES=1;
 
+
+#ApplicantAcceptOffer
+INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` where UNIQUE_SCENARIO_NAME = 'ApplicantAcceptOffer' and `ENTITY_TYPE` = 'Email' and `IS_TEMPLATE_MODIFIED` = 'N'), 'loginURL', '[Login_URL]');
+set SQL_SAFE_UPDATES=0;
+UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Org_User],\n\nCongratulations! Your Offer has been accepted. \nPlease find the details below\nJob ID/ Title /Project Name : [Job_Title]\nJoin Date :  [Join_Date]\nYou can go ahead and click below to start your onboarding process.\n\n[Login_URL]'  WHERE `UNIQUE_SCENARIO_NAME`='ApplicantAcceptOffer' and `ENTITY_TYPE`='Email';                                         
+set SQL_SAFE_UPDATES=1;
+
+#ApplicantRejectOffer
+INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` where UNIQUE_SCENARIO_NAME = 'ApplicantRejectOffer' and `ENTITY_TYPE` = 'Email' and `IS_TEMPLATE_MODIFIED` = 'N'), 'loginURL', '[Login_URL]');
+set SQL_SAFE_UPDATES=0;
+UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Org_User],\n\nI regret to inform you that I will not be able to accept your Offer for the following position.\nJob Title: [Job_Title].\nReason: [Reason]\nPlease find the details below.\n\n[Login_URL]'  WHERE `UNIQUE_SCENARIO_NAME`='ApplicantRejectOffer' and `ENTITY_TYPE`='Email';                          
+set SQL_SAFE_UPDATES=1;
 
 
 

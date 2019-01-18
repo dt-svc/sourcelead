@@ -136,6 +136,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	
 	@Autowired
 	CandidateResumesDao candidateResumesDao;
+	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
 
 	
 	@Override
@@ -524,7 +527,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             }
             
             StringBuilder linkSB=new StringBuilder();
-            globalVarsMap.put("link",linkSB.append("<a href='").append(sourceleadUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append
+            globalVarsMap.put("link",linkSB.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append
 
             		("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Offer Release</div></a>").toString());
             // setting the Recipient information
@@ -928,10 +931,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	public String acceptOrRejectOffer(Long submissionId, Long OfferId, User loginUser, String offerStatus, String reason,
 			OrgLocations orgLocations) throws Exception {
 		
+		
 	 
 		RequirementOffers requirementOffers  = requirementOffersDao.getRequirementOfferId(OfferId);
 		List<RequirementOfferHistory> requirementOfferHistories = requirementOfferHistoryService.getAllRequirementOfferHistoriesByOfferId(OfferId);
 	    
+		Long redirectOrgLocationId = requirementOffers.getSubmissionId().getOrgLocations().getId();
 	    if(requirementOfferHistories != null && !requirementOfferHistories.isEmpty() ){  
 		    if("OFFERACCEPTED".equalsIgnoreCase(offerStatus)){
 		    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
@@ -1002,7 +1007,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			     
 			      if(requirementOffers.getSubmissionId().getOrgLocations().getId().longValue() != orgLocations.getId().longValue()){
 			    	  if(requirementOffers.getSubmissionId().getSourceSubmission() != null) {
-			    		  sendOfferAcceptedMail(requirementOffers,loginUser,orgLocations);
+			    		  sendOfferAcceptedMail(requirementOffers,loginUser,orgLocations,redirectOrgLocationId);
 			    	  }
 			    	 
 			      }
@@ -1037,7 +1042,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	    	requirementOffers.setRejectedReason(reason);
 	    		if(requirementOffers.getSubmissionId().getOrgLocations().getId().longValue() != orgLocations.getId().longValue()){
 	    			 if(requirementOffers.getSubmissionId().getSourceSubmission() != null) {
-	    				 sendOfferRejectedMail(requirementOffers,loginUser,orgLocations);
+	    				 sendOfferRejectedMail(requirementOffers,loginUser,orgLocations,redirectOrgLocationId);
 	    			 }
 			      }
 	    	
@@ -1185,7 +1190,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		return contractsDTO;
 	}
 
-	private void sendOfferAcceptedMail(RequirementOffers requirementOffers, User loginUser, OrgLocations orgLocations) throws Exception
+	private void sendOfferAcceptedMail(RequirementOffers requirementOffers, User loginUser, OrgLocations orgLocations,Long redirectOrgLocationId) throws Exception
 	{
 		User vendorContactUser = null;
 		StringBuilder sb = new StringBuilder();
@@ -1195,8 +1200,13 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		emailMessage.setToEmail(requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser().getEmail());
 		emailMessage.setFromEmail(loginUser.getEmail());
 		emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		
+		//URL for page redirection
+		String redirectURL = "/requirementSummary-params-requirementUUID="
+				+ requirementOffers.getSubmissionId().getRequirement().getRequirementUUID();
+				
 		// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		// setting the class filed values
+		// setting the class filed value		
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		globalVarsMap.put("ClientContactName", requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser().getFirstName());
 		StringBuilder vendorName = new StringBuilder();
@@ -1231,6 +1241,15 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		}
 		// globalVarsMap.put("offeredRequirementName",requirementOffers.getSubmissionId().getRequirement().getJobTitle());
 		globalVarsMap.put("OfferedRate", requirementOffers.getAmount());
+		
+		StringBuilder linkBuild = new StringBuilder();
+
+			globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Offer Accepted</div></a>")
+					.toString());
+		
+		
+		
 		// setting the Recipient information
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		EmailScenario emailScenario = null;
@@ -1278,7 +1297,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		// TODO Auto-generated method stub
 	}
 	
-	private void sendOfferRejectedMail(RequirementOffers requirementOffers, User loginUser, OrgLocations orgLocations) throws Exception {
+	private void sendOfferRejectedMail(RequirementOffers requirementOffers, User loginUser, OrgLocations orgLocations,Long redirectOrgLocationId) throws Exception {
 		User vendorContactUser = null;
 		 StringBuilder sb = new StringBuilder();
 		 EmailMessage emailMessage = new EmailMessage();
@@ -1287,9 +1306,11 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		 emailMessage.setToEmail(requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser().getEmail());
 		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-
-		 
+		 			
+			//URL for page redirection
+			String redirectURL = "/requirementSummary-params-requirementUUID="
+					+ requirementOffers.getSubmissionId().getRequirement().getRequirementUUID();									 
+		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 
@@ -1311,6 +1332,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		 globalVarsMap.put("RequirementName",requirementOffers.getSubmissionId().getRequirement().getJobTitle());
 		 globalVarsMap.put("Rate",requirementOffers.getAmount());
 		 globalVarsMap.put("RejectReason",requirementOffers.getRejectedReason());
+		 
+		 StringBuilder linkBuild = new StringBuilder();
+
+				globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+						"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Offer Rejected</div></a>")
+						.toString());
 		 
 		//setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -1664,6 +1691,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	//	SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		EmailMessage emailMessage = new EmailMessage();
 		StringBuilder toUserSb = new StringBuilder();
+		
+		String redirectURL ="/requirementSummary-params-type=APPLICANTS-and-requirementUUID="+requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()+"-and-candidateUUID="+requirementOffers.getSubmissionId().getCandidate().getCandidateUUID()+"-and-submissionId="+requirementOffers.getSubmissionId().getId();	 
+		//String redirectURL = "/requirementSummary-params-requirementUUID="+requirementOffers.getSubmissionId().getRequirement().getRequirementUUID();
+		Long redirectOrgLocationId = requirementOffers.getSubmissionId().getOrgLocations().getId();
+
+		
 		if(StringUtils.isNotBlank(touser.getLastName())){
 			toUserSb.append(touser.getFirstName()).append(" ").append(touser.getLastName());
 		}else{
@@ -1710,8 +1743,10 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			else{
 			globalVarsMap.put("joinDate", "---");
 			}
-		
-
+			StringBuilder linkBuild = new StringBuilder();
+				globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+						"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accepted Offer</div></a>")
+						.toString());
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_OFFER_ACCEPT_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
@@ -1736,6 +1771,10 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		OrgLocations orgloc = orgLocationService.getOrgLocations(requirementOffers.getSubmissionId().getOrgLocations().getId());
 		RequirementSubmissionTemplateFields tempFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementOffers.getSubmissionId().getId());
 	//	SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		
+		String redirectURL ="/requirementSummary-params-type=APPLICANTS-and-requirementUUID="+requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()+"-and-candidateUUID="+requirementOffers.getSubmissionId().getCandidate().getCandidateUUID()+"-and-submissionId="+requirementOffers.getSubmissionId().getId();	 
+		Long redirectOrgLocationId = requirementOffers.getSubmissionId().getOrgLocations().getId();
+
 		EmailMessage emailMessage = new EmailMessage();
 		StringBuilder toUserSb = new StringBuilder();
 		if(StringUtils.isNotBlank(touser.getLastName())){
@@ -1783,6 +1822,11 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			else{
 				globalVarsMap.put("reason", "---");
 			}
+			
+			StringBuilder linkBuild = new StringBuilder();
+				globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+						"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Rejected Offer</div></a>")
+						.toString());
 		
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
