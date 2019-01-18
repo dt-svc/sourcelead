@@ -198,6 +198,18 @@ public class UserLoginHelper {
 		}
 		
 		SourceLeadSessionManager.setSessionAttribute(req, "loginUserRoleId", userRole.getRoles().getId());	
+		SourceLeadSessionManager.setSessionAttribute(req, "userType", loginUser.getUserType());
+		SourceLeadSessionManager.setSessionAttribute(req, "userCode", loginUser.getUserCode());
+
+		StringBuilder userNameSB = new StringBuilder();
+		if (null != loginUser.getLastName()) {
+			SourceLeadSessionManager.setSessionAttribute(req, "userName",
+					userNameSB.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		} else {
+			SourceLeadSessionManager.setSessionAttribute(req, "userName",
+					userNameSB.append(loginUser.getFirstName()).toString());
+		}
+		
        List<SourceleadActions> actionsList = null;
        Collection<Tabs> tabsList = null;
 		Integer associatesTabsCount = 0; 
