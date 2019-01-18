@@ -749,17 +749,17 @@ public class IndianPayrollRestController {
 					dto.setDeducationAmount(iepdt.getGrossPay().subtract(iepdt.getNetPay()));
 					dto.setNetPay(iepdt.getNetPay());
 					
-					/*List<IndEmployeePayroll> ytdList = indPaysheetFrequencyService.getYTDIndEmployeePayrollList(iepdt.getIndEmpPayrollUUID());
-					
-					double ytdPT = ytdList.stream().mapToDouble(ap->ap.getProfessionalTax().doubleValue()).sum();
-					double ytdTDS = ytdList.stream().mapToDouble(ap->ap.getTds().doubleValue()).sum();
-					double ytdNetPay = ytdList.stream().mapToDouble(ap->ap.getNetPay().doubleValue()).sum();
-							
-							
-					dto.setYtdTaxes(new BigDecimal(ytdPT).add(new BigDecimal(ytdTDS)));
-					dto.setYtdNetPay(new BigDecimal(ytdNetPay));*/
-					dto.setYtdTaxes(new BigDecimal(0.00));
-					dto.setYtdNetPay(new BigDecimal(0.00));
+					List<IndEmployeePayroll> ytdList = indPaysheetFrequencyService.getYTDIndEmployeePayrollList(iepdt.getCandidate().getId(), orgLocations.getStartMonth());
+					if(ytdList != null && ytdList.size() > 0) {
+						double ytdPT = ytdList.stream().mapToDouble(ap->ap.getProfessionalTax().doubleValue()).sum();
+						double ytdTDS = ytdList.stream().mapToDouble(ap->ap.getTds().doubleValue()).sum();
+						double ytdNetPay = ytdList.stream().mapToDouble(ap->ap.getNetPay().doubleValue()).sum();
+						dto.setYtdTaxes(new BigDecimal(ytdPT).add(new BigDecimal(ytdTDS)));
+						dto.setYtdNetPay(new BigDecimal(ytdNetPay));
+					}else {
+						dto.setYtdTaxes(new BigDecimal(0.00));
+						dto.setYtdNetPay(new BigDecimal(0.00));
+					}
 					indEmployeePayrollList.add(dto);
 				}
 				responseList.setData(indEmployeePayrollList);

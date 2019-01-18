@@ -248,8 +248,8 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 	}
 
 	@Override
-	public List<IndEmployeePayroll> getYTDIndEmployeePayrollList(String employeePayRollUUID) throws Exception {
-		return indPaysheetFrequencyDao.getYTDIndEmployeePayrollList(employeePayRollUUID);
+	public List<IndEmployeePayroll> getYTDIndEmployeePayrollList(Long candidateId, String startMonth) throws Exception {
+		return indPaysheetFrequencyDao.getYTDIndEmployeePayrollList(candidateId, startMonth);
 	}
  
 }
