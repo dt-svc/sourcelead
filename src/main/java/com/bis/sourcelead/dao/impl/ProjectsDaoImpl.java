@@ -31,6 +31,7 @@ import com.bis.sourcelead.dao.ProjectClientDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.AvailableAssociatesDTO;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -1641,6 +1642,23 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		}
 		return null;
 	}
-	
+
+
+
+	@Override
+	public List<AvailableAssociatesDTO> getProjectsListByUserIDAndOrgId(AvailableAssociatesDTO availableAssociatesDTO,OrgLocations orgLocations) {
+	    try {
+	    	   Session session = this.sessionFactory.getCurrentSession();
+	    	   
+	    	    String query = "from Projects proj where proj.orgLocationsId = :orgLocations and proj.id NOT IN(select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id IN(:userIds) )) ";
+				List<AvailableAssociatesDTO> projectsList =  session.createQuery(query.toString()).setParameter("orgLocationsId", orgLocations).setParameterList("userIds", availableAssociatesDTO.getUserIds()).list();
+				return projectsList;
+	    	   
+	    	   
+	        } catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
 }
 

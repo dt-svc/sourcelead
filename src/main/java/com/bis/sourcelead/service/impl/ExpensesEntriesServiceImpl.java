@@ -106,8 +106,8 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 							entries.setReceiptIssuedBy(entryCategory.getReceiptIssuedBy());
 						}
 						
-						Countries country = countriesService.getCountriesByCountryName(orgLocation.getCountry());
-						String currencyType = null;
+						//Countries country = countriesService.getCountriesByCountryName(orgLocation.getCountry());
+						/*String currencyType = null;
 						if(country!= null &&  country.getCurrency()!= null && !country.getCurrency().equalsIgnoreCase(entryCategory.getCategoryAmountType())){
 							currencyType = country.getCurrency();
 						}
@@ -116,8 +116,10 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 							entries.setCurrencyType(entryCategory.getCategoryAmountType());
 						}else {
 							entries.setCurrencyType(currencyType);
+						}*/
+						if(entryCategory.getCategoryAmountType()!= null) {
+							entries.setCurrencyType(entryCategory.getCategoryAmountType());
 						}
-						
 						
 						entries.setSubmittedamount(new BigDecimal(entryCategory.getCategoryAmount()));
 						

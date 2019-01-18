@@ -49,11 +49,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
+import com.bis.sourcelead.dto.AvailableAssociatesDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
@@ -61,6 +63,7 @@ import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
@@ -1915,4 +1918,17 @@ public class ReportRestController {
 					return projectMembersDTOList;
 				}
 		 
+			
+			@RequestMapping(value = "/getProjectsList")
+			@ResponseBody
+			public Response<AvailableAssociatesDTO> getProjectList(AvailableAssociatesDTO availableAssociatesDTO,HttpServletRequest request,HttpServletResponse response)throws Exception{
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				List<AvailableAssociatesDTO> projectsList = projectsService.getProjectsListByUserIDAndOrgId(availableAssociatesDTO,orgLocations);
+				return (Response<AvailableAssociatesDTO>) projectsList;
+				
+				
+			}
+			
+			
+			
 }
