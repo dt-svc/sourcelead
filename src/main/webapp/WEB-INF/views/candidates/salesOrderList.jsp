@@ -14,7 +14,7 @@
     
        <div class="clearfix">
 	<ul class="project-tabs-menu projecttabs-custom clearfix">
-         <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
+         <li id="" ><a href="/ats/candidatesList">Candidate List</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToCartList();">Cart</a></li>
@@ -156,6 +156,7 @@
   <script>
    var table = "";
    var paymentStatus = "";
+   var atsUrl = '${SourceLeadWeb_atsUrl}';
    $(document).ready(function () {
 	   getDynamicSalesOrderList();
 	 });
@@ -180,7 +181,7 @@
 	  	result = result +"</thead>";
 	  	result = result +"<table>";
 	  	$("#dynamicSalesOrderList").html(result);
-  		url = sourceleadUrl + "/getDynamicSalesOrderList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&salesOrderFromDate="+salesOrderFromDate+"&salesOrderToDate="+salesOrderToDate+"&salesOrderFilterDate="+salesOrderFilterDate;  
+  		url = atsUrl + "/getDynamicSalesOrderList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&salesOrderFromDate="+salesOrderFromDate+"&salesOrderToDate="+salesOrderToDate+"&salesOrderFilterDate="+salesOrderFilterDate;  
   		dynamicSalesOrderList(url);
   	}
   
@@ -309,14 +310,14 @@
  	 }
   
   	function goToSalesOrder(salesUuid){
-		  location.href = "${appPath}/SalesOrder?salesUuid="+salesUuid;
+		  location.href = "/ats/SalesOrder?salesUuid="+salesUuid;
   	}
   
   	function exportSalesOrderToPdf(){
 		  if (!table.data().count()) {
 			  popupDisplay();
 		  }else{
-	  			window.location.href = sourceleadUrl+"/exportSalesOrderToPdfOrExcel?"+tokenParamName+"="+tokenValue+"&exportType=pdf";
+	  			window.location.href = atsUrl+"/exportSalesOrderToPdfOrExcel?"+tokenParamName+"="+tokenValue+"&exportType=pdf";
 		  }
   	}
   
@@ -324,34 +325,34 @@
 		 if (!table.data().count()) {
 			 popupDisplay();
 		 }else{
-		 	 window.location.href = sourceleadUrl+"/exportSalesOrderToPdfOrExcel?"+tokenParamName+"="+tokenValue+"&exportType=excel";
+		 	 window.location.href = atsUrl+"/exportSalesOrderToPdfOrExcel?"+tokenParamName+"="+tokenValue+"&exportType=excel";
 		 }
 	}
 
    </script>
    <script>
   	function goToCandidateList(){
-			location.href = "${appPath}/candidatesList";
+			location.href = "/ats/candidatesList";
 	}
 		
 	function goToGlobalMarketPlaceList(){
-		location.href = "${appPath}/globalMarketplacePage";
+		location.href = "/ats/globalMarketplacePage";
 	}
 
 	function goToOrgMarketPlaceList(){
-		location.href = "${appPath}/OrgMarketplace";
+		location.href = "/ats/OrgMarketplace";
 	}
 	function goToCartList(){
-		location.href = "${appPath}/candidateMarketplaceCart";
+		location.href = "/ats/candidateMarketplaceCart";
 	}
 	function goToPurchaseOrderList(){
-		location.href ="${appPath}/PurchaseOrderList";
+		location.href ="/ats/PurchaseOrderList";
 		}
 	function goToSalesOrderList(){
-		location.href = "${appPath}/SalesOrderList";
+		location.href = "/ats/SalesOrderList";
 	}
 	function goToWalletList(){
-	    location.href = "${appPath}/walletList";
+	    location.href = "/ats/walletList";
 	}
 	function refreshPage(){
 		$("#searchByValue").val('');
