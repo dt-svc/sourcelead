@@ -15,6 +15,10 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>	
+
 <!-- Content Area -->
    <section class="content-wraper">
     <section class="content-header clearfix">
@@ -434,7 +438,7 @@ function validateShiftName(){
 	var id = $("#shiftId").val();	
 	if(name != null && name != '' && name != 'undefined'){
 		if(name.length < 100){
-			$.get(sourceleadUrl+"/validateName?&orgLocationId="+locationId+"&from=Shift&name="+name+"&id="+id, function(data) {
+			$.get(pmsUrl+"/validateName?&orgLocationId="+locationId+"&from=Shift&name="+name+"&id="+id, function(data) {
 	          	if(data == true){	
 	          		$('#shiftNameDiv').find('p.jquery_form_error_message').remove();
 	          		$("#save_shift").removeAttr("disabled");
@@ -458,7 +462,7 @@ function validateShiftName(){
 		 if ($('#addshift_form').validate(false, validationSettings)) {
 			var formData = getFormData("addshift_form");
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			$.post( sourceleadUrl+ "/saveShift?$ "+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&shiftUUID="+shiftUUID, formData, function(result) {
+			$.post( pmsUrl+ "/saveShift?$ "+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&shiftUUID="+shiftUUID, formData, function(result) {
 				if (result && result.response === "INVALID_DATA") {
 	    		    showError(result.responseMessage);
 	    		   } else if (result.response === "AWKWARD") {
@@ -466,9 +470,9 @@ function validateShiftName(){
 	    		   }  else if (result.response === "SUCCESS") {     
 				
 				         $("#loading").removeAttr("style");
-                    	   location.replace(sourceleadUrl+"/viewShift");
+                    	   location.replace(pmsUrl+"/viewShift");
                        }else if (result.indexOf('Sign In') !== -1) {
-               			location.replace(sourceleadUrl);
+               			location.replace(pmsUrl);
                		} else {
                		    showError("Operation failed, please try again");
                		}
@@ -491,7 +495,7 @@ function validateShiftName(){
 
 <script>
 function cancelShift(){
-	location.replace(sourceleadUrl+"/viewShift");
+	location.replace(pmsUrl+"/viewShift");
 }
 </script>
 

@@ -11,13 +11,18 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>	   
+	
+
   <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Add Leave Options</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/leaveConfiguration'/>"> Leave Configuration</a> &raquo;<a href="<c:url value='${appPath}/viewOptions'/>">Leave Options List</a> &raquo; Add Leave Options</div>
+      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="/pms/leaveConfiguration"> Leave Configuration</a> &raquo; <a href="/pms/viewOptions">Leave Options List</a> &raquo; Add Leave Options</div>
     </section>
     <div class="content-area content-new clearfix">
     <div id="loading"></div> 
@@ -171,13 +176,13 @@ function saveLeaveOption(){
 		  	/* var formData = getFormData("add_option_form"); */
 		  	var formData = $($('#add_option_form')[0]).serialize();
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			$.post(sourceleadUrl+"/saveLeaveOption?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(result) {
+			$.post(pmsUrl+"/saveLeaveOption?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(result) {
 				 if (result.response === "AWKWARD") {
 	    		    location.href = "/errorPage";
 	    		   }  else if (result.response === "SUCCESS") { 
-					location.replace(sourceleadUrl+ "/viewOptions");
+					location.replace(pmsUrl+ "/viewOptions");
 				}else if (result.indexOf('Sign In') !== -1) {
-           			location.replace(sourceleadUrl);
+           			location.replace(pmsUrl);
            		} else {
            		    showError("Operation failed, please try again");
            		}
@@ -197,7 +202,7 @@ $('body').on('blur', '#add_option_form', function() {
 
 <script>
 function cancel(){
-	location.replace(sourceleadUrl+ "/viewOptions");
+	location.replace(pmsUrl+ "/viewOptions");
 }
 </script>
 
@@ -254,7 +259,7 @@ function cancel(){
 	    var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var  orgCode ='${SourceLeadWeb_orgCode}';
 		var  roleHierarchyId ='${SourceLeadWeb_roleHierarchyId}';
-		$.get(sourceleadUrl+"/getRoles?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&orgCode="+orgCode+"&roleHierarchyId="+roleHierarchyId, function(result) {
+		$.get(pmsUrl+"/getRoles?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&orgCode="+orgCode+"&roleHierarchyId="+roleHierarchyId, function(result) {
 		  var json = result.data;
 		  var output = "";
       	  output = output +'<select multiple data-placeholder="select owner" class="chosen-select form-control"  id="roles" name="roles" field-name="Role">';

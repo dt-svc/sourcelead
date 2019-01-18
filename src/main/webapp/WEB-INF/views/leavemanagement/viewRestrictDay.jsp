@@ -10,13 +10,17 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
    <!-- Content Area -->
    <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Restrict Day</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/leaveConfiguration'/>">Leave Configuration</a> &raquo; Restrict Day</div>
+		<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="/pms/leaveConfiguration">Leave Configuration</a> &raquo; Restrict Day</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -27,7 +31,7 @@ $(document).ready(function(){
     <div class="timesheet_head">
       <ul>
           <li>
-              <a href="<c:url value='${appPath}/addRestrictDay'/>" title="Add Restrict Day">
+              <a href="/pms/addRestrictDay" title="Add Restrict Day">
                 <i class="fa fa-plus paddingRight"></i>Add Restrict Day
               </a>
           </li>
@@ -71,7 +75,7 @@ function getRestrictDayList(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
         type : "GET",
-         url: sourceleadUrl+"/getRestrictDayList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId,  
+         url: pmsUrl+"/getRestrictDayList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId,  
          success :function(json) {
         	 populateRestrictDayList(json);
         },
@@ -128,7 +132,7 @@ function populateRestrictDayList(response){
     $("#restricDayList").append(result);
     restrictDayPagination();
 	} else if (response.indexOf('Sign In') !== -1) {
-		location.replace(sourceleadUrl);
+		location.replace(pmsUrl);
 	} else {
 	    showError("Operation failed, please try again");
 	}
@@ -183,11 +187,11 @@ function saveDeletedReason(id){
 		}else{
 			 $.ajax({
 				   	type: "POST",
-				    url: sourceleadUrl+"/deleteRestrictedDay?"+tokenParamName+"="+tokenValue+"&restrictUUID="+id+"&reason="+reason,
+				    url: pmsUrl+"/deleteRestrictedDay?"+tokenParamName+"="+tokenValue+"&restrictUUID="+id+"&reason="+reason,
 		   		    success: function(data) {
 		   		    	$("#popUp").empty();
 		   			 	$(".project_inn_mask").fadeOut(200);
-		   			 	location.replace(sourceleadUrl+"/viewRestrictDay");	
+		   			 	location.replace(pmsUrl+"/viewRestrictDay");	
 		   		    }
 			     });
 		}

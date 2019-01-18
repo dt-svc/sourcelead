@@ -9,13 +9,17 @@
 	});
  </script>
  
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+ 
  <!-- Content Area -->
   <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Shift</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/leaveConfiguration'/>">Leave Configuration</a> &raquo; Shift</div>
+		<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; <a href="/pms/leaveConfiguration">Leave Configuration</a> &raquo; Shift</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -50,7 +54,7 @@ function getShiftList(){
        var orgLocationId = '${SourceLeadWeb_orgLocationId}';
        $.ajax({
        type : "GET",
-        url: sourceleadUrl+"/getShiftList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId,       
+        url: pmsUrl+"/getShiftList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId,       
         success :function(json) {
                 populategShiftList(json);
        },
@@ -121,7 +125,7 @@ function populategShiftList(response){
    $("#shiftDev").append(result);
     shiftPagination();
 	} else if (response.indexOf('Sign In') !== -1) {
-		location.replace(sourceleadUrl);
+		location.replace(pmsUrl);
 	} else {
 	    showError("Operation failed, please try again");
 	}
@@ -150,7 +154,7 @@ function shiftPagination(){
 
 <script type="text/javascript">
 function editShift(shiftId) {
-	window.location.href = sourceleadUrl + "/editleaveshift?shiftUUID="+shiftId;
+	window.location.href = pmsUrl + "/editleaveshift?shiftUUID="+shiftId;
 }
 </script>
 
@@ -159,9 +163,9 @@ function deleteShift(shiftId){
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
       $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/deleteShift?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&shiftUUID="+shiftId,       
+       url: pmsUrl+"/deleteShift?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&shiftUUID="+shiftId,       
        success :function(data) {
-    	   location.replace(sourceleadUrl+ "/viewShift");
+    	   location.replace(pmsUrl+ "/viewShift");
       }
        
   }); 

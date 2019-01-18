@@ -10,6 +10,11 @@
 			});
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
+
 
  <!-- Content Area -->
   <section class="content-wraper" id="themeroller">
@@ -17,7 +22,7 @@
       <div class="pull-left">
         <h2>Holidays List</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/leaveConfiguration'/>">Leave Configuration</a> &raquo; Holiday</div>
+		<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; <a href="/pms/leaveConfiguration">Leave Configuration</a> &raquo; Holiday</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -88,7 +93,7 @@ function getHolidaysList(){
 		reportYear = $("#reportYear").val();
 	}
 // 	var userId = '${SourceLeadWeb_userId}';
-	$.get(sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&reportYear="+reportYear+"&shiftIds="+shiftIds, function(response) {
+	$.get(pmsUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&reportYear="+reportYear+"&shiftIds="+shiftIds, function(response) {
 		 if (response.response === "AWKWARD") {
 		    location.href = "/errorPage";
 		} else if (response.response === "SUCCESS") {
@@ -152,7 +157,7 @@ function getHolidaysList(){
 				viewHolidaysTablePagination();
 				viewHolidaysTable();
 		} else if (response.indexOf('Sign In') !== -1) {
-			location.replace(sourceleadUrl);
+			location.replace(pmsUrl);
 		} else {
 		    showError("Operation failed, please try again");
 		}
@@ -161,8 +166,8 @@ function getHolidaysList(){
 </script> 
 <script>
 function deleteHoliday(holidayId){
-			 $.get(sourceleadUrl+"/deleteHoliday?"+tokenParamName+"="+tokenValue+"&holidayUUID="+holidayId, function(data) {
-				 location.replace(sourceleadUrl+ "/viewHoliday");
+			 $.get(pmsUrl+"/deleteHoliday?"+tokenParamName+"="+tokenValue+"&holidayUUID="+holidayId, function(data) {
+				 location.replace(pmsUrl+ "/viewHoliday");
 			 }); 
 		
 }

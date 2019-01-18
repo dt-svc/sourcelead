@@ -2,6 +2,11 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
  
  <script>
  function fromDayCheckBox(){
@@ -267,16 +272,16 @@ $(document).ready(function() {
 		if ($('#holiday_form').validate(false, validationSettings)) {
 		  	var formData = $($('#holiday_form')[0]).serialize();
 		  	 $("#holidayLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			$.post(sourceleadUrl+"/saveHoliday?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", formData, function(result) {
+			$.post(pmsUrl+"/saveHoliday?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", formData, function(result) {
 				if (result.response === "INVALID_DATA") {
 	    		    showError(result.responseMessage);
 	    		} else if (result.response === "AWKWARD") {
 	    		    location.href = "/errorPage";
 	    		} else if (result.response === "SUCCESS") {
 	    			$("#holidayLoading").removeAttr("style");	
-					location.replace(sourceleadUrl+ "/viewHoliday");
+					location.replace(pmsUrl+ "/viewHoliday");
 	    		} else if (result.indexOf('Sign In') !== -1) {
-	    			location.replace(sourceleadUrl);
+	    			location.replace(pmsUrl);
 	    		} else {
 	    		    showError("Operation failed, please try again");
 	    		}
@@ -303,7 +308,7 @@ $(document).ready(function() {
 </script> 
 <script>
 function cancel(){
-	location.replace(sourceleadUrl+ "/viewHoliday");
+	location.replace(pmsUrl+ "/viewHoliday");
 }
 </script>
 <script>
@@ -369,7 +374,7 @@ function validateHolidayName(){
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
 	if(name != null && name != '' && name != 'undefined' && fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
-		$.get(sourceleadUrl+"/validateHolidayName?&orgLocationId="+locationId+"&from=Holiday"+"&name="+name+"&id="+id+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
+		$.get(pmsUrl+"/validateHolidayName?&orgLocationId="+locationId+"&from=Holiday"+"&name="+name+"&id="+id+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
 			if(data == true){
           		$('#holidayNameDiv').find('p.jquery_form_error_message').remove();
           		$("#save_holiday").removeAttr("disabled");

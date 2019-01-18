@@ -15,6 +15,10 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
  <!-- Content Area -->
   <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
@@ -59,7 +63,7 @@ $(document).ready(function(){
 
 <script>
 function redirectlocation(location){
-	window.location.href = sourceleadUrl + location;
+	window.location.href = pmsUrl + location;
 }
 </script>
 
@@ -68,7 +72,7 @@ function getRejectedLeavesList(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_user.id}';
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	$.get(sourceleadUrl+"/getLeavesListByLocationIdAndStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&status=REJECTED&userId="+userId, function(response) {
+	$.get(pmsUrl+"/getLeavesListByLocationIdAndStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&status=REJECTED&userId="+userId, function(response) {
 		if (response.response === "SUCCESS") {
 		var result = "";				        	
 				result = result + '<table id="rejectedListTable" class="display" cellspacing="0" width="100%" >';
@@ -124,7 +128,7 @@ function getRejectedLeavesList(){
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
-			        		 result = result + '   <a title="Reapply" class="tbldata-dotdot-100" href="'+sourceleadUrl+'/reApplyLeaveByUUID?leaveUUID='+opt.leaveUUID+'&currentStage=REJECTED">Reapply</a>';
+			        		 result = result + '   <a title="Reapply" class="tbldata-dotdot-100" href="'+pmsUrl+'/reApplyLeaveByUUID?leaveUUID='+opt.leaveUUID+'&currentStage=REJECTED">Reapply</a>';
 			        		 result = result + '</td>';
 			        		 result = result + '  </tr>';
 						}
@@ -148,7 +152,7 @@ function getRejectedLeavesList(){
 				    $('.addcandidate-popup').fadeOut(200);
 				}); 
 		}else if (response.indexOf('Sign In') !== -1) {
-			location.replace(sourceleadUrl);
+			location.replace(pmsUrl);
 	    } else if (response.response === "AWKWARD") {
 		    location.href = "/errorPage";
 	     }
@@ -161,7 +165,7 @@ function getRejectedLeavesList(){
 
 <script>
 function getRequestedAproveSummary(leaveUUID,orgLocationId){
-	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(response) {
+	   $.get(pmsUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(response) {
 		   if(response.response === "SUCCESS") {
 			   if(response != null){
 			$(".new_side_wrap").addClass("new_side_wrap_active");
@@ -306,7 +310,7 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
 				//$(".new_side_wrap").removeClass("new_side_wrap_active");
   		    showError(response.responseMessage);
 		   } else if (response.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
+				location.replace(pmsUrl);
 		    } else if (response.response === "AWKWARD") {
 			    location.href = "/errorPage";
 		     }

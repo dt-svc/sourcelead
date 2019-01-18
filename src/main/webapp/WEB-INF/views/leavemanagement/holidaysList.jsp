@@ -11,6 +11,11 @@
 				getHolidaysList();
 		 };
 </script>
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+ 
 	
 <!-- Content Area -->
       <section class="content-wraper">
@@ -101,7 +106,7 @@ function getExpensesList(){
 		  data: jsonData,
   	      contentType : 'application/json; charset=utf-8',
   	      dataType : 'json',
-          url: sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"",     
+          url: pmsUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"",     
           success :function(json) {
         	  var result = "";
 					result = result +" <table id='holidaysPagination'>";
@@ -187,7 +192,7 @@ function expenseView(expenseId){
 	        $("body").css('overflow-y', 'hidden');
 	        $.ajax({
 	            type : "GET",
-	             url: sourceleadUrl+"/getIndividualExpense?expenseId="+expenseId,       
+	             url: pmsUrl+"/getIndividualExpense?expenseId="+expenseId,       
 	             success :function(data) {
 	           	  var result = "";
 	           	  
@@ -420,7 +425,7 @@ function activeTab(){
 
 <script>
 function getEditExpense(eId){
-	window.location.replace(sourceleadUrl+'/addExpense?expenseId='+eId);
+	window.location.replace(pmsUrl+'/addExpense?expenseId='+eId);
 }
 </script>
 
@@ -435,7 +440,7 @@ function exportToPdf(type){
 		});
 		var startDate = $("#filterStartDate").val();
 		var endDate = $("#filterEndDate").val();
-		window.location.href = sourceleadUrl + "/exportAllMyExpensesList?&type="+type+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate;
+		window.location.href = pmsUrl + "/exportAllMyExpensesList?&type="+type+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate;
 	}else{
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";

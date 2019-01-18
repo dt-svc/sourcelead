@@ -15,6 +15,10 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>	
+
  <!-- Content Area -->
   <section class="content-wraper" id="themeroller">
   <div class="success_pop" id="selector1" style="display: none;">
@@ -63,7 +67,7 @@ $(document).ready(function(){
 
 <script>
 function redirectlocation(location){
-	window.location.href = sourceleadUrl + location;
+	window.location.href = pmsUrl + location;
 }
 </script>
 
@@ -72,7 +76,7 @@ function getApprovedLeavesList(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_user.id}';
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	$.get(sourceleadUrl+"/getLeavesListByLocationIdAndStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&status=APPROVED&userId="+userId, function(response) {
+	$.get(pmsUrl+"/getLeavesListByLocationIdAndStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&status=APPROVED&userId="+userId, function(response) {
 		if (response.response === "SUCCESS") {
 		var result = "";				        	
 				result = result + '<table id="approvedListTable" class="display" cellspacing="0" width="100%" >';
@@ -161,7 +165,7 @@ function getApprovedLeavesList(){
 				}); 
 				
 		}else if (response.indexOf('Sign In') !== -1) {
-			location.replace(sourceleadUrl);
+			location.replace(pmsUrl);
 	    } else if (response.response === "AWKWARD") {
 		    location.href = "/errorPage";
 	     }
@@ -175,7 +179,7 @@ function getApprovedLeavesList(){
 
 <script>
 function getRequestedAproveSummary(leaveUUID,orgLocationId){
-	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(response) {
+	   $.get(pmsUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(response) {
 		   if(response.response === "SUCCESS") {
 			   if(response != null){
 			$(".new_side_wrap").addClass("new_side_wrap_active");
@@ -310,7 +314,7 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
 				//$(".new_side_wrap").removeClass("new_side_wrap_active");
   		    showError(response.responseMessage);
 		   } else if (response.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
+				location.replace(pmsUrl);
 		    } else if (response.response === "AWKWARD") {
 			    location.href = "/errorPage";
 		     }
@@ -390,7 +394,7 @@ function withdraw(leaveUUID,locationId){
 	  	 $("#withdrawReasonDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
 	 }else{
 		 $("#withdrawReasonDiv").find('p.jquery_form_error_message').remove();
-		  $.get(sourceleadUrl+"/withdrawLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveUUID="+leaveUUID+"&reason="+reason+"&userId="+userId, function(response) {
+		  $.get(pmsUrl+"/withdrawLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveUUID="+leaveUUID+"&reason="+reason+"&userId="+userId, function(response) {
 			  if (response && response.response === "INVALID_DATA") {
 	    		    showError(response.responseMessage);
 	    		} else if (response.response === "AWKWARD") {
@@ -404,7 +408,7 @@ function withdraw(leaveUUID,locationId){
 		    	     msgFadein();
 		    	     getApprovedLeavesList();
 				} else if (response.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
+					location.replace(pmsUrl);
 				} else {
 				    showError("Operation failed, please try again");
 				}

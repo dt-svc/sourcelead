@@ -14,6 +14,10 @@ $(document).ready(function(){
 	}
 });
 </script>
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
  
 <!-- Content Area -->
   <section class="content-wraper" id="themeroller">
@@ -80,7 +84,7 @@ $(document).ready(function(){
   
  <script>
 function redirectlocation(location){
-	window.location.href = sourceleadUrl + location;
+	window.location.href = pmsUrl + location;
 }
 </script> 
   <script>
@@ -89,7 +93,7 @@ function redirectlocation(location){
 		var userId = '${SourceLeadWeb_userId}';
 		var searchValue = $("#requestedEmployeesTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=PENDING&searchValue="+searchValue;
+		var url = pmsUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=PENDING&searchValue="+searchValue;
 		prepareRequestedEmployeesList(url);
 }
 </script> 
@@ -271,7 +275,7 @@ function requestedEmployeesPagination(url){
 <script>
 function approveLeavePopup(leaveUUID,leaveTypeId,approveStatus,numberOfDays){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveUUID="+leaveUUID, function(data) {
+	$.get(pmsUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveUUID="+leaveUUID, function(data) {
 		if(data == true){
 			var result = "";
 			result = result +"	<div class='project_inn_mask'></div>"; 
@@ -301,7 +305,7 @@ function approveLeave(leaveUUID,leaveTypeId,approveStatus,numberOfDays){
 	 if((reason != null && reason != '' && reason != 'undefined') || (approveStatus == 'APPROVED')) {
 			 $("#rejectReasonDiv").find('p.jquery_form_error_message').remove();
 			 $("#appRejLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			 $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveUUID="+leaveUUID+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays+"&reason="+reason, function(response) {
+			 $.get(pmsUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveUUID="+leaveUUID+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays+"&reason="+reason, function(response) {
 				 if (response && response.response === "INVALID_DATA") {
 		    		    showError(response.responseMessage);
 		    		} else if (response.response === "AWKWARD") {
@@ -323,7 +327,7 @@ function approveLeave(leaveUUID,leaveTypeId,approveStatus,numberOfDays){
 			    	 	$("body").css('overflow-y', 'auto');
 						getRequestedEmployeesList();
 					} else if (response.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
+					location.replace(pmsUrl);
 				 } else {
 				    showError("Operation failed, please try again");
 				 }
@@ -337,7 +341,7 @@ function approveLeave(leaveUUID,leaveTypeId,approveStatus,numberOfDays){
 
 <script>
 function getRequestedAproveSummary(leaveUUID,orgLocationId,totalBalLeaves){
-	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(response) {
+	   $.get(pmsUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(response) {
 		   if(response.response === "SUCCESS") {
 		   if(response != null){
 			$(".new_side_wrap").addClass("new_side_wrap_active");
@@ -511,7 +515,7 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId,totalBalLeaves){
 				//$(".new_side_wrap").removeClass("new_side_wrap_active");
  		    showError(response.responseMessage);
 		   } else if (response.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
+				location.replace(pmsUrl);
 		    } else if (response.response === "AWKWARD") {
 			    location.href = "/errorPage";
 		     }

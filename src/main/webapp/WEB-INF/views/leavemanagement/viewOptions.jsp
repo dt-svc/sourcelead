@@ -9,13 +9,18 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
+
 <!-- Content Area -->
   <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Leave Options</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/leaveConfiguration'/>">Leave Configuration</a> &raquo; Leave Options</div>
+		<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; <a href="<c:url value='${appPath}/leaveConfiguration'/>">Leave Configuration</a> &raquo; Leave Options</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -25,7 +30,7 @@ $(document).ready(function(){
     <div class="timesheet_head">
       <ul>
           <li>
-              <a href="<c:url value='${appPath}/addOptions'/>" title="Add Leave Type"><i class="fa fa-plus paddingRight"></i>Add Leave options</a>
+              <a href="/pms/addOptions" title="Add Leave Type"><i class="fa fa-plus paddingRight"></i>Add Leave options</a>
           </li>
         <div class="clearfix"></div>
       </ul>
@@ -51,7 +56,7 @@ $(document).ready(function(){
 	    var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var userId = '${SourceLeadWeb_userId}';
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.get(sourceleadUrl+"/viewLeaveOption?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId, function(response) {
+		$.get(pmsUrl+"/viewLeaveOption?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId, function(response) {
 			 if (response.response === "AWKWARD") {
 			    location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
@@ -98,7 +103,7 @@ $(document).ready(function(){
 			        		 result = result + '  </td>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="tblminwidth-50">';
-			        		 result = result + '      <span title="Edit" class="paddingRight"><a href="'+sourceleadUrl+'/editOption?optionUUID='+opt.optionUUID+'"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span>';
+			        		 result = result + '      <span title="Edit" class="paddingRight"><a href="'+pmsUrl+'/editOption?optionUUID='+opt.optionUUID+'"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span>';
 			        		 result = result + '     <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteoption(\''+opt.optionUUID+'\')"></i></span>';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
@@ -113,7 +118,7 @@ $(document).ready(function(){
 				$("#loading").removeAttr("style");
 				viewOptionsTable();
          }else if (response.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
+				location.replace(pmsUrl);
 			} else {
 			    showError("Operation failed, please try again");
 			}
@@ -164,7 +169,7 @@ function deleteOption(optionId){
 		$("#deleteLeaveOptinDiv").empty(); 
 		$.ajax({
 		   	type: "POST",
-		   	url: sourceleadUrl+"/deleteLeaveOption?"+tokenParamName+"="+tokenValue+"&optionUUID="+optionId+"&reason="+reason,	    	   
+		   	url: pmsUrl+"/deleteLeaveOption?"+tokenParamName+"="+tokenValue+"&optionUUID="+optionId+"&reason="+reason,	    	   
 		    success: function(data) {
 	   			 $("#selector1").removeAttr("style");
 	  			 $("#selector1").css({ display: "block" });
@@ -173,7 +178,7 @@ function deleteOption(optionId){
 	 			 $(".project_inn_mask").fadeOut(200);
 	             msgFadein();
 	             if(data == true){
-	 				location.replace(sourceleadUrl+ "/viewOptions");
+	 				location.replace(pmsUrl+ "/viewOptions");
 	 			}
 		    }
 	   });

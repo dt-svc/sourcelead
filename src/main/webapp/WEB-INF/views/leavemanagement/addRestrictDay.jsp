@@ -19,6 +19,9 @@
 };
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>	
 
   <!-- Content Area -->
   <section class="content-wraper">
@@ -26,7 +29,7 @@
       <div class="pull-left">
         <h2>Add Restrict Day</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/leaveConfiguration'/>">Leave Configuration</a> &raquo; <a href="<c:url value='${appPath}/viewRestrictDay'/>">Restrict Day List</a> &raquo; Add Restrict Day</div>
+      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="/pms/leaveConfiguration">Leave Configuration</a> &raquo; <a href="/pms/viewRestrictDay">Restrict Day List</a> &raquo; Add Restrict Day</div>
     </section>
     <div class="content-area content-new clearfix">
     <div id="restrictLoading"></div>
@@ -127,7 +130,7 @@
         <div class="col-lg-12">
           <div class="pull-right">
             <input type="button" value="Save" class="btn btn-primary" onclick="storeRestrictedDay();">
-            <input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='${appPath}/viewRestrictDay'/>'" >
+            <input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '/pms/viewRestrictDay'" >
           </div>
         </div>
       </div>
@@ -144,16 +147,16 @@ function storeRestrictedDay(){
          if ($('#restrictDay_form').validate(false, validationSettings)){  
  	 	  	var formData = $($('#restrictDay_form')[0]).serialize();
 		        	  $("#restrictLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		        	  $.post(sourceleadUrl+"/storeRestrictedDay?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"",formData, function(result) {
+		        	  $.post(pmsUrl+"/storeRestrictedDay?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"",formData, function(result) {
 		        		  if (result && result.response === "INVALID_DATA") {
 		  	    		    showError(result.responseMessage);
 		  	    		   } else if (result.response === "AWKWARD") {
 		  	    		    location.href = "/errorPage";
 		  	    		   } else if (result.response === "SUCCESS") {   
 		        		        $("#restrictLoading").removeAttr("style");
-	    		     			location.replace(sourceleadUrl+"/viewRestrictDay");
+	    		     			location.replace(pmsUrl+"/viewRestrictDay");
 			  				} else if (result.indexOf('Sign In') !== -1) {
-		               			location.replace(sourceleadUrl);
+		               			location.replace(pmsUrl);
 		               		} else {
 		               		    showError("Operation failed, please try again");
 		               		}
@@ -239,7 +242,7 @@ function checkDuplicateRestrictDay(){
 	var startDate = $("#startDate").val();
 	var endDate = $("#endDate").val();
 	if(startDate != null && startDate != '' && startDate != 'undefined' && startDate != null && startDate != '' && startDate != 'undefined'){
-		$.get(sourceleadUrl + "/checkDuplicateRestrictDay?&orgLocationId="+ orgLocationId+"&startDate="+startDate+"&endDate="+endDate, function(data) {
+		$.get(pmsUrl + "/checkDuplicateRestrictDay?&orgLocationId="+ orgLocationId+"&startDate="+startDate+"&endDate="+endDate, function(data) {
 			if(data == true){
 				$("#warnDiv").after("<p class='jquery_form_error_message cOrange'><i class='fa fa-exclamation-circle'></i> Your restrict days are already added.</span>");
 			}else{

@@ -197,7 +197,7 @@ public class UserLoginHelper {
 			e1.printStackTrace();
 		}
 		
-		
+		SourceLeadSessionManager.setSessionAttribute(req, "loginUserRoleId", userRole.getRoles().getId());	
        List<SourceleadActions> actionsList = null;
        Collection<Tabs> tabsList = null;
 		Integer associatesTabsCount = 0; 

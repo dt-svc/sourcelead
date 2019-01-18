@@ -30,6 +30,10 @@
 			});
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <script type="text/javascript">
 //script for upload file
 document.getElementById("uploadBtn").onchange = function () {
@@ -104,7 +108,7 @@ background-color: #fcfcfc;
 						        </div>
 						        </form:form>
 			        <div class="pull-left">
-		                 <a href="<c:url value='${appPath}/applyLeave'/>" title="Apply Leave" class="btn btn-primary btn-sm zindex">Apply Leave</a>
+		                 <a href="/pms/applyLeave" title="Apply Leave" class="btn btn-primary btn-sm zindex">Apply Leave</a>
 		            </div>
              </div>
          </sec:authorize>  
@@ -277,19 +281,19 @@ background-color: #fcfcfc;
                 <ul class="list-unstyled list-group clearfix mb5">
                     <li class="clearfix">
                         <label class="pull-left">Requested Leaves</label>
-                        <a href="<c:url value='${appPath}/employeeRequestedLeaves'/>" class="color_white" id="empReq" title="Requested Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>></a>
+                        <a href="/pms/employeeRequestedLeaves" class="color_white" id="empReq" title="Requested Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>></a>
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Approved Leaves</label>
-                        <a href="<c:url value='${appPath}/employeeApprovedLeaves'/>" class="color_white" id="empApp" title="Approved Leaves"><span class="label label-success pull-right" id="employeeApprovedCounts"></span></a>
+                        <a href="/pms/employeeApprovedLeaves" class="color_white" id="empApp" title="Approved Leaves"><span class="label label-success pull-right" id="employeeApprovedCounts"></span></a>
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Rejected Leaves</label>
-                        <a href="<c:url value='${appPath}/employeeRejectedLeaves'/>" class="color_white" id="empRej" title="Rejected Leaves"><span class="label label-danger pull-right" id="employeeRejectedCounts"></span></a>
+                        <a href="/pms/employeeRejectedLeaves" class="color_white" id="empRej" title="Rejected Leaves"><span class="label label-danger pull-right" id="employeeRejectedCounts"></span></a>
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Cancelled Leaves</label>
-                        <a href="<c:url value='${appPath}/employeeCancelLeaves'/>" class="color_white" id="empCanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a>
+                        <a href="/pms/employeeCancelLeaves" class="color_white" id="empCanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a>
                     </li>
                 </ul>
                       
@@ -542,7 +546,7 @@ function getHolidaysList(){
 	if($("#reportYear").val() !=null && $("#reportYear").val() != 'undefined' && $("#reportYear").val() != ''){
 		reportYear = $("#reportYear").val();
 	}
-	$.get(sourceleadUrl+"/getHolidaysList?orgLocationId="+orgLocationId+"&reportYear="+reportYear+"", function(response) {
+	$.get(pmsUrl+"/getHolidaysList?orgLocationId="+orgLocationId+"&reportYear="+reportYear+"", function(response) {
 		if (response.response === "AWKWARD") {
 		    location.href = "/errorPage";
 		} else if (response.response === "SUCCESS") {
@@ -587,7 +591,7 @@ function getHolidaysList(){
 				$("#holidayListDiv").append(result);
 				viewHolidaysTable();
 		} else if (response.indexOf('Sign In') !== -1) {
-			location.replace(sourceleadUrl);
+			location.replace(pmsUrl);
 		} else {
 		    showError("Operation failed, please try again");
 		}
@@ -635,7 +639,7 @@ function getEmployeeLeavesList(){
     {
 		department.push($(this).val());
     });
-	$.get(sourceleadUrl+"/getEmployeeLeavesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&department="+department+"&leaveDateStr="+date, function(data) {
+	$.get(pmsUrl+"/getEmployeeLeavesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&department="+department+"&leaveDateStr="+date, function(data) {
 		var result = "";	
 		 $("#employeelistDiv").empty();
 		if(data != '' && data != null){
@@ -774,7 +778,7 @@ function getLeaveTakersBarChat(){
 	} 
 	$.ajax({
 	   	type: "GET",
-	   	url: sourceleadUrl+"/getLeaveTakersBarChat?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&barChartYear="+barChartYear+"&barCharMonth="+barCharMonth+"&barChartFromDate="+barChartFromDate+"&barChartToDate="+barChartToDate,	    	   
+	   	url: pmsUrl+"/getLeaveTakersBarChat?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&barChartYear="+barChartYear+"&barCharMonth="+barCharMonth+"&barChartFromDate="+barChartFromDate+"&barChartToDate="+barChartToDate,	    	   
 	    success: function(data) {
    			 totalLeaveByEmployeeBarChart(data);
 	    }
@@ -862,7 +866,7 @@ function getPieChartBasedOnUser(){
 	var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
         type : "GET",
-         url: sourceleadUrl+"/getLeaveTypeReport?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,    
+         url: pmsUrl+"/getLeaveTypeReport?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,    
          success :function(data) {
        	  var chartData = [];
        		 var result = "";
@@ -1220,7 +1224,7 @@ function getPieChartBasedOnUser(){
 
 		var searchValue = $("#dataTableSearch").val();
   		searchValue = searchValue ? searchValue : "";
-  		var url = sourceleadUrl+"/getTopLeavetakers?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&searchValue="+searchValue+"&userId="+userId+"&topLeaveTakersreportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate;
+  		var url = pmsUrl+"/getTopLeavetakers?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&searchValue="+searchValue+"&userId="+userId+"&topLeaveTakersreportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate;
   		prepareTopLeaveTakersList(url); 
 	}
 	
@@ -1455,7 +1459,7 @@ function leavePdfExport(){
 	}
 
 	if(emptyExport > 0){
-	window.location.href = sourceleadUrl+"/getLeaveExportList?"+tokenParamName+"="+tokenValue+"&topLeaveTakersreportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate+"&exportType=PDF";
+	window.location.href = pmsUrl+"/getLeaveExportList?"+tokenParamName+"="+tokenValue+"&topLeaveTakersreportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate+"&exportType=PDF";
 	}else{
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -1498,7 +1502,7 @@ function leaveExcelExport(){
 		 reportEndDate = $("#reportEndDate").val();	
 	}
 	if(emptyExport > 0){
-	window.location.href = sourceleadUrl+"/getLeaveExportList?"+tokenParamName+"="+tokenValue+"&topLeaveTakersreportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate+"&exportType=EXCEL";
+	window.location.href = pmsUrl+"/getLeaveExportList?"+tokenParamName+"="+tokenValue+"&topLeaveTakersreportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate+"&exportType=EXCEL";
 	}else{
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -1556,7 +1560,7 @@ if ($('#upload_leave_excel_form').validate(false, validationSettings)){
 	        processData: false,
 	        contentType:false,
     	    dataType : 'json',
-		    url : sourceleadUrl+"/uploadLeaveType?"+tokenParamName+"="+tokenValue+"", 	   
+		    url : pmsUrl+"/uploadLeaveType?"+tokenParamName+"="+tokenValue+"", 	   
  		    success : function(json) {
  		    		$("#loading").removeAttr("style");
  		    	    if(json.updateCount != null && json.updateCount != '')
@@ -1597,13 +1601,13 @@ function getEmployeeTotalCounts(){
 	var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
 	      type : "GET",
-	      url: sourceleadUrl+"/totalCountsForEmployeeLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
+	      url: pmsUrl+"/totalCountsForEmployeeLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
 	       success :function(report) { 
 	    	   if(report.employeeRequestedCounts != null && report.employeeRequestedCounts != '' && report.employeeRequestedCounts != 'undefined'){
 	    		   if(report.employeeRequestedCounts == 0){
 	      				$('#empReq').html("Requested");
 	      			   }else{
-	      				 $('#empReq').html("<a href='/app/employeeRequestedLeaves'>Requested</a>"); 
+	      				 $('#empReq').html("<a href='/pms/employeeRequestedLeaves'>Requested</a>"); 
 	      			   }
     			   $("#employeeRequestedCounts").html(report.employeeRequestedCounts); 
     		   }
@@ -1611,7 +1615,7 @@ function getEmployeeTotalCounts(){
     			   if(report.employeeApprovedCounts == 0){
     	   				$('#empApp').html("Approved");
     	   			   }else{
-    	   				$('#empApp').html("<a href='/app/employeeApprovedLeaves'>Approved</a>"); 
+    	   				$('#empApp').html("<a href='/pms/employeeApprovedLeaves'>Approved</a>"); 
     	   			   }
     			   $("#employeeApprovedCounts").html(report.employeeApprovedCounts); 
     		   }
@@ -1619,7 +1623,7 @@ function getEmployeeTotalCounts(){
     			   if(report.employeeRejectedCounts == 0){
     	   				$('#empRej').html("Rejected");
     	   			   }else{
-    	   				$('#empRej').html("<a href='/app/employeeRejectedLeaves'>Rejected</a>");
+    	   				$('#empRej').html("<a href='/pms/employeeRejectedLeaves'>Rejected</a>");
     	   			   }
     			   $("#employeeRejectedCounts").html(report.employeeRejectedCounts); 
     		   }
@@ -1627,7 +1631,7 @@ function getEmployeeTotalCounts(){
     			   if(report.employeeCancelledCounts == 0){
     				    $('#empCanc').html("Cancelled");
     	   			   }else{
-    	   				$('#empCanc').html("<a href='/app/employeeCancelLeaves'>Cancelled</a>");
+    	   				$('#empCanc').html("<a href='/pms/employeeCancelLeaves'>Cancelled</a>");
     	   			   }
     			   $("#employeeCancelledCounts").html(report.employeeCancelledCounts); 
     		   }
@@ -1644,13 +1648,13 @@ function getSelfTotalCounts(){
 	var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
 	      type : "GET",
-	      url: sourceleadUrl+"/totalCountsForSelfLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
+	      url: pmsUrl+"/totalCountsForSelfLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
 	       success :function(report) { 
 	   	   if(report.selfPendingCounts != null && report.selfPendingCounts != '' && report.selfPendingCounts != 'undefined'){
 	   		if(report.selfPendingCounts == 0){
    				$("#selfpend").html("Pending"); 
    			   }else{
-   				$("#selfpend").html("<a href='/app/pendingLeaves'>Pending</a>"); 
+   				$("#selfpend").html("<a href='/pms/pendingLeaves'>Pending</a>"); 
    			   }
    			   $("#selfPendingCounts").html(report.selfPendingCounts); 
    		   }
@@ -1658,7 +1662,7 @@ function getSelfTotalCounts(){
    			if(report.selfApprovedCounts == 0){
    				$("#selfapp").html("Approved"); 
    			   }else{
-   				$("#selfapp").html("<a href='/app/approvedLeaves'>Approved</a>");
+   				$("#selfapp").html("<a href='/pms/approvedLeaves'>Approved</a>");
    			   }
    			   $("#selfApprovedCounts").html(report.selfApprovedCounts); 
    		   }
@@ -1666,7 +1670,7 @@ function getSelfTotalCounts(){
    			   if(report.selfRejectedCounts == 0){
    				$("#selfrej").html("Rejected"); 
    			   }else{
-   				$("#selfrej").html("<a href='/app/rejectedLeaves'>Rejected</a>");
+   				$("#selfrej").html("<a href='/pms/rejectedLeaves'>Rejected</a>");
    			   }
    			   $("#selfRejectedCounts").html(report.selfRejectedCounts); 
    		   }
@@ -1675,7 +1679,7 @@ function getSelfTotalCounts(){
    			if(report.selfCancelledCounts == 0){
    				$('#selfcanc').html("Cancelled");
    			   }else{
-   				$("#selfcanc").html("<a href='/app/cancelLeaves'>Cancelled</a>");
+   				$("#selfcanc").html("<a href='/pms/cancelLeaves'>Cancelled</a>");
    			   }
    			   $("#selfCancelledCounts").html(report.selfCancelledCounts); 
    		   }

@@ -17,6 +17,10 @@
 	});
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>	
+
 <!-- Content Area -->
 <section class="content-wraper" id="themeroller">
 	<section class="content-header clearfix">
@@ -65,7 +69,7 @@
 
 <script>
 	function redirectlocation(location) {
-		window.location.href = sourceleadUrl + location;
+		window.location.href = pmsUrl + location;
 	}
 </script>
 
@@ -80,7 +84,7 @@
 
 		$
 				.get(
-						sourceleadUrl + "/getLeavesListByLocationIdAndStatus?"
+						pmsUrl + "/getLeavesListByLocationIdAndStatus?"
 								+ tokenParamName + "=" + tokenValue
 								+ "&orgLocationId=" + orgLocationId
 								+ "&status=CANCELLED&userId=" + userId,
@@ -222,7 +226,7 @@
 										$('.addcandidate-popup').fadeOut(200);
 									});
 						}else if (response.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
+							location.replace(pmsUrl);
 					    } else if (response.response === "AWKWARD") {
 						    location.href = "/errorPage";
 					     }
@@ -236,7 +240,7 @@
 <script>
 	function getRequestedAproveSummary(leaveUUID, orgLocationId) {
 		$.get(
-						sourceleadUrl + "/getRequestedAproveSummary?"
+						pmsUrl + "/getRequestedAproveSummary?"
 								+ tokenParamName + "=" + tokenValue
 								+ "&leaveUUID=" + leaveUUID + "&orgLocationId="
 								+ orgLocationId,
@@ -430,7 +434,7 @@
 									//$(".new_side_wrap").removeClass("new_side_wrap_active");
 					   		    showError(response.responseMessage);
 							   } else if (response.indexOf('Sign In') !== -1) {
-									location.replace(sourceleadUrl);
+									location.replace(pmsUrl);
 							    } else if (response.response === "AWKWARD") {
 								    location.href = "/errorPage";
 							     }

@@ -9,6 +9,11 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+ 
+
 <!-- Content Area -->
   <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
@@ -70,7 +75,7 @@ $(document).ready(function(){
   
 <script>
 function redirectlocation(location){
-	window.location.href = sourceleadUrl + location;
+	window.location.href = pmsUrl + location;
 }
 </script>
 
@@ -80,7 +85,7 @@ function redirectlocation(location){
 		var userId = '${SourceLeadWeb_userId}';
 		var searchValue = $("#rejectedLeavesTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=REJECTED&searchValue="+searchValue;
+		var url = pmsUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=REJECTED&searchValue="+searchValue;
 		prepareRejectedEmployeesList(url);
 }
 </script> 
@@ -256,7 +261,7 @@ function redirectlocation(location){
   
   <script>
 function getRequestedAproveSummary(leaveUUID,orgLocationId,totalBalLeaves){
-	$.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(response) {
+	$.get(pmsUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(response) {
 		   if(response.response === "SUCCESS") {
 			   if(response != null){
 			$(".new_side_wrap").addClass("new_side_wrap_active");
@@ -460,7 +465,7 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId,totalBalLeaves){
 				//$(".new_side_wrap").removeClass("new_side_wrap_active");
 		    showError(response.responseMessage);
 		   } else if (response.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
+				location.replace(pmsUrl);
 		    } else if (response.response === "AWKWARD") {
 			    location.href = "/errorPage";
 		     }

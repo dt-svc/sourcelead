@@ -20,6 +20,10 @@
 	});
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <!-- Content Area -->
 <section class="content-wraper" id="themeroller">
 	<section class="content-header clearfix">
@@ -29,7 +33,7 @@
 		<div class="pull-right brud-crum">
 			<a
 				href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;
-			<a href="<c:url value='${appPath}/leaveConfiguration'/>">Leave
+			<a href="/pms/leaveConfiguration">Leave
 				Configuration</a> &raquo; Leave Type
 		</div>
 	</section>
@@ -77,9 +81,8 @@
 				.attr(
 						'style',
 						'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$
-				.get(
-						sourceleadUrl
+				$.get(
+						pmsUrl
 								+ "/getLeaveTypesByLocationid?&orgLocationId="
 								+ locationId,
 						function(response) {
@@ -152,7 +155,7 @@
 									result += '    <td>';
 									result += '        <div class="tblminwidth-50">';
 									result += '            <span title="Edit" class="paddingRight"><a href="'
-											+ sourceleadUrl
+											+ pmsUrl
 											+ '/editLeaveType?leaveTypeUUID='
 											+ report.leaveTypeUUID
 											+ '"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span> ';
@@ -187,7 +190,7 @@
 										});
 
 							} else if (response.indexOf('Sign In') !== -1) {
-								location.replace(sourceleadUrl);
+								location.replace(pmsUrl);
 							} else {
 								showError("Operation failed, please try again");
 							}
@@ -250,13 +253,13 @@
 							'position:absolute; width:100%; height:150px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 				type : "POST",
-				url : sourceleadUrl + "/deleteLeaveType?" + tokenParamName
+				url : pmsUrl + "/deleteLeaveType?" + tokenParamName
 						+ "=" + tokenValue + "&leaveTypeUUID=" + typeId
 						+ "&deleteReason=" + reason + "&loginUserId="
 						+ loginUserId,
 				success : function(result) {
 					if (result.response === "SUCCESS") {
-						location.replace(sourceleadUrl + "/viewLeaveTypes");
+						location.replace(pmsUrl + "/viewLeaveTypes");
 						$("#leaveTypeReasonLoad").removeAttr("style");
 						$("#selector1").removeAttr("style");
 						$("#selector1").css({
@@ -267,7 +270,7 @@
 						$(".project_inn_mask").fadeOut(200);
 						msgFadein();
 					} else if (result.indexOf('Sign In') !== -1) {
-						location.replace(sourceleadUrl);
+						location.replace(pmsUrl);
 					} else {
 						showError("Operation failed, please try again");
 					}
@@ -297,7 +300,7 @@
 		var loginUserId = '${SourceLeadWeb_user.id}'
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/deleteLeaveType?" + tokenParamName + "="
+			url : pmsUrl + "/deleteLeaveType?" + tokenParamName + "="
 					+ tokenValue + "&leaveTypeUUID=" + typeId
 					+ "&status=reactive",
 			success : function(result) {
@@ -306,10 +309,10 @@
 						openLeaveTypeSummary(typeId);
 						getLeaveTypesList();
 					} else {
-						location.replace(sourceleadUrl + "/viewLeaveTypes");
+						location.replace(pmsUrl + "/viewLeaveTypes");
 					}
 				} else if (result.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
+					location.replace(pmsUrl);
 				} else {
 					showError("Operation failed, please try again");
 				}
@@ -347,7 +350,7 @@
 		$
 				.ajax({
 					type : "POST",
-					url : sourceleadUrl + "/leaveTypeSummary?&leaveTypeUUID="
+					url : pmsUrl + "/leaveTypeSummary?&leaveTypeUUID="
 							+ leaveTypeUUID,
 					success : function(response) {
 						if (response.response === "AWKWARD") {
@@ -372,7 +375,7 @@
 										+ '\', \'summary\')" title="Re-Active">Re-Active</a>';
 							}
 							result += '              <a href="'
-									+ sourceleadUrl
+									+ pmsUrl
 									+ '/editLeaveType?leaveTypeUUID='
 									+ leaveTypeUUID
 									+ '" class="btn btn-default btn-sm" title="Edit"><i class="fa fa-pencil paddingRight"></i>Edit</a> ';
@@ -1077,7 +1080,7 @@
 										$("body").css('overflow-y', 'auto');
 									});
 						} else if (response.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
+							location.replace(pmsUrl);
 						} else {
 							showError("Operation failed, please try again");
 						}

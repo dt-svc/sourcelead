@@ -12,7 +12,10 @@
 
 		<link href="/resources/css/bootstrap-colorpicker.min.css" rel="stylesheet">
 		<script src="/resources/js/bootstrap-colorpicker.min.js"></script>
-		   
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>	   
 	
 	
 <script>
@@ -1239,7 +1242,7 @@ function showLeaveEncashmentDiv(){
 		var name = $("#leaveTypeName").val();
 		if (name != null && name != '' && name != 'undefined') {
 
-			$.get(sourceleadUrl + "/validateName?&orgLocationId="+ locationId + "&from=LeaveType&name="+name+"&id="+id,
+			$.get(pmsUrl + "/validateName?&orgLocationId="+ locationId + "&from=LeaveType&name="+name+"&id="+id,
 							function(data) {
 								if (data == true) {
 									$('#leaveTypeDiv').find(
@@ -1289,15 +1292,15 @@ function showLeaveEncashmentDiv(){
 						.attr(
 								'style',
 								'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-				$.post(sourceleadUrl+"/saveNewLeaveType?&orgLocationId="+locationId+"&loginUserId="+loginUserId,formData,function(result) {
+				$.post(pmsUrl+"/saveNewLeaveType?&orgLocationId="+locationId+"&loginUserId="+loginUserId,formData,function(result) {
 					if (result && result.response === "INVALID_DATA") {
 		    		    showError(result.responseMessage);
 		    		} else if (result.response === "AWKWARD") {
 		    		    location.href = "/errorPage";
 		    		} else if (result.response === "SUCCESS") {
-		    			location.replace(sourceleadUrl + "/viewLeaveTypes");
+		    			location.replace(pmsUrl + "/viewLeaveTypes");
 		    		} else if (result.indexOf('Sign In') !== -1) {
-		    			location.replace(sourceleadUrl);
+		    			location.replace(pmsUrl);
 		    		} else {
 		    		    showError("Operation failed, please try again");
 		    		}
@@ -1325,7 +1328,7 @@ function showLeaveEncashmentDiv(){
 
 <script>
 	function redirect() {
-		window.location.href = sourceleadUrl + "/viewLeaveTypes";
+		window.location.href = pmsUrl + "/viewLeaveTypes";
 	}
 </script>
 <script>
@@ -1364,7 +1367,7 @@ function leavepolicyDescription(){
 	var leaveTypeId = '${leaveType.id}';
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/leavepolicyDescription?${_csrf.parameterName}=${_csrf.token}&leaveTypeId="+leaveTypeId, 	   
+	    url: pmsUrl+"/leavepolicyDescription?${_csrf.parameterName}=${_csrf.token}&leaveTypeId="+leaveTypeId, 	   
 		    success: function(result) {
 		    	$('#txtEditor').html(result.policyDescription);
 		    	$('.Editor-editor').html(result.policyDescription);

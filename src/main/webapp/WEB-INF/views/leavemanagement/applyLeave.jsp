@@ -4,6 +4,9 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>	
 	  
 <script type="text/javascript">
 window.onload = function() { 
@@ -535,7 +538,7 @@ function calculateDuration(){
 	var toDateToHalfTime = $("#toDateToHalfTime").val();
 	
 	if(fromDate != null && fromDate != '' && fromDate != 'undefined' && leaveTypeUUID != null && leaveTypeUUID != '' && leaveTypeUUID != 'undefined'){
-		$.get(sourceleadUrl+"/calculateLeaveDuration?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&leaveType="+leaveTypeUUID+"&userId="+userId+
+		$.get(pmsUrl+"/calculateLeaveDuration?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&leaveType="+leaveTypeUUID+"&userId="+userId+
 				"&fromHalfDay="+fromHalfDay+"&toHalfDay="+toHalfDay+"&fromDateFromHalfTime="+fromDateFromHalfTime+
 				"&fromDateToHalfTime="+fromDateToHalfTime+"&toDateFromHalfTime="+toDateFromHalfTime+
 				"&toDateToHalfTime="+toDateToHalfTime,  function(result) {
@@ -591,7 +594,7 @@ function calculateDuration(){
 	 if(userId != null && userId !='' && userId !='undefined'){
 	 $.ajax({
          type : "GET",
-          url: sourceleadUrl+"/getPieChartForLeaveStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,    
+          url: pmsUrl+"/getPieChartForLeaveStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,    
           success :function(json) {
         	  var output = "";
         	  output = output +'<select class="form-control" id="leaveType" name="leaveType" field-name="Leave Type" data-validation="required" onchange="getLeaveDetails();validateMaxLeave(this);">';
@@ -844,15 +847,15 @@ function applyLeave(){
 // 	  	var formData = $($('#apply_leave_form')[0]).serialize();
 	  	var formData = getFormData('apply_leave_form');
 		$("#leaveLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/saveApplyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveId="+leaveId+"&currentStage="+currentStage, formData, function(result) {
+		$.post(pmsUrl+"/saveApplyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveId="+leaveId+"&currentStage="+currentStage, formData, function(result) {
 			if (result && result.response === "INVALID_DATA") {
     		    showError(result.responseMessage);
     		} else if (result.response === "AWKWARD") {
     		    location.href = "/errorPage";
     		} else if (result.response === "SUCCESS") {
-    			location.replace(sourceleadUrl+ "/leaveManagementReports");
+    			location.replace(pmsUrl+ "/leaveManagementReports");
     		} else if (result.indexOf('Sign In') !== -1) {
-    			location.replace(sourceleadUrl);
+    			location.replace(pmsUrl);
     		} else {
     		    showError("Operation failed, please try again");
     		}
@@ -879,7 +882,7 @@ $('body').on('blur', '#apply_leave_form', function() {
 
 <script>
 function cancel(){
-	location.replace(sourceleadUrl+ "/leaveManagementReports");
+	location.replace(pmsUrl+ "/leaveManagementReports");
 }
 </script>
 
@@ -936,7 +939,7 @@ function getLeaveDetails(finalDateFormatEndDate){
 	if(leaveTypeUUID !=null && leaveTypeUUID != '' && leaveTypeUUID !='undefined'){
 		$.ajax({
 		   	type: "POST",
-		   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeUUID="+leaveTypeUUID+"&loginUserId="+userId,	 
+		   	url: pmsUrl+"/leaveTypeSummary?&leaveTypeUUID="+leaveTypeUUID+"&loginUserId="+userId,	 
 		    success: function(result) {
 		    	if (result && result.response === "INVALID_DATA") {
           		    showError(result.responseMessage);
@@ -1042,7 +1045,7 @@ function getLeaveDetails(finalDateFormatEndDate){
     		 			}
     		    	}
           		} else if (result.indexOf('Sign In') !== -1) {
-          			location.replace(sourceleadUrl);
+          			location.replace(pmsUrl);
           		} else {
           		    showError("Operation failed, please try again");
           		}
@@ -1153,7 +1156,7 @@ function validateMaxLeave(data){
 	if(userId != null && userId !='' && userId !='undefined'){
 	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
 		var leaveTypeName = data.options[data.selectedIndex].innerHTML;
-		$.get(sourceleadUrl+"/validateMaxLeave?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&orgLocationId="+orgLocationId+"&userId="+userId+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
+		$.get(pmsUrl+"/validateMaxLeave?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&orgLocationId="+orgLocationId+"&userId="+userId+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
 			if(data == true){
 				$('.jquery_form_error_message').remove();
 				$("#leaveTypeIdDiv").after("<p class='jquery_form_error_message cOrange'>You don't have balance for the '"+leaveTypeName+"'.</span>");
@@ -1183,7 +1186,7 @@ function validateCarryForwardLeaves(){
 	var leaveTypeId = $("#leaveType").val();
 	if(userId != null && userId !='' && userId !='undefined'){
 	if(leaveTypeId !=null && leaveTypeId != '' && leaveTypeId !='undefined'){
-		$.get(sourceleadUrl+"/validateCarryForwardLeaves?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&userId="+userId+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
+		$.get(pmsUrl+"/validateCarryForwardLeaves?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+leaveTypeId+"&userId="+userId+"&fromDate="+fromDate+"&toDate="+toDate, function(data) {
 			if(data!=null&&data == "you cannot apply two leaves on same day.!"){ 
 				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data); 
 				$("#ApplyLeave").attr('disabled','disabled'); 
@@ -1217,7 +1220,7 @@ function validateDate(){
 		userId = '${SourceLeadWeb_userId}';
 	}
 	if(userId != null && userId != '' && userId != 'undefined' && fromDate != null && fromDate != '' && fromDate != 'undefined' ){
-		$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId+"&errorMessage="+errorMessage, function(data) {
+		$.get(pmsUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId+"&errorMessage="+errorMessage, function(data) {
 			if(data !=null && data.validateType == 'SAMEDAY'){
 				errorMessage += data.errorMessage;
 				/* $("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
@@ -1273,7 +1276,7 @@ function getApproversList(){
 		userId = '${SourceLeadWeb_userId}';
 	}
    if(userId != null && userId !='' && userId !='undefined'){
-	$.get(sourceleadUrl+"/getApproversForLeave?&userId="+userId, function(data) {
+	$.get(pmsUrl+"/getApproversForLeave?&userId="+userId, function(data) {
 		if(data !=null){
 			var result = "";
 			var opt = data[0];
@@ -1367,7 +1370,7 @@ function getUsersBasedOnHierarchy(type){
 		userId = '${SourceLeadWeb_userId}';
 	}
    if(userId != null && userId !='' && userId !='undefined'){
-	$.get(sourceleadUrl+"/getApproversForLeave?&userId="+userId+"&notifyToOthers=Y", function(data) {
+	$.get(pmsUrl+"/getApproversForLeave?&userId="+userId+"&notifyToOthers=Y", function(data) {
 		if(data !=null){
 			var result = '';
 			for(var i=0; i<data.length; i++){
