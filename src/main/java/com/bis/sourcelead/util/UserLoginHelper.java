@@ -38,6 +38,8 @@ import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
@@ -84,9 +86,15 @@ public class UserLoginHelper {
 	@Value("${pmsUrl}")
 	private String pmsUrl;
 	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
+	@Autowired
+	OrgService orgService;
+	
 	   
 
-	public  UsernamePasswordAuthenticationToken redirectToDashboard(HttpServletRequest req,String username, String password,String verfDone)
+	public  UsernamePasswordAuthenticationToken redirectToDashboard(HttpServletRequest req,String username, String password,String verfDone) 
 	{
 		
 		 String[] usernameWithRole = username.split("##");
@@ -148,6 +156,7 @@ public class UserLoginHelper {
 		  
 		  req.getSession().setAttribute("userRoleId", userRole.getId());
 		  SourceLeadSessionManager.setSessionAttribute(req, "user", loginUser);
+		  SourceLeadSessionManager.setSessionAttribute(req, "userId", loginUser.getId());
 		  SourceLeadSessionManager.setSessionAttribute(req, "org", orgLocations.getOrg());
 		  SourceLeadSessionManager.setSessionAttribute(req, "orgLocations", orgLocations);
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginOrgLocation", orgLocations);
@@ -159,6 +168,11 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "pmsUrl", pmsUrl);
 		  SourceLeadSessionManager.setSessionAttribute(req, "googleMapsLocationApiKey", googleMapsLocationApiKey);
 		  SourceLeadSessionManager.setSessionAttribute(req, "userRoleId", userRoleId);
+			SourceLeadSessionManager.setSessionAttribute(req, "roleHierarchyId",
+					userRole.getRoles().getRoleHierarchy().getId());
+			 SourceLeadSessionManager.setSessionAttribute(req, "dateFormat", orgLocations.getDateFormat());  
+			 SourceLeadSessionManager.setSessionAttribute(req, "orgLocationId", orgLocations.getId());
+			 SourceLeadSessionManager.setSessionAttribute(req, "country", orgLocations.getCountry());
 		   
 		Candidate candidate;
 		try {
@@ -167,6 +181,27 @@ public class UserLoginHelper {
 			SourceLeadSessionManager.setSessionAttribute(req, "candidateId", candidate.getId());
 		} catch (Exception e) {}
 		SourceLeadSessionManager.setSessionAttribute(req, "isGlobalAccess", userRole.getIsGlobal());
+		
+		boolean isSuperUser;
+		boolean isSuperAdmin;
+		try {
+			isSuperUser = orgLocationService.isLoginUserIsSuperUser(userRole.getUser().getId(),
+					orgLocations.getId());
+			SourceLeadSessionManager.setSessionAttribute(req, "isSuperUser", isSuperUser);
+			
+			isSuperAdmin = orgService.isLoginUserIsSuperAdmin(userRole.getUser().getId(), orgLocations.getOrg().getId());
+			if (isSuperAdmin == true) {
+				SourceLeadSessionManager.setSessionAttribute(req, "isSuperAdmin", Constants.YES);
+			} else {
+				SourceLeadSessionManager.setSessionAttribute(req, "isSuperAdmin", Constants.NO);
+			}
+			
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+
+		
 		
 		
        List<SourceleadActions> actionsList = null;

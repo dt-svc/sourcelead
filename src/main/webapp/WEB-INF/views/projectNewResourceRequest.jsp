@@ -14,13 +14,15 @@
  
  <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
  
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+ 
  <script>
  function getNewProjectResourceReqestsListCount(){
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 alert
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getProjectNewResourceRequestsCounts?${_csrf.parameterName}=${_csrf.token}", 
+	        url: pmsUrl+"/getProjectNewResourceRequestsCounts?${_csrf.parameterName}=${_csrf.token}", 
 	        success: function(json) {
 	        	$("#newWaitingCount").html(json.waitingCount);
 	        	$("#newApprovedCount").html(json.approvedCount);
@@ -79,14 +81,13 @@ function newResourceRequestList(requestType){
 
 <script>
 function newRequestAssociatesDataTableList(requestType){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var approverUserId = '${SourceLeadWeb_user.id}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	 
 	 var searchValue = $("#newRequestAssociatesTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getProjectPlanningNewResourceRequestList?searchValue="+searchValue+"&resourceStatus="+requestType;
-	 newResourceRequestPagination(url,requestType,sourceleadUrl);
+	 var url = pmsUrl+"/getProjectPlanningNewResourceRequestList?searchValue="+searchValue+"&resourceStatus="+requestType;
+	 newResourceRequestPagination(url,requestType,pmsUrl);
 	 
 	   if(requestType == 'Waiting For Approval'){
 	    	 $("#newReqWaiting").addClass("activeIcon");
@@ -122,7 +123,7 @@ function newRequestAssociatesDataTableList(requestType){
 
 
 <script>
-function newResourceRequestPagination(url,requestType,sourceleadUrl){
+function newResourceRequestPagination(url,requestType,pmsUrl){
 	var colIndex = 0;
     $('#newRequestAssociates').DataTable( { 
 	  "processing": true,
@@ -149,7 +150,7 @@ function newResourceRequestPagination(url,requestType,sourceleadUrl){
     	  	"render": function(data, type, opt, meta) {
     	  		 var result = "";
     	  		 var flag = false;
-    	  		 result = result + '<td><div  class="tbldata-dotdot-vsm"><a href="'+sourceleadUrl+'/viewNewResourceRequestDashborad?requestUUID='+opt.projectPlanningRequestUUID+'">'+opt.projectPlanningRequestId+'</a></div></td>';
+    	  		 result = result + '<td><div  class="tbldata-dotdot-vsm"><a href="'+pmsUrl+'/viewNewResourceRequestDashborad?requestUUID='+opt.projectPlanningRequestUUID+'">'+opt.projectPlanningRequestId+'</a></div></td>';
 	              return result;
     	  	}
          },{
@@ -157,7 +158,7 @@ function newResourceRequestPagination(url,requestType,sourceleadUrl){
 	    	  	"data": "projectName",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-	    	  	    result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'&tabType=resources" title="'+opt.projectName+'">'+opt.projectName+'</a></div></td>';
+	    	  	    result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+pmsUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'&tabType=resources" title="'+opt.projectName+'">'+opt.projectName+'</a></div></td>';
 		            return result;
 	    	  	}
 	      },{
@@ -259,11 +260,10 @@ function newResourceRequestPagination(url,requestType,sourceleadUrl){
 function acceptNewAssociate(requestUUID,requestType){
 	 var userId = '${SourceLeadWeb_userId}';
      var orglocationId = '${SourceLeadWeb_orgLocationId}';
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 $("#requestedNewAssociatesDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	 $.ajax({
 		    type : "POST",
-	    	url: sourceleadUrl+"/acceptNewRequestedResource?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId, 
+	    	url: pmsUrl+"/acceptNewRequestedResource?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId, 
 	        success: function(result) {
 	        	$("#newResourceAction"+requestUUID).html("<span>Accepted</span>");
 	        	getNewProjectResourceReqestsListCount();
@@ -343,7 +343,6 @@ function saveRejectNewAssociate(requestUUID){
 	  	formData.append("json",jsonData)
 	  	 var userId = '${SourceLeadWeb_userId}';
         var orglocationId = '${SourceLeadWeb_orgLocationId}';
-        var sourceleadUrl ='${sourceleadUrl}';
       
         $("#submit_rejectedReason").attr("disabled", "disabled");
 		
@@ -355,7 +354,7 @@ function saveRejectNewAssociate(requestUUID){
 		        processData: false,
 		        contentType:false, 
 	    	    dataType : 'json',
-		    	url: sourceleadUrl+"/rejectNewRequestedResource?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orglocationId="+orglocationId, 
+		    	url: pmsUrl+"/rejectNewRequestedResource?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orglocationId="+orglocationId, 
 		        success: function(result) {
 		        	cancelRejectedReason();
 		        	$("#newResourceAction"+requestUUID).html("<span>Rejected</span>")
@@ -461,8 +460,6 @@ if ($('#newRequestOnHold_form').validate(false, validationSettings)){
 	    var form = $('#newRequestOnHold_form')[0];
 	    var formData = new FormData(form);
 	  	formData.append("json",jsonData)
-	  	
-        var sourceleadUrl ='${sourceleadUrl}';
         var userId = '${SourceLeadWeb_userId}';
         var orglocationId = '${SourceLeadWeb_orgLocationId}';
         
@@ -475,7 +472,7 @@ if ($('#newRequestOnHold_form').validate(false, validationSettings)){
 		        processData: false,
 		        contentType:false, 
 	    	    dataType : 'json',
-		    	url: sourceleadUrl+"/onholdRequestedNewAssociate?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId,
+		    	url: pmsUrl+"/onholdRequestedNewAssociate?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId,
 		        success: function(result) {
 		        	
 		        	cancelRequestOnholdReason();
@@ -535,7 +532,7 @@ function saveRejectAssociateRequest(requestUUID){
 		        processData: false,
 		        contentType:false, 
 	    	    dataType : 'json',
-		    	url: sourceleadUrl+"/rejectAssociatesRequest?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orglocationId="+orglocationId,
+		    	url: pmsUrl+"/rejectAssociatesRequest?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orglocationId="+orglocationId,
 		        success: function(result) {
 		        	cancelRejectedReason();
 		        	location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");  
