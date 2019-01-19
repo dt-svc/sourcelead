@@ -8,7 +8,6 @@
 <script>
 $(document).ready(function(){
    getIndPayGroupList("payGroup");
-   getDepartments("payrollDepartment");
 });
 </script>
 <!-- Content Area -->
@@ -52,7 +51,7 @@ $(document).ready(function(){
 	<div class="clearfix footerstyelsNew">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input value="Run" class="btn btn-success btnSuccess" type="button" onclick="runIndPayrollregisterReport();">
+            <input value="Run" class="btn btn-success btnSuccess" type="button" onclick="runIndPayrollBankTransferReport();">
             <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetForm();">
           </div>
         </div>
@@ -65,18 +64,20 @@ $(document).ready(function(){
       <div class="clearfix">
         <div class="positionRelative reportHead clearfix"> 
   			<ul class="pull-right list-unstyled list-inline">
+				<li class="">
 				<a class="overIcon" title="Actions" onclick="newActions();"></a>
       				<div class="newActPop" style="display: block;">
-       					<span><a onclick="exportPayrollRegisterReportPdf();" title="PDF">Export PDF</a> <!-- <a title="Excel">Export Excel</a> --> </span> </div>
+       					<span><a onclick="payrollBankTransferExport('pdf');" title="PDF">Export PDF</a>
+       					 <a title="Excel" onclick="payrollBankTransferExport('excel');">Export Excel</a></span> </div>
    				</li>
 			    <li class="">
 			      <input class="repSearchBar" placeholder="Search" id="payrollRegisterSearch" type="text">
-			      <span class="repSearchIcon" onclick="runIndPayrollregisterReport();"></span>
+			      <span class="repSearchIcon" onclick="runIndPayrollBankTransferReport();"></span>
 			    </li>
   			</ul>
 		</div>
         <div class="require_wrap_table datatable_filter">
-        	<div id="payrollRegisterTableDiv"></div>
+        	<div id="payrollBankTransferTableDiv"></div>
         </div>
       </div>
     </div>
@@ -85,54 +86,7 @@ $(document).ready(function(){
     </div>
     
   </section>
-  
-  <script type="text/javascript">
-            $(function () {
-                $('#datetimepicker3').datetimepicker({
-                    format: 'LT'
-                });
-            });
-        </script> 
-
-<script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				})
-				$(document).ready(function(){
-					$("#cd").click(function(){
-						$(".clientDetails").toggleClass('hidden', 500);
-					});
-	
-	});
- 		</script>
         
-<script type="text/javascript">
-	$(document).ready(function(e) {
-		$("#savevendor").click(function(){
-			$('#myform').validate({
-			rules:{
-				things:{
-					required:true
-				}
-			}
-			});
-		});
-	});
-	$(function () {
-
-	});
-</script>
 <script>
 function resetForm(){
 	 $("#payrollRegister").hide();
@@ -145,29 +99,25 @@ function resetForm(){
 </script>
 
 <script>
-function exportPayrollRegisterReportPdf(){
+function payrollBankTransferExport(type){
 	var searchValue = $("#payrollRegisterSearch").val();
 	var payGroup = $('#payGroup').val();
-	var department = $('#payrollDepartment').val();
-	var payRollType = $('#payRollType').val();
 	var freqStartDate = $('#freqStartDate').val();
 	var freqEndDate = $('#freqEndDate').val();
-    window.location.href = sourceleadUrl+"/exportIndPayrollRegisterReportPdf?&payGroup="+payGroup+"&department="+department+"&payRollType="+payRollType+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
+    window.location.href = sourceleadUrl+"/indPayrollBankTransferReports?&payGroup="+payGroup+"&exportType="+type+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
 }
 </script>
 <script type="text/javascript">
-function runIndPayrollregisterReport(){
+function runIndPayrollBankTransferReport(){
 	var searchValue = $("#payrollRegisterSearch").val();
 	var payGroup = $('#payGroup').val();
-	var department = $('#payrollDepartment').val();
-	var payRollType = $('#payRollType').val();
 	var freqStartDate = $('#freqStartDate').val();
 	var freqEndDate = $('#freqEndDate').val();
 	if(payGroup != null && payGroup != '' && payGroup != 'undefined' && freqStartDate != null && freqStartDate != '' && freqStartDate != 'undefined' && freqEndDate != null && freqEndDate != '' && freqEndDate != 'undefined'){
 		$("#payrollReportLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		var url = sourceleadUrl+ "/indPayrollBankTranseferReport?${_csrf.parameterName}=${_csrf.token}&payGroup="+payGroup+"&department="+department+"&payRollType="+payRollType+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
+		var url = sourceleadUrl+ "/indPayrollBankTranseferReport?${_csrf.parameterName}=${_csrf.token}&payGroup="+payGroup+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
 		$("#payrollRegister").show();
-		preparePayRollRegisterList(url);
+		preparePayRollBankTransferList(url);
 	}else{
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -188,9 +138,9 @@ function removePopUp(){
 </script>
 
 <script type="text/javascript">
-function preparePayRollRegisterList(url){
+function preparePayRollBankTransferList(url){
 	 $("#payrollReportLoading").removeAttr("style");
-	 $("#payrollRegisterTableDiv").empty();
+	 $("#payrollBankTransferTableDiv").empty();
 	 var result = "";
 		result = result +" <div class='remove_search'>";
 		result = result +"</div>";
@@ -200,16 +150,14 @@ function preparePayRollRegisterList(url){
 		result = result + '<th>Employee ID</th>';
         result = result + '<th>Employee Name</th>';
         result = result + '<th>Department</th>';
-        result = result + '<th>Current Hours</th>';
-        result = result + '<th>Gross Pay</th>';
-        result = result + '<th>YTD Taxes</th>';
-        result = result + '<th>Deductions</th>';
-        result = result + '<th>Net Pay</th>';
-        result = result + '<th>YTD Net Pay</th>';
+        result = result + '<th>Account Number</th>';
+        result = result + '<th>Bank Name</th>';
+        result = result + '<th>IFSC Code</th>';
+        result = result + '<th>Amount</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
         result = result +"</table>";
-     $("#payrollRegisterTableDiv").append(result);
+     $("#payrollBankTransferTableDiv").append(result);
      payrollRegisterPagination(url); 
 }
 
@@ -228,12 +176,10 @@ function payrollRegisterPagination(url){
             { "data": "empId" },
             { "data": "empName"},
             { "data": "department"},
-            { "data": "regularHours" },
-            { "data": "grossPay" },
-            { "data": "ytdTaxes"},
-            { "data": "deductions" },
-            { "data": "netPay" },
-            { "data": "ytdNetPay" },
+            { "data": "accountNumber" },
+            { "data": "bankName" },
+            { "data": "ifscCode"},
+            { "data": "amount" },
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
@@ -241,9 +187,9 @@ function payrollRegisterPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 		    	  		if(opt.employeeid !=null && opt.employeeid != '' && opt.employeeid !='undefined'){
-		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.employeeid+'" >'+opt.employeeid+'</div>';
+		    	  			result = result + '     <div class="tblminwidth-150" title="'+opt.employeeid+'" >'+opt.employeeid+'</div>';
 		        		}else{
-		        			result = result + '     <div class="tblminwidth-75">---</div>';
+		        			result = result + '     <div class="tblminwidth-150">---</div>';
 		        		}
 		              return result; 
 	    	  	}
@@ -273,21 +219,25 @@ function payrollRegisterPagination(url){
             }
           }, {
               "targets": colIndex++,
-              "data": "regularHours",
+              "data": "accountNumber",
               "sorting":false,
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
-	    	  		result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.currentHours+'" >'+opt.currentHours+'</div>';
+            	   if(opt.accountNumber != null && opt.accountNumber != "" && opt.accountNumber != "undefined"){
+   	    	  		result = result + '<div class="tbldata-dotdot-vsm" title="'+opt.accountNumber+'" >'+opt.accountNumber+'</div>';
+            	   }else{
+   	    	  		result = result + '<div class="tbldata-dotdot-vsm">--</div>';
+            	   }
             	    return result; 
               }
             },{
 	    	  	"targets": colIndex++,
-	    	  	"data": "grossPay",
+	    	  	"data": "bankName",
 	    	  	"sorting":false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-	    	  		if(opt.grossPay !=null && opt.grossPay != '' && opt.grossPay !='undefined'){
-	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.grossPay+'" ><i class="fa fa-inr"style="color:#454545;"></i> '+opt.grossPay+'</div>';
+	    	  		if(opt.bankName !=null && opt.bankName != '' && opt.bankName !='undefined'){
+	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.bankName+'" >'+opt.bankName+'</div>';
 	        		}else{
 	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
 	        		}
@@ -295,48 +245,29 @@ function payrollRegisterPagination(url){
 	    	  	}
 	    	  }, {
                   "targets": colIndex++,
-                  "data": "ytdTaxes",
+                  "data": "ifscCode",
                   "sorting":false,
                   "render": function ( data, type, opt, meta ) {
                 	var result = "";
-  	    	  		result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdTaxes+'" ><i class="fa fa-inr"style="color:#454545;"></i> '+opt.ytdTaxes+'</div>';
+                	if(opt.ifscCode != null && opt.ifscCode != "" && opt.ifscCode != "undefined"){
+      	    	  		result = result + ' <div class="tbldata-dotdot-vsm" title="'+opt.ifscCode+'" >'+opt.ifscCode+'</div>';
+                	}else{
+      	    	  		result = result + ' <div class="tbldata-dotdot-vsm">--</div>';
+                	}
   	    	  		return result; 
                   }
                }, {
                     "targets": colIndex++,
-                    "data": "deductions",
+                    "data": "amount",
                     "sorting":false,
                     "render": function ( data, type, opt, meta ) {
                   		var result = "";
-    	    	  		result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.deducationAmount+'" ><i class="fa fa-inr"style="color:#454545;"></i> '+opt.deducationAmount+'</div>';
+    	    	  		result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.netPay+'" ><i class="fa fa-inr"style="color:#454545;"></i> '+opt.netPay+'</div>';
     	    	  		return result; 
                     }
-                }, {
-                      "targets": colIndex++,
-                      "data": "netPay",
-                      "sorting":false,
-                      "render": function ( data, type, opt, meta ) {
-                   		var result = "";
-      	    	  		if(opt.netPay !=null && opt.netPay != '' && opt.netPay !='undefined'){
-      	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.netPay+'" ><i class="fa fa-inr"style="color:#454545;"></i> '+opt.netPay+'</div>';
-      	        		}else{
-      	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
-      	        		}
-      	    	  		return result; 
-                      }
-                }, {
-                    "targets": colIndex++,
-                    "data": "ytdNetPay",
-                    "sorting":false,
-                    "render": function ( data, type, opt, meta ) {
-                 		var result = "";
-    	    	  		result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdNetPay+'" ><i class="fa fa-inr"style="color:#454545;"></i> '+opt.ytdNetPay+'</div>';
-    	    	  		return result; 
-                    }
-                }],
+                } ],
                 "scrollCollapse": false,
     	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-//     	    	"aaSorting": [[1,'desc']],
     	    	"bLengthChange": true,
     	    	"bDestroy": true,
     	    	"ordering": true,
@@ -348,12 +279,13 @@ function payrollRegisterPagination(url){
                 });
        $("#payrollRegisterTable").wrap("<div class='overflow_Auto width100percnt'></div>")
        $("input[type=search]").hide();
-       $("#payrollRegisterSearch").keyup(function(e) {
-       	   if(e.which === 13) {
-       		runIndPayrollregisterReport();
-       	   }
-       	});
+      
 }
+$("#payrollRegisterSearch").keyup(function(e) {
+	   if(e.which === 13) {
+		runIndPayrollBankTransferReport();
+	   }
+	});
 </script>
 
 <script>	

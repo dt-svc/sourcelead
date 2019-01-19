@@ -418,6 +418,9 @@ Session session = this.sessionFactory.getCurrentSession();
 		       .append("OR (iep.candidate.firstName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
 		       .append("OR (iep.candidate.lastName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
 		       .append("OR concat(iep.candidate.firstName,iep.candidate.lastName) like '%" + indEmployeePayrollDTO.getSearchValue() + "%' ")
+		       .append("OR (iep.paymentAccount.accountNumber like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR (iep.paymentAccount.bankName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR (iep.paymentAccount.routingNumber like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
 			   .append("OR iep.employee.employeeId like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )");
 		}
 		

@@ -762,6 +762,8 @@ public class IndianPayrollRestController {
 					}
 					indEmployeePayrollList.add(dto);
 				}
+				responseList.setRecordsTotal(indEmployeePayrollList.size());
+				responseList.setRecordsFiltered(indEmployeePayrollList.size());
 				responseList.setData(indEmployeePayrollList);
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
@@ -829,38 +831,31 @@ public class IndianPayrollRestController {
    				indEmployeePayrollDTO.setSortColumn(tableColumns[sortColumnIndex]);
    				indEmployeePayrollDTO.setSortOrder(sortColumnOrder);
    				
-   				ResponseList<IndEmployeePayroll> payResponseList = indPaysheetFrequencyService.getPayrollRegisterReports(indEmployeePayrollDTO,orgLocations);
+   				ResponseList<IndEmployeePayroll> payResponseList = indPaysheetFrequencyService.getPayrollBankReportReportList(indEmployeePayrollDTO,orgLocations);
    				List<IndEmployeePayrollDTO> indEmployeePayrollList = new ArrayList<>();
    				for(IndEmployeePayroll iepdt :payResponseList.getData()) {
    					IndEmployeePayrollDTO dto = new IndEmployeePayrollDTO();
    					dto.setEmployeeid(iepdt.getEmployee().getEmployeeId());
    					dto.setEmployeeName(iepdt.getCandidate().getFullName());
    					dto.setDepartmentName(iepdt.getEmployee().getDepartmentId().getDepartmentName());
-   					BigDecimal currentHours = new BigDecimal("0");
-   					if(iepdt.getRegularHours() != null) {
-   						currentHours.add(new BigDecimal(iepdt.getRegularHours()));
+   				 
+   					if(iepdt.getPaymentAccount() != null) {
+   						Boolean flage = iepdt.getPaymentAccount().isDefaultAccount();
+   						if(flage) {
+   							dto.setBankName(iepdt.getPaymentAccount().getBankName());
+   	   						dto.setAccountNumber(iepdt.getPaymentAccount().getAccountNumber());
+   	   						dto.setIfscCode(iepdt.getPaymentAccount().getRoutingNumber());
+   						}
    					}
-   					if(iepdt.getOverTimeHours() != null) {
-   						currentHours.add(new BigDecimal(iepdt.getOverTimeHours()));
-   					}
-   					dto.setCurrentHours(currentHours);
    					dto.setGrossPay(iepdt.getGrossPay());
    					dto.setDeducationAmount(iepdt.getGrossPay().subtract(iepdt.getNetPay()));
    					dto.setNetPay(iepdt.getNetPay());
    					
-   					List<IndEmployeePayroll> ytdList = indPaysheetFrequencyService.getYTDIndEmployeePayrollList(iepdt.getCandidate().getId(), orgLocations.getStartMonth());
-   					if(ytdList != null && ytdList.size() > 0) {
-   						double ytdPT = ytdList.stream().mapToDouble(ap->ap.getProfessionalTax().doubleValue()).sum();
-   						double ytdTDS = ytdList.stream().mapToDouble(ap->ap.getTds().doubleValue()).sum();
-   						double ytdNetPay = ytdList.stream().mapToDouble(ap->ap.getNetPay().doubleValue()).sum();
-   						dto.setYtdTaxes(new BigDecimal(ytdPT).add(new BigDecimal(ytdTDS)));
-   						dto.setYtdNetPay(new BigDecimal(ytdNetPay));
-   					}else {
-   						dto.setYtdTaxes(new BigDecimal(0.00));
-   						dto.setYtdNetPay(new BigDecimal(0.00));
-   					}
+   				 
    					indEmployeePayrollList.add(dto);
    				}
+   				responseList.setRecordsTotal(indEmployeePayrollList.size());
+   				responseList.setRecordsFiltered(indEmployeePayrollList.size());
    				responseList.setData(indEmployeePayrollList);
    				responseList.setResponse(Result.SUCCESS.name());
    				responseList.setResponseMessage(Result.SUCCESS.getValue());
@@ -876,4 +871,44 @@ public class IndianPayrollRestController {
    		return responseList;
    	}
        
+    
+    @RequestMapping(value = { "app/indPayrollBankTransferReports"})
+   	public void indPayrollBankTransferReports(IndEmployeePayrollDTO indEmployeePayrollDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+   	{
+   			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+   			if (orgLocations != null) { 
+   				ResponseList<IndEmployeePayroll> payResponseList = indPaysheetFrequencyService.getPayrollBankReportReportList(indEmployeePayrollDTO,orgLocations);
+   				if(payResponseList.getData().size() > 0) {
+   					File file = null;
+   					if(indEmployeePayrollDTO.getExportType().equalsIgnoreCase("pdf")) {
+      					 file = indPaySlipPdf.getIndPayrollBankTransferReportsPdf(payResponseList,orgLocations);
+   					}else if(indEmployeePayrollDTO.getExportType().equalsIgnoreCase("excel")) {
+      					 file = indPaySlipPdf.getIndPayrollBankTransferReportsExcel(payResponseList,orgLocations);
+   					}
+   					
+   					
+   					String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+   					if (mimeType == null) {
+   						mimeType = "application/octet-stream";
+   					}
+   					response.setContentType(mimeType);
+   					StringBuilder fileName = new StringBuilder();
+   					response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+   					response.setContentLength((int) file.length());
+   					InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+   					FileCopyUtils.copy(inputStream, response.getOutputStream());
+   					inputStream.close();
+   					response.getOutputStream().close();
+   					response.getOutputStream().flush();
+   					if (file != null) {
+   						file.delete();
+   					}
+   				}
+   			}
+   	}
+       
+       
+       
+    
+    
 }
