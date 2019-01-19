@@ -1,20 +1,21 @@
 package com.bis.sourcelead.util;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.EntityType;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -22,6 +23,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailMessageService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.NotificationsService;
+import com.google.gson.Gson;
 
 /**
  * This class is for covert subject,body,signature
@@ -49,6 +51,12 @@ public class EmailScenerioUtil {
 		return subject ;
 	}
 	
+   public String bulidTemplateSubject(String subject,Map<String, String> globalVarsMap,EmailScenario emailScenario) throws Exception{
+		
+		subject = emailMessageBodyConverter.convertBodyOfEmailScenerioTemplate(subject,globalVarsMap,emailScenario);
+		return subject ;
+	}
+	
 	public String buildBody(String body,Map<String, String> globalVarsMap) throws Exception{
 		body = body.replaceAll("\n", "<br/>");
 		body = body.replaceAll(" ", "&nbsp;");
@@ -63,15 +71,32 @@ public class EmailScenerioUtil {
 		return body ;
 	}
 	
+	public String buildTemplateBody(String body,Map<String, String> globalVarsMap,EmailScenario emailScenario) throws Exception{
+		body = body.replaceAll("\n", "<br/>");
+		body = body.replaceAll(" ", "&nbsp;");
+		//body = emailMessageBodyConverter.convertTempBodyOfEmailTemplate(body,globalVarsMap);
+		body = emailMessageBodyConverter.convertTemplateBodyOfEmailTemplate(body,globalVarsMap,emailScenario);
+		return body ;
+	}
+	
 	public String buildSignature(String signature,Map<String, String> globalVarsMap) throws Exception{
 		signature = signature.replaceAll("\n", "<br/>");
+		signature = signature.replaceAll("\r", "<br/>");
 		signature = signature.replaceAll(" ", "&nbsp;");
 		signature = emailMessageBodyConverter.convertBodyOfEmailTemplate(signature,globalVarsMap);
 		return signature ;
 	}
+	
+	public String buildTemplateSignature(String signature,Map<String, String> globalVarsMap,EmailScenario emailScenario) throws Exception{
+		signature = signature.replaceAll("\n", "<br/>");
+		signature = signature.replaceAll("\r", " ");
+		signature = signature.replaceAll(" ", "&nbsp;");
+		signature = emailMessageBodyConverter.convertTemplateBodyOfEmailTemplate(signature,globalVarsMap,emailScenario);
+		return signature ;
+	}
 
 	public String AssembleEmailMessage(EmailScenario emailScenario, EmailMessage emailMessage,String subject , String body, String signature, String url, Org org,OrgLocations orgLocations ){
-		String emailTemplate = EmailTemplateHTMLConversionUtil.convertBodyOfEmailTemplateToHTML(body, signature,emailScenario.getCallToActionText(), emailScenario.getButtonText(), url , emailMessage,org,orgLocations);
+		String emailTemplate = EmailTemplateHTMLConversionUtil.convertBodyOfEmailTemplateToHTML(body, signature,emailScenario.getCallToActionText(), emailScenario.getButtonText(), url , emailMessage,org,orgLocations, emailScenario.getTabId(),emailScenario.getTemplateType());
 		return emailTemplate ;
 	} 
 	
@@ -116,28 +141,41 @@ public EmailScenario validateEmailscenerioExists(String uniqueScenarioName,Strin
 	}
 
 
-public void sendNotification(String actionLink,User loginUser,User toUser, OrgLocations loginOrgLocation, EmailScenario emailScenario) throws Exception{
-	
+public void sendNotification(String actionLink,User loginUser,User toUser, OrgLocations loginOrgLocation, EmailScenario emailScenario,HashMap<String,String> parameterList) throws Exception{
 	//new Notification logic
 	Notifications notification = new Notifications();
+	
+	if(null != emailScenario.getUUID()  && !emailScenario.getUUID().isEmpty()){
+		notification.setUuId(emailScenario.getUUID());
+	}
+	else {
+		notification.setUuId(SourceLeadRandomCodeHelper.generateNotificationUUID());
+	}
+	if(StringUtils.isNotEmpty(actionLink) && actionLink.contains(Constants.PLACE_UUID)) {
+		actionLink = actionLink.replace(Constants.PLACE_UUID, notification.getUuId());
+	}
 	notification.setActionLink(actionLink);
 	notification.setBody(emailScenario.getBody());
+	
+	if(loginUser != null) {
 	notification.setNotificationFrom(loginUser);
+	notification.setCreatedBy(loginUser.getCreatedBy());
+	}
 	notification.setNotificationTo(toUser);
 	notification.setNotificationScenarioId(emailScenario);
 	notification.setMode(Constants.NOTIFICATION_UNREAD);
-	notification.setCreatedBy(loginUser.getUserCode());
 	notification.setCreatedDate(new Date());
 	notification.setLocationCode(loginOrgLocation.getLocationCode());
 	notification.setOrgCode(loginOrgLocation.getOrg().getOrgCode());
 	notification.setUserNotificationStatus("Sent");
 	notification.setNotificationStatus(Constants.NOTIFICATION_NOT_DELETED);
-	if(null != emailScenario.getUUID()  && !emailScenario.getUUID().isEmpty()){
-		notification.setUUID(emailScenario.getUUID());
+	if(parameterList != null && !parameterList.isEmpty()) {
+		System.out.println("parameterList != null");
+		 Gson gsonObj = new Gson();
+		 String str = gsonObj.toJson(parameterList);
+		notification.setParameterList(str);
 	}
-	
-	Notifications notification1 = notificationsService.saveNotification(notification);
-	
+	 notificationsService.saveNotification(notification);
 	}
 
 public void sendNotificationToClientOrVendor(String actionLink,String rejectActionLink, User loginUser,User fromUser, User toUser, OrgLocations loginOrgLocation, EmailScenario emailScenario, String spocUUID) throws Exception{
@@ -159,7 +197,7 @@ public void sendNotificationToClientOrVendor(String actionLink,String rejectActi
 	notification.setUserNotificationStatus("Sent");
 	notification.setNotificationStatus(Constants.NOTIFICATION_NOT_DELETED);
 	if(null != emailScenario.getUUID()  && !emailScenario.getUUID().isEmpty()){
-		notification.setUUID(emailScenario.getUUID());
+		notification.setUuId(emailScenario.getUUID());
 	}
 	
 	Notifications notification1 = notificationsService.saveNotification(notification);
@@ -186,7 +224,7 @@ public void sendNotificationToClientOrVendorWhenOwnerChange(String actionLink,St
 	notification.setUserNotificationStatus("Sent");
 	notification.setNotificationStatus(Constants.NOTIFICATION_NOT_DELETED);
 	if(null != emailScenario.getUUID()  && !emailScenario.getUUID().isEmpty()){
-		notification.setUUID(emailScenario.getUUID());
+		notification.setUuId(emailScenario.getUUID());
 	}
 	
 	Notifications clientVendorNotification = notificationsService.saveNotification(notification);

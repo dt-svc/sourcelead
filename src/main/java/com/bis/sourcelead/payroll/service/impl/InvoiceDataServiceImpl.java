@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -30,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.InvoiceDetailsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -38,7 +40,9 @@ import com.bis.sourcelead.payroll.dao.InvoiceDataDao;
 import com.bis.sourcelead.payroll.entity.InvoiceData;
 import com.bis.sourcelead.payroll.entity.UserPayroll;
 import com.bis.sourcelead.payroll.service.InvoiceDataService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class InvoiceDataServiceImpl implements InvoiceDataService{
@@ -49,6 +53,9 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 	
 	@Autowired
 	InvoiceDataDao invoiceDataDao;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	@Override
 	public Integer saveInvoiceData(MultipartFile multipartFile, OrgLocations orgLocation, User user,JSONObject jsonObj) throws EncryptedDocumentException, InvalidFormatException {
@@ -74,7 +81,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 			int version;
 			version = getInvoiceDataVersionByOrgLocationId(orgLocation.getId());
 			version += 1;
-			for (int i = 0; i < numberOfSheets; i++) {
+			for (int i = 0; i < 1; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
 				
@@ -82,7 +89,8 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 					Row row = rowIterator.next();
 					if (row.getRowNum() > 0) { // Excluding column names
 						InvoiceData invoiceData = new InvoiceData();
-						
+						boolean notEmpty = checkRowEmptyOrNot(row);
+						if(notEmpty) {
 						if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 							String sku = getCellValueAsString(row.getCell(0), fileName);
 							invoiceData.setSku(sku.split("\\.")[0]);
@@ -122,20 +130,33 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 						}
 						if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
 							String qty = getCellValueAsString(row.getCell(9), fileName);
-							invoiceData.setQty(qty);;
+							invoiceData.setQty(qty);
+						}else {
+							invoiceData.setQty("0");
 						}
 						if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
 							String amount = getCellValueAsString(row.getCell(10), fileName);
-							invoiceData.setAmount(amount);;
+							invoiceData.setAmount(amount);
+						}else {
+							invoiceData.setAmount("0");
 						}
 						if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
 							String arPaid = getCellValueAsString(row.getCell(11), fileName);
 							invoiceData.setArPaid(arPaid);
+						}else {
+							invoiceData.setArPaid(Constants.NONE);
 						}
 						if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
 							String newOld = getCellValueAsString(row.getCell(12), fileName);
 							invoiceData.setOldNew(newOld);
 						}
+						if (row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())) {
+							String payRate = getCellValueAsString(row.getCell(13), fileName);
+							invoiceData.setPayRate(payRate);
+						}else {
+							invoiceData.setPayRate("0");
+						}
+						invoiceData.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 						invoiceData.setCreatedBy(user.getUserCode());
 						invoiceData.setCreatedDate(new Date());
 						invoiceData.setUpdatedBy(user.getUserCode());
@@ -147,12 +168,13 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 						if (saveInvoiceData != null) {
 							count++;
 						}
-						count++;
+//						count++;
+						
 					}
 				}
 
 			}
-
+			}
 			fis.close();
 		} catch (IOException e) {
 			logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
@@ -161,6 +183,33 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 		return count;
 
 	
+	}
+	
+	/**
+	 * check the rows empty or not
+	 * @param row
+	 * @return boolean
+	 */
+		
+	private boolean checkRowEmptyOrNot(Row row) {
+		       if(row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString()) 
+		        || row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString()) 
+		        || row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString()) 
+		        || row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())
+		        || row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())
+                || row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())
+                || row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())
+                || row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())
+                || row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())
+                || row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString()) 
+                || row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())
+                || row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString()) 
+                || row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())
+		    	|| row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())){
+
+			return true;
+		}
+		return false;
 	}
 /**
  * To read cell value as string
@@ -254,7 +303,16 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 
 	@Override
 	public ResponseList<InvoiceData> getInvoiceDetails(InvoiceDetailsDTO invoiceDetailsDTO, OrgLocations orgLocation) throws Exception {
-		return invoiceDataDao.getInvoiceDetails(invoiceDetailsDTO, orgLocation);
+		ResponseList<InvoiceData> list = invoiceDataDao.getInvoiceDetails(invoiceDetailsDTO, orgLocation);
+		for (InvoiceData invoiceData : list.getData()) {
+			if(invoiceData.getDate() != null)
+			invoiceData.setDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoiceData.getDate()));
+			if(invoiceData.getLastmodified() != null)
+			invoiceData.setLastModifiedStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoiceData.getLastmodified()));
+			if(invoiceData.getDueDate() != null)
+			invoiceData.setDueDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoiceData.getDueDate()));
+		}
+		return list;
 
 		// TODO do not delete @Rajashekar
 		/*List<InvoiceData> invoiceDataList = invoiceDataDao.getInvoiceDetails(userId, orgLocationId);
@@ -281,13 +339,24 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 		return invoiceDataList;*/
 	}
 	@Override
-	public List<InvoiceData> getInvoiceDetailsByEmpId(Long empId, OrgLocations orgLocations) throws Exception {
-		return invoiceDataDao.getInvoiceDetailsByEmpId(empId,orgLocations);
+	public ResponseList<InvoiceData> getInvoiceDetailsByEmpId(OrgLocations orgLocations,InvoiceDetailsDTO invoiceDetailsDTO) throws Exception {
+		return invoiceDataDao.getInvoiceDetailsByEmpId(orgLocations,invoiceDetailsDTO);
 	}
 	
 	@Override
 	public int getInvoiceDataVersionByOrgLocationId(Long orgLocationId)
 	{
 		return invoiceDataDao.getInvoiceDataVersionByOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public ResponseList<InvoiceData> getAllEmployeeInvoiceDetailsByEmpIdAndOrgLocationId(Long orgLocationId, Long userId)
+	{
+		return invoiceDataDao.getAllEmployeeInvoiceDetailsByEmpIdAndOrgLocationId(orgLocationId,userId);
+	}
+
+	@Override
+	public List<InvoiceData> getInvoiceDetailsByEmpId(Long empId, OrgLocations orgLocations) {
+		return invoiceDataDao.getInvoiceDetailsByEmpId(empId,orgLocations);
 	}
 }

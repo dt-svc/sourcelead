@@ -18,6 +18,8 @@ public class EmailAttachment implements Serializable{
 	
 	private String UUID;
 
+	private String fileUrl;
+	
 	public String getName() {
 		return name;
 	}
@@ -66,4 +68,11 @@ public class EmailAttachment implements Serializable{
 		UUID = uUID;
 	}
 
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
 }

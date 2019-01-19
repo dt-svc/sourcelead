@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -13,7 +14,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.PayrollDao;
+import com.bis.sourcelead.dao.UserGroupDao;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Payroll;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserGroup;
+import com.bis.sourcelead.payroll.dto.GenerateINDPayrollDTO;
+import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
+import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.util.CommonUtil;
 
 /**
@@ -32,6 +40,9 @@ public class PayrollDaoImpl implements PayrollDao {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private UserGroupDao userGroupDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -59,7 +70,7 @@ public class PayrollDaoImpl implements PayrollDao {
 		 
 			Session session = this.sessionFactory.getCurrentSession();
 			List<Payroll> payrolls = new ArrayList<Payroll>();
-			payrolls = session.createQuery("from Payroll payroll where payroll.id =:id" ).setLong("id", id).setCacheable(true).list();
+			payrolls = session.createQuery("from Payroll payroll where payroll.id =:id" ).setLong("id", id).list();
 			logger.debug("Payroll end");
 			if (payrolls.size() > 0) {
 				return payrolls.get(0);
@@ -77,9 +88,34 @@ public class PayrollDaoImpl implements PayrollDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Payroll payroll";
 	   
-		List<Payroll> payrollList = session.createQuery(query.toString()).setCacheable(true).list();
+		List<Payroll> payrollList = session.createQuery(query.toString()).list();
 	    return payrollList;
 	    
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public PaysheetFrequency getPayrollData(GenerateINDPayrollDTO generateINDPayrollDTO, OrgLocations orgLocation,
+			User loginUser) {
+		String[] groupUUID = generateINDPayrollDTO.getGroupId().split(",");
+		UserGroup userGroup = userGroupDao.findUserGroupById(groupUUID[0]);
+		String dates[] = generateINDPayrollDTO.getPayPeriod().split(",");
+		Date startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[0].replaceAll("/", "-"));
+		Date endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[1].replaceAll("/", "-"));
+		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
+		java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
+		Session session = this.sessionFactory.getCurrentSession();
+		PaysheetFrequency paysheetFrequency = null;
+		List<PaysheetFrequency> list = session.createQuery("from PaysheetFrequency pf where pf.userGroup.id =:groupId and pf.orgLocation.id = :orgLocationId and pf.frequencyStartDate = :startDate and pf.frequencyEndDate = :endDate and pf.type = 'PAYROLL'")
+		.setLong("groupId", userGroup.getId())
+		.setLong("orgLocationId", orgLocation.getId())
+		.setDate("startDate", sqlStartDate)
+		.setDate("endDate", sqlEndDate).list();
+		if (list != null && list.size() > 0) {
+			paysheetFrequency = list.get(0);
+		}
+		return paysheetFrequency;
 	}
 	
 	

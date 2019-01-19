@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,15 +13,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "SUBMISSION_TEMPLATE", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "submissionTemplate")
+@Table(name = "SUBMISSION_TEMPLATE")
 public class SubmissionTemplate implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -33,13 +29,13 @@ public class SubmissionTemplate implements Serializable{
 	@Column(name = "TEMPLATE_NAME")
 	private String templateName;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CLIENT_LOCATION_ID")
     private OrgLocations clientLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID")
     private OrgLocations orgLocationId;
 	
@@ -72,6 +68,9 @@ public class SubmissionTemplate implements Serializable{
 	
 	@Column(name = "IS_DEFAULT")
 	private String isDefault;
+	
+	@Column(name = "UUID")
+	private String uuid;
 	
 	
 
@@ -177,5 +176,13 @@ public class SubmissionTemplate implements Serializable{
 
 	public void setTemplateType(String templateType) {
 		this.templateType = templateType;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 }

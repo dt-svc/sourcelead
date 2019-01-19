@@ -12,6 +12,8 @@ public interface SubmissionTemplateService {
 	
 	SubmissionTemplate getSubmissionTemplateById(Long Id) throws Exception;
 	
+	SubmissionTemplate getDefaultSubmissionTemplateByOrgLocationId(Long orgLocationId) throws Exception;
+	
 	SubmissionTemplate getDefaultSubmissionTemplateByClientLocationIdAndOrgLocationId(Long clientLocationId,Long orgLocationId) throws Exception;
 	
 	SubmissionTemplate getSubmissionTemplateByTemplateName(Long clientLocationId,Long orgLocationId,String templateName) throws Exception;
@@ -23,5 +25,7 @@ public interface SubmissionTemplateService {
 	SubmissionTemplate getSubmissionTemplateByTemplateNameByOrg(Long orgLocationId,String templateName) throws Exception;
 	
 	List<SubmissionTemplate> getInterviewFeedbackTemplatesByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	SubmissionTemplate getSubmissionTemplateByUUID(String uuid) throws Exception;
 	
 }

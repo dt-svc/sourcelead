@@ -8,20 +8,27 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.NotificationDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.service.NotificationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -33,6 +40,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 
 @Controller
+@RequestMapping("/app")
 public class NotificationController {
 
 	@Value("${sourceleadUrl}")
@@ -43,6 +51,9 @@ public class NotificationController {
 	
 	@Autowired
 	TimeZoneService timeZoneService;
+	
+	@Autowired
+	OrgSpocService orgSpocService;
 	
 	/*
 	 * To change the notification mode as read
@@ -90,9 +101,8 @@ public class NotificationController {
 	}
 	
 	@RequestMapping(value = "/getNotificationtLists")
-	public @ResponseBody String getNotificationtLists(HttpServletRequest request) throws Exception {
+	public @ResponseBody List<Notifications> getNotificationtLists(HttpServletRequest request) throws Exception {
 
-	    String resultJson;
 	    Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"userId");
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
@@ -105,10 +115,21 @@ public class NotificationController {
 				nl.setNotificationLastName(nl.getNotificationFrom().getLastName());
 				nl.setNotificationFormId(nl.getNotificationFrom().getId().toString());
 				nl.setNotificationImage(nl.getNotificationFrom().getFileUrl());
+				nl.setUuId(nl.getUuId());
+				if(StringUtils.isNotBlank(nl.getSpocUUID())){
+					OrgSpoc orgSpoc = orgSpocService.getOrgSpocByUUID(nl.getSpocUUID());
+					nl.setSpocInvitationStatus(orgSpoc.getInvitationStatus());
+					nl.setOrgRelationUUID(orgSpoc.getOrgRelations().getUUID());
+					String responderType = "";
+					if(userId.longValue() == orgSpoc.getClientUser().getId().longValue())
+						responderType = "vendor";
+					else
+						responderType = "client";
+					nl.setResponderType(responderType);
+				}
 			}
 		}
-		resultJson = commonUtil.toJSON(notificationsList);
-		return resultJson;
+		return notificationsList;
 	}
 	
 	
@@ -148,5 +169,49 @@ public class NotificationController {
 		}
 
 	}
+	
+	/**
+	 * @author Laxman
+	 * DyanmicNotificationList
+	 * @param notificationDTO
+	 * @param request
+	 * @return notificationsList
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getDynamicNotificationtLists", method = RequestMethod.POST)
+	public @ResponseBody ResponseList<Notifications> getDynamicNotificationtLists(NotificationDTO notificationDTO,HttpServletRequest request) throws Exception {
+		ResponseList<Notifications> notificationsList =  new  ResponseList<Notifications>();
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"userId");
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		String locationCode =  (String) SourceLeadSessionManager.getSessionAttribute(request,"locationCode");
+		 notificationsList = notificationsService.getDynamicAllNotificationsListByUserId(notificationDTO,userId,orgLocations.getOrg().getOrgCode(), locationCode,timezone);
+		 if(notificationsList != null && notificationsList.getData() != null) {
+			 calculateDays(notificationsList.getData(),timezone);
+			 for(Notifications nl : notificationsList.getData()){
+					nl.setNotificationFirstName(nl.getNotificationFrom().getFirstName());
+					nl.setNotificationLastName(nl.getNotificationFrom().getLastName());
+					nl.setNotificationFormId(nl.getNotificationFrom().getId().toString());
+					nl.setNotificationImage(nl.getNotificationFrom().getFileUrl());
+					nl.setUuId(nl.getUuId());
+					if(StringUtils.isNotBlank(nl.getSpocUUID())){
+						OrgSpoc orgSpoc = orgSpocService.getOrgSpocByUUID(nl.getSpocUUID());
+						if(orgSpoc != null){
+							nl.setSpocInvitationStatus(orgSpoc.getInvitationStatus());
+							nl.setOrgRelationUUID(orgSpoc.getOrgRelations().getUUID());
+							String responderType = "";
+							if(userId.longValue() == orgSpoc.getClientUser().getId().longValue())
+								responderType = "vendor";
+							else
+								responderType = "client";
+							nl.setResponderType(responderType);
+						}
+					}
+				}
+		 }
+		 return notificationsList;
+	}
+	
+	
 	
 }

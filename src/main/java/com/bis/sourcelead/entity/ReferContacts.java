@@ -2,30 +2,32 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import com.bis.sourcelead.enums.Contact_Source;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "REFER_CONTACTS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "referContacts")
+@Table(name = "REFER_CONTACTS")
 public class ReferContacts implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -35,25 +37,24 @@ public class ReferContacts implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="REFER_FROM_USER_ID")        
     private User referFromUser;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CONTACT_USER_ID")        
     private User contactUser;
 	
-	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;
-		
+	@Column(name = "FILE_URL", columnDefinition = "TEXT default NULL")
+	private String fileURL;
+	
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORGLOCATION_ID")        
     private OrgLocations orgLocationId;
 
@@ -97,8 +98,38 @@ public class ReferContacts implements Serializable{
 	@Column(name = "CONTACT_USER_EMAIL2")
 	private String contactUserEmail2;
 	
+	@Column(name = "GROUP_ID" , columnDefinition = "TEXT default NULL")
+	private String groupId;
+	
+	@Column(name = "CLIENT_TYPE")
+	private Integer clientType;
+	
+	@Column(name = "VENDOR_TYPE")
+	private Integer vendorType;
+	
+	@Column(name = "CANDIDATE_TYPE")
+	private Integer candidateType;
+	
+	@Column(name = "OTHER_TYPE")
+	private Integer otherType;
+	
 	@Transient
 	private String contactUserName;
+	
+	@Transient
+	@JsonProperty
+	private String fullName;
+	
+	@ManyToMany(mappedBy="contactsList",cascade = CascadeType.ALL)
+	//@Fetch(FetchMode.SELECT)
+	private List<ContactsGroup> groupList;
+	
+	@Column(name = "CONTACT_TYPE")
+	private String contactType;
+	
+	@Column(name = "COMPANY_NAME")
+	private String companyName;
+	
 	
 	public Long getId() {
 		return id;
@@ -219,13 +250,12 @@ public class ReferContacts implements Serializable{
 	public void setContactSource(Contact_Source contactSource) {
 		this.contactSource = contactSource;
 	}
-	
-	public byte[] getDocFile() {
-		return docFile;
+	public String getFileURL() {
+		return fileURL;
 	}
 
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
+	public void setFileURL(String fileURL) {
+		this.fileURL = fileURL;
 	}
 
 	public String getFileContentType() {
@@ -259,6 +289,96 @@ public class ReferContacts implements Serializable{
 	public void setContactUserEmail2(String contactUserEmail2) {
 		this.contactUserEmail2 = contactUserEmail2;
 	}
-	
 
+	public String getFullName() {
+
+		if(StringUtils.isNotEmpty(fullName))
+			return fullName;
+		else{
+			if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName)){
+				fullName = firstName;
+			}
+			else if(StringUtils.isEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
+				fullName = lastName;
+			}
+			else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
+				fullName = firstName+" "+lastName;
+			}
+			return fullName;
+		}
+	
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public String getGroupId()
+	{
+		return groupId;
+	}
+
+	public void setGroupId(String groupId)
+	{
+		this.groupId = groupId;
+	}
+
+
+	public List<ContactsGroup> getGroupList()
+	{
+		return groupList;
+	}
+
+	public void setGroupList(List<ContactsGroup> groupList)
+	{
+		this.groupList = groupList;
+	}
+
+	public String getContactType() {
+		return contactType;
+	}
+
+	public void setContactType(String contactType) {
+		this.contactType = contactType;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+
+	public Integer getClientType() {
+		return clientType;
+	}
+
+	public void setClientType(Integer clientType) {
+		this.clientType = clientType;
+	}
+
+	public Integer getVendorType() {
+		return vendorType;
+	}
+
+	public void setVendorType(Integer vendorType) {
+		this.vendorType = vendorType;
+	}
+
+	public Integer getCandidateType() {
+		return candidateType;
+	}
+
+	public void setCandidateType(Integer candidateType) {
+		this.candidateType = candidateType;
+	}
+
+	public Integer getOtherType() {
+		return otherType;
+	}
+
+	public void setOtherType(Integer otherType) {
+		this.otherType = otherType;
+	}
 }

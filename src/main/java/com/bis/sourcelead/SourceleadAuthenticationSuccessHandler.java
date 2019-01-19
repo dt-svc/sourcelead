@@ -9,10 +9,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.ModelAndView;
@@ -22,10 +25,13 @@ import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.WhiteListIpAddressService;
 
 /**
  * Custom AuthenticationSuccessHandler
@@ -49,62 +55,85 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 	@Autowired
 	UserLoginLogoutSessionService userLoginLogoutSessionService;
 	
+	@Autowired
+	WhiteListIpAddressService whiteListIpAddressService;
+	
+	@Autowired
+	UserRoleService userRoleService;
+	
 	protected boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());
 	}
 	
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-			Authentication authentication) throws IOException, ServletException {
+			Authentication authentication) throws IOException, ServletException, AuthenticationException {
 		ModelAndView model = new ModelAndView();
 		 String UUID = request.getParameter("UUID");
 		 String spocUUID = request.getParameter("spocUUID");
 		 String requirementUUID = request.getParameter("requirementUUID");
 		 String referUUID = request.getParameter("referUUID");
-		try{
-			 if(null != UUID && !"".equalsIgnoreCase(UUID) && null != spocUUID && !"".equalsIgnoreCase(spocUUID)){
-				 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
-				 if(null != notifications){
-					 notifications.setUserNotificationStatus("Accepted");
-					 notificationsService.saveNotification(notifications);
-				 }
-				 
-				 OrgSpoc orgSpoc = orgSpocService.getSpocBySpocUUID(spocUUID);
-				 if(null != orgSpoc ){
-					 orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
-					 orgSpocService.addOrgSpoc(orgSpoc);
-				 }
-			 }
-			 
-			User loginUser = userService.findByUserName(authentication.getName());
-		    if(loginUser != null){
-		    	UserLoginLogoutSession userLoginSession = new UserLoginLogoutSession();
-		    	String ipAddress = getClientIpAddr(request);
-		    	userLoginSession.setIpaddress(ipAddress);
-			    userLoginSession.setUserId(loginUser);
-			    userLoginSession.setLoginTime(new Date());
-			    userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
-			    request.getSession().setAttribute("userLoginSession", userLoginSession);
-		    }
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
-	    finally{
-	    	if(null != UUID && !"".equalsIgnoreCase(UUID) && null != spocUUID && !"".equalsIgnoreCase(spocUUID)){
-	    		response.sendRedirect("/sourcelead/dashboard?invitation=true");
-	    	}else{
-	    		if(!isNullOrEmpty(requirementUUID) && isNullOrEmpty(referUUID)){
-	    			response.sendRedirect("/sourcelead/dashboard?requirementUUID="+requirementUUID);
-	    		}
-	    		else if(!isNullOrEmpty(requirementUUID) && !isNullOrEmpty(referUUID)){
-	    			response.sendRedirect("/sourcelead/dashboard?requirementUUID="+requirementUUID+"&referUUID="+referUUID);
-	    		}
-	    		else{
-	    			response.sendRedirect("/sourcelead/dashboard");
-	    		}
-	    		
-	    	}
-	    }
+		 User loginUser = userService.findByUserName(authentication.getName());
+		 UserRole userRole = null;
+			try {
+				userRole = userRoleService.getLoginUserPrimaryRole(loginUser.getId());
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			String ipAddress = getClientIpAddr(request);
+			boolean validIp = whiteListIpAddressService.validateIPAddress(ipAddress, userRole,null,null);
+		      if(!validIp){
+		    	  response.sendRedirect("/login?allowed=false");
+		      }else{
+		    	  try{
+		  			
+		 			 if(null != UUID && !"".equalsIgnoreCase(UUID) && null != spocUUID && !"".equalsIgnoreCase(spocUUID)){
+		 				 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
+		 				 if(null != notifications){
+		 					 notifications.setUserNotificationStatus("Accepted");
+		 					 notificationsService.saveNotification(notifications);
+		 				 }
+		 				 
+		 				 OrgSpoc orgSpoc = orgSpocService.getSpocBySpocUUID(spocUUID);
+		 				 if(null != orgSpoc ){
+		 					 orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
+		 					 orgSpocService.addOrgSpoc(orgSpoc);
+		 				 }
+		 			 }
+		 			 
+		 			
+		 		    if(loginUser != null){
+		 		    	UserLoginLogoutSession userLoginSession = new UserLoginLogoutSession();
+		 		    	
+		 		    	userLoginSession.setIpaddress(ipAddress);
+		 			    userLoginSession.setUserId(loginUser);
+		 			    userLoginSession.setLoginTime(new Date());
+		 			    userLoginSession.setActionUUID(RandomStringUtils.randomAlphanumeric(16));
+		 			    userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
+		 			    request.getSession().setAttribute("userLoginSession", userLoginSession);
+		 		    }
+		 		} catch (Exception e) {
+		 			e.printStackTrace();
+		 		} 
+		 	    finally{
+		 	    	if(null != UUID && !"".equalsIgnoreCase(UUID) && null != spocUUID && !"".equalsIgnoreCase(spocUUID)){
+		 	    		response.sendRedirect("/app/dashboard?invitation=true");
+		 	    	}else{
+		 	    		if(!isNullOrEmpty(requirementUUID) && isNullOrEmpty(referUUID)){
+		 	    			response.sendRedirect("/app/dashboard?requirementUUID="+requirementUUID);
+		 	    		}
+		 	    		else if(!isNullOrEmpty(requirementUUID) && !isNullOrEmpty(referUUID)){
+		 	    			response.sendRedirect("/app/dashboard?requirementUUID="+requirementUUID+"&referUUID="+referUUID);
+		 	    		}
+		 	    		else{
+		 	    			response.sendRedirect("/app/dashboard");
+		 	    		}
+		 	    		
+		 	    	}
+		 	    }
+		      }
 	}
 
 	public static String getClientIpAddr(HttpServletRequest request) {  
@@ -151,6 +180,19 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 			if(localip != null)
             ip = localip.getHostAddress();
         }
+        
+        String[] ipArray = ip.split(",");
+		if(ipArray.length > 1){
+			for(String s :ipArray){
+				if(StringUtils.isNotEmpty(s)){
+					ip =s.replaceAll("[^0-9.]", "");
+					break;
+				}
+			}
+			
+		}else{
+			ip = ip.replaceAll("[^0-9.]", "");
+		}
 	    return ip;  
 	}
 }

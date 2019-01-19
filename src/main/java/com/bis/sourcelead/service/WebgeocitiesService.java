@@ -14,4 +14,6 @@ public interface WebgeocitiesService {
 	
 	List<Webgeocities> getAllCitiesByStateAndCountry(String stateName, String countryName) throws Exception;
 	
+	List<Webgeocities> getAllCitiesByCountryCode(String countryCode) throws Exception;
+	
 }

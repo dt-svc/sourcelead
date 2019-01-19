@@ -34,4 +34,6 @@ public interface HrDeductionsService {
 
 	HrDeductions saveHrDeductions(HrDeductions hrDeductions) throws Exception;
 
+	ResponseList<HrDeductions> getHrDeductionsByEmployeeId(OrgLocations orgLocation, HrDeductionsDTO hrDeductionsDTO);
+
 }

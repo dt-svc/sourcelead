@@ -68,7 +68,7 @@ public class ContractRequestDocumentsDaoImpl implements ContractRequestDocuments
 	public Integer getCountOfDocByContractedId(Long contractId)
 	{
 			Session session = this.sessionFactory.getCurrentSession();
-			List<ContractRequestDocuments>  contractRequestDocumentsList = session.createQuery("from ContractRequestDocuments crq where crq.contractId.id =:contractId and crq.status = '"+Constants.MEMBER_ACTIVE+"'").setLong("contractId", contractId).setCacheable(true).list();
+			List<ContractRequestDocuments>  contractRequestDocumentsList = session.createQuery("from ContractRequestDocuments crq where crq.contractId.id =:contractId and crq.status = '"+Constants.MEMBER_ACTIVE+"'").setLong("contractId", contractId).list();
 			return (Integer) contractRequestDocumentsList.size();
 	}
 
@@ -78,7 +78,7 @@ public class ContractRequestDocumentsDaoImpl implements ContractRequestDocuments
 	public List<ContractRequestDocuments> getAllDocByContractId(Long contractId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		List<ContractRequestDocuments>  contractRequestDocumentsList = session.createQuery("from ContractRequestDocuments crq where crq.contractId.id =:contractId and crq.status = '"+Constants.MEMBER_ACTIVE+"'").setLong("contractId", contractId).setCacheable(true).list();
+		List<ContractRequestDocuments>  contractRequestDocumentsList = session.createQuery("from ContractRequestDocuments crq where crq.contractId.id =:contractId and crq.status = '"+Constants.MEMBER_ACTIVE+"'").setLong("contractId", contractId).list();
 		return contractRequestDocumentsList;
 	}
 
@@ -89,7 +89,7 @@ public class ContractRequestDocumentsDaoImpl implements ContractRequestDocuments
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		ContractRequestDocuments  contractRequestDocuments =  null;
-		List<ContractRequestDocuments>  contractRequestDocumentseList = session.createQuery("from ContractRequestDocuments crq left join fetch crq.contractId where crq.id =:docId and crq.status = '"+Constants.MEMBER_ACTIVE+"'").setLong("docId", docId).setCacheable(true).list();
+		List<ContractRequestDocuments>  contractRequestDocumentseList = session.createQuery("from ContractRequestDocuments crq left join fetch crq.contractId where crq.id =:docId and crq.status = '"+Constants.MEMBER_ACTIVE+"'").setLong("docId", docId).list();
 		if(null != contractRequestDocumentseList && contractRequestDocumentseList.size() >0){
 			contractRequestDocuments = contractRequestDocumentseList.get(0);
 		}
@@ -103,7 +103,7 @@ public class ContractRequestDocumentsDaoImpl implements ContractRequestDocuments
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		ContractRequestDocuments  contractRequestDocuments =  null;
-		List<ContractRequestDocuments>  contractRequestDocumentseList = session.createQuery("from ContractRequestDocuments crq  left join fetch crq.contractId contract where contract.contractUUID =:contractUUID and crq.status = '"+Constants.MEMBER_ACTIVE+"'").setString("contractUUID", contractUUID).setCacheable(true).list();
+		List<ContractRequestDocuments>  contractRequestDocumentseList = session.createQuery("from ContractRequestDocuments crq  left join fetch crq.contractId contract where contract.contractUUID =:contractUUID and crq.status = '"+Constants.MEMBER_ACTIVE+"'").setString("contractUUID", contractUUID).list();
 		if(null != contractRequestDocumentseList && contractRequestDocumentseList.size() >0){
 			contractRequestDocuments = contractRequestDocumentseList.get(0);
 		}
@@ -116,7 +116,7 @@ public class ContractRequestDocumentsDaoImpl implements ContractRequestDocuments
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query="from ContractRequestDocuments cd  left join fetch crq.contractId contract where contract.id =:contractId and crq.status = '"+Constants.MEMBER_ACTIVE+"')";
-	  List contractList = session.createQuery(query).setLong("contractId", contractId).setCacheable(true).list();
+	  List contractList = session.createQuery(query).setLong("contractId", contractId).list();
       
 	  ContractRequestDocuments requirement = null;
       if(contractList != null && !contractList.isEmpty())

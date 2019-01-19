@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementApproverHierarchyDao;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
+import com.bis.sourcelead.entity.Team;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -42,7 +45,7 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 		return session.createQuery(query)
 				      .setLong("requirementId", requirementId)
 				      .setLong("approverUserId", approverUserId)
-				      .setCacheable(true)
+				      
 				      .list();
 	
 	}
@@ -57,7 +60,7 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 		List<RequirementApproverHierarchy> requirementApproverHierarchyList =  session.createQuery(query)
 														.setLong("requirementId", requirementId)
 														.setLong("approverUserId", approverUserId)
-														.setCacheable(true)
+														
 														.list();
 		
 		RequirementApproverHierarchy requirementApproverHierarchy = null;
@@ -97,7 +100,7 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 		
 	    String query = "select   max(rah.level) from  RequirementApproverHierarchy rah where rah.requirementId.id =:requirementId";
 
-		List<RequirementApproverHierarchy> results =  session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+		List<RequirementApproverHierarchy> results =  session.createQuery(query).setLong("requirementId", requirementId).list();
 
 		if(results != null && !results.isEmpty()){
 			  for(Object result :results){
@@ -117,7 +120,7 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 		String query = "from RequirementApproverHierarchy rah left join fetch rah.approverUserId where rah.requirementId.id =:requirementId  ORDER BY rah.level ASC";
 		List<RequirementApproverHierarchy> list =  session.createQuery(query)
 													      .setLong("requirementId", requirementId)
-													      .setCacheable(true)
+													      
 													      .list();
 		if(list!=null && list.size()>0){
 			return list;
@@ -153,7 +156,7 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementApproverHierarchy rah where rah.requirementId.id =:requirementId and  rah.level = 2";
 
-		List<RequirementApproverHierarchy> requirementApproverHierarchyList =  session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+		List<RequirementApproverHierarchy> requirementApproverHierarchyList =  session.createQuery(query).setLong("requirementId", requirementId).list();
 		
 		RequirementApproverHierarchy requirementApproverHierarchy = null;
 		if(requirementApproverHierarchyList != null && !requirementApproverHierarchyList.isEmpty())
@@ -175,7 +178,7 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 	return session.createQuery(query)
 				  .setLong("userId", userId)
 				  .setLong("orgLocationId", orgLocationId)
-				  .setCacheable(true)
+				  
 				  .list();
 
 }
@@ -194,6 +197,21 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 	return requirementApproverHierarchy;
 	 
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementApproverHierarchy getRejectedApproverHierarchyByRequirementId(Long requirementId) {
+	Session session = this.sessionFactory.getCurrentSession();
+	String query = "from RequirementApproverHierarchy hierarchy where hierarchy.requirementId.id = :requirementId and hierarchy.rejectedReason <> '' ";
+	List<RequirementApproverHierarchy> requirementApproverHierarchyList =  session.createQuery(query).setLong("requirementId", requirementId).list();
+	RequirementApproverHierarchy requirementApproverHierarchy = null;
+	if(requirementApproverHierarchyList != null && !requirementApproverHierarchyList.isEmpty())
+	{
+		requirementApproverHierarchy = requirementApproverHierarchyList.iterator().next();
+	}
+	return requirementApproverHierarchy;
+	 
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -202,7 +220,7 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementApproverHierarchy hierarchy where hierarchy.id != :requirementApproverHierarchyId and  hierarchy.requirementId.id = :requirementId";
-		List<RequirementApproverHierarchy> requirementApproverHierarchyList =  session.createQuery(query).setLong("requirementId", requirementId).setLong("requirementApproverHierarchyId", requirementApproverHierarchyId).setCacheable(true).list();
+		List<RequirementApproverHierarchy> requirementApproverHierarchyList =  session.createQuery(query).setLong("requirementId", requirementId).setLong("requirementApproverHierarchyId", requirementApproverHierarchyId).list();
 		RequirementApproverHierarchy requirementApproverHierarchy = null;
 		if(requirementApproverHierarchyList != null && !requirementApproverHierarchyList.isEmpty())
 		{
@@ -211,6 +229,26 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 		return requirementApproverHierarchy;
 		 
 		}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean getisRequirementApprover(Long userId,Long requirementId) {
+		// TODO Auto-generated method stub
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<RequirementApproverHierarchy> rahList = new ArrayList<>();
+		rahList = session.createQuery("from RequirementApproverHierarchy rah where rah.requirementId.id = :requirementId and rah.approverUserId.id = :userId")
+						   .setLong("userId", userId)
+						   .setLong("requirementId", requirementId)
+						   .list();
+		
+		Boolean flag = false;
+		if (rahList.size() > 0) {
+			flag = true;
+		} 
+		return flag;
+		
+	}
 	
     
   }

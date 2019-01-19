@@ -10,51 +10,48 @@
       <div class="pull-left">
         <h2>Hierarchy Level</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="orgRolesList">Roles List</a> &raquo; Hierarchy List </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a>&raquo;<a href="${appPath}/orgRolesList"> Roles List </a> &raquo; Hierarchy List </div>
     </section>
     
    <!-- Role Persmission -->
-    <section class="clearfix">
-     <div class="clearfix create-level">
-     <div class="col-md-8 col-md-offset-2">
-         <div class="row">
-    
-    <div class="col-md-offset-9 col-md-3">
-		<a href="#popAddLevel" class="btn btn-sm btn-primary btn-block addLevel-pop" ><i class="fa fa-plus"></i>&nbsp;Add Level</a>
-    </div>
+    <section class="project_wrap clearfix">
+     
+<div class="reportHead positionRelative clearfix">
+      <ul class="pull-right list-unstyled list-inline">
+			<li class="addcon-pop">
+				<a href="#popAddLevel" class="newAdBtn mr5 addLevel-pop" >+ Level</a>
+            </li>      
+        </ul>
+      </div>      
     
     
     <!-- Modal -->
-  <div class="modal fade" id="popAddLevel" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
+  <div class="popupWrap" id="popAddLevel" role="dialog">
       <div id="hierarchyLoading"></div> 
         <form:form id="addnew_hierarchy"  name="addnew_hierarchy" method="post"> 
-        <div class="modal-header">
-          <button type="button" onclick="flush();" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Add Level</h4>
-        </div>
-        <div class="modal-body">
+        
+        <div class="popupHead">Add Level <i class="closePop pull-right popClose" onclick="flush();" data-dismiss="modal"></i></div>
+        
+        <div class="popupContent">
            <div class="form-group" id="levelDiv">
-            <input type="text" class="form-control input-sm" data-validation="required validate_Space validate_length length2-20" field-name="Level" onblur="validateLevelName();"onkeyup="validateLevelName();"  placeholder="Enter Level" name="level" id="level" autocomplete="off" autofocus>
+           	<label class="noPad" for="Role Name">Level Name <b class="valStar">*</b></label>
+            <input type="text" class="form-control" data-validation="required validate_Space validate_length length2-20" field-name="Level"  onkeyup="validateLevelName();"  placeholder="Enter Level" name="level" id="level" autocomplete="off" autofocus onkeydown="return (event.keyCode!=13);">
             <input type="hidden" name="hierarchyId" id="hierarchyId">
            </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" id="add_hierarchy"  class="btn btn-primary btn-sm" onclick="storeHierarchyLevel()" >Save</button>
-          <button type="button" class="btn btn-default btn-sm" onclick="flush();" data-dismiss="modal">Close</button>
+        
+        <div class="popupFoot text-right">
+          <button type="button" id="add_hierarchy"  class="slBtn md colorBtn" onclick="storeHierarchyLevel()" >Add</button>
+          <button type="button" class="slBtn md popClose" onclick="flush();" data-dismiss="modal">Cancel</button>
         </div>
         </form:form>
-      </div>
-      
-    </div>
   </div>
-</div>
+  
+  
+
 <div id="popup"></div>
 <div id="loading"></div>
-	<div class="view-level">
+	<div class="view-level mb">
 	         <ul class="list-unstyled hierachy-role" id="sortable">
 	         <c:forEach var="hierarchy" items="${rolesHierarchyList}">
 	             <li id="hierarchyList${hierarchy.id}" value="${hierarchy.id}"><i class="fa fa-edit addLevel-pop"  onclick="editHierarchyLevel('${hierarchy.hierarchyName}','${hierarchy.id}');" title="Edit Role"></i><span class="sellevel">${hierarchy.hierarchyName}</span>
@@ -67,14 +64,8 @@
 			 </c:forEach>
 			 </ul>
 	</div>
-     </div>
-     </div>
     </section>
-   <!-- Role Persmission Ends -->
-
   </section>
-  <!-- Content Area Ends-->
-
  <jsp:include page="masterFooter.jsp" />	
  
  
@@ -93,9 +84,8 @@
  
  <script>
 $('.addLevel-pop').click(function(){
-$('#popAddLevel').modal({
-backdrop: 'static'
-});
+	$('#popAddLevel').fadeIn(100);
+	$(".mask").show();
 }); 
 </script> 
  
@@ -105,6 +95,8 @@ backdrop: 'static'
 		$('#level').val('');
 		$(".error").removeClass("error");
 		$('#levelDiv').find('p.jquery_form_error_message').remove();
+		$('#popAddLevel').fadeOut(100);
+		$(".mask").hide();
  }
  </script>
  
@@ -123,27 +115,40 @@ backdrop: 'static'
 		
 		 if ($('#addnew_hierarchy').validate(false, validationSettings)){ 
 			
-          		
-    		    var frm = $('#addnew_hierarchy').serializeFormJSON();
-    	        var con = JSON.stringify(frm);
-    	        con = con.replace(/[{}]/g, "");
-    	        
-    	        //It will escape all the special characters
-   	        var jsonData = encodeURIComponent(con);
-       		var sourceleadUrl ='${sourceleadUrl}';
+        	var sourceleadUrl ='${sourceleadUrl}';
        		$("#add_hierarchy").attr("disabled", "disabled");
-       		$("#hierarchyLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-       		
+       		$("#hierarchyLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+       		var formData = getFormData1("addnew_hierarchy");
 
 			$.ajax({
 			 	
 				type: "POST",
-		    	 url: sourceleadUrl+"/addNewRoleHierarcy?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+				data: formData,
+ 		    	processData: false, 
+		 		contentType: false,
+		    	 url: sourceleadUrl+"/addNewRoleHierarcy?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(data) {
-		        	if(data != null && data != ''){
-	   	        	    location.replace(sourceleadUrl+"/roleHierarchy");  
-		        	}
-			        
+		        	
+		        	if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+ 		        		showError(data.responseMessage);
+      	    		    $("#hierarchyLoading").removeAttr('style');
+      	    		}
+                		else if (data.response === "AWKWARD") {
+                			location.href = "/errorPage";
+      	    		}
+                		else if(data.response === "SUCCESS"){
+                			$("#hierarchyLoading").removeAttr('style');
+                			location.replace(sourceleadUrl+"/roleHierarchy"); 
+                			$('#popAddLevel').hide();
+                			$(".mask").hide();                			
+			        	    }
+                		else if (data.indexOf('Sign In') !== -1) {
+                			location.replace(sourceleadUrl);
+      				} else {
+      					showError("Operation failed, please try again");
+      				    $("#hierarchyLoading").removeAttr('style');
+      				}
+		            
 		        },
 					});
 			return true;
@@ -194,18 +199,19 @@ backdrop: 'static'
  
  <script type="text/javascript">
 function validateLevelName(){
-	var levelName = document.getElementById("level").value;
+	// 	var levelName = document.getElementById("level").value;
+	var levelName = document.getElementById("level").value.trim();
 	var hierarchyId = document.getElementById("hierarchyId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
-	if(levelName) {
-		$("#add_hierarchy").attr("disabled", "disabled");
+	if(levelName.match(/^[^\s-](.*)*$/) !== null) {
+		 $('#levelDiv').find('p.jquery_form_error_message').remove(); 
 		$.ajax({
 			type : "GET",
 			url: sourceleadUrl+"/validateRoleHierarchyLevelName?${_csrf.parameterName}=${_csrf.token}&levelName="+levelName+"&hierarchyId="+hierarchyId, 
 			success : function(data) {
 				var result = data;
 				if (result == "invalid") {
-					$("#add_hierarchy").removeAttr("disabled");
+					$("#add_hierarchy").attr("disabled", "disabled");
 				    $('#levelDiv').find('p.jquery_form_error_message').remove(); 
 		    	    $("input#level").after("<p class='jquery_form_error_message'>"+levelName+" is Already Existed</span>");
     				$('input#level').attr('record-exist','yes');
@@ -268,7 +274,7 @@ function updateHierarchyOrder(hierarchyOrder){
 	$("#popup").empty();
 	$(".project_inn_mask").fadeOut(200);
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 if(hierarchyOrder){
 		 $.ajax({
 		    	type: "POST",
@@ -288,7 +294,7 @@ function cancel(){
 	$("#popup").empty();
 	$(".project_inn_mask").fadeOut(200);
 	var sourceleadUrl ='${sourceleadUrl}';
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	location.replace(sourceleadUrl+"/roleHierarchy");  
 }
 </script>

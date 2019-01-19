@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class CombinedList implements Serializable{
  
 	/**
@@ -13,9 +15,11 @@ public class CombinedList implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Transient
+	@JsonProperty
 	private List<Roles> roles;
 	
 	@Transient
+	@JsonProperty
 	private List<Team> teams;
 
 	public List<Roles> getRoles() {
