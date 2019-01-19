@@ -377,6 +377,8 @@ function prepareOfferList(url){
 		result = result + '<th>Client</th>';
 		result = result + '<th>Source</th>';
 		result = result + '<th>Date Of Join</th>';
+		result = result + '<th>Offer Rate</th>';
+		result = result + '<th>Offer Rate Yearly</th>';
 		result = result + '<th>Payment Term</th>';
 		result = result + '<th>Generate Invoice</th>';
 		result = result + '</tr>';
@@ -411,6 +413,8 @@ function offerpagination(url){
             { "data": "client"},
             { "data": "souorce"},
             { "data": "joinDate"},
+            { "data": "offerRate"},
+            { "data": "offerRateYearly"},
             { "data": "paymentTerm"},
             { "data": "generateInvoice"}
         ],
@@ -518,6 +522,30 @@ function offerpagination(url){
     	              return result;
                 }
           } ,{
+              "targets": colIndex++,
+              "data": "offerRate",
+              "render": function ( data, type, opt, meta ) {
+              		var result = "";
+              		if(opt.offerRate !=null && opt.offerRate !='' && opt.offerRate !='undefined'){
+							result = result + ' <td><div><span>'+opt.offerRate+'</span></div></td>';
+						}else{
+							result = result + ' <td><div><span>---</span></div></td>';
+						}
+  	              return result;
+              }
+        } ,{
+            "targets": colIndex++,
+            "data": "offerRateYearly",
+            "render": function ( data, type, opt, meta ) {
+            		var result = "";
+            		if(opt.offerRateforYearly !=null && opt.offerRateforYearly !='' && opt.offerRateforYearly !='undefined'){
+							result = result + ' <td><div><span>'+opt.offerRateforYearly+'</span></div></td>';
+						}else{
+							result = result + ' <td><div><span>---</span></div></td>';
+						}
+	              return result;
+            }
+      } ,{
                       "targets": colIndex++,
                       "data": "paymentTerm",
                       "render": function ( data, type, opt, meta ) {
