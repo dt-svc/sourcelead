@@ -6,6 +6,7 @@
 <!-- Starts -->
   <!-- Content Area -->
  <script type="text/javascript">
+ var atsUrl = '${SourceLeadWeb_atsUrl}';
  $(document).ready(function () {
      getDynamicWalletList();
  });
@@ -19,7 +20,7 @@
     </section>
      <div class="clearfix">
 	<ul class="project-tabs-menu projecttabs-custom clearfix">
-           <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
+           <li id="" ><a href="/ats/candidatesList">Candidate List</a></li>
            <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
            <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
            <li id=""><a href="javascript:void(0)" onclick="javascript:goToCartList();">Cart</a></li>
@@ -171,7 +172,7 @@
   </div>
  <script>
   /* function goToCandidateList(){
-		location.href = "${appPath}/candidatesList";
+		location.href = "/ats/candidatesList";
 	} */
 		
 	function cancelWalletFilter(){
@@ -203,23 +204,23 @@
 		
 	}
 	function goToGlobalMarketPlaceList(){
-		location.href = "${appPath}/globalMarketplacePage";
+		location.href = "/ats/globalMarketplacePage";
 	}
 
 	function goToOrgMarketPlaceList(){
-		location.href = "${appPath}/OrgMarketplace";
+		location.href = "/ats/OrgMarketplace";
 	}
 	function goToCartList(){
-		location.href = "${appPath}/candidateMarketplaceCart";
+		location.href = "/ats/candidateMarketplaceCart";
 	}
 	function goToPurchaseOrderList(){
-		location.href ="${appPath}/PurchaseOrderList";
+		location.href ="/ats/PurchaseOrderList";
 		}
 	function goToSalesOrderList(){
-		location.href = "${appPath}/SalesOrderList";
+		location.href = "/ats/SalesOrderList";
 	}
 	/* function goToWalletList(){
-		location.href = "${appPath}/walletList";
+		location.href = "/ats/walletList";
 	} */
   </script>
   
@@ -233,7 +234,6 @@
   
   
   function getDynamicWalletList(selectedTime, selectedTransaction){
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  var searchValue = $("#walletSearch").val();
 		 searchValue = searchValue ? searchValue : "";
 		if(selectedTime == undefined){
@@ -267,7 +267,7 @@
 	        $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
 	        $('#custToDateDiv').find('p.jquery_form_error_message').remove();   
 	    }	
-		var url = sourceleadUrl	+"/getWalletList?searchValue="+searchValue+"&selectedTime="+selectedTime+"&transactionType="+selectedTransaction+"&fromDate="+startDate+"&toDate="+endDate;
+		var url = atsUrl +"/getWalletList?searchValue="+searchValue+"&selectedTime="+selectedTime+"&transactionType="+selectedTransaction+"&fromDate="+startDate+"&toDate="+endDate;
 		prepareWalletList(url);	
   }
   

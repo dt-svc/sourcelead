@@ -5,6 +5,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 $(document).ready(function(){
    getPurchaseOrderList();
 });
@@ -22,7 +23,7 @@ $(document).ready(function(){
     
           <div class="clearfix">
 	<ul class="project-tabs-menu projecttabs-custom clearfix">
-          <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
+          <li id="" ><a href="/ats/candidatesList">Candidate List</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToCartList();">Cart</a></li>
@@ -71,31 +72,31 @@ $(document).ready(function(){
   <script>
   
   function goToCandidateList(){
-		location.href = "${appPath}/candidatesList";
+		location.href = "/ats/candidatesList";
 	}
 		
 	function goToGlobalMarketPlaceList(){
-		location.href = "${appPath}/globalMarketplacePage";
+		location.href = "/ats/globalMarketplacePage";
 	}
 
 	function goToOrgMarketPlaceList(){
-		location.href = "${appPath}/OrgMarketplace";
+		location.href = "/ats/OrgMarketplace";
 	}
 	function goToCartList(){
-		location.href = "${appPath}/candidateMarketplaceCart";
+		location.href = "/ats/candidateMarketplaceCart";
 	}
 	function goToPurchaseOrderList(){
-		location.href ="${appPath}/PurchaseOrderList";
+		location.href ="/ats/PurchaseOrderList";
 		}
 	function goToSalesOrderList(){
-		location.href = "${appPath}/SalesOrderList";
+		location.href = "/ats/SalesOrderList";
 	}
 	function refreshPage(){
 		$("#purchaseOrderDataTableSearch").val('');
 		getPurchaseOrderList();
 	}
 	function goToWalletList(){
-	    location.href = "${appPath}/walletList";
+	    location.href = "/ats/walletList";
 	}
 	function refreshPage(){
 		location.reload();
@@ -108,7 +109,7 @@ $(document).ready(function(){
    function getPurchaseOrderList(){
 	    var searchValue = $("#purchaseOrderDataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-	   	var url = sourceleadUrl+"/getPurchasedOrderList?searchValue="+searchValue;
+	   	var url = atsUrl+"/getPurchasedOrderList?searchValue="+searchValue;
 	   	getPurchaseOrderListPagin(url);	  
   }
   </script>
@@ -174,7 +175,7 @@ function purchasePagination(url){
             	var result = "";
             	$("#noCandidates").val(1);
             	 if(report.orderNo != null && report.orderNo != '' && report.orderNo !='undefined'){
-             result = result +'<div class="tbldata-dotdot-vsm" title="'+report.orderNo+'"><a href="'+sourceleadUrl+'/PurchaseOrder?purchaseUuid='+report.purchaseUuid+'" title="'+report.purchaseUuid+'">'+report.orderNo+'</a></div>';	 
+             result = result +'<div class="tbldata-dotdot-vsm" title="'+report.orderNo+'"><a href="'+atsUrl+'/PurchaseOrder?purchaseUuid='+report.purchaseUuid+'" title="'+report.purchaseUuid+'">'+report.orderNo+'</a></div>';	 
             		         		 
          		}else{
          		  result = result +'<div class="tblminwidth-100">--</div>';
@@ -339,7 +340,7 @@ function exportToPdf(){
 	var isCandidatesAvailable= $("#noCandidates").val();
 	if(isCandidatesAvailable >0)
 		{
-	  window.location.href = sourceleadUrl+"/getPurchaseCandidatesExportList?&exportType=pdf";	
+	  window.location.href = atsUrl+"/getPurchaseCandidatesExportList?&exportType=pdf";	
 	   }
 	  else{
 		
@@ -362,7 +363,7 @@ function exportToExcel(){
 	var isCandidatesAvailable= $("#noCandidates").val();
 	if(isCandidatesAvailable >0)
 		{	
-	  window.location.href = sourceleadUrl+"/getPurchaseCandidatesExportList?&exportType=xls";	
+	  window.location.href = atsUrl+"/getPurchaseCandidatesExportList?&exportType=xls";	
 	  }
 	else{
 		

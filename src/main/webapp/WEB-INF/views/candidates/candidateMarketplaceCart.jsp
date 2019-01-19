@@ -15,14 +15,14 @@
       <h2 id="headerLbl">Cart</h2>
     </div>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl"><a href="${appPath}/globalMarketplacePage">Global Marketplace List</a></label> &raquo; <label id="brudCrumLbl">Cart</label> </div>
+	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl"><a href="/ats/globalMarketplacePage">Global Marketplace List</a></label> &raquo; <label id="brudCrumLbl">Cart</label> </div>
 	  </c:if>
 	  </section>
 	  <div id="popUp"></div>
  	<div class="clearfix"></div>
 	  <div class="clearfix">
 			<ul class="project-tabs-menu projecttabs-custom clearfix">
-		         <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
+		         <li id="" ><a href="/ats/candidatesList">Candidate List</a></li>
 		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
 		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
 		         <li id="" class="current"><a href="javascript:void(0)">Cart</a></li>
@@ -123,7 +123,7 @@
                 <sec:authorize access="hasRole('PURCHASE_PROFILE')">
               <div class="cartInvoiceBodyFooter">
                 <div class="clearfix">
-                  <div class="pull-right"> <a onclick="initMarketplacePayment()" href="javascript:void(0)" class="btn btn-primary mr" id = "checkOutButton2"><i class="fa fa-send paddingRight"></i>Check Out</a> <a class="btn btn-default" href="${appPath}/globalMarketplacePage">Cancel</a> </div>
+                  <div class="pull-right"> <a onclick="initMarketplacePayment()" href="javascript:void(0)" class="btn btn-primary mr" id = "checkOutButton2"><i class="fa fa-send paddingRight"></i>Check Out</a> <a class="btn btn-default" href="/ats/globalMarketplacePage">Cancel</a> </div>
                 </div>
               </div>
               </sec:authorize>
@@ -245,7 +245,7 @@
   <jsp:include page="../masterFooter.jsp" />
 </body>	
 <script type="text/javascript">
-
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 $(document).ready(function () {
 	getCandidateDetailsFromMarketcart();
 	updateInvoiceDetails();
@@ -281,22 +281,22 @@ $('.chosen-select').each(function() {
 
 });
 function goToOrgMarketPlaceList(){
-	location.href = "${appPath}/OrgMarketplace";
+	location.href = "/ats/OrgMarketplace";
 }
 
 function goToGlobalMarketPlaceList(){
-	location.href = "${appPath}/globalMarketplacePage";
+	location.href = "/ats/globalMarketplacePage";
 }
 
 function goToPurchaseOrderList(){
-	location.href ="${appPath}/PurchaseOrderList";
+	location.href ="/ats/PurchaseOrderList";
 	}
 function goToSalesOrderList(){
-	location.href = "${appPath}/SalesOrderList";
+	location.href = "/ats/SalesOrderList";
 }
 
 function goToWalletList(){
-    location.href = "${appPath}/walletList";
+    location.href = "/ats/walletList";
 }
 
 function getCandidateDetailsFromMarketcart(){
@@ -308,7 +308,7 @@ function getCandidateDetailsFromMarketcart(){
 	searchValue = searchValue ? searchValue : "";
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl +"/getCandidateDetailsFromMarketcart?searchValue="+searchValue+"&creationStartDate="+creationStartDate+"&creationEndDate="+creationEndDate+"&checkedDate="+checkedDate,
+		url : atsUrl +"/getCandidateDetailsFromMarketcart?searchValue="+searchValue+"&creationStartDate="+creationStartDate+"&creationEndDate="+creationEndDate+"&checkedDate="+checkedDate,
 		async : false,
 		success : function(object) {
 			var result ="";
@@ -381,7 +381,7 @@ function getCandidateDetailsFromMarketcart(){
 function updateInvoiceDetails(){
 	var totalPriceInCurrency;
 	$.ajax({
-		 	url: sourceleadUrl + "/updateMarketplaceCartCountAndPrice",
+		 	url: atsUrl + "/updateMarketplaceCartCountAndPrice",
 	        type: 'GET',
 	        success: function (object) {
 	        	if(object != null){
@@ -416,7 +416,7 @@ function deleteCandidateFromMarketcart(candidateName, candidateUuid){
 function deleteCandidateFromMarketcartByCandidateUuid(candidateUuid){
 	var cLength;
 	$.ajax({
-	 	url: sourceleadUrl + "/deleteCandidateFromMarketcartByCandidateUuid?candidateUuid="+candidateUuid,
+	 	url: atsUrl + "/deleteCandidateFromMarketcartByCandidateUuid?candidateUuid="+candidateUuid,
 		type: 'GET',
 		success : function(result){
 			if (result.response === "AWKWARD") {
@@ -455,13 +455,13 @@ function deleteAllCandidatesFromMarketcart(){
 
 function deleteAllCandidatesForCheckout(){
 	$.ajax({
-	 	url: sourceleadUrl + "/deleteAllCandidatesFromMarketcart",
+	 	url: atsUrl + "/deleteAllCandidatesFromMarketcart",
 		type: 'GET',
 		success : function(result){
 			if (result.response === "AWKWARD") {
                 location.href = "/errorPage";
             }else if(result.response === "SUCCESS") {
-            	window.location.replace("${appPath}/globalMarketplacePage");
+            	window.location.replace("/ats/globalMarketplacePage");
             }else{
            	 	showError("Operation failed, please try again");
             }}
