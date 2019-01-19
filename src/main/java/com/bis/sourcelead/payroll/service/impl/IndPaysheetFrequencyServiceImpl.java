@@ -258,5 +258,10 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 	public List<IndEmployeePayroll> getYTDIndEmployeePayrollList(Long candidateId, String startMonth) throws Exception {
 		return indPaysheetFrequencyDao.getYTDIndEmployeePayrollList(candidateId, startMonth);
 	}
+
+	@Override
+	public ResponseList<IndEmployeePayroll> getPayrollBankReportReportList(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations) {
+		return indPaysheetFrequencyDao.getPayrollBankReportReportList(indEmployeePayrollDTO, orgLocations);
+	}
  
 }

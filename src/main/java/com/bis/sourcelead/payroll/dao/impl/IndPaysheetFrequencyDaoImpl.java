@@ -398,4 +398,60 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		indEmpPayrollList = session.createQuery(query).setLong("candidateId", candidateId).setDate("sqlDate", sqlDate).list();
 		return indEmpPayrollList;
 	}
+
+
+	@Override
+	public ResponseList<IndEmployeePayroll> getPayrollBankReportReportList(IndEmployeePayrollDTO indEmployeePayrollDTO,
+			OrgLocations orgLocations) {
+Session session = this.sessionFactory.getCurrentSession();
+		
+		Date fDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), indEmployeePayrollDTO.getFreqStartDate());
+		Date tDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), indEmployeePayrollDTO.getFreqEndDate());
+		java.sql.Date freqStartDate = new java.sql.Date(fDate.getTime());
+		java.sql.Date freqEndDate = new java.sql.Date(tDate.getTime());
+		
+		ResponseList<IndEmployeePayroll> response = new ResponseList<>();
+		
+		StringBuilder query1 = new StringBuilder("");
+		if(indEmployeePayrollDTO.getSearchValue() !=null && !"".equalsIgnoreCase(indEmployeePayrollDTO.getSearchValue())) {
+		 query1.append("and (iep.employee.departmentId.departmentName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' ")
+		       .append("OR (iep.candidate.firstName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR (iep.candidate.lastName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR concat(iep.candidate.firstName,iep.candidate.lastName) like '%" + indEmployeePayrollDTO.getSearchValue() + "%' ")
+		       .append("OR (iep.paymentAccount.accountNumber like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR (iep.paymentAccount.bankName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR (iep.paymentAccount.routingNumber like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+			   .append("OR iep.employee.employeeId like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )");
+		}
+		
+	 
+		List<IndEmployeePayroll> indEmployeePayrollList = null;
+		List<Long> countlist  = null;
+		//List Query
+		String query = "from IndEmployeePayroll iep left join fetch iep.indPaysheetFrequency ipf where  ipf.userGroup.id =:groupId and ipf.frequencyStartDate =:frequencyStartDate and ipf.frequencyEndDate =:frequencyEndDate and ipf.approverStatus ='APPROVED' and ipf.orgLocation.id =:orgLoactionId  "+query1+"";
+		
+		//count Query
+		String countQuery  = "Select count (*) from IndEmployeePayroll iep where  iep.indPaysheetFrequency.userGroup.id =:groupId and iep.indPaysheetFrequency.frequencyStartDate =:frequencyStartDate and iep.indPaysheetFrequency.frequencyEndDate =:frequencyEndDate and iep.indPaysheetFrequency.approverStatus ='APPROVED' and iep.indPaysheetFrequency.orgLocation.id =:orgLoactionId "+query1+"";
+		
+			 indEmployeePayrollList = session.createQuery(query).setDate("frequencyStartDate", freqStartDate).setDate("frequencyEndDate", freqEndDate).setLong("groupId", indEmployeePayrollDTO.getPayGroup()).setLong("orgLoactionId", orgLocations.getId()).setFirstResult(indEmployeePayrollDTO.getStart()).setMaxResults(indEmployeePayrollDTO.getLength()).list();
+			 countlist  = session.createQuery(countQuery).setDate("frequencyStartDate", freqStartDate).setDate("frequencyEndDate", freqEndDate).setLong("groupId", indEmployeePayrollDTO.getPayGroup()).setLong("orgLoactionId", orgLocations.getId()).list();
+		Integer filterCount = countlist.iterator().next().intValue();
+		
+		int totalCount = 0;
+		if (indEmployeePayrollDTO != null) {
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		} 
+		response.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(filterCount);
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}
+		
+		response.setData(indEmployeePayrollList);
+		return response;
+	}
 }

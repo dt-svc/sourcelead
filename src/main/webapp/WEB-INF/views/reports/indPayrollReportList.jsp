@@ -26,16 +26,16 @@
               <div class="clearfix mt10"> <a href="${appPath}/indPayrollRegisterReport"  class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
-          <%-- <div class="col-md-3">
+           <div class="col-md-3">
             <div class="pull-left mr10"> <i class="fa fa-exchange fa-2x text-muted"></i> </div>
             <div class="pull-left">
-              <h4 class="text-muted">Comparison</h4>
-              <small class="text-muted">Payroll Comparison</small>
-              <div class="clearfix mt10"> <a href="${appPath}/payrollComparison" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <h4 class="text-muted">Bank Transfer</h4>
+              <small class="text-muted">Bank Transfer Reports</small>
+              <div class="clearfix mt10"> <a href="${appPath}/indPayrollBankTransferReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
 
-          <div class="col-md-3">
+        <%--  <div class="col-md-3">
             <div class="pull-left mr10"> <i class="fa fa-file-text-o fa-2x text-muted"></i> </div>
             <div class="pull-left">
               <h4 class="text-muted">Payroll Summary</h4>
