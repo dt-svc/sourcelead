@@ -1,12 +1,20 @@
 package com.bis.sourcelead.dto;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class InvoiceLineItemsDTO {
 	private String candidateName;
 	private String candidate;
 	private String lineItemId;
+	
+	@Required (desc = "Description")
 	private String Description;
+	
 	private String sow;
+	
+	@Required (desc = "Rate")
 	private String rate;
+	
 	private String totalHours;
 	private String amount;
 	private String invoiceStartDate;
@@ -14,6 +22,11 @@ public class InvoiceLineItemsDTO {
     private String submissionInvoiceId;
     private String submissionApproverHierarchyId;
     private String user;
+    private String requirementSubmissionId;
+    
+    private String quantity;
+    
+    private String billRateType;
 //	 
 	public String getCandidateName() {
 		return candidateName;
@@ -92,6 +105,24 @@ public class InvoiceLineItemsDTO {
 	}
 	public void setUser(String user) {
 		this.user = user;
+	}
+	public String getQuantity() {
+		return quantity;
+	}
+	public void setQuantity(String quantity) {
+		this.quantity = quantity;
+	}
+	public String getBillRateType() {
+		return billRateType;
+	}
+	public void setBillRateType(String billRateType) {
+		this.billRateType = billRateType;
+	}
+	public String getRequirementSubmissionId() {
+		return requirementSubmissionId;
+	}
+	public void setRequirementSubmissionId(String requirementSubmissionId) {
+		this.requirementSubmissionId = requirementSubmissionId;
 	}
 	
 	

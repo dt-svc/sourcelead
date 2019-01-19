@@ -5,9 +5,9 @@
 <script>
 function certificationSubmissionDetails(candidateId){
 	var result = "";
-	result = result	+ '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-	result = result	+ '<div class="project_tabs_inn_head"> <input class="vendorfild" ></div>';
-	result = result + '   <div id="certificationSubmissionDetailsList" class="datatable_filter"></div>';
+	result = result	+ '   <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew">';
+	/* result = result	+ '<div class="project_tabs_inn_head"> <input class="vendorfild" ></div>'; */
+	result = result + '   <div id="certificationSubmissionDetailsList" class="datatable_filter mt5"></div>';
 	result = result + '   </div>';
 	
 	$("#tabb-1").empty();
@@ -41,94 +41,79 @@ function certificationSubmissionDetailsList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-               /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
-             		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{
-	                	 $("#certificationSubmissionDetailsList").empty();
-	                	 var result = "";
-	                	 result = result +"<table id='certificationSubmissionDetailPagination' class='display' cellspacing='0' width='100%' >"; 
-	                     result = result +"<thead>"; 
-	                     result = result +"  <tr>"; 
-	                     result  = result +"           <th>Name</th>";
-	                 	result  = result + "           <th>Provider</th>";
-	                 	result  = result + "           <th>Score</th>";
-	                 	result  = result + "           <th>Score Type</th>";
-	                 	result  = result + "           <th>Description</th>";
-	                 	result  = result + "           <th>Valid from <br>(<small class='custom-small'>"+certSubListDate+"</small>)</th>";
-	                 	result  = result + "           <th>Valid to <br>(<small class='custom-small'>"+certSubListDate+"</small>)</th>";
-	                     result = result +"  </tr>"; 
-	                     result = result +"</thead>";
-	                     result = result +"<tbody>"; 
-	                      var json = JSON.parse(data);
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
-	                    	 var score = "";
-	                    	 var scoreType ="";
-	                    	 var description ="";
-	                    	 var candidatevalidFromDateToString ="";
-	                    	 var candidatevalidToDateToString ="";
-				            	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
-				            		score = opt.score;
-				            	}else{
-				            		score = "----";
-				            	}
-				            	if(opt.scoreType != null && opt.scoreType != 'undefined' && opt.scoreType != ""){
-				            		scoreType = opt.scoreType;
-				            	}else{
-				            		scoreType = "----";
-				            	}
-				            	if(opt.description != null && opt.description != 'undefined' && opt.description != ""){
-				            		description = opt.description;
-				            	}else{
-				            		description = "----";
-				            	}
-				            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
-				            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
-				            	}else{
-				            		candidatevalidFromDateToString = "----";
-				            	}
-				            	if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
-				            		candidatevalidToDateToString = opt.candidatevalidToDateToString;
-				            	}else{
-				            		candidatevalidToDateToString = "----";
-				            	}
-	                    	 result  = result + '         <tr>';
-	                    	 result  = result + '           <td><div><span title="'+opt.name+'">'+opt.name+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span title="'+opt.provider+'">'+opt.provider+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+score+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+scoreType+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span title="'+description+'">'+description+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+candidatevalidFromDateToString+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+candidatevalidToDateToString+'</span></div></td>';
-	                     result  = result + '         </tr>';
-	                      } 
-	                     result = result +" </tbody>";
-	                     result = result +"</table>";
-	                     $("#certificationSubmissionDetailsList").append(result); 
-	                     certificationSubmissionDetailsPagination(); 
-			    	} 
-               /* }else{
-	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No SubmissionCertifications Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#certificationSubmissionDetailsList").empty();
-				    $("#certificationSubmissionDetailsList").append(result);
-				    
-               } */
+          success :function(response) {
+        	  	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			 $("#certificationSubmissionDetailsList").empty();
+                	 var result = "";
+                	 result = result +"<table id='certificationSubmissionDetailPagination' class='display' cellspacing='0' width='100%' >"; 
+                     result = result +"<thead>"; 
+                     result = result +"  <tr>"; 
+                     result  = result +"           <th>Name</th>";
+                 	result  = result + "           <th>Provider</th>";
+                 	result  = result + "           <th>Score</th>";
+                 	result  = result + "           <th>Score Type</th>";
+                 	result  = result + "           <th>Description</th>";
+                 	result  = result + "           <th>Valid from <br>(<small class='custom-small'>"+certSubListDate+"</small>)</th>";
+                 	result  = result + "           <th>Valid to <br>(<small class='custom-small'>"+certSubListDate+"</small>)</th>";
+                     result = result +"  </tr>"; 
+                     result = result +"</thead>";
+                     result = result +"<tbody>"; 
+//	                      var json = JSON.parse(data);
+                     for (var i = 0; i < response.data.length; i++) { 
+                    	 var opt = response.data[i];  
+                    	 var score = "";
+                    	 var scoreType ="";
+                    	 var description ="";
+                    	 var candidatevalidFromDateToString ="";
+                    	 var candidatevalidToDateToString ="";
+			            	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
+			            		score = opt.score;
+			            	}else{
+			            		score = "----";
+			            	}
+			            	if(opt.scoreType != null && opt.scoreType != 'undefined' && opt.scoreType != ""){
+			            		scoreType = opt.scoreType;
+			            	}else{
+			            		scoreType = "----";
+			            	}
+			            	if(opt.description != null && opt.description != 'undefined' && opt.description != ""){
+			            		description = opt.description;
+			            	}else{
+			            		description = "----";
+			            	}
+			            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
+			            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
+			            	}else{
+			            		candidatevalidFromDateToString = "----";
+			            	}
+			            	if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+			            		candidatevalidToDateToString = opt.candidatevalidToDateToString;
+			            	}else{
+			            		candidatevalidToDateToString = "----";
+			            	}
+                    	 result  = result + '         <tr>';
+                    	 result  = result + '           <td><div><span title="'+opt.name+'">'+opt.name+'</span></div></td>';
+                    	 result  = result + '           <td><div><span title="'+opt.provider+'">'+opt.provider+'</span></div></td>';
+                    	 result  = result + '           <td><div><span>'+score+'</span></div></td>';
+                    	 result  = result + '           <td><div><span>'+scoreType+'</span></div></td>';
+                    	 result  = result + '           <td><div><span title="'+description+'">'+description+'</span></div></td>';
+                    	 result  = result + '           <td><div><span>'+candidatevalidFromDateToString+'</span></div></td>';
+                    	 result  = result + '           <td><div><span>'+candidatevalidToDateToString+'</span></div></td>';
+                     result  = result + '         </tr>';
+                      } 
+                     result = result +" </tbody>";
+                     result = result +"</table>";
+                     $("#certificationSubmissionDetailsList").append(result); 
+                     certificationSubmissionDetailsPagination(); 
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
         },
           
      }); 

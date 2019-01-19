@@ -34,6 +34,7 @@ public interface CandidateEmployersService {
 	/**
 	 * @param candidateId
 	 * @param orgLocationId
+	 * @param searchVal 
 	 * @return
 	 * @throws Exception
 	 */
@@ -70,6 +71,14 @@ public interface CandidateEmployersService {
 	
 	CandidateEmployers getCandidateCurrentEmployer(Long candidateId, Long orgLocationId) throws Exception;
 	
+	String removeCandidateEmployerDocById(Long candidateEmployerId) throws Exception;
+	
 	CandidateEmployers getCandidateLastCompanyEmployer(Long candidateId, Long orgLocationId) throws Exception;
+	
+	public List<CandidateEmployers>   getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long candidateId, String searchVal) throws Exception;
+	
+	public Integer getCandidateActiveEmployersCountByCandidateId(Long candidateId);
+	
+	public  HashSet<CandidateEmployers> getCandidateEmployersDetailsList(CandidateDTO candidateDTO,OrgLocations orgLocations,Candidate candidate,User user) throws Exception;
 	
 }

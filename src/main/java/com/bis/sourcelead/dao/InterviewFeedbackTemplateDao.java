@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao;
 
+import java.util.List;
+
 import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
 
 public interface InterviewFeedbackTemplateDao {
@@ -10,5 +12,5 @@ public interface InterviewFeedbackTemplateDao {
 	
 	InterviewFeedbackTemplate getInterviewFeedbackTemplateByTemplateIdAndRequirementInterviewId(Long templateId,Long requirementInterviewId) throws Exception;
 		
-	
+	List<InterviewFeedbackTemplate> getInterviewerAndRatingListByInterviewId(Long requirementInterviewId) throws Exception;
 }

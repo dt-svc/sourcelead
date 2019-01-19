@@ -2,7 +2,10 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.NotificationDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Notifications;
+import com.bis.sourcelead.entity.Timezone;
 
 public interface NotificationsDao {
 
@@ -18,9 +21,18 @@ public interface NotificationsDao {
 
 	List<Notifications> getAllNotificationsListByUserId(Long userId, String orgCode, String locationCode);
 	
+	List<Notifications> getTopTenNotificationsListByUserId(Long userId, String orgCode, String locationCode);
+	
 	Notifications getNotificationsById(Long Id) throws Exception;
 	
 	Notifications getNotificationsByUUID(String UUID) throws Exception;
 	
+	Notifications getNotificationDetailsByUUID(String UUID) throws Exception;
+	
 	Notifications getNotificationBySpocUUID(String spocUUID) throws Exception;
+	
+	ResponseList<Notifications> getDynamicAllNotificationsListByUserId(NotificationDTO notificationDTO, Long userId, String orgCode, String locationCode, Timezone timezone);
+	
+	String getNotificationUUIDByOrgSpocId(Long orgSpocId) throws Exception;
+
 }

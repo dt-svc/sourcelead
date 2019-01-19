@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public class SearchDTO implements Serializable {
+public class SearchDTO extends CommonDTO implements Serializable {
+	
 	private List<String> anyOfKeyword;
 	private List<String> allKeywords;
 	private List<String> excludeKeyWord;
@@ -18,8 +19,11 @@ public class SearchDTO implements Serializable {
 	private String searchValue;
 	private Map<String, String> search;
 	private List<Map<String, String>> order;
-	private String sortColumn;
-	private String sortOrder;
+	private String sortColumn = "id";
+	private String sortOrder = "desc";
+	private String searchCountry;
+	private String searchState;
+	private String searchCity;
 	
 	public List<String> getAnyOfKeyword()
 	{
@@ -165,5 +169,29 @@ public class SearchDTO implements Serializable {
 
 	public void setSortOrder(String sortOrder) {
 		this.sortOrder = sortOrder;
+	}
+
+	public String getSearchCountry() {
+		return searchCountry;
+	}
+
+	public void setSearchCountry(String searchCountry) {
+		this.searchCountry = searchCountry;
+	}
+
+	public String getSearchState() {
+		return searchState;
+	}
+
+	public void setSearchState(String searchState) {
+		this.searchState = searchState;
+	}
+
+	public String getSearchCity() {
+		return searchCity;
+	}
+
+	public void setSearchCity(String searchCity) {
+		this.searchCity = searchCity;
 	}
 }

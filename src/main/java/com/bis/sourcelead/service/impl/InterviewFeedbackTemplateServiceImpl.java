@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,5 +39,8 @@ public class InterviewFeedbackTemplateServiceImpl implements InterviewFeedbackTe
 	}
 
 	
-	
+	@Override
+	public List<InterviewFeedbackTemplate> getInterviewerAndRatingListByInterviewId(Long requirementInterviewId) throws Exception {
+		return interviewFeedbackTemplateDao.getInterviewerAndRatingListByInterviewId(requirementInterviewId);
+	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.JobAlertDTO;
 import com.bis.sourcelead.entity.JobAlert;
 
 public interface JobAlertService {
@@ -14,7 +15,7 @@ public interface JobAlertService {
 	
 	 List<JobAlert>  getJobAlertByuserId(Long userId) throws Exception;
 	
-	 String  saveJobAlert(JSONObject jsonObj) throws Exception;
+	 String  saveJobAlert(JobAlertDTO  jobAlertDTO) throws Exception;
 	 
 	 List<JobAlert>  getJobAlertByEmail(String email) throws Exception;
 	 

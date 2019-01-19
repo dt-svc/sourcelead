@@ -6,8 +6,10 @@ public interface AddExpensesDao {
 
 	public Expenses storeAddExpensesData(Expenses expenses) throws Exception;
 
-	public Expenses checkExpensIdNumberInDatebase(Long orgLocId);
+	public Long checkExpensIdNumberInDatebase(Long orgLocId, Integer generatedIdcount);
 
-	public void deleteDocumentByDocumentId(Long parseLong);
+	public void deleteDocumentByDocumentId(Long documentId);
+
+	public long changeStatusToBillable(long expenseEntriesId,String  billableStatus);
 
 }

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -9,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.EmployeesDao;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.service.EmployeesService;
 
 @Service
@@ -120,6 +123,32 @@ public class EmployeesServiceImpl implements EmployeesService {
 	@Override
 	public Employees getEmployeByUserIdAndOrgRelationId(Long userId, Long orgRelationId) throws Exception {
 		return employeesDao.getEmployeByUserIdAndOrgRelationId(userId,orgRelationId);
+	}
+
+	@Override
+	public Employees getEmployeeByUserAndOrgLocationId(Long userId, Long orgLocationId)
+	{
+		return employeesDao.getEmployeeByUserAndOrgLocationId(userId,orgLocationId);
+	}
+
+	@Override
+	public List<UserDTO> getEmployeesBasedOnDepartment(String departmentId, OrgLocations orgLocation) {
+		List<Employees> empList =  employeesDao.getEmployeesBasedOnDepartment(departmentId,orgLocation);
+		List<UserDTO> userList = new ArrayList<>();
+		
+		for (Employees employee : empList) {
+			UserDTO user = new UserDTO();
+			user.setId(employee.getId());
+			if(employee.getUser().getLastName() != null) {
+				StringBuilder sb = new StringBuilder();
+				user.setFullName(sb.append(employee.getUser().getFirstName()).append(" ").append(employee.getUser().getLastName()).toString());
+			}else {
+				user.setFullName(employee.getUser().getFirstName());
+			}
+			
+			userList.add(user);
+		}
+		return userList;
 	}
 
 	

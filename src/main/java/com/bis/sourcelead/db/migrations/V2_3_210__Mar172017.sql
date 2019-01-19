@@ -1,1 +1,1 @@
-CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_REFER','PHONE_NUMBER','VARCHAR(20) NULL');
+CALL AlterTableAddColumn ('REQUIREMENT_REFER','PHONE_NUMBER','VARCHAR(20) NULL');

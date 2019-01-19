@@ -12,8 +12,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.service.ActionHistoryService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.DashboardController;
 /**
  *
@@ -111,7 +114,8 @@ public class LoggingAspect {
 	}*/
 
 
-	@AfterReturning(pointcut = "@annotation(org.springframework.security.access.prepost.PreAuthorize) && execution(* com.bis.sourcelead.rest..*.*(..))", returning = "result")
+	@SuppressWarnings("unchecked")
+	@AfterReturning(pointcut = "execution(* com.bis.sourcelead.web..*.*(..)) || execution(* com.bis.sourcelead.rest..*.*(..))", returning = "result")
 	public void logAfterReturningRestService(JoinPoint joinPoint, Object result) throws Exception {
 		//logger.info("********** Rest Service Layer After Method Exectution ************");
 		//logger.info("Class name : " + joinPoint.getTarget().getClass().getSimpleName());
@@ -122,11 +126,55 @@ public class LoggingAspect {
 				.getRequestAttributes()).getRequest();
 
 		UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
-	//	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "userLoginSession");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		String methodName = joinPoint.getSignature().getName();
-		if(userLoginSession != null)
-			actionHistoryService.saveActionHistory(methodName,userLoginSession);
+		String type = "";
+		if("searchClientContactDetails".equalsIgnoreCase(methodName) || "saveVenodrContact".equalsIgnoreCase(methodName) || "searchClientDetails".equalsIgnoreCase(methodName)){
+			Object[] args = joinPoint.getArgs();
+			Object arg=args[0];
+			Class c=arg.getClass();
+			type=(String)c.getMethod("getResponderType").invoke(arg);
+		}else if("getSpocAndOwnerDetailsById".equalsIgnoreCase(methodName) || "terminateSpoc".equalsIgnoreCase(methodName))
+		{
+			Object[] args = joinPoint.getArgs();
+			Object arg=args[4];
+			type=arg.toString();	
+		}
+		if("storeCandidate".equalsIgnoreCase(methodName) || "updateCandidate".equalsIgnoreCase(methodName)){
+			Object[] args = joinPoint.getArgs();
+			Object arg=args[0];
+			Class c=arg.getClass();
+			String str=(String)c.getMethod("getIsAssociate").invoke(arg);
+			if("Y".equalsIgnoreCase(str))
+				type = Constants.ASSOCIATE;
+			else
+				type = Constants.Candidate;
+		}
+		if("deleteCandidateByCandidateId".equalsIgnoreCase(methodName)){
+			Object[] args = joinPoint.getArgs();
+			Object arg=args[1];
+			String str=arg.toString();
+			if("Associates".equalsIgnoreCase(str))
+				type = Constants.ASSOCIATE;
+			else
+				type = Constants.Candidate;
+		}
+		if("saveMarketPlaceData".equalsIgnoreCase(methodName)){
+			type="saveMarketPlaceData";
+		}
+		if("withdrawCandidateFromMarketplace".equalsIgnoreCase(methodName)){
+			type="withdrawCandidateFromMarketplace";
+		}
+		if("withdrawCandidatesFromMarketPlace".equalsIgnoreCase(methodName)){
+			type="withdrawCandidatesFromMarketPlace";
+		}
+		if("initMarketplacePayment".equalsIgnoreCase(methodName)){
+			type="initMarketplacePayment";
+		}
+		
 
+		if(userLoginSession != null)
+			actionHistoryService.saveActionHistory(methodName,userLoginSession,loginOrgLocation,type);
 	}
 
 	/*@AfterThrowing(pointcut = "execution(* com.bis.sourcelead.rest.*.*(..))", throwing = "error")
