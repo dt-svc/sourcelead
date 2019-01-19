@@ -75,6 +75,25 @@ UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Org_User],\n\nI regret to inform you t
 set SQL_SAFE_UPDATES=1;
 
 
+#ApplicantAcceptRequirement
+INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` where UNIQUE_SCENARIO_NAME = 'ApplicantAcceptRequirement' and `ENTITY_TYPE` = 'Email' and `IS_TEMPLATE_MODIFIED` = 'N'), 'loginURL', '[Login_URL]');
+set SQL_SAFE_UPDATES=0;
+UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Initiator_User_Name],\n\nI am pleased to accept the rate offered by you for the following position.\nplease let me know the next steps\n\nJob ID/name : [Requirement_Name]\nExeperience : [Experience]\nLocation : [Location]\nRate :[Requirement_Rate]\nSkills  : [Skills]\nJob Description :  [Job_Description].\n\n[Login_URL]'  WHERE `UNIQUE_SCENARIO_NAME`='ApplicantAcceptRequirement' and `ENTITY_TYPE`='Email';
+set SQL_SAFE_UPDATES=1;
+
+
+#ApplicantRejectanceRequirement
+INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` where UNIQUE_SCENARIO_NAME = 'ApplicantRejectanceRequirement' and `ENTITY_TYPE` = 'Email' and `IS_TEMPLATE_MODIFIED` = 'N'), 'loginURL', '[Login_URL]');
+set SQL_SAFE_UPDATES=0;
+UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Initiator_User_Name],\n\n [Applicant_Name] not interested for the position [Requirement_Name] \n\n Reason : [Reject_Reason].\n Rate :[Requirement_Rate]\n[Negotiation_Link]\n[Login_URL]' WHERE `UNIQUE_SCENARIO_NAME`='ApplicantRejectanceRequirement' and `ENTITY_TYPE`='Email';              
+set SQL_SAFE_UPDATES=1;
+
+
+
+
+
+
+
 
 
 

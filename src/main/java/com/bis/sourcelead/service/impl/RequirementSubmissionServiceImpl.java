@@ -1755,15 +1755,21 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public void applicantAcceptMailAboutRequirement(Requirement requirement, User initiatorUser, Candidate candidate,
+	public void applicantAcceptMailAboutRequirement(Requirement requirement, User initiatorUser, RequirementSubmission requirementSubmission,
 			OrgLocations orgLocations) throws Exception {
-		 
+		
+		Candidate candidate = requirementSubmission.getCandidate(); 
+		
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(initiatorUser.getFirstName());
 		 emailMessage.setLastName(initiatorUser.getLastName());
 		 emailMessage.setToEmail(initiatorUser.getEmail());
 		 emailMessage.setFromEmail(candidate.getEmail());
 		 emailMessage.setCreatedBy(initiatorUser.getUserCode());
+		 
+		//String redirectURL = "/requirementSummary-params-requirementUUID="+requirement.getRequirementUUID();
+		String redirectURL = "/requirementSummary-params-type=APPLICANTS-and-requirementUUID="+requirement.getRequirementUUID()+"-and-candidateUUID="+candidate.getCandidateUUID()+"-and-submissionId="+requirementSubmission.getId();
+		 Long redirectOrgLocationId = requirement.getOrgLocationId().getId();
 		
 		 if(candidate.getFirstName() != null && candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()) && !"".equalsIgnoreCase(candidate.getLastName())){
 			 StringBuilder msgBuild = new StringBuilder();
@@ -1845,7 +1851,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 globalVarsMap.put("jobDescription","--");
 			 }
 		
-		
+		 StringBuilder linkBuild = new StringBuilder();
+			globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Applicant</div></a>")
+					.toString());
+		 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_ACCEPT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 
@@ -1858,7 +1868,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 User fromUser = userService.getUserById(Constants.USERID);
 		 
 		 StringBuilder actionLinkBuilder = new StringBuilder();
-	      // String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=APPLICANTRATE&requirementUUID="+requirement.getRequirementUUID()+"&candidateUUID="+requirement.getcgetCandidate().getCandidateUUID()+"&submissionId="+requirement.getSubmissionId()).toString();//calling the sendEmail method of emailScenerioUtil
+	   // String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=APPLICANTS&requirementUUID="+requirement.getRequirementUUID()+"&candidateUUID="+candidate.getCandidateUUID()+"&submissionId="+requirement.getSubmissionId()).toString();//calling the sendEmail method of emailScenerioUtil
 		// emailScenerioUtil.sendNotification(actionLink, fromUser,initiatorUser, orgLocations, notificationScenario);
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.APPLICANT_ACCEPT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION,new ArrayList<EmailAttachment>());
 
@@ -1876,6 +1886,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setToEmail(initiatorUser.getEmail());
 		 emailMessage.setFromEmail(requirementSubmissionTemplateFields.getEmailId());
 		 emailMessage.setCreatedBy(initiatorUser.getUserCode());
+		 
+		 //URL for page redirection
+		 String redirectURL = "/requirementSummary-params-type=APPLICANTS-and-requirementUUID="+requirement.getRequirementUUID()+"-and-submissionId="+requirementSubmissionTemplateFields.getRequirementSubmission().getId()+"-and-candidateUUID="+requirementSubmissionTemplateFields.getRequirementSubmission().getCandidate().getCandidateUUID()+"-and-submissionStatus=all";	 
+		 Long redirectOrgLocationId = requirement.getOrgLocationId().getId();
+		 
 		 if(requirementSubmissionTemplateFields.getFirstName() != null && requirementSubmissionTemplateFields.getLastName()!= null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
 			 StringBuilder emailBuild = new StringBuilder();
 			 emailMessage.setFromName(emailBuild.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
@@ -1926,6 +1941,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 if(null !=tempHTML){
 		 globalVarsMap.put("negotiationLink", tempHTML.toString());
 		 }
+		 
+		 
+		 StringBuilder linkBuild = new StringBuilder();
+		 globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Applicant</div></a>")
+					.toString());
+		 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_REJECT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 
@@ -2890,6 +2912,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 globalVarsMap.put("negotiationTable",tempHTML.toString());
 		 }
 		 
+		 
+		 
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
@@ -3495,6 +3519,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 if(tempHTML != null){
 			 globalVarsMap.put("negotiationTable",tempHTML.toString());
 		 }
+		 
 		 
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
