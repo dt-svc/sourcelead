@@ -758,11 +758,11 @@ public class ProjectsDaoImpl implements ProjectsDao{
 							 projectAccessQuery =  " and ("
 				                       + "  ps.id IN(select distinct subpah.projectId.id from ProjectApproverHierarchy subpah where subpah.approverUserId ='"+userId+"' and subpah.status !='0')"
 				                       +" OR "
-				                       + "  ps.id IN( select subpah.projectId.id from ProjectApproverHierarchy subpah where subpah.level = '1' and subpah.projectClientsId.orgLocationsId.id IN(select userRole.orgLocations.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = '"+orgLocationsId+"'))"
+				                       + "  ps.id IN( select subpah.projectId.id from ProjectApproverHierarchy subpah where subpah.level = '1' and subpah.status = '1' and subpah.projectClientsId.orgLocationsId.id IN(select userRole.orgLocations.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = '"+orgLocationsId+"'))"
 			                           +" OR "
 			                           + "  ps.id IN(select distinct epx.projectId.id from ExpenseProjectApproverHierarchy epx where epx.approverUserId ='"+userId+"' and epx.status !='0')"
 				                       +" OR "
-				                       + "  ps.id IN( select epx.projectId.id from ExpenseProjectApproverHierarchy epx where epx.level = '1' and epx.projectClientsId.orgLocationsId.id IN(select userRole.orgLocations.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = '"+orgLocationsId+"'))"
+				                       + "  ps.id IN( select epx.projectId.id from ExpenseProjectApproverHierarchy epx where epx.level = '1' and epx.status = '1' and epx.projectClientsId.orgLocationsId.id IN(select userRole.orgLocations.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = '"+orgLocationsId+"'))"
 				                       +" )";
 				}else if(userRole.equalsIgnoreCase("ROLE_ADMIN")) {
 					 projectAccessQuery =  " and ("
@@ -782,7 +782,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 					query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId "+subQuery2+" "+approverQuery+" "+subQuery4+" "+subQuery6+") "+projectModeQuery+" "+subQuery1+" "+subQuery3+" "+subQuery5+" ";
 				}*/
 				
-				query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId.org.id = :orgId "+subQuery2+" "+approverQuery+" "+subQuery4+" "+subQuery6+") "+projectModeQuery+" "+subQuery1+" "+subQuery3+" "+subQuery5+" ";
+				query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId.org.id = :orgId and pc.status = 1 "+subQuery2+" "+approverQuery+" "+subQuery4+" "+subQuery6+") "+projectModeQuery+" "+subQuery1+" "+subQuery3+" "+subQuery5+" ";
 		         query = query+projectAccessQuery;
 		
 		if(query1.toString() != null && !query1.toString().isEmpty()){
@@ -860,7 +860,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 			Query queryObj = null;
 		    StringBuilder query1 = new StringBuilder("");
 			if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
-				approverQuery = " and ( (pc.id IN (select pah.projectClientsId.id from ProjectApproverHierarchy pah where pah.approverUserId = "+userId+") OR pc.id IN (select epx.projectClientsId.id from ExpenseProjectApproverHierarchy epx where epx.approverUserId = "+userId+")) OR pc.createdBy.id = "+userId+" "
+				approverQuery = " and ( (pc.id IN (select pah.projectClientsId.id from ProjectApproverHierarchy pah where pah.approverUserId = "+userId+") OR pc.id IN (select epx.projectClientsId.id from ExpenseProjectApproverHierarchy epx where epx.approverUserId = "+userId+" and epx.status = '1' )) OR pc.createdBy.id = "+userId+" "
 						+ " OR pc.id IN (select pm.projectClientsId.id from ProjectMembers pm where pm.projectMemberCandidteId.id = "+candidateId+" and pm.status = '1') ) ";
 			}
 			String projectModeQuery = "";
@@ -870,9 +870,9 @@ public class ProjectsDaoImpl implements ProjectsDao{
 				projectModeQuery = " and (ps.orgLocationsId = :orgLocationsId  OR ps.projectMode = 'Finished')";
 			}
 			if(StringUtils.isNotBlank(globalAccess) && globalAccess.equalsIgnoreCase(Constants.YES)) {
-				query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId.org.id = :orgId  "+approverQuery+" ) "+projectModeQuery+"  ";
+				query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId.org.id = :orgId and pc.status = '1' "+approverQuery+" ) "+projectModeQuery+"  ";
 			}else {
-				query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId  "+approverQuery+" ) "+projectModeQuery+" ";
+				query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId and pc.status = '1' "+approverQuery+" ) "+projectModeQuery+" ";
 			}
 		
 			if(query1.toString() != null && !query1.toString().isEmpty()){
