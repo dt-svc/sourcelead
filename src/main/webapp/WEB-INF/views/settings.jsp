@@ -554,7 +554,7 @@
 								</c:if>
 								</div> --%>
 								
-								<a href="/app/payrollConfiguration">
+								<a href="/pms/payrollConfiguration">
 									<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 										<div class="clearfix text-center mb10"><i class="payrollSVG"></i></div>
 										<div class="clearfix text-center">
@@ -563,7 +563,7 @@
 									</c:if>
 								</a>
 								
-								<a href="${appPath}/indPayrollConfiguration">
+								<a href="/pms/indPayrollConfiguration">
 									<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
 										<div class="clearfix text-center mb10"><i class="payrollSVG"></i></div>
 										<div class="clearfix text-center">
