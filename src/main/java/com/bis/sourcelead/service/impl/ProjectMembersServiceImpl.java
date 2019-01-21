@@ -1882,13 +1882,13 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 		return projectMembersDao.getProjectMemberByUserIdAndLoginOrglocationId(userId, orgLocationId);
 	}
 	@Override
-	public List<String> getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndCandidateId(Long locationsId, Long candidateId){
-		return projectMembersDao.getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndCandidateId(locationsId, candidateId);
+	public List<String> getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndMasterCandidateId(Long locationsId,Long orgId, Long masterCandidateId){
+		return projectMembersDao.getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndMasterCandidateId(locationsId,orgId, masterCandidateId);
 		
 	}
 	@Override
-	public List<ProjectMembers> getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(Long locationsId, Long candidateId,String timesheetFrequency){
-		return projectMembersDao.getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(locationsId, candidateId, timesheetFrequency);
+	public List<ProjectMembers> getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(Long locationsId,Long orgId, Long candidateId,String timesheetFrequency){
+		return projectMembersDao.getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(locationsId,orgId, candidateId, timesheetFrequency);
 	}
 
 	@Override

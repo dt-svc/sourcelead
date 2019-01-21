@@ -131,9 +131,9 @@ public interface ProjectMembersDao {
 
 	public ProjectMembers getProjectMemberByUserIdAndLoginOrglocationId(Long userId, Long orgLocationId) throws Exception;
 	
-	public List<String> getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndCandidateId(Long locationsId, Long candidateId);
+	public List<String> getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndMasterCandidateId(Long locationsId,Long orgId, Long masterCandidateId);
 	
-	public List<ProjectMembers> getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(Long locationsId, Long candidateId,String timesheetFrequency);
+	public List<ProjectMembers> getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(Long locationsId,Long orgId, Long candidateId,String timesheetFrequency);
 	
 	List<ProjectMembers> getAllProjectMembersListByMasterCandidateId(Long masterCandidateId,Long projectId) throws Exception;
 	
