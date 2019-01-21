@@ -5,6 +5,10 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <!-- Content Area -->
 <section class="content-wraper contentWraper">
 	<section class="content-header clearfix">
@@ -223,7 +227,7 @@
 		<div class="col-lg-12">
 			<div class="pull-right">
 				<input value="Save" class="btn btn-success btnSuccess" id="savePayheadBtn" type="button" onclick="storePayhead();">
-				<input value="Cancel" onclick="javascript:window.location.href = '/app/payheadList'" class="btn btn-default ml10" type="button">
+				<input value="Cancel" onclick="javascript:window.location.href = '/pms/payheadList'" class="btn btn-default ml10" type="button">
 			</div>
 		</div>
 	</div>
@@ -295,7 +299,7 @@
 			  	var name = $("#paytypeName").val();
 		    	$.ajax({
 				 type : "POST",
-				 url : sourceleadUrl+"/findPayrollPaytypeByNameAndLocationId?name="+name,
+				 url : pmsUrl+"/findPayrollPaytypeByNameAndLocationId?name="+name,
 				 success : function(result) {
 					 	if (result.response === "SESSION_TIMEDOUT") {
 			  				location.replace(sourceleadUrl);
@@ -353,7 +357,7 @@
 function findPayheadByNameOrShortCode(name, shortCode, listType){
 	$.ajax({
 	 type : "POST",
-	 url : sourceleadUrl+"/findPayrollPayheadByNameOrShortCodeAndLocationId?name="+name+"&shortCode="+shortCode+"&listType="+listType,
+	 url : pmsUrl+"/findPayrollPayheadByNameOrShortCodeAndLocationId?name="+name+"&shortCode="+shortCode+"&listType="+listType,
 	 success : function(result) {
 		 	if (result.response === "SESSION_TIMEDOUT") {
   				location.replace(sourceleadUrl);
@@ -420,7 +424,7 @@ function findPayheadByNameOrShortCode(name, shortCode, listType){
 					 data: formData,
 	 		         processData: false,
 	 		         contentType:false, 
-					  url : sourceleadUrl+"/storePayhead?"+tokenParamName+"="+tokenValue+"&uuid="+uuid,
+					  url : pmsUrl+"/storePayhead?"+tokenParamName+"="+tokenValue+"&uuid="+uuid,
 					  	success : function(result) {
 					  		if(result.object === 'MissingData'){
 					  			showError("Invalid data");
@@ -430,7 +434,7 @@ function findPayheadByNameOrShortCode(name, shortCode, listType){
 				                } else if (result.response === "AWKWARD") {
 				                    location.href = "/errorPage";
 				                } else if (result.response === "SUCCESS") {
-								  	location.replace(sourceleadUrl+"/payheadList");
+								  	location.replace(pmsUrl+"/payheadList");
 				                } else if (result.indexOf('Sign In') !== -1) {
 									location.replace(sourceleadUrl);
 								} else {
@@ -470,7 +474,7 @@ function findPayheadByNameOrShortCode(name, shortCode, listType){
 						 data: formData,
 		 		         processData: false,
 		 		         contentType:false, 
-						 url : sourceleadUrl+"/storePaytype?"+tokenParamName+"="+tokenValue,
+						 url : pmsUrl+"/storePaytype?"+tokenParamName+"="+tokenValue,
 						 success : function(result) {
 							 if(result.object === 'MissingData'){
 						  			showError("Invalid data");
@@ -519,7 +523,7 @@ function findPayheadByNameOrShortCode(name, shortCode, listType){
 	function refreshPaytypeList(){
 		$.ajax({
 			 type : "POST",
-			 url : sourceleadUrl+"/getPaytypeList",
+			 url : pmsUrl+"/getPaytypeList",
 			 success : function(result) {
 				 	if (result.response === "SESSION_TIMEDOUT") {
 		  				location.replace(sourceleadUrl);

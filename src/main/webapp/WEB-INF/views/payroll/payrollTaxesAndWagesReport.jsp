@@ -6,6 +6,10 @@
 <script src="/resources/js/payrollReports.js"></script>
 
 <script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
+<script>
 $(document).ready(function(){
    getPayGroupList("payGroup","Y");
 });
@@ -128,7 +132,7 @@ function exportTaxAndWageReportPdf(exportType){
 		freqEndDate = $("#freqEndDate").val();
 	}
 	
-   	window.location.href = sourceleadUrl+"/getpayrollTaxAndWagesReportPdf?&searchValue="+searchValue+"&payGroup="+payGroup+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&exportType="+exportType;
+   	window.location.href = pmsUrl+"/getpayrollTaxAndWagesReportPdf?&searchValue="+searchValue+"&payGroup="+payGroup+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&exportType="+exportType;
 }
 </script>
 
@@ -155,7 +159,7 @@ function runPayrollTaxAndWagesReport(){
 		}else{
 			freqEndDate = $("#freqEndDate").val();
 		}
-		var url = sourceleadUrl+"/getpayrollTaxAndWagesReport?&searchValue="+searchValue+"&payGroup="+payGroup+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate;
+		var url = pmsUrl+"/getpayrollTaxAndWagesReport?&searchValue="+searchValue+"&payGroup="+payGroup+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate;
 		
 		if($("#payGroup").val() == "custom"){
 			var fromDate = $("#fromDate").val();

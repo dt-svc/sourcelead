@@ -7,9 +7,13 @@
 <script src="/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
 <script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+ 
+
+<script>
 $(document).ready(function(){
 	getUserGroupList();
-// 	getUsersByDepartment();
 });
 </script>
 
@@ -20,7 +24,7 @@ $(document).ready(function(){
     </div>
      <div class="pull-right brud-crum">
                 <a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo; Batches
+				href="/pms/payrollConfiguration"> Payroll Configuration</a>&raquo; Batches
       </div>
   </section>
   <div class="timesheet_out">

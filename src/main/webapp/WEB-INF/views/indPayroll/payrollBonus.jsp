@@ -5,12 +5,16 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Bonus Setup</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configure</a>  &raquo; <a href="${appPath}/payrollBonusList">Bonus List</a> &raquo; Bonus Setup</div>
+      <div class="pull-right brud-crum">Home &raquo; <a href="/pms/payrollConfiguration">Payroll Configure</a>  &raquo; <a href="/pms/payrollBonusList">Bonus List</a> &raquo; Bonus Setup</div>
     </section>
   <div class="content-area content-new clearfix">
    <div id="loading"></div> 
@@ -131,7 +135,7 @@
 				<div class="col-lg-12">
 					<div class="pull-right">
 						<input type="submit" value="Save" class="btn btn-primary"> 
-						<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/payrollBonusList'/>'" class="btn btn-default ml">
+						<input type="button" value="Cancel" onClick="javascript:window.location.href = '/pms/payrollBonusList'" class="btn btn-default ml">
 					</div>
 				</div>
 			</div>
@@ -311,7 +315,7 @@ var validationSettings = {
           		 $.ajax({
           	      type: "POST",
           	    	data: formData,
-                	  url: sourceleadUrl+"/saveBonus?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,
+                	  url: pmsUrl+"/saveBonus?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,
                   	success: function(result) {
                   		if (result && result.response === "INVALID_DATA") {
                   			$("#loading").removeAttr('style');
@@ -320,7 +324,7 @@ var validationSettings = {
                         	$("#loading").removeAttr('style');
     		        	    location.href = "/errorPage";
     		        	} else if (result.response === "SUCCESS") {
-    		        		 location.replace(sourceleadUrl + "/payrollBonusList");
+    		        		 location.replace(pmsUrl + "/payrollBonusList");
     		        	} else if (result.indexOf('Sign In') !== -1) {
     		        		location.replace(sourceleadUrl);
     		        	} else {

@@ -1,3 +1,7 @@
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <script type="text/javascript">
 function accountDeductionsList(){
 	    $("#addPayrollDiv").hide();
@@ -7,11 +11,10 @@ function accountDeductionsList(){
 		$("#hrDedSearch").hide();
 		$("#checksSearch").hide();
 		$("#invoiceDataSearch").hide();
-		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#accountDataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getAccountDeductionsList?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
+		var url = pmsUrl+"/getAccountDeductionsList?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
 		/* url += "&"+$($('#payroll_list_form')[0]).serialize(); */
 	    prepareAccountDeductionsList(url);
 }
@@ -270,11 +273,10 @@ function accountDataTableSearch(){
 function getEmpAccountDeductionDetails(accountDedId,empName){
 	$(".sideMask").fadeIn("slow");
 	$(".AccountDedu").fadeIn("slow");
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 			  $.ajax({
 			    	type: "GET",
-			        url: sourceleadUrl+"/getDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&deductionId="+accountDedId,
+			        url: pmsUrl+"/getDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&deductionId="+accountDedId,
 			        success: function(data) {
 					var result = "";				        	
 					result = result + '<table id="employeeDeductionsListTable" class="display" cellspacing="0" width="100%" >';
@@ -348,10 +350,9 @@ function editAccountDetails(id){
 	}
 	if(flag == "valid"){
 		$("#preDedError").empty();
-		 var sourceleadUrl ='${sourceleadUrl}';
 		  $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/updateAccountDeduction?${_csrf.parameterName}=${_csrf.token}&accDeductionId="+id+"&dedAmount="+output,
+		        url: pmsUrl+"/updateAccountDeduction?${_csrf.parameterName}=${_csrf.token}&accDeductionId="+id+"&dedAmount="+output,
 		        success: function(data) {
 		        	document.getElementById("preDedDiv"+id).style.display="block";
 		   		 	document.getElementById("editDedDiv"+id).style.display="none";

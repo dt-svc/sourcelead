@@ -12,6 +12,10 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
   <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
@@ -19,7 +23,7 @@ $(document).ready(function(){
         <h2>Deduction</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/usPayrollReport'/>"> US Payroll Reports List</a>&raquo;Deduction
+				href="/pms/usPayrollReport"> US Payroll Reports List</a>&raquo;Deduction
 		</div>
     </section>
     
@@ -240,7 +244,7 @@ function getDeductionReports(){
 	    var deductionId = $("#deductionId").val();
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getDeductionReports?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&deductionId="+deductionId;
+		var url = pmsUrl+"/getDeductionReports?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&deductionId="+deductionId;
 		deductionReportURL(url);	
 }
 
@@ -411,7 +415,7 @@ function getDeductionReports(){
  function getDeductionType(){
 	 $.ajax({
 			type : "POST",
-			url: sourceleadUrl+"/getAllDeductionType?"+tokenParamName+"="+tokenValue+"",
+			url: pmsUrl+"/getAllDeductionType?"+tokenParamName+"="+tokenValue+"",
 			success :function(data) {
 			var json = data.data;
 			var output = "";
@@ -441,7 +445,7 @@ function deductionReportExportToPdf(){
 	var deductionId = $("#deductionId").val();
 	var deduction = $('#deductionTypeDiv').html();
 	if(deduction != null && deduction !='' && deduction !='undefined'){
-		window.location.href = sourceleadUrl+"/exportToPdfDeductionReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&deductionId="+deductionId;
+		window.location.href = pmsUrl+"/exportToPdfDeductionReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&deductionId="+deductionId;
 	}else{
 		var result = " ";
 		result = result +"	<div class='project_inn_mask'></div>";

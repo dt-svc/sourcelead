@@ -4,6 +4,11 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
+
 
 			<form:form id="associateSalary_form" name="associateSalary_form">
                 <div class="clearfix minHeightcol5 mt">
@@ -314,7 +319,7 @@ function cnfToSaveAssociateSalaryInd(){
 			 data: formData,
 		     processData: false,
 		     contentType:false, 
-			 url : sourceleadUrl+"/saveAssociateSalaryInd?"+tokenParamName+"="+tokenValue,
+			 url : pmsUrl+"/saveAssociateSalaryInd?"+tokenParamName+"="+tokenValue,
 			 success : function(result) {
 			  		if(status == "NEW" || status == "NODATA"){
 			  			location.reload();
@@ -368,7 +373,7 @@ function getPayGroups(){
 	var userId = $("#userId").val();
 		 $.ajax({
 				type : "GET",
-				url : sourceleadUrl+"/getPayGroupsByPayFrequency?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency+"&userId="+userId,
+				url : pmsUrl+"/getPayGroupsByPayFrequency?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency+"&userId="+userId,
 				success : function(result) {
 				var output = "";
 				output = output + "<option value=''>Select Group</option>";

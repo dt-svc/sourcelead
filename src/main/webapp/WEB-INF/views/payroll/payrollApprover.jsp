@@ -9,6 +9,11 @@ $(document).ready(function(){
   getApproverList();
 });
 </script>
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
@@ -112,7 +117,7 @@ $(document).ready(function(){
   function getApproverList(){
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getPayrollApprover?"+tokenParamName+"="+tokenValue                 , 
+		        url: pmsUrl+"/getPayrollApprover?"+tokenParamName+"="+tokenValue                 , 
 		        success: function(data) {
 		         var output = "";
 		         var json = data.user;
@@ -154,14 +159,14 @@ function savePayrollApprover(){
 	/*   	var formData = getFormData('payroll_approver_form'); */
 	  	var formData = $($('#payroll_approver_form')[0]).serialize();
 		$("#approverLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/savePayrollApprover?"+tokenParamName+"="+tokenValue, formData, function(result) {
+		$.post(pmsUrl+"/savePayrollApprover?"+tokenParamName+"="+tokenValue, formData, function(result) {
 			if (result && result.response === "INVALID_DATA") {
     		    showError(result.responseMessage);
     		} else if (result.response === "AWKWARD") {
     		    location.href = "/errorPage";
     		} else if (result.response === "SUCCESS") {
     			$("#approverLoading").removeAttr('style');
-    			 location.replace(sourceleadUrl+ "//payrollApprover");
+    			 location.replace(pmsUrl+ "/payrollApprover");
     		} else if (result.indexOf('Sign In') !== -1) {
     			location.replace(sourceleadUrl);
     		} else {
@@ -181,7 +186,7 @@ $('body').on('blur', '#payroll_approver_form', function() {
 
 <script>
 function cancelButton(){
-	location.replace(sourceleadUrl+ "/payrollConfiguration");
+	location.replace(pmsUrl+ "/payrollConfiguration");
 }
 </script>
 

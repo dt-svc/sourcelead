@@ -1,6 +1,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <div class="sideMask"></div>
 <div class="modal usRunpayroll" style="display: none;" id="usRunpayroll">
 <form:form id="payroll_adjustment_form" name="payroll_adjustment_form" method="post">
@@ -229,7 +233,7 @@
 	function payAdjustment(payrollUUID,status){
 		$.ajax({
 		  	type: "GET",
-		        url: sourceleadUrl+"/getEmployeePayroll?payrollUUID="+payrollUUID+"&status="+status,                 
+		        url: pmsUrl+"/getEmployeePayroll?payrollUUID="+payrollUUID+"&status="+status,                 
 		        success: function(data) {
 		            var json = data.object;
 		            if(json.empId != null){
@@ -727,7 +731,7 @@ function savePayrollAdjustment(){
 	  var formData = getFormData("payroll_adjustment_form");
 	 /* var formData = $($('#payroll_adjustment_form')[0]).serialize(); */
 	  	$("#editPayrollLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/editEmployeePayroll?"+tokenParamName+"="+tokenValue, formData, function(result) {
+		$.post(pmsUrl+"/editEmployeePayroll?"+tokenParamName+"="+tokenValue, formData, function(result) {
 			$("#editPayrollLoading").removeAttr('style');
 			if (result.response === "INVALID_DATA") {
  		    showError(result.responseMessage);

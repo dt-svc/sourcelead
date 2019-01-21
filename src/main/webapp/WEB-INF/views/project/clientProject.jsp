@@ -167,7 +167,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				<div class="form-footer clearfix mt">
 					<div class="col-lg-12">
 						<div class="pull-right">
-							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/projectDashboard'/>'" class="btn btn-danger ml">
+							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/pms/projectDashboard'/>'" class="btn btn-danger ml">
 							<input type="button" value="Save & Continue"  id="save_project" onclick="saveClientProject()" class="btn btn-primary">
 						</div>
 					</div>

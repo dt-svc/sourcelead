@@ -2,6 +2,11 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <script>
 window.onload = function () {
 	loadVendorRecruiters();
@@ -16,7 +21,7 @@ window.onload = function () {
 		<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
   </div>
   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;
-  <a href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo; Payroll</div>
+  <a href="/pms/payrollConfiguration"> Payroll Configuration</a>&raquo; Payroll</div>
 </section>
 
 
@@ -38,7 +43,7 @@ function loadVendorRecruiters(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_user.id}';
 	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	$.get(sourceleadUrl+ "/getVendorRecruiter?${_csrf.parameterName}=${_csrf.token}", function(data) {
+	$.get(pmsUrl+ "/getVendorRecruiter?${_csrf.parameterName}=${_csrf.token}", function(data) {
 		var response = data.data;
 		var result = "";				        	
 		result = result + '<table id="VendorRecruitersTable" class="display table table-bordered" cellspacing="0" width="100%" >';

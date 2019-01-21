@@ -5,6 +5,10 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 
 <script type="text/javascript">
 	$(window).load(function() {
@@ -155,7 +159,7 @@
 				<div class="col-lg-12">
 					<div class="pull-right">
 						<input type="submit" value="Save" id="loan_adv"  class="btn btn-primary"> 
-						<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/payrollLoanAndAdvancesList'/>'" class="btn btn-default ml">
+						<input type="button" value="Cancel" onClick="javascript:window.location.href = '/pms/payrollLoanAndAdvancesList'" class="btn btn-default ml">
 					</div>
 				</div>
 			</div>
@@ -178,7 +182,7 @@ function validateName(){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateLoandAndAdvanceName?loanAdvType="+loanAdvType+"&loanAdvName="+loanAdvName+"&uuid="+uuid, 
+		        url: pmsUrl+"/validateLoandAndAdvanceName?loanAdvType="+loanAdvType+"&loanAdvName="+loanAdvName+"&uuid="+uuid, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#loandAndAdvNameDiv').find('p.jquery_form_error_message').remove();
@@ -405,7 +409,7 @@ var validationSettings = {
           		  $.ajax({
           	      type: "POST",
           	    	data: formData,
-                	  url: sourceleadUrl+"/savePayrollLoanAndAdvance?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,
+                	  url: pmsUrl+"/savePayrollLoanAndAdvance?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,
                   	success: function(result) {
                   		if (result && result.response === "INVALID_DATA") {
                   			$("#loading").removeAttr('style');
@@ -413,7 +417,7 @@ var validationSettings = {
                         }else if (result.response === "AWKWARD") {
     		        	    location.href = "/errorPage";
     		        	} else if (result.response === "SUCCESS") {
-    		        		 location.replace(sourceleadUrl + "/payrollLoanAndAdvancesList");
+    		        		 location.replace(pmsUrl + "/payrollLoanAndAdvancesList");
     		        	} else if (result.indexOf('Sign In') !== -1) {
     		        		location.replace(sourceleadUrl);
     		        	} else {

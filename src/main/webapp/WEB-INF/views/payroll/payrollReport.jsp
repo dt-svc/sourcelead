@@ -9,13 +9,17 @@ window.onload = function () {
 }
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
  <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left"><h2>Associate(s) ROI</h2></div>
 
 <%--       <a href="<c:url value='/payrollAllBalanceReport'/>" class="ml10 mt5" id=generateReportId title="Generate Report">All Balance Report</a> --%>
  <%--  <a href="<c:url value='/searchBasedReport'/>" class="ml10 mt5" id=generateReportId title="Generate Report">Search Based Report</a>--%>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/associateReportsList'/>">Associate Reports</a> &raquo; Associate(s) ROI</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/pms/reportsDashboard">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/associateReportsList'/>">Associate Reports</a> &raquo; Associate(s) ROI</div>
     </section>
     
     <section class="project_side_wrap_inn_tabs">
@@ -157,11 +161,10 @@ function redirect() {
 function getIncomeData(){
 		$("#customize_btn").attr("onClick","getIncomeData();");
 	    var empId = $("#empId").val();
-		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getInvoiceDetailsByEmpId?orgLocationId="+orgLocationId+"&searchValue="+searchValue+"&empId="+empId;
+		var url = pmsUrl+"/getInvoiceDetailsByEmpId?orgLocationId="+orgLocationId+"&searchValue="+searchValue+"&empId="+empId;
 		/* url += "&"+$($('#payroll_list_form')[0]).serialize(); */
 	    prepareInvoiceData(url);
 }
@@ -560,11 +563,10 @@ function dataTableSearch(){
 function getChecks(){
 		$("#customize_btn").attr("onClick","getChecks();");
 	    var empId = $("#empId").val();
-		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getChecksListByEmployeeId?orgLocationId="+orgLocationId+"&searchValue="+searchValue+"&empId="+empId;
+		var url = pmsUrl+"/getChecksListByEmployeeId?orgLocationId="+orgLocationId+"&searchValue="+searchValue+"&empId="+empId;
 		/* url += "&"+$($('#payroll_list_form')[0]).serialize(); */
 	    prepareChecks(url);
 }
@@ -1024,7 +1026,7 @@ function getWagesTaxSummaryByEmpId(){
 		var searchValue = $("#dataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getWagesTaxSummaryByEmpId?empId="+empId+"&orgLocationId="+orgLocationId+"&searchValue="+searchValue;
+		var url = pmsUrl+"/getWagesTaxSummaryByEmpId?empId="+empId+"&orgLocationId="+orgLocationId+"&searchValue="+searchValue;
 	    prepareWagesAndTaxList(url);
 }
 </script> 
@@ -1417,11 +1419,10 @@ function wagesAndTaxEmpTablePagination(){
 function getAccontDeductions(){
 	$("#customize_btn").attr("onClick","getAccontDeductions();");
 	    var empId = $("#empId").val();
-		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getAccontDeductionsByEmpId?orgLocationId="+orgLocationId+"&employeeId="+empId+"&searchValue="+searchValue;
+		var url = pmsUrl+"/getAccontDeductionsByEmpId?orgLocationId="+orgLocationId+"&employeeId="+empId+"&searchValue="+searchValue;
 		/* url += "&"+$($('#payroll_list_form')[0]).serialize(); */
 	    prepareAccountDeductions(url);
 }
@@ -1771,10 +1772,9 @@ function accountDeductionsEmpTablePagination(){
 function getEmpAccountDeductionDetails(accountDedId,empName){
 	$(".sideMask").fadeIn("slow");
 	$(".AccountDedu").fadeIn("slow");
-	  var sourceleadUrl ='${sourceleadUrl}';
 			  $.ajax({
 			    	type: "GET",
-			        url: sourceleadUrl+"/getDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&deductionId="+accountDedId,
+			        url: pmsUrl+"/getDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&deductionId="+accountDedId,
 			        success: function(data) {
 					var result = "";				        	
 					result = result + '<table id="employeeDeductionsListTable" class="display" cellspacing="0" width="100%" >';
@@ -1855,11 +1855,10 @@ function closeModalExpenses(){
 function getHRDeductions(){
 	$("#customize_btn").attr("onClick","getHRDeductions();");
 	    var empId = $("#empId").val();
-		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getHRDeductionsByEmployeeId?orgLocationId="+orgLocationId+"&employeeId="+empId+"&searchValue="+searchValue;
+		var url = pmsUrl+"/getHRDeductionsByEmployeeId?orgLocationId="+orgLocationId+"&employeeId="+empId+"&searchValue="+searchValue;
 		/* url += "&"+$($('#payroll_list_form')[0]).serialize(); */
 	    prepareHRDeductions(url);
 }
@@ -2198,10 +2197,9 @@ function hrDeductionsEmpTablePagination(){
 function getHrDeductionDetails(hrDedId,empName){
 	$(".sideMask").fadeIn("slow");
 	$(".hrDedu").fadeIn("slow");
-	  var sourceleadUrl ='${sourceleadUrl}';
 			  $.ajax({
 			    	type: "GET",
-			        url: sourceleadUrl+"/getEmpHrDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&hrDeductionId="+hrDedId,
+			        url: pmsUrl+"/getEmpHrDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&hrDeductionId="+hrDedId,
 			        success: function(json) {
 					var result = "";				        	
 					result = result + '<table id="employeeHrDeductionsListTable" class="display" cellspacing="0" width="100%" >';
@@ -2282,10 +2280,9 @@ function finalBalance(){
 	$("#customize_btn").attr("onClick","finalBalance();");
 		var empId = $("#empId").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-		var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
 		type: "GET",
-		url: sourceleadUrl+"/getfinalBalanceByEmpId?empId="+empId+"&orgLocationId="+orgLocationId,
+		url: pmsUrl+"/getfinalBalanceByEmpId?empId="+empId+"&orgLocationId="+orgLocationId,
 		success: function(data) {
 		var result = "";
 		result = result + ' <div class="clearfix col-md-10 col-md-offset-1">';

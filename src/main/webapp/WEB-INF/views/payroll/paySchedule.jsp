@@ -15,6 +15,11 @@ $(document).ready(function(){
 
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
+
 
  <!-- Content Area -->
   <section class="content-wraper contentWraper">
@@ -26,8 +31,8 @@ $(document).ready(function(){
           <i class="fa fa-check-circle"></i><span id="msgFadeDiv"></span>
         </div>
         <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo;
-          <a href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo;
-          <a href="<c:url value='${appPath}/payrollScheduleList'/>"> Pay Schedule List</a>&raquo;Add Pay Schedule
+          <a href="/pms/payrollConfiguration"> Payroll Configuration</a>&raquo;
+          <a href="/pms/payrollScheduleList"> Pay Schedule List</a>&raquo;Add Pay Schedule
         </div>
     </section>
     <div class="clearfix"></div>
@@ -160,7 +165,7 @@ function savePayrollSchedule(){
 // 	 	    var formData = getFormData("add_payroll_schedule_form");
 	 	   var formData = $($('#add_payroll_schedule_form')[0]).serialize();
 	        	  $("#loaderDIV").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	        	  $.post(sourceleadUrl+"/savePayrollSchedule?"+tokenParamName+"="+tokenValue, formData, function(result) {
+	        	  $.post(pmsUrl+"/savePayrollSchedule?"+tokenParamName+"="+tokenValue, formData, function(result) {
 	        		  if (result && result.response === "INVALID_DATA") {
 		                    $("#save_pay_schedule_button").removeAttr("disabled");
 		                    $("#save_pay_schedule_button").removeAttr('button').val('Save');
@@ -169,7 +174,7 @@ function savePayrollSchedule(){
 		                    location.href = "/errorPage";
 		                } else if (result.response === "SUCCESS") {
 		                	    $("#loaderDIV").removeAttr("style");
-		                	    location.replace(sourceleadUrl+ "/payrollScheduleList"); 
+		                	    location.replace(pmsUrl+ "/payrollScheduleList"); 
 			        		    $("#selector2").removeAttr("style");
 				     			 $("#selector2").css({ display: "block" });
 				     			 $("#msgFadeDiv").html("Added Successfully");
@@ -315,7 +320,7 @@ function removepPayCheckDate(){
 	  var payrollScheduleUUID = "${payScheduleUUID}";
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/checkDuplicatePaySchedule?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency+"&payrollScheduleUUID="+payrollScheduleUUID, 
+		        url: pmsUrl+"/checkDuplicatePaySchedule?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency+"&payrollScheduleUUID="+payrollScheduleUUID, 
 		        success: function(data) {
 		      	  if (!data) {
 		                	$('#scheduleFreDIV').find('p.jquery_form_error_message').remove();
@@ -345,7 +350,7 @@ function removepPayCheckDate(){
 	  
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/findPayrollScheduleByUUID?"+tokenParamName+"="+tokenValue+"&payrollScheduleUUID="+payrollScheduleUUID, 
+	        url: pmsUrl+"/findPayrollScheduleByUUID?"+tokenParamName+"="+tokenValue+"&payrollScheduleUUID="+payrollScheduleUUID, 
 	        success: function(json) {
 	               
 	        	   var data = json.approvers;

@@ -1,12 +1,13 @@
 
 
+
 <div id="popUp"></div>
 
 <script>
   function getUserGroupList(fromType){
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getUserGroupList?searchValue="+searchValue;
+		var url = pmsUrl+"/getUserGroupList?searchValue="+searchValue;
 		getUserGroupListData(url,fromType); 
   }
 </script>
@@ -72,7 +73,7 @@ function userGroupPaginationFun(url,fromType){
 	    	  	"sortable": true,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		        var result = "";
-							result = result + ' <td><div class="tblminwidth-75"><a href="'+sourceleadUrl+'/numberOfEmployeesInGroup?groupUUID='+opt.groupUUID+'">'+opt.groupId+'</a></div></td>';
+							result = result + ' <td><div class="tblminwidth-75"><a href="'+pmsUrl+'/numberOfEmployeesInGroup?groupUUID='+opt.groupUUID+'">'+opt.groupId+'</a></div></td>';
 // 							result = result +'<div class="tblminwidth-100"><a href="'+sourceleadUrl+'/viewPaySheetFrequencyData?approverStatus='+opt.approverStatus+'&paySheetFrequencyUUID='+opt.paySheetFrequencyuuid+'&payPeriodNum='+opt.payPeriodNum+'">'+opt.payPeriodNum+'</a></div>'; 
 							return result;
 	    	  	}
@@ -158,7 +159,7 @@ function deleteUserGroup(groupUUID){
 }
 	
 function confirmDeleteUserGroup(groupUUID){	
-	$.get(sourceleadUrl+"/deleteUserGroupByUUID?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID,  function(result) {
+	$.get(pmsUrl+"/deleteUserGroupByUUID?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID,  function(result) {
 		 if (result.response === "AWKWARD") {
              location.href = "/errorPage";
          } else if (result.response === "SUCCESS") {
@@ -184,7 +185,7 @@ function addbatches(groupUUID,fromType){
 	if(groupUUID == null || groupUUID == '' || groupUUID == 'undefined'){
 		groupUUID = "";
 	}
-	$.get(sourceleadUrl+"/addUserGroup?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID+"&fromType="+fromType,  function(result) {
+	$.get(pmsUrl+"/addUserGroup?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID+"&fromType="+fromType,  function(result) {
 		$("#addUserGroupFormDiv123").empty();
 		$("#addUserGroupFormDiv123").append(result);
 // 		getUsersByDepartment();

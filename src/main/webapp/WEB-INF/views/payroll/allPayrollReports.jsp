@@ -9,6 +9,10 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
  <section class="content-wraper" id="themeroller">
  <div class="success_pop" id="selector1" style="display: none;"><i class="fa fa-check-circle"></i><span id="msgDiv"></span></div>
 <section class="content-header clearfix">
@@ -46,7 +50,7 @@ function getAllPayrollBalanceReports(){
 	        var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  		var searchValue = $("#dataTableSearchPayRollId").val();
 	  		searchValue = searchValue ? searchValue : "";
-	  		var url = sourceleadUrl+"/getAllPayrollBalanceReport?orgLocationId="+orgLocationId+"&searchValue="+searchValue;
+	  		var url = pmsUrl+"/getAllPayrollBalanceReport?orgLocationId="+orgLocationId+"&searchValue="+searchValue;
 	  		prepareClientList(url);
 	  		
 }	

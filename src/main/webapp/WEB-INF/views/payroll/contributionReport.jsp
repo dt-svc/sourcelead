@@ -11,6 +11,12 @@ $(document).ready(function(){
 	getcontributionList();
 });
 </script>
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
+
   <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
@@ -18,7 +24,7 @@ $(document).ready(function(){
         <h2>Contribution</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/usPayrollReport'/>"> US Payroll Reports List</a>&raquo;Contribution
+				href="/pms/usPayrollReport"> US Payroll Reports List</a>&raquo;Contribution
 		</div>
     </section>
     
@@ -233,7 +239,7 @@ function getContributionReports(){
 	    var contributionId = $("#contributionId").val();
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getContributionReports?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&contributionId="+contributionId;
+		var url = pmsUrl+"/getContributionReports?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&contributionId="+contributionId;
 		contributionReportURL(url);	
 }
 
@@ -404,7 +410,7 @@ function getContributionReports(){
 function getcontributionList(){
 	$.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getContributionList?"+tokenParamName+"="+tokenValue                 , 
+	        url: pmsUrl+"/getContributionList?"+tokenParamName+"="+tokenValue                 , 
 	        success: function(json) {
 	        var output = "";
 			for (var i=0; i<json.length; i++)
@@ -437,7 +443,7 @@ function exportToPdf(){
 	alert("searchValue = "+searchValue); */
 	var contribution = $('#contributionTypeDiv').html();
 	if(contribution != null && contribution !='' && contribution !='undefined'){
-	window.location.href = sourceleadUrl+"/exportToPdfContributionReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&contributionId="+contributionId;
+	window.location.href = pmsUrl+"/exportToPdfContributionReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&contributionId="+contributionId;
 }else{
 	 var result = " ";
 		result = result +"	<div class='project_inn_mask'></div>";

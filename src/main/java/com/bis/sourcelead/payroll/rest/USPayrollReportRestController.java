@@ -72,7 +72,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.dynamicReport.DynamicReport;
 
 @RestController
-@RequestMapping("/app")
 public class USPayrollReportRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(USPayrollReportRestController.class);

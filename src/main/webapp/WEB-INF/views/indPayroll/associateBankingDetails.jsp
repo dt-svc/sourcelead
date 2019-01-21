@@ -4,6 +4,9 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
 
 <div id="tab-6" class="tabsMenu_tabs_inn project_wrap noPad" style="display: block;">
 <div class="reportHead clearfix">
@@ -162,7 +165,7 @@
 			$.ajax({
 				 type : "POST",
 				 data: formData,
-			     url : sourceleadUrl+"/save-ind-associate-payment-account?userId="+userId,
+			     url : pmsUrl+"/save-ind-associate-payment-account?userId="+userId,
 				 success : function(result) {
 					 if (result && result.response === "INVALID_DATA") {
 							$("#accountDetailsLoading").removeAttr("style");
@@ -235,7 +238,7 @@ function clearPaymentAccount() {
 
 <script>
 function changeDefaultPaymentAccount(ele, id) {
-    $.post(sourceleadUrl+"/change-default-payment-account", {id: id, defaultAccount: $(ele).is(":checked")}, function(data) {
+    $.post(pmsUrl+"/change-default-payment-account", {id: id, defaultAccount: $(ele).is(":checked")}, function(data) {
     	 var candidateId = '${candidateId}';
     	 associateBankingDetails(candidateId);
         showError(data.responseMessage);
@@ -243,7 +246,7 @@ function changeDefaultPaymentAccount(ele, id) {
 }
 function changeActivePaymentAccount(id){
 	 var candidateId = '${candidateId}';
-	 $.post(sourceleadUrl+"/change-active-payment-account", {id: id}, function(data) {
+	 $.post(pmsUrl+"/change-active-payment-account", {id: id}, function(data) {
 	        showError(data.responseMessage);
 	        associateBankingDetails(candidateId);
 	    });

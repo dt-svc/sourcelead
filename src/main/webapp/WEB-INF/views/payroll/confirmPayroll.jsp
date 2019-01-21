@@ -4,9 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <script>
-$(document).ready(function(){
-	
-});
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 </script>
 
 

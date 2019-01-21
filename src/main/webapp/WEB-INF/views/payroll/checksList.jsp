@@ -1,3 +1,8 @@
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <script>
 function bisChecksList(){
 	$("#addPayrollDiv").hide();
@@ -7,11 +12,10 @@ function bisChecksList(){
 	$("#hrDedSearch").hide();
 	$("#checksSearch").show();
 	$("#invoiceDataSearch").hide();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var searchValue = $("#checksDataTableSearch").val();
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getChecksList?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
+	var url = pmsUrl+"/getChecksList?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
     prepareBisChecksList(url);
 }
 

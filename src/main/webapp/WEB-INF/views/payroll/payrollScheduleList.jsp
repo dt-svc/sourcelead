@@ -12,6 +12,9 @@ $(document).ready(function(){
 
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
 
 <style>
 .Highlighted a {
@@ -34,7 +37,7 @@ $(document).ready(function(){
         <h2>Pay Schedule</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;
-       <a href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo;Pay Schedule List
+       <a href="/pms/payrollConfiguration"> Payroll Configuration</a>&raquo;Pay Schedule List
 		</div>
     </section>
     <div class="contentareaInner-styles clearfix">
@@ -43,7 +46,7 @@ $(document).ready(function(){
           <div class="positionRelative timesheet_head clearfix"> 
          <!--  <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span> -->
             <ul class="pull-right list-unstyled list-inline">
-              <li><a class="newAdBtn mr5" href="<c:url value='${appPath}/paySchedule'/>"  title="Add">+ Add</a></li>
+              <li><a class="newAdBtn mr5" href="/pms/paySchedule"  title="Add">+ Add</a></li>
             </ul> 
           </div>
           <div class="require_wrap_table tableFirstSecond datatable_filter clearfix overflow_inherint width100percnt">
@@ -60,7 +63,7 @@ $(document).ready(function(){
   function getPayrollScheduleList(){
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/findAllPayrollScheduleList?"+tokenParamName+"="+tokenValue, 
+		        url: pmsUrl+"/findAllPayrollScheduleList?"+tokenParamName+"="+tokenValue, 
 		        success: function(data) {
 		        	
 		        	var result = "";
@@ -89,7 +92,7 @@ $(document).ready(function(){
 			        	
 			        	result = result + ' <td>';
 		        		 result = result + ' <div class="tblminwidth-50">';
-		        		 result = result +' <span title="List" class="paddingRight"><a href="<c:url value="/app/payrollScheduleCalender?payScheduleUUID='+opt.payrollScheduleUUID+'"/>">view</a></span> ';
+		        		 result = result +' <span title="List" class="paddingRight"><a href="/pms/payrollScheduleCalender?payScheduleUUID='+opt.payrollScheduleUUID+'">view</a></span> ';
 		        		 result = result + '  </div>';
 		        		 result = result + ' </td>';
 			        	//result = result + "<td><div class='tblminwidth-75'><a onClick='calendarPop(\""+opt.payFrequency+"\" , \""+opt.payPeriodStartDate+"\",\""+opt.payCheckDate+"\",\""+opt.runPayDate+"\");'>view</a></div></td>";
@@ -191,7 +194,7 @@ function payschedulePagination(){
 function calendarPop(payFrequency,payPeriodStartDate,payCheckDate,runPayDate){
 	  $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/findScheduleDates?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency+"&payPeriodStartDate="+payPeriodStartDate
+	        url: pmsUrl+"/findScheduleDates?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency+"&payPeriodStartDate="+payPeriodStartDate
 	        		+"&payCheckDate="+payCheckDate+"&runPayDate="+runPayDate, 
 	        success: function(data) {
 			

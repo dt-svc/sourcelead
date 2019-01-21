@@ -10,6 +10,10 @@ $(document).ready(function(){
    getDepartments("payrollDepartment");
 });
 </script>
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
  
   <!-- Content Area -->
   <section class="content-wraper contentWraper">
@@ -17,7 +21,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Employee Payroll</h2>
       </div>
-       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usPayrollReport'/>">US Payroll Reports List</a> &raquo; Employee Payroll</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/pms/usPayrollReport">US Payroll Reports List</a> &raquo; Employee Payroll</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
@@ -217,7 +221,7 @@ function runAssociatePayrollReport(){
 		var employees = $('#employees').val();
 		var searchValue = $("#dynamicUserPayrollTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/runEmployeePayroll?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&department="+department+"&employees="+employees+"&searchValue="+searchValue;
+		var url = pmsUrl+"/runEmployeePayroll?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&department="+department+"&employees="+employees+"&searchValue="+searchValue;
 		runAssociatePayrollList(url);	
 	 }else{
 			return false;
@@ -517,7 +521,7 @@ function exportEmployeePayrollPdf(){
 	var searchValue = $("#dynamicUserPayrollTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 
-    window.location.href = sourceleadUrl+"/exportEmployeePayroll?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&department="+department+"&employees="+employees+"&searchValue="+searchValue+"&exportType=pdf";
+    window.location.href = pmsUrl+"/exportEmployeePayroll?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&department="+department+"&employees="+employees+"&searchValue="+searchValue+"&exportType=pdf";
 }
 </script>
 
@@ -531,7 +535,7 @@ function exportEmployeePayrollExcel(){
 	var searchValue = $("#dynamicUserPayrollTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 
-    window.location.href = sourceleadUrl+"/exportEmployeePayroll?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&department="+department+"&employees="+employees+"&searchValue="+searchValue+"&exportType=xls";
+    window.location.href = pmsUrl+"/exportEmployeePayroll?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&department="+department+"&employees="+employees+"&searchValue="+searchValue+"&exportType=xls";
 }
 </script>
 

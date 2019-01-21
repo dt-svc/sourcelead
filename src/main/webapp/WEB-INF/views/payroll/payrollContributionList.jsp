@@ -8,7 +8,11 @@ $(document).ready(function(){
    getAllContributionType();
 });
 </script>
- 
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
  <!-- Content Area -->
 <section class="content-wraper contentWraper">
 <section class="content-header clearfix">
@@ -21,7 +25,7 @@ $(document).ready(function(){
  </div>
   <div class="pull-right brud-crum">
                 <a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo; Payroll Contribution
+				href="/pms/payrollConfiguration"> Payroll Configuration</a>&raquo; Payroll Contribution
   </div>
 </section>
  
@@ -30,7 +34,7 @@ $(document).ready(function(){
    
     <div class="table-header clearfix">
       <ul class="list-unstyled list-inline">
-        <li><a href="<c:url value='${appPath}/addContribution'/>" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Add</a></li>
+        <li><a href="/pms/addContribution" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Add</a></li>
         <li>
 		 <div class="dynamic_search">
 			<input type="text" placeholder="Search" id='dataTableSearch'/>
@@ -51,10 +55,9 @@ $(document).ready(function(){
   
   <script>
   function getAllContributionType(){
-	  var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/findAllPayrollContribution?searchValue="+searchValue;
+		var url = pmsUrl+"/findAllPayrollContribution?searchValue="+searchValue;
 	    prepareAllContributionTypeList(url);
   }
 </script>
@@ -192,7 +195,7 @@ function contributionTypepagination(url){
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
                 		result = result + '<td><div class="tbldata-dotdot_50">';
-                		result = result + '<a href="'+sourceleadUrl+'/editContributionType?contributionUUID='+opt.contributionUUID+'" class="text-primary"><i class="fa fa-pencil-square-o mr5"></i></a>';
+                		result = result + '<a href="'+pmsUrl+'/editContributionType?contributionUUID='+opt.contributionUUID+'" class="text-primary"><i class="fa fa-pencil-square-o mr5"></i></a>';
                 		if(opt.status == 1){
                 			result = result + '<a href="javascript:void(0)"><i class="glyphicon glyphicon-trash" onclick="deleteContributionType('+opt.contributionId+');"></i></a>';
                 		}else{
@@ -257,7 +260,7 @@ function deleteContributionPopUp(){
 function deleteSelectedContributionType(contributionId){
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/deleteContributionType?${_csrf.parameterName}=${_csrf.token}&contributionId="+contributionId+"&changeStatus=DELETE", 	   
+	    url: pmsUrl+"/deleteContributionType?${_csrf.parameterName}=${_csrf.token}&contributionId="+contributionId+"&changeStatus=DELETE", 	   
 		    success: function(data) {
 		    	if(data == true){
 		    		getAllContributionType();
@@ -283,7 +286,7 @@ function deleteSelectedContributionType(contributionId){
 function reactiveContribution(contributionId){
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/deleteContributionType?${_csrf.parameterName}=${_csrf.token}&contributionId="+contributionId+"&changeStatus=REACTIVE", 	   
+	    url: pmsUrl+"/deleteContributionType?${_csrf.parameterName}=${_csrf.token}&contributionId="+contributionId+"&changeStatus=REACTIVE", 	   
 		    success: function(data) {
 		    	if(data == true){
 		    		getAllContributionType();

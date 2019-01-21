@@ -11,6 +11,11 @@ $(document).ready(function(){
 
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
+
 <!-- Content Area -->
   <section class="content-wraper contentWraper">
   
@@ -25,7 +30,7 @@ $(document).ready(function(){
       <!-- <div class="pull-right brud-crum">Home &raquo; Payhead List &raquo; Add Deduction</div> -->
        <div class="pull-right brud-crum">
 			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo;Add Deduction
+				href="/pms/payrollConfiguration"> Payroll Configuration</a>&raquo;Add Deduction
 		</div>
     </section>
     <div id="addDeductionLoading"></div>
@@ -101,7 +106,7 @@ $(document).ready(function(){
 function findAllDeductionType(deductionType){
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/findAllLookUpDeductionTypes?"+tokenParamName+"="+tokenValue+"",
+		url: pmsUrl+"/findAllLookUpDeductionTypes?"+tokenParamName+"="+tokenValue+"",
 		success :function(data) {
 		var json = data.data;
 		var output = "";
@@ -169,9 +174,9 @@ function saveDeduction(){
 	if ($('#add_deduction_form').validate(false, validationSettings)){  
  	 	    var formData = getFormData("add_deduction_form");
 		        	  $("#addDeductionLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		        	  $.post(sourceleadUrl+"/savePayrollDeduction?"+tokenParamName+"="+tokenValue, formData, function(data) {
+		        	  $.post(pmsUrl+"/savePayrollDeduction?"+tokenParamName+"="+tokenValue, formData, function(data) {
 		        		  $("#addDeductionLoading").removeAttr("style");
-		        		  location.replace(sourceleadUrl+ "/payrollDeductionList");
+		        		  location.replace(pmsUrl+ "/payrollDeductionList");
 		        		  
 		        		    $("#selector2").removeAttr("style");
 			     			 $("#selector2").css({ display: "block" });
@@ -205,7 +210,7 @@ function validateDeductionType(){
 	if (payrollDeductionType != null && payrollDeductionType != '') {
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/isValidDeductionType?"+tokenParamName+"="+tokenValue+"&payrollDeductionType="+payrollDeductionType,
+			url : pmsUrl + "/isValidDeductionType?"+tokenParamName+"="+tokenValue+"&payrollDeductionType="+payrollDeductionType,
 			success : function(data) {
 				if (data == true) {
 // 					$("#save_deductionType").removeAttr("disabled");

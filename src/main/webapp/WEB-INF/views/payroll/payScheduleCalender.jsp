@@ -3,7 +3,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
 
 <style>
 .Highlighted {
@@ -68,8 +70,8 @@ $(document).ready(function(){
       </div>
      <!--  <div class="pull-right brud-crum">Home &raquo; Payhead List &raquo; Upcomming pay period and paydays</div> -->
      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo;
-          <a href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo;
-          <a href="<c:url value='${appPath}/payrollScheduleList'/>"> Pay Schedule List</a>&raquo;View Pay Schedule
+          <a href="/pms/payrollConfiguration"> Payroll Configuration</a>&raquo;
+          <a href="/pms/payrollScheduleList"> Pay Schedule List</a>&raquo;View Pay Schedule
         </div>
     </section>
     
@@ -104,7 +106,7 @@ $(document).ready(function(){
   function calendarView(payrollScheduleUUID){
 		  $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/findScheduleDates?"+tokenParamName+"="+tokenValue+"&payrollScheduleUUID="+payrollScheduleUUID, 
+		        url: pmsUrl+"/findScheduleDates?"+tokenParamName+"="+tokenValue+"&payrollScheduleUUID="+payrollScheduleUUID, 
 		        success: function(data) {
 		        var result = '';
 		        	result = result + '<table id="calenderTable" class="display" cellspacing="0" width="100%" >';

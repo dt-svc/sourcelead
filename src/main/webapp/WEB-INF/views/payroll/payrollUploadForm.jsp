@@ -8,6 +8,11 @@ window.onload = function () {
 }
 </script>
  -->
+ 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left">
@@ -149,7 +154,6 @@ function runPayrollCycles(type){
 		var form = $('#run_payroll_cycle')[0];
 		var formData = new FormData(form);
 		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "GET",
 					data : formData,
@@ -158,7 +162,7 @@ function runPayrollCycles(type){
 					processData : false,
 					contentType : false,
 					dataType : 'json',
-					url : sourceleadUrl+ "/runPayrollCycle?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					url : pmsUrl+ "/runPayrollCycle?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 					success : function(result) {
 						generatrPayroll(result,payrollCycle);
 						$("#loading").removeAttr("style");
@@ -187,8 +191,7 @@ function flushPayrollCycle(){
 }
 
 function cancelUpload(){
-	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/payrollImports";
+	window.location.href = pmsUrl + "/payrollImports";
 }
 
 </script>
@@ -405,7 +408,6 @@ $(".addcon-pop").click(function() {
 		var form = $('#upload_bulk_payroll_form')[0];
 		var formData = new FormData(form);
 		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		var sourceleadUrl = '${sourceleadUrl}';
 		$
 				.ajax({
 					type : "POST",
@@ -415,7 +417,7 @@ $(".addcon-pop").click(function() {
 					processData : false,
 					contentType : false,
 					dataType : 'json',
-					url : sourceleadUrl
+					url : pmsUrl
 							+ "/uploadPayrollDocument?${_csrf.parameterName}=${_csrf.token}&json="
 							+ jsonData,
 					success : function(result) {
@@ -425,7 +427,7 @@ $(".addcon-pop").click(function() {
 		    			$("#selector1").css("display", "block");
 		    			$("#msgDiv").html(result+" Records Imported Successfully.");
 						msgFadein();
-						location.replace(sourceleadUrl+'/payrollImports');
+						location.replace(pmsUrl+'/payrollImports');
 					},
 				});
 		
@@ -447,7 +449,6 @@ $(".addcon-pop").click(function() {
 		var form = $('#upload_payroll_form')[0];
 		var formData = new FormData(form);
 		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		var sourceleadUrl = '${sourceleadUrl}';
 		$
 				.ajax({
 					type : "POST",
@@ -457,7 +458,7 @@ $(".addcon-pop").click(function() {
 					processData : false,
 					contentType : false,
 					dataType : 'json',
-					url : sourceleadUrl+ "/uploadPayrollDocument?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					url : pmsUrl+ "/uploadPayrollDocument?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 					success : function(result) {
 						/* var json = JSON.parse(result); */
 						if(result == 0){
@@ -469,7 +470,7 @@ $(".addcon-pop").click(function() {
 			    			$("#selector1").css("display", "block");
 			    			$("#msgDiv").html(result+" Records Imported Successfully.");
 							msgFadein();
-							location.replace(sourceleadUrl+'/payrollImports');
+							location.replace(pmsUrl+'/payrollImports');
 							
 						}
 					},

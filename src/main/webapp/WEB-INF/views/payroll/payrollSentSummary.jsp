@@ -4,6 +4,11 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
+
+<script>
 $(document).ready(function(){
 	$("#approveDivID").addClass('disabled').removeAttr("onclick"); 
 	$("#approveDiv").hide();
@@ -83,7 +88,7 @@ function approvePayrollTab(){
 	  $("#sentSummaryLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getPaySheetFrequencySummary?paySheetFrequencyuuid="+uuid+"&payPeriodNum="+payPeriodNum+"&approverStatus="+status,                 
+		        url: pmsUrl+"/getPaySheetFrequencySummary?paySheetFrequencyuuid="+uuid+"&payPeriodNum="+payPeriodNum+"&approverStatus="+status,                 
 		        success: function(data) {
 					var json = data.payrollDTO;
 		        	var result = "";

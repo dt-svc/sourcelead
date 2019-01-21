@@ -4,6 +4,10 @@
 
 <script src="/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
     <!--  Popups -->
 <div class="mask" ></div>
 <div class="addPayrollGroupWrap">
@@ -152,9 +156,9 @@ function validateGroupName(){
 			                	$("#loading").removeAttr('style');
 			                	 closeBatch();
 			                	 if(fromType != null && fromType != 'undefined' && fromType != '' && fromType == 'DASHBOARD'){
-			                		 location.replace(sourceleadUrl+"/payrollList");
+			                		 location.replace(pmsUrl+"/payrollList");
 			                	 }else{
-			                		 location.replace(sourceleadUrl+"/userGroupList");
+			                		 location.replace(pmsUrl+"/userGroupList");
 			                	 }
 			                	 
 			                } else if (result.indexOf('Sign In') !== -1) {

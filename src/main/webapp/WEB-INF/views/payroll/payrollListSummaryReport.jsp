@@ -10,6 +10,10 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
   <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
@@ -17,7 +21,7 @@ $(document).ready(function(){
         <h2>Payroll List Summary</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/usPayrollReport'/>"> US Payroll Reports List</a>&raquo;Payroll List Summary
+				href="/pms/usPayrollReport"> US Payroll Reports List</a>&raquo;Payroll List Summary
 		</div>
     </section>
     <div class="clearfix"></div>
@@ -152,7 +156,7 @@ $(document).ready(function(){
 		if(groupId != '' && groupId != 'undefined'){
 			var searchValue = $("#dataTableSearch").val();
 			searchValue = searchValue ? searchValue : "";
-			var url = sourceleadUrl+"/getPayCheckDateReports?searchValue="+searchValue+"&groupId="+groupId+"&payCheckDate="+payCheckDate;
+			var url = pmsUrl+"/getPayCheckDateReports?searchValue="+searchValue+"&groupId="+groupId+"&payCheckDate="+payCheckDate;
 			payCheckDatePayrollList(url);	
 		}else{
 			$("#payPeriodErrorDiv").text('select pay period');

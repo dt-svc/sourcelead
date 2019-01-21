@@ -10,6 +10,10 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
@@ -17,7 +21,7 @@ $(document).ready(function(){
         <h2>Check Register Report</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/usPayrollReport'/>"> US Payroll Reports List</a>&raquo;Check Register Report
+				href="/pms/usPayrollReport"> US Payroll Reports List</a>&raquo;Check Register Report
 		</div>
     </section>
     <div class="contentareaInner-styles clearfix">
@@ -239,7 +243,7 @@ function checkRegisterReports(){
 	    var freqEndDate = $("#freqEndDate").val();
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getCheckRegisterReports?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&depositType=Cheque";
+		var url = pmsUrl+"/getCheckRegisterReports?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&depositType=Cheque";
 		checkRegisterReportsList(url);	
 }
 
@@ -406,7 +410,7 @@ function exportToPdf(){
 	alert("contributionId = "+freqEndDate);
 	alert("searchValue = "+searchValue); */
 	
-	window.location.href = sourceleadUrl+"/exportToPdfCheckRegisterReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&depositType="+depositType;
+	window.location.href = pmsUrl+"/exportToPdfCheckRegisterReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&depositType="+depositType;
 }
 </script>
 

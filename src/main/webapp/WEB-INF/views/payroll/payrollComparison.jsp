@@ -12,6 +12,10 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
  
  <!-- Content Area -->
   <section class="content-wraper contentWraper">
@@ -19,7 +23,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Payroll Comparison Report</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usPayrollReport'/>">US Payroll Reports List</a> &raquo; Payroll Comparison Report</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/pms/usPayrollReport">US Payroll Reports List</a> &raquo; Payroll Comparison Report</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
@@ -384,7 +388,7 @@ function runPayrollregister(){
          $.ajax({
 				type : "POST",
      	    	data: formData,
-				url : sourceleadUrl+"/runPayrollComparison?"+tokenParamName+"="+tokenValue,
+				url : pmsUrl+"/runPayrollComparison?"+tokenParamName+"="+tokenValue,
 				success : function(result) {
 					
 					

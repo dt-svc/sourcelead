@@ -10,6 +10,9 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
 
 
 <!-- Content Area -->
@@ -25,7 +28,7 @@ $(document).ready(function(){
  
          <div class="pull-right brud-crum">
                 <a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo;Payroll Deduction
+				href="/pms/payrollConfiguration"> Payroll Configuration</a>&raquo;Payroll Deduction
 				</div>
 </section>
  
@@ -35,7 +38,7 @@ $(document).ready(function(){
    
     <div class="table-header clearfix">
       <ul class="list-unstyled list-inline">
-        <li><a href="<c:url value='${appPath}/addDeduction'/>" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Add</a></li>
+        <li><a href="/pms/addDeduction" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Add</a></li>
         <li>
 		 <div class="dynamic_search">
 			<input type="text" placeholder="Search" id='dataTableSearch'/>
@@ -55,10 +58,9 @@ $(document).ready(function(){
   
 <script>
   function getAllDeductionType(){
-	  var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/findAllPayrollDeduction?searchValue="+searchValue;
+		var url = pmsUrl+"/findAllPayrollDeduction?searchValue="+searchValue;
 	    prepareAllDeductionTypeList(url);
   }
 </script>
@@ -195,7 +197,7 @@ function deductionTypepagination(url){
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
                 		result = result + '<td><div class="tbldata-dotdot_50">';
-                		result = result + '<a href="'+sourceleadUrl+'/editDeductionType?deductionUUID='+opt.deductionUUID+'" class="text-primary"><i class="fa fa-pencil-square-o mr5"></i></a>';
+                		result = result + '<a href="'+pmsUrl+'/editDeductionType?deductionUUID='+opt.deductionUUID+'" class="text-primary"><i class="fa fa-pencil-square-o mr5"></i></a>';
                 		if(opt.status == 1){
                 			result = result + '<a href="javascript:void(0)"><i class="glyphicon glyphicon-trash" onclick="deleteDeductionType('+opt.id+');"></i></a>';
                 		}else{
@@ -258,7 +260,7 @@ function deleteDeductionPopUp(){
 function deleteSelectedDeductionType(id){
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/deleteDeductionType?${_csrf.parameterName}=${_csrf.token}&id="+id+"&changeStatus=DELETE", 	   
+	    url: pmsUrl+"/deleteDeductionType?${_csrf.parameterName}=${_csrf.token}&id="+id+"&changeStatus=DELETE", 	   
 		    success: function(data) {
 		    	if(data == true){
 		    		getAllDeductionType();
@@ -284,7 +286,7 @@ function deleteSelectedDeductionType(id){
 function reactiveDeduction(id){
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/deleteDeductionType?${_csrf.parameterName}=${_csrf.token}&id="+id+"&changeStatus=REACTIVE", 	   
+	    url: pmsUrl+"/deleteDeductionType?${_csrf.parameterName}=${_csrf.token}&id="+id+"&changeStatus=REACTIVE", 	   
 		    success: function(data) {
 		    	if(data == true){
 		    		getAllDeductionType();

@@ -4,13 +4,9 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <script>
-$(document).ready(function(){
- /*   var empType = '${payItem.allowEmployeementType}';
-   if(empType != null && empType != '' && empType != 'undefined'){
-	   $("#allowEmployeementType").val(empType);
-   } */
-});
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 </script>
+
 <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
@@ -19,7 +15,7 @@ $(document).ready(function(){
       </div>
       <div class="pull-right brud-crum">
                 <a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo; Pay Item
+				href="/pms/payrollConfiguration"> Payroll Configuration</a>&raquo; Pay Item
       </div>
     </section>
     
@@ -98,7 +94,7 @@ $(document).ready(function(){
         <div class="col-lg-12">
           <div class="pull-right">
             <input value="Save" class="btn btn-success btnSuccess" id="save_payitem_button" type="button" onclick="addPayItem();">
-            <input value="Cancel" class="btn btn-defualt ml10" onclick="window.location='${appPath}/viewPayItem';" type="button">
+            <input value="Cancel" class="btn btn-defualt ml10" onclick="window.location='/pms/viewPayItem';" type="button">
           </div>
         </div>
       </div>      
@@ -113,7 +109,6 @@ $(document).ready(function(){
 <script type="text/javascript">
  function addPayItem() {
 	 if ($('#add_pay_item_form').validate(false, validationSettings)){ 
-			   /*  var formData = getFormData("add_pay_item_form"); */
 			   var formData = getFormData1('add_pay_item_form');
 				$("#save_payitem_button").attr("disabled", "disabled");
 				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -123,7 +118,7 @@ $(document).ready(function(){
 	        	    data: formData,
 	        	    processData: false,
 	  		        contentType:false, 
-					url : sourceleadUrl+"/createPayItem?"+tokenParamName+"="+tokenValue+"",
+					url : pmsUrl+"/createPayItem?"+tokenParamName+"="+tokenValue+"",
 					success : function(result) {
 						 if (result && result.response === "INVALID_DATA") {
 			                    $("#save_payitem_button").removeAttr("disabled");
@@ -132,7 +127,7 @@ $(document).ready(function(){
 			                } else if (result.response === "AWKWARD") {
 			                    location.href = "/errorPage";
 			                } else if (result.response === "SUCCESS") {
-			                	 location.replace(sourceleadUrl+ "/viewPayItem");
+			                	 location.replace(pmsUrl+ "/viewPayItem");
 			                } else if (result.indexOf('Sign In') !== -1) {
 								location.replace(sourceleadUrl);
 							} else {
@@ -158,7 +153,7 @@ $(document).ready(function(){
    function validateItemName(){
 		var payItemName = $("#payItemName").val();
 		var payItemId = $("#payItemId").val();
-		$.get(sourceleadUrl+"/validatePayItemName?"+tokenParamName+"="+tokenValue+"&payItemName="+payItemName+"&payItemId="+payItemId,  function(result) {
+		$.get(pmsUrl+"/validatePayItemName?"+tokenParamName+"="+tokenValue+"&payItemName="+payItemName+"&payItemId="+payItemId,  function(result) {
 				 if (result.response === "AWKWARD") {
 	                    location.href = "/errorPage";
 	                } else if (result.response === "SUCCESS") {

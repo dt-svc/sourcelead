@@ -2,6 +2,11 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <script>
 window.onload = function () {
 	getCategoriesForStaffingFiltered();
@@ -47,7 +52,7 @@ window.onload = function () {
 
 <script>
 function getCategoriesForStaffingFiltered(){
-	$.get(sourceleadUrl+ "/getCategoriesForStaffingFiltered?${_csrf.parameterName}=${_csrf.token}", function(data) {
+	$.get(pmsUrl+ "/getCategoriesForStaffingFiltered?${_csrf.parameterName}=${_csrf.token}", function(data) {
 		var map = data.object;
 		var result = "";
 		result = result +  '<option value="">---Select Category---</option>';
@@ -138,7 +143,7 @@ function getCategoriesForStaffingFiltered(){
 function getStaffingFilteredList(){
 	document.getElementById("selectRecords").style.display="none";
 	var categoryId = $("#categoryList").val();
-	$.get(sourceleadUrl+ "/getStaffingFilteredListByCategoryId?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId, function(data) {
+	$.get(pmsUrl+ "/getStaffingFilteredListByCategoryId?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId, function(data) {
 		var response = data.data;
 		var result = "";				        	
 		result = result + '<table id="staffingFilteredListTable" class="display table table-bordered" cellspacing="0" width="100%" >';

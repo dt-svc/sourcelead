@@ -11,6 +11,10 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
@@ -133,7 +137,7 @@ function associateWithHolding(){
    
         var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getAssociateWithHoldingReports?searchValue="+searchValue+"&dept="+dept+"&empType="+empType;
+		var url = pmsUrl+"/getAssociateWithHoldingReports?searchValue="+searchValue+"&dept="+dept+"&empType="+empType;
 		associateWithHoldingList(url);	
 }
 
@@ -400,7 +404,7 @@ function openPop(){
 	  /*  function getPayGroupList(id){ */
 			$.ajax({
 			    	type: "GET",
-			        url: sourceleadUrl+"/findAllDepartments?"+tokenParamName+"="+tokenValue                 , 
+			        url: pmsUrl+"/findAllDepartments?"+tokenParamName+"="+tokenValue                 , 
 			        success: function(json) {
 			        	 var result = "";
 			        	 for(var i = 0;i<json.length;i++){
@@ -422,7 +426,7 @@ function openPop(){
 function populateDepartment(){
 	$.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/findAllDepartments?"+tokenParamName+"="+tokenValue                 , 
+        url: pmsUrl+"/findAllDepartments?"+tokenParamName+"="+tokenValue                 , 
         success: function(json) {
         	 var result = "";
         	 for(var i = 0;i<json.length;i++){
@@ -519,7 +523,7 @@ function exportToPdf(){
         var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
 
-    	window.location.href = sourceleadUrl+"/exportAssociateWithholding?searchValue="+searchValue+"&dept="+dept+"&empType="+empType+"&exportType=pdf";
+    	window.location.href = pmsUrl+"/exportAssociateWithholding?searchValue="+searchValue+"&dept="+dept+"&empType="+empType+"&exportType=pdf";
 }
 </script>
 
@@ -543,7 +547,7 @@ function exportToExcel(){
         var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
 
-    	window.location.href = sourceleadUrl+"/exportAssociateWithholding?searchValue="+searchValue+"&dept="+dept+"&empType="+empType+"&exportType=xls";
+    	window.location.href = pmsUrl+"/exportAssociateWithholding?searchValue="+searchValue+"&dept="+dept+"&empType="+empType+"&exportType=xls";
 }
 </script>
 

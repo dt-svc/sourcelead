@@ -1,3 +1,7 @@
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
  <div class="clearfix"></div>
   <div class="timesheet_out" id="loansAdvancesDiv">
 
@@ -96,7 +100,7 @@ function requestFun(event){
 function EmployeeLoansAndAdvances(type){
 	$.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getEmpOutstandingLoansAdvances?"+tokenParamName+"="+tokenValue+"&type="+type, 
+	        url: pmsUrl+"/getEmpOutstandingLoansAdvances?"+tokenParamName+"="+tokenValue+"&type="+type, 
 	        success: function(data) {
          	var result = "";
 	        result = result +'<table id="outstandingLoansTableDiv" class="display" cellspacing="0" width="100%" >';
@@ -259,7 +263,7 @@ function outstandingLoansPagination(){
 function getLoansCountList(){
 	$.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getLoansAndAdvancesCounts?"+tokenParamName+"="+tokenValue, 
+        url: pmsUrl+"/getLoansAndAdvancesCounts?"+tokenParamName+"="+tokenValue, 
         success: function(data) {
         	$("#outstandingAmount").html(data.Outstanding);
         	$("#completedAmount").html(data.Completed);

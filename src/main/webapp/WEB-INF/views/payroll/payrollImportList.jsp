@@ -4,6 +4,11 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
+
+<script>
 	$(document).ready(function() {
 		$("#employeeCostSearch").show();
 		$("#wageTaxSearch").hide();
@@ -21,7 +26,7 @@
 	<section class="content-header clearfix">
 		<div class="pull-left">
 			<h2>
-				Pay Roll <a href="<c:url value='${appPath}/uploadDocuments'/>"
+				Pay Roll <a href="/pms/uploadDocuments"
 					class="jobHeadBtn" id="uloadDocs" title="Upload Files">Upload
 					Files</a>
 			</h2>
@@ -33,7 +38,7 @@
 		<div class="pull-right brud-crum">
 			<a
 				href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;
-			<a href="<c:url value='${appPath}/payrollConfiguration'/>">
+			<a href="/pms/payrollConfiguration">
 				Payroll Configuration</a>&raquo; Payroll
 		</div>
 	</section>
@@ -261,7 +266,6 @@
 						.attr(
 								'style',
 								'position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-				var sourceleadUrl = '${sourceleadUrl}';
 				$
 						.ajax({
 							type : "GET",
@@ -271,7 +275,7 @@
 							processData : false,
 							contentType : false,
 							dataType : 'json',
-							url : sourceleadUrl
+							url : pmsUrl
 									+ "/runPayrollCycle?${_csrf.parameterName}=${_csrf.token}&json="
 									+ jsonData,
 							success : function(result) {
@@ -592,11 +596,10 @@
 		$("#checksSearch").hide();
 		$("#invoiceDataSearch").hide();
 
-		var sourceleadUrl = '${sourceleadUrl}';
 		var searchValue = $("#employeeDataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl
+		var url = pmsUrl
 				+ "/loadEmployerPayrollCostByOrgLocationId?searchValue="
 				+ searchValue + "&orgLocationId=" + orgLocationId;
 		prepareEmployeePayrollList(url);
@@ -950,8 +953,7 @@
 	}
 
 	function deletePayrollEntity(uuid, entityType) {
-		var sourceleadUrl = '${sourceleadUrl}';
-		$.get(sourceleadUrl + "/deletePayrollEntitiesByUUIDAndEntityType?"
+		$.get(pmsUrl + "/deletePayrollEntitiesByUUIDAndEntityType?"
 				+ tokenParamName + "=" + tokenValue + "&uuid=" + uuid
 				+ "&entityType=" + entityType, function(result) {
 			if (entityType == "EmployeePayrollCost") {

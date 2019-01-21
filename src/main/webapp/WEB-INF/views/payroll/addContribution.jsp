@@ -12,6 +12,11 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
+
   <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
@@ -26,7 +31,7 @@ $(document).ready(function(){
       
       <div class="pull-right brud-crum">
 			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo;Add Contribution
+				href="/pms/payrollConfiguration"> Payroll Configuration</a>&raquo;Add Contribution
 		</div>
       
       
@@ -93,7 +98,7 @@ $(document).ready(function(){
 function getAllDeductionType(deductionType){
 	$.ajax({
 		type : "POST",
-		url: sourceleadUrl+"/getAllDeductionType?"+tokenParamName+"="+tokenValue+"",
+		url: pmsUrl+"/getAllDeductionType?"+tokenParamName+"="+tokenValue+"",
 		success :function(data) {
 		var json = data.data;
 		var output = "";
@@ -124,9 +129,9 @@ function saveContribution(){
 	if ($('#add_contribution_form').validate(false, validationSettings)){  
  	 	    var formData = getFormData("add_contribution_form");
 		        	  $("#addContributionLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		        	  $.post(sourceleadUrl+"/savePayrollContribution?"+tokenParamName+"="+tokenValue, formData, function(data) {
+		        	  $.post(pmsUrl+"/savePayrollContribution?"+tokenParamName+"="+tokenValue, formData, function(data) {
 		        		  $("#addContributionLoading").removeAttr("style");
-		        		  location.replace(sourceleadUrl+ "/payrollContribution");
+		        		  location.replace(pmsUrl+ "/payrollContribution");
 		        		  $("#selector2").removeAttr("style");
 			     		  $("#selector2").css({ display: "block" });
 			     		  $("#addContributeMsgDiv").html("Added Successfully");
@@ -197,7 +202,7 @@ function isValidContributionType(){
 	if (deductionTypeId != null && deductionTypeId != '') {
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/isValidContributionType?"+tokenParamName+"="+tokenValue+"&deductionTypeId="+deductionTypeId,
+			url : pmsUrl + "/isValidContributionType?"+tokenParamName+"="+tokenValue+"&deductionTypeId="+deductionTypeId,
 			success : function(data) {
 				if (data == true) {
 // 					$("#save_contributionType").removeAttr("disabled");

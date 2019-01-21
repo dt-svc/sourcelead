@@ -4,6 +4,10 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
+<script>
 $(document).ready(function(){
 	$("#approveDiv").hide();
 	$("#submitButtonDiv").hide();
@@ -277,10 +281,9 @@ $(document).ready(function() {
   
   <script>
   function getPayPeriodData(){
-			var sourceleadUrl = '${sourceleadUrl}';
 			var searchValue = $("#historyDataTableSearch").val();
 			searchValue = searchValue ? searchValue : "";
-			var url = sourceleadUrl+ "/getPaySheetFrequencyData?searchValue="+searchValue;
+			var url = pmsUrl+ "/getPaySheetFrequencyData?searchValue="+searchValue;
 			preparePaySheetFrequency(url);
 	  
   }
@@ -355,7 +358,7 @@ $(document).ready(function() {
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.payPeriodNum != null && opt.payPeriodNum != '' && opt.payPeriodNum !='undefined'){
-						                		  result = result +'<div class="tblminwidth-100"><a href="'+sourceleadUrl+'/viewPaySheetFrequencyData?approverStatus='+opt.approverStatus+'&paySheetFrequencyUUID='+opt.paySheetFrequencyuuid+'&payPeriodNum='+opt.payPeriodNum+'">'+opt.payPeriodNum+'</a></div>';
+						                		  result = result +'<div class="tblminwidth-100"><a href="'+pmsUrl+'/viewPaySheetFrequencyData?approverStatus='+opt.approverStatus+'&paySheetFrequencyUUID='+opt.paySheetFrequencyuuid+'&payPeriodNum='+opt.payPeriodNum+'">'+opt.payPeriodNum+'</a></div>';
 											}else{
 						              		  result = result +'<div class="tblminwidth-100">--</div>';
 						              		}
@@ -470,7 +473,7 @@ function getGroupFrequency(){
 	var groupUUID = $("#groupId").val();
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getGroupPayPeriod?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID                  , 
+	        url: pmsUrl+"/getGroupPayPeriod?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID                  , 
 	        success: function(json) {
 	        var output = "";
 	        output = output + "<option value=''>Ferquency</option>";
@@ -517,7 +520,7 @@ function runUSPayroll(){
 		var payrollPayDate = $("#payrollPayDate").val();
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/generateUSPayroll?searchValue="+searchValue+"&groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate+"&payType="+payType,                 
+		        url: pmsUrl+"/generateUSPayroll?searchValue="+searchValue+"&groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate+"&payType="+payType,                 
 		        success: function(data) {
 		        	   var count = 0;
 		        		 var json = data.payrollDTO;
@@ -679,13 +682,13 @@ $('body').on('blur', '#generate_payroll_form', function() {
 <script type="text/javascript">
 function sendPayrollForApprover(){
       var formData = $($('#submit_for_approver')[0]).serialize();
-      $.post(sourceleadUrl+"/sendPayrollForApprover?"+tokenParamName+"="+tokenValue, formData, function(result) {
+      $.post(pmsUrl+"/sendPayrollForApprover?"+tokenParamName+"="+tokenValue, formData, function(result) {
         if (result && result.response === "INVALID_DATA") {
               showError(result.responseMessage);
           } else if (result.response === "AWKWARD") {
               location.href = "/errorPage";
           } else if (result.response === "SUCCESS") {
-        	  location.replace(sourceleadUrl+ "/payrollList?&redirect=history"); 
+        	  location.replace(pmsUrl+ "/payrollList?&redirect=history"); 
         	  $("#msgDiv").html("Submited Successfully");
           } else if (result.indexOf('Sign In') !== -1) {
             location.replace(sourceleadUrl);
@@ -756,7 +759,7 @@ function getDraftData(){
 	$("#initiateLoading").attr('style','position:absolute; width:100%; height:140%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getPaysheetFrequencyDraftData",                 
+	        url: pmsUrl+"/getPaysheetFrequencyDraftData",                 
 	        success: function(data) {
 			        	var result = '';
 			        	result += '<table id="draftPagination">';
@@ -780,7 +783,7 @@ function getDraftData(){
 					        	}
 					        	
 					        	if(opt.payFrequency != null && opt.payFrequency != '' && opt.payFrequency != 'undefined'){
-					        		result += '<td><div class="tbldata-dotdot-200"><a href="'+sourceleadUrl+'/viewPaySheetFrequencyData?paySheetFrequencyUUID='+opt.paySheetFrequencyuuid+'&approverStatus=DRAFT">'+opt.payFrequency+'</a></div></td>';
+					        		result += '<td><div class="tbldata-dotdot-200"><a href="'+pmsUrl+'/viewPaySheetFrequencyData?paySheetFrequencyUUID='+opt.paySheetFrequencyuuid+'&approverStatus=DRAFT">'+opt.payFrequency+'</a></div></td>';
 					        	}else{
 					        		result += '<td><div class="tbldata-dotdot-200">--</div></td>';
 					        	}
@@ -847,7 +850,7 @@ function dashboardTab(){
 	  $("#searchDivForEmployee").hide();
 	  $("#dashboardDiv").show();
 	  
-	  location.replace(sourceleadUrl+ "/uSPayrollDashboard"); 
+	  location.replace(pmsUrl+ "/uSPayrollDashboard"); 
 	
 }
 </script>

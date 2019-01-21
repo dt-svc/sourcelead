@@ -1,3 +1,7 @@
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 
 <script type="text/javascript">
 function getInvoiceDetails(){
@@ -8,11 +12,10 @@ function getInvoiceDetails(){
 		$("#hrDedSearch").hide();
 		$("#checksSearch").hide();
 		$("#invoiceDataSearch").show();
-		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#invoiceDataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getInvoiceDetails?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
+		var url = pmsUrl+"/getInvoiceDetails?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
 	    prepareInvoiceDetailsList(url);
 }
 </script> 

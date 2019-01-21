@@ -136,7 +136,7 @@ public class IndianPayrollRestController {
 	@Autowired
 	CommonUtil commonUtil;
 	
-    @RequestMapping(value = "/app/save-ind-associate-payment-account", method = RequestMethod.POST)
+    @RequestMapping(value = "/save-ind-associate-payment-account", method = RequestMethod.POST)
 	public Response<IndAssociatePaymentAccountDTO> savePaymentAccount(HttpServletRequest request, IndAssociatePaymentAccountDTO account,
 			@RequestParam(value="userId", required=false) Long userId){
 		 Response<IndAssociatePaymentAccountDTO> resObj = new Response<>();
@@ -165,7 +165,7 @@ public class IndianPayrollRestController {
    }
     
     
-    @RequestMapping(value = "/app/getIndAssociatePaymentAccountDetails", method = RequestMethod.POST)
+    @RequestMapping(value = "/getIndAssociatePaymentAccountDetails", method = RequestMethod.POST)
 	public IndAssociatePaymentAccountDTO getIndAssociatePaymentAccountDetails(HttpServletRequest request,
 			@RequestParam(value="userId", required=false) Long userId){
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -193,7 +193,7 @@ public class IndianPayrollRestController {
     }  
     
     
-    @RequestMapping(value = "/app/getIndAssociatePFESIAccountDetails", method = RequestMethod.POST)
+    @RequestMapping(value = "/getIndAssociatePFESIAccountDetails", method = RequestMethod.POST)
 	public AssociatePfEsiDetailsDTO getIndAssociatePFESIAccountDetails(HttpServletRequest request,
 			@RequestParam(value="userId", required=false) Long userId){
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -209,7 +209,7 @@ public class IndianPayrollRestController {
     } 
     
     
-    @RequestMapping(value = "/app/validateLoandAndAdvanceName", method = RequestMethod.POST)
+    @RequestMapping(value = "/validateLoandAndAdvanceName", method = RequestMethod.POST)
    	public String validateLoandAndAdvanceName(HttpServletRequest request,
    			@RequestParam(value="loanAdvType", required=true) String loanAdvType,
    			@RequestParam(value="loanAdvName", required=true) String loanAdvName,
@@ -246,7 +246,7 @@ public class IndianPayrollRestController {
    		 return result;
        }  
     
-    @RequestMapping(value = "/app/getNamesByLoanAndAdvanceType", method = RequestMethod.POST)
+    @RequestMapping(value = "/getNamesByLoanAndAdvanceType", method = RequestMethod.POST)
  	public List<PayrollLoanAndAdvancesDTO> getNamesByLoanAndAdvanceType(HttpServletRequest request,
  			@RequestParam(value="loanAndAdvType", required=true) String loanAndAdvType,
  			@RequestParam(value="associateUserId", required=true) Long associateUserId,
@@ -303,7 +303,7 @@ public class IndianPayrollRestController {
      } 
     
     
-    @RequestMapping(value = "/app/getLoanAndAdvanceApprovers", method = RequestMethod.POST)
+    @RequestMapping(value = "/getLoanAndAdvanceApprovers", method = RequestMethod.POST)
  	public List<UserDTO> getLoanAndAdvanceApprovers(HttpServletRequest request){
  		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
  		List<UserDTO> userDTOList = new ArrayList<>();
@@ -327,7 +327,7 @@ public class IndianPayrollRestController {
      }  
     
     
-    @RequestMapping(value = "/app/getLoanAndAdvanceDetailsByLoanAndAdvanceId", method = RequestMethod.POST)
+    @RequestMapping(value = "/getLoanAndAdvanceDetailsByLoanAndAdvanceId", method = RequestMethod.POST)
  	public PayrollLoanAndAdvancesDTO getLoanAndAdvanceDetailsByLoanAndAdvanceId(HttpServletRequest request,
  			@RequestParam(value="loanAndAdvId", required=true) Long loanAndAdvId){
     	
@@ -357,7 +357,7 @@ public class IndianPayrollRestController {
      }  
     
     
-	@RequestMapping(value = "/app/getLoanAndAdvanceEndDateByEffectiveDate", method = RequestMethod.GET)
+	@RequestMapping(value = "/getLoanAndAdvanceEndDateByEffectiveDate", method = RequestMethod.GET)
 	public @ResponseBody String getLoanAndAdvanceEndDateByEffectiveDate(@RequestParam(value = "effectiveDate", required = true) String effectiveDate, 
 			@RequestParam(value = "noOfSchedules", required = false) String noOfSchedules,
 			@RequestParam(value = "scheduler", required = false) String scheduler,HttpServletRequest request) throws Exception
@@ -392,7 +392,7 @@ public class IndianPayrollRestController {
 	
 	
 	
-    @RequestMapping(value = "/app/saveAssociateLoanAndAdvanceDetails", method = RequestMethod.POST)
+    @RequestMapping(value = "/saveAssociateLoanAndAdvanceDetails", method = RequestMethod.POST)
 	public Response<AssociateLoanAndAdvancesDTO> saveAssociateLoanAndAdvanceDetails(HttpServletRequest request, 
 			AssociateLoanAndAdvancesDTO loanAndAdvanceDTO){
 		 Response<AssociateLoanAndAdvancesDTO> resObj = new Response<>();
@@ -419,7 +419,7 @@ public class IndianPayrollRestController {
     }
     
     
-    @RequestMapping(value = "/app/verifyLoanEligibilityByAssociateIdAndLoanAdv", method = RequestMethod.POST)
+    @RequestMapping(value = "/verifyLoanEligibilityByAssociateIdAndLoanAdv", method = RequestMethod.POST)
 	public Response<Boolean> verifyLoanEligibilityByAssociateIdAndLoanAdv(HttpServletRequest request, AssociateLoanAndAdvancesDTO loanAndAdvanceDTO){
 		 Response<Boolean> resObj = new Response<>();
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -453,7 +453,7 @@ public class IndianPayrollRestController {
     
     
     
-    @RequestMapping(value = "/app/getAssociateLoanAndAdvanceDetails", method = RequestMethod.POST)
+    @RequestMapping(value = "/getAssociateLoanAndAdvanceDetails", method = RequestMethod.POST)
 	public AssociateLoanAndAdvancesDTO getAssociateLoanAndAdvanceDetails(HttpServletRequest request,
 			@RequestParam(value="userId", required=false) Long userId){
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -469,7 +469,7 @@ public class IndianPayrollRestController {
     } 
     
     
-    @RequestMapping(value = "/app/getAssociateLoanAndAdvanceDetailsById", method = RequestMethod.POST)
+    @RequestMapping(value = "/getAssociateLoanAndAdvanceDetailsById", method = RequestMethod.POST)
 	public AssociateLoanAndAdvancesDTO getAssociateLoanAndAdvanceDetailsById(HttpServletRequest request,
 			@RequestParam(value="loanAdvId", required=false) Long loanAdvId){
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -483,7 +483,7 @@ public class IndianPayrollRestController {
 		 return loanAndAdvDTO;
     } 
     
-    @RequestMapping(value = "/app/deleteAssociateLoanAndAdvanceDetailsById", method = RequestMethod.POST)
+    @RequestMapping(value = "/deleteAssociateLoanAndAdvanceDetailsById", method = RequestMethod.POST)
 	public String deleteAssociateLoanAndAdvanceDetailsById(HttpServletRequest request,
 			@RequestParam(value="loanAdvId", required=false) Long loanAdvId){
 		 try {
@@ -498,7 +498,7 @@ public class IndianPayrollRestController {
     } 
     
     
-    @RequestMapping(value = "/app/initiateIndPayroll", method = RequestMethod.POST)
+    @RequestMapping(value = "/initiateIndPayroll", method = RequestMethod.POST)
    	public ModelAndView initiateIndPayroll(HttpServletRequest request){
     	ModelAndView modelAndView = new ModelAndView();
    		 try {
@@ -513,7 +513,7 @@ public class IndianPayrollRestController {
       } 
     
 
-	@RequestMapping(value = "/app/indianPayrolluserGroupList")
+	@RequestMapping(value = "/indianPayrolluserGroupList")
 	public ModelAndView userBatchList(HttpServletRequest request) throws Exception {
 		   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		   ModelAndView model = new ModelAndView();
@@ -529,7 +529,7 @@ public class IndianPayrollRestController {
 	      } 
     
 
-    @RequestMapping(value = { "/app/generateINDPayroll","/app/rest/generateINDPayroll" }, method = RequestMethod.POST)
+    @RequestMapping(value = { "/generateINDPayroll","/rest/generateINDPayroll" }, method = RequestMethod.POST)
 	public IndPaysheetFrequencyDTO generateINDPayroll(GenerateINDPayrollDTO generateINDPayrollDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -540,7 +540,7 @@ public class IndianPayrollRestController {
 	}
     
     
-    @RequestMapping(value = { "/app/sentForApproveIndPayroll","/app/rest/sentForApproveIndPayroll" }, method = RequestMethod.POST)
+    @RequestMapping(value = { "/sentForApproveIndPayroll","/rest/sentForApproveIndPayroll" }, method = RequestMethod.POST)
    	public IndApprovePayrollDTO sentForApproveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
    	{
    		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -567,7 +567,7 @@ public class IndianPayrollRestController {
    	}
     
     
-    @RequestMapping(value = { "/app/getApproveInfoIndPayroll","/app/rest/getApproveInfoIndPayroll" }, method = RequestMethod.GET)
+    @RequestMapping(value = { "/getApproveInfoIndPayroll","/rest/getApproveInfoIndPayroll" }, method = RequestMethod.GET)
    	public ModelAndView getApproveInfoIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
    	{
     	ModelAndView model = new ModelAndView();
@@ -628,7 +628,7 @@ public class IndianPayrollRestController {
    		return model;
    	}
     
-    @RequestMapping(value = { "/app/removePaysheetFrequencyFromSession","/app/rest/removePaysheetFrequencyFromSession" }, method = RequestMethod.POST)
+    @RequestMapping(value = { "/removePaysheetFrequencyFromSession","/rest/removePaysheetFrequencyFromSession" }, method = RequestMethod.POST)
    	public String getApproveInfoIndPayroll(@RequestParam(value="paySheetFrequencyUUID", required=false) String paySheetFrequencyUUID , HttpServletRequest request, HttpServletResponse response) throws Exception
    	{
     	if(StringUtils.isNotEmpty(paySheetFrequencyUUID)) {
@@ -638,7 +638,7 @@ public class IndianPayrollRestController {
    	}
     
     
-    @RequestMapping(value = { "app/approveIndPayroll","app/rest/approveIndPayroll" }, method = RequestMethod.POST)
+    @RequestMapping(value = { "/approveIndPayroll","/rest/approveIndPayroll" }, method = RequestMethod.POST)
 	public Response<IndApprovePayrollDTO> approveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

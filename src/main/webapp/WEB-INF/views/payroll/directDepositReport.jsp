@@ -10,6 +10,10 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
@@ -274,7 +278,7 @@ function checkDirectDepositReports(){
 	    var freqEndDate = $("#freqEndDate").val();
 		var searchValue = $("#directDataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getCheckRegisterReports?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&depositType=Direct Deposit";
+		var url = pmsUrl+"/getCheckRegisterReports?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&depositType=Direct Deposit";
 		checkDirectDepositReportsList(url);	
 }
 
@@ -433,7 +437,7 @@ function directDepositData(url) {
      getFreqdates("freqStartDate", "freqEndDate");
      var  freqStartDate = $("#freqStartDate").val();
      var freqEndDate = $("#freqEndDate").val();
-	 window.location.href = sourceleadUrl+"/exportToPdfCheckRegisterReport?"+tokenParamName+"="+tokenValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue+"&depositType=Direct Deposit";
+	 window.location.href = pmsUrl+"/exportToPdfCheckRegisterReport?"+tokenParamName+"="+tokenValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue+"&depositType=Direct Deposit";
  }
  
  </script>

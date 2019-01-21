@@ -3,13 +3,17 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
   <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Payroll Configure</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; Payroll Configure</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a> &raquo; <a href="${appPath}/goToSettings">Settings</a>&raquo; Payroll Configure</div>
     </section>
     <div class="clearfix"></div>
     <div class="leaveConfigure clerfix">
@@ -19,8 +23,8 @@
           <h4 class="text-muted">Deductions</h4>
           <small class="text-muted">Configure Deductions</small>
           <div class="clearfix mt10"> 
-          <a href="<c:url value='${appPath}/addDeduction'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
-          <a href="<c:url value='${appPath}/payrollDeductionList'/>" class="btn btn-primary btn-sm" title="View">View</a> </div>
+          <a href="/pms/addDeduction" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+          <a href="/pms/payrollDeductionList" class="btn btn-primary btn-sm" title="View">View</a> </div>
         </div>
         <div class="clearfix"></div>
       </div>
@@ -30,8 +34,8 @@
           <h4 class="text-muted">Contributions</h4>
           <small class="text-muted">Configure Contributions</small>
           <div class="clearfix mt10"> 
-          <a href="<c:url value='${appPath}/addContribution'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a> 
-          <a href="<c:url value='${appPath}/payrollContribution'/>" class="btn btn-primary btn-sm" title="View">View</a> </div>
+          <a href="/pms/addContribution" class="btn btn-info btn-sm mr10" title="Add">Add</a> 
+          <a href="/pms/payrollContribution" class="btn btn-primary btn-sm" title="View">View</a> </div>
         </div>
         <div class="clearfix"></div>
       </div>
@@ -41,8 +45,8 @@
           <h4 class="text-muted">Pay Items</h4>
           <small class="text-muted">Configure Pay Items</small>
           <div class="mt10">
-           <a href="<c:url value='${appPath}/addPayItem'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a>
-          <a href="<c:url value='${appPath}/viewPayItem'/>"class="btn btn-primary btn-sm" title="View">View</a> </div>
+           <a href="/pms/addPayItem" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+          <a href="/pms/viewPayItem"class="btn btn-primary btn-sm" title="View">View</a> </div>
         </div>
         <div class="clearfix"></div>
       </div>
@@ -51,7 +55,7 @@
         <div class="pull-left">
           <h4 class="text-muted">Pay Schedule</h4>
           <small class="text-muted">Configure Pay Schedule</small>
-          <div class="clearfix mt10"> <a href="<c:url value='${appPath}/payrollScheduleList'/>" class="btn btn-info btn-sm mr10" title="Add">View</a></div>
+          <div class="clearfix mt10"> <a href="/pms/payrollScheduleList" class="btn btn-info btn-sm mr10" title="Add">View</a></div>
         </div>
         <div class="clearfix"></div>
       </div>
@@ -61,7 +65,7 @@
         <div class="pull-left">
           <h4 class="text-muted">Payroll Configure</h4>
           <small class="text-muted">Configure Payroll</small>
-          <div class="clearfix mt10"> <a href="<c:url value='${appPath}/payrollApprover'/>" class="btn btn-info btn-sm mr10" title="Configure">Configure</a>
+          <div class="clearfix mt10"> <a href="/pms/payrollApprover" class="btn btn-info btn-sm mr10" title="Configure">Configure</a>
            </div>
         </div>
         <div class="clearfix"></div>
@@ -72,7 +76,7 @@
         <div class="pull-left">
           <h4 class="text-muted">Payroll Legacy Reports</h4>
           <small class="text-muted">Configure Payroll Reports</small>
-          <div class="clearfix mt10"> <a href="<c:url value='${appPath}/payrollImports'/>" class="btn btn-info btn-sm mr10" title="Configure">Configure</a>
+          <div class="clearfix mt10"> <a href="/pms/payrollImports" class="btn btn-info btn-sm mr10" title="Configure">Configure</a>
            </div>
         </div>
         <div class="clearfix"></div>
@@ -85,7 +89,7 @@
           <h4 class="text-muted">Create Batch</h4>
           <small class="text-muted">Configure Batch</small>
           <div class="mt10">
-          <a href="<c:url value='${appPath}/userGroupList'/>"class="btn btn-primary btn-sm" title="View">View</a> </div>
+          <a href="/pms/userGroupList"class="btn btn-primary btn-sm" title="View">View</a> </div>
         </div>
         <div class="clearfix"></div>
       </div>
@@ -132,8 +136,8 @@
           <h4 class="text-muted">Loan & Advances</h4>
           <small class="text-muted">Manage your loan & advances</small>
           <div class="mt10">
-          	<a class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/payrollLoanAndAdvances'/>" title="Add">Add</a> 
-			<a class="btn btn-primary btn-sm" href="<c:url value='${appPath}/payrollLoanAndAdvancesList'/>" title="View">View</a>
+          	<a class="btn btn-info btn-sm mr10" href="/pms/payrollLoanAndAdvances" title="Add">Add</a> 
+			<a class="btn btn-primary btn-sm" href="/pms/payrollLoanAndAdvancesList" title="View">View</a>
 		  </div>
         </div>
         <div class="clearfix"></div>

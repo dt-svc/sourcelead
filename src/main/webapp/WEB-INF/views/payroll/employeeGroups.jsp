@@ -1,14 +1,17 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Employees List</h2>
       </div>
-<%--       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a>&raquo;<a href=""> Groups List </a> &raquo;  Employees List </div> --%>
       <div class="pull-right brud-crum"><a href=" ${appPath}/dashboard" title="Home">Home</a>&raquo;
-       <a href="${appPath}/userGroupList" title="Groups List"> Batches List</a>&raquo;Employees List
+       <a href="/pms/userGroupList" title="Groups List"> Batches List</a>&raquo;Employees List
 		</div>
     </section>
      <div class='reportHead' id="">
@@ -33,7 +36,7 @@ $(document).ready(function(){
 	  	var groupUUID = '${groupUUID}';
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getAllEmployeesInGroups?groupUUID="+groupUUID+"&searchValue="+searchValue;
+		var url = pmsUrl+"/getAllEmployeesInGroups?groupUUID="+groupUUID+"&searchValue="+searchValue;
 		getAllEmployeesInGroupsData(url); 
   }
 </script>

@@ -3,6 +3,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 
 <script>
 $(document).ready(function(){
@@ -379,7 +383,7 @@ function getMyPayrollList(){
 	var hrsTotalAmount = 0;
 	$.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getMyPayrollList?"+tokenParamName+"="+tokenValue                 , 
+	        url: pmsUrl+"/getMyPayrollList?"+tokenParamName+"="+tokenValue                 , 
 	        success: function(result) {
 	        var data = result.myPayroll;
 	        

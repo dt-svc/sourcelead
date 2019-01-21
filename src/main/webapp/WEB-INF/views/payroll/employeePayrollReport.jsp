@@ -1,6 +1,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
  <section class="content-wraper">
     
     <div class="modal modal_Expenses AccountDedu" id="one">
@@ -87,7 +91,7 @@ function redirect() {
     		  var sourceleadUrl ='${sourceleadUrl}';
     				  $.ajax({
     				    	type: "GET",
-    				        url: sourceleadUrl+"/getInvoiceDetailsByEmpId?${_csrf.parameterName}=${_csrf.token}&empId="+empId+"&orgLocationId="+orgLocationId,
+    				        url: pmsUrl+"/getInvoiceDetailsByEmpId?${_csrf.parameterName}=${_csrf.token}&empId="+empId+"&orgLocationId="+orgLocationId,
     				        success: function(data) {
     						 var result = "";				        	
     						result = result + '<table id="incometable" class="display" cellspacing="0" width="100%" >';
@@ -231,7 +235,7 @@ function redirect() {
 			  var sourceleadUrl ='${sourceleadUrl}';
 					  $.ajax({
 					    	type: "GET",
-					        url: sourceleadUrl+"/getChecksListByEmployeeId?employeeId="+empId+"&orgLocationId="+orgLocationId,
+					        url: pmsUrl+"/getChecksListByEmployeeId?employeeId="+empId+"&orgLocationId="+orgLocationId,
 					        success: function(data) {
 							 var result = "";				        	
 							result = result + '<table id="empchecksListTable" class="display" cellspacing="0" width="100%" >';
@@ -550,7 +554,7 @@ function getWagesTaxSummaryByEmpId(){
 		var searchValue = $("#dataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getWagesTaxSummaryByEmpId?empId="+empId+"&orgLocationId="+orgLocationId+"&searchValue="+searchValue;
+		var url = pmsUrl+"/getWagesTaxSummaryByEmpId?empId="+empId+"&orgLocationId="+orgLocationId+"&searchValue="+searchValue;
 	    prepareWagesAndTaxList(url);
 }
 </script> 
@@ -838,7 +842,7 @@ function getAccontDeductions(){
 		  var sourceleadUrl ='${sourceleadUrl}';
 				  $.ajax({
 				    	type: "GET",
-				    	url: sourceleadUrl+"/getAccontDeductionsByEmpId?employeeId="+empId+"&orgLocationId="+orgLocationId,
+				    	url: pmsUrl+"/getAccontDeductionsByEmpId?employeeId="+empId+"&orgLocationId="+orgLocationId,
 				        success: function(json) {
 				        var data = json.data;
 						var result = "";				        	
@@ -977,7 +981,7 @@ function getEmpAccountDeductionDetails(accountDedId,empName){
 	  var sourceleadUrl ='${sourceleadUrl}';
 			  $.ajax({
 			    	type: "GET",
-			        url: sourceleadUrl+"/getDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&deductionId="+accountDedId,
+			        url: pmsUrl+"/getDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&deductionId="+accountDedId,
 			        success: function(data) {
 					var result = "";				        	
 					result = result + '<table id="employeeDeductionsListTable" class="display" cellspacing="0" width="100%" >';
@@ -1062,7 +1066,7 @@ function getHRDeductions(){
 		  var sourceleadUrl ='${sourceleadUrl}';
 				  $.ajax({
 				    	type: "GET",
-				    	url: sourceleadUrl+"/getHRDeductionsByEmployeeId?employeeId="+empId+"&orgLocationId="+orgLocationId,
+				    	url: pmsUrl+"/getHRDeductionsByEmployeeId?employeeId="+empId+"&orgLocationId="+orgLocationId,
 				        success: function(json) {
 				        var data = json.data;
 						var result = "";				        	
@@ -1196,7 +1200,7 @@ function getHrDeductionDetails(hrDedId,empName){
 	  var sourceleadUrl ='${sourceleadUrl}';
 			  $.ajax({
 			    	type: "GET",
-			        url: sourceleadUrl+"/getEmpHrDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&hrDeductionId="+hrDedId,
+			        url: pmsUrl+"/getEmpHrDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&hrDeductionId="+hrDedId,
 			        success: function(data) {
 					var result = "";				        	
 					result = result + '<table id="employeeHrDeductionsListTable" class="display" cellspacing="0" width="100%" >';
@@ -1279,7 +1283,7 @@ function finalBalance(){
 	var sourceleadUrl ='${sourceleadUrl}';
 			  $.ajax({
 			    	type: "GET",
-			    	url: sourceleadUrl+"/getfinalBalanceByEmpId?empId="+empId+"&orgLocationId="+orgLocationId,
+			    	url: pmsUrl+"/getfinalBalanceByEmpId?empId="+empId+"&orgLocationId="+orgLocationId,
 			        success: function(data) {
 			        	var result = "";
 			        	     result = result + ' <div class="clearfix col-md-10 col-md-offset-1">';

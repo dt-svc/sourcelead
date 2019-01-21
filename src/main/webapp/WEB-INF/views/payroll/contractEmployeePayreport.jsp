@@ -3,13 +3,18 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
+
 <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Contract Employee Payreport</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usPayrollReport'/>">US Payroll Reports List</a> &raquo; Contract Employee Payreport</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/pms/usPayrollReport">US Payroll Reports List</a> &raquo; Contract Employee Pay Report</div>
     </section>
     <div class="contentareaInner-styles clearfix">
       <div class="clearfix minHeight">
@@ -83,7 +88,7 @@ function exportPayrollRegisterReportExcel(){
 	var freqStartDate = $('#fromDate').val();
 	var freqEndDate = $('#toDate').val();
 	if(freqStartDate != null && freqStartDate != '' && freqStartDate != 'undefined' && freqEndDate != null && freqEndDate != '' && freqEndDate != 'undefined'){
-		window.location.href = sourceleadUrl+ "/getContractEmployeeReportExport?${_csrf.parameterName}=${_csrf.token}&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&exportType=excel&searchValue="+searchValue;
+		window.location.href = pmsUrl+ "/getContractEmployeeReportExport?${_csrf.parameterName}=${_csrf.token}&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&exportType=excel&searchValue="+searchValue;
 	}
 }
 </script>
@@ -93,7 +98,7 @@ function exportPayrollRegisterReportPdf(){
 	var freqStartDate = $('#fromDate').val();
 	var freqEndDate = $('#toDate').val();
 	if(freqStartDate != null && freqStartDate != '' && freqStartDate != 'undefined' && freqEndDate != null && freqEndDate != '' && freqEndDate != 'undefined'){
-		window.location.href = sourceleadUrl+ "/getContractEmployeeReportExport?${_csrf.parameterName}=${_csrf.token}&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&exportType=pdf&searchValue="+searchValue;
+		window.location.href = pmsUrl+ "/getContractEmployeeReportExport?${_csrf.parameterName}=${_csrf.token}&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&exportType=pdf&searchValue="+searchValue;
 	}
 }
 </script>
@@ -104,7 +109,7 @@ function getContractEmployeeReport(){
 	var freqEndDate = $('#toDate').val();
 	if(freqStartDate != null && freqStartDate != '' && freqStartDate != 'undefined' && freqEndDate != null && freqEndDate != '' && freqEndDate != 'undefined'){
 		$("#payrollReportLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		var url = sourceleadUrl+ "/getContractEmployeeReportList?${_csrf.parameterName}=${_csrf.token}&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
+		var url = pmsUrl+ "/getContractEmployeeReportList?${_csrf.parameterName}=${_csrf.token}&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
 		$("#contractEmployeeReportDiv").show();
 		getContractEmployeeReportList(url);
 	}

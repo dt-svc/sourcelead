@@ -217,9 +217,10 @@
 
 <script>
 	function payAdjustment(payrollUUID,status){
+		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		 $.ajax({
 		  	type: "GET",
-		        url: sourceleadUrl+"/getEmployeePayroll?payrollUUID="+payrollUUID+"&status="+status,                 
+		        url: pmsUrl+"/getEmployeePayroll?payrollUUID="+payrollUUID+"&status="+status,                 
 		        success: function(data) {
 		            var json = data.object;
 		            if(json.empId != null){

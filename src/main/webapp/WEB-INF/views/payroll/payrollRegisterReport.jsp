@@ -11,13 +11,19 @@ $(document).ready(function(){
    getDepartments("payrollDepartment");
 });
 </script>
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
+
 <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Payroll Register</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usPayrollReport'/>">US Payroll Reports List</a> &raquo;  Payroll Register</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/pms/usPayrollReport">US Payroll Reports List</a> &raquo;  Payroll Register</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
@@ -180,7 +186,7 @@ function exportPayrollRegisterReportPdf(){
 	var payRollType = $('#payRollType').val();
 	var freqStartDate = $('#freqStartDate').val();
 	var freqEndDate = $('#freqEndDate').val();
-    window.location.href = sourceleadUrl+"/exportPayrollRegisterReportPdf?&payGroup="+payGroup+"&department="+department+"&payRollType="+payRollType+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
+    window.location.href = pmsUrl+"/exportPayrollRegisterReportPdf?&payGroup="+payGroup+"&department="+department+"&payRollType="+payRollType+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
 }
 </script>
 <script type="text/javascript">
@@ -194,7 +200,7 @@ function runPayrollregisterReport(){
 	var freqEndDate = $('#freqEndDate').val();
 	if(payGroup != null && payGroup != '' && payGroup != 'undefined' && freqStartDate != null && freqStartDate != '' && freqStartDate != 'undefined' && freqEndDate != null && freqEndDate != '' && freqEndDate != 'undefined'){
 		$("#payrollReportLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		var url = sourceleadUrl+ "/runPayrollregister?${_csrf.parameterName}=${_csrf.token}&payGroup="+payGroup+"&department="+department+"&payRollType="+payRollType+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
+		var url = pmsUrl+ "/runPayrollregister?${_csrf.parameterName}=${_csrf.token}&payGroup="+payGroup+"&department="+department+"&payRollType="+payRollType+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
 		$("#payrollRegister").show();
 		preparePayRollRegisterList(url);
 	}else{

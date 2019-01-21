@@ -135,7 +135,6 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/app")
 public class USPayrollRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(USPayrollRestController.class);

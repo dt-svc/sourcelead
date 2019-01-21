@@ -10,6 +10,11 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
+
 
 <!-- Content Area -->
   <section class="content-wraper">
@@ -17,7 +22,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Payroll List Summary</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/uSPayrollDashboard?&redirect=history'/>">Payroll Dashboard</a> &raquo; Payroll Summary</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/pms/uSPayrollDashboard?&redirect=history">Payroll Dashboard</a> &raquo; Payroll Summary</div>
     </section>
     
     <div class="clearfix"></div>
@@ -31,13 +36,12 @@ $(document).ready(function(){
   
 <script>
 function getPaySheetFrequencySummary(status){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var uuid = '${paySheetFrequencyUUID}';
 	var payPeriodNum = '${payPeriodNum}';
 	$("#approvedSummaryDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 		type : "GET",
-		url : sourceleadUrl+ "/getPaySheetFrequencySummary?paySheetFrequencyuuid="+uuid+"&payPeriodNum="+payPeriodNum,
+		url : pmsUrl+ "/getPaySheetFrequencySummary?paySheetFrequencyuuid="+uuid+"&payPeriodNum="+payPeriodNum,
 		success : function(data) {
 			    var result = "";
 	        	result = result +'<table id="paySheetSummary">';

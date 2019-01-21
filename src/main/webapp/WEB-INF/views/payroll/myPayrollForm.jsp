@@ -1,6 +1,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
+
     <div class="clearfix"></div>
     <div id="myPayrollFormLoading"></div>
     <div class="timesheet_out" id="myPayrollFormDiv">
@@ -67,7 +72,7 @@ function saveUsMyPayrollForm(){
 	if ($('#us_My_Payroll_form').validate(false, validationSettings)) {
 	  	var formData = getFormData('us_My_Payroll_form');
 		$("#myPayrollFormLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/saveUsMyPayrollForms?"+tokenParamName+"="+tokenValue, formData, function(result) {
+		$.post(pmsUrl+"/saveUsMyPayrollForms?"+tokenParamName+"="+tokenValue, formData, function(result) {
 			if (result && result.response === "INVALID_DATA") {
     		    showError(result.responseMessage);
     		} else if (result.response === "AWKWARD") {
@@ -89,7 +94,7 @@ function saveUsMyPayrollForm(){
 <script>
 function getUsMyPayrollForms(){
 	$("#us_My_Payroll_form")[0].reset();
-	$.get(sourceleadUrl+"/getUsMyPayrollFormsByOrgLocationId", function(res) {
+	$.get(pmsUrl+"/getUsMyPayrollFormsByOrgLocationId", function(res) {
 		if (res && res.response === "INVALID_DATA") {
 		    showError(res.responseMessage);
 		} else if (res.response === "AWKWARD") {
@@ -160,7 +165,7 @@ function usPayrollFormListTablePagination(){
 <script>
 function deleteForm(uuid){
 	$("#myPayrollFormLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	$.get(sourceleadUrl+"/deleteUsMyPayrollFormByUUID?&uuid="+uuid, function(res) {
+	$.get(pmsUrl+"/deleteUsMyPayrollFormByUUID?&uuid="+uuid, function(res) {
 		if (res && res.response === "INVALID_DATA") {
 		    showError(res.responseMessage);
 		} else if (res.response === "AWKWARD") {

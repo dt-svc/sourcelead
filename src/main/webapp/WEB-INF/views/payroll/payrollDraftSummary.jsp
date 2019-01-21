@@ -11,6 +11,10 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 
 <script>
 function reviewPayroll(){
@@ -36,7 +40,7 @@ function approvePayrollTab(){
       <div class="pull-left">
         <h2>Review Payroll</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;  <a href="<c:url value='${appPath}/uSPayrollDashboard'/>">Payroll Dashboard</a> &raquo; Review Payroll</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;  <a href="/pms/uSPayrollDashboard">Payroll Dashboard</a> &raquo; Review Payroll</div>
     </section>
     
     <div class="tabsMenu clearfix">
@@ -106,7 +110,7 @@ function approvePayrollTab(){
 	  $("#draftSummaryDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
-		    	url : sourceleadUrl+ "/getPaySheetFrequencySummary?paySheetFrequencyuuid="+uuid+"&approverStatus=DRAFT",                
+		    	url : pmsUrl+ "/getPaySheetFrequencySummary?paySheetFrequencyuuid="+uuid+"&approverStatus=DRAFT",                
 		        success: function(data) {
 					var json = data.payrollDTO;
 		        	var result = "";
@@ -235,13 +239,13 @@ function approvePayrollTab(){
 <script type="text/javascript">
 function sendPayrollForApprover(){
       var formData = $($('#submit_for_approver')[0]).serialize();
-      $.post(sourceleadUrl+"/sendPayrollForApprover?"+tokenParamName+"="+tokenValue, formData, function(result) {
+      $.post(pmsUrl+"/sendPayrollForApprover?"+tokenParamName+"="+tokenValue, formData, function(result) {
         if (result && result.response === "INVALID_DATA") {
               showError(result.responseMessage);
           } else if (result.response === "AWKWARD") {
               location.href = "/errorPage";
           } else if (result.response === "SUCCESS") {
-        	  location.replace(sourceleadUrl+ "/payrollList?&redirect=history"); 
+        	  location.replace(pmsUrl+ "/payrollList?&redirect=history"); 
         	  $("#msgDiv").html("Submited Successfully");
           } else if (result.indexOf('Sign In') !== -1) {
             location.replace(sourceleadUrl);

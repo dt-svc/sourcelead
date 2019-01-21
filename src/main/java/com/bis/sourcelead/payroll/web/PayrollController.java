@@ -61,7 +61,6 @@ import com.ibm.icu.text.SimpleDateFormat;
  *
  */
 @Controller
-@RequestMapping("/app")
 public class PayrollController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;

@@ -3,6 +3,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
@@ -154,7 +158,7 @@ function runContributionSummary(){
 	    var toDate = $("#toDate").val();
 		var searchValue = $("#contributionSummarySearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getContributionSummaryReports?searchValue="+searchValue+"&fromDate="+fromDate+"&toDate="+toDate+"&type=CONTRIBUTION";
+		var url = pmsUrl+"/getContributionSummaryReports?searchValue="+searchValue+"&fromDate="+fromDate+"&toDate="+toDate+"&type=CONTRIBUTION";
 		contributionSummaryReportsList(url);	
 			return true;
 	}else{ 
@@ -334,7 +338,7 @@ function resetDiv(){
      var toDate = $("#toDate").val();
      var usContribution = $('#usContributionTypeDiv').html();
  	if(usContribution != null && usContribution !='' && usContribution !='undefined'){
-	 window.location.href = sourceleadUrl+"/exportdeductionContributionSummaryReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&searchValue="+searchValue+"&type=CONTRIBUTION&exportType=pdf";
+	 window.location.href = pmsUrl+"/exportdeductionContributionSummaryReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&searchValue="+searchValue+"&type=CONTRIBUTION&exportType=pdf";
  	}else{
 		var result = " ";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -366,7 +370,7 @@ function resetDiv(){
      var toDate = $("#toDate").val();
      var usContribution = $('#usContributionTypeDiv').html();
   	if(usContribution != null && usContribution !='' && usContribution !='undefined'){
-	 window.location.href = sourceleadUrl+"/exportdeductionContributionSummaryReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&searchValue="+searchValue+"&type=CONTRIBUTION&exportType=xls";
+	 window.location.href = pmsUrl+"/exportdeductionContributionSummaryReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&searchValue="+searchValue+"&type=CONTRIBUTION&exportType=xls";
  }else{
 		var result = " ";
 		result = result +"	<div class='project_inn_mask'></div>";

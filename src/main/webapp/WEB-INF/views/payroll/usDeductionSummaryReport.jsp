@@ -4,6 +4,10 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
  <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
@@ -11,7 +15,7 @@
         <h2>Deduction Summary</h2>
       </div>
        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;
-       <a href="<c:url value='${appPath}/usPayrollReport'/>"> US Payroll Reports List</a>&raquo;Deduction Summary
+       <a href="/app/usPayrollReport"> US Payroll Reports List</a>&raquo;Deduction Summary
 		</div>
     </section>
     <div class="contentareaInner-styles clearfix">
@@ -155,7 +159,7 @@ function runDeductionSummary(){
 	    var toDate = $("#toDate").val();
 		var searchValue = $("#deductionSummarySearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getDeductionSummaryReports?searchValue="+searchValue+"&fromDate="+fromDate+"&toDate="+toDate+"&type=DEDUCTION";
+		var url = pmsUrl+"/getDeductionSummaryReports?searchValue="+searchValue+"&fromDate="+fromDate+"&toDate="+toDate+"&type=DEDUCTION";
 		deductionSummaryReportsList(url);	
 			return true;
 	}else{ 
@@ -334,7 +338,7 @@ function resetDiv(){
      var toDate = $("#toDate").val();
      var usDeduction = $('#usDeductionTypeDiv').html();
   	if(usDeduction != null && usDeduction !='' && usDeduction !='undefined'){
-	 window.location.href = sourceleadUrl+"/exportdeductionContributionSummaryReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&searchValue="+searchValue+"&type=DEDUCTION&exportType=pdf";
+	 window.location.href = pmsUrl+"/exportdeductionContributionSummaryReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&searchValue="+searchValue+"&type=DEDUCTION&exportType=pdf";
      }else{
 		var result = " ";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -364,7 +368,7 @@ function resetDiv(){
      var toDate = $("#toDate").val();
      var usDeduction = $('#usDeductionTypeDiv').html();
    	if(usDeduction != null && usDeduction !='' && usDeduction !='undefined'){
-	 window.location.href = sourceleadUrl+"/exportdeductionContributionSummaryReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&searchValue="+searchValue+"&type=DEDUCTION&exportType=xls";
+	 window.location.href = pmsUrl+"/exportdeductionContributionSummaryReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&searchValue="+searchValue+"&type=DEDUCTION&exportType=xls";
  }else{
 		var result = " ";
 		result = result +"	<div class='project_inn_mask'></div>";
