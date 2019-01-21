@@ -130,8 +130,8 @@
 									<td>${payHead.type} <input type="text" style="display:none" id="payheadSC[${payHead.shortCode}]" value="${payHead.type}"> <input type="text" style="display:none" name="associateSalaryPayheadIndList[${loop.index}].id" value="${assoSalPayHeadId}"></td>
 									<td>${payHead.method}</td>
 									<td>${payHead.formula}</td>
-									<td><input type="text" id="payHeadMonthly[${payHead.shortCode}]" name="associateSalaryPayheadIndList[${loop.index}].monthly" value="${monthlyValue}" onblur="calculateToPerYear('${payHead.shortCode}');" value="" class="form-control input-sm" field-name="${payHead.name}" data-validation="validate_Space validate_length length1-20 validate_float" data-validation-optional="true"></td>
-									<td><input type="text" id="payHeadYearly[${payHead.shortCode}]" name="associateSalaryPayheadIndList[${loop.index}].annualy" value="${yearlyValue}" onblur="calculateToPerMonth('${payHead.shortCode}');" value="" class="form-control input-sm" field-name="${payHead.name}" data-validation="validate_Space validate_length length1-20 validate_float" data-validation-optional="true"></td>
+									<td><input type="text" id="payHeadMonthly[${payHead.shortCode}]" name="associateSalaryPayheadIndList[${loop.index}].monthly" value="${monthlyValue}" onblur="calculateToPerYear('${payHead.shortCode}');" value="" class="form-control input-sm" field-name="${payHead.name}" data-validation="validate_Space validate_length length1-20 validate_number" data-validation-optional="true"></td>
+									<td><input type="text" id="payHeadYearly[${payHead.shortCode}]" name="associateSalaryPayheadIndList[${loop.index}].annualy" value="${yearlyValue}" onblur="calculateToPerMonth('${payHead.shortCode}');" value="" class="form-control input-sm" field-name="${payHead.name}" data-validation="validate_Space validate_length length1-20 validate_number" data-validation-optional="true"></td>
 								</tr>
 							</c:forEach>
 	               		</tbody>
@@ -182,11 +182,21 @@ function shiftToLeaveTypeDetails(){
 <script>
 function calculateToPerYear(shortCode){
 	var monthly = document.getElementById("payHeadMonthly["+shortCode+"]").value;
-	document.getElementById("payHeadYearly["+shortCode+"]").value = (monthly*12).toFixed(2);
+	var floatRegex = /^((\d+(\.\d *)?)|((\d*\.)?\d+))$/;
+	if(monthly != '' && floatRegex.test(monthly)){
+		document.getElementById("payHeadYearly["+shortCode+"]").value = (monthly*12).toFixed(2);
+	}else{
+		document.getElementById("payHeadYearly["+shortCode+"]").value = "";
+	}
 }
 function calculateToPerMonth(shortCode){
 	var yearly = document.getElementById("payHeadYearly["+shortCode+"]").value;
-	document.getElementById("payHeadMonthly["+shortCode+"]").value = (yearly/12).toFixed(2);
+	var floatRegex = /^((\d+(\.\d *)?)|((\d*\.)?\d+))$/;
+	if(yearly != '' && floatRegex.test(yearly)){
+		document.getElementById("payHeadMonthly["+shortCode+"]").value = (yearly/12).toFixed(2);
+	}else{
+		document.getElementById("payHeadMonthly["+shortCode+"]").value = "";
+	}
 }
 
 function payHeadCalculation(id, shortCode, method, formula){
