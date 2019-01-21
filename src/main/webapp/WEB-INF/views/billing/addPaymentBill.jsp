@@ -15,7 +15,8 @@
      <div class="pull-left">
      <h2>Add Payment</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/payablesList'/>">Bill List</a> &raquo;  Add Payment </div>
+    <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+    <a href="/vms/payablesList">Bill List</a> &raquo;  Add Payment </div>
     
     </section>
     <form id= "paymentForm" name="paymentForm" method="post">
@@ -208,14 +209,14 @@ $('#paymentDate').datepicker({
 </script>
 <script>
   function getPaybleList(){
+	  var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	  var orgRelationId = $("#vendor").val();
 	   $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getInvoiceListForPayment?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&invoiceType=payables",
+	        url: vmsUrl+"/getInvoiceListForPayment?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&invoiceType=payables",
 	        success: function(json) {
 	        	
 	        	var result = '';
-         		//result = result +'     <form id ="paymentForm" name ="paymentForm" method="post">'; 
          		result = result +'     <div class="modal-bodyCustom clearfix popupFilter clients_wrap_table">'; 
          	    result = result +'       <table id="invoiceListTable" class="clearfix" cellspacing="0" width="100%" >';
          		result = result +'           <thead>';
@@ -293,7 +294,7 @@ $('#paymentDate').datepicker({
   </script>
   <script type="text/javascript">
   function addInvoice(){
-		
+	  var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	// check if dueamount is valid or not
 		var Duevalidate = true;
 		$("input[id^=totalAmountRow]").each(function() {
@@ -318,13 +319,13 @@ $('#paymentDate').datepicker({
 			     }); 
 			 if(amount !=null && amount !="" && amount !="undefined"){
 			 var formData = getFormData("paymentForm");
-			 $.post(sourceleadUrl+"/saveInvoiceBulkPayment?"+tokenParamName+"="+tokenValue+"&invoiceIds="+invoiceIds,formData,function(result) {
+			 $.post(vmsUrl+"/saveInvoiceBulkPayment?"+tokenParamName+"="+tokenValue+"&invoiceIds="+invoiceIds,formData,function(result) {
 				 if (result && result.response === "INVALID_DATA") {
 	          		    showError(result.responseMessage);
 	          		} else if (result.response === "AWKWARD") {
 	          		    location.href = "/errorPage";
 	          		} else if (result.response === "SUCCESS") {
-	          			location.replace(sourceleadUrl+"/payablesList");
+	          			location.replace(vmsUrl+"/payablesList");
 	          		} else if (result.indexOf('Sign In') !== -1) {
 	          			location.replace(sourceleadUrl);
 	          		} else {

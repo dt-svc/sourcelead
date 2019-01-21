@@ -17,7 +17,8 @@
       <div class="pull-left">
         <h2>Add Debit Note</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/debitNoteList'/>">Debit Note List</a> &raquo; Debit Note</div>
+      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+      <a href="/vms/debitNoteList">Debit Note List</a> &raquo; Debit Note</div>
       
     </section>
     <div class="content-area content-new clearfix">
@@ -328,7 +329,7 @@
           <input value="Draft" id="draftButtonId" onClick="saveDebitNote('Draft');" class="btn btn-warning" type="button">
             <input value="Send" id="sendButtonId" onClick="saveDebitNote('Send');" class="btn btn-success mr ml" type="button">
             <input value="Submit" id = "submitButtonId" onClick="saveDebitNote('Submit');" class="btn btn-primary" type="button">
-            <input value="Cancel" class="btn btn-default ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/debitNoteList'/>'" type="button">
+            <input value="Cancel" class="btn btn-default ml" onClick="javascript:window.location.href = '/vms/debitNoteList'" type="button">
           </div>
         </div>
       </div>
@@ -348,13 +349,13 @@ $(document).ready(function(){
 	});
 
 function saveDebitNote(saveType){
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	if ($('#creditNote_form').validate(false, validationSettings)){  
 	 	    var formData = getFormData1("creditNote_form");
 	 	   
 	        	  $("#creditDebitLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	  $.ajax({
-	                  url: sourceleadUrl+"/saveCreditDebitNote?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&noteType=Debit",
+	                  url: vmsUrl+"/saveCreditDebitNote?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&noteType=Debit",
 	                  type: "POST",
 	                  data: formData,
 	                  processData: false,
@@ -366,7 +367,7 @@ function saveDebitNote(saveType){
 	          		    location.href = "/errorPage";
 	          		} else if (result.response === "SUCCESS") {
 		  					$("#creditDebitLoading").removeAttr("style");
-    		     			location.replace(sourceleadUrl+"/debitNoteList");
+    		     			location.replace(vmsUrl+"/debitNoteList");
     		     			$("#selector1").removeAttr("style");
 				    		$("#selector1").css({ display: "block" });
 			    		if(saveType == 'SENT'){
@@ -490,24 +491,23 @@ function removeDynamicRowDiv(id,lineItemId){
 <script>
 
 function deleteLinteItemEditMode(id) {
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl + "/deleteLineItemEditModeId?"+ tokenParamName + "=" + tokenValue + "&id=" + id,
+		url : vmsUrl + "/deleteLineItemEditModeId?"+ tokenParamName + "=" + tokenValue + "&id=" + id,
 		success: function(data) {
-		    	/* $("#popUp").empty();
-			 	$(".project_inn_mask").fadeOut(200);
-			 	location.replace(sourceleadUrl+"/creditNoteList");	 */
 		    },
 	});
 }
 
 function getSpocsList() {
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var spocIds = "${creditDebitNote.contactUser}";
 	var orgRelationId = $("#orgRelationId").val();
 	$("#spocUser").empty();
 	$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/getPayableVendorContactsByOrgRelationId?"+ tokenParamName + "=" + tokenValue + "&orgRelationId=" + orgRelationId,
+				url : vmsUrl + "/getPayableVendorContactsByOrgRelationId?"+ tokenParamName + "=" + tokenValue + "&orgRelationId=" + orgRelationId,
 				success : function(json) {
 					var output = "";
 					if(json.data !=null){
@@ -535,11 +535,13 @@ function getSpocsList() {
 }
 
 function getApproversList() {
+	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var invoiceIds = "${creditDebitNote.approvers}";
 	$("#approvers").empty();
 	$.ajax({
 		type : "GET",
-		url : sourceleadUrl + "/getApproversListForCreditDebitNote?",
+		url : vmsUrl + "/getApproversListForCreditDebitNote?",
 		success : function(json) {
 			var output = "";
 			for (var i = 0; i < json.data.length; i++) {
@@ -587,16 +589,16 @@ function currencyConversionDiv(){
 }
 
 function  conversionRate(){
+	   var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	   var orgRelationId = $("#orgRelationId").val();
 	   var currencyCode = '${SourceLeadWeb_currencyCode}';
 	   var grandTotal = $("#grandTotal").val();
 	   if(grandTotal != '' && grandTotal != 'undefined'){
 		   $.ajax({
 				type : "GET",
-				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
+				url: vmsUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
 				success :function(response) {
 					if(response.object !='' && response.object != 'undefined' && response.object != null){
-//						var json = JSON.parse(data);
 						$("#afterExchangeGrandTotal").val((response.object.exchangeRate).toFixed(2));
 						$("#exchangeCurrencyRate").val(response.object.exchangeCurrency);
 						$("#vendorCurrencyCode").html(response.object.vendorCurrencyCode);
@@ -638,12 +640,13 @@ function  conversionRate(){
 	}
 
 	function getInvoiceList() {
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var invoiceIds = "${creditDebitNote.invoceId}";
 		var orgRelationId = $("#orgRelationId").val();
 		$("#invoceId").empty();
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/getInvoiceListForCreditDebitNote?"+ tokenParamName + "=" + tokenValue + "&orgRelationId="+ orgRelationId + "&invoiceType=Payables",
+			url : vmsUrl + "/getInvoiceListForCreditDebitNote?"+ tokenParamName + "=" + tokenValue + "&orgRelationId="+ orgRelationId + "&invoiceType=Payables",
 			success : function(json) {
 				var output = "";
 				if(json.data !=null){
@@ -703,9 +706,6 @@ function datePickerFunction(id){
 	     $('#rowTotal'+rowId).empty().val(totlalAmount.toFixed(2));
 	     $('#rowTotalAmount'+rowId).empty().val(totlalAmount.toFixed(2));
 	     calculateSumSubTotal(rowId);
-	     /* var vvv = $("#rowTotalAmount"+rowId).val();
-		 $("#subTotal").empty().text(vvv); */
-	     //calculateSum();
 }
   
   function taxCalculatedAmount(rowId){
@@ -735,14 +735,11 @@ function datePickerFunction(id){
 	  }
 	   $('#rowTotalAmount'+rowId).empty().val(totlalValue.toFixed(2));
 	   calculateSumSubTotal(rowId);
-	   /* var vvv = $("#rowTotalAmount"+rowId).val();
-	   $("#subTotal").empty().text(vvv); */
 		
 }
   
   
   function calculateSumSubTotal(id){
-		 //var maxRowNum = $("#invoiceExpMaxRowNumber"+id).val();
 		 var maxRowNum = $("input[id^='creditDebitMaxRowNumber']").length; // $("#creditDebitMaxRowNumber"+id).val();
 		 var sum = 0;
 		  for(var i=0;i <= maxRowNum;i++){

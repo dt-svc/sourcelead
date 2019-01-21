@@ -28,7 +28,7 @@ $(document).ready(function(){
         <h2>Debit Notes</h2>
       </div>
       
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Debit Note List</div>
+      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Debit Note List</div>
     </section>
     
     
@@ -36,8 +36,8 @@ $(document).ready(function(){
     
     <div class="project_side_wrap_inn_tabs clearfix">
 	    <ul class="project-tabs-menu">
-		    <li class=""><a href="${appPath}/payablesList">Bill List</a></li>
-		    <li class="current"><a href="${appPath}/debitNoteList">Debit Note List</a></li>
+		    <li class=""><a href="/vms/payablesList">Bill List</a></li>
+		    <li class="current"><a href="/vms/debitNoteList">Debit Note List</a></li>
 		    
 	    </ul>
     </div>    
@@ -59,19 +59,10 @@ $(document).ready(function(){
       <ul class="pull-right list-unstyled list-inline">
       
             <li>
-				<a class="action newAdBtn mr5" href="<c:url value='${appPath}/addDebitNote'/>">+ Add</a>
+				<a class="action newAdBtn mr5" href="/vms/addDebitNote">+ Add</a>
 			</li>
 			
 				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openCreditNoteFilterPop();"></a></li>
-				
-				<!-- <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-					<div class="newActPop">
-						<span>
-						 	<a href="javascript:void(0)" onclick="exportToReceivablePdf();" title="PDF">Export PDF</a>
-							<a href="javascript:void(0)" onclick="exportToReceivableExcel();" title="Excel">Export Excel</a>
-						</span>
-					</div>
-				</li> -->
 		    
 		  <li class=""><input type="text" class="repSearchBar" placeholder='Id/Reference Number/Company Name/Total' title= "Id/Reference Number/Company Name/Total" id='creditDebitDataTableSearch'/><span class="repSearchIcon" onClick="getDebitList();"></span></li>
         </ul>
@@ -182,11 +173,11 @@ function getDebitList(){
 		tags.push($(this).val());
      });
 	
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var searchValue = $("#creditDebitDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	if(returnStat){
-		var url = sourceleadUrl+"/getCreDitNotesList?&creditDebitNoteStatus="+creditDebitNoteStatus+"&dayWiseType="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&noteType=Debit&searchValue="+searchValue+"&orglocationId="+orglocationId+"&tags="+tags+"&status="+status;
+		var url = vmsUrl+"/getCreDitNotesList?&creditDebitNoteStatus="+creditDebitNoteStatus+"&dayWiseType="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&noteType=Debit&searchValue="+searchValue+"&orglocationId="+orglocationId+"&tags="+tags+"&status="+status;
 		prepareDebitNoteList(url,locationdateForList);
 		closeInvoiceFilterPop();
 	}
@@ -310,7 +301,6 @@ function creditNotePagination(url){
             	  result = result +'         <td>   ';
             	 if(report.generatedId != null && report.generatedId != '' && report.generatedId != 'undefined'){
             		 
-				    //result = result +'<div class="tbldata-dotdot-vsm" title="'+report.referenceNumber+'">'+report.referenceNumber+'</div>';
 					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/app/viewCreditDebitNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Debit"/>" title="'+report.generatedId+'">'+report.generatedId+'</a></div>';				
 
   				     
@@ -343,7 +333,6 @@ function creditNotePagination(url){
             	  result = result +'         <td>   ';
             	 if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
             		 
-  				      //result = result +'<div class="tbldata-dotdot-vsm" title="'+report.clientName+'"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'">'+report.clientName+'</a></div>';
   				     
 				      result = result +'<div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
   				     
@@ -493,17 +482,18 @@ function acceptCreditDebitNote(creditDebitUUID){
 }
 
 function acceptCreditDebitNoteSave(creditDebitUUID){
-	 $.ajax({
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}'; 
+	$.ajax({
    	 type: "POST",
 	     dataType : 'json',
-	    	 url: sourceleadUrl+"/acceptCreditDebitNote?"+tokenParamName+"="+tokenValue+"&creditDebitUUID="+creditDebitUUID, 
+	    	 url: vmsUrl+"/acceptCreditDebitNote?"+tokenParamName+"="+tokenValue+"&creditDebitUUID="+creditDebitUUID, 
             success: function(result) {
            	 if (result && result.response === "INVALID_DATA") {
 	          		    showError(result.responseMessage);
 	          		} else if (result.response === "AWKWARD") {
 	          		    location.href = "/errorPage";
 	          		} else if (result.response === "SUCCESS") {
-	          			location.replace(sourceleadUrl+"/debitNoteList");
+	          			location.replace(vmsUrl+"/debitNoteList");
 	          		} else if (result.indexOf('Sign In') !== -1) {
 	          			location.replace(sourceleadUrl);
 	          		} else {
@@ -533,6 +523,7 @@ function rejectCreditDebitNote(creditDebitUUID){
 
 
 function saveReasonCreditDebitNote(creditDebitUUID){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var reason = document.getElementById("reasonForReject").value;
 	if(reason == null || reason == '' || reason == 'undefined'){
 	      
@@ -543,7 +534,7 @@ function saveReasonCreditDebitNote(creditDebitUUID){
 		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
 		$.ajax({
 		   	type: "POST",
-		   	url: sourceleadUrl+"/rejectCreditDebitNote?"+tokenParamName+"="+tokenValue+"&creditDebitUUID="+creditDebitUUID+"&reason="+reason,	    	   
+		   	url: vmsUrl+"/rejectCreditDebitNote?"+tokenParamName+"="+tokenValue+"&creditDebitUUID="+creditDebitUUID+"&reason="+reason,	    	   
 		    success: function(result) {
 		    	if (result && result.response === "INVALID_DATA") {
           		    showError(result.responseMessage);
@@ -552,7 +543,7 @@ function saveReasonCreditDebitNote(creditDebitUUID){
           		} else if (result.response === "SUCCESS") {
           			$("#popUp").empty();
    	 			    $(".project_inn_mask").fadeOut(200);
-   		    	    location.replace(sourceleadUrl+"/debitNoteList");
+   		    	    location.replace(vmsUrl+"/debitNoteList");
           		} else if (result.indexOf('Sign In') !== -1) {
           			location.replace(sourceleadUrl);
           		} else {
@@ -647,13 +638,6 @@ function cancelbtn(){
 <script>
 function removeMask(){
 	 $("#customeAmount").removeAttr("readonly");
-	/*  $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
-	        $(this).val($(this).val().replace(/[^0-9\.]/g,''));
-	            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
-	                event.preventDefault();
-	            }
-	        }); */
-	        
 	 $("#customeAmount").keydown(function (e) {
 	        // Allow: backspace, delete, tab, escape, enter and .
 	        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
@@ -792,13 +776,14 @@ function deleteCreditDebitNote(creditDebitUUID){
 }
 
 function deleteCreditDebitNoteMethod(creditDebitUUID){
-			 $.ajax({
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';		 
+	$.ajax({
 				   	type: "POST",
-				    url: sourceleadUrl+"/deleteCreditDebitNote?"+tokenParamName+"="+tokenValue+"&noteType=Debit&creditDebitUUID="+creditDebitUUID,
+				    url: vmsUrl+"/deleteCreditDebitNote?"+tokenParamName+"="+tokenValue+"&noteType=Debit&creditDebitUUID="+creditDebitUUID,
 		   		    success: function(data) {
 		   		    	$("#popUp").empty();
 		   			 	$(".project_inn_mask").fadeOut(200);
-		   			 	location.replace(sourceleadUrl+"/debitNoteList");	
+		   			 	location.replace(vmsUrl+"/debitNoteList");	
 		   		    }
 			     });
 }
@@ -819,13 +804,14 @@ function reactiveCreditDebitNote(creditDebitUUID){
 }
 
 function reactiveCreditDebitMethod(creditDebitUUID){
-	 $.ajax({
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}'; 
+	$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/reactiveCreditDebitNote?"+tokenParamName+"="+tokenValue+"&noteType=Debit&creditDebitUUID="+creditDebitUUID,
+		    url: vmsUrl+"/reactiveCreditDebitNote?"+tokenParamName+"="+tokenValue+"&noteType=Debit&creditDebitUUID="+creditDebitUUID,
   		    success: function(data) {
   		    	$("#popUp").empty();
   			 	$(".project_inn_mask").fadeOut(200);
-  			 	location.replace(sourceleadUrl+"/debitNoteList");	
+  			 	location.replace(vmsUrl+"/debitNoteList");	
   		    }
 	     });
 }
@@ -839,9 +825,10 @@ function cancelTermination(){
 
 <script type="text/javascript">
 function cancel(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
-	location.replace(sourceleadUrl+"/creditNoteList");	
+	location.replace(vmsUrl+"/creditNoteList");	
 }
 </script>
 
@@ -913,10 +900,6 @@ function resetInvoiceFilter(){
                                     <li class="checkBox positionRelative" ><input type="checkbox" value="Send" name="creditNoteFilterStatus"><label for="onboard2">Send</label></li>
                                     <li class="checkBox positionRelative" ><input type="checkbox" value="Received" name="creditNoteFilterStatus"><label for="onboard1">Received</label></li>
 	                               	<li class="checkBox positionRelative" ><input type="checkbox" value="Rejected" name="creditNoteFilterStatus"><label>Rejected</label></li>
-	                               <!--  <li class="checkBox positionRelative" ><input type="checkbox"  value="ACCEPTED" name="creditNoteFilterStatus"><label for="onboard2">Accepted</label></li>
-	                                <li class="checkBox positionRelative" ><input type="checkbox" value="REJECTED" name="creditNoteFilterStatus"><label for="onboard2">Rejected</label></li>
-	                                <li class="checkBox positionRelative" ><input type="checkbox" value="LINKED" name="creditNoteFilterStatus"><label for="onboard2">Linked</label></li>
-	                                <li class="checkBox positionRelative" ><input type="checkbox" value="VOID" name="creditNoteFilterStatus"><label for="onboard2">Void</label></li> -->
 			                        </ul>
 							      </div>
 						     </div> 

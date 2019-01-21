@@ -6,6 +6,8 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script type="text/javascript">
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+
 $(document).ready(function(){
 	getCreditList();
 });
@@ -28,7 +30,7 @@ $(document).ready(function(){
         <h2>Credit Notes</h2>
       </div>
       
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Credit Note List</div>
+      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Credit Note List</div>
     </section>
     
     
@@ -36,8 +38,8 @@ $(document).ready(function(){
     
     <div class="project_side_wrap_inn_tabs clearfix">
 	    <ul class="project-tabs-menu">
-		    <li class=""><a href="${appPath}/invoiceList">Invoice List</a></li>
-		    <li class="current"><a href="${appPath}/creditNoteList">Credit Note List</a></li>
+		    <li class=""><a href="/vms/invoiceList">Invoice List</a></li>
+		    <li class="current"><a href="/vms/creditNoteList">Credit Note List</a></li>
 		    
 	    </ul>
     </div>    
@@ -59,19 +61,11 @@ $(document).ready(function(){
       <ul class="pull-right list-unstyled list-inline">
       
             <li>
-				<a class="action newAdBtn mr5" href="<c:url value='${appPath}/addCreditNote'/>">+ Add</a>
+				<a class="action newAdBtn mr5" href="/vms/addCreditNote">+ Add</a>
 			</li>
 			
 				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openCreditNoteFilterPop();"></a></li>
 				
-				<!-- <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-					<div class="newActPop">
-						<span>
-						 	<a href="javascript:void(0)" onclick="exportToReceivablePdf();" title="PDF">Export PDF</a>
-							<a href="javascript:void(0)" onclick="exportToReceivableExcel();" title="Excel">Export Excel</a>
-						</span>
-					</div>
-				</li> -->
 		    
 		  <li class=""><input type="text" class="repSearchBar" placeholder='Id/Reference Number/Company Name/Total' title= "Id/Reference Number/Company Name/Total" id='creditDebitDataTableSearch'/><span class="repSearchIcon" onClick="getCreditList();"></span></li>
         </ul>
@@ -214,7 +208,7 @@ function getCreditList(){
 	var searchValue = $("#creditDebitDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	if(returnStat){
-		var url = sourceleadUrl+"/getCreDitNotesList?&creditDebitNoteStatus="+creditDebitNoteStatus+"&dayWiseType="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&noteType=Credit&searchValue="+searchValue+"&orglocationId="+orglocationId+"&tags="+tags+"&status="+status;
+		var url = vmsUrl+"/getCreDitNotesList?&creditDebitNoteStatus="+creditDebitNoteStatus+"&dayWiseType="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&noteType=Credit&searchValue="+searchValue+"&orglocationId="+orglocationId+"&tags="+tags+"&status="+status;
 		prepareCreditNoteList(url,locationdateForList);
 		closeInvoiceFilterPop();
 	}
@@ -372,7 +366,7 @@ function creditNotePagination(url){
             	  result = result +'         <td>   ';
             	 if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
             		 
-  				      //result = result +'<div class="tbldata-dotdot-vsm" title="'+report.clientName+'"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'">'+report.clientName+'</a></div>';
+  				      //result = result +'<div class="tbldata-dotdot-vsm" title="'+report.clientName+'"><a href="'+vmsUrl+'/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'">'+report.clientName+'</a></div>';
   				     
 				      result = result +'<div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
   				     
@@ -526,16 +520,16 @@ function acceptCreditDebitNoteSave(creditDebitUUID){
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
-	    	 url: sourceleadUrl+"/acceptCreditDebitNote?"+tokenParamName+"="+tokenValue+"&creditDebitUUID="+creditDebitUUID+"&noteType=Credit",
+	    	 url: vmsUrl+"/acceptCreditDebitNote?"+tokenParamName+"="+tokenValue+"&creditDebitUUID="+creditDebitUUID+"&noteType=Credit",
              success: function(result) {
             	 if (result && result.response === "INVALID_DATA") {
 	          		    showError(result.responseMessage);
 	          		} else if (result.response === "AWKWARD") {
 	          		    location.href = "/errorPage";
 	          		} else if (result.response === "SUCCESS") {
-	          			location.replace(sourceleadUrl+"/creditNoteList");
+	          			location.replace(vmsUrl+"/creditNoteList");
 	          		} else if (result.indexOf('Sign In') !== -1) {
-	          			location.replace(sourceleadUrl);
+	          			location.replace(vmsUrl);
 	          		} else {
 	          		    showError("Operation failed, please try again");
 	          		}
@@ -573,7 +567,7 @@ function saveReasonCreditDebitNote(creditDebitUUID){
 		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
 		$.ajax({
 		   	type: "POST",
-		   	url: sourceleadUrl+"/rejectCreditDebitNote?"+tokenParamName+"="+tokenValue+"&creditDebitUUID="+creditDebitUUID+"&reason="+reason,	    	   
+		   	url: vmsUrl+"/rejectCreditDebitNote?"+tokenParamName+"="+tokenValue+"&creditDebitUUID="+creditDebitUUID+"&reason="+reason,	    	   
 		    success: function(result) {
 		    	if (result && result.response === "INVALID_DATA") {
           		    showError(result.responseMessage);
@@ -582,9 +576,9 @@ function saveReasonCreditDebitNote(creditDebitUUID){
           		} else if (result.response === "SUCCESS") {
           			$("#popUp").empty();
    	 			    $(".project_inn_mask").fadeOut(200);
-   		    	    location.replace(sourceleadUrl+"/creditNoteList");
+   		    	    location.replace(vmsUrl+"/creditNoteList");
           		} else if (result.indexOf('Sign In') !== -1) {
-          			location.replace(sourceleadUrl);
+          			location.replace(vmsUrl);
           		} else {
           		    showError("Operation failed, please try again");
           		}
@@ -795,11 +789,11 @@ function deleteCreditDebitNote(creditDebitUUID){
 function deleteCreditDebitMethod(creditDebitUUID){
 			 $.ajax({
 				   	type: "POST",
-				    url: sourceleadUrl+"/deleteCreditDebitNote?"+tokenParamName+"="+tokenValue+"&noteType=Credit&creditDebitUUID="+creditDebitUUID,
+				    url: vmsUrl+"/deleteCreditDebitNote?"+tokenParamName+"="+tokenValue+"&noteType=Credit&creditDebitUUID="+creditDebitUUID,
 		   		    success: function(data) {
 		   		    	$("#popUp").empty();
 		   			 	$(".project_inn_mask").fadeOut(200);
-		   			 	location.replace(sourceleadUrl+"/creditNoteList");	
+		   			 	location.replace(vmsUrl+"/creditNoteList");	
 		   		    }
 			     });
 		}
@@ -822,11 +816,11 @@ function reactiveCreditDebitNote(creditDebitUUID){
 function reactiveCreditDebitMethod(creditDebitUUID){
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/reactiveCreditDebitNote?"+tokenParamName+"="+tokenValue+"&noteType=Credit&creditDebitUUID="+creditDebitUUID,
+		    url: vmsUrl+"/reactiveCreditDebitNote?"+tokenParamName+"="+tokenValue+"&noteType=Credit&creditDebitUUID="+creditDebitUUID,
   		    success: function(data) {
   		    	$("#popUp").empty();
   			 	$(".project_inn_mask").fadeOut(200);
-  			 	location.replace(sourceleadUrl+"/creditNoteList");	
+  			 	location.replace(vmsUrl+"/creditNoteList");	
   		    }
 	     });
 }
@@ -843,7 +837,7 @@ function cancelTermination(){
 function cancel(){
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
-	location.replace(sourceleadUrl+"/creditNoteList");	
+	location.replace(vmsUrl+"/creditNoteList");	
 }
 </script>
 

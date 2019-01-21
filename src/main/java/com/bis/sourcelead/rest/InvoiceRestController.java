@@ -1575,7 +1575,6 @@ return responseList;
 				double roundValue = (Math.round(hourlyRate * 100.0) / 100.0);
 				contracts.setBillingAmount(String.valueOf(roundValue));
 			}
-//			resultJson = commonUtil.toJSON(contracts);
 			response.setObject(contracts);
 		}
 		return response;

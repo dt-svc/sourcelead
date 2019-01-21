@@ -27,6 +27,8 @@ margin-bottom: 0;
 
 
 <script type="text/javascript">
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+
 $(document).ready(function(){
 	var invoiceUUID = '${invoiceUUID}';
 	if(invoiceUUID != null && invoiceUUID != '' && invoiceUUID != 'undefined'){
@@ -64,7 +66,8 @@ function errRemoveClientContact(){
 			<h2>Client Invoice</h2>
 		</div>
 		<sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/invoiceList'/>">Invoice List</a> &raquo; Client Invoice</div>
+		<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+		<a href="/vms/invoiceList">Invoice List</a> &raquo; Client Invoice</div>
 	</sec:authorize>
 	<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
@@ -181,14 +184,6 @@ function errRemoveClientContact(){
 			              </div>
 			            </div>
 			            
-<!-- 						<div class="form-group"> -->
-<!-- 							<label class="col-md-3">Account Details</label> -->
-<!-- 							<div class="col-md-9"> -->
-<!-- 								<textarea class="form-control" rows="2" id="accountDetails" -->
-<!-- 									name="accountDetails" placeholder="Account Details"></textarea> -->
-<!-- 							</div> -->
-<!-- 						</div> -->
-
 					</div>
 				</div>
 
@@ -205,7 +200,7 @@ function errRemoveClientContact(){
 						<button type="button" id="sendButtonId" class="btn btn-sm btn-success ml"
 							onclick="saveInvoice('SENT')">Send</button>
 						<button type="button" class="btn btn-sm btn-default ml"
-							onClick="javascript:window.location.href = '<c:url value='${appPath}/invoiceList'/>'">Cancel</button>
+							onClick="javascript:window.location.href = '/vms/invoiceList'">Cancel</button>
 					</div>
 				</footer>
 			</div>
@@ -499,16 +494,8 @@ if(selectedTextInvoice =='percentage'){
 			return false; 
 	 	 }
 }if(selectedTextInvoice =='flat'){
-	/* var floatNum = /^[0-9]*$/
-		if(enteredValue.match(floatNum)){
-			  $("#saveButtonId").attr("disabled", "disabled");
-				$("#sendButtonId").attr("disabled", "disabled");
-			   return false;
-		  }
-		else{ */
 			$("#saveButtonId").removeAttr("disabled", "disabled");
 			  $("#sendButtonId").removeAttr("disabled", "disabled");
-// 		}
 	  }		
 	  
  
@@ -517,10 +504,11 @@ if(selectedTextInvoice =='percentage'){
 
 <script>
 	function loadInvoiceDetails(invoiceUUID){
-		 
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+		
 		 $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getInvoiceDetailsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
+		    	 url: vmsUrl+"/getInvoiceDetailsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
 		         success: function(data) {
 		        	 var json = JSON.parse(data);
 		        	 var result = '';
@@ -536,8 +524,6 @@ if(selectedTextInvoice =='percentage'){
 		           	 $('#clientOrgRelationId').trigger("chosen:updated"); 
 		           	 $('#clientCurrency').val(json['clientCurrency']);
 		           
-		           	/* getClientContacts(json['vendorContactId']); */
-		           	//var clientContact = json['contactUsers'];
 		           	getClientContacts(json['contactUsers']);
 		           	$("#invoiceId").val(json['invoiceId']);
 		           	
@@ -552,9 +538,6 @@ if(selectedTextInvoice =='percentage'){
 		           	if(json['billingAddress'] != null && json['billingAddress'] != '' && json['billingAddress'] != 'undefined'){
 		           		$("#billingAddress").val(json['billingAddress']);
 		           	}
-		           	/* if(json['accountDetails'] != null && json['accountDetails'] != '' && json['accountDetails'] != 'undefined'){
-		           		$("#accountDetails").val(json['accountDetails']);
-		           	} */
 		           	buildLineItemAndTaxAddRows();
 		           	
 		           	editInvoice(json['invoiceLineItemsList']);
@@ -649,11 +632,11 @@ if(selectedTextInvoice =='percentage'){
 	
 	
 	function deleteInvoiceDocument(documentId){
-		
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		if(documentId){
 			$.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/deleteInvoiceDocumentBydocumentId?"+tokenParamName+"="+tokenValue+"&documentId="+documentId, 
+		    	 url: vmsUrl+"/deleteInvoiceDocumentBydocumentId?"+tokenParamName+"="+tokenValue+"&documentId="+documentId, 
 		         success: function(data) {
 		        	 document.getElementById("invoiceDocument"+documentId).remove();
 		        	 $("#lineItemPopUp").empty();
@@ -995,6 +978,7 @@ function cancelPopup(){
 <script>
 
   function getAllAssociates(){
+	  var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	  var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 	  var orgRelationId = $("#clientOrgRelationId").val();
 	  var invoiceCreateType = $("#clientOrgRelationId").find(':selected').attr("data-Invoice");
@@ -1018,7 +1002,7 @@ function cancelPopup(){
 	  $('.action-pop').slideUp();
 	   $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getInvoiceCandidatesListForJobClosure?"+tokenParamName+"="+tokenValue+"&selectedAssociates="+selectedAssociates+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
+	        url: vmsUrl+"/getInvoiceCandidatesListForJobClosure?"+tokenParamName+"="+tokenValue+"&selectedAssociates="+selectedAssociates+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
 	        success: function(json) {
 	        	
 	        	var result = '';
@@ -1159,12 +1143,11 @@ function pagination(){
 <script type="text/javascript">
  function validateInvoiceId() {
 	 var invoiceId = document.getElementById("invoiceId").value; 
-	
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 if(invoiceId != null && invoiceId != ""){
-         //$("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId+"&invoiceType=Receivable", 
+		        url: vmsUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId+"&invoiceType=Receivable", 
 		        success: function(data) {
 		        	 if(data == true){
 		        		  $('#invoiceIdDiv').find('p.jquery_form_error_message').remove();
@@ -1192,15 +1175,15 @@ function pagination(){
 <!-- Get contract sow between client and the associate -->
   <script>
   function getSow(candidateId,id,contractId){
+	  var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	  var orgRelationId = $("#clientOrgRelationId").val();
 			  $.ajax({
 			    	type: "GET",
-			        url: sourceleadUrl+"/getSowcontractListByAssociateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
+			        url: vmsUrl+"/getSowcontractListByAssociateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
 			        success: function(json) {
 			        	var result = "";
 			        	result = result + "<option value='' >select sow</option>"
 			        	if(json.data != null && json.data != ''){
-// 			        		var json = JSON.parse(data);
 				        	 for (var i=0; i<json.data.length; i++)
 							{
 					        		var opt = json.data[i];
@@ -1235,10 +1218,11 @@ function pagination(){
 	   var orgRelationId = $("#clientOrgRelationId").val();
 	   var currencyCode = '${SourceLeadWeb_currencyCode}';
 	   var grandTotal = $("#grandTotal").val();
+	   var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	   if(grandTotal != '' && grandTotal != 'undefined'){
 		   $.ajax({
 				type : "GET",
-				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
+				url: vmsUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
 				success :function(response) {
 					if(response.object !='' && response != 'undefined' && response != null){
 // 						var json = JSON.parse(data);
@@ -1622,7 +1606,7 @@ function getSowRate(id){
 	if(contractId !='' && contractId != 'undefined' && contractId != null){
 	$.ajax({
     	type: "GET",
-    	url: sourceleadUrl+"/getSowRateByContractId?"+tokenParamName+"="+tokenValue+"&contractId="+contractId,
+    	url: vmsUrl+"/getSowRateByContractId?"+tokenParamName+"="+tokenValue+"&contractId="+contractId,
         success: function(json) {
         	 if(json.object != null && json.object != ''){
 //         		var json = JSON.parse(data);
@@ -1752,7 +1736,7 @@ function getClientContacts(clientContactId){
 	$("#clientContact").empty();
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
+		url: vmsUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 		success :function(json) {
 			var output = "";
 			for (var i=0; i<json.data.length; i++)
@@ -1786,7 +1770,7 @@ function getPaymentTerms(){
 	var orgRelationId = $("#clientOrgRelationId").val();
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getPaymentTermsAndBillindAddress?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
+		url: vmsUrl+"/getPaymentTermsAndBillindAddress?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 		success :function(data) {
 			 var json = JSON.parse(data);
 			 for (var i=0; i<json.length; i++)
@@ -1822,7 +1806,7 @@ function getDueDateByFrequency(){
 	    
 	    $.ajax({
 			type : "GET",
-			url: sourceleadUrl+"/getDueDateByFrequency?"+tokenParamName+"="+tokenValue+"&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate+"&locationCode="+locationCode,
+			url: vmsUrl+"/getDueDateByFrequency?"+tokenParamName+"="+tokenValue+"&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate+"&locationCode="+locationCode,
 			success :function(dueDateStr) {
 				
 				$("#dueDate").val(dueDateStr);
@@ -1870,7 +1854,7 @@ function saveInvoice(saveType){
 		        }else{
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		        	  $.ajax({
-		        		  url: sourceleadUrl+"/saveInvoiceForJobClosure?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable"+"&isJobClosure=Y",
+		        		  url: vmsUrl+"/saveInvoiceForJobClosure?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable"+"&isJobClosure=Y",
 		        		  type: "POST",
 		        		  data: formData,
 		        		  processData: false,
@@ -1882,7 +1866,7 @@ function saveInvoice(saveType){
 		          		    location.href = "/errorPage";
 		          		} else if (result.response === "SUCCESS") {
 			  					$("#invoiceLoading").removeAttr("style");
-	    		     			location.replace(sourceleadUrl+"/invoiceList");
+	    		     			location.replace(vmsUrl+"/invoiceList");
 	    		     			$("#selector1").removeAttr("style");
 					    		$("#selector1").css({ display: "block" });
 				    		if(saveType == 'SENT'){
@@ -1892,7 +1876,7 @@ function saveInvoice(saveType){
 				    		}
     		     			msgFadein();
 		          		} else if (result.indexOf('Sign In') !== -1) {
-		          			location.replace(sourceleadUrl);
+		          			location.replace(vmsUrl);
 		          		} else {
 		          		    showError("Operation failed, please try again");
 		          		}
@@ -1948,24 +1932,9 @@ function maskme(){
     	         if (charCode > 31 && (charCode < 48 || charCode > 57))
     	            return false;
     	         return true;
-    	
-    	
-//     $(this).val($(this).val().replace(/[^0-9\.]/g,''));
-//         if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
-//             event.preventDefault();
-//         }
     });
 }
 </script>
-
-<!-- <script>
-$(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
-$(this).val($(this).val().replace(/[^0-9\.]/g,''));
-    if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
-        event.preventDefault();
-    }
-});
-</script> -->
 <script type="text/javascript">
 function cancel(){
 	$("#popUp").empty();
@@ -1996,12 +1965,13 @@ function createInvoiceEmptyClientContact(){
     $('#clientContact').trigger("chosen:updated");
 }
 function getInvoiceTemplateList() {
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgRelationId = $("#clientOrgRelationId").val();
 	var responderLocationId = $("#clientOrgRelationId :selected").data("responder_location_id");
 	$("#invoiceTemplateId").empty("");
 	$.ajax({
 		type : "POST",
-		url: sourceleadUrl+"/invoiceTemplateList?orgRelationId=" + orgRelationId + "&orgLocationId=" + responderLocationId,
+		url: vmsUrl+"/invoiceTemplateList?orgRelationId=" + orgRelationId + "&orgLocationId=" + responderLocationId,
 		success : function(data) {
 			$("#invoiceTemplateId").append("<option value='0'>-- Select Invoice Template --</option>");
 			$("#invoiceTemplateId").append("<option value='-1' selected>Default Template</option>");
@@ -2017,7 +1987,7 @@ function getInvoiceTemplateList() {
  <script>
 	 function selectedClient(){
 		 var cid = $("#clientOrgRelationId").val();
-		 window.open(sourceleadUrl+"/addClientContact?cid="+cid,'_blank');
+		 window.open(vmsUrl+"/addClientContact?cid="+cid,'_blank');
 	 }
 </script>
 <!-- <script>

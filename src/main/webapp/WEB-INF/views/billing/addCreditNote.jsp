@@ -10,13 +10,18 @@
 <c:set var="rowIndex" value="0" scope="page" /><!-- used for dynamic row index  rowindex starts from 0-->
 <div class="wraper"> 
   
+ <script>
+ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+ </script>
+ 
   <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Add Credit Note</h2>
       </div>
-       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/creditNoteList'/>">Credit Note List</a> &raquo; Credit Note</div>
+       <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+       <a href="/vms/creditNoteList">Credit Note List</a> &raquo; Credit Note</div>
 
     </section>
     <div class="content-area content-new clearfix">
@@ -329,7 +334,7 @@
           <input value="Draft" id="draftButtonId" onClick="saveCreditNote('Draft');" class="btn btn-warning" type="button">
             <input value="Send" id="sendButtonId" onClick="saveCreditNote('Send');" class="btn btn-success mr ml" type="button">
             <input value="Submit" id = "submitButtonId" onClick="saveCreditNote('Submit');" class="btn btn-primary" type="button">
-            <input value="Cancel" class="btn btn-default ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/creditNoteList'/>'" type="button">
+            <input value="Cancel" class="btn btn-default ml" onClick="javascript:window.location.href = '/vms/creditNoteList'" type="button">
           </div>
         </div>
       </div>
@@ -355,7 +360,7 @@ function saveCreditNote(saveType){
 	 	   
 	        	  $("#creditDebitLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	  $.ajax({
-	                  url: sourceleadUrl+"/saveCreditDebitNote?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&noteType=Credit",
+	                  url: vmsUrl+"/saveCreditDebitNote?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&noteType=Credit",
 	                  type: "POST",
 	                  data: formData,
 	                  processData: false,
@@ -367,7 +372,7 @@ function saveCreditNote(saveType){
 	          		    location.href = "/errorPage";
 	          		} else if (result.response === "SUCCESS") {
 		  					$("#creditDebitLoading").removeAttr("style");
-    		     			location.replace(sourceleadUrl+"/creditNoteList");
+    		     			location.replace(vmsUrl+"/creditNoteList");
     		     			$("#selector1").removeAttr("style");
 				    		$("#selector1").css({ display: "block" });
 			    		if(saveType == 'SENT'){
@@ -377,7 +382,7 @@ function saveCreditNote(saveType){
 			    		}
 		     			msgFadein();
 	          		} else if (result.indexOf('Sign In') !== -1) {
-	          			location.replace(sourceleadUrl);
+	          			location.replace(vmsUrl);
 	          		} else {
 	          		    showError("Operation failed, please try again");
 	          		}
@@ -496,7 +501,7 @@ function removeDynamicRowDiv(id,lineItemId){
 		$("#spocUser").empty();
 		$.ajax({
 					type : "GET",
-					url : sourceleadUrl + "/getClientContactsByOrgRelationId?"+ tokenParamName + "=" + tokenValue + "&orgRelationId=" + orgRelationId,
+					url : vmsUrl + "/getClientContactsByOrgRelationId?"+ tokenParamName + "=" + tokenValue + "&orgRelationId=" + orgRelationId,
 					success : function(json) {
 						var output = "";
 						if(json.data !=null){
@@ -526,11 +531,8 @@ function removeDynamicRowDiv(id,lineItemId){
 	function deleteLinteItemEditMode(id) {
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/deleteLineItemEditModeId?"+ tokenParamName + "=" + tokenValue + "&id=" + id,
+			url : vmsUrl + "/deleteLineItemEditModeId?"+ tokenParamName + "=" + tokenValue + "&id=" + id,
 			success: function(data) {
-   		    	/* $("#popUp").empty();
-   			 	$(".project_inn_mask").fadeOut(200);
-   			 	location.replace(sourceleadUrl+"/creditNoteList");	 */
    		    },
 		});
 	}
@@ -567,7 +569,7 @@ function removeDynamicRowDiv(id,lineItemId){
 		$("#invoceId").empty();
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/getInvoiceListForCreditDebitNote?"+ tokenParamName + "=" + tokenValue + "&orgRelationId="+ orgRelationId + "&invoiceType=Receivable",
+			url : vmsUrl + "/getInvoiceListForCreditDebitNote?"+ tokenParamName + "=" + tokenValue + "&orgRelationId="+ orgRelationId + "&invoiceType=Receivable",
 			success : function(json) {
 				var output = "";
 				if(json.data !=null){
@@ -596,7 +598,7 @@ function removeDynamicRowDiv(id,lineItemId){
 		$("#approvers").empty();
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/getApproversListForCreditDebitNote?",
+			url : vmsUrl + "/getApproversListForCreditDebitNote?",
 			success : function(json) {
 				var output = "";
 				for (var i = 0; i < json.data.length; i++) {
@@ -655,9 +657,6 @@ function datePickerFunction(id){
 	     $('#rowTotal'+rowId).empty().val(totlalAmount.toFixed(2));
 	     $('#rowTotalAmount'+rowId).empty().val(totlalAmount.toFixed(2));
 	     calculateSumSubTotal(rowId);
-	     /* var vvv = $("#rowTotalAmount"+rowId).val();
-		 $("#subTotal").empty().text(vvv); */
-	     //calculateSum();
 }
   
   function taxCalculatedAmount(rowId){
@@ -786,7 +785,7 @@ function  conversionRate(){
 	   if(grandTotal != '' && grandTotal != 'undefined'){
 		   $.ajax({
 				type : "GET",
-				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
+				url: vmsUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
 				success :function(response) {
 					if(response.object !='' && response.object != 'undefined' && response.object != null){
 //						var json = JSON.parse(data);

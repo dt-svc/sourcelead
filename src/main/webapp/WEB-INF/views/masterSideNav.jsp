@@ -153,15 +153,15 @@
 						   
 						   <c:if test="${sessionData.nav == 'Receivable' || sessionData.nav == 'Payables'}">
                               <ul class="collapses" style="display: none">
-                                  <li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/invoiceList'/>" title="Invoices"><i class="fa fa-chevron-right"></i> Invoices</a></li>
-                                  <li class="${sessionData.nav == 'Payables' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/payablesList'/>" title="Bills"><i class="fa fa-chevron-right"></i> Bills</a></li>
+                                  <li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="/vms/invoiceList" title="Invoices"><i class="fa fa-chevron-right"></i> Invoices</a></li>
+                                  <li class="${sessionData.nav == 'Payables' ? 'treview-active' : ''}"><a href="/vms/payablesList" title="Bills"><i class="fa fa-chevron-right"></i> Bills</a></li>
                               </ul>
                            </c:if>
                               
                            <c:if test="${sessionData.nav != 'Receivable' || sessionData.nav != 'Payables'}">
                            <ul class="collapses" style="display: none">
-                               <li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/invoiceList'/>" title="Invoices"><i class="fa fa-chevron-right"></i> Invoices</a></li>
-                               <li class="${sessionData.nav == 'Payables' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/payablesList'/>" title="Bills"><i class="fa fa-chevron-right"></i> Bills</a></li>
+                               <li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="/vms/invoiceList" title="Invoices"><i class="fa fa-chevron-right"></i> Invoices</a></li>
+                               <li class="${sessionData.nav == 'Payables' ? 'treview-active' : ''}"><a href="/vms/payablesList" title="Bills"><i class="fa fa-chevron-right"></i> Bills</a></li>
                            </ul>
                            </c:if>
                               
@@ -170,11 +170,11 @@
 	                 
 	                 
 	                  <c:if test="${SourceLeadWeb_billingTabsCount < 2 && userTabs.tabName == 'Receivable'}">
-	                   <li class="${sessionData.nav == 'Receivable' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/invoiceList'/>" title="Invoices"><span class="navIcons invoIcon"></span><b>Invoices</b></a></li>
+	                   <li class="${sessionData.nav == 'Receivable' ? 'navActive' : ''}"><a href="/vms/invoiceList" title="Invoices"><span class="navIcons invoIcon"></span><b>Invoices</b></a></li>
 	                 </c:if>
 	                 
 	                 <c:if test="${SourceLeadWeb_billingTabsCount < 2 && userTabs.tabName == 'Payables'}">
-	                 <li class="${sessionData.nav == 'Payables' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/payablesList'/>" title="Bills"><span class="navIcons billIcon"></span><b>Bills</b></a></li>
+	                 <li class="${sessionData.nav == 'Payables' ? 'navActive' : ''}"><a href="/vms/payablesList" title="Bills"><span class="navIcons billIcon"></span><b>Bills</b></a></li>
 	                 </c:if>
 	                 
 	                 

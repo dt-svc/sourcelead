@@ -59,7 +59,8 @@ function checkBox(){
       <div class="pull-left">
         <h2>Create Bill</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/payablesList'/>">Bill List</a> &raquo; Create Bill</div>
+      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+      <a href="/vms/payablesList">Bill List</a> &raquo; Create Bill</div>
     <div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
        </div>
@@ -157,13 +158,6 @@ function checkBox(){
 	              </div>
 	            </div>
 	            
-            <!-- <div class="form-group">
-							<label class="col-md-3">Account Details</label>
-							<div class="col-md-9">
-								<textarea class="form-control" rows="2" id="accountDetails"
-									name="accountDetails" placeholder="Account Details"></textarea>
-							</div>
-			</div> -->
 			
 			<div class="clearfix mb"></div>
 			<div class="form-group">
@@ -295,7 +289,7 @@ function checkBox(){
               <div class="pull-right mr">
                   <button type="button" class="btn btn-sm btn-primary" id="saveButtonId" onclick="saveInvoice('DRAFT');">Save</button>
                   <button type="button" class="btn btn-sm btn-success ml" id="sendButtonId" onclick="saveInvoice('SENT')">Send</button>
-                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/payablesList'/>'">Cancel</button>
+                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '/vms/payablesList">Cancel</button>
               </div>
           </footer>
           </form:form>
@@ -312,17 +306,16 @@ function checkBox(){
 <!-- Diplays client contacts details when clien selected -->
 <script>
 function getProjectsList(projectName){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgRelationId = $("#vendorOrgRelationId").val();
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getClientProjectsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
+	url: vmsUrl+"/getClientProjectsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 	success :function(json) {
-	//var json = JSON.parse(data);
 	var output = "";
 	output = output + "<option value=''>--Select Project--</option>";
 	for (var i=0; i<json.data.length; i++){
 	var opt = json.data[i];
-	/* output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>"; */
 	var selected = "";
 	if(projectName != null && projectName != "" && projectName !="undefined" && projectName == opt.projectName){
 		selected = 'selected';
@@ -339,34 +332,6 @@ function getProjectsList(projectName){
 </script>
 
 
- <script> 
- /* function getProjectsList(projectName){
- 	var orgRelationId = $("#vendorOrgRelationId").val();
- 	$.ajax({
- 	type : "GET",
- 	url: sourceleadUrl+"/getAllProjectsByOrgRelationId?"+tokenParamName+"="+tokenValue+"",
- 	success :function(json) {
- // 	var json = JSON.parse(data);
- 	var output = "";
- 	output = output + "<option value=''>Select Project</option>";
- 	for (var i=0; i<json.data.length; i++)
-   {
- 	var opt = json.data[i];
- 	 output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>"; 
- 	var selected = "";
- 	if(projectName != null && projectName != "" && projectName !="undefined" && projectName == opt.projectName){
- 		selected = 'selected';
- 	}
- 	output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.projectName+"</option>";
- 	}
- 	$("#projectId").empty();
- 	$("#projectId").append(output);
- 	$('#projectId').trigger("chosen:updated");
- 	},
- 	});
-
- 	}*/
- </script>
 
 
 <!-- Get all assigned members for the project based on project id -->
@@ -376,12 +341,13 @@ function getProjectMemberByVendor(pid,projectMemberName){
 	var orgRelationId = $("#vendorOrgRelationId").val();
 	var userId = '${SourceLeadWeb_user.id}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	if(pid != null && pid!='undefined'){
 		projectId =pid;
 	}
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getVendorAssignedMembersForProjects?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&orgRelationId="+orgRelationId+"&userId="+userId+"&orgLocationId="+orgLocationId,
+	url: vmsUrl+"/getVendorAssignedMembersForProjects?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&orgRelationId="+orgRelationId+"&userId="+userId+"&orgLocationId="+orgLocationId,
 	success :function(json) {
 		var output = "";
 		output = output + "<option value=''>--Select Associate--</option>";
@@ -465,14 +431,14 @@ function cancelPayableAlert(){
   function  conversion(){
 	   var orgRelationId = $("#vendorOrgRelationId").val();
 	   var currencyCode = '${SourceLeadWeb_currencyCode}';
+	   var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	   var grandTotal = $("#grandTotal").val();
 	   if(grandTotal != '' && grandTotal != 'undefined'){
 		   $.ajax({
 				type : "GET",
-				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
+				url: vmsUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
 				success :function(response) {
 					if(response.object !='' && response.object != 'undefined' && response.object != null){
-// 						var json = JSON.parse(data);
 						$("#exchangeRate").html(response.object.exchangeRate);
 						$("#exchangeCurrency").html(response.object.exchangeCurrency);
 						$("#vendorCurrencyCode").html(response.object.vendorCurrencyCode);
@@ -583,30 +549,6 @@ function calculateDisCount(){
 	}
 	 calculateTaxDiscount();
 	 conversion();
-	/* var discountValue = $("#discountValue").val();
-	if(discountValue !='' && discountValue !='undefined' ){
-		var subTotal = $("#subTotal").val();
-		var disCountType = $("#disCount").val();
-					 	 if(disCountType == "flat"){
-					 		 var total = subTotal-discountValue;
-					 		 $("#discountTotal").val(discountValue); 
-					 		$("#grandTotal").val(total);
-					 		$("#conversionFrom").val(total);
-					 		$("#afterDiscountTotal").val(total.toFixed(2));
-					 		
-					 	  }
-					 	  if(disCountType == "percentage"){
-					 		var perCentValue = (subTotal * discountValue)/100;
-					 		 var total = subTotal - perCentValue;
-					 		 $("#discountTotal").val(perCentValue);
-					 		$("#grandTotal").val(total);
-					 		$("#conversionFrom").val(total);
-					 		$("#afterDiscountTotal").val(total.toFixed(2));
-					 	 }
-
-					 	 calculateTaxDiscount();
-					 	conversion();
-} */
 }
 </script>
 
@@ -827,12 +769,11 @@ function calculateTaxDiscount(){
 <script type="text/javascript">
  function validateBillId() {
 	 var invoiceId = document.getElementById("invoiceId").value; 
-	
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 if(invoiceId != null && invoiceId != ""){
-         //$("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId+"&invoiceType=payables", 
+		        url: vmsUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId+"&invoiceType=payables", 
 		        success: function(data) {
 		        	 if(data == true){
 		        		 $("#saveButtonId").attr("disabled", "disabled");
@@ -859,7 +800,7 @@ function calculateTaxDiscount(){
 
 <script>
 function saveInvoice(saveType){
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var userId = '${SourceLeadWeb_user.id}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
@@ -879,22 +820,20 @@ function saveInvoice(saveType){
 	     		$(".project_inn_mask").fadeIn(200);
 		        }else{
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-// 		          	  $.post(sourceleadUrl+"/saveExpensesInvoice?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=payable&type=expenses", formData, function(data) {
 		        	  $.ajax({
-		        		  url: sourceleadUrl+"/saveExpensesInvoice?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=payable&type=expenses",
+		        		  url: vmsUrl+"/saveExpensesInvoice?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=payable&type=expenses",
 		        		  type: "POST",
 		        		  data: formData,
 		        		  processData: false,
 		        		  contentType: false,
 		        		  success: function (result) {
 				  					$("#invoiceLoading").removeAttr("style");
-		    		     			location.replace(sourceleadUrl+"/payablesList");
+		    		     			location.replace(vmsUrl+"/payablesList");
 		    		     			$("#selector1").removeAttr("style");
 						    		$("#selector1").css({ display: "block" });
 						    	    $("#msgDiv").html("Successfully you have created a Invoice..");
 		    		     			msgFadein();
 		        		  }
-// 		        	  $.post(sourceleadUrl+"/saveExpensesInvoice?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=Receivable&type=expenses", formData, function(data) {
 			  			
 			  			   }); 
 		    	         return true; 
@@ -975,9 +914,10 @@ function toDate(selector) {
 <!-- To Get the Existed invoice details to Edit -->
 <script>
 	function loadInvoiceDetails(invoiceUUID){
-		 $.ajax({
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+		$.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getInvoiceDetailsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
+		    	 url: vmsUrl+"/getInvoiceDetailsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
 		         success: function(data) {
 		        	 var json = JSON.parse(data);
 		        	 var result = '';
@@ -1011,8 +951,6 @@ function toDate(selector) {
 		           	 	editExpensesInlineItems(json['invoiceLineItemsList']);
 		           	}
 		           
-		           /* 	getProjectFrequency(json['invoiceFrequency'],json['id']);
-		           	getProjectAssignedMem1(json['invoiceLineItemsList']); */
 		           	$("#invoiceId").val(json['invoiceId']);
 		           	
 		           	if(json['paymentFrequency'] != null && json['paymentFrequency'] != '' && json['paymentFrequency'] != 'undefined'){
@@ -1087,9 +1025,10 @@ $(document).ready(function(){
 <script>
 function getVendors(){
 	var orgRelationId ='${orgRelationId}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getPayableVendorsList?"+tokenParamName+"="+tokenValue+"",
+		url: vmsUrl+"/getPayableVendorsList?"+tokenParamName+"="+tokenValue+"",
 		success :function(data) {
 		var json = JSON.parse(data);
 		var output = "";
@@ -1207,11 +1146,11 @@ function getVendors(){
 	
 	
 	function deleteInvoiceDocument(documentId){
-		
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		if(documentId){
 			$.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/deleteInvoiceDocumentBydocumentId?"+tokenParamName+"="+tokenValue+"&documentId="+documentId, 
+		    	 url: vmsUrl+"/deleteInvoiceDocumentBydocumentId?"+tokenParamName+"="+tokenValue+"&documentId="+documentId, 
 		         success: function(data) {
 		        	 document.getElementById("invoiceDocument"+documentId).remove();
 		        	 $("#lineItemPopUp").empty();
@@ -1272,9 +1211,10 @@ function addTaxDivs(){
 <script> 
 function getPaymentTerms(){
 	var orgRelationId = $("#vendorOrgRelationId").val();
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getPaymentTermsAndBillindAddress?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
+		url: vmsUrl+"/getPaymentTermsAndBillindAddress?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 		success :function(data) {
 			 var json = JSON.parse(data);
 			 for (var i=0; i<json.length; i++)
@@ -1303,6 +1243,7 @@ function getPaymentTerms(){
 <script>
 function getDueDateByFrequency(){
 	 var invoiceDate = document.getElementById("invoiceDate").value;
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
 	 var locationCode ='${SourceLeadWeb_locationCode}';
 	 if(paymentFrequency && invoiceDate){
@@ -1310,9 +1251,8 @@ function getDueDateByFrequency(){
 	    
 	    $.ajax({
 			type : "GET",
-			url: sourceleadUrl+"/getDueDateByFrequency?"+tokenParamName+"="+tokenValue+"&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate+"&locationCode="+locationCode,
+			url: vmsUrl+"/getDueDateByFrequency?"+tokenParamName+"="+tokenValue+"&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate+"&locationCode="+locationCode,
 			success :function(dueDateStr) {
-				
 				$("#dueDate").val(dueDateStr);
 				$("#invoiceLoading").removeAttr("style");
 			}
@@ -1355,10 +1295,11 @@ function errInvoiceDate(){
 <script>
 function getVendorContacts(vendorContactId){
 	var orgRelationId = $("#vendorOrgRelationId").val();
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$("#vendorContact").empty();
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getPayableVendorContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
+		url: vmsUrl+"/getPayableVendorContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 		success :function(json) {
 		var output = "";
 		for (var i=0; i<json.data.length; i++)
@@ -1603,12 +1544,13 @@ function populateInlineItemsGrid(){
 <script>
 function getExpenses(projectMemberId,expensesFrequency){
 	var memberId = $("#projectMemberId").val();
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	if(projectMemberId !=null && projectMemberId !='undefined' && expensesFrequency !=null && expensesFrequency !='undefined'){
 		memberId = projectMemberId
 	}
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getExpensesByProjectMemberId?"+tokenParamName+"="+tokenValue+"&memberId="+memberId+"&invoiceType=payable",
+		url: vmsUrl+"/getExpensesByProjectMemberId?"+tokenParamName+"="+tokenValue+"&memberId="+memberId+"&invoiceType=payable",
 		success :function(json) {
 			var output = "";
 			output = output + "<option value=''>--Select Expenses--</option>";
@@ -1634,13 +1576,14 @@ function getExpenses(projectMemberId,expensesFrequency){
 
 <script>
 function getExpensesDetails(expId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var expensesId = $("#expensesId").val();
 	if(expId !=null && expId !='undefined'){
 		expensesId = expId
 	}
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getExpensesEntries?"+tokenParamName+"="+tokenValue+"&expensesId="+expensesId,
+		url: vmsUrl+"/getExpensesEntries?"+tokenParamName+"="+tokenValue+"&expensesId="+expensesId,
 		success :function(json) {
 			if(json.data !=null && json.data !=''){
 			populateExpensesEntriesGrid(json.data);
@@ -1673,7 +1616,6 @@ function populateExpensesEntriesGrid(data){
             result = result +' <tbody>';
             if(data !=null && data !=''){
             	 for(var i=0;i < data.length;i++){
-                 	/* S.no. Date, category, description , amount  */
                  	  var opt = data[i];
                  	  subTotal += opt.amount;
                  	  result = result +'   <tr>';
@@ -1889,9 +1831,7 @@ function editExpensesDetailsEdit(data){
             result = result +' <tbody>';
             if(data !=null && data !=''){
             	 for(var i=0;i < data.length;i++){
-                 	/* S.no. Date, category, description , amount  */
                  	  var opt = data[i];
-                 	 /*  subTotal = opt.subTotal; */
                  	  result = result +'   <tr>';
                  	 result = result +' <input type="hidden" value='+opt.id+' id="'+i+'lineItemId"   name="'+(i+1)+'lineItemId">';
          		      result = result +'   <td>';
@@ -1972,12 +1912,6 @@ function maskme(){
     $.mask.definitions['p'] = "[Mm]";
     $(".inline_field").mask("Hhh:Mm"); 
 	
-//     $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
-//     $(this).val($(this).val().replace(/[^0-9\.]/g,''));
-//         if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
-//             event.preventDefault();
-//         }
-//     });
 }
 </script>
 
@@ -1997,16 +1931,12 @@ function creatExpPayBilsEmptyVendorContact(){
 </script>
 <script>
 	 function selectedVendor(){
+		 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 var vid =   $("#vendorOrgRelationId").val();
-		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+		 window.open(vmsUrl+"/addVendorContact?vid="+vid,'_blank');
 	 }
 </script>
 
-<!-- <script>
-function clearDate(){
-	$("#dueDate").val("");
-	};	
-</script> -->
 
 <script>
 function validateDiscount() {
@@ -2054,16 +1984,8 @@ if(selectedTextInvoice =='percentage'){
 			return false; 
 	 	 }
 }if(selectedTextInvoice =='flat'){
-	/* var floatNum = /^[0-9]*$/
-		if(enteredValue.match(floatNum)){
-			  $("#saveButtonId").attr("disabled", "disabled");
-				$("#sendButtonId").attr("disabled", "disabled");
-			   return false;
-		  }
-		else{ */
 			$("#saveButtonId").removeAttr("disabled", "disabled");
 			  $("#sendButtonId").removeAttr("disabled", "disabled");
-// 		}
 	  }		
 	  
  
@@ -2072,12 +1994,13 @@ if(selectedTextInvoice =='percentage'){
 <script>
 function getPaymentAccountList(dbOrgRelationId,paymentAccoutId){
 	var	orgRelationId = $("#vendorOrgRelationId").val();
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	if(orgRelationId == null){
 		orgRelationId = dbOrgRelationId;
 	}
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getAllPaymentAccountList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
+		url: vmsUrl+"/getAllPaymentAccountList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 		success :function(json) {
 			var result = "";
 			   result = result +"<option value=''>-- Select Account --</option>";
