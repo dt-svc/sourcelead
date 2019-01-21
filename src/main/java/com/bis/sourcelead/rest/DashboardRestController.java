@@ -115,7 +115,6 @@ import com.ibm.icu.util.Calendar;
  */
 
 @RestController
-@RequestMapping("/app")
 public class DashboardRestController {
 
 	

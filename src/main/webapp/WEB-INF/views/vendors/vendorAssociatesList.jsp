@@ -59,7 +59,7 @@ function vendorAssociatesList(orgRelationId){
 
 <script type="text/javascript">
 	function getVendorRequirementListTab(orgRelationId) {
-		var sourceleadUrl = '${sourceleadUrl}';
+		var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 		var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	 	  if(locationList.match("yyyy-MM-dd")){
 	 		  associatesVendorDatePattern = 'YYYY-MM-DD';
@@ -72,7 +72,7 @@ function vendorAssociatesList(orgRelationId){
 	 	  }
 		$.ajax({
 	    	type: "POST",
-	    	   url: sourceleadUrl+"/getVendorAssociatesListForVendors?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId, 	
+	    	   url: vmsUrl+"/getVendorAssociatesListForVendors?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId, 	
 	    	success: function(json) {
 	        	
 	        ///	var json = JSON.parse(data);
@@ -157,8 +157,8 @@ function vendorAssociatesList(orgRelationId){
 
 <script>
 function viewAssociateCandidateResume(candidateId,title){
-	var sourceleadUrl ='${sourceleadUrl}';
-	window.open(sourceleadUrl+'/viewAssociateCandidateResumeDocView/'+title+'?candidateId='+candidateId,title,"height=600,width=600");
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	window.open(vmsUrl+'/viewAssociateCandidateResumeDocView/'+title+'?candidateId='+candidateId,title,"height=600,width=600");
 }
 </script>
 

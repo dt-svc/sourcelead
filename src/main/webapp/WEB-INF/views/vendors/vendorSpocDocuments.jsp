@@ -149,21 +149,6 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                     $("#spocDocumentsList").append(result); 
 	                     spocDocumentpagination(); 
 	                    
-              /*  }else{
-	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Documents Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#spocDocumentsList").empty();
-				    $("#spocDocumentsList").append(result); 
-               } */
         },
           
      }); 
@@ -422,30 +407,6 @@ function closeVendorSpocDocPopup(){
 });
 </script>
 
-<!-- <script>
-function getSpocsList(orgRelationId){
-	 var sourceleadUrl ='${sourceleadUrl}';
-	$.ajax({
-    	type: "POST",
-        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId, 
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	var output = "";
-        	output = output + "<option value=''>Client Contact</option>"; 
-        	for (var i=0; i<json.length; i++)
-			{
-	        		var opt = json[i];
-	        		output = output + "<option value='" +opt.spocUserId+ "'>"+opt.spocName+"</option>";
-			}
-        	$("#spoc").empty();
-	        $("#spoc").append(output);
-	        $('#spoc').trigger("chosen:updated");
-	        //$('.selectpicker').selectpicker('refresh'); 
-        },
-    });
-}
-
-</script> -->
 <script>
 function deleteDocument(clientLocationId,orgRelationId,spocName,userId,docId,docName){
 	 var result = "";

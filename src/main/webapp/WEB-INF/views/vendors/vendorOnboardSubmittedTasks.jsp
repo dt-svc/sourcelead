@@ -12,10 +12,10 @@ padding: 0px 15px 15px;
 
 <script>
 function vendorOnboardTasksList(orgRelationId){
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		$.ajax({
 		   	type: "GET",
-		    url: sourceleadUrl+"/getVendorSubmittedOnboardTasksByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,	    	   
+		    url: vmsUrl+"/getVendorSubmittedOnboardTasksByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,	    	   
 		    success: function(json) {
 	        	 var result = "";
 	        	 if(json.length > 0){ 

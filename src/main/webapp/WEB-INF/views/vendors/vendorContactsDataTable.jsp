@@ -35,7 +35,7 @@ function getVendorContactList(){
 		invitationStatus.push($(this).val());
     });
 	
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var responderType = "Vendor";
 	var validationSettings = {
@@ -53,7 +53,7 @@ function getVendorContactList(){
 	  		var formData = new FormData(form); 
 	  		var searchValue = $("#dataTableSearch").val();
 	  		searchValue = searchValue ? searchValue : "";
-	  		var url = sourceleadUrl+"/searchClientContactDetails?responderType="+responderType+"&searchValue="+searchValue+"&clientIds="+clientIds+"&status="+status+"&invitationStatus="+invitationStatus;
+	  		var url = vmsUrl+"/searchClientContactDetails?responderType="+responderType+"&searchValue="+searchValue+"&clientIds="+clientIds+"&status="+status+"&invitationStatus="+invitationStatus;
 	  	    url += "&"+$($('#vendorList_form')[0]).serialize();  
 	  	    prepareVendorContactList(url);
 	  		closePop();

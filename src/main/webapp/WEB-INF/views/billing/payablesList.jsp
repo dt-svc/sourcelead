@@ -8,6 +8,7 @@
 	uri="http://www.springframework.org/security/tags"%>
 
 <script type="text/javascript">
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 $(document).ready(function(){
 	getPayableInvoiceList();
 });
@@ -63,7 +64,7 @@ $(document).ready(function(){
 			<h2>Bills</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			<a href="/app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
 			&raquo; Bill List
 		</div>
 	</section>
@@ -74,33 +75,14 @@ $(document).ready(function(){
 	
 	<div class="project_side_wrap_inn_tabs clearfix">
 	    <ul class="project-tabs-menu">
-		    <li class="current"><a href="${appPath}/payablesList">Bill List</a></li>
-		    <li class=""><a href="${appPath}/debitNoteList">Debit Note List</a></li>
+		    <li class="current"><a href="/vms/payablesList">Bill List</a></li>
+		    <li class=""><a href="/vms/debitNoteList">Debit Note List</a></li>
 		    
 	    </ul>
     </div>	
 	
 		<div class="billing_dashboard noPad">
 			<div class="tabbable positionRelative">
-				<!-- <div class="onboardcreateButtons">
-					<div class="pull-right select-field mr mt">
-						<select class="form-control input-sm" id="dayWiseTypeId"
-							onchange="getPayableInvoiceList();customInvoiceList();">
-							<option value="month">Last 30 days</option>
-							<option value="twomonths">Last 60 Days</option>
-							<option value="threemonths">Last 90 days</option>
-							<option value="sixmonths">Last 180 days</option>
-							<option value="oneyear">Last 365 days</option>
-							<option value="custom">Custom</option>
-						</select>
-
-						<div class="custom_search">
-							<div id="customDateDivId">
-								</id>
-							</div>
-						</div>
-					</div>
-				</div> -->
 				<ul class="nav nav-tabs pad15 invoiCount" id="tab_bar">
 
 
@@ -193,14 +175,14 @@ $(document).ready(function(){
 					<span> 
 						<sec:authorize access="hasAnyRole('ROLE_ADD_BILL')">
 							<!-- <a href="javascript:void(0)" title="Create Bill" onclick="createBill();">Create Bill </a> -->
-					<a href="<c:url value='${appPath}/createPayables'/>" title="Create Vendor Based Bill">Vendor Based Bill</a>
-					<a href="<c:url value='${appPath}/createInvoiceProjectPayableBased'/>" title="Create Project Based Bill">Project Based Bill</a>
-		            <a href="<c:url value='${appPath}/createPaybleForJobClosure'/>" title="Create Job closure Based Bill">Job closure Based Bill</a>
-		            <a href="<c:url value='${appPath}/createExpensesPayableBill'/>" title="Create Other Bill">Other Bill</a>
+					<a href="/vms/createPayables" title="Create Vendor Based Bill">Vendor Based Bill</a>
+					<a href="/vms/createInvoiceProjectPayableBased" title="Create Project Based Bill">Project Based Bill</a>
+		            <a href="/vms/createPaybleForJobClosure" title="Create Job closure Based Bill">Job closure Based Bill</a>
+		            <a href="/vms/createExpensesPayableBill" title="Create Other Bill">Other Bill</a>
                            </sec:authorize>
 						<a href="javascript:void(0)" title="Generate Automatic Bill" onclick="generateAutomaticInvoice();">Generate Automatic Bill</a>
 						<a href="javascript:void(0)" title="Generate Automatic JobClosure Bill" onclick="generateAutomaticBillForJobClosure();">Generate Automatic JobClosure Bill</a>
-						 <a href="<c:url value='${appPath}/addPaymentBill'/>">Add Payment</a>
+						 <a href="/vms/addPaymentBill">Add Payment</a>
 					</span>
 				</div>
 			</li>
@@ -218,8 +200,6 @@ $(document).ready(function(){
 		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='payableDataTableSearch'/><span class="repSearchIcon" onClick="getPayableInvoiceList();"></span></li>
         </ul>
       </div> 							
-
-
 								<div class="candidate_wrap_table datatable_filter">
 									<div id="invoiceList"></div>
 								</div>
@@ -486,15 +466,6 @@ function validMask(){
 <!-- modal pop -->
 
 
-<!-- <script>
-$(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
-    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
-        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
-            event.preventDefault();
-        }
-    });
-
-</script> -->
 
 <script>
 function cancelTermination(){
@@ -521,8 +492,6 @@ function showInvoiceStartDate(){
 		changeYear: true, 
 		dateFormat : finalDateFormatClientInvoiceDate,
 		onSelect : function(selected) {
-			//var dt = new Date(selected);
-			//var dt = toDate("#billingStartDate");
 			 var dt = $(this).datepicker('getDate', '+1d');
 	            dt.setDate(dt.getDate() + 1);
 			$("#billingEndDate").datepicker("option", "minDate", dt);
@@ -553,8 +522,6 @@ function showInvoiceEndDate(){
 	           this.value='';
 	     },
 		onSelect : function(selected) {
-//			var dt = new Date(selected);
-//			var dt = toDate("#billingEndDate");
 			   var dt = $(this).datepicker('getDate', '-1d');
 	            dt.setDate(dt.getDate() - 1);
 			$("#billingStartDate").datepicker("option", "maxDate", dt);
@@ -566,7 +533,8 @@ function showInvoiceEndDate(){
 <!-- modal pop -->
 <script>
 function saveReceivePayment(invoiceId){
-	 if ($('#receivePayment-form').validate(false, validationSettings)){  
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}'; 
+	if ($('#receivePayment-form').validate(false, validationSettings)){  
 		    var frm = $('#receivePayment-form').serializeFormJSON();
 	        var con = JSON.stringify(frm);
 	        con = con.replace(/[{}]/g, "");
@@ -585,14 +553,14 @@ function saveReceivePayment(invoiceId){
 		        processData: false,
 		        contentType:false,
 			      dataType : 'json',
-		    	 url: sourceleadUrl+"/saveInvoicePayment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&invoiceId="+invoiceId, 
+		    	 url: vmsUrl+"/saveInvoicePayment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&invoiceId="+invoiceId, 
 		        success: function(result) {
 		        	if (result && result.response === "INVALID_DATA") {
 	          		    showError(result.responseMessage);
 	          		} else if (result.response === "AWKWARD") {
 	          		    location.href = "/errorPage";
 	          		} else if (result.response === "SUCCESS") {
-	          			location.replace(sourceleadUrl+"/payablesList");
+	          			location.replace(vmsUrl+"/payablesList");
 	          		} else if (result.indexOf('Sign In') !== -1) {
 	          			location.replace(sourceleadUrl);
 	          		} else {
@@ -661,11 +629,6 @@ function getPayableInvoiceList(){
 		payment.push($(this).val());
 	 });
 	
-	/* var dayWisetype = null;
-	
-	$('input:radio[name=invoiceCustomDays]:checked').each(function() {
-		dayWisetype = $(this).val();
-	});	 */
 	
 	var invoieDeleteStatus = null;
 	
@@ -678,11 +641,11 @@ function getPayableInvoiceList(){
      {
 		tags.push($(this).val());
 	 });
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var searchValue = $("#payableDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	if(returnStat){
-		var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=payables&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tags="+tags+"&invoiceDeleteStatus="+invoieDeleteStatus;
+		var url = vmsUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=payables&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tags="+tags+"&invoiceDeleteStatus="+invoieDeleteStatus;
 		preparePayableList(url,orgLocationDate);
 		closeBillsFilterPop();
 	}
@@ -694,12 +657,6 @@ function getPayableInvoiceList(){
 <script>
 function preparePayableList(url,orgLocationDate){
  	var result = "";
- 	
-/*  	result = result +" <div class='dynamic_search dynamic_search-new'>";
- 	result = result +" <input type='text' placeholder='Search' id='payableDataTableSearch'/>";
- 	result = result +"  <span class='cursorPointer' title='Search'><i class='fa fa-search' onclick='getPayableInvoiceList();'></i></span>";     
- 	result = result +"</div>"; */
- 	
  	result = result + '<table id="payableListTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '<thead>';
 	result = result +'       <tr>                             ';
@@ -720,7 +677,6 @@ function preparePayableList(url,orgLocationDate){
     $("#invoiceList").empty();  
     $("#invoiceList").append(result);
     payablePagination(url); 
-//     closePopup();
 	
 }
 
@@ -820,15 +776,6 @@ function payablePagination(url){
 								
 							}
 							
-							/* if(report.invoiceType=="Receivable"){
-								if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
-									result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span> </td>          ';	
-								}else{
-									result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
-								}
-							} */
-							 
-					 
 					        result = result +'</div>';
 					        result = result +'</td>';
 			            	 return result;
@@ -874,10 +821,10 @@ function payablePagination(url){
 				    	else if(report.invoiceStatus == "DRAFT" || (report.invoiceStatus == "Rejected" && report.invoiceParentId == null)){
 							if(report.projectId != null && report.projectId != '' && report.projectId != 'undefined'){
 								'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_BILL\')">';
-								result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
+								result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+vmsUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
 								'</sec:authorize>';
 							}else{
-								result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
+								result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+vmsUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
 							}
 							
 						}
@@ -903,7 +850,7 @@ function payablePagination(url){
 	            	  result = result +'         <td>   ';
 	            	 
 	            	  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
-	            	   result = result +'<div class="tbldata-dotdot-vsm" title="'+report.clientName+'"><a href="'+sourceleadUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'"> '+report.clientName+' </a></div>';
+	            	   result = result +'<div class="tbldata-dotdot-vsm" title="'+report.clientName+'"><a href="'+vmsUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'"> '+report.clientName+' </a></div>';
 	            	  '</sec:authorize>';
 	            	  
 	            	  '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
@@ -1122,10 +1069,11 @@ $('html').click(function(){
 </script>
 <script>
 function sendReminder(invoiceUUID){
-	 $.ajax({
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}'; 
+	$.ajax({
     	 type: "POST",
 	     dataType : 'json',
-	    	 url: sourceleadUrl+"/sendReminder?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
+	    	 url: vmsUrl+"/sendReminder?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
              success: function(result) {
             	 if (result && result.response === "INVALID_DATA") {
 	          		    showError(result.responseMessage);
@@ -1146,32 +1094,21 @@ function sendReminder(invoiceUUID){
 
 </script>
 
-<!-- <script type="text/javascript">
-function getPrint(id) {
-	var sourceleadUrl ='${sourceleadUrl}';
-	window.open(sourceleadUrl+'/getPrint/'+id+'','_newtab');
-}</script>
-
-<script>
-function downloadInvoice(id){
-	var sourceleadUrl ='${sourceleadUrl}';
-	window.location.href = sourceleadUrl+"/downloadInvoice?"+tokenParamName+"="+tokenValue+"&invoiceId="+id;
-}
-</script> -->
 
 <script>
 function acceptedInvoice(invoiceUUID){
-	 $.ajax({
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	$.ajax({
     	 type: "POST",
 	     dataType : 'json',
-	    	 url: sourceleadUrl+"/acceptedInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
+	    	 url: vmsUrl+"/acceptedInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
              success: function(result) {
             	 if (result && result.response === "INVALID_DATA") {
 	          		    showError(result.responseMessage);
 	          		} else if (result.response === "AWKWARD") {
 	          		    location.href = "/errorPage";
 	          		} else if (result.response === "SUCCESS") {
-	          			location.replace(sourceleadUrl+"/payablesList");
+	          			location.replace(vmsUrl+"/payablesList");
 	          		} else if (result.indexOf('Sign In') !== -1) {
 	          			location.replace(sourceleadUrl);
 	          		} else {
@@ -1190,7 +1127,6 @@ function rejectInvoice(invoiceUUID){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
 	result = result +"		<textarea id='reasonForDelete' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reject Reason' rows='2'></textarea>";
 	result = result + ' <div id="reasonForRejectDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Reject' onclick='saveReasonforPayable(\""+invoiceUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
@@ -1203,6 +1139,7 @@ function rejectInvoice(invoiceUUID){
 
 <script>
 function saveReasonforPayable(invoiceUUID){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var reason = document.getElementById("reasonForDelete").value;
 	if(reason == null || reason == '' || reason == 'undefined'){
 	      
@@ -1213,7 +1150,7 @@ function saveReasonforPayable(invoiceUUID){
 		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
 		$.ajax({
 		   	type: "POST",
-		   	url: sourceleadUrl+"/rejectInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&reason="+reason,	    	   
+		   	url: vmsUrl+"/rejectInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&reason="+reason,	    	   
 		    success: function(result) {
 		    	if (result && result.response === "INVALID_DATA") {
           		    showError(result.responseMessage);
@@ -1222,7 +1159,7 @@ function saveReasonforPayable(invoiceUUID){
           		} else if (result.response === "SUCCESS") {
           			$("#popUp").empty();
    	 			    $(".project_inn_mask").fadeOut(200);
-   		    	    location.replace(sourceleadUrl+"/payablesList");
+   		    	    location.replace(vmsUrl+"/payablesList");
           		} else if (result.indexOf('Sign In') !== -1) {
           			location.replace(sourceleadUrl);
           		} else {
@@ -1236,21 +1173,6 @@ function saveReasonforPayable(invoiceUUID){
 }
 </script>
 
-<!-- <script>
-function rejectInvoice(id){
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({
-    	 type: "POST",
-	     dataType : 'json',
-	    	 url: sourceleadUrl+"/rejectInvoice?"+tokenParamName+"="+tokenValue+"&invoiceId="+id, 
-             success: function(result) {
-        	location.replace(sourceleadUrl+"/payablesList");
-     		
-        },
-    }); 
-}
-
-</script> -->
 <script>
 function cancelbtn(){
 	  $("#recvPymntpop, #recvPymntpopOnline").fadeOut(200);
@@ -1442,27 +1364,6 @@ function removeEnddateval(){
 }
 
 </script>
-<script>
-/* function searchResults(){
-	$("#errStartDate").find('p.jquery_form_error_message').remove();
-	$("#errEndDate").find('p.jquery_form_error_message').remove();
-	var startDate =  $('#billingStartDate').val();
-	var endDate =  $('#billingEndDate').val();
-	if(startDate != null && startDate != '' && startDate != 'undefined' && endDate != null && endDate != '' && endDate != 'undefined'){
-		getPayableInvoiceList();
-	}else{
-		if(startDate != null && startDate != '' && startDate != 'undefined'){
-			$("input#billingEndDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");
-		}else if(endDate != null && endDate != '' && endDate != 'undefined'){
-			$("input#billingStartDate") .after( "<p class='jquery_form_error_message'>Start Date is Required</span>");
-		}else{
-			$("input#billingStartDate") .after( "<p class='jquery_form_error_message'>Start Date is Required</span>");
-			$("input#billingEndDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");
-		}
-	} 
-}
- */
-</script>
 
 <script>
 
@@ -1483,7 +1384,7 @@ $('#mypop').click(function(){
 
 <script>
 function exportToPayablePdf(){
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var invoiceStatus = [];
 	 var paymentStatus = [];
 	 
@@ -1518,7 +1419,7 @@ function exportToPayablePdf(){
 		var exportEndDate = $("#billingEndDate").val();
 		
 		if(emptyExport > 0){
-		window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&tags="+tags+"&invoiceDeleteStatus="+invoiceDeleteStatus+"&exportType=pdf&invoiceType=Payables";
+		window.location.href = vmsUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&tags="+tags+"&invoiceDeleteStatus="+invoiceDeleteStatus+"&exportType=pdf&invoiceType=Payables";
 		}else{
 				var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";
@@ -1536,7 +1437,7 @@ function exportToPayablePdf(){
 
 <script>
 function exportToPayableExcel(){
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var invoiceStatus = [];
 	 var paymentStatus = [];
 	 
@@ -1573,7 +1474,7 @@ function exportToPayableExcel(){
 		var exportEndDate = $("#billingEndDate").val();
 		
 		if(emptyExport > 0){
-		window.location.href = sourceleadUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&tags="+tags+"&invoiceDeleteStatus="+invoiceDeleteStatus+"&exportType=xls&invoiceType=Payables";
+		window.location.href = vmsUrl+"/getBillingExportList?"+tokenParamName+"="+tokenValue+"&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&tags="+tags+"&invoiceDeleteStatus="+invoiceDeleteStatus+"&exportType=xls&invoiceType=Payables";
 		}else{	
 				var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";
@@ -1591,10 +1492,11 @@ function exportToPayableExcel(){
 
 <script type="text/javascript">
 function linkPayableInvoice(invoiceUUID,totalAmount){
-	 $.ajax({
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}'; 
+	$.ajax({
     	 type: "POST",
 	     dataType : 'json',
-	     url : sourceleadUrl+"/getClientBasedInvoiceList?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&invoiceType=payables",
+	     url : vmsUrl+"/getClientBasedInvoiceList?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&invoiceType=payables",
 			success: function(json) {
 			var result = "";
 			result = result +'  <div class="modal-dialog modal-lg">                                                                                         ';
@@ -1787,14 +1689,15 @@ function showDiffAmountPopup(calculatedAmount,currencyCode,checkVal,invoiceUUID)
 
 <script>
 function proceedToMergeBill(checkVal,invoiceUUID){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$.ajax({
 	   	 type: "POST",
 		     dataType : 'json',
-		    	 url: sourceleadUrl+"/linkInvoice?"+tokenParamName+"="+tokenValue+"&checkVal="+checkVal+"&invoiceType=payables&invoiceUUID="+invoiceUUID, 
+		    	 url: vmsUrl+"/linkInvoice?"+tokenParamName+"="+tokenValue+"&checkVal="+checkVal+"&invoiceType=payables&invoiceUUID="+invoiceUUID, 
 	            success: function(json) {
 	            	$("#popUp").empty();
 	            	$(".project_inn_mask").fadeOut(200);
-	            	location.replace(sourceleadUrl+"/payablesList");	
+	            	location.replace(vmsUrl+"/payablesList");	
 	       },
 	   });  
 }
@@ -1804,7 +1707,7 @@ function proceedToMergeBill(checkVal,invoiceUUID){
 function cancel(){
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
-	location.replace(sourceleadUrl+"/payablesList");	
+	location.replace(vmsUrl+"/payablesList");	
 }
 </script>
 
@@ -1821,7 +1724,7 @@ function generateAutomaticInvoice(){
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
-	    	 url: sourceleadUrl+"/generateAutomaticInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=payables&contractType=vendorSow", 
+	    	 url: vmsUrl+"/generateAutomaticInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=payables&contractType=vendorSow", 
              success: function(json) {
             	 
             	 $("#invoiceLoading").removeAttr("style");
@@ -1829,7 +1732,7 @@ function generateAutomaticInvoice(){
 	    			$("#selector1").css("display", "block");
 	    			$("#msgDiv").html(json.object.count+"Bill(s) Generated Successfully.");
 					msgFadein();
-            	 location.replace(sourceleadUrl+"/payablesList");	
+            	 location.replace(vmsUrl+"/payablesList");	
         },
     });  
 }
@@ -1840,7 +1743,7 @@ function generateAutomaticBillForJobClosure(){
 	 $.ajax({
    	 type: "POST",
 	     dataType : 'json',
-	    	 url: sourceleadUrl+"/generateAutomaticInvoiceForJobClosure?"+tokenParamName+"="+tokenValue+"&invoiceType=payables&contractType=vendorSow", 
+	    	 url: vmsUrl+"/generateAutomaticInvoiceForJobClosure?"+tokenParamName+"="+tokenValue+"&invoiceType=payables&contractType=vendorSow", 
             success: function(json) {
            	 
            	 $("#invoiceLoading").removeAttr("style");
@@ -1848,7 +1751,7 @@ function generateAutomaticBillForJobClosure(){
 	    			$("#selector1").css("display", "block");
 	    			$("#msgDiv").html(json.object.count+"Bill(s) Generated Successfully.");
 					msgFadein();
-           	 location.replace(sourceleadUrl+"/payablesList");	
+           	 location.replace(vmsUrl+"/payablesList");	
        },
    });  
 }
@@ -1859,9 +1762,9 @@ function unLinkBill(invoiceUUID){
 	$.ajax({
 	   	 type: "POST",
 		     dataType : 'json',
-		    	 url: sourceleadUrl+"/unLinkInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
+		    	 url: vmsUrl+"/unLinkInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
 	            success: function(data) {
-	            	location.replace(sourceleadUrl+"/payablesList");	
+	            	location.replace(vmsUrl+"/payablesList");	
 	       },
 	   });  
 }
@@ -1912,11 +1815,11 @@ function saveBillRejectedReason(invoiceUUID){
 		}else{
 			 $.ajax({
 				   	type: "POST",
-				    url: sourceleadUrl+"/deleteInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=payables&invoiceUUID="+invoiceUUID+"&reason="+reason,
+				    url: vmsUrl+"/deleteInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=payables&invoiceUUID="+invoiceUUID+"&reason="+reason,
 		   		    success: function(data) {
 		   		    	$("#popUp").empty();
 		   			 	$(".project_inn_mask").fadeOut(200);
-		   			 	location.replace(sourceleadUrl+"/payablesList");	
+		   			 	location.replace(vmsUrl+"/payablesList");	
 		   		    }
 			     });
 		}
@@ -1930,7 +1833,7 @@ function saveBillRejectedReason(invoiceUUID){
 function savevoidBill(invoiceUUID){
 			 $.ajax({
 				   	type: "POST",
-				    url: sourceleadUrl+"/voidInvoiceOrBill?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,
+				    url: vmsUrl+"/voidInvoiceOrBill?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,
 				    success: function(result) {
 		  		    	if (result && result.response === "INVALID_DATA") {
 		          		    showError(result.responseMessage);
@@ -1939,7 +1842,7 @@ function savevoidBill(invoiceUUID){
 		          		} else if (result.response === "SUCCESS") {
 		          			$("#popUp").empty();
 		   	 			    $(".project_inn_mask").fadeOut(200);
-		   		    	    location.replace(sourceleadUrl+"/payablesList");
+		   		    	    location.replace(vmsUrl+"/payablesList");
 		          		} else if (result.indexOf('Sign In') !== -1) {
 		          			location.replace(sourceleadUrl);
 		          		} else {
@@ -1958,7 +1861,7 @@ function continuePaymentOnline() {
         return;
     }
     $("#save_paymentOnline").attr("disabled", "disabled");
-    $.post(sourceleadUrl+"/wepay-iframe-payment", {notes: $("#paymentMemoOnline").val(), paymentType: $("[name=paymentAmountOnline][value=custom]").is(":checked") ? 0 : 1, invoiceUUID: $("#paymentInfoOnline").data('invoiceid'), amount: amount}, function(data) {
+    $.post(vmsUrl+"/wepay-iframe-payment", {notes: $("#paymentMemoOnline").val(), paymentType: $("[name=paymentAmountOnline][value=custom]").is(":checked") ? 0 : 1, invoiceUUID: $("#paymentInfoOnline").data('invoiceid'), amount: amount}, function(data) {
         if(data && data === "FAILED") {
             
         } else if(data) {

@@ -28,6 +28,8 @@ margin-bottom: 0;
 
 <script type="text/javascript">
 $(document).ready(function(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	
 	var invoiceUUID = '${invoiceUUID}';
 	if(invoiceUUID != null && invoiceUUID != '' && invoiceUUID != 'undefined'){
 		loadInvoiceDetails(invoiceUUID);
@@ -64,7 +66,8 @@ function errRemoveClientContact(){
 			<h2>Client Invoice</h2>
 		</div>
 		<sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/invoiceList'/>">Invoice List</a> &raquo; Client Invoice</div>
+		<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+		<a href="/vms/invoiceList">Invoice List</a> &raquo; Client Invoice</div>
 	</sec:authorize>
 	<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
@@ -88,7 +91,7 @@ function errRemoveClientContact(){
 				                <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();createInvoiceEmptyClientContact();"><i class="fa fa-refresh "></i></span>
 				                </div>
 				                 <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-                                 <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
+                                 <span class="col-md-2 noPad clearfix"><a href="/vms/client" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
                                  </sec:authorize>
 				               </div> 
 				              <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
@@ -204,8 +207,7 @@ function errRemoveClientContact(){
 							onclick="saveInvoice('DRAFT')">Save</button>
 						<button type="button" id="sendButtonId" class="btn btn-sm btn-success ml"
 							onclick="saveInvoice('SENT')">Send</button>
-						<button type="button" class="btn btn-sm btn-default ml"
-							onClick="javascript:window.location.href = '<c:url value='${appPath}/invoiceList'/>'">Cancel</button>
+						<button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '/vms/invoiceList'">Cancel</button>
 					</div>
 				</footer>
 			</div>
@@ -513,10 +515,10 @@ if(selectedTextInvoice =='percentage'){
 
 <script>
 	function loadInvoiceDetails(invoiceUUID){
-		 
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getInvoiceDetailsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
+		    	 url: vmsUrl+"/getInvoiceDetailsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
 		         success: function(data) {
 		        	 var json = JSON.parse(data);
 		        	 var result = '';
@@ -653,11 +655,11 @@ if(selectedTextInvoice =='percentage'){
 	
 	
 	function deleteInvoiceDocument(documentId){
-		
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		if(documentId){
 			$.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/deleteInvoiceDocumentBydocumentId?"+tokenParamName+"="+tokenValue+"&documentId="+documentId, 
+		    	 url: vmsUrl+"/deleteInvoiceDocumentBydocumentId?"+tokenParamName+"="+tokenValue+"&documentId="+documentId, 
 		         success: function(data) {
 		        	 document.getElementById("invoiceDocument"+documentId).remove();
 		        	 $("#lineItemPopUp").empty();
@@ -1089,6 +1091,8 @@ function cancelPopup(){
 <script>
 
   function getAllAssociates(){
+	  var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	  
 	  var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 	  var orgRelationId = $("#clientOrgRelationId").val();
 	  var invoiceCreateType = $("#clientOrgRelationId").find(':selected').attr("data-Invoice");
@@ -1112,7 +1116,7 @@ function cancelPopup(){
 	  $('.action-pop').slideUp();
 	   $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getInvoiceAssociatesList?"+tokenParamName+"="+tokenValue+"&selectedAssociates="+selectedAssociates+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
+	        url: vmsUrl+"/getInvoiceAssociatesList?"+tokenParamName+"="+tokenValue+"&selectedAssociates="+selectedAssociates+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
 	        success: function(json) {
 	        	
 	        	if(json.data != null && json.data != 'undefined' && json.data != "" && json.data != '[]'){
@@ -1280,12 +1284,12 @@ function pagination(){
 <script type="text/javascript">
  function validateInvoiceId() {
 	 var invoiceId = document.getElementById("invoiceId").value; 
-	
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 if(invoiceId != null && invoiceId != ""){
          //$("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId+"&invoiceType=Receivable", 
+		        url: vmsUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId+"&invoiceType=Receivable", 
 		        success: function(data) {
 		        	 if(data == true){
 		        		  $('#invoiceIdDiv').find('p.jquery_form_error_message').remove();
@@ -1313,10 +1317,11 @@ function pagination(){
 <!-- Get contract sow between client and the associate -->
   <script>
   function getSow(candidateId,id,contractId){
+	  var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	  var orgRelationId = $("#clientOrgRelationId").val();
 			  $.ajax({
 			    	type: "GET",
-			        url: sourceleadUrl+"/getSowcontractListByAssociateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
+			        url: vmsUrl+"/getSowcontractListByAssociateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
 			        success: function(json) {
 			        	var result = "";
 			        	result = result + "<option value='' >select sow</option>"
@@ -1490,13 +1495,14 @@ function pagination(){
   
   
   function  conversion(){
+	  var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	   var orgRelationId = $("#clientOrgRelationId").val();
 	   var currencyCode = '${SourceLeadWeb_currencyCode}';
 	   var grandTotal = $("#grandTotal").val();
 	   if(grandTotal != '' && grandTotal != 'undefined'){
 		   $.ajax({
 				type : "GET",
-				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
+				url: vmsUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
 				success :function(response) {
 					if(response != null && response.object != null && response.object != '' && response != 'undefined'){
 // 						var json = JSON.parse(data);
@@ -1901,11 +1907,12 @@ function errDueDate(){
 
 <script>
 function getSowRate(id){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var contractId = $("#"+id+'sow').val();
 	if(contractId !='' && contractId != 'undefined' && contractId != null){
 	$.ajax({
     	type: "GET",
-    	url: sourceleadUrl+"/getSowRateByContractId?"+tokenParamName+"="+tokenValue+"&contractId="+contractId,
+    	url: vmsUrl+"/getSowRateByContractId?"+tokenParamName+"="+tokenValue+"&contractId="+contractId,
         success: function(json) {
         	 if(json.object != null && json.object != ''){
 //         		var json = JSON.parse(data);
@@ -1993,10 +2000,10 @@ function getSowRate(id){
 <script>
 function getClients(){
 	var orgRelationId ='${orgRelationId}';
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getClientList?"+tokenParamName+"="+tokenValue+"",
+		url: vmsUrl+"/getClientList?"+tokenParamName+"="+tokenValue+"",
 		success :function(json) {
 // 		var json = JSON.parse(data);
 		var output = "";
@@ -2032,11 +2039,12 @@ function getClients(){
 <script>
 function getClientContacts(clientContactId){
 	//alert(clientContactId);
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgRelationId = $("#clientOrgRelationId").val();
 	$("#clientContact").empty();
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
+		url: vmsUrl+"/getClientContactsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 		success :function(json) {
 			var output = "";
 			for (var i=0; i<json.data.length; i++)
@@ -2068,9 +2076,10 @@ function getClientContacts(clientContactId){
 <script> 
 function getPaymentTerms(){
 	var orgRelationId = $("#clientOrgRelationId").val();
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getPaymentTermsAndBillindAddress?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
+		url: vmsUrl+"/getPaymentTermsAndBillindAddress?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 		success :function(data) {
 			 var json = JSON.parse(data);
 			 for (var i=0; i<json.length; i++)
@@ -2097,12 +2106,13 @@ function getPaymentTerms(){
 }
 
 function getInvoiceTemplateList() {
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgRelationId = $("#clientOrgRelationId").val();
 	var responderLocationId = $("#clientOrgRelationId :selected").data("responder_location_id");
 	$("#invoiceTemplateId").empty("");
 	$.ajax({
 		type : "POST",
-		url: sourceleadUrl+"/invoiceTemplateList?orgRelationId=" + orgRelationId + "&orgLocationId=" + responderLocationId,
+		url: vmsUrl+"/invoiceTemplateList?orgRelationId=" + orgRelationId + "&orgLocationId=" + responderLocationId,
 		success : function(data) {
 			$("#invoiceTemplateId").append("<option value='0'>-- Select Invoice Template --</option>");
 			$("#invoiceTemplateId").append("<option value='-1' selected>Default Template</option>");
@@ -2120,12 +2130,13 @@ function getDueDateByFrequency(){
 	 var invoiceDate = document.getElementById("invoiceDate").value;
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
 	 var locationCode ='${SourceLeadWeb_locationCode}';
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 if(paymentFrequency && invoiceDate){
 	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    $.ajax({
 			type : "GET",
-			url: sourceleadUrl+"/getDueDateByFrequency?"+tokenParamName+"="+tokenValue+"&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate+"&locationCode="+locationCode,
+			url: vmsUrl+"/getDueDateByFrequency?"+tokenParamName+"="+tokenValue+"&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate+"&locationCode="+locationCode,
 			success :function(dueDateStr) {
 				
 				$("#dueDate").val(dueDateStr);
@@ -2142,6 +2153,7 @@ function getDueDateByFrequency(){
 
 <script>
 function saveInvoice(saveType){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 	    var selectedAssociates = '';
 		  if(maxTsRowNum > 0){
@@ -2173,20 +2185,20 @@ function saveInvoice(saveType){
 		        }else{
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		        	  $.ajax({
-		        		  url: sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable",
+		        		  url: vmsUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable",
 		        		  type: "POST",
 		        		  data: formData,
 		        		  processData: false,
 		        		  contentType: false,
 		        		  success: function (result) {
-		        	  //$.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable", formData, function(result) {
+		        	  //$.post(vmsUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable", formData, function(result) {
 		        		  if (result && result.response === "INVALID_DATA") {
 		          		    showError(result.responseMessage);
 		          		} else if (result.response === "AWKWARD") {
 		          		    location.href = "/errorPage";
 		          		} else if (result.response === "SUCCESS") {
 			  					$("#invoiceLoading").removeAttr("style");
-	    		     			location.replace(sourceleadUrl+"/invoiceList");
+	    		     			location.replace(vmsUrl+"/invoiceList");
 	    		     			$("#selector1").removeAttr("style");
 					    		$("#selector1").css({ display: "block" });
 				    		if(saveType == 'SENT'){
@@ -2196,7 +2208,7 @@ function saveInvoice(saveType){
 				    		}
     		     			msgFadein();
 		          		} else if (result.indexOf('Sign In') !== -1) {
-		          			location.replace(sourceleadUrl);
+		          			location.replace(vmsUrl);
 		          		} else {
 		          		    showError("Operation failed, please try again");
 		          		}
@@ -2289,12 +2301,13 @@ function getEstimatedHours(rowId){
 	var startDate = document.getElementById(rowId+"sdate-input").value;
 	var endDate = document.getElementById(rowId+"edate-input").value;
 	var locationId = '${SourceLeadWeb_orgLocationId}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	if(startDate && endDate){
 		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
 		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getTotalHosursForBilling?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId,
+		        url: vmsUrl+"/getTotalHosursForBilling?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId,
 		        success: function(estimatedHours) {
 		        	$('#'+rowId+'totalHours').val(estimatedHours);
 		        	$('#'+rowId+'hiddenHours').val(estimatedHours);
@@ -2307,13 +2320,14 @@ function getEstimatedHours(rowId){
 	}
 }
 function editHoursValidations(startDate,endDate,rowId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	if(startDate && endDate){
 		 var locationId = '${SourceLeadWeb_orgLocationId}';
 		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
 		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getTotalHosursForBilling?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId,
+		        url: vmsUrl+"/getTotalHosursForBilling?"+tokenParamName+"="+tokenValue+"&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId,
 		        success: function(estimatedHours) {
 		        	$('#'+rowId+'hiddenHours').val(estimatedHours);
 		        	totalHoursCalculateAmount(rowId);
@@ -2366,8 +2380,9 @@ function createInvoiceEmptyClientContact(){
 </script>
  <script>
 	 function selectedClient(){
+		 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 var cid = $("#clientOrgRelationId").val();
-		 window.open(sourceleadUrl+"/addClientContact?cid="+cid,'_blank');
+		 window.open(vmsUrl+"/addClientContact?cid="+cid,'_blank');
 	 }
 </script>
 <!-- <script>

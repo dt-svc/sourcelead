@@ -8,12 +8,17 @@
 <script src="/resources/js/jquery.mask.min.js"></script>
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 
+<script>
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+</script>
+
 <section class="content-wraper">
   <section class="content-header clearfix">
      <div class="pull-left">
      <h2>Add Payment</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/invoiceList'/>">Invoice List</a> &raquo;  Add Payment </div>
+    <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+    <a href="/vms/invoiceList">Invoice List</a> &raquo;  Add Payment </div>
     
     </section>
     <form id= "paymentForm" name="paymentForm" method="post">
@@ -164,13 +169,13 @@ $('#paymentDate').datepicker({
 <script>
   function getInvoiceList(){
 	  var orgRelationId = $("#client").val();
-	   $.ajax({
+	  var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	  $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getInvoiceListForPayment?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&invoiceType=receivable",
+	        url: vmsUrl+"/getInvoiceListForPayment?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&invoiceType=receivable",
 	        success: function(json) {
 	        	
 	        	var result = '';
-         		//result = result +'     <form id ="paymentForm" name ="paymentForm" method="post">'; 
          		result = result +'     <div class="modal-bodyCustom clearfix popupFilter clients_wrap_table">'; 
          	    result = result +'       <table id="invoiceListTable" class="clearfix" cellspacing="0" width="100%" >';
          		result = result +'           <thead>';
@@ -279,31 +284,28 @@ function addInvoice(){
 		 var invoiceIds= []
 		 var amount = "";
 		 $('input:checkbox[name=invoices]:checked').each(function() {
-				//invoiceIdsMap[this.id] =  $("#totalAmountRow"+this.id).val();
 				invoiceIds.push(this.id+"_"+$("#totalAmountRow"+this.id).val()); // pushing values as id_invoice amount to array.
 				amount = $("#totalAmountRow"+this.id).val();
 		     }); 
 		 if(amount !=null && amount !="" && amount !="undefined"){
 		 var formData = getFormData("paymentForm");
-		 $.post(sourceleadUrl+"/saveInvoiceBulkPayment?"+tokenParamName+"="+tokenValue+"&invoiceIds="+invoiceIds,formData,function(result) {
+		 $.post(vmsUrl+"/saveInvoiceBulkPayment?"+tokenParamName+"="+tokenValue+"&invoiceIds="+invoiceIds,formData,function(result) {
 			 	if (result && result.response === "INVALID_DATA") {
           		    showError(result.responseMessage);
           		} else if (result.response === "AWKWARD") {
           		    location.href = "/errorPage";
           		} else if (result.response === "SUCCESS") {
-          			location.replace(sourceleadUrl+"/invoiceList");
+          			location.replace(vmsUrl+"/invoiceList");
           		} else if (result.indexOf('Sign In') !== -1) {
-          			location.replace(sourceleadUrl);
+          			location.replace(vmsUrl);
           		} else {
           		    showError("Operation failed, please try again");
           		}
 	 });
 		 }else{
-			// alert("please select at least one record / Amount should not Empty");
 			 showCheckBoxDivPopup();
 		 }
 		}else{
-			 //alert("Amount Received and Due Total should be same");
 			 showAmountWarningPopup();
 		 }
 	 } 
@@ -327,7 +329,7 @@ function getInvoiceTemplateList() {
 	$("#invoiceTemplateId").empty("");
 	$.ajax({
 		type : "POST",
-		url: sourceleadUrl+"/invoiceTemplateList?orgRelationId=" + orgRelationId + "&orgLocationId=" + responderLocationId,
+		url: vmsUrl+"/invoiceTemplateList?orgRelationId=" + orgRelationId + "&orgLocationId=" + responderLocationId,
 		success : function(data) {
 			$("#invoiceTemplateId").append("<option value='0'>-- Select Invoice Template --</option>");
 			$("#invoiceTemplateId").append("<option value='-1' selected>Default Template</option>");

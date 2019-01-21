@@ -76,6 +76,7 @@ function clientRequirementList(orgRelationId){
 		
 		var orgRelationId =$("#orgRelationId").val();
 		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+		var sourceleadUrl = '${sourceleadUrl}';
 		 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
 			  reqListClientDate = 'YYYY-MM-DD';

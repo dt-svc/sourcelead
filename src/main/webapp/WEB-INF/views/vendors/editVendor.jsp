@@ -17,7 +17,7 @@
 	function editVendorDetails(vendorLocationId,orgRelationId) {
 		      $.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId+"&requestType=Vendor",
+						url : vmsUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId+"&requestType=Vendor",
 						success : function(json) {
 						
 						var result = "";
@@ -388,7 +388,7 @@ function preapareCustomFieldDetails(vendorLocationId,orgRelationId,sectionId){
 	function storeVendorDetails(orgRelationId,vendorLocationId) {
 		if ($('#editClient_form').validate(false, validationSettings)){
              var formData = getFormData("editClient_form");
-		 $.post(sourceleadUrl+"/vendorDetailsUpdateUsingId?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId, formData, function(data) {
+		 $.post(vmsUrl+"/vendorDetailsUpdateUsingId?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId, formData, function(data) {
 			 vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
 		    	//getVendorListsElk();
 		    	getVendorList();
@@ -438,7 +438,7 @@ function preapareCustomFieldDetails(vendorLocationId,orgRelationId,sectionId){
 			// $( "#save_client" ).addClass('button').val('Processing..');
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
+				url : vmsUrl + "/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
 				success : function(data) {
 					var result = data;
 					if (result == "Website Duplicated" || result == "Invalid Website") {
@@ -484,7 +484,7 @@ function validateClientName(vName,orgRelationId){
 	//	$( "#save_client" ).addClass('button').val('Processing..');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+vendorName+"&orgRelationId="+orgRelationId,
+			url : vmsUrl + "/isClientNameValid?"+tokenParamName+"="+tokenValue+"&clientName="+vendorName+"&orgRelationId="+orgRelationId,
 			success : function(data) {
 				var result = data;
 				if (result == true) {

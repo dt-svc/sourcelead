@@ -486,7 +486,6 @@ public class InvoiceController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-		//SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		if(null != countries){
         model.addObject("loginCountryName", countries.getName());
         model.addObject("currencyCode", countries.getCurrency());

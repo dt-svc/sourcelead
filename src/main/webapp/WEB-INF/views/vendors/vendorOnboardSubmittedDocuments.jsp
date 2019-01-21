@@ -10,10 +10,10 @@
 
 <script>
 function vendorOnboardDocumentsList(orgRelationId){
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	  $.ajax({
 	    	type: "GET",
-	    	 url: sourceleadUrl+"/getVendorOnboardDocumentByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
+	    	 url: vmsUrl+"/getVendorOnboardDocumentByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
 	        success: function(json) {
 	        	var result = "";
 	        	result = result +'	 <div class="row">';
