@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +38,14 @@ public class EmailReminderServiceImpl implements EmailReminderService {
 	@SuppressWarnings("null")
 	@Override
 	public EmailReminder saveEmailReminderDetails(EmailReminderDTO emailReminderDTO, User user, OrgLocations orgLocations) throws Exception {
-		EmailReminder emailReminder = new EmailReminder();
+		EmailReminder emailReminder = null;
 		if(emailReminderDTO.getId() != null) {
+			emailReminder = emailReminderDao.getEmailReminderById(emailReminderDTO.getId());
 			emailReminder.setId(emailReminderDTO.getId());
 			emailReminder.setUpdatedBy(user);
 			emailReminder.setUpdatedDate(new Date());
 		}else {
+			emailReminder = new EmailReminder();
 			emailReminder.setCreatedBy(user);
 			emailReminder.setCreatedDate(new Date());
 		}
@@ -61,12 +64,20 @@ public class EmailReminderServiceImpl implements EmailReminderService {
 		if(emailReminderDTO.getEmailReminderHierarchyList().size() > 0) {
 			List<EmailReminderHierarchy> emailReminderHierarchyList = new ArrayList<>();
 			int level = 0;
+			List<Long> updatedIds = new ArrayList<>();
 			for(EmailReminderHierarchyDTO emailReminderHierarchyDTO : emailReminderDTO.getEmailReminderHierarchyList()) {
+				
 				if(emailReminderHierarchyDTO != null && emailReminderHierarchyDTO.getReminderdays() != null && !StringUtils.isBlank(emailReminderHierarchyDTO.getRemindertime())) {
-					level = level+1;
+					if(null != emailReminderHierarchyDTO.getId()) {
+						updatedIds.add(emailReminderHierarchyDTO.getId());
+					}
+					
 					EmailReminderHierarchy emailReminderHierarchy = new EmailReminderHierarchy();
+					level = level+1;
 					if(emailReminderHierarchyDTO.getId() != null) {
 						emailReminderHierarchy.setId(emailReminderHierarchyDTO.getId());
+						emailReminderHierarchy.setCreatedBy(user);
+						emailReminderHierarchy.setCreateddate(new Date());
 						emailReminderHierarchy.setUpdatedBy(user);
 						emailReminderHierarchy.setUpdatedDate(new Date());
 					}else {
@@ -81,6 +92,17 @@ public class EmailReminderServiceImpl implements EmailReminderService {
 					emailReminderHierarchyList.add(emailReminderHierarchy);
 				}
 			}
+			//deactivate removed hierarchy items
+			if(emailReminder != null && emailReminder.getEmailReminderHierarchyList() != null)
+			for(EmailReminderHierarchy erh : emailReminder.getEmailReminderHierarchyList()) {
+				if(!updatedIds.contains(erh.getId())) {
+					erh.setStatus(Constants.RECORD_INACTIVE);
+					erh.setUpdatedBy(user);
+					erh.setUpdatedDate(new Date());
+					emailReminderHierarchyList.add(erh);
+				}
+			}
+			
 			emailReminder.setEmailReminderHierarchyList(emailReminderHierarchyList);
 		}
 		

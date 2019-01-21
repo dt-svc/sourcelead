@@ -91,6 +91,17 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 	
 	private String employeeid;
 	
+	private String departmentName;
+	
+	private BigDecimal currentHours;
+	
+	private BigDecimal ytdTaxes;
+	
+	private BigDecimal deducationAmount;
+	
+	private BigDecimal ytdNetPay;
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -412,4 +423,45 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 	public void setEmployeeid(String employeeid) {
 		this.employeeid = employeeid;
 	}
+
+	public String getDepartmentName() {
+		return departmentName;
+	}
+
+	public void setDepartmentName(String departmentName) {
+		this.departmentName = departmentName;
+	}
+
+	public BigDecimal getCurrentHours() {
+		return currentHours;
+	}
+
+	public BigDecimal getYtdTaxes() {
+		return ytdTaxes;
+	}
+
+	public BigDecimal getDeducationAmount() {
+		return deducationAmount;
+	}
+
+	public BigDecimal getYtdNetPay() {
+		return ytdNetPay;
+	}
+
+	public void setCurrentHours(BigDecimal currentHours) {
+		this.currentHours = currentHours;
+	}
+
+	public void setYtdTaxes(BigDecimal ytdTaxes) {
+		this.ytdTaxes = ytdTaxes;
+	}
+
+	public void setDeducationAmount(BigDecimal deducationAmount) {
+		this.deducationAmount = deducationAmount;
+	}
+
+	public void setYtdNetPay(BigDecimal ytdNetPay) {
+		this.ytdNetPay = ytdNetPay;
+	}
+	
 }

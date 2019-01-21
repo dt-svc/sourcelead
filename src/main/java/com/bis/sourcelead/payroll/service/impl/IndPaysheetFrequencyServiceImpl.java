@@ -246,5 +246,10 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 	public ResponseList<IndEmployeePayroll> getPayrollRegisterReports(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations) {
 		return indPaysheetFrequencyDao.getPayrollRegisterReports(indEmployeePayrollDTO, orgLocations);
 	}
+
+	@Override
+	public List<IndEmployeePayroll> getYTDIndEmployeePayrollList(String employeePayRollUUID) throws Exception {
+		return indPaysheetFrequencyDao.getYTDIndEmployeePayrollList(employeePayRollUUID);
+	}
  
 }

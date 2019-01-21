@@ -13,7 +13,7 @@
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard
 </a> &raquo; India Payroll Reports</div>
     </section>
-    <div class="content-area content-new clearfix">
+    <div class="content-area content-new clearfix reportNewDash">
       <div class="clearfix form-horizontal inner-content mt mb col-md-12">
         <div class="leaveConfigure clerfix">
           <div class="col-md-3">
