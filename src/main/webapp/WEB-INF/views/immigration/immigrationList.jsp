@@ -18,7 +18,7 @@
    
     <section class="content-header clearfix">
       <div class="pull-left"><h2>Petition List</h2></div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Petition List</div>
+      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Petition List</div>
 	<div class="clearfix"></div>
     </section>    
     
@@ -27,10 +27,10 @@
 	    <ul class="project-tabs-menu">
 		   
 		   <sec:authorize access="hasAnyRole(\'ROLE_ADD_LCA\',\'ROLE_VIEW_LCA\',\'ROLE_VIEW_EDIT_LCA\',\'ROLE_VIEW_DELETE_LCA\',\'ROLE_IMPORT_LCA\',\'ROLE_EXPORT_LCA\')">
-		    <li class=""><a href="${appPath}/immigration/viewLCAList">LCA List</a></li>
+		    <li class=""><a href="/vms/immigration/viewLCAList">LCA List</a></li>
 		   </sec:authorize> 
 		   
-		   <li class="current"><a href="/app/immigration/viewImmigrationList">Petition List</a></li>
+		   <li class="current"><a href="/vms/immigration/viewImmigrationList">Petition List</a></li>
 		   
 	    </ul>
     </div>
@@ -229,7 +229,7 @@
       <ul class="pull-right list-unstyled list-inline">
       <%--  <a href="${appPath}/immigration/viewLCAList" class="btn btn-success btnSuccess anchorWhite btn-sm"><i class="paddingRight"></i> LCA List</a> --%>
       		<sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION')">
-            <li><a href="${appPath}/immigration/loadNewPetition" class="action newAdBtn mr5">+ New </a></li>
+            <li><a href="/vms/immigration/loadNewPetition" class="action newAdBtn mr5">+ New </a></li>
 			</sec:authorize>
 				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a></li>
 				
@@ -237,7 +237,7 @@
 				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
-	                 		<a href="/app/uploadImmigrationForm">Import</a>
+	                 		<a href="/vms/uploadImmigrationForm">Import</a>
 							<a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a>
 						</span>
 						<!-- <span>
@@ -349,14 +349,16 @@
 
 <script>
 		function exportToPdf(){
-			window.location.href = sourceleadUrl+"/immigration/getImmigrationListExport?"+tokenParamName+"="+tokenValue+"&exportType=pdf";
+			var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+			window.location.href = vmsUrl+"/immigration/getImmigrationListExport?"+tokenParamName+"="+tokenValue+"&exportType=pdf";
 		}
 		
 		function exportToExcel(){
+			var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			if (!table.data().count() ) {
 			    alert( 'Empty table' );
 			}else{
-				window.location.href = sourceleadUrl+"/immigration/getImmigrationListExport?"+tokenParamName+"="+tokenValue+"&exportType=excel";
+				window.location.href = vmsUrl+"/immigration/getImmigrationListExport?"+tokenParamName+"="+tokenValue+"&exportType=excel";
 			}
 		}
 
@@ -565,16 +567,16 @@
      $("#dynamicImmigrationListViewDiv").empty();
      $("#dynamicImmigrationListViewDiv").append(result);
 
-     var sourceleadUrl = '${sourceleadUrl}';
+     var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 //     var statusFilter = $("#statusFilter").val();
      var searchValue = $("#immiListSerach").val();
      searchValue = searchValue ? searchValue : "";
      var url ="";
      if(DashBoardFilterStatus !== null && typeof DashBoardFilterStatus !='undefined'){
-    	 url = sourceleadUrl + "/immigration/getImmigrationDashBoardFilterList?filterStatus="+DashBoardFilterStatus; 
+    	 url = vmsUrl + "/immigration/getImmigrationDashBoardFilterList?filterStatus="+DashBoardFilterStatus; 
      }
      else{
-      url = sourceleadUrl + "/immigration/getImmigrationViewList?searchValue=" + searchValue+"&filterAttorneyVal="+filterAttorneyVal+"&filterTypeVal="+filterTypeVal+"&filterStatusVal="+filterStatusVal+"&filterDurationVal="+filterDurationVal+"&orgTypeVal="+orgTypeVal;
+      url = vmsUrl + "/immigration/getImmigrationViewList?searchValue=" + searchValue+"&filterAttorneyVal="+filterAttorneyVal+"&filterTypeVal="+filterTypeVal+"&filterStatusVal="+filterStatusVal+"&filterDurationVal="+filterDurationVal+"&orgTypeVal="+orgTypeVal;
      }
      dynamicImmigrationListPagination(url);
  }
@@ -629,7 +631,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.generatedId !== null && opt.generatedId !== '' && opt.generatedId !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.generatedId+"'><a href=/app/immigration/viewImmigration?immigrationUUID="+opt.immigrationUUID+"&candidateUUID="+opt.candidateUUID+"&immiTemplateUUID="+opt.immiTemplateUUID+"&myImmigrationPage=N>"+opt.generatedId+"</a></div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.generatedId+"'><a href=/vms/immigration/viewImmigration?immigrationUUID="+opt.immigrationUUID+"&candidateUUID="+opt.candidateUUID+"&immiTemplateUUID="+opt.immiTemplateUUID+"&myImmigrationPage=N>"+opt.generatedId+"</a></div></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
                      }
@@ -764,7 +766,7 @@
                 	 }
                      var result = "";
                      '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_VIEW_PETITION\')">';
-                     result = result + '<td><div><a href=/app/immigration/editImmigrationDetails?immigrationUUID='+opt.immigrationUUID+'><i id="edit' + opt.immigrationUUID + '" class="glyphicon glyphicon-pencil"></i></a>';
+                     result = result + '<td><div><a href=/vms/immigration/editImmigrationDetails?immigrationUUID='+opt.immigrationUUID+'><i id="edit' + opt.immigrationUUID + '" class="glyphicon glyphicon-pencil"></i></a>';
                      '</sec:authorize>';
                       '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PETITION\')">';
                      result = result + '<i id="delete' + opt.immigrationUUID + '" onclick="deleteImmigrationListId(\''+opt.immigrationUUID+'\');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
@@ -818,10 +820,11 @@
 	}
  
  function changeSaveUscisStatus(idVal,templateId,uscisOldId){
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var uscisId = idVal.val();
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/immigration/updateUscisTypeDropDown?templateId="+templateId+"&uscisId="+uscisId+"&uscisOldId="+uscisOldId, 
+	        url: vmsUrl+"/immigration/updateUscisTypeDropDown?templateId="+templateId+"&uscisId="+uscisId+"&uscisOldId="+uscisOldId, 
 	        success: function(data) {
 	        	if(data == "success"){
 	        		//getDynamicImmigrationList();
@@ -885,9 +888,10 @@
 	}
 	
 	function getPetitionTypeDropDown(){
-		 $.ajax({
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+		$.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+immiModulePath+"/getPetitionTypeDropDown", 
+		        url: vmsUrl+immiModulePath+"/getPetitionTypeDropDown", 
 		        success: function(data) {
 		        	$('#typeFilter').empty();
 		            for(var i=0;i<data.length;i++){
@@ -923,9 +927,10 @@
 	 }
 	
 	function getUscisTypeDropDown(){
-		 $.ajax({
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+		$.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+immiModulePath+"/getUscisTypeDropDown", 
+		        url: vmsUrl+immiModulePath+"/getUscisTypeDropDown", 
 		        success: function(data) {
 		        	$('#statusFilter').empty();
 		            for(var i=0;i<data.length;i++){

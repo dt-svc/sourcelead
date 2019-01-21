@@ -15,10 +15,12 @@
       </div>
       <c:choose>
 	   		<c:when test="${myImmigrationPage =='Y'}">
-	   			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/myImmigration">My Immigrations List</a> &raquo; New Petition</div>
+	   			<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+	   			<a href="/vms/immigration/myImmigration">My Immigrations List</a> &raquo; New Petition</div>
 			</c:when>
 			<c:otherwise>
-				<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Petition List</a>&raquo; New Petition</div>
+				<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; 
+				<a href="/vms/immigration/viewImmigrationList">Petition List</a>&raquo; New Petition</div>
 			</c:otherwise>
 		</c:choose>
       
@@ -30,7 +32,7 @@
   <c:set var = "immigrationIdCode" scope = "page" value = '<%= session.getAttribute("immigrationIdCode")%>'/>
   <script type="text/javascript">
   $( document ).ready(function() {
-	  $("#newPetitionTemplateDiv").load("/app/immigration/loadNewPetitionPage?forward=petitionDetails&immigrationUUID=${immigrationUUID}");
+	  $("#newPetitionTemplateDiv").load("/vms/immigration/loadNewPetitionPage?forward=petitionDetails&immigrationUUID=${immigrationUUID}");
 	  console.info("inside new petition template jsp------>");
 	  /* $("#newPetitonPageTwoDiv").hide(); */
 	

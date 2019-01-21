@@ -266,7 +266,7 @@ $('#lcaEndDate').datepicker({
 <script type="text/javascript">
 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 var finalDateFormatOrg = getOrgDateFormat(locationDate);
-
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
  $("#lcaNumberAuto").autocomplete({ 
 	 minLength: 2, 
 	 source : function(request, response) {
@@ -292,7 +292,7 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 		 
 			 $.ajax({
 			    	type: "GET",
-			        url: sourceleadUrl+immiModulePath+"/getLcaByLcaId?id="+ui.item.value, 
+			        url: vmsUrl+immiModulePath+"/getLcaByLcaId?id="+ui.item.value, 
 			        success: function(data) {
 			        	
 			        	if(data.lcaLocation != null && typeof data.lcaLocation != 'undefined' && data.lcaLocation !=''){

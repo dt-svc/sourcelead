@@ -108,7 +108,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/app/immigration")
+@RequestMapping("/immigration")
 public class ImmigrationRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ImmigrationRestController.class);
@@ -169,9 +169,9 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/viewImmigrationList" })
 	public ModelAndView loadImmigrationList(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
-		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
-				.getAttribute("sessionData");
-		sessionData.setNav(Constants.Immigrations);
+//		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
+//				.getAttribute("sessionData");
+//		sessionData.setNav(Constants.Immigrations);
 
 		// CandidatePassportVisa candidatePassportVisa =
 		// immigrationCommonService.getCandidatePassportVisaByIdAndIdNumber(id,
@@ -194,9 +194,9 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/myImmigration" })
 	public ModelAndView loadMyImmigration(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
-		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
-				.getAttribute("sessionData");
-		sessionData.setNav(Constants.My_Immigration);
+//		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
+//				.getAttribute("sessionData");
+//		sessionData.setNav(Constants.My_Immigration);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("/immigration/myImmigration");
 		return model;

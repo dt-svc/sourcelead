@@ -1089,6 +1089,7 @@ $("input[id='candidateNameEmail']").focusout(function(){
 });
 
 function resetBeneficiaryDetails(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$("#candidateNameEmail").val("");
 	$("#firstName").val("");
 	$("#lastName").val("");
@@ -1113,7 +1114,7 @@ function resetBeneficiaryDetails(){
 			minLength: 2, 
 			source : function(request, response) {
 				$.ajax({
-					url :sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation",
+					url :vmsUrl+immiModulePath+"/getAllActiveCandidatesByLocation",
 					type : "GET",
 					data : {
 						name : request.term,
@@ -1131,7 +1132,7 @@ function resetBeneficiaryDetails(){
 				$("#candidateNameEmail").attr("selecedVal", ui.item.label); //this value will be compared when refoces on input.
 				 $.ajax({
 				    	type: "GET",
-				        url: sourceleadUrl+immiModulePath+"/getCandidateById?id="+ui.item.value, 
+				        url: vmsUrl+immiModulePath+"/getCandidateById?id="+ui.item.value, 
 				        success: function(candidateObj) {
 				        	$("#firstName").val(candidateObj.firstName);
 				    		$("#lastName").val(candidateObj.lastName);
@@ -1186,11 +1187,11 @@ function deleteResumeDoc(){
 
 // to get the resume details for the candidate.
 function getCandidatesResumeDetailsById(candidateId){
-	 console.log(" before getCandidatesResumeDetailsById function calling ---->"+candidateId);
-	 urltest = sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation";
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	 var urltest = sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation";
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+immiModulePath+"/getCandidatesResumeDetailsById?candidateId="+candidateId, 
+		        url: vmsUrl+immiModulePath+"/getCandidatesResumeDetailsById?candidateId="+candidateId, 
 		        /* data:, */
 		        success: function(data) {
 		        	if(data.fileName != null){
@@ -1221,9 +1222,10 @@ $("#experienceValue").change(function () {
 	<script>
 	
 	function getPetitionTypeDropDown(petitionType){
-		 $.ajax({
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+		$.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+immiModulePath+"/getPetitionTypeDropDown", 
+		        url: vmsUrl+immiModulePath+"/getPetitionTypeDropDown", 
 		        success: function(data) {
 		        	$('#petitionType').empty();
 		        	$('#petitionType').append('<option selected value="">--Select Type --</option>');
@@ -1241,9 +1243,10 @@ $("#experienceValue").change(function () {
 	}
 	
 	function getUscisTypeDropDown(status){
-		 $.ajax({
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+		$.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+immiModulePath+"/getUscisTypeDropDown", 
+		        url: vmsUrl+immiModulePath+"/getUscisTypeDropDown", 
 		        success: function(data) {
 		        	$('#currUscisStatus').empty();
 		        	$('#currUscisStatus').append('<option selected value="">--Select Type --</option>');
@@ -1261,9 +1264,10 @@ $("#experienceValue").change(function () {
 	}
 	
 	function employmentLevelDropDown(employmentLevelId){
-		 $.ajax({
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}'; 
+		$.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+immiModulePath+"/getEmploymentLevelDropDown", 
+		        url: vmsUrl+immiModulePath+"/getEmploymentLevelDropDown", 
 		        success: function(data) {
 		        	$('#employmentLevel').empty();
 		        	$('#employmentLevel').append('<option value="">--Select Type --</option>');
@@ -1281,6 +1285,7 @@ $("#experienceValue").change(function () {
 	}
 	
 	function jobTitleDropDown(jobId){
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}'; 
 		if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
 			var locationId = responderLocationId;
 			}else{
@@ -1288,7 +1293,7 @@ $("#experienceValue").change(function () {
 			}
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+immiModulePath+"/getJobTitleDropDown?locationId="+locationId, 
+		        url: vmsUrl+immiModulePath+"/getJobTitleDropDown?locationId="+locationId, 
 		        success: function(data) {
 		        	$('#jobId').empty();
 		        	$('#jobId').append('<option value="">--Select Type --</option>');
@@ -1361,6 +1366,7 @@ $("#experienceValue").change(function () {
  }
  var responderLocationId = null;
  function getAttorneyContactList(attorneyId,attorneyContactId){
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var orgRelationID = null;
 	 var reponsderLocId = $('option:selected', '#attorneyId').attr('attrval');
 	 responderLocationId = reponsderLocId;
@@ -1391,7 +1397,7 @@ $("#experienceValue").change(function () {
 	 	
 			 $.ajax({
 				    type: "POST",
-			        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type="+type,  
+			        url: vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type="+type,  
 			        success: function(json) {
 			        	$('#attorneyContact').empty();
 			        	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
@@ -1699,13 +1705,14 @@ function  removeValidationAttorneyContact() {
 
 <!-- LcaNumber AutoPopulate Ui script -->
 <script type="text/javascript">
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 var finalDateFormatOrg = getOrgDateFormat(locationDate);
  $("#lcaNumber").autocomplete({ 
 	 minLength: 2, 
 	 source : function(request, response) {
 		 $.ajax({
-			 url :sourceleadUrl+immiModulePath+ "/getLcaNumbersList",
+			 url :vmsUrl+immiModulePath+ "/getLcaNumbersList",
 			 type : "GET",
 			 data : {
 				 lcaNum : request.term,
@@ -1726,7 +1733,7 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 		 	
 			 $.ajax({
 			    	type: "GET",
-			        url: sourceleadUrl+immiModulePath+"/getLcaByLcaId?id="+ui.item.value, 
+			        url: vmsUrl+immiModulePath+"/getLcaByLcaId?id="+ui.item.value, 
 			        success: function(data) {
 			        	
 			        	if(data.lcaLocation != null && typeof data.lcaLocation != 'undefined' && data.lcaLocation !=''){
@@ -1785,13 +1792,14 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 </script> 
 
 <script type="text/javascript">
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 var finalDateFormatOrg = getOrgDateFormat(locationDate);
  $("#prevLcaNumber").autocomplete({ 
 	 minLength: 2, 
 	 source : function(request, response) {
 		 $.ajax({
-			 url :sourceleadUrl+immiModulePath+ "/getLcaNumbersList",
+			 url :vmsUrl+immiModulePath+ "/getLcaNumbersList",
 			 type : "GET",
 			 data : {
 				 lcaNum : request.term,
@@ -1809,7 +1817,7 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 		 	$("#prevLcaNumber").attr("selecedVal", ui.item.label);
 			 $.ajax({
 			    	type: "GET",
-			        url: sourceleadUrl+immiModulePath+"/getLcaByLcaId?id="+ui.item.value, 
+			        url: vmsUrl+immiModulePath+"/getLcaByLcaId?id="+ui.item.value, 
 			        success: function(data) {
 			    		// setting the startDate,endDate for current Lca.
 			    		 if(data.lcaStartDateStr != null && typeof  data.lcaStartDateStr != 'undefined' && data.lcaStartDateStr!=''){

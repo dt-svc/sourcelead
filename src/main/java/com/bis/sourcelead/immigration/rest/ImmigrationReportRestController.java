@@ -42,7 +42,6 @@ import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/app")
 public class ImmigrationReportRestController {
 	
 	@Value("${sourceleadUrl}")

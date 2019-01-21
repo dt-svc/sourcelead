@@ -335,18 +335,20 @@ function getAllRelationssByOrgLocation(){
 
 <script>
 function exportPetitionReportPdf(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var searchValue = $("#payrollRegisterSearch").val();
 	var payGroup = $('#payGroup').val();
 	var department = $('#payrollDepartment').val();
 	var payRollType = $('#payRollType').val();
 	var freqStartDate = $('#custFromDate').val();
 	var freqEndDate = $('#custToDate').val();
-    window.location.href = sourceleadUrl+"/exportPetitionReportPdf?&payGroup="+payGroup+"&department="+department+"&payRollType="+payRollType+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
+    window.location.href = vmsUrl+"/exportPetitionReportPdf?&payGroup="+payGroup+"&department="+department+"&payRollType="+payRollType+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
 }
 </script>
 
 <script type="text/javascript">
 function runImmigrationReport(){
+	     var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	     var validationSettings = {
 	             errorMessagePosition: 'element',
 	             borderColorOnError: '',
@@ -389,7 +391,7 @@ function runImmigrationReport(){
 	 			}
 	 		}
 	    	 
-        	var url = sourceleadUrl+ "/runImmigrationReport?&searchValue="+searchValue+"&petitionType="+petitionType+"&petitionStatus="+petitionStatus+"&dateFrequency="+dateFrequency+"&attorneyId="+attorneyId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate;
+        	var url = vmsUrl+ "/runImmigrationReport?&searchValue="+searchValue+"&petitionType="+petitionType+"&petitionStatus="+petitionStatus+"&dateFrequency="+dateFrequency+"&attorneyId="+attorneyId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate;
             $("#immigrationReport").show(); 
             prepareImmigrationReportList(url);
 	     }
@@ -633,7 +635,7 @@ function resetImmForm(){
 <!-- =============== Pdf and  Excel Export by prasad k =================== -->
 <script>
 	function petitionExport123(type){
-		
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 if(type == "Pdf"){
 			exportType = "pdf";
 		}else{
@@ -663,7 +665,7 @@ function resetImmForm(){
 	    		 dateFrequency = "";
 	    	 }
 	    	
-			window.location.href = sourceleadUrl+ "/exportPetitionReportPdf?&searchValue="+searchValue+"&petitionType="+petitionType+"&petitionStatus="+petitionStatus+"&dateFrequency="+dateFrequency+"&attorneyId="+attorneyId+"&exportType="+exportType; 
+			window.location.href = vmsUrl+ "/exportPetitionReportPdf?&searchValue="+searchValue+"&petitionType="+petitionType+"&petitionStatus="+petitionStatus+"&dateFrequency="+dateFrequency+"&attorneyId="+attorneyId+"&exportType="+exportType; 
 	   }
 	}
 </script>

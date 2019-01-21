@@ -348,12 +348,13 @@
 
 	/* Document Category Selection  in immigration template creation */
 	function getDocumentType(id,rowId){
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var docType = id.value;
 		$('#candidateEducation'+rowId).empty();
 		
 		 $.ajax({
 	            type: "POST",
-	            url:sourceleadUrl+immiModulePath +"/getDcoumentType?"+tokenParamName +"="+tokenValue+"&docType="+docType,
+	            url:vmsUrl+immiModulePath +"/getDcoumentType?"+tokenParamName +"="+tokenValue+"&docType="+docType,
 	            success: function (json) {
 	            	 $('#candidateEducation'+rowId).append('<option selected value="">--Select Document--</option>');
 	            	 for (var i = 0; i < json.length; i++) {

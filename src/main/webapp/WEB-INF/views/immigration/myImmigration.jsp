@@ -18,7 +18,7 @@
    
     <section class="content-header clearfix">
       <div class="pull-left"><h2>Petition List</h2></div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; My Immigrations List</div>
+      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; My Immigrations List</div>
 	<div class="clearfix"></div>
     </section>    
     
@@ -311,9 +311,9 @@
      $("#dynamicImmigrationListViewDiv").empty();
      $("#dynamicImmigrationListViewDiv").append(result);
 
-     var sourceleadUrl = '${sourceleadUrl}';
+     var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 //     var statusFilter = $("#statusFilter").val();
-     var url = sourceleadUrl + "/immigration/getMyImmigrationList";
+     var url = vmsUrl + "/immigration/getMyImmigrationList";
      dynamicImmigrationListPagination(url);
  }
  //var count = 0;

@@ -317,9 +317,10 @@ document.getElementById("uploadBtnEmployer").onchange = function () {
 
 <script type="text/javascript">
 function removeImmiEmpDocFile(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var id = $("#candidateEmpId").val();
 	$.ajax({
-        url: sourceleadUrl + immiModulePath + "/deleteImmigrationEmployerDocumentById?id="+id,
+        url: vmsUrl + immiModulePath + "/deleteImmigrationEmployerDocumentById?id="+id,
         type: "GET",
         success: function (result) {
         if(result=='success'){
