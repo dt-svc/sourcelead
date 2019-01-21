@@ -140,7 +140,7 @@
 	                 
 	                 
 	                 <c:if test="${userTabs.tabName == 'Contracts'}">
-	                   <li class="${sessionData.nav == 'Contract' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/contractListbyStatus'/>" title="Contracts"><span class="navIcons contIcon"></span><b>Contracts</b></a></li>
+	                   <li class="${sessionData.nav == 'Contract' ? 'navActive' : ''}"><a href="/vms/contractListbyStatus" title="Contracts"><span class="navIcons contIcon"></span><b>Contracts</b></a></li>
 	                </c:if> 
 	                
 	                <c:if test="${SourceLeadWeb_billingTabsCount == 2 && userTabs.tabName == 'Receivable'}">

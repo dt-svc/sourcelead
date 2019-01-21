@@ -16,6 +16,7 @@
 
 <script>
 		$(document).ready(function() {
+			var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 			  var sectionId = '${section.id}';
 			  getCustomDependentField(sectionId);
@@ -86,12 +87,12 @@
       <div class="pull-left">
         <h2>New Contract</h2>
       </div>
-     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/contractListbyStatus'/>">Contracts</a> &raquo; New Contract</div>
+     <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="/vms/contractListbyStatus">Contracts</a> &raquo; New Contract</div>
     </section>
     <div class="content-area content-new clearfix">
      <div id="contractLoading"></div>
      <form:form id="newcontract_form" name="newcontract_form" method="post">
-     <input type="hidden" id="actionId" value="${actionId}">
+     <input type="hidden" id="actionId" value="${actionId}"/>
       <div class="clearfix form-horizontal">
        
         <div class="row newContrWrap">
@@ -183,7 +184,7 @@
 					 <span class="input-group-addon cursorPointer bg-blue" onclick="getContractTemplates();"><i class="fa fa-refresh "></i></span>
 					 </div>
 					  <sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')"> 
-					 <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/addContractTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>           
+					 <span class="col-md-2 noPad clearfix"><a href="/app/addContractTemplate" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>           
                    </sec:authorize>
                   <c:choose>
 				    <c:when test="${fn:length(contractsTemplateList) gt 0}">
@@ -856,10 +857,11 @@
           </div>
         </div>
       </div>
-      </div>
+<!--       </div> -->
       <!-- Content Area Ends--> 
-    </div>
+<!--     </div> -->
     </form:form>
+    </div>
   </section>
 
 <div class="comMask"></div>
@@ -891,7 +893,7 @@ function closeVpec(){
 <script>
 function getCustomDependentField(sectionId){
 	var contractId = '${contract.id}';
-	
+	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 			type : "POST" , 
 				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId+"&contractId="+contractId+"&requestFrom=contract",
@@ -1027,10 +1029,10 @@ function getSequentialApprovers(){
 });
 	
 function removeDocument(id){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
      type : "POST",
-      url: sourceleadUrl+"/terminateDocument?${_csrf.parameterName}=${_csrf.token}&docuId="+id,       
+      url: vmsUrl+"/terminateDocument?${_csrf.parameterName}=${_csrf.token}&docuId="+id,       
       success :function(data) {
       	    $("#tr"+id).empty();
      },
@@ -1146,10 +1148,10 @@ function getVendorContacts(spocUserCode){
 	$('#errorVendor').find('p.jquery_form_error_message').remove();
 	var orgRelationId = $("#orgRelationId").val();
 	if("" != orgRelationId){
-		var sourceleadUrl ='${sourceleadUrl}';
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 $.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Vendor",       
+	       url: vmsUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Vendor",       
 	       success :function(data) {
 	    	var json = JSON.parse(data);
 	       	var output = "";
@@ -1185,10 +1187,10 @@ function getClientContacts(spocUserCode){
 	$('#errorClient').find('p.jquery_form_error_message').remove();
 	var orgRelationId = $("#clientOrgRelationId").val();
 	if("" != orgRelationId){
-		var sourceleadUrl ='${sourceleadUrl}';
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		$.ajax({
 			type : "GET",
-			url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Client",
+			url: vmsUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Client",
 			success :function(data) {
 				var json = JSON.parse(data);
 				var output = "";
@@ -1233,9 +1235,9 @@ function previewTemplateEye(){
 function previewTemplatePDF(){
 	var uuid = $("#template").children(":selected").attr("id");
 	var templateName = $("#template").children(":selected").text();
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	if(uuid != null && uuid != ""){
-		window.open(sourceleadUrl+'/viewContractTemplatePdf/'+uuid+'/'+templateName+'','_newtab');
+		window.open(vmsUrl+'/viewContractTemplatePdf/'+uuid+'/'+templateName+'','_newtab');
 	}
 }
 </script>
@@ -1403,10 +1405,10 @@ function getContractTemplates(){
 		document.getElementById("workLocationDiv").style.display="block";
 		  document.getElementById("offerRateDiv").style.display="none";
 	}
- 	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
      type : "GET",
-      url: sourceleadUrl+"/getContractsTemplatesByContractType?${_csrf.parameterName}=${_csrf.token}&contractType="+contractType,       
+      url: vmsUrl+"/getContractsTemplatesByContractType?${_csrf.parameterName}=${_csrf.token}&contractType="+contractType,       
       success :function(data) {
     	var json = JSON.parse(data);
       	var output = "";
@@ -1974,17 +1976,17 @@ function hideCommonSOWFields(){
 	function saveNewContract(saveType) {
 		if ($('#newcontract_form').validate(false, validationSettings)) {
 			var formData = getFormData1("newcontract_form");
-			var sourceleadUrl = '${sourceleadUrl}';
+			var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			$("#contractLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 				type : "POST",
 				data: formData,
   		        processData: false,
   		        contentType:false, 
-				url : sourceleadUrl+ "/saveNewContract?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType,
+				url : vmsUrl+ "/saveNewContract?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType,
 				success : function(data) {
 					  if(data == true){
-                   	   location.replace(sourceleadUrl+"/contractListbyStatus");
+                   	   location.replace(vmsUrl+"/contractListbyStatus");
                       }
 				  }
               });
@@ -2006,10 +2008,10 @@ function hideCommonSOWFields(){
 	function getRequirements(sowType){
 		 $('#errorAppDiv').empty();
 		$("#requirementsList").empty();
-		var sourceleadUrl ='${sourceleadUrl}';
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		$.ajax({
 	        type : "GET",
-	        url: sourceleadUrl+"/getRequirementsForSOWByOrgLocationId?sowType="+sowType,    
+	        url: vmsUrl+"/getRequirementsForSOWByOrgLocationId?sowType="+sowType,    
 	         success :function(data) {
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
@@ -2036,7 +2038,7 @@ function hideCommonSOWFields(){
 		
 	function submissionOffers(){
 		 $('#errorAppDiv').empty();
-		var sourceleadUrl ='${sourceleadUrl}';
+		 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var requirementId = $("#requirementsList").val();
 		var sowType = $("#contractType").val();
 		$("#flatReward").val("");
@@ -2044,7 +2046,7 @@ function hideCommonSOWFields(){
 	    $("#billingRatePer").val("").trigger('change');
 		$.ajax({
 	        type : "GET",
-	        url: sourceleadUrl+"/getSubmissionsForSOWByRequirementId?&requirementId="+requirementId+"&sowType="+sowType,    
+	        url: vmsUrl+"/getSubmissionsForSOWByRequirementId?&requirementId="+requirementId+"&sowType="+sowType,    
 	         success :function(data) {
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
@@ -2082,13 +2084,13 @@ function hideCommonSOWFields(){
 	}
 	function getApplicantSubmission(){
 		$('#errorAppDiv').empty();
-		var sourceleadUrl ='${sourceleadUrl}';
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var reqSubId = $("#submissionOffersList").val();
 		var contractType = $("#contractType").val();
 		
 		$.ajax({
 	        type : "GET",
-	        url: sourceleadUrl+"/validateRequirementSubmission?reqSubId="+reqSubId+"&contractType="+contractType,    
+	        url: vmsUrl+"/validateRequirementSubmission?reqSubId="+reqSubId+"&contractType="+contractType,    
 	         success :function(data) {
 	        	 if(data == true){
 	        	//	 $("#submissionOffersListDiv").after("<p class='jquery_form_error_message'>Existed applicant</p>");
@@ -2099,7 +2101,7 @@ function hideCommonSOWFields(){
 
 	}
 	function getOfferRate(){
-		var sourceleadUrl ='${sourceleadUrl}';
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var reqSubId = $("#submissionOffersList").val();
 		var locationId = '${SourceLeadWeb_orgLocationId}';
 		var sowType = $("#contractType").val();
@@ -2110,7 +2112,7 @@ function hideCommonSOWFields(){
 		}
 		$.ajax({
 	        type : "GET",
-	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId+"&locationId="+locationId,    
+	        url: vmsUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId+"&locationId="+locationId,    
 	         success :function(data) {
 		              if(data != null && data != 'undefined' && data != "" && data != '[]' && data != '{}'){
 		            	  var json = JSON.parse(data);
@@ -2165,12 +2167,13 @@ function hideCommonSOWFields(){
 	}
 	
 	function getVendor(){
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var reqSubId = $("#submissionOffersList").val();
 		var sowType = $("#contractType").val();
 		if(sowType == "Vendor SOW"){
 			$.ajax({
 		        type : "GET",
-		        url: sourceleadUrl+"/getVendorForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
+		        url: vmsUrl+"/getVendorForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
 		         success :function(json) {
 	              if(json != null && json != 'undefined' && json != "" && json != '[]'){
 // 	            	 var json = JSON.parse(data);
@@ -2434,11 +2437,11 @@ function validateContractTitle(){
 	var contractTitle = $('#contractTitle').val();
 	var contractType = $('#contractType').val();
 	var contractId = $('#contrId').val();
-	 var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 if(contractTitle != null && contractTitle != "" && contractType != null && contractType != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateContractTitle?${_csrf.parameterName}=${_csrf.token}&contractTitle="+contractTitle+"&contractType="+contractType+"&contractId="+contractId, 
+		        url: vmsUrl+"/validateContractTitle?${_csrf.parameterName}=${_csrf.token}&contractTitle="+contractTitle+"&contractType="+contractType+"&contractId="+contractId, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		 // $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
@@ -2498,11 +2501,11 @@ function removePaymentvalidation(){
 
 <script>
 function refreshVendorList(){
-		 var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 var selectedOrgId = '${contract.orgRelations.id}';
 		 $.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/refreshVendorList",       
+	       url: vmsUrl+"/refreshVendorList",       
 	       success: function(json) {
 	        	var output = "";
 	        	output = output + "<option value=''>Select Vendor</option>"; 
@@ -2526,14 +2529,14 @@ function refreshVendorList(){
 </script>
 <script>
 function refreshClientList(autoPopClientId){
-		 var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 var selectedOrgId = '${contract.orgRelations.id}';
 		 if(selectedOrgId == null || selectedOrgId == '' || selectedOrgId == 'undefined'){
 			 selectedOrgId = autoPopClientId;
 		 }
 		 $.ajax({
 	      type : "POST",
-	       url: sourceleadUrl+"/refreshClientList",       
+	       url: vmsUrl+"/refreshClientList",       
 	       success: function(json) {
 	        	var output = "";
 	        	output = output + "<option value=''>Select Client</option>"; 
@@ -2610,14 +2613,16 @@ function addCustomEmptyClientContact(){
 </script>
 <script>
 	 function selectedVendor(){
+		 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 var vid =  $("#orgRelationId").val();
-		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+		 window.open(vmsUrl+"/addVendorContact?vid="+vid,'_blank');
 	 }
 	 </script>
 <script>
 	 function selectedClient(){
+		 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 var cid =  $("#clientOrgRelationId").val();
-		 window.open(sourceleadUrl+"/addClientContact?cid="+cid,'_blank');
+		 window.open(vmsUrl+"/addClientContact?cid="+cid,'_blank');
 	 }
 	 </script>
 <!-- Footer Area -->

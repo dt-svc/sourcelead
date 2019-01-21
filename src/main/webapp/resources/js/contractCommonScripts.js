@@ -6,12 +6,13 @@ function validateAlreadyGeneratedContract(){
 		orgRelationId = $("#clientOrgRelationId").val();
 	var contractType = $("#contractType").val();
 	var submissionOffersList = $("#submissionOffersList").val();
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var url = "";
 	if((contractType == "Client MSA" || contractType == "Vendor MSA")  && (orgRelationId != "" && orgRelationId != 'undefined')){
-		url = sourceleadUrl+"/validateAlreadyGeneratedContract?startDate="+startDate+"&endDate="+endDate+"&orgRelationId="+orgRelationId+"&contractType="+contractType;
+		url = vmsUrl+"/validateAlreadyGeneratedContract?startDate="+startDate+"&endDate="+endDate+"&orgRelationId="+orgRelationId+"&contractType="+contractType;
 		validateAlreadyGeneratedContractMainFunc(url,startDate,endDate,contractType);
 	}else if(contractType == "Client SOW" || contractType == "Vendor SOW"){
-		url = sourceleadUrl+"/validateAlreadyGeneratedContract?startDate="+startDate+"&endDate="+endDate+"&submissionOffersList="+submissionOffersList+"&contractType="+contractType;
+		url = vmsUrl+"/validateAlreadyGeneratedContract?startDate="+startDate+"&endDate="+endDate+"&submissionOffersList="+submissionOffersList+"&contractType="+contractType;
 		validateAlreadyGeneratedContractMainFunc(url,startDate,endDate,contractType);
 	}
 }
@@ -66,9 +67,10 @@ function reviseContract(contractUUID){
 
 function submitReviseContractReason(contractUUID){
 	var reviseReason =  $("#reviseContractId").val();
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	if(reviseReason != null && reviseReason !='undefined' && reviseReason !=''){
 		$("#reviseContractIdDiv").find('p.jquery_form_error_message').remove();
-		$.get(sourceleadUrl+"/reviseContract?"+tokenParamName+"="+tokenValue+"&contractUUID="+contractUUID+"&revisedReason="+reviseReason, function(data) {
+		$.get(vmsUrl+"/reviseContract?"+tokenParamName+"="+tokenValue+"&contractUUID="+contractUUID+"&revisedReason="+reviseReason, function(data) {
 			if(data == true){
 				cancelTermination();
 				getTemplateList();

@@ -10,7 +10,7 @@
 <script>
 $(document).ready(function(){
 	$("#tempEye").hide();
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	if('${contract.ownersType}' == "Sequential"){
 		 getSequentialApprovers();
 	 }else{
@@ -35,7 +35,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Add Existing Contract</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/contractListbyStatus'/>">Contracts</a> &raquo;Add Existing Contract</div>
+      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/vms/contractListbyStatus">Contracts</a> &raquo;Add Existing Contract</div>
     </section>
     <div class="content-area content-new clearfix">
      <div id="existLoading"></div>
@@ -658,11 +658,11 @@ function fileStore(id){
 
 <script>
 function refreshClientList(){
-		 var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 var selectedOrgId = '${contract.orgRelations.id}';
 		 $.ajax({
 	      type : "POST",
-	       url: sourceleadUrl+"/refreshClientList",       
+	       url: vmsUrl+"/refreshClientList",       
 	       success: function(json) {
 	        	var output = "";
 	        	output = output + "<option value=''>Select Client</option>"; 
@@ -861,10 +861,10 @@ function getVendorContacts(spocId){
 	$('#errorVendor').find('p.jquery_form_error_message').remove();
 	 var orgRelationId = $("#orgRelationId").val();
 	 if("" != orgRelationId){
-		 var sourceleadUrl ='${sourceleadUrl}';
+		 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 $.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Vendor",       
+	       url: vmsUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Vendor",       
 	       success :function(data) {
 	    	var json = JSON.parse(data);
 	       	var output = "";
@@ -899,10 +899,10 @@ function getClientContacts(){
 	$('#errorClient').find('p.jquery_form_error_message').remove();
 	var orgRelationId = $("#clientOrgRelationId").val();
 	if("" != orgRelationId){
-		var sourceleadUrl ='${sourceleadUrl}';
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Client",
+		url: vmsUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Client",
 		success :function(data) {
 		var json = JSON.parse(data);
 		var output = "";
@@ -1098,10 +1098,10 @@ function getContractTemplates(){
 		document.getElementById("offeredSubmissionDiv").style.display="block";
 		document.getElementById("uploadFile").value = '';
 	}	 
- 	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
      type : "GET",
-      url: sourceleadUrl+"/getContractsTemplatesByContractType?${_csrf.parameterName}=${_csrf.token}&contractType="+contractType,       
+      url: vmsUrl+"/getContractsTemplatesByContractType?${_csrf.parameterName}=${_csrf.token}&contractType="+contractType,       
       success :function(data) {
     	var json = JSON.parse(data);
       	var output = "";
@@ -1741,10 +1741,11 @@ function previewTemplatePDF(){
 					},
 					}); */ 
 			var formData = getFormData("newcontract_form");
+			var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 					$("#existLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	           $.post( sourceleadUrl+ "/saveExistigContract?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
+	           $.post( vmsUrl+ "/saveExistigContract?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
 	                      if(data == true){
-	                   	   location.replace(sourceleadUrl+"/contractListbyStatus");
+	                   	   location.replace(vmsUrl+"/contractListbyStatus");
 	                      }
 	                   });		
 					
@@ -1764,10 +1765,10 @@ function previewTemplatePDF(){
 <script>
 	function getRequirements(sowType){
 		$("#requirementsList").empty();
-		var sourceleadUrl ='${sourceleadUrl}';
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		$.ajax({
 	        type : "GET",
-	        url: sourceleadUrl+"/getRequirementsForSOWByOrgLocationId?sowType="+sowType,    
+	        url: vmsUrl+"/getRequirementsForSOWByOrgLocationId?sowType="+sowType,    
 	         success :function(data) {
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
@@ -1793,7 +1794,7 @@ function previewTemplatePDF(){
 	}
 		
 	function submissionOffers(){
-		var sourceleadUrl ='${sourceleadUrl}';
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var requirementId = "";
 		var sowType = $("#contractType").val();
 		var locationId ='${SourceLeadWeb_orgLocationId}';
@@ -1809,7 +1810,7 @@ function previewTemplatePDF(){
 	    }
 	    $.ajax({
 	        type : "GET",
-	        url: sourceleadUrl+url,  
+	        url: vmsUrl+url,  
 	         success :function(data) {
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  
@@ -1858,7 +1859,7 @@ function previewTemplatePDF(){
 	}
 	}
 	function getOfferRate(){
-		var sourceleadUrl ='${sourceleadUrl}';
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var reqSubId = $("#submissionOffersList").val();
 		var sowType = $("#contractType").val();
 		var locationId ='${SourceLeadWeb_orgLocationId}';
@@ -1871,7 +1872,7 @@ function previewTemplatePDF(){
 		 if(sowType != 'Client SOW' && sowType != 'Vendor SOW'){
 			 $.ajax({
 			        type : "GET",
-			        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId+"&locationId="+locationId,    
+			        url: vmsUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId+"&locationId="+locationId,    
 			         success :function(data) {
 			        	 
 				              if(data != null && data != 'undefined' && data != "" && data != '[]'){
@@ -1918,7 +1919,7 @@ function previewTemplatePDF(){
 	}
 	
 	function submissionOffers1(){
-		var sourceleadUrl ='${sourceleadUrl}';
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var requirementId = $("#requirementsList").val();
 		var sowType = $("#contractType").val();
 		$("#flatReward").val("");
@@ -1926,7 +1927,7 @@ function previewTemplatePDF(){
 	    $("#billingRatePer").val("").trigger('change');
 	    $.ajax({
 	        type : "GET",
-	        url: sourceleadUrl+"/getSubmissionsForSOWByRequirementId?requirementId="+requirementId+"&sowType="+sowType,    
+	        url: vmsUrl+"/getSubmissionsForSOWByRequirementId?requirementId="+requirementId+"&sowType="+sowType,    
 	         success :function(data) {
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
@@ -1963,7 +1964,7 @@ function previewTemplatePDF(){
 	}
 	
 	function getVendor(){
-		var sourceleadUrl ='${sourceleadUrl}';
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var relationList = '${orgRelationsList}';
 		var associateId = $("#submissionOffersList").val();
 		var map = new Object(); // or var map = {};
@@ -1972,7 +1973,7 @@ function previewTemplatePDF(){
 		</c:forEach>
 		$.ajax({
 	        type : "GET",
-	        url: sourceleadUrl+"/getCandidateDetails?candidateId="+associateId,    
+	        url: vmsUrl+"/getCandidateDetails?candidateId="+associateId,    
 	         success :function(data) {
 	        	 if (data.response === "FAILED") {
 			    		showError(data.responseMessage);
@@ -2135,8 +2136,8 @@ function flush(){
 
 <script>
 function cancelContract(){
-	var sourceleadUrl = '${sourceleadUrl}';
-	location.replace(sourceleadUrl+"/contractListbyStatus");
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	location.replace(vmsUrl+"/contractListbyStatus");
 }
 
 </script>
@@ -2152,10 +2153,11 @@ function cancelContract(){
 function validateContractTitle(){
 	var contractTitle = $('#contractTitle').val();
 	var contractType = $('#contractType').val();
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	if(contractTitle != null && contractTitle != "" && contractType != null && contractType != ""){
 		$.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateContractTitle?${_csrf.parameterName}=${_csrf.token}&contractTitle="+contractTitle+"&contractType="+contractType, 
+		        url: vmsUrl+"/validateContractTitle?${_csrf.parameterName}=${_csrf.token}&contractTitle="+contractTitle+"&contractType="+contractType, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		 // $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
@@ -2182,11 +2184,11 @@ function validateContractTitle(){
 
 <script>
 function refreshVendorList(){
-		 var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 var selectedOrgId = '${contract.orgRelations.id}';
 		 $.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/refreshVendorList",       
+	       url: vmsUrl+"/refreshVendorList",       
 	       success: function(json) {
 	        	var output = "";
 	        	output = output + "<option value=''>Select Vendor</option>"; 
@@ -2229,14 +2231,16 @@ function addExistedEmptyClientContact(){
 </script>
 <script>
 	 function selectedVendor(){
+		 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 var vid =   $("#orgRelationId").val();
-		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+		 window.open(vmsUrl+"/addVendorContact?vid="+vid,'_blank');
 	 }
 	 </script>
 	 <script>
 	 function selectedClient(){
+		 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 var cid =  $("#clientOrgRelationId").val();
-		 window.open(sourceleadUrl+"/addClientContact?cid="+cid,'_blank');
+		 window.open(vmsUrl+"/addClientContact?cid="+cid,'_blank');
 	 }
 	 </script>
 
