@@ -56,7 +56,7 @@ function requirementHistoryList(candidateId){
 	  }
 	 $.ajax({  
          type : "POST",
-         url: sourceleadUrl+"/getRequirementHistoryListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+         url: atsUrl+"/getRequirementHistoryListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(response) {
         	 if (response.response === "AWKWARD") {
         		    location.href = "/errorPage";
@@ -171,7 +171,7 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
 	var loginUserId = '${SourceLeadWeb_userId}';
 	 $.ajax({  
         type : "POST",
-        url: sourceleadUrl+"/getRequirementHistoryDetailsByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&submissionId="+submissionId,        
+        url: atsUrl+"/getRequirementHistoryDetailsByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&submissionId="+submissionId,        
         success :function(response) {
         	if (response.response === "AWKWARD") {
         	    location.href = "/errorPage";
@@ -182,7 +182,7 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
          		result = result  +'		<div class="reqClose clearfix">';
          		result = result  +'			<span class="pull-left"><i class="fa fa-angle-double-left"></i>Go Back</span><b class="fa fa-close"></b>';
          		result = result  +'		</div>';
-         		result = result  +'		<h3 title="'+positionType+'"><a href="'+sourceleadUrl+'/requirementSummary?requirementUUID='+requirementUUID+'">'+positionType+'</a><span onclick="getRateListDiv('+candidateId+',\''+submissionId+'\');">Rate</span><i class="ratepop" id="ratepop"></i><div class="clearfix"></div></h3>';
+         		result = result  +'		<h3 title="'+positionType+'"><a href="'+atsUrl+'/requirementSummary?requirementUUID='+requirementUUID+'">'+positionType+'</a><span onclick="getRateListDiv('+candidateId+',\''+submissionId+'\');">Rate</span><i class="ratepop" id="ratepop"></i><div class="clearfix"></div></h3>';
          		result = result  +'		<ul>';
          		    var report2 = json[0];
          		    if(report2.requirementOfferHistoryList != null && report2.requirementOfferHistoryList != "undefined" && report2.requirementOfferHistoryList.length > 0){
@@ -193,7 +193,7 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
     		            		result = result  +'	   <img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+loginUserId+'"/>';
     		            		result = result  +'<span>Issued offer by '+port.clientName+' <b>'+port.createDateStr+'</b></span>';
     		            		if(port.fileContentType != null && port.fileContentType != '' && port.fileContentType!= 'undefined'){
-    		            		result = result  +'<a href=\"'+sourceleadUrl+'/offerDownloadDocument?resumeId='+port.offerResumeId+'\"><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';
+    		            		result = result  +'<a href=\"'+atsUrl+'/offerDownloadDocument?resumeId='+port.offerResumeId+'\"><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';
     		            		}
     		            		result = result  +'<div class="clearfix"></div>';
     		            		result = result  +'			</li>';
@@ -317,7 +317,7 @@ function getRateListDiv(candidateId,submissionId){
 	  }
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getRateHistoryBySubmissionId?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&candidateId="+candidateId,        
+         url: atsUrl+"/getRateHistoryBySubmissionId?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&candidateId="+candidateId,        
          success :function(data) {
         	 if (data.response === "FAILED") {
 		    		showError(data.responseMessage);

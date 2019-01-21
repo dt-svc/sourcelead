@@ -49,7 +49,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
 @RestController
-@RequestMapping("/app")
 @PropertySource("${propertyLocation:app.properties}")
 public class CustomFormRestController {
 

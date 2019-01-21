@@ -105,7 +105,7 @@
 		$
 				.ajax({
 					type : "POST",
-					url : sourceleadUrl
+					url : atsUrl
 							+ "/getCandidateReferencesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId + "&locationCode=" + locationCode,
 					success : function(json) {
@@ -435,7 +435,7 @@
 			var locationCode = '${SourceLeadWeb_locationCode}';
 			$("#save_ref").attr("disabled", "disabled");
 			$("#save_ref").addClass('button').val('Processing..'); 
-		    $.post(sourceleadUrl+"/saveCandidateReferences?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(result) {
+		    $.post(atsUrl+"/saveCandidateReferences?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(result) {
 		    	if (result && (result.response === "INVALID_USER" || result.response === "INVALID_DATA")) {
 				    showError(result.responseMessage);
 				} else if (result.response === "AWKWARD") {
@@ -531,7 +531,7 @@
 		var userCode = '${SourceLeadWeb_userCode}';
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl
+			url : atsUrl
 					+ "/terminateReference?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="
 					+ candidateId + "&refId=" + refId + "&userCode="
 					+ userCode,
@@ -575,7 +575,7 @@
 		    var locationCode = '${SourceLeadWeb_locationCode}';
 			$("#save_ref").attr("disabled", "disabled");
 			$("#save_ref").addClass('button').val('Processing..'); 
-	        $.post(sourceleadUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(result) {
+	        $.post(atsUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(result) {
 	        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
 	    		    showError(result.responseMessage);
 	    		} else if (result.response === "AWKWARD") {
@@ -608,7 +608,7 @@
 	function editCandidateReference(candidateId, refId) {
 		$.ajax({
 				type : "POST",
-				url : sourceleadUrl
+				url : atsUrl
 					+ "/getCandidateReferencesByCandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="
 					+ candidateId + "&refId=" + refId,
 				success : function(response) {
@@ -783,7 +783,7 @@ function validateReferenceEmail(candidateId,referId){
 	 if (email != null && email != "") {
 	$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateReferEmail?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&referId="+referId+"&email="+email,
+			url : atsUrl + "/validateReferEmail?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&referId="+referId+"&email="+email,
 			success : function(response) {
 				if (response.response === "AWKWARD") {
 				    location.href = "/errorPage";

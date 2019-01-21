@@ -14,11 +14,11 @@ function candidateQuickViewProfile(candidateId){
 	  var skillsList = '${skillsList}'; 
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+         url: atsUrl +"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(result) {  
         	 var json = result.object;
       	     if(result.response === "SESSION_TIMEDOUT") {
-					location.replace(sourceleadUrl);
+					location.replace(sourceleadurl);
 				} else if (result.response === "AWKWARD") {
 					location.href = "/errorPage";
 				} else if (result.response === "SUCCESS") {
@@ -202,7 +202,6 @@ function candidateQuickViewProfile(candidateId){
 						
 					$("#candidateQuickViewDiv").empty();
   				    $("#candidateQuickViewDiv").append(result); 
-  				    
   				    qvemployeeSubmission(candidateId);
   				    qveducationSubmission(candidateId);
 					qwikCertificates(candidateId);
@@ -230,6 +229,7 @@ function candidateQuickViewProfile(candidateId){
                },
                  
             }); 
+	  
 }
 </script>
 
@@ -237,7 +237,7 @@ function candidateQuickViewProfile(candidateId){
 	function qvemployeeSubmission(candidateId) {
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?&candidateId=" + candidateId,
+					url : atsUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?&candidateId=" + candidateId,
 					success : function(data) {
 						if (data && data.response === "INVALID_DATA") {
 						    $("#update_candidate").removeAttr("disabled");
@@ -307,7 +307,7 @@ function candidateQuickViewProfile(candidateId){
 				        	  	$("#qvemployeeSubmission").append(result);
 							}
 						} else if (data.indexOf('Sign In') !== -1) {
-							/* location.replace(sourceleadUrl); */
+							/* location.replace(sourceleadurl); */
 						} else {
 						    showError("Operation failed, please try again");
 						}
@@ -320,7 +320,7 @@ function candidateQuickViewProfile(candidateId){
 function qveducationSubmission(candidateId){
 	 $.ajax({  
           type : "GET",
-          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateEducationListByCandidateId?&candidateId="+candidateId,        
         		  success :function(data) {
 								if(data && data.response === "INVALID_DATA") {
        								showError(data.responseMessage);
@@ -401,7 +401,7 @@ function qveducationSubmission(candidateId){
 				               	  $("#qveducationSubmission").empty();
 				               	  $("#qveducationSubmission").append(result); */
 					       		} else if (data.indexOf('Sign In') !== -1) {
-        							location.replace(sourceleadUrl);
+        							location.replace(sourceleadurl);
 					        	} else {
 					        	    showError("Operation failed, please try again");
 					        	}
@@ -414,7 +414,7 @@ function qveducationSubmission(candidateId){
 function qwikCertificates(candidateId){
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
         	  	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
         		    showError(response.responseMessage);
@@ -470,7 +470,7 @@ function qwikCertificates(candidateId){
         	        	  $("#qvcertificationSubmission").append(result); 
         			}
         		} else if (response.indexOf('Sign In') !== -1) {
-        			location.replace(sourceleadUrl);
+        			location.replace(sourceleadurl);
         		} else {
         		    showError("Operation failed, please try again");
         		}

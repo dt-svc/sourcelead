@@ -31,7 +31,6 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
-@RequestMapping("/app")
 public class CandidateTimelineActivityRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(CandidateTimelineActivityRestController.class);
