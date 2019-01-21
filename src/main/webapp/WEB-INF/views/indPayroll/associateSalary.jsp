@@ -95,8 +95,9 @@
                  <div class="clearfix"></div>
                  </div>
          <div class="clearfix clients_wrap_table">
-              <div class="clearfix mb mt">
-              </div>
+         <div class="clearfix mb5">
+         	<a href="<c:url value='${appPath}/payrollPayhead'/>" class="btn btn-primary  pull-right mr"><i class="fa fa-plus paddingRight"></i>Add Payhead</a>
+         </div>
                <table>
                		<thead>
                		<tr>

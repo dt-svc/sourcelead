@@ -2,6 +2,7 @@ package com.bis.sourcelead.payroll.service.impl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -390,10 +391,29 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					
 					// TDS process Calculation
 					if(!isTDS) {
+						String fromYear = null;
+						String toYear = null;
 						Calendar c = Calendar.getInstance();
-						String fromYear = c.get(Calendar.YEAR) + "";
-						c.roll(Calendar.YEAR, 1);
-						String toYear = c.get(Calendar.YEAR) + "";
+						c.setTime(freqStartDate);
+						int fYear = c.get(Calendar.YEAR);
+						int fMonth = c.get(Calendar.MONTH);
+						if (StringUtils.isNotBlank(orgLocation.getStartMonth())) {
+							Calendar cal = Calendar.getInstance();
+							Date date = new SimpleDateFormat("MMMM").parse(orgLocation.getStartMonth());
+							cal.setTime(date);
+							int startFinMonth = cal.get(Calendar.MONTH);
+							if (fMonth >= startFinMonth && fMonth < 12) {
+								fromYear = Integer.toString(fYear);
+								toYear = Integer.toString(fYear + 1);
+							} else {
+								fromYear = Integer.toString(fYear - 1);
+								toYear = Integer.toString(fYear);
+							}
+						} else {
+							fromYear = Integer.toString(fYear);
+							toYear = Integer.toString(fYear);
+						}
+				        
 						int age = 0;
 						if(assoSal.getCandidate().getConsultantUser().getDateOfBirth() != null) {
 							LocalDate today = LocalDate.now();  //Today's date
@@ -463,7 +483,9 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					employeePayroll.setNoOfDays(new BigDecimal(frequencyPayrollDays));
 					employeePayroll.setNoOfLeaves( lopList != null ? new BigDecimal(lopList.size()): BigDecimal.ZERO );
 					employeePayroll.setLoanHistory(assLoanAndAdvDTO.getLoanHis());
-					employeePayroll.setAssociatePayrollPayheadHistory(utilDTO.getAssociatePayrollPayheadHistory());
+					if(utilDTO != null && utilDTO.getAssociatePayrollPayheadHistory() != null && utilDTO.getAssociatePayrollPayheadHistory().size() > 0) {
+						employeePayroll.setAssociatePayrollPayheadHistory(utilDTO.getAssociatePayrollPayheadHistory().stream().filter(app -> app.getMonthly()!=null && app.getMonthly().compareTo(BigDecimal.ZERO) > 0).collect(Collectors.toSet()));
+					}
 					employeePayroll.setGrossPay(utilDTO.getGrossPay().multiply(payAdjustmentConst).setScale(2, BigDecimal.ROUND_HALF_EVEN));
 					employeePayroll.setNetPay((utilDTO.getNetPay().subtract(new BigDecimal(tdsMonthlyTotal)).subtract(new BigDecimal(loanAdvTotal)).subtract(lopAmount).multiply(payAdjustmentConst).setScale(2, BigDecimal.ROUND_HALF_EVEN)));
 					employeePayroll.setProfessionalTax(utilDTO.getProfessionalTax());

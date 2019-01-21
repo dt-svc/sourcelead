@@ -598,7 +598,9 @@ function calculateDuration(){
         	  output = output +' <option value="">--Select Leave Type--</option>';
         	  for (var i = 0; i < json.length; i++) {
         		  var leave = json[i];
-        		  if(leave.leaveTypeBalanceLeaveCount <= 0 && leave.overdrawLeaves == 'N'){
+        		  //TODO
+        		  //To be done (Rakshith)
+        		  if(leave.leaveTypeBalanceLeaveCount <= 0 && leave.overdrawLeaves == 'N' && leave.visibleInBalanceLeaves == 'Y'){
         			 
         		  }else{
         			  if(leave.id == leaveId){
@@ -1088,7 +1090,7 @@ function validateOverDrawLeaves(totalNumberOfDays){
 	
 	var typeName = leaveTypeName.replace(/ /g,"_");
 	var typeIdBalCount = parseFloat($("#"+typeName+"Span").text());
-	if(totalNumberOfDays > typeIdBalCount){
+	if(totalNumberOfDays > typeIdBalCount && overDrawLeaveType == 'N'){
 		errorMessage += "You Have Not Enough Leaves To Apply.";
 		$("#ApplyLeave").attr('disabled','disabled');
 	}
