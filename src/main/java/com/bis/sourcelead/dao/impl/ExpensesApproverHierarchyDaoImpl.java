@@ -113,14 +113,8 @@ public class ExpensesApproverHierarchyDaoImpl implements ExpensesApproverHierarc
 		if(StringUtils.isNotEmpty(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase("Y")) {
 			globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId) ";
 		}else {
-			
+			globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId ";
 		}
-				/*+ ""
-				+ ""
-				+ "(sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId OR "
-                + " (sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId) "
-                + "    and (sah.hierarchyId.projectClientsId.orgLocationsId.id  IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = sah.expenseId.projects.id and subpm.masterCandidateId.id = sah.expenseId.masterCandidateId.id and subpm.projectMemberCandidteId.designationType = '"+Constants.OFFSHORE_C2C+"') OR :orgLocationId NOT IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = sah.hierarchyId.projectClientsId.projectId.id and subpm.masterCandidateId.id = sah.expenseId.masterCandidateId.id)))"
-                + " )  ";*/
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String from = "from  ExpensesApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pc left join fetch hierarchy.approverUserId approver left join fetch sah.expenseId exp  left join fetch exp.projectMembers pm left join fetch pm.projectMemberCandidteId cand left join fetch cand.orgRelationId rel left join fetch pm.projects projects left join fetch pm.employee emp left join fetch emp.user user where "

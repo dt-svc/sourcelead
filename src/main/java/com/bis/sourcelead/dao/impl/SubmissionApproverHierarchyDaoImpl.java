@@ -1299,7 +1299,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			Session session = this.sessionFactory.getCurrentSession();
 			 String globalUserQuery = " ";
 			 if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
-				 globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId) ";
+				 globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :orgLocationId) ";
 			 }else {
 				 globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId ";
 			 }
@@ -1324,7 +1324,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 					 +" OR  ((sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and sah.submissionId.projectMembers.projects.isReportingManagerAsApprover = 'Y'  and sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id)) and (sah.hierarchyId.projectId.projectApprovalType= '"+Constants.PARALLEL+"'  OR (sah.hierarchyId.projectId.projectApprovalType = '"+Constants.SEQUENTIAL+"' and ( sah.hierarchyId.projectClientsId.level IN(select Max(subsah.hierarchyId.projectClientsId.level) from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectId.id = sah.hierarchyId.projectId.id and subsah.submissionId.projectMembers.masterCandidateId.id = sah.submissionId.projectMembers.masterCandidateId.id and subsah.hierarchyId.projectClientsId.orgLocationsId.org.orgType <> 'GUEST') OR ((sah.hierarchyId.projectClientsId.level+1) IN ( select subsah.hierarchyId.projectClientsId.level from SubmissionApproverHierarchy subsah where subsah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and subsah.hierarchyId.projectId.id = sah.hierarchyId.projectId.id and subsah.frequencyStartDate = sah.frequencyStartDate and  subsah.frequencyEndDate = sah.frequencyEndDate))))))"
 					 + "   ) "
 					 + " and sah.status != '0' and sah.submissionStatus = :submissionStatus and sah.submissionId.status = '1'  GROUP BY CONCAT(sah.submissionId.projectMembers.id,sah.frequencyStartDate,sah.frequencyEndDate)order by sah.submissionId.projectMembers.projects.id ASC)";
-			List<SubmissionApproverHierarchy> tslist = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setLong("locationsId", orgLocationId).setString("submissionStatus", submissionStatus).list();
+			List<SubmissionApproverHierarchy> tslist = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setString("submissionStatus", submissionStatus).list();
 			Integer count = 0;
 			if (tslist != null && !tslist.isEmpty()) {
 				count = tslist.size();

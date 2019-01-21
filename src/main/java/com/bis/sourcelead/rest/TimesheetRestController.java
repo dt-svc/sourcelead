@@ -3054,7 +3054,7 @@ public class TimesheetRestController {
 		Long projectId = eedDTO.getProjectsId();
 		Long masterCandidateId = eedDTO.getMasterCandidatesId();
 		List<ProjectMembers> projectMembersList = projectMembersService
-				.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(), candidate.getId());
+				.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(),orgLocations.getOrg().getId(), candidate.getId());
 		ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
 		if (projectMembersList != null && !projectMembersList.isEmpty()) {
 			long count = 1;
