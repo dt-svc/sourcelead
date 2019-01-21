@@ -22,13 +22,17 @@ $(document).ready(function(){
 	getSelfTotalCounts();
 });
 </script>
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
   
     <div class="col-md-6 mb10">
       
         <div class="dashboardWidget-new dashNewWrap mb">
             
         	<div class="dashNewWrapHead clearfix">
-				<a class="pull-left" href="<c:url value='${appPath}/leaveManagementReports'/>" title="Leave Management">Leaves</a>
+				<a class="pull-left" href="/pms/leaveManagementReports" title="Leave Management">Leaves</a>
               	<div class="pull-left balLeaves">Balance Leaves<span class="label label-info" id="selfBalancedCounts" title="Balance Leaves"></span></div>				
 	            <ul class="nav nav-tabs pull-right">
 		            <li class="active"><a data-toggle="tab" href="#self">Self</a></li>
@@ -185,14 +189,14 @@ function getEmployeeTotalCounts(){
 	var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
 	      type : "GET",
-	      url: sourceleadUrl+"/totalCountsForEmployeeLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
+	      url: pmsUrl+"/totalCountsForEmployeeLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
 	       success :function(report) { 
 	    	   if(report.employeeRequestedCounts != null && report.employeeRequestedCounts != '' && report.employeeRequestedCounts != 'undefined'){
 	    		   if(report.employeeRequestedCounts == 0){
 // 	      				$('#empReq').removeAttr("href");
 	      				$('#empReq').html("Requested");
 	      			   }else{
-	      				 $('#empReq').html("<a href='/app/employeeRequestedLeaves'>Requested</a>"); 
+	      				 $('#empReq').html("<a href='/pms/employeeRequestedLeaves'>Requested</a>"); 
 	      			   }
     			   $("#employeeRequestedCounts").html(report.employeeRequestedCounts); 
     		   }
@@ -201,7 +205,7 @@ function getEmployeeTotalCounts(){
 //     	   				$('#empApp').removeAttr("href");
     	   				$('#empApp').html("Approved");
     	   			   }else{
-    	   				$('#empApp').html("<a href='/app/employeeApprovedLeaves'>Approved</a>"); 
+    	   				$('#empApp').html("<a href='/pms/employeeApprovedLeaves'>Approved</a>"); 
     	   			   }
     			   $("#employeeApprovedCounts").html(report.employeeApprovedCounts); 
     		   }
@@ -210,7 +214,7 @@ function getEmployeeTotalCounts(){
 //     	   				$('#empRej').removeAttr("href");
     	   				$('#empRej').html("Rejected");
     	   			   }else{
-    	   				$('#empRej').html("<a href='/app/employeeRejectedLeaves'>Rejected</a>");
+    	   				$('#empRej').html("<a href='/pms/employeeRejectedLeaves'>Rejected</a>");
     	   			   }
     			   $("#employeeRejectedCounts").html(report.employeeRejectedCounts); 
     		   }
@@ -219,7 +223,7 @@ function getEmployeeTotalCounts(){
 //     	   				$('#empCanc').removeAttr("href");
     				    $('#empCanc').html("Cancelled");
     	   			   }else{
-    	   				$('#empCanc').html("<a href='/app/employeeCancelLeaves'>Cancelled</a>");
+    	   				$('#empCanc').html("<a href='/pms/employeeCancelLeaves'>Cancelled</a>");
     	   			   }
     			   $("#employeeCancelledCounts").html(report.employeeCancelledCounts); 
     		   }
@@ -288,14 +292,14 @@ function getSelfTotalCounts(){
 	var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
 	      type : "GET",
-	      url: sourceleadUrl+"/totalCountsForSelfLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
+	      url: pmsUrl+"/totalCountsForSelfLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
 	       success :function(report) { 
 	   	   if(report.selfPendingCounts != null && report.selfPendingCounts != '' && report.selfPendingCounts != 'undefined'){
 	   		if(report.selfPendingCounts == 0){
 //    				$('#selfapp').removeAttr("href");
    				$("#selfpend").html("Pending"); 
    			   }else{
-   				$("#selfpend").html("<a href='/app/pendingLeaves'>Pending</a>"); 
+   				$("#selfpend").html("<a href='/pms/pendingLeaves'>Pending</a>"); 
    			   }
    			   $("#selfPendingCounts").html(report.selfPendingCounts); 
    		   }
@@ -304,7 +308,7 @@ function getSelfTotalCounts(){
 //    				$('#selfrej').removeAttr("href");
    				$("#selfapp").html("Approved"); 
    			   }else{
-   				$("#selfapp").html("<a href='/app/approvedLeaves'>Approved</a>");
+   				$("#selfapp").html("<a href='/pms/approvedLeaves'>Approved</a>");
    			   }
    			   $("#selfApprovedCounts").html(report.selfApprovedCounts); 
    		   }
@@ -313,7 +317,7 @@ function getSelfTotalCounts(){
 //    				$('#selfrej').removeAttr("href");
    				$("#selfrej").html("Rejected"); 
    			   }else{
-   				$("#selfrej").html("<a href='/app/rejectedLeaves'>Rejected</a>");
+   				$("#selfrej").html("<a href='/pms/rejectedLeaves'>Rejected</a>");
    			   }
    			   $("#selfRejectedCounts").html(report.selfRejectedCounts); 
    		   }
@@ -323,7 +327,7 @@ function getSelfTotalCounts(){
 //    				$('#selfrej').removeAttr("href");
    				$('#selfcanc').html("Cancelled");
    			   }else{
-   				$("#selfcanc").html("<a href='/app/cancelLeaves'>Cancelled</a>");
+   				$("#selfcanc").html("<a href='/pms/cancelLeaves'>Cancelled</a>");
    			   }
    			   $("#selfCancelledCounts").html(report.selfCancelledCounts); 
    		   }

@@ -14,10 +14,10 @@
       <div class="pull-left">
         <h2>Settings Dashboard</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Settings</div>
+      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; Settings</div>
     </section>
 	<div class="reportNewDash clearfix">
-			<div class="reqListBtn clearfix mb10">
+			<!-- <div class="reqListBtn clearfix mb10">
 				<div class="pull-left">
 					<span class="GView rAct" title="Graphical View"><i class="fa fa-th-large"></i></span>
 					<span class="LView" title="List View"><i class="fa fa-list"></i></span>
@@ -25,7 +25,7 @@
 				<h4 class="pull-left text-muted" id="SettingsHeader" style="display: none">Settings</h4>
 				<div class="repSearch">
 					<input class="innSeaFld" id="repSearchaa" onKeyUp="myManagersFunction();" type="text" placeholder="Search"></div>
-			</div>
+			</div> -->
 			
 			
 			
@@ -34,7 +34,7 @@
 	            
 	<!-- 	List view jsp code -->
          
-		<div class="newRepList clearfix settingsRepList">		
+		<%-- <div class="newRepList clearfix settingsRepList">		
 			<div class="clearfix">	</div>	
 			<sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
 			<div class="col-md-2">
@@ -197,11 +197,11 @@
 			</sec:authorize>
 			
 			<!-- Dont remove this comment. Work in progress -->
-			<%-- <div class="col-md-2">
+			<div class="col-md-2">
 				<ul class="repSearchList list-unstyled">
 				 <li><a href="<c:url value="${appPath}/performanceManagementConfiguration"/>">Performance Management</a></li>
 				</ul>
-			</div> --%>
+			</div>
 			
 			<div class="col-md-2">
 				<h5>Tags</h5>
@@ -250,7 +250,7 @@
 		
 			
 		</div>
-         
+          --%>
          
          
          
@@ -443,17 +443,7 @@
 				
 				   <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
 							<div class="col-md-2 reportNewCta">
-								<!-- DropDown -->
-								<!-- <div class="dropdown pull-right report-dropdown">
-								<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu9" data-toggle="dropdown">
-									<span class="caret cursorPointer"></span>
-								</span>
-									<ul class="dropdown-menu minHeight50 maxHeight250">
-									<li><a href="payrollRegister-I.html">Leave Configuration</a></li>
-									</ul>
-								</div> -->
-								<!-- Dropdown -->
-								<a href="/app/leaveConfiguration">
+								<a href="/pms/leaveConfiguration">
 										<div class="clearfix text-center mb10"><i class="leaveConfiguration"></i></div>
 								<div class="clearfix text-center">
 									<h4>Leave Configuration</h4>

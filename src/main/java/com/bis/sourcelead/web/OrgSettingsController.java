@@ -606,7 +606,7 @@ public class OrgSettingsController {
 	   	    ModelAndView model = new ModelAndView();
 	   	    List<LookUpData> referTypeList = lookUpDataService.getReferLookUpDataByCategory(Constants.TASKSEVERITY);
 			model.addObject("referTypeList", referTypeList);
-	   		model.setViewName("project/emailreminderConfigurationDashboard");
+	   		model.setViewName("emailreminderConfigurationDashboard");
 	   		model.addObject("sourceleadUrl", sourceleadUrl);
 	   		return model;
 	       }
