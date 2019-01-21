@@ -140,7 +140,7 @@
 	                 
 	                 
 	                 <c:if test="${userTabs.tabName == 'Contracts'}">
-	                   <li class="${sessionData.nav == 'Contract' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/contractListbyStatus'/>" title="Contracts"><span class="navIcons contIcon"></span><b>Contracts</b></a></li>
+	                   <li class="${sessionData.nav == 'Contract' ? 'navActive' : ''}"><a href="/vms/contractListbyStatus" title="Contracts"><span class="navIcons contIcon"></span><b>Contracts</b></a></li>
 	                </c:if> 
 	                
 	                <c:if test="${SourceLeadWeb_billingTabsCount == 2 && userTabs.tabName == 'Receivable'}">
@@ -347,7 +347,7 @@
 								</sec:authorize>
 						</c:if>
 				    <c:if test="${userTabs.tabName == 'Leave Management'}">
-		             <li class="${sessionData.nav == 'Leave Management' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/leaveManagementReports'/>" title="Leave Management"><span class="navIcons leaveIcon"></span><b>Leave Management</b></a></li>
+		             <li class="${sessionData.nav == 'Leave Management' ? 'navActive' : ''}"><a href="/pms/leaveManagementReports" title="Leave Management"><span class="navIcons leaveIcon"></span><b>Leave Management</b></a></li>
 		          	</c:if>	
           </c:forEach>
 	         
