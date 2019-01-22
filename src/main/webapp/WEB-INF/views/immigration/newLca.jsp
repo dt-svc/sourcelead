@@ -19,7 +19,8 @@
   <section class="content-header clearfix">
       <div class="pull-left positionRelative"><h2>Add LCA</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="/app/immigration/viewImmigrationList">Petition List</a>&raquo;  <a href="/app/immigration/viewLCAList">LCA List</a>&raquo; Add LCA</div>
+    <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="/vms/immigration/viewImmigrationList">Petition List</a>&raquo; 
+     <a href="/vms/immigration/viewLCAList">LCA List</a>&raquo; Add LCA</div>
   </section>
   <div class="content-area content-new clearfix">
   
@@ -600,7 +601,7 @@
       <div class="pull-right  mr">
         <input type="button" value="Save" id="saveLca" onclick="saveLcaDetails();" class="btn btn-primary">
        <input type="button" value="Cancel"
-							onClick="javascript:window.location.href = '<c:url value='/app/immigration/viewLCAList'/>'"
+							onClick="javascript:window.location.href = '/vms/immigration/viewLCAList'"
 							class="btn btn-default ml">
       </div>
       </div>
@@ -621,6 +622,7 @@
   <script type="text/javascript">
 
   function saveLcaDetails(){
+	  var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	  privilingWageValidations();
        var validationSettings = {
             errorMessagePosition: 'element',
@@ -644,9 +646,9 @@
 		 $.ajax({
 	            type: "POST",
 	            data : formData,
-	            url:sourceleadUrl+immiModulePath +"/saveLcaDetailsPage",
+	            url:vmsUrl+immiModulePath +"/saveLcaDetailsPage",
 	            success: function (data) {
-	            	location.replace(sourceleadUrl+immiModulePath+"/viewLCAList");
+	            	location.replace(vmsUrl+immiModulePath+"/viewLCAList");
 	            },
 	        });
 	 }
@@ -1101,11 +1103,12 @@ $('#endDate').datepicker({
  <!-- SOC CODE Autocomplete -->
  
  <script type="text/javascript">
+ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
  $("#socCode").autocomplete({ 
 	 minLength: 2, 
 	 source : function(request, response) {
 		 $.ajax({
-			 url :sourceleadUrl+immiModulePath+ "/getSocCodeWithSOCOccupationTitleList",
+			 url :vmsUrl+immiModulePath+ "/getSocCodeWithSOCOccupationTitleList",
 			 type : "GET",
 			 data : {
 			 	name : request.term,
@@ -1123,7 +1126,7 @@ $('#endDate').datepicker({
 	 	$("#socCode").val(ui.item.label);
 	 	$.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+immiModulePath+"/getOesSocCodeById", 
+	        url: vmsUrl+immiModulePath+"/getOesSocCodeById", 
 	        data : {
 			 	id : ui.item.value,
 			 	socType:"socTitle"
@@ -1141,11 +1144,12 @@ $('#endDate').datepicker({
 	 });
 </script> 
   <script type="text/javascript">
+  var vmsUrl ='${SourceLeadWeb_vmsUrl}';
  $("#socOccupationTitle").autocomplete({ 
 	 minLength: 2, 
 	 source : function(request, response) {
 		 $.ajax({
-			 url :sourceleadUrl+immiModulePath+ "/getSocCodeWithSOCOccupationTitleList",
+			 url :vmsUrl+immiModulePath+ "/getSocCodeWithSOCOccupationTitleList",
 			 type : "GET",
 			 data : {
 			 	name : request.term,
@@ -1161,7 +1165,7 @@ $('#endDate').datepicker({
 	 	$("#socOccupationTitle").val(ui.item.label);
 	   $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+immiModulePath+"/getOesSocCodeById",
+	        url: vmsUrl+immiModulePath+"/getOesSocCodeById",
 	        data : {
 			 	id : ui.item.value,
 			 	socType:"socCode"
@@ -1205,12 +1209,13 @@ $('#endDate').datepicker({
 
 <script type="text/javascript">
 function validateLcaNumber() {
-	  var lcaNo = document.getElementById("lcaNo").value;
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';  
+	var lcaNo = document.getElementById("lcaNo").value;
 	  var lcaId = $("#lcaId").val();
 	  $('#errLcaNoDiv').find('p.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "GET",
-		    	 url:sourceleadUrl + immiModulePath + "/validateLcaNumber?"+tokenParamName+"="+tokenValue+"&lcaNo="+lcaNo+"&lcaId="+lcaId, 
+		    	 url:vmsUrl + immiModulePath + "/validateLcaNumber?"+tokenParamName+"="+tokenValue+"&lcaNo="+lcaNo+"&lcaId="+lcaId, 
 		        success: function(data) {
 		        	
 		        	if(data == true){
@@ -1233,12 +1238,13 @@ function validateLcaNumber() {
 
 <script type="text/javascript">
 function validateLcaTitle() {
+	  var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	  var lcaTitle = document.getElementById("lcaTitle").value;
 	  var lcaId = $("#lcaId").val();
 	  $('#errLcaTitleDiv').find('p.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "GET",
-		    	 url:sourceleadUrl + immiModulePath + "/validateLcaTitle?"+tokenParamName+"="+tokenValue+"&lcaTitle="+lcaTitle+"&lcaId="+lcaId, 
+		    	 url:vmsUrl + immiModulePath + "/validateLcaTitle?"+tokenParamName+"="+tokenValue+"&lcaTitle="+lcaTitle+"&lcaId="+lcaId, 
 		        success: function(data) {
 		        	
 		        	if(data == true){

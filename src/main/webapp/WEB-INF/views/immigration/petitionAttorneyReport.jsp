@@ -27,7 +27,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Petition Attorney Report</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
+      <div class="pull-right brud-crum"><a href="/app/dashboard'/>" title="Home">Home</a>&raquo;<a
 					href="<c:url value='/app/reportsDashboard'/>"> Reports Dashboard</a>&raquo;Petition Attorney Report</div>
     </section>
     
@@ -349,13 +349,14 @@ function getAllRelationssByOrgLocation(){
 
 <script>
 function exportPetitionReportPdf(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var searchValue = $("#payrollRegisterSearch").val();
 	var payGroup = $('#payGroup').val();
 	var department = $('#payrollDepartment').val();
 	var payRollType = $('#payRollType').val();
 	var freqStartDate = $('#freqStartDate').val();
 	var freqEndDate = $('#freqEndDate').val();
-    window.location.href = sourceleadUrl+"/exportPetitionReportPdf?&payGroup="+payGroup+"&department="+department+"&payRollType="+payRollType+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
+    window.location.href = vmsUrl+"/exportPetitionReportPdf?&payGroup="+payGroup+"&department="+department+"&payRollType="+payRollType+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
 }
 </script>
 
@@ -402,8 +403,8 @@ function runImmigrationReport(){
 	 				returnStat =  false;
 	 			}
 	 		}
-	    	 
-        	var url = sourceleadUrl+ "/runImmigrationAttorneyReport?&searchValue="+searchValue+"&petitionType="+petitionType+"&petitionStatus="+petitionStatus+"&dateFrequency="+dateFrequency+"&attorneyId="+attorneyId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate;
+	    	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+        	var url = vmsUrl+ "/runImmigrationAttorneyReport?&searchValue="+searchValue+"&petitionType="+petitionType+"&petitionStatus="+petitionStatus+"&dateFrequency="+dateFrequency+"&attorneyId="+attorneyId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate;
             $("#immigrationReport").show(); 
             prepareImmigrationReportList(url);
 	     }
@@ -474,7 +475,7 @@ function immigrationReportPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 		    	  	 	if(opt.generatedId !=null && opt.generatedId != '' && opt.generatedId !='undefined'){
-		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.generatedId+'" ><a href=/app/immigration/viewImmigration?immigrationUUID='+opt.immigrationUUID+'&candidateUUID='+opt.candidateUUID+'&immiTemplateUUID='+opt.immiTemplateUUID+'&myImmigrationPage=Y>'+opt.generatedId+'</a></div>';
+		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.generatedId+'" ><a href=/vms/immigration/viewImmigration?immigrationUUID='+opt.immigrationUUID+'&candidateUUID='+opt.candidateUUID+'&immiTemplateUUID='+opt.immiTemplateUUID+'&myImmigrationPage=Y>'+opt.generatedId+'</a></div>';
 		        		}else{
 		        			result = result + '     <div class="tblminwidth-75">---</div>';
 		        		} 
@@ -639,15 +640,19 @@ function resetImmForm(){
 	 $("#petitionStatus").trigger("chosen:updated"); 
 	 $("#attorneyId").val('');
 	 $("#attorneyId").trigger("chosen:updated"); 
-	 $("#dateFrequency").val('');
+	 //By default date filter shows This year or current year
+	 $("#dateFrequency").val('YTD');
+	 $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
 	 $("#custFromDate").val('');
+	 $('#custToDateDiv').find('p.jquery_form_error_message').remove(); 
 	 $("#custToDate").val('');
+	 $("#custom-select").hide();
 }
 </script>
 <!-- =============== Pdf and  Excel Export by prasad k =================== -->
 <script>
 	function petitionExport123(type){
-		
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 if(type == "Pdf"){
 			exportType = "pdf";
 		}else{
@@ -677,7 +682,7 @@ function resetImmForm(){
 	    		 dateFrequency = "";
 	    	 }
 	    	
-			window.location.href = sourceleadUrl+ "/exportPetitionReportPdf?&searchValue="+searchValue+"&petitionType="+petitionType+"&petitionStatus="+petitionStatus+"&dateFrequency="+dateFrequency+"&attorneyId="+attorneyId+"&exportType="+exportType; 
+			window.location.href = vmsUrl+ "/exportPetitionReportPdf?&searchValue="+searchValue+"&petitionType="+petitionType+"&petitionStatus="+petitionStatus+"&dateFrequency="+dateFrequency+"&attorneyId="+attorneyId+"&exportType="+exportType; 
 	   }
 	}
 </script>

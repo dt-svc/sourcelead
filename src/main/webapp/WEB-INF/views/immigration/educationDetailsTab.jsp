@@ -401,9 +401,10 @@ document.getElementById("uploadBtnEducation").onchange = function () {
 
 <script type="text/javascript">
 function removeImmiEduDocFile(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var id = $("#candidateEducationId").val();
 	$.ajax({
-        url: sourceleadUrl + immiModulePath + "/deleteImmigrationEducationDocumentById?id="+id,
+        url: vmsUrl + immiModulePath + "/deleteImmigrationEducationDocumentById?id="+id,
         type: "GET",
         success: function (result) {
         if(result=='success'){

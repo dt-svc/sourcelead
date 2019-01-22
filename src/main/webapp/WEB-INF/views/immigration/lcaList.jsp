@@ -11,16 +11,17 @@
    
     <section class="content-header clearfix">
       <div class="pull-left"><h2>LCA</h2></div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Petition List</a> &raquo; LCA List</div>
+      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+      <a href="/vms/immigration/viewImmigrationList">Petition List</a> &raquo; LCA List</div>
 	<div class="clearfix"></div>
     </section>
     
      <div class="project_side_wrap_inn_tabs clearfix">
 	    <ul class="project-tabs-menu">
 		   
-		    <li class="current"><a href="${appPath}/immigration/viewLCAList" >LCA List</a></li>
+		    <li class="current"><a href="/vms/immigration/viewLCAList" >LCA List</a></li>
 		    
-		     <li><a href="${appPath}/immigration/viewImmigrationList" >Petition List</a></li>
+		     <li><a href="/vms/immigration/viewImmigrationList" >Petition List</a></li>
 	    </ul>
     </div>
         
@@ -31,7 +32,7 @@
 <div class="positionRelative reportHead clearfix">
       <ul class="pull-right list-unstyled list-inline">
         <sec:authorize access="hasRole('ROLE_ADD_LCA')">
-			<li><a href="${appPath}/immigration/loadNewLCA" class="newAdBtn mr5">+ New </a></li>
+			<li><a href="/vms/immigration/loadNewLCA" class="newAdBtn mr5">+ New </a></li>
 		</sec:authorize>	
 			<li>
 			    <select id="daysFilter" onchange="getDynamicLCAList()" style="padding: 3px 5px;">
@@ -209,16 +210,15 @@
    	 $('input:checkbox[name=lcaStatus]:checked').each(function() {
   		lcaStatus.push($(this).val());
       });
-     var sourceleadUrl = '${sourceleadUrl}';
+     var vmsUrl ='${SourceLeadWeb_vmsUrl}';
      
      var searchValue = $("#lcaSearch").val();
      searchValue = searchValue ? searchValue : "";
      
      var filterByDays = $("#daysFilter").val();
      filterByDays = filterByDays ? filterByDays : "";
-     
      var url ="";
-     url = sourceleadUrl + "/immigration/getLcaViewList?searchValue="+searchValue+"&lcaStatus="+lcaStatus+"&mainStatus="+status+"&filterByDays="+filterByDays; 
+     url = vmsUrl + "/immigration/getLcaViewList?searchValue="+searchValue+"&lcaStatus="+lcaStatus+"&mainStatus="+status+"&filterByDays="+filterByDays; 
      dynamicLCAListPagination(url);
  }
  //var count = 0;
@@ -450,16 +450,17 @@ function deleteLcaListId(lcaUuid){ // only stauts updated with reason. active 1 
 
 <script type="text/javascript">
  function deleteLcaDetailsByRowId(lcaUuid){
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var reason = $("#reasonForLca").val();
      if(reason.match(/^[^\s-](.*)*$/) != null && reason !="" && reason.length <= 250){
      $("#reasonForLcaDiv").empty();
 		$.ajax({
-	        url: sourceleadUrl+"/immigration/deleteLcaDetailsById?lcaUuid="+lcaUuid,
+	        url: vmsUrl+"/immigration/deleteLcaDetailsById?lcaUuid="+lcaUuid,
 	        type: "GET",
 	        success: function (result) {
 	        	$("#remove_lca_pop").fadeOut(200);
 	    		$(".project_inn_mask").fadeOut(200);
-	    		window.location.href = sourceleadUrl+"/immigration/viewLCAList";
+	    		window.location.href = vmsdUrl+"/immigration/viewLCAList";
 	        }
 		});
      }else if (reason.length >= 251){
@@ -505,11 +506,12 @@ function deleteLcaListId(lcaUuid){ // only stauts updated with reason. active 1 
 
 <script type="text/javascript">
  function reActivateLca(lcaUuid){
-		$.ajax({
-	        url: sourceleadUrl +"/immigration/reActivateLca?lcaUuid="+lcaUuid,
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	 $.ajax({
+	        url: vmsUrl +"/immigration/reActivateLca?lcaUuid="+lcaUuid,
 	        type: "GET",
 	        success: function (result) {
-	    		window.location.href = sourceleadUrl+"/immigration/viewLCAList";
+	    		window.location.href = vmsUrl+"/immigration/viewLCAList";
 	        }
 		});
 	}
@@ -530,10 +532,11 @@ $(".overIcon, .newActPop").click(function(e){
 // LCA Export Excel
 
 function exportToLCAExcel(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	if (!table.data().count() ) {
 	    alert( 'Empty table' );
 	}else{
-		window.location.href = sourceleadUrl+"/immigration/getLcaListExport?exportType=excel";
+		window.location.href = vmsUrl+"/immigration/getLcaListExport?exportType=excel";
 	}
 }
 

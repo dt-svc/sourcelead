@@ -252,9 +252,9 @@
 		templateDocDetails = templateDocDetails+ "<div class='col-md-3'>";
 		templateDocDetails = templateDocDetails+ "<select class='form-control selectpicker' onchange='updateUIforOthers("+rowId+")' field-name='Select Document' data-validation='required' name='immigrationDocList["+rowId+"].documentType' id='candidateEducation"+rowId+"' data-validation='validate_Space' data-live-search='true'>";
 		templateDocDetails = templateDocDetails+ "<option value='' selected>--Select Document--</option>";
-		<c:forEach var='edu' items='${educationsList}'>
+		/* <c:forEach var='edu' items='${educationsList}'>
 		templateDocDetails = templateDocDetails+ "<option value='${edu.id}'>${edu.name}</option>";
-		</c:forEach>
+		</c:forEach> */
 		templateDocDetails = templateDocDetails+ "</select></div>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-4 noPad' id='currentRow"+rowId+"'>";
 		templateDocDetails = templateDocDetails+ "	<div id='customOther-defaults"+rowId+"'>";
@@ -348,12 +348,13 @@
 
 	/* Document Category Selection  in immigration template creation */
 	function getDocumentType(id,rowId){
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var docType = id.value;
 		$('#candidateEducation'+rowId).empty();
 		
 		 $.ajax({
 	            type: "POST",
-	            url:sourceleadUrl+immiModulePath +"/getDcoumentType?"+tokenParamName +"="+tokenValue+"&docType="+docType,
+	            url:vmsUrl+immiModulePath +"/getDcoumentType?"+tokenParamName +"="+tokenValue+"&docType="+docType,
 	            success: function (json) {
 	            	 $('#candidateEducation'+rowId).append('<option selected value="">--Select Document--</option>');
 	            	 for (var i = 0; i < json.length; i++) {

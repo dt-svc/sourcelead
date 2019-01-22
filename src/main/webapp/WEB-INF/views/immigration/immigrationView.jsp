@@ -8,7 +8,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
-<script src="/resources/js/immigration.js"></script>
+<script src="/vms/resources/js/immigration.js"></script>
+
+<script type="text/javascript">
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+</script>
+
 <style>
 .disabledLink
 {
@@ -40,10 +45,12 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
       </div>
        <c:choose>
 	   		<c:when test="${myImmigrationPage =='Y'}">
-	   			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/myImmigration">My Immigration List</a> &raquo; My Immigration Summary</div>
+	   			<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+	   			<a href="/vms/immigration/myImmigration">My Immigration List</a> &raquo; My Immigration Summary</div>
 			</c:when>
 			<c:otherwise>
-				<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Petition List</a> &raquo; Petition Summary</div>
+				<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+				<a href="/vms/immigration/viewImmigrationList">Petition List</a> &raquo; Petition Summary</div>
 			</c:otherwise>
 		</c:choose>
       
@@ -67,7 +74,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
   			<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				       <div class="col-md-4">
-	  						<p id='editImmigrationView' class="cursorPointer"><a href=/app/immigration/editImmigrationDetails?immigrationUUID=${immigration.immigrationUUID}>Edit</a></p>
+	  						<p id='editImmigrationView' class="cursorPointer"><a href=/vms/immigration/editImmigrationDetails?immigrationUUID=${immigration.immigrationUUID}>Edit</a></p>
 	  					</div>
 				    </c:when>
 				    <c:otherwise>
@@ -341,7 +348,7 @@ $("#packageZipfile").click(function() {
 		return;
 	$.post("downloadAllImmigrationDocsZip",{immigrationId: immigrationId}, function(data) { //  used for download all immigration doc files 
 		if(data !== "" && data.indexOf("Documents Found") === -1)
-			location.href = '/app/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
+			location.href = '/vms/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
 		else if(data !== "" && data.indexOf("immigrationId Found") !== -1)
 			alert(data);
 		else
@@ -447,9 +454,10 @@ $("#packageZipfile").click(function() {
 		$("a[href='" + tabName + "']").click();
 	}
 	function changeUscisStatusForImmigration(uscisStatusId,uscisOldId){
-		 $.ajax({
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+		$.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/immigration/updateUscisTypeDropDown?templateId="+immigrationId+"&uscisId="+uscisStatusId+"&uscisOldId="+uscisOldId, 
+		        url: vmsUrl+"/immigration/updateUscisTypeDropDown?templateId="+immigrationId+"&uscisId="+uscisStatusId+"&uscisOldId="+uscisOldId, 
 		        success: function(data) {
 		        	if(data == "success"){
 		        		location.reload();

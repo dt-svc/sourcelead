@@ -82,15 +82,7 @@
 				    </c:otherwise>
 				</c:choose>
 				
-				<!-- <td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td> -->
+				
 			  </tr>  			  			  
 			  	</c:forEach>
 			  <c:if test="${empty candidatesEmployersList}">
@@ -102,16 +94,7 @@
 		  </table>
 		</div>
 		
-		<!-- <div class="immigraPagi clearfix">
-			<div class="immiPagiText">Showing 1 to 6 of 6 entries</div>
-			  <ul class="pagination">
-				<li><a href="#"> << </a></li>
-				<li><a href="#">2</a></li>
-				<li><a href="#">3</a></li>
-				<li class="disabled"><a href="#">6</a></li>
-				<li data-page="last"><a href="#"> >> </a></li>
-			  </ul>
-		</div>  -->
+		
 		<!-- popup code start -->
 		<form name = "employerDetails_form" id = "employerDetails_form" method = "post">
 		<div class="popUpOut" id="emploView">
@@ -182,7 +165,7 @@
 						data-validation-optional="true">
 						
 				</div>
-				<p id="startYearValidation" class="text-danger small" style="display: none"></p>
+				<p id="startYearValidation" class="colorRed small pull-right mr mt5 mb0" style="display: none"></p>
 				</div>
 			</div>				
           <div class="col-sm-12 noPad mt clearfix" id = "endDateDivId">
@@ -209,10 +192,10 @@
 					<input type="text" max class="form-control input-sm" value="" maxlength="4" id="endYear"  name="endYear" placeholder="Enter Year"
 						field-name="End Year"
 						data-validation="validate_Space validate_extno validate_length length4-4"
-						data-validation-optional="true" onChange="monthIfYearRequired();">
+						data-validation-optional="true" onChange="monthIfYearRequired();" onkeyup="monthIfYearRequired();">
 						
 				</div>
-				<p id="endYearValidation" class="small text-danger" style="display: none"></p>
+				<p id="endYearValidation" class="colorRed small pull-right mr mt5 mb0" style="display: none"></p>
 				
 				</div>
 			</div>	
@@ -254,9 +237,6 @@
 	</form>
 	
 <script>
-
-
-
 	function employercurrentPosition() {
 		var currentposition = document.getElementById("isCurrentPosition").checked;
 		if (currentposition) {
@@ -271,7 +251,51 @@
 			document.getElementById("endDateDivId").style.display = 'block';
 		}
 	}
-</script>		
+</script>	
+    
+<script type="text/javascript">
+	var startYearFlag = true ,endYearFlag = true;
+	function applyKeyEventsToYears() {
+		$("#startYear").keyup(function() {
+			if($(this).val() > new Date().getFullYear()) {
+				$("#startYearValidation").html("Start year shouldn't be greater than Current year");
+				$("#startYearValidation").show();
+				startYearFlag = false;
+			} else {
+				$("#startYearValidation").hide();
+				startYearFlag = true;
+			}
+		});
+		$("#endYear").keyup(function() {
+			if($(this).val() > new Date().getFullYear()) {
+				$("#endYearValidation").html("End year shouldn't be greater than Current year");
+				$("#endYearValidation").show();
+				endYearFlag = false;
+			} else {
+				$("#endYearValidation").hide();
+				endYearFlag = true;
+			} 
+		});
+	}
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	})(jQuery);
+</script>
 <script>
 	// Add Employee PopUp
 	$("#addEmpl").click(function(){
@@ -303,23 +327,24 @@
 </script>	
 
 <script type="text/javascript">
-$(function() {
-	$("#uploadBtnEmployer").change(function() {
-	fileUpload("uploadBtnEmployer", "candidateDocuments", "employerDetails_form");
-});
-});
-
-document.getElementById("uploadBtnEmployer").onchange = function () {
- 	$('#uploadFileEmployer').val($(this).val().replace(/C:\\fakepath\\/i, ''))
-
-}; 
+	$(function() {
+		$("#uploadBtnEmployer").change(function() {
+		fileUpload("uploadBtnEmployer", "candidateDocuments", "employerDetails_form");
+	});
+	});
+	
+	document.getElementById("uploadBtnEmployer").onchange = function () {
+	 	$('#uploadFileEmployer').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+	
+	}; 
 </script>
 
 <script type="text/javascript">
 function removeImmiEmpDocFile(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var id = $("#candidateEmpId").val();
 	$.ajax({
-        url: sourceleadUrl + immiModulePath + "/deleteImmigrationEmployerDocumentById?id="+id,
+        url: vmsUrl + immiModulePath + "/deleteImmigrationEmployerDocumentById?id="+id,
         type: "GET",
         success: function (result) {
         if(result=='success'){
@@ -344,21 +369,17 @@ function removeImmiEmpDocFile(){
 </script>
 <script type="text/javascript">
 function monthIfYearRequired(){
+	
 	var startMonth= document.getElementById("startMonth").value;
 	if(startMonth != null && startMonth != "" && startMonth != "undefined"){
-		
 		 $('#startYear').removeAttr('data-validation-optional');
-	    $('#startYear').attr("data-validation","required validate_Space validate_extno validate_length length4-4"); 
-	   
+	     $('#startYear').attr("data-validation","required validate_Space validate_extno validate_length length4-4"); 
 	}else{
 		 $('#startYear').removeAttr('data-validation');
 		 $('#startYear').attr("data-validation-optional","true"); 
 	}
-	
 	var endMonth= document.getElementById("endMonth").value;
-	
 	if(endMonth != null && endMonth != "" && endMonth != "undefined"){
-		
 			 $('#endYear').removeAttr('data-validation-optional');
 		     $('#endYear').attr("data-validation","required validate_Space validate_extno validate_length length4-4"); 
 		}else{
@@ -369,22 +390,19 @@ function monthIfYearRequired(){
 	var startYear= document.getElementById("startYear").value;
 	var SMdata = startMonth.split('&');
 	var sMonthNumber = SMdata[0];
-	
 	var endYear= document.getElementById("endYear").value;
 	var EMdata = endMonth.split('&');
 	var eMonthNumber = EMdata[0];
-	if((startYear != " " && startYear != null && startYear != "undefined" ) && (endYear != " " && endYear != null && endYear != "undefined")){
-		
-	if(( parseInt(sMonthNumber) > parseInt(eMonthNumber)) && (startYear == endYear) ){
-		 $("#err").empty();
-		 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
-		}
-	if(parseInt(sMonthNumber) < parseInt(eMonthNumber))
-		 {
-		 $('#startYearDiv').parent().find('p.jquery_form_error_message').remove(); 
-		 }
 	
+	if((startYear != " " && startYear != null && startYear != "undefined" ) && (endYear != " " && endYear != null && endYear != "undefined")){
+		if(( parseInt(sMonthNumber) > parseInt(eMonthNumber)) && (startYear == endYear) ){
+			 $("#err").empty();
+			 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
+			}
+		if(parseInt(sMonthNumber) < parseInt(eMonthNumber))
+			 {
+			 $('#startYearDiv').parent().find('p.jquery_form_error_message').remove(); 
+			 }
 	}
-
 }
 </script>

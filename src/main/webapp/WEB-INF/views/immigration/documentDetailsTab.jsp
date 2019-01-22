@@ -442,6 +442,7 @@ function uploadDoc(id){
 </script> -->
 <script type="text/javascript">
 function uploadRerqDocsList(id) {
+	
 	fileUpload("uploadBtn"+id+"", "immigrationCandidateDocuments", "uploadRequestDoc_Form");
 }
 
@@ -529,12 +530,12 @@ function appendDynamicUploaRow(){
 	   $("#dynamicUplodDiv").append(prepareDynamicUploadRow(rowId++)); 
 }
 function removeDynamicUploaRow(id){
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	  var  recordDelete = $("#uploadFile"+id).attr("docid");
 	   
 	  if(typeof recordDelete != "undefined" && recordDelete != null && recordDelete !='' ){
 	  $.ajax({
-          url: sourceleadUrl + immiModulePath + "/deleteDocumentHistoryRecordById?recordDelete="+recordDelete,
+          url: vmsUrl + immiModulePath + "/deleteDocumentHistoryRecordById?recordDelete="+recordDelete,
           type: "GET",
           success: function (result) {
           if(result=='success'){
@@ -559,7 +560,7 @@ function downlaodZipfileByDocId(docId){
 		return;
 	$.post("downloadImmigrationDocsZip",{immigrationId: immigrationId, docId: docId}, function(data) { //  passing empty value for immigrationId to do doc level zip download
 		if(data !== "" && data.indexOf("Documents Found") === -1)
-			location.href = '/app/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
+			location.href = '/vms/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
 		else
 			alert("Unable to locate Documents.");
 	});

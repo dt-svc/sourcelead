@@ -1172,7 +1172,7 @@ return responseList;
 			
 			invoice.setExchangeRate(invoice.getExchangeRate());
 			if (invoice.getConvertAmount() != null) {
-				invoice.setConvertAmount(String.format("%.2f", Float.valueOf(invoice.getConvertAmount())));
+				invoice.setConvertAmount(String.format("%.3f", Float.valueOf(invoice.getConvertAmount())));
 			}
 			invoice.setConvertCurrencyCode(invoice.getConvertCurrencyCode());
 			invoice.setCurrencyCode(invoice.getCurrencyCode());

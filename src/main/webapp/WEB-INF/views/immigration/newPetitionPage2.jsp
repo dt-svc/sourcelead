@@ -201,6 +201,7 @@
 <script type="text/javascript">
 
 	function showEndDatePicker(id){
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		var finalDateFormat = getJSDateFormat(locationDate);  
 		$('#endDate'+id).datepicker({
@@ -224,7 +225,7 @@
 	
 	 $(document).ready(function () {
 		$.ajax({
-		       url: sourceleadUrl+immiModulePath+"/getPetitionTemplateEmployers",
+		       url: vmsUrl+immiModulePath+"/getPetitionTemplateEmployers",
 		       type : "GET",
 		       success: function(data) {
 					for(var i=0;i<data.length;i++){
@@ -239,6 +240,7 @@
 	});
 	
 	function addEmployment(empCount,dataValues,dynamicStatus){
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var dynamicStatusValue = "";
 		if(dynamicStatus == 'default'){
 			dynamicStatusValue = '<button type="button" onclick="addEmploymentDynamic('+empCount+')" class="btn btn-default pull-right mt2"><i class="fa fa-plus paddingRight"></i>Add Employer</button>';
@@ -294,7 +296,7 @@
 	 function getEmploymentTypeList(id){
 			$.ajax({
 			   	type: "GET",
-			    url: sourceleadUrl+immiModulePath+"/getEmploymentTypeList?${_csrf.parameterName}=${_csrf.token}",	    	   
+			    url: vmsUrl+immiModulePath+"/getEmploymentTypeList?${_csrf.parameterName}=${_csrf.token}",	    	   
 			    success: function(json) {
 			    	 var result = "";
 			    	 $('#employmentTypeId'+id)

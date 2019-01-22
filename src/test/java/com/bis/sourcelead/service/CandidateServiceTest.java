@@ -59,7 +59,6 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.impl.CandidateServiceImpl;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.web.CandidateController;
 
 import org.mockito.Spy;
 import org.mockito.Mock;
