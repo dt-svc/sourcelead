@@ -744,10 +744,13 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 		return date;
 	}
 
-	public Date[] getCustomDates(String fromDate, String toDate) throws ParseException {
+	public Date[] getCustomDates(String fromDate, String toDate,OrgLocations orgLocations) throws ParseException {
 		   Date[]  dates = new Date[2];
-		   dates[0] =new SimpleDateFormat("yyyy-MM-dd").parse(fromDate);  
-		   dates[1] =new SimpleDateFormat("yyyy-MM-dd").parse(toDate);  
+		 /*  dates[0] =new SimpleDateFormat("yyyy-MM-dd").parse(fromDate);  
+		   dates[1] =new SimpleDateFormat("yyyy-MM-dd").parse(toDate);  */
+		   dates[0] =new SimpleDateFormat(orgLocations.getDateFormat()).parse(fromDate);  
+		   dates[1] =new SimpleDateFormat(orgLocations.getDateFormat()).parse(toDate);  
+		   
 		return dates;
 	}
 

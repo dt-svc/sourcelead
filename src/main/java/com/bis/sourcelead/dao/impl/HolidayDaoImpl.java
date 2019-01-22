@@ -1,6 +1,7 @@
 	package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -148,19 +149,25 @@ public class HolidayDaoImpl  implements HolidayDAO{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Holiday> getAllHolidaysListByOrgloationIdAndShiftId(Long locationId, String shiftIds) {
+	public List<Holiday> getAllHolidaysListByOrgloationIdAndShiftId(Long locationId, String shiftIds, String reportYear) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
 		if(StringUtils.isNotBlank(shiftIds)) {
 			subQuery = " and holiday.id IN (select hs.holiday.id from HolidayShift hs where hs.shift.id IN("+shiftIds+"))";
 		}
+		String subQuery1 = "";
+		if(!StringUtils.isNotBlank(reportYear)) {
+			int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+			reportYear = String.valueOf(currentYear);
+		}
+		subQuery1 = " and (year(holiday.fromDate)='"+reportYear+"'  OR year(holiday.toDate)= '"+reportYear+"')";
 		String from = null;
 		List<Holiday> holidayList  = null;
 		if(shiftIds != null && shiftIds != "") {
-			from = "from Holiday holiday where holiday.orgLocations.id =:locationId "+subQuery+" and holiday.status ='1' ORDER BY holiday.fromDate ASC";
+			from = "from Holiday holiday where holiday.orgLocations.id =:locationId "+subQuery+" "+subQuery1+" and holiday.status ='1' ORDER BY holiday.fromDate ASC";
 			 holidayList = session.createQuery(from).setLong("locationId", locationId).list();
 		}else {
-			from = "from Holiday holiday where holiday.orgLocations.id =:locationId  and holiday.status ='1' ORDER BY holiday.fromDate ASC";
+			from = "from Holiday holiday where holiday.orgLocations.id =:locationId  and holiday.status ='1' "+subQuery1+" ORDER BY holiday.fromDate ASC";
 			 holidayList = session.createQuery(from).setLong("locationId", locationId).list();
 		}
 		 
