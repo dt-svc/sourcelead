@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,20 +45,15 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.WageTaxSummaryDao;
 import com.bis.sourcelead.payroll.entity.BisUserMapping;
-import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
-import com.bis.sourcelead.payroll.entity.InvoiceData;
 import com.bis.sourcelead.payroll.entity.PayrollBalance;
 import com.bis.sourcelead.payroll.entity.PayrollHelper;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
-import com.bis.sourcelead.payroll.rest.EmployeePayrollRestController;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-
-import org.apache.commons.lang3.StringUtils;
 
 
 @Service

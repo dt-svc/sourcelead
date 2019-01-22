@@ -276,14 +276,14 @@
 						<c:if test="${sessionData.nav == 'Payroll' || sessionData.nav == 'My Payroll'}">
 							<ul class="collapses" style="display: none">
 							 <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-								<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/uSPayrollDashboard'/>" title="Run Payroll"><i class="fa fa-chevron-right"></i> Run Payroll</a></li>
-								<li><a href="<c:url value='${appPath}/userPay'/>" title="Legacy Payroll"><i class="fa fa-chevron-right"></i>Legacy Payroll</a></li>
-								<li><a href="<c:url value='${appPath}/myPayroll'/>" title="My Payroll"><i class="fa fa-chevron-right"></i>My Payroll</a></li>
+								<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a href="/pms/uSPayrollDashboard" title="Run Payroll"><i class="fa fa-chevron-right"></i> Run Payroll</a></li>
+								<li><a href="/pms/userPay" title="Legacy Payroll"><i class="fa fa-chevron-right"></i>Legacy Payroll</a></li>
+								<li><a href="/pms/myPayroll" title="My Payroll"><i class="fa fa-chevron-right"></i>My Payroll</a></li>
 							</c:if>
 							
 							<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-								<li class="${sessionData.nav == 'MyPayroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/myPayrollInd'/>" title="My Pays"><i class="fa fa-chevron-right"></i> My Pays</a></li>
-								<li class="${sessionData.nav == 'RunPayroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/runIndianPayRoll'/>" title="Payroll"><i class="fa fa-chevron-right"></i> Payroll</a></li>
+								<li class="${sessionData.nav == 'MyPayroll' ? 'treview-active' : ''}"><a href="/pms/myPayrollInd" title="My Pays"><i class="fa fa-chevron-right"></i> My Pays</a></li>
+								<li class="${sessionData.nav == 'RunPayroll' ? 'treview-active' : ''}"><a href="/pms/runIndianPayRoll" title="Payroll"><i class="fa fa-chevron-right"></i> Payroll</a></li>
 							</c:if>
 							</ul>
 						</c:if>
@@ -291,14 +291,14 @@
 						<c:if test="${sessionData.nav != 'Payroll' || sessionData.nav != 'My Payroll'}">
 							<ul class="collapses" style="display: none">
 							<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-								<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/uSPayrollDashboard'/>" title="Run Payroll"><i class="fa fa-chevron-right"></i> Run Payroll</a></li>
-								<li><a href="<c:url value='${appPath}/userPay'/>" title="Legacy Payroll"><i class="fa fa-chevron-right"></i> Legacy Payroll</a></li>
-								<li><a href="<c:url value='${appPath}/myPayroll'/>" title="My Payroll"><i class="fa fa-chevron-right"></i> My Payroll</a></li>
+								<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a href="/pms/uSPayrollDashboard" title="Run Payroll"><i class="fa fa-chevron-right"></i> Run Payroll</a></li>
+								<li><a href="/pms/userPay" title="Legacy Payroll"><i class="fa fa-chevron-right"></i> Legacy Payroll</a></li>
+								<li><a href="/pms/myPayroll" title="My Payroll"><i class="fa fa-chevron-right"></i> My Payroll</a></li>
 							</c:if>
 							
 							<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-								<li class="${sessionData.nav == 'MyPayroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/myPayrollInd'/>" title="My Pays"><i class="fa fa-chevron-right"></i>My Payroll</a></li>
-								<li class="${sessionData.nav == 'RunPayroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/runIndianPayRoll'/>" title="Payroll"><i class="fa fa-chevron-right"></i>Run Payroll</a></li>
+								<li class="${sessionData.nav == 'MyPayroll' ? 'treview-active' : ''}"><a href="/pms/myPayrollInd" title="My Pays"><i class="fa fa-chevron-right"></i>My Payroll</a></li>
+								<li class="${sessionData.nav == 'RunPayroll' ? 'treview-active' : ''}"><a href="/pms/runIndianPayRoll" title="Payroll"><i class="fa fa-chevron-right"></i>Run Payroll</a></li>
 							</c:if>
 							</ul>
 						</c:if>
@@ -308,22 +308,22 @@
 					
 					<c:if test="${SourceLeadWeb_paryrollTabCount < 2 && userTabs.tabName == 'Run Payroll'}">
 							<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-								<li class="${sessionData.nav == 'Payroll' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/uSPayrollDashboard'/>" title="Run Payroll"><span class="navIcons payIcon"></span><b>Run Payroll</b></a></li>
+								<li class="${sessionData.nav == 'Payroll' ? 'navActive' : ''}"><a href="/pms/uSPayrollDashboard" title="Run Payroll"><span class="navIcons payIcon"></span><b>Run Payroll</b></a></li>
 							</c:if>
 							
 							<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-								<li class="${sessionData.nav == 'RunPayroll' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/runIndianPayRoll'/>" title="Payroll"><span class="navIcons payIcon"></span><b>Run Payroll</b></a></li>
+								<li class="${sessionData.nav == 'RunPayroll' ? 'navActive' : ''}"><a href="/pms/runIndianPayRoll" title="Payroll"><span class="navIcons payIcon"></span><b>Run Payroll</b></a></li>
 							</c:if>
 					</c:if>
 					
 					<c:if test="${SourceLeadWeb_paryrollTabCount < 2 && userTabs.tabName == 'My Payroll'}">
 							<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-								<li class="${sessionData.nav == 'My Payroll' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/userPay'/>" title="Leagacy Payroll"><span class="navIcons payIcon"></span><b>Legacy Payroll</b></a></li>
-								<li class="${sessionData.nav == 'My Payroll' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/myPayroll'/>" title="My Payroll"><span class="navIcons payIcon"></span><b>My Payroll</b></a></li>
+								<li class="${sessionData.nav == 'My Payroll' ? 'navActive' : ''}"><a href="/pms/userPay" title="Leagacy Payroll"><span class="navIcons payIcon"></span><b>Legacy Payroll</b></a></li>
+								<li class="${sessionData.nav == 'My Payroll' ? 'navActive' : ''}"><a href="/pms/myPayroll" title="My Payroll"><span class="navIcons payIcon"></span><b>My Payroll</b></a></li>
 							</c:if>
 							
 							<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-								<li class="${sessionData.nav == 'MyPayroll' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/myPayrollInd'/>" title="My Pays"><span class="navIcons payIcon"></span><b>My Payroll</b></a></li>
+								<li class="${sessionData.nav == 'MyPayroll' ? 'navActive' : ''}"><a href="/pms/myPayrollInd" title="My Pays"><span class="navIcons payIcon"></span><b>My Payroll</b></a></li>
 							</c:if>
 					</c:if>
 
@@ -338,8 +338,8 @@
 
 								<ul class="collapses" style="display: none">
 								
-									<li class="${sessionData.nav == 'MyImmigration' ? 'treview-active' : ''}"><a	href="<c:url value='${appPath}/immigration/myImmigration'/>" title="My Immigration"><i class="fa fa-chevron-right"></i> Self</a></li>
-									<li class="${sessionData.nav == 'Immigrations' ? 'treview-active' : ''}"><a	href="<c:url value='${appPath}/immigration/viewImmigrationList'/>" title="Immigrations"><i class="fa fa-chevron-right"></i> Employees</a></li>
+									<li class="${sessionData.nav == 'MyImmigration' ? 'treview-active' : ''}"><a	href="/vms/immigration/myImmigration" title="My Immigration"><i class="fa fa-chevron-right"></i> Self</a></li>
+									<li class="${sessionData.nav == 'Immigrations' ? 'treview-active' : ''}"><a	href="/vms/immigration/viewImmigrationList" title="Immigrations"><i class="fa fa-chevron-right"></i> Employees</a></li>
 									
 								</ul>
 								
@@ -347,7 +347,7 @@
 								</sec:authorize>
 						</c:if>
 				    <c:if test="${userTabs.tabName == 'Leave Management'}">
-		             <li class="${sessionData.nav == 'Leave Management' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/leaveManagementReports'/>" title="Leave Management"><span class="navIcons leaveIcon"></span><b>Leave Management</b></a></li>
+		             <li class="${sessionData.nav == 'Leave Management' ? 'navActive' : ''}"><a href="/pms/leaveManagementReports" title="Leave Management"><span class="navIcons leaveIcon"></span><b>Leave Management</b></a></li>
 		          	</c:if>	
           </c:forEach>
 	         
