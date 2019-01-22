@@ -41,10 +41,10 @@
 		<p>Manage Your Contract Templates</p>
 		<span>
 			<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')">
-			<a class="btn btn-info btn-sm mr10" href="<c:url value="${appPath}/addContractTemplate" />">Add</a> 
+			<a class="btn btn-info btn-sm mr10" href="/vms/addContractTemplate">Add</a> 
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE')"> 
-			<a class="btn btn-primary btn-sm" href="<c:url value="${appPath}/orgContractTemplate" />">View</a>
+			<a class="btn btn-primary btn-sm" href="/vms/orgContractTemplate">View</a>
 			</sec:authorize>
 		</span>
 	</div>
