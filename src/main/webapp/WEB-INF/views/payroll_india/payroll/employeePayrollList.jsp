@@ -279,7 +279,9 @@ function closeCPR() {
 function sentForApprove(approverStatus){
 	var totalCheckboxes = $('input:checkbox[name=empPayroll]').length;
 	var numberOfChecked  = $('input:checkbox[name=empPayroll]:checked').length;
-	if(totalCheckboxes != numberOfChecked){
+	if(totalCheckboxes > 0 && totalCheckboxes == numberOfChecked){
+		alertPopUp();
+	}else{
 		var feqUUID = $("#paySheetFrequency").val();
 		var excludeEmpArr = [];
 		$("input:checkbox[name=empPayroll]:checked").each(function(){
@@ -292,8 +294,6 @@ function sentForApprove(approverStatus){
 	        	 $(location).attr('href', 'runIndianPayRoll?stab=payroll');
 	         },
 	    });
-	}else{
-		alertPopUp();
 	}
 }
 </script>
@@ -335,7 +335,9 @@ function cancelIndPayroll(){
 $('#approveTab , #cnfmPayrollBtn').click(function(){
 	var totalCheckboxes = $('input:checkbox[name=empPayroll]').length;
 	var numberOfChecked  = $('input:checkbox[name=empPayroll]:checked').length;
-	if(totalCheckboxes != numberOfChecked){
+	if(totalCheckboxes > 0 && totalCheckboxes == numberOfChecked){
+		alertPopUp();
+	}else{
 		var feqUUID = $("#paySheetFrequency").val();
 		var excludeEmpArr = [];
 		$("input:checkbox[name=empPayroll]:checked").each(function(){
@@ -353,8 +355,6 @@ $('#approveTab , #cnfmPayrollBtn').click(function(){
 	        	 
 	         },
 	    });
-	}else{
-		alertPopUp();
 	}
 });
 
