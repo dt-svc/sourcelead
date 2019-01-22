@@ -35,6 +35,15 @@
             </div>
           </div>
 
+       <div class="col-md-3">
+            <div class="pull-left mr10"> <i class="fa fa-calendar fa-2x text-muted"></i> </div>
+            <div class="pull-left">
+              <h4 class="text-muted">YTD Summary</h4>
+              <small class="text-muted">Payroll YTD Summary Reports</small>
+              <div class="clearfix mt10"><a href="${appPath}/indPayrollYTDSummaryReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+            </div>
+          </div> 
+          
         <%--  <div class="col-md-3">
             <div class="pull-left mr10"> <i class="fa fa-file-text-o fa-2x text-muted"></i> </div>
             <div class="pull-left">

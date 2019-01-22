@@ -41,6 +41,8 @@ public interface IndPaysheetFrequencyService {
 	
 	ResponseList<IndEmployeePayroll> getPayrollBankReportReportList(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations);
 
+	ResponseList<IndEmployeePayroll> getPayrollYTDSummaryReportReportList(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations);
+
 	List<IndEmployeePayroll> getYTDIndEmployeePayrollList(Long candidateId, String startMonth)throws Exception;
 
 }

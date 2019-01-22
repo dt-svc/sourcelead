@@ -596,6 +596,80 @@ public class IndPaySlipPdf {
 		return dataSource;
 	}
 
+
+	public File getIndPayrollYTDPdf(ResponseList<IndEmployeePayroll> payResponseList, OrgLocations orgLocations) throws Exception {
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("payrollYTDSummary_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
+			file.setReadable(true);
+			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+			
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orgLocations.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							col.column("Employee Id", "employeeId", type.stringType()),
+							col.column("Employee Name", "employeeName", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Department", "department", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("No Of Working Days", "noOfWorkingDays", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("No Of Leaves", "noOfLeaves", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Gross Pay", "grossPay", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Deducations", "deducatons", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Net Pay", "netPay", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(createYTDSummaryDataSource(payResponseList)).toPdf(pdfExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+
+
+	public File getIndPayrollYTDExcel(ResponseList<IndEmployeePayroll> payResponseList, OrgLocations orgLocations)throws Exception {
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("payrollYTDSummary_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
+			file.setReadable(true);
+			
+			JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file).setDetectCellType(true)
+                    .setIgnorePageMargins(true)
+                    .setWhitePageBackground(false)
+                    .setRemoveEmptySpaceBetweenColumns(true);
+			
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orgLocations.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							col.column("Employee Id", "employeeId", type.stringType()).setColumns(15),
+							col.column("Employee Name", "employeeName", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER).setColumns(15),
+							col.column("Department", "department", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("No Of Working Days", "noOfWorkingDays", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER).setColumns(30),
+							col.column("No Of Leaves", "noOfLeaves", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Gross Pay", "grossPay", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Deducations", "deducatons", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Net Pay", "netPay", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(createYTDSummaryDataSource(payResponseList)).toXls(xlsExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+
+
+	private DRDataSource createYTDSummaryDataSource(ResponseList<IndEmployeePayroll> payResponseList) {
+		DRDataSource dataSource = new DRDataSource("employeeId","employeeName", "department", "noOfWorkingDays", "noOfLeaves", "grossPay", "deducatons", "netPay");
+	       for(IndEmployeePayroll iep:payResponseList.getData()) {
+				String employeeId = "--";
+				if(iep.getEmployee().getEmployeeId() != null) {
+					employeeId = iep.getEmployee().getEmployeeId();
+				} 
+				dataSource.add(employeeId,iep.getCandidate().getFullName(), iep.getEmployee().getDepartmentId().getDepartmentName(), iep.getNoOfDays(),iep.getNoOfLeaves(),iep.getGrossPay(),iep.getGrossPay().subtract(iep.getNetPay()),iep.getNetPay());
+			}
+			
+			return dataSource;
+	}
+
 	 
 	
 }
