@@ -661,4 +661,19 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 			 model.setViewName("reports/indPayrollRegisterReport");
 			 return model;
 		 }
+		 
+		 @RequestMapping(value = "/indPayrollBankTransferReport")
+			public ModelAndView indPayrollBankTransferReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 ModelAndView model = new ModelAndView();
+			 model.addObject("sourceleadUrl", sourceleadUrl);
+			 model.setViewName("reports/indPayrollBankTransferReport");
+			 return model;
+		 }
+		 @RequestMapping(value = "/indPayrollYTDSummaryReport")
+			public ModelAndView indPayrollYTDSummaryReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 ModelAndView model = new ModelAndView();
+			 model.addObject("sourceleadUrl", sourceleadUrl);
+			 model.setViewName("reports/indPayrollYTDSummaryReport");
+			 return model;
+		 }
 }

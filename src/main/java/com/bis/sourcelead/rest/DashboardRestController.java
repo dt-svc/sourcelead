@@ -215,13 +215,16 @@ public class DashboardRestController {
 	
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/getTimeSheetSubmissionStatus")
-	public TimeSheetSubmissionCount getTimeSheetSubmissionStatus(@RequestParam(value="timesheetType", required=false) String timesheetType,@RequestParam(value="timesheetCountType") String timesheetCountType,HttpServletRequest request) throws Exception {
+	public TimeSheetSubmissionCount getTimeSheetSubmissionStatus(@RequestParam(value="timesheetType", required=false) String timesheetType,@RequestParam(value="timesheetCountType", required=false) String timesheetCountType,HttpServletRequest request) throws Exception {
 
 	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Candidate candidate =(Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
+		if(StringUtils.isEmpty(timesheetCountType)) {
+			timesheetCountType = "All";
+		}
 		if("employes".equalsIgnoreCase(timesheetType)){
 			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId(),timesheetCountType,isGlobalAccess);
 		}else if("myTimesheets".equalsIgnoreCase(timesheetType)){

@@ -600,7 +600,7 @@ public class TimesheetRestController {
 		/**
 		 * Getting List Of Projects For LoginUser
 		 */
-		List<String> timesheetFrequencyList = projectMembersService.getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndCandidateId(orgLocations.getId(), candidate.getId());
+		List<String> timesheetFrequencyList = projectMembersService.getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndMasterCandidateId(orgLocations.getId(),orgLocations.getOrg().getId(), candidate.getMasterCandidateId().getId());
 		if(timesheetFrequencyList != null && !timesheetFrequencyList.isEmpty()) {
 			employeeTimesheetEntryDetailsDTO.setInvoiceFrequencyList(new LinkedHashSet<String>(timesheetFrequencyList));
 			if(StringUtils.isEmpty(eedDTO.getInvoiceFrequency())){
@@ -608,7 +608,7 @@ public class TimesheetRestController {
 	       }else {
 	       	employeeTimesheetEntryDetailsDTO.setInvoiceFrequency(eedDTO.getInvoiceFrequency());
 	       }
-			List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(orgLocations.getId(), candidate.getId(),employeeTimesheetEntryDetailsDTO.getInvoiceFrequency());
+			List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(orgLocations.getId(),orgLocations.getOrg().getId(), candidate.getId(),employeeTimesheetEntryDetailsDTO.getInvoiceFrequency());
 			employeeTimesheetEntryDetailsDTO =  getEmployeeWeekFrequncyDropDown(projectMembersList,employeeTimesheetEntryDetailsDTO,eedDTO,request);
 		}
 		return employeeTimesheetEntryDetailsDTO;
@@ -3054,7 +3054,7 @@ public class TimesheetRestController {
 		Long projectId = eedDTO.getProjectsId();
 		Long masterCandidateId = eedDTO.getMasterCandidatesId();
 		List<ProjectMembers> projectMembersList = projectMembersService
-				.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(), candidate.getId());
+				.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(),orgLocations.getOrg().getId(), candidate.getId());
 		ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
 		if (projectMembersList != null && !projectMembersList.isEmpty()) {
 			long count = 1;
