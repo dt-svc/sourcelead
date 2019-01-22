@@ -338,8 +338,8 @@
 
 								<ul class="collapses" style="display: none">
 								
-									<li class="${sessionData.nav == 'MyImmigration' ? 'treview-active' : ''}"><a	href="<c:url value='${appPath}/immigration/myImmigration'/>" title="My Immigration"><i class="fa fa-chevron-right"></i> Self</a></li>
-									<li class="${sessionData.nav == 'Immigrations' ? 'treview-active' : ''}"><a	href="<c:url value='${appPath}/immigration/viewImmigrationList'/>" title="Immigrations"><i class="fa fa-chevron-right"></i> Employees</a></li>
+									<li class="${sessionData.nav == 'MyImmigration' ? 'treview-active' : ''}"><a	href="/vms/immigration/myImmigration" title="My Immigration"><i class="fa fa-chevron-right"></i> Self</a></li>
+									<li class="${sessionData.nav == 'Immigrations' ? 'treview-active' : ''}"><a	href="/vms/immigration/viewImmigrationList" title="Immigrations"><i class="fa fa-chevron-right"></i> Employees</a></li>
 									
 								</ul>
 								
