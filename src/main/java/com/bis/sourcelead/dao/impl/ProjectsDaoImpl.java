@@ -754,7 +754,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 				}
 				String projectAccessQuery = "";
 				
-				if(!userRole.equalsIgnoreCase("ROLE_ADMIN") || (userRole.equalsIgnoreCase("ROLE_ADMIN") && (StringUtils.isNotBlank(projectsDTO.getIsGlobalAccess()) && projectsDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)))){
+				if((userRole.equalsIgnoreCase("ROLE_ADMIN") && (StringUtils.isNotBlank(projectsDTO.getIsGlobalAccess()) && projectsDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)))){
 							 projectAccessQuery =  " and ("
 				                       + "  ps.id IN(select distinct subpah.projectId.id from ProjectApproverHierarchy subpah where subpah.approverUserId ='"+userId+"' and subpah.status !='0')"
 				                       +" OR "
