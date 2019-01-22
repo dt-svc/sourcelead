@@ -306,15 +306,15 @@ function getRequirementTableList(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#reqDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getRequirementListForCandidateBulkSubmission?searchValue="+searchValue+"&generatedId="+generatedId+"&jobTitle="+requirementTitle+"&noticePeriod="+noticePeriod+"&client="+client+"&createdDate="+updatedOn+"&skills="+requirementSkills+"&city="+city;
-	 requirementListPagination(url,sourceleadUrl);
+	 var url = atsUrl+"/getRequirementListForCandidateBulkSubmission?searchValue="+searchValue+"&generatedId="+generatedId+"&jobTitle="+requirementTitle+"&noticePeriod="+noticePeriod+"&client="+client+"&createdDate="+updatedOn+"&skills="+requirementSkills+"&city="+city;
+	 requirementListPagination(url,atsUrl);
 	 $("#addApplicantDivLoading").removeAttr("style");
    	}
 }
 </script>
 
 <script>
-function requirementListPagination(url,sourceleadUrl){
+function requirementListPagination(url,atsUrl){
 	
 	var colIndex = 0;
     $('#reqListTable').DataTable( { 
@@ -471,7 +471,7 @@ function submitCandidtesToJob(){
 		 $("#requirementsListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			   $.ajax({
 		          type : "POST",
-		          url: sourceleadUrl+"/submitRecommendationCandidates?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+jobId+"&candidateResume="+candidateResume,    
+		          url: atsUrl+"/submitRecommendationCandidates?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+jobId+"&candidateResume="+candidateResume,    
 		           success :function(data) {
 		        	   if (data.response === "FAILED") {
 		        		   $("#requirementsListLoading").removeAttr("style");

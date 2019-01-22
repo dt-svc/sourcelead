@@ -43,7 +43,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  *
  */
 @RestController
-@RequestMapping("/app")
 public class CandidateCertificationsRestController {
 
 	@Autowired

@@ -106,7 +106,7 @@ function candDocumentsList(candidateId){
 	var candidateType = '${candidateType}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
         	  if (response && response.response === "INVALID_USER") {
         		    showError(response.responseMessage);
@@ -212,7 +212,7 @@ function candDocumentsList(candidateId){
 <script>
 function candidateDocumentView(documentUUID,title) {
 	if(documentUUID != null && documentUUID != "") {
-		window.open(sourceleadUrl+'/viewProfessionalCandidateDocument/'+title+'?documentUUID='+documentUUID,title,"height=600,width=600");
+		window.open(atsUrl+'/viewProfessionalCandidateDocument/'+title+'?documentUUID='+documentUUID,title,"height=600,width=600");
 	}
 }
 
@@ -301,7 +301,7 @@ function deleteRequestedDoc(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	   $.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/acceptRequestedDocuments?"+tokenParamName+"="+tokenValue+"&documentsIds="+documentsIds+"&userId="+userId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId,
+	    	url: atsUrl+"/acceptRequestedDocuments?"+tokenParamName+"="+tokenValue+"&documentsIds="+documentsIds+"&userId="+userId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId,
 	        success: function(response) {
 	        	if (response && response.response === "INVALID_DATA") {
 	        	    showError(response.responseMessage);
@@ -600,7 +600,7 @@ function storeCandidateDocument(candidateId, documentUUID) {
 		      	data: formData,
 		  		processData: false,
 		  	    contentType:false,
-		      	url : sourceleadUrl+"/saveCandidateDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
+		      	url : atsUrl+"/saveCandidateDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
 				success : function(result) {
 					if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
 		    		    showError(result.responseMessage);
@@ -688,7 +688,7 @@ function getDocument(candidateId, documentId){
 	  $("#documentOtherType").attr("data-validation-optional", "true");
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentId="+documentId, 	   
+		    url: atsUrl+"/getDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentId="+documentId, 	   
    		    success: function(response) {
    		    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")){
    		    	    showError(response.responseMessage);
@@ -772,7 +772,7 @@ function deleteDocument(candidateId, documentId) {
 	//var message = confirm("You are choosing to delete the document");
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/terminateDoc?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
+	    url: atsUrl+"/terminateDoc?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
   		success: function(result) {
   			if (result && result.response === "INVALID_DATA") {
 			    showError(result.responseMessage);
@@ -995,7 +995,7 @@ $('body').on('submit', '#requestForDocuments_form', function(e){
 			    data : formData,
 			    //processData: false,
 		    	//  contentType:false,
-			    url: sourceleadUrl+"/requestCandidateForDocuments?"+tokenParamName+"="+tokenValue+"", 
+			    url: atsUrl+"/requestCandidateForDocuments?"+tokenParamName+"="+tokenValue+"", 
 			    success: function(response) {
 			    	if (response.response === "AWKWARD") {
 			    	    location.href = "/errorPage";
@@ -1087,7 +1087,7 @@ $('body').on('submit', '#docrejectedReason_form', function(e) {
        	$("#docsrejectedLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
   	   	$.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/rejectRequestedDocuments?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&documentsIds="+documentsIds, 
+	    	url: atsUrl+"/rejectRequestedDocuments?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&documentsIds="+documentsIds, 
 	        success: function(response) {
 	        	if (response && response.response === "INVALID_DATA") {
 	        	    showError(response.responseMessage);

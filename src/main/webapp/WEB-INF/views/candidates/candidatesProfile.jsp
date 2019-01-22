@@ -46,7 +46,7 @@ function editCandidate(candidateId){
        
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+         url: atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(result) {
            var json = result.object;
       	   if(result.response === "SESSION_TIMEDOUT") {
@@ -633,7 +633,7 @@ function editCandidate(candidateId){
 function preapareCustomFieldDetails(candidateId){
 	$.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getAllASectionCustomFields?&candidateId="+candidateId+"&requestFrom=candidate",        
+         url: atsUrl+"/getAllASectionCustomFields?&candidateId="+candidateId+"&requestFrom=candidate",        
          success :function(data) {
         	 $('#customFieldDataId').empty();
         	 $('#customFieldDataId').append(data);
@@ -659,7 +659,7 @@ function deleteCandidate(candidateId,candidateType){
 			$(".rejectErrorMsgs").append("<p class='jquery_form_error_message'>The values should be between 2-250 characters</p>");
 		}else{
 			$(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
-			$.post(sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,{},function(result){
+			$.post(atsUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,{},function(result){
 				if (result && result.response === "INVALID_DATA") {
 				    $("#update_candidate").removeAttr("disabled");
 				    $("#update_candidate").removeAttr('button').val('Save');
@@ -670,12 +670,12 @@ function deleteCandidate(candidateId,candidateType){
 					showSuccessStatusPopup("Candidate marked as teminated");
 					var json = result.object;
 					if(candidateType == 'Associates') {
-						location.replace(sourceleadUrl+"/associatesList");
+						location.replace(atsUrl+"/associatesList");
 					} else {
-						location.replace(sourceleadUrl+"/candidatesList");
+						location.replace(atsUrl+"/candidatesList");
 					}
 				} else if (result.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
+					location.replace(atsUrl);
 				} else {
 				    $("#update_candidate").removeAttr("disabled");
 				    showError("Operation failed, please try again");
@@ -705,7 +705,7 @@ function deleteCandidate111(candidateId,candidateType) {
 		if(reason.match(/^[^\s-](.*)*$/) != null) {
 			$(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
 			$(".rejectErrorMsgs").empty();
-			$.post(sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,{},function(result){
+			$.post(atsUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,{},function(result){
 				if (result && result.response === "INVALID_DATA") {
 				    $("#update_candidate").removeAttr("disabled");
 				    $("#update_candidate").removeAttr('button').val('Save');
@@ -716,12 +716,12 @@ function deleteCandidate111(candidateId,candidateType) {
 					showSuccessStatusPopup("Candidate marked as teminated");
 					var json = result.object;
 					if(candidateType == 'Associates') {
-						location.replace(sourceleadUrl+"/associatesList");
+						location.replace(atsUrl+"/associatesList");
 					} else {
-						location.replace(sourceleadUrl+"/candidatesList");
+						location.replace(atsUrl+"/candidatesList");
 					}
 				} else if (result.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
+					location.replace(atsUrl);
 				} else {
 				    $("#update_candidate").removeAttr("disabled");
 				    showError("Operation failed, please try again");
@@ -803,7 +803,7 @@ function reActivateCandidateAlertMessage(candidateId){
 	if (message == true) { */
 		var reactivate = '1';
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,{},function(result){
+		$.post(atsUrl+"/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,{},function(result){
 			if (result && result.response === "INVALID_DATA") {
 			    $("#update_candidate").removeAttr("disabled");
 			    $("#update_candidate").removeAttr('button').val('Save');
@@ -811,19 +811,19 @@ function reActivateCandidateAlertMessage(candidateId){
 			} else if (result.response === "AWKWARD") {
 			    location.href = "/errorPage";
 			} else if (result.response === "SUCCESS") {
-				location.replace(sourceleadUrl+"/candidatesList");
+				location.replace(atsUrl+"/candidatesList");
 			} else if (result.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
+				location.replace(atsUrl);
 			} else {
 			    showError("Operation failed, please try again");
 			}			
 		});
 		/* $.ajax({
 	        type : "POST",
-	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,        
+	         url: atsUrl+"/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,        
 	         success :function(data) {
 	               if(data != null && data != 'undefined' && data != ""){
-	            			 location.replace(sourceleadUrl+"/candidatesList");
+	            			 location.replace(atsUrl+"/candidatesList");
 	                } 
 	         },
 		}); */ 
@@ -847,11 +847,11 @@ function candidateProfile(candidateId,candidateType,isAssociate){
 	  var skillsList = '${skillsList}'; 
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+         url: atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(result) { 
         	 var json = result.object;
         	   if(result.response === "SESSION_TIMEDOUT") {
-  					location.replace(sourceleadUrl);
+  					location.replace(atsUrl);
   				} else if (result.response === "AWKWARD") {
   					location.href = "/errorPage";
   				} else if (result.response === "SUCCESS") {
@@ -1212,9 +1212,9 @@ function saveCandidateTags(candidateId){
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(tagName != null && tagName != '' && tagName !='undefined') {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&tagName="+jsonData
+		 Urlcheck = atsUrl+"/saveOrUpdateTagsBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&tagName="+jsonData
 	 } else {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&tagName="+""
+		 Urlcheck = atsUrl+"/saveOrUpdateTagsBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&tagName="+""
 	 }
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  
@@ -1292,9 +1292,9 @@ function saveCandidateTags(candidateId){
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(skillName != null && skillName != '' && skillName !='undefined') {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+jsonData
+		 Urlcheck = atsUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+jsonData
 	 } else {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+""
+		 Urlcheck = atsUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+""
 	 }
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  
@@ -1354,7 +1354,7 @@ function saveCandidateTags(candidateId){
       		var formData = getFormData("candidateProfileEdit_form");
 			$("#update_candidate").attr("disabled", "disabled");
 			$("#update_candidate").addClass('button').val('Processing..');
-			$.post(sourceleadUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"", formData, function(result) {
+			$.post(atsUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"", formData, function(result) {
 				if (result && result.response === "INVALID_DATA") {
 				    $("#update_candidate").removeAttr("disabled");
 				    $("#update_candidate").removeAttr('button').val('Save');
@@ -1447,7 +1447,7 @@ function cancelEdit(){
 function removeSkillById(candidateId, skillId){
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/removeSkillBySkillId?"+tokenParamName+"="+tokenValue+"&skillId="+skillId,        
+         url: atsUrl+"/removeSkillBySkillId?"+tokenParamName+"="+tokenValue+"&skillId="+skillId,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != ""){
             			 candidateSkillsList(candidateId);
@@ -1503,7 +1503,7 @@ function removeSkillById(candidateId, skillId){
 			var name = local.id;
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/fieldUpdateCandidate?"+tokenParamName+"="+tokenValue+"&candidateSkillId="+candidateSkillId+"&name="+name+"&value="+value,
+						url : atsUrl+"/fieldUpdateCandidate?"+tokenParamName+"="+tokenValue+"&candidateSkillId="+candidateSkillId+"&name="+name+"&value="+value,
 						success : function(result) {
 							 
 						},
@@ -1518,7 +1518,7 @@ function removeSkillById(candidateId, skillId){
 	function employeeSubmissionProfile(candidateId) {
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
+					url : atsUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
 					success : function(data) {
 						if (data && data.response === "INVALID_DATA") {
 						    $("#update_candidate").removeAttr("disabled");
@@ -1594,7 +1594,7 @@ function removeSkillById(candidateId, skillId){
 							$("#employeeSubmissionProfile").empty(); 
 							$("#employeeSubmissionProfile").append(result);
 						} else if (data.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
+							location.replace(atsUrl);
 						} 
 					},
 				});
@@ -1605,7 +1605,7 @@ function removeSkillById(candidateId, skillId){
 function educationSubmissionProfile(candidateId){
 	 $.ajax({  
           type : "GET",
-          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
         	  	if (response && response.response === "INVALID_DATA") {
         		    showError(response.responseMessage);
@@ -1684,7 +1684,7 @@ function educationSubmissionProfile(candidateId){
 					 $("#educationSubmissionProfile").empty(); 
                     $("#educationSubmissionProfile").append(result); 
         		} else if (response.indexOf('Sign In') !== -1) {
-        			location.replace(sourceleadUrl);
+        			location.replace(atsUrl);
         		} else {
         		    showError("Operation failed, please try again");
         		}
@@ -1698,7 +1698,7 @@ function certificationSubmissionProfile(candidateId) {
 	
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
         	  if (data && data.response === "INVALID_DATA") {
       		    showError(data.responseMessage);
@@ -1763,7 +1763,7 @@ function certificationSubmissionProfile(candidateId) {
 					$("#certificationSubmissionProfile").empty();
 					$("#certificationSubmissionProfile").append(result); 
 				} else if (data.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
+					location.replace(atsUrl);
 				} 
         },
      }); 
@@ -1819,7 +1819,7 @@ function updateDesignationOtherType(){
 	 if(email != null && email != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType="+candidateType, 
+		        url: atsUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType="+candidateType, 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -1975,7 +1975,7 @@ function employementType(){
 	 var vendorOrgRelationId = $("#updateVendorOrgRelationId").val();
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
+		        url: atsUrl+"/getVendorsByOrgLocation?", 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendorName').empty();
@@ -2016,7 +2016,7 @@ function  removeValiationVendorContact() {
 			 var vendorSpocId = $("#updateSpocId").val();
 			 $.ajax({
 				    type: "POST",
-			        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
+			        url: atsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 			        success: function(json) {
 			        	//var json = JSON.parse(data);
 			        	$('#vendorcontactName').empty();
