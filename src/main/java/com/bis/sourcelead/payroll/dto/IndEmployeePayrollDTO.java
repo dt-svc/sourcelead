@@ -109,6 +109,18 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 	
 	private String exportType;
 	
+	private String employeeIds;
+	
+	private String departmentId;
+	
+	private String startDate;
+	
+	private String endDate;
+	
+	private BigDecimal deducations;
+	
+	private BigDecimal noOfWorkingDays;
+	
 	public Long getId() {
 		return id;
 	}
@@ -502,4 +514,53 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 	public void setExportType(String exportType) {
 		this.exportType = exportType;
 	}
+
+	public String getEmployeeIds() {
+		return employeeIds;
+	}
+
+	public String getDepartmentId() {
+		return departmentId;
+	}
+
+	public String getStartDate() {
+		return startDate;
+	}
+
+	public String getEndDate() {
+		return endDate;
+	}
+
+	public void setEmployeeIds(String employeeIds) {
+		this.employeeIds = employeeIds;
+	}
+
+	public void setDepartmentId(String departmentId) {
+		this.departmentId = departmentId;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+
+	public BigDecimal getDeducations() {
+		return deducations;
+	}
+
+	public void setDeducations(BigDecimal deducations) {
+		this.deducations = deducations;
+	}
+
+	public BigDecimal getNoOfWorkingDays() {
+		return noOfWorkingDays;
+	}
+
+	public void setNoOfWorkingDays(BigDecimal noOfWorkingDays) {
+		this.noOfWorkingDays = noOfWorkingDays;
+	}
+	
 }

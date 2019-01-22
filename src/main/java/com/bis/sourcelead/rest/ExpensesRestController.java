@@ -301,7 +301,7 @@ public class ExpensesRestController {
 		}
 		else{
 			Candidate candidate = candidateService.getCandidateByConsultantUserId(eedDTO.getUserId(), orgLocations.getId());
-			List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(), candidate.getId());
+			List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(),orgLocations.getOrg().getId(),candidate.getId());
 			if (projectMembersList != null && !projectMembersList.isEmpty()) {
 				
 				ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
