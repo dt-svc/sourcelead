@@ -221,7 +221,7 @@ public class ProfessionalRequirementsController {
 	 
 	 
 	
-	 @RequestMapping(value = "/app/professionalRequirements")
+	 @RequestMapping(value = "/professionalRequirements")
 		public ModelAndView professionalProfile(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false) String  requirementUUID,
 				@RequestParam(value="referUUID", required=false) String  referUUID) throws Exception {
 		    

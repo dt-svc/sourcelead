@@ -123,7 +123,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.ibm.icu.util.Calendar;
 
 @Controller
-@RequestMapping("/app")
 public class RequirementController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(RequirementController.class);
