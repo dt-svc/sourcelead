@@ -928,19 +928,24 @@ public class ProjectsDaoImpl implements ProjectsDao{
 						 if(projects.getOrgLocationsId().getId().equals(orglo.getId())) {
 							 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocationsId);
 						 }else {
-							 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocationsId);
-							 if(projectClients != null && projectClients.getOrgRelationId() != null) {
-								 OrgRelations orgRel = projectClients.getOrgRelationId();
-								 OrgLocations clientOrgLocation = null;
-								 if(!orgRel.getResponderLocationId().getId().equals(orglo.getId())) {
-									 clientOrgLocation = orgRel.getLocationId();
-								 }else {
-									 clientOrgLocation = orgRel.getResponderLocationId();
-								 } 
-								 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientOrgLocation.getId());
+							 if(projects.getOrgLocationsId().getOrg().getId().equals(orglo.getOrg().getId())) {
+								 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
 							 }else {
-								 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgId(projects.getId(), projectDTO.getOrgId());
+								 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocationsId);
+								 if(projectClients != null && projectClients.getOrgRelationId() != null) {
+									 OrgRelations orgRel = projectClients.getOrgRelationId();
+									 OrgLocations clientOrgLocation = null;
+									 if(!orgRel.getResponderLocationId().getId().equals(orglo.getId())) {
+										 clientOrgLocation = orgRel.getLocationId();
+									 }else {
+										 clientOrgLocation = orgRel.getResponderLocationId();
+									 } 
+									 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientOrgLocation.getId());
+								 }else {
+									 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgId(projects.getId(), projectDTO.getOrgId());
+								 }
 							 }
+							
 						 }
 						
 						
