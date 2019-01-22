@@ -1,6 +1,8 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -18,9 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementLocationsDao;
 import com.bis.sourcelead.dao.RequirementSubmissionHistoryDao;
+import com.bis.sourcelead.dto.OfferAcceptanceRateDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.OfferAcceptanceRateView;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportView;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -365,6 +370,43 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 			e.printStackTrace();
 		}
 		return count;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<OfferAcceptanceRateView> getOfferAcceptanceRateList(String userCode, long orgLocationId, String selectedClients, int month, int year, boolean compare) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from OfferAcceptanceRateView oarView where oarView.userCode=:userCode and oarView.orgLocationId=:orgLocationId";
+			if(selectedClients != null && !selectedClients.isEmpty()) {
+				query += " and oarView.orgRelationId in (" + selectedClients + ")";
+			}
+			if (month > 0 || year > 0) {
+				Calendar c = Calendar.getInstance();
+				if (month > 0) {
+					c.set(Calendar.MONTH, month - 1);
+					SimpleDateFormat YYYY_MM = new SimpleDateFormat("yyyy-MM");
+					query += " and oarView.createdYearMonth='" + YYYY_MM.format(c.getTime()) + "'";
+				} else if (year > 0) {
+					c.set(Calendar.YEAR, year);
+					SimpleDateFormat YYYY = new SimpleDateFormat("yyyy");
+					query += " and oarView.createdYear='" + YYYY.format(c.getTime()) + "'";
+				}
+			}
+			query += " order by oarView.createdYearMonthDate";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("userCode", userCode);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			
+			List<OfferAcceptanceRateView> offerAcceptanceRateViewList = queryObj.list();
+			if(offerAcceptanceRateViewList != null && !offerAcceptanceRateViewList.isEmpty()) {
+				return offerAcceptanceRateViewList;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

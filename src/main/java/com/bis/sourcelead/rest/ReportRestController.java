@@ -56,6 +56,7 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
+import com.bis.sourcelead.dto.OfferAcceptanceRateDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
@@ -2140,5 +2141,26 @@ public class ReportRestController {
 			}
 					return projectMembersDTOList;
 				}
+			
+
+	@RequestMapping(value = "/offerAcceptanceRateList")
+	public ResponseList<OfferAcceptanceRateDTO> getOfferAcceptanceRateList(HttpServletRequest request, 
+			@RequestParam(defaultValue = "") String selectedClients,
+			@RequestParam(defaultValue = "") String filteredDate,
+			@RequestParam(defaultValue = "") String filterType) {
+		ResponseList<OfferAcceptanceRateDTO> responseList = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if(user != null) {
+				responseList =  requirementSubmissionHistoryService.getOfferAcceptanceRateList(user.getUserCode(), orgLocations.getId(), selectedClients, filterType, filteredDate);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return responseList;
+	}
 		 
 }
