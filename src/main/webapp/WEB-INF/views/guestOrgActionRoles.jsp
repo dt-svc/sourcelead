@@ -25,7 +25,7 @@ padding-right: 254px; padding-top: 10px;
           <div class="pull-left">
             <h2>Roles List</h2>
           </div>
-           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo;Guest Action Roles</div>
+           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo;Guest Action Roles</div>
         </section>
 
         <div class="timesheet_out">

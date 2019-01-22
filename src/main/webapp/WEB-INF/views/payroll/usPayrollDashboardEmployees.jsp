@@ -21,8 +21,8 @@ function getUserGroupListData(url,fromType){
         result = result +"<thead>"; 
         result = result + '<tr>';
 		result = result + '<th>Batch Id</th>';
+		result = result + '<th>No.Of Associates</th>';
 		result = result + '<th>Batch Name</th>';
-// 		result = result + '<th>No.Of Associates</th>';
 		result = result + '<th>Pay Frequency</th>';
 		result = result + '<th>Action</th>';
 		result = result + '</tr>';
@@ -61,8 +61,8 @@ function userGroupPaginationFun(url,fromType){
         }),
         "columns": [
             { "data": "groupId" },
+            { "data": "numOfAssociates"},
             { "data": "groupName"},
-//             { "data": "numOfAssociates"},
             { "data": "payFrequency" },
             { "data": "Action"}
         ],
@@ -72,11 +72,20 @@ function userGroupPaginationFun(url,fromType){
 	    	  	"sortable": true,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		        var result = "";
-							result = result + ' <td><div class="tblminwidth-75"><a href="'+sourceleadUrl+'/numberOfEmployeesInGroup?groupUUID='+opt.groupUUID+'">'+opt.groupId+'</a></div></td>';
+							result = result + ' <td><div class="tblminwidth-75">'+opt.groupId+'</div></td>';
 // 							result = result +'<div class="tblminwidth-100"><a href="'+sourceleadUrl+'/viewPaySheetFrequencyData?approverStatus='+opt.approverStatus+'&paySheetFrequencyUUID='+opt.paySheetFrequencyuuid+'&payPeriodNum='+opt.payPeriodNum+'">'+opt.payPeriodNum+'</a></div>'; 
 							return result;
 	    	  	}
 	      },{
+	            "targets": colIndex++,
+	            "data": "numOfAssociates",
+	            "sortable": false,
+	            "render": function ( data, type, opt, meta ) { 
+	          			  var result = "";
+						 result = result + ' <td><div  class="tblminwidth-100"><a href="'+sourceleadUrl+'/numberOfEmployeesInGroup?groupUUID='+opt.groupUUID+'">'+opt.totalEmpCount+'</a></div></td>';
+	            return result;
+	            }
+	          },{
 	    	  "targets": colIndex++,
               "data": "groupName",
               "sortable": true,
@@ -86,16 +95,7 @@ function userGroupPaginationFun(url,fromType){
 	              return result;
               		
               }
-	          },/* {
-            "targets": colIndex++,
-            "data": "numOfAssociates",
-            "sortable": false,
-            "render": function ( data, type, opt, meta ) { 
-          			  var result = "";
-					 result = result + ' <td><div  class="tblminwidth-100">'+opt.numOfAssociates+'</div></td>';
-            return result;
-            }
-          }, */ {
+	          },   {
               "targets": colIndex++,
               "data": "payFrequency",
               "sortable": true,

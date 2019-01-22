@@ -50,10 +50,6 @@ $(document).ready(function(){
               <label class="col-md-12">Pay Period<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
                 <select class="form-control sel" id="payPeriod" name="payPeriod" onchange="getFreqdates('freqStartDate','freqEndDate');">
-					    <!-- <option>Select Period</option>
-						<option>01-02-2018 28-02-2018</option>
-						<option>01-03-2018 28-03-2018</option>
-						<option>01-02-2018 28-02-2018</option> -->
 					</select>
 					<input type="hidden" name="freqStartDate" id="freqStartDate" value=""/>
 					<input type="hidden" name="freqEndDate" id="freqEndDate" value=""/>
@@ -63,10 +59,6 @@ $(document).ready(function(){
               <label class="col-md-12">Department</label>
               <div class="col-md-12">
                 <select class="form-control chosen-select" multiple id="payrollDepartment" name="department">
-					    <!-- <option>Select Department</option>
-						<option>Department-1</option>
-						<option>Department-2</option>
-						<option>Department-3</option> -->
 					</select>
               </div>
             </div>
@@ -88,8 +80,6 @@ $(document).ready(function(){
       <div class="clearfix">
         <div class="positionRelative reportHead clearfix"> 
   			<ul class="pull-right list-unstyled list-inline">
-<!-- 			    <li><a class="newAdBtn mr5 hidden" href="/app/userCreation">+  Associate</a></li> -->
-<!-- 			    <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li> -->
 				<li>
 				<a class="overIcon" title="Actions" onclick="newActions();"></a>
       				<div class="newActPop" style="display: block;">
