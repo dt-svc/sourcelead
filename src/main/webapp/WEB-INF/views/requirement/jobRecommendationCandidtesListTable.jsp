@@ -55,7 +55,7 @@
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var searchValue = $("#recommendationTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getRequirementRecommendationsByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId+"&searchValue="+searchValue;
+	var url = atsUrl+"/getRequirementRecommendationsByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId+"&searchValue="+searchValue;
 	prepareRecommendationList(url,requirementRecommendationsDate,requirementId, requirementSubmissionStatus);
 }	
  
@@ -466,7 +466,7 @@ function recommendationpagination(url,requirementId, requirementSubmissionStatus
 function getSubmittedJobsList(candidateId){
 	$.ajax({
 		  type: "GET",
-		    url: sourceleadUrl+"/getCandidateSubmittedJobsList?candidateId="+candidateId,
+		    url: atsUrl+"/getCandidateSubmittedJobsList?candidateId="+candidateId,
 		     success :function(response) {
 		    	    $("#candidateSubmittedJobsDiv").empty();  
 		    	    $("#candidateSubmittedJobsDiv").append(response);
@@ -497,10 +497,10 @@ function cancelTermination(){
 }
 
 function shareRecomendedApplicant(requirementId,candidateId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	$.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/shareRecomendedApplicant?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&candidateId="+candidateId, 
+        url: atsUrl+"/shareRecomendedApplicant?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&candidateId="+candidateId, 
         success: function(data) {
         	if (data.response === "FAILED") {
 	    		showError(data.responseMessage);
@@ -512,7 +512,7 @@ function shareRecomendedApplicant(requirementId,candidateId){
 	   			$("#eduMsgDiv").html("You have successfully shared the job with selected candidate(s)");
 	   			eduMsgFadeinFunction();
 	    	}else if (data.indexOf('Sign In') !== -1) {
-	    		location.replace(sourceleadUrl);
+	    		location.replace(atsUrl);
 	    	} else {
 	    		showError("Operation failed, please try again");
 	    	}
@@ -628,7 +628,7 @@ function checkResume(){
 
 <script>
 function submitRecommendationCandidatesToJob(requirementId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var candidateIds = new Array();
 	 for(var e in compareCandidates) {
 		 if(!e || !compareCandidates[e] || compareCandidates[e] === "")
@@ -641,7 +641,7 @@ function submitRecommendationCandidatesToJob(requirementId){
 		 $("#recommendationsListLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		  $.ajax({
 	          type : "POST",
-	          url: sourceleadUrl+"/submitRecommendationCandidates?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+requirementId+"&candidateResume="+candidateResume,    
+	          url: atsUrl+"/submitRecommendationCandidates?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+requirementId+"&candidateResume="+candidateResume,    
 	           success :function(data) {
 	        	   $("#recommendationsListLoading").removeAttr("style");
 	        	   if (data.response === "FAILED") {
@@ -668,7 +668,7 @@ function submitRecommendationCandidatesToJob(requirementId){
 		       			}
 			    		
 			    	}else if (data.indexOf('Sign In') !== -1) {
-			    		location.replace(sourceleadUrl);
+			    		location.replace(atsUrl);
 			    	} else {
 			    		showError("Operation failed, please try again");
 			    	}
@@ -680,7 +680,7 @@ function submitRecommendationCandidatesToJob(requirementId){
 
 <script>
 function shareAllRecommendations(requirementId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var candidateIds = new Array();
 	 for(var e in compareCandidates) {
 		 if(!e || !compareCandidates[e] || compareCandidates[e] === "")
@@ -691,7 +691,7 @@ function shareAllRecommendations(requirementId){
 			$("#recommendationsListLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 	          type : "POST",
-	          url: sourceleadUrl+"/shareAllRecommendations?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+requirementId,    
+	          url: atsUrl+"/shareAllRecommendations?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+requirementId,    
 	           success :function(data) {
 	        	   $("#recommendationsListLoading").removeAttr("style");
 	        	   if (data.response === "FAILED") {
@@ -705,7 +705,7 @@ function shareAllRecommendations(requirementId){
 		       			eduMsgFadeinFunction();
 		       			toggleShareRecommendation();
 			    	}else if (data.indexOf('Sign In') !== -1) {
-			    		location.replace(sourceleadUrl);
+			    		location.replace(atsUrl);
 			    	} else {
 			    		showError("Operation failed, please try again");
 			    	}
@@ -751,7 +751,7 @@ function customizeScore(requirementId){
 	var loc = "apiLocation";
 	 $.ajax({
 		   	type: "GET",
-		    url: sourceleadUrl+"/getCustomizeScore?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
+		    url: atsUrl+"/getCustomizeScore?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
 		    success: function(data) {
 		    	var json = data.object;
 		    	if (data.response === "FAILED") {
@@ -1210,7 +1210,7 @@ function customizeScore(requirementId){
 		    		     
 			   		  tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
 		    	}else if (data.indexOf('Sign In') !== -1) {
-		    		location.replace(sourceleadUrl);
+		    		location.replace(atsUrl);
 		    	} else {
 		    		showError("Operation failed, please try again");
 		    	}
@@ -1291,7 +1291,7 @@ function updateCutomize(requirementId){
     		var jsonData = encodeURIComponent(con);
     		 $.ajax({
     					type : "POST",
-    					url : sourceleadUrl + "/updateCustomizeScore?"+tokenParamName+"="+tokenValue+"&json="+ jsonData + "&requirementId=" + requirementId,
+    					url : atsUrl + "/updateCustomizeScore?"+tokenParamName+"="+tokenValue+"&json="+ jsonData + "&requirementId=" + requirementId,
     					success : function(data) {
     						if (data.response === "FAILED") {
     				    		showError(data.responseMessage);
@@ -1303,7 +1303,7 @@ function updateCutomize(requirementId){
         							closePop();
 	    						}
     				    	}else if (data.indexOf('Sign In') !== -1) {
-    				    		location.replace(sourceleadUrl);
+    				    		location.replace(atsUrl);
     				    	} else {
     				    		showError("Operation failed, please try again");
     				    	}

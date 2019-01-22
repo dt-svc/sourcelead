@@ -19,15 +19,15 @@
       <div class="success_pop" id="selector" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
      </div>
-     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a>&raquo;<a href="<c:url value='${appPath}/jobs'/>"> Jobs List  </a>&raquo; <c:if test="${empty requirementId}">Add Job</c:if> <c:if test="${!empty requirementId}">Update Job</c:if> </div>
+     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a>&raquo;<a href="<c:url value='/jobs'/>"> Jobs List  </a>&raquo; <c:if test="${empty requirementId}">Add Job</c:if> <c:if test="${!empty requirementId}">Update Job</c:if> </div>
     </section>
     
     <div class="newPrDetails newPrDetailsPMO"> 
     <div class="newPrTabs">
     <ul class="newPrTabsMenu">
-				<li><a href="<c:url value='${appPath}/requirement?requirementUUID=${requirementUUID}'/>">Job Details</a></li>
-				<li><a href="<c:url value='${appPath}/jobReleaseManagement?requirementUUID=${requirementUUID}'/>">Job Release</a></li>
-				<li class="current"><a href="<c:url value='${appPath}/jobRecommendations?requirementUUID=${requirementUUID}'/>">Recommendations</a></li>
+				<li><a href="<c:url value='/requirement?requirementUUID=${requirementUUID}'/>">Job Details</a></li>
+				<li><a href="<c:url value='/jobReleaseManagement?requirementUUID=${requirementUUID}'/>">Job Release</a></li>
+				<li class="current"><a href="<c:url value='/jobRecommendations?requirementUUID=${requirementUUID}'/>">Recommendations</a></li>
 				<div class="clearfix mb"></div>
 			  </ul>
 	   <div class="clearfix"></div>
@@ -39,7 +39,7 @@
     <div class="form-footer clearfix row">
               <div class="col-lg-12">
                 <div class="pull-right">
-                  <input type="button" value="Go to list"  class="btn btn-primary ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/jobs'/>'"  class="btn btn-default ml">
+                  <input type="button" value="Go to list"  class="btn btn-primary ml" onClick="javascript:window.location.href = '<c:url value='/jobsList'/>'"  class="btn btn-default ml">
                 </div>
               </div>
     </div>
@@ -56,14 +56,14 @@
 <script>
 var candidateStatusGlobal ="";
 function clientSideBar(candidateId,recScore){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	  $.ajax({
           type : "POST",
-           url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+           url: atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
            success :function(result) {
         	   var json = result.object;
         	   if(result.response === "SESSION_TIMEDOUT") {
-					location.replace(sourceleadUrl);
+					location.replace(atsUrl);
 				} else if (result.response === "AWKWARD") {
 					location.href = "/errorPage";
 				} else if (result.response === "SUCCESS") {
@@ -343,7 +343,7 @@ function clientSideBar(candidateId,recScore){
 							 hilightTab();
 	                }
 				} else if (result.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
+					location.replace(atsUrl);
 				} else {
 					showError("Operation failed, please try again");
 				}

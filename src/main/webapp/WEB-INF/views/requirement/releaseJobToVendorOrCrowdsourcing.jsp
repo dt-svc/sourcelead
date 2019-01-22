@@ -218,10 +218,10 @@
           <div class="pull-right">
             <span id="openNetworkRelease" class="text-danger small" style="font-size: 11px; display: none;">Job Board / Public / Crowd Sourcing is mandatory</span>
 	           <c:if test="${!empty jobRecommendations}">
-	              <input type="button" value="Skip" class="btn btn-primary ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/jobRecommendations?requirementUUID=${requirementUUID}'/>'"></a>
+	              <input type="button" value="Skip" class="btn btn-primary ml" onClick="javascript:window.location.href = '<c:url value='/jobRecommendations?requirementUUID=${requirementUUID}'/>'"></a>
 	           </c:if>
            	<input type="button" class="btn btn-primary ml" onclick="releaseToCrowdSourcing();" id="releaseToCWBtn" value="Release">
-            <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/jobs'/>'">
+            <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/jobsList'/>'">
           </div>
         </div>
       </div>
@@ -232,14 +232,14 @@
         <div class="col-lg-12">
           <div class="pull-right">
                <c:if test="${!empty jobRecommendations}">
-	              <input type="button" value="Skip" class="btn btn-primary ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/jobRecommendations?requirementUUID=${requirementUUID}'/>'"></a>
+	              <input type="button" value="Skip" class="btn btn-primary ml" onClick="javascript:window.location.href = '<c:url value='/jobRecommendations?requirementUUID=${requirementUUID}'/>'"></a>
 	           </c:if>
             <sec:authorize access="hasAnyRole('ROLE_RELEASE_REQUIREMENT')">
             <span class="jquery_form_error_message" style="display:none;">Vendor/Contact selection is mandatory</span>
             	<input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Release">
 			</sec:authorize>
 			
-            <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/jobs'/>'">
+            <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/jobsList'/>'">
           </div>
         </div>
       </div>
@@ -299,7 +299,7 @@ $(document).ready(function(){
 	getVendorLists();
 	 var sourceleadShareUrl ='${sourceleadShareUrl}';
 	var referLink = "${sourceleadShareUrl}/job/${requirement.url}-${requirement.id}"
-			
+	//alert(sourceleadShareUrl);		
 	$("#referralLink").val(referLink);
 	
 	if('${SourceLeadWeb_vms}'  == 'Y'){
@@ -395,25 +395,25 @@ function releaseTo(){
 	 	    	$("#releaseBtn").prop('disabled', true);
 	 	    	$("#releaseCancelBtn").prop('disabled', true);
 	 			$("#releaseBtn").prop('value', 'Processing');
-	 		    var sourceleadUrl ='${sourceleadUrl}';
+	 			var atsUrl = '${SourceLeadWeb_atsUrl}';
 	 		    var requirementId = '${requirementId}';
 	 		    
 	 		 	$.ajax({
 	 		           type : "POST",
-	 		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    
+	 		           url: atsUrl+"/releaseJobsToClientsOrVendors?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    
 	 		            success :function(result) {
 	 		            	if (result.response === "SESSION_TIMEDOUT") {
-				  				location.replace(sourceleadUrl);
+				  				location.replace(atsUrl);
 			                } else if (result.response === "AWKWARD") {
 			                    location.href = "/errorPage";
 			                } else if (result.response === "SUCCESS") {
 			                	if(jobRecommendations){
-			 		       			   location.replace(sourceleadUrl+"/jobRecommendations?requirementUUID="+requirementUUID);	
+			 		       			   location.replace(atsUrl+"/jobRecommendations?requirementUUID="+requirementUUID);	
 		 		     		    }else{
-		 		     		    	   location.replace(sourceleadUrl+"/jobs");
+		 		     		    	   location.replace(atsUrl+"/jobsList");
 		 	     		    	 } 	
 			                } else if (result.indexOf('Sign In') !== -1) {
-								location.replace(sourceleadUrl);
+								location.replace(atsUrl);
 							} else {
 			                    showError("Operation failed, please try again");
 			                }
@@ -455,7 +455,7 @@ function releaseToOneVendor(vendorcheckboxId){
 	        //It will escape all the special characters
 	        var jsonData = encodeURIComponent(con);
 	        
-	        var sourceleadUrl ='${sourceleadUrl}';
+	        var atsUrl = '${SourceLeadWeb_atsUrl}';
 	        var requirementUUID = '${requirementUUID}';
        	    var requirementId = '${requirementId}';
 	        
@@ -491,7 +491,7 @@ function releaseToOneVendor(vendorcheckboxId){
 	        if((jobBoardAccounts.length > 0 && valid) || isContinue){
 	       	     $.ajax({
 			    	type: "POST",
-			    	 url: sourceleadUrl+"/releaseToCrowdSourcingNetwork?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&requirementId="+requirementId+"&jobBoardAccounts="+jobBoardAccounts, 
+			    	 url: atsUrl+"/releaseToCrowdSourcingNetwork?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&requirementId="+requirementId+"&jobBoardAccounts="+jobBoardAccounts, 
 			        success: function(result) {
 			        	$("#relTocro").removeAttr("style");
 		    			$("#relTocro").css({ display: "block" });
@@ -499,9 +499,9 @@ function releaseToOneVendor(vendorcheckboxId){
 		       			relMsgFadeinFunction();
 		       			
 		       		 if(jobRecommendations){
-		       			   location.replace(sourceleadUrl+"/jobRecommendations?requirementUUID="+requirementUUID);	
+		       			   location.replace(atsUrl+"/jobRecommendations?requirementUUID="+requirementUUID);	
 		     		    }else{
-		     		    	location.replace(sourceleadUrl+"/jobs");
+		     		    	location.replace(atsUrl+"/jobsList");
 	     		     }
 			        	
 			        },
@@ -582,14 +582,14 @@ function getContactsLists(){
     {
 		vendorSelectedIds.push($(this).val());
     });
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var requirementId = '${requirementId}';
 	$("#vendorContactsLoaderDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	var searchValue = $("#vendorContactDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 
-	var url = sourceleadUrl	+"/getAllContactsbyOrgLocationIdAndUserIdForRequirement?searchValue="+searchValue+"&requirementId="+requirementId+"&vendorSelectedIds="+vendorSelectedIds;
+	var url = atsUrl	+"/getAllContactsbyOrgLocationIdAndUserIdForRequirement?searchValue="+searchValue+"&requirementId="+requirementId+"&vendorSelectedIds="+vendorSelectedIds;
 	prepareReleaseVendorContactList(url);
 	 
 }	
@@ -850,14 +850,14 @@ function getVendorLists(){
 		vendorStatus.push($(this).val());
     });
 	
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var requirementId = '${requirementId}';
 	$("#vendorLoaderDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 
 	var searchValue = $("#vendorDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl	+"/getVendorListsForReleaseRequirement?searchValue="+searchValue+"&requirementId="+requirementId+"&vendorStatus="+vendorStatus;
+	var url = atsUrl	+"/getVendorListsForReleaseRequirement?searchValue="+searchValue+"&requirementId="+requirementId+"&vendorStatus="+vendorStatus;
 	prepareReleaseVendorList(url);
 	
 }
@@ -1297,11 +1297,11 @@ function opennetwork(){
 	document.getElementById("releaseToCrowdSourcing").style.display="";
 	document.getElementById("releaseToVendors").style.display="none";
 	
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var requirementId = '${requirementId}';
 	  $.ajax({
 		   	type: "GET",
-		    url: sourceleadUrl+"/getOpenNetworkStatus?requirementId="+requirementId, 	   
+		    url: atsUrl+"/getOpenNetworkStatus?requirementId="+requirementId, 	   
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    		    	if(json.isPublic == "Y"){
