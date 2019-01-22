@@ -55,6 +55,7 @@ public class IndianPayrollController {
 			modelAndView.addObject("activeTaxTab", "myPayrollInd");
 			modelAndView.addObject("redirectionTab", redirectionTab);
 			modelAndView.setViewName("payroll_india/payroll/myPayrollInd");
+			modelAndView.addObject("sourceleadUrl", sourceleadUrl);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage());
@@ -150,6 +151,7 @@ public class IndianPayrollController {
 		ModelAndView modelAndView = new ModelAndView();
 		commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
 		modelAndView.addObject("stab",stab);
+		modelAndView.addObject("sourceleadUrl", sourceleadUrl);
 		try {
 			modelAndView.setViewName("payroll_india/payroll/runPayrollInd");
 		}catch (Exception e) {

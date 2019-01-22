@@ -585,10 +585,12 @@ function lcaReportPagination(url){
 function resetLcaForm(){
 	 $("#lcaStatus").val('');
 	 $("#lcaStatus").trigger("chosen:updated"); 
-	 $("#daysFilter").val('');
+	 $("#daysFilter").val('All');
 	 $("#daysFilter").trigger("chosen:updated"); 
-	 $("#availability").val('');
-	 $("#status").val('');
+	 // By default All should Shows when we Reset Form
+	 $("#daysFilter").val('All');
+	 $("#availability").val('All');
+	 $("#status").val('All');
 }
 </script>
 

@@ -1815,6 +1815,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	
+
 	@Override
 	public Candidate getCandidateByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception {
 		return candidateDao.getCandidateByEmailAndOrgLocationId(email, orgLocationId);
