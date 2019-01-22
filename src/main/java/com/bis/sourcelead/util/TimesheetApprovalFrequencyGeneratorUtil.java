@@ -1,6 +1,5 @@
 package com.bis.sourcelead.util;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,7 +17,6 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
-import com.bis.sourcelead.web.LoginSessionController;
 
 @Component
 public  class TimesheetApprovalFrequencyGeneratorUtil {

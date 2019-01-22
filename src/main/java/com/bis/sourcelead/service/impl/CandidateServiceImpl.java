@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -90,6 +91,7 @@ import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -97,7 +99,10 @@ import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
+import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
@@ -113,13 +118,18 @@ import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.MasterCandidateService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.StatesService;
+import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
@@ -129,7 +139,6 @@ import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
-import com.bis.sourcelead.web.RegistrationController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
@@ -224,7 +233,7 @@ public class CandidateServiceImpl implements CandidateService {
     CandidateActivityCommonUtil candidateActivityCommonUtil;
     
     @Autowired
-    RegistrationController registrationController;
+    SourceleadRolesService sourceleadRolesService;
     
     @Autowired
     ClientService clientService;
@@ -267,6 +276,18 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Autowired
     CandidateEducationDao candidateEducationDao;
+    
+    @Autowired
+    RolesService rolesService;
+    
+    @Autowired
+    SourceleadActionsService sourceleadActionsService;
+    
+    @Autowired
+    OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+    
+    @Autowired
+    TabsService tabService;
     
        
     protected boolean isNullOrEmpty(String str) {
@@ -1745,7 +1766,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							 if(tsflag == false) {
 				    				modules = modules+","+Constants.MODULE_TIMESHEET;
 				    			}
-							 registrationController.saveUserRoleActions(vendorOrgLocation);
+							 saveUserRoleActions(vendorOrgLocation);
 							
 							 
 							 vendorOrgLocation.setModulesId(modules);
@@ -1760,7 +1781,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 								 boolean flag1 = moduleIds.contains(Constants.MODULE_ATS);
 								 if(flag1 == false){
 									 clientModules = clientModules+","+Constants.MODULE_ATS;
-								     registrationController.saveVendorUserRoleActions(orgLocations);
+								     saveVendorUserRoleActions(orgLocations);
 								 }
 								 
 								 orgLocations.setModulesId(clientModules);
@@ -1874,6 +1895,134 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	
+	
+	 public void saveUserRoleActions(OrgLocations orgLocations) throws Exception{
+		 
+		   SourceleadRoles soruceLeadRoles = sourceleadRolesService.getSourceleadRolesByRoleName(Constants.ROLE_GUEST_CLIENT);
+			List<Long> soureleadActionIdList = new ArrayList<>();
+			String[] actionsIds = null;
+			actionsIds = soruceLeadRoles.getActionId().split(",");
+			 for(int i=0 ; i < actionsIds.length; i++) {
+				 soureleadActionIdList.add(Long.parseLong(actionsIds[i]));
+			 }
+			
+			Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
+			 List<Long> adminRoleActonList = new ArrayList<Long>();
+			 for (String s : adminrole.getActionId().split(",")){
+				 adminRoleActonList.add(Long.parseLong(s));
+			 }
+			 
+			 adminRoleActonList.retainAll(soureleadActionIdList);
+			 soureleadActionIdList.removeAll(adminRoleActonList);
+			
+			
+	    	StringBuilder strbul  = new StringBuilder();
+		     Iterator<Long> iter = soureleadActionIdList.iterator();
+		     while(iter.hasNext())
+		     {
+		         strbul.append(iter.next());
+		        if(iter.hasNext()){
+		         strbul.append(",");
+		        }
+		     }
+		     strbul.toString();
+			
+			
+	        String adminids = adminrole.getActionId()+","+strbul;
+			adminrole.setActionId(adminids);
+			rolesService.storeRoles(adminrole);
+			
+			Roles managerrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER, orgLocations.getId());
+			String managerids = managerrole.getActionId()+","+strbul;
+		    managerrole.setActionId(managerids);
+			rolesService.storeRoles(managerrole);
+			
+			
+			updateOrgSubscriptionRegsiteredTabs(orgLocations,adminids);
+			
+			
+	 }
+	
+	 public void saveVendorUserRoleActions(OrgLocations orgLocations) throws Exception{
+		 
+		   SourceleadRoles soruceLeadRoles = sourceleadRolesService.getSourceleadRolesByRoleName(Constants.ROLE_GUEST_VENDOR);
+			List<Long> soureleadActionIdList = new ArrayList<>();
+			String[] actionsIds = null;
+			actionsIds = soruceLeadRoles.getActionId().split(",");
+			 for(int i=0 ; i < actionsIds.length; i++) {
+				 soureleadActionIdList.add(Long.parseLong(actionsIds[i]));
+			 }
+			
+			Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
+			 List<Long> adminRoleActonList = new ArrayList<Long>();
+			 for (String s : adminrole.getActionId().split(",")){
+				 adminRoleActonList.add(Long.parseLong(s));
+			 }
+			 
+			 adminRoleActonList.retainAll(soureleadActionIdList);
+			 soureleadActionIdList.removeAll(adminRoleActonList);
+			
+			
+	    	StringBuilder strbul  = new StringBuilder();
+		     Iterator<Long> iter = soureleadActionIdList.iterator();
+		     while(iter.hasNext())
+		     {
+		         strbul.append(iter.next());
+		        if(iter.hasNext()){
+		         strbul.append(",");
+		        }
+		     }
+		     strbul.toString();
+			
+			
+	        String adminids = adminrole.getActionId()+","+strbul;
+			adminrole.setActionId(adminids);
+			rolesService.storeRoles(adminrole);
+			
+			Roles managerrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER, orgLocations.getId());
+			String managerids = managerrole.getActionId()+","+strbul;
+		    managerrole.setActionId(managerids);
+			rolesService.storeRoles(managerrole);
+			
+			updateOrgSubscriptionRegsiteredTabs(orgLocations,adminids);
+	 }
+	 
+	 
+ public void updateOrgSubscriptionRegsiteredTabs(OrgLocations orglocations,String actionIds) throws Exception {
+		 
+		 String[] sourceleadActionIds = actionIds.split(",");
+		 List<Long> actionIdsList = new ArrayList<>();
+		 for(int i=0; i<sourceleadActionIds.length;i++) {
+			 actionIdsList.add(Long.parseLong(sourceleadActionIds[i]));
+		 }
+		 
+		 List<SourceleadActions> actionsList = sourceleadActionsService.getAllSourceleadActionsByIdsList(actionIdsList);
+		 Set<Long> tabIds = new HashSet<>();
+		 if(actionsList != null && !actionsList.isEmpty()) {
+			 for(SourceleadActions action : actionsList) {
+				 Tabs tabs = tabService.getTabListByTabId(action.getTabs().getId());
+				 if(tabs.getTabs() != null){
+					 if(tabs.getId() == 14L) {
+						 tabIds.add(tabs.getId());
+					 }else {
+						 tabIds.add(tabs.getTabs().getId());
+					 }
+				 }else {
+					 tabIds.add(tabs.getId());
+				 }
+			 }
+		 }
+		 
+		 StringBuilder tabsBuilder = new StringBuilder();
+		 for (Long tabId : tabIds) {
+			 tabsBuilder.append(tabId).append(",");
+		 }
+		 String tabsBuilderString = tabsBuilder.substring(0, tabsBuilder.length()-1);
+		 
+		 OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgIdAndCountry(orglocations.getOrg().getId(), orglocations.getCountry());
+		 orgLicenseSubscription.setSubscriptionTabs(tabsBuilderString);
+		 orgLicenseSubscriptionService.saveOrgLicenseSubscription(orgLicenseSubscription);
+	 }
 	
 	
 	public OrgRelations saveOrgRelations(OrgLocations orglocations,OrgLocations vendorOrgLocation,User user){

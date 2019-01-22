@@ -17,7 +17,6 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.DashboardController;
 /**
  *
  * @author Pradeep kumar Reddy
@@ -32,8 +31,6 @@ public class LoggingAspect {
 	@Autowired(required=true)
 	private HttpServletRequest request;
 	
-	@Autowired
-	private DashboardController dashboardController;
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 

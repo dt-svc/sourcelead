@@ -33,14 +33,12 @@ import com.bis.sourcelead.entity.CampaignList;
 import com.bis.sourcelead.entity.CampaignRecipient;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
-import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
-import com.bis.sourcelead.rest.MailBoxRestController;
 import com.bis.sourcelead.service.CampaignService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -60,7 +58,7 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 @Service
 public class HotListEmailCampaignServiceImpl implements HotListEmailCampaignService{
 	
-	private static final Logger logger = LoggerFactory.getLogger(MailBoxRestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(HotListEmailCampaignServiceImpl.class);
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;

@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,6 +44,7 @@ import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -51,6 +53,10 @@ import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.SourceleadRoles;
+import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.service.CandidateService;
@@ -58,6 +64,7 @@ import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesReportService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -66,7 +73,11 @@ import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -74,7 +85,6 @@ import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.RegistrationController;
 
 @Service
 public class ProjectMembersServiceImpl implements ProjectMembersService{
@@ -141,13 +151,25 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	 OrgRelationsService orgRelationsService;
 	 
 	 @Autowired
-	 RegistrationController registrationController;
-	 
-	 @Autowired
 	 ClientService clientService;
 	 
 	 @Autowired
 	 OrgSpocService orgSpocService;
+	 
+	 @Autowired
+	 RolesService rolesService;
+	 
+	 @Autowired
+	 OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+	 
+	 @Autowired
+	 SourceleadRolesService sourceleadRolesService;
+	 
+	 @Autowired
+	 TabsService tabService;
+	 
+	 @Autowired
+	 SourceleadActionsService sourceleadActionsService;
 	 
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDaoImpl.class);
 	
@@ -1485,7 +1507,7 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 							 if(tsflag == false) {
 				    				modules = modules+","+Constants.MODULE_TIMESHEET;
 				    			}
-							 registrationController.saveUserRoleActions(orgLoc);
+							 saveUserRoleActions(orgLoc);
 							 
 							 orgLoc.setModulesId(modules);
 							 orgLocationService.updateOrgLocations(orgLoc);
@@ -1557,6 +1579,92 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
     	result = "success";
 		return result;
 	}
+	
+	
+	
+	 public void saveUserRoleActions(OrgLocations orgLocations) throws Exception{
+		 
+		   SourceleadRoles soruceLeadRoles = sourceleadRolesService.getSourceleadRolesByRoleName(Constants.ROLE_GUEST_CLIENT);
+			List<Long> soureleadActionIdList = new ArrayList<>();
+			String[] actionsIds = null;
+			actionsIds = soruceLeadRoles.getActionId().split(",");
+			 for(int i=0 ; i < actionsIds.length; i++) {
+				 soureleadActionIdList.add(Long.parseLong(actionsIds[i]));
+			 }
+			
+			Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
+			 List<Long> adminRoleActonList = new ArrayList<Long>();
+			 for (String s : adminrole.getActionId().split(",")){
+				 adminRoleActonList.add(Long.parseLong(s));
+			 }
+			 
+			 adminRoleActonList.retainAll(soureleadActionIdList);
+			 soureleadActionIdList.removeAll(adminRoleActonList);
+			
+			
+	    	StringBuilder strbul  = new StringBuilder();
+		     Iterator<Long> iter = soureleadActionIdList.iterator();
+		     while(iter.hasNext())
+		     {
+		         strbul.append(iter.next());
+		        if(iter.hasNext()){
+		         strbul.append(",");
+		        }
+		     }
+		     strbul.toString();
+			
+			
+	        String adminids = adminrole.getActionId()+","+strbul;
+			adminrole.setActionId(adminids);
+			rolesService.storeRoles(adminrole);
+			
+			Roles managerrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER, orgLocations.getId());
+			String managerids = managerrole.getActionId()+","+strbul;
+		    managerrole.setActionId(managerids);
+			rolesService.storeRoles(managerrole);
+			
+			
+			updateOrgSubscriptionRegsiteredTabs(orgLocations,adminids);
+			
+			
+	 }
+	 
+	 
+ public void updateOrgSubscriptionRegsiteredTabs(OrgLocations orglocations,String actionIds) throws Exception {
+		 
+		 String[] sourceleadActionIds = actionIds.split(",");
+		 List<Long> actionIdsList = new ArrayList<>();
+		 for(int i=0; i<sourceleadActionIds.length;i++) {
+			 actionIdsList.add(Long.parseLong(sourceleadActionIds[i]));
+		 }
+		 
+		 List<SourceleadActions> actionsList = sourceleadActionsService.getAllSourceleadActionsByIdsList(actionIdsList);
+		 Set<Long> tabIds = new HashSet<>();
+		 if(actionsList != null && !actionsList.isEmpty()) {
+			 for(SourceleadActions action : actionsList) {
+				 Tabs tabs = tabService.getTabListByTabId(action.getTabs().getId());
+				 if(tabs.getTabs() != null){
+					 if(tabs.getId() == 14L) {
+						 tabIds.add(tabs.getId());
+					 }else {
+						 tabIds.add(tabs.getTabs().getId());
+					 }
+				 }else {
+					 tabIds.add(tabs.getId());
+				 }
+			 }
+		 }
+		 
+		 StringBuilder tabsBuilder = new StringBuilder();
+		 for (Long tabId : tabIds) {
+			 tabsBuilder.append(tabId).append(",");
+		 }
+		 String tabsBuilderString = tabsBuilder.substring(0, tabsBuilder.length()-1);
+		 
+		 OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgIdAndCountry(orglocations.getOrg().getId(), orglocations.getCountry());
+		 orgLicenseSubscription.setSubscriptionTabs(tabsBuilderString);
+		 orgLicenseSubscriptionService.saveOrgLicenseSubscription(orgLicenseSubscription);
+	 }
 	
 	
 	public OrgRelations saveOrgRelations(OrgLocations vendorOrgLocations,OrgLocations clientOrgLocation,User user){
