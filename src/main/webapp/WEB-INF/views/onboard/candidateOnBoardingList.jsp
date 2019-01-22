@@ -19,6 +19,7 @@
 </style>
 
 <script> 
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 	$(document).ready(function(){
 		
 		$("#onboardCount").html('(${onboardCount})');
@@ -26,6 +27,7 @@
 		
 		 '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_USER\',\'ROLE_VIEW_EDIT_ON_BOARD_USER\') && !hasRole(\'ROLE_CREATE_OFF_BOARD_USER\')">'
 		       getOnboardCandidatesList();
+		
          '</sec:authorize>';
          
          '<sec:authorize access="!hasRole(\'ROLE_CREATE_ON_BOARD_USER\') && hasAnyRole(\'ROLE_CREATE_OFF_BOARD_USER\',\'ROLE_VIEW_EDIT_OFF_BOARD_USER\')">'
@@ -46,7 +48,7 @@
       <div class="pull-left">
         <h2>Onboard & Offboard</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo;On-board/Off-board</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo;On-board/Off-board</div>
  </section>
  
  <div class="clearfix">
@@ -170,13 +172,10 @@
  
  <script>
 function onboardDataTableList(){
-	 var atsUrl ='${SourceLeadWeb_atsUrl}';
-	 alert("atsUrl"+atsUrl)
 	 var searchValue = $("#onboardDataTableSearch").val();
 	 var locationCode = '${SourceLeadWeb_locationCode}';
 	 searchValue = searchValue ? searchValue : "";
 	 var url = atsUrl+"/getOnboardCandidateList?searchValue="+searchValue+"&locationCode="+locationCode;
-	
 	 onboardPagination(url,atsUrl);
 	 $("#onboardingLoading").removeAttr("style");
 }
@@ -185,14 +184,13 @@ function onboardDataTableList(){
 
 <script>
 function onboardPagination(url,atsUrl){
-	 var atsUrl ='${SourceLeadWeb_atsUrl}';
 	var colIndex = 0;
     $('#onboardListTable').DataTable( { 
-	  "processing": true,
+      "processing": true,
       "serverSide": true,
       "searching": false,
       "ajax": $.fn.dataTable.pipeline( {
-          url: url,
+    	  url: url,
           method: 'POST',
           pages: 1
         }),
@@ -208,7 +206,6 @@ function onboardPagination(url,atsUrl){
 	    	  	"data": "firstName",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
-	    	  		 alert("ss'''''''''''"+atsUrl);
 	    	  	   	 result = result +"<td>";
                 	 result = result +"<div class='width300px'>";
                 	 result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.candidateName+"'>"+opt.candidateName+"</div>";

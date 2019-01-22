@@ -13,6 +13,7 @@
 
 
 <script> 
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 	$(document).ready(function(){
 		document.getElementById("templateDocs").disabled = true;
 		document.getElementById("templateTasks").disabled = true;
@@ -52,7 +53,7 @@
       <div class="pull-left">
         <h2>Employee Onboarding</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Onboarding </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Onboarding </div>
  </section>
  
  
