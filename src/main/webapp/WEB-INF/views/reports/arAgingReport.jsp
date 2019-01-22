@@ -8,6 +8,7 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	 arAgingReport(); 
+	 $("#apagingType").val('client');
 });
 </script>
 
@@ -53,8 +54,8 @@ $(document).ready(function(){
         	 
         	 <div class="select-fild col-md-2 mt5 pull-right">
                     <select  name="apagingType" id="apagingType" onchange="change();">
-                        <option value="Receivable">By Client</option>
-                        <option value="Invoice">By Invoice</option>
+                        <option value="client">By Client</option>
+                        <option value="Receivable">By Invoice</option>
                     </select>
                 </div>
         	 <div class="col-md-2 dropdown-select positionRelatives mt5 mb5 pull-right" id="customDatesDropdown" style="display: none">
@@ -109,11 +110,11 @@ $(document).ready(function(){
 $(function() {
         $('#apagingType').change(function(){
 			var optval = $(this).val();
-			if(optval === "Invoice") {
+			if(optval === "Receivable") {
 				$("#byInvoice").show();
 				$("#byCustomer").hide();
 				$("#customDatesDropdown").show();
-			}else if(optval === "Receivable"){
+			}else{
 				$("#byCustomer").show();
 				$("#byInvoice").hide();
 				$("#customDatesDropdown").hide();
@@ -167,7 +168,7 @@ $(function() {
   <script>
 function change(){
 	var optval = $("#apagingType").val();
-	if(optval === "Invoice") {
+	if(optval === "Receivable") {
 		aragingInvoice();
 	}else{
 		arAgingReport();
@@ -177,7 +178,7 @@ function change(){
 
 <script>
 function arAgingReport(){
-			var apagingType = $("#apagingType").val();
+			var apagingType = "Receivable";
 			var sourceleadUrl ='${sourceleadUrl}';
 			var searchValue = $("#dataTableClientSearch").val();
 			searchValue = searchValue ? searchValue : "";
@@ -338,9 +339,10 @@ function araging(url){
 
 <!-- Invoice start -->
 <script>
-function customSearch(){
-	aragingInvoice();
-}
+	function customSearch(){
+		aragingInvoice();
+		$("#custom-select").hide();
+	}
 </script>
 
  <script>
@@ -355,7 +357,8 @@ function aragingInvoice(){
 		$("#fromDate").val("");
 		$("#toDate").val("");
 	}
-    var apagingType = 'Receivable';
+   // var apagingType = 'Receivable';
+    var apagingType = $("#apagingType").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var searchValue = $("#dataTableInvoiceSearch").val();
 	var filterType = $("#custom-dates").val(); 

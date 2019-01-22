@@ -54,10 +54,10 @@ $(document).ready(function(){
           <form:form id="paidbillgraph_custom_form" name="paidbillgraph_custom_form" method="post">
           <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
             <div class="pull-left">
-              <div class="pull-left mr5" style="width: 140px">
+              <div class="pull-left mr5" style="width: 140px" id="fromErrDate">
                 <input value="" name="Date" id="fromDate" placeholder="From" class="form-control calendar input-sm" type="text" data-validation="required" field-name="From Date">
               </div>
-              <div class="pull-left mr5" style="width: 140px">
+              <div class="pull-left mr5" style="width: 140px" id="toErrDate">
                 <input value="" name="Date" id="toDate" placeholder="To" class="form-control calendar input-sm" type="text" data-validation="required" field-name="To Date">
               </div>
               <button type="button" class="btn btn-primary btn-sm" onclick="getPaidBillGraphCustomReport();"><i class="fa fa-search"></i></button>
@@ -305,7 +305,7 @@ function getPaidBillsCustomDates() {
 		 document.getElementById("customSearch").style.display="block";
 		 document.getElementById("paidBillreportGraph").style.display="none";
 		 //$("#jobReportList_custome").attr("disabled", "disabled");
-		 
+		
 	 }else{
 		 document.getElementById("customSearch").style.display="none";
 		 document.getElementById("paidBillreportGraph").style.display="block";
@@ -374,6 +374,7 @@ function getPaidBillsCustomDates() {
 				var dt = $(this).datepicker('getDate', '+1d');
 				dt.setDate(dt.getDate());
 				$("#toDate").datepicker("option", "minDate", dt);
+				todate();
 			}
 		});
 	  
@@ -385,9 +386,18 @@ function getPaidBillsCustomDates() {
 				var dt = $(this).datepicker('getDate', '-1d');
 				dt.setDate(dt.getDate());
 				$("#fromDate").datepicker("option", "maxDate", dt);
+				fromdate();
 			}
 		});
   } );
+  
+  function todate(){
+	  $('#fromErrDate').find('p.jquery_form_error_message').remove(); 
+  }
+  
+  function fromdate(){
+	  $('#toErrDate').find('p.jquery_form_error_message').remove(); 
+  }
   </script>
 
 <script>

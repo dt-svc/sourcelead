@@ -177,24 +177,25 @@
 		      dateFormat: finalDateFormatPassSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
+		  	  maxDate:0,
 		      onSelect: function (selected) {
 		           // var dt = new Date(selected);
-		           var dt = 	  $(this).datepicker('getDate', '+1d'); 
+		           var dt = $(this).datepicker('getDate', '+1d'); 
 		           dt.setDate(dt.getDate() + 1);
 		            $("#validTo").datepicker("option", "minDate", dt);
 		        }
 		  });
 		  
 		  $('#validTo').datepicker({
-		      dateFormat: finalDateFormatPassSave,
-		      changeMonth: true,
-		  	  changeYear: true, 
-		        onSelect: function (selected) {
-		            //var dt = new Date(selected);
-		            var dt = 	  $(this).datepicker('getDate', '-1d');
-		            dt.setDate(dt.getDate() - 1);
-		            $("#validFrom").datepicker("option", "maxDate", dt);
-		        }
+		     dateFormat: finalDateFormatPassSave,
+		     changeMonth: true,
+		  	 changeYear: true, 
+	         onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = 	  $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
+	            $("#validFrom").datepicker("option", "maxDate", dt);
+	        }
 		  });
 		  
 			  var config = {
