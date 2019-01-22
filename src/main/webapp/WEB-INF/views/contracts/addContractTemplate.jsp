@@ -21,8 +21,8 @@
 			<h2>Add Contract Template</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo;<a href="<c:url value='${appPath}/orgContractTemplate'/>"> Contract
+			<a href="/app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			&raquo;<a href="/vms/orgContractTemplate"> Contract
 				Template List</a> &raquo; Add Contract Template
 		</div>
 	</section>
@@ -405,7 +405,7 @@
 							<input type="button" value="Save" id="save_template"
 								onclick="saveTemplate(); " class="btn btn-primary"> <input
 								type="button" value="Cancel"
-								onClick="javascript:window.location.href = '<c:url value='${appPath}/orgContractTemplate'/>'"
+								onClick="javascript:window.location.href = '/vms/orgContractTemplate'"
 								class="btn btn-default ml10">
 							<!--  <input type="button" value="Back" class="btn btn-danger">
 			<a href="add-contract-template-preview.html"><input type="button" value="Next" class="btn btn-primary ml10"></a> -->
@@ -640,9 +640,9 @@
 			$("#save_template").addClass('button').val('Processing..');
 
 			var formData = getFormData("template_form");
-			var sourceleadUrl = '${sourceleadUrl}';
+			var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			// 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			$.post(sourceleadUrl
+			$.post(vmsUrl
 					+ "/saveTemplate?${_csrf.parameterName}=${_csrf.token}",
 					formData, function(data) {
 						if (data != null) {
@@ -687,12 +687,12 @@
 	function editContractTemplate(templateId) {
 
 		contractTemplateType();
-		var sourceleadUrl = '${sourceleadUrl}';
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		if (templateId != '') {
 			$
 					.ajax({
 						type : "GET",
-						url : sourceleadUrl
+						url : vmsUrl
 								+ "/getEditContractTemplateDetails?${_csrf.parameterName}=${_csrf.token}&templateId="
 								+ templateId,
 						success : function(data) {
@@ -709,7 +709,7 @@
 	function validateContractTemplateName() {
 		var templateName = $('#templateName').val();
 		var contractType = $('#contractType').val();
-		var sourceleadUrl = '${sourceleadUrl}';
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		
 		var templateUUID = '${contractsTemplate.templateUUID}';
 		
@@ -718,7 +718,7 @@
 			$
 					.ajax({
 						type : "POST",
-						url : sourceleadUrl
+						url : vmsUrl
 								+ "/validateContractTemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="
 								+ templateName + "&contractType="
 								+ contractType + "&templateUUID="

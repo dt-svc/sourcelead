@@ -13,7 +13,7 @@
       <!-- <h2>Submission Templates</h2> -->
       <h2 class="pull-left">Contract Templates</h2>
     </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates </a> &raquo; Contract Template List</div>
+  <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="/vms/orgTemplates"> Templates </a> &raquo; Contract Template List</div>
 </section>
 	
 	
@@ -29,7 +29,7 @@ $(document).ready(function(){
       <ul class="pull-right list-unstyled list-inline">
 			
         	<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')">
-				<li><a href="<c:url value="/app/addContractTemplate" />" class="newAdBtn mr5">+ Template</a></li>	
+				<li><a href="/vms/addContractTemplate" class="newAdBtn mr5">+ Template</a></li>	
 			</sec:authorize>      
       
         	<li id="filterContractTypePop"><a href="javascript:void(0)" class="filtIcon" title="Filters"></a>
@@ -69,11 +69,11 @@ function getTemplateList(){
 	    {
 			templateType.push($(this).val());
 	    });
-		var sourceleadUrl ='${sourceleadUrl}';
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var searchValue = $("#contractTemplateTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getAllTemplatesByOrgLocationId?${_csrf.parameterName}=${_csrf.token}&templateType="+templateType+"&orgLocationId="+orgLocationId+"&searchValue="+searchValue;
+		var url = vmsUrl+"/getAllTemplatesByOrgLocationId?${_csrf.parameterName}=${_csrf.token}&templateType="+templateType+"&orgLocationId="+orgLocationId+"&searchValue="+searchValue;
 		/* url += "&"+$($('#payroll_list_form')[0]).serialize(); */
 	    prepareTemplateList(url,sourceleadUrl);
 }
@@ -188,8 +188,9 @@ function contractTemplatePagination(url,sourceleadUrl){
              "data": "action",
              "render": function ( data, type, report, meta ) {
              	var result = "";
+             	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
              	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CONTRACT_TEMPLATE\')">';
-             	result = result + '<div class="tblicons"><a href="#" title="Preview" class="mr10"><i class="fa fa-eye" onclick="previewPDF(\''+report.templateUUID+'\',\''+report.templateName+'\');" ></i></a> <a href="'+sourceleadUrl+'/editTemplate?templateId='+report.id+'" title="Edit"><i class="fa fa-pencil"></i></a></div>';
+             	result = result + '<div class="tblicons"><a href="#" title="Preview" class="mr10"><i class="fa fa-eye" onclick="previewPDF(\''+report.templateUUID+'\',\''+report.templateName+'\');" ></i></a> <a href="'+vmsUrl+'/editTemplate?templateId='+report.id+'" title="Edit"><i class="fa fa-pencil"></i></a></div>';
              	'</sec:authorize>';
              	return result;
                 }
@@ -234,15 +235,15 @@ $("#filterContractTypePop, .statusFiler-1, .approved_pop").click(function(e) {
 
 <script type="text/javascript">
 function previewPDF(id,tempName) {
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 // 	window.open(sourceleadUrl+'/testController/'+id+'/'+tempName+'','_newtab');
-	window.open(sourceleadUrl+'/previewContractTemplate/'+id+'/'+tempName+'','_newtab');
+	window.open(vmsUrl+'/previewContractTemplate/'+id+'/'+tempName+'','_newtab');
 }</script>
 
  <script>
 function downloadPdfTemplate(templateId){
-	var sourceleadUrl ='${sourceleadUrl}';
-	window.location.href = sourceleadUrl+"/downloadContractsTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId;
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	window.location.href = vmsUrl+"/downloadContractsTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId;
 	/* window.location.href = sourceleadUrl+"/downloadContractsTemplate&templateId="+templateId; */
 }
 
