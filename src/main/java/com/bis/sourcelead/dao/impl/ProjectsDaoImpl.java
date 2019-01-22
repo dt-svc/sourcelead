@@ -651,7 +651,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		
 		if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
 			approverQuery = " and (pc.id IN (select pah.projectClientsId.id from ProjectApproverHierarchy pah where pah.approverUserId = "+userId+" and pah.status ='1') OR "
-					+ " pc.id IN (select pex.projectClientsId.id from ExpenseProjectApproverHierarchy pex where pex.approverUserId = "+userId+") OR pc.createdBy.id = "+userId+" "
+					+ " pc.id IN (select pex.projectClientsId.id from ExpenseProjectApproverHierarchy pex where pex.approverUserId = "+userId+" and pex.status = '1') OR pc.createdBy.id = "+userId+" "
 					+ " OR pc.id IN (select pm.projectClientsId.id from ProjectMembers pm where pm.projectMemberCandidteId.id = "+candidateId+" and pm.status = '1') "
 							+ " OR pc.id IN (select pm.projectClientsId.id from ProjectMembers pm where pm.projectMemberCandidteId.parentCandidateId.id = "+candidateId+" and pm.status = '1')) ";
 		}
@@ -766,9 +766,9 @@ public class ProjectsDaoImpl implements ProjectsDao{
 				                       +" )";
 				}else if(userRole.equalsIgnoreCase("ROLE_ADMIN")) {
 					 projectAccessQuery =  " and ("
-		                       + "  ps.id IN( select subpah.projectId.id from ProjectApproverHierarchy subpah where subpah.level = '1' and subpah.projectClientsId.orgLocationsId.id IN(select userRole.orgLocations.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = '"+orgLocationsId+"'))"
+		                       + "  ps.id IN( select subpah.projectId.id from ProjectApproverHierarchy subpah where subpah.level = '1' and subpah.status = '1' and subpah.projectClientsId.orgLocationsId.id IN(select userRole.orgLocations.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = '"+orgLocationsId+"'))"
 	                           +" OR "
-		                       + "  ps.id IN( select epx.projectId.id from ExpenseProjectApproverHierarchy epx where epx.level = '1' and epx.projectClientsId.orgLocationsId.id IN(select userRole.orgLocations.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = '"+orgLocationsId+"'))"
+		                       + "  ps.id IN( select epx.projectId.id from ExpenseProjectApproverHierarchy epx where epx.level = '1' and epx.status = '1' and epx.projectClientsId.orgLocationsId.id IN(select userRole.orgLocations.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = '"+orgLocationsId+"'))"
 		                       +" )";
 				}
 				
