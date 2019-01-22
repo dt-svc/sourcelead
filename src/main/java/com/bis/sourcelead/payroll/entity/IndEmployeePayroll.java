@@ -20,6 +20,7 @@ import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.PayrollPaySlipInd;
 
 @Entity
@@ -127,6 +128,10 @@ public class IndEmployeePayroll implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "IND_PAYSLIP_ID")
 	private PayrollPaySlipInd payrollPaySlipInd;
+	
+	@ManyToOne
+	@JoinColumn(name = "PAYMENT_ACCOUNT_ID")
+	private PaymentAccount paymentAccount;
 	
 	public Long getId() {
 		return id;
@@ -379,5 +384,13 @@ public class IndEmployeePayroll implements Serializable {
 
 	public void setPayrollPaySlipInd(PayrollPaySlipInd payrollPaySlipInd) {
 		this.payrollPaySlipInd = payrollPaySlipInd;
+	}
+
+	public PaymentAccount getPaymentAccount() {
+		return paymentAccount;
+	}
+
+	public void setPaymentAccount(PaymentAccount paymentAccount) {
+		this.paymentAccount = paymentAccount;
 	}
 }

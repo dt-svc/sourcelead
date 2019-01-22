@@ -5,6 +5,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
  <!-- Content Area -->
+ <div id="popUp" ></div>
 <section class="content-wraper contentWraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
@@ -202,23 +203,25 @@ function editNetpay(){
 }
 function saveNetpay(){
 	calculateGrossSalary();
-	$("#tableNetpay").find(".formControl").toggleClass("activeEdit");
-	var x = document.getElementsByClassName("formControl"), i;
-	for (i=0; i<x.length; i++) {
-		if(x[i].readOnly) {
-			x[i].readOnly = false;
-		}else {
-			x[i].readOnly = true;
-		}
-	}
-	$(".editNetpay").show();
-	$(".saveNetpay").hide();
 	
 	saveAdjustedPayheads();
 }
 
 function saveAdjustedPayheads(){
 	if ($('#associatePayheadAdjust_form').validate(false, validationSettings)) {
+		
+		$("#tableNetpay").find(".formControl").toggleClass("activeEdit");
+		var x = document.getElementsByClassName("formControl"), i;
+		for (i=0; i<x.length; i++) {
+			if(x[i].readOnly) {
+				x[i].readOnly = false;
+			}else {
+				x[i].readOnly = true;
+			}
+		}
+		$(".editNetpay").show();
+		$(".saveNetpay").hide();
+		
 		var formData = getFormData1("associatePayheadAdjust_form");
 		var psfUUID = $('#paySheetFrequencyUUID').val();
 		$.ajax({
@@ -237,8 +240,11 @@ function saveAdjustedPayheads(){
 
 function calculateGrossSalary(){
 	var grossTotal = 0.00;
+	var floatRegex = /^((\d+(\.\d *)?)|((\d*\.)?\d+))$/;
 	$('.earningPayheadTbady #earningPayheadAmount').each(function() {
-		grossTotal += parseFloat($(this).val());
+		if($(this).val() != '' && floatRegex.test($(this).val())){
+			grossTotal += parseFloat($(this).val());
+		}
 	});
 	$('#earningPayheadAmountTotal').html(grossTotal.toFixed(2));
 	$('#totalGrossPay').html($('#earningPayheadAmountTotal').html());
@@ -249,8 +255,11 @@ function calculateGrossSalary(){
 
 function calculateNetSalary(){
 	var netTotal = 0.00;
+	var floatRegex = /^((\d+(\.\d *)?)|((\d*\.)?\d+))$/;
 	$('.deductionPayheadTbady #deductionPayheadAmount').each(function() {
-		netTotal += parseFloat($(this).val());
+		if($(this).val() != '' && floatRegex.test($(this).val())){
+			netTotal += parseFloat($(this).val());
+		}
 	});
 	$('#deductionPayheadAmountTotal').html(netTotal.toFixed(2));
 	$('#totalNetPay').html((parseFloat($('#earningPayheadAmountTotal').html()) - parseFloat($('#deductionPayheadAmountTotal').html())).toFixed(2));
@@ -268,20 +277,46 @@ function closeCPR() {
 
 <script>
 function sentForApprove(approverStatus){
-	var feqUUID = $("#paySheetFrequency").val();
-	var excludeEmpArr = [];
-	$("input:checkbox[name=empPayroll]:checked").each(function(){
-		excludeEmpArr.push($(this).val());
-	});
-	$.ajax({
-        type : "POST",
-        url: sourceleadUrl+"/sentForApproveIndPayroll?approverStatus="+approverStatus+"&paySheetFrequencyUUID="+feqUUID+"&excludeEmpPayrollUUID="+excludeEmpArr,    
-         success :function(result) { 
-        	 $(location).attr('href', 'runIndianPayRoll?stab=payroll');
-         },
-    });
+	var totalCheckboxes = $('input:checkbox[name=empPayroll]').length;
+	var numberOfChecked  = $('input:checkbox[name=empPayroll]:checked').length;
+	if(totalCheckboxes != numberOfChecked){
+		var feqUUID = $("#paySheetFrequency").val();
+		var excludeEmpArr = [];
+		$("input:checkbox[name=empPayroll]:checked").each(function(){
+			excludeEmpArr.push($(this).val());
+		});
+		$.ajax({
+	        type : "POST",
+	        url: sourceleadUrl+"/sentForApproveIndPayroll?approverStatus="+approverStatus+"&paySheetFrequencyUUID="+feqUUID+"&excludeEmpPayrollUUID="+excludeEmpArr,    
+	         success :function(result) { 
+	        	 $(location).attr('href', 'runIndianPayRoll?stab=payroll');
+	         },
+	    });
+	}else{
+		alertPopUp();
+	}
 }
 </script>
+
+<script>
+function alertPopUp(){
+	    var result = "";
+		result = result +"	<div class='project_inn_mask'></div>"; 
+		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Excluding all Employees is illegal</p>";
+		result = result + ' <div id="reasonForInvoiceDiv"/>';
+		result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="cancelTermination();"></b>';
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#remove_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+}
+function cancelTermination(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
 <script>
 function cancelIndPayroll(){
 	var feqUUID = $("#paySheetFrequency").val();
@@ -298,19 +333,29 @@ function cancelIndPayroll(){
 
 <script>
 $('#approveTab , #cnfmPayrollBtn').click(function(){
-	var feqUUID = $("#paySheetFrequency").val();
-	$.ajax({
-        type : "GET",
-        url: sourceleadUrl+"/getApproveInfoIndPayroll?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID,    
-         success :function(result) {
-        	 $("#reviewTab").removeClass("current");
-        	 $("#approveTab").addClass("current");
-        	 $("#reviewDiv").hide();
-        	 $("#approveDiv").remove();
-             $("#reviewAndApproveDiv").append(result);
-        	 
-         },
-    });
+	var totalCheckboxes = $('input:checkbox[name=empPayroll]').length;
+	var numberOfChecked  = $('input:checkbox[name=empPayroll]:checked').length;
+	if(totalCheckboxes != numberOfChecked){
+		var feqUUID = $("#paySheetFrequency").val();
+		var excludeEmpArr = [];
+		$("input:checkbox[name=empPayroll]:checked").each(function(){
+			excludeEmpArr.push($(this).val());
+		});
+		$.ajax({
+	        type : "GET",
+	        url: sourceleadUrl+"/getApproveInfoIndPayroll?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID+"&excludeEmpPayrollUUID="+excludeEmpArr,   
+	         success :function(result) {
+	        	 $("#reviewTab").removeClass("current");
+	        	 $("#approveTab").addClass("current");
+	        	 $("#reviewDiv").hide();
+	        	 $("#approveDiv").remove();
+	             $("#reviewAndApproveDiv").append(result);
+	        	 
+	         },
+	    });
+	}else{
+		alertPopUp();
+	}
 });
 
 $('#reviewTab').click(function(){

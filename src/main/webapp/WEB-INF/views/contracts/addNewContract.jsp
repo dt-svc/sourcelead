@@ -2584,9 +2584,17 @@ function addCustomEmptyVendorContact(){
 }
 
  function clearStartDt(){
+	 $('#startDate').attr('value', '');
+	 $('#startDate').datepicker( "option" , {
+	        minDate: null,
+	        maxDate: null} );
 	$("#startDate").val("");
 }; 
 function clearEndDt(){
+	$('#endDate').attr('value', '');
+	$('#endDate').datepicker( "option" , {
+        minDate: null,
+        maxDate: null} );
 	$("#endDate").val("");
 	};
 

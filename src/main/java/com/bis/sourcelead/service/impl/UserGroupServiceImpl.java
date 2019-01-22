@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,15 +22,22 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserGroupDao;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserGroupDTO;
+import com.bis.sourcelead.entity.AssociateSalary;
+import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociateDeductionDTO;
+import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
+import com.bis.sourcelead.service.AssociateSalaryService;
+
+import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -45,6 +53,9 @@ public class UserGroupServiceImpl implements UserGroupService{
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	AssociateSalaryService associateSalaryService;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -108,6 +119,13 @@ public class UserGroupServiceImpl implements UserGroupService{
 				ugDTO.setDescription(ug.getDescription());
 				ugDTO.setGroupUUID(ug.getGroupUUID());
 				ugDTO.setPayFrequency(ug.getPayFrequency());
+				if(orgLocation.getCountry().equalsIgnoreCase("India")) {
+					ResponseList<AssociateSalaryInd> assSalIndList = associateSalaryService.getAssociateSalaryIndListByLocationIdAndGroupId(orgLocation, ug.getId(),new CandidateDTO());
+					ugDTO.setTotalEmpCount(assSalIndList.getData().size());
+				}else {
+					ResponseList<AssociateSalary> assSalList = associateSalaryService.getAssociateSalaryListByLocationIdAndGroupId(orgLocation, ug.getId(),new CandidateDTO());
+					ugDTO.setTotalEmpCount(assSalList.getData().size());
+				}
 				/*if(ug.getUserId() !=null && !"".equalsIgnoreCase(ug.getUserId())) {
 					String numOfAss = ug.getUserId().replaceAll("\\s+","");
 					numOfAssociates = numOfAss.split(",").length;
@@ -245,7 +263,14 @@ public class UserGroupServiceImpl implements UserGroupService{
 	{
 		return userGroupDao.getAllUserGroupsByLocationIdAndPayrollFrequency(orgLocation,autoPayrollFrequency);
 	}
-	
-	
-	
+
+	@Override
+	public List<IndPaysheetFrequency> getIndPayPeriodsByGroupId(Long groupId, OrgLocations orgLocation) throws Exception {
+		List<IndPaysheetFrequency> datesList =  userGroupDao.getIndPayPeriodsByGroupId(groupId,orgLocation);
+		for(IndPaysheetFrequency ipsfd : datesList) {
+			ipsfd.setFrequencyStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), ipsfd.getFrequencyStartDate()));
+			ipsfd.setFrequencyEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), ipsfd.getFrequencyEndDate()));
+		}
+		return datesList;
+	}
 }

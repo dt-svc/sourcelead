@@ -26,7 +26,7 @@
 		</a>
 	</sec:authorize>
 	
- 	<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
+ 	<sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
 		<a href='${appPath}/applicantsjoinedlist'>
 			<div class="repDashCta">
 				<span><i class="fa fa-bar-chart"></i></span>
