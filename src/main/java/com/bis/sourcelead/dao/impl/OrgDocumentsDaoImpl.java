@@ -18,7 +18,6 @@ import com.bis.sourcelead.dao.OrgDocumentsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
-import com.bis.sourcelead.rest.CandidateResumeRestController;
 
 
 /**
@@ -30,7 +29,7 @@ import com.bis.sourcelead.rest.CandidateResumeRestController;
 public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 	
 
-	private static final Logger logger = LoggerFactory.getLogger(CandidateResumeRestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(OrgDocumentsDaoImpl.class);
 	
 	@Autowired
 	private SessionFactory sessionFactory;
