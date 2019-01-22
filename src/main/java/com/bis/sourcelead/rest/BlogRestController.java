@@ -40,7 +40,7 @@ import com.itextpdf.tool.xml.XMLWorkerHelper;
 @RestController
 public class BlogRestController {
 	
-private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);
+private static final Logger logger = LoggerFactory.getLogger(BlogRestController.class);
 	
 	@Value("${static.path}")
 	private String staticPath;

@@ -37,8 +37,6 @@ public class UserLeaveLinkUpWithTimeSheetOldData {
 	 @Autowired
 	 private HolidayService holidayService;
 	 
-	 @Autowired
-	 private TimesheetRestController timesheetRestController;
 	 
 	 @Autowired
 	 private UserService userService;
