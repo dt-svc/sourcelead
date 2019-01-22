@@ -1,13 +1,11 @@
 #ApplicantRejectMailToInterviewCreator
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` where UNIQUE_SCENARIO_NAME = 'ApplicantRejectMailToInterviewCreator' and `ENTITY_TYPE` = 'Email' and `IS_TEMPLATE_MODIFIED` = 'N'), 'loginURL', '[Login_URL]');
-
 set SQL_SAFE_UPDATES=0;
 UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Interview_Creator_Name],\n\nI regret to say that i am no longer interested in attending the following interview\n\nJob Title :[Requirement_Name]\nInterview Date :[Interview_Date]\nInterview Time :[Interview_Time]\nInterview Type :[Interview_Type]\nDetails :[Details].\n\n[Login_URL]\n\nThank you for providing me the opportunity', `SUBJECT`='I am not intrested in attending the interview for [Requirement_Name]', `SIGNATURE`='Best Regards,\n[Applicant_Name]'  WHERE `UNIQUE_SCENARIO_NAME`='Applicant RejectMailToInterviewCreator' and `ENTITY_TYPE`='Email';
 set SQL_SAFE_UPDATES=1;
 
 #MSAFinalizeEmail
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` where UNIQUE_SCENARIO_NAME = 'MSAFinalizeEmail' and `ENTITY_TYPE` = 'Email' and `IS_TEMPLATE_MODIFIED` = 'N'), 'loginURL', '[Login_URL]');
-
 set SQL_SAFE_UPDATES=0;
 UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Receiver_Party],\n We are happy to inform you [Contract_Title] Contract got finalised from [Duration].\n\n[Login_URL]' WHERE `UNIQUE_SCENARIO_NAME`='MSAFinalizeEmail';
 set SQL_SAFE_UPDATES=1;
@@ -25,11 +23,13 @@ set SQL_SAFE_UPDATES=0;
 UPDATE `EMAIL_SCENARIO` SET `BODY`=' Dear [Job_Initiator_Name],\n\n[Approver_Name] Approved the Job [Requirement_Id-_Name].\n\n[Login_URL]' WHERE `UNIQUE_SCENARIO_NAME`='Approved Requirement' and `ENTITY_TYPE`='Email';
 set SQL_SAFE_UPDATES=1;
 
+
 #Vendors Interview
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` where UNIQUE_SCENARIO_NAME = 'Vendors Interview' and `ENTITY_TYPE` = 'Email' and `IS_TEMPLATE_MODIFIED` = 'N'), 'loginURL', '[Login_URL]');
 set SQL_SAFE_UPDATES=0;
 UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Vendor_First_Name] [Vendor_Last_Name],\n\nInterview scheduled for the following applicants,\n\nRequirement name : [Requirement_Name]\n\nInterview date : [Interview_Date]\n\nDetails : [Details]\n\nInterview Type : [Interview_Type]\n\nApplicant : [Applicant_Name].\n\n[Login_URL]' WHERE `UNIQUE_SCENARIO_NAME`='Vendors Interview' and `ENTITY_TYPE`='Email';
 set SQL_SAFE_UPDATES=1;
+
 
 #VendorApplicantAcceptMailToInterviewCreator
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` where UNIQUE_SCENARIO_NAME = 'VendorApplicantAcceptMailToInterviewCreator' and `ENTITY_TYPE` = 'Email' and `IS_TEMPLATE_MODIFIED` = 'N'), 'loginURL', '[Login_URL]');
@@ -37,16 +37,19 @@ set SQL_SAFE_UPDATES=0;
 UPDATE `EMAIL_SCENARIO` SET `BODY`= 'Dear [Interview_Creator_Name],\n\n[Applicant_Name] is attending for interview.\nGo through the brief details.\n\nJob Title :[Requirement_Name]\nInterview Date :[Interview_Date]\nInterview Time :[Interview_Time]\nInterview Type :[Interview_Type]\nDetails :[Details].\n\n[Login_URL]' WHERE `UNIQUE_SCENARIO_NAME`='VendorApplicantAcceptMailToInterviewCreator' and `ENTITY_TYPE`='Email';
 set SQL_SAFE_UPDATES=1;
 
+
 #VendorApplicantRejectMailToInterviewCreator
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` where UNIQUE_SCENARIO_NAME = 'VendorApplicantRejectMailToInterviewCreator' and `ENTITY_TYPE` = 'Email' and `IS_TEMPLATE_MODIFIED` = 'N'), 'loginURL', '[Login_URL]');
 set SQL_SAFE_UPDATES=0;
 UPDATE `EMAIL_SCENARIO` SET `BODY`= 'Dear [Interview_Creator_Name],\n\nWe are sorry to say [Applicant_Name] is not attending for interview.\nGo through the brief details.\n\nJob Title :[Requirement_Name]\nInterview Date :[Interview_Date]\nInterview Time :[Interview_Time]\nInterview Type :[Interview_Type]\nDetails :[Details].\n\n[Login_URL]' WHERE `UNIQUE_SCENARIO_NAME`='VendorApplicantRejectMailToInterviewCreator' and `ENTITY_TYPE`='Email';
 set SQL_SAFE_UPDATES=1;
 
+
 #Client to Vendor Acceptence
 set SQL_SAFE_UPDATES=0;
 UPDATE `EMAIL_SCENARIO` SET `BODY`= 'Dear [Vendor_Contact],\n\n We are pleased to inform you that the applicant sent by you have been selected for [Requirement_Name]. \n\n If you would like to release offer, Please click here \n\n[Link]' WHERE `UNIQUE_SCENARIO_NAME`='Client to Vendor Acceptence' and `ENTITY_TYPE`='Email';
 set SQL_SAFE_UPDATES=1;
+
 
 #Offer Accepted
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` where UNIQUE_SCENARIO_NAME = 'Offer Accepted' and `ENTITY_TYPE` = 'Email' and `IS_TEMPLATE_MODIFIED` = 'N'), 'loginURL', '[Login_URL]');
@@ -89,11 +92,24 @@ UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Initiator_User_Name],\n\n [Applicant_N
 set SQL_SAFE_UPDATES=1;
 
 
+#RecruiterWillReceiveMailAboutTheAcceptanceOfRequirementByManager
+INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` where UNIQUE_SCENARIO_NAME = 'RecruiterWillReceiveMailAboutTheAcceptanceOfRequirementByManager' and `ENTITY_TYPE` = 'Email' and `IS_TEMPLATE_MODIFIED` = 'N'), 'loginURL', '[Login_URL]');
+set SQL_SAFE_UPDATES=0;
+UPDATE `EMAIL_SCENARIO` SET `BODY`= 'Dear [Assigned_User],\n\n I have accepted the [Applicant_Name] for [Requirement_Name].\n You can go for further process.\n\n The brief details are below \n Job Location :[Requirement_Location]\n Job Rate :[Rate].\n\n[Login_URL]'  WHERE `UNIQUE_SCENARIO_NAME`='RecruiterWillReceiveMailAboutTheAcceptanceOfRequirementByManager' and `ENTITY_TYPE`='Email';
+set SQL_SAFE_UPDATES=1;
 
 
+#RejectMailFromClient_To_Vendor
+INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` where UNIQUE_SCENARIO_NAME = 'RejectMailFromClient_To_Vendor' and `ENTITY_TYPE` = 'Email' and `IS_TEMPLATE_MODIFIED` = 'N'), 'loginURL', '[Login_URL]');
+set SQL_SAFE_UPDATES=0;
+UPDATE `EMAIL_SCENARIO` SET `BODY` = 'Dear [Vendor_Contact_Name],\n\n[Applicant_Name] got rejected by [Client_Contact_Name] for [Requirement_Name] \n\n Reason: [Reason].\n[Login_URL]'  WHERE `UNIQUE_SCENARIO_NAME`='RejectMailFromClient_To_Vendor' and `ENTITY_TYPE`='Email';
+set SQL_SAFE_UPDATES=1;
 
-
-
+#Mail To Project Manager
+INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` where UNIQUE_SCENARIO_NAME = 'Mail To Project Manager' and `ENTITY_TYPE` = 'Email' and `IS_TEMPLATE_MODIFIED` = 'N'), 'loginURL', '[Login_URL]');
+set SQL_SAFE_UPDATES=0;
+UPDATE `EMAIL SCENARIO` SET `BODY` = 'Hi [Manager_First_Name] [Manager_Last_Name],\n [Login_User_First_Name] [Login_User_Last_Name] assigned you as a project manager for the [Project_Name].\nTeam Members\n[Team_Members].\n[Login_URL]'  WHERE `UNIQUE_SCENARIO_NAME`='Mail To Project Manager' and `ENTITY_TYPE`='Email';
+set SQL_SAFE_UPDATES=1;
 
 
 

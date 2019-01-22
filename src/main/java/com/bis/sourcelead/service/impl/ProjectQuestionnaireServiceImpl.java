@@ -422,6 +422,11 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 			 emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			 //setting the class filed values
+			 
+			String redirectURL = "/projectSummary-params-projectUUID="+projects.getProjectUUID()+"-and-projectClientUUID="+pc.getUuid();
+			Long redirectOrgLocationId = projects.getOrgLocationsId().getId();
+			 
+			 
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 globalVarsMap.put("LoginUserFirstName",loginUser.getFirstName());
 			 globalVarsMap.put("LoginUserLastName",loginUser.getLastName());
@@ -430,8 +435,11 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 			 globalVarsMap.put("TeamMembers",teamMembersTable);
 			 globalVarsMap.put("ProjectName", projects.getProjectName());
 			 globalVarsMap.put("OrgName",loginOrgLocation.getOrgLocationName());
-			 StringBuilder loginURLBuilder=new StringBuilder();
-			 globalVarsMap.put("loginURL",loginURLBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			 	 
+			 StringBuilder loginURLBuilder=new StringBuilder();			 
+			 globalVarsMap.put("loginURL",loginURLBuilder.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append
+					 ("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Project</div></a>").toString());
+			
 			 //calling the sendEmail method of emailScenerioUtil
 			 if(null != projects.getOrgLocationsId())
 			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_PROJECT_MANAGER,new ArrayList<EmailAttachment>());
