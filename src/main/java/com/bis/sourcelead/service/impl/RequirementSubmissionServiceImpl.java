@@ -2429,8 +2429,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	   		clientSubmissionHistory.setFromStage(ApplicantSubmissionStatus.NEW.toString());
 			requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, user, clientSubmissionHistory, clientUser.getUserCode());
 	   		 
-	   		 
-	   		 if(requirementSubmissionHistoryForCoolingOff != null){
+	   		 /*if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
 					 RequirementSubmissionHistory requirementSubmissionHistoryNewToSubmission = new RequirementSubmissionHistory();
 					 requirementSubmissionHistoryNewToSubmission.setFromStage(Submission_Status.NEW.toString());
@@ -2443,7 +2442,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					 requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, null, requirementSubmissionHistorySubmissionToRejected, clientUser.getUserCode());
 					 
 				 }
-	   		}
+	   		}*/
    		 }
    		 
    		 
