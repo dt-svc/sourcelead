@@ -144,5 +144,8 @@ public interface ProjectMembersDao {
 	public List<ProjectMembers> getAllActiveProjectsByUserIdAndOrgLocationId(Long userId,Long orgLocationId) throws Exception;
 	
 	List<ProjectMembers> getProjectMembersListByCandidateIdAndProjectClientId(Long candidateId,List<Long> projectClientsId) throws Exception;
+	
 	ResponseList<MarginSheetReportDTO> getProjectMemeberByClientProjectAndOrglocation(Long orglocationId,Date[] searchDates,MarginSheetReportDTO marginSheetReportDTO);
+	
+	ProjectMembers getProjectMembersByMasterCandiateIdAndProjectClientId(Long masterCandidateId,Long projectClientsId) throws Exception;
 }
