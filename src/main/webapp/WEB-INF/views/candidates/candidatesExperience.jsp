@@ -118,7 +118,7 @@ function closeCertificatePopup(){
 				document.getElementById("endYearValidation").style.display="none";
 				$("#candidateEmployersAdd").attr("disabled", "disabled");
 				$("#candidateEmployersAdd").addClass('button').val('Processing..'); 
-	        	$.post(sourceleadUrl+"/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(result) {
+	        	$.post(atsUrl+"/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(result) {
 		        	if (result && result.response === "INVALID_DATA") {
 					    $("#update_candidate").removeAttr("disabled");
 					    $("#update_candidate").removeAttr('button').val('Save');
@@ -307,7 +307,7 @@ function closeCertificatePopup(){
 	function editEmployer(candidateEmpId, candidateId) {
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl
+			url : atsUrl
 					+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?"+tokenParamName+"="+tokenValue+"&candidateId="
 					+ candidateId + "&candidateEmpId=" + candidateEmpId,
 			success : function(response) {
@@ -631,7 +631,7 @@ function applyKeyEventsToYears() {
 		  }
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
+					url : atsUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId,
 					success : function(json) {
 						if (json && json.response === "INVALID_DATA") {
@@ -777,7 +777,7 @@ function removeEmployer(candidateemployerId, candidateId){
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
+			url : atsUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
 			success : function(response) {
 				if (response.response === "AWKWARD") {
 				    location.href = "/errorPage";
@@ -871,7 +871,7 @@ function removeEmployer(candidateemployerId, candidateId){
 			} else if(startYearFlag && endYearFlag) {
 				
 				document.getElementById("endYearValidation").style.display="none";
-				$.post(sourceleadUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId, formData, function(result) {
+				$.post(atsUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId, formData, function(result) {
 					if (result && result.response === "INVALID_DATA") {
 					    $("#update_candidate").removeAttr("disabled");
 					    $("#update_candidate").removeAttr('button').val('Save');

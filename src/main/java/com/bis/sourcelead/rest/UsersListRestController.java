@@ -150,7 +150,6 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 import opennlp.tools.parser.Cons;
 
 @RestController
-@RequestMapping("/app")
 public class UsersListRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UsersListRestController.class);

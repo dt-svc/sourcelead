@@ -21,7 +21,7 @@ function candidateCommentsList(candidateId,submissionId){
     }
 	$.ajax({
 		type : "POST",
-	    url: sourceleadUrl+urlForm,        
+	    url: atsUrl+urlForm,        
 	    success :function(data) {
 	    	var json = data.data;
 	    	if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {

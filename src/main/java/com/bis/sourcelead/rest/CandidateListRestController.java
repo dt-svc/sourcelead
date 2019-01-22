@@ -113,7 +113,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  *
  */
 @RestController
-@RequestMapping("/app")
 public class CandidateListRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(CandidateListRestController.class);

@@ -122,7 +122,6 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 
 @RestController
-@RequestMapping("/app")
 public class UserRestController {
 	
 private static final Logger logger = LoggerFactory.getLogger(UserRestController.class);

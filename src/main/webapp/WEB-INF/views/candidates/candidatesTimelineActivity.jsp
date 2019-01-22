@@ -11,7 +11,7 @@
 	 var result = "";
 	 $.ajax({
          type : "POST",
-          url: sourceleadUrl+"/getCandidateActivitiesByCandidateIdAndLocationCode?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&locationId="+locationId,        
+          url: atsUrl+"/getCandidateActivitiesByCandidateIdAndLocationCode?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&locationId="+locationId,        
           success :function(response) {
         	 	 if (response.response === "AWKWARD") {
         		    location.href = "/errorPage";
@@ -32,7 +32,7 @@
                   			var opt = data[i];
    		   	         		result = result + '      <li> <i class="'+opt.actionIconClass+' bg-blue"></i>';
    		                	result = result + '      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> '+opt.actionTimeStr+' </span>';
-   		                	result = result + '        <h3 class="timeline-header"><a href="'+sourceleadUrl+'/userSummaryDetails?userId='+opt.createdUserId+'">'+opt.actionBy+'</a> has '+opt.actionDesc+' <a href="#">'+opt.actionOn+'</a></h3>';
+   		                	result = result + '        <h3 class="timeline-header"><a href="'+atsUrl+'/userSummaryDetails?userId='+opt.createdUserId+'">'+opt.actionBy+'</a> has '+opt.actionDesc+' <a href="#">'+opt.actionOn+'</a></h3>';
    		                	result = result + '        <div class="timeline-body"> '+opt.actionSummary+' </div>';
 
    		                	/* result = result + '        <div class="timeline-footer"> <a class="btn btn-primary btn-xs">Read more</a></div>'; */
