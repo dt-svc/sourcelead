@@ -2165,6 +2165,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 String[] clientShortlistsRate = selectedShortlistsRate.split(",");
    	     Requirement requirement = requirementDao.getRequirementByRequirementId(requirementId);
 		 requirement.setId(requirementId);
+		 Long redirectOrgLocationId = requirement.getClientId().getLocationId().getId();
+				 
 		 if(requirement.getParentRequirement() != null){
 			 requirementName = requirement.getParentRequirement().getJobTitle();
 		 }else{
@@ -2488,11 +2490,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    	 
    	 
    	SubmissionXls submissionXls =  saveSubmissionTracker(dateFormat,createExcelworkbook,requirement,user);
-    
+   
    	
    	
    	
-   	sendMailTemplateWithAttachment(jsonData,user,files,loginOrgLocation,submissionXls,submissionId);
+   	sendMailTemplateWithAttachment(jsonData,user,files,loginOrgLocation,submissionXls,submissionId,redirectOrgLocationId);
 	
 		
 	}
@@ -2509,9 +2511,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
  * 
  */
 	private void sendMailTemplateWithAttachment(JSONObject jsonObj, User user, Map files, OrgLocations loginOrgLocation,
-			SubmissionXls submissionXls, String[] submissionId) throws Exception {
+			SubmissionXls submissionXls, String[] submissionId,Long redirectOrgLocationId) throws Exception {
 		List<EmailAttachment> attachmentList = new ArrayList<>();
 		EmailMessage emailMessage = new EmailMessage();
+		
+		
 		
 		//to check send resumes condition
 		if (jsonObj.has("sendResumes")) {
@@ -2546,6 +2550,15 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			List<String> submissionIsd = Arrays.asList(submissionId);
 			for(String subIds :submissionIsd){
 			 reqSub = getRequirementSubmissionById(Long.parseLong(subIds));
+			 //URL for page redirection
+			String redirectURL = "requirementSummary-params-type=all-and-requirementUUID="+reqSub.getRequirement().getParentRequirement().getRequirementUUID()+"-and-submissionId="+reqSub.getId();
+			//Long redirectOrgLocationId = loginOrgLocation.getId();
+			
+			StringBuilder linkBuild = new StringBuilder();
+			globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Applicants Received</div></a>")
+					.toString());
+			
 			 if(reqSub.getRequirement().getJobTitle()!= null  && !"".equalsIgnoreCase(reqSub.getRequirement().getJobTitle())){
 				 globalVarsMap.put("RequirementTitle", reqSub.getRequirement().getJobTitle());
 				 }else{
@@ -2565,9 +2578,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					 globalVarsMap.put("vendorOrgName","--"); 
 				 }
 			}
-
+   
+			
 			// getting the current EmailScenario by EmailScenario unique name
 			// and entity type
+			
 			EmailScenario emailScenario = null;
 			if(loginOrgLocation != null)
 				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.SUBMIT_TO_CLIENT,Constants.ENTITY_TYPE_EMAIL, loginOrgLocation.getId());

@@ -1617,7 +1617,7 @@ public class LeaveServiceImpl implements LeaveService{
 			leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
 			
 			// for URL redirections from mail
-			 String redirectURL = null;											
+			 String redirectURL = "/withdrawLeaves-params-notifyLink=notifyLink-and-leaveUUID="+leaveManagementHistory.getLeaveid().getLeaveUUID()+"-and-orgLocationId="+orgLocations.getId();											
 			Long redirectOrgLocationId = orgLocations.getId(); 	 
 			sendWithdrawLeaveMailToAdmin(orgLocations,leave.getId(), user, leaveManagementHistory,redirectOrgLocationId,redirectURL);
 			/*if(leave != null && leave.getLeaveType() != null && leave.getOrgLocations() != null) {
@@ -1679,7 +1679,11 @@ public class LeaveServiceImpl implements LeaveService{
 				else {
 					globalVarsMap.put("loginOrg", "--");
 				}
-		 
+		       
+				StringBuilder linkBuild = new StringBuilder();
+				globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+						"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Withdraw Leave</div></a>")
+						.toString());
 				InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 				EmailScenario emailScenario = null;
 				
@@ -1694,7 +1698,10 @@ public class LeaveServiceImpl implements LeaveService{
 			    notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_WITHDRAW_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
 				String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
 				notificationScenario.setBody(notificationbody);
-				emailScenerioUtil.sendNotification(null, loginUser, lmh.getApproverUserId(), orgLocations, notificationScenario,new HashMap<String,String>());
+				
+				StringBuilder actionLinkBuilder = new StringBuilder();
+				String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("withdrawLeaves?notifyLink=notifyLink&leaveUUID="+leaveManagementHistory.getLeaveid().getLeaveUUID()+"&orgLocationId="+orgLocations.getId()).toString();
+				emailScenerioUtil.sendNotification(actionLink, loginUser, lmh.getApproverUserId(), orgLocations, notificationScenario,new HashMap<String,String>());
 
 				
 				
