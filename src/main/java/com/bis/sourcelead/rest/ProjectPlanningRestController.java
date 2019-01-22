@@ -79,7 +79,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.RegistrationController;
 
 @RestController
-@RequestMapping("/app")
 public class ProjectPlanningRestController {
 
 	@Autowired
