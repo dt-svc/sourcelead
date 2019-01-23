@@ -645,7 +645,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				 candidateResumes.setFileName(jsonObj.get("fileInfo[0].fileName").toString());
 				 candidateResumes.setTitle(jsonObj.get("fileInfo[0].fileName").toString());
 				 candidateResumes.setFileContentType(jsonObj.get("fileInfo[0].contentType").toString());
-				 candidateResumes.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString());
+				 candidateResumes.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString().replaceAll(" ", "_"));
  				 candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
  				 candidateResumes.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
  				 candidateResumes.setCreatedDate(new Date());
@@ -2453,8 +2453,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	   		clientSubmissionHistory.setFromStage(ApplicantSubmissionStatus.NEW.toString());
 			requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, user, clientSubmissionHistory, clientUser.getUserCode());
 	   		 
-	   		 
-	   		 if(requirementSubmissionHistoryForCoolingOff != null){
+	   		 /*if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
 					 RequirementSubmissionHistory requirementSubmissionHistoryNewToSubmission = new RequirementSubmissionHistory();
 					 requirementSubmissionHistoryNewToSubmission.setFromStage(Submission_Status.NEW.toString());
@@ -2467,7 +2466,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					 requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, null, requirementSubmissionHistorySubmissionToRejected, clientUser.getUserCode());
 					 
 				 }
-	   		}
+	   		}*/
    		 }
    		 
    		 

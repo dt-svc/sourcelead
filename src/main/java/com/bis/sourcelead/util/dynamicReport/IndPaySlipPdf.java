@@ -9,7 +9,9 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.type;
 
 import java.awt.Color;
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -44,6 +47,8 @@ import com.ibm.icu.text.SimpleDateFormat;
 import edu.emory.mathcs.backport.java.util.LinkedList;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.jasper.builder.export.JasperPdfExporterBuilder;
+import net.sf.dynamicreports.jasper.builder.export.JasperXlsExporterBuilder;
+import net.sf.dynamicreports.jasper.constant.JasperProperty;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
 import net.sf.dynamicreports.report.builder.component.HorizontalListBuilder;
@@ -350,7 +355,7 @@ public class IndPaySlipPdf {
 				addEmployeeAttribute(list, "Income Tax Number (PAN) ", candidate.getPanNumber());
 			}
 		}
-		if(ape.getEligibleForPf().equalsIgnoreCase("Y")) {
+		if(ape != null && ape.getEligibleForPf() != null && ape.getEligibleForPf().equalsIgnoreCase("Y")) {
 			if(ape.getUanNumber() != null) {
 				if(ppsi.getEmployeeUanNumber() != null && ppsi.getEmployeeUanNumber().equalsIgnoreCase("Y")) {
 					addEmployeeAttribute(list, "Universal Account Number (UAN) ", ape.getUanNumber());
@@ -362,7 +367,7 @@ public class IndPaySlipPdf {
 				}
 			}
 		}
-		if(ape.getEligibleForEsi() != null) {
+		if(ape != null && ape.getEligibleForEsi() != null) {
 			if(ape.getEsinumber() != null) {
 				if(ppsi.getEmployeeEsiNumber() != null && ppsi.getEmployeeEsiNumber().equalsIgnoreCase("Y")) {
 					addEmployeeAttribute(list, "ESI Number ", ape.getEsinumber());
@@ -458,7 +463,213 @@ public class IndPaySlipPdf {
 		}
 	}
 
+
+	public File getIndPayrollRegisterReportsPdf(ResponseList<IndEmployeePayroll> payResponseList, OrgLocations orgLocations) throws IOException {
+		 File file = null;
+			try {
+			    StringBuilder fileSB = new StringBuilder();
+				file = File.createTempFile(fileSB.append("payrollRegister_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
+				file.setReadable(true);
+				JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+				
+				report().setTemplate(Templates.reportTemplate)
+						.title(cmp.text(orgLocations.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+						.columns(
+								col.column("Employee Id", "employeeId", type.stringType()),
+								col.column("Employee Name", "employeeName", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+								col.column("Department", "department", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+								col.column("Current Hours", "currentHours", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+								col.column("Grass Pay", "grossPay", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+								col.column("YTD Taxes", "ytdTaxes", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+								col.column("Deducation", "deducation", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+								col.column("Net Pay", "netPay", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+								col.column("YTD Net Pay", "ytdNetPay", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER))
+						.pageFooter(Templates.footerComponent)
+						.setDataSource(createPdfDataSource(payResponseList)).toPdf(pdfExporter);
+			} catch (DRException e) {
+				e.printStackTrace();
+			}
+			return file;
+	}
+
+
+	private DRDataSource createPdfDataSource(ResponseList<IndEmployeePayroll> payResponseList) {
+		DRDataSource dataSource = new DRDataSource("employeeId","employeeName", "department", "currentHours", "grossPay", "ytdTaxes", "deducation", "netPay", "ytdNetPay");
+		for(IndEmployeePayroll iep:payResponseList.getData()) {
+			
+			String employeeId = "--";
+			if(iep.getEmployee().getEmployeeId() != null) {
+				employeeId = iep.getEmployee().getEmployeeId();
+			} 
+			BigDecimal currentHours = new BigDecimal("0");
+			if(iep.getRegularHours() != null) {
+				currentHours.add(new BigDecimal(iep.getRegularHours()));
+			}
+			if(iep.getOverTimeHours() != null) {
+				currentHours.add(new BigDecimal(iep.getOverTimeHours()));
+			}
+			dataSource.add(employeeId,iep.getCandidate().getFullName(), iep.getEmployee().getDepartmentId().getDepartmentName(), currentHours,iep.getGrossPay(),new BigDecimal(0.00),iep.getGrossPay().subtract(iep.getNetPay()),iep.getNetPay(),new BigDecimal(0.00));
+		}
+		return dataSource;
+	}
+
+
+	public File getIndPayrollBankTransferReportsPdf(ResponseList<IndEmployeePayroll> payResponseList, OrgLocations orgLocations) throws Exception {
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("payrollBankTransfer_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
+			file.setReadable(true);
+			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+			
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orgLocations.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							col.column("Employee Id", "employeeId", type.stringType()),
+							col.column("Employee Name", "employeeName", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER).setFixedWidth(600),
+							col.column("Department", "department", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Account Numaber", "acoountNumber", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Bank Name", "bankName", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("IFSC Code", "ifscCode", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Amount", "amount", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(createBankTransferDataSource(payResponseList)).toPdf(pdfExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+
+
 	
+
+	public File getIndPayrollBankTransferReportsExcel(ResponseList<IndEmployeePayroll> payResponseList, OrgLocations orgLocations) throws Exception {
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("payrollBankTransfer_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
+			file.setReadable(true);
+			
+			JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
+                    .setIgnorePageMargins(true)
+                    .setWhitePageBackground(false)
+                    .setRemoveEmptySpaceBetweenColumns(true);
+			
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orgLocations.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							col.column("Employee Id", "employeeId", type.stringType()),
+							col.column("Employee Name", "employeeName", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Department", "department", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Account Numaber", "acoountNumber", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Bank Name", "bankName", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("IFSC Code", "ifscCode", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Amount", "amount", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(createBankTransferDataSource(payResponseList)).toXls(xlsExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+
+	
+	private DRDataSource createBankTransferDataSource(ResponseList<IndEmployeePayroll> payResponseList) {
+		DRDataSource dataSource = new DRDataSource("employeeId","employeeName", "department", "acoountNumber", "bankName", "ifscCode", "amount");
+       for(IndEmployeePayroll iep:payResponseList.getData()) {
+			String employeeId = "--";
+			String accontNumber = "--";
+			String bankName  = "--";
+			String ifscCode = "--";
+			
+			if(iep.getEmployee().getEmployeeId() != null) {
+				employeeId = iep.getEmployee().getEmployeeId();
+			} 
+			 if(iep.getPaymentAccount() != null) {
+				 ifscCode = iep.getPaymentAccount().getRoutingNumber();
+				 accontNumber = iep.getPaymentAccount().getAccountNumber();
+				 bankName = iep.getPaymentAccount().getBankName();
+			 }
+			dataSource.add(employeeId,iep.getCandidate().getFullName(), iep.getEmployee().getDepartmentId().getDepartmentName(), accontNumber,bankName,ifscCode,iep.getNetPay());
+		}
+		
+		return dataSource;
+	}
+
+
+	public File getIndPayrollYTDPdf(ResponseList<IndEmployeePayroll> payResponseList, OrgLocations orgLocations) throws Exception {
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("payrollYTDSummary_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
+			file.setReadable(true);
+			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+			
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orgLocations.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							col.column("Employee Id", "employeeId", type.stringType()),
+							col.column("Employee Name", "employeeName", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Department", "department", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("No Of Working Days", "noOfWorkingDays", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("No Of Leaves", "noOfLeaves", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Gross Pay", "grossPay", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Deducations", "deducatons", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Net Pay", "netPay", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(createYTDSummaryDataSource(payResponseList)).toPdf(pdfExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+
+
+	public File getIndPayrollYTDExcel(ResponseList<IndEmployeePayroll> payResponseList, OrgLocations orgLocations)throws Exception {
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("payrollYTDSummary_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
+			file.setReadable(true);
+			
+			JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file).setDetectCellType(true)
+                    .setIgnorePageMargins(true)
+                    .setWhitePageBackground(false)
+                    .setRemoveEmptySpaceBetweenColumns(true);
+			
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orgLocations.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							col.column("Employee Id", "employeeId", type.stringType()).setColumns(15),
+							col.column("Employee Name", "employeeName", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER).setColumns(15),
+							col.column("Department", "department", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("No Of Working Days", "noOfWorkingDays", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER).setColumns(30),
+							col.column("No Of Leaves", "noOfLeaves", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Gross Pay", "grossPay", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Deducations", "deducatons", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Net Pay", "netPay", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(createYTDSummaryDataSource(payResponseList)).toXls(xlsExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+
+
+	private DRDataSource createYTDSummaryDataSource(ResponseList<IndEmployeePayroll> payResponseList) {
+		DRDataSource dataSource = new DRDataSource("employeeId","employeeName", "department", "noOfWorkingDays", "noOfLeaves", "grossPay", "deducatons", "netPay");
+	       for(IndEmployeePayroll iep:payResponseList.getData()) {
+				String employeeId = "--";
+				if(iep.getEmployee().getEmployeeId() != null) {
+					employeeId = iep.getEmployee().getEmployeeId();
+				} 
+				dataSource.add(employeeId,iep.getCandidate().getFullName(), iep.getEmployee().getDepartmentId().getDepartmentName(), iep.getNoOfDays(),iep.getNoOfLeaves(),iep.getGrossPay(),iep.getGrossPay().subtract(iep.getNetPay()),iep.getNetPay());
+			}
+			
+			return dataSource;
+	}
+
 	 
 	
 }

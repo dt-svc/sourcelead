@@ -2201,11 +2201,12 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		try {
 			ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
 			if(projectClients != null) {
+				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 				if((projectClients.getOrgLocationsId().getId().equals(orgLocations.getId())) || (StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES))) {
 					if(StringUtils.isNotBlank(loginUserRole) && (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN"))) {
 						ProjectApproverHierarchy approverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
 						ExpenseProjectApproverHierarchy expenseApproverHierarchy = expenseProjectApproverHierarchyService.getExpenseApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
-						ProjectMembers pm = projectMembersService.getProjectMembersByCandidateIdAndProjectClientId(candidateId, projectClients.getId());
+						ProjectMembers pm = projectMembersService.getProjectMembersByMasterCandiateIdAndProjectClientId(candidate.getMasterCandidateId().getId(), projectClients.getId());
 						Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
 						if(expenseApproverHierarchy != null || approverHierarchy != null || pm != null || projects.getCreatedBy().equalsIgnoreCase(loginUser.getUserCode()) || isGlobalAccess.equalsIgnoreCase(Constants.YES)) {
 							flag = true;
@@ -2214,6 +2215,11 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 						flag = true;
 					}
 					
+				}else {
+					ProjectMembers pm = projectMembersService.getProjectMembersByMasterCandiateIdAndProjectClientId(candidate.getMasterCandidateId().getId(), projectClients.getId());
+					if(pm != null) {
+						flag = true;
+					}
 				}
 			}
 		} catch (Exception e) {

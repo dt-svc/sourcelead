@@ -913,6 +913,7 @@ function Immigration() {
 
 	
 	this.saveEmployerDetails = function(status) {
+		applyKeyEventsToYears();
 		var validationSettings = {
 	            errorMessagePosition: 'element',
 	            borderColorOnError: '',
@@ -920,6 +921,7 @@ function Immigration() {
 	            dateFormat: 'yyyy/mm/dd'
 	        };
 		if ($('#employerDetails_form').validate(false, validationSettings)) {
+		
 	        var formData = getFormData("employerDetails_form");
 	        var candidateId = $('#candidateID').val();
 	        var immigrationId = $('#immigrationID').val();
