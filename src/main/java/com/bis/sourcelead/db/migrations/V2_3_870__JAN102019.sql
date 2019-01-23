@@ -120,9 +120,15 @@ set SQL_SAFE_UPDATES=1;
 
 
 
-
-
-
+#Email_body_update -------
+set SQL_SAFE_UPDATES=0;
+UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Employee_Name],\n\n We are regret to inform that your leave has not been approved for the requested period.\n Leave Type : [Leave_Type_Name]\n  Duration : [From_Date] - [To_Date].\n  Rejected Reason : [Reason]\n\n[Login_URL]'  WHERE `UNIQUE_SCENARIO_NAME`='Rejected Leave' and `ENTITY_TYPE`='Email';
+UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Approver_Name],\n\nThis is to inform you that I have withdrawn my requested leave for the period [From_Date] - [To_Date], due to \nReason : [Reason].\n\n[Login_URL]' WHERE `UNIQUE_SCENARIO_NAME`='Withdraw Leave' and `ENTITY_TYPE`='Email';
+UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Employee_Name],\n\n We are glad to inform you that your leave [From_Date] to [To_Date] got approved.\n\n[Login_URL]' WHERE `UNIQUE_SCENARIO_NAME`='Approver Leave' and `ENTITY_TYPE`='Email';
+UPDATE `EMAIL_SCENARIO` SET `BODY` ='Dear [Employee_User],\n\n We are regret to inform you that your leave has been cancelled for the requested period.\nLeave Type : [Leave_Type]\nDuration : [From_Date] - [To_Date]\n Cancelled Reason : [Reason].\n\n[Login_URL]' WHERE `UNIQUE_SCENARIO_NAME`='LeaveCancelEmailToUser' and `ENTITY_TYPE`='Email';
+UPDATE `EMAIL_SCENARIO` SET `BODY` ='Dear [User_Name],\n\nThis is to inform you that there will be holiday on [Date] due to [Holidayname].\n\n[Login_URL]' WHERE `UNIQUE_SCENARIO_NAME`='HolidayRemainder' and `ENTITY_TYPE`='Email';
+UPDATE `EMAIL_SCENARIO` SET `BODY`= 'Dear [Leave_Taken_Employee],\n\ This is to notify that leave has been requested for you on behalf of [Login_User]. Please find the details below.\nLeave Type : [Leave_Type]\nDuration  : [Leave_Duration]\nReason  : [Leave_Reason]\n\n[Login_Link]'   WHERE `UNIQUE_SCENARIO_NAME`='onBehalfEmail' and `ENTITY_TYPE`='Email';
+set SQL_SAFE_UPDATES=1;
 
 
 
