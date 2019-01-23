@@ -40,6 +40,7 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.PayrollPaySlipInd;
 import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
@@ -369,6 +370,10 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 					payrollDTO.setEmployee(employeePayroll.getEmployee().getId());
 				}
 				
+				if(employeePayroll != null && employeePayroll.getPayrollPaySlipInd() != null) {
+					payrollDTO.setPayrollPaySlipInd(employeePayroll.getPayrollPaySlipInd().getId());
+				}
+				
 				if(employeePayroll != null && employeePayroll.getEmployee() != null && employeePayroll.getEmployee().getUser() != null) {
 					payrollDTO.setEmpName(employeePayroll.getEmployee().getUser().getFullName());
 				}else {
@@ -440,6 +445,11 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 					Employees employee = new Employees();
 					employee.setId(payrollDTO.getEmployee());
 					employeePayroll.setEmployee(employee);
+				}
+				if(payrollDTO.getPayrollPaySlipInd() != null) {
+					PayrollPaySlipInd payrollPaySlipInd = new PayrollPaySlipInd();
+					payrollPaySlipInd.setId(payrollDTO.getPayrollPaySlipInd());
+					employeePayroll.setPayrollPaySlipInd(payrollPaySlipInd);
 				}
 				if(payrollDTO.getCandidateId() != null) {
 					Candidate candidate = new Candidate();
