@@ -68,6 +68,7 @@ import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
+import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Tasks;
@@ -92,6 +93,7 @@ import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOffersService;
+import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TaskService;
@@ -203,6 +205,9 @@ public class DashboardRestController {
 	 
 	 @Autowired
 	 private ConversionUtil conversionUtil;
+	 
+	 @Autowired
+	 private RequirementRateSubmissionNegotiationService requirementRateSubmissionNegotiationService;
 	 
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -1753,7 +1758,13 @@ public class DashboardRestController {
 					rshDTO.setSubmittedBy(rsh.getCreatedUser());
 		//					}
 						
-					
+					RequirementRateSubmissionNegotiation rateNegotiation = requirementRateSubmissionNegotiationService.getRequirementRateSubmissionByMaxId(rsh.getSubmissionId().getId());
+					if(rateNegotiation !=null && rateNegotiation.getCurrentRate()!=null){
+						float currentRate = conversionUtil.rateConvertToYear(rateNegotiation.getCurrentRate(),rateNegotiation.getCurrentRateType(),loginOrgLocations);
+						float expectedRate = conversionUtil.rateConvertToYear(rateNegotiation.getExpectedRate(),rateNegotiation.getExpectedRateType(),loginOrgLocations);
+						float finalRatePerYear = expectedRate-currentRate;
+						rshDTO.setMarginRateYearly(String.format("%.3f", Float.valueOf(finalRatePerYear)));
+					}
 					
 					int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocations.getId(), rsh.getSubmissionId().getRequirement().getId(), "INTERVIEWED");
 					rshDTO.setNumOfInterview(interviewedCount);

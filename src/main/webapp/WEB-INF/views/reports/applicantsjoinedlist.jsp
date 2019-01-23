@@ -379,6 +379,7 @@ function prepareOfferList(url){
 		result = result + '<th>Date Of Join</th>';
 		result = result + '<th>Offer Rate</th>';
 		result = result + '<th>Offer Rate Yearly</th>';
+		result = result + '<th>Margin Rate Yearly</th>';
 		result = result + '<th>Payment Term</th>';
 		result = result + '<th>Generate Invoice</th>';
 		result = result + '</tr>';
@@ -415,6 +416,7 @@ function offerpagination(url){
             { "data": "joinDate"},
             { "data": "offerRate"},
             { "data": "offerRateYearly"},
+            { "data": "marginRateYearly"},
             { "data": "paymentTerm"},
             { "data": "generateInvoice"}
         ],
@@ -546,6 +548,18 @@ function offerpagination(url){
 	              return result;
             }
       } ,{
+          "targets": colIndex++,
+          "data": "marginRateYearly",
+          "render": function ( data, type, opt, meta ) {
+          		var result = "";
+          		if(opt.marginRateYearly !=null && opt.marginRateYearly !='' && opt.marginRateYearly !='undefined'){
+							result = result + ' <td><div><span>'+opt.marginRateYearly+'</span></div></td>';
+						}else{
+							result = result + ' <td><div><span>---</span></div></td>';
+						}
+	              return result;
+          }
+    	} ,{
                       "targets": colIndex++,
                       "data": "paymentTerm",
                       "render": function ( data, type, opt, meta ) {
