@@ -320,7 +320,12 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 			orgLocations = orgLoc;
 		}*/
 		 synchronized (this) {
-			   String expenseId = getExpenseId(orgLoc);
+			    String expenseId = "";
+			    if(expenses.getOrgLocationId() != null) {
+			    	expenseId = getExpenseId(expenses.getOrgLocationId());
+			    }else {
+			    	expenseId = getExpenseId(orgLoc);
+			    }
 			   expenses.setExpenseId(expenseId);
 			   expenses = addExpensesDao.storeAddExpensesData(expenses);
 			   storeExpenseApprovers(status, expenses, managers, loginUser, orgLoc,currencyCode,isGlobalUser);
