@@ -54,8 +54,8 @@
 					<label class="clearfix">Type<span class="text-danger">&nbsp;*</span></label>
 					<div class="clearfix dropdown-select">
 						<select class="form-control chosen-select" id="type" name="type" field-name="Type" data-validation="required">
-							<option value="Earnings" ${payrollPayhead.type  == 'Earnings'  ? 'selected' :''}>Earnings</option>
-							<option value="Deductions" ${payrollPayhead.type  == 'Deductions'  ? 'selected' :''}>Deductions</option>
+							<option value="Earnings" ${payrollPayhead.type  == 'Earnings'  ? 'selected' :''}>Earning</option>
+							<option value="Deduction" ${payrollPayhead.type  == 'Deduction'  ? 'selected' :''}>Deduction</option>
 						</select>
 					</div>
 				</div>

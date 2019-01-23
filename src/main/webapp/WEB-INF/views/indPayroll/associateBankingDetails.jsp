@@ -235,7 +235,8 @@ function clearPaymentAccount() {
 
 <script>
 function changeDefaultPaymentAccount(ele, id) {
-    $.post(sourceleadUrl+"/change-default-payment-account", {id: id, defaultAccount: $(ele).is(":checked")}, function(data) {
+	candidateId = '${candidateId}';
+    $.post(sourceleadUrl+"/change-associate-default-payment-account", {id: id, candidateId: candidateId, defaultAccount: $(ele).is(":checked")}, function(data) {
     	 var candidateId = '${candidateId}';
     	 associateBankingDetails(candidateId);
         showError(data.responseMessage);

@@ -101,6 +101,27 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 	
 	private BigDecimal ytdNetPay;
 	
+	private String accountNumber;
+	
+	private String bankName;
+	
+	private String ifscCode;
+	
+	private String exportType;
+	
+	private String employeeIds;
+	
+	private String departmentId;
+	
+	private String startDate;
+	
+	private String endDate;
+	
+	private BigDecimal deducations;
+	
+	private BigDecimal noOfWorkingDays;
+	
+	private String financialYear;
 	
 	public Long getId() {
 		return id;
@@ -463,5 +484,92 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 	public void setYtdNetPay(BigDecimal ytdNetPay) {
 		this.ytdNetPay = ytdNetPay;
 	}
-	
+
+	public String getAccountNumber() {
+		return accountNumber;
+	}
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public String getIfscCode() {
+		return ifscCode;
+	}
+
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
+	public void setIfscCode(String ifscCode) {
+		this.ifscCode = ifscCode;
+	}
+
+	public String getExportType() {
+		return exportType;
+	}
+
+	public void setExportType(String exportType) {
+		this.exportType = exportType;
+	}
+
+	public String getEmployeeIds() {
+		return employeeIds;
+	}
+
+	public String getDepartmentId() {
+		return departmentId;
+	}
+
+	public String getStartDate() {
+		return startDate;
+	}
+
+	public String getEndDate() {
+		return endDate;
+	}
+
+	public void setEmployeeIds(String employeeIds) {
+		this.employeeIds = employeeIds;
+	}
+
+	public void setDepartmentId(String departmentId) {
+		this.departmentId = departmentId;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+
+	public BigDecimal getDeducations() {
+		return deducations;
+	}
+
+	public void setDeducations(BigDecimal deducations) {
+		this.deducations = deducations;
+	}
+
+	public BigDecimal getNoOfWorkingDays() {
+		return noOfWorkingDays;
+	}
+
+	public void setNoOfWorkingDays(BigDecimal noOfWorkingDays) {
+		this.noOfWorkingDays = noOfWorkingDays;
+	}
+
+	public String getFinancialYear() {
+		return financialYear;
+	}
+
+	public void setFinancialYear(String financialYear) {
+		this.financialYear = financialYear;
+	}
 }

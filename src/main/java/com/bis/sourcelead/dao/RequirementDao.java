@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.bis.sourcelead.dto.JobFairDTO;
+import com.bis.sourcelead.dto.OfferAcceptanceRateDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -243,5 +244,7 @@ public interface RequirementDao {
 	void deleteRequirementIncentiveByRequirementIdOrIds(long requirementId, String ids) throws Exception;
 	
 	public List<Requirement> getJobsListByOrgRelationAndLocation(Long orglocationId,String orgRelationIds,Date startDateUTC,Date endDateUTC) throws Exception;
+
+	public List<OfferAcceptanceRateDTO> getOfferAcceptanceRateList(Long userId);
 
 }

@@ -58,6 +58,7 @@ import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.AvailableAssociatesDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
+import com.bis.sourcelead.dto.OfferAcceptanceRateDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
@@ -78,12 +79,13 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectAssignTask;
-import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
@@ -116,6 +118,7 @@ import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.dynamicReport.DynamicReport;
@@ -239,6 +242,9 @@ public class ReportRestController {
 	@Autowired
 	private ProjectMembersService projectMembersService;
 	
+	@Autowired
+	private PdfUtil pdfUtil;
+	
 	@RequestMapping(value="/updateSourceUserCodeForSubmissionHistory")
 	public String updateSourceUserCodeForSubmissionHistory() {
 		int count = requirementSubmissionHistoryService.updateSourceUserCodeForSubmissionHistory();
@@ -317,6 +323,106 @@ public class ReportRestController {
 			ResponseList<UserDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates,teamsList,type,rolesList);
 			return userDTOList;
 		}
+	
+	
+	@RequestMapping(value = "/getAllRecruiterReportsExport")
+	public File getAllRecruiterReportsExport(UserRoleDTO userRoleDto,UserDTO userDTO,
+			@RequestParam(value="timePeriod", required=false) String timePeriod,
+			@RequestParam(value="customStartDate", required=false) String customStartDate,
+			@RequestParam(value="customEndDate", required=false) String customEndDate,
+			HttpServletRequest request,HttpServletResponse response) throws Exception {
+
+	      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	      Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+	      User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	      String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+	      String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			
+			Date[] searchDates = null;
+				if(!"custom".equalsIgnoreCase(timePeriod)){
+					searchDates = reportsUtil.getJobFilterDate(timePeriod,orgLocations);
+				}else if("custom".equalsIgnoreCase(timePeriod) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
+		    	    
+		    	    DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+					DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					
+					Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
+					Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
+					String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+					String customEndTimeStr = TZ_DF_CED.format(endTime);  
+					Date startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+					Date endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+		    	   
+		    	    searchDates = new Date[2];
+		    	    searchDates[0] = startDateUTC;
+		    	    searchDates[1] = endDateUTC;
+				}
+				String[] orgTeams = null;
+				List<Long> teamsList = new ArrayList<>();
+				if(userRoleDto.getOrgTeams() != null && !userRoleDto.getOrgTeams().isEmpty()) {
+				   orgTeams = userRoleDto.getOrgTeams().split(",");
+					for(int i=0; i < orgTeams.length; i++) {
+						teamsList.add(Long.parseLong(orgTeams[i]));
+					}
+				}
+				//Roles List
+				String[] roleNames = null;
+				List<Long> rolesList = new ArrayList<>();
+				if(userRoleDto.getUserRoleName() != null && !userRoleDto.getUserRoleName().isEmpty()) {
+				   roleNames = userRoleDto.getUserRoleName().split(",");
+					for(int i=0; i < roleNames.length; i++) {
+						rolesList.add(Long.parseLong(roleNames[i]));
+					}
+				}
+				String type=null;
+			if(userRoleDto.getType() != null && !userRoleDto.getType().isEmpty()){
+				type=userRoleDto.getType();
+			}
+			ResponseList<UserDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates,teamsList,type,rolesList);
+			
+			StringBuilder sbRoles = new StringBuilder();
+			String roleName = null;
+			if(roleNames !=null){
+			List<Roles> roles = rolesService.getRolesListUsingMultipleIds(roleNames);
+			for(Roles r: roles){
+				sbRoles.append(r.getDisplayName()).append(",").toString();
+			}
+			roleName = sbRoles.deleteCharAt(sbRoles.length()-1).toString();
+			}
+			
+			StringBuilder sbTeams = new StringBuilder();
+			String teamName = null;
+			if(orgTeams !=null){
+			List<Team> teams = teamService.getTeamListByMultipleIds(orgTeams,orgLocations.getId());
+			for(Team t: teams){
+				sbTeams.append(t.getName()).append(",").toString();
+			}
+			teamName = sbTeams.deleteCharAt(sbTeams.length()-1).toString();
+			}
+			
+			File file = null;
+				file = pdfUtil.recruiterReprtsListPdfTable(userDTOList, orgLocations,searchDates,roleName,teamName);
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+
+			StringBuilder filename = new StringBuilder();
+			response.setHeader("Content-Disposition",
+					filename.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();
+			if (file != null) {
+				file.delete();
+			}
+			return file;
+	}
 	
 	
 	@RequestMapping(value = "/getAllJobsByUserIdAndOrgLocationId")
@@ -450,6 +556,66 @@ public class ReportRestController {
 			return list;
 		}
 	
+	@RequestMapping(value = "/getAllCandidateListForRecruiterReportsExport")
+	public File getAllCandidateListForRecruiterReportsExport(CandidateDTO candidateDTO, 
+			@RequestParam(value="userCode", required=false) String userCode, 
+			@RequestParam(value="timePeriod", required=false) String timePeriod,
+			@RequestParam(value="customStartDate", required=false) String customStartDate,
+			@RequestParam(value="customEndDate", required=false) String customEndDate,
+			HttpServletRequest request,HttpServletResponse response) throws Exception {
+
+	      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			Date[] searchDates = null;
+			
+				if(!"custom".equalsIgnoreCase(timePeriod)){
+					searchDates = reportsUtil.getJobFilterDate(timePeriod,orgLocations);
+					if(timePeriod.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
+						Date newDate = DateUtils.addHours(searchDates[0], 24);
+						searchDates[1] = newDate;
+					}
+				}else if("custom".equalsIgnoreCase(timePeriod) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
+		    	    
+		    	    DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+					DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					
+					Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
+					Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
+					String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+					String customEndTimeStr = TZ_DF_CED.format(endTime);  
+					Date startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+					Date endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+		    	   
+		    	    searchDates = new Date[2];
+		    	    searchDates[0] = startDateUTC;
+		    	    searchDates[1] = endDateUTC;
+				}
+			
+			ResponseList<Candidate> list = candidateService.getAllCandidatesByCreatedByUserCode(candidateDTO,orgLocations,userCode,searchDates);
+			File file = null;
+			file = pdfUtil.recruiterReprtsCandidateListPdfTable(list, orgLocations,searchDates);
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+
+		StringBuilder filename = new StringBuilder();
+		response.setHeader("Content-Disposition",
+				filename.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+		if (file != null) {
+			file.delete();
+		}
+		return file;
+		}
+	
 	@RequestMapping(value = "/getAllSubmissionApplicantsForRecruiterReports")
 	public @ResponseBody ResponseList<RequirementSubmissionHistory> getAllSubmissionApplicantsForRecruiterReports(RequirementSubmissionHistoryDTO sumissionHistoryDTO, 
 			@RequestParam(value="userCode", required=false) String userCode, 
@@ -499,6 +665,67 @@ public class ReportRestController {
 			ResponseList<RequirementSubmissionHistory> list = requirementSubmissionHistoryService.getAllSubmissionHistoryApplicantsByOwner(sumissionHistoryDTO,userCode,sumissionHistoryDTO.getToStage(),searchDates,orgLocations.getId());
 			
 			return list;
+		}
+	
+	@RequestMapping(value = "/getAllSubmissionApplicantsForRecruiterReportsExport")
+	public File getAllSubmissionApplicantsForRecruiterReportsExport(RequirementSubmissionHistoryDTO sumissionHistoryDTO, 
+			@RequestParam(value="userCode", required=false) String userCode, 
+			@RequestParam(value="timePeriod", required=false) String timePeriod,
+			@RequestParam(value="customStartDate", required=false) String customStartDate,
+			@RequestParam(value="customEndDate", required=false) String customEndDate,
+			HttpServletRequest request,HttpServletResponse response) throws Exception {
+
+	      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			Date[] searchDates = null;
+			
+				if(!"custom".equalsIgnoreCase(timePeriod)){
+					searchDates = reportsUtil.getJobFilterDate(timePeriod,orgLocations);
+					if(timePeriod.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
+						Date newDate = DateUtils.addHours(searchDates[0], 24);
+						searchDates[1] = newDate;
+					}
+				}else if("custom".equalsIgnoreCase(timePeriod) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
+		    	    
+		    	    DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+					DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					
+					Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
+					Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
+					String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+					String customEndTimeStr = TZ_DF_CED.format(endTime);  
+					Date startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+					Date endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+		    	   
+		    	    searchDates = new Date[2];
+		    	    searchDates[0] = startDateUTC;
+		    	    searchDates[1] = endDateUTC;
+				}
+			
+			ResponseList<RequirementSubmissionHistory> list = requirementSubmissionHistoryService.getAllSubmissionHistoryApplicantsByOwner(sumissionHistoryDTO,userCode,sumissionHistoryDTO.getToStage(),searchDates,orgLocations.getId());
+			
+			File file = null;
+			file = pdfUtil.recruiterReprtsApplicantsListPdfTable(list, orgLocations,searchDates,sumissionHistoryDTO.getToStage());
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+
+		StringBuilder filename = new StringBuilder();
+		response.setHeader("Content-Disposition",
+				filename.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+		if (file != null) {
+			file.delete();
+		}
+		return file;
 		}
 
 	
@@ -1918,6 +2145,27 @@ public class ReportRestController {
 			}
 					return projectMembersDTOList;
 				}
+			
+
+	@RequestMapping(value = "/offerAcceptanceRateList")
+	public ResponseList<OfferAcceptanceRateDTO> getOfferAcceptanceRateList(HttpServletRequest request, 
+			@RequestParam(defaultValue = "") String selectedClients,
+			@RequestParam(defaultValue = "") String filteredDate,
+			@RequestParam(defaultValue = "") String filterType) {
+		ResponseList<OfferAcceptanceRateDTO> responseList = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if(user != null) {
+				responseList =  requirementSubmissionHistoryService.getOfferAcceptanceRateList(user.getUserCode(), orgLocations.getId(), selectedClients, filterType, filteredDate);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return responseList;
+	}
 		 
 			
 			@RequestMapping(value = "/getProjectsList")

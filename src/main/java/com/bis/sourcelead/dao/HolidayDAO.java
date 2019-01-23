@@ -31,7 +31,7 @@ public interface HolidayDAO {
 
 	List<Holiday> getAllHoliday();
 
-	List<Holiday> getAllHolidaysListByOrgloationIdAndShiftId(Long locationId,String shiftIds);
+	List<Holiday> getAllHolidaysListByOrgloationIdAndShiftId(Long locationId,String shiftIds,String reportYear );
 	
 	List<Long> getHolidayShiftCout(Long holidayId)throws Exception;
 	
