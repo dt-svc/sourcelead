@@ -9,10 +9,12 @@ import com.bis.sourcelead.entity.User;
 
 public interface EmailReminderService {
 	
-	EmailReminder saveEmailReminderDetails(EmailReminderDTO emailReminder, User user, OrgLocations orgLocations);
+	EmailReminder saveEmailReminderDetails(EmailReminderDTO emailReminder, User user, OrgLocations orgLocations) throws Exception;
 	
 	List<EmailReminder> getEmailReminderList();
 	
 	List<EmailReminder> getEmailReminderListByEmailScenarioName(String scenarioName);
+	
+	List<EmailReminder> getEmailReminderListByTabsIdAndOrgLocationId(Long tabsId, Long orgLocationsId);
 
 }

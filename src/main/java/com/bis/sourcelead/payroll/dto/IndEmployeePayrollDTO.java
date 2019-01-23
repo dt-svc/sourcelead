@@ -74,7 +74,55 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 	private List<String> indEmpPayrollUUIDList;
 	 
 	private String allEmployees;
+	
+	private Long payGroup;
 
+	private String department;
+	
+	private String payRollType;
+	
+    private String freqStartDate;
+	
+	private String freqEndDate;
+	
+	private String searchValue;
+
+	private String employeeName;
+	
+	private String employeeid;
+	
+	private String departmentName;
+	
+	private BigDecimal currentHours;
+	
+	private BigDecimal ytdTaxes;
+	
+	private BigDecimal deducationAmount;
+	
+	private BigDecimal ytdNetPay;
+	
+	private String accountNumber;
+	
+	private String bankName;
+	
+	private String ifscCode;
+	
+	private String exportType;
+	
+	private String employeeIds;
+	
+	private String departmentId;
+	
+	private String startDate;
+	
+	private String endDate;
+	
+	private BigDecimal deducations;
+	
+	private BigDecimal noOfWorkingDays;
+	
+	private String financialYear;
+	
 	public Long getId() {
 		return id;
 	}
@@ -331,5 +379,197 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 
 	public void setAllEmployees(String allEmployees) {
 		this.allEmployees = allEmployees;
+	}
+
+	public Long getPayGroup() {
+		return payGroup;
+	}
+
+	public String getDepartment() {
+		return department;
+	}
+
+	public String getPayRollType() {
+		return payRollType;
+	}
+
+	public String getFreqStartDate() {
+		return freqStartDate;
+	}
+
+	public String getFreqEndDate() {
+		return freqEndDate;
+	}
+
+	public String getSearchValue() {
+		return searchValue;
+	}
+
+	public void setPayGroup(Long payGroup) {
+		this.payGroup = payGroup;
+	}
+
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+
+	public void setPayRollType(String payRollType) {
+		this.payRollType = payRollType;
+	}
+
+	public void setFreqStartDate(String freqStartDate) {
+		this.freqStartDate = freqStartDate;
+	}
+
+	public void setFreqEndDate(String freqEndDate) {
+		this.freqEndDate = freqEndDate;
+	}
+
+	public void setSearchValue(String searchValue) {
+		this.searchValue = searchValue;
+	}
+
+	public String getEmployeeName() {
+		return employeeName;
+	}
+
+	public String getEmployeeid() {
+		return employeeid;
+	}
+
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}
+
+	public void setEmployeeid(String employeeid) {
+		this.employeeid = employeeid;
+	}
+
+	public String getDepartmentName() {
+		return departmentName;
+	}
+
+	public void setDepartmentName(String departmentName) {
+		this.departmentName = departmentName;
+	}
+
+	public BigDecimal getCurrentHours() {
+		return currentHours;
+	}
+
+	public BigDecimal getYtdTaxes() {
+		return ytdTaxes;
+	}
+
+	public BigDecimal getDeducationAmount() {
+		return deducationAmount;
+	}
+
+	public BigDecimal getYtdNetPay() {
+		return ytdNetPay;
+	}
+
+	public void setCurrentHours(BigDecimal currentHours) {
+		this.currentHours = currentHours;
+	}
+
+	public void setYtdTaxes(BigDecimal ytdTaxes) {
+		this.ytdTaxes = ytdTaxes;
+	}
+
+	public void setDeducationAmount(BigDecimal deducationAmount) {
+		this.deducationAmount = deducationAmount;
+	}
+
+	public void setYtdNetPay(BigDecimal ytdNetPay) {
+		this.ytdNetPay = ytdNetPay;
+	}
+
+	public String getAccountNumber() {
+		return accountNumber;
+	}
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public String getIfscCode() {
+		return ifscCode;
+	}
+
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
+	public void setIfscCode(String ifscCode) {
+		this.ifscCode = ifscCode;
+	}
+
+	public String getExportType() {
+		return exportType;
+	}
+
+	public void setExportType(String exportType) {
+		this.exportType = exportType;
+	}
+
+	public String getEmployeeIds() {
+		return employeeIds;
+	}
+
+	public String getDepartmentId() {
+		return departmentId;
+	}
+
+	public String getStartDate() {
+		return startDate;
+	}
+
+	public String getEndDate() {
+		return endDate;
+	}
+
+	public void setEmployeeIds(String employeeIds) {
+		this.employeeIds = employeeIds;
+	}
+
+	public void setDepartmentId(String departmentId) {
+		this.departmentId = departmentId;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+
+	public BigDecimal getDeducations() {
+		return deducations;
+	}
+
+	public void setDeducations(BigDecimal deducations) {
+		this.deducations = deducations;
+	}
+
+	public BigDecimal getNoOfWorkingDays() {
+		return noOfWorkingDays;
+	}
+
+	public void setNoOfWorkingDays(BigDecimal noOfWorkingDays) {
+		this.noOfWorkingDays = noOfWorkingDays;
+	}
+
+	public String getFinancialYear() {
+		return financialYear;
+	}
+
+	public void setFinancialYear(String financialYear) {
+		this.financialYear = financialYear;
 	}
 }
