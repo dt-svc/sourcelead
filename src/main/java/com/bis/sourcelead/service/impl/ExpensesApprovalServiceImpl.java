@@ -337,8 +337,8 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 
 	@Override
 	public Integer updateApprovalStatusByApproverForExpense(Long expenseId, Long approverUserId, String status,
-			String rejectedReason,OrgLocations location) throws Exception {
-		return expensesApprovalDao.updateApprovalStatusByApproverForExpense(expenseId, approverUserId, status, rejectedReason,location);
+			String rejectedReason,OrgLocations location,String isGlobalUser) throws Exception {
+		return expensesApprovalDao.updateApprovalStatusByApproverForExpense(expenseId, approverUserId, status, rejectedReason,location,isGlobalUser);
 	}
 
 

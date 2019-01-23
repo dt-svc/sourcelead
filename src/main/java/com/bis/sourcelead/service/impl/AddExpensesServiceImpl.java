@@ -154,7 +154,7 @@ public Expenses storeAddExpensesData(Expenses expenses) throws Exception{
 }
 
 @Override
-public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLocations orgLoc,HttpServletRequest request,String currencyCode) throws NumberFormatException, Exception {
+public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLocations orgLoc,HttpServletRequest request,String currencyCode,String isGlobalUser) throws NumberFormatException, Exception {
 	Expenses expenses = null;
 	ProjectMembers projMembers = null;
 	String status = "draft";
@@ -323,22 +323,22 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 			   String expenseId = getExpenseId(orgLoc);
 			   expenses.setExpenseId(expenseId);
 			   expenses = addExpensesDao.storeAddExpensesData(expenses);
-			   storeExpenseApprovers(status, expenses, managers, loginUser, orgLoc,currencyCode);
+			   storeExpenseApprovers(status, expenses, managers, loginUser, orgLoc,currencyCode,isGlobalUser);
 		 }
 		   
     }else {
     	 expenses = addExpensesDao.storeAddExpensesData(expenses);
-    	 storeExpenseApprovers(status, expenses, managers, loginUser, orgLoc,currencyCode);
+    	 storeExpenseApprovers(status, expenses, managers, loginUser, orgLoc,currencyCode,isGlobalUser);
     }
 	
 }
 
-private void storeExpenseApprovers(String status,Expenses expenses,HashMap<Integer,User> managers,User loginUser,OrgLocations orgLoc,String currencyCode) throws Exception{
+private void storeExpenseApprovers(String status,Expenses expenses,HashMap<Integer,User> managers,User loginUser,OrgLocations orgLoc,String currencyCode,String isGlobalUser) throws Exception{
 	 if(status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
 		 if(managers != null && !managers.isEmpty()){
 				expenses.setProjectManagerUserList(new ArrayList(managers.values()));
 	     }
-		 expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(),"APPROVED", "",orgLoc);
+		 expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(),"APPROVED", "",orgLoc,isGlobalUser);
 	 }
 	 
 	 if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
