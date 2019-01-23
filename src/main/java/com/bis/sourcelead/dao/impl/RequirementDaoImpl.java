@@ -3861,10 +3861,4 @@ public class RequirementDaoImpl implements RequirementDao {
 		 return reqList;
 	}
 
-	@Override
-	public List<OfferAcceptanceRateDTO> getOfferAcceptanceRateList(Long userId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
