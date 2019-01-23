@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
@@ -132,6 +133,9 @@ public class IndEmployeePayroll implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "PAYMENT_ACCOUNT_ID")
 	private PaymentAccount paymentAccount;
+	
+	@Transient
+	private Long candidateId;
 	
 	public Long getId() {
 		return id;
@@ -392,5 +396,13 @@ public class IndEmployeePayroll implements Serializable {
 
 	public void setPaymentAccount(PaymentAccount paymentAccount) {
 		this.paymentAccount = paymentAccount;
+	}
+
+	public Long getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
 	}
 }
