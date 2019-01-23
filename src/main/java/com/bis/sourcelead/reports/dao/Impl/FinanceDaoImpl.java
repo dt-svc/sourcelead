@@ -269,7 +269,8 @@ public class FinanceDaoImpl implements FinanceDao{
 					startDate = new java.sql.Date(dates[0].getTime());
 					endDate = new java.sql.Date(dates[1].getTime());
 				}else if("custom".equalsIgnoreCase(apAgingDTO.getFilterType())){
-					Date[] dates = reportsUtil.getCustomDates(apAgingDTO.getFromDate(),apAgingDTO.getToDate());
+					Date[] dates = reportsUtil.getCustomDates(apAgingDTO.getFromDate(),apAgingDTO.getToDate(),orgLocation);
+					
 					startDate = new java.sql.Date(dates[0].getTime());
 					endDate = new java.sql.Date(dates[1].getTime());
 				}
@@ -398,7 +399,7 @@ public class FinanceDaoImpl implements FinanceDao{
 						startDate = new java.sql.Date(dates[0].getTime());
 						endDate = new java.sql.Date(dates[1].getTime());
 					}else if("custom".equalsIgnoreCase(missingInvoiceDto.getFilterType())){
-						Date[] dates = reportsUtil.getCustomDates(missingInvoiceDto.getFromDate(),missingInvoiceDto.getToDate());
+						Date[] dates = reportsUtil.getCustomDates(missingInvoiceDto.getFromDate(),missingInvoiceDto.getToDate(),orgLocations);
 						startDate = new java.sql.Date(dates[0].getTime());
 						endDate = new java.sql.Date(dates[1].getTime());
 					}
@@ -679,7 +680,7 @@ public class FinanceDaoImpl implements FinanceDao{
 				return reportsUtil.lastYearDates();
 			}
 			else if ("custom".equalsIgnoreCase(paidBillDTO.getFilterType())) {
-				return reportsUtil.getCustomDates(paidBillDTO.getFromDate(), paidBillDTO.getToDate());
+				return reportsUtil.getCustomDates(paidBillDTO.getFromDate(), paidBillDTO.getToDate(),orgLocations);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
