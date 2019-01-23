@@ -46,7 +46,6 @@ import com.bis.sourcelead.dto.OrgDTO;
 import com.bis.sourcelead.dto.OrgLicenseSubscriptionDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.OrgPrimaryUserDTO;
-import com.bis.sourcelead.dto.OrgSettingsDTO;
 import com.bis.sourcelead.dto.RegistrationDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
