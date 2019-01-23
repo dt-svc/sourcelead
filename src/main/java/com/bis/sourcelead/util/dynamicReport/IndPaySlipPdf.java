@@ -11,10 +11,12 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.PayrollPaySlipInd;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
 import com.bis.sourcelead.payroll.dto.INDPayrollDTO;
+import com.bis.sourcelead.payroll.dto.IndEmployeePayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndPayrollPaySlipDeduction;
 import com.bis.sourcelead.payroll.dto.IndPayrollPaySlipDeductionTotal;
 import com.bis.sourcelead.payroll.dto.IndPayrollPaySlipEarning;
@@ -659,14 +662,108 @@ public class IndPaySlipPdf {
 
 	private DRDataSource createYTDSummaryDataSource(ResponseList<IndEmployeePayroll> payResponseList) {
 		DRDataSource dataSource = new DRDataSource("employeeId","employeeName", "department", "noOfWorkingDays", "noOfLeaves", "grossPay", "deducatons", "netPay");
-	       for(IndEmployeePayroll iep:payResponseList.getData()) {
+		Map<Long,List<IndEmployeePayroll>> mapList = payResponseList.getData().stream().collect(Collectors.groupingBy(IndEmployeePayroll::getCandidateId,Collectors.toList()));
+			for (Map.Entry<Long, List<IndEmployeePayroll>> entry : mapList.entrySet()) {
+				IndEmployeePayroll iepdt = entry.getValue().get(0);
+				double noOfLeaves = entry.getValue().stream().mapToDouble(i->i.getNoOfLeaves().doubleValue()).sum();
+				double noOfDays = entry.getValue().stream().mapToDouble(i->i.getNoOfDays().doubleValue()).sum();
+				double doubleGrossPay = entry.getValue().stream().mapToDouble(i->i.getGrossPay().doubleValue()).sum();
+				double doubleNetPay = entry.getValue().stream().mapToDouble(i->i.getNetPay().doubleValue()).sum();
+				BigDecimal days = new BigDecimal(noOfDays);
+				BigDecimal leaves = new BigDecimal(noOfLeaves);
+				BigDecimal grossPay = new BigDecimal(doubleGrossPay);
+				BigDecimal netPay = new BigDecimal(doubleNetPay);
 				String employeeId = "--";
-				if(iep.getEmployee().getEmployeeId() != null) {
-					employeeId = iep.getEmployee().getEmployeeId();
+				if(iepdt.getEmployee().getEmployeeId() != null) {
+					employeeId = iepdt.getEmployee().getEmployeeId();
 				} 
-				dataSource.add(employeeId,iep.getCandidate().getFullName(), iep.getEmployee().getDepartmentId().getDepartmentName(), iep.getNoOfDays(),iep.getNoOfLeaves(),iep.getGrossPay(),iep.getGrossPay().subtract(iep.getNetPay()),iep.getNetPay());
+				dataSource.add(employeeId,iepdt.getCandidate().getFullName(), iepdt.getEmployee().getDepartmentId().getDepartmentName(), days,leaves,grossPay,grossPay.subtract(netPay),netPay);
 			}
+			return dataSource;
+	}
+
+
+	public File getIndPayrollAnnualTaxPdf(ResponseList<IndEmployeePayroll> payResponseList, OrgLocations orgLocations) throws Exception {
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("payrollAnnualTax_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
+			file.setReadable(true);
+			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
 			
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orgLocations.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							col.column("Employee Id", "employeeId", type.stringType()),
+							col.column("Employee Name", "employeeName", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Department", "department", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Gross Pay", "grossPay", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("PF", "pf", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("PT", "pt", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("TDS", "tds", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Net Pay", "netPay", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(createAnnualTaxDataSource(payResponseList)).toPdf(pdfExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+
+
+	public File getIndPayrollAnnualTaxExcel(ResponseList<IndEmployeePayroll> payResponseList,OrgLocations orgLocations) throws Exception {
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("payrollAnnualTax_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
+			file.setReadable(true);
+			
+			JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file).setDetectCellType(true)
+                    .setIgnorePageMargins(true)
+                    .setWhitePageBackground(false)
+                    .setRemoveEmptySpaceBetweenColumns(true);
+			
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orgLocations.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							col.column("Employee Id", "employeeId", type.stringType()).setColumns(15),
+							col.column("Employee Name", "employeeName", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER).setColumns(15),
+							col.column("Department", "department", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Gross Pay", "grossPay", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("PF", "pf", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("PT", "pt", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("TDS", "tds", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Net Pay", "netPay", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(createAnnualTaxDataSource(payResponseList)).toXls(xlsExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+
+
+	private DRDataSource createAnnualTaxDataSource(ResponseList<IndEmployeePayroll> payResponseList) {
+		DRDataSource dataSource = new DRDataSource("employeeId","employeeName", "department", "grossPay", "pf", "pt", "tds", "netPay");
+		Map<Long,List<IndEmployeePayroll>> mapList = payResponseList.getData().stream().collect(Collectors.groupingBy(IndEmployeePayroll::getCandidateId,Collectors.toList()));
+			for (Map.Entry<Long, List<IndEmployeePayroll>> entry : mapList.entrySet()) {
+				IndEmployeePayroll iepdt = entry.getValue().get(0);
+				
+				double professionalTax = entry.getValue().stream().mapToDouble(i->i.getProfessionalTax().doubleValue()).sum();
+				double doubleTds = entry.getValue().stream().mapToDouble(i->i.getTds().doubleValue()).sum();
+				double doubleGrossPay = entry.getValue().stream().mapToDouble(i->i.getGrossPay().doubleValue()).sum();
+				double doubleNetPay = entry.getValue().stream().mapToDouble(i->i.getNetPay().doubleValue()).sum();
+				BigDecimal pt = new BigDecimal(professionalTax);
+				BigDecimal tds = new BigDecimal(doubleTds);
+				BigDecimal grossPay = new BigDecimal(doubleGrossPay);
+				BigDecimal netPay = new BigDecimal(doubleNetPay);
+				
+				String employeeId = "--";
+				if(iepdt.getEmployee().getEmployeeId() != null) {
+					employeeId = iepdt.getEmployee().getEmployeeId();
+				} 
+				dataSource.add(employeeId,iepdt.getCandidate().getFullName(), iepdt.getEmployee().getDepartmentId().getDepartmentName(), grossPay,grossPay.subtract(netPay),pt,tds,netPay);
+			}
 			return dataSource;
 	}
 

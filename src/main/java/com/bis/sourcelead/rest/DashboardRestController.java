@@ -68,6 +68,7 @@ import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
+import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Tasks;
@@ -92,6 +93,7 @@ import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOffersService;
+import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TaskService;
@@ -102,6 +104,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.DashboardController;
@@ -199,6 +202,12 @@ public class DashboardRestController {
 	 
 	 @Autowired
 	 private InvoiceService invoiceService;
+	 
+	 @Autowired
+	 private ConversionUtil conversionUtil;
+	 
+	 @Autowired
+	 private RequirementRateSubmissionNegotiationService requirementRateSubmissionNegotiationService;
 	 
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -1648,8 +1657,10 @@ public class DashboardRestController {
                         String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
                         Integer result = 0;
                         try {
+                        	if(StringUtils.isNotBlank(payTerm)){
                             payTerm=payTerm.replaceAll("\\D", "");
                             result = Integer.parseInt(payTerm);
+                        	}
                         } catch (Exception e) {
                             result = 0;
                         }
@@ -1747,7 +1758,13 @@ public class DashboardRestController {
 					rshDTO.setSubmittedBy(rsh.getCreatedUser());
 		//					}
 						
-					
+					RequirementRateSubmissionNegotiation rateNegotiation = requirementRateSubmissionNegotiationService.getRequirementRateSubmissionByMaxId(rsh.getSubmissionId().getId());
+					if(rateNegotiation !=null && rateNegotiation.getCurrentRate()!=null){
+						float currentRate = conversionUtil.rateConvertToYear(rateNegotiation.getCurrentRate(),rateNegotiation.getCurrentRateType(),loginOrgLocations);
+						float expectedRate = conversionUtil.rateConvertToYear(rateNegotiation.getExpectedRate(),rateNegotiation.getExpectedRateType(),loginOrgLocations);
+						float finalRatePerYear = expectedRate-currentRate;
+						rshDTO.setMarginRateYearly(String.format("%.3f", Float.valueOf(finalRatePerYear)));
+					}
 					
 					int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocations.getId(), rsh.getSubmissionId().getRequirement().getId(), "INTERVIEWED");
 					rshDTO.setNumOfInterview(interviewedCount);
@@ -1755,6 +1772,8 @@ public class DashboardRestController {
 						List<RequirementOffers> offersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(rsh.getSubmissionId().getId(), loginOrgLocations.getId());
 						for (RequirementOffers requirementOffers : offersList) {
 							rshDTO.setOfferId(requirementOffers.getId());
+							float rate = conversionUtil.rateConvertToYear(requirementOffers.getAmount(),requirementOffers.getPaymentMode(),loginOrgLocations);
+							rshDTO.setOfferRateforYearly(String.format("%.3f", Float.valueOf(rate)));
 							rshDTO.setOfferRate(requirementOffers.getAmount());
 							rshDTO.setPaymentType(requirementOffers.getPaymentType());
 							rshDTO.setPaymentMode(requirementOffers.getPaymentMode());

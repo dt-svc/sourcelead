@@ -1224,6 +1224,7 @@ public class ProjectPlanningRestController {
 				orgRelations.setInitiatorLevel("Tier-5");
 				orgRelations.setResponderLevel("Tier-5");
 				orgRelations.setVendorRelationStatus("Sent");
+				orgRelations.setGenerateBill("Bulk");
 				orgRelations.setStatus("ACTIVE");
 				orgRelations.setCreatedBy(user.getUserCode());
 				orgRelations.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());

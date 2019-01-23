@@ -121,6 +121,8 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 	
 	private BigDecimal noOfWorkingDays;
 	
+	private String financialYear;
+	
 	public Long getId() {
 		return id;
 	}
@@ -562,5 +564,12 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 	public void setNoOfWorkingDays(BigDecimal noOfWorkingDays) {
 		this.noOfWorkingDays = noOfWorkingDays;
 	}
-	
+
+	public String getFinancialYear() {
+		return financialYear;
+	}
+
+	public void setFinancialYear(String financialYear) {
+		this.financialYear = financialYear;
+	}
 }

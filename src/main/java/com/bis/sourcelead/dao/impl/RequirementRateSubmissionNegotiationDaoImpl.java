@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementRateSubmissionNegotiationDao;
+import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 
 @Repository
@@ -88,6 +89,19 @@ public class RequirementRateSubmissionNegotiationDaoImpl  implements Requirement
 		String query = "from RequirementRateSubmissionNegotiation rateNegotiation where rateNegotiation.requirementsubmissionId =:submissionId ";
 		List<RequirementRateSubmissionNegotiation> rateNegotiation =  session.createQuery(query.toString()).setLong("submissionId", submissionId).list();
 		return rateNegotiation;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementRateSubmissionNegotiation getRequirementRateSubmissionByMaxId(Long submissionId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from RequirementRateSubmissionNegotiation rateNegotiation where rateNegotiation.requirementsubmissionId.id =:submissionId and rateNegotiation.id =(SELECT MAX(rate.id) FROM RequirementRateSubmissionNegotiation rate where rate.requirementsubmissionId.id =:submissionId)" ;
+		List<RequirementRateSubmissionNegotiation> rateNegotiationList =session.createQuery(query).setLong("submissionId", submissionId).list(); 
+		RequirementRateSubmissionNegotiation negotiation = null;
+		if(rateNegotiationList != null && !rateNegotiationList.isEmpty()){
+			negotiation = rateNegotiationList.iterator().next();
+		}
+		return negotiation;
 	}
 
 }
