@@ -111,6 +111,9 @@ public interface ProjectsDao {
 
 	public List<Projects> getProjectReportList(ProjectReportDTO projectReportDTO, Long orgLocationId);
 
-	public List<AvailableAssociatesDTO> getProjectsListByUserIDAndOrgId(AvailableAssociatesDTO availableAssociatesDTO,OrgLocations orgLocations);
+	public List<Projects> getProjectsListByUserIDAndOrgId(String[] associates,Long orgLocations);
+
+
+	public ResponseList<AvailableAssociatesDTO> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO, OrgLocations orgLocations);
 
 }

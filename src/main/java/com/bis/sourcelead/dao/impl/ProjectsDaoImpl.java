@@ -1646,19 +1646,89 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 
 
 	@Override
-	public List<AvailableAssociatesDTO> getProjectsListByUserIDAndOrgId(AvailableAssociatesDTO availableAssociatesDTO,OrgLocations orgLocations) {
+	@Transactional
+	public List<Projects> getProjectsListByUserIDAndOrgId(String[] associatesId,Long orgLocations) {
 	    try {
+	    	// convert string array to long array
+	    	Long[] data = new Long[associatesId.length];
+	    	for (int i = 0; i < associatesId.length; i++) {
+	    	data[i] = Long.valueOf(associatesId[i]);
+	    	}
 	    	   Session session = this.sessionFactory.getCurrentSession();
-	    	   
-	    	    String query = "from Projects proj where proj.orgLocationsId = :orgLocations and proj.id NOT IN(select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id IN(:userIds) )) ";
-				List<AvailableAssociatesDTO> projectsList =  session.createQuery(query.toString()).setParameter("orgLocationsId", orgLocations).setParameterList("userIds", availableAssociatesDTO.getUserIds()).list();
+				String query = "from Projects pj where pj.orgLocationsId = :orgLocations and pj.projectStatus = 'INPROGRESS' and pj.id  IN(select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id IN( :associatesId ))) ";
+				List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocations", orgLocations).setParameterList("associatesId", data).list();
 				return projectsList;
-	    	   
 	    	   
 	        } catch (Exception e) {
 				e.printStackTrace();
 			}
 			return null;
 		}
+
+	@Override
+	@Transactional
+	public ResponseList<AvailableAssociatesDTO> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO, OrgLocations orgLocations) {
+	try {
+		
+		 Session session = this.sessionFactory.getCurrentSession();
+		 
+		SimpleDateFormat format = new SimpleDateFormat(orgLocations.getDateFormat());
+		String fromDate = format.format(availableAssociatesDTO.getFromDate());
+		String toDate = format.format(availableAssociatesDTO.getToDate());
+		 
+		String query = "select pm.employee.employeeId as empId,"
+				+ " pm.employee.user.firstName as empName,"
+				+ " pm.projects.projectName as projects,"
+				+ " pm.projects.startDate as projectDuration,"
+				+ " pm.projectAssignedDate as empStartDate,"
+				+ " pm.projectEndDate as empEndDate"
+				+ " from ProjectMembers pm"
+				+ " where pm.projects.orgLocationsId=:orgLocations";
+		
+			/*query += " and case pm.projectEndDate is not null then ('" + fromDate + "' <= pm.projectAssignedDate and '" + toDate + "' <= pm.projectEndDate)"
+				+ " else "
+				+ " case pm.projects.endDate is not null then ('" + fromDate + "' <= pm.projectAssignedDate and '" + toDate + "' <= pm.projects.endDate)"
+				+ " else "
+				+ " ('" + fromDate + "' <= pm.projectAssignedDate)"
+				+ " end";*/
+			
+			query += " and (case when (pm.projectEndDate is null and pm.projects.endDate is null) "
+					+ "		then '" + fromDate + "' = pm.projectAssignedDate"
+					+ " else "
+					+ " 	case when (pm.projectEndDate is null)"
+					+ "		 	then case pm.projects.endDate is null then '" + fromDate + "' = pm.projectAssignedDate	else '" + fromDate + "' = pm.projectAssignedDate and '" + toDate + "' = pm.projects.endDate"
+					+ " 	else '" + fromDate + "' = pm.projectAssignedDate and '" + toDate + "' = pm.projectEndDate"
+					+ " end) ";
+		
+		if (availableAssociatesDTO.getProjectsIds() != null && !availableAssociatesDTO.getProjectsIds().isEmpty()) {
+			String projectIds = "";
+			for (long id : availableAssociatesDTO.getProjectsIds()) {
+				projectIds += (projectIds.isEmpty() ? "" : ", ") + id;
+			}
+ 			query += " and pm.projects.id in (" + projectIds + ")";
+		}
+		if(availableAssociatesDTO.getUserIds() != null && !availableAssociatesDTO.getUserIds().isEmpty()) {
+			query += "";
+		}
+		
+		
+		/*java.sql.Date fromDate = new java.sql.Date(availableAssociatesDTO.getFromDate().getTime());
+		java.sql.Date toDate = new java.sql.Date(availableAssociatesDTO.getToDate().getTime());*/
+		
+		Query queryObj = session.createQuery(query);
+		queryObj.setLong("orgLocations", orgLocations.getId());
+		/*queryObj.setString("fromDate", fromDate);
+		queryObj.setString("toDate", toDate);*/
+		
+		List<AvailableAssociatesDTO> availableAssociatesDTOList = queryObj.list();
+		if(availableAssociatesDTOList != null && !availableAssociatesDTOList.isEmpty()) {
+			
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return null;
+	}
+			
 }
 

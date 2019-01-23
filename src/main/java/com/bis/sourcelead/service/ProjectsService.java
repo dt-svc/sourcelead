@@ -155,7 +155,9 @@ public interface ProjectsService {
 
 		File getProjectReportListOfExcel(List<ProjectReportDTO> projectReportDTO, User user, OrgLocations orgLocation,String isGlobalAccess) throws Exception;
 
-		List<AvailableAssociatesDTO> getProjectsListByUserIDAndOrgId(AvailableAssociatesDTO availableAssociatesDTO,OrgLocations orgLocations);
+		List<Projects> getProjectsListByUserIDAndOrgId(String[] associates,Long orglocationId);
+
+		ResponseList<AvailableAssociatesDTO> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO,OrgLocations orgLocations);
 		
 //		public String getProjectId(OrgLocations orgLocations);
 		

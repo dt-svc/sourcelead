@@ -80,6 +80,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -1921,14 +1922,24 @@ public class ReportRestController {
 			
 			@RequestMapping(value = "/getProjectsList")
 			@ResponseBody
-			public Response<AvailableAssociatesDTO> getProjectList(AvailableAssociatesDTO availableAssociatesDTO,HttpServletRequest request,HttpServletResponse response)throws Exception{
+			public ResponseList<Projects> getProjectList(@RequestParam(value="associatesId", required=false) String associatesId,HttpServletRequest request,HttpServletResponse response)throws Exception{
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				List<AvailableAssociatesDTO> projectsList = projectsService.getProjectsListByUserIDAndOrgId(availableAssociatesDTO,orgLocations);
-				return (Response<AvailableAssociatesDTO>) projectsList;
-				
+				String[] associates = associatesId.split(",");
+				ResponseList<Projects> list = new ResponseList<Projects>();
+				List<Projects> projectsList = projectsService.getProjectsListByUserIDAndOrgId(associates,orgLocations.getId());
+				list.setData(projectsList);
+				return list;
 				
 			}
 			
-			
+			@RequestMapping(value ="/prepareReport")
+			public ResponseList<AvailableAssociatesDTO> prepareReport(AvailableAssociatesDTO availableAssociatesDTO,HttpServletRequest request,HttpServletResponse response) {
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				ResponseList<Projects> list = new ResponseList<Projects>();
+				ResponseList<AvailableAssociatesDTO> result = projectsService.getAvailableAssociatesReport(availableAssociatesDTO,orgLocations);
+				
+				return null;
+				
+			}
 			
 }

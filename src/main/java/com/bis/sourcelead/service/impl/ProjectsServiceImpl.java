@@ -3999,9 +3999,16 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 	}
 
 	@Override
-	public List<AvailableAssociatesDTO> getProjectsListByUserIDAndOrgId(AvailableAssociatesDTO availableAssociatesDTO,OrgLocations orgLocations) {
+	public List<Projects> getProjectsListByUserIDAndOrgId(String[] associates,Long orgLocations) {
 		// TODO Auto-generated method stub
-		return projectsDao.getProjectsListByUserIDAndOrgId(availableAssociatesDTO,orgLocations);
+		return projectsDao.getProjectsListByUserIDAndOrgId(associates,orgLocations);
+	}
+
+	@Override
+	public ResponseList<AvailableAssociatesDTO> getAvailableAssociatesReport(
+			AvailableAssociatesDTO availableAssociatesDTO, OrgLocations orgLocations) {
+		// TODO Auto-generated method stub
+		return ((ProjectsDao) projectsDao).getAvailableAssociatesReport(availableAssociatesDTO,orgLocations);
 	}
 
 	
