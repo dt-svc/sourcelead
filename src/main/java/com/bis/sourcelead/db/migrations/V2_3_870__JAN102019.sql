@@ -119,7 +119,7 @@ UPDATE `EMAIL SCENARIO` SET `BODY` =  'Hi [Client_First_Name] [Client_Last_Name]
 set SQL_SAFE_UPDATES=1;
 
 
-
+INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` where UNIQUE_SCENARIO_NAME = 'LeaveEmailToApprovers' and `ENTITY_TYPE` = 'Email' and `IS_TEMPLATE_MODIFIED` = 'N'), 'loginURL', '[Login_URL]');
 #Email_body_update -------
 set SQL_SAFE_UPDATES=0;
 UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Employee_Name],\n\n We are regret to inform that your leave has not been approved for the requested period.\n Leave Type : [Leave_Type_Name]\n  Duration : [From_Date] - [To_Date].\n  Rejected Reason : [Reason]\n\n[Login_URL]'  WHERE `UNIQUE_SCENARIO_NAME`='Rejected Leave' and `ENTITY_TYPE`='Email';
@@ -128,8 +128,19 @@ UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Employee_Name],\n\n We are glad to inf
 UPDATE `EMAIL_SCENARIO` SET `BODY` ='Dear [Employee_User],\n\n We are regret to inform you that your leave has been cancelled for the requested period.\nLeave Type : [Leave_Type]\nDuration : [From_Date] - [To_Date]\n Cancelled Reason : [Reason].\n\n[Login_URL]' WHERE `UNIQUE_SCENARIO_NAME`='LeaveCancelEmailToUser' and `ENTITY_TYPE`='Email';
 UPDATE `EMAIL_SCENARIO` SET `BODY` ='Dear [User_Name],\n\nThis is to inform you that there will be holiday on [Date] due to [Holidayname].\n\n[Login_URL]' WHERE `UNIQUE_SCENARIO_NAME`='HolidayRemainder' and `ENTITY_TYPE`='Email';
 UPDATE `EMAIL_SCENARIO` SET `BODY`= 'Dear [Leave_Taken_Employee],\n\ This is to notify that leave has been requested for you on behalf of [Login_User]. Please find the details below.\nLeave Type : [Leave_Type]\nDuration  : [Leave_Duration]\nReason  : [Leave_Reason]\n\n[Login_Link]'   WHERE `UNIQUE_SCENARIO_NAME`='onBehalfEmail' and `ENTITY_TYPE`='Email';
+UPDATE `EMAIL_SCENARIO` SET `BODY` ='Dear [Approver_User],\nThis email is a request for leave.\nDays : [No_Of_Days] days. \nLeave Type : [Leave_Type]. \nDuration : [From_Date] to [To_Date] \nReason : [Reason]\nI request you to grant me leave for the above mentioned dates and reason.\n[Login_URL]'  WHERE `UNIQUE_SCENARIO_NAME`='LeaveEmailToApprovers' and `ENTITY_TYPE`='Email';
 set SQL_SAFE_UPDATES=1;
 
+
+#project_email_body
+set SQL_SAFE_UPDATES=0;
+UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Manager],\n\nThis is to inform you that the following resources have been terminated from Project\nProject Name: [Project_Name]\nEmployee: [Employee_Name]\nLast day: [Project_End_Date]\nDetails and reason: [Reason]\nPlease click here for more details\n\n[Login_Link]'  WHERE `UNIQUE_SCENARIO_NAME`='Employee Termination Mail To Manager' and `ENTITY_TYPE`='Email';
+UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Employee_Name],\nThis is to inform you that you are relieved of your duties from [Project_Name] with [Client_Name]\nPlease find the details below.\nProject Name : [Project_Name]\nLast Day : [Project_End_Date]\nReason : [Reason]\nPlease contact your manager for further details or login to Source Lead\n\n[Login_Link]'  WHERE `UNIQUE_SCENARIO_NAME`='Employee Termination' and `ENTITY_TYPE`='Email';
+UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Employee_Name],\n\nWe are happy to inform you that you are assigned with the following Project work\nThe details of the project are as follows:-\nProject Start date : [Project_Start_Date]\nProject End date : [Project_End_Date]\nManager : [Manager]\nLocation : [Location]\n\nWe are looking forward to work with you.'  WHERE `UNIQUE_SCENARIO_NAME`='Employee Reassign' and `ENTITY_TYPE`='Email';
+set SQL_SAFE_UPDATES=1;
+
+#Budget Request Accepted
+UPDATE `EMAIL_SCENARIO` SET `BODY` ='Dear [Approver_Name],\n Budget request for [Project_Name] project got approved. Go ahead with the further process.'  WHERE `UNIQUE_SCENARIO_NAME`='Budget Request Accepted' and `ENTITY_TYPE`='Email';
 
 
 
