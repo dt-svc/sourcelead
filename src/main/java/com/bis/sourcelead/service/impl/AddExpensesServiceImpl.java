@@ -294,10 +294,6 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 		expenses.setOrgLocationId(orgLoc);
 	}
 	
-	Candidate expenseCandidate = candidateDao.getCandidateByMasterCandidateId(projMembers.getMasterCandidateId().getId());
-	if(expenseCandidate != null) {
-		expenses.setExpensesLocationId(expenseCandidate.getOrgLocationId().getId());
-	}
 //	expenses.setExpensesLocationId(orgLoc.getId());
 	
 	if(expenses != null && expenses.getProjects() != null && StringUtils.isNotEmpty( expenses.getProjects().getIsReportingManagerAsApprover())
@@ -321,11 +317,17 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 		}*/
 		 synchronized (this) {
 			    String expenseId = "";
+			    Long expenseLocationId = 0l;
 			    if(expenses.getOrgLocationId() != null) {
+			    	expenseLocationId =expenses.getOrgLocationId().getId();
 			    	expenseId = getExpenseId(expenses.getOrgLocationId());
 			    }else {
+			    	expenseLocationId =orgLoc.getId();
 			    	expenseId = getExpenseId(orgLoc);
 			    }
+			    
+			    expenses.setExpensesLocationId(expenseLocationId);
+			    
 			   expenses.setExpenseId(expenseId);
 			   expenses = addExpensesDao.storeAddExpensesData(expenses);
 			   storeExpenseApprovers(status, expenses, managers, loginUser, orgLoc,currencyCode,isGlobalUser);
