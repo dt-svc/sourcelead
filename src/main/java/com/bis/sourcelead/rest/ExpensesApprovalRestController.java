@@ -214,7 +214,7 @@ public class ExpensesApprovalRestController {
 		if(user != null && orgLoc != null) {
     	try {
 		 String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
-	 	expensesApprovalService.updateApprovalStatusByApproverForExpense(expenseId, user.getId(),approvalStatus, rejectedReason,orgLoc);
+	 	expensesApprovalService.updateApprovalStatusByApproverForExpense(expenseId, user.getId(),approvalStatus, rejectedReason,orgLoc,isGlobalAccess);
 	 	ExpensesApproverHierarchy eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(user.getId(), expenseId, orgLoc.getId(),isGlobalAccess);
 	 	if(eah != null && eah.getExpenseId() != null){
 	 		 String submissionStatusStr = eah.getExpenseId().getExpenseStatus().getValue();
