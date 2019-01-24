@@ -28,3 +28,19 @@ INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUE
 INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUES ( 'Working Holiday Visa', 'Students to work on holidays.', 'VisaCategory', 'Canada');
 
 INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUES ( 'IIVP', 'For Investors.', 'VisaCategory', 'Canada');
+
+INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUES ( 'Employment Pass', 'Employment Pass.', 'VisaCategory', 'Singapore');
+
+INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUES ( 'Personalised Employment Pass', 'Personalised Employment Pass.', 'VisaCategory', 'Singapore');
+
+INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUES ( 'S-Pass', 'S-Pass.', 'VisaCategory', 'Singapore');
+
+INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUES ( 'Work permit', 'Work permit.', 'VisaCategory', 'Singapore');
+
+INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUES ( 'Training Employment Pass', 'Training Employment Pass.', 'VisaCategory', 'Singapore');
+
+INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUES ( 'Dependant Pass', 'Dependant Pass.', 'VisaCategory', 'Singapore');
+
+INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUES ( 'Long Term Social Visit Pass', 'Long Term Social Visit Pass.', 'VisaCategory', 'Singapore');
+
+INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUES ( 'Permanent Residency Visa', 'Permanent Residency Visa.', 'VisaCategory', 'Singapore');
