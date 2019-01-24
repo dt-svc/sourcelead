@@ -1,4 +1,4 @@
-package com.bis.sourcelead.dao.impl;
+package com.bis.sourcelead.dao.impl;
 
 import java.util.HashMap;
 import java.util.List;
