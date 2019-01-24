@@ -1,8 +1,0 @@
-package com.bis.sourcelead.service;
-
-import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
-
-public interface OrgLicensePaymentTransactionHistoryService {
-
-	OrgLicensePaymentTransactionHistory saveOrgLicensePaymentTransactionHistory(OrgLicensePaymentTransactionHistory orgLicensePaymentTransactionHistory) throws Exception;
-}
