@@ -273,9 +273,9 @@ public class AddExpensesRestController {
 			Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());
 			currencyCode = countries.getCurrency();
 		}
-		 
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess"); 
 		if(loginUser != null && orgLoc != null){
-			addExpensesService.storeAddExpensesData(expensesDTO,loginUser,orgLoc,request,currencyCode);
+			addExpensesService.storeAddExpensesData(expensesDTO,loginUser,orgLoc,request,currencyCode,isGlobalAccess);
 			return "success";
 		}
 		else{

@@ -245,6 +245,5 @@ public interface RequirementDao {
 	
 	public List<Requirement> getJobsListByOrgRelationAndLocation(Long orglocationId,String orgRelationIds,Date startDateUTC,Date endDateUTC) throws Exception;
 
-	public List<OfferAcceptanceRateDTO> getOfferAcceptanceRateList(Long userId);
 
 }

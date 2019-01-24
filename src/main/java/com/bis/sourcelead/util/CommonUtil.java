@@ -2382,8 +2382,8 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		}
 	
 	public static TimesheetActivities getTimesheetActivity(SubmissionApproverHierarchy sah,String activityStatus) {
-		TimesheetActivities timesheetActivity = null;
-		if(sah != null) {
+		TimesheetActivities timesheetActivity = new TimesheetActivities();
+	/*	if(sah != null) {
 			timesheetActivity = new TimesheetActivities();
 			timesheetActivity.setProjectId(sah.getSubmissionId().getProjects());
 			timesheetActivity.setActivityStatus(activityStatus.toUpperCase());
@@ -2407,7 +2407,7 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 			timesheetActivity.setWeekTotal(sah.getSubmissionId().getTotalHours());
 			timesheetActivity.setWeekTotalBillable(sah.getSubmissionId().getBillableHours());
 			timesheetActivity.setWeekTotalNonBillable(sah.getSubmissionId().getNonBillableHours());
-		}
+		}*/
 		return timesheetActivity;
 	}
 	

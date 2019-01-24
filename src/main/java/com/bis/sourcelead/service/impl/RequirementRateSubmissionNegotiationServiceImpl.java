@@ -138,4 +138,10 @@ public class RequirementRateSubmissionNegotiationServiceImpl implements Requirem
 		return tempHTML;
 	}
 
+	@Override
+	public RequirementRateSubmissionNegotiation getRequirementRateSubmissionByMaxId(Long submissionId) {
+		
+		return requirementRateSubmissionNegotiationDao.getRequirementRateSubmissionByMaxId(submissionId);
+	}
+
 }

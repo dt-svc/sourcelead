@@ -1,6 +1,7 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -516,7 +517,72 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		}else {
 			response.setRecordsFiltered(totalCount);
 		}
+		for(IndEmployeePayroll iep: indEmployeePayrollList) {
+			iep.setCandidateId(iep.getCandidate().getId());
+		}
+		response.setData(indEmployeePayrollList);
+		return response;
+	}
+
+
+	@Override
+	public ResponseList<IndEmployeePayroll> getPayrollAnnualTaxReportReportList(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations) throws Exception {
+   Session session = this.sessionFactory.getCurrentSession();
 		
+		
+		ResponseList<IndEmployeePayroll> response = new ResponseList<>();
+		StringBuilder query1 = new StringBuilder("");
+		if(indEmployeePayrollDTO.getSearchValue() !=null && !"".equalsIgnoreCase(indEmployeePayrollDTO.getSearchValue())) {
+		 query1.append("and (iep.employee.departmentId.departmentName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' ")
+		       .append("OR (iep.candidate.firstName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR (iep.candidate.lastName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR concat(iep.candidate.firstName,iep.candidate.lastName) like '%" + indEmployeePayrollDTO.getSearchValue() + "%' ")
+			   .append("OR iep.employee.employeeId like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )");
+		}
+		
+	 
+		List<IndEmployeePayroll> indEmployeePayrollList = null;
+		List<Long> countlist  = null;
+		
+		
+		String [] fYears = indEmployeePayrollDTO.getFinancialYear().split("-");
+		 Date startDate = new SimpleDateFormat("MMMM").parse(orgLocations.getStartMonth());
+		 Calendar cal = Calendar.getInstance();
+		 cal.setTime(startDate);
+		 cal.set(Calendar.YEAR, Integer.valueOf(fYears[0].trim()));
+		 Date sDate = cal.getTime();
+		 
+		 Date endDate = new SimpleDateFormat("MMMM").parse(orgLocations.getEndMonth());
+		 cal.setTime(endDate);
+		 cal.set(Calendar.YEAR, Integer.valueOf(fYears[1].trim()));
+		 Date eDate = cal.getTime();
+		
+		
+		//List Query
+		String query = "from IndEmployeePayroll iep left join fetch iep.indPaysheetFrequency ipf where  date(ipf.frequencyStartDate) BETWEEN :startDate and :endDate  and ipf.approverStatus ='APPROVED' and ipf.orgLocation.id =:orgLoactionId "+query1+"";
+		indEmployeePayrollList = session.createQuery(query).setLong("orgLoactionId", orgLocations.getId()).setDate("startDate", sDate).setDate("endDate", eDate).setFirstResult(indEmployeePayrollDTO.getStart()).setMaxResults(indEmployeePayrollDTO.getLength()).list();
+		
+		//count Query
+		String countQuery  = "Select count (*) from IndEmployeePayroll iep where  date(iep.indPaysheetFrequency.frequencyStartDate) BETWEEN :startDate and :endDate and iep.indPaysheetFrequency.approverStatus ='APPROVED' and iep.indPaysheetFrequency.orgLocation.id =:orgLoactionId  "+query1+"";
+		countlist  = session.createQuery(countQuery).setLong("orgLoactionId", orgLocations.getId()).setDate("startDate", sDate).setDate("endDate", eDate).list();
+		Integer filterCount = countlist.iterator().next().intValue();
+		
+		int totalCount = 0;
+		if (indEmployeePayrollDTO != null) {
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		} 
+		response.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(filterCount);
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}
+		for(IndEmployeePayroll iep: indEmployeePayrollList) {
+			iep.setCandidateId(iep.getCandidate().getId());
+		}
 		response.setData(indEmployeePayrollList);
 		return response;
 	}

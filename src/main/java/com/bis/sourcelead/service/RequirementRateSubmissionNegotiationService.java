@@ -15,6 +15,7 @@ public interface RequirementRateSubmissionNegotiationService {
 	public List<RequirementRateSubmissionNegotiation> getRequirementRateSubmissionByOrgLocationsId(Long orgLocationsId)
 			throws Exception;
 	
+	public RequirementRateSubmissionNegotiation getRequirementRateSubmissionByMaxId(Long submissionId);
 	
 	public void saveRateNegotiation(RequirementRateSubmissionNegotiation rateNegotiation);
 	
