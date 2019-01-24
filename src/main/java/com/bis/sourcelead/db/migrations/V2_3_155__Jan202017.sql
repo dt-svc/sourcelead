@@ -1,3 +1,0 @@
-
-CALL AlterTableAddColumn ('REQUIREMENT_SUBMISSION','SCORE','INT NULL');
-

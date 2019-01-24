@@ -1,1 +1,0 @@
-CALL AlterTableAddColumn ('ORG_SPOC','UUID','VARCHAR(250) NULL');
