@@ -98,7 +98,7 @@ public class TimesheetEmailUtil {
 	 * @throws Exception
 	 * @Description send mail and notification to employee and end client.
 	 */
-	void sendEmailNotificationToEmployeeAndApproversOfEndClient(String firstName, String lastName, String toEmail,
+	public void sendEmailNotificationToEmployeeAndApproversOfEndClient(String firstName, String lastName, String toEmail,
 		User loginUser, OrgLocations loginOrgLocation, ProjectMembers projectMember, String startDate,
 		String endDate, String status, String rejectedReason) throws Exception {
 		EmailMessage emailMessage = new EmailMessage();
@@ -197,7 +197,7 @@ public class TimesheetEmailUtil {
 	 * @throws Exception
 	 * @description send email and notification to vendors about time sheet approval status
 	 */
-	void sendEmailToVendorAtTimesheetApprovalStatus(ProjectMembers projectMember, User loginUser,
+	public void sendEmailToVendorAtTimesheetApprovalStatus(ProjectMembers projectMember, User loginUser,
 			OrgLocations loginOrgLocation, String startDate, String endDate, String status,
 			String rejectedReason) throws Exception {
 		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService
@@ -330,7 +330,7 @@ public class TimesheetEmailUtil {
 	 * @throws Exception
 	 * @Description send email  to manager.
 	 */
-	void sendEmailToManagerAtTimesheetSubmissionsNew(ProjectMembers projMembers,Long masterCanidateId, Long projectId,
+	public void sendEmailToManagerAtTimesheetSubmissionsNew(ProjectMembers projMembers,Long masterCanidateId, Long projectId,
 			Date frequencyStartDate, Date frequencyEndDate, User loginUser, OrgLocations loginOrgLocation,String loginOrgCode) throws Exception {
 		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService
 				.getActiveOrgApproverUsersByProjectMemberMasterCandidateIdAndProjectId(masterCanidateId, projectId);
