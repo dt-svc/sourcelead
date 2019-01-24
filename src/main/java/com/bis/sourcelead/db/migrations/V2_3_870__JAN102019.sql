@@ -140,7 +140,7 @@ UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Employee_Name],\n\nWe are happy to inf
 set SQL_SAFE_UPDATES=1;
 
 #Budget Request Accepted
-UPDATE `EMAIL_SCENARIO` SET `BODY` ='Dear [Approver_Name],\n Budget request for [Project_Name] project got approved. Go ahead with the further process.'  WHERE `UNIQUE_SCENARIO_NAME`='Budget Request Accepted' and `ENTITY_TYPE`='Email';
+UPDATE `EMAIL_SCENARIO` SET `BODY` ='Dear [Approver_Name],\nThe Budget request for [Project_Name] project got approved.\nPlease log into Sourcelead to go ahead with the further process.'  WHERE `UNIQUE_SCENARIO_NAME`='Budget Request Accepted' and `ENTITY_TYPE`='Email';
 
 
 
