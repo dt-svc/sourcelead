@@ -2230,12 +2230,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 clientSubmission.setCreatedDate(new Date());
    		 clientSubmission.setCreatedBy(user.getUserCode());
    		 clientSubmission.setUpdatedDate(commonUtil.currentDate());
-   		 if(user.getLastName() !=null){
-   			 sb.append(user.getFirstName()).append(" ").append(user.getLastName());
-   		 }else{
-   			 sb.append(user.getFirstName());
-   		 }
-   		 clientSubmission.setCreatedUser(sb.toString());
+   		 clientSubmission.setCreatedUser(user.getFullName());
 		 if(null != submission.getCandidateScore() && !"".equalsIgnoreCase(submission.getCandidateScore())){
 			 clientSubmission.setCandidateScore(submission.getCandidateScore());		 
 		 }
@@ -2316,6 +2311,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 String clientRatePer = submissionratePer[i];
 			 rateNegotiation.setExpectedRate(clientRate);
 			 rateNegotiation.setExpectedRateType(clientRatePer);
+			 rateNegotiation.setCurrentRate(templateFields.getExpectedCTC());
+			 rateNegotiation.setCurrentRateType(templateFields.getExpectedRatePer());
 		 }
 			 rateNegotiation.setRateInitiatorType(SubmissionRateStatus.VENDOR);
 			 rateNegotiation.setInitiatorOrgLocationId(loginOrgLocation);
