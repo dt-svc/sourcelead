@@ -197,9 +197,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 							}
 							
 					 ProjectMembers projectMember = projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectIdLocationIdForExpences(expensesApproverHierarchy.getExpenseId().getProjectMembers().getMasterCandidateId().getId(), expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjects().getId(),orgLoc.getId(),isGlobalUser);
-							 //expensesApproverHierarchy.getExpenseId().getProjectMembers();
 					 ProjectMembers pmWithUser =projectMembersDao.getConsultantUserProjectMemberByProjectMemberId(expensesApproverHierarchy.getExpenseId().getProjectMembers().getId());
-					
 					 if (projectMember != null && null != projectMember.getProjectMemberCandidteId()) {
 							if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && StringUtils.isNotBlank(projectMember.getProjectMemberCandidteId().getDesignationType())){
 								 String empType = null; empType = projectMember.getProjectMemberCandidteId().getDesignationType();
@@ -242,6 +240,9 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 						}
 						expensesApproverHierarchy.setRejectedReason(expensesApproverHierarchy.getRejectedReason());
 						expensesApproverHierarchy.setReopenReason(expensesApproverHierarchy.getReopenReason());
+					}else {
+						expensesApproverHierarchy.setExpenseEmpUserFirstNameLastName(pmWithUser.getProjectMemberCandidteId().getFullName());
+						expensesApproverHierarchy.setExpenseEmpUserEmail(pmWithUser.getProjectMemberCandidteId().getEmail());
 					}
 				}
 			}
@@ -337,8 +338,8 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 
 	@Override
 	public Integer updateApprovalStatusByApproverForExpense(Long expenseId, Long approverUserId, String status,
-			String rejectedReason,OrgLocations location) throws Exception {
-		return expensesApprovalDao.updateApprovalStatusByApproverForExpense(expenseId, approverUserId, status, rejectedReason,location);
+			String rejectedReason,OrgLocations location,String isGlobalUser) throws Exception {
+		return expensesApprovalDao.updateApprovalStatusByApproverForExpense(expenseId, approverUserId, status, rejectedReason,location,isGlobalUser);
 	}
 
 
