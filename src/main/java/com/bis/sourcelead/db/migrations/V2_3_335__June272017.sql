@@ -1,3 +1,0 @@
-
-CALL AlterTableAddColumn ('CANDIDATE','VISA_TYPE','TEXT NULL AFTER `SUMMARY`');
-

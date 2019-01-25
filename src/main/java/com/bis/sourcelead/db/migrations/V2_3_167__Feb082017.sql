@@ -1,1 +1,0 @@
-CALL AlterTableAddColumn ('REQUIREMENT','RELEASED_BY','TEXT NULL');
