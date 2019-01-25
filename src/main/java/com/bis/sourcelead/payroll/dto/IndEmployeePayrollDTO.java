@@ -1,8 +1,10 @@
 package com.bis.sourcelead.payroll.dto;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.dto.AssociateSalaryPayheadIndDTO;
 import com.bis.sourcelead.dto.SearchDTO;
@@ -122,6 +124,24 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 	private BigDecimal noOfWorkingDays;
 	
 	private String financialYear;
+	
+	private Date deteOfJoin;
+	
+	private String firstName;
+	
+	private String lastName;
+
+	private String payHeadName;
+	
+	private BigDecimal payHeadAmount;
+	
+	private String salaryMonthName;
+	
+	private BigInteger canId;
+	
+	private String payHeadType;
+
+	private Map<String,String> payHeadMapList;
 	
 	public Long getId() {
 		return id;
@@ -571,5 +591,77 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 
 	public void setFinancialYear(String financialYear) {
 		this.financialYear = financialYear;
+	}
+
+	public Date getDeteOfJoin() {
+		return deteOfJoin;
+	}
+
+	public void setDeteOfJoin(Date deteOfJoin) {
+		this.deteOfJoin = deteOfJoin;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public String getPayHeadName() {
+		return payHeadName;
+	}
+
+	public BigDecimal getPayHeadAmount() {
+		return payHeadAmount;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public void setPayHeadName(String payHeadName) {
+		this.payHeadName = payHeadName;
+	}
+
+	public void setPayHeadAmount(BigDecimal payHeadAmount) {
+		this.payHeadAmount = payHeadAmount;
+	}
+
+	public String getSalaryMonthName() {
+		return salaryMonthName;
+	}
+
+	public void setSalaryMonthName(String salaryMonthName) {
+		this.salaryMonthName = salaryMonthName;
+	}
+
+	public BigInteger getCanId() {
+		return canId;
+	}
+
+	public void setCanId(BigInteger canId) {
+		this.canId = canId;
+	}
+
+	public Map<String, String> getPayHeadMapList() {
+		return payHeadMapList;
+	}
+
+	public void setPayHeadMapList(Map<String, String> payHeadMapList) {
+		this.payHeadMapList = payHeadMapList;
+	}
+
+	public String getPayHeadType() {
+		return payHeadType;
+	}
+
+	public void setPayHeadType(String payHeadType) {
+		this.payHeadType = payHeadType;
 	}
 }
