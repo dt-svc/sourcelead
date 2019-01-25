@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URLConnection;
 import java.text.DateFormat;
@@ -61,7 +62,6 @@ import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
-import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
@@ -77,6 +77,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.RecruiterJobsReportView;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -88,6 +89,7 @@ import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.reportsDTO.AssetGrowthDTO;
 import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
@@ -426,11 +428,6 @@ public class ReportRestController {
 			HttpServletRequest request) throws Exception {
 
 	      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	      //Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-	      //User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	      //String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
-	      //String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-	      
 	      User recruiterUser = userService.getUserById(recruiterUserId);
 			
 			Date[] searchDates = null;
@@ -478,15 +475,26 @@ public class ReportRestController {
 			requirementDTO.setOrgLocationId(orgLocations.getId());
 			ResponseList<RequirementDTO> requirementDTOList = requirementService.getJobListOfRecruiter(requirementDTO, recruiterUserId,searchDates,teamsList);
 			for(RequirementDTO reqDTO : requirementDTOList.getData()) {
-				RequirementSubmissionsCountDTO rsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(reqDTO.getId(), recruiterUser, orgLocations, "ALL");
-				reqDTO.setNoOfApplicants(String.valueOf(rsCount.getApplicantsCount()));
-				reqDTO.setNoOfShortlistApplicants(String.valueOf(rsCount.getShortlistCount()));
-				reqDTO.setNoOfSubmittedApplicants(String.valueOf(rsCount.getSubmitToClientCount()));
-				reqDTO.setNoOfInterviewedApplicants(String.valueOf(rsCount.getInterviewCount()));
-				reqDTO.setNoOfOfferedApplicants(String.valueOf(rsCount.getOffersCount()));
-				reqDTO.setNoOfJoinedApplicants(String.valueOf(rsCount.getJoinedCount()));
-				reqDTO.setNoOfRejectedApplicants(String.valueOf(rsCount.getRejectedCount()));
-				reqDTO.setNoOfBackoutApplicants(String.valueOf(rsCount.getBackoutCount()));
+				List<RecruiterJobsReportView> rjrvList = requirementSubmissionHistoryService.getSubmissionApplicantCountsForRecruiterJobreports(orgLocations.getId(), recruiterUser, searchDates, reqDTO.getId());
+				
+				double  applicantSubmittedApplicantCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantSubmissionCount().doubleValue()));
+				double  applicantShortlistCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantShortlistedCount().doubleValue()));
+				double  applicantSubmittedCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantSubmittedClientCount().doubleValue()));
+				double  applicantInterviewCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantInterviewCount().doubleValue()));
+				double  applicantOfferCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantOfferMadeCount().doubleValue()));
+				double  applicantJoinedCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantJoinedCount().doubleValue()));
+				double  applicantRejectedCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantRejectedCount().doubleValue()));
+				double  applicantBackoutCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantBackOutCount().doubleValue()));
+
+				reqDTO.setNoOfApplicants(String.valueOf(applicantSubmittedApplicantCount));
+				reqDTO.setNoOfShortlistApplicants(String.valueOf(applicantShortlistCount));
+				reqDTO.setNoOfSubmittedApplicants(String.valueOf(applicantSubmittedCount));
+				reqDTO.setNoOfInterviewedApplicants(String.valueOf(applicantInterviewCount));
+				reqDTO.setNoOfOfferedApplicants(String.valueOf(applicantOfferCount));
+				reqDTO.setNoOfJoinedApplicants(String.valueOf(applicantJoinedCount));
+				reqDTO.setNoOfRejectedApplicants(String.valueOf(applicantRejectedCount));
+				reqDTO.setNoOfBackoutApplicants(String.valueOf(applicantBackoutCount));
+				
 			}
 			
 			return requirementDTOList;
