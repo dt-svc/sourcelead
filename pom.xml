@@ -46,6 +46,7 @@
 			<groupId>com.bis.sourcelead.commons</groupId>
 			<artifactId>sourcelead-commons</artifactId>
 			<version>1.0.0</version>
+			<scope>compile</scope>
 		</dependency>
         
         <!-- https://mvnrepository.com/artifact/com.itextpdf.tool/xmlworker -->
@@ -805,9 +806,9 @@
                     <execution>
                         <phase>install</phase>
                         <configuration>
-                            <target>
-                                <!-- <copy file="${project.build.directory}/sourcelead.war" todir="C:/apache-tomcat-8.0.30/webapps" 
-                                /> -->
+                           <target>
+                               <!--   <copy file="${project.build.directory}/admin.war" todir="C:/apache-tomcat-8.0.38/wtpwebapps" 
+                                />  -->
                             </target>
                         </configuration>
                         <goals>
