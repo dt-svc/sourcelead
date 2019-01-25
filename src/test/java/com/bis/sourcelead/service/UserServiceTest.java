@@ -42,6 +42,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.UserProfile;
 import com.bis.sourcelead.service.impl.UserServiceImpl;
+import com.bis.sourcelead.util.EMailJobScheduler;
 
 /**
  * This is a JUnit Test class for testing UserService methods
@@ -73,12 +74,15 @@ public class UserServiceTest {
 	
 	@Autowired
 	OrgSpocService orgSpocService;
+	
+	@Autowired
+	EMailJobScheduler eMailJobScheduler;
 
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
 
 	
 	
-	@Test
+	//@Test
 	public void addUser() throws Exception{
 		User user = new User();
 
@@ -86,11 +90,10 @@ public class UserServiceTest {
 
 		user.setCreatedBy("ajith");
 		user.setCreatedDate(new Date());
-		user.setDocFile(new byte[4096]);
+//		user.setDocFile(new byte[4096]);
 		user.setEmail("ajith@gmail.com");
 		user.setFileContentType("open");
 		user.setFirstName("matta");
-		user.setIsMailSent(Status.N);
 		user.setJobTitle("developer");
 		user.setLastName("reddy");
 		user.setLocation("hyderabad");
@@ -107,7 +110,7 @@ public class UserServiceTest {
 		//logger.info("add user details success fully inserted "+ user.getEmail());
 	}
 	
-	@Test
+	//@Test
 	public void createUser() throws Exception{
 	
 		 JSONObject jsonObj = new JSONObject();
@@ -130,7 +133,7 @@ public class UserServiceTest {
 		userService.createUser(jsonObj,user,orgLocationsId);
 	}
 	
-	@Test
+	//@Test
 	public void findByUserName() {	
 
 		String username = "demomail123@gmail.com";
@@ -138,17 +141,16 @@ public class UserServiceTest {
 		assertSame(username, user.getUserName());
 	}
 	
-	@Test
+	//@Test
 	public void sendEmail() throws Exception{
 		User user = new User();
 		user.setId(1l);
 		user.setCreatedBy("srinivas");
 		user.setCreatedDate(new Date());
-		user.setDocFile(new byte[4096]);
+//		user.setDocFile(new byte[4096]);
 		user.setEmail("srinivas@gmail.com");
 		user.setFileContentType("open");
 		user.setFirstName("pradeeop");
-		user.setIsMailSent(Status.Y);
 		user.setJobTitle("tester");
 		user.setLastName("reddy");
 		user.setLocation("rangareddy");
@@ -169,7 +171,7 @@ public class UserServiceTest {
 		userService.sendEmail(user,loginUser,password,1l);
 	}
 
-	@Test
+	//@Test
 	public void validateEmailandCandidate() throws Exception{
 		String website = "www.bis.com";
 		String email = "info@businessintelli.com"; 
@@ -178,7 +180,7 @@ public class UserServiceTest {
 		logger.info(" success fully validate email "+email);
 	}
 	
-	@Test
+	//@Test
 	public void  getUserById() throws Exception{
 		
 		Long Id=3l;
@@ -189,7 +191,7 @@ public class UserServiceTest {
 		assertEquals(user2.getId(), user.getId());
 	}
 	
-	@Test
+	//@Test
    public void findByEmail() throws Exception{
 		User user = new User();
 		String email = "demomail123@gmail.com";
@@ -197,24 +199,23 @@ public class UserServiceTest {
 		assertNotNull(user);
 	}
 	
-	@Test
+	//@Test
 	public void getUsers() throws Exception{
 		//User user = new User();
 		Collection<User> user  = userService.getUsers();
 		assertNotNull(user);
 	}
 	
-	@Test
+	//@Test
 	public void saveUserProfile() throws Exception{
 		User user = new User();
 //		user.setId(10l);
 		user.setCreatedBy("srinivas");
 		user.setCreatedDate(new Date());
-		user.setDocFile(new byte[4096]);
+//		user.setDocFile(new byte[4096]);
 		user.setEmail("srinivas@gmail.com");
 		user.setFileContentType("open");
 		user.setFirstName("pradeeop");
-		user.setIsMailSent(Status.Y);
 		user.setJobTitle("tester");
 		user.setLastName("reddy");
 		user.setLocation("rangareddy");
@@ -241,7 +242,7 @@ public class UserServiceTest {
 		userProfile.setLocation("kolkatta");
 		userProfile.setMobilePhone("54789562123");
 		userProfile.setPassword("Bis@123");
-		
+
 		assertSame(user, userService.saveUserProfile(userProfile,user));
 
 	}
@@ -253,37 +254,37 @@ public class UserServiceTest {
 		return multipartFile;
 	}
 	
-	@Test
+	//@Test
 	public void getUsersByUserRoles() throws Exception{
 		Collection<User> user = userService.getUsersByUserRoles(2l);
 		assertNotNull(user);
 	}
 	
-	@Test
+	//@Test
 	public void getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser() throws Exception{
 		List<User>  user = userService.getUsersByUserRolesAndOrgLocationIdAndNoCurrentUser(1l,2l);
 		assertNotNull(user);
 	}
 	
-	@Test
+	//@Test
 	public void getUsersByUserRolesAndOrgLocationId() throws Exception{
 		List<User>  user = userService.getUsersByUserRolesAndOrgLocationId(1l);
 		assertNotNull(user);
 	}
 	
-	@Test
+	//@Test
 	public void getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser() throws Exception{
 		 List<User> user  = userService.getUsersRoleCountByRoleIdAndLocationIdAndNotLoggedInUser(1l,2l,1l);
 		 assertNotNull(user);
 	}
 	
-	@Test
+	//@Test
 	public void getAllUserOrgCodeAndLocationCodeTimeSheetNotification() throws Exception{
 		 List<Employees> employee = userService.getAllUserOrgCodeAndLocationCodeTimeSheetNotification(1l);
 		 assertNotNull(employee);
 	}
 	
-	@Test
+	//@Test
 	public void sendEmailToClientOrVendor() throws Exception{
 		Org loginOrg = new Org();
 		loginOrg.setOrgName("Source Lead");
@@ -296,7 +297,7 @@ public class UserServiceTest {
 		userService.sendEmailToClientOrVendor("abc",user,null, loginUser, "Pwd123", "Client", loginOrg,null,null,null);
 	}
 	
-	@Test
+	//@Test
 	public void getUserByIdAndOrgLocationsId() throws Exception{
 		User user = new User();
 		user.setId(3L);
@@ -305,7 +306,7 @@ public class UserServiceTest {
 		assertEquals(user.getId(), userService.getUserByIdAndOrgLocationsId(user.getId(), orgLocations.getId()));
 	}
 	
-	@Test
+	//@Test
 	public void storeUser() throws Exception{
 		AddUserDTO addUserDto = new AddUserDTO();
 		 addUserDto.setFirstName("Demo_final13");
@@ -342,7 +343,7 @@ public class UserServiceTest {
 		 assertEquals(users.getId(), userService.storeUser(addUserDto,candidto, users, orgLocations, sourceType, responderType, loginOrg));
 	}
 	
-	@Test
+	//@Test
 	public void getOwnersByOrgLocationId() throws Exception{
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(3L);
@@ -359,7 +360,7 @@ public class UserServiceTest {
 		assertFalse(list.isEmpty());
 	}
 	
-	@Test
+	//@Test
 	public void getManagersByUserIdAndUserRolesAndOrgLocationId() throws Exception{
 		Long userId = 3l;
 		Long roleType = 2l;
@@ -368,7 +369,7 @@ public class UserServiceTest {
 		assertFalse(list.isEmpty());
 	}
 	
-	@Test
+	//@Test
 	public void getUserDetailsByUserCode() throws Exception{
 		User user = new User();
 		user.setUserCode("0mkBMphb");
@@ -376,16 +377,25 @@ public class UserServiceTest {
 		assertEquals(user.getUserCode(), user1.getUserCode());
 	}
 	
-	@Test
+	//@Test
 	public void getOwnersByOrgLocationIdAndNotExistedOwnerId() throws Exception{
 		List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(5l,3l);
 		List<User> list = userService.getOwnersByOrgLocationIdAndNotExistedOwnerId(3l, 3l, ownerListOfSpoc);
 		assertFalse(list.isEmpty());
 	}
 	
-	@Test
+	//@Test
 	public void getAllUserIdsByReportingManagerId() throws Exception{
 		List<Long> list = userRoleService.getAllUserIdsByReportingManagerId(3l);
 		assertFalse(list.isEmpty());
+	}
+	@Test
+	public void testPayroll() throws Exception {
+		eMailJobScheduler.autoMaticPayrollRunning();
+	}
+	
+	@Test
+	public void testSchedulePayrollEmail() throws Exception {
+		eMailJobScheduler.sendUSPayrollScheduleEmail();
 	}
 }

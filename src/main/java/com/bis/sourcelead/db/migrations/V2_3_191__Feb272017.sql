@@ -1,1 +1,1 @@
-CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE_RESUMES','RESUME_UUID','VARCHAR(20) NULL');
+CALL AlterTableAddColumn ('CANDIDATE_RESUMES','RESUME_UUID','VARCHAR(20) NULL');
