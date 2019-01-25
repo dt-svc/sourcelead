@@ -1,3 +1,0 @@
-INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'negotiationLink', '{{ApplicantRejectanceRequirement.negotiationLink}}');
-
-UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear {{ApplicantRejectanceRequirement.initiatorUserName}},\n\n {{ApplicantRejectanceRequirement.applicantName}} not interested for the position {{ApplicantRejectanceRequirement.requirementName}} \n\n Reason : {{ApplicantRejectanceRequirement.rejectReason}}.\n Rate :{{ApplicantRejectanceRequirement.requirementRate}}\n\n{{ApplicantRejectanceRequirement.negotiationLink}}\n' WHERE `ID`='71';
