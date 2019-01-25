@@ -1,1 +1,0 @@
-CALL AlterTableAddColumn ('REQUIREMENT','NOTICEPERIOD','TEXT NULL');

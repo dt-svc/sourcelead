@@ -1,1 +1,0 @@
-CALL AlterTableAddColumn ('PROJECTS','PROJECT_UUID','VARCHAR(20) NULL');
