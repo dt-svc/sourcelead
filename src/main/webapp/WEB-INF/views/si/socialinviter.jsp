@@ -2,7 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <link href="//fonts.googleapis.com/css?family=Lato:100,300,400" rel="stylesheet">
 <script src="//socialinviter.com/assets/js/libraries/jquery.js"></script>
-<script type="text/javascript" id="apiscript" src="resources/js/all.js?burst=1"></script>
+<script type="text/javascript" id="apiscript" src="/resources/js/all.js?burst=1"></script>
 <style type="text/css">
 		body{
 			font-family: 'Lato', sans-serif;
@@ -288,8 +288,8 @@ var shareObj = {
              },
              apikeys:{
             	 "facebook":{
-                     "consumerKey":"200281393793197",
-                     "consumerSecret":"3a62bba550c343eb4f42bbeabd2e0f5e"
+                     "consumerKey":"2066960683592341",
+                     "consumerSecret":"a5e28872fb1b6456392f1c58b1649ca0"
                  }
              },
              callbacks: {
@@ -326,10 +326,10 @@ var shareObj = {
              },
              
              path: {
-                 css: "resources/css/",
-                 js: "resources/js/",
-                 authpage : "http://localhost:8080/sourcelead/resources/oauth.html",
-                 apiurl:"http://localhost:8080/sourcelead/getAPIService"
+                 css: "/resources/css/",
+                 js: "/resources/js/",
+                 authpage : "http://localhost:8080/app/resources/oauth.html",
+                 apiurl:"http://localhost:8080/app/ws/getAPIService"
              }
          });
         /*  var shareObj = {

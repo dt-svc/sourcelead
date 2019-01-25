@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ClientVendorUploadDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.BulkClientDetails;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
@@ -59,9 +62,8 @@ public class ClientImportRestController {
 	@PreAuthorize("hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_CLIENT_BULK_IMPORTS')")
 	@RequestMapping(value = "/clientExcelFileUpload", method = RequestMethod.POST)
 	@ResponseBody
-	public String fileUploaded(MultipartHttpServletRequest request,@RequestParam(value = "responderType", required = false) String responderType)throws Exception{
+	public ResponseList<BulkClientDetails> fileUploaded(ClientVendorUploadDTO clientVendorUploadDTO,MultipartHttpServletRequest request,@RequestParam(value = "responderType", required = false) String responderType,@RequestParam(value = "isMailCheck", required = false) String isMailCheck)throws Exception{
 
-		String isSuccess =  "failure";
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -72,23 +74,34 @@ public class ClientImportRestController {
 			multipartFile = request.getFile(itrator.next());
 		}
 		
-		String isFileCreated = "";
+		List<BulkClientDetails> fileList = null;
 		if(multipartFile != null){
-		isFileCreated = clientImportsService.clientExcelDataSave(multipartFile,user,orgLocation,org,"Y",responderType);
+			fileList = clientImportsService.clientExcelDataSave(multipartFile,user,orgLocation,org,isMailCheck,responderType);
 		}
-		if("empty".equalsIgnoreCase(isFileCreated)){
-			isSuccess = "empty";
-		}else if("invalid".equalsIgnoreCase(isFileCreated)){
-			isSuccess = "invalid";
-		}else{
-			List<BulkClientDetails> bulkClientDetailsList = clientImportsService.getbulkClientDetailsByOrgLocationId(orgLocation,user,org,"Y",responderType);
-			List<BulkClientDetails> filteredBulkClientDetailsList = bulkClientDetailsList.stream()
-					.filter(bulkClientDetails -> bulkClientDetails.getEmail() != null
-							&& !"".equalsIgnoreCase(bulkClientDetails.getEmail()))
-					.collect(Collectors.toList());
-			return commonUtil.toJSON(filteredBulkClientDetailsList);
+		
+		if(fileList != null && fileList.size() > 0) {
+			ResponseList<BulkClientDetails> response = clientImportsService.getbulkClientDetailsByOrgLocationId(fileList,clientVendorUploadDTO,orgLocation,user,org,isMailCheck,responderType);
+			
+			
+			if(response !=null) {
+				if(response.getData().isEmpty() && response.getData().size() == 0) {
+					response.setStatusCode("success");
+				}else if(!response.getData().isEmpty() && response.getData().size() >0) {
+					List<BulkClientDetails> filteredBulkClientDetailsList = response.getData();
+					response.setData(filteredBulkClientDetailsList);
+					if(response.getData() !=null ) {
+						response.setStatusCode("success");
+					}else if(filteredBulkClientDetailsList !=null ) {
+						response.setStatusCode("invalid");
+					}else {
+						response.setStatusCode("invalid");
+					}
+					
+				}
+			}
+			return response;
 		}
-		return isSuccess;
+		return null;
 	}
 	
 //	/deleteRecordFromBulk
@@ -109,14 +122,14 @@ public class ClientImportRestController {
 	
 	@RequestMapping(value = "/addRecordFromBulk", method = RequestMethod.POST)
 	@ResponseBody
-	public boolean addRecordFromBulk(@RequestParam(value = "recordId", required = false) String recordId,@RequestParam(value = "responderType", required = false) String responderType,HttpServletRequest request)throws Exception{
+	public boolean addRecordFromBulk(@RequestParam(value = "recordId", required = false) String recordId,@RequestParam(value = "responderType", required = false) String responderType,@RequestParam(value = "templateId", required = false) List<String> templateId,HttpServletRequest request)throws Exception{
 
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		boolean isDeleted = false;
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		BulkClientDetails bulkClientDetails  = clientImportsService.saveClientRecord(recordId,orgLocation,org,user,responderType);
+		BulkClientDetails bulkClientDetails  = clientImportsService.saveClientRecord(recordId,orgLocation,org,user,responderType,templateId);
 		if(bulkClientDetails != null){
 			isDeleted = true;
 		}

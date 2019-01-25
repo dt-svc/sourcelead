@@ -1,3 +1,0 @@
-
-CALL sourcelead.AlterTableAddColumn ('sourcelead','WAGE_TAX_SUMMARY','USER_ID','BIGINT NULL AFTER `SSN_NUMBER`');
-ALTER TABLE `sourcelead`.`WAGE_TAX_SUMMARY` ADD FOREIGN KEY FK1_USER_ID (USER_ID) REFERENCES `sourcelead`.USER(ID);

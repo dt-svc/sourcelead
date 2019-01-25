@@ -12,9 +12,8 @@
 	function submissionReferencesDetails(candidateId){
 	
 		    var result = "";
-			result = result	+ '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-			result = result	+ '<div class="project_tabs_inn_head"> <input class="vendorfild" ></div>';
-			result = result + '   <div id="submissionReferencesList" class="datatable_filter"></div>';
+		    result = result	+ '   <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew">';
+		    result = result + '   <div id="submissionReferencesList" class="datatable_filter mt5"></div>';
 			result = result + '   </div>';
 	    
 		    $("#tabb-1").empty();
@@ -55,8 +54,8 @@ function submissionReferencesList(candidateId){
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                     
-	                      for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
+	                      for (var i = 0; i < json.data.length; i++) { 
+	                    	 var opt = json.data[i];  
 	                    	 result  = result + ' <tr>';
 	                    	 if(opt.name != null && opt.name != '' && opt.name != "undefined")
 	    	             	 {

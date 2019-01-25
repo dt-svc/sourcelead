@@ -1,1 +1,0 @@
-UPDATE `sourcelead`.`USER` SET `IS_MAIL_SENT`='Y' WHERE `ID`='2';

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONArray;
@@ -42,28 +43,46 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.OnBoardingTemplateDTO;
+import com.bis.sourcelead.dto.OnboardTasksDTO;
+import com.bis.sourcelead.dto.OrgLocationDTO;
+import com.bis.sourcelead.dto.OrgRelationDTO;
+import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.VendorOnboardTaskDTO;
+import com.bis.sourcelead.dto.VendorOnboardingTemplateDocumentDTO;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.entity.VendorOnboardTasks;
+import com.bis.sourcelead.entity.VendorOnboarding;
+import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.ClientVendorExport;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementReportService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.VendorOnboardService;
+import com.bis.sourcelead.service.VendorOnboardTasksService;
+import com.bis.sourcelead.service.VendorOnboardTemplateDocumentsService;
+import com.bis.sourcelead.service.VendorService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -115,6 +134,110 @@ public class VendorRestController {
 	
 	@Autowired
 	ClientService clientService;
+	
+	@Autowired
+	VendorService vendorService;
+	
+	@Autowired
+	VendorOnboardTemplateDocumentsService vendorOnboardTemplateDocumentsService;
+	
+	@Autowired
+	VendorOnboardService vendorOnboardService;
+	
+	@Autowired
+	VendorOnboardTasksService vendorOnboardTasksService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
+	
+	
+	@PreAuthorize("hasRole('ROLE_CREATE_VENDOR')")
+	@RequestMapping(value = { "/saveVendor", "/rest/saveVendor" }, method = RequestMethod.POST)
+	@ResponseBody
+	public OrgLocationDTO saveVendor(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO,
+			@RequestParam(value = "responderType", required = false) String responderType,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request)
+			throws Exception {
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
+		
+		if (null != orgLocationId) {
+			clientDTO.setOrgLocationId(orgLocationId.toString());
+		}
+
+		OrgLocations invitedOrgLocation = clientService.storeClient(clientDTO,addUserDTO,candidateDTO, user, orgLocation, responderType, org);
+		VendorOnboarding vendorOnboarding = vendorOnboardService.saveVendorOnboarding(invitedOrgLocation, orgLocation, user);
+		
+		orgLocationDTO.setId(invitedOrgLocation.getId());
+		orgLocationDTO.setVendorOrgRelationId(invitedOrgLocation.getVendorOrgRelationId());
+		orgLocationDTO.setVendorOnboardId(vendorOnboarding.getId());
+		
+		SourceLeadSessionManager.setSessionAttribute(request, "vendorCreateMsg", "Success!! New Vendor created");
+		return orgLocationDTO;
+	}
+	
+	
+	
+	
+	@PreAuthorize("hasRole('ROLE_CREATE_VENDOR')")
+	@RequestMapping(value = { "/updateVendor", "/rest/updateVendor" }, method = RequestMethod.POST)
+	@ResponseBody
+	public OrgLocationDTO updateVendor(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO,
+			@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request)
+			throws Exception {
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
+		
+		OrgLocations invitedOrgLocation = vendorService.updateVendor(clientDTO, addUserDTO, candidateDTO, user, orgLocations, orgRelationId, org);
+		orgLocationDTO.setId(invitedOrgLocation.getId());
+		SourceLeadSessionManager.setSessionAttribute(request, "vendorCreateMsg", "Success!! New Vendor created");
+		return orgLocationDTO;
+	}
+	
+	
+	
+	 @RequestMapping(value = { "/getVendorOnboardTemplateDocumentByOrgRelationId", "/rest/getVendorOnboardTemplateDocumentByOrgRelationId" }, method = RequestMethod.POST)
+	 public @ResponseBody List<VendorOnboardingTemplateDocumentDTO> getVendorOnboardTemplateDocumentByOrgRelationId(@RequestParam(value="orgRelationId", required = true) Long orgRelationId,
+			 @RequestParam(value="vendorOnboardId", required = true) Long vendorOnboardId,@RequestParam(value="documentType", required = false) String documentType, HttpServletRequest request) throws Exception {
+		
+		List<VendorOnboardingTemplateDocumentDTO> documentsDTOList = new ArrayList<>();
+		List<VendorOnboardingTemplateDocuments> documentsList = null;
+		
+		documentsList = vendorOnboardTemplateDocumentsService.getVendorOnboaringTemplateDocumentsByVendorOnboardId(vendorOnboardId);
+		if(documentsList.size() == 0){
+			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(orgRelationId);
+			if(orgRelations != null && StringUtils.isNotBlank(orgRelations.getVendorOnboardTemplateId())){
+				List<Long> templateIdsList = new ArrayList<>();
+				String[] templateIds = orgRelations.getVendorOnboardTemplateId().split(",");
+				for(String onboardTempalteId : templateIds){
+					templateIdsList.add(Long.valueOf(onboardTempalteId));
+				}
+				 documentsList = vendorOnboardTemplateDocumentsService.getVendorOnBoardingTemplateDocumentsByTemplateList(templateIdsList,documentType);
+			}
+		}
+		
+		if(documentsList != null && documentsList.size() > 0) {
+			for(VendorOnboardingTemplateDocuments documents : documentsList) {
+				VendorOnboardingTemplateDocumentDTO docsDTO = new VendorOnboardingTemplateDocumentDTO();
+				docsDTO.setId(documents.getId());
+				docsDTO.setDocumentName(documents.getDocumentName());
+				docsDTO.setIsRequired(documents.getIsRequired());
+				docsDTO.setDocumentUUID(documents.getDocumentUUID());
+				docsDTO.setDocumentType(documents.getDocumentType());
+				documentsDTOList.add(docsDTO);
+			}
+		}
+		return documentsDTOList;
+	}
 	
 	
 	/**
@@ -299,6 +422,83 @@ public class VendorRestController {
 	
 	
 	
+	@RequestMapping(value = { "/getOrgRelationDetailsByOrgRelationId", "/rest/getOrgRelationDetailsByOrgRelationId" }, method = RequestMethod.GET)
+	public OrgRelationDTO getOrgRelationDetailsByOrgRelationId(OrgRelationDTO orgRelationDTO, @RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request) throws Exception {
+
+		OrgLocations orgLocations = null;
+	    orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    OrgRelations orgRelations = orgRelationsService.getOrRelationsById(orgRelationId);
+	    
+		if(orgLocations == null) {
+			orgLocations = orgLocationService.getOrgLocations(orgRelationDTO.getOrgLocationId());
+		}
+	    
+		if(orgRelations.getLocationId().getId().equals(orgLocations.getId())){
+			orgRelationDTO.setWebSite(orgRelations.getResponderLocationId().getWebsite());
+			orgRelationDTO.setOrgName(orgRelations.getResponderLocationId().getOrgLocationName());
+			orgRelationDTO.setCountry(orgRelations.getResponderLocationId().getCountry());
+			orgRelationDTO.setState(orgRelations.getResponderLocationId().getState());
+			orgRelationDTO.setCity(orgRelations.getResponderLocationId().getCity());
+			orgRelationDTO.setZipcode(orgRelations.getResponderLocationId().getZipCode());
+			orgRelationDTO.setPaymentTerm(orgRelations.getPaymentTerm());
+			orgRelationDTO.setBillingAddress(orgRelations.getResponderLocationId().getBillingAddress());
+			orgRelationDTO.setAddress(orgRelations.getResponderLocationId().getOrgLocationAddress());
+			orgRelationDTO.setVendorlocationId(orgRelations.getResponderLocationId().getId());
+			orgRelationDTO.setVendorOrgLocation(orgRelations.getResponderLocationId().getLocation());
+		}else{
+			orgRelationDTO.setWebSite(orgRelations.getLocationId().getWebsite());
+			orgRelationDTO.setOrgName(orgRelations.getLocationId().getOrgLocationName());
+			orgRelationDTO.setCountry(orgRelations.getLocationId().getCountry());
+			orgRelationDTO.setState(orgRelations.getLocationId().getState());
+			orgRelationDTO.setCity(orgRelations.getLocationId().getCity());
+			orgRelationDTO.setZipcode(orgRelations.getLocationId().getZipCode());
+			orgRelationDTO.setBillingAddress(orgRelations.getLocationId().getBillingAddress());
+			orgRelationDTO.setAddress(orgRelations.getLocationId().getOrgLocationAddress());
+			orgRelationDTO.setPaymentTerm(orgRelations.getPaymentTerm());
+			orgRelationDTO.setVendorlocationId(orgRelations.getLocationId().getId());
+			orgRelationDTO.setVendorOrgLocation(orgRelations.getLocationId().getLocation());
+		}
+		if(StringUtils.isNotBlank(orgRelations.getIsAccountingFirm()) && orgRelations.getIsAccountingFirm().equalsIgnoreCase("Y")){
+		orgRelationDTO.setIsAccountingFirm(orgRelations.getIsAccountingFirm());
+		}
+		if(StringUtils.isNotBlank(orgRelations.getIsLawFirm()) && orgRelations.getIsLawFirm().equalsIgnoreCase("Y")){
+		orgRelationDTO.setIsLawFirm(orgRelations.getIsLawFirm());
+		}
+		if(StringUtils.isNotBlank(orgRelations.getVendorOnboardTemplateId())) {
+			orgRelationDTO.setVendorOnboardTemplateId(orgRelations.getVendorOnboardTemplateId());
+		}
+		
+		orgRelationDTO.setLevel(orgRelations.getResponderLevel());
+		
+		 Set<OrgSpoc> contactsList = orgRelations.getOrgSpocList();
+		 StringBuilder contactIds = new StringBuilder();
+		 for(OrgSpoc orgSpoc : contactsList){
+			if(orgSpoc.getStatus().equalsIgnoreCase(Constants.MEMBER_ACTIVE)){
+				contactIds.append(orgSpoc.getClientUser().getId()).append(",");
+				orgRelationDTO.setFirstName(orgSpoc.getVendorUser().getFirstName());
+				 if(StringUtils.isNotBlank(orgSpoc.getVendorUser().getLastName())){
+					 orgRelationDTO.setLastName(orgSpoc.getVendorUser().getLastName());
+				 }
+				 orgRelationDTO.setEmail(orgSpoc.getVendorUser().getEmail());
+				 if(StringUtils.isNotBlank(orgSpoc.getVendorUser().getMobilePhone())){
+					 orgRelationDTO.setPhoneNumber(orgSpoc.getVendorUser().getMobilePhone());
+				 }
+				 orgRelationDTO.setSpocStatus(orgSpoc.getSpocStatus());
+				 UserRole userRole = userRoleDao.getUserDetailsByUserIdAndLocationId(orgSpoc.getVendorUser().getId(), orgSpoc.getVendorLocationId().getId());
+				 if(userRole != null) {
+					 if(StringUtils.isNotBlank(userRole.getExtensionNumber())) {
+						 orgRelationDTO.setExtensionNumber(userRole.getExtensionNumber());
+					 }
+				 }
+				 
+			}
+		 }
+		 String contactIdsStr = contactIds.toString();
+		 orgRelationDTO.setClientContactIds(contactIdsStr.substring(0, contactIdsStr.length()-1)); 
+		 return orgRelationDTO;
+		
+		}
+	
 	
 	/**
 	 * @author Laxman
@@ -419,6 +619,30 @@ public class VendorRestController {
 		 	  return "success";
 		    }
 	   
+	   
+	   
+	   
+	   
+	   @RequestMapping(value = "/resendVendorSpocInvitationEmail" , method = RequestMethod.POST)
+		  public @ResponseBody  String resendVendorSpocInvitationEmail(@RequestParam(value="spocUserId", required=false) String spocUserId, @RequestParam(value="orgSpocId", required=false) String orgSpocId,HttpServletRequest request,String responderType, Long orgRelationID) throws Exception {
+			    
+			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			    User spocUser = userService.getUserById(Long.parseLong(spocUserId));
+			    
+		 		if(null != spocUser){
+		 			OrgSpoc spoc = orgSpocService.getOrgSpocById(Long.parseLong(orgSpocId));
+		 			spoc.setInvitationStatus(Constants.MAIL_SENT);
+		 			orgSpocService.addOrgSpoc(spoc);
+		 			
+		 			VendorOnboarding vendorOnboarding = vendorOnboardService.getVendorOnboardingByOrgRelationId(orgRelationID);
+		 			vendorOnboardService.sendMailAndNotificationToVendorContact(vendorOnboarding, vendorOnboarding.getVendorLocationId(), loginOrgLocation, loginUser, spocUser,spoc);
+		 			
+		 		}
+			
+		 	  return "success";
+		    }
+	   
 	   /**
 	    * @author Rajashekar
 	    * writes vendor to to excel and pdf
@@ -447,10 +671,15 @@ public class VendorRestController {
 						orgRelation.setVendorlocationId(orgRelation.getResponderLocationId().getId());
 						//List<OrgSpoc>  contactsList = orgSpocService.getAllContactsbyOrgLocationIdAndUserIdForRequirement(orgLocations.getId(),user.getId(),"Client");
 						List<Requirement> vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendor(orgRelation.getResponderLocationId().getId(),orgRelation.getId(),user,orgLocations);
-						List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgId(orgRelation.getId());
+						if(orgRelation.getId() != null){
+							List<OrgSpoc> contactsList = orgSpocService.getAllContactsbyOrgId(orgRelation.getId());
+							if(contactsList != null){
+								orgRelation.setNoOfContatcs(contactsList.size()); 
+							}
+						}
 						
 						orgRelation.setNoOfReleasedJobs(vendorReleasedJobsList.size());
-						orgRelation.setNoOfContatcs(contactsList.size()); 
+						
 						if(orgRelation.getInitiatorLevel()!=null){
 							orgRelation.setLevel(orgRelation.getInitiatorLevel());
 						}
@@ -594,10 +823,10 @@ public class VendorRestController {
 				 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : excludeKeyWordArray){
 						 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList =getQueryBuilderList(keywd);
+						if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+							for(QueryBuilder QueryBuilder :QueryBuilderList){
+								excludeBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
 						}
@@ -611,10 +840,10 @@ public class VendorRestController {
 						 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 						 for(String keywd : anyKeyWordArray){
 							 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-									anyBoolSubQueryBuilder.should(matchQueryBuilder);
+							ArrayList<QueryBuilder> QueryBuilderList =getQueryBuilderList(keywd);
+							if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+								for(QueryBuilder QueryBuilder :QueryBuilderList){
+									anyBoolSubQueryBuilder.should(QueryBuilder);
 								}
 								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 							}
@@ -628,10 +857,10 @@ public class VendorRestController {
 						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 						 for(String keywd : allKeyWordArray){
 							 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-									allBoolSubQueryBuilder.should(matchQueryBuilder);
+							ArrayList<QueryBuilder> QueryBuilderList =getQueryBuilderList(keywd);
+							if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+								for(QueryBuilder QueryBuilder :QueryBuilderList){
+									allBoolSubQueryBuilder.should(QueryBuilder);
 								}
 								allBoolQueryBuilder.must(allBoolSubQueryBuilder);
 							}
@@ -777,78 +1006,78 @@ public class VendorRestController {
 	        return keyWordList;
 	    }
 
-		 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
-			    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+		 private ArrayList<QueryBuilder> getQueryBuilderList(String keywd){
+			    ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
 			   
 			    //Vendor Search 
-			    matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorOrgName", keywd));
-			    matchQueryBuilderList.add(QueryBuilders.matchQuery("responderOrgName", keywd));
-			    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorLevel", keywd));
-			    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderLevel", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("createdBy", keywd));
+			    QueryBuilderList.add(QueryBuilders.matchQuery("initiatorOrgName", keywd));
+			    QueryBuilderList.add(QueryBuilders.matchQuery("responderOrgName", keywd));
+			    QueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorLevel", keywd));
+			    QueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderLevel", keywd));
+				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("createdBy", keywd));
 				
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCountry", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("responderState", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCity", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCountry", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorState", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCity", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("responderCountry", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("responderState", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("responderCity", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("initiatorCountry", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("initiatorState", keywd));
+				QueryBuilderList.add(QueryBuilders.matchQuery("initiatorCity", keywd));
 				
-				matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderWebSite", keywd));
-				matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorWebSite", keywd));
+				QueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderWebSite", keywd));
+				QueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorWebSite", keywd));
 				
-				return matchQueryBuilderList; 
+				return QueryBuilderList; 
 		 }
 		 
-		 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForContacts(String keywd,String responderType){
-			    ArrayList<MatchQueryBuilder> matchQueryBuilderListForContacts = new ArrayList<MatchQueryBuilder>();
+		 private ArrayList<QueryBuilder> getQueryBuilderListForContacts(String keywd,String responderType){
+			    ArrayList<QueryBuilder> QueryBuilderListForContacts = new ArrayList<QueryBuilder>();
 			   
 			    //Contact  Search 
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("spocStatus", keywd));
+			    QueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("spocStatus", keywd));
 			    
 			    if("Vendor".equalsIgnoreCase(responderType)){
 			    	 // Client OrgName
-				    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("vendorOrgName", keywd));
+				    QueryBuilderListForContacts.add(QueryBuilders.matchQuery("vendorOrgName", keywd));
 			    }
 			    if("Client".equalsIgnoreCase(responderType)){
 			    	 // Vendor OrgName
-				    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("clientOrgName", keywd));
+				    QueryBuilderListForContacts.add(QueryBuilders.matchQuery("clientOrgName", keywd));
 			    }
 			   
 			    
 			    //owner Name
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("clientUserFirstName", keywd));
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("clientUserLastName", keywd));
+			    QueryBuilderListForContacts.add(QueryBuilders.matchQuery("clientUserFirstName", keywd));
+			    QueryBuilderListForContacts.add(QueryBuilders.matchQuery("clientUserLastName", keywd));
 			    
 			    //spock Name
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("vendorUserFirstName", keywd));
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("vendorUserLastName", keywd));
+			    QueryBuilderListForContacts.add(QueryBuilders.matchQuery("vendorUserFirstName", keywd));
+			    QueryBuilderListForContacts.add(QueryBuilders.matchQuery("vendorUserLastName", keywd));
 			    
 			    
 			    if("Client".equalsIgnoreCase(responderType)){
 			    // ClientUser Email
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("clientUserEmail", keywd));
+			    QueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("clientUserEmail", keywd));
 			    }
 			    if("Vendor".equalsIgnoreCase(responderType)){
 			    // VendorUser Email
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("vendorUserEmail", keywd));
+			    QueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("vendorUserEmail", keywd));
 			    }
 			    if("Client".equalsIgnoreCase(responderType)){
 			   // ClientUser PhoneNumber
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("clientUserPhNo", keywd));
+			    QueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("clientUserPhNo", keywd));
 			    }
 			    if("Vendor".equalsIgnoreCase(responderType)){
 			    // VendorUser PhoneNumber
-			    matchQueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("vendorUserPhNo", keywd));
+			    QueryBuilderListForContacts.add(QueryBuilders.matchPhraseQuery("vendorUserPhNo", keywd));
 			    }
 				 
 			    
 			    if(keywd.equalsIgnoreCase("Resend") || keywd.equalsIgnoreCase("resend") ){
-			    	matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("invitationStatus", "Sent"));
+			    	QueryBuilderListForContacts.add(QueryBuilders.matchQuery("invitationStatus", "Sent"));
 			    }else{
-			    	matchQueryBuilderListForContacts.add(QueryBuilders.matchQuery("invitationStatus", keywd));
+			    	QueryBuilderListForContacts.add(QueryBuilders.matchQuery("invitationStatus", keywd));
 			    }
-				return matchQueryBuilderListForContacts; 
+				return QueryBuilderListForContacts; 
 		 }
 		 
 		 /**
@@ -921,10 +1150,10 @@ public class VendorRestController {
 				 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
 					 for(String keywd : excludeKeyWordArray){
 						 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderListForContacts(keywd,responderType);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+						ArrayList<QueryBuilder> QueryBuilderList =getQueryBuilderListForContacts(keywd,responderType);
+						if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+							for(QueryBuilder QueryBuilder :QueryBuilderList){
+								excludeBoolSubQueryBuilder.should(QueryBuilder);
 							}
 							excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
 						}
@@ -938,10 +1167,10 @@ public class VendorRestController {
 						 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 						 for(String keywd : anyKeyWordArray){
 							 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderListForContacts(keywd,responderType);
-							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-									anyBoolSubQueryBuilder.should(matchQueryBuilder);
+							ArrayList<QueryBuilder> QueryBuilderList =getQueryBuilderListForContacts(keywd,responderType);
+							if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+								for(QueryBuilder QueryBuilder :QueryBuilderList){
+									anyBoolSubQueryBuilder.should(QueryBuilder);
 								}
 								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 							}
@@ -955,10 +1184,10 @@ public class VendorRestController {
 						 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
 						 for(String keywd : allKeyWordArray){
 							 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-							ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderListForContacts(keywd,responderType);
-							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-									allBoolSubQueryBuilder.should(matchQueryBuilder);
+							ArrayList<QueryBuilder> QueryBuilderList =getQueryBuilderListForContacts(keywd,responderType);
+							if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+								for(QueryBuilder QueryBuilder :QueryBuilderList){
+									allBoolSubQueryBuilder.should(QueryBuilder);
 								}
 								allBoolQueryBuilder.must(allBoolSubQueryBuilder);
 							}
@@ -1421,106 +1650,225 @@ public class VendorRestController {
 		  * @return
 		  * @throws Exception
 		  */
-	@RequestMapping(value = "/getVendorJobs")
-	public String getVendorJobs(@RequestParam(value = "orgRelationID", required = false) Long orgRelationID, @RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception
-	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		OrgRelations orgrel = orgRelationsService.getOrgRelationById(orgRelationID);
-		long vendorLocationId = 0L;
-		if (orgrel.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()) {
-			vendorLocationId = orgrel.getLocationId().getId();
-		}
-		else if (orgrel.getLocationId().getId().longValue() == orgLocations.getId().longValue()) {
-			vendorLocationId = orgrel.getResponderLocationId().getId();
-		}
-		// List<Requirement> reqList =
-		// requirementService.getAllReleasedJobsForVendorBasedOnStartAndEndDates(orgLocations.getId(),
-		// orgRelationID,null,null);
-		List<Requirement> mainReqList = new ArrayList<>();
-		Requirement mainRequirement = null;
-		Long tempReqId =0l;
-		int interviewsSum = 0;
-		int offeredSum = 0;
-		int backoutSum = 0;
-		int submitToclient = 0;
-		List<Requirement> reqList = requirementService.getAllVendorJobsBasedonRelationId(orgLocations.getId(), orgRelationID, userRoleName, loginUser, status);
-		for (Requirement requirement : reqList) {
-			if(tempReqId.longValue() != requirement.getParentRequirement().getId().longValue()){
-				mainRequirement = requirementService.getRequirementDetailsById(requirement.getParentRequirement().getId());
-				interviewsSum = 0;
-				offeredSum = 0;
-				backoutSum = 0;
-				submitToclient = 0;	
-//			}
-			List<RequirementSubmission> requirementSubmissionList1 = requirementSubmissionService.getApplicantRequirmentCountSubmittedByVendor(orgLocations.getId(), requirement.getParentRequirement().getId(), vendorLocationId);
-			if (null != requirementSubmissionList1 && requirementSubmissionList1.size() > 0) {
-				for (RequirementSubmission reqSub : requirementSubmissionList1) {
-					int vendorInterviewsCount = 0;
-					int vendorOfferedCount = 0;
-					int vendorBackoutCount = 0;
-					int vendorSubmittoClientCount = 0;
-					List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(reqSub.getId(), null, null);
-					if (null != requirementSubmissionHistoryList
-							&& requirementSubmissionHistoryList.size() > 0) {
-						for (RequirementSubmissionHistory rsh : requirementSubmissionHistoryList) {
-							if ("interview".equalsIgnoreCase(rsh.getToStage())) {
-								vendorInterviewsCount++;
-							}
-							else if ("offermade".equalsIgnoreCase(rsh.getToStage())) {
-								vendorOfferedCount++;
-							}
-							
-							else if ("backout".equalsIgnoreCase(rsh.getToStage())) {
-								vendorBackoutCount++;
-							}
-							else if(ApplicantSubmissionStatus.SUBMISSION.toString().equalsIgnoreCase(rsh.getToStage())){
-								vendorSubmittoClientCount++;
+			@RequestMapping(value ={ "/getVendorJobs","/rest/getVendorJobs"},method = RequestMethod.POST)
+			public ResponseList<RequirementDTO> getVendorJobs(@RequestParam(value = "orgRelationID", required = false) Long orgRelationID, @RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception
+			{
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				OrgRelations orgrel = orgRelationsService.getOrgRelationById(orgRelationID);
+				long vendorLocationId = 0L;
+				if (orgrel.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()) {
+					vendorLocationId = orgrel.getLocationId().getId();
+				}
+				else if (orgrel.getLocationId().getId().longValue() == orgLocations.getId().longValue()) {
+					vendorLocationId = orgrel.getResponderLocationId().getId();
+				}
+				// List<Requirement> reqList =
+				// requirementService.getAllReleasedJobsForVendorBasedOnStartAndEndDates(orgLocations.getId(),
+				// orgRelationID,null,null);
+				 ResponseList<RequirementDTO> mainReqListDTOList = new ResponseList<>();
+				List<Requirement> mainReqList = new ArrayList<>();
+				List<RequirementDTO> mainReqListDTO = new ArrayList<>();
+				Requirement mainRequirement = null;
+				Long tempReqId =0l;
+				int interviewsSum = 0;
+				int offeredSum = 0;
+				int backoutSum = 0;
+				int submitToclient = 0;
+				List<Requirement> reqList = requirementService.getAllVendorJobsBasedonRelationId(orgLocations.getId(), orgRelationID, userRoleName, loginUser, status);
+				for (Requirement requirement : reqList) {
+					if(tempReqId.longValue() != requirement.getParentRequirement().getId().longValue()){
+						mainRequirement = requirementService.getRequirementDetailsById(requirement.getParentRequirement().getId());
+						RequirementDTO requirementDTO=new RequirementDTO();
+						interviewsSum = 0;
+						offeredSum = 0;
+						backoutSum = 0;
+						submitToclient = 0;	
+//					}
+					List<RequirementSubmission> requirementSubmissionList1 = requirementSubmissionService.getApplicantRequirmentCountSubmittedByVendor(orgLocations.getId(), requirement.getParentRequirement().getId(), vendorLocationId);
+					if (null != requirementSubmissionList1 && requirementSubmissionList1.size() > 0) {
+						for (RequirementSubmission reqSub : requirementSubmissionList1) {
+							int vendorInterviewsCount = 0;
+							int vendorOfferedCount = 0;
+							int vendorBackoutCount = 0;
+							int vendorSubmittoClientCount = 0;
+							List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(reqSub.getId(), null, null);
+							if (null != requirementSubmissionHistoryList
+									&& requirementSubmissionHistoryList.size() > 0) {
+								for (RequirementSubmissionHistory rsh : requirementSubmissionHistoryList) {
+									if ("interview".equalsIgnoreCase(rsh.getToStage())) {
+										vendorInterviewsCount++;
+									}
+									else if ("offermade".equalsIgnoreCase(rsh.getToStage())) {
+										vendorOfferedCount++;
+									}
+									
+									else if ("backout".equalsIgnoreCase(rsh.getToStage())) {
+										vendorBackoutCount++;
+									}
+									else if(ApplicantSubmissionStatus.SUBMISSION.toString().equalsIgnoreCase(rsh.getToStage())){
+										vendorSubmittoClientCount++;
+									}
+								}
+								interviewsSum = interviewsSum + vendorInterviewsCount;
+								offeredSum = offeredSum + vendorOfferedCount;
+								backoutSum = backoutSum + vendorBackoutCount;
+								submitToclient = submitToclient + vendorSubmittoClientCount;
 							}
 						}
-						interviewsSum = interviewsSum + vendorInterviewsCount;
-						offeredSum = offeredSum + vendorOfferedCount;
-						backoutSum = backoutSum + vendorBackoutCount;
-						submitToclient = submitToclient + vendorSubmittoClientCount;
 					}
+					   //SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
+					requirementDTO.setVendorInterviewsCount(interviewsSum);
+					requirementDTO.setVendorOfferedCount(offeredSum);
+					requirementDTO.setVendorBackoutCount(backoutSum);
+					requirementDTO.setNoOfSubmittedApplicants(String.valueOf(submitToclient));
+					requirementDTO.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirement.getCreatedDate()));
+					requirementDTO.setRequirementUUID(mainRequirement.getRequirementUUID());
+					requirementDTO.setJobTitle(mainRequirement.getJobTitle());
+					requirementDTO.setJobType(mainRequirement.getJobType());
+					requirementDTO.setOtherJobType(mainRequirement.getOtherJobType());
+					requirementDTO.setState(mainRequirement.getState());
+					requirementDTO.setCity(mainRequirement.getCity());
+					requirementDTO.setCountry(mainRequirement.getCountry());
+					requirementDTO.setManager(mainRequirement.getManager());
+					requirementDTO.setId(mainRequirement.getId());
+					List<String> requirementLocationsList = new ArrayList<>();
+					List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(mainRequirement.getId());
+					if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations location : locationsList) {
+					requirementLocationsList.add(location.getLocation());
+					}
+					}
+					requirementDTO.setLocationsList(requirementLocationsList);
+					requirementDTO.setRequirementSubmissionStatus((mainRequirement.getRequirementSubmissionStatus()).toString());
+					if (mainRequirement.getManagerUserId() != null) {
+						String managerFirstName = "";
+						if (StringUtils.isNotEmpty(mainRequirement.getManagerUserId().getFirstName())) {
+							managerFirstName = mainRequirement.getManagerUserId().getFirstName();
+						}
+						String managerLastName = "";
+						if (StringUtils.isNotEmpty(mainRequirement.getManagerUserId().getLastName())) {
+							managerLastName = mainRequirement.getManagerUserId().getLastName();
+						}
+						StringBuilder name = new StringBuilder();
+						requirementDTO.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
+					}
+//					if(tempReqId.longValue() != requirement.getParentRequirement().getId().longValue()){
+						tempReqId = requirement.getParentRequirement().getId();
+						//mainReqList.add(mainRequirement);
+						mainReqListDTO.add(requirementDTO);
+						
+					}
+					
 				}
+				mainReqListDTOList.setData(mainReqListDTO);
+				return mainReqListDTOList;
 			}
-			   //SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
-			mainRequirement.setVendorInterviewsCount(interviewsSum);
-			mainRequirement.setVendorOfferedCount(offeredSum);
-			mainRequirement.setVendorBackoutCount(backoutSum);
-			mainRequirement.setNoOfSubmittedApplicants(String.valueOf(submitToclient));
-			mainRequirement.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirement.getCreatedDate()));
-			if (mainRequirement.getManagerUserId() != null) {
-				String managerFirstName = "";
-				if (StringUtils.isNotEmpty(mainRequirement.getManagerUserId().getFirstName())) {
-					managerFirstName = mainRequirement.getManagerUserId().getFirstName();
-				}
-				String managerLastName = "";
-				if (StringUtils.isNotEmpty(mainRequirement.getManagerUserId().getLastName())) {
-					managerLastName = mainRequirement.getManagerUserId().getLastName();
-				}
-				StringBuilder name = new StringBuilder();
-				mainRequirement.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
-			}
-//			if(tempReqId.longValue() != requirement.getParentRequirement().getId().longValue()){
-				tempReqId = requirement.getParentRequirement().getId();
-				mainReqList.add(mainRequirement);
-			}
-			
-		}
-		return commonUtil.toJSON(mainReqList);
-	}
 	
 	
-	@RequestMapping(value = "/getVendorAssociatesListForVendors")
-	public String getVendorAssociatesListForVendors(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId, HttpServletRequest request) throws Exception
+	@RequestMapping(value = { "/getVendorAssociatesListForVendors", "/rest/getVendorAssociatesListForVendors" }, method = RequestMethod.POST)
+	public ResponseList<CandidateDTO> getVendorAssociatesListForVendors(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String resultJson;
-		List<Candidate> candidateList = candidateService.getCandidatesListByOrgLocationIdAndOrgRelationId(orgLocations.getId(), orgRelationId);
-		resultJson = commonUtil.toJSON(candidateList);
-		return resultJson;
+		ResponseList<CandidateDTO> candidateList = candidateService.getCandidateListByOrgLocationIdAndOrgRelationId(orgLocations.getId(), orgRelationId);
+		return candidateList;
 	}
+	
+	
+	@RequestMapping(value = "/saveVendorOnboardingDocuments", method = RequestMethod.POST)
+	public @ResponseBody String saveVendorOnboardingTemplateDocuments(OnBoardingTemplateDTO onBoardingTemplateDTO, HttpServletRequest request) throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		vendorOnboardTemplateDocumentsService.storeVendorOnboardDocuments(onBoardingTemplateDTO, user);
+		
+	return "success";
+			
+	}
+	
+	
+	 @RequestMapping(value = { "/getVendorOnboardTasksListByTemplateId", "/rest/getVendorOnboardTasksListByTemplateId" }, method = RequestMethod.GET)
+	 public @ResponseBody List<VendorOnboardTaskDTO> getVendorOnboardTasksListByTemplateId(@RequestParam(value="orgRelationId", required = true) Long orgRelationId,
+			 @RequestParam(value="vendorOnboardId", required = true) Long vendorOnboardId,HttpServletRequest request) throws Exception{
+		
+		 List<VendorOnboardTasks> vendorOnboardtasksList = new ArrayList<VendorOnboardTasks>();
+		 List<VendorOnboardTasks> tasksList = null;
+		 List<VendorOnboardTaskDTO> tasksDTOList = new ArrayList<>();
+		
+		 tasksList = vendorOnboardTasksService.getVendorOnboardTasksByVendorOnboardId(vendorOnboardId);
+		 if(tasksList != null && tasksList.size() > 0){
+			 vendorOnboardtasksList.addAll(tasksList);
+		 }
+		 
+		 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(orgRelationId);
+		 
+		 if(StringUtils.isNotBlank(orgRelations.getVendorOnboardTemplateId())){
+			 List<Long> templateIdsList = new ArrayList<>();
+				String[] templateIds = orgRelations.getVendorOnboardTemplateId().split(",");
+				for(String onboardTempalteId : templateIds){
+					templateIdsList.add(Long.valueOf(onboardTempalteId));
+				}
+			List<VendorOnboardTasks> onboardTemplatetasksList  = vendorOnboardTasksService.getVendorOnboardTasksByTemplateIdsList(templateIdsList);
+			if(onboardTemplatetasksList != null && onboardTemplatetasksList.size() > 0){
+				vendorOnboardtasksList.addAll(onboardTemplatetasksList);
+			}
+		 }
+
+		
+		
+		 if(vendorOnboardtasksList != null && vendorOnboardtasksList.size() > 0){
+			 for(VendorOnboardTasks tasks : vendorOnboardtasksList){
+				 
+				 List<String> usersList = new ArrayList<String>();
+					 if(StringUtils.isNotBlank(tasks.getAssignToUsers())){
+						 String[] userIds = tasks.getAssignToUsers().split(",");
+						 
+						 for(int i = 0 ; i < userIds.length; i++ ){
+							 StringBuilder userName = new StringBuilder();
+							 User user = userService.getUserById(Long.valueOf(userIds[i]));
+							 String assignedUser = null;
+							 if(null != user.getLastName()){
+								 assignedUser = userName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+								}else{
+									assignedUser = userName.append(user.getFirstName()).toString();
+								}
+							 usersList.add(assignedUser);
+						 }
+					 }
+					 
+					 VendorOnboardTaskDTO taskDTO = new  VendorOnboardTaskDTO();
+					 taskDTO.setId(tasks.getId());
+					 taskDTO.setPriority(tasks.getPriority());
+					 taskDTO.setTaskRepeat(tasks.getTaskRepeat());
+					 taskDTO.setTaskName(tasks.getTaskName());
+					 taskDTO.setDueAfterString(tasks.getDueAfterString());
+					 taskDTO.setUsersList(usersList); 
+					 taskDTO.setTaskType(tasks.getTaskType());
+					 tasksDTOList.add(taskDTO);
+			 }
+		 }
+		 return tasksDTOList;
+		}
+	
+	
+	 @RequestMapping(value = "/saveVendorOnBoardTasks" , method = RequestMethod.POST)
+	 public @ResponseBody  String saveVendorOnBoardTasks(OnboardTasksDTO onboardTasksDTO, @RequestParam(value="vendorOnboardId", required = true) String vendorOnboardId,
+			 HttpServletRequest request) throws Exception {
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 onboardTasksDTO.setVendorOnboardId(vendorOnboardId);
+		 vendorOnboardTasksService.saveVendorOnboardTemplateTask(onboardTasksDTO, user);
+		 return "success";
+	   }
+	 
+	 
+	 @RequestMapping(value = "/saveAndFinishVendorOnboard" , method = RequestMethod.POST)
+	 public @ResponseBody  String saveAndFinishVendorOnboard(OnboardTasksDTO onboardTasksDTO, @RequestParam(value="vendorOnboardId", required = true) String vendorOnboardId,
+			 HttpServletRequest request) throws Exception {
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 onboardTasksDTO.setVendorOnboardId(vendorOnboardId);
+		 //vendorOnboardTasksService.saveVendorOnboardTemplateTask(onboardTasksDTO, user);
+		 vendorOnboardService.finishVendorOnboarding(onboardTasksDTO, user,orgLocations);
+		 return "success";
+	   } 
+	 
 }

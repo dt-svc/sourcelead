@@ -18,10 +18,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
@@ -29,6 +31,8 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -74,6 +78,12 @@ public class ClientController {
 	@Autowired
 	StatesService statesService;
 	
+	@Autowired
+	private SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	private SourceleadFormSectionsService sourceleadFormSectionsService;
+	
 	/**
 	 * Handles to display client jsp
 	 * @return ModelAndView
@@ -85,6 +95,20 @@ public class ClientController {
 		 	logger.debug("Display the client page");
 			ModelAndView model = new ModelAndView();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.Clients);
+			request.getSession().setAttribute("sessionData",sessionData);
+			
+			 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CLIENT);
+		     model.addObject("actionId",action.getId());
+		     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+			 model.addObject("sourceleadSectionList",sections);
+		     
 			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
 			model.addObject("userList", userList);
 			model.setViewName("client/client");
@@ -107,13 +131,23 @@ public class ClientController {
 		public ModelAndView clientDashboard(HttpServletRequest request,@RequestParam(value = "searchResult", required = false) String searchResult,@RequestParam(value = "searchValue", required = false) String searchValue,
 				@RequestParam(value = "responderLocationId", required = false) String responderLocationId,
 				@RequestParam(value = "orgRelationId", required = false) String orgRelationId,
+				@RequestParam(value = "orgRelationUUID", required = false) String orgRelationUUID,
+				@RequestParam(value = "orgSpocUUID", required = false) String orgSpocUUID,
 				@RequestParam(value = "orgName", required = false) String orgName,
-				@RequestParam(value = "clientKeyword", required = false) String clientKeyword) throws Exception {
+				@RequestParam(value = "clientKeyword", required = false) String clientKeyword,
+				@RequestParam(value="contactsTab", required=false)String contactsTab) throws Exception {
 		 
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    ModelAndView model = new ModelAndView();
-			model.setViewName("client/clientDashboard");
+			
+		    SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CLIENT);
+		     model.addObject("actionId",action.getId());
+		     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+			 model.addObject("sourceleadSectionList",sections);
+		    
+			 model.addObject("contactsTab",contactsTab);
+		    model.setViewName("client/clientDashboard");
 			
 			if(null != searchResult && !searchResult.equalsIgnoreCase("") && searchResult.equals("clientSearchResult")){
 				model.addObject("clientSearchResult","clientSearchResult");
@@ -171,8 +205,10 @@ public class ClientController {
 				if(null != countries){
 				   model.addObject("loginCountryName", countries.getName());
 				}
+				if(countries!= null && countries.getName()!= null) {
 		        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
 		        model.addObject("statesList", statesList);
+			}
 			}
 			
 			commonUtil.highLightMenu(Constants.Clients, request);
@@ -195,6 +231,36 @@ public class ClientController {
 				SourceLeadSessionManager.removeSessionAttribute(request, "clientImport");
 			}
 			
+			if(orgRelationUUID != null){
+				OrgRelations orgRelations = orgRelationsService.getOrgRelationsByUUID(orgRelationUUID);
+				if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					model.addObject("clientOrgLocationId", orgRelations.getResponderLocationId().getId());
+					model.addObject("clientName", orgRelations.getResponderLocationId().getOrgLocationName());
+				}else{
+					model.addObject("clientOrgLocationId", orgRelations.getLocationId().getId());
+					model.addObject("clientName", orgRelations.getLocationId().getOrgLocationName());
+				}
+				
+				model.addObject("orgRelationId", orgRelations.getId());
+				model.addObject("orgRelationUUID", orgRelationUUID);
+			}
+			
+			if(orgSpocUUID != null){
+			
+			OrgSpoc orgSpoc = orgSpocService.getOrgSpocByUUID(orgSpocUUID);
+				
+			if(orgSpoc != null){
+				model.addObject("spocId", orgSpoc.getId());
+				model.addObject("ownerId", orgSpoc.getVendorUser().getId());
+				model.addObject("spocUserId", orgSpoc.getClientUser().getId());
+				model.addObject("tempOwnerId", orgSpoc.getVendorUser().getId());
+				model.addObject("spocName", orgSpoc.getClientUser().getFullName());
+				model.addObject("spocLocationId", orgSpoc.getClientLocationId().getId());
+				model.addObject("orgRelationId", orgSpoc.getOrgRelations().getId());
+				model.addObject("userId", orgSpoc.getVendorUser().getId());
+			 }
+			}
+			
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
 	    }
@@ -207,12 +273,13 @@ public class ClientController {
 		 */
 	 @PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')")
 		 @RequestMapping(value = "/addClientContact")
-		 public ModelAndView addClientContact(HttpServletRequest request) throws Exception {
+		 public ModelAndView addClientContact(HttpServletRequest request,@RequestParam(value = "cid", required = false) String cid) throws Exception {
 			 ModelAndView model = new ModelAndView();
 				try{
 					
 					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 					List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
+					model.addObject("cid",cid);
 					model.addObject("userList", userList);
 					model.setViewName("client/addClientContact");
 					model.addObject("sourceleadUrl", sourceleadUrl);
@@ -221,6 +288,11 @@ public class ClientController {
 					model.addObject("loginOrgLocId", orgLocations.getId());
 					model.addObject("clientContactList", vandorsListByOrgLocationId);
 					
+					 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CLIENT);
+				     model.addObject("actionId",action.getId());
+				     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+					 model.addObject("sourceleadSectionList",sections);
+					 
 					SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 					if(sessionData == null)
 					{
