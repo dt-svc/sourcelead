@@ -86,6 +86,9 @@ public class UserLoginHelper {
 	@Value("${pmsUrl}")
 	private String pmsUrl;
 	
+	@Value("${atsUrl}")
+	private String atsUrl;
+	
 	@Autowired
 	OrgLocationService orgLocationService;
 	
@@ -166,6 +169,7 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRole", userRole.getRoles().getRoleName());
 		  SourceLeadSessionManager.setSessionAttribute(req, "sourceleadUrl", sourceleadUrl);
 		  SourceLeadSessionManager.setSessionAttribute(req, "pmsUrl", pmsUrl);
+		  SourceLeadSessionManager.setSessionAttribute(req, "atsUrl", atsUrl);
 		  SourceLeadSessionManager.setSessionAttribute(req, "googleMapsLocationApiKey", googleMapsLocationApiKey);
 		  SourceLeadSessionManager.setSessionAttribute(req, "userRoleId", userRoleId);
 			SourceLeadSessionManager.setSessionAttribute(req, "roleHierarchyId",
