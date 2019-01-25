@@ -14,4 +14,6 @@ public interface ExpensesReportDao {
 
 	List<ExpensesApproverHierarchy> getExpensesTotalMontWiseCountBasedOnprojectMemberIdStartDateAndEndDate(Date startDate, Date endDate,Long projectMemberId);
 
+	List<Expenses> getExpensesByProjectMemberIdAndExpenseStartAndEndDateForClaimedExpenses(Long projectMembersId,Date startDate, Date endDate);
+
 }

@@ -1,43 +1,53 @@
 package com.bis.sourcelead.dto;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.bis.sourcelead.enums.PaymentModes;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-public class ExpensesEntriesDTO implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class ExpensesEntriesDTO {
 
 	private Long id;
-
-	@JsonBackReference
-	private ExpensesDTO expensesId;
 	
-	private ExpensesCategoryDTO expensesCategoryId;
-
-	private PaymentModes paymentMode;
+	private String maxRecCount;
 	
-	private List<ExpensesEntryDocumentsDTO> expensesEntryDocuments;
-
+	private String categoryType;
+	
+	private long categoryTypeId;
+	
+	private String categoryName;
+	
+	private String dateOccurred;
+	
 	private String receiptIssuedBy;
-
-	private String currencyType;
 	
-	private String expenseDate;
-
-	private Float amount;
-
-	private String description;
+	private String paymentMode;
 	
-	private String date;
+	private float allowedAmount;
 	
-	private String subTotal;
+	private String categoryAmount;
 	
-	private String category;
+	private String categoryAmountType;
+	
+	private String categoryApprovedAmountType;
+	
+	private String categoryApprovedAmount;
+	
+	private String paidBy;
+	
+	private String entryDescription;
+	
+	private List<FileInfo> fileInfo;
 	
 	private BigDecimal amountRoundOff;
+	
+	private Boolean billable;
+	
+	private String amountchangereason;
+	
+	private BigDecimal submittedamount;
+	
+	private BigDecimal amount;
 
 	public Long getId() {
 		return id;
@@ -47,43 +57,36 @@ public class ExpensesEntriesDTO implements Serializable {
 		this.id = id;
 	}
 
-	public ExpensesDTO getExpensesId() {
-		return expensesId;
+	public String getMaxRecCount() {
+		return maxRecCount;
 	}
 
-	public void setExpensesId(ExpensesDTO expensesId) {
-		this.expensesId = expensesId;
+	public void setMaxRecCount(String maxRecCount) {
+		this.maxRecCount = maxRecCount;
 	}
 
-	public ExpensesCategoryDTO getExpensesCategoryId() {
-		return expensesCategoryId;
+	public String getCategoryType() {
+		return categoryType;
 	}
 
-	public void setExpensesCategoryId(ExpensesCategoryDTO expensesCategoryId) {
-		this.expensesCategoryId = expensesCategoryId;
-	}
-	public String getExpenseDate() {
-		return expenseDate;
+	public void setCategoryType(String categoryType) {
+		this.categoryType = categoryType;
 	}
 
-	public void setExpenseDate(String expenseDate) {
-		this.expenseDate = expenseDate;
+	public String getCategoryName() {
+		return categoryName;
 	}
 
-	public PaymentModes getPaymentMode() {
-		return paymentMode;
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
 	}
 
-	public void setPaymentMode(PaymentModes paymentMode) {
-		this.paymentMode = paymentMode;
+	public String getDateOccurred() {
+		return dateOccurred;
 	}
 
-	public List<ExpensesEntryDocumentsDTO> getExpensesEntryDocuments() {
-		return expensesEntryDocuments;
-	}
-
-	public void setExpensesEntryDocuments(List<ExpensesEntryDocumentsDTO> expensesEntryDocuments) {
-		this.expensesEntryDocuments = expensesEntryDocuments;
+	public void setDateOccurred(String dateOccurred) {
+		this.dateOccurred = dateOccurred;
 	}
 
 	public String getReceiptIssuedBy() {
@@ -94,57 +97,54 @@ public class ExpensesEntriesDTO implements Serializable {
 		this.receiptIssuedBy = receiptIssuedBy;
 	}
 
-	public String getCurrencyType() {
-		return currencyType;
+	public String getPaymentMode() {
+		return paymentMode;
 	}
 
-	public void setCurrencyType(String currencyType) {
-		this.currencyType = currencyType;
+	public void setPaymentMode(String paymentMode) {
+		this.paymentMode = paymentMode;
 	}
 
-	public Float getAmount() {
-		return amount;
+	public float getAllowedAmount() {
+		return allowedAmount;
 	}
 
-	public void setAmount(Float amount) {
-		this.amount = amount;
+	public void setAllowedAmount(float allowedAmount) {
+		this.allowedAmount = allowedAmount;
 	}
 
-	public String getDescription() {
-		return description;
+	public String getCategoryAmount() {
+		return categoryAmount;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setCategoryAmount(String categoryAmount) {
+		this.categoryAmount = categoryAmount;
 	}
 
-	public String getDate() {
-		return date;
+	public String getCategoryAmountType() {
+		return categoryAmountType;
 	}
 
-	public void setDate(String date) {
-		this.date = date;
+	public void setCategoryAmountType(String categoryAmountType) {
+		this.categoryAmountType = categoryAmountType;
 	}
 
-	public String getSubTotal() {
-		return subTotal;
+	public String getEntryDescription() {
+		return entryDescription;
 	}
 
-	public void setSubTotal(String subTotal) {
-		this.subTotal = subTotal;
+	public void setEntryDescription(String entryDescription) {
+		this.entryDescription = entryDescription;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public List<FileInfo> getFileInfo() {
+		return fileInfo;
 	}
 
-	public String getCategory() {
-		return category;
+	public void setFileInfo(List<FileInfo> fileInfo) {
+		this.fileInfo = fileInfo;
 	}
 
-	public void setCategory(String category) {
-		this.category = category;
-	}
 
 	public BigDecimal getAmountRoundOff() {
 		return amountRoundOff;
@@ -154,7 +154,77 @@ public class ExpensesEntriesDTO implements Serializable {
 		this.amountRoundOff = amountRoundOff;
 	}
 
-	
-	
+	public long getCategoryTypeId() {
+		return categoryTypeId;
+	}
 
+	public void setCategoryTypeId(long categoryTypeId) {
+		this.categoryTypeId = categoryTypeId;
+	}
+
+	public String getPaidBy() {
+		return paidBy;
+	}
+
+	public void setPaidBy(String paidBy) {
+		this.paidBy = paidBy;
+	}
+
+	public BigDecimal getAmount() {
+		return amount;
+	}
+
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+	}
+
+	public Boolean getBillable() {
+		return billable;
+	}
+
+	public void setBillable(Boolean billable) {
+		this.billable = billable;
+	}
+
+	public String getAmountchangereason() {
+		return amountchangereason;
+	}
+
+	public void setAmountchangereason(String amountchangereason) {
+		this.amountchangereason = amountchangereason;
+	}
+
+	public BigDecimal getSubmittedamount() {
+		return submittedamount;
+	}
+
+	public void setSubmittedamount(BigDecimal submittedamount) {
+		this.submittedamount = submittedamount;
+	}
+
+	public String getCategoryApprovedAmountType() {
+		return categoryApprovedAmountType;
+	}
+
+	public void setCategoryApprovedAmountType(String categoryApprovedAmountType) {
+		this.categoryApprovedAmountType = categoryApprovedAmountType;
+	}
+
+	public String getCategoryApprovedAmount() {
+		return categoryApprovedAmount;
+	}
+
+	public void setCategoryApprovedAmount(String categoryApprovedAmount) {
+		this.categoryApprovedAmount = categoryApprovedAmount;
+	}
+
+
+	
+	
+	
 }
+
+
+
+
+

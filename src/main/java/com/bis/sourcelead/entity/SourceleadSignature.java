@@ -21,8 +21,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "SOURCELEAD_SIGNATURE", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadSignature")
+@Table(name = "SOURCELEAD_SIGNATURE")
 public class SourceleadSignature implements Serializable{
 	
 	
@@ -33,8 +32,8 @@ public class SourceleadSignature implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocationId;
 	

@@ -18,7 +18,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddCreatedUserToRequirement {
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author Venkat I
  * this method is using for update the userCode to userId	
@@ -34,7 +35,7 @@ public void dumpUserIdToJob() throws IOException, SQLException {
 		conn = dataSource.getConnection();
 			
 		
-			 String sql1 = "SELECT * FROM sourcelead.REQUIREMENT requirement ";
+			 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".REQUIREMENT requirement ";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			
@@ -44,14 +45,14 @@ public void dumpUserIdToJob() throws IOException, SQLException {
 				 Long  requirementId = rs1.getLong("ID");
 				 String  userCode = rs1.getString("CREATED_BY");
 				 
-				 String query = "SELECT * from sourcelead.USER where USER_CODE = '"+userCode+"' ";
+				 String query = "SELECT * from "+dbconfig.getSchema()+".USER where USER_CODE = '"+userCode+"' ";
 				 java.sql.PreparedStatement pstmt = conn.prepareStatement(query); 
 				 ResultSet rs2 = pstmt.executeQuery();
 				
 				 
 			 	if (rs2.next()) {
 			 		Long  userId = rs2.getLong("ID");
-				    String query1 = " update sourcelead.REQUIREMENT set CREATED_BY = ? where ID = ? ";
+				    String query1 = " update "+dbconfig.getSchema()+".REQUIREMENT set CREATED_BY = ? where ID = ? ";
 			    	java.sql.PreparedStatement pstmt2 = conn.prepareStatement(query1); 
 			    	pstmt2.setLong(1, userId);
 			    	pstmt2.setLong(2, requirementId);
@@ -79,10 +80,6 @@ public void dumpUserIdToJob() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

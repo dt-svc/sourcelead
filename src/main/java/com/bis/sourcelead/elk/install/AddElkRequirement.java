@@ -2,8 +2,6 @@ package com.bis.sourcelead.elk.install;
 
 import java.beans.PropertyVetoException;
 import java.io.IOException;
-import java.io.Writer;
-import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,13 +15,11 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.index.engine.DocumentMissingException;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -31,25 +27,22 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.elk.index.RequirementIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKTC;
+import com.bis.sourcelead.util.CommonUtil;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JsonWriter;
 
 public class AddElkRequirement {
 	
-	
-	
-	
 	private static final Logger logger = LoggerFactory.getLogger(AddElkRequirement.class);
 	private ComboPooledDataSource comboPooledDataSource;
-	private TransportClient client;
+	private SourceleadELKTC<RequirementIndex> client;
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	public void addElkRequirement() throws IOException, SQLException {
 		ArrayList<RequirementIndex> requirementList = getElkRequirements();
 		if(null != requirementList && !requirementList.isEmpty()){
 			for (RequirementIndex requirementIndex :requirementList) {
-				saveOrUpdateElkDocument(requirementIndex, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_INDEX,requirementIndex.getRequirementId().toString());
+				client.saveOrUpdateElkDocument(requirementIndex, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,requirementIndex.getRequirementId().toString());
 			}
 		}
 		  logger.info("Rquirements Successfully Added To Elk");
@@ -65,7 +58,9 @@ public class AddElkRequirement {
 		Connection conn = null ;
 		Statement stmt = null;
 		try {
-			String sql = "SELECT * FROM sourcelead.REQUIREMENT req INNER JOIN USER user on req.MANAGER_USER_ID = user.ID;";
+
+			String sql = "SELECT * FROM "+dbconfig.getSchema()+".REQUIREMENT req INNER JOIN USER user on req.MANAGER_USER_ID = user.ID;";
+
 			DataSource dataSource = comboPooledDataSource();
 			 conn = dataSource.getConnection();
 			 stmt = conn.createStatement();
@@ -78,7 +73,7 @@ public class AddElkRequirement {
 				if(null != rs.getString("ORG_LOCATION_ID") && !"".equalsIgnoreCase(rs.getString("ORG_LOCATION_ID"))){
 					requirementIndex.setOrgLocationId(Long.parseLong(rs.getString("ORG_LOCATION_ID")));
 				}
-				requirementIndex.setJobTitle(rs.getString("JOB_TITLE"));
+				requirementIndex.setJobTitle(firstLetterCapitalizedString(rs.getString("JOB_TITLE")));
 				requirementIndex.setJobId(rs.getString("JOB_ID"));
 				requirementIndex.setCurrentRateCurrency(rs.getString("CURRENCY_CODE"));
 				requirementIndex.setNumberOfPositions(rs.getString("POSITIONS"));
@@ -88,7 +83,9 @@ public class AddElkRequirement {
 				requirementIndex.setProjectDurationYears(rs.getString("PROJECT_DURATION_YEARS"));
 				requirementIndex.setClosedDate(rs.getString("REQUIRMENT_CLOSED_DATE"));
 				requirementIndex.setIsreceivingApplicants(rs.getString("IS_RECEIVING_APPLICANTS"));
-				
+				if(null != rs.getString("PROJECT_CLIENT_ID") && !"".equalsIgnoreCase(rs.getString("PROJECT_CLIENT_ID"))){
+					requirementIndex.setProjectClientID(rs.getString("PROJECT_CLIENT_ID"));
+				}
 				if(null != rs.getString("DESCRIPTION") && !"".equalsIgnoreCase(rs.getString("DESCRIPTION"))){
 					requirementIndex.setDescription(rs.getString("DESCRIPTION"));
 				}
@@ -101,12 +98,13 @@ public class AddElkRequirement {
 				}
 				requirementIndex.setRateType(rs.getString("RATE_TYPE"));
 				if(null != rs.getString("MIN_EXP") && !"".equalsIgnoreCase(rs.getString("MIN_EXP"))){
-					requirementIndex.setMinExperience(rs.getString("MIN_EXP"));
+					requirementIndex.setMinExperience(Float.parseFloat(rs.getString("MIN_EXP")));
 				}
 				if(null != rs.getString("MAX_EXP") && !"".equalsIgnoreCase(rs.getString("MAX_EXP"))){
-					requirementIndex.setMaxExperience(rs.getString("MAX_EXP"));
+					requirementIndex.setMaxExperience(Float.parseFloat(rs.getString("MAX_EXP")));
 				}
 				requirementIndex.setRequirementStatus(rs.getString("REQUIREMENT_SUBMISSION_STATUS"));
+				requirementIndex.setUrl(rs.getString("URL"));
 				//requirementIndex.setRequirementSubmissionPreviousStatus(rs.getString("REQUIREMENT_SUBMISSION_PREVIOUS_STATUS"));
 				requirementIndex.setCountry(rs.getString("COUNTRY"));
 				requirementIndex.setState(rs.getString("STATE"));
@@ -121,8 +119,41 @@ public class AddElkRequirement {
 				requirementIndex.setUpdatedDate(dateFormat.format(rs.getDate("UPDATED_DATE")));
 				requirementIndex.setIsTemplate(rs.getString("IS_Template"));
 				requirementIndex.setManagerUserId(rs.getString("MANAGER_USER_ID"));
+				requirementIndex.setPrimaryRecruiterUserId(rs.getString("PRIMARY_RECRUITER_USER_ID"));
 				requirementIndex.setGeneratedId(rs.getString("GENERATED_ID"));
 				requirementIndex.setReleasedBy(rs.getString("RELEASED_BY"));
+				if(null != rs.getString("MEDICAL_CLEARENCE") && !"".equalsIgnoreCase(rs.getString("MEDICAL_CLEARENCE"))){
+				requirementIndex.setMedicalClearence(rs.getString("MEDICAL_CLEARENCE"));
+				}
+				if(null != rs.getString("SECURITY_CLEARANCE") && !"".equalsIgnoreCase(rs.getString("SECURITY_CLEARANCE"))){
+					requirementIndex.setSecurityClearance(rs.getString("SECURITY_CLEARANCE"));
+					}
+				if(null != rs.getString("OVER_TIME") && !"".equalsIgnoreCase(rs.getString("OVER_TIME"))){
+					requirementIndex.setOverTime(rs.getString("OVER_TIME"));
+					}
+				if(null != rs.getString("BACKGROUNG_CHECK") && !"".equalsIgnoreCase(rs.getString("BACKGROUNG_CHECK"))){
+					requirementIndex.setBackgroundCheck(rs.getString("BACKGROUNG_CHECK"));
+					}
+				if(null != rs.getString("GENDER") && !"".equalsIgnoreCase(rs.getString("GENDER"))){
+					requirementIndex.setGender(rs.getString("GENDER"));
+					}
+				
+				if(null != rs.getString("EXPERIENCE_LEVEL") && !"".equalsIgnoreCase(rs.getString("EXPERIENCE_LEVEL"))){
+					requirementIndex.setExperienceLevel(rs.getString("EXPERIENCE_LEVEL"));
+					}
+				if(null != rs.getString("CLIENT_CURRENCY_CODE") && !"".equalsIgnoreCase(rs.getString("CLIENT_CURRENCY_CODE"))){
+					requirementIndex.setClientCurrencyCode(rs.getString("CLIENT_CURRENCY_CODE"));
+				}
+				if(null != rs.getString("CLIENT_MAX_RATE") && !"".equalsIgnoreCase(rs.getString("CLIENT_MAX_RATE"))){
+					requirementIndex.setClientMaxRate(Float.parseFloat(rs.getString("CLIENT_MAX_RATE")));
+				}
+				if(null != rs.getString("CLIENT_RATE") && !"".equalsIgnoreCase(rs.getString("CLIENT_RATE"))){
+					requirementIndex.setClientRate(Float.parseFloat(rs.getString("CLIENT_RATE")));
+				}
+				if(null != rs.getString("CLIENT_RATE_TYPE") && !"".equalsIgnoreCase(rs.getString("CLIENT_RATE_TYPE"))){
+					requirementIndex.setClientRateType(rs.getString("CLIENT_RATE_TYPE"));
+				}
+					
 				ResultSet approverSet = getApproverUserDetails(Long.parseLong(rs.getString("ID")),conn);
 				List<String> lavel1User = new ArrayList<String>();
 				List<String> lave21User = new ArrayList<String>();
@@ -172,15 +203,19 @@ public class AddElkRequirement {
 				if(null != education && !"".equalsIgnoreCase(education)){
 					requirementIndex.setEducation(education.split(","));
 				}
+				requirementIndex.setIsClientJob(rs.getString("IS_CLIENT_JOB"));
 				if(rs.getString("ORG_RELATION_ID") !=null && !"".equalsIgnoreCase(rs.getString("ORG_RELATION_ID"))){
+					requirementIndex.setIsClientJob(rs.getString("IS_CLIENT_JOB"));
 					ResultSet rs1 = getClientContactDetails(rs.getString("ORG_RELATION_ID"),conn);
-					String clientName =null;;
+					String clientName =null;
+					String clientContactName = null;
+					String clientContactEmail = null;
 					while(rs1.next()){
 						String type = rs1.getString("INITIATOR_TYPE");
 						if("Client".equalsIgnoreCase(type)){
 							clientName = getClientName(rs1.getString("LOCATION_ID"),conn);
 						}
-						else{
+						if("Vendor".equalsIgnoreCase(type)){
 							clientName = getClientName(rs1.getString("RESPONDER_LOCATION_ID"),conn);
 						}
 					}
@@ -192,12 +227,24 @@ public class AddElkRequirement {
 					requirementIndex.setJobType(rs.getString("JOB_TYPE"));
 					requirementIndex.setOtherJobType(rs.getString("OTHER_JOBTYPE"));
 					requirementIndex.setJobId(rs.getString("JOB_ID"));
-					String clientContactName = null;
+					
+					
+					String clientContactSql = "SELECT USER.FIRST_NAME, USER.LAST_NAME,USER.EMAIL FROM USER INNER JOIN ORG_SPOC ON USER.ID=ORG_SPOC.CLIENT_USER_ID WHERE ORG_SPOC.ID=?;";
+					ResultSet clientNameRs = getClientContactName(rs.getString("SPOC_ID"),clientContactSql,conn);
+					if(clientNameRs.next()){
+						if(StringUtils.isNotEmpty(clientNameRs.getString("LAST_NAME"))) {
+							clientContactName = clientNameRs.getString("FIRST_NAME")+" "+clientNameRs.getString("LAST_NAME");
+						}else {
+							clientContactName = clientNameRs.getString("FIRST_NAME");
+						}
+						clientContactEmail = clientNameRs.getString("EMAIL");
+					}
+					/*String clientContactName = null;
 					String clientContactEmail = null;
 					while(rs1.next()){
 						String type = rs1.getString("INITIATOR_TYPE");
 						if("Client".equalsIgnoreCase(type)){
-							String clientContactSql = "SELECT user.FIRST_NAME,user.EMAIL FROM sourcelead.ORG_SPOC spoc INNER JOIN USER user on spoc.OWNER_USER_ID=user.ID where spoc.INITIATOR_LOCATION_ID = ?;";
+							String clientContactSql = "SELECT user.FIRST_NAME,user.EMAIL FROM "+dbconfig.getSchema()+".ORG_SPOC spoc INNER JOIN USER user on spoc.OWNER_USER_ID=user.ID where spoc.INITIATOR_LOCATION_ID = ?;";
 							ResultSet clientNameRs = getClientContactName(rs.getString("LOCATION_ID"),clientContactSql,conn);
 							clientContactName = clientNameRs.getString("FIRST_NAME");
 							clientContactEmail = clientNameRs.getString("EMAIL");
@@ -214,9 +261,10 @@ public class AddElkRequirement {
 							clientContactEmail = clientNameRs.getString("EMAIL");
 							
 						}
-					}
+					}*/
 					requirementIndex.setClientContactName(clientContactName);
 					requirementIndex.setClientContactEmail(clientContactEmail);
+					requirementIndex.setOrgRelationId(rs.getString("ORG_RELATION_ID"));
 				}
 				
 				if(null != rs.getString("FIRST_NAME") && null != rs.getString("LAST_NAME")){
@@ -297,6 +345,10 @@ public class AddElkRequirement {
 						}
 					}
 				}
+				if(null != rs.getString("REQUIREMENT_SUBMISSION_PREVIOUS_STATUS")){
+					requirementIndex.setRequirementSubmissionPreviousStatus(rs.getString("REQUIREMENT_SUBMISSION_PREVIOUS_STATUS"));
+				}
+				
 				reqIndexList.add(requirementIndex);
 				
 			}
@@ -321,7 +373,7 @@ public class AddElkRequirement {
 		ResultSet rs=null;
 		Long requirementId = Long.parseLong(reqId);
 		try{
-				String sql = "SELECT * FROM sourcelead.TEAM team inner join REQUIREMENT_ASSIGN_TO req on team.ID = req.TEAM_ID where req.REQUIREMENT_ID = ?";
+				String sql = "SELECT * FROM "+dbconfig.getSchema()+".TEAM team inner join REQUIREMENT_ASSIGN_TO req on team.ID = req.TEAM_ID where req.STATUS = 1 and req.REQUIREMENT_ID = ?";
 //				 conn = dataSource.getConnection();
 				 ps = conn.prepareStatement(sql);
 				 ps.setLong(1, requirementId);
@@ -338,7 +390,7 @@ public class AddElkRequirement {
 		ResultSet rs=null;
 		Long requirementId = Long.parseLong(reqId);
 		 try{
-				String sql = "SELECT * FROM sourcelead.REQUIREMENT_APPROVER_HIERARCHY where REQUIREMENT_ID = ?;";
+				String sql = "SELECT * FROM "+dbconfig.getSchema()+".REQUIREMENT_APPROVER_HIERARCHY where REQUIREMENT_ID = ?;";
 //				 conn = dataSource.getConnection();
 				 ps = conn.prepareStatement(sql);
 				 ps.setLong(1, requirementId);
@@ -377,7 +429,7 @@ public class AddElkRequirement {
 		ResultSet rs=null;
 		 try{
 //			 DataSource dataSource = comboPooledDataSource();
-				String sql = "select * from REQUIREMENT_ASSIGN_TO reqAssaign  where reqAssaign.REQUIREMENT_ID = ? ;";
+				String sql = "select * from REQUIREMENT_ASSIGN_TO reqAssaign  where reqAssaign.STATUS = 1 and reqAssaign.REQUIREMENT_ID = ? ;";
 //				 conn = dataSource.getConnection();
 				 ps = conn.prepareStatement(sql);
 				 ps.setLong(1, requirementId);
@@ -458,7 +510,7 @@ public class AddElkRequirement {
 		
 //		DataSource dataSource = comboPooledDataSource();
         String orgName = null;
-		String sql = "SELECT org.ORG_NAME FROM sourcelead.ORG_LOCATIONS orgloc INNER JOIN ORG org on orgloc.ORG_ID=org.ID where orgloc.ID = ?;";
+		String sql = "SELECT org.ORG_NAME FROM "+dbconfig.getSchema()+".ORG_LOCATIONS orgloc INNER JOIN ORG org on orgloc.ORG_ID=org.ID where orgloc.ID = ?;";
 		PreparedStatement ps = null;
 		try {
 //			conn = dataSource.getConnection();
@@ -502,53 +554,12 @@ public class AddElkRequirement {
 	}
 
 
-	/**
-	 * stores Requirement into elk
-	 * @param requirementIndex
-	 * @param eLK_REQUIREMENT_INDEX(index)
-	 * @param eLK_REQUIREMENT_INDEX2(type)
-	 * @param requirementId
-	 * @return void
-	 */
-	private void saveOrUpdateElkDocument(RequirementIndex requirementIndex, String index,String type, String requirementId) {
-		String entityInJson = null;
-		try {
-		    entityInJson = toJSON(requirementIndex);
-		    client.prepareUpdate(index, type,requirementId).setDoc(entityInJson).get();
-		   // logger.info(type+" has been updated.");
-		} 
-        catch(DocumentMissingException e){
-        	client.prepareIndex(index, type,requirementId)
-		    .setSource(entityInJson).execute().actionGet();
-		   // logger.info(type+" has been indexed.");
-		}
-		catch (Exception e) {
-			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
-		}
-		
-	}
-	/**
-	 * converts entity to JSOn Object
-	 * @param obj
-	 * @return
-	 */
-	 public String toJSON(Object obj){
-	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-	            public HierarchicalStreamWriter createWriter(Writer writer) {
-	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-	            }
-	        });
-	        return xstream.toXML(obj);
-	  }
+	
 	 /**
 	  * getting connection
 	  * @return DataSource
 	  */ 
 	 private DataSource comboPooledDataSource() {
-			@SuppressWarnings("resource")
-			ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-			DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 			this.comboPooledDataSource = new ComboPooledDataSource();
 			try {
 				comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());
@@ -559,18 +570,6 @@ public class AddElkRequirement {
 			comboPooledDataSource.setUser(dbconfig.getUser());
 			comboPooledDataSource.setPassword(dbconfig.getPassword());
 			
-			try {
-		    	  Settings settings = Settings.settingsBuilder()
-		    			  .put("cluster.name", dbconfig.getCluster())
-		                  .put("node.name", dbconfig.getNode())
-		         		  .put("path.home", dbconfig.getPath())
-		                  .build();
-				client = TransportClient.builder().settings(settings).build().
-				      addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(dbconfig.getHost()), 9300));
-		     } catch (Exception exception) {
-				logger.error(ExceptionUtils.getFullStackTrace(exception));
-			}
-			
 			return comboPooledDataSource;
 		}
 	 
@@ -578,9 +577,16 @@ public class AddElkRequirement {
 			
 			try {
 				AddElkRequirement addElkCandidate = new AddElkRequirement();
+				addElkCandidate.client = new SourceleadELKTC();
 				   addElkCandidate.addElkRequirement();
+				   addElkCandidate.client.shutdown();
 			}catch (Exception e){
 				e.printStackTrace();
 			}
 		}
+	 
+	 public String firstLetterCapitalizedString(String name){
+		 String finalString = WordUtils.capitalizeFully(name);
+		return finalString;
+	}
 }

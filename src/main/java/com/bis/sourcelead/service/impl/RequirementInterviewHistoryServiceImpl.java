@@ -32,7 +32,6 @@ import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class RequirementInterviewHistoryServiceImpl implements RequirementInterviewHistoryService{
@@ -106,7 +105,7 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 					StringBuilder interviewStringBuilder=new StringBuilder();
 					interviewHistory.setRemainderTime(interviewStringBuilder.append(hours).append(" : ").append( minutes).append(" minutes").toString());
 				}
-				
+				 
 			    if(requirementInterview.getDateOfInterview() != null){
 
 					String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getStartTime());
@@ -169,6 +168,7 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			    }
 			    if(requirementInterview.getInterviewTemplateId() != null){
 			    	interviewHistory.setInterviewTemplateid(requirementInterview.getInterviewTemplateId().getId());
+			    	interviewHistory.setInterviewTemplateUUId(requirementInterview.getInterviewTemplateId().getUuid());
 			    }
 			    if(requirementInterview.getTimezone() != null){
 			    	interviewHistory.setTimezone(requirementInterview.getTimezone().getTimeZoneId());
@@ -223,7 +223,12 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 				for(RequirementInterviewer interviewer: Interviewers){
 					if(i <= 50){
 						 StringBuilder interviewerBuilder=new StringBuilder();
-						InterviewersList = interviewerBuilder.append(InterviewersList).append(interviewer.getInterviewerUser().getFirstName()).append(" ").append(interviewer.getInterviewerUser().getLastName()).toString();
+						 if(interviewer.getInterviewerUser() != null) {
+							 InterviewersList = interviewerBuilder.append(InterviewersList).append(interviewer.getInterviewerUser().getFirstName()).append(" ").append(interviewer.getInterviewerUser().getLastName()).toString();
+						 }else {
+							 InterviewersList = interviewerBuilder.append(InterviewersList).append(interviewer.getExternalInterviewerName()).toString();
+						 }
+						
 						if(i != Interviewers.size()-1){
 							 StringBuilder strBuilder=new StringBuilder();
 							InterviewersList = strBuilder.append(InterviewersList).append(",").toString();
@@ -278,17 +283,20 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 				}
 			}
 			
+			if(interviewHistory.getSubmissionId().getRequirement() != null) {
+				if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getRequirement().getJobTitle() != null){
+					requirementTitle = interviewHistory.getSubmissionId().getRequirement().getJobTitle();
+				}
+				if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getRequirement().getRequirementUUID() != null){
+					interviewHistory.setRequirementUUID(interviewHistory.getSubmissionId().getRequirement().getRequirementUUID());
+				}
+				
+				if(null != interviewHistory.getInterviewId().getInterviewTemplateId()){
+					interviewHistory.setInterviewTemplateUUId(interviewHistory.getInterviewId().getInterviewTemplateId().getUuid());
+				}
+			}
 			
-			if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getRequirement().getJobTitle() != null){
-				requirementTitle = interviewHistory.getSubmissionId().getRequirement().getJobTitle();
-			}
-			if(interviewHistory.getSubmissionId() != null && interviewHistory.getSubmissionId().getRequirement().getRequirementUUID() != null){
-				interviewHistory.setRequirementUUID(interviewHistory.getSubmissionId().getRequirement().getRequirementUUID());
-			}
 			
-			if(null != interviewHistory.getInterviewId().getInterviewTemplateId()){
-				interviewHistory.setInterviewTemplateid(interviewHistory.getInterviewId().getInterviewTemplateId().getId());
-			}
 			
 	/*		if(Constants.ADMIN.equalsIgnoreCase(userType)){
 				List<RequirementInterviewer> reqiremList = requirementInterviewerService.getInterviwersListByInterviewId(interviewHistory.getInterviewId().getId());
@@ -307,7 +315,7 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			}else{*/
 				RequirementInterviewer requirementInterviewer =  requirementInterviewerService.getInterviwerByInterviewIdAndUserId(interviewHistory.getInterviewId().getId(), user.getId());
 				if(null != requirementInterviewer){
-					interviewHistory.setInterviewerId(requirementInterviewer.getId());
+					interviewHistory.setInterviewerUUID(requirementInterviewer.getUuid());
 				} 
 			/*}*/
 			
@@ -320,15 +328,20 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			
 			interviewHistory.setRequirementTitle(requirementTitle);
 			
-			interviewHistory.setRequirementId(interviewHistory.getSubmissionId().getRequirement().getId().toString());
+			if(interviewHistory.getSubmissionId().getRequirement() != null) {
+				interviewHistory.setRequirementId(interviewHistory.getSubmissionId().getRequirement().getId().toString());
+			}
 			
-			List<RequirementInterviewer> interviewers = requirementInterviewerService.getInterviwersListByInterviewId(interviewHistory.getInterviewId().getId());
-			for(RequirementInterviewer interviewer:interviewers){
-				InterviewFeedbackTemplate feedbackTemplate = interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(interviewer.getId()) ;
-				if(null != feedbackTemplate){
-					interviewHistory.setFeedbackDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),feedbackTemplate.getCreatedDate()));	
+			if(userId != null) {
+				List<RequirementInterviewer> interviewers = requirementInterviewerService.getInterviwersListByInterviewIdAndUserID(interviewHistory.getInterviewId().getId(),userId);
+				for(RequirementInterviewer interviewer:interviewers){
+					InterviewFeedbackTemplate feedbackTemplate = interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(interviewer.getId()) ;
+					if(null != feedbackTemplate){
+						interviewHistory.setFeedbackDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),feedbackTemplate.getCreatedDate()));	
+					}
 				}
 			}
+			
 			
 			//changed as per the timezone
 			DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");
@@ -539,4 +552,8 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 	}
 
 	
+	@Override
+	public Long getCountOfAllInterviewAssignedToLoginUser(OrgLocations loginOrgLocations, String userType, Long userId, String userCode) throws Exception {
+		return requirementInterviewHistoryDao.getCountOfAllInterviewAssignedToLoginUser(loginOrgLocations.getId(), userType, userId, userCode);
+	}
 }

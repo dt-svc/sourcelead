@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,15 +14,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 import com.bis.sourcelead.entity.OrgLocations;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "INVOICE_DATA", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "invoiceData")
+@Table(name = "INVOICE_DATA")
 public class InvoiceData implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -31,7 +28,7 @@ public class InvoiceData implements Serializable {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocationId;
 	
@@ -100,6 +97,12 @@ public class InvoiceData implements Serializable {
 	
 	@Column(name = "VERSION")
 	private int version;
+	
+	@Column(name = "PAY_RATE")
+	private String payRate;
+	
+	@Column(name = "UUID")
+	private String uuid;
 	
 	@Transient
 	@JsonProperty
@@ -334,4 +337,25 @@ public class InvoiceData implements Serializable {
 	{
 		this.version = version;
 	}
+
+	public String getPayRate()
+	{
+		return payRate;
+	}
+
+	public void setPayRate(String payRate)
+	{
+		this.payRate = payRate;
+	}
+
+	public String getUuid()
+	{
+		return uuid;
+	}
+
+	public void setUuid(String uuid)
+	{
+		this.uuid = uuid;
+	}
+
 }

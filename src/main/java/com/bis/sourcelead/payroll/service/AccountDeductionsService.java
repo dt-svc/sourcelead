@@ -27,7 +27,9 @@ public interface AccountDeductionsService {
 
 	List<AccountDeductions> getAccountDeductionsByEmployeeId(OrgLocations orgLocations, Long empId)throws Exception;
 
-	PayrollBalance getBalance(Long empId, OrgLocations orgLocations)throws Exception;
+	PayrollBalance getBalance(Long empId, OrgLocations orgLocations, String loginUserRole)throws Exception;
 
 	int getAccountDeductionsVersionByLocationId(Long locationId);
+
+	ResponseList<AccountDeductions> getAccountDeductionsByEmployeeId(OrgLocations orgLocation,AccountDeductionsDTO accountDeductionsDTO);
 }

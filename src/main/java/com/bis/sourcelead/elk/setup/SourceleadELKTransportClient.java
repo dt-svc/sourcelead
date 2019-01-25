@@ -7,7 +7,8 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -37,13 +38,13 @@ public class SourceleadELKTransportClient {
      */
     public SourceleadELKTransportClient() {
 	     try {
-	    	  Settings settings = Settings.settingsBuilder()
+	    	 Settings settings = Settings.builder()
 	    			  .put("cluster.name", dbconfig.getCluster())
 	                  .put("node.name", dbconfig.getNode())
 	         		  .put("path.home", dbconfig.getPath())
 	                  .build();
-			client = TransportClient.builder().settings(settings).build().
-					addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(dbconfig.getHost()), 9300));
+			client = new PreBuiltTransportClient(settings)
+					.addTransportAddress(new TransportAddress(InetAddress.getByName(dbconfig.getHost()),  new Integer(dbconfig.getTcport())));
 	     } catch (Exception exception) {
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}

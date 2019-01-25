@@ -26,4 +26,6 @@ public interface CandidateDocumentsDao {
 	public List<CandidateDocuments> getCandidateDocumentsListByRequestedDocumentsId(Long requestedDocumentsId) throws Exception;
 	
 	public Boolean validateCandidateDocument(Long candidateId, String candidateDocument) throws Exception;
+	
+	public Integer getCandidateActiveDocumentsByCandidateId(Long candidateId);
 }

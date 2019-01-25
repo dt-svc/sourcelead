@@ -1,11 +1,14 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.io.Writer;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.InterviewFeedbackTemplateDao;
 import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Repository
 public class InterviewFeedbackTemplateDaoImpl implements InterviewFeedbackTemplateDao{
@@ -59,7 +66,7 @@ public class InterviewFeedbackTemplateDaoImpl implements InterviewFeedbackTempla
 		Session session = this.sessionFactory.getCurrentSession();
 		List<InterviewFeedbackTemplate> interviewFeedbackTemplate = new ArrayList<InterviewFeedbackTemplate>();
 		logger.debug("getInterviewFeedbackTemplateById start");
-		interviewFeedbackTemplate = session.createQuery("from InterviewFeedbackTemplate where requirementInterviewerId =:requirementInterviewid" ).setCacheable(true).setLong( "requirementInterviewid", requirementInterviewid ).setCacheable(true).list();
+		interviewFeedbackTemplate = session.createQuery("from InterviewFeedbackTemplate where requirementInterviewerId = :requirementInterviewid" ).setLong( "requirementInterviewid", requirementInterviewid ).list();
 		logger.debug("getInterviewFeedbackTemplateById end");
 		if (interviewFeedbackTemplate.size() > 0) {
 			return interviewFeedbackTemplate.get(0);
@@ -73,7 +80,7 @@ public class InterviewFeedbackTemplateDaoImpl implements InterviewFeedbackTempla
 		Session session = this.sessionFactory.getCurrentSession();
 		List<InterviewFeedbackTemplate> interviewFeedbackTemplate = new ArrayList<InterviewFeedbackTemplate>();
 		logger.debug("getInterviewFeedbackTemplateById start");
-		interviewFeedbackTemplate = session.createQuery("from InterviewFeedbackTemplate ift where ift.submissionTemplateId.id =:templateId and ift.requirementInterviewerId.id =:requirementInterviewId" ).setLong( "templateId", templateId ).setLong( "requirementInterviewId", requirementInterviewId ).setCacheable(true).list();
+		interviewFeedbackTemplate = session.createQuery("from InterviewFeedbackTemplate ift where ift.submissionTemplateId.id =:templateId and ift.requirementInterviewerId.id =:requirementInterviewId" ).setLong( "templateId", templateId ).setLong( "requirementInterviewId", requirementInterviewId ).list();
 		logger.debug("getInterviewFeedbackTemplateById end");
 		if (interviewFeedbackTemplate.size() > 0) {
 			return interviewFeedbackTemplate.get(0);
@@ -81,5 +88,45 @@ public class InterviewFeedbackTemplateDaoImpl implements InterviewFeedbackTempla
 			return null;
 		}
 	}
-
+	
+	@Override
+	@Transactional
+	public List<InterviewFeedbackTemplate> getInterviewerAndRatingListByInterviewId(Long requirementInterviewId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<InterviewFeedbackTemplate> interviewFeedbackTemplate = new ArrayList<InterviewFeedbackTemplate>();
+		List<Object[]> objList = null;
+		 objList  = session.createSQLQuery("select ift.INTERVIEW_TEMPLATE_JSON_STRING, u.FIRST_NAME, u.LAST_NAME from INTERVIEW_FEEDBACK_TEMPLATE ift, REQUIREMENT_INTERVIEWER ri, USER u  where ri.id=ift.REQUIREMENT_INTERVIEWER_ID and u.id=ri.INTERVIEWER_USER_ID and ri.INTERVIEW_ID =:requirementInterviewId ").setLong("requirementInterviewId", requirementInterviewId).list();
+		if(objList != null && objList.size() > 0) {
+			 for(Object[] obj : objList){
+					InterviewFeedbackTemplate ifTemplate = new InterviewFeedbackTemplate();
+					if(obj[0] != null) {
+						ifTemplate.setInterviewerRating(obj[0].toString());
+					}
+					if(obj[2] != null && obj[2] != "") {
+						ifTemplate.setInterviewerName(obj[1].toString()+" "+obj[2].toString());
+					}else {
+						ifTemplate.setInterviewerName(obj[1].toString());
+					}
+					interviewFeedbackTemplate.add(ifTemplate);
+				}
+		}
+	
+			
+			List<Object[]> externalObjList  = session.createSQLQuery("select ift.INTERVIEW_TEMPLATE_JSON_STRING, ri.EXTERNAL_INTERVIEWER_NAME from INTERVIEW_FEEDBACK_TEMPLATE ift, REQUIREMENT_INTERVIEWER ri, REQUIREMENT_INTERVIEW iterview, REQUIREMENT_SUBMISSION submission  where ift.REQUIREMENT_INTERVIEWER_ID  = ri.id  and ri.INTERVIEW_ID = iterview.ID and iterview.SUBMISSION_ID = submission.ID  and ri.INTERVIEW_ID = :requirementInterviewId and ri.INTERVIEWER_USER_ID IS NULL ").setLong("requirementInterviewId", requirementInterviewId).list();
+			if(externalObjList != null && externalObjList.size() > 0) {
+				for(Object[] obj : externalObjList){
+					InterviewFeedbackTemplate ifTemplate = new InterviewFeedbackTemplate();
+					if(obj[0] != null) {
+						ifTemplate.setInterviewerRating(obj[0].toString());
+					}
+					if(obj[1] != null) {
+						ifTemplate.setInterviewerName(obj[1].toString());
+					}
+					interviewFeedbackTemplate.add(ifTemplate);
+				}
+			}
+		
+		return interviewFeedbackTemplate;
+	}
+	
 }

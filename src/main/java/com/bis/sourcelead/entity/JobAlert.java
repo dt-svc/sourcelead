@@ -20,8 +20,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "JOB_ALERTS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="jobAlerts")
+@Table(name = "JOB_ALERTS")
 public class JobAlert implements Serializable{
 	
 private static final long serialVersionUID = 1L;
@@ -31,7 +30,7 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User userId;
@@ -43,16 +42,16 @@ private static final long serialVersionUID = 1L;
 	@Type(type="text")
 	private String skillsName;
     
-    @Column(name = "COUNTRY")
+    @Column(name = "COUNTRY", columnDefinition = "LONGTEXT default NULL")
 	private String country;
 	
-	@Column(name = "STATE")
+	@Column(name = "STATE", columnDefinition = "LONGTEXT default NULL")
 	private String state;
 	
-	@Column(name = "CITY")
+	@Column(name = "CITY", columnDefinition = "LONGTEXT default NULL")
 	private String city;
 	
-	@Column(name = "LOCATION")
+	@Column(name = "LOCATION", columnDefinition = "LONGTEXT default NULL")
 	private String location;
 	
 	@Column(name = "ZIPCODE")

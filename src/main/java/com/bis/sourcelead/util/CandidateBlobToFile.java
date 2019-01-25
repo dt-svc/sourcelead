@@ -23,15 +23,17 @@ public class CandidateBlobToFile {
 	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
 	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 
-	private void convertBlobToFile(String table, String idColumn, String blobColumn, String filename, String urlColumn,String bucketName, String environment) {
+	private void convertBlobToFile(String table, String idColumn, String blobColumn, String filename, String urlColumn) {
 		DataSource dataSource = comboPooledDataSource();
 		try (Connection con = dataSource.getConnection()) {
 			Statement stmt = con.createStatement();
 			Statement stmt1 = con.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT cadidate.*FROM " + table + " cadidate");
+			ResultSet rs = stmt.executeQuery("SELECT cadidate.* FROM " + table + " cadidate");
+			int i=0;
 			while (rs.next()) {
 				String fileName = rs.getString(filename);
 				if (rs.getBlob(blobColumn) != null) {
+					System.out.println(i+"Created");
 					InputStream in = rs.getBlob(blobColumn).getBinaryStream();
 					byte[] b = new byte[in.available()];
 					in.read(b);
@@ -67,7 +69,7 @@ public class CandidateBlobToFile {
 
 	public static void main(String... args) {
 		long st = new Date().getTime();
-		new CandidateBlobToFile().convertBlobToFile("CANDIDATE", "ID", "DOC_FILE", "ID", "FILE_URL", "sourcelead", "dev");
+		new CandidateBlobToFile().convertBlobToFile("CANDIDATE", "ID", "DOC_FILE", "ID", "FILE_URL");
 		long end = new Date().getTime();
 		System.out.println(end - st);
 	}

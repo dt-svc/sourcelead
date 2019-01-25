@@ -13,15 +13,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "SOURCELEAD_ACTIONS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="sourceleadActions")
+@Table(name = "SOURCELEAD_ACTIONS")
 public class SourceleadActions implements Serializable{
 
 	
@@ -41,14 +36,19 @@ public class SourceleadActions implements Serializable{
 	@Column(name = "ACTION_ROLE")
 	private String actionRole;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TAB_ID")
 	private Tabs tabs;
 	
 	@Transient
 	private String isActionConfigured;
 	
+	@Column(name = "STATUS", nullable = false)
+   	private Integer status;
+	
+	@Column(name = "LOCATION_CODE")
+   	private String locationCode;
 	
 
 	public Long getId() {
@@ -89,6 +89,22 @@ public class SourceleadActions implements Serializable{
 
 	public void setIsActionConfigured(String isActionConfigured) {
 		this.isActionConfigured = isActionConfigured;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public String getLocationCode() {
+		return locationCode;
+	}
+
+	public void setLoctionCode(String loctionCode) {
+		this.locationCode = loctionCode;
 	}
 
 	

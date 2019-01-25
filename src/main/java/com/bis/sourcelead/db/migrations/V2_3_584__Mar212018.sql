@@ -1,0 +1,46 @@
+
+#Project Tasks : Source_lead_form_section script
+
+INSERT INTO `SOURCELEAD_FORM_SECTIONS` (`ID`, `TAB_ID`, `SOURCELEAD_ACTION_ID`, `SECTION_NAME`, `ORDER`, `STATUS`) VALUES ('17', '3', '94', 'Add Project Tasks', '1', '1');
+
+
+#Add project tasks Source_lead_form Fields Scripts:
+
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('224', '17', 'Task Type', 'Task Type', 'SelectBox', '1', '1', '1');
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('225', '17', 'Task Title', 'Task Title', 'Task Title', 'TextBox', '1', '1', '1');
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `LABEL_INFO`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('226', '17', 'Assign To', 'Assign To', 'Select the project team members who will handle this task (can be assigned to multiple members)', 'Select Assign To', 'SelectBox', '0', '1', '1');
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('227', '17', 'Due Date', 'Due Date', 'Due Date', 'Date', '0', '1', '1');
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('228', '17', 'Priority', 'Priority', 'SelectBox', '0', '1', '1');
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `LABEL_INFO`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('229', '17', 'Estimated Time', 'Estimated Time', 'The estimated of time taken for the project task', 'Estimated Time', 'TextBox', '0', '1', '1');
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('230', '17', 'Severity', 'Severity', 'Select Severity', 'SelectBox', '0', '1', '1');
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('231', '17', 'Status', 'Status', 'SelectBox', '1', '1', '1');
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('232', '17', 'Owner', 'Select Owner', 'Select Owner', 'SelectBox', '0', '1', '1');
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('233', '17', 'Billing Type', 'Billing Type', 'SelectBox', '1', '1', '1');
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('234', '17', 'Business Value', 'Business Value', 'TextBox', '0', '1', '1');
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('235', '17', 'Description', 'Description', 'TextBox', '0', '1', '1');
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `SL_DEPENDANT_FIELD`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('236', '17', 'Epic', 'Epic', 'Select Epic', 'SelectBox', '0', '224', '1', '1');
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `SL_DEPENDANT_FIELD`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('237', '17', 'User Story', 'User Story', 'Select User Story', 'SelectBox', '0', '224', '1', '1');
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `SL_DEPENDANT_FIELD`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('238', '17', 'Task', 'Task', 'SelectBox', '1', '224', '1', '1');
+
+
+
+ #Add Asset : Source_lead_form_section script
+
+INSERT INTO `SOURCELEAD_FORM_SECTIONS` (`ID`, `TAB_ID`, `SOURCELEAD_ACTION_ID`, `SECTION_NAME`, `ORDER`, `STATUS`) VALUES ('18', '14', '262', 'Add Asset', '1', '1');
+
+
+# Asset: Source_lead_form Fields Scripts:
+
+
+
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('239', '18', 'Category', 'Asset Category', 'Select Category', 'SelectBox', '1', '1', '1');
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('240', '18', 'Working Status', 'Working Status', 'Select Working Status', 'SelectBox', '1', '1', '1');
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('241', '18', 'Serial / Port Number', 'Serial / Port Number', 'Serial / Port Number', 'SelectBox', '1', '1', '1');
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('242', '18', 'Make', 'Make', 'Make', 'TextBox', '0', '1', '1');
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('243', '18', 'Model', 'Model', 'Model', 'TextBox', '0', '1', '1');
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('244', '18', 'Issue Date', 'Issue Date', 'Issue Date', 'Date', '0', '1', '1');
+INSERT INTO `SOURCELEAD_FORM_FIELDS` (`ID`, `SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `PLACE_HOLDER`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('245', '18', 'Description', 'Description', 'Description', 'TextBox', '0', '1', '1');
+
+
+
+

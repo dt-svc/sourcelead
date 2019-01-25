@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -19,9 +20,10 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
-@Table(name = "INTERVIEW_FEEDBACK_TEMPLATE", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "interviewfeedbackTemplate")
+@Table(name = "INTERVIEW_FEEDBACK_TEMPLATE")
 public class InterviewFeedbackTemplate implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -31,18 +33,18 @@ public class InterviewFeedbackTemplate implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "REQUIREMENT_INTERVIEW_ID")
     private RequirementInterview requirementInterviewId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "REQUIREMENT_INTERVIEWER_ID")
     private RequirementInterviewer requirementInterviewerId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SUBMISSION_TEMPLATE_ID")
     private SubmissionTemplate submissionTemplateId;
 	
@@ -71,6 +73,14 @@ public class InterviewFeedbackTemplate implements Serializable{
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+	@JsonProperty
+	private String interviewerName;
+	
+	@Transient
+	@JsonProperty
+	private String interviewerRating;
 
 	public Long getId() {
 		return id;
@@ -157,6 +167,22 @@ public class InterviewFeedbackTemplate implements Serializable{
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getInterviewerName() {
+		return interviewerName;
+	}
+
+	public void setInterviewerName(String interviewerName) {
+		this.interviewerName = interviewerName;
+	}
+
+	public String getInterviewerRating() {
+		return interviewerRating;
+	}
+
+	public void setInterviewerRating(String interviewerRating) {
+		this.interviewerRating = interviewerRating;
 	}
 
 	public RequirementInterviewer getRequirementInterviewerId() {

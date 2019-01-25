@@ -3,10 +3,9 @@ package com.bis.sourcelead.service;
 import java.util.List;
 
 import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dto.CandidateDocumentsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.User;
 
@@ -33,4 +32,10 @@ public interface CandidateDocumentsService {
 	public List<CandidateDocuments> getCandidateDocumentsListByRequestedDocumentsId(Long requestedDocumentsId) throws Exception;
 	
 	public Boolean validateCandidateDocument(Long candidateId, String candidateDocument) throws Exception;
+	
+	public List<CandidateDocumentsDTO> getCandidateDocumentsDTOListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
+
+	void saveOrUpdateCandidateElkDocumentWithDocumentDetails(Long candidateId,Long orgLocationId) throws Exception;
+	
+	public Integer getCandidateActiveDocumentsByCandidateId(Long candidateId);
 }

@@ -27,4 +27,7 @@ public interface AccountDeductionsDao {
 
 	int getAccountDeductionsVersionByLocationId(Long locationId);
 
+	ResponseList<AccountDeductions> getAccountDeductionsByEmployeeId(OrgLocations orgLocation,
+			AccountDeductionsDTO accountDeductionsDTO);
+
 }

@@ -60,7 +60,7 @@ public class RequirementSubmissionTemplateFieldsDaoImpl implements RequirementSu
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementSubmissionTemplateFields reqSubTemp where reqSubTemp.requirementSubmission.id =:requirementSubmissionsId";
 		List<RequirementSubmissionTemplateFields> requirementSubmissionTemplateFieldsList =  session.createQuery(query.toString()).setLong("requirementSubmissionsId", requirementSubmissionsId)
-				.setCacheable(true).list();
+				.list();
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = null;
 		if (requirementSubmissionTemplateFieldsList != null && requirementSubmissionTemplateFieldsList.size() > 0) {
@@ -76,7 +76,7 @@ public class RequirementSubmissionTemplateFieldsDaoImpl implements RequirementSu
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementSubmissionTemplateFields reqSubTemp where reqSubTemp.requirementSubmission.id =:requirementSubmissionsId and reqSubTemp.requirementSubmission.vendorLocationId.id =:orgLocationId";
 		List<RequirementSubmissionTemplateFields> requirementSubmissionTemplateFieldsList =  session.createQuery(query.toString()).setLong("requirementSubmissionsId", submissionId).setLong("orgLocationId", orgLocationId)
-				.setCacheable(true).list();
+				.list();
 		return requirementSubmissionTemplateFieldsList;
 	}
     

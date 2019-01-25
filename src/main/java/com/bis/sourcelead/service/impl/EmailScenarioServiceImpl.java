@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,38 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioServic
 	public EmailScenario getEmailScenarioByUniqueName(String uniqueScenarioName, String entityType) throws Exception {
 		logger.debug("In EmailScenarioServiceImpl class getEmailScenarioByUniqueName method");
 		return emailScenarioDao.getEmailScenarioByUniqueName(uniqueScenarioName, entityType);
+	}
+
+	
+	@Override
+	public EmailScenario getEmailTemplateById(Long id) {
+		return emailScenarioDao.getEmailTemplateById(id);
+	}
+
+	@Override
+	public EmailScenario getEmailDefTemplateNo(String uniqueScenarioName, String defaultTemp) throws Exception {
+		return emailScenarioDao.getEmailDefTemplateNo(uniqueScenarioName, defaultTemp);
+	}
+
+	@Override
+	public List<EmailScenario> getEmailScenarioList(String templateType,List<Long> tabIds, List<String> specification) throws Exception {
+		
+		return emailScenarioDao.getEmailScenarioList(templateType,tabIds,specification);
+	}
+
+	@Override
+	public EmailScenario getEmailScenarioByUniqueNameAndOrgLocationId(String uniqueScenarioName, String entityType,
+			Long orgLocationId) throws Exception {
+		return emailScenarioDao.getEmailScenarioByUniqueNameAndOrgLocationId(uniqueScenarioName, entityType, orgLocationId);
+	}
+
+	@Override
+	public List<EmailScenario> getEmailScenarioListByOrgLocId(Long orgLocId) throws Exception {
+		return emailScenarioDao.getEmailScenarioListByOrgLocId(orgLocId);
+	}
+	@Override
+	public EmailScenario getEmailTemplateByUUID(String templateUUID) {
+		return emailScenarioDao.getEmailTemplateByUUID(templateUUID);
 	}
 
 }

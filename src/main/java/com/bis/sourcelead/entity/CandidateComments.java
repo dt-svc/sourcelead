@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,10 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Venkat Kesav
@@ -24,9 +22,7 @@ import org.hibernate.annotations.NotFoundAction;
  */
 
 @Entity
-@Table(name = "CANDIDATE_COMMENTS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateComments")
-
+@Table(name = "CANDIDATE_COMMENTS")
 public class CandidateComments implements Serializable{
 	
 	
@@ -37,18 +33,18 @@ public class CandidateComments implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
 	private Candidate candidateId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SUBMISSION_ID", nullable=false)
 	private RequirementSubmission submissionId;
 	
@@ -71,18 +67,23 @@ public class CandidateComments implements Serializable{
 	private String updatedBy;
 	
 	@Transient
+	@JsonProperty
 	private String commentTime;
 	
 	@Transient
+	@JsonProperty
 	private String commentAuthor;
 	
 	@Transient
+	@JsonProperty
 	private Long commentAuthorUserId;
 	
 	@Transient
+	@JsonProperty
 	private String commentAuthorUserImage;
 	
 	@Transient
+	@JsonProperty
 	private String candidateName;
 
 	public Long getId() {

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.TimesheetSubmissionsDocumentsDao;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
+import com.bis.sourcelead.entity.TimesheetSubmissionsDocumentsHistory;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -38,6 +39,27 @@ public class TimesheetSubmissionsDocumentsServiceImpl implements TimesheetSubmis
 	@Override
 	public TimesheetSubmissionsDocuments getTimesheetSubmissionsDocuments(Long id) throws Exception {
 		return  timesheetSubmissionsDocumentsDao.getTimesheetSubmissionsDocuments(id);
+	}
+
+	@Override
+	public TimesheetSubmissionsDocumentsHistory addTimesheetSubmissionsDocumentsHistory(TimesheetSubmissionsDocumentsHistory timesheetSubmissionsDocuments) throws Exception {
+		timesheetSubmissionsDocuments.setUpdatedDate(commonUtil.currentDate());
+		 return  timesheetSubmissionsDocumentsDao.addTimesheetSubmissionsDocumentsHistory(timesheetSubmissionsDocuments);
+	}
+
+	@Override
+	public List<TimesheetSubmissionsDocumentsHistory> getAllTimesheetSubmissionsDocumentsHistoryBySubmissionId(Long submissionId) throws Exception {
+		return  timesheetSubmissionsDocumentsDao.getAllTimesheetSubmissionsDocumentsHistoryBySubmissionId(submissionId);
+	}
+
+	@Override
+	public List<TimesheetSubmissionsDocumentsHistory> getAllTimesheetSubmissionsDocumentsHistoryByTimesheetActivityId(Long activityId) {
+		return timesheetSubmissionsDocumentsDao.getAllTimesheetSubmissionsDocumentsHistoryByTimesheetActivityId(activityId);
+	}
+
+	@Override
+	public List<Long> getAllTimesheetSubmissionsDocumentIdsBySubmissionId(Long submissionId) throws Exception {
+		return timesheetSubmissionsDocumentsDao.getAllTimesheetSubmissionsDocumentIdsBySubmissionId(submissionId);
 	}
 
 	

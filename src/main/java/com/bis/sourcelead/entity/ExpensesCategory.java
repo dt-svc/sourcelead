@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,8 +21,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "EXPENSE_CATEGORY", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "ExpensesCategory")
+@Table(name = "EXPENSE_CATEGORY")
 public class ExpensesCategory implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -30,8 +30,8 @@ public class ExpensesCategory implements Serializable {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
@@ -46,6 +46,9 @@ public class ExpensesCategory implements Serializable {
 	
 	@Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
 	private String description;
+	
+	@Column(name = "IS_ATTACHEMT_REQUIRED")
+	private String isAttachemtRequired;
 	
 	@Column(name = "STATUS")
 	private String status;
@@ -163,7 +166,12 @@ public class ExpensesCategory implements Serializable {
 		this.expenseCategoryList = expenseCategoryList;
 	}
 
-	
+	public String getIsAttachemtRequired() {
+		return isAttachemtRequired;
+	}
 
+	public void setIsAttachemtRequired(String isAttachemtRequired) {
+		this.isAttachemtRequired = isAttachemtRequired;
+	}
 	
 }
