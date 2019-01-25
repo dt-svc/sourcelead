@@ -121,7 +121,7 @@ public class UploadCandidateController {
 				model.addAttribute("msg", "successfully uploaded");
 				 model.addAttribute("fileName", "");
 				 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a Candidate");
-				return "redirect:/candidatesList";
+				return "redirect:/ats/candidatesList";
 			}
 			
 			

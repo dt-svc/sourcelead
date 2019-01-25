@@ -1,6 +1,5 @@
 package com.bis.sourcelead.web;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,10 +17,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
-import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.OffBoardingDocuments;
 import com.bis.sourcelead.entity.OffBoardingTemplate;
-import com.bis.sourcelead.entity.OffboardCheckList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
@@ -173,7 +170,7 @@ public class CandidateOffBoardController {
 	@RequestMapping(value = "/candidateOffBoardCreation")
 	public ModelAndView candidateOffBoardCreation(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
-		
+		System.out.println(" inisde ats /candidateOffBoardingList controller ");
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -193,9 +190,13 @@ public class CandidateOffBoardController {
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		    ModelAndView model = new ModelAndView();
  			commonUtil.highLightMenu(Constants.OrgSettings, request);
- 			
  			model.setViewName("offboard/offboardingTemplatesList");
  			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "OffboardCreateMsg");
+ 			if(!isNullOrEmpty(msg)){
+ 				model.addObject("msg", msg);
+ 				SourceLeadSessionManager.removeSessionAttribute(request, "OffboardCreateMsg");
+ 			}
  			return model;
  	}
 	
@@ -229,7 +230,7 @@ public class CandidateOffBoardController {
  			return model;
  	}
 	
-	@PreAuthorize("hasRole('ROLE_CREATE_OFF_BOARD_USER')")
+//	@PreAuthorize("hasRole('ROLE_CREATE_OFF_BOARD_USER')")
 	@RequestMapping(value = "/viewOffboardCandidateDetails")
  	public ModelAndView viewOffboardCandidateDetails(@RequestParam(value="offboardUUID", required=false) String offboardUUID,
  			HttpServletRequest request) throws Exception {

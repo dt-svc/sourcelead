@@ -65,10 +65,8 @@ public class CandidateResumesServiceTest {
 		candidateResumes.setId(1l);
 		candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
 		candidate.setOrgLocationId(orgLocationId);
-		MultipartFile multipartFile = getMultiPartFile();
+		File multipartFile = new File(staticPath);
 		String fileURL = new FileUploadUtil().uploadFile(staticPath, 1l, orgLocationId.getId(), "resume", multipartFile);
-		String fileName = multipartFile.getOriginalFilename();
-		String contentType = multipartFile.getContentType();
 		candidateResumes = candidateResumesService.storeCandidateResume(candidateResumeDTO, user, candidate, "1", orgLocationId);
 		logger.info("success fully store " + candidateResumes.getStatus());
 	}

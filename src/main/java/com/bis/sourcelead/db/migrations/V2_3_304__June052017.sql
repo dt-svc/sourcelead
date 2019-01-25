@@ -1,2 +1,0 @@
-CALL sourcelead.AlterTableAddColumn ('sourcelead','INVOICE','LINK_INVOICE_REFERENCE_ID','BIGINT(20) NULL  AFTER `INVOICE_UUID`');
-CALL sourcelead.AlterTableAddColumn ('sourcelead','INVOICE','LINK_INVOICE_REF_INVOICE_ID','VARCHAR(20) NULL  AFTER `LINK_INVOICE_REFERENCE_ID`');

@@ -37,16 +37,16 @@ function candidateResumeById(candidateId){
 	  $.ajax({
 			type : "POST",
 			url : sourceleadUrl+"/candidateResumesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
-			success : function(data) {
-				var json = JSON.parse(data);
-				if( data.indexOf('Sign In') >= 0){
-		    		location.replace(sourceleadUrl);
-		    	 }
-       		 else if (data.indexOf('exception') >= 0) {
-       			 location.replace(sourceleadUrl+"/errorPage");
-       		 }
-       		 else{
-					if(json.length<=0 || (data == null && data == 'undefined' && data == "")){
+			success : function(json) {
+// 				var json = JSON.parse(data);
+// 				if( data.indexOf('Sign In') >= 0){
+// 		    		location.replace(sourceleadUrl);
+// 		    	 }
+//        		 else if (data.indexOf('exception') >= 0) {
+//        			 location.replace(sourceleadUrl+"/errorPage");
+//        		 }
+//        		 else{
+					if(json.data.length<=0 || (json == null && json == 'undefined' && json == "")){
 							result = result+"   <div class='row'>"; 
 						 	result = result+"	<div class='col-lg-12'>"; 
 						 	result = result+"		<div class='content-area clearfix'>"; 
@@ -69,9 +69,9 @@ function candidateResumeById(candidateId){
 							result = result+'	          </tr>';
 							
 							
-				             for (var i = 0; i < json.length; i++) {
-				            	 	resumesCount = json.length;
-					            	var opt = json[i];
+				             for (var i = 0; i < json.data.length; i++) {
+				            	 	resumesCount = json.data.length;
+					            	var opt = json.data[i];
 					            	var title = "";
 					            	var description = "";
 					            	if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
@@ -89,13 +89,12 @@ function candidateResumeById(candidateId){
 					            	}else{
 					            		createdBy = '----';
 					            	}
-					            	
 					            	result = result+'	          <tr>';
 					           		result = result+'	            <td><div><span title="'+title+'">'+title+'</span></div></td>';
 					           		result = result+'	            <td><div><span title="'+opt.fileName+'">'+opt.fileName+'</span></div></td>';
 					           		result = result+'	            <td><div><span title="'+description+'">'+description+'</span></div></td>';
 					           		result = result+'	            <td><div><span title="'+createdBy+'">'+createdBy+'</span></div></td>';
-					           		result = result+'	            <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" title="Download" target="_blank" href=\"'+opt.fileURL+'\"></a>';
+					           		result = result+'	            <td><div class="tblicons"><a download class="glyphicon glyphicon-download-alt" title="Download" target="_blank" href=\"'+opt.fileURL+'\"></a>';
 					           		result = result+'	            </div></td>';
 					           		result = result+'	          </tr>';
 				             }
@@ -105,7 +104,7 @@ function candidateResumeById(candidateId){
 					$("#resumesList").empty();
 					$("#resumesList").append(result);
 					
-       		}
+//        		}
 				},
 		});
 }

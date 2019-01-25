@@ -1,24 +1,28 @@
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
-<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<!-- Bootstrap -->
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/bootstrap-select.css" rel="stylesheet">
-<link href="resources/css/jquery.dataTables.min.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jquery-ui.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link href="resources/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/timesheet.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet" id="myStyleSheet">
-
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
+ 
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+<!-- Bootstrap -->
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/bootstrap-select.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/jquery.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet" id="myStyleSheet">
+<link rel="stylesheet" href="/resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 
+<script type="text/javascript">
+  var sourceleadUrl ='${sourceleadUrl}';
+</script>
 
 <div class="wraper"> 
 
@@ -26,37 +30,11 @@
 		<section class="welcoInn">
 		  <div class="welcoHead">
 				
-		<c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
-		<div class="offOrg">
-             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
-	              <div id="spockLinksList" style="display: none;">
-	              <ul class="list-unstyled">
-	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
-		              <li>
-			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
-				                <div class="clearfix">
-				                   <div class="pull-left image-parent positionRelative">
-				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
-				                     </div>
-				                   </div>
-				                   <div class="pull-left mt5">
-				                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-				                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
-				                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
-				                   </div>
-				                </div>
-			                </a>
-		              </li>
-	              </c:forEach>
-	              </ul>
-	            </div>
-	            </div>
-          </c:if>
+		<jsp:include page="../userManageAccounts.jsp" />
 				
 				<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 					<div class="welLogo">
-					<img class="logo" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
+					<img class="logo" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_orgName}" />
 					</div>
 				</c:if>
 				
@@ -76,33 +54,6 @@
 				  <div class="clearfix"></div>
 			  </ul>
 			  
-		<c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
-		<div class="offOrg">
-             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
-	              <div id="spockLinksList" style="display: none;">
-	              <ul class="list-unstyled">
-	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
-		              <li>
-			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
-				                <div class="clearfix">
-				                   <div class="pull-left image-parent positionRelative">
-				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
-				                     </div>
-				                   </div>
-				                   <div class="pull-left mt5">
-				                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-				                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
-				                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
-				                   </div>
-				                </div>
-			                </a>
-		              </li>
-	              </c:forEach>
-	              </ul>
-	            </div>
-	            </div>
-          </c:if>			  
 			  
 			  <div class="clearfix"></div>
 		  </div>
@@ -273,18 +224,22 @@
 	</section>  
 </div>
 
+					<div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
+    <a href="#" class="loc-alertclose close">&times;</a>
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
+  </div>
 
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
- <script type="text/javascript" src="resources/js/jquery-1.11.0.min.js"></script>
- <script type="text/javascript" src="resources/js/responsiveCarousel.min.js"></script>
+ <script type="text/javascript" src="/resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
+ <script type="text/javascript" src="/resources/js/responsiveCarousel.min.js?staticTime=${staticTime}"></script>
  
-  <script src="resources/js/jquery.dataTables.min.js"></script> 
-  <script src="resources/js/moment.min.js"></script> 
-  <script src="resources/js/jquery-ui.min.js"></script> 
-  <script src="resources/js/bootstrap-select.min.js"></script> 
-  <script src="resources/js/bootstrap.min.js"></script> 
-  <script src="resources/js/masterHeaderAction.js"></script> 
-  <script src="resources/js/chosen.jquery.min.js"></script> 
+  <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/moment.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/jquery-ui.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
   <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
@@ -301,9 +256,12 @@
 				$this.next().css({'width': '100%'});
 
 });
+			  $(".loc-alertclose").click(function(){
+					 $(".location-alert").fadeOut();
+				})
 </script> 
 
-<script src="resources/js/formvalidator.js"></script>
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 
 
 <script>
@@ -316,26 +274,32 @@
 	         }; 
 	 
 	 if ($('#offCandidate_form').validate(false, validationSettings)){ 
-		    var frm = $('#offCandidate_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        
-	        var jsonData = encodeURIComponent(con);
-	        
-	        var sourceleadUrl ='${sourceleadUrl}';
-	        
-	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        var formData = getFormData1("offCandidate_form");
+	       	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	          $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/saveOffboardingCandidateStep1Details?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
-		        success: function(data) {
-		        	
-		        	location.replace(sourceleadUrl+"/offboardStep2");  
+		    	data: formData,
+		        processData: false,
+		        contentType:false,
+		    	 url: sourceleadUrl+"/saveOffboardingCandidateStep1Details?${_csrf.parameterName}=${_csrf.token}", 
+		        success: function(response) {
+		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+      	    		    showError(response.responseMessage);
+      	    		    $("#loading").removeAttr('style');
+      	    		}
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		location.replace(sourceleadUrl+"/offboardStep2"); 
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        },
 		    });  
 	        return true;
-		
-	  }else{
+	  } else {
 		return false;
 	  }
  }
@@ -343,10 +307,10 @@
  $('body').on('blur', '#offCandidate_form', function() {
 		$("#offCandidate_form").showHelpOnFocus();
 		$("#offCandidate_form").validateOnBlur(false, validationSettings);  
-	});
+ });
  </script>
  
- 
+ <script src="/resources/js/slead-common.js"></script>
  <script type="text/javascript">
 (function ($) {
    $.fn.serializeFormJSON = function () {
@@ -397,11 +361,7 @@ $(function(){
 });
 </script>
 
-<script>
-		function logoutFormSubmit() {
-			document.getElementById("logoutForm").submit();
-		}
-</script>
+
 
 <script>
   function navtoggle(elementRef){
@@ -427,15 +387,7 @@ $(function(){
   
  <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 
-<c:url var="logoutUrl" value="/logout"/>
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>
-
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>

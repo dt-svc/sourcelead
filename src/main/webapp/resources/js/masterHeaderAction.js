@@ -5,7 +5,9 @@
 			$('.content-wraper').toggleClass("content-wraper-active");
 			$('.footer-area').toggleClass("footer-area-active");
 			$('.theme_sideMenu').toggleClass('themeSideMenu_Active');
+			$('.cusFieldHeadFixed').toggleClass('cusFieldHeadFixedAct');
 			$(".collapses").hide();
+			$('aside').toggleClass("asideAct");
 			});
 		$('.srch-btn-xs').click(function(){
 		  $(".search-area").toggleClass("search-area-active");
@@ -91,46 +93,110 @@
 		   $(".level-second").toggleClass("level-second-active");
 		});
        
+       $(".addExpenseApproverLevel").click(function(){
+		   $(".expenselevel-second").toggleClass("expenselevel-second-active");
+		});
+       
+       
        $(".tree-view").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".usersLi, .billingLi, .backofficeLi, .timesheetLi, .associatesLi, .expencesLi ").next('ul').slideUp();
+           $(".usersLi, .billingLi, .backofficeLi, .timesheetLi, .associatesLi, .expencesLi, .campaignsli, .resourcesli, .payrollli ").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".usersLi, .billingLi, .expencesLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".usersLi, .billingLi, .backofficeLi, .timesheetLi, .associatesLi, .expencesLi, .campaignsli, .resourcesli, .payrollli ").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        $(".backofficeLi").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .billingLi, .associatesLi, .timesheetLi, .expencesLi").next('ul').slideUp();
+           $(".tree-view, .billingLi, .associatesLi, .timesheetLi, .expencesLi, .campaignsli, .resourcesli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .billingLi, .associatesLi, .timesheetLi, .expencesLis").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .billingLi, .associatesLi, .timesheetLi, .expencesLi, .campaignsli, .resourcesli, .payrollli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        $(".timesheetLi").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .billingLi, .associatesLi, .backofficeLi, .expencesLi").next('ul').slideUp();
+           $(".tree-view, .billingLi, .associatesLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli, .payrollli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .billingLi, .associatesLi, .backofficeLi, .expencesLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .billingLi, .associatesLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli, .payrollli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });	
        $(".associatesLi").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .billingLi, .timesheetLi, .backofficeLi, .expencesLi").next('ul').slideUp();
+           $(".tree-view, .billingLi, .timesheetLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli, .payrollli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .billingLi, .timesheetLi, .backofficeLi, .expencesLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .billingLi, .timesheetLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli, .payrollli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        $(".billingLi").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .expencesLi").next('ul').slideUp();
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli, .payrollli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .expencesLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli, .payrollli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        $(".expencesLi").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi").next('ul').slideUp();
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .campaignsli, .resourcesli, .payrollli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .campaignsli, .resourcesli, .payrollli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+       });
+       
+       $(".campaignsli").click(function(){
+    	   $(this).next('ul').slideToggle();
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli, .payrollli").next('ul').slideUp();
+           $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli, .payrollli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+       });
+       
+       $(".resourcesli").click(function(){
+    	   $(this).next('ul').slideToggle();
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .campaignsli, .payrollli").next('ul').slideUp();
+           $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .campaignsli, .payrollli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+       });
+       
+       
+       $(".payrollli").click(function(){
+    	   $(this).next('ul').slideToggle();
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .campaignsli, .expencesLi").next('ul').slideUp();
+           $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .campaignsli, .expencesLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        
        
     });   
-
-
+	
+	
+	
+// New Menu Actions
+	
+	$(document).ready(function(e) {
+		$('.menuIcon').click(function(){
+			$('.side-bar').toggleClass("side-bar-active");
+			$('.content-wraper').toggleClass("content-wraper-active");
+			$('.footer-area').toggleClass("footer-area-active");
+			$('.theme_sideMenu').toggleClass('themeSideMenu_Active');
+			$('.cusFieldHeadFixed').toggleClass('cusFieldHeadFixedAct');
+			$(".collapses").hide();
+			$('aside').toggleClass("asideAct");
+		});
+		$('.headProfileIcon').click(function(){
+			$("#profilePop").slideToggle(0);
+			 $('#settingPopup, #notificationPopup, #orgPopView').hide();
+		});
+		$('#settingPopId').click(function(){
+			$("#settingPopup").slideToggle(0);
+			 $('#profilePop, #notificationPopup, #orgPopView').hide();
+		});	
+		$('#notiPopId').click(function(){
+			$("#notificationPopup").slideToggle(0);
+			 $('#profilePop, #settingPopup, #orgPopView').hide();
+		});	
+		$('#orgPopId').click(function(){
+			$("#orgPopView").slideToggle(0);
+			 $('#profilePop, #settingPopup, #notificationPopup').hide();
+		});			
+		$('html').click(function(){
+			  $('#profilePop, #settingPopup, #notificationPopup, #orgPopView').hide();
+		    });
+		$('.headProfile, #settingPopId, #settingPopup, #notiPopId, #notificationPopup, #orgPopId, #orgPopView').click(function(e){
+			e.stopPropagation();
+		});		
+		
+	 }); 
 
 

@@ -13,19 +13,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>::. Forgot Password .::</title>
-    <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
+    <link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-    <link href="resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-     <link href="resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
+    <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+    <link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
+     <link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
     
 </head>
 
 <body>
   
 <div class="regis_bg">
-	<div class="regis_logo"><img src="resources/images/SourceLead-logo.png" alt=""/></div>
+	<div class="regis_logo"><img src="/resources/images/SourceLead-logo.png" alt=""/></div>
     <div class="regis_wrap">
      <div id="loading"></div> 
     	<div class="signin_wrap">
@@ -46,10 +46,10 @@
 </div>  
   
 
-    <script src="resources/js/jquery-1.11.1.min.js"></script>
-    <script src="resources/js/jquery-ui.js"></script>
-    <script src="resources/js/bootstrap.min.js"></script>
-    <script src="resources/js/jquery-fun.js"></script> 
+    <script src="/resources/js/jquery-1.11.1.min.js"></script>
+    <script src="/resources/js/jquery-ui.js"></script>
+    <script src="/resources/js/bootstrap.min.js"></script>
+    <script src="/resources/js/jquery-fun.js"></script> 
     
 </body>
 
@@ -83,13 +83,13 @@ function applyInputSlide() {
         		var form = $('#forgetPassword_form').serializeFormJSON();
         		var sourceleadUrl ='${sourceleadUrl}';
         		$('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
-        		  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
+        		  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
                 $.ajax({
             	      type: "POST",
             	      data :JSON.stringify(form),
             	      contentType : 'application/json; charset=utf-8',
             	      dataType : 'json',
-                  	  url: sourceleadUrl+"/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
+                  	  url: sourceleadUrl+"/ws/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
                     	success: function(json) {
                     		if(json.status == 'Invalid'){
 	                   			 $('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
@@ -101,10 +101,10 @@ function applyInputSlide() {
 	             				 $("#loading").removeAttr("style");
     			        	}
                     		else if(json.status == 'login'){
-    			        		  location.replace(sourceleadUrl+"/login"); 
+    			        		  location.replace("/login"); 
     			        	}
                     		else{
-                    			  location.replace(sourceleadUrl+"/resetPassword"); 
+                    			  location.replace("/resetPassword"); 
     			        	}
 			        },  
                 });

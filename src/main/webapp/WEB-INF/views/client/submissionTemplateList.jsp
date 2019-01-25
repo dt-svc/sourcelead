@@ -11,9 +11,9 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
 </c:if>
 
-<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
-<script src="resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
-<script src="resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
+<script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
+<script src="/resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
 
 
 <style type="text/css">
@@ -127,13 +127,13 @@ function clientSubmissionTemplate(clientLocationId){
 	        	result = result +"</table>";
 	        	
     		}else{
-      			 result = result + '<div class="table_nodata">';
-       			 result = result + '<div class="table_nodata_inn">';
-       			 result = result + '<img src="resources/images/no-data.png" />';
+      			 result = result + '<div class="dataTables_empty">';
+       			/*  result = result + '<div class="table_nodata_inn">';
+       			 result = result + '<img src="/resources/images/no-data.png" />';
        			 result = result + '<span>Nothing is here to show </b>';
        			 result = result + '</span>';
        			 result = result + '<div class="clearfix"></div>';
-       			 result = result + '</div>';
+       			 result = result + '</div>'; */
        			 result = result + '</div>';
        		 } 
     		 
@@ -151,10 +151,14 @@ function clientSubmissionTemplate(clientLocationId){
 function templatepagination(){  
     $('#templatePagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 2
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -239,7 +243,7 @@ function templatepagination(){
 		           result = result + '<div class="form-footer clearfix row mt">';
 		           
 		           result = result + '<div class="pull-right mr">';
-		           result = result + ' <input type="submit" value="Save" id="save_button" class="btn btn-primary mr">';
+		           result = result + ' <input type="button" value="Save" id="save_button" onclick="submitClientSubmissionTemplate();" class="btn btn-primary mr">';
 		           result = result + ' <input type="button" value="Cancel" onclick="clientSubmissionTemplate('+clientLocationId+')" class="btn btn-default" >';
 		           result = result + '</div>';
 
@@ -322,148 +326,151 @@ function validateTemplateName(clientLocationId){
 
 
   <script type="text/javascript">
-   	$('body').on('submit', '#sjfb', function(e){
-	  if ($(this).validate(false, validationSettings)){
-        e.preventDefault();
-        var frm = $('#sjfb').serializeFormJSON();
-        var con = JSON.stringify(frm);
-        con = con.replace(/[{}]/g, "");
-        var jsonData = encodeURIComponent(con);
-        var isRemoved = '';
-        var isLabelModified = 'N';
-        var submitTemplate = true;
-        var fieldLabel = '';
-        var myArray = new Array();
+  function submitClientSubmissionTemplate(){
+	  if ($("#sjfb").validate(false, validationSettings)){
+// 	        e.preventDefault();
+	        var frm = $('#sjfb').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        var jsonData = encodeURIComponent(con);
+	        var isRemoved = '';
+	        var isLabelModified = 'N';
+	        var submitTemplate = true;
+	        var fieldLabel = '';
+	        var myArray = new Array();
 
-        //Loop through fields and save field data to array
-        var fields = [];
+	        //Loop through fields and save field data to array
+	        var fields = [];
 
-        $('.field').each(function() {
+	        $('.field').each(function() {
 
-            var $this = $(this);
+	            var $this = $(this);
 
-            //field type
-            var fieldType = $this.data('type');
+	            //field type
+	            var fieldType = $this.data('type');
 
-            //field label
-            fieldLabel = $this.find('.field-label').val();
+	            //field label
+	            fieldLabel = $this.find('.field-label').val();
 
-            //field required
-            var fieldReq = $this.hasClass('required') ? 1 : 0;
-            
-            if(fieldType == 'checkbox' || fieldType == 'radio' ||  fieldType == 'select'){
-            	if($this.find('.choices li').length == 0) {
-            		submitTemplate = false;
-            		alertMessage("Provide choice for "+fieldLabel)
-            	}
-            }
-            
-            myArray.push(fieldLabel);
-            //check if this field has choices
-            if($this.find('.choices li').length >= 1) {
+	            //field required
+	            var fieldReq = $this.hasClass('required') ? 1 : 0;
+	            
+	            if(fieldType == 'checkbox' || fieldType == 'radio' ||  fieldType == 'select'){
+	            	if($this.find('.choices li').length == 0) {
+	            		submitTemplate = false;
+	            		alertMessage("Provide choice for "+fieldLabel)
+	            	}
+	            }
+	            
+	            myArray.push(fieldLabel);
+	            //check if this field has choices
+	            if($this.find('.choices li').length >= 1) {
 
-                var choices = [];
+	                var choices = [];
 
-                $this.find('.choices li').each(function() {
+	                $this.find('.choices li').each(function() {
 
-                    var $thisChoice = $(this);
+	                    var $thisChoice = $(this);
 
-                    //choice label
-                    var choiceLabel = $thisChoice.find('.choice-label').val();
+	                    //choice label
+	                    var choiceLabel = $thisChoice.find('.choice-label').val();
 
-                    //choice selected
-                    var choiceSel = $thisChoice.hasClass('selected') ? 1 : 0;
+	                    //choice selected
+	                    var choiceSel = $thisChoice.hasClass('selected') ? 1 : 0;
 
-                    if($thisChoice.find('.choice-label').val() != null && $thisChoice.find('.choice-label').val() != '' && $thisChoice.find('.choice-label').val() != 'undefined'){
-	                    choices.push({
-	                        label: choiceLabel,
-	                        sel: choiceSel
-	                    });
-                    }
+	                    if($thisChoice.find('.choice-label').val() != null && $thisChoice.find('.choice-label').val() != '' && $thisChoice.find('.choice-label').val() != 'undefined'){
+		                    choices.push({
+		                        label: choiceLabel,
+		                        sel: choiceSel
+		                    });
+	                    }
 
-                });
-            }
-            
-            
-            if(fieldLabel == 'First Name'  || fieldLabel == 'Phone Number'  
-        		|| fieldLabel == 'Email Id' || fieldLabel == 'DOB' || fieldLabel == 'Current / Last Company' || fieldLabel == 'Designation' 
-        		|| fieldLabel == 'Education' || fieldLabel == 'Work Experience' || fieldLabel == 'Current CTC' || fieldLabel == 'Expected CTC' 
-        		|| fieldLabel == 'Notice Period'){
-        	
-            	isRemoved = 'N';
-            }else{
-            	isRemoved = 'Y';
-            }
-            
-           /*  if(fieldLabel == 'First Name' || fieldLabel == 'Last Name' || fieldLabel == 'Phone Number'  || fieldLabel == 'Alternate Number' 
-            		|| fieldLabel == 'Email Id' || fieldLabel == 'DOB' || fieldLabel == 'Current / Last Company' || fieldLabel == 'Designation' 
-            		|| fieldLabel == 'Education' || fieldLabel == 'Work Experience' || fieldLabel == 'Current CTC' || fieldLabel == 'Expected CTC' 
-            		|| fieldLabel == 'Notice Period'){
-            	
-            	isLabelModified = 'N';
-            }else{
-            	isLabelModified = 'Y';
-            }
- 			*/
-            fields.push({
-                type: fieldType,
-                label: fieldLabel,
-                req: fieldReq,
-                choices: choices,
-                isRemoved : isRemoved,
-                isLabelModified : isLabelModified
-            });
+	                });
+	            }
+	            
+	            
+	            if(fieldLabel == 'First Name'  || fieldLabel == 'Phone Number'  
+	        		|| fieldLabel == 'Email Id' || fieldLabel == 'DOB' || fieldLabel == 'Current / Last Company' || fieldLabel == 'Designation' 
+	        		|| fieldLabel == 'Education' || fieldLabel == 'Work Experience' || fieldLabel == 'Current CTC' || fieldLabel == 'Expected CTC' 
+	        		|| fieldLabel == 'Notice Period'){
+	        	
+	            	isRemoved = 'N';
+	            }else{
+	            	isRemoved = 'Y';
+	            }
+	            
+	           /*  if(fieldLabel == 'First Name' || fieldLabel == 'Last Name' || fieldLabel == 'Phone Number'  || fieldLabel == 'Alternate Number' 
+	            		|| fieldLabel == 'Email Id' || fieldLabel == 'DOB' || fieldLabel == 'Current / Last Company' || fieldLabel == 'Designation' 
+	            		|| fieldLabel == 'Education' || fieldLabel == 'Work Experience' || fieldLabel == 'Current CTC' || fieldLabel == 'Expected CTC' 
+	            		|| fieldLabel == 'Notice Period'){
+	            	
+	            	isLabelModified = 'N';
+	            }else{
+	            	isLabelModified = 'Y';
+	            }
+	 			*/
+	            fields.push({
+	                type: fieldType,
+	                label: fieldLabel,
+	                req: fieldReq,
+	                choices: choices,
+	                isRemoved : isRemoved,
+	                isLabelModified : isLabelModified
+	            });
 
-        });
+	        });
 
-        
-        for (var i = 0; i < myArray.length; i++) 
-        {
-            for (var j = 0; j < myArray.length; j++) 
-            {
-                if (i != j) 
-                {
-                    if (myArray[i].toLowerCase() == myArray[j].toLowerCase()) 
-                    {
-                    	submitTemplate = false;
-                    	alertMessage(myArray[i]+" label duplicated")
-                    }
-                }
-            }
-        }
-        
-        var frontEndFormHTML = '';
-        var clientLocationId = document.getElementById("clientLocationId").value;
-        var templateId = document.getElementById("templateId").value;
-        if(templateId == 'undefined'){
-        	templateId = '';
-        }
-        var sourceleadUrl ='${sourceleadUrl}';
-        //Save form to database
-        //Demo doesn't actually save. Download project files for save
-        var con2 = JSON.stringify(fields);
-        var jsonStringData = encodeURIComponent(con2);
-        if(submitTemplate){
-        	 $( "#save_button" ).addClass('button').val('Processing..');
-        	    $.ajax({
-     	    	type: "POST",
-     	        url: sourceleadUrl+"/saveClientSubmissionTemplate?"+tokenParamName+"="+tokenValue+"&clientLocationId="+clientLocationId+"&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
-     	        success: function(result) {
-     	        	if((result == 'home')){
-     	        		clientSubmissionTemplate(clientLocationId);  
-     		        } 
-     	        },
-     	    });
-             return true;
-        }else{
-        	alertMessage("Provide choice for "+fieldLabel)
-        }
-       
-      }
-      else{
-      	return false;	
-         }
-    });
+	        
+	        for (var i = 0; i < myArray.length; i++) 
+	        {
+	            for (var j = 0; j < myArray.length; j++) 
+	            {
+	                if (i != j) 
+	                {
+	                    if (myArray[i].toLowerCase() == myArray[j].toLowerCase()) 
+	                    {
+	                    	submitTemplate = false;
+	                    	alertMessage(myArray[i]+" label duplicated")
+	                    }
+	                }
+	            }
+	        }
+	        
+	        var frontEndFormHTML = '';
+	        var clientLocationId = document.getElementById("clientLocationId").value;
+	        var templateId = document.getElementById("templateId").value;
+	        if(templateId == 'undefined'){
+	        	templateId = '';
+	        }
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        //Save form to database
+	        //Demo doesn't actually save. Download project files for save
+	        var con2 = JSON.stringify(fields);
+	        var jsonStringData = encodeURIComponent(con2);
+	        if(submitTemplate){
+	        	 $( "#save_button" ).addClass('button').val('Processing..');
+	        	    $.ajax({
+	     	    	type: "POST",
+	     	        url: sourceleadUrl+"/saveClientSubmissionTemplate?"+tokenParamName+"="+tokenValue+"&clientLocationId="+clientLocationId+"&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+	     	        success: function(result) {
+	     	        	if((result == 'home')){
+	     	        		clientSubmissionTemplate(clientLocationId);  
+	     		        } 
+	     	        },
+	     	    });
+	             return true;
+	        }else{
+	        	alertMessage("Provide choice for "+fieldLabel)
+	        }
+	       
+	      }
+	      else{
+	      	return false;	
+	         }
+  }
+   /* 	$('body').on('submit', '#sjfb', function(e){
+	  
+    }); */
     	
   $('body').on('blur', '#sjfb', function() {
    	$('#sjfb').showHelpOnFocus();
@@ -480,7 +487,7 @@ function alertMessage(message){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelClientSubmissionTemplate();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelClientSubmissionTemplate();'></b>";
 	result = result +"	</div>";
 	$("#choicepopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -490,7 +497,7 @@ function alertMessage(message){
 </script>
 
 <script type="text/javascript">
-function cancel(){
+function cancelClientSubmissionTemplate(){
 	$("#choicepopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 }
