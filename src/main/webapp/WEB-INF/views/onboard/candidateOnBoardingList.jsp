@@ -19,6 +19,7 @@
 </style>
 
 <script> 
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 	$(document).ready(function(){
 		
 		$("#onboardCount").html('(${onboardCount})');
@@ -26,6 +27,7 @@
 		
 		 '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_USER\',\'ROLE_VIEW_EDIT_ON_BOARD_USER\') && !hasRole(\'ROLE_CREATE_OFF_BOARD_USER\')">'
 		       getOnboardCandidatesList();
+		
          '</sec:authorize>';
          
          '<sec:authorize access="!hasRole(\'ROLE_CREATE_ON_BOARD_USER\') && hasAnyRole(\'ROLE_CREATE_OFF_BOARD_USER\',\'ROLE_VIEW_EDIT_OFF_BOARD_USER\')">'
@@ -46,7 +48,7 @@
       <div class="pull-left">
         <h2>Onboard & Offboard</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo;On-board/Off-board</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo;On-board/Off-board</div>
  </section>
  
  <div class="clearfix">
@@ -81,10 +83,10 @@
 				<div class="action-pop">
 					<span> 
 			           <sec:authorize access="hasRole('ROLE_CREATE_ON_BOARD_USER')">
-				          <a href="<c:url value='${appPath}/candidateOnBoardCreation'/>" title="Create onboard">Create onboard</a> 
+				          <a href="<c:url value='/candidateOnBoardCreation'/>" title="Create onboard">Create onboard</a> 
 			          	</sec:authorize>
 			          	<sec:authorize access="hasRole('ROLE_CREATE_OFF_BOARD_USER')">
-				          <a href="<c:url value='${appPath}/candidateOffBoardCreation'/>" title="Create offboard">Create offboard</a>
+				          <a href="<c:url value='/candidateOffBoardCreation'/>" title="Create offboard">Create offboard</a>
 			          	</sec:authorize>					
 					</span>
 				</div>
@@ -123,7 +125,7 @@
 	 $("#onboardingCandidatesList").empty();
 	 $("#offboardingCandidatesList").empty();
 	 
-	  var sourceleadUrl ='${sourceleadUrl}';
+	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 	  var locationCode = '${SourceLeadWeb_locationCode}';
 	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
@@ -170,26 +172,25 @@
  
  <script>
 function onboardDataTableList(){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#onboardDataTableSearch").val();
 	 var locationCode = '${SourceLeadWeb_locationCode}';
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getOnboardCandidateList?searchValue="+searchValue+"&locationCode="+locationCode;
-	 onboardPagination(url,sourceleadUrl);
+	 var url = atsUrl+"/getOnboardCandidateList?searchValue="+searchValue+"&locationCode="+locationCode;
+	 onboardPagination(url,atsUrl);
 	 $("#onboardingLoading").removeAttr("style");
 }
 </script>
 
 
 <script>
-function onboardPagination(url,sourceleadUrl){
+function onboardPagination(url,atsUrl){
 	var colIndex = 0;
     $('#onboardListTable').DataTable( { 
-	  "processing": true,
+      "processing": true,
       "serverSide": true,
       "searching": false,
       "ajax": $.fn.dataTable.pipeline( {
-          url: url,
+    	  url: url,
           method: 'POST',
           pages: 1
         }),
@@ -210,10 +211,11 @@ function onboardPagination(url,sourceleadUrl){
                 	 result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.candidateName+"'>"+opt.candidateName+"</div>";
                 	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ON_BOARD_USER\')">'	 
                 	 if(opt.candidateOnBoardStatus == 'Draft'){
-                    		 result = result +"<div class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardCandidateUUID+"'> <i class='fa fa-binoculars'></i> </a> </div> </div>";
+                		
+                    		 result = result +"<div class='pull-right proj_show'> <a href='"+atsUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardCandidateUUID+"'> <i class='fa fa-binoculars'></i> </a> </div> </div>";
                     	 }
                     	 else if(opt.candidateOnBoardStatus == 'Finished' || opt.candidateOnBoardStatus == 'Submitted' || opt.candidateOnBoardStatus == 'Rejected' || opt.candidateOnBoardStatus == 'Accepted'){
-                    		 result = result +"<div class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOnboardCandidateSummary?onboardUUID="+opt.onboardCandidateUUID+"'> <i class='fa fa-binoculars'></i> </a> </div> </div>";
+                    		 result = result +"<div class='pull-right proj_show'> <a href='"+atsUrl+"/viewOnboardCandidateSummary?onboardUUID="+opt.onboardCandidateUUID+"'> <i class='fa fa-binoculars'></i> </a> </div> </div>";
                     	 }
                     	 '</sec:authorize>'
                 	 
@@ -338,7 +340,7 @@ function onboardPagination(url,sourceleadUrl){
 	 $("#onboardingCandidatesList").empty();
 	 $("#offboardingCandidatesList").empty();
 	 
-	  var sourceleadUrl ='${sourceleadUrl}';
+	  var atsUrl ='${SourceLeadWeb_atsUrl}';
 	  var locationCode = '${SourceLeadWeb_locationCode}'
 	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
@@ -383,19 +385,19 @@ function onboardPagination(url,sourceleadUrl){
  
  <script>
  function offboardDataTableList(){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var atsUrl ='${SourceLeadWeb_atsUrl}';
 	 var searchValue = $("#offboardDataTableSearch").val();
 	 var locationCode = '${SourceLeadWeb_locationCode}';
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getOffboardCandidateList?searchValue="+searchValue+"&locationCode="+locationCode;
-	 offboardPagination(url,sourceleadUrl);
+	 var url = atsUrl+"/getOffboardCandidateList?searchValue="+searchValue+"&locationCode="+locationCode;
+	 offboardPagination(url,atsUrl);
 	 $("#onboardingLoading").removeAttr("style");
  }
  </script>
  
  
  <script>
-function offboardPagination(url,sourceleadUrl){
+function offboardPagination(url,atsUrl){
 	var colIndex = 0;
     $('#offboardListTable').DataTable( { 
 	  "processing": true,
@@ -423,10 +425,10 @@ function offboardPagination(url,sourceleadUrl){
                 	 result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.candidateName+"'>"+opt.candidateName+"</div>";
                 	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_OFF_BOARD_USER\')">'	 
                 	 if(opt.offboardSubmitted == 'N'){
-                    		 result = result +"<div class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOffboardCandidateDetails?offboardUUID="+opt.offboardUUID+"'> <i class='fa fa-binoculars'></i> </a> </div> </div>";
+                    		 result = result +"<div class='pull-right proj_show'> <a href='"+atsUrl+"/viewOffboardCandidateDetails?offboardUUID="+opt.offboardUUID+"'> <i class='fa fa-binoculars'></i> </a> </div> </div>";
                     	 }
                     	 else if(opt.offboardSubmitted == 'Y'){
-                    		 result = result +"<div class='pull-right proj_show'> <a href='"+sourceleadUrl+"/viewOffboardCandidateSummaryDetails?offboardUUID="+opt.offboardUUID+"'> <i class='fa fa-binoculars'></i> </a> </div> </div>";
+                    		 result = result +"<div class='pull-right proj_show'> <a href='"+atsUrl+"/viewOffboardCandidateSummaryDetails?offboardUUID="+opt.offboardUUID+"'> <i class='fa fa-binoculars'></i> </a> </div> </div>";
                     	 }
                     	 '</sec:authorize>'
                 	 
@@ -588,12 +590,12 @@ $('body').on('submit', '#rejectedReason_form', function(e){
       
       //It will escape all the special characters
       var jsonData = encodeURIComponent(con);
-      var sourceleadUrl ='${sourceleadUrl}';
+      var atsUrl ='${SourceLeadWeb_atsUrl}';
         $("#submit_rejectedReason").attr("disabled", "disabled");
         $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 	 $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/rejectOnboardedCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		    	 url: atsUrl+"/rejectOnboardedCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -601,7 +603,7 @@ $('body').on('submit', '#rejectedReason_form', function(e){
 		        		cancelRejectedReason();
 			        	getOnboardCandidatesList();
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
+		        		location.replace(atsUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -623,17 +625,17 @@ $('body').on('submit', '#rejectedReason_form', function(e){
   
   <script>
   function acceptOnboardingCandiate(onboardCandidateUUID){
-	  var sourceleadUrl ='${sourceleadUrl}';
+	  var atsUrl ='${SourceLeadWeb_atsUrl}';
 	 	 $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/acceptOnboardingCandiate?${_csrf.parameterName}=${_csrf.token}&onboardCandidateUUID="+onboardCandidateUUID, 
+		    	 url: atsUrl+"/acceptOnboardingCandiate?${_csrf.parameterName}=${_csrf.token}&onboardCandidateUUID="+onboardCandidateUUID, 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
 		        		getOnboardCandidatesList();
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
+		        		location.replace(atsUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}

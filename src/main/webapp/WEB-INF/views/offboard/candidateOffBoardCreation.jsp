@@ -47,7 +47,7 @@
       <div class="pull-left">
         <h2>Employee offboarding</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='${appPath}/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Offboarding </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Offboarding </div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="applicant_accept">
@@ -210,7 +210,7 @@
                 
                   <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/app/candidateOnBoardingList'">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/ats/candidateOnBoardingList'">
                     <input type="button" value="Save" id="save_offboardUser" onclick="saveOffboardingCandidateDetails('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="saveAndContinue_offboardUser" onclick="saveOffboardingCandidateDetails('saveAndContinue');"  class="btn btn-sm btn-primary">
                   </div>
@@ -257,7 +257,7 @@
                
                 <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/app/candidateOnBoardingList'">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/ats/candidateOnBoardingList'">
                     <input type="button" value="Save" id="save_docs_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="save_continue_docs_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
@@ -621,10 +621,10 @@ function validate_fileupload(fileName)
   
   <script>
   function loadCandidates(){
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  var atsUrl ='${SourceLeadWeb_atsUrl}';
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getUsersForOffboard?${_csrf.parameterName}=${_csrf.token}",	    	   
+		    url: atsUrl+"/getUsersForOffboard?${_csrf.parameterName}=${_csrf.token}",	    	   
 		    success: function(response) {
 		    	if (response.response === "AWKWARD") {
 		    	    location.href = "/errorPage";
@@ -640,7 +640,7 @@ function validate_fileupload(fileName)
 		           	$("#offboardUser").append(result); 
 		           	$('#offboardUser').trigger("chosen:updated");
 		    	} else if (response.indexOf('Sign In') !== -1) {
-		    		location.replace(sourceleadUrl);
+		    		location.replace(atsUrl);
 		    	} else {
 		    	    showError("Operation failed, please try again");
 		    	}
@@ -654,10 +654,10 @@ function validate_fileupload(fileName)
   function getUserDetails(){
 	  var offboardUserId = document.getElementById("offboardUser").value;
 	  if(offboardUser){
-		  var sourceleadUrl = '${sourceleadUrl}';
+		  var atsUrl = '${SourceLeadWeb_atsUrl}';
 			$.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/getOffboardUserDetailsById?${_csrf.parameterName}=${_csrf.token}&offboardUserId="+offboardUserId,	    	   
+			    url: atsUrl+"/getOffboardUserDetailsById?${_csrf.parameterName}=${_csrf.token}&offboardUserId="+offboardUserId,	    	   
 			    success: function(response) {
 			    	if (response.response === "AWKWARD") {
 			    	    location.href = "/errorPage";
@@ -694,7 +694,7 @@ function validate_fileupload(fileName)
 				    	 $("#offboardingTemplate").val('');
 				    	 $('#offboardingTemplate').trigger("chosen:updated");
 			    	} else if (response.indexOf('Sign In') !== -1) {
-			    		location.replace(sourceleadUrl);
+			    		location.replace(atsUrl);
 			    	} else {
 			    	    showError("Operation failed, please try again");
 			    	}
@@ -714,10 +714,10 @@ function getTemplateResignationDocumentsDetails(offboardId){
 	}
 	var documentType = "Resignation"
 	if(offboardId){
-		var sourceleadUrl ='${sourceleadUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 	     $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getCandidateOffboardDocumentByOffboardId?${_csrf.parameterName}=${_csrf.token}&offboardId="+offboardId+"&documentType="+documentType, 
+		    	 url: atsUrl+"/getCandidateOffboardDocumentByOffboardId?${_csrf.parameterName}=${_csrf.token}&offboardId="+offboardId+"&documentType="+documentType, 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -751,7 +751,7 @@ function getTemplateResignationDocumentsDetails(offboardId){
 	                	 $("#savedResignationAttachments").append(result);
 	                	 $("#offboardTasksList").empty();
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
+		        		location.replace(atsUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -773,10 +773,10 @@ function getTemplateOffboardPackDocumentsDetails(offboardId){
 	
 	var documentType = "Offboard Pack"
 	if(offboardId){
-		var sourceleadUrl ='${sourceleadUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 	     $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getCandidateOffboardDocumentByOffboardId?${_csrf.parameterName}=${_csrf.token}&offboardId="+offboardId+"&documentType="+documentType, 
+		    	 url: atsUrl+"/getCandidateOffboardDocumentByOffboardId?${_csrf.parameterName}=${_csrf.token}&offboardId="+offboardId+"&documentType="+documentType, 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -814,7 +814,7 @@ function getTemplateOffboardPackDocumentsDetails(offboardId){
 	                	 $("#offboardTasksList").empty();
 				        
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
+		        		location.replace(atsUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -893,10 +893,10 @@ function toDate(selector) {
 <script>
 function loadOffBoardingTemplates(offboardTemplateId){
 	
-	var sourceleadUrl = '${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getOffboardingTemplatesForCandidateOffBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
+	    url: atsUrl+"/getOffboardingTemplatesForCandidateOffBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
 	    success: function(response) {
 	    	if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
@@ -920,7 +920,7 @@ function loadOffBoardingTemplates(offboardTemplateId){
 	           	$("#offboardingTemplate").append(result); 
 	           	$('#offboardingTemplate').trigger("chosen:updated");
 	    	} else if (response.indexOf('Sign In') !== -1) {
-	    		location.replace(sourceleadUrl);
+	    		location.replace(atsUrl);
 	    	} else {
 	    	    showError("Operation failed, please try again");
 	    	}
@@ -943,7 +943,7 @@ function loadOffBoardingTemplates(offboardTemplateId){
 	 
 	 if ($('#offboardCandidate_form').validate(false, validationSettings)){ 
 		 var formData = getFormData1("offboardCandidate_form");
-	        var sourceleadUrl ='${sourceleadUrl}';
+	        var atsUrl ='${SourceLeadWeb_atsUrl}';
 	        $("#save_offboardUser").attr("disabled", "disabled");
 	        $("#saveAndContinue_offboardUser").attr("disabled", "disabled");
 	       
@@ -953,7 +953,7 @@ function loadOffBoardingTemplates(offboardTemplateId){
 		    	data: formData,
 		 		processData: false, 
 		 		contentType: false,
-		    	 url: sourceleadUrl+"/saveOffboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}", 
+		    	 url: atsUrl+"/saveOffboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -973,7 +973,7 @@ function loadOffBoardingTemplates(offboardTemplateId){
 		     	        $("#saveAndContinue_offboardUser").removeAttr("disabled");
 		     	        $("#loading").removeAttr("style");
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
+		        		location.replace(atsUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -1010,13 +1010,13 @@ function loadOffBoardingTemplates(offboardTemplateId){
 		 offBoardingUUID = document.getElementById("candidateOffBoardUUID").value;
 	 }
 	 if(offBoardingUUID) {
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var atsUrl ='${SourceLeadWeb_atsUrl}';
 	 var locationCode ='${SourceLeadWeb_locationCode}';
 	 
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/loadOffboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&offBoardingUUID="+offBoardingUUID+"&locationCode="+locationCode, 
+	    	 url: atsUrl+"/loadOffboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&offBoardingUUID="+offBoardingUUID+"&locationCode="+locationCode, 
 	        success: function(response) {
 	        	if (response.response === "AWKWARD") {
 	        	    location.href = "/errorPage";
@@ -1078,7 +1078,7 @@ function loadOffBoardingTemplates(offboardTemplateId){
 			    	$("#savedoffboardId").val(json['savedoffboardId']);
 			    	$("#loading").removeAttr("style");
 	        	} else if (response.indexOf('Sign In') !== -1) {
-	        		location.replace(sourceleadUrl);
+	        		location.replace(atsUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}
@@ -1091,10 +1091,10 @@ function loadOffBoardingTemplates(offboardTemplateId){
  
  <script>
 function deleteOffBoardingDocument(documentUUID,documentId,documentType){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
    	$.ajax({
     	type: "POST",
-    	url: sourceleadUrl+"/deleteOffBoardingDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
+    	url: atsUrl+"/deleteOffBoardingDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
         success: function(response) {
         	if (response.response === "AWKWARD") {
         	    location.href = "/errorPage";
@@ -1105,7 +1105,7 @@ function deleteOffBoardingDocument(documentUUID,documentId,documentType){
         			document.getElementById("offboardPackdocument"+documentId).remove();
         		}
         	} else if (response.indexOf('Sign In') !== -1) {
-        		location.replace(sourceleadUrl);
+        		location.replace(atsUrl);
         	} else {
         	    showError("Operation failed, please try again");
         	}
@@ -1139,7 +1139,7 @@ function createTemplateDocs(saveType){
 			dateFormat : 'yyyy/mm/dd' 
          }; 
 	
-	  var sourceleadUrl ='${sourceleadUrl}';
+	  var atsUrl ='${SourceLeadWeb_atsUrl}';
 	  
 	  if ($('#templateDocuments_form').validate(false, validationSettings)){ 
 		   $("#save_docs_button").attr("disabled", "disabled");
@@ -1151,7 +1151,7 @@ function createTemplateDocs(saveType){
 		      data: formData,
 		      processData: false,
 		      contentType:false, 
-	    	  url: sourceleadUrl+"/saveCandidatedOffboardingDocuments?${_csrf.parameterName}=${_csrf.token}",		
+	    	  url: atsUrl+"/saveCandidatedOffboardingDocuments?${_csrf.parameterName}=${_csrf.token}",		
 		      success :function(response) {
 		    	  	if (response.response === "AWKWARD") {
 		    		    location.href = "/errorPage";
@@ -1170,7 +1170,7 @@ function createTemplateDocs(saveType){
 			   	   
 			    	  $("#loading").removeAttr("style");
 		    		} else if (response.indexOf('Sign In') !== -1) {
-		    			location.replace(sourceleadUrl);
+		    			location.replace(atsUrl);
 		    		} else {
 		    		    showError("Operation failed, please try again");
 		    		}
@@ -1192,7 +1192,7 @@ function getOffboardingCheckList(){
 	
 	var result = "";
 	var candidateOffBoardId = document.getElementById("candidateOffBoardId").value;
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	
 	if(candidateOffBoardId){
@@ -1247,7 +1247,7 @@ function getOffboardingCheckList(){
 	           $("#offboardingCheckList").empty();
 	           $("#offboardingCheckList").append(result); 
 	           $("#offboardTasksList").empty();
-	           customizeFields(candidateOffBoardId,sourceleadUrl,"offboarding");
+	           customizeFields(candidateOffBoardId,atsUrl,"offboarding");
 	}
 	           
 	
@@ -1365,7 +1365,7 @@ function createOffboardCheckList(saveType){
 	        }
 	        
 	        
-	        var sourceleadUrl ='${sourceleadUrl}';
+	        var atsUrl ='${SourceLeadWeb_atsUrl}';
 	        //Save form to database
 	        //Demo doesn't actually save. Download project files for save
 	        var con2 = JSON.stringify(fields);
@@ -1379,7 +1379,7 @@ function createOffboardCheckList(saveType){
 	        	 $("#offboardcheckListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	  $.ajax({
 	      	    	type: "POST",
-	      	        url: sourceleadUrl+"/saveCandidateOffboardCheckList?${_csrf.parameterName}=${_csrf.token}&checkListoffboardId="+checkListoffboardId+"&jsonStringData="+jsonStringData, 
+	      	        url: atsUrl+"/saveCandidateOffboardCheckList?${_csrf.parameterName}=${_csrf.token}&checkListoffboardId="+checkListoffboardId+"&jsonStringData="+jsonStringData, 
 	      	        success: function(response) {
 	      	        	if (response.response === "AWKWARD") {
 	      	        	    location.href = "/errorPage";
@@ -1399,7 +1399,7 @@ function createOffboardCheckList(saveType){
 		    	        	$("#save_continue_checkList_button").removeAttr("disabled");
 		      	        	$("#offboardcheckListLoading").removeAttr("style");
 	      	        	} else if (response.indexOf('Sign In') !== -1) {
-	      	        		location.replace(sourceleadUrl);
+	      	        		location.replace(atsUrl);
 	      	        	} else {
 	      	        	    showError("Operation failed, please try again");
 	      	        	}
@@ -1453,13 +1453,13 @@ function getOffboardingTasksList(){
 	var offboardTaskDiv = document.getElementById("offboardTaskDiv").value;
 	if(offboardTaskDiv == 'Y'){
 		var offboardId = document.getElementById("candidateOffBoardId").value;
-		var sourceleadUrl = '${sourceleadUrl}';
+		var atsUrl = '${SourceLeadWeb_atsUrl}';
 		var locationId = '${SourceLeadWeb_orgLocationId}';
 		if(offboardId != null && offboardId != '' && offboardId!= 'undefined') {
 			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/getCandidateOffboardTasksList?${_csrf.parameterName}=${_csrf.token}&offboardId="+offboardId,	    	   
+			    url: atsUrl+"/getCandidateOffboardTasksList?${_csrf.parameterName}=${_csrf.token}&offboardId="+offboardId,	    	   
 			    success: function(response) {
 			    	if (response.response === "AWKWARD") {
 			    		location.href = "/errorPage";
@@ -1518,7 +1518,7 @@ function getOffboardingTasksList(){
 			    		$("#offboardingCheckList").empty();
 			           	$("#offboardTasksList").append(result); 
 			    	} else if (response.indexOf('Sign In') !== -1) {
-			    		location.replace(sourceleadUrl);
+			    		location.replace(atsUrl);
 			    	} else {
 			    	    showError("Operation failed, please try again");
 			    	}
@@ -1539,20 +1539,20 @@ function saveAndFinishOffboardTemplate(offboardId) {
 		tasks = tasks+tasksIds[i].value+",";
 	}
 	tasks = tasks.substring(0, tasks.length - 1);
-	var sourceleadUrl = '${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	$("#finish_task").attr("disabled", "disabled");
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/saveAndFinishCandidateOffboard?${_csrf.parameterName}=${_csrf.token}&offboardId="+offboardId+"&tasks="+tasks, 	    	   
+	    url: atsUrl+"/saveAndFinishCandidateOffboard?${_csrf.parameterName}=${_csrf.token}&offboardId="+offboardId+"&tasks="+tasks, 	    	   
 	    success: function(response) {
 	    	if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
 	    	} else if (response.response === "SUCCESS") {
 	    		$("#finish_task").removeAttr("disabled");
-		    	 location.replace(sourceleadUrl+"/candidateOnBoardingList"); 
+		    	 location.replace(atsUrl+"/candidateOnBoardingList"); 
 	    	} else if (response.indexOf('Sign In') !== -1) {
-	    		location.replace(sourceleadUrl);
+	    		location.replace(atsUrl);
 	    	} else {
 	    	    showError("Operation failed, please try again");
 	    	}
@@ -1583,10 +1583,10 @@ function deleteTask(taskId,taskType){
 		document.getElementById("offboardTask"+taskId).remove();
 		document.getElementById("templateTask"+taskId).remove()
 	} else {
-		var sourceleadUrl ='${sourceleadUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 		   $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/deleteOffboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
+		    	 url: atsUrl+"/deleteOffboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
 		        success: function(response) {
 		        	if (response && response.response === "INVALID_DATA") {
 		        	    showError(response.responseMessage);
@@ -1595,7 +1595,7 @@ function deleteTask(taskId,taskType){
 		        	} else if (response.response === "SUCCESS") {
 		        		document.getElementById("offboardTask"+taskId).remove();
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
+		        		location.replace(atsUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -1650,10 +1650,10 @@ function getAssignToUsersList(){
 	var candidateOffBoardId = document.getElementById("candidateOffBoardId").value;
     $("#candidateOffboardTaskId").val(candidateOffBoardId);
     
-	var sourceleadUrl = '${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
+	    url: atsUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
 	    success: function(response) {
 	    	if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
@@ -1668,7 +1668,7 @@ function getAssignToUsersList(){
 	           	 $("#offboardAssignedTo").append(result); 
 	           	 $('#offboardAssignedTo').trigger("chosen:updated");
 	    	} else if (response.indexOf('Sign In') !== -1) {
-	    		location.replace(sourceleadUrl);
+	    		location.replace(atsUrl);
 	    	} else {
 	    	    showError("Operation failed, please try again");
 	    	}
@@ -1687,7 +1687,7 @@ function saveOffboardTask(){
 			dateFormat : 'yyyy/mm/dd' 
 	}; 
 	  if ($('#addoffboardTask_form').validate(false, validationSettings)) {
-	        var sourceleadUrl ='${sourceleadUrl}';
+	        var atsUrl ='${SourceLeadWeb_atsUrl}';
 	        var tasksIds = document.getElementsByName("savedTemplateTask");
 	    	var tasks = '';
 	    	for(var i=0; i < tasksIds.length; i++){
@@ -1701,7 +1701,7 @@ function saveOffboardTask(){
 		    	data: formData,
 		    	processData: false,
 		        contentType:false, 
-		    	url: sourceleadUrl+"/saveCandidateOffBoardTasks?${_csrf.parameterName}=${_csrf.token}&tasks="+tasks,
+		    	url: atsUrl+"/saveCandidateOffBoardTasks?${_csrf.parameterName}=${_csrf.token}&tasks="+tasks,
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -1714,7 +1714,7 @@ function saveOffboardTask(){
 			        	$("#selector").fadeIn(150);
 			        	$('#selector').delay(1000).fadeOut('slow');
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
+		        		location.replace(atsUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -1737,12 +1737,12 @@ function getEndDate(){
 	if(effectiveDate){
 		 var noticePeriod = document.getElementById("noticePeriod").value;
 		 if(noticePeriod && noticePeriod != 'Relieve Immediately'){
-			 var sourceleadUrl ='${sourceleadUrl}';
+			 var atsUrl ='${SourceLeadWeb_atsUrl}';
 			 var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';
 			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			    $.ajax({
 					type : "GET",
-					url: sourceleadUrl+"/getEndDateByEffectiveDateAndNoticePeriod?${_csrf.parameterName}=${_csrf.token}&noticePeriod="+noticePeriod+"&effectiveDate="+effectiveDate+"&dateFormat="+dateFormat,
+					url: atsUrl+"/getEndDateByEffectiveDateAndNoticePeriod?${_csrf.parameterName}=${_csrf.token}&noticePeriod="+noticePeriod+"&effectiveDate="+effectiveDate+"&dateFormat="+dateFormat,
 					success :function(response) {
 						if (response.response === "AWKWARD") {
 						    location.href = "/errorPage";
@@ -1751,7 +1751,7 @@ function getEndDate(){
 							$("#loading").removeAttr("style");
 							addValidClass();
 						} else if (response.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
+							location.replace(atsUrl);
 						} else {
 						    showError("Operation failed, please try again");
 						}
