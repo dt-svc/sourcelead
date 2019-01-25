@@ -19,6 +19,7 @@
 	type="text/css" rel="stylesheet" />
 
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 		$(document).ready(function() {
 			//getProjectsList();
 			$("#txtEditor").Editor();
@@ -150,11 +151,11 @@ $(document).ready(function () {
 		    	    /*$("#sequentialApprover2").val(str_array2).trigger("chosen:updated");  */
 		    	    
 		    		var currentApproverId = document.getElementById("sequentialApprover1").value;
-		    		var sourceleadUrl ='${sourceleadUrl}';
+		    		
 		    		if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
 		    			 $.ajax({
 		    			    	type: "POST",
-		    			        url: sourceleadUrl+"/getApproverTwoByUserId?"+tokenParamName+"="+tokenValue+"&currentApproverId="+currentApproverId,  
+		    			        url: atsUrl+"/getApproverTwoByUserId?"+tokenParamName+"="+tokenValue+"&currentApproverId="+currentApproverId,  
 		    			        success: function(data) {
 		    			        	var json = JSON.parse(data);
 		    			        	var output = "";
@@ -213,8 +214,8 @@ $(document).ready(function () {
 		</div>
 		<div class="pull-right brud-crum">
 			<a
-				href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home
-			</a>&raquo;<a href="<c:url value='${appPath}/jobs'/>"> Jobs List </a>&raquo;
+				href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home
+			</a>&raquo;<a href="<c:url value='/jobs'/>"> Jobs List </a>&raquo;
 			<c:if test="${empty requirementId}">Add Job</c:if>
 			<c:if test="${!empty requirementId}">Update Job</c:if>
 		</div>
@@ -234,14 +235,14 @@ $(document).ready(function () {
 					</c:if>
 					<c:if test="${!empty requirementUUID}">
 						<li class="current"><a
-							href="<c:url value='${appPath}/requirement?requirementUUID=${requirementUUID}'/>">Job
+							href="<c:url value='/requirement?requirementUUID=${requirementUUID}'/>">Job
 								Details</a></li>
 						<c:if test="${requirementStatus == 'OPEN'}">
 							<li><a
-								href="<c:url value='${appPath}/jobReleaseManagement?requirementUUID=${requirementUUID}'/>">Job
+								href="<c:url value='/jobReleaseManagement?requirementUUID=${requirementUUID}'/>">Job
 									Release</a></li>
 							<li><a
-								href="<c:url value='${appPath}/jobRecommendations?requirementUUID=${requirementUUID}'/>">Recommendations</a></li>
+								href="<c:url value='/jobRecommendations?requirementUUID=${requirementUUID}'/>">Recommendations</a></li>
 						</c:if>
 						<c:if test="${requirementStatus != 'OPEN'}">
 							<li><a href="#" id="jobRelease">Job Release</a></li>
@@ -2329,7 +2330,7 @@ $(document).ready(function () {
 
 
 						<input type="button" value="Cancel"
-							onClick="javascript:window.location.href = '<c:url value='${appPath}/jobs'/>'"
+							onClick="javascript:window.location.href = '<c:url value='/jobs'/>'"
 							class="btn btn-default ml">
 					</div>
 				</div>
@@ -2557,11 +2558,11 @@ function validateProfilePercentage(){
 		if(requirementId > 0) {
 			$.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/jobFairsByRequirementId?requirementId="+requirementId, 	   
+			    url: atsUrl+"/jobFairsByRequirementId?requirementId="+requirementId, 	   
 				    success: function(result) {
 				    	if(result != null && result != 'undefined' && result !='' ){
 				    		if (result.response === "SESSION_TIMEDOUT") {
-								location.replace(sourceleadUrl);
+								location.replace(atsUrl);
 							} else if (result.response === "AWKWARD") {
 								location.href = "/errorPage";
 							} else if (result.response === "SUCCESS") {
@@ -2604,7 +2605,7 @@ function validateProfilePercentage(){
 					            /* $("#jobFairDatesDiv").hide(); */
 					            initializeDatePicker();
 							} else if (result.indexOf('Sign In') !== -1) {
-								location.replace(sourceleadUrl);
+								location.replace(atsUrl);
 							} else {
 								showError("Operation failed, please try again");
 							}
@@ -2621,11 +2622,11 @@ function validateProfilePercentage(){
 		var requirementId = "${requirement.id}";
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/searchJobFairs", 	   
+		    url: atsUrl+"/searchJobFairs", 	   
 			    success: function(result) {
 			    	if(result != null && result != 'undefined' && result !='' ){
 			    		if (result.response === "SESSION_TIMEDOUT") {
-							location.replace(sourceleadUrl);
+							location.replace(atsUrl);
 						} else if (result.response === "AWKWARD") {
 							location.href = "/errorPage";
 						} else if (result.response === "SUCCESS") {
@@ -2648,7 +2649,7 @@ function validateProfilePercentage(){
 				            $("#jobFairList").trigger("chosen:updated");
 				            /* $("#jobFairDatesDiv").hide(); */
 						} else if (result.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
+							location.replace(atsUrl);
 						} else {
 							showError("Operation failed, please try again");
 						}
@@ -2730,7 +2731,7 @@ function validateProfilePercentage(){
 	}
 	
 	function addNewJobFair() {
-		window.open(sourceleadUrl + "/addJobFair", "_blank");
+		window.open(atsUrl + "/addJobFair", "_blank");
 	}
 </script>
 
@@ -2760,7 +2761,7 @@ function getCustomDependentField(sectionId){
 	var requirementId = '${requirement.id}';
 	 $.ajax({
 			type : "POST" , 
-				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId+"&requirementId="+requirementId+"&requestFrom=requirement",
+				 url: atsUrl+"/getAllASectionCustomFields?sectionId="+sectionId+"&requirementId="+requirementId+"&requestFrom=requirement",
 				 success: function(data) {
 		        	$('#customDiv'+sectionId).empty();
 		        	$('#customDiv'+sectionId).append(data);
@@ -2918,19 +2919,19 @@ function validate_fileupload(fileName)
 							 data: formData,
 			  		         processData: false,
 			  		         contentType:false, 
-							  url : sourceleadUrl+"/storeRequirement?"+tokenParamName+"="+tokenValue+"&saveType="+jobSaveType,
+							  url : atsUrl+"/storeRequirement?"+tokenParamName+"="+tokenValue+"&saveType="+jobSaveType,
 							  	success : function(result) {
 							  		if(result.object === 'MissingData'){
 							  			showError("Invalid data");
 							  			$("#requirementLoading").removeAttr("style");	
 							  		}else{
 							  			if (result.response === "SESSION_TIMEDOUT") {
-							  				location.replace(sourceleadUrl);
+							  				location.replace(atsUrl);
 						                } else if (result.response === "AWKWARD") {
 						                    location.href = "/errorPage";
 						                } else if (result.response === "SUCCESS") {
 										  	if(saveType != 'saveAndContinue'){
-										  		location.replace(sourceleadUrl+"/jobs");
+										  		location.replace(atsUrl+"/jobsList");
 										  	}
 											$("#selector2").removeAttr("style");
 								    		$("#selector2").css({ display: "block" });
@@ -2944,13 +2945,13 @@ function validate_fileupload(fileName)
 								    		}else if(saveType == 'saveAndContinue'){
 								    			if(result.object != 'MissingData'){
 								    				$("#msgJobDiv").html("Job saved successfully");
-								    				location.replace(sourceleadUrl+"/jobReleaseManagement?requirementUUID="+result.object);	
+								    				location.replace(atsUrl+"/jobReleaseManagement?requirementUUID="+result.object);	
 								    			}
 								    		}
 							     			msgFadein();
 						     			
 						                } else if (result.indexOf('Sign In') !== -1) {
-											location.replace(sourceleadUrl);
+											location.replace(atsUrl);
 										} else {
 						                    showError("Operation failed, please try again");
 						                }
@@ -3004,7 +3005,7 @@ function storeTeam(){
  	    	     contentType : 'application/json; charset=utf-8',
  		         processData: false,
  		         contentType:false, 
-				url : sourceleadUrl+ "/storeTeam?"+tokenParamName+"="+tokenValue+"",
+				url : atsUrl+ "/storeTeam?"+tokenParamName+"="+tokenValue+"",
 				success : function(result) {
 					$('#addTeam').hide();
 					//$('.modal-backdrop').hide();
@@ -3082,7 +3083,7 @@ function getRequirementAndLookUpSkills(requirementid){
 	
 	$.ajax({
    	type: "POST",
-    url: sourceleadUrl+"/getRequirementAndLookUpSkills?"+tokenParamName+"="+tokenValue+"&requirementid="+requirementid, 	   
+    url: atsUrl+"/getRequirementAndLookUpSkills?"+tokenParamName+"="+tokenValue+"&requirementid="+requirementid, 	   
 	    success: function(data) {
 	    	if(data != null && data != 'undefined' && data !='' ){ 
 	    		var json = JSON.parse(data);
@@ -3110,7 +3111,7 @@ function setTemplateValues(){
 // 		getRequirementAndLookUpSkills(requirementId);
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getRequirementById?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
+	    url: atsUrl+"/getRequirementById?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
 		    success: function(json) {
 		    	if(json != null && json != 'undefined' && json !='' ){ 
 		    		if(json.fileName != null && json.fileName != '' && json.fileName !='undefined'){
@@ -3563,7 +3564,7 @@ function getTeamOwners(){
 	 var teamMemberUserId = document.getElementById("memberUserId").value;
      $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?"+tokenParamName+"="+tokenValue+"&teamOwnerUserId="+teamMemberUserId,
+		        url: atsUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?"+tokenParamName+"="+tokenValue+"&teamOwnerUserId="+teamMemberUserId,
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -3592,7 +3593,7 @@ function getTeamMembers(){
 	 var teamOwnerUserId = document.getElementById("ownerUserId").value;
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?"+tokenParamName+"="+tokenValue+"&teamOwnerUserId="+teamOwnerUserId,
+		        url: atsUrl+"/getAllUsersByOrgLocationCodeExceptTeamOwner?"+tokenParamName+"="+tokenValue+"&teamOwnerUserId="+teamOwnerUserId,
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -3732,7 +3733,7 @@ function getLevel2Approvers(currentApproverId){
 	 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getApproverTwoByUserId?"+tokenParamName+"="+tokenValue+"&currentApproverId="+currentApproverId,  
+		        url: atsUrl+"/getApproverTwoByUserId?"+tokenParamName+"="+tokenValue+"&currentApproverId="+currentApproverId,  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -3778,7 +3779,7 @@ function getLevel2Approvers(currentApproverId){
 			 $("#submitForApproval").attr("disabled", "disabled");
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/validateJobId?"+tokenParamName+"="+tokenValue+"&jobId="+jobId+"&requirementid="+requirementid, 
+			        url: atsUrl+"/validateJobId?"+tokenParamName+"="+tokenValue+"&jobId="+jobId+"&requirementid="+requirementid, 
 			        success: function(data) {
 			        	if(data == true){
 							  $("input#jobId").after("<p class='jquery_form_error_message'>"+jobId+" is Already Existed</span>");
@@ -3872,7 +3873,7 @@ function checkTemplateforDouplicate(){
 		
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/validatetemplateName?"+tokenParamName+"="+tokenValue+"&templateName="+jsonData, 
+			        url: atsUrl+"/validatetemplateName?"+tokenParamName+"="+tokenValue+"&templateName="+jsonData, 
 			        success: function(data) {
 			        	if(data == "true"){
 			        		  $('#jobTitleDiv').find('p.jquery_form_error_message').remove();
@@ -3947,7 +3948,7 @@ function getEditRequirementDetails(requirementId){
 	if(templateId !=''){
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/getEditRequirementDetails?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,
+			url : atsUrl + "/getEditRequirementDetails?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,
 			success : function(data) {
 				var json = JSON.parse(data);
 				$(".Editor-container").find('.Editor-editor').html(json['description']);
@@ -3964,7 +3965,7 @@ function getEditRequirementDetails(requirementId){
 	 if(teamName != null && teamName != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateTeamName?"+tokenParamName+"="+tokenValue+"&name="+teamName, 
+		        url: atsUrl+"/validateTeamName?"+tokenParamName+"="+tokenValue+"&name="+teamName, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $("input#nameOfCandidate").after("<p class='jquery_form_error_message'>"+teamName+" is Already Existed</span>");
@@ -3989,7 +3990,7 @@ function getProjectsList(projectName){
 	var orgRelationId = $("#vendorOrgRelationId").val();
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getAllProjectsByOrgRelationIdAndInProgress?"+tokenParamName+"="+tokenValue+"",
+	url: atsUrl+"/getAllProjectsByOrgRelationIdAndInProgress?"+tokenParamName+"="+tokenValue+"",
 	success :function(json) {
 	var output = "";
 	output = output + "<option value=''>--Select Project--</option>";
@@ -4068,7 +4069,7 @@ $("button.btnShowlist").click(function(){
 function removeReqDoc(requirementId){
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/deleteJobDoc?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
+	    url: atsUrl+"/deleteJobDoc?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
 		    success: function(data) {
 		    	$("#uploadDocNameDiv").hide();
 		     	$("#uploadFileGroup123").show();
@@ -4087,10 +4088,10 @@ function refreshRequirementClientList(){
 		 var loginOrgLocId = '${SourceLeadWeb_orgLocationId}';
 		 $.ajax({
 	      type : "POST",
-	       url: sourceleadUrl+"/refreshRequirementClientList",       
+	       url: atsUrl+"/refreshRequirementClientList",       
 	       success: function(result) {
 	    	   if (result.response === "SESSION_TIMEDOUT") {
-	  				location.replace(sourceleadUrl);
+	  				location.replace(atsUrl);
                } else if (result.response === "AWKWARD") {
                    location.href = "/errorPage";
                } else if (result.response === "SUCCESS") {
@@ -4110,7 +4111,7 @@ function refreshRequirementClientList(){
 			        $("#addClientId").append(output);
 			        $('#addClientId').trigger("chosen:updated");
                } else if (result.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
+					location.replace(atsUrl);
 			   } else {
                    showError("Operation failed, please try again");
                }
@@ -4124,7 +4125,7 @@ function refreshRequirementClientList(){
 		 var a = $("#addClientId").val();
 		 var valueArray = a.split(",");
 		 var cid = valueArray[0]             
-		 window.open(sourceleadUrl+"/addClientContact?cid="+cid,'_blank');
+		 window.open(atsUrl+"/addClientContact?cid="+cid,'_blank');
 	 }
 </script>
 
@@ -4146,7 +4147,7 @@ function getJobLocations(){
 		$("#requirementLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getRequirementLocations?${_csrf.parameterName}=${_csrf.token}&requirementUUID="+requirementUUID, 
+		    	 url: atsUrl+"/getRequirementLocations?${_csrf.parameterName}=${_csrf.token}&requirementUUID="+requirementUUID, 
 		        success: function(json) {
 		        	
 		        	 var result = "";

@@ -48,7 +48,6 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/app")
 public class RequirementListController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(RequirementListController.class);
@@ -86,7 +85,7 @@ public class RequirementListController {
     @Autowired
     private JobBoardConfigurationService jobBoardConfigurationService;
 	
-	@RequestMapping(value = "/jobs")
+	@RequestMapping(value = "/jobsList")
 	public ModelAndView requirementList(HttpServletRequest request,@RequestParam(value="searchResult", required=false)String  searchResult
 			,@RequestParam(value="searchValue", required=false)String searchValue,@RequestParam(defaultValue = "") String viewTab) throws Exception {
 		
@@ -214,6 +213,7 @@ public class RequirementListController {
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLoc.getId())){
 			String sourceleadShareUrl = StringUtils.removeEnd(sourceleadUrl, sourceleadUrl.substring(sourceleadUrl.lastIndexOf("/")));
+			System.out.println("sourceleadShareUrl is "+sourceleadShareUrl);
 			model.addObject("sourceleadShareUrl", sourceleadShareUrl);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.addObject("requirement", requirement);

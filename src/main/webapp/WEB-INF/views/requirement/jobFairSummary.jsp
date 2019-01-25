@@ -8,7 +8,7 @@
 			<h2>Job Fair Summary</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="/app/dashboard/3">Home</a> »<a href="/app/jobs?viewTab=jobFair">Job Fairs</a>»Job Fair Details
+			<a href="/ats/dashboard/3">Home</a> »<a href="/ats/jobs?viewTab=jobFair">Job Fairs</a>»Job Fair Details
 		</div>
 	</section>
 	<div class="timesheet_out">
@@ -103,7 +103,7 @@
 <jsp:include page="addApplicantFromRequirementList.jsp" />
 <jsp:include page="requirementAssignedTo.jsp"/>
 <script type="text/javascript">
-	var sourceleadURL = '${sourceleadUrl}';
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var orgATS = '${SourceLeadWeb_ats}';
 	var jobFairId = '${jobFair.id}';
 	function test() {
@@ -129,12 +129,12 @@
 		});
 	});
 	function editJobFair() {
-		location.href = sourceleadURL + "/editJobFair?uuid=${jobFair.uuid}";
+		location.href = atsUrl + "/editJobFair?uuid=${jobFair.uuid}";
 	}
 	function getJobFairRequirements() {
 		$.ajax({
 	           type : "POST",
-	           url: sourceleadUrl + "/getRequirementsByJobFair?jobFairId=" + jobFairId,    
+	           url: atsUrl + "/getRequirementsByJobFair?jobFairId=" + jobFairId,    
 	            success :function(data) {
 	            	if (data.response === "FAILED") {
 			    		showError(data.responseMessage);
@@ -204,9 +204,9 @@
 			    	         	'<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 			    	            	if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 			    	                	if(opt.isRequirementReleasedByuser == 'Y') {
-			    	                    	result = result +"<div class='pull-left'><a href='<c:url value='/app/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success' title='Release Job'></i></a></div>"; 
+			    	                    	result = result +"<div class='pull-left'><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success' title='Release Job'></i></a></div>"; 
 			    	                    } else {	
-			    	                    	result = result +"<div class='pull-left'><a href='<c:url value='/app/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn' title='Release Job'></i></a></div>";
+			    	                    	result = result +"<div class='pull-left'><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn' title='Release Job'></i></a></div>";
 			    	                    }
 			    					} else {
 			    						result = result +"<div class='pull-left'>---</div>";
@@ -221,15 +221,15 @@
 			                   		result = result +"<td><div>---</div></td>";
 			                   	 }
 			                   	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined') {
-			                   		result = result + "<td><a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+			                   		result = result + "<td><a href='"+atsUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 			                   	 } else {
-			                   		result = result + "<td><a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+			                   		result = result + "<td><a href='"+atsUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 			                     }
 			                     if(orgATS == 'Y') {
 			    	             	if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined') {
 			    	                    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
 			    	                    	if(opt.clientId != null) {
-				    	                    	result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+opt.clientId.uuid+'" title="'+opt.clientName+'">'+opt.clientName+'</a></div></td>';
+				    	                    	result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+atsUrl+'/clientDashboard?orgRelationUUID='+opt.clientId.uuid+'" title="'+opt.clientName+'">'+opt.clientName+'</a></div></td>';
 			    	                    	} else {
 				    	                    	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.clientName+'</div></td>';
 			    	                    	}
@@ -263,37 +263,37 @@
 			                    }
 			                    
 			                    if(opt.noOfApplicants != null && opt.noOfApplicants != '' && opt.noOfApplicants != 'undefined') {		                     
-			                   		result = result +"<td><a href='<c:url value='/app/requirementSummary?type=applicants&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfApplicants+"</div></a></td>";
+			                   		result = result +"<td><a href='<c:url value='/requirementSummary?type=applicants&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfApplicants+"</div></a></td>";
 			                    } else {
 			                    	result = result +"<td><div>---</div></td>";
 			                    }
 			                    
 			                    if(opt.noOfShortlistedApplicants != null && opt.noOfShortlistedApplicants != '' && opt.noOfShortlistedApplicants != 'undefined') {
-			                    	result = result +"<td><a href='<c:url value='/app/requirementSummary?type=SHORTLIST&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfShortlistedApplicants+"</div></a></td>";
+			                    	result = result +"<td><a href='<c:url value='/requirementSummary?type=SHORTLIST&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfShortlistedApplicants+"</div></a></td>";
 			                    } else {
 			                    	result = result +"<td><div>---</div></td>";
 			                    }
 			                    
 			                    if(opt.noOfSubmittedApplicants != null && opt.noOfSubmittedApplicants != '' && opt.noOfSubmittedApplicants != 'undefined') {
-			    	            	result = result +"<td><a href='<c:url value='/app/requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfSubmittedApplicants+"</div></a></td>";
+			    	            	result = result +"<td><a href='<c:url value='/requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfSubmittedApplicants+"</div></a></td>";
 			                    } else {
 			                    	result = result +"<td><div>---</div></td>";
 			                    }
 			                    
 			                    if(opt.noOfInterviewedApplicants != null && opt.noOfInterviewedApplicants != '' && opt.noOfInterviewedApplicants != 'undefined') {
-			                    	result = result +"<td><a href='<c:url value='/app/requirementSummary?type=INTERVIEW&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfInterviewedApplicants+"</div></a></td>";
+			                    	result = result +"<td><a href='<c:url value='/requirementSummary?type=INTERVIEW&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfInterviewedApplicants+"</div></a></td>";
 			                    } else {
 			                    	result = result +"<td><div>---</div></td>";
 			                    }
 			                    
 			                    if(opt.noOfOfferedApplicants != null && opt.noOfOfferedApplicants != '' && opt.noOfOfferedApplicants != 'undefined') {
-			                    	result = result +"<td><a href='<c:url value='/app/requirementSummary?type=OFFERMADE&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfOfferedApplicants+"</div></a></td>";
+			                    	result = result +"<td><a href='<c:url value='/requirementSummary?type=OFFERMADE&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfOfferedApplicants+"</div></a></td>";
 			                    } else {
 			                    	result = result +"<td><div>---</div></td>";
 			                    }
 			                    
 			                    if(opt.noOfJoinedApplicants != null && opt.noOfJoinedApplicants != '' && opt.noOfJoinedApplicants != 'undefined') {
-			    	            	result = result +"<td><a href='<c:url value='/app/requirementSummary?type=JOINED&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfJoinedApplicants+"</div></a></td>";
+			    	            	result = result +"<td><a href='<c:url value='/requirementSummary?type=JOINED&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfJoinedApplicants+"</div></a></td>";
 			    	            } else {
 			                    	result = result +"<td><div>---</div></td>";
 			                    }
@@ -307,7 +307,7 @@
 			                    if(checkSize>=10 && i==9) {
 			                       	/* $("#viewmoresDiv").css("display", "block"); */
 			                    	var text = "<div class='pull-right jobMoreBtn' id='viewmoresDiv'>";
-			                    	text += "<a href='/app/jobs' class='btn btn-sm btn-primary pull-right' title='View more'> View More</a>";
+			                    	text += "<a href='/ats/jobs' class='btn btn-sm btn-primary pull-right' title='View more'> View More</a>";
 			                       	text += "</div>";
 			                       	$("#requirementListActions").append(text);
 			    	 	   	   	}
@@ -344,7 +344,7 @@
 			            		$("#requirementList").append("<table id='noResultsTable'><tr class='odd'><td colspan='7' class='dataTables_empty' valign='top'></td></tr></table>");
 			            	}
 			    	} else if (data.indexOf('Sign In') !== -1) {
-			    		location.replace(sourceleadUrl);
+			    		location.replace(atsUrl);
 			    	} else {
 			    		showError("Operation failed, please try again");
 			    	}
