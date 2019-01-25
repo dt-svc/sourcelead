@@ -345,8 +345,8 @@ public class ExpensesRestController {
 						pmDTO.setExpenseId(eedDTO.getExpenseId());
 					}
 					else{
-						//String expenseId = addExpensesService.getExpenseId(pm.getProjects().getOrgLocationsId());
-						String expenseId = addExpensesService.getExpenseId(orgLocations);
+						OrgLocations projLoc = orgLocationService.getOrgLocations(orgLocationId);
+						String expenseId = addExpensesService.getExpenseId(projLoc);
 						pmDTO.setExpenseId(expenseId);
 					}
 					 if(pm.getProjectClientsId() != null &&  pm.getProjectClientsId().getOrgRelationId() != null){
