@@ -1,1 +1,0 @@
-CALL sourcelead.AlterTableAddColumn ('sourcelead','INVOICE','IS_GENERATE_AUTOMATIC_INVOICE','VARCHAR(5) NULL AFTER `PROJECT_MEMBER_ID`');

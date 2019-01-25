@@ -31,6 +31,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
+@RequestMapping("/app")
 public class SocialInviterService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(SocialInviterService.class);
@@ -38,7 +39,7 @@ public class SocialInviterService {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
-    @RequestMapping(value="/getAPIService",  method =  RequestMethod.GET )
+    @RequestMapping(value={"/ws/getAPIService", "/app/getAPIService"},  method =  RequestMethod.GET )
 	@ResponseBody
 	public String getAPIService(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 
@@ -205,7 +206,7 @@ public class SocialInviterService {
 	}
     
     
-    @RequestMapping(value = "/storeCsv", method = RequestMethod.POST)
+    @RequestMapping(value = {"/storeCsv"}, method = RequestMethod.POST)
 	public @ResponseBody String storeCsv(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
 		
 		MultipartFile multiFile = null;
@@ -280,8 +281,8 @@ public class SocialInviterService {
         	
         }
     	else if (service.equals("facebook")){
-        	APICredentials.put("consumerKey", "200281393793197");
-        	APICredentials.put("consumerSecret", "3a62bba550c343eb4f42bbeabd2e0f5e");
+        	APICredentials.put("consumerKey", "2066960683592341");
+        	APICredentials.put("consumerSecret", "a5e28872fb1b6456392f1c58b1649ca0");
         }
     	else if(service.equals("googleplus") || service.equals("gmail") || service.equals("google")){
         	APICredentials.put("consumerKey", "926632023543-jvf94kddpdemsb2p7r85j2clp1is9mkl.apps.googleusercontent.com");

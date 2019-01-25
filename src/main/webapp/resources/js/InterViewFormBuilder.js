@@ -6,7 +6,6 @@
  */
 
 function customizeFields(templateId,sourceleadUrl){
-
     //If loading a saved form from your database, put the ID here. Example id is "1".
     //Adds new field with animation
     $("#add-field a").click(function(e) {
@@ -22,7 +21,7 @@ function customizeFields(templateId,sourceleadUrl){
     	var result = "";
     	result = result +"<div class='project_inn_mask'></div>";
     	result = result +"<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-    	result = result +"<p>Are you sure ?</p>";
+    	result = result +"<p>Are you sure you want to delete?</p>";
     	result = result +"<div>&nbsp;&nbsp;&nbsp;</div>";
     	result = result +"<b href='javascript:void(0)'><input type='button' id='deleteCustomField'  value='Ok' /><input class='u_can_color' type='button' id='cancelDelete' value='Cancel'></b>";
     	result = result +"</div>";

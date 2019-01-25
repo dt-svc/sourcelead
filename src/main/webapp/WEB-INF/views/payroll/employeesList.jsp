@@ -1,11 +1,14 @@
 <script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
+<script>
 function getEmployeeList(){
 	$("#addPayrollDiv").hide();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var searchValue = $("#employeesDataTableSearch").val();
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getEmployeeList?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
+	var url = pmsUrl+"/getEmployeeList?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
     prepareEmployeeList(url);
 }
 
@@ -25,6 +28,8 @@ function prepareEmployeeList(url){
 	
 	 $("#employeeListDiv").removeAttr("style");
  	 $("#employeeListDiv").empty();
+ 	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
+	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
  	result = result +" <div class='modal-header'>";
  	result = result +" <div class='remove_search'>";
@@ -295,18 +300,18 @@ function employeesPagination(url){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#employeesListTablePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#employeesDataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    		   getEmployeeList();
-    	   }
-    	});
+   
 }
-
+$("#employeesDataTableSearch").keyup(function(e) {
+	   if(e.which === 13) {
+		   getEmployeeList();
+	   }
+	});
 </script>
 
 <!--  TODO do not delete @Rajashekar -->

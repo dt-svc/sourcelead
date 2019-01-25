@@ -1,1 +1,0 @@
-CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECTS','PROJECT_UUID','VARCHAR(20) NULL');
