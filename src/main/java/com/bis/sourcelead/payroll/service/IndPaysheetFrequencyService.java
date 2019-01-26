@@ -47,4 +47,7 @@ public interface IndPaysheetFrequencyService {
 	
 	List<IndEmployeePayroll> getYTDIndEmployeePayrollList(Long candidateId, String startMonth)throws Exception;
 
+	List<IndEmployeePayrollDTO> getPayrollSalaryStatementReportList(IndEmployeePayrollDTO indEmployeePayrollDTO,OrgLocations orgLocations)throws Exception;
+
+
 }

@@ -17,12 +17,14 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -585,6 +587,53 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		}
 		response.setData(indEmployeePayrollList);
 		return response;
+	}
+
+
+	@Override
+	public List<IndEmployeePayrollDTO> getPayrollSalaryStatementReportList(IndEmployeePayrollDTO indEmployeePayrollDTO,	OrgLocations orgLocations) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		 Date startDate = new SimpleDateFormat("MMMM").parse(indEmployeePayrollDTO.getSalaryMonthName());
+		 Calendar cal = Calendar.getInstance();
+		 cal.setTime(startDate);
+		 cal.set(Calendar.YEAR, Integer.valueOf(indEmployeePayrollDTO.getFinancialYear()));
+		 Date sDate = cal.getTime();
+		 java.sql.Date freqStartDate = new java.sql.Date(sDate.getTime());
+		 
+		 cal.add(Calendar.MONTH, 1);  
+		 cal.set(Calendar.DAY_OF_MONTH, 1);  
+		 cal.add(Calendar.DATE, -1);  
+	     Date eDate = cal.getTime();
+	     java.sql.Date freqEndDate = new java.sql.Date(eDate.getTime());
+	     
+		String query =  " SELECT  can.ID as canId, "+
+						" employee.EMPLOYEE_ID as employeeid, "+
+				        " department.DEPARTMENT_NAME as departmentName, "+
+						" employee.HIRE_DATE as deteOfJoin, "+
+					    " can.FIRST_NAME as firstName, "+
+				        " can.LAST_NAME as lastName, "+
+				        " payHead.NAME as payHeadName, "+
+				        " his.MONTHLY as payHeadAmount, "+
+				        " payroll.GROSS_PAY as grossPay, "+
+				        " payroll.NET_PAY as netPay, "+
+				        " payHead.TYPE as payHeadType "+
+				        
+						" FROM PAYROLL_PAYHEAD payHead, IND_PAY_SHEET_FREQUENCY freq, IND_EMPLOYEE_PAYROLL payroll, "
+						+ " ASSOCIATE_PAYROLL_PAYHEAD_HISTORY his, CANDIDATE can, EMPLOYEE employee, DEPARTMENT department "+
+						" where payroll.IND_PAY_SHEET_FREQUENCY_ID = freq.ID "+
+						" AND his.IND_EMPLOYEE_PAYROLL_ID = payroll.ID "+
+						" AND his.PAYROLL_PAYHEAD = payHead.ID  "+
+						" AND payroll.CANDIDATE_ID = can.ID "+
+						" AND payroll.EMPLOYEE_ID = employee.ID "+ 
+						" AND employee.DEPARTMENT_ID = department.ID "+
+						" AND freq.ORG_LOCATION_ID =:orgloationId "+
+						" AND ( date(freq.FREQUENCY_START_DATE) BETWEEN :startDate and :endDate ) "+ 
+						" AND his.UPDATED_DATE = (select max(UPDATED_DATE) from ASSOCIATE_PAYROLL_PAYHEAD_HISTORY assHis where  assHis.IND_EMPLOYEE_PAYROLL_ID = payroll.ID and assHis.PAYROLL_PAYHEAD = payHead.ID) ";
+
+		               Query queryObj = session.createSQLQuery(query);
+					   queryObj.setResultTransformer(Transformers.aliasToBean(IndEmployeePayrollDTO.class));
+					   List<IndEmployeePayrollDTO> projectassignTaskList = queryObj.setLong("orgloationId", orgLocations.getId()).setDate("startDate", freqStartDate).setDate("endDate", freqEndDate).list();
+					return projectassignTaskList;
 	}
 	
 	
