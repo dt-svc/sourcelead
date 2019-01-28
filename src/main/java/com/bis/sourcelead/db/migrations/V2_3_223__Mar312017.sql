@@ -1,1 +1,0 @@
-UPDATE `ORG_LOCATIONS` SET `FROM_EMAIL`='donotreply@com', `FROM_EMAIL_PASSWORD`='Welcome1' WHERE `ID`='1';

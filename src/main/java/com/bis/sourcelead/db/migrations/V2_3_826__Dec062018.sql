@@ -1,1 +1,0 @@
-CALL AlterTableAddColumn ('EXPENSES','Total_Submitted_Amount','decimal(20,2)  DEFAULT NULL AFTER `UPDATED_BY`');

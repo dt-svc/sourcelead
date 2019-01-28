@@ -140,6 +140,9 @@ public class UserRole implements Serializable {
     @Column(name = "LOGIN_SECURITY")
 	private String loginSecurity;
     
+    @Column(name = "UUID")
+   	private String uuid;
+    
     
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "GRADE_ID")
@@ -1343,6 +1346,14 @@ public class UserRole implements Serializable {
 
 	public void setProbationStatus(String probationStatus) {
 		this.probationStatus = probationStatus;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 }
