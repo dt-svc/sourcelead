@@ -12,7 +12,7 @@
 <!-- For add New Recomended Applicant -->
 <script>
 function getAddRecomendedApplicant(requirementId){
-	generateOrgSubmissionForm(sourceleadUrl,requirementId)
+	generateOrgSubmissionForm(atsUrl,requirementId)
 	var result = "";
 	result = result + '<form id="addRecomApplicant_form" name="addRecomApplicant_form" enctype="multipart/form-data" method="post">';
 	result = result + '<h3>Add Applicant</h3>';
@@ -62,7 +62,7 @@ $('body').on('submit', '#addRecomApplicant_form', function(e){
 	  if ($(this).validate(false, validationSettings)){
       e.preventDefault();
       var frm = $('#addRecomApplicant_form').serializeFormJSON();
-      var sourceleadUrl ='${sourceleadUrl}';
+      var atsUrl = '${SourceLeadWeb_atsUrl}';
       var requirementId = $("#requirementId").val();
       var frm = $('#addRecomApplicant_form').serializeFormJSON();
       var con1 = JSON.stringify(frm);
@@ -141,18 +141,18 @@ $('body').on('submit', '#addRecomApplicant_form', function(e){
 	        processData: false,
 	        contentType:false,
  	        dataType : 'json',
- 	    	url : sourceleadUrl+"/saveAddApplicant?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
+ 	    	url : atsUrl+"/saveAddApplicant?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
 	        	if(result.response === "SESSION_TIMEDOUT") {
-					location.replace(sourceleadUrl);
+					location.replace(atsUrl);
 				} else if (result.response === "AWKWARD") {
 					location.href = "/errorPage";
 				} else if (result.response === "SUCCESS") {
 		        	if((result.object === "success")){
-		        		location.replace(sourceleadUrl+"/requirementSummary?requirementId="+requirementId); 
+		        		location.replace(atsUrl+"/requirementSummary?requirementId="+requirementId); 
 			        }
 				} else if (result.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
+					location.replace(atsUrl);
 				} else {
 					showError("Operation failed, please try again");
 				}
@@ -213,7 +213,7 @@ function getAllCountries(){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/sourceLeadCountryAutoComplete?"+tokenParamName+"="+tokenValue+"",
+    	 url: '${SourceLeadWeb_atsUrl}'+"/sourceLeadCountryAutoComplete?"+tokenParamName+"="+tokenValue+"",
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#country').empty();
@@ -244,7 +244,7 @@ function getStates(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: '${SourceLeadWeb_atsUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -282,7 +282,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: '${SourceLeadWeb_atsUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
@@ -339,7 +339,7 @@ function init(){
  		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var form = $('#addRecomApplicant_form')[0];
   		var formData = new FormData(form); 
-		var sourceleadUrl = '${sourceleadUrl}';
+		var atsUrl = '${SourceLeadWeb_atsUrl}';
 		   $.ajax({
 				    type: "POST",
 			    	data: formData,
@@ -348,7 +348,7 @@ function init(){
 			        processData: false,
 			        contentType:false,
 		   	        dataType : 'json',
-					url : sourceleadUrl+"/parseResume?"+tokenParamName+"="+tokenValue+"",
+					url : atsUrl+"/parseResume?"+tokenParamName+"="+tokenValue+"",
 					success : function(response) {
 						if (response.response === "AWKWARD") {
 						    location.href = "/errorPage";
@@ -378,7 +378,7 @@ function init(){
 							}
 							 $("#loading").removeAttr("style");
 						} else if (response.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
+							location.replace(atsUrl);
 						} else {
 						    showError("Operation failed, please try again");
 						}
@@ -418,7 +418,7 @@ function validate_fileupload(fileName)
 		
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email, 
+		        url: atsUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email, 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -436,7 +436,7 @@ function validate_fileupload(fileName)
 			        		$('.jquery_form_error_message').remove();
 			        	} 
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
+		        		location.replace(atsUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}

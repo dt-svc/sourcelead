@@ -8,6 +8,7 @@
 
 <link href="/resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 $(document).ready(function() {
 	 var requirementId = '${requirementId}';
 	 var submissionId = '${submissionId}';
