@@ -25,6 +25,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
@@ -97,6 +98,9 @@ public class UserLoginHelper {
 	
 	@Autowired
 	OrgService orgService;
+	
+	@Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
 	
 	   
 
