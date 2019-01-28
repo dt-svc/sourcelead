@@ -948,6 +948,7 @@ public class EMailJobScheduler {
 	 * Fires on Monday at 11:45 PM of every week of the month emailJobScheduler.job.cron.everyfriday.expression
 	 */
 	@Scheduled(cron = "0 45 23 ? * MON")
+//	@Scheduled(cron = "0 0/1 * 1/1 * ?")
 	public void runJobSchedulerByMondayForWeeklyAndBiWeekly() {
 		try {
 			  logger.info("******************  Notification Job Scheduler MONDAY of every week of the Month started (Weekly) to Level 1 Manager..! **********");
@@ -1200,7 +1201,6 @@ public class EMailJobScheduler {
 	 * Fires on Friday at 11:45 PM of every week of the month emailJobScheduler.job.cron.everyfriday.expression
 	 */
 	@Scheduled(cron = "0 45 23 ? * FRI")
-	//@Scheduled(cron = "0 0/1 * 1/1 * ?")
 	public void runJobSchedulerByFRIDay() {
 		logger.info("******************  Notification Job Scheduler WednesDay of every week of the Month started (Weekly) to Admin..! **********");
 		try {
@@ -1250,114 +1250,118 @@ public class EMailJobScheduler {
 	
 	@Async
 	private void adminCronRemainder(String invoiceFrequency) throws Exception {
-		List<Org> orgList = orgService.getOrgs();
-		Map<String,String>  timesheetFrequencyMap = null;
-		for (Org org : orgList) {
-				StringBuilder tempHTML = new StringBuilder();
-				int count=0;
-				tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
-				List<OrgLocations> orgLocations = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
-				for (OrgLocations ol : orgLocations) {
-					     if(count==0){	
-						            tempHTML.append("<tr>");
-							        tempHTML.append("<th> Employee Name </th>");
-							        tempHTML.append("<th> Frequency </th>");
-									tempHTML.append("<th> Project Name </th>");
-									tempHTML.append("<th> Manager Name </th>");
-									tempHTML.append("</tr>");
-									count++;
-						   }
-					    	
-					    	 HashSet<ProjectMembers> projectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(invoiceFrequency,ol.getId());
-					    	 boolean pmCheck = true;
-					    	 if(null != projectMembersList && !projectMembersList.isEmpty()){
-								for (ProjectMembers projectMembers : projectMembersList) {
-									 boolean freqCheck = true;
-									timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMembers,ol,"approverScheduler");
-									  if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
-									            LinkedList<String> frequency = new LinkedList<>();
-												 Date cronStartDate = null;
-												 Date cronEndDate = null;
-												
-												 for(Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
-													    String key = entry.getKey();
-													    String value =entry.getValue();
-													    
-													    Date frequencyStartDate = commonUtil.orgLocationDateFormat(ol.getDateFormat(),key.replaceAll("/", "-"));
-														Date frequencyEndDate = commonUtil.orgLocationDateFormat(ol.getDateFormat(),value.replaceAll("/", "-"));
-														Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
-														currentCal.setLenient(false);
-														currentCal.setTime(CommonUtil.currentDate());
-											             Boolean flag = true;
-											             if(CalendarUtil.getNumberOfDays(frequencyEndDate,currentCal.getTime()) <-2 && invoiceFrequency.equalsIgnoreCase(Constants.BI_WEEKLY)){
-											            	 flag = false;
-											             }
-											             
-											             if(flag && submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMembers.getMasterCandidateId().getId(),projectMembers.getProjects().getId())){
-											            	    freqCheck = false;
-											            	    pmCheck = false;
-											            	    if(cronStartDate == null){
-																	cronStartDate = frequencyStartDate;
-																}
-																if(cronEndDate == null || CalendarUtil.getNextDate(cronEndDate).equals(frequencyStartDate)){
-																	cronEndDate = frequencyEndDate;
-																}else{
-																	String stDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronStartDate);
-																	String eDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronEndDate);
-																	frequency.add("<b>"+stDate.replaceAll("/", "-")+" To "+eDate.replaceAll("/", "-"));
-																	cronStartDate = null;
-																	cronEndDate = null;
-																}
-														 }
-													    
-												 }
-												 if(freqCheck)
-													continue;
-												 tempHTML.append("<tr>");
-												 if(projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName()!= null && projectMembers.getProjectMemberCandidteId().getConsultantUser().getLastName() !=null){
-													 tempHTML.append("<td style='text-align: center;'>"+projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName()+" "+projectMembers.getProjectMemberCandidteId().getConsultantUser().getLastName()+"</td>");
-												 }else{
-													 tempHTML.append("<td style='text-align: center;'>"+projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName()+"</td>");
-												 }
-												 if(cronStartDate != null && cronEndDate != null){
-													    String stDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronStartDate);
-														String eDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronEndDate);
-														frequency.add("<b>"+stDate.replaceAll("/", "-")+" To "+eDate.replaceAll("/", "-"));
-														cronStartDate = null;
-														cronEndDate = null;
-												 }
-											     if(frequency != null && !frequency.isEmpty()){
-												    tempHTML.append("<td style='text-align: center;'>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
-											     }
-												  tempHTML.append("<td style='text-align: center;'>"+projectMembers.getProjects().getProjectName()+"</td>");
-												 
-												  Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(),ol.getId());
-												  StringBuilder projectStringBuilder=new StringBuilder();
-												  for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
-													    if(StringUtils.isNoneEmpty(projectStringBuilder.toString())){
-													    	projectStringBuilder.append(" , ");
+		try {
+			List<Org> orgList = orgService.getOrgs();
+			Map<String,String>  timesheetFrequencyMap = null;
+			for (Org org : orgList) {
+					StringBuilder tempHTML = new StringBuilder();
+					int count=0;
+					tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
+					List<OrgLocations> orgLocations = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+					for (OrgLocations ol : orgLocations) {
+						     if(count==0){	
+							            tempHTML.append("<tr>");
+								        tempHTML.append("<th> Employee Name </th>");
+								        tempHTML.append("<th> Frequency </th>");
+										tempHTML.append("<th> Project Name </th>");
+										tempHTML.append("<th> Manager Name </th>");
+										tempHTML.append("</tr>");
+										count++;
+							   }
+						    	
+						    	 HashSet<ProjectMembers> projectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(invoiceFrequency,ol.getId());
+						    	 boolean pmCheck = true;
+						    	 if(null != projectMembersList && !projectMembersList.isEmpty()){
+									for (ProjectMembers projectMembers : projectMembersList) {
+										 boolean freqCheck = true;
+										timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMembers,ol,"approverScheduler");
+										  if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
+										            LinkedList<String> frequency = new LinkedList<>();
+													 Date cronStartDate = null;
+													 Date cronEndDate = null;
+													
+													 for(Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
+														    String key = entry.getKey();
+														    String value =entry.getValue();
+														    
+														    Date frequencyStartDate = commonUtil.orgLocationDateFormat(ol.getDateFormat(),key.replaceAll("/", "-"));
+															Date frequencyEndDate = commonUtil.orgLocationDateFormat(ol.getDateFormat(),value.replaceAll("/", "-"));
+															Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
+															currentCal.setLenient(false);
+															currentCal.setTime(CommonUtil.currentDate());
+												             Boolean flag = true;
+												             if(CalendarUtil.getNumberOfDays(frequencyEndDate,currentCal.getTime()) <-2 && invoiceFrequency.equalsIgnoreCase(Constants.BI_WEEKLY)){
+												            	 flag = false;
+												             }
+												             
+												             if(flag && submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMembers.getMasterCandidateId().getId(),projectMembers.getProjects().getId())){
+												            	    freqCheck = false;
+												            	    pmCheck = false;
+												            	    if(cronStartDate == null){
+																		cronStartDate = frequencyStartDate;
+																	}
+																	if(cronEndDate == null || CalendarUtil.getNextDate(cronEndDate).equals(frequencyStartDate)){
+																		cronEndDate = frequencyEndDate;
+																	}else{
+																		String stDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronStartDate);
+																		String eDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronEndDate);
+																		frequency.add("<b>"+stDate.replaceAll("/", "-")+" To "+eDate.replaceAll("/", "-"));
+																		cronStartDate = null;
+																		cronEndDate = null;
+																	}
+															 }
+														    
+													 }
+													 if(freqCheck)
+														continue;
+													 tempHTML.append("<tr>");
+													 if(projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName()!= null && projectMembers.getProjectMemberCandidteId().getConsultantUser().getLastName() !=null){
+														 tempHTML.append("<td style='text-align: center;'>"+projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName()+" "+projectMembers.getProjectMemberCandidteId().getConsultantUser().getLastName()+"</td>");
+													 }else{
+														 tempHTML.append("<td style='text-align: center;'>"+projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName()+"</td>");
+													 }
+													 if(cronStartDate != null && cronEndDate != null){
+														    String stDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronStartDate);
+															String eDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronEndDate);
+															frequency.add("<b>"+stDate.replaceAll("/", "-")+" To "+eDate.replaceAll("/", "-"));
+															cronStartDate = null;
+															cronEndDate = null;
+													 }
+												     if(frequency != null && !frequency.isEmpty()){
+													    tempHTML.append("<td style='text-align: center;'>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
+												     }
+													  tempHTML.append("<td style='text-align: center;'>"+projectMembers.getProjects().getProjectName()+"</td>");
+													 
+													  Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(),ol.getId());
+													  StringBuilder projectStringBuilder=new StringBuilder();
+													  for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
+														    if(StringUtils.isNoneEmpty(projectStringBuilder.toString())){
+														    	projectStringBuilder.append(" , ");
+														    }
+													    	if(approverHierarchy.getLevel()==1){
+													    		projectStringBuilder.append(approverHierarchy.getApproverUserId().getFullName()).toString();
+													    	}else if(approverHierarchy.getLevel()==2){
+													    		projectStringBuilder.append(approverHierarchy.getApproverUserId().getFullName()).toString();
+													    	}
 													    }
-												    	if(approverHierarchy.getLevel()==1){
-												    		projectStringBuilder.append(approverHierarchy.getApproverUserId().getFullName()).toString();
-												    	}else if(approverHierarchy.getLevel()==2){
-												    		projectStringBuilder.append(approverHierarchy.getApproverUserId().getFullName()).toString();
-												    	}
-												    }
-												    
-												  tempHTML.append("<td style='text-align: center;'>").append(projectStringBuilder).append("</td>");
-												  tempHTML.append("</tr>");
-									          }
-								       }	
-								}
-					    	    if(pmCheck)
-					    	    	continue;
-					    	    tempHTML.append("</table> ");
-					    	    
-								if(null != ol.getUser() && null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
-								   projectsService.userEmailToAdmin(tempHTML,ol,ol.getUser());
-								}
-				  }
-			}
+													    
+													  tempHTML.append("<td style='text-align: center;'>").append(projectStringBuilder).append("</td>");
+													  tempHTML.append("</tr>");
+										          }
+									       }	
+									}
+						    	    if(pmCheck)
+						    	    	continue;
+						    	    tempHTML.append("</table> ");
+						    	    
+									if(null != ol.getUser() && null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
+									   projectsService.userEmailToAdmin(tempHTML,ol,ol.getUser());
+									}
+					  }
+				}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	//=============================================== ADMIN TIME SHEETS MAILS END==========================================
 	

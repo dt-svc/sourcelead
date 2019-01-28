@@ -6685,7 +6685,8 @@ public class TimesheetRestController {
 			// DateFormat sdf = LoginSessionController.DATEFORMAT;
 			Date sDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), startDate);
 			Date eDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), endDate);
-			submissionApproverHierarchyService.updateApprovalStatusByApproverForProjectMemberId(projectMemberId,user.getId(), sDate, eDate, approvalStatus, rejectedReason, loginOrgLocation);
+			String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+			submissionApproverHierarchyService.updateApprovalStatusByApproverForProjectMemberId(projectMemberId,user.getId(), sDate, eDate, approvalStatus, rejectedReason, loginOrgLocation,isGlobalAccess);
 			sendEmailToEmployeeTimesheetApprovalStatus(projectMemberId, user, startDate, endDate, approvalStatus,
 					rejectedReason, loginOrgLocation, loginOrgCode);
 			resp.setResponse(Result.SUCCESS.name());
