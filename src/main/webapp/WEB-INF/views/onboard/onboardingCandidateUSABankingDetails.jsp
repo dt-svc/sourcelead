@@ -40,7 +40,9 @@
 </script>
 
 <script type="text/javascript">
- var sourceleadUrl ='${sourceleadUrl}';
+/*  var sourceleadUrl ='${sourceleadUrl}'; */
+   var atsUrl = '${SourceLeadWeb_atsUrl}';
+ 
 </script>
 
 <style>
@@ -66,7 +68,7 @@
 	              <ul class="list-unstyled">
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
 		              <li>
-			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
+			              <a href="<c:url value='${SourceLeadWeb_atsUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
 				                <div class="clearfix">
 				                   <div class="pull-left image-parent positionRelative">
 				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
@@ -180,8 +182,8 @@
 
 		  
 <div class="welBtns">
-	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/onboardingCandidateStep2'/>'" >
-	<input type="button"  value="Proceed to next step" id="save_button"  onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/onboardingCandidateTaxDetails'/>'" class="Brig">
+	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_atsUrl}/onboardingCandidateStep2'/>'" >
+	<input type="button"  value="Proceed to next step" id="save_button"  onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_atsUrl}/onboardingCandidateTaxDetails'/>'" class="Brig">
 	<div class="clearfix"></div>
 </div>
 </form:form>
@@ -397,7 +399,7 @@
   </div>
 <!-- Add IP Modal -->
 <script>
-var sourceleadUrl = '${sourceleadUrl}';
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 function showIndiaPaymentAccountPopup() {
     $("#paymentAccountId").val('0');
     $("[data-fieldtype=account]").hide();
@@ -481,12 +483,12 @@ function savePaymentAccount() {
     }
     if(flag) {
     	$("#savePaymentButton").attr("disabled", "disabled");
-        $.post(sourceleadUrl+"/save-payment-account", data, function(data) {
+        $.post(atsUrl+"/save-payment-account", data, function(data) {
             showError(data.responseMessage);
              if(data.response === "SUCCESS" || data.response === "UNABLE_SET_PAYMENT_ACCOUNT") {
                 closePaymentAccountPopup(val);
                 $("#savePaymentButton").removeAttr("disabled", "disabled");
-                location.replace(sourceleadUrl+"/onboardingCandidateBankingDetails"); 
+                location.replace(atsUrl+"/onboardingCandidateBankingDetails"); 
             }
             getPaymentAccounts(true);
         });
@@ -509,19 +511,19 @@ function editPaymentAccount(type, id, locationId, firstName, lastName, accountNu
 }
 
 function changeDefaultPaymentAccount(ele, id) {
-    $.post(sourceleadUrl+"/change-default-payment-account", {id: id, defaultAccount: $(ele).is(":checked")}, function(data) {
-    	location.replace(sourceleadUrl+"/onboardingCandidateBankingDetails"); 
+    $.post(atsUrl+"/change-default-payment-account", {id: id, defaultAccount: $(ele).is(":checked")}, function(data) {
+    	location.replace(atsUrl+"/onboardingCandidateBankingDetails"); 
         showError(data.responseMessage);
     });
 }
 function changeActivePaymentAccount(id){
-	 $.post(sourceleadUrl+"/change-active-payment-account", {id: id}, function(data) {
+	 $.post(atsUrl+"/change-active-payment-account", {id: id}, function(data) {
 	        showError(data.responseMessage);
-	        location.replace(sourceleadUrl+"/onboardingCandidateBankingDetails"); 
+	        location.replace(atsUrl+"/onboardingCandidateBankingDetails"); 
 	    });
 }
 function grantWePayAccess(id) {
-    $.post(sourceleadUrl+"/resend-wepay-mail", {id: id}, function(data) {
+    $.post(atsUrl+"/resend-wepay-mail", {id: id}, function(data) {
         showError(data.responseMessage);
     });
 }

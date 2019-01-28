@@ -1413,6 +1413,7 @@ public class CandidateOffBoardRestController {
 			HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
 		try{
 			if(user !=null){
 				if(Validator.validate(offboardingCandidateSetpsDTO)){
@@ -1461,6 +1462,7 @@ public class CandidateOffBoardRestController {
 					response.setObject("DataMissing");
 					response.setResponse(Result.INVALID_DATA.name());
 					response.setResponseMessage(Result.INVALID_DATA.getValue());
+					
 				}
 				
 			}else{
