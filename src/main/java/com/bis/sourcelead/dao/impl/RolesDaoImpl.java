@@ -468,5 +468,18 @@ public class RolesDaoImpl implements RolesDao{
 	
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<Roles> getRolesListUsingMultipleIds(String[] roleIds) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		// convert string array to long array
+		Long[] data = new Long[roleIds.length];
+		for (int i = 0; i < roleIds.length; i++) {
+		data[i] = Long.valueOf(roleIds[i]);
+		}
+		return session.createQuery("from Roles roles where roles.id IN (:roleIds) ").setParameterList("roleIds", data).list();
+	}
+
 
 }
