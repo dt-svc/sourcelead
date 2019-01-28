@@ -1591,4 +1591,16 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 	
 	}
+
+	@Override
+	@Transactional
+	public List<UserRole> getAllUserRoles() throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole left join fetch userRole.user left join fetch userRole.roles ";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).list();
+		return userRoleList;
+
+	
+	}
 }
