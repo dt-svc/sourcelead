@@ -715,7 +715,7 @@ function addApplicantForm(){
 					} else if (result.response === "SUCCESS") {
 			    		$(".side_mask").fadeOut(200);
 			    		$("body").css('overflow-y', 'auto');
-			    		location.replace(atsUrl+"/jobs");
+			    		location.replace(atsUrl+"/jobsList");
 					}
 	        },
 	    }); 

@@ -7,7 +7,7 @@
 		<div class="pull-left">
 			<h2>Job Fair</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/jobs?viewTab=jobFair'/>"> Job Fairs </a> &raquo; JobFair</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/jobsList?viewTab=jobFair'/>"> Job Fairs </a> &raquo; JobFair</div>
 	</section>
 	
 	
@@ -399,12 +399,12 @@
 			});
 
 	function getRequirements() {
-		var sourceleadUrl = '${sourceleadUrl}';
+		var atsUrl = '${SourceLeadWeb_atsUrl}';
 		var postedDateRange = $("#requirementsTimeRange").val();
 		var selectedClients = $("#clientList").val() !== null ? $("#clientList").val() : "";
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl
+			url : atsUrl
 					+ "/getRequirementListByPostedDateAndSelectedClients?postedDateRange=" + postedDateRange + "&selectedClients=" + selectedClients,
 			success : function(data) {
 				if (data != null && data != 'undefined' && data != "" && data != '[]') {
@@ -458,6 +458,7 @@
 		dateFormat : 'yyyy/mm/dd'
 	};
 	function addJobFair() {
+		var atsUrl = '${SourceLeadWeb_atsUrl}';
 		if ($('#jobFairForm').validate(false, validationSettings)) {
 			var flag = true;
 			if($("#budget").val() !== "") {
@@ -511,9 +512,9 @@
 						notifyTo : $("#notifyTo").val(),
 						requirementJSONData : JSON.stringify(requirements)
 				};
-				$.post(sourceleadUrl + "/storeFairJob?" + tokenParamName + "=" + tokenValue + "", data, function(result) {
+				$.post(atsUrl + "/storeFairJob?" + tokenParamName + "=" + tokenValue + "", data, function(result) {
 					if (result.response === "SESSION_TIMEDOUT") {
-						location.replace(sourceleadUrl);
+						location.replace(atsUrl);
 					} else if (result.response === "AWKWARD") {
 						location.href = "/errorPage";
 					} else if (result.response === "DUPLICATE_NAME" || result.response === "INVALID_DATA") {
@@ -525,7 +526,7 @@
 							redirectToJobFairsList();
 				 		}, 500);
 					} else if (result.indexOf('Sign In') !== -1) {
-						location.replace(sourceleadUrl);
+						location.replace(atsUrl);
 					} else {
 						showError("Operation failed, please try again");
 					}
@@ -542,6 +543,6 @@
 	}
 	
 	function redirectToJobFairsList() {
-		location.href = sourceleadUrl + "/jobs?viewTab=jobFair";
+		location.href = "/ats/jobsList?viewTab=jobFair";
 	}
 </script>
