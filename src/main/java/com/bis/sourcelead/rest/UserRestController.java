@@ -1582,4 +1582,13 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		return isFound;
 		
 	}
+	
+	 @RequestMapping(value = "/ws/dumpUUIDForUserRoles", method = RequestMethod.GET)
+	 public void dumpUUIDForUserRoles() throws Exception {
+		 List<UserRole> userRolesList = userRoleService.getAllUserRoles();
+		 for(UserRole userRole : userRolesList) {
+			 userRole.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			 userRoleService.addUserRole(userRole);
+		 }
+	 }
 }
