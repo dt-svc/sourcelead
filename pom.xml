@@ -3,7 +3,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.bis.sourcelead.pms</groupId>
-    <artifactId>sourcelead-pms</artifactId>
+    <artifactId>pms</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>pms</name>
