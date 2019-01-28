@@ -1398,4 +1398,7 @@ public class Constants {
 	
 	public static final String APPLICANT_JOINING = "ApplicantJoining";
 	
+	public static final String COUCH_DOCUMENT_TYPE_ORGLOCATION = "OrgLocation";
+	
+	public static final String COUCH_DOCUMENT_TYPE_USER_LOGIN_ACCOUNT = "User Account";
 }

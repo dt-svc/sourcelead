@@ -25,6 +25,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
@@ -86,11 +87,20 @@ public class UserLoginHelper {
 	@Value("${pmsUrl}")
 	private String pmsUrl;
 	
+	@Value("${atsUrl}")
+	private String atsUrl;
+	
+	@Value("${vmsUrl}")
+	private String vmsUrl;
+	
 	@Autowired
 	OrgLocationService orgLocationService;
 	
 	@Autowired
 	OrgService orgService;
+	
+	@Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
 	
 	   
 
@@ -166,6 +176,8 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRole", userRole.getRoles().getRoleName());
 		  SourceLeadSessionManager.setSessionAttribute(req, "sourceleadUrl", sourceleadUrl);
 		  SourceLeadSessionManager.setSessionAttribute(req, "pmsUrl", pmsUrl);
+		  SourceLeadSessionManager.setSessionAttribute(req, "atsUrl", atsUrl);
+		  SourceLeadSessionManager.setSessionAttribute(req, "vmsUrl", vmsUrl);
 		  SourceLeadSessionManager.setSessionAttribute(req, "googleMapsLocationApiKey", googleMapsLocationApiKey);
 		  SourceLeadSessionManager.setSessionAttribute(req, "userRoleId", userRoleId);
 			SourceLeadSessionManager.setSessionAttribute(req, "roleHierarchyId",

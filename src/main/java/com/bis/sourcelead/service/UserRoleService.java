@@ -184,5 +184,7 @@ public interface UserRoleService {
    	public Boolean isUserWithMultipleOrgsAccounts(Long orgId,Long userId);
    	
    	public List<UserRole> getLoginUserAccountsList(Long userId) throws Exception;
+   	
+   	public List<UserRole> getAllUserRoles() throws Exception;
 
 }
