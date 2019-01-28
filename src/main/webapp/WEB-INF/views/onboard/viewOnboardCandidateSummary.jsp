@@ -30,7 +30,7 @@ padding-left: 25px;
       <div class="pull-left">
           <h2 id="candidateName"></h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='${appPath}/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Candidate Onboarding Summary </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Candidate Onboarding Summary </div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="applicant_accept">
@@ -96,12 +96,13 @@ padding-left: 25px;
  <script>
  function onboardCandidateSummaryDetails(){
 	 var onBoardingUUID = '${onBoardingUUID}';
-    var sourceleadUrl ='${sourceleadUrl}';
+    /* var sourceleadUrl ='${sourceleadUrl}'; */
+     var atsUrl ='${SourceLeadWeb_atsUrl}';
     var locationCode ='${SourceLeadWeb_locationCode}';
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/loadOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&locationCode="+locationCode, 
+	    	 url: atsUrl+"/loadOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&locationCode="+locationCode, 
 	        success: function(response) {
 	        	if (response.response === "AWKWARD") {
 	        	    location.href = "/errorPage";
@@ -423,7 +424,7 @@ padding-left: 25px;
 	            	 $("#onboardCandidateSummaryDetailsId").append(result);
 	            	 loadOnBoardingTemplates(json.onboardTemplateId);
 	        	} else if (response.indexOf('Sign In') !== -1) {
-	        		location.replace(sourceleadUrl);
+	        		location.replace(atsUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}
@@ -463,10 +464,10 @@ function loadOnBoardingTemplates(onboardTemplateId){
 function getTemplateContractsDocumentsDetails(){
 	var onBoardingUUID = '${onBoardingUUID}';
 	var documentType = "Contracts"
-		var sourceleadUrl ='${sourceleadUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 	     $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByonBoardingUUID?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&documentType="+documentType, 
+		    	 url: atsUrl+"/getCandidateOnboardTemplateDocumentByonBoardingUUID?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&documentType="+documentType, 
 		        success: function(response) {
 		        	if (response && response.response === "INVALID_USER") {
 		        	    showError(response.responseMessage);
@@ -508,7 +509,7 @@ function getTemplateContractsDocumentsDetails(){
 	                	 $("#employmentContractDivId").empty();
 	                	 $("#employmentContractDivId").append(result);
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
+		        		location.replace(atsUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -521,10 +522,10 @@ function getTemplateContractsDocumentsDetails(){
 function getTemplateFormsDocumentsDetails(){
 	var onBoardingUUID = '${onBoardingUUID}';
 	var documentType = "Forms"
-		var sourceleadUrl ='${sourceleadUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 	     $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByonBoardingUUID?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&documentType="+documentType, 
+		    	 url: atsUrl+"/getCandidateOnboardTemplateDocumentByonBoardingUUID?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&documentType="+documentType, 
 		        success: function(response) {
 		        	if (response && response.response === "INVALID_USER") {
 		        	    showError(response.responseMessage);
@@ -565,7 +566,7 @@ function getTemplateFormsDocumentsDetails(){
 	                	 $("#formstDivId").empty();
 	                	 $("#formstDivId").append(result);
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
+		        		location.replace(atsUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -577,10 +578,10 @@ function getTemplateFormsDocumentsDetails(){
 function getTemplatePolicyDocumentsDetails(){
 	var onBoardingUUID = '${onBoardingUUID}';
 	var documentType = "Policies"
-		var sourceleadUrl ='${sourceleadUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 	     $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByonBoardingUUID?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&documentType="+documentType, 
+		    	 url: atsUrl+"/getCandidateOnboardTemplateDocumentByonBoardingUUID?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&documentType="+documentType, 
 		        success: function(response) {
 		        	if (response && response.response === "INVALID_USER") {
 		        	    showError(response.responseMessage);
@@ -617,7 +618,7 @@ function getTemplatePolicyDocumentsDetails(){
 	                	 $("#policiesDivId").empty();
 	                	 $("#policiesDivId").append(result);
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
+		        		location.replace(atsUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -630,10 +631,10 @@ function getTemplatePolicyDocumentsDetails(){
 function getTemplateSupportingDocumentsDetails(){
 	var onBoardingUUID = '${onBoardingUUID}';
 	var documentType = "Supported"
-		var sourceleadUrl ='${sourceleadUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 	     $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByonBoardingUUID?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&documentType="+documentType, 
+		    	 url: atsUrl+"/getCandidateOnboardTemplateDocumentByonBoardingUUID?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&documentType="+documentType, 
 		        success: function(response) {
 		        	if (response && response.response === "INVALID_USER") {
 		        	    showError(response.responseMessage);
@@ -662,7 +663,7 @@ function getTemplateSupportingDocumentsDetails(){
 	                	 $("#supportedDivId").empty();
 	                	 $("#supportedDivId").append(result);
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
+		        		location.replace(atsUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -674,12 +675,12 @@ function getTemplateSupportingDocumentsDetails(){
 <script>
 function getOnboardingTasksList(){
 	var onBoardingUUID = '${onBoardingUUID}';
-	var sourceleadUrl = '${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/viewCandidateOnboardTasksByOnboardingUUID?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&locationId="+locationId,	    	   
+	    url: atsUrl+"/viewCandidateOnboardTasksByOnboardingUUID?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&locationId="+locationId,	    	   
 	    success: function(response) {
 	    	if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
@@ -727,7 +728,7 @@ function getOnboardingTasksList(){
 	    		 $("#onboardTasksListViewId").empty();
 	           	 $("#onboardTasksListViewId").append(result); 
 	    	} else if (response.indexOf('Sign In') !== -1) {
-	    		location.replace(sourceleadUrl);
+	    		location.replace(atsUrl);
 	    	} else {
 	    	    showError("Operation failed, please try again");
 	    	}

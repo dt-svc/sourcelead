@@ -55,7 +55,6 @@ import com.bis.sourcelead.validation.FileValidator;
 
 
 @RestController
-@RequestMapping("/app")
 public class ClientUploadController {
 	private static final Logger logger = LoggerFactory.getLogger(ClientUploadController.class);
 	

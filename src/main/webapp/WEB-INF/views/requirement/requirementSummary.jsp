@@ -8,6 +8,7 @@
 
 <link href="/resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 $(document).ready(function() {
 	 var requirementId = '${requirementId}';
 	 var submissionId = '${submissionId}';
@@ -44,7 +45,7 @@ $(document).ready(function() {
 function prepareAllCounts(requirementId){
 	$.ajax({
 	       type : "POST",
-	        url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=ALL",        
+	        url: atsUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=ALL",        
 	        success :function(data) { 
 	       	 var json = data.object;
 	       	 $("#applicantsCount").html(json.applicantsCount);
@@ -70,7 +71,7 @@ function duplicateCount(requirementId){
 	
 	  $.ajax({
       type : "POST",
-       url: sourceleadUrl+"/getDuplicateSubmissionsCountByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
+       url: atsUrl+"/getDuplicateSubmissionsCountByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
        success :function(data) { 
       	 var json = JSON.parse(data);
       	 $("#duplicateApplicantsCount").html(json);
@@ -198,7 +199,7 @@ $("#jobsTagName_chosen").find('ul.chosen-choices > li input').attr("placeholder"
 function getJobsTagsList(requirementId){
 	$.ajax({  
         type : "POST",
-        url: sourceleadUrl+"/getJobsTags?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
+        url: atsUrl+"/getJobsTags?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
         success :function(json) {
         	var result = "";
 			$.each( json.tagsList, function( i, tags ) {
@@ -232,9 +233,9 @@ function saveJobsTags(type){
 	 var jsonData = encodeURIComponent(tagName);
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 if(tagName != null && tagName != '' && tagName !='undefined') {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByJobId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&requirementId="+requirementId+"&tagName="+jsonData
+		 Urlcheck = atsUrl+"/saveOrUpdateTagsByJobId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&requirementId="+requirementId+"&tagName="+jsonData
 	 } else {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByJobId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&requirementId="+requirementId+"&tagName="+""
+		 Urlcheck = atsUrl+"/saveOrUpdateTagsByJobId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&requirementId="+requirementId+"&tagName="+""
 	 }
 	 $.ajax({  
          type : "POST",
@@ -253,7 +254,7 @@ function saveJobsTags(type){
         		}
         		getJobsTagsList(requirementId);
         	} else if (result.indexOf('Sign In') !== -1) {
-        		location.replace(sourceleadUrl);
+        		location.replace(atsUrl);
         	} else {
         	    showError("Operation failed, please try again");
         	}
@@ -511,7 +512,7 @@ function openTopDiv(){
 
 <script>
 function sideBar(requirementId,type){
-		  var sourceleadUrl ='${sourceleadUrl}';
+		var atsUrl = '${SourceLeadWeb_atsUrl}';
 	    if(type != null && type != '' && type != 'undefined'){
 	    	$("#details-div" ).hide();
 			 if(type == 'SHORTLIST'){
@@ -608,9 +609,9 @@ function activeTabs(){
 
 <script>
 function viewJobSummaryDocument(jobId,title){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 		if(jobId != null && jobId != ""){
-			window.open(sourceleadUrl+'/viewJobSummaryDocumentDocView/'+title+'?jobId='+jobId,title,"height=600,width=600");
+			window.open(atsUrl+'/viewJobSummaryDocumentDocView/'+title+'?jobId='+jobId,title,"height=600,width=600");
 		}  
 }
 
@@ -646,14 +647,14 @@ function updateReuqirementStatus(status){
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	$.ajax({
       type : "POST",
-      url: sourceleadUrl+"/requirementAcceptOrReject?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&reason="+reason+"&isLoginUserAsAdmin="+isLoginUserAsAdmin, 
+      url: atsUrl+"/requirementAcceptOrReject?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&reason="+reason+"&isLoginUserAsAdmin="+isLoginUserAsAdmin, 
     		  success :function(data) {  
             if(data != null && data != 'undefined' && data != ""){  
           		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
+			    		location.replace(atsUrl);
 			    	 }
           		 else if (data.indexOf('exception') >= 0) {
-          			 location.replace(sourceleadUrl+"/errorPage");
+          			 location.replace(atsUrl+"/errorPage");
           		 }
           		 else{ 
           			 $("#selector11").removeAttr("style");
@@ -663,7 +664,7 @@ function updateReuqirementStatus(status){
           			 }else{
           				$("#msgDiv").html("Job rejected Successfully");
          			   }
-          			location.replace(sourceleadUrl+"/requirementSummary?requirementUUID="+requirementUUID);
+          			location.replace(atsUrl+"/requirementSummary?requirementUUID="+requirementUUID);
           			$("#selector11").fadeOut(3000);
           			sideBar(requirementId);
              			msgFadein();
@@ -719,14 +720,14 @@ function updateReuqirementStatusReject(status){
 	$('#reasonDiv').empty();
  	$.ajax({
       type : "POST",
-      url: sourceleadUrl+"/requirementAcceptOrReject?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&reason="+reason+"&isLoginUserAsAdmin="+isLoginUserAsAdmin, 
+      url: atsUrl+"/requirementAcceptOrReject?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&reason="+reason+"&isLoginUserAsAdmin="+isLoginUserAsAdmin, 
     		  success :function(data) {  
             if(data != null && data != 'undefined' && data != ""){  
           		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
+			    		location.replace(atsUrl);
 			    	 }
           		 else if (data.indexOf('exception') >= 0) {
-          			 location.replace(sourceleadUrl+"/errorPage");
+          			 location.replace(atsUrl+"/errorPage");
           		 }
           		 else{ 
           			 $("#selector11").removeAttr("style");
@@ -771,7 +772,7 @@ function updateReuqirementStatusReject(status){
 function requirementPipeline(requirementId,submissionType){
 	$("#actionsDiv" ).show();
 	$("#emptyPipelinelist").val('');
-	var sourceleadUrl = '${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_user.id}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
@@ -779,7 +780,7 @@ function requirementPipeline(requirementId,submissionType){
 	var searchValue = $("#submissionDataTableSearch").val();
 	var clientSubmissions = '${clientSubmissions}';
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/loadSubmissionsListByRequirementId?searchValue="+searchValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&orgLocationId="+orgLocationId+"&userId="+userId+"&loginUserRole="+loginUserRole+"&userCode="+userCode+"&clientSubmissions="+clientSubmissions;
+	var url = atsUrl+"/loadSubmissionsListByRequirementId?searchValue="+searchValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&orgLocationId="+orgLocationId+"&userId="+userId+"&loginUserRole="+loginUserRole+"&userCode="+userCode+"&clientSubmissions="+clientSubmissions;
 	requirementPipelineList(url, requirementId, submissionType);
 	}
 </script>
@@ -917,9 +918,9 @@ function requirementPipelineList(url, requirementId, submissionType){
 
 <script>
 function viewOfferDocument(offerID,title){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	if(offerID != null && offerID != ""){
-		window.open(sourceleadUrl+'/viewOfferDocumentDocView/'+title+'?offerID='+offerID,title,"height=600,width=600");
+		window.open(atsUrl+'/viewOfferDocumentDocView/'+title+'?offerID='+offerID,title,"height=600,width=600");
 	}  
 }
 </script>
@@ -1018,7 +1019,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     }else if(selectBox == "Joined"){
     	$.ajax({
     	      type : "POST",
-    	      url: sourceleadUrl+"/getRequirementOfferSubmissionById?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
+    	      url: atsUrl+"/getRequirementOfferSubmissionById?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
     	    	success :function(data) { 
     	    		if (data.response === "FAILED") {
 			    		showError(data.responseMessage);
@@ -1062,7 +1063,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     	            	  	  changeYear: true,
     	            	  });
 			    	}else if (data.indexOf('Sign In') !== -1) {
-			    		location.replace(sourceleadUrl);
+			    		location.replace(atsUrl);
 			    	} else {
 			    		showError("Operation failed, please try again");
 			    	}
@@ -1074,14 +1075,14 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     	
     	$.ajax({
   	      type : "POST",
-  	      url: sourceleadUrl+"/saveSelectedOnInterviewStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
+  	      url: atsUrl+"/saveSelectedOnInterviewStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
   	    	success :function(data) {
   	    		if (data.response === "AWKWARD") {
 		    		location.href = "/errorPage";
 		    	} else if (data.response === "SUCCESS") {
 		    		$("tr").removeClass("row-success");
 		    	}else if (data.indexOf('Sign In') !== -1) {
-		    		location.replace(sourceleadUrl);
+		    		location.replace(atsUrl);
 		    	} else {
 		    		showError("Operation failed, please try again");
 		    	}
@@ -1091,7 +1092,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     }else if(selectBox == "shortlist"){
     	$.ajax({
     	      type : "POST",
-    	      url: sourceleadUrl+"/saveShortlistStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
+    	      url: atsUrl+"/saveShortlistStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
     	    	success :function(data) {
     	    		if (data.response === "AWKWARD") {
   		    		location.href = "/errorPage";
@@ -1099,7 +1100,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
   		    		$("tr").removeClass("row-success");
   		    		 requirementPipeline(requirementId,submissionType);
   		    	}else if (data.indexOf('Sign In') !== -1) {
-  		    		location.replace(sourceleadUrl);
+  		    		location.replace(atsUrl);
   		    	} else {
   		    		showError("Operation failed, please try again");
   		    	}
@@ -1111,7 +1112,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     else if(selectBox == "On Hold" || selectBox == "Status" || selectBox == "Interview" || selectBox == "Selected on Interview" || selectBox == "Offer Made" || selectBox == "NoResponse"){
     	$.ajax({
     	      type : "POST",
-    	      url: sourceleadUrl+"/saveOnHoldStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+selectBox, 
+    	      url: atsUrl+"/saveOnHoldStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+selectBox, 
     	    	success :function(data) {
     	    		if (data.response === "AWKWARD") {
   		    		location.href = "/errorPage";
@@ -1119,7 +1120,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
   		    		$("tr").removeClass("row-success");
   		    		 requirementPipeline(requirementId,submissionType);
   		    	}else if (data.indexOf('Sign In') !== -1) {
-  		    		location.replace(sourceleadUrl);
+  		    		location.replace(atsUrl);
   		    	} else {
   		    		showError("Operation failed, please try again");
   		    	}
@@ -1264,7 +1265,7 @@ function saveRejectApplicantReason(submissionId,requirementId,submissionType){
 		$.ajax({
 			type : "POST",
     	    data: formData,
-		    url: sourceleadUrl+"/rejectApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,	    	   
+		    url: atsUrl+"/rejectApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,	    	   
 		    success: function(result) {
 		    	$("#popUp").empty();
 		    	$(".project_inn_mask").fadeOut(200);
@@ -1275,7 +1276,7 @@ function saveRejectApplicantReason(submissionId,requirementId,submissionType){
 				} else if (result.response === "SUCCESS") {
 					requirementPipeline(requirementId,submissionType);
 				}else if (result.indexOf('Sign In') !== -1) {
-		    		location.replace(sourceleadUrl);
+		    		location.replace(atsUrl);
 		    	} else {
 		    		showError("Operation failed, please try again");
 		    	}
@@ -1298,7 +1299,7 @@ function backOutApplicantSave(submissionId,requirementId,submissionType){
 		$.ajax({
 			type : "POST",
     	    data: formData,
-		    url: sourceleadUrl+"/backoutApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,	    	   
+		    url: atsUrl+"/backoutApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,	    	   
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
@@ -1323,7 +1324,7 @@ function saveJoinedRequestForApplicant(submissionId,requirementId,submissionType
 		$.ajax({
 			type : "POST",
     	    data: formData,
-		    url: sourceleadUrl+"/saveJoinedRequestForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,	    	   
+		    url: atsUrl+"/saveJoinedRequestForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,	    	   
 		    success: function(data) {
 		    	if (data.response === "FAILED") {
 		    		showError(data.responseMessage);
@@ -1334,7 +1335,7 @@ function saveJoinedRequestForApplicant(submissionId,requirementId,submissionType
 	   			 	$(".project_inn_mask").fadeOut(200);
 	   			    requirementPipeline(requirementId,submissionType);
 		    	}else if (data.indexOf('Sign In') !== -1) {
-		    		location.replace(sourceleadUrl);
+		    		location.replace(atsUrl);
 		    	} else {
 		    		showError("Operation failed, please try again");
 		    	}
@@ -1363,7 +1364,7 @@ function requirementSubmissionCount(requirementId){
 	
 	 $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
+         url: atsUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
          success :function(data) { 
         	 var json = JSON.parse(data);
         	 var report1 = json[0];
@@ -1391,7 +1392,7 @@ function requirementSubmissionCount(requirementId){
 --%>
 <script>  
 function assignedMemberList(requirementId){
-	var url = sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId;
+	var url = atsUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId;
 	
 		var result = '';
 		result = result +'     <div class="clearfix mt5 mb project_wrap_table datatable_filter dataTablesPaginate">';
@@ -1512,14 +1513,14 @@ function reqNotes(requirementId){
 	var urlForm = "";
 	    urlForm = "/getRequirementNotes?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId;
 		
-	var sourceleadUrl ='${sourceleadUrl}';
+	    var atsUrl = '${SourceLeadWeb_atsUrl}';
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+urlForm,        
+         url: atsUrl+urlForm,        
 		 success :function(result) {
 			 var json = result.data;
 	      	   if(result.response === "SESSION_TIMEDOUT") {
-						location.replace(sourceleadUrl);
+						location.replace(atsUrl);
 					} else if (result.response === "AWKWARD") {
 						location.href = "/errorPage";
 					} else if (result.response === "SUCCESS") {
@@ -1577,7 +1578,7 @@ function reqNotes(requirementId){
 					$("#clientNotesListDiv").empty(); 
 				    $("#clientNotesListDiv").append(output);
 			} else if (result.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
+				location.replace(atsUrl);
 			} else {
 				showError("Operation failed, please try again");
 			}
@@ -1614,7 +1615,7 @@ function reqNotes(requirementId){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"",
+						url : atsUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"",
 						success : function(result) {
 							closeDocPopup();
 							if(result.response === "FAILED") {
@@ -1624,7 +1625,7 @@ function reqNotes(requirementId){
 							} else if (result.response === "SUCCESS") {
 								reqNotes(requirementId);
 							}else if (result.indexOf('Sign In') !== -1) {
-					    		location.replace(sourceleadUrl);
+					    		location.replace(atsUrl);
 					    	} else {
 					    		showError("Operation failed, please try again");
 					    	}
@@ -1659,14 +1660,14 @@ function popClose(){
 <script>
 var candidateStatusGlobal ="";
 function clientSideBar(candidateId,recScore){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	  $.ajax({
           type : "POST",
-           url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+           url: atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
            success :function(result) {
         	   var json = result.object;
         	   if(result.response === "SESSION_TIMEDOUT") {
-					location.replace(sourceleadUrl);
+					location.replace(atsUrl);
 				} else if (result.response === "AWKWARD") {
 					location.href = "/errorPage";
 				} else if (result.response === "SUCCESS") {
@@ -1964,7 +1965,7 @@ function clientSideBar(candidateId,recScore){
 					    $("#candidateSideDiv").append(result); 
 	                }
 				} else if (result.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
+					location.replace(atsUrl);
 				} else {
 					showError("Operation failed, please try again");
 				}
@@ -2095,7 +2096,7 @@ $('.edit-status').toggle();
 
 <script>
 function getRateListDiv(submissionId, candidateId){
-	  var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  
 	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
@@ -2111,7 +2112,7 @@ function getRateListDiv(submissionId, candidateId){
 	  
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getRateHistoryBySubmissionId?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId,        
+         url: atsUrl+"/getRateHistoryBySubmissionId?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId,        
          success :function(data) {
         	 
         	 if (data.response === "FAILED") {
@@ -2330,7 +2331,7 @@ function getRateListDiv(submissionId, candidateId){
 			      	 		 $("#ratepop").fadeIn(); 
 		            	}
 		    	}else if (data.indexOf('Sign In') !== -1) {
-		    		location.replace(sourceleadUrl);
+		    		location.replace(atsUrl);
 		    	} else {
 		    		showError("Operation failed, please try again");
 		    	}
@@ -2343,13 +2344,13 @@ function getRateListDiv(submissionId, candidateId){
 <script type="text/javascript">
 	function proposeNewRate(submissionId, candidateId) {
 		 if ($('#rate_form').validate(false, validationSettings)){
-			var sourceleadUrl ='${sourceleadUrl}';
+			 var atsUrl = '${SourceLeadWeb_atsUrl}';
 			var formData = getFormData("rate_form");
 		    $("#add_rate").attr("disabled", "disabled");
 			$.ajax({
 			type: "POST",
 			data :formData,
-			url: sourceleadUrl+"/proposeRate?submissionId="+submissionId+"&candidateId="+candidateId,
+			url: atsUrl+"/proposeRate?submissionId="+submissionId+"&candidateId="+candidateId,
 				success: function(data) {
 					if (data.response === "FAILED") {
 			    		showError(data.responseMessage);
@@ -2358,7 +2359,7 @@ function getRateListDiv(submissionId, candidateId){
 			    	} else if (data.response === "SUCCESS") {
 			    		$("#ratepop").fadeOut();
 			    	}else if (json.indexOf('Sign In') !== -1) {
-			    		location.replace(sourceleadUrl);
+			    		location.replace(atsUrl);
 			    	} else {
 			    		showError("Operation failed, please try again");
 			    	}
@@ -2379,11 +2380,11 @@ function getRateListDiv(submissionId, candidateId){
 	function acceptRejectRate(submissionId,status) {
 		$("#loading").empty();
 		$("#loading").prepend('<i class="fa fa-cog fa-spin"></i>');
-			var sourceleadUrl ='${sourceleadUrl}';
+		var atsUrl = '${SourceLeadWeb_atsUrl}';
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 			type: "POST",
-			url: sourceleadUrl+"/acceptRejectRate?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+status,
+			url: atsUrl+"/acceptRejectRate?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+status,
 				success: function(data) {
 					if (data.response === "FAILED") {
 			    		showError(data.responseMessage);
@@ -2392,7 +2393,7 @@ function getRateListDiv(submissionId, candidateId){
 			    	} else if (data.response === "SUCCESS") {
 			    		$("#ratepop").fadeOut();
 			    	}else if (data.indexOf('Sign In') !== -1) {
-			    		location.replace(sourceleadUrl);
+			    		location.replace(atsUrl);
 			    	} else {
 			    		showError("Operation failed, please try again");
 			    	}
@@ -2437,7 +2438,7 @@ function exportPipelineToExcel(requirementId,submissionType){
 	  var clientSubmissions = '${clientSubmissions}';
 	  var emptypilpeline = $("#emptyPipelinelist").val();
       if(emptypilpeline > 0 ){
-          window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=xls";
+          window.location.href = atsUrl+"/getSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=xls";
 	  }else{
 		  var result = "";
 			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
@@ -2462,7 +2463,7 @@ function exportPipelineToPdf(requirementId,submissionType){
 	  var clientSubmissions = '${clientSubmissions}';
 	  var emptypilpeline = $("#emptyPipelinelist").val();
 	  if(emptypilpeline > 0 ){
-		  window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=pdf";
+		  window.location.href = atsUrl+"/getSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=pdf";
 	  }else{
 		  var result = "";
 			/* result = result +"	<div class='project_inn_mask'></div>"; */
@@ -2507,7 +2508,7 @@ function customizeScore(requirementId){
 	var apiLocation = "apiLocation";
 	 $.ajax({
 		   	type: "GET",
-		    url: sourceleadUrl+"/getCustomizeScore?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
+		    url: atsUrl+"/getCustomizeScore?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
 		    success: function(data) {
 		    	var json = data.object;
 		    	if (data.response === "FAILED") {
@@ -2940,7 +2941,7 @@ function customizeScore(requirementId){
 			    		     
 			   		     tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
 		    	}else if (data.indexOf('Sign In') !== -1) {
-		    		location.replace(sourceleadUrl);
+		    		location.replace(atsUrl);
 		    	} else {
 		    		showError("Operation failed, please try again");
 		    	}
@@ -3041,7 +3042,7 @@ function updateCutomize(requirementId){
     		var jsonData = encodeURIComponent(con);
     		 $.ajax({
     					type : "POST",
-    					url : sourceleadUrl + "/updateCustomizeScore?"+tokenParamName+"="+tokenValue+"&json="+ jsonData + "&requirementId=" + requirementId,
+    					url : atsUrl + "/updateCustomizeScore?"+tokenParamName+"="+tokenValue+"&json="+ jsonData + "&requirementId=" + requirementId,
     					success : function(data) {
     						if (data.response === "FAILED") {
     				    		showError(data.responseMessage);
@@ -3053,7 +3054,7 @@ function updateCutomize(requirementId){
 	    							requirementRecommendations(requirementId);	
 	    						}
     				    	}else if (data.indexOf('Sign In') !== -1) {
-    				    		location.replace(sourceleadUrl);
+    				    		location.replace(atsUrl);
     				    	} else {
     				    		showError("Operation failed, please try again");
     				    	}
@@ -3126,14 +3127,14 @@ function recommendationAlertMessage(message,candidateId){
 
 <script>
 function refreshImageBlock(candidateId){  
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	  $.ajax({
           type : "POST",
-           url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+           url: atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
            success :function(result) { 
         	   var json = result.object;
         	   if(result.response === "SESSION_TIMEDOUT") {
-					location.replace(sourceleadUrl);
+					location.replace(atsUrl);
 				} else if (result.response === "AWKWARD") {
 					location.href = "/errorPage";
 				} else if (result.response === "SUCCESS") {
@@ -3182,7 +3183,7 @@ function refreshImageBlock(candidateId){
 							 $("#candidateImageId").append(result);
 	                }
 				} else if (result.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
+					location.replace(atsUrl);
 				} else {
 					showError("Operation failed, please try again");
 				}
@@ -3208,13 +3209,13 @@ function deleteImage(candidateId){
 
 <script type="text/javascript">
 function deleteProfileImage(candidateId){   
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var submissionId = '${submissionId}';
 	 $.ajax({
 		    type: "GET",
-            url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
+            url: atsUrl+"/deleteCandidateImage?candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
 	        success: function(response) {
 	        	if (response.response === "AWKWARD") {
 	        	    location.href = "/errorPage";
@@ -3225,7 +3226,7 @@ function deleteProfileImage(candidateId){
 		        	 refreshImageBlock(candidateId);
 		        	 applicantQuickViewProfile(candidateId,submissionId);
 	        	} else if (response.indexOf('Sign In') !== -1) {
-	        		location.replace(sourceleadUrl);
+	        		location.replace(atsUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}
@@ -3259,7 +3260,7 @@ function saveCandidateImage(candidateId){
 
    var jsonData = encodeURIComponent(con);
  		
-	var sourceleadUrl ='${sourceleadUrl}';
+   var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var form = $('#candidate_form')[0];
@@ -3273,14 +3274,14 @@ function saveCandidateImage(candidateId){
 	    processData: false,
 	    contentType:false,
     	dataType : 'json',
-        url: sourceleadUrl+"/saveCandidateProfile?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
+        url: atsUrl+"/saveCandidateProfile?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
         success: function(response) {
         	if (response.response === "AWKWARD") {
         	    location.href = "/errorPage";
         	} else if (response.response === "SUCCESS") {
         		recommendationAlertCancel(candidateId);        		
         	} else if (response.indexOf('Sign In') !== -1) {
-        		location.replace(sourceleadUrl);
+        		location.replace(atsUrl);
         	} else {
         	    showError("Operation failed, please try again");
         	}

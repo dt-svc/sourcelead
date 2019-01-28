@@ -49,7 +49,6 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/app")
 public class CandidateOnBoardController {
 
 	private static final Logger logger = LoggerFactory.getLogger(CandidateOnBoardController.class);
@@ -339,7 +338,7 @@ public class CandidateOnBoardController {
 	@RequestMapping(value = "/candidateOnBoardingList")
 	public ModelAndView candidateOnBoardingList(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
-		
+		System.out.println(" inisde ats /candidateOnBoardingList controller ");
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -408,7 +407,7 @@ public class CandidateOnBoardController {
     @RequestMapping(value = "/viewOnboardCandidateSummary")
      public ModelAndView viewOnboardCandidateSummary(@RequestParam(value="onboardUUID", required=false) String onboardUUID,
                      HttpServletRequest request) throws Exception {
-               
+               System.out.println("inisde ats /candidateOnBoardingList viewOnboardCandidateSummary controller ");
                 ModelAndView model = new ModelAndView();
                      
                 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");

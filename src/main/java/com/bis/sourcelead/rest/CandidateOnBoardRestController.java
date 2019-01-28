@@ -83,7 +83,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.ibm.icu.text.SimpleDateFormat;
 
 @RestController
-@RequestMapping("/app")
 public class CandidateOnBoardRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(CandidateOnBoardRestController.class);
