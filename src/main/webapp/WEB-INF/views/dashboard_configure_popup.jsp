@@ -39,12 +39,12 @@
 				      
 				        <!-- Jobs -->
 				        <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-				      		<c:if test="${userTabs.tabName == 'Jobs'}">
+				      		<c:if test="${userTabs == 'Jobs'}">
 								<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-									<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
+									<%-- <c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}"> --%>
 										<li class="positionRelative" style="width: 48%; height: 30px;"><input class="checkbox-custom" id="cb${index}" type="checkbox" checked="checked" data-order="${index + 1}" data-size="2:1"><label for="cb${index}">Jobs</label><span class="movIcon"></span></li>  
 										<c:set var="index" value="${index +1}"></c:set>
-									</c:if>
+									<%-- </c:if> --%>
 						     	</sec:authorize>
 					    	</c:if>
 					    </c:forEach>
@@ -61,10 +61,10 @@
 							<c:set var="index" value="${index +1}"></c:set>
 						</sec:authorize>
 
-						<c:if test="${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
+						<%-- <c:if test="${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}"> --%>
 							<!-- Assigned Jobs -->
 							<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-								<c:if test="${userTabs.tabName == 'Jobs'}">
+								<c:if test="${userTabs == 'Jobs'}">
 									<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 										<li class="positionRelative" style="width: 98%; height: 30px;"><input class="checkbox-custom" id="cb${index}" type="checkbox" checked="checked" data-order="${index + 1}" data-size="4:1"> <label for="cb${index}">Assigned Jobs</label><span class="movIcon"></span></li>
 										<c:set var="index" value="${index +1}"></c:set>
@@ -94,18 +94,18 @@
 
 							<!-- Job Approvals -->
 							<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-								<c:if test="${userTabs.tabName == 'Jobs'}">
+								<c:if test="${userTabs == 'Jobs'}">
 									<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 										<li class="positionRelative" style="width: 48%; height: 60px;"><input class="checkbox-custom" id="cb${index}" type="checkbox" checked="checked" data-order="${index + 1}" data-size="2:2"><label for="cb${index}">Job Approvals</label><span class="movIcon"></span></li>
 										<c:set var="index" value="${index +1}"></c:set>
 									</sec:authorize>
 								</c:if>
 							</c:forEach>
-						</c:if>
+						<%-- </c:if> --%>
 						
 						<!-- Applicant Permission -->
 						<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-							<c:if test="${userTabs.tabName == 'Jobs'}">
+							<c:if test="${userTabs == 'Jobs'}">
 								<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 									<li class="positionRelative" style="width: 48%; height: 60px;"><input class="checkbox-custom" id="cb${index}" type="checkbox" checked="checked" data-order="${index + 1}" data-size="2:2"><label for="cb${index}">Applicant Permission</label><span class="movIcon"></span></li>
 									<c:set var="index" value="${index +1}"></c:set>
