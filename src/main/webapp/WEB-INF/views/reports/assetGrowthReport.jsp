@@ -78,12 +78,13 @@ function getAssetReportCustomDates(){
 }
  
  function daysValidation(fromDate,toDate){
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var fromDate = $("#fromDate").val();
 	 var toDate = $("#toDate").val();
 	  if(fromDate != null && fromDate != "" && fromDate != "undefined" && toDate != null && toDate != "" && toDate != "undefined"){
 		  $.ajax({ 
 			   	type: "GET",
-			   	url: sourceleadUrl+"/noOfDaysAssetGrowth?fromDate="+fromDate+"&toDate="+toDate,
+			   	url: vmsUrl+"/noOfDaysAssetGrowth?fromDate="+fromDate+"&toDate="+toDate,
 			    success: function(report) {
 			    	document.getElementById("noOfDaysDiv").style.display="inline-block";
 			    	$("#durationCount").text(report.noOfDays);
@@ -108,7 +109,7 @@ function getAssetReportCustomDates(){
       <div class="pull-left">
         <h2>Asset Growth</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/financialReportsList'/>">Financial Reports</a> &raquo; Asset Growth
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Reports Dashboard</a> &raquo; <a href="/vms/financialReportsList">Financial Reports</a> &raquo; Asset Growth
        </div>
     </section>
     
@@ -200,6 +201,7 @@ document.getElementById("ListView").addEventListener("click", function(){
     $("#customeSearchButton").hide();
 });
 function getAssetGrowthReports(type){
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var flag = true;
 	  var catIds = $("#catIds").val();
 	  if(catIds == null){
@@ -232,7 +234,7 @@ function getAssetGrowthReports(type){
 	  if(flag){
 	  $.ajax({ 
 		   	type: "POST",
-		   	url: sourceleadUrl+"/getAssetGrowthReportList?${_csrf.parameterName}=${_csrf.token}&categoryIds="+catIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate+"&gridType="+type,
+		   	url: vmsUrl+"/getAssetGrowthReportList?${_csrf.parameterName}=${_csrf.token}&categoryIds="+catIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate+"&gridType="+type,
 		    success: function(response) {
 		    	if(response.response === "SUCCESS") {
 		    		if(response.data != ""){
@@ -290,7 +292,7 @@ function getAssetGrowthReports(type){
 		        		  $("#assetGrowthReportList").empty();
 		        		  $.ajax({ 
 		        			   	type: "POST",
-		        			   	url: sourceleadUrl+"/getAssetGrowthReportList?${_csrf.parameterName}=${_csrf.token}&categoryIds="+catIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate+"&gridType=ListView",
+		        			   	url: vmsUrl+"/getAssetGrowthReportList?${_csrf.parameterName}=${_csrf.token}&categoryIds="+catIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate+"&gridType=ListView",
 		        			    success: function(response) {
 		        			      assetGrowthReportList(response.data);
 		   	      			      var element = document.getElementById("ListView");
