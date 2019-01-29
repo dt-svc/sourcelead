@@ -38,7 +38,7 @@
                     </c:if>
 	                <c:if test="${tabName == 'Jobs'}"> 
 	                <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}"> 
-	                   <li class="${sessionData.nav == 'Requirement' ? 'navActive' : ''}"><a href="/app/jobs" title="Jobs"><span class="navIcons jobIcon"></span><b>Jobs</b></a></li>
+	                   <li class="${sessionData.nav == 'Requirement' ? 'navActive' : ''}"><a href="<c:url value='/ats/jobsList'/>" title="Jobs"><span class="navIcons jobIcon"></span><b>Jobs</b></a></li>
 	                </c:if> 
 	                
 	                <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER' }">
@@ -50,7 +50,7 @@
 	                
 	                <c:if test="${tabName == 'Candidates'}">
 	                 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-	                   <li class="${sessionData.nav == 'Candidates' ? 'navActive' : ''}"><a href="/ats/candidatesList" title="Candidates"><span class="navIcons canIcon"></span><b>Candidates</b></a></li>
+	                   <li class="${sessionData.nav == 'Candidates' ? 'navActive' : ''}"><a href="<c:url value='/ats/candidatesList'/>" title="Candidates"><span class="navIcons canIcon"></span><b>Candidates</b></a></li>
 	                 </c:if>
 	                 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
 	                   <li class="${sessionData.nav == 'Candidates' ? 'navActive' : ''}"><a href="<c:url value='/ats/candidatesList'/>" title="Candidates"><span class="navIcons canIcon"></span><b>Candidates</b></a></li>
@@ -133,8 +133,10 @@
 	                 </c:if>
 	                 
 	                 
+
 	                 <c:if test="${tabName == 'On & Off Boarding'}">
-	                  <li class="${sessionData.nav == 'OnAndOffboard' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/candidateOnBoardingList'/>" title="On / Off Boarding"><span class="navIcons onoffIcon"></span><b>On / Off Board</b></a></li>
+	                  <li class="${sessionData.nav == 'OnAndOffboard' ? 'navActive' : ''}"><a href="<c:url value='/ats/candidateOnBoardingList'/>" title="On / Off Boarding"><span class="navIcons onoffIcon"></span><b>On / Off Board</b></a></li>
+
 	                 </c:if>
 	                 
 	                 
