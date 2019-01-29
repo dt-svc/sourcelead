@@ -102,6 +102,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.DashboardController;
@@ -157,6 +158,9 @@ public class DashboardRestController {
 	 
 	 @Autowired
 	 private RequirementElkUtil requirementElkUtil;
+	 
+	 @Autowired
+	 private ConversionUtil conversionUtil;
 	 
 	 @Autowired
 	 private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
@@ -1645,12 +1649,15 @@ public class DashboardRestController {
                         String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
                         Integer result = 0;
                         try {
+                        	if(StringUtils.isNotBlank(payTerm)){
                             payTerm=payTerm.replaceAll("\\D", "");
                             result = Integer.parseInt(payTerm);
+                        	}
                         } catch (Exception e) {
                             result = 0;
                         }
                         rshDTO.setPayTerm(result);
+                        
                         }
 
                     }
@@ -1752,6 +1759,8 @@ public class DashboardRestController {
 						List<RequirementOffers> offersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(rsh.getSubmissionId().getId(), loginOrgLocations.getId());
 						for (RequirementOffers requirementOffers : offersList) {
 							rshDTO.setOfferId(requirementOffers.getId());
+							float rate = conversionUtil.rateConvertToYear(requirementOffers.getAmount(),requirementOffers.getPaymentMode(),loginOrgLocations);
+							rshDTO.setOfferRateforYearly(String.format("%.3f", Float.valueOf(rate)));
 							rshDTO.setOfferRate(requirementOffers.getAmount());
 							rshDTO.setPaymentType(requirementOffers.getPaymentType());
 							rshDTO.setPaymentMode(requirementOffers.getPaymentMode());
