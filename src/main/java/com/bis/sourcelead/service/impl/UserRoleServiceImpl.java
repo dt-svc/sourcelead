@@ -894,5 +894,10 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.getAllUserRoles();
 	}
 
+	@Override
+	public String getUserRoleUUIDByUserRoleId(Long userRoleId) throws Exception {
+		return userRoleDao.getUserRoleUUIDByUserRoleId(userRoleId);
+	}
+
 
 }
