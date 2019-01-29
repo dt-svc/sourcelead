@@ -114,18 +114,18 @@ function getAssignedMembersListForEdit(reqId){
 	if(reqId != '' && reqId != 'undefined' && reqId != null){
 		$.ajax({
 	           type : "POST",
-	           url: sourceleadUrl+"/getAssignedMembersForEdit?"+tokenParamName+"="+tokenValue+"&reqId="+reqId,    
+	           url: atsUrl+"/getAssignedMembersForEdit?"+tokenParamName+"="+tokenValue+"&reqId="+reqId,    
 	            success :function(result) {
 		            	var json = result.object;
 		            	if (result.response === "SESSION_TIMEDOUT") {
-			  				location.replace(sourceleadUrl);
+			  				location.replace(atsUrl);
 		                } else if (result.response === "AWKWARD") {
 		                    location.href = "/errorPage";
 		                } else if (result.response === "SUCCESS") {
 		                	selectAssignUsersIds = json;
 			            	$("#assignedTeamId").val(json);	
 		                } else if (result.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
+							location.replace(atsUrl);
 						} else {
 		                    showError("Operation failed, please try again");
 		                }
@@ -140,11 +140,11 @@ function getAssignedMembersListForEdit(reqId){
 function getTeamsList(reqId){
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getTeamsList?"+tokenParamName+"="+tokenValue+"&reqId="+reqId,    
+           url: atsUrl+"/getTeamsList?"+tokenParamName+"="+tokenValue+"&reqId="+reqId,    
             success :function(result) {
             	var json = result.object;
             	if (result.response === "SESSION_TIMEDOUT") {
-	  				location.replace(sourceleadUrl);
+	  				location.replace(atsUrl);
                 } else if (result.response === "AWKWARD") {
                     location.href = "/errorPage";
                 } else if (result.response === "SUCCESS") {
@@ -184,7 +184,7 @@ function getTeamsList(reqId){
 				    $("#teamSelectionCategory").append(output);
 				    $("#teamSelectionCategory").selectpicker("refresh");
                 } else if (result.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
+					location.replace(atsUrl);
 				} else {
                     showError("Operation failed, please try again");
                 }
@@ -280,11 +280,11 @@ function getUserList(teamType){
  	   $("#usersGrid-loader").attr('style','position:absolute; width:100%; height:200px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	   $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getUserList?"+tokenParamName+"="+tokenValue+"&teamType="+teamType,    
+           url: atsUrl+"/getUserList?"+tokenParamName+"="+tokenValue+"&teamType="+teamType,    
             success :function(data) {
             	$("#usersGrid").removeAttr("style");
             	if (data.response === "SESSION_TIMEDOUT") {
-	  				location.replace(sourceleadUrl);
+	  				location.replace(atsUrl);
                 } else if (data.response === "AWKWARD") {
                     location.href = "/errorPage";
                 } else if (data.response === "SUCCESS") {
@@ -352,7 +352,7 @@ function getUserList(teamType){
 		                       //paginations(); 
 	                 	}
 	                } else if (data.indexOf('Sign In') !== -1) {
-						location.replace(sourceleadUrl);
+						location.replace(atsUrl);
 					} else {
 	                    showError("Operation failed, please try again");
 	                }
@@ -369,7 +369,7 @@ function getUserAssingedJobCounts(){
 		 if(userId != null &&  userId !='undefined' && userId != ''){
 			 $.ajax({
 		           type : "GET",
-		           url: sourceleadUrl+"/getUserAssingedJobsListCountForRequirementAssignedTo?userId="+userId,    
+		           url: atsUrl+"/getUserAssingedJobsListCountForRequirementAssignedTo?userId="+userId,    
 		            success :function(data) {
 		            	  $("#"+userId+"assignedUserType").empty();
 		             	  $("#"+userId+"assignedUserType").html(data.userType);
@@ -471,16 +471,16 @@ function paginations(){
 		$("#forAssignedToCount2").text(assignedToEditCount);
 			$.ajax({
 		           type : "POST",
-		           url: sourceleadUrl+"/saveOrUpdateAssignToTeam?"+tokenParamName+"="+tokenValue+"&assignedIdVal="+assignedIdVal+"&requirementId="+requirementId,    
+		           url: atsUrl+"/saveOrUpdateAssignToTeam?"+tokenParamName+"="+tokenValue+"&assignedIdVal="+assignedIdVal+"&requirementId="+requirementId,    
 		            success :function(result) {
 		            	if (result.response === "SESSION_TIMEDOUT") {
-			  				location.replace(sourceleadUrl);
+			  				location.replace(atsUrl);
 		                } else if (result.response === "AWKWARD") {
 		                    location.href = "/errorPage";
 		                } else if (result.response === "SUCCESS") {
 		                	
 		                } else if (result.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
+							location.replace(atsUrl);
 						} else {
 		                    showError("Operation failed, please try again");
 		                }

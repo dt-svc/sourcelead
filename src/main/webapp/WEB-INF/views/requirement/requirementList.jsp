@@ -13,6 +13,7 @@
      
 --%>
  <script type="text/javascript">
+ var atsUrl = '${SourceLeadWeb_atsUrl}';
  var hideColumns = [];
  var table = "";
  $(document).ready(function () {
@@ -33,27 +34,27 @@ function clearList(){
 
 function selectAllPriority(){
 	$("ul#priority > li input:checkbox").prop("checked",true);
-	requirementList('list','${sourceleadUrl}');
+	requirementList('list','${SourceLeadWeb_atsUrl}');
 }
 function clearAllPriority(){
 	$("ul#priority > li input:checkbox").prop("checked",false);
-	requirementList('list','${sourceleadUrl}');
+	requirementList('list','${SourceLeadWeb_atsUrl}');
 }
 function selectAllJobType(){
 	$("ul#jobType > li input:checkbox").prop("checked",true);
-	requirementList('list','${sourceleadUrl}');
+	requirementList('list','${SourceLeadWeb_atsUrl}');
 }
 function clearAlljobType(){
 	$("ul#jobType > li input:checkbox").prop("checked",false);
-	requirementList('list','${sourceleadUrl}');
+	requirementList('list','${SourceLeadWeb_atsUrl}');
 }
 function selectAllStatus(){
 	$("ul#status > li input:checkbox").prop("checked",true);
-	requirementList('list','${sourceleadUrl}');
+	requirementList('list','${SourceLeadWeb_atsUrl}');
 }
 function clearAllStatus(){
 	$("ul#status > li input:checkbox").prop("checked",false);
-	requirementList('list','${sourceleadUrl}');
+	requirementList('list','${SourceLeadWeb_atsUrl}');
 }
 
 </script>
@@ -108,7 +109,7 @@ top: 18px;height: 32px; line-height: 18px;
 			/* alert("viewTab : " + viewTab); */
 			jobFairListCheck();
 		} else {
- 			requirementListCheck("${searchValue}","${universalRequirementList}","universalSearch",'${sourceleadUrl}');
+ 			requirementListCheck("${searchValue}","${universalRequirementList}","universalSearch",'${SourceLeadWeb_atsUrl}');
 		}
 };
 </script>
@@ -123,7 +124,7 @@ function statusvalidating(id){
    function getSourceleadTags(){
  		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getSourceleadTagsList?"+tokenParamName+"="+tokenValue, 
+		        url: atsUrl+"/getSourceleadTagsList?"+tokenParamName+"="+tokenValue, 
 		        success: function(json) {
 		        	var output = "";
 		        	for (var i=0; i<json.length; i++)
@@ -163,7 +164,7 @@ function statusvalidating(id){
 		<div class="pull-left">
         	<h2>Jobs 
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
-						<a href="<c:url value='${appPath}/professionalRequirements'/>" class="jobHeadBtn">Crowdsourcing Jobs</a>
+						<a href="<c:url value='/professionalRequirements'/>" class="jobHeadBtn">Crowdsourcing Jobs</a>
 					</sec:authorize>        	
         	</h2>
       	</div>
@@ -181,12 +182,12 @@ function statusvalidating(id){
 					Jobs</a></span>
 		</div> --%>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Job List
+			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Job List
 		</div>
 	</section>
 	<div class="clearfix">
 	<ul class="project-tabs-menu projecttabs-custom clearfix">
-         <li class="current" id="jobsTab"><a href="javascript:void(0)" onclick="requirementListCheck('','','','${sourceleadUrl}');">Jobs</a></li>
+         <li class="current" id="jobsTab"><a href="javascript:void(0)" onclick="requirementListCheck('','','','${SourceLeadWeb_atsUrl}');">Jobs</a></li>
          <li id="jobFairTab"><a href="javascript:void(0)"  onclick="jobFairListCheck();">Job Fair</a></li>
          <div class="clearfix"></div>
      </ul>
@@ -423,7 +424,7 @@ function statusvalidating(id){
 	<div class="clearfix advancedsearch-footer">
 		<div class="pull-right mr">
 			<input type="button" value="Search" id="search_requiremet"
-				onclick="requirementListCheck('','','advanceSearch','${sourceleadUrl}');" class="btn btn-sm btn-success" />
+				onclick="requirementListCheck('','','advanceSearch','${SourceLeadWeb_atsUrl}');" class="btn btn-sm btn-success" />
 			<input type="button" value="Reset" id="clear_search"
 				onclick="clearSearch();" class="btn btn-sm btn-primary" />
 		</div>
@@ -634,12 +635,12 @@ function statusvalidating(id){
 								<ul>
 									<c:forEach var="report" items="${add_clientList}">
 										<c:if test="${report.locationId.id == loginOrgLocId}">
-											<li><input id="clientName${report.id}" name="clientNameById" value="${report.id}" onclick="requirementList('list','${sourceleadUrl}');" type="checkbox"><label
+											<li><input id="clientName${report.id}" name="clientNameById" value="${report.id}" onclick="requirementList('list','${SourceLeadWeb_atsUrl}');" type="checkbox"><label
 												title="${report.responderLocationId.org.orgName}">${report.responderLocationId.org.orgName}</label></li>
 											<%-- 			                    	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option> --%>
 										</c:if>
 										<c:if test="${report.responderLocationId.id == loginOrgLocId}">
-											<li><input id="clientName${report.id}" name="clientNameById" value="${report.id}" onclick="requirementList('list','${sourceleadUrl}');" type="checkbox"><label
+											<li><input id="clientName${report.id}" name="clientNameById" value="${report.id}" onclick="requirementList('list','${SourceLeadWeb_atsUrl}');" type="checkbox"><label
 												title="${report.locationId.org.orgName}">${report.locationId.org.orgName}</label></li>
 											<%-- 			                  	 	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option> --%>
 										</c:if>
@@ -653,9 +654,9 @@ function statusvalidating(id){
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
 									<span> 
-									<a href="<c:url value='${appPath}/requirement'/>" >Job</a>
+									<a href="<c:url value='/requirement'/>" >Job</a>
 									<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
-										<a href="<c:url value='${appPath}/uploadJobs'/>">Import</a>
+										<a href="<c:url value='/uploadJobs'/>">Import</a>
 									</sec:authorize>									
 									</span>
 								</div>
@@ -676,7 +677,7 @@ function statusvalidating(id){
 						</span>
 					</div>
 				</li>
-		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dataTableSearch'/><span class="repSearchIcon" onClick="requirementListCheck('','','','${sourceleadUrl}');"></span></li>
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dataTableSearch'/><span class="repSearchIcon" onClick="requirementListCheck('','','','${SourceLeadWeb_atsUrl}');"></span></li>
         </ul>
       </div>		
 		
@@ -693,7 +694,7 @@ function statusvalidating(id){
       <ul class="pull-right list-unstyled list-inline">
 					
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
-						<li><a href="<c:url value='${appPath}/addJobFair'/>" class="newAdBtn">+ Job Fair</a></li>
+						<li><a href="<c:url value='/addJobFair'/>" class="newAdBtn">+ Job Fair</a></li>
 					</sec:authorize>					
 									
 					<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
@@ -745,6 +746,7 @@ function closeFilter(){
 
 	function columPop(){
 		$(".colPop").show();
+		$(".colPopFot").show();
 	}
 	function columClose(){
 		$(".colPop").hide();
@@ -840,17 +842,17 @@ function changeStatus(requirementId, requirementStatus){
      if(status == "DRAFT"){
         	 $.ajax({
              type : "POST",
-        	 url: sourceleadUrl+"/saveChangedStatusFromDraft?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&userId="+userId,
+        	 url: atsUrl+"/saveChangedStatusFromDraft?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&userId="+userId,
 	        	 success :function(result) {
 	        		 	if (result.response === "SESSION_TIMEDOUT") {
-			  				location.replace(sourceleadUrl);
+			  				location.replace(atsUrl);
 		                } else if (result.response === "AWKWARD") {
 		                    location.href = "/errorPage";
 		                } else if (result.response === "SUCCESS") {
 		                	$("#changeStatusId" +requirementId).val(status);
 		  	           	  //location.replace(sourceleadUrl+"/requirementList");	
 		                } else if (result.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
+							location.replace(atsUrl);
 						} else {
 		                    showError("Operation failed, please try again");
 		                }
@@ -859,17 +861,17 @@ function changeStatus(requirementId, requirementStatus){
          }else{
         	 $.ajax({
              type : "POST",
-        	 url: sourceleadUrl+"/saveChangedStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status,
+        	 url: atsUrl+"/saveChangedStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status,
 	        	 success :function(result) {
 	        		 if (result.response === "SESSION_TIMEDOUT") {
-			  				location.replace(sourceleadUrl);
+			  				location.replace(atsUrl);
 		                } else if (result.response === "AWKWARD") {
 		                    location.href = "/errorPage";
 		                } else if (result.response === "SUCCESS") {
 		                	$("#changeStatusId" +requirementId).val(status);
 		   	           	 //location.replace(sourceleadUrl+"/requirementList");
 		                } else if (result.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
+							location.replace(atsUrl);
 						} else {
 		                    showError("Operation failed, please try again");
 		                }
@@ -915,8 +917,9 @@ function changeStatus(requirementId, requirementStatus){
 	});
 </script>
 <script>
+
 function exportToPdf(type) {
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	if(type === 1) {
 		var req = $("#noReq").val();
 	 	var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
@@ -929,7 +932,7 @@ function exportToPdf(type) {
 			clients.push($(this).attr("data-val"));
 	    });
 		if(requirementEmptyMessage > 0) {
-			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=pdf";
+			window.location.href = atsUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=pdf";
 		} else {
 			var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -945,13 +948,13 @@ function exportToPdf(type) {
 	} else {
 		/* alert("Export JobFair to PDF"); */
 		$(".buttons-pdf").click();
-		window.location.href = sourceleadUrl +"/pdfExportForJobfair?includeInactive=true";
+		window.location.href = atsUrl +"/pdfExportForJobfair?includeInactive=true";
 	}
 }
 </script>
 <script>
 function exportToExcel(type) {
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	if(type === 1) {
 		var req = $("#noReq").val();
 		var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
@@ -964,7 +967,7 @@ function exportToExcel(type) {
 			clients.push($(this).attr("data-val"));
 	    });
 		if(requirementEmptyMessage > 0) {
-			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=xls";	
+			window.location.href = atsUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=xls";	
 		} else {
 			var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -979,7 +982,7 @@ function exportToExcel(type) {
 		}
 	} else {
 		/* alert("Export JobFair to Excel"); */
-		window.location.href = sourceleadUrl +"/excelExportForJobfair?includeInactive=true"
+		window.location.href = atsUrl +"/excelExportForJobfair?includeInactive=true"
 		$(".buttons-excel").click();
 	}
 }
@@ -1350,7 +1353,7 @@ function refreshGoogleApiCity(cityId){
 			<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" 
-								onclick="closeFilter();requirementList('list','${sourceleadUrl}');" class="btn btn-sm btn-success" />
+								onclick="closeFilter();requirementList('list','${SourceLeadWeb_atsUrl}');" class="btn btn-sm btn-success" />
 							<input type="button" value="Reset" id="clear_search"
 								onclick="resetJobFilter();" class="btn btn-sm btn-primary" />
 						</div>
@@ -1434,7 +1437,7 @@ function resetJobFilter(){
 	$("ul#priority > li input:checkbox").prop("checked",false);
 	$("ul#assignTo > li input:radio").prop("checked",false);
 	
-	requirementList('list','${sourceleadUrl}');
+	requirementList('list','${SourceLeadWeb_atsUrl}');
 }
 </script>
 <script type="text/javascript">
@@ -1471,15 +1474,15 @@ function resetJobFilter(){
 				jobFairId: jobFairId,
 				status : status
 		};
-		$.post(sourceleadUrl + "/changeJobFairStatus?", data, function(result) {
+		$.post(atsUrl + "/changeJobFairStatus?", data, function(result) {
 			if (result.response === "SESSION_TIMEDOUT") {
-				location.replace(sourceleadUrl);
+				location.replace(atsUrl);
 			} else if (result.response === "AWKWARD") {
 				location.href = "/errorPage";
 			} else if (result.response === "SUCCESS") {
-				location.href = sourceleadUrl + "/jobs?viewTab=jobFair";
+				location.href = atsUrl + "/jobsList?viewTab=jobFair";
 			} else if (result.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
+				location.replace(atsUrl);
 			} else {
 				showError("Operation failed, please try again");
 			}
