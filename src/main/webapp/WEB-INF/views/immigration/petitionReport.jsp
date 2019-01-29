@@ -627,7 +627,6 @@ function resetImmForm(){
 	 $("#petitionStatus").trigger("chosen:updated"); 
 	 $("#attorneyId").val('');
 	 $("#attorneyId").trigger("chosen:updated"); 
-	 //By default date filter shows This year or current year
 	 $("#dateFrequency").val('YTD');
 	 $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
 	 $("#custFromDate").val('');
