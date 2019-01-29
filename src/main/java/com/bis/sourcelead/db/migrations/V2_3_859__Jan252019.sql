@@ -1,0 +1,1 @@
+CALL AlterTableAddColumn('USER_ROLE','UUID','VARCHAR(10) DEFAULT NULL');
