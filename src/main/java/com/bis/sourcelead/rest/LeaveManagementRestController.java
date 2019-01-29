@@ -126,7 +126,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.ibm.icu.text.DecimalFormat;
 
 @RestController
-@RequestMapping("/app")
 public class LeaveManagementRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(LeaveManagementRestController.class);
