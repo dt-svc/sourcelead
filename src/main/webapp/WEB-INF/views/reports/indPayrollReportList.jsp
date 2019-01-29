@@ -71,6 +71,25 @@
             </div>
           </div> 
           
+          <div class="col-md-3">
+            <div class="pull-left mr10"> <i class="fa fa-medkit fa-2x text-muted"></i> </div>
+            <div class="pull-left">
+              <h4 class="text-muted">ESI Summary</h4>
+              <small class="text-muted">Payroll ESI Summary Reports</small>
+              <div class="clearfix mt10"><a href="${appPath}/indPayrollESISummaryReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+            </div>
+          </div> 
+          
+          
+          <div class="col-md-3">
+            <div class="pull-left mr10"> <i class="fa fa-suitcase fa-2x text-muted"></i> </div>
+            <div class="pull-left">
+              <h4 class="text-muted">PF Summary</h4>
+              <small class="text-muted">Payroll PF Summary Reports</small>
+              <div class="clearfix mt10"><a href="${appPath}/indPayrollPFSummaryReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+            </div>
+          </div> 
+          
           
           
         <%--  <div class="col-md-3">

@@ -38,8 +38,10 @@ import net.sf.dynamicreports.report.constant.HorizontalAlignment;
 import net.sf.dynamicreports.report.constant.VerticalAlignment;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 
+
+
 /**
- * @author Ricardo Mariaca (r.mariaca@dynamicreports.org)
+ * @author Laxman
  */
 public class Templates {
 	public static final StyleBuilder rootStyle;
@@ -151,7 +153,7 @@ public class Templates {
 
 		@Override
 		public String getPattern() {
-			return "$ #,###.00";
+			return "₹ #,###.00";
 		}
 	}
 
