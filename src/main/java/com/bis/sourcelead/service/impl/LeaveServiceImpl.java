@@ -2939,6 +2939,12 @@ public Set<PayrollLopHis> getLeaveByFrequencyInd(Long candidateId, Date freqStar
 	return leaveDao.getLeaveByFrequencyInd(candidateId,freqStartDate,freqEndDate,orgLocation,employeePayroll);
 }
 
+@Override
+public List<Leave> getAllLeavesByLocationIdAndStatusAndAppliedDate(Long locationId, String status, Date appliedDate) {
+    
+    return leaveDao.getAllLeavesByLocationIdAndStatusAndAppliedDate(locationId, status, appliedDate);
+}
+
 }
 
 

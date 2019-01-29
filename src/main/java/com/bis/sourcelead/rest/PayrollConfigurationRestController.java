@@ -1121,4 +1121,34 @@ public class PayrollConfigurationRestController {
 			}
 			return response;
 		}
+	 
+	 @RequestMapping(value = "/storeLeaveConfigureEmail" , method = RequestMethod.POST)
+		public Response<String> storeLeaveConfigureEmail(EmailReminderDTO emailreminderDTO, HttpServletRequest request)
+				throws Exception {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Response<String> response = new Response<>();
+			if (user != null) {
+				if (Validator.validate(emailreminderDTO)) {
+					try {
+						EmailReminder emailReminder = emailReminderService.saveEmailReminderDetails(emailreminderDTO, user, orgLocations);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					} catch (Exception e) {
+						response.setResponse(Result.AWKWARD.name());
+						response.setResponseMessage(Result.AWKWARD.getValue());
+						logger.error(ExceptionUtils.getFullStackTrace(e));
+					}
+				}else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+			return response;
+		}
+	 
 }
