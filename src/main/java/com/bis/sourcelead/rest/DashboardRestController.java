@@ -30,6 +30,8 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -104,6 +106,7 @@ import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.UserLoginHelper;
 import com.bis.sourcelead.web.DashboardController;
 import com.ibm.icu.util.Calendar;
 
@@ -199,6 +202,9 @@ public class DashboardRestController {
 	 
 	 @Autowired
 	 private InvoiceService invoiceService;
+	 
+	 @Autowired 
+	 UserLoginHelper userLoginHelper;
 	 
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -333,15 +339,30 @@ public class DashboardRestController {
 		     if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
    			    userRole.setUserState(Status.ACTIVE);
    			   UserRole userRoleElk = userRoleService.addUserRole(userRole);
-   			   
-   			   
-   			   
    			   //user update/save in user Elk
    			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
    		      }
 				
-		     SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
-		     
+		     String uname = user.getUserName()+"##"+userRole.getId();
+		     SecurityContextHolder.clearContext();
+			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRole.getUuid()));
+				
+		     StringBuilder redirectUrl = new StringBuilder();
+		     response.sendRedirect(redirectUrl.append("/app/dashboard").toString());
+			
+	}
+	
+	
+	
+	@RequestMapping(value = "/switchLocation" , method = RequestMethod.GET)
+	 public @ResponseBody void userSummary(@RequestParam(value="userRoleId") Long userRoleId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		     String userRoleUUID = userRoleService.getUserRoleUUIDByUserRoleId(userRoleId);
+		     String[] usernameWithRole = auth.getName().split("##");
+		     String uname = usernameWithRole[0]+"##"+userRoleId;
+		     SecurityContextHolder.clearContext();
+			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRoleUUID));
+				
 		     StringBuilder redirectUrl = new StringBuilder();
 		     response.sendRedirect(redirectUrl.append("/app/dashboard").toString());
 			

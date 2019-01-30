@@ -114,7 +114,7 @@ public class CandidateOnBoardController {
  			return model;
  	}
 	
-	@RequestMapping(value = "/onboardingCandidateStep2")
+	/*@RequestMapping(value = "/onboardingCandidateStep2")
 	public ModelAndView onboardingCandidateStep2(HttpServletRequest request) throws Exception{
 		ModelAndView model = new ModelAndView();
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -287,7 +287,7 @@ public class CandidateOnBoardController {
 		}
 		
 		return model;
-	}
+	}*/
 	
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE')")
 	@RequestMapping(value = "/onboardingTemplatesList")
@@ -335,7 +335,7 @@ public class CandidateOnBoardController {
  	}
 	
 	
-	@PreAuthorize("hasAnyRole('ROLE_CREATE_ON_BOARD_USER','ROLE_VIEW_EDIT_ON_BOARD_USER','ROLE_CREATE_OFF_BOARD_USER','ROLE_VIEW_EDIT_OFF_BOARD_USER')")
+	/*@PreAuthorize("hasAnyRole('ROLE_CREATE_ON_BOARD_USER','ROLE_VIEW_EDIT_ON_BOARD_USER','ROLE_CREATE_OFF_BOARD_USER','ROLE_VIEW_EDIT_OFF_BOARD_USER')")
 	@RequestMapping(value = "/candidateOnBoardingList")
 	public ModelAndView candidateOnBoardingList(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
@@ -424,5 +424,5 @@ public class CandidateOnBoardController {
                      model.addObject("onBoardingUUID", onboardUUID);
                      return model;
      }
-
+*/
 }

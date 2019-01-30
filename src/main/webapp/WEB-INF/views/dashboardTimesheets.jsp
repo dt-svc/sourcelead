@@ -71,7 +71,7 @@ $(document).ready(function(){
       </div>
 <script>
 	var wsocket;  
-	var userId = '${SourceLeadWeb_user.id}';
+	var userId = '${SourceLeadWeb_userId}';
 	var orgLocationCode = '${SourceLeadWeb_locationCode}';
 	var candiadteId = '${SourceLeadWeb_candidateId}';
 	var timesheetType;
