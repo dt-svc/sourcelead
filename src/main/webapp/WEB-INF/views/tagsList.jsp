@@ -23,32 +23,32 @@ $(document).ready(function(){
 <div class="project_side_wrap_inn_tabs">
 	<ul class="project-tabs-menu">
 	<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-		<c:if test="${userTabs.tabName == 'Associates'}">
+		<c:if test="${userTabs == 'Associates'}">
 				<li class="current" id="details"><a href="#tab-1" onclick="getAllTags('ASSOCIATES');">Associates</a></li>
 		</c:if>
 		
-		<c:if test="${userTabs.tabName == 'Jobs'}">
+		<c:if test="${userTabs == 'Jobs'}">
 			<li><a href="#tab-2" onclick="getAllTags('JOBS');">Jobs</a></li>
 		</c:if>
 		
-		<c:if test="${userTabs.tabName == 'Candidates'}">
+		<c:if test="${userTabs == 'Candidates'}">
 			<li><a href="#tab-3" onclick="getAllTags('CANDIDATES');">Candidates</a></li>
 		</c:if>
 		
-		<c:if test="${userTabs.tabName == 'Projects'}">
+		<c:if test="${userTabs == 'Projects'}">
 			<li><a href="#tab-4" onclick="getAllTags('PROJECTS');">Projects</a></li>
 			<li><a href="#tab-5" onclick="getAllTags('TASKS');">Tasks</a></li>
 		</c:if>
 		
-		<c:if test="${userTabs.tabName == 'Asset Management'}">
+		<c:if test="${userTabs == 'Asset Management'}">
 			<li><a href="#tab-6" onclick="getAllTags('ASSETMANAGEMENT');">Asset</a></li>
 		</c:if>
 		
-		<c:if test="${userTabs.tabName == 'Receivable'}">
+		<c:if test="${userTabs == 'Receivable'}">
 			<li><a href="#tab-7" onclick="getAllTags('INVOICES');">Invoices</a></li>
 		</c:if>
 		
-		<c:if test="${userTabs.tabName == 'Payables'}">
+		<c:if test="${userTabs == 'Payables'}">
 			<li><a href="#tab-8" onclick="getAllTags('BILLS');">Bills</a></li>
 		</c:if>
 		

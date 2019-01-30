@@ -368,28 +368,28 @@ function preventTabkey(e){
 			<select id="searchType" name="searchType" class="selectpicker uasrch pull-left show-menu-arrow" >
 			<option data-icon="fa fa-th-large" ${searchType == "All" ?"selected='selected'":""} value="All">All</option>
 			<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-		       <c:if test="${userTabs.tabName == 'Associates'}">
+		       <c:if test="${userTabs == 'Associates'}">
 	                 <option data-icon="fa fa-users"  ${searchType == "Users" ?"selected='selected'":""} value="Users">Associates</option>
 	           </c:if>
-	           <c:if test="${userTabs.tabName == 'Jobs'}"> 
+	           <c:if test="${userTabs == 'Jobs'}"> 
 	                <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Jobs</option>
 	           </c:if>
-	           <c:if test="${userTabs.tabName == 'Candidates'}">
+	           <c:if test="${userTabs == 'Candidates'}">
 	                <option data-icon="fa fa-user-circle" ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidates</option>
 	           </c:if> 
-	           <c:if test="${userTabs.tabName == 'Clients'}">
+	           <c:if test="${userTabs == 'Clients'}">
                  	  <option data-icon="fa fa-user-plus" ${searchType == "Client" ?"selected='selected'":""} value="Client">Clients</option>
                </c:if>
-	           <c:if test="${userTabs.tabName == 'Vendors'}">
+	           <c:if test="${userTabs == 'Vendors'}">
 	                  <option data-icon="fa fa-suitcase" ${searchType == "Vendor" ?"selected='selected'":""} value="Vendor">Vendors</option>
 	           </c:if> 
 	           
 	         <!--   commented by laxman because client based project querys are not implemented -->
-	           <%-- <c:if test="${userTabs.tabName == 'Projects'}">
+	           <%-- <c:if test="${userTabs == 'Projects'}">
 	             <option data-icon="fa fa-bar-chart" ${searchType == "Projects" ?"selected='selected'":""} value="Projects">Projects</option>   	  
 	           </c:if> --%>
 	           
-	           <c:if test="${userTabs.tabName == 'Associates List'}">
+	           <c:if test="${userTabs == 'Associates List'}">
 	           <option data-icon="fa fa-black-tie" ${searchType == "Associate" ?"selected='selected'":""} value="Associate">Associates</option>
 	           </c:if>
 			</c:forEach>
