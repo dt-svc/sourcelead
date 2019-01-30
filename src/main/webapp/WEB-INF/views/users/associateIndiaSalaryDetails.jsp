@@ -7,6 +7,7 @@
 </div>
 
 <script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 function indAssociateSalarySummary(newAssociate){
 	var locationCode = '${SourceLeadWeb_locationCode}';
 	var candidateId =  $("#associateCandidateId").val();
@@ -15,7 +16,7 @@ function indAssociateSalarySummary(newAssociate){
 		var status = "NEW";
 		$.ajax({
 			  type: "GET",
-			    url: sourceleadUrl+"/getAssociateSalaryDataByOrgLocation?candidateId="+candidateId+"&orgLocationId="+locationCode+"&status="+status,
+			    url: atsUrl+"/getAssociateSalaryDataByOrgLocation?candidateId="+candidateId+"&orgLocationId="+locationCode+"&status="+status,
 			     success :function(response) {
 			    	    $("#indSalaryDetailsLoading").empty();  
 			    	    $("#indSalaryDetailsLoading").append(response);

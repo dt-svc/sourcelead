@@ -6,6 +6,7 @@
 
 
 <script type="text/javascript">
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 		window.onload = function () {
 			getAssociatesList();
 		 };
@@ -16,7 +17,7 @@
          <div class="pull-left">
            <h2>Add Associate</h2>
          </div>
-         <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usersList'/>">Associates List</a> &raquo; Add Associate </div>
+         <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/usersList'/>">Associates List</a> &raquo; Add Associate </div>
        </section>
       
   <div class="content-area clearfix">
@@ -35,7 +36,7 @@
               <div class="col-lg-12">
                 <div class="pull-right">
                   <input type="button" value="Save" id="create_user" onclick="createAssociate();" class="btn btn-primary">
-                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/usersList'/>'"  class="btn btn-default ml">
+                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/usersList'/>'"  class="btn btn-default ml">
                 </div>
               </div>
     </div>
@@ -166,7 +167,7 @@
 		 $("#addLocAssociatesLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAssociateReportingManager?"+tokenParamName+"="+tokenValue+"&role="+role, 
+		        url: atsUrl+"/getAssociateReportingManager?"+tokenParamName+"="+tokenValue+"&role="+role, 
 		        success: function(json) {
 		        	var output = "";
 		        	output = output + "<option value=''>-- Select Manager --</option>"; 
@@ -298,7 +299,7 @@ function getOrgLocationRoles(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getOrgLocationRoles?${_csrf.parameterName}=${_csrf.token}&orgLocations="+orgLocations, 
+	        url: atsUrl+"/getOrgLocationRoles?${_csrf.parameterName}=${_csrf.token}&orgLocations="+orgLocations, 
 	        success: function(json) {
 	        	
 	        	var output = "";
@@ -391,15 +392,15 @@ function candidatesDataTableList(){
 	  
 	     var searchValue = $("#candidateDataTableSearch").val();
 		 searchValue = searchValue ? searchValue : "";
-		 var url = sourceleadUrl+"/getOrgLocationAssociatesList?searchValue="+searchValue+"&orgLocationId="+orgLocations+"&roles="+roles+"&selectedAssociates="+selectedAssociates;
-		 candidatesPagination(sourceleadUrl,url);
+		 var url = atsUrl+"/getOrgLocationAssociatesList?searchValue="+searchValue+"&orgLocationId="+orgLocations+"&roles="+roles+"&selectedAssociates="+selectedAssociates;
+		 candidatesPagination(atsUrl,url);
 	
 }
 </script>
 
 
 <script>
-function candidatesPagination(sourceleadUrl,url){
+function candidatesPagination(atsUrl,url){
 	var colIndex = 0;
     $('#associatesListPagination').DataTable( { 
 	  "processing": true,
@@ -551,7 +552,7 @@ function candidatesPagination(sourceleadUrl,url){
 	            	    var candidateResume = "";
 	            	    
 	            	    if(report.resumeUUID != null && report.resumeUUID != '' && report.resumeUUID != 'undefined'){
-		        			candidateResume = '<a  class="fa fa-download" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"title="Download"></a>';
+		        			candidateResume = '<a  class="fa fa-download" href=\"'+atsUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"title="Download"></a>';
 		        		}else{
 		        			candidateResume = "-----";
 		        		} 
@@ -786,9 +787,9 @@ function createAssociate(){
       		$.ajax({
 					type : "POST",
 	  	    	    data : formData,
-					url : sourceleadUrl+"/saveLocationAssociate?${_csrf.parameterName}=${_csrf.token}", 
+					url : atsUrl+"/saveLocationAssociate?${_csrf.parameterName}=${_csrf.token}", 
 					success : function(result) {
-						location.replace(sourceleadUrl+"/usersList");
+						location.replace(atsUrl+"/usersList");
 					},
 				}); 
       		 return true;
