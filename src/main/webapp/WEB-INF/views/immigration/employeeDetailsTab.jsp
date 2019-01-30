@@ -22,7 +22,7 @@
 			
 			 <c:forEach var="lcaEmp" items="${empList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-sm" title = ""></div><a href=/app/immigration/viewImmigration?immigrationUUID=${lcaEmp.immigrationUUID}&candidateUUID=${lcaEmp.candidateUUID}&immiTemplateUUID=${lcaEmp.immiTemplateUUID}&myImmigrationPage=N>${lcaEmp.petitionId}</a></td>
+				<td><div class="tbldata-dotdot-sm" title = ""></div><a href=/vms/immigration/viewImmigration?immigrationUUID=${lcaEmp.immigrationUUID}&candidateUUID=${lcaEmp.candidateUUID}&immiTemplateUUID=${lcaEmp.immiTemplateUUID}&myImmigrationPage=N>${lcaEmp.petitionId}</a></td>
 				<td><div class="tbldata-dotdot-sm" title = ""></div>${lcaEmp.empName}</td>
 				<td><div class="tbldata-dotdot-sm" title = ""></div>${lcaEmp.petitionType}</td>
 				<td><div class="tbldata-dotdot-sm" title = ""></div>${lcaEmp.attorneyName}</td>
