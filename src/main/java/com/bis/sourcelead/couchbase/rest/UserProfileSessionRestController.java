@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,10 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.couchbase.OrgLocationCacheDTO;
 import com.bis.sourcelead.couchbase.UserRoleSessionProfileDTO;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -41,6 +45,12 @@ public class UserProfileSessionRestController {
 	@Autowired
 	TabsService tabsService;
 	
+	@Autowired
+	OrgService orgService;
+	
+	@Autowired
+	CandidateService candiateService;
+	
 	 @RequestMapping(value = "/ws/storeOrgLocationsInCouch", method = RequestMethod.GET)
 	 public void storeOrgLocationsInCouch() throws Exception {
 		
@@ -62,11 +72,18 @@ public class UserProfileSessionRestController {
 				 orgLocationDTO.setZipcode(orgLocations.getZipCode());
 				 orgLocationDTO.setDateFormat(orgLocations.getDateFormat());
 				 orgLocationDTO.setWebsite(orgLocations.getWebsite());
-				 orgLocationDTO.setWeekOffDays(orgLocations.getWeekOffDays());
+				 if(StringUtils.isNotBlank(orgLocations.getWeekOffDays())) {
+					 orgLocationDTO.setWeekOffDays(orgLocations.getWeekOffDays());
+				 }else {
+					 orgLocationDTO.setWeekOffDays("Sat,Sun");
+				 }
+				
 				 orgLocationDTO.setWorkingHours(String.valueOf(orgLocations.getWorkingDaysPerWeek()));
 				 orgLocationDTO.setOrgShortCode(orgLocations.getGeneratedUserId());
 				 orgLocationDTO.setOrgLocationCode(orgLocations.getLocationCode());
 				 orgLocationDTO.setOrgCode(orgLocations.getOrg().getOrgCode());
+				 orgLocationDTO.setIsCompanyOnboarded(orgLocations.getIsCompanyOnboarded());
+				 
 				 
 			     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 			     LocalDateTime now = LocalDateTime.now();  
@@ -114,6 +131,9 @@ public class UserProfileSessionRestController {
 				 userRoleDTO.setRoleId(String.valueOf(userRole.getRoles().getId()));
 				 userRoleDTO.setRoleName(userRole.getRoles().getRoleName());
 				 userRoleDTO.setRoleDisplayName(userRole.getRoles().getDisplayName());
+				 userRoleDTO.setEmail(userRole.getUser().getEmail());
+				 userRoleDTO.setFirstName(userRole.getUser().getFirstName());
+				 userRoleDTO.setLastName(userRole.getUser().getLastName());
 				 
 				 if(userRole.getReportingManager() != null) {
 					 userRoleDTO.setReportingManagerId(String.valueOf(userRole.getReportingManager().getId()));
@@ -128,6 +148,39 @@ public class UserProfileSessionRestController {
 				 userRoleDTO.setUserType(userRole.getUserType());
 				 userRoleDTO.setDesignation(userRole.getDesignation());
 				 userRoleDTO.setIsGlobalUser(userRole.getIsGlobal());
+				 userRoleDTO.setOrgLocationCode(userRole.getOrgLocations().getLocationCode());
+				 if(userRole.getRoles().getRoleHierarchy() != null) {
+					 userRoleDTO.setRoleHierarchyId(String.valueOf(userRole.getRoles().getRoleHierarchy().getId()));
+				 }
+				 userRoleDTO.setUserCode(userRole.getUser().getUserCode());
+				 Candidate candidate = candiateService.getCandidateByConsultantUserId(userRole.getUser().getId(),userRole.getOrgLocations().getId());
+				 if(candidate != null) {
+					 userRoleDTO.setCandidateId(String.valueOf(candidate.getId()));
+					 userRoleDTO.setCandidateUUID(candidate.getCandidateUUID());
+				 }
+				
+				 StringBuilder userNameSB = new StringBuilder();
+				 if (null != userRole.getUser().getLastName()) {
+					 userNameSB.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName());
+					} else {
+						 userNameSB.append(userRole.getUser().getFirstName());
+					}
+				 userRoleDTO.setUserName(userNameSB.toString());
+				 userRoleDTO.setImgUrl(userRole.getUser().getFileUrl());
+				 
+				 boolean isSuperUser = orgLocationService.isLoginUserIsSuperUser(userRole.getUser().getId(),userRole.getOrgLocations().getId());
+					if(isSuperUser == true) {
+						userRoleDTO.setIsSuperUser(Constants.YES);
+					}else {
+						userRoleDTO.setIsSuperUser(Constants.NO);
+					}
+					
+					boolean isSuperAdmin = orgService.isLoginUserIsSuperAdmin(userRole.getUser().getId(),userRole.getOrgLocations().getOrg().getId());
+					if(isSuperAdmin == true){
+						userRoleDTO.setIsSuperAdmin(Constants.YES);
+					}else{
+						userRoleDTO.setIsSuperAdmin(Constants.NO);
+					}
 				 
 				 if(userRole.getShift() != null) {
 					 userRoleDTO.setShiftId(String.valueOf(userRole.getShift().getId()));

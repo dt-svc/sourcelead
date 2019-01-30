@@ -4,8 +4,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -14,13 +12,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dto.AccountDeductionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -28,9 +24,6 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.AccountDeductionsDao;
 import com.bis.sourcelead.payroll.entity.AccountDeductions;
 import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
-import com.bis.sourcelead.payroll.entity.Checks;
-import com.bis.sourcelead.payroll.entity.HrDeductions;
-import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 
