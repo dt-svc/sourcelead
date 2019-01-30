@@ -801,7 +801,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 @RequestMapping(value = "/indPayrollESISummaryReport")
 			public ModelAndView indPayrollESISummaryReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
 			 ModelAndView model = new ModelAndView();
- OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+             OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			 
              Calendar orgCal = Calendar.getInstance();
              orgCal.setTime(orgLocation.getCreatedDate());
@@ -881,6 +881,16 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 			 model.addObject("finYearList", finYearList);
 			 model.addObject("sourceleadUrl", sourceleadUrl);
 			 model.setViewName("reports/indPayrollPFSummaryReport");
+			 return model;
+		 }
+		 
+		 
+		 
+		 @RequestMapping(value = "/indPayrollBankTransferReport")
+			public ModelAndView indPayrollSalaryRegisterReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 ModelAndView model = new ModelAndView();
+			 model.addObject("sourceleadUrl", sourceleadUrl);
+			 model.setViewName("reports/indPayrollSalaryRegisterReport");
 			 return model;
 		 }
 }

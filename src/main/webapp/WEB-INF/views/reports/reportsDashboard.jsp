@@ -644,6 +644,7 @@
 				 <li><a href="${appPath}/indPayrollLoanReport">Loan</a></li>
 				 <li><a href="${appPath}/indPayrollESISummaryReport">ESI</a></li>
 				 <li><a href="${appPath}/indPayrollPFSummaryReport">PF</a></li>
+				 <li><a href="${appPath}/indPayrollSalaryRegisterReport">Salary Register</a></li>
 				</ul>
 			</div>
                  <!-- Dropdown -->
