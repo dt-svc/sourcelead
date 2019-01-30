@@ -57,7 +57,7 @@ import com.ibm.icu.text.DateFormat;
 import com.ibm.icu.text.SimpleDateFormat;
 
 @Controller
-@RequestMapping("/app")
+
 public class FinanceReportRestController {
 	private static final Logger logger = LoggerFactory.getLogger(FinanceReportRestController.class);
 	

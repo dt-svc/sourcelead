@@ -462,7 +462,7 @@ function immigrationReportPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 		    	  	 	if(opt.generatedId !=null && opt.generatedId != '' && opt.generatedId !='undefined'){
-		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.generatedId+'" ><a href=/app/immigration/viewImmigration?immigrationUUID='+opt.immigrationUUID+'&candidateUUID='+opt.candidateUUID+'&immiTemplateUUID='+opt.immiTemplateUUID+'&myImmigrationPage=N>'+opt.generatedId+'</a></div>';
+		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.generatedId+'" ><a href=/vms/immigration/viewImmigration?immigrationUUID='+opt.immigrationUUID+'&candidateUUID='+opt.candidateUUID+'&immiTemplateUUID='+opt.immiTemplateUUID+'&myImmigrationPage=N>'+opt.generatedId+'</a></div>';
 		        		}else{
 		        			result = result + '     <div class="tblminwidth-75">---</div>';
 		        		} 
@@ -627,7 +627,6 @@ function resetImmForm(){
 	 $("#petitionStatus").trigger("chosen:updated"); 
 	 $("#attorneyId").val('');
 	 $("#attorneyId").trigger("chosen:updated"); 
-	 //By default date filter shows This year or current year
 	 $("#dateFrequency").val('YTD');
 	 $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
 	 $("#custFromDate").val('');
