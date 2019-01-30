@@ -227,6 +227,7 @@ $(".overIcon, .newActPop").click(function(e){
 
 <script type="text/javascript">
 function runLCAReport(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	     var validationSettings = {
 	             errorMessagePosition: 'element',
 	             borderColorOnError: '',
@@ -256,7 +257,7 @@ function runLCAReport(){
 	    	 var sourceleadUrl = '${sourceleadUrl}';
 	         var filterByDays = $("#daysFilter").val();
 	         filterByDays = filterByDays ? filterByDays : "";
-        	 var url = sourceleadUrl+ "/runLCAReport?&searchValue="+searchValue+"&lcaStatus="+lcaStatus+"&expiredOn="+expiredOn+"&availability="+availability+"&status="+status+"&filterByDays="+filterByDays;
+        	 var url = vmsUrl+ "/runLCAReport?&searchValue="+searchValue+"&lcaStatus="+lcaStatus+"&expiredOn="+expiredOn+"&availability="+availability+"&status="+status+"&filterByDays="+filterByDays;
              $("#immigrationReport").show(); 
              prepareLCAReportList(url);
 	     }
@@ -339,7 +340,7 @@ function lcaReportPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 		    	  	 	 if(opt.lcaNo !=null && opt.lcaNo != '' && opt.lcaNo !='undefined'){
-		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.lcaNo+'" ><a href=/app/immigration/viewLca?lcaUuid='+opt.lcaUuid+'>'+opt.lcaNo+'</a></div>';
+		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.lcaNo+'" ><a href=/vms/immigration/viewLca?lcaUuid='+opt.lcaUuid+'>'+opt.lcaNo+'</a></div>';
 		        		}else{
 		        			result = result + '     <div class="tblminwidth-75">---</div>';
 		        		}  
@@ -597,7 +598,7 @@ function resetLcaForm(){
 <!-- =============== Pdf and  Excel Export by prasad k =================== -->
 <script>
 function lcaExport(type){
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 if(type == "Pdf"){
 		exportType = "pdf";
 	}else{
@@ -634,7 +635,7 @@ function lcaExport(type){
 	         var filterByDays = $("#daysFilter").val();
 	         filterByDays = filterByDays ? filterByDays : "";
     	
-		    window.location.href = sourceleadUrl+ "/exportLcaReportPdf?&searchValue="+searchValue+"&lcaStatus="+lcaStatus+"&expiredOn="+expiredOn+"&availability="+availability+"&status="+status+"&filterByDays="+filterByDays+"&exportType="+exportType; 
+		    window.location.href = vmsUrl+ "/exportLcaReportPdf?&searchValue="+searchValue+"&lcaStatus="+lcaStatus+"&expiredOn="+expiredOn+"&availability="+availability+"&status="+status+"&filterByDays="+filterByDays+"&exportType="+exportType; 
    }
 }
 </script>

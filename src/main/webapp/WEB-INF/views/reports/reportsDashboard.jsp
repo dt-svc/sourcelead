@@ -166,7 +166,7 @@
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                 <a href="${appPath}/financialReportsList" class="block">
+                 <a href="/vms/financialReportsList" class="block">
                   <div class="clearfix text-center mb10"><i class="finReport"></i></div>
                   <div class="clearfix text-center"><h4>Financial Report</h4></div></a>
                   </div>

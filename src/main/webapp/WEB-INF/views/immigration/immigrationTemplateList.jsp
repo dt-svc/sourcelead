@@ -6,9 +6,12 @@
          pageEncoding="ISO-8859-1"%>
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+<script type="text/javascript">
+  var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+</script>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"> 
-<script type="text/javascript" src="/resources/js/immigration.js"></script>
+<script type="text/javascript" src="/vms/resources/js/immigration.js"></script>
 <script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script>
 <!-- <script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script> -->
@@ -168,7 +171,7 @@
                       <option value="2">Draft</option>
                 </select>
                 <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION_TEMPLATE','ROLE_EDIT_VIEW_PETITION_TEMPLATE','ROLE_DELETE_PETITION_TEMPLATE')">
-                <a href="<c:url value='${appPath}/immigration/addNewPetitionTemplate'/>"><i class="glyphicon glyphicon-plus"></i> Add Template</a>
+                <a href="/vms/immigration/addNewPetitionTemplate"><i class="glyphicon glyphicon-plus"></i> Add Template</a>
  				</sec:authorize>
                 <span><input class="immigraTabSerach" id ="immiTemplateSerach" placeholder="Name/Description" type="text"></span>
             </div>
@@ -234,13 +237,13 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
         result = result + '</table>';
         $("#dynamicImmigrationListViewDiv").empty();
         $("#dynamicImmigrationListViewDiv").append(result);
-
+        var vmsUrl ='${SourceLeadWeb_vmsUrl}';
         var sourceleadUrl = '${sourceleadUrl}';
 //        var statusFilter = $("#statusFilter").val();
         var searchValue = $("#immiTemplateSerach").val();
         searchValue = searchValue ? searchValue : "";
 
-        var url = sourceleadUrl + "/immigration/getImmigrationTemplateList?searchValue=" + searchValue + "&status=" + (status ? status : 1)+"&countriesList="+countriesList;
+        var url = vmsUrl + "/immigration/getImmigrationTemplateList?searchValue=" + searchValue + "&status=" + (status ? status : 1)+"&countriesList="+countriesList;
         dynamicImmigrationListPagination(url);
     }
 
