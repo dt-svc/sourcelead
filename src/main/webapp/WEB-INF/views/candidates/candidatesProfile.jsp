@@ -675,7 +675,7 @@ function deleteCandidate(candidateId,candidateType){
 						location.replace(atsUrl+"/candidatesList");
 					}
 				} else if (result.indexOf('Sign In') !== -1) {
-					location.replace(atsUrl);
+					location.replace(sourceleadUrl);
 				} else {
 				    $("#update_candidate").removeAttr("disabled");
 				    showError("Operation failed, please try again");
@@ -721,7 +721,7 @@ function deleteCandidate111(candidateId,candidateType) {
 						location.replace(atsUrl+"/candidatesList");
 					}
 				} else if (result.indexOf('Sign In') !== -1) {
-					location.replace(atsUrl);
+					location.replace(sourceleadUrl);
 				} else {
 				    $("#update_candidate").removeAttr("disabled");
 				    showError("Operation failed, please try again");
@@ -813,7 +813,7 @@ function reActivateCandidateAlertMessage(candidateId){
 			} else if (result.response === "SUCCESS") {
 				location.replace(atsUrl+"/candidatesList");
 			} else if (result.indexOf('Sign In') !== -1) {
-				location.replace(atsUrl);
+				location.replace(sourceleadUrl);
 			} else {
 			    showError("Operation failed, please try again");
 			}			
@@ -851,7 +851,7 @@ function candidateProfile(candidateId,candidateType,isAssociate){
          success :function(result) { 
         	 var json = result.object;
         	   if(result.response === "SESSION_TIMEDOUT") {
-  					location.replace(atsUrl);
+  					location.replace(sourceleadUrl);
   				} else if (result.response === "AWKWARD") {
   					location.href = "/errorPage";
   				} else if (result.response === "SUCCESS") {
@@ -1594,7 +1594,7 @@ function removeSkillById(candidateId, skillId){
 							$("#employeeSubmissionProfile").empty(); 
 							$("#employeeSubmissionProfile").append(result);
 						} else if (data.indexOf('Sign In') !== -1) {
-							location.replace(atsUrl);
+							location.replace(sourceleadUrl);
 						} 
 					},
 				});
@@ -1684,7 +1684,7 @@ function educationSubmissionProfile(candidateId){
 					 $("#educationSubmissionProfile").empty(); 
                     $("#educationSubmissionProfile").append(result); 
         		} else if (response.indexOf('Sign In') !== -1) {
-        			location.replace(atsUrl);
+        			location.replace(sourceleadUrl);
         		} else {
         		    showError("Operation failed, please try again");
         		}
@@ -1763,7 +1763,7 @@ function certificationSubmissionProfile(candidateId) {
 					$("#certificationSubmissionProfile").empty();
 					$("#certificationSubmissionProfile").append(result); 
 				} else if (data.indexOf('Sign In') !== -1) {
-					location.replace(atsUrl);
+					location.replace(sourceleadUrl);
 				} 
         },
      }); 

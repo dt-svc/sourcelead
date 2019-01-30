@@ -514,7 +514,7 @@
 				};
 				$.post(atsUrl + "/storeFairJob?" + tokenParamName + "=" + tokenValue + "", data, function(result) {
 					if (result.response === "SESSION_TIMEDOUT") {
-						location.replace(atsUrl);
+						location.replace(sourceleadUrl);
 					} else if (result.response === "AWKWARD") {
 						location.href = "/errorPage";
 					} else if (result.response === "DUPLICATE_NAME" || result.response === "INVALID_DATA") {
@@ -526,7 +526,7 @@
 							redirectToJobFairsList();
 				 		}, 500);
 					} else if (result.indexOf('Sign In') !== -1) {
-						location.replace(atsUrl);
+						location.replace(sourceleadUrl);
 					} else {
 						showError("Operation failed, please try again");
 					}

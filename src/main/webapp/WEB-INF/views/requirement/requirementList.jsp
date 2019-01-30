@@ -182,7 +182,7 @@ function statusvalidating(id){
 					Jobs</a></span>
 		</div> --%>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Job List
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Job List
 		</div>
 	</section>
 	<div class="clearfix">
@@ -845,14 +845,14 @@ function changeStatus(requirementId, requirementStatus){
         	 url: atsUrl+"/saveChangedStatusFromDraft?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&userId="+userId,
 	        	 success :function(result) {
 	        		 	if (result.response === "SESSION_TIMEDOUT") {
-			  				location.replace(atsUrl);
+			  				location.replace(sourceleadUrl);
 		                } else if (result.response === "AWKWARD") {
 		                    location.href = "/errorPage";
 		                } else if (result.response === "SUCCESS") {
 		                	$("#changeStatusId" +requirementId).val(status);
 		  	           	  //location.replace(sourceleadUrl+"/requirementList");	
 		                } else if (result.indexOf('Sign In') !== -1) {
-							location.replace(atsUrl);
+							location.replace(sourceleadUrl);
 						} else {
 		                    showError("Operation failed, please try again");
 		                }
@@ -864,14 +864,14 @@ function changeStatus(requirementId, requirementStatus){
         	 url: atsUrl+"/saveChangedStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status,
 	        	 success :function(result) {
 	        		 if (result.response === "SESSION_TIMEDOUT") {
-			  				location.replace(atsUrl);
+			  				location.replace(sourceleadUrl);
 		                } else if (result.response === "AWKWARD") {
 		                    location.href = "/errorPage";
 		                } else if (result.response === "SUCCESS") {
 		                	$("#changeStatusId" +requirementId).val(status);
 		   	           	 //location.replace(sourceleadUrl+"/requirementList");
 		                } else if (result.indexOf('Sign In') !== -1) {
-							location.replace(atsUrl);
+							location.replace(sourceleadUrl);
 						} else {
 		                    showError("Operation failed, please try again");
 		                }
@@ -1476,13 +1476,13 @@ function resetJobFilter(){
 		};
 		$.post(atsUrl + "/changeJobFairStatus?", data, function(result) {
 			if (result.response === "SESSION_TIMEDOUT") {
-				location.replace(atsUrl);
+				location.replace(sourceleadUrl);
 			} else if (result.response === "AWKWARD") {
 				location.href = "/errorPage";
 			} else if (result.response === "SUCCESS") {
 				location.href = atsUrl + "/jobsList?viewTab=jobFair";
 			} else if (result.indexOf('Sign In') !== -1) {
-				location.replace(atsUrl);
+				location.replace(sourceleadUrl);
 			} else {
 				showError("Operation failed, please try again");
 			}

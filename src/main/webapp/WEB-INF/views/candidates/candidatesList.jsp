@@ -740,7 +740,7 @@ function saveCandidateTags(type,candidateId){
         		}
         		getCandidateTagsList(candidateId);
         	} else if (result.indexOf('Sign In') !== -1) {
-        		location.replace(atsUrl);
+        		location.replace(sourceleadUrl);
         	} else {
         	    showError("Operation failed, please try again");
         	}
@@ -849,7 +849,7 @@ function deleteProfileImage(candidateId){
 		        	 candidateQuickViewProfile(candidateId);
 		        	 refreshImageBlock(candidateId);
 	        	} else if (response.indexOf('Sign In') !== -1) {
-	        		location.replace(atsUrl);
+	        		location.replace(sourceleadUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}
@@ -873,7 +873,7 @@ function refreshImageBlock(candidateId){
            success :function(result) { 
         	   var json = result.object;
         	   if(result.response === "SESSION_TIMEDOUT") {
-					location.replace(atsUrl);
+					location.replace(sourceleadUrl);
 				} else if (result.response === "AWKWARD") {
 					location.href = "/errorPage";
 				} else if (result.response === "SUCCESS") {
@@ -918,7 +918,7 @@ function refreshImageBlock(candidateId){
 						 $("#candidateImageId").append(result);
                 	}
 				} else if (result.indexOf('Sign In') !== -1) {
-					location.replace(atsUrl);
+					location.replace(sourceleadUrl);
 				} else {
 					showError("Operation failed, please try again");
 				}
@@ -968,7 +968,7 @@ function addFavourite(candidateId){
 						
 
 				} else if (response.indexOf('Sign In') !== -1) {
-					location.replace(atsUrl);
+					location.replace(sourceleadUrl);
 				} else {
 				    showError("Operation failed, please try again");
 				}
@@ -1922,7 +1922,7 @@ function closeComment(){
 		    		} else if (result.response === "SUCCESS") {
 		    			savedCommentAndCount(candidateId);
 		    		} else if (result.indexOf('Sign In') !== -1) {
-						location.replace(atsUrl);
+						location.replace(sourceleadUrl);
 					} else {
 					    showError("Operation failed, please try again");
 					}
@@ -1994,7 +1994,7 @@ function savedCommentAndCount(candidateId){
                   		}
 					}
         		} else if (data.indexOf('Sign In') !== -1) {
-        			location.replace(atsUrl);
+        			location.replace(sourceleadUrl);
         		} else {
         		    showError("Operation failed, please try again");
         		}
