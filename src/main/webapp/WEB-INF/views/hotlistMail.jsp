@@ -25,6 +25,7 @@ display: none;
 
 
 <script>
+ var atsUrl ='${SourceLeadWeb_atsUrl}';
  $(document).ready(function(){
 	 $(".clearUpload").hide();
 	 var UUID = '${UUID}';
@@ -44,7 +45,7 @@ display: none;
       <div class="pull-left">
         <h2>Hotlist Mail Box</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/campaigns/hotcampaigns'/>"> Mailbox</a>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/ats/campaigns/hotcampaigns'/>"> Mailbox</a>
 			&raquo; Hotlist Campaign</div>
     </section>
     
@@ -317,6 +318,7 @@ $(function() {
   
   
 	function sendHotListCampaign() {
+		 var atsUrl ='${SourceLeadWeb_atsUrl}';
 		if ($('#hotlistCampaign_form').validate(false, validationSettings)){ 
 		nicEditors.findEditor('bodytext').saveContent();
   		
@@ -339,16 +341,16 @@ $(function() {
   	    }
   	    else{
 	  	    	
-	  	    	$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  	   // 	$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  			$.ajax({
 	  				type : "POST",
 	  	    	    data: formData,
 	  	    	    enctype: 'multipart/form-data',
 	  		        processData: false,
 	  		        contentType:false, 
-	  				url : sourceleadUrl+"/sendHotListCampaign?${_csrf.parameterName}=${_csrf.token}",
+	  				url : atsUrl+"/sendHotListCampaign?${_csrf.parameterName}=${_csrf.token}",
 	  				success : function(result) {
-	  						location.replace(sourceleadUrl+"/campaigns/hotcampaigns");
+	  						location.replace(atsUrl+"/campaigns/hotcampaigns");
 	  				},
 	  			}); 
 	  	    
@@ -477,7 +479,7 @@ function getClientContacts(){
 	  $("#clientsList").empty();
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getClientContacts?${_csrf.parameterName}=${_csrf.token}",    
+           url: atsUrl+"/getClientContacts?${_csrf.parameterName}=${_csrf.token}",    
             success :function(data) {
             	
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
@@ -570,15 +572,15 @@ function getClientList(){
 	 $("#clientsList").empty();
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getClientsListForHotlist?${_csrf.parameterName}=${_csrf.token}",    
+           url: atsUrl+"/getClientsListForHotlist?${_csrf.parameterName}=${_csrf.token}",    
             success :function(data) {
             	
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
                		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
+			    		location.replace(atsUrl);
 			    	 }
                		 else if (data.indexOf('exception') >= 0) {
-               			 location.replace(sourceleadUrl+"/errorPage");
+               			 location.replace(atsUrl+"/errorPage");
                		 }
                		 else{
 	                	   
@@ -727,7 +729,6 @@ function getContactsList(){
 
 <script>
 function contactsDataTableList(){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#contactsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
 	 
@@ -736,7 +737,7 @@ function contactsDataTableList(){
 		 contactsGroups = $("#groupsFilter").val();
 	 }
 	 
-	 var url = sourceleadUrl+"/getUserContactsListForMalling?searchValue="+searchValue+"&groupIdsList="+contactsGroups;
+	 var url = atsUrl+"/getUserContactsListForMalling?searchValue="+searchValue+"&groupIdsList="+contactsGroups;
 	 contactsPagination(url);
 }
 </script>
@@ -744,7 +745,7 @@ function contactsDataTableList(){
 
 
 <script>
-function contactsPagination(url,sourceleadUrl){
+function contactsPagination(url,atsUrl){
 	var colIndex = 0;
     $('#example').DataTable( { 
 	  "processing": true,
@@ -874,13 +875,12 @@ function pagination(){
 <script>
 function getCandidates(candidatesListType){
 	
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  
 	  $("#candidatesLoading").attr('style','position:absolute; width:98%; height:49%; background-color:rgba(255,255,255,0.8); top:140px; left:17px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getCandidatesForCampaign?${_csrf.parameterName}=${_csrf.token}&candidatesListType="+candidatesListType,    
+           url: atsUrl+"/getCandidatesForCampaign?${_csrf.parameterName}=${_csrf.token}&candidatesListType="+candidatesListType,    
             success :function(data) {
             	
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
@@ -1149,10 +1149,9 @@ function getContactEmails(){
 		 orgRelationIds[i] = $(this).val();
 	});
 	 
-	 var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
           type : "POST",
-          url: sourceleadUrl+"/getClientContactsEmailsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationIds="+orgRelationIds,    
+          url: atsUrl+"/getClientContactsEmailsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationIds="+orgRelationIds,    
            success :function(data) {
         	    var str_array = data.replace(/\"/g, "").split(',');
 				for(var i = 0; i < str_array.length; i++) {
@@ -1177,11 +1176,10 @@ function getContactEmails(){
 
 <script>
 function loadHotMailBoxDetails(UUID){
-	var sourceleadUrl ='${sourceleadUrl}';
 	
 	$.ajax({
         type : "POST",
-        url: sourceleadUrl+"/getHotListedCandidateDetailsByUUID?${_csrf.parameterName}=${_csrf.token}&UUID="+UUID,    
+        url: atsUrl+"/getHotListedCandidateDetailsByUUID?${_csrf.parameterName}=${_csrf.token}&UUID="+UUID,    
          success :function(data) {
         	 
         	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
@@ -1283,7 +1281,7 @@ bkLib.onDomLoaded(function() {
 function getSenders(){
 		$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getSenders?"+tokenParamName+"="+tokenValue,
+		url: atsUrl+"/getSenders?"+tokenParamName+"="+tokenValue,
 		success :function(json) {
 		var output = "";
 		output = output + "<option value=''>Select Sender</option>";
@@ -1307,7 +1305,7 @@ function getRecipient(){
 	    var typeOfCampaign = "0";
 		$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getRecipientList?"+tokenParamName+"="+tokenValue+"&typeOfCampaign="+typeOfCampaign,
+		url: atsUrl+"/getRecipientList?"+tokenParamName+"="+tokenValue+"&typeOfCampaign="+typeOfCampaign,
 		success :function(json) {
 		var output = "";
 		output = output + "<option value=''>Select Recipient</option>";
@@ -1371,7 +1369,7 @@ function vendorContactDataTableList1(){
 	 var responderType ="JobCampaignVendor";
 	 searchValue = searchValue ? searchValue : "";
 	 var typeOfCampaign = "0";
-	 var url = sourceleadUrl+"/getRecipientList?searchValue="+searchValue+"&responderType="+responderType+"&typeOfCampaign="+typeOfCampaign;
+	 var url = atsUrl+"/getRecipientList?searchValue="+searchValue+"&responderType="+responderType+"&typeOfCampaign="+typeOfCampaign;
 	 vendorContactpagination1(url);
 }
 </script>
@@ -1510,7 +1508,7 @@ function listViewPop(viewListId){
 	
 	$.ajax({
 	       type : "GET",
-	        url: sourceleadUrl+"/listViewPop?"+tokenParamName+"="+tokenValue+"&viewListId="+viewListId,       
+	        url: atsUrl+"/listViewPop?"+tokenParamName+"="+tokenValue+"&viewListId="+viewListId,       
 	        success :function(json) {
 	        	populategViewList(json);
 	       },
@@ -1623,7 +1621,7 @@ function checkUniqueSubject(){
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var name = $("#campaignSubject").val();
 	if(name != null && name != '' && name != 'undefined'){
-			$.get(sourceleadUrl+"/validateCampaignSubject?&orgLocationId="+locationId+"&campaignName="+name+"&campaignType=0", function(data) {
+			$.get(atsUrl+"/validateCampaignSubject?&orgLocationId="+locationId+"&campaignName="+name+"&campaignType=0", function(data) {
 	          	if(data == true){
 	          		$('#campaignSubjectDiv').find('p.jquery_form_error_message').remove();
 	          		$("#campaignSend").removeAttr("disabled");
