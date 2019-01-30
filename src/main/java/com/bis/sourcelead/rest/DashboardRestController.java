@@ -356,12 +356,12 @@ public class DashboardRestController {
 	
 	@RequestMapping(value = "/switchLocation" , method = RequestMethod.GET)
 	 public @ResponseBody void userSummary(@RequestParam(value="userRoleId") Long userRoleId,HttpServletRequest request,HttpServletResponse response) throws Exception {
-		      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		     String userRoleUUID = userRoleService.getUserRoleUUIDByUserRoleId(userRoleId);
-		     String[] usernameWithRole = auth.getName().split("##");
-		     String uname = usernameWithRole[0]+"##"+userRoleId;
+		      UserRole userRole = userRoleService.getUserRoleById(userRoleId);
+		      User user = userRole.getUser();
+		      String uname = user.getUserName()+"##"+userRole.getId();
+		     
 		     SecurityContextHolder.clearContext();
-			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRoleUUID));
+			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRole.getUuid()));
 				
 		     StringBuilder redirectUrl = new StringBuilder();
 		     response.sendRedirect(redirectUrl.append("/app/dashboard").toString());
@@ -379,14 +379,15 @@ public class DashboardRestController {
   			    userRole.setUserState(Status.ACTIVE);
   			   UserRole userRoleElk = userRoleService.addUserRole(userRole);
   			   
-  			   
-  			   
   			   //user update/save in user Elk
   			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
   		      }
 				
-		     SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 		     SourceLeadSessionManager.setSessionAttribute(request, "productionLoginUserId", productionLoginUserId);
+		     String uname = user.getEmail()+"##"+userRole.getId();
+		     SecurityContextHolder.clearContext();
+			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRole.getUuid()));
+				
 		     
 		     StringBuilder redirectUrl = new StringBuilder();
 		     response.sendRedirect(redirectUrl.append("/app/dashboard").toString());
