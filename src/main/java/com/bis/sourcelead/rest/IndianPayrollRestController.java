@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -16,16 +17,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang.time.DateUtils;
-import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -65,8 +63,6 @@ import com.bis.sourcelead.payroll.dto.INDPayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndApprovePayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndEmployeePayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
-import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
-import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
@@ -1089,5 +1085,37 @@ public class IndianPayrollRestController {
    			}
    	}
     
-    
+    @RequestMapping(value ="app/indPayrollSaleryStatementReport")
+	public @ResponseBody List<IndEmployeePayrollDTO> indPayrollSaleryStatementReport(IndEmployeePayrollDTO indEmployeePayrollDTO,HttpServletRequest request)throws Exception{
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    	List<IndEmployeePayrollDTO> salareyStatementReportList = indPaysheetFrequencyService.getPayrollSalaryStatementReportList(indEmployeePayrollDTO, orgLocations);
+	    	Map<String, List<IndEmployeePayrollDTO>> map = salareyStatementReportList.stream().collect(Collectors.groupingBy(IndEmployeePayrollDTO :: getPayHeadName,Collectors.toList()));
+	    	Map<BigInteger, List<IndEmployeePayrollDTO>> canMap = salareyStatementReportList.stream().collect(Collectors.groupingBy(IndEmployeePayrollDTO::getCanId,Collectors.toList()));
+	    	List<IndEmployeePayrollDTO> mp = new ArrayList<>();
+	    	 for (Map.Entry<BigInteger, List<IndEmployeePayrollDTO>> entry : canMap.entrySet())  {
+	    		 IndEmployeePayrollDTO dty = new IndEmployeePayrollDTO();
+	    		 Map<String,String> innerMap = new HashMap<>();
+	    		 IndEmployeePayrollDTO dto = entry.getValue().get(0);
+	    		 if(dto.getLastName() != null) {
+	    			 dty.setEmployeeName(dto.getFirstName() +" "+ dto.getLastName());
+		    	  }else {
+		    		 dty.setEmployeeName(dto.getFirstName());
+		          }
+				  dty.setEmployeeid(dto.getEmployeeid());
+				  dty.setDepartmentName(dto.getDepartmentName());
+				  dty.setGrossPay(dto.getGrossPay());
+				  dty.setDeducations(dto.getGrossPay().subtract(dto.getNetPay()));
+				  dty.setNetPay(dto.getNetPay());
+				  
+				  dty.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), dto.getDeteOfJoin()));
+				  for (Map.Entry<String, List<IndEmployeePayrollDTO>> canEntry : map.entrySet())  {
+					  List<IndEmployeePayrollDTO> s = entry.getValue().stream().filter(pd->canEntry.getKey().equalsIgnoreCase(pd.getPayHeadName())).collect(Collectors.toList());
+					  innerMap.put(canEntry.getKey(), String.valueOf(s.get(0).getPayHeadAmount()));
+					  }
+				  dty.setPayHeadMapList(innerMap);
+				  mp.add(dty);
+	    	 }
+	    	return mp;
+    	
+    }
 }
