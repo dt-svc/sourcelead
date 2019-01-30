@@ -372,28 +372,28 @@ function preventTabkey(e){
 			<select id="searchType" name="searchType" class="selectpicker uasrch pull-left show-menu-arrow" >
 			<option ${searchType == "All" ?"selected='selected'":""} value="All">All</option>
 			<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-		       <c:if test="${userTabs.tabName == 'Associates'}">
+		       <c:if test="${userTabs == 'Associates'}">
 	                 <option  ${searchType == "Users" ?"selected='selected'":""} value="Users">Associates</option>
 	           </c:if>
-	           <c:if test="${userTabs.tabName == 'Jobs'}"> 
+	           <c:if test="${userTabs == 'Jobs'}"> 
 	                <option ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Jobs</option>
 	           </c:if>
-	           <c:if test="${userTabs.tabName == 'Candidates'}">
+	           <c:if test="${userTabs == 'Candidates'}">
 	                <option ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidates</option>
 	           </c:if> 
-	           <c:if test="${userTabs.tabName == 'Clients'}">
+	           <c:if test="${userTabs == 'Clients'}">
                  	  <option ${searchType == "Client" ?"selected='selected'":""} value="Client">Clients</option>
                </c:if>
-	           <c:if test="${userTabs.tabName == 'Vendors'}">
+	           <c:if test="${userTabs == 'Vendors'}">
 	                  <option ${searchType == "Vendor" ?"selected='selected'":""} value="Vendor">Vendors</option>
 	           </c:if> 
 	           
 	         <!--   commented by laxman because client based project querys are not implemented -->
-	           <%-- <c:if test="${userTabs.tabName == 'Projects'}">
+	           <%-- <c:if test="${userTabs == 'Projects'}">
 	             <option ${searchType == "Projects" ?"selected='selected'":""} value="Projects">Projects</option>   	  
 	           </c:if> --%>
 	           
-	           <c:if test="${userTabs.tabName == 'Associates List'}">
+	           <c:if test="${userTabs == 'Associates List'}">
 	           <option ${searchType == "Associate" ?"selected='selected'":""} value="Associate">Associates</option>
 	           </c:if>
 			</c:forEach>
