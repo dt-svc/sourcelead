@@ -266,7 +266,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
               <div class="pull-right mr">
                   <button type="button" class="btn btn-sm btn-primary" id="saveInvoice" onclick="saveInvoiceTest('DRAFT');">Save</button>
                   <button type="button" class="btn btn-sm btn-success ml" id="sendInvoice" onclick="saveInvoiceTest('SENT')">Send</button>
-                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/invoiceList'/>'">Cancel</button>
+                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '/vms/invoiceList'">Cancel</button>
               </div>
           </footer>
           </form:form>
@@ -1530,12 +1530,11 @@ function getClientContactsExisted(clientContactId){
 <!-- Get alla clients when editing -->
 <script>
 function getClients(){
-	var sourceleadUrl ='${sourceleadUrl}';
-	alert(sourceleadUrl)
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgRelationId ='${orgRelationId}';
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getClientList?"+tokenParamName+"="+tokenValue+"",
+		url: vmsUrl+"/getClientList?"+tokenParamName+"="+tokenValue+"",
 		success :function(json) {
 // 		var json = JSON.parse(data);
 		var output = "";
