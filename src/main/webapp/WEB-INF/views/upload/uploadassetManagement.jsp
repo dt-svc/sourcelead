@@ -45,7 +45,7 @@ var uploadflag= true;
 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="#">Home</a> &raquo; <a href="${appPath}/assetManagement">Assets List</a>
+			<a href="#">Home</a> &raquo; <a href="/assetManagement">Assets List</a>
 			&raquo; Import Assets
 		</div>
 	</section>

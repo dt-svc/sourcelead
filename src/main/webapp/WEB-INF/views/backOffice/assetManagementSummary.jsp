@@ -10,6 +10,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 $(document).ready(function() {
 	assetDetails('${asset.assetUUID}');
 	getAssetTagsList('${asset.id}')
@@ -21,7 +22,7 @@ $(document).ready(function() {
 	  <div class="pull-left">
 	    <h2>Asset Management Summary</h2>
 	  </div>
-	  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/assetManagement'/>">Assets List</a> &raquo; Asset Summary</div>
+	  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/assetManagement'/>">Assets List</a> &raquo; Asset Summary</div>
 	</section>
 
 	   <div class="success_pop tagStyles" id="addTaskTagAlert">
@@ -111,7 +112,7 @@ function assetHistory(assetUUID){
 	 var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl+ "/getReturnedOnAssetDetaisl?${_csrf.parameterName}=${_csrf.token}&assetUUID="+assetUUID,
+			url : atsUrl+ "/getReturnedOnAssetDetaisl?${_csrf.parameterName}=${_csrf.token}&assetUUID="+assetUUID,
 			success : function(json) {
 				var result = "";
    	        	result = result +'<table id="assignAssetPagination">';
@@ -183,7 +184,7 @@ function assetServiceHistory(assetUUID){
 	 var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl+ "/getAssetManagementServiceHistory?${_csrf.parameterName}=${_csrf.token}&assetUUID="+assetUUID,
+			url : atsUrl+ "/getAssetManagementServiceHistory?${_csrf.parameterName}=${_csrf.token}&assetUUID="+assetUUID,
 			success : function(json) {
 				var result = "";
    	        	result = result +'<table id="assetServicePagination">';
@@ -273,7 +274,7 @@ $("#assetTagName_chosen").find('ul.chosen-choices > li input').attr("placeholder
 function getAssetTagsList(assetId){
 	$.ajax({  
         type : "POST",
-        url: sourceleadUrl+"/getAssetTags?"+tokenParamName+"="+tokenValue+"&assetId="+assetId,        
+        url: atsUrl+"/getAssetTags?"+tokenParamName+"="+tokenValue+"&assetId="+assetId,        
         success :function(json) {
         	var result = "";
 			$.each( json.tagsList, function( i, tags ) {
@@ -306,9 +307,9 @@ function saveTaskTags(type){
 	 var jsonData = encodeURIComponent(tagName);
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 if(tagName != null && tagName != '' && tagName !='undefined') {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByAssetId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&assetId="+assetId+"&tagName="+jsonData
+		 Urlcheck = atsUrl+"/saveOrUpdateTagsByAssetId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&assetId="+assetId+"&tagName="+jsonData
 	 } else {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByAssetId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&assetId="+assetId+"&tagName="+""
+		 Urlcheck = atsUrl+"/saveOrUpdateTagsByAssetId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&assetId="+assetId+"&tagName="+""
 	 } 
 	 $.ajax({  
          type : "POST",
