@@ -31,7 +31,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
         <h2></h2>
       </div>
      
-	   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewLCAList">LCA List</a> &raquo; LCA Summary</div>
+	   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/vms/immigration/viewLCAList">LCA List</a> &raquo; LCA Summary</div>
       
         <input type="hidden" id ="lcaId" value ="${lcaId}">
     </section>
@@ -117,9 +117,10 @@ $(document).ready(function() {
 
 <script type="text/javascript">
 function getEmployeeList(lcaId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var lcaId = $("#lcaId").val();
 	$.ajax({
-        url: sourceleadUrl+"/immigration/getEmployeeByLcaId?lcaId="+lcaId,
+        url: vmsUrl+"/immigration/getEmployeeByLcaId?lcaId="+lcaId,
         type: "GET",
         success: function (result) {
             $("#employeeTab").html(result);

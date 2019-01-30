@@ -17,7 +17,7 @@
 <div class="reportNewDash">
     
     <sec:authorize access="hasRole('ROLE_BILLING_REPORTS')">
-    <a href="${appPath}/billingReports">
+    <a href="/vms/billingReports">
 	<div class="repDashCta">
 		<span><i class="fa fa-money"></i></span>
 		<div class="repDashCtaWrap">
@@ -29,7 +29,7 @@
 	
 <sec:authorize access="hasRole('ROLE_A_R_AGING')">
 <c:if test="${SourceLeadWeb_ats == 'Y'}">
-	<a href='${appPath}/arAgingReport'>
+	<a href='/vms/arAgingReport'>
 	<div class="repDashCta">
 		<span><i class="fa fa-calendar-plus-o"></i></span>
 		<div class="repDashCtaWrap">
@@ -42,7 +42,7 @@
 		
 <sec:authorize access="hasRole('ROLE_A_P_AGING')">
 <c:if test="${SourceLeadWeb_vms == 'Y'}">
-<a href='${appPath}/apAgingReport'>
+<a href='/vms/apAgingReport'>
 	<div class="repDashCta">
 		<span><i class="fa fa-calendar-plus-o"></i></span>
 		<div class="repDashCtaWrap">
@@ -58,7 +58,7 @@
 	
 <sec:authorize access="hasRole('ROLE_MISSING_INVOICE')">
 <c:if test="${SourceLeadWeb_ats == 'Y'}">
-<a href='${appPath}/missingInvoiceReport'>
+<a href='/vms/missingInvoiceReport'>
 	<div class="repDashCta">
 		<span><i class="fa fa-file-text-o"></i></span>
 		<div class="repDashCtaWrap">
@@ -71,7 +71,7 @@
 
 <sec:authorize access="hasRole('ROLE_RECEIVED_INVOICES')">
 <c:if test="${SourceLeadWeb_ats == 'Y'}">	
-<a href='${appPath}/receivedInvoiceReport'>
+<a href='/vms/receivedInvoiceReport'>
 	<div class="repDashCta">
 		<span><i class="fa fa-copy"></i></span>
 		<div class="repDashCtaWrap">
@@ -85,7 +85,7 @@
 
 <sec:authorize access="hasRole('ROLE_MISSING_BILL')">
 <c:if test="${SourceLeadWeb_vms == 'Y'}">
-<a href='${appPath}/missingBillReport'>	
+<a href='/vms/missingBillReport'>	
 	<div class="repDashCta">
 		<span><i class="fa fa-calendar-times-o"></i></span>
 		<div class="repDashCtaWrap">
@@ -99,7 +99,7 @@
 	
 <sec:authorize access="hasRole('ROLE_PAID_BILL')">
 <c:if test="${SourceLeadWeb_vms == 'Y'}">
-<a href='${appPath}/paidBillReport'>						
+<a href='/vms/paidBillReport'>						
 	<div class="repDashCta">
 		<span><i class="fa fa-calendar-check-o"></i></span>
 		<div class="repDashCtaWrap">
@@ -110,7 +110,7 @@
  </c:if>
 </sec:authorize>
 			
-	<a href='${appPath}/assetmanagementGrowth'>						
+	<a href='/vms/assetmanagementGrowth'>						
 		<div class="repDashCta">
 			<span class="navIcons asstIcon"></span>
 			<div class="repDashCtaWrap">
@@ -120,7 +120,7 @@
 	</a>
 	<sec:authorize access="hasRole('ROLE_MARGIN_SHEET_REPORT')">
 <c:if test="${SourceLeadWeb_vms == 'Y'}">
-<a href='${appPath}/marginSheetReports'>						
+<a href='/vms/marginSheetReports'>						
 	<div class="repDashCta">
 		<span><i class="fa fa-calendar-check-o"></i></span>
 		<div class="repDashCtaWrap">
