@@ -81,8 +81,8 @@ function newResourceRequestList(requestType){
 
 <script>
 function newRequestAssociatesDataTableList(requestType){
-	 var approverUserId = '${SourceLeadWeb_user.id}';
-	 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+	 var approverUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 
 	 var searchValue = $("#newRequestAssociatesTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
