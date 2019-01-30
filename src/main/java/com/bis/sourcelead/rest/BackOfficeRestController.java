@@ -68,7 +68,6 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
-@RequestMapping("/app")
 public class BackOfficeRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(BackOfficeRestController.class);
@@ -407,6 +406,7 @@ public class BackOfficeRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
   		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ResponseList<Asset> responseList = new ResponseList<>();
+		System.out.println(" inside ATS getAssetDynamicList ");
 		try {
 			
 			if (user != null && orgLocations != null) {
