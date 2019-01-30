@@ -29,6 +29,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Tabs;
@@ -131,6 +132,8 @@ public class UserLoginHelper {
 			SourceLeadSessionManager.setSessionAttribute(req, "user", user);
 			Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations1.getId());
 			SourceLeadSessionManager.setSessionAttribute(req, "candidate", candidate);
+			Org org = orgLocations1.getOrg();
+			SourceLeadSessionManager.setSessionAttribute(req, "org", org);
 		} catch (NumberFormatException e1) {
 			e1.printStackTrace();
 		} catch (Exception e1) {
