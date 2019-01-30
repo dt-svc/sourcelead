@@ -103,11 +103,11 @@ var loaded = false;
 				</c:if>
 				<c:if test='${itemName eq "Jobs" && itemChecked == true}'>
 			      <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-			      	<c:if test="${userTabs.tabName == 'Jobs'}">
+			      	<c:if test="${userTabs == 'Jobs'}">
 						 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-							<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
+							<%-- <c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}"> --%>
 								<jsp:include page="dashboardRequirement.jsp"></jsp:include>
-							</c:if>
+							<%-- </c:if> --%>
 					     </sec:authorize>
 				     </c:if>
 				   </c:forEach>
@@ -130,10 +130,10 @@ var loaded = false;
 			</sec:authorize> 
 			</c:if>
 	    
-		    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
+		    	<%-- <c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}"> --%>
 		    		<%-- <c:forEach items="${dashboardItems.itemsList}" var="item"> --%>
 			    		<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-				    		<c:if test="${userTabs.tabName == 'Jobs'}">
+				    		<c:if test="${userTabs == 'Jobs'}">
 				    			<c:if test='${itemName eq "Assigned Jobs" && itemChecked == true}'>
 					    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 										<div class="col-md-12"><jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include></div> 
@@ -163,7 +163,7 @@ var loaded = false;
 							
 					    
 					    <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-					    	<c:if test="${userTabs.tabName == 'Jobs'}">
+					    	<c:if test="${userTabs == 'Jobs'}">
 						    	 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 						    	 <c:if test='${itemName eq "Job Approvals" && itemChecked == true}'>
 							   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
@@ -171,9 +171,9 @@ var loaded = false;
 						   	 	 </sec:authorize>
 					   	 	 </c:if>	
 					   	 </c:forEach>
-			    </c:if>
+			    <%-- </c:if> --%>
 		     	<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-			     	<c:if test="${userTabs.tabName == 'Jobs'}">
+			     	<c:if test="${userTabs == 'Jobs'}">
 			     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 			     			<%-- <c:forEach items="${dashboardItems.itemsList}" var="item"> --%>
 			     				<c:if test='${itemName eq "Applicant Permission" && itemChecked == true}'>

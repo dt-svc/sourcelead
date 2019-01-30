@@ -306,7 +306,7 @@ function preventTabkey(e){
 <c:url var="logoutUrl" value="/logout"/>
 <form action="${logoutUrl}" method="post" id="logoutForm">
   <input type="hidden" name="userSessionId" value="${userLoginSession.id}"/>
-   <input type="hidden" name="orgLocationId" value="${SourceLeadWeb_orgLocations.id}"/>
+   <input type="hidden" name="orgLocationId" value="${SourceLeadWeb_orgLocationId}"/>
  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </form>
 
@@ -339,16 +339,16 @@ function preventTabkey(e){
   <a href="${sourceleadUrl}/recruiterDashboard" title="Source Lead">
   </c:if>
   <i>
- 	 <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
+ 	 <c:if test="${!empty SourceLeadWeb_fileUrl}">
  	 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
- 	 	<img data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}" class="img-responsive mt5">
+ 	 	<img data-id="orgLogoImage" src="${SourceLeadWeb_fileUrl}" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}" class="img-responsive mt5">
  	 </c:if>
  	  <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
- 	  <img data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_orgName}" class="img-responsive mt5">
+ 	  <img data-id="orgLogoImage" src="${SourceLeadWeb_fileUrl}" title="${SourceLeadWeb_orgName}" class="img-responsive mt5">
  	 </c:if>
  	 </c:if>
  	 
- 	 <c:if test="${empty SourceLeadWeb_org.fileContentType}">
+ 	 <c:if test="${empty SourceLeadWeb_fileUrl}">
 				<div class="text-logo">
 				 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 					<c:if test="${!empty SourceLeadWeb_orgName}">
@@ -372,28 +372,28 @@ function preventTabkey(e){
 			<select id="searchType" name="searchType" class="selectpicker uasrch pull-left show-menu-arrow" >
 			<option ${searchType == "All" ?"selected='selected'":""} value="All">All</option>
 			<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-		       <c:if test="${userTabs.tabName == 'Associates'}">
+		       <c:if test="${userTabs == 'Associates'}">
 	                 <option  ${searchType == "Users" ?"selected='selected'":""} value="Users">Associates</option>
 	           </c:if>
-	           <c:if test="${userTabs.tabName == 'Jobs'}"> 
+	           <c:if test="${userTabs == 'Jobs'}"> 
 	                <option ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Jobs</option>
 	           </c:if>
-	           <c:if test="${userTabs.tabName == 'Candidates'}">
+	           <c:if test="${userTabs == 'Candidates'}">
 	                <option ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidates</option>
 	           </c:if> 
-	           <c:if test="${userTabs.tabName == 'Clients'}">
+	           <c:if test="${userTabs == 'Clients'}">
                  	  <option ${searchType == "Client" ?"selected='selected'":""} value="Client">Clients</option>
                </c:if>
-	           <c:if test="${userTabs.tabName == 'Vendors'}">
+	           <c:if test="${userTabs == 'Vendors'}">
 	                  <option ${searchType == "Vendor" ?"selected='selected'":""} value="Vendor">Vendors</option>
 	           </c:if> 
 	           
 	         <!--   commented by laxman because client based project querys are not implemented -->
-	           <%-- <c:if test="${userTabs.tabName == 'Projects'}">
+	           <%-- <c:if test="${userTabs == 'Projects'}">
 	             <option ${searchType == "Projects" ?"selected='selected'":""} value="Projects">Projects</option>   	  
 	           </c:if> --%>
 	           
-	           <c:if test="${userTabs.tabName == 'Associates List'}">
+	           <c:if test="${userTabs == 'Associates List'}">
 	           <option ${searchType == "Associate" ?"selected='selected'":""} value="Associate">Associates</option>
 	           </c:if>
 			</c:forEach>
@@ -412,12 +412,12 @@ function preventTabkey(e){
 
 
 <div class="headProfile">
-	<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_user.fileUrl}"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_userName}"> ${SourceLeadWeb_userName} </div>
+	<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_imgUrl}"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_userName}"> ${SourceLeadWeb_userName} </div>
 	<div class="headPop" id="profilePop">
 		<div class="headPopInn">
 				<a href="<c:url value='${appPath}/userProfile'/>" title="Profile">
 				<div class="headPopUser clearfix">
-					<div class="pull-left"><img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"></div>
+					<div class="pull-left"><img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_imgUrl}"></div>
 					<div class="pull-right">
 						<p>${SourceLeadWeb_userName}</p>
 		                 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
@@ -628,12 +628,12 @@ function preventTabkey(e){
 	       success :function(result) {
 	    	   if(result == true){
 	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y')){
-	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userId);   
+	    				 location.replace(sourceleadUrl+"/switchLocation?userRoleId="+roleId);    
 	    			 }else if('${SourceLeadWeb_isAuthenticated}' == 'N' && orgSecurity == 'Y'){
 	    				 $(".authenticationMask").fadeIn();
 	    				 getUserDetailsbyroleId(roleId);
 	    			 }else{
-	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userId);    
+	    				 location.replace(sourceleadUrl+"/switchLocation?userRoleId="+roleId);    
 	    			 }
 	    		 }else{
 	    			 $(".location-alert").fadeIn();
