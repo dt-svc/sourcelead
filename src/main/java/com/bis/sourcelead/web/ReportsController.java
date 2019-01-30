@@ -794,4 +794,103 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 			 model.setViewName("reports/indPayrollSalaryStatementReport");
 			 return model;
 		 }
+		 
+		 
+		 
+		 
+		 @RequestMapping(value = "/indPayrollESISummaryReport")
+			public ModelAndView indPayrollESISummaryReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 ModelAndView model = new ModelAndView();
+             OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 
+             Calendar orgCal = Calendar.getInstance();
+             orgCal.setTime(orgLocation.getCreatedDate());
+ 			 int orgRegisteredYear = orgCal.get(Calendar.YEAR);
+              
+			 String fromYear = null;
+			 String toYear = null;
+			 Calendar c = Calendar.getInstance();
+			 int fYear = c.get(Calendar.YEAR);
+			 int fMonth = c.get(Calendar.MONTH);
+			 if (StringUtils.isNotBlank(orgLocation.getStartMonth())) {
+			 Calendar cal = Calendar.getInstance();
+			 Date date = new SimpleDateFormat("MMMM").parse(orgLocation.getStartMonth());
+			 cal.setTime(date);
+			 int startFinMonth = cal.get(Calendar.MONTH);
+			 if (fMonth >= startFinMonth && fMonth < 12) {
+			 fromYear = Integer.toString(fYear);
+			 toYear = Integer.toString(fYear + 1);
+			 } else {
+			 fromYear = Integer.toString(fYear - 1);
+			 toYear = Integer.toString(fYear);
+			 }
+			 } else {
+			 fromYear = Integer.toString(fYear);
+			 toYear = Integer.toString(fYear);
+			 }
+			 
+			 List<String> finYearList = new ArrayList<>();
+			 while(orgRegisteredYear < Integer.parseInt(toYear)) {
+				 String finYear = String.valueOf(orgRegisteredYear)+"-"+String.valueOf(orgRegisteredYear+1);
+				 finYearList.add(finYear);
+				 orgRegisteredYear++;
+			 }
+			 model.addObject("finYearList", finYearList);
+			 model.addObject("sourceleadUrl", sourceleadUrl);
+			 model.setViewName("reports/indPayrollESISummaryReport");
+			 return model;
+		 }
+		 
+		 @RequestMapping(value = "/indPayrollPFSummaryReport")
+			public ModelAndView indPayrollPFSummaryReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 ModelAndView model = new ModelAndView();
+            OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 
+             Calendar orgCal = Calendar.getInstance();
+             orgCal.setTime(orgLocation.getCreatedDate());
+ 			 int orgRegisteredYear = orgCal.get(Calendar.YEAR);
+              
+			 String fromYear = null;
+			 String toYear = null;
+			 Calendar c = Calendar.getInstance();
+			 int fYear = c.get(Calendar.YEAR);
+			 int fMonth = c.get(Calendar.MONTH);
+			 if (StringUtils.isNotBlank(orgLocation.getStartMonth())) {
+			 Calendar cal = Calendar.getInstance();
+			 Date date = new SimpleDateFormat("MMMM").parse(orgLocation.getStartMonth());
+			 cal.setTime(date);
+			 int startFinMonth = cal.get(Calendar.MONTH);
+			 if (fMonth >= startFinMonth && fMonth < 12) {
+			 fromYear = Integer.toString(fYear);
+			 toYear = Integer.toString(fYear + 1);
+			 } else {
+			 fromYear = Integer.toString(fYear - 1);
+			 toYear = Integer.toString(fYear);
+			 }
+			 } else {
+			 fromYear = Integer.toString(fYear);
+			 toYear = Integer.toString(fYear);
+			 }
+			 
+			 List<String> finYearList = new ArrayList<>();
+			 while(orgRegisteredYear < Integer.parseInt(toYear)) {
+				 String finYear = String.valueOf(orgRegisteredYear)+"-"+String.valueOf(orgRegisteredYear+1);
+				 finYearList.add(finYear);
+				 orgRegisteredYear++;
+			 }
+			 model.addObject("finYearList", finYearList);
+			 model.addObject("sourceleadUrl", sourceleadUrl);
+			 model.setViewName("reports/indPayrollPFSummaryReport");
+			 return model;
+		 }
+		 
+		 
+		 
+		 @RequestMapping(value = "/indPayrollBankTransferReport")
+			public ModelAndView indPayrollSalaryRegisterReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 ModelAndView model = new ModelAndView();
+			 model.addObject("sourceleadUrl", sourceleadUrl);
+			 model.setViewName("reports/indPayrollSalaryRegisterReport");
+			 return model;
+		 }
 }

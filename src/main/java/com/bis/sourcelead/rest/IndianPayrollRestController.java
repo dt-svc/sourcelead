@@ -1117,5 +1117,162 @@ public class IndianPayrollRestController {
 	    	 }
 	    	return mp;
     	
+    } 
+    
+    @RequestMapping(value ="app/indPayrollESIAndPFReport", method = RequestMethod.POST)
+  	public @ResponseBody ResponseList<IndEmployeePayrollDTO> indPayrollESIAndPFReport(IndEmployeePayrollDTO indEmployeePayrollDTO,HttpServletRequest request)throws Exception{
+    	ResponseList<IndEmployeePayrollDTO> responseList = new ResponseList<>();	
+    	try {
+  	  			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+  	   			if (orgLocations != null) {
+  	   				String[] tableColumns = {"empId", "empName", "", "", "", "", "", "", ""};
+  	   			    int sortColumnIndex = 1;		 //by default sorting using updated date
+  	   				String sortColumnOrder = "asc";  //by default descending order
+  	   				if(indEmployeePayrollDTO.getOrder() != null && !indEmployeePayrollDTO.getOrder().isEmpty()) {
+  	   					sortColumnIndex = Integer.parseInt(indEmployeePayrollDTO.getOrder().get(0).get("column"));
+  	   					sortColumnOrder = indEmployeePayrollDTO.getOrder().get(0).get("dir");
+  	   				}
+  	   				indEmployeePayrollDTO.setSortColumn(tableColumns[sortColumnIndex]);
+  	   				indEmployeePayrollDTO.setSortOrder(sortColumnOrder);
+  	   				
+
+  	   			ResponseList<IndEmployeePayrollDTO> pfESIReportList = indPaysheetFrequencyService.getPayrollESIAndPFReportList(indEmployeePayrollDTO, orgLocations);
+  	  	    	Map<BigInteger, List<IndEmployeePayrollDTO>> canMap = pfESIReportList.getData().stream().collect(Collectors.groupingBy(IndEmployeePayrollDTO::getCanId,Collectors.toList()));
+  	  	    	List<IndEmployeePayrollDTO> list = new ArrayList<>();
+  	  	    	
+  	  	    	for (Map.Entry<BigInteger, List<IndEmployeePayrollDTO>> entry : canMap.entrySet())  {
+  	  	    		 IndEmployeePayrollDTO dty = new IndEmployeePayrollDTO();
+  	  	    		 IndEmployeePayrollDTO dto = entry.getValue().get(0);
+  	  	    		 if(dto.getLastName() != null) {
+  	  	    			 dty.setEmployeeName(dto.getFirstName() +" "+ dto.getLastName());
+  	  		    	  }else {
+  	  		    		 dty.setEmployeeName(dto.getFirstName());
+  	  		          }
+  	  				  dty.setEmployeeid(dto.getEmployeeid());
+  	  				  dty.setEsiNumber(dto.getEsiNumber());
+  	  				  dty.setDepartmentName(dto.getDepartmentName());
+  	  				  dty.setPfNumber(dto.getPfNumber());
+  	  				  dty.setUanNumber(dto.getUanNumber());
+  	  				  if(dto.getEligibleForEsi() != null && dto.getEligibleForEsi().equalsIgnoreCase("Y")) {
+  	  				  Double employeeESI = 0d;
+  	  				  Double employerESI = 0d;
+  	  				  for(IndEmployeePayrollDTO  ipd :entry.getValue()) {
+  	  					  if(ipd.getEmployeeEsi() != null && ipd.getPayHeadAmount().longValue() > 0) {
+  	  						  employeeESI = employeeESI + ((ipd.getPayHeadAmount().doubleValue() * ipd.getEmployeeEsi())/100);
+  	  					  }
+  	  					  if(ipd.getEmployerEsi() != null && ipd.getPayHeadAmount().longValue() > 0) {
+  	  						  employerESI = employerESI + ((ipd.getPayHeadAmount().doubleValue() * ipd.getEmployerEsi())/100);
+  	  					  }
+  	  				  }
+  	  				  dty.setEmployeeEsi(employeeESI);
+  	  				  dty.setEmployerEsi(employerESI);
+  	  				  dty.setTotalESI(employeeESI+employerESI);
+  	  				  }
+  	  				
+  	  				  if(dto.getEligibleForPf() != null && dto.getEligibleForPf().equalsIgnoreCase("Y")) {
+  	  				  Double employeePF = 0d;
+  	  				  Double employerPF = 0d;
+  	  				  for(IndEmployeePayrollDTO  ipd :entry.getValue()) {
+  	  					  if(ipd.getEmployeePf() != null && ipd.getPayHeadAmount().longValue() > 0) {
+  	  						  employeePF = employeePF + ((ipd.getPayHeadAmount().doubleValue() * ipd.getEmployeePf())/100);
+  	  					  }
+  	  					  if(ipd.getEmployerPf() != null && ipd.getPayHeadAmount().longValue() > 0) {
+  	  						  employerPF = employerPF + ((ipd.getPayHeadAmount().doubleValue() * ipd.getEmployerPf())/100);
+  	  					  }
+  	  				  }
+  	  				  dty.setEmployeePf(employeePF);
+  	  				  dty.setEmployerPf(employerPF);
+  	  				  dty.setTotalPF(employeePF+employerPF);
+  	  				  }
+  	  				  
+  	  				  
+  	  				  list.add(dty);
+  	  	    	    }
+  	  	    	
+  	   			responseList.setRecordsTotal(list.size());
+   				responseList.setRecordsFiltered(list.size());
+   				responseList.setData(list);
+   				responseList.setResponse(Result.SUCCESS.name());
+   				responseList.setResponseMessage(Result.SUCCESS.getValue());
+   			}else{
+   				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+   				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+   			}
+   		} catch (Exception e) {
+   			e.printStackTrace();
+   			responseList.setResponse(Result.AWKWARD.name());
+   			responseList.setResponseMessage(Result.AWKWARD.getValue());
+   		}
+	return responseList;
     }
+    
+    
+    @RequestMapping(value = { "app/indPayrollESIExport"})
+   	public void indPayrollESIExport(IndEmployeePayrollDTO indEmployeePayrollDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+   	{
+   			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+   			if (orgLocations != null) { 
+   				ResponseList<IndEmployeePayrollDTO> payResponseList = indPaysheetFrequencyService.getPayrollESIAndPFReportList(indEmployeePayrollDTO,orgLocations);
+   				if(payResponseList.getData().size() > 0) {
+   					File file = null;
+   					if(indEmployeePayrollDTO.getExportType().equalsIgnoreCase("pdf")) {
+      					 file = indPaySlipPdf.getIndPayrollESIPdf(payResponseList,orgLocations);
+   					}else if(indEmployeePayrollDTO.getExportType().equalsIgnoreCase("excel")) {
+      					 file = indPaySlipPdf.getIndPayrollESIExcel(payResponseList,orgLocations);
+   					}
+   					String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+   					if (mimeType == null) {
+   						mimeType = "application/octet-stream";
+   					}
+   					response.setContentType(mimeType);
+   					StringBuilder fileName = new StringBuilder();
+   					response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+   					response.setContentLength((int) file.length());
+   					InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+   					FileCopyUtils.copy(inputStream, response.getOutputStream());
+   					inputStream.close();
+   					response.getOutputStream().close();
+   					response.getOutputStream().flush();
+   					if (file != null) {
+   						file.delete();
+   					}
+   				}
+   			}
+   	}
+    
+    
+    @RequestMapping(value = { "app/indPayrollPFExport"})
+   	public void indPayrollPFExport(IndEmployeePayrollDTO indEmployeePayrollDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+   	{
+   			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+   			if (orgLocations != null) { 
+   				ResponseList<IndEmployeePayrollDTO> payResponseList = indPaysheetFrequencyService.getPayrollESIAndPFReportList(indEmployeePayrollDTO,orgLocations);
+   				if(payResponseList != null) {
+   					File file = null;
+   					if(indEmployeePayrollDTO.getExportType().equalsIgnoreCase("pdf")) {
+      					 file = indPaySlipPdf.getIndPayrollPFPdf(payResponseList,orgLocations);
+   					}else if(indEmployeePayrollDTO.getExportType().equalsIgnoreCase("excel")) {
+      					 file = indPaySlipPdf.getIndPayrollPFExcel(payResponseList,orgLocations);
+   					}
+   					String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+   					if (mimeType == null) {
+   						mimeType = "application/octet-stream";
+   					}
+   					response.setContentType(mimeType);
+   					StringBuilder fileName = new StringBuilder();
+   					response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+   					response.setContentLength((int) file.length());
+   					InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+   					FileCopyUtils.copy(inputStream, response.getOutputStream());
+   					inputStream.close();
+   					response.getOutputStream().close();
+   					response.getOutputStream().flush();
+   					if (file != null) {
+   						file.delete();
+   					}
+   				}
+   			}
+   	}
+    
+ 
 }
