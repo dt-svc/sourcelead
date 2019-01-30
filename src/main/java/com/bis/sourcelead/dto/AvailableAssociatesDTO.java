@@ -12,7 +12,7 @@ import java.util.List;
 
 	private String associates;
 	
-	private String projects;
+	private String projectName;
 	
     private Date fromDate;
 	
@@ -26,18 +26,27 @@ import java.util.List;
 	
 	private String empName;
 	
-	private String projectDuration;
+	private BigDecimal percentageOfWork;
 	
-	private Date empStartDate;
+	private String projectStartDate;
 	
-	private Date empEndDate;
+	private String projectEndDate;
 	
-	private BigDecimal availability;
+	private String empStartDate;
+	
+	private String empEndDate;
+	
+	private BigDecimal availableHours;
 	
 	private BigDecimal hoursperWeek;
 	
-	private BigDecimal total;
-	
+	public BigDecimal getPercentageOfWork() {
+		return percentageOfWork;
+	}
+
+	public void setPercentageOfWork(BigDecimal percentageOfWork) {
+		this.percentageOfWork = percentageOfWork;
+	}
 
 	public Long getEmpId() {
 		return empId;
@@ -55,36 +64,12 @@ import java.util.List;
 		this.empName = empName;
 	}
 
-	public String getProjectDuration() {
-		return projectDuration;
+	public BigDecimal getAvailableHours() {
+		return availableHours;
 	}
 
-	public void setProjectDuration(String projectDuration) {
-		this.projectDuration = projectDuration;
-	}
-
-	public Date getEmpStartDate() {
-		return empStartDate;
-	}
-
-	public void setEmpStartDate(Date empStartDate) {
-		this.empStartDate = empStartDate;
-	}
-
-	public Date getEmpEndDate() {
-		return empEndDate;
-	}
-
-	public void setEmpEndDate(Date empEndDate) {
-		this.empEndDate = empEndDate;
-	}
-
-	public BigDecimal getAvailability() {
-		return availability;
-	}
-
-	public void setAvailability(BigDecimal availability) {
-		this.availability = availability;
+	public void setAvailableHours(BigDecimal availableHours) {
+		this.availableHours = availableHours;
 	}
 
 	public BigDecimal getHoursperWeek() {
@@ -93,14 +78,6 @@ import java.util.List;
 
 	public void setHoursperWeek(BigDecimal hoursperWeek) {
 		this.hoursperWeek = hoursperWeek;
-	}
-
-	public BigDecimal getTotal() {
-		return total;
-	}
-
-	public void setTotal(BigDecimal total) {
-		this.total = total;
 	}
 
 	public List<Long> getProjectsIds() {
@@ -119,12 +96,13 @@ import java.util.List;
 		this.associates = associates;
 	}
 
-	public String getProjects() {
-		return projects;
+
+	public String getProjectName() {
+		return projectName;
 	}
 
-	public void setProjects(String projects) {
-		this.projects = projects;
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
 	}
 
 	public Date getFromDate() {
@@ -149,6 +127,38 @@ import java.util.List;
 
 	public void setUserIds(List<Long> userIds) {
 		this.userIds = userIds;
+	}
+
+	public String getProjectStartDate() {
+		return projectStartDate;
+	}
+
+	public void setProjectStartDate(String projectStartDate) {
+		this.projectStartDate = projectStartDate;
+	}
+
+	public String getProjectEndDate() {
+		return projectEndDate;
+	}
+
+	public void setProjectEndDate(String projectEndDate) {
+		this.projectEndDate = projectEndDate;
+	}
+
+	public String getEmpStartDate() {
+		return empStartDate;
+	}
+
+	public void setEmpStartDate(String empStartDate) {
+		this.empStartDate = empStartDate;
+	}
+
+	public String getEmpEndDate() {
+		return empEndDate;
+	}
+
+	public void setEmpEndDate(String empEndDate) {
+		this.empEndDate = empEndDate;
 	}
 	
 	

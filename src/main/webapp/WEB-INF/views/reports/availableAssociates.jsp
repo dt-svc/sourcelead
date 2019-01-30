@@ -35,7 +35,7 @@
             <div class="form-group row">
               <label class="col-md-12 paddingRight">Project Name</label>
                 <div class="col-md-9">
-                      <select class="chosen-select form-control" multiple data-placeholder="Select Project" name="projectsIds" id="projects" field-name="Projects" data-validation="required">
+                      <select class="chosen-select form-control" multiple data-placeholder="Select Project" name="projectsIds" id="projects" field-name="Projects" ">
                         <option value="">-Select Projects-</option>
                       </select>
                   </div>
@@ -69,6 +69,12 @@
         </div>
       </div>
       </form>
+        </div>
+        
+         <div class="tableStyles">
+	 <div class="require_wrap_table">
+	 <div id="availableAssociatesReporttableList"></div>
+	</div>
         </div>
       </section>
       
@@ -115,7 +121,6 @@
       
       <script>
       function prepareReport(){
-    	  alert("inside")
     	  var associates =$("#associatesId").val();
     	  var projects = $("#projects").val();
     	  var fromDate = $('#fromDate').val();
@@ -135,25 +140,52 @@
   		            data: formData,
   	 		        processData: false,
   	 		        contentType:false, 
-  		            success: function (data) { 
+  		            success: function (result) { 
+  		            	$("#availableAssociatesReporttableList").show();
+  		          	if(result && result.response === "SUCCESS") {
+  		          
+  						var text = "";
+  						$("#availableAssociatesReporttableList").empty();
+  						if(result.data.length > 0) {   	
+  							text += "  <table class='table' id='availableAssociatesReporttableList1'>";
+  							text += " 	<thead>";
+  							text += " 	  <tr>";
+  							text += " 	   	<th>Project Name</th>";
+  							text += " 		<th>Project Duration</th>";
+  							text += " 		<th>Associate Duration</th>";
+  							text += " 		<th>Availability %</th>";
+  							text += " 		<th>No.of Hours</th>";
+  							text += " 	  </tr>";
+  							text += " 	</thead>";
+  							text += " 	<tbody>";
+  						 text += "		<td><div class='tbldata-dotdot'>" + (result.data[2]) + "</div></td>";
+  							for(var e in result.data) {
+  								var report = result.data[e];
+  								text += "    <tr>";
+  								text += "		<td><div class='tbldata-dotdot'>" + (report[3] !== null ? report[3] : "--" ) + "</div></td>";
+  								text += "		<td><div class='tbldata-dotdot'>" +(report[4] !== null ? report[4] : "--") +"-"+(report[5] !== null ? report[5] : "--") + "</div></td>";
+  								text += "		<td><div class='tbldata-dotdot-vsm'>" +(report[6] !== null ? report[6] : "--") +"-"+(report[7] !== null ? report[7] : "--")  + "</div></td>";
+  								text += "		<td><div class='tbldata-dotdot-100' title='" + (report[8] !== null ? report[8] : "--" ) + "</div></td>";
+  								text += "		<td><div class='tblminwidth-75'>" + (report[9] !== null ? report[9] : "----") + "</div></td>";
+  								text += "	</tr>";
+  							}
+  							
+  							text += " 	</tbody>";
+  							text += "   </table>";
+  							$("#availableAssociatesReporttableList").append(text);
+  						} else {
+  							$("#availableAssociatesReporttableList").append("<div class='dataTables_empty'></div>");
+  						}
+  					}
   		            	
   		            }
     			  })
-    		           
-    	  
       }else{
     	  return false;
         }
-      
      }
-      
-      
-      
-      
-      
       </script>
-      
-      
+    
       
       
       

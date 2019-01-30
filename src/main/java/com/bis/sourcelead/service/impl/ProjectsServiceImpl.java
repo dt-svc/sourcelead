@@ -4006,10 +4006,29 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 	}
 
 	@Override
-	public ResponseList<AvailableAssociatesDTO> getAvailableAssociatesReport(
-			AvailableAssociatesDTO availableAssociatesDTO, OrgLocations orgLocations) {
-		// TODO Auto-generated method stub
-		return ((ProjectsDao) projectsDao).getAvailableAssociatesReport(availableAssociatesDTO,orgLocations);
+	public List<AvailableAssociatesDTO> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO, OrgLocations orgLocations) {
+		try {
+			List<AvailableAssociatesDTO> availableAssociatesDTOList = new LinkedList<>();
+			List<Object[]> objectList = projectsDao.getAvailableAssociatesReport(availableAssociatesDTO,orgLocations);
+			if(objectList != null && !objectList.isEmpty()) {
+				for(Object[] obj : objectList) {
+					AvailableAssociatesDTO dto = new AvailableAssociatesDTO();
+					SimpleDateFormat dateForm1 = new SimpleDateFormat(orgLocations.getDateFormat());
+					dto.setProjectStartDate(dateForm1.format(obj[4]));
+					dto.setProjectEndDate(dateForm1.format(obj[5]));
+					dto.setEmpStartDate(dateForm1.format(obj[6]));
+					dto.setEmpEndDate(dateForm1.format(obj[7]));
+					
+					availableAssociatesDTOList.add(dto);
+				}
+				return availableAssociatesDTOList;
+			}
+			
+			return availableAssociatesDTOList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	

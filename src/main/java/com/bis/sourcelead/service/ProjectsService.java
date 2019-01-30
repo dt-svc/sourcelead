@@ -157,7 +157,7 @@ public interface ProjectsService {
 
 		List<Projects> getProjectsListByUserIDAndOrgId(String[] associates,Long orglocationId);
 
-		ResponseList<AvailableAssociatesDTO> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO,OrgLocations orgLocations);
+		List<AvailableAssociatesDTO> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO,OrgLocations orgLocations);
 		
 //		public String getProjectId(OrgLocations orgLocations);
 		

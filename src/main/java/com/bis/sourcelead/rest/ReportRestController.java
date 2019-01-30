@@ -2180,14 +2180,21 @@ public class ReportRestController {
 				
 			}
 			
-			@RequestMapping(value ="/prepareReport")
-			public ResponseList<AvailableAssociatesDTO> prepareReport(AvailableAssociatesDTO availableAssociatesDTO,HttpServletRequest request,HttpServletResponse response) {
-				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				ResponseList<Projects> list = new ResponseList<Projects>();
-				ResponseList<AvailableAssociatesDTO> result = projectsService.getAvailableAssociatesReport(availableAssociatesDTO,orgLocations);
-				
-				return null;
-				
-			}
+	@RequestMapping(value = "/prepareReport")
+	public ResponseList<AvailableAssociatesDTO> prepareReport(AvailableAssociatesDTO availableAssociatesDTO,
+			HttpServletRequest request, HttpServletResponse response) {
+		ResponseList<AvailableAssociatesDTO> responseList = new ResponseList<>();
+		try {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			responseList.setData(projectsService.getAvailableAssociatesReport(availableAssociatesDTO, orgLocations));
+			responseList.setResponse(Result.SUCCESS.name());
+			responseList.setResponseMessage(Result.SUCCESS.getValue());
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponse(Result.AWKWARD.getValue());
+			e.printStackTrace();
+		}
+		return responseList;
+	}
 			
 }
