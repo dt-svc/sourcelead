@@ -20,6 +20,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Controller;
 
+import com.bis.sourcelead.security.JWTSecurityContextRepository;
+
 /**
  * This class is used to read the properties from properties file and configures
  * security context in spring.
