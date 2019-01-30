@@ -170,7 +170,7 @@ public class CandidateOffBoardController {
 	@RequestMapping(value = "/candidateOffBoardCreation")
 	public ModelAndView candidateOffBoardCreation(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
-		System.out.println(" inisde ats /candidateOffBoardingList controller ");
+		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -236,7 +236,7 @@ public class CandidateOffBoardController {
  			HttpServletRequest request) throws Exception {
 		   
 		    ModelAndView model = new ModelAndView();
- 			
+		   
 		    SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			if(sessionData == null)
 			{

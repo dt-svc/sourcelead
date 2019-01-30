@@ -22,7 +22,8 @@
 <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 
 <script type="text/javascript">
- var sourceleadUrl ='${sourceleadUrl}';
+/*  var sourceleadUrl ='${sourceleadUrl}'; */
+ var atsUrl = '${SourceLeadWeb_atsUrl}';
 </script>
 
 <script>
@@ -145,7 +146,7 @@ $(function(){
 			 <c:if test="${SourceLeadWeb_OnboardingManagerUserId != null}">
 					<h4>Manager</h4>
 			        <div class="welMana">
-						<img onerror="predefineProfileImage(this);" class='m-t-xs' src="<c:url value='${sourceleadUrl}/displayOnboardingUserImage/${SourceLeadWeb_OnboardingManagerUserId}'/>"></img>
+						<img onerror="predefineProfileImage(this);" class='m-t-xs' src="<c:url value='${atsUrl}/displayOnboardingUserImage/${SourceLeadWeb_OnboardingManagerUserId}'/>"></img>
 						<span>
 							<b><u>Name</u>: ${SourceLeadWeb_managerName}</b>
 						</span>
@@ -157,7 +158,7 @@ $(function(){
 	<c:if test="${SourceLeadWeb_OnboardingTeamOwnerUserId != null}">
 		<h4>Team Owner</h4>
         <div class="welMana">
-			<img onerror="predefineProfileImage(this);" class='m-t-xs' src="<c:url value='${sourceleadUrl}/displayOnboardingUserImage/${SourceLeadWebSourceLeadWeb_OnboardingTeamOwnerUserId}'/>"></img>
+			<img onerror="predefineProfileImage(this);" class='m-t-xs' src="<c:url value='${atsUrl}/displayOnboardingUserImage/${SourceLeadWebSourceLeadWeb_OnboardingTeamOwnerUserId}'/>"></img>
 			<span>
 				<b><u>Name</u>: ${SourceLeadWeb_teamOwnerName}</b>
 				<b><u>Role</u>: ${SourceLeadWeb_teamOwnerRole}</b>
@@ -175,7 +176,7 @@ $(function(){
 				 <c:forEach var="teamMembers" items="${SourceLeadWeb_teamMembersList}">
 					<li>
 				        <div class="crsl-item">
-							<img onerror='predefineProfileImage(this);' class='m-t-xs' src='<c:url value="${sourceleadUrl}/displayOnboardingUserImage/${teamMembers.memberUserId.id}"/>' ></img>
+							<img onerror='predefineProfileImage(this);' class='m-t-xs' src='<c:url value="${atsUrl}/displayOnboardingUserImage/${teamMembers.memberUserId.id}"/>' ></img>
 							<span>
 								<b><u>Name</u>: ${teamMembers.memberName}</b>
 								<b><u>Role</u>: ${teamMembers.roleName}</b>
@@ -204,7 +205,7 @@ $(function(){
   </div>		  
 		  
 <div class="welBtns">
-<input type="button"  value="Proceed to next step"  onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/onboardingCandidateStep2'/>'"  class="Brig">
+<input type="button"  value="Proceed to next step"  onClick="javascript:window.location.href = '<c:url value='${atsUrl}/onboardingCandidateStep2'/>'"  class="Brig">
 <div class="clearfix"></div>
 </div>
 		  

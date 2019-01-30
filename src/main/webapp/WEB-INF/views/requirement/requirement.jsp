@@ -215,7 +215,7 @@ $(document).ready(function () {
 		<div class="pull-right brud-crum">
 			<a
 				href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home
-			</a>&raquo;<a href="<c:url value='/jobs'/>"> Jobs List </a>&raquo;
+			</a>&raquo;<a href="<c:url value='/jobsList'/>"> Jobs List </a>&raquo;
 			<c:if test="${empty requirementId}">Add Job</c:if>
 			<c:if test="${!empty requirementId}">Update Job</c:if>
 		</div>
@@ -1322,7 +1322,7 @@ $(document).ready(function () {
 					                    
 		                   		    </select>
 								</div>
-								<span class="col-md-3 noPad clearfix"><a href="<c:url value='/app/addJobFair'/>" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn" title="add new JobFair"></i></a>
+								<span class="col-md-3 noPad clearfix"><a href="<c:url value='/addJobFair'/>" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn" title="add new JobFair"></i></a>
 								<span class="input-group-addon cursorPointer bg-blue refreshBtn" onclick="getJobFairList();"><i class="fa fa-refresh "></i></span>
 								</span>
 							</div> --%>
@@ -2330,7 +2330,7 @@ $(document).ready(function () {
 
 
 						<input type="button" value="Cancel"
-							onClick="javascript:window.location.href = '<c:url value='/jobs'/>'"
+							onClick="javascript:window.location.href = '<c:url value='/jobsList'/>'"
 							class="btn btn-default ml">
 					</div>
 				</div>

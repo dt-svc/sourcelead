@@ -746,6 +746,7 @@ function closeFilter(){
 
 	function columPop(){
 		$(".colPop").show();
+		$(".colPopFot").show();
 	}
 	function columClose(){
 		$(".colPop").hide();
@@ -1479,7 +1480,7 @@ function resetJobFilter(){
 			} else if (result.response === "AWKWARD") {
 				location.href = "/errorPage";
 			} else if (result.response === "SUCCESS") {
-				location.href = atsUrl + "/jobs?viewTab=jobFair";
+				location.href = atsUrl + "/jobsList?viewTab=jobFair";
 			} else if (result.indexOf('Sign In') !== -1) {
 				location.replace(atsUrl);
 			} else {
