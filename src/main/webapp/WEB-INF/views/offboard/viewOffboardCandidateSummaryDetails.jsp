@@ -262,7 +262,7 @@ padding-left: 25px;
 					 $("#offboardCandidateDetails").append(result); 
 			    	 $("#loading").removeAttr("style");
 	        	} else if (response.indexOf('Sign In') !== -1) {
-	        		location.replace(atsUrl);
+	        		location.replace(sourceleadUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}
@@ -361,7 +361,7 @@ padding-left: 25px;
 		    		 $("#offboardTasksListView").append(result);
 		    		 $("#loading").removeAttr("style");
 	        	} else if (response.indexOf('Sign In') !== -1) {
-	        		location.replace(atsUrl);
+	        		location.replace(sourceleadUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}
@@ -431,7 +431,7 @@ padding-left: 25px;
 			    		 $("#offboardDocumentsDiv").append(result);
 			    		 $("#loading").removeAttr("style");
 	        	} else if (response.indexOf('Sign In') !== -1) {
-	        		location.replace(atsUrl);
+	        		location.replace(sourceleadUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}

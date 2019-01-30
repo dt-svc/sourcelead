@@ -196,7 +196,7 @@ function getOffboardCheckList(offboardingId){
 		        	} else if (response.response === "SUCCESS") {
 		        		location.replace(atsUrl+"/offboardStep3");  
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(atsUrl);
+		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}

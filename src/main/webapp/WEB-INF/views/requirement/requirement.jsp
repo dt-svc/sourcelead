@@ -2562,7 +2562,7 @@ function validateProfilePercentage(){
 				    success: function(result) {
 				    	if(result != null && result != 'undefined' && result !='' ){
 				    		if (result.response === "SESSION_TIMEDOUT") {
-								location.replace(atsUrl);
+								location.replace(sourceleadUrl);
 							} else if (result.response === "AWKWARD") {
 								location.href = "/errorPage";
 							} else if (result.response === "SUCCESS") {
@@ -2605,7 +2605,7 @@ function validateProfilePercentage(){
 					            /* $("#jobFairDatesDiv").hide(); */
 					            initializeDatePicker();
 							} else if (result.indexOf('Sign In') !== -1) {
-								location.replace(atsUrl);
+								location.replace(sourceleadUrl);
 							} else {
 								showError("Operation failed, please try again");
 							}
@@ -2626,7 +2626,7 @@ function validateProfilePercentage(){
 			    success: function(result) {
 			    	if(result != null && result != 'undefined' && result !='' ){
 			    		if (result.response === "SESSION_TIMEDOUT") {
-							location.replace(atsUrl);
+							location.replace(sourceleadUrl);
 						} else if (result.response === "AWKWARD") {
 							location.href = "/errorPage";
 						} else if (result.response === "SUCCESS") {
@@ -2649,7 +2649,7 @@ function validateProfilePercentage(){
 				            $("#jobFairList").trigger("chosen:updated");
 				            /* $("#jobFairDatesDiv").hide(); */
 						} else if (result.indexOf('Sign In') !== -1) {
-							location.replace(atsUrl);
+							location.replace(sourceleadUrl);
 						} else {
 							showError("Operation failed, please try again");
 						}
@@ -2926,7 +2926,7 @@ function validate_fileupload(fileName)
 							  			$("#requirementLoading").removeAttr("style");	
 							  		}else{
 							  			if (result.response === "SESSION_TIMEDOUT") {
-							  				location.replace(atsUrl);
+							  				location.replace(sourceleadUrl);
 						                } else if (result.response === "AWKWARD") {
 						                    location.href = "/errorPage";
 						                } else if (result.response === "SUCCESS") {
@@ -2951,7 +2951,7 @@ function validate_fileupload(fileName)
 							     			msgFadein();
 						     			
 						                } else if (result.indexOf('Sign In') !== -1) {
-											location.replace(atsUrl);
+											location.replace(sourceleadUrl);
 										} else {
 						                    showError("Operation failed, please try again");
 						                }
@@ -4091,7 +4091,7 @@ function refreshRequirementClientList(){
 	       url: atsUrl+"/refreshRequirementClientList",       
 	       success: function(result) {
 	    	   if (result.response === "SESSION_TIMEDOUT") {
-	  				location.replace(atsUrl);
+	  				location.replace(sourceleadUrl);
                } else if (result.response === "AWKWARD") {
                    location.href = "/errorPage";
                } else if (result.response === "SUCCESS") {
@@ -4111,7 +4111,7 @@ function refreshRequirementClientList(){
 			        $("#addClientId").append(output);
 			        $('#addClientId').trigger("chosen:updated");
                } else if (result.indexOf('Sign In') !== -1) {
-					location.replace(atsUrl);
+					location.replace(sourceleadUrl);
 			   } else {
                    showError("Operation failed, please try again");
                }
