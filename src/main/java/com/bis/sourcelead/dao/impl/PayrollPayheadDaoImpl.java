@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.PayrollPayheadDao;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssociateSalaryHistoryInd;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -30,6 +31,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.INDPayrollCommonUtil;
 
 @Repository
+@SuppressWarnings("unchecked")
 public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 
 	@Autowired
@@ -344,5 +346,23 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 			payrollPayhead = (PayrollPayhead) payrollPayheadList.iterator().next();
 		}
 		return payrollPayhead;
+	}
+
+	@Override
+	@Transactional
+	public AssociateSalaryHistoryInd saveAssociateSalaryHistoryInd(AssociateSalaryHistoryInd associateSalaryHistoryInd)
+			throws Exception {
+		logger.debug("Adding AssociateSalaryHistoryInd");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (associateSalaryHistoryInd != null) {
+				session.saveOrUpdate(associateSalaryHistoryInd);
+			}
+			logger.debug("associateSalaryHistoryInd Added Successfully");
+		} catch (ConstraintViolationException exception) {
+			StringBuffer message= new StringBuffer(MessageFormat.format(duplicateValue,"ASSOCIATE_SALARY_HISTORY_IND"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return associateSalaryHistoryInd;
 	}
 }

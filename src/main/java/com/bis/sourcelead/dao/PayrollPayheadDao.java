@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssociateSalaryHistoryInd;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -38,4 +39,6 @@ public interface PayrollPayheadDao {
 	AssociateSalaryPayheadInd getAssociateSalaryPayheadIndById(Long id) throws Exception;
 	
 	PayrollPayhead getPayrollPayheadByShortCodeAndOrglocation(String shortCode, Long orgLocationId);
+
+	AssociateSalaryHistoryInd saveAssociateSalaryHistoryInd(AssociateSalaryHistoryInd associateSalaryHistoryInd) throws Exception;
 }

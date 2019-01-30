@@ -32,7 +32,9 @@ import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
+import com.bis.sourcelead.entity.AssociateSalaryHistoryInd;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
+import com.bis.sourcelead.entity.AssociateSalaryPayheadHistoryInd;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -40,6 +42,7 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.PayrollPaySlipInd;
 import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
@@ -369,6 +372,10 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 					payrollDTO.setEmployee(employeePayroll.getEmployee().getId());
 				}
 				
+				if(employeePayroll != null && employeePayroll.getPayrollPaySlipInd() != null) {
+					payrollDTO.setPayrollPaySlipInd(employeePayroll.getPayrollPaySlipInd().getId());
+				}
+				
 				if(employeePayroll != null && employeePayroll.getEmployee() != null && employeePayroll.getEmployee().getUser() != null) {
 					payrollDTO.setEmpName(employeePayroll.getEmployee().getUser().getFullName());
 				}else {
@@ -440,6 +447,11 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 					Employees employee = new Employees();
 					employee.setId(payrollDTO.getEmployee());
 					employeePayroll.setEmployee(employee);
+				}
+				if(payrollDTO.getPayrollPaySlipInd() != null) {
+					PayrollPaySlipInd payrollPaySlipInd = new PayrollPaySlipInd();
+					payrollPaySlipInd.setId(payrollDTO.getPayrollPaySlipInd());
+					employeePayroll.setPayrollPaySlipInd(payrollPaySlipInd);
 				}
 				if(payrollDTO.getCandidateId() != null) {
 					Candidate candidate = new Candidate();
@@ -1191,5 +1203,101 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,Constants.SEND_APPROVED_MAIL_TO_REQUESTED_USERIND, new ArrayList<EmailAttachment>());
 		}
 	}
+	
+	
+	public AssociateSalaryHistoryInd setPreviousDataToAssociateSalaryHistoryInd(AssociateSalaryInd associateSalaryInd, AssociateSalaryHistoryInd associateSalaryHistoryInd) {
+		try {
+				associateSalaryHistoryInd.setPreviousAnnualSalary(associateSalaryInd.getAnnualSalary());
+				associateSalaryHistoryInd.setPreviousChangeReason(associateSalaryInd.getChangeReason());
+				associateSalaryHistoryInd.setPreviousCreatedBy(associateSalaryInd.getCreatedBy());
+				associateSalaryHistoryInd.setPreviousCreatedDate(associateSalaryInd.getCreatedDate());
+				associateSalaryHistoryInd.setPreviousEffectiveDate(associateSalaryInd.getEffectiveDate());
+				associateSalaryHistoryInd.setPreviousGrossSalary(associateSalaryInd.getGrossSalary());
+				associateSalaryHistoryInd.setPreviousGroupId(associateSalaryInd.getGroupId());
+				associateSalaryHistoryInd.setPreviousHourlyRate(associateSalaryInd.getHourlyRate());
+				associateSalaryHistoryInd.setPreviousIncrementPercentage(associateSalaryInd.getIncrementPercentage());
+				associateSalaryHistoryInd.setPreviousPayFrequency(associateSalaryInd.getPayFrequency());
+				associateSalaryHistoryInd.setPreviousPayType(associateSalaryInd.getPayType());
+				associateSalaryHistoryInd.setPreviousSalaryType(associateSalaryInd.getSalaryType());
+				associateSalaryHistoryInd.setPreviousStandardHours(associateSalaryInd.getStandardHours());
+				associateSalaryHistoryInd.setPreviousStopSalary(associateSalaryInd.getStopSalary());
+				associateSalaryHistoryInd.setPreviousUpdatedBy(associateSalaryInd.getUpdatedBy());
+				associateSalaryHistoryInd.setPreviousUpdatedDate(associateSalaryInd.getUpdatedDate());
+				
+				HashSet<AssociateSalaryPayheadHistoryInd> associateSalaryPayheadHistoryIndList = new HashSet<AssociateSalaryPayheadHistoryInd>();
+				for(AssociateSalaryPayheadInd associateSalaryPayheadInd : associateSalaryInd.getAssociateSalaryPayheadIndList()){
+					AssociateSalaryPayheadHistoryInd associateSalaryPayheadHistoryInd = new AssociateSalaryPayheadHistoryInd();
+					associateSalaryPayheadHistoryInd.setPreviousAnnualy(associateSalaryPayheadInd.getAnnualy());
+					associateSalaryPayheadHistoryInd.setPreviousMonthly(associateSalaryPayheadInd.getMonthly());
+					associateSalaryPayheadHistoryInd.setPreviousPayrollPayhead(associateSalaryPayheadInd.getPayrollPayhead());
+					associateSalaryPayheadHistoryInd.setPreviousCreatedBy(associateSalaryPayheadInd.getCreatedBy());
+					associateSalaryPayheadHistoryInd.setPreviousCreatedDate(associateSalaryPayheadInd.getCreatedDate());
+					associateSalaryPayheadHistoryInd.setPreviousUpdatedBy(associateSalaryPayheadInd.getUpdatedBy());
+					associateSalaryPayheadHistoryInd.setPreviousUpdatedDate(associateSalaryPayheadInd.getUpdatedDate());
+					associateSalaryPayheadHistoryIndList.add(associateSalaryPayheadHistoryInd);
+				}
+				associateSalaryHistoryInd.setAssociateSalaryPayheadHistoryIndList(associateSalaryPayheadHistoryIndList);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		return associateSalaryHistoryInd;
+	}
+	
+	
+	@SuppressWarnings("unused")
+	public AssociateSalaryHistoryInd setNewDataToAssociateSalaryHistoryInd(AssociateSalaryInd associateSalaryInd, AssociateSalaryHistoryInd associateSalaryHistoryInd) {
+		try {
+				associateSalaryHistoryInd.setAssociateSalaryInd(associateSalaryInd);
+				associateSalaryHistoryInd.setAnnualSalary(associateSalaryInd.getAnnualSalary());
+				associateSalaryHistoryInd.setChangeReason(associateSalaryInd.getChangeReason());
+				associateSalaryHistoryInd.setCreatedBy(associateSalaryInd.getCreatedBy());
+				associateSalaryHistoryInd.setCreatedDate(associateSalaryInd.getCreatedDate());
+				associateSalaryHistoryInd.setEffectiveDate(associateSalaryInd.getEffectiveDate());
+				associateSalaryHistoryInd.setGrossSalary(associateSalaryInd.getGrossSalary());
+				associateSalaryHistoryInd.setGroupId(associateSalaryInd.getGroupId());
+				associateSalaryHistoryInd.setHourlyRate(associateSalaryInd.getHourlyRate());
+				associateSalaryHistoryInd.setIncrementPercentage(associateSalaryInd.getIncrementPercentage());
+				associateSalaryHistoryInd.setPayFrequency(associateSalaryInd.getPayFrequency());
+				associateSalaryHistoryInd.setPayType(associateSalaryInd.getPayType());
+				associateSalaryHistoryInd.setSalaryType(associateSalaryInd.getSalaryType());
+				associateSalaryHistoryInd.setStandardHours(associateSalaryInd.getStandardHours());
+				associateSalaryHistoryInd.setStopSalary(associateSalaryInd.getStopSalary());
+				associateSalaryHistoryInd.setUpdatedBy(associateSalaryInd.getUpdatedBy());
+				associateSalaryHistoryInd.setUpdatedDate(associateSalaryInd.getUpdatedDate());
+				associateSalaryHistoryInd.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				associateSalaryHistoryInd.setStatus(Constants.RECORD_ACTIVE);
+				
+				HashSet<AssociateSalaryPayheadHistoryInd> associateSalaryPayheadHistoryIndList = new HashSet<AssociateSalaryPayheadHistoryInd>();
+				for(AssociateSalaryPayheadInd associateSalaryPayheadInd : associateSalaryInd.getAssociateSalaryPayheadIndList()){
+					if(associateSalaryPayheadInd.getPayrollPayhead() != null && associateSalaryPayheadInd.getPayrollPayhead().getShortCode() != null) {
+						AssociateSalaryPayheadHistoryInd associateSalaryPayheadHistoryInd = associateSalaryHistoryInd.getAssociateSalaryPayheadHistoryIndList().stream().filter(a -> a.getPreviousPayrollPayhead() != null && a.getPreviousPayrollPayhead().getShortCode() != null && a.getPreviousPayrollPayhead().getShortCode().equalsIgnoreCase(associateSalaryPayheadInd.getPayrollPayhead().getShortCode())).findFirst().orElse(null);
+						if(associateSalaryPayheadInd.getStatus() > 0) {
+							if(associateSalaryPayheadHistoryInd == null) {
+								associateSalaryPayheadHistoryInd = new AssociateSalaryPayheadHistoryInd();
+							}
+							associateSalaryPayheadHistoryInd.setAnnualy(associateSalaryPayheadInd.getAnnualy());
+							associateSalaryPayheadHistoryInd.setMonthly(associateSalaryPayheadInd.getMonthly());
+							associateSalaryPayheadHistoryInd.setPayrollPayhead(associateSalaryPayheadInd.getPayrollPayhead());
+							associateSalaryPayheadHistoryInd.setAssociateSalaryHistoryInd(associateSalaryHistoryInd);
+							associateSalaryPayheadHistoryInd.setAssociateSalaryInd(associateSalaryInd);
+							associateSalaryPayheadHistoryInd.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+							associateSalaryPayheadHistoryInd.setStatus(Constants.RECORD_ACTIVE);
+							associateSalaryPayheadHistoryInd.setCreatedBy(associateSalaryPayheadInd.getCreatedBy());
+							associateSalaryPayheadHistoryInd.setCreatedDate(associateSalaryPayheadInd.getCreatedDate());
+							associateSalaryPayheadHistoryInd.setUpdatedBy(associateSalaryPayheadInd.getUpdatedBy());
+							associateSalaryPayheadHistoryInd.setUpdatedDate(associateSalaryPayheadInd.getUpdatedDate());
+							associateSalaryPayheadHistoryIndList.add(associateSalaryPayheadHistoryInd);
+						}
+					}
+				}
+				associateSalaryHistoryInd.getAssociateSalaryPayheadHistoryIndList().clear();
+				associateSalaryHistoryInd.setAssociateSalaryPayheadHistoryIndList(associateSalaryPayheadHistoryIndList);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		return associateSalaryHistoryInd;
+	}
+	
 }
 
