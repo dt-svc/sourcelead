@@ -33,10 +33,10 @@
           
           <c:set var="timesheetTabExist" scope="session" value="N"/>
           <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-                    <c:if test="${userTabs.tabName == 'Clients'}">
+                    <c:if test="${userTabs == 'Clients'}">
                  	  <li class="${sessionData.nav == 'Clients' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/clientDashboard'/>" title="Clients"><span class="navIcons assIcon"></span><b>Clients</b></a></li>
                     </c:if>
-	                <c:if test="${userTabs.tabName == 'Jobs'}"> 
+	                <c:if test="${userTabs == 'Jobs'}"> 
 	                <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}"> 
 	                   <li class="${sessionData.nav == 'Requirement' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/jobs'/>" title="Jobs"><span class="navIcons jobIcon"></span><b>Jobs</b></a></li>
 	                </c:if> 
@@ -48,7 +48,7 @@
 	                
 	                
 	                
-	                <c:if test="${userTabs.tabName == 'Candidates'}">
+	                <c:if test="${userTabs == 'Candidates'}">
 	                 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 	                   <li class="${sessionData.nav == 'Candidates' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/candidatesList'/>" title="Candidates"><span class="navIcons canIcon"></span><b>Candidates</b></a></li>
 	                 </c:if>
@@ -58,19 +58,19 @@
 	                </c:if> 
 	                
                 
-	                <c:if test="${userTabs.tabName == 'Vendors'}">
+	                <c:if test="${userTabs == 'Vendors'}">
 	                   <li class="${sessionData.nav == 'Vendors' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/vendorsList'/>" title="Vendors"><span class="navIcons venIcon"></span><b>Vendors</b></a></li>
 	                </c:if> 
 	                 
-	                 <c:if test="${userTabs.tabName == 'Associates'}">
+	                 <c:if test="${userTabs == 'Associates'}">
 	                 <li class="${sessionData.nav == 'Users' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/usersList'/>" title="Associates"><span class="navIcons cliIcon"></span><b>Associates</b></a></li>
 	                 </c:if>
 	                 
-	                 <c:if test="${userTabs.tabName == 'Projects'}">
+	                 <c:if test="${userTabs == 'Projects'}">
 	                	  <li class="${sessionData.nav == 'Projects' ? 'navActive' : ''}"><a href="/pms/projectDashboard" title="Projects"><span class="navIcons projIcon"></span><b>Projects</b></a></li>
 	                 </c:if>
 	                 
-	                 <c:if test="${timesheetTabExist == 'N' && (userTabs.tabName == 'My Timesheets' || userTabs.tabName == 'Timesheet Approval')}">
+	                 <c:if test="${timesheetTabExist == 'N' && (userTabs == 'My Timesheets' || userTabs == 'Timesheet Approval')}">
 	                 <sec:authorize access="hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')"> 
 				           <li class="${sessionData.nav == 'TimeSheet' || sessionData.nav == 'TimeSheetApproval' ? 'navActive' : ''}">
 							 							  
@@ -95,18 +95,18 @@
 						  </li>
 					  </sec:authorize>
 	                 </c:if>
-	                 <c:if test="${userTabs.tabName == 'My Timesheets'}">
+	                 <c:if test="${userTabs == 'My Timesheets'}">
 	                 <sec:authorize access="hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS') && !hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')">
 	                       <li class="${sessionData.nav == 'TimeSheet' ? 'navActive' : ''}"><a href="/pms/timesheet"><span class="navIcons timIcon"></span><b>TimeSheets</b></a></li>
 	                 </sec:authorize>
 	                 </c:if>
-	                 <c:if test="${userTabs.tabName == 'Timesheet Approval'}">
+	                 <c:if test="${userTabs == 'Timesheet Approval'}">
 	                 <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS') && hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')">
 	                       <li class="${sessionData.nav == 'TimeSheetApproval' ? 'navActive' : ''}"><a href="/pms/timesheetApproval"><span class="navIcons timIcon"></span><b>TimeSheets</b></a></li>
 	                 </sec:authorize>
 	                 </c:if>
 	                 
-	                 <c:if test="${userTabs.tabName == 'Finance' }">
+	                 <c:if test="${userTabs == 'Finance' }">
 				           <li class="${sessionData.nav == 'Finance' || sessionData.nav == 'AssetManagement' ? 'navActive' : ''}">
 							 							  
 							  <a href="#" class="backofficeLi" title="Back Office">
@@ -133,17 +133,17 @@
 	                 </c:if>
 	                 
 	                 
-	                 <c:if test="${userTabs.tabName == 'On & Off Boarding'}">
+	                 <c:if test="${userTabs == 'On & Off Boarding'}">
 	                  <li class="${sessionData.nav == 'OnAndOffboard' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/candidateOnBoardingList'/>" title="On / Off Boarding"><span class="navIcons onoffIcon"></span><b>On / Off Board</b></a></li>
 	                 </c:if>
 	                 
 	                 
 	                 
-	                 <c:if test="${userTabs.tabName == 'Contracts'}">
+	                 <c:if test="${userTabs == 'Contracts'}">
 	                   <li class="${sessionData.nav == 'Contract' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/contractListbyStatus'/>" title="Contracts"><span class="navIcons contIcon"></span><b>Contracts</b></a></li>
 	                </c:if> 
 	                
-	                <c:if test="${SourceLeadWeb_billingTabsCount == 2 && userTabs.tabName == 'Receivable'}">
+	                <c:if test="${SourceLeadWeb_billingTabsCount == 2 && userTabs == 'Receivable'}">
 	                   <li class="${sessionData.nav == 'Receivable' || sessionData.nav == 'Payables' ? 'navActive' : ''}">
 														  
 							  <a href="#" class="billingLi" title="Finance">
@@ -169,18 +169,18 @@
 	                 </c:if>
 	                 
 	                 
-	                  <c:if test="${SourceLeadWeb_billingTabsCount < 2 && userTabs.tabName == 'Receivable'}">
+	                  <c:if test="${SourceLeadWeb_billingTabsCount < 2 && userTabs == 'Receivable'}">
 	                   <li class="${sessionData.nav == 'Receivable' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/invoiceList'/>" title="Invoices"><span class="navIcons invoIcon"></span><b>Invoices</b></a></li>
 	                 </c:if>
 	                 
-	                 <c:if test="${SourceLeadWeb_billingTabsCount < 2 && userTabs.tabName == 'Payables'}">
+	                 <c:if test="${SourceLeadWeb_billingTabsCount < 2 && userTabs == 'Payables'}">
 	                 <li class="${sessionData.nav == 'Payables' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/payablesList'/>" title="Bills"><span class="navIcons billIcon"></span><b>Bills</b></a></li>
 	                 </c:if>
 	                 
 	                 
 	                 
 	                 
-	                 <c:if test="${SourceLeadWeb_expensesTabCount == 2 && userTabs.tabName == 'My Expenses'}">
+	                 <c:if test="${SourceLeadWeb_expensesTabCount == 2 && userTabs == 'My Expenses'}">
 	                   <li class="${sessionData.nav == 'My Expenses' || sessionData.nav == 'Expenses Approval' ? 'navActive' : ''}">
 														  
 							  <a href="#" class="expencesLi" title="Expenses">
@@ -205,23 +205,23 @@
 						  </li>
 	                 </c:if>
 	                 
-	                 <c:if test="${SourceLeadWeb_expensesTabCount < 2 && userTabs.tabName == 'My Expenses'}">
+	                 <c:if test="${SourceLeadWeb_expensesTabCount < 2 && userTabs == 'My Expenses'}">
 	                   <li class="${sessionData.nav == 'My Expenses' ? 'navActive' : ''}"><a href="/pms/expenses" title="My Expenses"><span class="navIcons expIcon"></span><b>Expenses</b></a></li>
 	                 </c:if>
 	                 
-	                 <c:if test="${SourceLeadWeb_expensesTabCount < 2 && userTabs.tabName == 'Expenses Approval'}">
+	                 <c:if test="${SourceLeadWeb_expensesTabCount < 2 && userTabs == 'Expenses Approval'}">
 	                 <li class="${sessionData.nav == 'Expenses Approval' ? 'navActive' : ''}"><a href="/pms/expensesApprovalList" title="Expenses Approval"><span class="navIcons expIcon"></span><b>Expenses Approval</b></a></li>
 	                 </c:if>
 	                 
-	                 <c:if test="${userTabs.tabName == 'Asset Management'}">
+	                 <c:if test="${userTabs == 'Asset Management'}">
 	                   <li class="${sessionData.nav == 'AssetManagement' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/assetManagement'/>" title="Asset Management"><span class="navIcons asstIcon"></span><b>Asset Management</b></a></li>
 	                </c:if> 
 	                
-	                <c:if test="${userTabs.tabName == 'Support'}">
+	                <c:if test="${userTabs == 'Support'}">
 	                   <li class="${sessionData.nav == 'Support' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/sourceleadTicketList'/>" title="Support"><span class="navIcons supIcon"></span><b>Support</b></a></li>
 	                </c:if> 
 	                
-	                <c:if test="${SourceLeadWeb_resourcesTabCount == 2 && userTabs.tabName == 'Blog'}">
+	                <c:if test="${SourceLeadWeb_resourcesTabCount == 2 && userTabs == 'Blog'}">
 	                   <li class="${sessionData.nav == 'Blogs' || sessionData.nav == 'UserManuals' ? 'navActive' : ''}">
 														  
 							  <a href="#" class="resourcesli" title="Resources">
@@ -250,22 +250,22 @@
 	                 
 	                 <c:if test="${SourceLeadWeb_resourcesTabCount < 2}">
 	                 
-	                 <c:if test="${userTabs.tabName == 'Blog'}">
+	                 <c:if test="${userTabs == 'Blog'}">
 	                    <li class="${sessionData.nav == 'Blogs' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/blogs'/>" title="Blogs"><span class="navIcons blogIcon"></span><b>Blogs</b></a></li>
 	                 </c:if>
 	                 
-	                 <c:if test="${userTabs.tabName == 'User Manuals'}">
+	                 <c:if test="${userTabs == 'User Manuals'}">
 	                    <li class="${sessionData.nav == 'UserManuals' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/userManuals'/>" title="User Manuals"><span class="navIcons usermanuIcon"></span><b>User Manuals</b></a></li>
 	                 </c:if>
 	                      
 	                 </c:if>
 	                
 	                
-	                <c:if test="${userTabs.tabName == 'Campaigns'}">
+	                <c:if test="${userTabs == 'Campaigns'}">
                          <li class="${sessionData.nav == 'Campaigns' || sessionData.nav == 'CampaignSender' || sessionData.nav == 'CampaignRecipient' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/campaigns/hotcampaigns'/>" title="Campaigns"><span class="navIcons campIcon"></span><b>Campaigns</b></a></li>				  
 			         </c:if>
 
-					<c:if test="${SourceLeadWeb_paryrollTabCount == 2 && userTabs.tabName == 'Run Payroll'}">
+					<c:if test="${SourceLeadWeb_paryrollTabCount == 2 && userTabs == 'Run Payroll'}">
 						<li class="${sessionData.nav == 'Run Payroll' || sessionData.nav == 'My Payroll' ? 'navActive' : ''}">
 						
 						<a href="#" class="payrollli" title="Pay Roll">
@@ -306,7 +306,7 @@
 						</li>
 					</c:if>
 					
-					<c:if test="${SourceLeadWeb_paryrollTabCount < 2 && userTabs.tabName == 'Run Payroll'}">
+					<c:if test="${SourceLeadWeb_paryrollTabCount < 2 && userTabs == 'Run Payroll'}">
 							<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 								<li class="${sessionData.nav == 'Payroll' ? 'navActive' : ''}"><a href="/pms/uSPayrollDashboard" title="Run Payroll"><span class="navIcons payIcon"></span><b>Run Payroll</b></a></li>
 							</c:if>
@@ -316,7 +316,7 @@
 							</c:if>
 					</c:if>
 					
-					<c:if test="${SourceLeadWeb_paryrollTabCount < 2 && userTabs.tabName == 'My Payroll'}">
+					<c:if test="${SourceLeadWeb_paryrollTabCount < 2 && userTabs == 'My Payroll'}">
 							<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 								<li class="${sessionData.nav == 'My Payroll' ? 'navActive' : ''}"><a href="/pms/userPay" title="Leagacy Payroll"><span class="navIcons payIcon"></span><b>Legacy Payroll</b></a></li>
 								<li class="${sessionData.nav == 'My Payroll' ? 'navActive' : ''}"><a href="/pms/myPayroll" title="My Payroll"><span class="navIcons payIcon"></span><b>My Payroll</b></a></li>
@@ -327,7 +327,7 @@
 							</c:if>
 					</c:if>
 
-					<c:if test="${userTabs.tabName == 'Immigrations'}">
+					<c:if test="${userTabs == 'Immigrations'}">
 					 <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION','ROLE_VIEW_MY_PETITION')"> 
 					
 
@@ -346,7 +346,7 @@
 								</li>
 								</sec:authorize>
 						</c:if>
-				    <c:if test="${userTabs.tabName == 'Leave Management'}">
+				    <c:if test="${userTabs == 'Leave Management'}">
 		             <li class="${sessionData.nav == 'Leave Management' ? 'navActive' : ''}"><a href="/pms/leaveManagementReports" title="Leave Management"><span class="navIcons leaveIcon"></span><b>Leave Management</b></a></li>
 		          	</c:if>	
           </c:forEach>
