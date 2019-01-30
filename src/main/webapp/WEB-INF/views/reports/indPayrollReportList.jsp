@@ -53,6 +53,25 @@
             </div>
           </div> 
           
+          <div class="col-md-3">
+            <div class="pull-left mr10"> <i class="fa fa-inr fa-2x text-muted"></i> </div>
+            <div class="pull-left">
+              <h4 class="text-muted">Loan</h4>
+              <small class="text-muted">Payroll Loan Reports</small>
+              <div class="clearfix mt10"><a href="${appPath}/indPayrollLoanReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+            </div>
+          </div> 
+          
+          <div class="col-md-3">
+            <div class="pull-left mr10"> <i class="fa fa-inr fa-2x text-muted"></i> </div>
+            <div class="pull-left">
+              <h4 class="text-muted">Salary Statement</h4>
+              <small class="text-muted">Payroll Salary Statement Reports</small>
+              <div class="clearfix mt10"><a href="${appPath}/indPayrollSalaryStatementReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+            </div>
+          </div> 
+          
+          
           
         <%--  <div class="col-md-3">
             <div class="pull-left mr10"> <i class="fa fa-file-text-o fa-2x text-muted"></i> </div>

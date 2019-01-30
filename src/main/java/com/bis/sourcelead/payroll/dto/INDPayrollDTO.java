@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.AssociateLoanAndAdvancesHistoryDTO;
+import com.bis.sourcelead.entity.PayrollPaySlipInd;
 
 public class INDPayrollDTO {
 	private Long id;
@@ -78,6 +79,8 @@ public class INDPayrollDTO {
 	 List<AssociatePayrollPayheadHistoryDTO> payHeadHistoryDTOList;
 	 
 	 List<AssociateLoanAndAdvancesHistoryDTO> loanAdvHistoryDTOList;
+	 
+	 private Long payrollPaySlipInd;
 	 
 	public Long getId() {
 		return id;
@@ -366,6 +369,14 @@ public class INDPayrollDTO {
 
 	public void setUpdatedBy(Long updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public Long getPayrollPaySlipInd() {
+		return payrollPaySlipInd;
+	}
+
+	public void setPayrollPaySlipInd(Long payrollPaySlipInd) {
+		this.payrollPaySlipInd = payrollPaySlipInd;
 	}
 	
 	
