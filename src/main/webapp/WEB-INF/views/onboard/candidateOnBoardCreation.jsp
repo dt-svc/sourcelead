@@ -13,6 +13,7 @@
 
 
 <script> 
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 	$(document).ready(function(){
 		document.getElementById("templateDocs").disabled = true;
 		document.getElementById("templateTasks").disabled = true;
@@ -52,7 +53,7 @@
       <div class="pull-left">
         <h2>Employee Onboarding</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='${appPath}/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Onboarding </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Onboarding </div>
  </section>
  
  
@@ -92,7 +93,7 @@
                   
                 <div class="form-footer">
                   <div class="pull-right mr">
-                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/app/candidateOnBoardingList'">
+                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/ats/candidateOnBoardingList'">
                     <input type="button" value="Save" id="save_onboardUser" onclick="saveOnboardingCandidateDetails('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="saveAndContinue_onboardUser" onclick="saveOnboardingCandidateDetails('saveAndContinue');"  class="btn btn-sm btn-primary">
                   </div>
@@ -166,7 +167,7 @@
                 </div>
                 <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/app/candidateOnBoardingList'">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/ats/candidateOnBoardingList'">
                     <input type="button" value="Save" id="save_docs_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="save_continue_docs_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
@@ -453,7 +454,7 @@ function getEmploymentType(){
 			  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			  $.ajax({
 				   	type: "POST",
-				    url: sourceleadUrl+"/getOnBoardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,	    	   
+				    url: atsUrl+"/getOnBoardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,	    	   
 				    success: function(response) {
 				    	if (response.response === "AWKWARD") {
 				    	    location.href = "/errorPage";
@@ -467,7 +468,7 @@ function getEmploymentType(){
 				    			 getVendorsByOrgLocationForAddApplicant();
 				    		 }
 				    	} else if (response.indexOf('Sign In') !== -1) {
-				    		location.replace(sourceleadUrl);
+				    		location.replace(atsUrl);
 				    	} else {
 				    	    showError("Operation failed, please try again");
 				    	}
@@ -497,7 +498,7 @@ function getEmploymentType(){
  function getVendorsByOrgLocationForAddApplicant(orgRelationId){
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getVendorsByOrgLocation?"+tokenParamName+"="+tokenValue+"", 
+	        url: atsUrl+"/getVendorsByOrgLocation?"+tokenParamName+"="+tokenValue+"", 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
@@ -537,7 +538,7 @@ function getEmploymentType(){
 	 }
 		 $.ajax({
 			    type: "POST",
-		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        url: atsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(json) {
 		        	$('#vendorContact').empty();
 		        	$('#vendorContact').append('<option value="">--Select Vendor contact--</option>');
@@ -843,7 +844,7 @@ function validateUploadFile(id)
   function loadOfferAcceptedCandidates(candidateId){
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getOfferAcceptedCandidatesForOnBoard?${_csrf.parameterName}=${_csrf.token}",	    	   
+		    url: atsUrl+"/getOfferAcceptedCandidatesForOnBoard?${_csrf.parameterName}=${_csrf.token}",	    	   
 		    success: function(response) {
 		    	if (response.response === "AWKWARD") {
 		    	    location.href = "/errorPage";
@@ -868,7 +869,7 @@ function validateUploadFile(id)
 		           	 $("#onboardCandiate").append(result); 
 		           	 $('#onboardCandiate').trigger("chosen:updated");
 		    	} else if (response.indexOf('Sign In') !== -1) {
-		    		location.replace(sourceleadUrl);
+		    		location.replace(atsUrl);
 		    	} else {
 		    	    showError("Operation failed, please try again");
 		    	}
@@ -890,7 +891,7 @@ function validateUploadFile(id)
 		  
 		  $.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/getOnBoardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,	    	   
+			    url: atsUrl+"/getOnBoardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,	    	   
 			    success: function(response) {
 			    	if (response.response === "AWKWARD") {
 			    	    location.href = "/errorPage";
@@ -930,7 +931,7 @@ function validateUploadFile(id)
 				    	 
 				    	 validateOnboardCandidate(json['email']);
 			    	} else if (response.indexOf('Sign In') !== -1) {
-			    		location.replace(sourceleadUrl);
+			    		location.replace(atsUrl);
 			    	} else {
 			    	    showError("Operation failed, please try again");
 			    	}
@@ -953,7 +954,7 @@ function validateUploadFile(id)
 		  
 		  $.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/getOnBoardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,	    	   
+			    url: atsUrl+"/getOnBoardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,	    	   
 			    success: function(response) {
 			    	if (response.response === "AWKWARD") {
 			    	    location.href = "/errorPage";
@@ -1002,7 +1003,7 @@ function validateUploadFile(id)
 					    	 $("#zipCode").val(json['zipCode']);
 				    	 } 
 			    	} else if (response.indexOf('Sign In') !== -1) {
-			    		location.replace(sourceleadUrl);
+			    		location.replace(atsUrl);
 			    	} else {
 			    	    showError("Operation failed, please try again");
 			    	}
@@ -1027,7 +1028,7 @@ function validateUploadFile(id)
 		  
 		  $.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/getOnBoardingCandidateOfferDetails?${_csrf.parameterName}=${_csrf.token}&offerId="+offerId+"&locationCode="+locationCode,	    	   
+			    url: atsUrl+"/getOnBoardingCandidateOfferDetails?${_csrf.parameterName}=${_csrf.token}&offerId="+offerId+"&locationCode="+locationCode,	    	   
 			    success: function(response) {
 			    	if (response.response === "AWKWARD") {
 			    	    location.href = "/errorPage";
@@ -1078,7 +1079,7 @@ function validateUploadFile(id)
 				 			 $("#endDate").datepicker("option", "minDate", dt);
 				    	 }
 			    	} else if (response.indexOf('Sign In') !== -1) {
-			    		location.replace(sourceleadUrl);
+			    		location.replace(atsUrl);
 			    	} else {
 			    	    showError("Operation failed, please try again");
 			    	}
@@ -1110,7 +1111,7 @@ function getOnBoardCandidateCountry(country){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+    	 url: '${SourceLeadWeb_atsUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
           success: function(data) {
         	var json = JSON.parse(data);
         	$('#country').empty();
@@ -1139,7 +1140,7 @@ function getOnBoardCandidateStates(country,state){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+country, 
+	    	 url: '${SourceLeadWeb_atsUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+country, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -1173,7 +1174,7 @@ function getOnBoardCandidateCities(country,state,city){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+country+"&stateName="+state, 
+	    	 url: '${SourceLeadWeb_atsUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+country+"&stateName="+state, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
@@ -1205,7 +1206,7 @@ function loadCandidateRoles(onBoardRoleId){
 	
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getRolesListForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
+	    url: atsUrl+"/getRolesListForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
 	    success: function(response) {
 	    	 var json = JSON.parse(response.object);
 	    	 if (response.response === "AWKWARD") {
@@ -1226,7 +1227,7 @@ function loadCandidateRoles(onBoardRoleId){
 		           	 $("#onboardCandidateRole").append(result); 
 		           	 $('#onboardCandidateRole').trigger("chosen:updated");
 		    	} else if (response.indexOf('Sign In') !== -1) {
-		    		location.replace(sourceleadUrl);
+		    		location.replace(atsUrl);
 		    	} else {
 		    	    showError("Operation failed, please try again");
 		    	}
@@ -1241,7 +1242,7 @@ function loadTeams(onboardTeamId){
 	
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getTeamsListForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
+	    url: atsUrl+"/getTeamsListForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
 	    success: function(response) {
 	    	if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
@@ -1262,7 +1263,7 @@ function loadTeams(onboardTeamId){
 	           	 $("#team").append(result); 
 	           	 $('#team').trigger("chosen:updated");
 	    	} else if (response.indexOf('Sign In') !== -1) {
-	    		location.replace(sourceleadUrl);
+	    		location.replace(atsUrl);
 	    	} else {
 	    	    showError("Operation failed, please try again");
 	    	}
@@ -1278,7 +1279,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getOnboardingTemplatesForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
+	    url: atsUrl+"/getOnboardingTemplatesForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
 	    success: function(response) {
 	    	if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
@@ -1303,7 +1304,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	           	 $('#onboardingTemplate').trigger("chosen:updated");
 	           	$('#onboardingTemplate_chosen').find(".chosen-choices").css({"min-height":"34px"});
 	    	} else if (response.indexOf('Sign In') !== -1) {
-	    		location.replace(sourceleadUrl);
+	    		location.replace(atsUrl);
 	    	} else {
 	    	    showError("Operation failed, please try again");
 	    	}
@@ -1321,11 +1322,11 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		 role = document.getElementById("onboardCandidateRole").value; 
 	 }
 	 
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var atsUrl ='${SourceLeadWeb_atsUrl}';
 	 if(role != null && role != "" && role != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAssociateReportingManager?${_csrf.parameterName}=${_csrf.token}&role="+role, 
+		        url: atsUrl+"/getAssociateReportingManager?${_csrf.parameterName}=${_csrf.token}&role="+role, 
 		        success: function(json) {
 		        	var output = "";
 		        	output = output + "<option value=''>-- Select Manager --</option>"; 
@@ -1368,7 +1369,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	         }; 
 	 
 	 if ($('#onboardCandidate_form').validate(false, validationSettings)){ 
-	        var sourceleadUrl ='${sourceleadUrl}';
+	        var atsUrl ='${SourceLeadWeb_atsUrl}';
 	        $("#save_onboardUser").attr("disabled", "disabled");
 	        $("#saveAndContinue_onboardUser").attr("disabled", "disabled");
 	        var formData = getFormData1("onboardCandidate_form");
@@ -1378,7 +1379,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		    	 data: formData,
 		 		processData: false, 
 		 		contentType: false,
-		    	 url: sourceleadUrl+"/saveOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}", 
+		    	 url: atsUrl+"/saveOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -1400,7 +1401,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		   	            $("#saveAndContinue_onboardUser").removeAttr("disabled");
 		     	        $("#loading").removeAttr("style");
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
+		        		location.replace(atsUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -1430,13 +1431,13 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		 
 	 addCandidateDetailsForOnboarding();
 	
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var atsUrl ='${SourceLeadWeb_atsUrl}';
 	 var locationCode ='${SourceLeadWeb_locationCode}';
 	 
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    $.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/loadOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&locationCode="+locationCode, 
+	    	url: atsUrl+"/loadOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&locationCode="+locationCode, 
 	        success: function(response) {
 	        	if (response.response === "AWKWARD") {
         		    location.href = "/errorPage";
@@ -1578,7 +1579,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
    		    	$("#savedonboardId").val(json['id']);
    		    	$("#loading").removeAttr("style");
         		} else if (response.indexOf('Sign In') !== -1) {
-        			location.replace(sourceleadUrl);
+        			location.replace(atsUrl);
         		} else {
         		    showError("Operation failed, please try again");
         		}
@@ -1619,10 +1620,10 @@ function getTemplatePolicyDocumentsDetails(onboardId){
 	}
 	var documentType = "Policies"
 	if(onboardId){
-		var sourceleadUrl ='${sourceleadUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 	     $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
+		    	 url: atsUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
 		        success: function(json) {
 		        	
 		        	 var result = "";
@@ -1675,10 +1676,10 @@ function getTemplateSupportingDocumentsDetails(onboardId){
 	}
 	var documentType = "Supported"
 	if(onboardId){
-		var sourceleadUrl ='${sourceleadUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 	     $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
+		    	 url: atsUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
 		        success: function(json) {
 		        	
 		        	 var result = "";
@@ -1731,10 +1732,10 @@ function getTemplateContractsDocumentsDetails(onboardId){
 	}
 	var documentType = "Contracts"
 	if(onboardId){
-		var sourceleadUrl ='${sourceleadUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 	     $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
+		    	 url: atsUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
 		        success: function(json) {
 		        	
 		        	 var result = "";
@@ -1789,10 +1790,10 @@ function getTemplateFormsDocumentsDetails(onboardId){
 	}
 	var documentType = "Forms"
 	if(onboardId){
-		var sourceleadUrl ='${sourceleadUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 	     $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
+		    	 url: atsUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
 		        success: function(json) {
 		        	
 		        	 var result = "";
@@ -1867,10 +1868,10 @@ function deleteTemplateDocument(documentId,documentType){
 <script>
 function deleteCandidateOnboardDocument(documentUUID,documentId,documentType){
 	
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	   $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/deleteTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
+	    	 url: atsUrl+"/deleteTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
 	        success: function(response) {
 	        	if (response && response.response === "INVALID_DATA") {
 	        	    showError(response.responseMessage);
@@ -1890,7 +1891,7 @@ function deleteCandidateOnboardDocument(documentUUID,documentId,documentType){
 	        			document.getElementById("formsdocument"+documentId).remove();
 	        		}
 	        	} else if (response.indexOf('Sign In') !== -1) {
-	        		location.replace(sourceleadUrl);
+	        		location.replace(atsUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}
@@ -1908,7 +1909,7 @@ function createTemplateDocs(saveType){
 			dateFormat : 'yyyy/mm/dd' 
          }; 
 	
-	  var sourceleadUrl ='${sourceleadUrl}';
+	  var atsUrl ='${SourceLeadWeb_atsUrl}';
 	  if ($('#templateDocuments_form').validate(false, validationSettings)){ 
 		   $("#save_docs_button").attr("disabled", "disabled");
 		   $("#save_continue_docs_button").attr("disabled", "disabled");
@@ -1919,7 +1920,7 @@ function createTemplateDocs(saveType){
 		      data: formData,
 		      processData: false, 
 		 	  contentType: false,
-	    	  url: sourceleadUrl+"/saveCandidatedOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}",		
+	    	  url: atsUrl+"/saveCandidatedOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}",		
 		      success :function(response) {
 		    	  	if (response.response === "AWKWARD") {
 		    		    location.href = "/errorPage";
@@ -1939,7 +1940,7 @@ function createTemplateDocs(saveType){
 			   	      $("#save_continue_docs_button").removeAttr("disabled");
 			    	  $("#loading").removeAttr("style");
 		    	  	} else if (response.indexOf('Sign In') !== -1) {
-		    			location.replace(sourceleadUrl);
+		    			location.replace(atsUrl);
 		    		} else {
 		    		    showError("Operation failed, please try again");
 		    		}
@@ -2041,7 +2042,7 @@ function getAssignToUsersList(){
     $("#candidateOnboardTaskId").val(candidateOnBoardId);
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
+	    url: atsUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
 	    success: function(response) {
 	    	if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
@@ -2056,7 +2057,7 @@ function getAssignToUsersList(){
 	           	 $("#onboardAssignedTo").append(result); 
 	           	 $('#onboardAssignedTo').trigger("chosen:updated");
 	    	} else if (response.indexOf('Sign In') !== -1) {
-	    		location.replace(sourceleadUrl);
+	    		location.replace(atsUrl);
 	    	} else {
 	    	    showError("Operation failed, please try again");
 	    	}
@@ -2076,7 +2077,7 @@ function saveOnboardTask(){
          }; 
 	
 	  if ($('#addonboardTask_form').validate(false, validationSettings)){ 
-		    var sourceleadUrl ='${sourceleadUrl}';
+		    var atsUrl ='${SourceLeadWeb_atsUrl}';
 	        var formData = getFormData1("addonboardTask_form");
 	    	var tasksIds = document.getElementsByName("savedTemplateTask");
 	    	var tasks = '';
@@ -2092,7 +2093,7 @@ function saveOnboardTask(){
 		    	 data: formData,
 		    	 processData: false,
 			     contentType:false,
-		    	 url: sourceleadUrl+"/saveCandidateOnBoardTasks?${_csrf.parameterName}=${_csrf.token}&tasks="+tasks, 
+		    	 url: atsUrl+"/saveCandidateOnBoardTasks?${_csrf.parameterName}=${_csrf.token}&tasks="+tasks, 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -2105,7 +2106,7 @@ function saveOnboardTask(){
 			        	$("#selector").fadeIn(150);
 			        	$('#selector').delay(1000).fadeOut('slow');
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
+		        		location.replace(atsUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -2134,7 +2135,7 @@ function getOnboardingTasksList(){
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getCandidateOnboardTasksList?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId,	    	   
+	    url: atsUrl+"/getCandidateOnboardTasksList?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId,	    	   
 	    success: function(json) {
         	 var result = "";
         	 
@@ -2219,10 +2220,10 @@ function deleteTask(taskId,taskType){
 		document.getElementById("onboardTask"+taskId).remove();
 		document.getElementById("templateTask"+taskId).remove()
 	}else{
-		var sourceleadUrl ='${sourceleadUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 		   $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/deleteOnboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
+		    	 url: atsUrl+"/deleteOnboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
 		        success: function(response) {
 		        	if (response && response.response === "INVALID_DATA") {
 	        		    showError(response.responseMessage);
@@ -2231,7 +2232,7 @@ function deleteTask(taskId,taskType){
 	        		} else if (response.response === "SUCCESS") {
 	        			document.getElementById("onboardTask"+taskId).remove();
 	        		} else if (response.indexOf('Sign In') !== -1) {
-	        			location.replace(sourceleadUrl);
+	        			location.replace(atsUrl);
 	        		} else {
 	        		    showError("Operation failed, please try again");
 	        		}
@@ -2259,15 +2260,15 @@ function saveAndFinishOnboardTemplate(onboardId){
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/saveAndFinishCandidateOnboard?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&tasks="+tasks, 	    	   
+	    url: atsUrl+"/saveAndFinishCandidateOnboard?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&tasks="+tasks, 	    	   
 	    success: function(response) {
 	    	if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
 	    	} else if (response.response === "SUCCESS") {
 		    	$("#finish_task").removeAttr("disabled");
-		    	location.replace(sourceleadUrl+"/candidateOnBoardingList"); 
+		    	location.replace(atsUrl+"/candidateOnBoardingList"); 
 	    	} else if (response.indexOf('Sign In') !== -1) {
-	    		location.replace(sourceleadUrl);
+	    		location.replace(atsUrl);
 	    	} else {
 	    	    showError("Operation failed, please try again");
 	    	}
@@ -2281,13 +2282,13 @@ function saveAndFinishOnboardTemplate(onboardId){
  function validateUserEmail() {
 	 var email = document.getElementById("companyEmail").value;
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var atsUrl ='${SourceLeadWeb_atsUrl}';
 	 if(email != null && email != ""){
 		 $("#save_onboardUser").attr("disabled", "disabled");
 		 $("#saveAndContinue_onboardUser" ).attr("disabled", "disabled");
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateOnboardCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email, 
+		        url: atsUrl+"/validateOnboardCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email, 
 		        success: function(response) {
 		        	if (response && response.response === "INVALID_USER") {
 		        	    showError(response.responseMessage);
@@ -2313,7 +2314,7 @@ function saveAndFinishOnboardTemplate(onboardId){
 	                         $("#saveAndContinue_onboardUser").removeAttr("disabled");
 			        	}
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
+		        		location.replace(atsUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -2326,13 +2327,13 @@ function saveAndFinishOnboardTemplate(onboardId){
  
  <script>
  function validateOnboardCandidate(email){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var atsUrl ='${SourceLeadWeb_atsUrl}';
 	  if(email){
 		  $("#save_onboardUser").attr("disabled", "disabled");
 			 $("#saveAndContinue_onboardUser" ).attr("disabled", "disabled");
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/validateOnboardCandidate?${_csrf.parameterName}=${_csrf.token}&email="+email, 
+			        url: atsUrl+"/validateOnboardCandidate?${_csrf.parameterName}=${_csrf.token}&email="+email, 
 			        success: function(response) {
 			        	if (response.response === "AWKWARD") {
 			        	    location.href = "/errorPage";
@@ -2344,7 +2345,7 @@ function saveAndFinishOnboardTemplate(onboardId){
 		                         $("#saveAndContinue_onboardUser").removeAttr("disabled");
 				        	}
 			        	} else if (response.indexOf('Sign In') !== -1) {
-			        		location.replace(sourceleadUrl);
+			        		location.replace(atsUrl);
 			        	} else {
 			        	    showError("Operation failed, please try again");
 			        	}
@@ -2357,11 +2358,11 @@ function saveAndFinishOnboardTemplate(onboardId){
  
  <script>
  function validateOnbardUserByCandidateId(candidateId,candidateName){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var atsUrl ='${SourceLeadWeb_atsUrl}';
 	  if(candidateId){
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/validateOnboardCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+			        url: atsUrl+"/validateOnboardCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
 			        success: function(response) {
 			        	if (response.response === "AWKWARD") {
 			        	    location.href = "/errorPage";
@@ -2370,7 +2371,7 @@ function saveAndFinishOnboardTemplate(onboardId){
 			    			 $("#saveAndContinue_onboardUser" ).attr("disabled", "disabled");
 			        		 alertMessage(candidateName+" is Already exists as onboard user");	
 			        	} else if (response.indexOf('Sign In') !== -1) {
-			        		location.replace(sourceleadUrl);
+			        		location.replace(atsUrl);
 			        	} else {
 			        	    showError("Operation failed, please try again");
 			        	}
@@ -2880,7 +2881,7 @@ function toDate(selector) {
 function refreshRoleList(){
 		 $.ajax({
 	      type : "POST",
-	       url: sourceleadUrl+"/refreshRoleList",       
+	       url: atsUrl+"/refreshRoleList",       
 	       success: function(json) {
 	        	var output = "";
 	        	output = output + "<option value=''>Select Role</option>"; 
@@ -2932,7 +2933,7 @@ function changeCitizenShip(){
 function shiftList(shiftId){
 		 $.ajax({
 	      type : "POST",
-	       url: sourceleadUrl+"/shiftList",       
+	       url: atsUrl+"/shiftList",       
 	       success: function(json) {
 	        	var output = "";
 	        	output = output + "<option value=''>Select Shift</option>"; 

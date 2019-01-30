@@ -185,7 +185,7 @@ public class SubmissionsRestController {
 
 	}
 
-	@RequestMapping(value = "/app/getCandidateDetails")
+	@RequestMapping(value = "/getCandidateDetails")
 	@ResponseBody Response<Candidate> getCandidateDetails(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
@@ -349,7 +349,7 @@ public class SubmissionsRestController {
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_ADD_APPLICANT','ROLE_CROWDSOURCING_CANDIDATES')")
-	@RequestMapping(value = "/app/saveAddApplicant", method = RequestMethod.POST)
+	@RequestMapping(value = "/saveAddApplicant", method = RequestMethod.POST)
 	public @ResponseBody Response<String> saveAddApplicant(@RequestParam(value = "jsonData", required = false) String json,
 			@RequestParam(value = "con", required = false) String con, MultipartHttpServletRequest request,
 			@RequestParam(value = "locationMapFile", required = false) CommonsMultipartFile locationMapFileData)

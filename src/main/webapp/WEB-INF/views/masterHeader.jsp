@@ -189,7 +189,7 @@ z-index: 1000000000 !important;
 <script type="text/javascript">
 $(document).ready(function(){
 //   getNotificationsByuserId();
-	updateMarketplaceCartCountAndPrice();
+	//updateMarketplaceCartCountAndPrice();
 });
 </script>
 <!-- notification related include jsp -->

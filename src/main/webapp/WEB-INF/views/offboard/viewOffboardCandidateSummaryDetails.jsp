@@ -34,7 +34,7 @@ padding-left: 25px;
       <div class="pull-left">
           <h2 id="candidateName"></h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='${appPath}/candidateOnBoardingList'/>">Candidate Offboarding Summary</a> &raquo; Employee Offboard Summary </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Candidate Offboarding Summary</a> &raquo; Employee Offboard Summary </div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="applicant_accept">
@@ -108,12 +108,13 @@ padding-left: 25px;
    <script>
    function offboardCandidateDetails(){
 	    var offboardUUID = '${offboardUUID}';
-	    var sourceleadUrl ='${sourceleadUrl}';
+	    /* var sourceleadUrl ='${sourceleadUrl}'; */
+	    var atsUrl ='${SourceLeadWeb_atsUrl}';
 	    var locationCode='${SourceLeadWeb_locationCode}'; 
 	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/loadOffboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&offBoardingUUID="+offboardUUID+"&locationCode="+locationCode,
+	    	 url: atsUrl+"/loadOffboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&offBoardingUUID="+offboardUUID+"&locationCode="+locationCode,
 	        success: function(response) {
 	        	if (response.response === "AWKWARD") {
 	        	    location.href = "/errorPage";
@@ -261,7 +262,7 @@ padding-left: 25px;
 					 $("#offboardCandidateDetails").append(result); 
 			    	 $("#loading").removeAttr("style");
 	        	} else if (response.indexOf('Sign In') !== -1) {
-	        		location.replace(sourceleadUrl);
+	        		location.replace(atsUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}
@@ -274,12 +275,12 @@ padding-left: 25px;
    function getOffboardCandidateCheckList(){
 	   
 	   
-	   var sourceleadUrl = '${sourceleadUrl}';
+	   var atsUrl = '${SourceLeadWeb_atsUrl}';
 	   var offboardUUID = '${offboardUUID}';
 	  
 	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	   
-	    getOffboardCheckList(sourceleadUrl,offboardUUID);
+	    getOffboardCheckList(atsUrl,offboardUUID);
 	   
 	    var result = "";
 		
@@ -303,12 +304,12 @@ padding-left: 25px;
    function getOffboardingTasksList(){
 	   
 	   var offboardUUID = '${offboardUUID}';
-	    var sourceleadUrl ='${sourceleadUrl}'; 
+	    var atsUrl ='${SourceLeadWeb_atsUrl}'; 
 	    var locationCode ='${SourceLeadWeb_locationCode}';
 	    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    $.ajax({
 	    	type: "GET",
-	    	 url: sourceleadUrl+"/getOffboardCandidateTasksByOffboardUUID?${_csrf.parameterName}=${_csrf.token}&offboardUUID="+offboardUUID+"&locationCode="+locationCode, 
+	    	 url: atsUrl+"/getOffboardCandidateTasksByOffboardUUID?${_csrf.parameterName}=${_csrf.token}&offboardUUID="+offboardUUID+"&locationCode="+locationCode, 
 	        success: function(response) {
 	        	if (response.response === "AWKWARD") {
 	        	    location.href = "/errorPage";
@@ -360,7 +361,7 @@ padding-left: 25px;
 		    		 $("#offboardTasksListView").append(result);
 		    		 $("#loading").removeAttr("style");
 	        	} else if (response.indexOf('Sign In') !== -1) {
-	        		location.replace(sourceleadUrl);
+	        		location.replace(atsUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}
@@ -371,11 +372,11 @@ padding-left: 25px;
    <script>
    function getOffboardDocuments(){
 	   var offboardUUID = '${offboardUUID}';
-	    var sourceleadUrl ='${sourceleadUrl}';  
+	    var atsUrl ='${SourceLeadWeb_atsUrl}';  
 	  // $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    $.ajax({
 	    	type: "GET",
-	    	 url: sourceleadUrl+"/getOffboardCandidateDocumentsByOffboardUUID?${_csrf.parameterName}=${_csrf.token}&offboardUUID="+offboardUUID, 
+	    	 url: atsUrl+"/getOffboardCandidateDocumentsByOffboardUUID?${_csrf.parameterName}=${_csrf.token}&offboardUUID="+offboardUUID, 
 	        success: function(response) {
 	        	if (response.response === "AWKWARD") {
 	        	    location.href = "/errorPage";
@@ -430,7 +431,7 @@ padding-left: 25px;
 			    		 $("#offboardDocumentsDiv").append(result);
 			    		 $("#loading").removeAttr("style");
 	        	} else if (response.indexOf('Sign In') !== -1) {
-	        		location.replace(sourceleadUrl);
+	        		location.replace(atsUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}

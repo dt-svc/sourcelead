@@ -46,7 +46,7 @@ var uploadflag= true;
 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="${appPath}/jobs">Job List</a>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/jobsList'/>">Job List</a>
 			&raquo; Import Jobs
 		</div>
 	</section>
@@ -63,7 +63,7 @@ var uploadflag= true;
 					</div>
 					
 						<div class="col-xs-5 col-md-5">
-							<a href="<c:url value='${appPath}/downloadDataImportTemplate'/>"
+							<a href="<c:url value='/downloadDataImportTemplate'/>"
 								class="btn btn-success btn-block" title="Download Job Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Job Template
 							</a>
 						</div>
@@ -76,7 +76,7 @@ var uploadflag= true;
 								</div>
 								<div class="btn-group">
 									<input type="reset" class="btn btn-danger" value="Reset"
-										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadJobs'/>'">
+										onClick="javascript:window.location.href = '<c:url value='/uploadJobs'/>'">
 								</div>
 							</div>
 						</div>
@@ -166,7 +166,7 @@ function fetchFieldsWithMatchedColumn(){
       	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
           	$.ajax({
     			type: "POST",
-    		    url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition, 
+    		    url: atsUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition, 
     		    success: function(data) {
     		    	$("#dataFileImportDiv").attr("style","display:none");
     		    	$('#dataFieldsDiv').removeAttr("style");
@@ -192,7 +192,7 @@ function cancelFileImport(){
 	/* $("#jobFieldsDiv").attr("style","display:none");
 	$('#jobFileImportDiv').removeAttr("style");
 	$('#jobFieldsDiv').empty(); */
-	location.replace(sourceleadUrl+"/uploadJobs");
+	location.replace(atsUrl+"/uploadJobs");
 }
 </script>
 

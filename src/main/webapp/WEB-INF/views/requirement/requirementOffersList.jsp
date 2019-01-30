@@ -63,7 +63,7 @@
  <script type="text/javascript">
        function requirementOfferist(onloadFlag){
 
-    	   var sourceleadUrl ='${sourceleadUrl}';
+    	   var atsUrl = '${SourceLeadWeb_atsUrl}';
    		   var tab = '${tab}';
     	   var frequency = $('input[name=customDates]:checked').val(); 
     	    var fromDate = $("#custFromDate").val();
@@ -125,13 +125,13 @@
     	        	$('#custFromDateDiv').find('p.jquery_form_error_message').remove();
     	            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
     	            $("#custom-selects").hide();
-        	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=OFFERMADE&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&applicants="+applicants;
+        	        var url = atsUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=OFFERMADE&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&applicants="+applicants;
         			prepareSubmissionList(url);
     	        }
     	    }else{
     	        $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
     	        $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-    	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=OFFERMADE&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&applicants="+applicants;
+    	        var url = atsUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=OFFERMADE&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&applicants="+applicants;
     		    prepareOfferList(url);
     	    } 
  
@@ -200,7 +200,7 @@ function offerpagination(url){
 	    	  		  var result = "";
 	    	  		 if(opt.candidateName !=null && opt.candidateName !='' && opt.candidateName !='undefined'){
 	    	  			result = result + ' <td>';
-						result = result + ' <div title='+opt.candidateName+' class="clearfix mt5 proj_show"><span><a href="'+sourceleadUrl+'/requirementSummary?type=applicants&requirementUUID='+opt.requirementUUID+'&candidateUUID='+opt.candidateUUID+'&submissionId='+opt.submissionId+'" >'+opt.candidateName+'<i class="fa fa-binoculars"></i></a></span></div>';
+						result = result + ' <div title='+opt.candidateName+' class="clearfix mt5 proj_show"><span><a href="'+atsUrl+'/requirementSummary?type=applicants&requirementUUID='+opt.requirementUUID+'&candidateUUID='+opt.candidateUUID+'&submissionId='+opt.submissionId+'" >'+opt.candidateName+'<i class="fa fa-binoculars"></i></a></span></div>';
 						result = result + ' <div title='+opt.email+' class="clearfix mt5 mb5">'+opt.email+'</div>';
 						result = result + ' </td>';
 						}else{
@@ -215,9 +215,9 @@ function offerpagination(url){
             	  var result = "";
             	  if(opt.requirementUUID !=null && opt.requirementUUID !='' && opt.requirementUUID !='undefined'){
             		  if(opt.jobGeneratedId != null && opt.jobGeneratedId != ''  && opt.jobGeneratedId !="undefined"){
-                		  result = result + '<td><div class="proj_show"><span title='+opt.jobTitle+'><a href="'+sourceleadUrl+'/requirementSummary?requirementUUID='+opt.requirementUUID+'">'+opt.jobGeneratedId+' - '+opt.jobTitle+'</a></span></div></td>';
+                		  result = result + '<td><div class="proj_show"><span title='+opt.jobTitle+'><a href="'+atsUrl+'/requirementSummary?requirementUUID='+opt.requirementUUID+'">'+opt.jobGeneratedId+' - '+opt.jobTitle+'</a></span></div></td>';
             		  }else{
-                		  result = result + '<td><div class="proj_show"><span title='+opt.jobTitle+'><a href="'+sourceleadUrl+'/requirementSummary?requirementUUID='+opt.requirementUUID+'">'+opt.jobTitle+'</a></span></div></td>';
+                		  result = result + '<td><div class="proj_show"><span title='+opt.jobTitle+'><a href="'+atsUrl+'/requirementSummary?requirementUUID='+opt.requirementUUID+'">'+opt.jobTitle+'</a></span></div></td>';
             		  }
             		}else{
 						result = result + ' <td><div>--</div></td>';
@@ -365,7 +365,7 @@ function offerpagination(url){
 <script>
 function viewInterviewListResumes(resumeUUID,title){
 	if(resumeUUID != null && resumeUUID != ""){
-		window.open(sourceleadUrl+'/viewInterviewListResumes/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
+		window.open(atsUrl+'/viewInterviewListResumes/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
 	}  
 }
 </script>
@@ -373,7 +373,7 @@ function viewInterviewListResumes(resumeUUID,title){
 <script>
 function viewOffersListAttachment(offerId,title){
 	if(offerId != null && offerId != ""){
-		window.open(sourceleadUrl+'/viewOffersListAttachment/'+title+'?offerId='+offerId,title,"height=600,width=600");
+		window.open(atsUrl+'/viewOffersListAttachment/'+title+'?offerId='+offerId,title,"height=600,width=600");
 	}  
 }
 </script>
@@ -640,10 +640,10 @@ $(".overIcon, .newActPop").click(function(e){
 
 <script>
 function getClientList(){
-	var sourceleadUrl = '${sourceleadUrl}';
+	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+ "/getClientList?${_csrf.parameterName}=${_csrf.token}",
+		url : atsUrl+ "/getClientList?${_csrf.parameterName}=${_csrf.token}",
 		success : function(data) {
 			var result = "";
 			  for (var i=0; i<data.length; i++)
@@ -688,10 +688,10 @@ function myClientFunction() {
 }
 
 function getTeamsList(){
-	var sourceleadUrl = '${sourceleadUrl}';
+	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+ "/getTeamsListForLoginUser?${_csrf.parameterName}=${_csrf.token}",
+		url : atsUrl+ "/getTeamsListForLoginUser?${_csrf.parameterName}=${_csrf.token}",
 		success : function(data) {
 			var result = "";
 			  for (var i=0; i<data.length; i++)
@@ -746,7 +746,7 @@ function projectExport(type){
 	}else{
 		exportType = "xls";
 	}
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 	   var tab = '${tab}';
 	   var frequency = $('input[name=customDates]:checked').val(); 
 	    var fromDate = $("#custFromDate").val();
@@ -786,7 +786,7 @@ function projectExport(type){
 			 incentivizedType.push($(this).val());
 		 });
 		 var searchType = $('input[name=searchType]:checked').val();
-		 window.location.href = sourceleadUrl+"/applicantListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=OFFERMADE&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
+		 window.location.href = atsUrl+"/applicantListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=OFFERMADE&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
 	     
 }
 </script>
