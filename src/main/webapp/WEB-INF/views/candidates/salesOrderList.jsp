@@ -161,10 +161,39 @@
 	   getDynamicSalesOrderList();
 	 });
   
-   function getDynamicSalesOrderList(){
-	   var salesOrderFilterDate = $('input[name=dateCheckBox]:checked').val();
-	 	var salesOrderFromDate = $("#salesOrderFromDate").val();
-		var salesOrderToDate = $("#salesOrderToDate").val(); 
+   function validateSalesOrderFilter(){ 
+	   		   
+	   		   var salesOrderFilterDate = $('input[name=dateCheckBox]:checked').val(); 
+	   		   var salesOrderFromDate = $("#salesOrderFromDate").val(); 
+	   		   var salesOrderToDate = $("#salesOrderToDate").val(); 
+	   		 if(salesOrderFilterDate === "custom"){ 
+	   		   if(salesOrderFromDate === '' && salesOrderToDate != null){ 
+	   		   $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
+	   		   $("input#salesOrderFromDate").after( "<p class='jquery_form_error_message'>From Date is required.</span>"); 
+	   		   $("input#salesOrderFromDate").empty(); 
+	   		   return false; 
+	   		   } 
+	   		   if(salesOrderToDate === '' && salesOrderFromDate !== ''){ 
+	   		   $('#custToDateDiv').find('p.jquery_form_error_message').remove(); 
+	   		   $("input#salesOrderToDate").after( "<p class='jquery_form_error_message'>To Date is required.</span>"); 
+	   		   $("input#salesOrderToDate").empty(); 
+	   		   return false; 
+	   		   } 
+	   		   if((salesOrderFromDate != '' && salesOrderFromDate != 'undefined' && salesOrderFromDate != null) && 
+	   		   (salesOrderToDate != '' && salesOrderToDate != 'undefined' && salesOrderToDate != null)){ 
+	   		   $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
+	   		   $('#custToDateDiv').find('p.jquery_form_error_message').remove(); 
+	   		   } 
+	   		   } 
+	   		 else{ 
+	   		   $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
+	   		   $('#custToDateDiv').find('p.jquery_form_error_message').remove(); 
+	   		}
+	   		  closePop(); 
+	   		  getDynamicSalesOrderList(salesOrderFilterDate, salesOrderFromDate, salesOrderToDate); 
+	   		 } 
+   
+   function getDynamicSalesOrderList(salesOrderFilterDate, salesOrderFromDate, salesOrderToDate){
 	  	var result = "";
 	  	var searchValue = $("#searchByValue").val();
 	  	var url = "";
@@ -184,6 +213,7 @@
   		url = atsUrl + "/getDynamicSalesOrderList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&salesOrderFromDate="+salesOrderFromDate+"&salesOrderToDate="+salesOrderToDate+"&salesOrderFilterDate="+salesOrderFilterDate;  
   		dynamicSalesOrderList(url);
   	}
+   
   
    function dynamicSalesOrderList(url){
 	   var colIndex = 0;
@@ -404,31 +434,6 @@
   		 createSalesOrderToDate();
   	 });
   	
-  	function validateSalesOrderFilter(){
-  		var customDate = $("#salesOrderCustomDate").val();
-  		var otherDate = $('input[name=dateCheckBox]:checked').val();
-  		var fromDate = $("#salesOrderFromDate").val();
-  		var toDate = $("#salesOrderToDate").val();
-  		if(customDate === "custom"){
-  			if(fromDate === ''){
-  				$("#salesOrderFromDate").focus();
-  			}
-  			if(toDate === '' && fromDate !== ''){
-				$("#salesOrderToDate").focus();  				
-	  		}
-  	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
-  	        	closePop();
-  	        	getDynamicSalesOrderList();
-        	}
-  			}
-  		if(otherDate != null && otherDate != 'undefined' && otherDate != ''){
-  				closePop();
-	        	getDynamicSalesOrderList();
-  		}
-  		if(otherDate === '' && customDate != 'custom'){
-  			alert('Kindly Select a Check Box.');
-  		}
-  	}
  </script>
    <script>	
    function closePop(){
@@ -444,40 +449,26 @@
     	$("#modalSalesOrder, .advancedsearch-mask").fadeOut();
     }
   
-	 
-	/* $("#paymentSuccessCheckBox").click(function() {
-		if($(this).is(":checked")){
-			paymentStatus = 'success';
-		}
-	});
-	$("#paymentFailureCheckBox").click(function() {
-		if($(this).is(":checked")){
-			paymentStatus = 'failure';
-		}
-	}); */
-	//Custom Dates
-	$("#salesOrderCustomDate").click(function() {
-	if($(this).is(":checked")){
-		$("#customDates").show();
-	}else {
-		$("#customDates").hide();
-	}
+    $('input[name=dateCheckBox]').on('change', function() {
+    	   		if($(this).val() == "custom"){
+    	   			$("#customDates").show();
+    		   		$('#salesOrderFromDate').attr('data-validation',"required");
+    		        $('#salesOrderToDate').attr('data-validation',"required");
+    	   		}else{
+    	  			$("#customDates").hide();
+    	   			$('#salesOrderFromDate').removeAttr('data-validation');
+    	   	        $('#salesOrderToDate').removeAttr('data-validation');
+    	   	     	$('#salesOrderToDate, #salesOrderFromDate').val('').datepicker('setDate', null);
+    	   		} 
 	});
 	
 	function resetSalesOrderFilter(){
-		emptySalesOrderSearchValues();
+		$('#salesOrderFromDate, #salesOrderToDate').val('').datepicker('setDate', null);
 		$("#customDates").hide();
 		$("ul#salesOrderCheckBox > li input:radio").prop("checked", false);
 		$("ul#salesOrderPaymentStatus > li input:checkbox").prop("checked", false);
 	}
 	
-	function emptySalesOrderSearchValues(){
-		$("#salesOrderCustomDate").val('');
-		$("#salesOrderFromDate").val('');
-		$("#salesOrderToDate").val('');
-		salesOrderFilterDate = '';
-		paymentStatus = '';
-	}
 	
 	function getActions(){
 		$(".action-pop").slideToggle(200);
