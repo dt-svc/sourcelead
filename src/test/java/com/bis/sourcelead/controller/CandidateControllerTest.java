@@ -117,7 +117,7 @@ public void getGlobalMarketplaceCandList() throws Exception {
 	ResponseList<CandidateMarketPlaceDTO> candidateMarketPlaceDTOResponseList = null;
 	candidateMarketPlaceDTOResponseList = mockCandidateService.getGlobalMarketCandidateList(dto,"");
 //	System.out.println(candidateMarketPlaceDTOList.getRecordsTotal());
-	Assert.assertEquals(mockCandidateService.getGlobalMarketCandidateList(dto,"").getRecordsTotal(),2);
+	Assert.assertEquals(controller.getGlobalMarketplaceCandList(dto,"",mockHttpServletRequest).getRecordsTotal(),2);
 	}catch(Exception e){
 		e.printStackTrace();
 	}
