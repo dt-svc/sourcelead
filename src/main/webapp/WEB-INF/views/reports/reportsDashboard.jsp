@@ -299,7 +299,7 @@
               
               
              <%--  <sec:authorize access="hasAnyRole('ROLE_USAGE_REPORT')">    --%>
-      <c:if test="${SourceLeadWeb_loginCountryName == 'United States'}">
+      <c:if test="${SourceLeadWeb_country == 'United States'}">
        <div class="col-md-4 reportNewCta">
                   <!-- DropDown payReport -->
 			<div class="dropdown pull-right report-dropdown">
