@@ -118,14 +118,14 @@ function getAssignedMembersListForEdit(reqId){
 	            success :function(result) {
 		            	var json = result.object;
 		            	if (result.response === "SESSION_TIMEDOUT") {
-			  				location.replace(atsUrl);
+			  				location.replace(sourceleadUrl);
 		                } else if (result.response === "AWKWARD") {
 		                    location.href = "/errorPage";
 		                } else if (result.response === "SUCCESS") {
 		                	selectAssignUsersIds = json;
 			            	$("#assignedTeamId").val(json);	
 		                } else if (result.indexOf('Sign In') !== -1) {
-							location.replace(atsUrl);
+							location.replace(sourceleadUrl);
 						} else {
 		                    showError("Operation failed, please try again");
 		                }
@@ -144,7 +144,7 @@ function getTeamsList(reqId){
             success :function(result) {
             	var json = result.object;
             	if (result.response === "SESSION_TIMEDOUT") {
-	  				location.replace(atsUrl);
+	  				location.replace(sourceleadUrl);
                 } else if (result.response === "AWKWARD") {
                     location.href = "/errorPage";
                 } else if (result.response === "SUCCESS") {
@@ -184,7 +184,7 @@ function getTeamsList(reqId){
 				    $("#teamSelectionCategory").append(output);
 				    $("#teamSelectionCategory").selectpicker("refresh");
                 } else if (result.indexOf('Sign In') !== -1) {
-					location.replace(atsUrl);
+					location.replace(sourceleadUrl);
 				} else {
                     showError("Operation failed, please try again");
                 }
@@ -284,7 +284,7 @@ function getUserList(teamType){
             success :function(data) {
             	$("#usersGrid").removeAttr("style");
             	if (data.response === "SESSION_TIMEDOUT") {
-	  				location.replace(atsUrl);
+	  				location.replace(sourceleadUrl);
                 } else if (data.response === "AWKWARD") {
                     location.href = "/errorPage";
                 } else if (data.response === "SUCCESS") {
@@ -352,7 +352,7 @@ function getUserList(teamType){
 		                       //paginations(); 
 	                 	}
 	                } else if (data.indexOf('Sign In') !== -1) {
-						location.replace(atsUrl);
+						location.replace(sourceleadUrl);
 					} else {
 	                    showError("Operation failed, please try again");
 	                }
@@ -474,13 +474,13 @@ function paginations(){
 		           url: atsUrl+"/saveOrUpdateAssignToTeam?"+tokenParamName+"="+tokenValue+"&assignedIdVal="+assignedIdVal+"&requirementId="+requirementId,    
 		            success :function(result) {
 		            	if (result.response === "SESSION_TIMEDOUT") {
-			  				location.replace(atsUrl);
+			  				location.replace(sourceleadUrl);
 		                } else if (result.response === "AWKWARD") {
 		                    location.href = "/errorPage";
 		                } else if (result.response === "SUCCESS") {
 		                	
 		                } else if (result.indexOf('Sign In') !== -1) {
-							location.replace(atsUrl);
+							location.replace(sourceleadUrl);
 						} else {
 		                    showError("Operation failed, please try again");
 		                }
