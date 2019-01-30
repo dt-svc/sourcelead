@@ -512,7 +512,7 @@ function shareRecomendedApplicant(requirementId,candidateId){
 	   			$("#eduMsgDiv").html("You have successfully shared the job with selected candidate(s)");
 	   			eduMsgFadeinFunction();
 	    	}else if (data.indexOf('Sign In') !== -1) {
-	    		location.replace(atsUrl);
+	    		location.replace(sourceleadUrl);
 	    	} else {
 	    		showError("Operation failed, please try again");
 	    	}
@@ -668,7 +668,7 @@ function submitRecommendationCandidatesToJob(requirementId){
 		       			}
 			    		
 			    	}else if (data.indexOf('Sign In') !== -1) {
-			    		location.replace(atsUrl);
+			    		location.replace(sourceleadUrl);
 			    	} else {
 			    		showError("Operation failed, please try again");
 			    	}
@@ -705,7 +705,7 @@ function shareAllRecommendations(requirementId){
 		       			eduMsgFadeinFunction();
 		       			toggleShareRecommendation();
 			    	}else if (data.indexOf('Sign In') !== -1) {
-			    		location.replace(atsUrl);
+			    		location.replace(sourceleadUrl);
 			    	} else {
 			    		showError("Operation failed, please try again");
 			    	}
@@ -1210,7 +1210,7 @@ function customizeScore(requirementId){
 		    		     
 			   		  tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
 		    	}else if (data.indexOf('Sign In') !== -1) {
-		    		location.replace(atsUrl);
+		    		location.replace(sourceleadUrl);
 		    	} else {
 		    		showError("Operation failed, please try again");
 		    	}
@@ -1303,7 +1303,7 @@ function updateCutomize(requirementId){
         							closePop();
 	    						}
     				    	}else if (data.indexOf('Sign In') !== -1) {
-    				    		location.replace(atsUrl);
+    				    		location.replace(sourceleadUrl);
     				    	} else {
     				    		showError("Operation failed, please try again");
     				    	}
