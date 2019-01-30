@@ -1591,4 +1591,29 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 	
 	}
+
+	@Override
+	@Transactional
+	public List<UserRole> getAllUserRoles() throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole left join fetch userRole.user left join fetch userRole.roles roles "
+				+ " left join fetch roles.roleHierarchy  ";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).list();
+		return userRoleList;
+
+	
+	}
+
+	@Override
+	@Transactional
+	public String getUserRoleUUIDByUserRoleId(Long userRoleId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select userRole.uuid from UserRole userRole where userRole.id = :userRoleId";
+		List<String> UUID = session.createQuery(query).setLong("userRoleId", userRoleId).list();
+		return UUID.get(0);
+
+		
+	}
 }
