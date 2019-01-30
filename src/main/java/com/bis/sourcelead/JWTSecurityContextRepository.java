@@ -20,6 +20,7 @@ import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.security.web.context.SaveContextOnUpdateOrErrorResponseWrapper;
 import org.springframework.security.web.context.SecurityContextRepository;
 
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.UserLoginHelper;
@@ -50,6 +51,7 @@ public class JWTSecurityContextRepository implements SecurityContextRepository {
     private final String tokenName;
     private final String secret;
     private static Long userRoleId = 0l;
+    private String userRoleUUID;
 
     JWTSecurityContextRepository(String tokenName, String secret) {
         this.tokenName = tokenName;
@@ -95,10 +97,16 @@ public class JWTSecurityContextRepository implements SecurityContextRepository {
                         if(usernameWithRole.length >1  && NumberUtils.isNumber(usernameWithRole[1])) {
                         	username = usernameWithRole[0];
                         	userRoleId = new Long(usernameWithRole[1]);
+                        	try {
+								UserRole userRole = userRoleService.getUserRoleById(userRoleId);
+								userRoleUUID = userRole.getUuid();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
                         }
                         String uname = username+"##"+userRoleId;
                         SecurityContext context = SecurityContextHolder.createEmptyContext();
-                        context.setAuthentication(userLoginHelper.redirectToDashboard(request,uname, null, null));
+                        context.setAuthentication(userLoginHelper.redirectToDashboard(request,uname, null, null,userRoleUUID));
                         return context;
                     } catch (ExpiredJwtException ex) {
                         log.debug("authentication cookie is expired");
