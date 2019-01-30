@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -37,6 +38,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.EmailReminderDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociateNominee;
+import com.bis.sourcelead.entity.AssociateSalaryHistoryInd;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.Candidate;
@@ -73,6 +75,7 @@ import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.INDPayrollCommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -139,6 +142,8 @@ public class PayrollConfigurationRestController {
 	@Autowired
 	EmailReminderService emailReminderService;
 	
+	@Autowired
+	INDPayrollCommonUtil payrollCommonUtil;
 	
 	@RequestMapping(value = "/saveBonus" , method = RequestMethod.POST)
 	public Response<String> saveBonus(PayrollBonusDTO payrollBonusDTO, HttpServletRequest request)
@@ -1120,5 +1125,46 @@ public class PayrollConfigurationRestController {
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 			}
 			return response;
+		}
+	 
+	 
+	 @RequestMapping(value = { "/stopSalaryProcessingForEmployee","/rest/stopSalaryProcessingForEmployee" } , method = RequestMethod.POST)
+	 public Response<String> stopSalaryProcessingForEmployee(AssociateSalaryIndDTO associateSalaryIndDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+	    	Response<String> resObj = new Response<>();
+	    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+		    	try {
+		    		AssociateSalaryHistoryInd associateSalaryHistoryInd = new AssociateSalaryHistoryInd();
+						AssociateSalaryInd associateSalaryInd = payrollPayheadService.getAssociateSalaryIndByUUID(associateSalaryIndDTO.getUuid());
+						associateSalaryHistoryInd =  payrollCommonUtil.setPreviousDataToAssociateSalaryHistoryInd(associateSalaryInd, associateSalaryHistoryInd);
+						if(associateSalaryInd != null) {
+							associateSalaryInd.setStopSalary(associateSalaryIndDTO.getStopSalary());
+							associateSalaryInd.setUpdatedBy(user);
+							associateSalaryInd.setUpdatedDate(new Date());
+							associateSalaryInd = payrollPayheadService.saveAssociateSalaryInd(associateSalaryInd);
+							
+							//save History
+							associateSalaryHistoryInd =  payrollCommonUtil.setNewDataToAssociateSalaryHistoryInd(associateSalaryInd, associateSalaryHistoryInd);
+							payrollPayheadService.saveAssociateSalaryHistoryInd(associateSalaryHistoryInd);
+							
+							resObj.setResponse(Result.SUCCESS.name());
+							resObj.setResponseMessage(Result.SUCCESS.getValue());
+						}else {
+							resObj.setObject("DataMissing");
+							resObj.setResponse(Result.INVALID_DATA.name());
+							resObj.setResponseMessage(Result.INVALID_DATA.getValue());
+						}
+				 }catch (Exception e) {
+					 resObj.setResponse(Result.AWKWARD.name());
+					 resObj.setResponseMessage(Result.AWKWARD.getValue());
+					 logger.error(ExceptionUtils.getFullStackTrace(e));
+				}
+			}else {
+				resObj.setResponse(Result.SESSION_TIMEDOUT.name());
+				resObj.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+			return resObj;
+			
 		}
 }
