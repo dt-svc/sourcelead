@@ -116,14 +116,14 @@
 							   <c:if test="${sessionData.nav == 'Finance' || sessionData.nav == 'AssetManagement'}">
                               <ul class="collapses" style="display: none">
                                   <li class="${sessionData.nav == 'Finance' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/finance'/>" title="Finance"><i class="fa fa-chevron-right"></i> Finance</a></li>
-                                    <li class="${sessionData.nav == 'AssetManagement' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/assetManagement'/>" title="Asset Management"><i class="fa fa-chevron-right"></i> Asset Management</a></li>
+                                    <li class="${sessionData.nav == 'AssetManagement' ? 'treview-active' : ''}"><a href="<c:url value='/ats/assetManagement'/>" title="Asset Management"><i class="fa fa-chevron-right"></i> Asset Management</a></li>
                                     <li><a href="<c:url value='${appPath}/quickBookInvoice'/>" title="QuickBook Invoice"><i class="fa fa-chevron-right"></i> QuickBook Customers</a></li>
                               </ul>
                               </c:if>
                               <c:if test="${sessionData.nav != 'Finance' || sessionData.nav != 'AssetManagement'}">
                               <ul class="collapses" style="display: none">
                                   <li class="${sessionData.nav == 'BackOffice' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/finance'/>" title="Finance"><i class="fa fa-chevron-right"></i> Finance</a></li>
-                                    <li class="${sessionData.nav == 'AssetManagement' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/assetManagement'/>" title="Asset Management"><i class="fa fa-chevron-right"></i> Asset Management</a></li>
+                                    <li class="${sessionData.nav == 'AssetManagement' ? 'treview-active' : ''}"><a href="<c:url value='/ats/assetManagement'/>" title="Asset Management"><i class="fa fa-chevron-right"></i> Asset Management</a></li>
                                       <li><a href="<c:url value='${appPath}/quickBookInvoice'/>" title="QuickBook Invoice"><i class="fa fa-chevron-right"></i> QuickBook Customers</a></li>
                               
                               </ul>
@@ -216,7 +216,7 @@
 	                 </c:if>
 	                 
 	                 <c:if test="${tabName == 'Asset Management'}">
-	                   <li class="${sessionData.nav == 'AssetManagement' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/assetManagement'/>" title="Asset Management"><span class="navIcons asstIcon"></span><b>Asset Management</b></a></li>
+	                   <li class="${sessionData.nav == 'AssetManagement' ? 'navActive' : ''}"><a href="<c:url value='/ats/assetManagement'/>" title="Asset Management"><span class="navIcons asstIcon"></span><b>Asset Management</b></a></li>
 	                </c:if> 
 	                
 	                <c:if test="${tabName == 'Support'}">
