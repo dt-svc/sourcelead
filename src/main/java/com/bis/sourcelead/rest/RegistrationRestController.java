@@ -1416,7 +1416,7 @@ public class RegistrationRestController {
 		}
 		SecurityContextHolder.clearContext();
 		SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, userName
-				+ "##" + userRole.getId(), password, verfDone));
+				+ "##" + userRole.getId(), password, verfDone,userRole.getUuid()));
 		return "true";
 	}
 	
