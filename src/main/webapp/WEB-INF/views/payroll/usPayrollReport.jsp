@@ -22,7 +22,7 @@
             <div class="pull-left">
               <h4 class="text-muted">Payroll Register</h4>
               <small class="text-muted">Payroll Register Reports</small>
-              <div class="clearfix mt10"> <a href="${appPath}/payrollRegisterReport"  class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <div class="clearfix mt10"> <a href="/pms/payrollRegisterReport"  class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
           <div class="col-md-3">
@@ -30,7 +30,7 @@
             <div class="pull-left">
               <h4 class="text-muted">Comparison</h4>
               <small class="text-muted">Payroll Comparison</small>
-              <div class="clearfix mt10"> <a href="${appPath}/payrollComparison" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <div class="clearfix mt10"> <a href="/pms/payrollComparison" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
 
@@ -39,7 +39,7 @@
             <div class="pull-left">
               <h4 class="text-muted">Payroll Summary</h4>
               <small class="text-muted">Payroll Summary Report</small>
-              <div class="clearfix mt10"><a href="${appPath}/payrollListSummaryReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <div class="clearfix mt10"><a href="/pms/payrollListSummaryReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
           <div class="col-md-3">
@@ -47,7 +47,7 @@
             <div class="pull-left">
               <h4 class="text-muted">Check Register</h4>
               <small class="text-muted">Check Register Report</small>
-              <div class="clearfix mt10"><a href="${appPath}/checkRegisterReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <div class="clearfix mt10"><a href="/pms/checkRegisterReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
           
@@ -56,7 +56,7 @@
             <div class="pull-left">
               <h4 class="text-muted">Associate Withholding</h4>
               <small class="text-muted">Associate Withholding Report</small>
-              <div class="clearfix mt10"><a href="${appPath}/associateWithholding" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <div class="clearfix mt10"><a href="/pms/associateWithholding" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
           
@@ -81,7 +81,7 @@
             <div class="pull-left">
               <h4 class="text-muted">Taxable Wages Report</h4>
               <small class="text-muted">Payroll Taxable Wages Reports</small>
-              <div class="clearfix mt10"><a href="${appPath}/payrollTaxesAndWagesReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <div class="clearfix mt10"><a href="/pms/payrollTaxesAndWagesReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div> 
           <div class="col-md-3">
@@ -89,7 +89,7 @@
             <div class="pull-left">
               <h4 class="text-muted">Deduction Reports</h4>
               <small class="text-muted">Payroll Deduction Reports</small>
-              <div class="clearfix mt10"><a href="${appPath}/deductionReport"  class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <div class="clearfix mt10"><a href="/pms/deductionReport"  class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
           <div class="col-md-3">
@@ -97,7 +97,7 @@
             <div class="pull-left">
               <h4 class="text-muted">Contribution Reports</h4> 
               <small class="text-muted">Payroll Contribution Reports</small>
-              <div class="clearfix mt10"> <a href="${appPath}/contributionReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <div class="clearfix mt10"> <a href="/pms/contributionReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
          <!--  <div class="col-md-3">
@@ -122,7 +122,7 @@
             <div class="pull-left">
               <h4 class="text-muted">Direct Deposit</h4>
               <small class="text-muted">Direct Deposit Report</small>
-              <div class="clearfix mt10"><a href="${appPath}/directDepositReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <div class="clearfix mt10"><a href="/pms/directDepositReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
           
@@ -132,7 +132,7 @@
             <div class="pull-left">
               <h4 class="text-muted">Employee Payroll</h4>
               <small class="text-muted">Employee Payroll Report</small>
-              <div class="clearfix mt10"><a href="${appPath}/usEmployeePayrollReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <div class="clearfix mt10"><a href="/pms/usEmployeePayrollReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
           
@@ -141,7 +141,7 @@
             <div class="pull-left">
               <h4 class="text-muted">Contract Employee Payroll</h4>
               <small class="text-muted">Contract Employee Payroll Report</small>
-              <div class="clearfix mt10"><a href="${appPath}/contractEmployeePayreport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <div class="clearfix mt10"><a href="/pms/contractEmployeePayreport" class="btn btn-primary btn-sm" title="View">View</a> </div>
               </div>
           </div> 
           
@@ -150,7 +150,7 @@
             <div class="pull-left">
               <h4 class="text-muted">Deduction Summary</h4>
               <small class="text-muted">Deduction Summary Report</small>
-              <div class="clearfix mt10"><a href="${appPath}/usDeductionSummaryReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <div class="clearfix mt10"><a href="/pms/usDeductionSummaryReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
           
@@ -159,7 +159,7 @@
             <div class="pull-left">
               <h4 class="text-muted">Contribution Summary</h4>
               <small class="text-muted">Contribution Summary Report</small>
-              <div class="clearfix mt10"><a href="${appPath}/usContributionSummaryReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <div class="clearfix mt10"><a href="/pms/usContributionSummaryReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
           
