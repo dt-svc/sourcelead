@@ -8,6 +8,7 @@
 
 <link href="/resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 $(document).ready(function() {
 	 var requirementId = '${requirementId}';
 	 var submissionId = '${submissionId}';
@@ -91,7 +92,7 @@ function duplicateCount(requirementId){
     <div class="pull-left">
       <h2>Job Summary</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/jobs'/>"> Jobs List  </a>&raquo; Job Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/jobsList'/>"> Jobs List  </a>&raquo; Job Details</div>
   </section>
   
 
