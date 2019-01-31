@@ -30,7 +30,6 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -63,13 +62,13 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.DashboardCounts;
 import com.bis.sourcelead.entity.ExpensesCount;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
+import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Tasks;
@@ -94,6 +93,7 @@ import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOffersService;
+import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TaskService;
@@ -210,6 +210,10 @@ public class DashboardRestController {
 	 @Autowired 
 	 UserLoginHelper userLoginHelper;
 	 
+	 @Autowired
+	 private RequirementRateSubmissionNegotiationService requirementRateSubmissionNegotiationService;
+	 
+	 
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 		}
@@ -218,16 +222,18 @@ public class DashboardRestController {
 	 * This  controller method is   for getting TimesheetSubmission Counts in dashboard Landing Page Based on User Login
 	 * @author: Sammeta David
 	 */
-	
-	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')")
+    @PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/getTimeSheetSubmissionStatus")
-	public TimeSheetSubmissionCount getTimeSheetSubmissionStatus(@RequestParam(value="timesheetType", required=false) String timesheetType,@RequestParam(value="timesheetCountType") String timesheetCountType,HttpServletRequest request) throws Exception {
+	public TimeSheetSubmissionCount getTimeSheetSubmissionStatus(@RequestParam(value="timesheetType", required=false) String timesheetType,@RequestParam(value="timesheetCountType", required=false) String timesheetCountType,HttpServletRequest request) throws Exception {
 
 	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Candidate candidate =(Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
+		if(StringUtils.isEmpty(timesheetCountType)) {
+			timesheetCountType = "All";
+		}
 		if("employes".equalsIgnoreCase(timesheetType)){
 			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId(),timesheetCountType,isGlobalAccess);
 		}else if("myTimesheets".equalsIgnoreCase(timesheetType)){
@@ -236,6 +242,7 @@ public class DashboardRestController {
 		
 		return timeSheetSubmissionCount;
 	}
+		
 	
 	
 	
@@ -1773,7 +1780,13 @@ public class DashboardRestController {
 					rshDTO.setSubmittedBy(rsh.getCreatedUser());
 		//					}
 						
-					
+					RequirementRateSubmissionNegotiation rateNegotiation = requirementRateSubmissionNegotiationService.getRequirementRateSubmissionByMaxId(rsh.getSubmissionId().getId());
+					if(rateNegotiation !=null && rateNegotiation.getCurrentRate()!=null){
+						float currentRate = conversionUtil.rateConvertToYear(rateNegotiation.getCurrentRate(),rateNegotiation.getCurrentRateType(),loginOrgLocations);
+						float expectedRate = conversionUtil.rateConvertToYear(rateNegotiation.getExpectedRate(),rateNegotiation.getExpectedRateType(),loginOrgLocations);
+						float finalRatePerYear = expectedRate-currentRate;
+						rshDTO.setMarginRateYearly(String.format("%.3f", Float.valueOf(finalRatePerYear)));
+					}
 					
 					int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocations.getId(), rsh.getSubmissionId().getRequirement().getId(), "INTERVIEWED");
 					rshDTO.setNumOfInterview(interviewedCount);
