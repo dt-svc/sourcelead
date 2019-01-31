@@ -886,7 +886,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 
 		 
 		 
-		 @RequestMapping(value = "/indPayrollBankTransferReport")
+		 @RequestMapping(value = "/indPayrollSalaryRegisterReport")
 			public ModelAndView indPayrollSalaryRegisterReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
 			 ModelAndView model = new ModelAndView();
 			 model.addObject("sourceleadUrl", sourceleadUrl);

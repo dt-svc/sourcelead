@@ -14,9 +14,9 @@ $(document).ready(function(){
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Payroll YTD Summary</h2>
+        <h2>Salary Register </h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/indPayrollReportList'/>">India Payroll Reports List</a> &raquo;  Payroll YTD Summary</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/indPayrollReportList'/>">India Payroll Reports List</a> &raquo; Salary Register</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
@@ -35,13 +35,13 @@ $(document).ready(function(){
             <div class="form-group">
               <label class="col-md-12">From Date <span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
-                <input type="text" class="form-control calendar" id="startDate" name="startDate" readonly>
+                <input type="text" class="form-control calendar" id="startDate" name="startDate" readonly placeholder="From Date">
               </div>
             </div>
 			</div>
             <div class="col-md-5">
              <div class="form-group">
-              <label class="col-md-12">Select Employee <span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-12">Select Associate <span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
                 <select class="form-control chosen-select" multiple id="employeeId" name="employeeIds">
 					</select>
@@ -50,7 +50,7 @@ $(document).ready(function(){
              <div class="form-group">
               <label class="col-md-12">To Date</label>
               <div class="col-md-12">
-                <input type="text" class="form-control calendar" id="endDate" name="endDate" readonly>
+                <input type="text" class="form-control calendar" id="endDate" name="endDate" readonly placeholder="To Date">
               </div>
             </div>
         </div>
@@ -58,7 +58,7 @@ $(document).ready(function(){
 	<div class="clearfix footerstyelsNew">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input value="Run" class="btn btn-success btnSuccess" type="button" onclick="runIndPayrollTYDReport();">
+            <input value="Run" class="btn btn-success btnSuccess" type="button" onclick="runIndPayrollSalaryRegisterReport();">
             <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetForm();">
           </div>
         </div>
@@ -74,17 +74,17 @@ $(document).ready(function(){
 				<li class="">
 				<a class="overIcon" title="Actions" onclick="newActions();"></a>
       				<div class="newActPop" style="display: block;">
-       					<span><a onclick="payrollBankTransferExport('pdf');" title="PDF">Export PDF</a>
-       					 <a title="Excel" onclick="payrollBankTransferExport('excel');">Export Excel</a></span> </div>
+       					<span><a onclick="payrollSalaryRegisterExport('pdf');" title="PDF">Export PDF</a>
+       					 <a title="Excel" onclick="payrollSalaryRegisterExport('excel');">Export Excel</a></span> </div>
    				</li>
 			    <li class="">
-			      <input class="repSearchBar" placeholder="Search" id="payrollYTDSearch" type="text">
-			      <span class="repSearchIcon" onclick="runIndPayrollTYDReport();"></span>
+			      <input class="repSearchBar" placeholder="Search" id="payrollSalarySearch" type="text">
+			      <span class="repSearchIcon" onclick="runIndPayrollSalaryRegisterReport();"></span>
 			    </li>
   			</ul>
 		</div>
         <div class="require_wrap_table datatable_filter">
-        	<div id="payrollYTDSummaryTableDiv"></div>
+        	<div id="payrollSalaryRegisterTableDiv"></div>
         </div>
       </div>
     </div>
@@ -166,28 +166,28 @@ function resetForm(){
 </script>
 
 <script>
-function payrollBankTransferExport(type){
-	var searchValue = $("#payrollYTDSearch").val();
+function payrollSalaryRegisterExport(type){
+	var searchValue = $("#payrollSalarySearch").val();
 	var department = $('#payrollDepartment').val();
 	var employeeId = $('#employeeId').val();
 	var startDate = $("#startDate").val();
 	var endDate = $("#endDate").val();
-    window.location.href = sourceleadUrl+"/indPayrollYTDSummaryExport?&departmentId="+department+"&employeeIds="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&searchValue="+searchValue+"&exportType="+type;
+    window.location.href = sourceleadUrl+"/indPayrollSalaryRegisterExport?&departmentId="+department+"&employeeIds="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&searchValue="+searchValue+"&exportType="+type;
 }
 </script>
 <script type="text/javascript">
-function runIndPayrollTYDReport(){
-	var searchValue = $("#payrollYTDSearch").val();
+function runIndPayrollSalaryRegisterReport(){
+	var searchValue = $("#payrollSalarySearch").val();
 	var department = $('#payrollDepartment').val();
 	var employeeId = $('#employeeId').val();
 	var startDate = $("#startDate").val();
 	var endDate = $("#endDate").val();
 	if(department != null && department != '' && department != 'undefined' && employeeId != null && employeeId != '' && employeeId != 'undefined' && startDate != null && startDate != '' && startDate != 'undefined'){
 		$("#payrollReportLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		var url = sourceleadUrl+ "/indPayrollYTDSummaryReport?${_csrf.parameterName}=${_csrf.token}&departmentId="+department+"&employeeIds="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&searchValue="+searchValue;
+		var url = sourceleadUrl+ "/indPayrollSalaryRegisterReport?${_csrf.parameterName}=${_csrf.token}&departmentId="+department+"&employeeIds="+employeeId+"&startDate="+startDate+"&endDate="+endDate+"&searchValue="+searchValue;
 		$("#payrollRegister").show();
-		preparePayRollYTDSummaryList(url);
-		$("#payrollYTDSearch").val('');
+		preparePayRollSalaryList(url);
+		$("#payrollSalarySearch").val('');
 	}else{
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -208,31 +208,29 @@ function removePopUp(){
 </script>
 
 <script type="text/javascript">
-function preparePayRollYTDSummaryList(url){
+function preparePayRollSalaryList(url){
 	 $("#payrollReportLoading").removeAttr("style");
-	 $("#payrollYTDSummaryTableDiv").empty();
+	 $("#payrollSalaryRegisterTableDiv").empty();
 	 var result = "";
 		result = result +" <div class='remove_search'>";
 		result = result +"</div>";
 		result = result + '<table id="payrollRegisterTable" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
-		result = result + '<th>Employee ID</th>';
-        result = result + '<th>Employee Name</th>';
+		result = result + '<th>Associate Id</th>';
+        result = result + '<th>Associate Name</th>';
         result = result + '<th>Department</th>';
-        result = result + '<th>No Of Working Days</th>';
-        result = result + '<th>No Of Leaves</th>';
-        result = result + '<th>Gross Pay</th>';
-        result = result + '<th>Deducations</th>';
-        result = result + '<th>Net Pay</th>';
+        result = result + '<th>Effective Date</th>';
+        result = result + '<th>Increase %</th>';
+        result = result + '<th>Annual CTC</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
         result = result +"</table>";
-     $("#payrollYTDSummaryTableDiv").append(result);
-     payrollYTDPagination(url); 
+     $("#payrollSalaryRegisterTableDiv").append(result);
+     payrollSalaryPagination(url); 
 }
 
-function payrollYTDPagination(url){
+function payrollSalaryPagination(url){
 	var colIndex = 0;
     $('#payrollRegisterTable').DataTable( { 
     	"processing": true,
@@ -247,11 +245,9 @@ function payrollYTDPagination(url){
             { "data": "empId" },
             { "data": "empName"},
             { "data": "department"},
-            { "data": "noOfWorkingDays" },
-            { "data": "noOfLeaves" },
-            { "data": "grossPay"},
-            { "data": "dedecations" },
-            { "data": "netPay" },
+            { "data": "effectiveDate" },
+            { "data": "increase" },
+            { "data": "annualCTC"},
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
@@ -291,50 +287,32 @@ function payrollYTDPagination(url){
             }
           }, {
               "targets": colIndex++,
-              "data": "noOfWorkingDays",
+              "data": "effectiveDate",
               "sorting":false,
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
-   	    	  		result = result + '<div class="tbldata-dotdot-vsm" title="'+opt.noOfDays+'" >'+opt.noOfDays+'</div>';
+   	    	  		result = result + '<div class="tbldata-dotdot-vsm" title="'+opt.effectiveDate+'" >'+opt.effectiveDate+'</div>';
             	    return result; 
               }
             },{
 	    	  	"targets": colIndex++,
-	    	  	"data": "noOfLeaves",
+	    	  	"data": "increase",
 	    	  	"sorting":false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.noOfLeaves+'" >'+opt.noOfLeaves+'</div>';
+	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.incresePercentage+'" >'+opt.incresePercentage+'</div>';
   	                return result; 
 	    	  	}
 	    	  }, {
                   "targets": colIndex++,
-                  "data": "grossPay",
+                  "data": "annualCTC",
                   "sorting":false,
                   "render": function ( data, type, opt, meta ) {
                 	var result = "";
-      	    	  		result = result + ' <div class="tbldata-dotdot-vsm" title="'+opt.grossPay+'" >'+opt.grossPay+'</div>';
+      	    	  		result = result + ' <div class="tbldata-dotdot-vsm" title="'+opt.annualSalary+'" ><i class="fa fa-inr"style="color:#454545;"></i> '+opt.annualSalary+'</div>';
   	    	  		return result; 
                   }
-               }, {
-                    "targets": colIndex++,
-                    "data": "dedecations",
-                    "sorting":false,
-                    "render": function ( data, type, opt, meta ) {
-                  		var result = "";
-    	    	  		result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.deducationAmount+'" ><i class="fa fa-inr"style="color:#454545;"></i> '+opt.deducationAmount+'</div>';
-    	    	  		return result; 
-                    }
-                }, {
-                    "targets": colIndex++,
-                    "data": "netPay",
-                    "sorting":false,
-                    "render": function ( data, type, opt, meta ) {
-                  		var result = "";
-    	    	  		result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.netPay+'" ><i class="fa fa-inr"style="color:#454545;"></i> '+opt.netPay+'</div>';
-    	    	  		return result; 
-                    }
-                }  ],
+               } ],
                 "scrollCollapse": false,
     	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	    	"bLengthChange": true,
@@ -350,9 +328,9 @@ function payrollYTDPagination(url){
        $("input[type=search]").hide();
       
 }
-$("#payrollYTDSearch").keyup(function(e) {
+$("#payrollSalarySearch").keyup(function(e) {
 	   if(e.which === 13) {
-		   runIndPayrollTYDReport();
+		   runIndPayrollSalaryRegisterReport();
 	   }
 	});
 </script>

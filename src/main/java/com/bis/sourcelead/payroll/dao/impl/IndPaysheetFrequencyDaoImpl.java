@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.User;
@@ -765,4 +766,74 @@ String countQuery  =  " select count(*) FROM PAYROLL_PAYHEAD payHead, IND_PAY_SH
 	}
 	
 	
+	@Override
+	public ResponseList<IndEmployeePayrollDTO> getPayrollSalaryRegisterReportReportList(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations) {
+	Session session = this.sessionFactory.getCurrentSession();
+		
+		Date fDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), indEmployeePayrollDTO.getStartDate());
+		java.sql.Date freqStartDate = new java.sql.Date(fDate.getTime());
+		Date tDate = null;
+		if(!indEmployeePayrollDTO.getEndDate().isEmpty()) {
+			 tDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), indEmployeePayrollDTO.getEndDate());
+		}else {
+			tDate = new Date();
+		}
+		
+		java.sql.Date freqEndDate = new java.sql.Date(tDate.getTime());
+		
+		ResponseList<IndEmployeePayrollDTO> response = new ResponseList<>();
+		StringBuilder query1 = new StringBuilder("");
+		if(indEmployeePayrollDTO.getSearchValue() !=null && !"".equalsIgnoreCase(indEmployeePayrollDTO.getSearchValue())) {
+		 query1.append("and (dept.DEPARTMENT_NAME like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' ")
+		       .append("OR (can.FIRST_NAME like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR (can.LAST_NAME like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR concat(can.FIRST_NAME,can.LAST_NAME) like '%" + indEmployeePayrollDTO.getSearchValue() + "%' ")
+			   .append("OR emp.EMPLOYEE_ID like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )");
+		}
+		List<IndEmployeePayrollDTO> indEmployeePayrollList = null;
+		List<Long> employeeList = new ArrayList<>();
+		if(indEmployeePayrollDTO.getEmployeeIds() != null && !indEmployeePayrollDTO.getEmployeeIds().isEmpty()) {
+			String[] orgDepts = indEmployeePayrollDTO.getEmployeeIds().split(",");
+			for(int i=0; i < orgDepts.length; i++) {
+				employeeList.add(Long.parseLong(orgDepts[i]));
+			}
+		}
+		
+		//List Query
+		String query = " SELECT DISTINCT asih.ANNUAL_SALARY as annualSalary, "+
+				       " emp.EMPLOYEE_ID as employeeid, "+
+					   " can.FIRST_NAME as firstName, "+
+					   " can.LAST_NAME as lastName, "+
+					   " asih.INCREMENT_PERCENTAGE as incresePercentage, "+
+					   " asih.EFFECTIVE_DATE as effectiveDate, "+
+					   " dept.DEPARTMENT_NAME as departmentName "+
+					   " FROM ASSOCIATE_SALARY_IND asi, CANDIDATE can,EMPLOYEE emp,DEPARTMENT dept,ASSOCIATE_SALARY_HISTORY_IND asih "+
+					   " where can.ID = asi.CANDIDATE_ID AND asi.ORG_LOCATION_ID =:orgLoactionId "+
+					   " AND can.CONSULTANT_USER_ID = emp.USER_ID "+
+					   " AND emp.ID IN(:employeeList) "+
+					   " AND emp.DEPARTMENT_ID = dept.ID "+
+					   " AND  asi.ID =asih.ASSOCIATE_SALARY_IND  "+
+					   " AND ( date(asih.EFFECTIVE_DATE) BETWEEN :startDate and :endDate) "+query1+" ";
+
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setResultTransformer(Transformers.aliasToBean(IndEmployeePayrollDTO.class));
+		indEmployeePayrollList = queryObj.setDate("startDate", freqStartDate).setDate("endDate", freqEndDate).setLong("orgLoactionId", orgLocations.getId()).setParameterList("employeeList", employeeList).setFirstResult(indEmployeePayrollDTO.getStart()).setMaxResults(indEmployeePayrollDTO.getLength()).list();
+        Integer filterCount = indEmployeePayrollList.size();
+		
+		int totalCount = 0;
+		if (indEmployeePayrollDTO != null) {
+			if(indEmployeePayrollList != null && !indEmployeePayrollList.isEmpty()) {
+				totalCount = indEmployeePayrollList.size();
+			}
+		} 
+		response.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(filterCount);
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}
+		response.setData(indEmployeePayrollList);
+		return response;
+	}
 }
