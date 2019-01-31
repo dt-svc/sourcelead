@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<script src="/resources/js/payrollReports.js"></script>
+<script src="/pms/resources/js/payrollReports.js"></script>
 
 <script>
 $(document).ready(function(){
@@ -23,7 +23,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Payroll Register</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/pms/usPayrollReport">US Payroll Reports List</a> &raquo;  Payroll Register</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;
+       <a href="/pms/usPayrollReport">US Payroll Reports List</a> &raquo;  Payroll Register</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
@@ -56,10 +57,6 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
               <label class="col-md-12">Pay Period<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
                 <select class="form-control sel" id="payPeriod" name="payPeriod" onchange="getFreqdates('freqStartDate','freqEndDate');">
-					    <!-- <option>Select Period</option>
-						<option>01-02-2018 28-02-2018</option>
-						<option>01-03-2018 28-03-2018</option>
-						<option>01-02-2018 28-02-2018</option> -->
 					</select>
 					<input type="hidden" name="freqStartDate" id="freqStartDate" value=""/>
 					<input type="hidden" name="freqEndDate" id="freqEndDate" value=""/>
@@ -69,10 +66,6 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
               <label class="col-md-12">Department</label>
               <div class="col-md-12">
                 <select class="form-control chosen-select" multiple id="payrollDepartment" name="department">
-					    <!-- <option>Select Department</option>
-						<option>Department-1</option>
-						<option>Department-2</option>
-						<option>Department-3</option> -->
 					</select>
               </div>
             </div>

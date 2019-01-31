@@ -1,7 +1,7 @@
 function getPayGroupList(id,customEnable){
 	$.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getPayGroupList?"+tokenParamName+"="+tokenValue                 , 
+	        url: pmsUrl+"/getPayGroupList?"+tokenParamName+"="+tokenValue, 
 	        success: function(json) {
 	        var output = "";
 	        output = output + "<option value=''>select group</option>";
@@ -29,15 +29,13 @@ function getPayPeriodByGroupId(payGroupid,payPeriodId1,payPeriodId2,customDivId)
 		$("#"+payPeriodId1+"Div").show();
 		$.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getPayPeriodByGroupId?"+tokenParamName+"="+tokenValue+"&groupId="+groupId               , 
+	        url: pmsUrl+"/getPayPeriodByGroupId?"+tokenParamName+"="+tokenValue+"&groupId="+groupId               , 
 	        success: function(json) {
 	        var output = "";
 	        output = output + "<option value=''>Pay Period</option>";
 			for (var i=0; i<json.data.length; i++)
 			{
 				var opt = json.data[i];
-//				var startDate  = moment(opt.freqStartDate).format(locDateFormat);
-//				var endDate  = moment(opt.freqEndDate).format(locDateFormat);
 				output = output + "<option value='"+opt.convertedFreqStartDate+"#"+opt.convertedFreqEndDate+"'>"+opt.convertedFreqStartDate+" To "+opt.convertedFreqEndDate+"</option>";
 			}
 			$("#"+payPeriodId1).empty();
@@ -88,11 +86,10 @@ function getFreqdates(freqSDId,fredEDId){
 
 
 function getEmployeesBasedOnDepartment(id){
-	
 	var departmentId = $("#payrollDepartment").val();
 	$.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getEmployeesBasedOnDepartment?&departmentId="+departmentId, 
+        url: pmsUrl+"/getEmployeesBasedOnDepartment?&departmentId="+departmentId, 
         success: function(json) {
         var output = "";
 		for (var i=0; i<json.length; i++)
