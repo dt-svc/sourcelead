@@ -455,7 +455,7 @@ public class ProfessionalRequirementsController {
 		return model;
 		}
 			 
-	 @RequestMapping(value = "/app/validateReferedEmail",  method = RequestMethod.GET)
+	 @RequestMapping(value = "/validateReferedEmail",  method = RequestMethod.GET)
 	   public @ResponseBody String validateReferedEmail(@RequestParam(value="email", required=false) String email,
 	   		@RequestParam(value="requirementId", required=false) Long requirementId,
 	   		HttpServletRequest request) throws Exception {

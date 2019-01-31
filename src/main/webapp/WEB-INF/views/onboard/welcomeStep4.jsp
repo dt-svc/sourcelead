@@ -166,7 +166,7 @@ function changeTaskStatus(taskId){
 	       	} else if (response.response === "SUCCESS") {
 	       		$("#task"+taskId).removeAttr("style");
 	       	} else if (response.indexOf('Sign In') !== -1) {
-	       		location.replace(atsUrl);
+	       		location.replace(sourceleadUrl);
 	       	} else {
 	       	    showError("Operation failed, please try again");
 	       	}
@@ -188,7 +188,7 @@ function goToDashboard(){
         	} else if (response.response === "SUCCESS") {
         		location.replace(atsUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");
         	} else if (response.indexOf('Sign In') !== -1) {
-        		location.replace(atsUrl);
+        		location.replace(sourceleadUrl);
         	} else {
         	    showError("Operation failed, please try again");
         	}

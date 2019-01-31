@@ -173,8 +173,8 @@
 			<div class="col-md-2">
 				<h5>Campaigns</h5>
 				<ul class="repSearchList list-unstyled">
-					<li><a href="${appPath}/campaignSendersList" title="Campaigns">Senders</a></li>
-					<li><a href="${appPath}/recipientsList" title="Campaigns">Recipients</a></li>
+					<li><a href="/ats/campaignSendersList" title="Campaigns">Senders</a></li>
+					<li><a href="/ats/recipientsList" title="Campaigns">Recipients</a></li>
 				</ul>
 				<div class="noDate noDateSm" style="display: none;"></div>
 			</div>
