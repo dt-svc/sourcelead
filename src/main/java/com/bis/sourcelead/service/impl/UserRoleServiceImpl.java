@@ -113,9 +113,6 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public UserRole addUserRole(UserRole userRole) throws Exception {
 		userRole.setCreatedDate(new Date());
 		userRole.setUpdatedDate(new Date());
-		if(StringUtils.isBlank(userRole.getUuid())) {
-			userRole.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-		}
 		return userRoleDao.addUserRole(userRole);
 	}
 
