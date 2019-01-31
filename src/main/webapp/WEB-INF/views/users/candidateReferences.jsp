@@ -22,6 +22,7 @@
      1.usage     : used at clientSideBar().
 --%>
 <script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 	function candidateReferences(candidateId) {
 		var candidateType = '${candidateType}';
 		var result = "";
@@ -105,7 +106,7 @@
 		$
 				.ajax({
 					type : "POST",
-					url : sourceleadUrl
+					url : atsUrl
 							+ "/getCandidateReferencesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId + "&locationCode=" + locationCode,
 					success : function(json) {
@@ -403,7 +404,7 @@ function validateReferenceEmail(candidateId,referId){
 	 if (email != null && email != "") {
 	$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateReferEmail?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&referId="+referId+"&email="+email,
+			url : atsUrl + "/validateReferEmail?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&referId="+referId+"&email="+email,
 			success : function(response) {
 				if (response.response === "AWKWARD") {
 				    location.href = "/errorPage";
@@ -473,7 +474,7 @@ function validateReferenceEmail(candidateId,referId){
 			    var locationCode = '${SourceLeadWeb_locationCode}';
 				$("#save_ref").attr("disabled", "disabled");
 				$("#save_ref").addClass('button').val('Processing..'); 
-		        $.post(sourceleadUrl+"/saveCandidateReferences?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(response) {
+		        $.post(atsUrl+"/saveCandidateReferences?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(response) {
 		        	if (response && response.response === "INVALID_DATA") {
 		        	    showError(response.responseMessage);
 		        	} else if (response && response.response === "INVALID_USER") {
@@ -573,7 +574,7 @@ function validateReferenceEmail(candidateId,referId){
 		$
 				.ajax({
 					type : "POST",
-					url : sourceleadUrl
+					url : atsUrl
 							+ "/terminateReference?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="
 							+ candidateId + "&refId=" + refId + "&userCode="
 							+ userCode,
@@ -624,7 +625,7 @@ function validateReferenceEmail(candidateId,referId){
 			
 			 $("#save_ref").attr("disabled", "disabled");
 			$("#save_ref").addClass('button').val('Processing..'); 
-	        $.post(sourceleadUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(result) {
+	        $.post(atsUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(result) {
 	        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
 	    		    showError(result.responseMessage);
 	    		} else if (result.response === "AWKWARD") {
@@ -661,7 +662,7 @@ function validateReferenceEmail(candidateId,referId){
 	function editCandidateReference(candidateId, refId) {
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl
+			url : atsUrl
 					+ "/getCandidateReferencesByCandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="
 					+ candidateId + "&refId=" + refId,
 			success : function(response) {

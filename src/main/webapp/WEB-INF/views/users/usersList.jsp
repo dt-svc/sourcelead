@@ -52,6 +52,7 @@ margin-right: 15px;
 
 
 <script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 $(document).ready(function() {
     $("#filterDropDown").click(function(){
 		$(".approvedPop").slideToggle(200);
@@ -95,7 +96,7 @@ function usersListCheck(searchValue,searchResult){
 function getUsersSearchResult(searchValue){
 	 $.ajax({
         type : "GET",
-         url: sourceleadUrl+"/getUniversalSearchUsersList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue,       
+         url: atsUrl+"/getUniversalSearchUsersList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue,       
          success :function(data) {
         	 prepareUsersList(data);
         },
@@ -127,7 +128,7 @@ function getUsersSearchResult(searchValue){
 	     </c:if>
       <div class="pull-left"><h2>Associates </h2></div>
       
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Associates List </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Associates List </div>
     </section>
 
 	<div class="project_wrap">
@@ -332,10 +333,10 @@ function getUsersSearchResult(searchValue){
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
 									<span> 
-									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
-									<a href="<c:url value='${appPath}/addAssociateFromLocations'/>">Add From Loc</a>
+									<a href="<c:url value='/userCreation'/>">Add Associate</a>
+									<a href="<c:url value='/addAssociateFromLocations'/>">Add From Loc</a>
 									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
-										<a href="<c:url value='${appPath}/uploadForm'/>">Import</a>
+										<a href="<c:url value='${sourceleadUrl}/uploadForm'/>">Import</a>
 									</sec:authorize>									
 									</span>
 								</div>
@@ -348,7 +349,7 @@ function getUsersSearchResult(searchValue){
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
 									<span> 
-									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
+									<a href="<c:url value='/userCreation'/>">Add Associate</a>
 									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
 										<a href="<c:url value='${appPath}/uploadForm'/>">Import</a>
 									</sec:authorize>									
@@ -358,7 +359,7 @@ function getUsersSearchResult(searchValue){
 							</sec:authorize>
 							
 				<sec:authorize access="!hasRole('ROLE_USER_BULK_IMPORTS')"> 
-						<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userCreation'/>">+  Associate</a></li>
+						<li><a class="newAdBtn mr5" href="<c:url value='/userCreation'/>">+  Associate</a></li>
 				</sec:authorize>
 							
 				</c:if>	
@@ -587,7 +588,7 @@ function exportUserData(){
     var searchValue = $("#dynamicUserDataTableSearch").val();
     searchValue = searchValue ? searchValue : "";
 	if(userListEmpty != 'nousers'){
-		window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType+"&tags="+tags+"&exportType=xls";
+		window.location.href = atsUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType+"&tags="+tags+"&exportType=xls";
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -711,7 +712,7 @@ function exportToPdf(){
     var searchValue = $("#dynamicUserDataTableSearch").val();
     searchValue = searchValue ? searchValue : "";
 	if(userListEmpty != 'nousers'){
-	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType+"&tags="+tags+"&exportType=pdf";
+	window.location.href = atsUrl+ "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType+"&tags="+tags+"&exportType=pdf";
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -767,7 +768,7 @@ function resendInvitation(userId){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/resendInvitationEmail?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
+			        url: atsUrl+"/resendInvitationEmail?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
 			        success: function(result) {
 			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)'  onClick='resendInvitation("+userId+");'>&nbsp;Resend</a>");
 			        	$("#loading").removeAttr("style"); 
@@ -845,7 +846,7 @@ var validationSettings = {
 		        	     processData: false,
 		    	         contentType:false,
 		        	     dataType : 'json',
-						 url : sourceleadUrl+"/searchUser?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&offset="+offset+"&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole,
+						 url : atsUrl+"/searchUser?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&offset="+offset+"&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole,
 						 success : function(data) {
 							$("#search_user").addClass('button').val('Search');
 							$("#search_user").removeAttr("disabled");
@@ -870,7 +871,7 @@ function getUserSummary(userId){
 	if(userId != null && userId != ""){
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/userSummary?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
+			        url: atsUrl+"/userSummary?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
 			        success: function(result) {
 			        	 
 			        },
@@ -916,7 +917,7 @@ function getUserSummary(userId){
 			       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
 			       	    	
 			       	     '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\')">' 
-			       	         	result = result +"<h4><a href='<c:url value='/app/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.firstName+" "+lastName+"'> "+userRole.firstName+" "+lastName+" </span> </a> </h4>";
+			       	         	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.firstName+" "+lastName+"'> "+userRole.firstName+" "+lastName+" </span> </a> </h4>";
 			       	    	'</sec:authorize>';
 			       	    	
 			       	     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\')">' 
@@ -1205,7 +1206,7 @@ function getDynamciUserList(){
 	
 	var searchValue = $("#dynamicUserDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getDynamicUserList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userRole="+userRole+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType+"&tags="+tags;
+	var url = atsUrl+"/getDynamicUserList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userRole="+userRole+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType+"&tags="+tags;
     $('#dynamicUserDataTableSearch').removeAttr('disabled');
 	$('#dynamicUserDataTableSearch').attr('disabled','disabled');
 	prepareDynamicUserList(url);
@@ -1272,7 +1273,7 @@ function dynamicUserListPagination(url){
 		    	  		if(userRole.userName !=null && userRole.userName !='' && userRole.userName !='undefined'){
 		        			   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\')">' 
 		        			   result = result +"<td><div class='proj_show divmax-width dotdotwithImage'>"    
-		        			    result = result +" <a href='<c:url value='/app/userSummary/"+userRole.userCode+"'/>'' class='UserTextLeft' title = '"+userRole.userName+"'>";
+		        			    result = result +" <a href='<c:url value='/userSummary/"+userRole.userCode+"'/>'' class='UserTextLeft' title = '"+userRole.userName+"'>";
 		        			    if(userRole.fileUrl != null && userRole.fileUrl !="" && userRole.fileUrl != "undefined"){
 				       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs pull-left'  src='"+userRole.fileUrl+"' alt='image'>";
 		        			    }else{

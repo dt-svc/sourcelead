@@ -208,6 +208,7 @@
   </div>
   
 <script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 function saveAssociateLoanAndAdvanceDetails(){
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -222,7 +223,7 @@ function saveAssociateLoanAndAdvanceDetails(){
 	         $.ajax({
 		    	type: "POST",
 		    	data: formData,
-		    	 url: sourceleadUrl+"/saveAssociateLoanAndAdvanceDetails?",
+		    	 url: atsUrl+"/saveAssociateLoanAndAdvanceDetails?",
 		        success: function(response) {
 		        	$("#loanAndAdvancesDetailsLoading").removeAttr('style');
 		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
@@ -278,7 +279,7 @@ function deleteLoanAndAdvance(loanAdvId){
 function deleteSavedLoanAndAdvance(loanAdvId){
 	$.ajax({
     	type: "POST",
-    	url: sourceleadUrl+"/deleteAssociateLoanAndAdvanceDetailsById?loanAdvId="+loanAdvId,
+    	url: atsUrl+"/deleteAssociateLoanAndAdvanceDetailsById?loanAdvId="+loanAdvId,
         success: function(json) {
         	var candidateId = '${candidateId}';
     		associateLoanAndAdvanceDetails(candidateId);
@@ -301,7 +302,7 @@ function editLoanAndAdvance(loanAdvId){
 	 $("#loanAndAdvancesDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');	
 	$.ajax({
     	type: "POST",
-    	url: sourceleadUrl+"/getAssociateLoanAndAdvanceDetailsById?loanAdvId="+loanAdvId,
+    	url: atsUrl+"/getAssociateLoanAndAdvanceDetailsById?loanAdvId="+loanAdvId,
         success: function(json) {
         	
         	if(json != null && json.id != '0'){
@@ -415,7 +416,7 @@ function verifyLoanEligibility(){
 	if(effectiveDate != 'undefined' && effectiveDate != '' && effectiveDate != null){
 		$.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/verifyLoanEligibilityByAssociateIdAndLoanAdv?loanAndAdvName="+loanAndAdvName+"&associateUserId="+associateUserId+"&effectiveDate="+effectiveDate,
+	    	url: atsUrl+"/verifyLoanEligibilityByAssociateIdAndLoanAdv?loanAndAdvName="+loanAndAdvName+"&associateUserId="+associateUserId+"&effectiveDate="+effectiveDate,
 	        success: function(json) {
 	        	if(!json.object){
 	        		$('#savePaymentButton').attr('disabled', 'disabled');

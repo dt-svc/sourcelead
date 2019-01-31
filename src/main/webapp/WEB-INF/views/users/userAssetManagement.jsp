@@ -7,11 +7,12 @@
 --%>
 
 <script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 function userAssetManagement(userId){  
 	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 	  $.ajax({
            type : "GET",
-           url: sourceleadUrl+"/getUserBasedAssetManagementList?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId,    
+           url: atsUrl+"/getUserBasedAssetManagementList?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId,    
             success :function(json) {
             	var result = "";
             	result = result + '<div id="assetServicePopUp" class="popupWrap" style="position:fixed;"/>';
@@ -55,7 +56,7 @@ function userAssetManagement(userId){
 					
 
 					result = result+'<tr id="asset'+report.id+'">';
-		   	        result = result+'<td><a href="'+sourceleadUrl+'/assetManagementSummary?assetUUID='+report.asset.assetUUID+'" target="_blank">';
+		   	        result = result+'<td><a href="'+atsUrl+'/assetManagementSummary?assetUUID='+report.asset.assetUUID+'" target="_blank">';
        		       	result = result +"<div class='proj_show tbldata-dotdot_140 tbldata-dotdot-sm'><span class='pull-left' title='"+report.asset.slno+"'>"+report.asset.slno+"</span><i class='fa fa-binoculars'></i></div>";
 				   	result = result+'</a></td>';
 				   	result = result+'<td><div class="tbldata-dotdot-sm" title="'+report.asset.categoryName+'">'+report.asset.categoryName+'</div></td>';
@@ -140,7 +141,7 @@ function updateWorkingStatus(assetUUID,assetId){
 		}else{
 			 $.ajax({
 				   	type: "POST",
-				    url: sourceleadUrl+"/updateAssetWorkingStatus?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&workingStatus="+workingStatus,	    	   
+				    url: atsUrl+"/updateAssetWorkingStatus?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&workingStatus="+workingStatus,	    	   
 				    success: function(data) {
 				    	$("#asset"+assetId).empty();
 				    	$("#asset"+assetId).html(rowHtmlContent);
@@ -243,7 +244,7 @@ function closeAssetPopup(assetUUID,assetId) {
 	$("#assetServicePopUp, .mask").fadeOut();
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/cancelAssetManagementService?"+tokenParamName+"="+tokenValue+"&assetUUID="+assetUUID,	    	   
+		    url: atsUrl+"/cancelAssetManagementService?"+tokenParamName+"="+tokenValue+"&assetUUID="+assetUUID,	    	   
 		    success: function(json) {
 		    	$("#asset"+assetId).empty();
 		    	$("#workingStatus"+assetId).val(json.workingStatus);
@@ -268,7 +269,7 @@ function saveAssetService(assetId){
 	 	$.ajax({
 			type: "POST",
 			data: formData,
-			url : sourceleadUrl+ "/saveAssetService?${_csrf.parameterName}=${_csrf.token}",
+			url : atsUrl+ "/saveAssetService?${_csrf.parameterName}=${_csrf.token}",
 			success : function(data) {
 					if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
 			        		showError(data.responseMessage);
@@ -317,7 +318,7 @@ function removeAssetManagement(assignAssetId){
 	 $("#loading"+assignAssetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	 $.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/removeAssocateAssingAssetManagement?"+tokenParamName+"="+tokenValue+"&assignAssetId="+assignAssetId,	    	   
+	    url: atsUrl+"/removeAssocateAssingAssetManagement?"+tokenParamName+"="+tokenValue+"&assignAssetId="+assignAssetId,	    	   
 	    success: function(data) {
 	    	 var table = $('#assetManagementListPagination').DataTable();
   		     table.row("#asset"+assignAssetId).remove().draw( false );
