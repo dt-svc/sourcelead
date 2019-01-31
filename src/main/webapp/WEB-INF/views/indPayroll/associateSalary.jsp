@@ -44,10 +44,10 @@
                     <div>
                       <select class="sel" id="payFrequency" name="payFrequency" onchange="getPayGroups();" data-validation="required" field-name="Pay Frequency">
                         <option value="">--Select--</option>
-                        <option ${associateSalaryInd.payFrequency == "Annual" ? "selected" : ""} value="Annual">Annually</option>
+<%--                         <option ${associateSalaryInd.payFrequency == "Annual" ? "selected" : ""} value="Annual">Annually</option> --%>
                         <option ${associateSalaryInd.payFrequency == "Monthly" ? "selected" : ""} value="Monthly">Monthly</option>
-                        <option ${associateSalaryInd.payFrequency == "Bi-Weekly" ? "selected" : ""} value="Bi-Weekly">Bi-Weekly</option>
-                        <option ${associateSalaryInd.payFrequency == "Weekly" ? "selected" : ""} value="Weekly">Weekly</option>
+<%--                         <option ${associateSalaryInd.payFrequency == "Bi-Weekly" ? "selected" : ""} value="Bi-Weekly">Bi-Weekly</option> --%>
+<%--                         <option ${associateSalaryInd.payFrequency == "Weekly" ? "selected" : ""} value="Weekly">Weekly</option> --%>
                       </select>
                     </div>
                   </div>
@@ -572,6 +572,7 @@ function calculatePercentSal(){
 	      dateFormat: jsDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true,
+	  	  minDate:0,
 	  	  onSelect : function(selected) {
 	  	  }
 	  });
