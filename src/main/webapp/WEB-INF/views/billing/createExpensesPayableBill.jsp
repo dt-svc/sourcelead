@@ -82,7 +82,7 @@ function checkBox(){
 		       <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();creatExpPayBilsEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 			</div>
 			 <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
-			<span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a></span> 
+			<span class="col-md-2 noPad clearfix"><a href="/vms/addVendor" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a></span> 
 			</sec:authorize>
                <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
                <input type="hidden" name="vendorCurrency" id="vendorCurrency">
@@ -289,7 +289,7 @@ function checkBox(){
               <div class="pull-right mr">
                   <button type="button" class="btn btn-sm btn-primary" id="saveButtonId" onclick="saveInvoice('DRAFT');">Save</button>
                   <button type="button" class="btn btn-sm btn-success ml" id="sendButtonId" onclick="saveInvoice('SENT')">Send</button>
-                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '/vms/payablesList">Cancel</button>
+                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '/vms/payablesList'">Cancel</button>
               </div>
           </footer>
           </form:form>
