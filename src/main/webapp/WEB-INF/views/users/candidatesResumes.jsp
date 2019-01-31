@@ -43,6 +43,7 @@
 </style>
 
 <script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 function candidateResume(candidateId){
 	var candidateType = '${candidateType}';
 	var result ="";
@@ -244,7 +245,7 @@ function addResume(candidateId) {
 				$.ajax({
 					type : "POST",
 	        	    data: formData,
-					url : sourceleadUrl+"/saveCandidateResume?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&resumeId="+resumeId,
+					url : atsUrl+"/saveCandidateResume?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&resumeId="+resumeId,
 					success : function(response) {
 						if (response && response.response === "INVALID_DATA") {
 						    showError(response.responseMessage);
@@ -337,7 +338,7 @@ function addResume(candidateId) {
 	  }
 	  $.ajax({
 			type : "POST",
-			url : sourceleadUrl+"/candidateResumesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
+			url : atsUrl+"/candidateResumesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 			success : function(json) {
 // 				if (json != null && json != 'undefined' && json != "" && json != '[]') {
 // 					var json = JSON.parse(data);
@@ -458,7 +459,7 @@ function addResume(candidateId) {
 <script type="text/javascript">
 function getCandiResume(fileURL,title){
 	if(fileURL != null && fileURL != ""){
-		window.open(sourceleadUrl+'/viewDocumentsForCan/'+title+'?docFile='+encodeURI(fileURL),title,"height=600,width=600");
+		window.open(atsUrl+'/viewDocumentsForCan/'+title+'?docFile='+encodeURI(fileURL),title,"height=600,width=600");
 	}  
 }
 function getIframeDocument(element)
@@ -509,7 +510,7 @@ function deleteResume(candidateId, resumeId){
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateResume?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
+		    url: atsUrl+"/terminateResume?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
    		    success: function(response) {
    		    	if (response && response.response === "INVALID_DATA") {
    		    	    showError(response.responseMessage);
@@ -578,7 +579,7 @@ function getResume(candidateId, resumeId){
 	
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getResume?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
+		    url: atsUrl+"/getResume?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
    		    success: function(response) {
    		    	if (response.response === "AWKWARD") {
    		    	    location.href = "/errorPage";

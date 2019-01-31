@@ -6,11 +6,12 @@
      3.ajax url implementation in UserRestController.
 --%>
 <script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 function userAssignedProjects(userId){  
 	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 	  $.ajax({
            type : "GET",
-           url: sourceleadUrl+"/getAssignedProjectsListForUser?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"&fromType=Associate",    
+           url: atsUrl+"/getAssignedProjectsListForUser?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"&fromType=Associate",    
             success :function(data) {
                 	prepareAssignedProjectsData(data);
           },
@@ -88,7 +89,7 @@ function prepareAssignedProjectsData(data){
 	
 	result = result +"<td>";
    	if(opt.projectName != '' && opt.projectName != null && opt.projectName != 'undefined'){
-   		result = result +"<div class='tbldata-dotdot'><a href='"+sourceleadUrl+"/projectSummary?projectUUID="+opt.projectUUID+"&projectClientUUID="+opt.projectClientUUID+"'><span title='"+opt.projectName+"'>"+opt.projectName+"</span></a></div>";
+   		result = result +"<div class='tbldata-dotdot'><a href='"+atsUrl+"/projectSummary?projectUUID="+opt.projectUUID+"&projectClientUUID="+opt.projectClientUUID+"'><span title='"+opt.projectName+"'>"+opt.projectName+"</span></a></div>";
    	}else{
    		result = result +"<div>-----</div>";
    	}
@@ -241,7 +242,7 @@ function inlineEditForEndDate(id,projectMemberId){
 	 var endDate = document.getElementById(id).value;
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/updateEndDateByProjectMemberId?"+tokenParamName+"="+tokenValue+"&endDate="+endDate+"&projectMemberId="+projectMemberId, 	   
+		    url: atsUrl+"/updateEndDateByProjectMemberId?"+tokenParamName+"="+tokenValue+"&endDate="+endDate+"&projectMemberId="+projectMemberId, 	   
    		    success: function(data) {
    			   
    		    }
@@ -266,6 +267,6 @@ function pagination(){
     $('#assignedProjectsListPagination').wrap("<div class='overflow_Auto width100percnt'></div>")
 }
 function projectSummaryRedirection(){
-	window.location.href = sourceleadUrl+"/projectDashboard";
+	window.location.href = atsUrl+"/projectDashboard";
 }
 </script>
