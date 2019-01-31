@@ -72,6 +72,13 @@ public class CouchbaseClient {
 		userProfileBucket.upsert(JsonDocument.create(id, arthur));
 	}
 	
+	public void setOrgLocations(String id, String key, JsonObject value) throws Exception {
+
+		JsonObject arthur = JsonObject.create().put(key, value);
+		// Store the Document
+		userProfileBucket.upsert(JsonDocument.create(id, arthur));
+	}
+	
 	
 	public Object getUserProfile(String key) {
 
