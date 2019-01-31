@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.User;
@@ -635,6 +636,205 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 					   List<IndEmployeePayrollDTO> projectassignTaskList = queryObj.setLong("orgloationId", orgLocations.getId()).setDate("startDate", freqStartDate).setDate("endDate", freqEndDate).list();
 					return projectassignTaskList;
 	}
+
+
+	@Override
+	public ResponseList<IndEmployeePayrollDTO> getPayrollESIAndPFReportList(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		ResponseList<IndEmployeePayrollDTO> response = new ResponseList<>();
+		List<Long> countlist  = null;
+		
+		StringBuilder query1 = new StringBuilder("");
+		if(indEmployeePayrollDTO.getSearchValue() !=null && !"".equalsIgnoreCase(indEmployeePayrollDTO.getSearchValue())) {
+		 query1.append("and (employee.EMPLOYEE_ID like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' ")
+		       .append("OR (can.FIRST_NAME like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR (can.LAST_NAME like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR concat(can.FIRST_NAME,can.LAST_NAME) like '%" + indEmployeePayrollDTO.getSearchValue() + "%' ")
+		       .append("OR (pfEsi.UAN_NUMBER like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR (pfEsi.PF_NUMBER like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR (pfEsi.ESI_NUMBER like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+			   .append("OR department.DEPARTMENT_NAME like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )");
+		}
+		
+		 String[] selectFromMonths = indEmployeePayrollDTO.getFromMonth().split("-");
+		 Date startDate = new SimpleDateFormat("MMMM").parse(selectFromMonths[0]);
+		 Calendar cal = Calendar.getInstance();
+		 cal.setTime(startDate);
+		 cal.set(Calendar.YEAR, Integer.valueOf(selectFromMonths[1]));
+		 Date sDate = cal.getTime();
+		 java.sql.Date freqStartDate = new java.sql.Date(sDate.getTime());
+		 
+		 
+		 String[] selectToMonth = indEmployeePayrollDTO.getToMonth().split("-");
+		 Date endDate = new SimpleDateFormat("MMMM").parse(selectToMonth[0]);
+		 Calendar endCal = Calendar.getInstance();
+		 endCal.setTime(endDate);
+		 endCal.set(Calendar.YEAR, Integer.valueOf(selectToMonth[1]));
+		 endCal.add(Calendar.MONTH, 1);  
+		 endCal.set(Calendar.DAY_OF_MONTH, 1);  
+		 endCal.add(Calendar.DATE, -1);  
+	     Date eeDate = endCal.getTime();
+	     java.sql.Date freqEndDate = new java.sql.Date(eeDate.getTime());
+	     String typeQury = "";
+	     if(indEmployeePayrollDTO.getType().equalsIgnoreCase("ESI")) {
+	    	 typeQury = typeQury + " AND pfEsi.ELIGIBLE_FOR_ESI = 'Y' ";
+		  }
+		  if(indEmployeePayrollDTO.getType().equalsIgnoreCase("PF")) {
+			  typeQury = typeQury + "AND pfEsi.ELIGIBLE_FOR_PF = 'Y' ";
+		  }
+		  
+		  String query =  " SELECT  can.ID as canId, "+ 
+						  "	employee.EMPLOYEE_ID as employeeid, "+
+						  "	department.DEPARTMENT_NAME as departmentName, "+
+						  "	employee.HIRE_DATE as deteOfJoin, "+
+						  "	can.FIRST_NAME as firstName, "+
+						  "	can.LAST_NAME as lastName,  "+
+						  "	payHead.NAME as payHeadName, "+
+						  "	his.PAYROLL_PAYHEAD as payrollPayheadId, "+
+						  "	his.MONTHLY as payHeadAmount, "+
+						  "	payHead.SHORT_CODE as shortCode, "+
+						  "	pfESI.UAN_NUMBER as uanNumber, "+
+						  "	pfESI.PF_NUMBER as pfNumber, "+
+						  "	pfESI.ESI_NUMBER as esiNumber, "+
+						  "	pfESI.ELIGIBLE_FOR_ESI as eligibleForEsi, "+
+						  "	pfESI.ELIGIBLE_FOR_PF as eligibleForPf, "+
+						  "	tax.EMPLOYEE_ESI as employeeEsi, "+
+						  "	tax.EMPLOYER_ESI as employerEsi, "+
+						  "	tax.EMPLOYEE_PF as employeePf, "+
+						  "	tax.EMPLOYER_PF as employerPf  "+
+
+						  "	FROM PAYROLL_PAYHEAD payHead, IND_PAY_SHEET_FREQUENCY freq, IND_EMPLOYEE_PAYROLL payroll, "+ 
+						  "	ASSOCIATE_PAYROLL_PAYHEAD_HISTORY his, CANDIDATE can, EMPLOYEE employee, DEPARTMENT department, "+
+						  "	ASSOCIATE_PF_ESI_DETAILS pfEsi,CENTRAL_TAX tax "+
+						  "	where payroll.IND_PAY_SHEET_FREQUENCY_ID = freq.ID "+  
+						  "	AND his.PAYROLL_PAYHEAD = payHead.ID  "+
+						  "	AND payroll.CANDIDATE_ID = can.ID  "+
+						  "	AND payroll.EMPLOYEE_ID = employee.ID "+  
+						  "	AND employee.DEPARTMENT_ID = department.ID "+  
+						  "	AND payroll.CANDIDATE_ID = pfESI.CANDIDATE_ID "+
+						  "	AND freq.ORG_LOCATION_ID =:orgloationId  "+
+						  "	AND ( date(freq.FREQUENCY_START_DATE) BETWEEN :startDate and :endDate) "+ 
+						  "	AND tax.CT_FINANCIAL_YEAR  =:financialYear "+
+						  "	AND  payHead.SHORT_CODE  =:type "+
+						  " "+typeQury+" "+query1+" "+ 
+						  "	AND his.MONTHLY > 0 "+
+						  " AND department.ID =:departmentId"+
+						  "	AND his.UPDATED_DATE = (select max(UPDATED_DATE) from ASSOCIATE_PAYROLL_PAYHEAD_HISTORY assHis where  assHis.IND_EMPLOYEE_PAYROLL_ID = payroll.ID and assHis.PAYROLL_PAYHEAD = payHead.ID)"; 
+		
+		  Query queryObj = session.createSQLQuery(query);
+		   queryObj.setResultTransformer(Transformers.aliasToBean(IndEmployeePayrollDTO.class));
+		   List<IndEmployeePayrollDTO> indPayrollESIAndPFList = queryObj.setBigInteger("departmentId", BigInteger.valueOf(Long.parseLong(indEmployeePayrollDTO.getDepartmentId()))).setString("financialYear", indEmployeePayrollDTO.getFinancialYear()).setString("type", indEmployeePayrollDTO.getType()).setLong("orgloationId", orgLocations.getId()).setDate("startDate", freqStartDate).setDate("endDate", freqEndDate).list();
+
+		 //count Query
+String countQuery  =  " select count(*) FROM PAYROLL_PAYHEAD payHead, IND_PAY_SHEET_FREQUENCY freq, IND_EMPLOYEE_PAYROLL payroll, "+ 
+					  "	ASSOCIATE_PAYROLL_PAYHEAD_HISTORY his, CANDIDATE can, EMPLOYEE employee, DEPARTMENT department, "+
+					  "	ASSOCIATE_PF_ESI_DETAILS pfEsi,CENTRAL_TAX tax "+
+					  "	where payroll.IND_PAY_SHEET_FREQUENCY_ID = freq.ID "+  
+					  "	AND his.PAYROLL_PAYHEAD = payHead.ID  "+
+					  "	AND payroll.CANDIDATE_ID = can.ID  "+
+					  "	AND payroll.EMPLOYEE_ID = employee.ID "+  
+					  "	AND employee.DEPARTMENT_ID = department.ID "+  
+					  "	AND payroll.CANDIDATE_ID = pfESI.CANDIDATE_ID "+
+					  "	AND freq.ORG_LOCATION_ID =:orgloationId  "+
+					  "	AND ( date(freq.FREQUENCY_START_DATE) BETWEEN :startDate and :endDate) "+ 
+					  "	AND tax.CT_FINANCIAL_YEAR  =:financialYear "+
+					  "	AND  payHead.SHORT_CODE  =:type "+
+					  " "+typeQury+" "+query1+" "+ 
+					  "	AND his.MONTHLY > 0 "+
+					  " AND department.ID =:departmentId"+
+					  "	AND his.UPDATED_DATE = (select max(UPDATED_DATE) from ASSOCIATE_PAYROLL_PAYHEAD_HISTORY assHis where  assHis.IND_EMPLOYEE_PAYROLL_ID = payroll.ID and assHis.PAYROLL_PAYHEAD = payHead.ID)"; 
+
+			Query countQueryObj = session.createSQLQuery(countQuery);
+			countlist = countQueryObj.setBigInteger("departmentId", BigInteger.valueOf(Long.parseLong(indEmployeePayrollDTO.getDepartmentId()))).setString("financialYear", indEmployeePayrollDTO.getFinancialYear()).setString("type", indEmployeePayrollDTO.getType()).setLong("orgloationId", orgLocations.getId()).setDate("startDate", freqStartDate).setDate("endDate", freqEndDate).list();
+	        Integer filterCount = countlist.size();
+			
+			int totalCount = 0;
+			if (indEmployeePayrollDTO != null) {
+				if(countlist != null && !countlist.isEmpty()) {
+					totalCount = countlist.size();
+				}
+			} 
+			response.setRecordsTotal(totalCount);
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				response.setRecordsFiltered(filterCount);
+			}else {
+				response.setRecordsFiltered(totalCount);
+			}
+			 
+			response.setData(indPayrollESIAndPFList);
+			return response;
+	}
 	
 	
+	@Override
+	public ResponseList<IndEmployeePayrollDTO> getPayrollSalaryRegisterReportReportList(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations) {
+	Session session = this.sessionFactory.getCurrentSession();
+		
+		Date fDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), indEmployeePayrollDTO.getStartDate());
+		java.sql.Date freqStartDate = new java.sql.Date(fDate.getTime());
+		Date tDate = null;
+		if(!indEmployeePayrollDTO.getEndDate().isEmpty()) {
+			 tDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), indEmployeePayrollDTO.getEndDate());
+		}else {
+			tDate = new Date();
+		}
+		
+		java.sql.Date freqEndDate = new java.sql.Date(tDate.getTime());
+		
+		ResponseList<IndEmployeePayrollDTO> response = new ResponseList<>();
+		StringBuilder query1 = new StringBuilder("");
+		if(indEmployeePayrollDTO.getSearchValue() !=null && !"".equalsIgnoreCase(indEmployeePayrollDTO.getSearchValue())) {
+		 query1.append("and (dept.DEPARTMENT_NAME like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' ")
+		       .append("OR (can.FIRST_NAME like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR (can.LAST_NAME like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR concat(can.FIRST_NAME,can.LAST_NAME) like '%" + indEmployeePayrollDTO.getSearchValue() + "%' ")
+			   .append("OR emp.EMPLOYEE_ID like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )");
+		}
+		List<IndEmployeePayrollDTO> indEmployeePayrollList = null;
+		List<Long> employeeList = new ArrayList<>();
+		if(indEmployeePayrollDTO.getEmployeeIds() != null && !indEmployeePayrollDTO.getEmployeeIds().isEmpty()) {
+			String[] orgDepts = indEmployeePayrollDTO.getEmployeeIds().split(",");
+			for(int i=0; i < orgDepts.length; i++) {
+				employeeList.add(Long.parseLong(orgDepts[i]));
+			}
+		}
+		
+		//List Query
+		String query = " SELECT DISTINCT asih.ANNUAL_SALARY as annualSalary, "+
+				       " emp.EMPLOYEE_ID as employeeid, "+
+					   " can.FIRST_NAME as firstName, "+
+					   " can.LAST_NAME as lastName, "+
+					   " asih.INCREMENT_PERCENTAGE as incresePercentage, "+
+					   " asih.EFFECTIVE_DATE as effectiveDate, "+
+					   " dept.DEPARTMENT_NAME as departmentName "+
+					   " FROM ASSOCIATE_SALARY_IND asi, CANDIDATE can,EMPLOYEE emp,DEPARTMENT dept,ASSOCIATE_SALARY_HISTORY_IND asih "+
+					   " where can.ID = asi.CANDIDATE_ID AND asi.ORG_LOCATION_ID =:orgLoactionId "+
+					   " AND can.CONSULTANT_USER_ID = emp.USER_ID "+
+					   " AND emp.ID IN(:employeeList) "+
+					   " AND emp.DEPARTMENT_ID = dept.ID "+
+					   " AND  asi.ID =asih.ASSOCIATE_SALARY_IND  "+
+					   " AND ( date(asih.EFFECTIVE_DATE) BETWEEN :startDate and :endDate) "+query1+" ";
+
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setResultTransformer(Transformers.aliasToBean(IndEmployeePayrollDTO.class));
+		indEmployeePayrollList = queryObj.setDate("startDate", freqStartDate).setDate("endDate", freqEndDate).setLong("orgLoactionId", orgLocations.getId()).setParameterList("employeeList", employeeList).setFirstResult(indEmployeePayrollDTO.getStart()).setMaxResults(indEmployeePayrollDTO.getLength()).list();
+        Integer filterCount = indEmployeePayrollList.size();
+		
+		int totalCount = 0;
+		if (indEmployeePayrollDTO != null) {
+			if(indEmployeePayrollList != null && !indEmployeePayrollList.isEmpty()) {
+				totalCount = indEmployeePayrollList.size();
+			}
+		} 
+		response.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(filterCount);
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}
+		response.setData(indEmployeePayrollList);
+		return response;
+	}
 }

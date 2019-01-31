@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
@@ -277,6 +278,16 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 	@Override
 	public List<IndEmployeePayrollDTO> getPayrollSalaryStatementReportList(IndEmployeePayrollDTO indEmployeePayrollDTO,	OrgLocations orgLocations) throws Exception {
 		return indPaysheetFrequencyDao.getPayrollSalaryStatementReportList(indEmployeePayrollDTO, orgLocations);
+	}
+
+	@Override
+	public ResponseList<IndEmployeePayrollDTO> getPayrollESIAndPFReportList(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations) throws Exception {
+		return indPaysheetFrequencyDao.getPayrollESIAndPFReportList(indEmployeePayrollDTO, orgLocations);
+	}
+
+	@Override
+	public ResponseList<IndEmployeePayrollDTO> getPayrollSalaryRegisterReportReportList(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations) {
+		return indPaysheetFrequencyDao.getPayrollSalaryRegisterReportReportList(indEmployeePayrollDTO, orgLocations);
 	}
  
 }

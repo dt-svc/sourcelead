@@ -641,7 +641,10 @@
 				 <li><a href="${appPath}/indPayrollBankTransferReport">Bank Transfer</a></li>
 				 <li><a href="${appPath}/indPayrollYTDSummaryReport">YTD Summary</a></li>
 				 <li><a href="${appPath}/indPayrollAnnualTaxReport">Annual Tax</a></li>
-				 <li><a href="${appPath}/indPayrollLoanReport">Loan</a></li>
+<%-- 				 <li><a href="${appPath}/indPayrollLoanReport">Loan</a></li> --%>
+				 <li><a href="${appPath}/indPayrollESISummaryReport">ESI</a></li>
+				 <li><a href="${appPath}/indPayrollPFSummaryReport">PF</a></li>
+				 <li><a href="${appPath}/indPayrollSalaryRegisterReport">Salary Register</a></li>
 				</ul>
 			</div>
                  <!-- Dropdown -->
