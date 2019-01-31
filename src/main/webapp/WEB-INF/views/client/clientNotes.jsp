@@ -89,11 +89,11 @@ function clientNotes(orgRelationId){
 	var urlForm = "";
 		
 	    urlForm = "/getNotes?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId;
-		
+	    var sourceleadUrl ='${sourceleadUrl}';
 	    var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	  $.ajax({
         type : "POST",
-         url: vmsUrl+urlForm,        
+         url: sourceleadUrl+urlForm,        
          success :function(data) {
 	var output = "";
     if(data != null && data != 'undefined' && data != "" && data != '[]'){
@@ -315,7 +315,7 @@ var validationSettings = {
 		        	    data: formData,
 		    	        processData: false,
 		    	        contentType:false,
-						url : vmsUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&locationCode="+locationCode,
+						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&locationCode="+locationCode,
 						success : function(result) {
 							
 							if (result && result.response === "INVALID_DATA") {
@@ -368,6 +368,7 @@ function getRejectedCategory(){
 function selectCategory(){
 	$('#categoryContactTypeListDivDiv').val('').trigger("chosen:updated");
 	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var orgRelationId = $('#orgRelationId').val(); 
 	var clientLocationId = $('#clientLocationId').val(); 
 	var categoryType = $('#categoryType').val(); 
@@ -376,7 +377,7 @@ function selectCategory(){
 			var status = "";
 			$.ajax({
 		    	type: "POST",
-		    	url : vmsUrl+"/getClientReleasedRequirementList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&status="+status, 
+		    	url : atsUrl+"/getClientReleasedRequirementList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&status="+status, 
 		        success: function(json) {
 		        	 //var json = JSON.parse(data);
 		        	 var result ="";
