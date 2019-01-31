@@ -13,7 +13,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Leave Configuration</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}"> Home</a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; Leave Configuration</div>
+      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}"> Home</a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; Leave Configuration</div>
     </section>
     <div class="project_wrap clearfix">
       <div class="clearfix form-horizontal inner-content mt mb col-md-12">
