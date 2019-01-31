@@ -24,11 +24,9 @@
     .nicEdit-pane { z-index: 9999999; top: 100px;}
 </style>
 
-<!-- <script>
- window.onload = function() {
-	 getMails('Inbox');
-};
-</script> -->	
+<script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
+</script>
 
 <div id="loading"></div>
 <section class="content-wraper">
@@ -75,7 +73,7 @@
 							</c:when>
 							<c:otherwise>
 								<button id="composeSourceleadMail" class="newAdBtn" type="button"
-									onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/composeMail'/>'">
+									onClick="javascript:window.location.href = '<c:url value='atsUrl/composeMail'/>'">
 									<i class="fa fa-envelope-o" aria-hidden="true"></i>Compose
 								</button>
 							</c:otherwise>
@@ -89,17 +87,18 @@
 						</button>
 						<ul class="dropdown-menu">
 						  <sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
-						  	<li><a href="${sourceleadUrl}/hotlistMail">Hotlist Campaign</a></li>
+						  	<li><a href="${SourceLeadWeb_atsUrl}/hotlistMail">Hotlist Campaign</a></li>
+						 <%--  	<li><a href="${sourceleadUrl}/hotlistMail">Hotlist Campaign</a></li> --%>
 						  	 </sec:authorize>
 						  	<sec:authorize access="hasRole('ROLE_JOB_CAMPAIGN')">
-						  	<li><a href="${sourceleadUrl}/joblistMail">Job Campaign</a></li>
+						  	<li><a href="${SourceLeadWeb_atsUrl}/joblistMail">Job Campaign</a></li>
 						  </sec:authorize>
 						</ul>
 					</c:if>
 					</c:if>
 					
 					<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-					<button class="btn-block btn btn-primary dropdown-toggle display-block" type="button" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/composeMail'/>'"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+					<button class="btn-block btn btn-primary dropdown-toggle display-block" type="button" onClick="javascript:window.location.href = '<c:url value='atsUrl/composeMail'/>'"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
 						Compose
 						</button>
 					</c:if>
@@ -346,8 +345,6 @@
 	});
 
   function getMails(type) {
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  
 	  
 	  $("#inbox").show();
 	  $("#details").hide();
@@ -364,15 +361,14 @@
 	  }
 	  
 	  setActiveTab(type)
-	  
+	  var atsUrl ='${SourceLeadWeb_atsUrl}';
 	  
 	  /* $("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;'); */
 	  $("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
           type : "POST",
-          url: sourceleadUrl+"/getUserMailsFromELK?${_csrf.parameterName}=${_csrf.token}&type="+type+"&mailType="+mailType,    
+          url: atsUrl+"/getUserMailsFromELK?type="+type+"&mailType="+mailType,    
            success :function(data) {
-           	
                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
               		
                 	 /* document.getElementById("checkAllBtn").style.display="";
@@ -590,14 +586,12 @@ function setActiveTab(type){
 
 <script>
 function addFavourite(mailboxId){
-	
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	var checked = document.getElementById("fav"+mailboxId).checked;
-	var sourceleadUrl = '${sourceleadUrl}';
-	
 	
 	  	$.ajax({
 			type : "POST",
-			url : sourceleadUrl+"/saveMailAsFavourite?${_csrf.parameterName}=${_csrf.token}&mailboxId="+mailboxId,
+			url : atsUrl+"/saveMailAsFavourite?mailboxId="+mailboxId,
 			success : function(result) {
 				if(checked){
 					 document.getElementById("favourite"+mailboxId).removeAttribute("class");
@@ -651,7 +645,6 @@ function deleteMail(){
 
 <script>
 function getMailBoxIds(){
-	var sourceleadUrl = '${sourceleadUrl}';
 	var mailIds = [];
 	 $("input[name='mailIds[]']:checked").each( function (i) {
 		 mailIds[i] = $(this).val();
@@ -663,12 +656,12 @@ function getMailBoxIds(){
 	for (var i=0; i< mailIds.length; i++) {
 		 document.getElementById("checkbox"+mailIds[i]).remove();					 
 	}
-	 
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	
 	 $("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 			type : "POST",
-			url : sourceleadUrl+"/sendMailsToTrash?${_csrf.parameterName}=${_csrf.token}&mailIds="+mailIds,
+			url : atsUrl+"/sendMailsToTrash?mailIds="+mailIds,
 			success : function(data) {
 				
 				var json = JSON.parse(data);
@@ -702,15 +695,14 @@ function refreshList(){
 
 <script>
 function getEmailDetails(uuid,type) {
-	var sourceleadUrl = '${sourceleadUrl}';
 	$("#details").show();
 	$("#inbox").hide();
-	 
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	 $("#mailContentLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
 	 var mailType = '${mailType}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/getEmailDetails?${_csrf.parameterName}=${_csrf.token}&UUID="+uuid+"&type="+type+"&mailType="+mailType,
+		url : atsUrl+"/getEmailDetails?UUID="+uuid+"&type="+type+"&mailType="+mailType,
 		success : function(data) {
 			
 			 var json = JSON.parse(data);
@@ -825,13 +817,12 @@ function getEmialSettings() {
 
 <script>
 function deleteReadMail(uuid,nextMailUUID,type){
-	var sourceleadUrl = '${sourceleadUrl}';
 	
 	 $("#mailContentLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
 	 
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/deleteReadMail?${_csrf.parameterName}=${_csrf.token}&UUID="+uuid+"&type="+type,
+		url : atsUrl+"/deleteReadMail?UUID="+uuid+"&type="+type,
 		success : function(data) {
 			getMails(type);
 		},
@@ -876,7 +867,7 @@ function activeEmail(id, ele){
 	
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl+"/emailAccountRead?${_csrf.parameterName}=${_csrf.token}&id="+id,
+			url : atsUrl+"/emailAccountRead?id="+id,
 			success : function(response) {
 				if(response && response.data != null && response.data.length > 0) {
 				 var result = "";
@@ -926,7 +917,7 @@ function readFolder(name, fullName, id, pageNo, pageSize, index){
 	
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/emailFolderRead?${_csrf.parameterName}=${_csrf.token}&folderName="+fullName+"&id="+id+"&pageNo="+pageNo+"&pageSize="+pageSize,
+		url : atsUrl+"/emailFolderRead?folderName="+fullName+"&id="+id+"&pageNo="+pageNo+"&pageSize="+pageSize,
 		success : function(data) {
 					if(data && data.response === "SUCCESS") {
 						var result = '';
@@ -1075,7 +1066,7 @@ function backToEmailList(){
 	    $("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
 	    $.ajax({
 			type : "POST",
-			url : sourceleadUrl+"/getEmailByUID?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&uid="+uid + "&folderName=" + folderName,
+			url : atsUrl+"/getEmailByUID?emailAccountId=" + emailAccountId + "&uid="+uid + "&folderName=" + folderName,
 			success : function(data) {
 				if(data && data != null) {
 					emailDetails = data;
@@ -1193,22 +1184,19 @@ $(document).ready(function(){
 
 <script>
 function replayToMail(uuid){
-	var sourceleadUrl = '${sourceleadUrl}';
-	location.replace(sourceleadUrl+"/composeMail?UUID="+uuid);  
+	location.replace(atsUrl+"/composeMail?UUID="+uuid);  
 }
 </script>
 
 <script>
 function forwardEmail(uuid){
-	var sourceleadUrl = '${sourceleadUrl}';
-	location.replace(sourceleadUrl+"/forwardEmail?UUID="+uuid+"&mailType=composeMail");  
+	location.replace(atsUrl+"/forwardEmail?UUID="+uuid+"&mailType=composeMail");  
 }
 </script>
 
 <script>
 function forwardEmailToHotMail(uuid){
-	var sourceleadUrl = '${sourceleadUrl}';
-	location.replace(sourceleadUrl+"/forwardEmail?UUID="+uuid+"&mailType=composeHotMail");  
+	location.replace(atsUrl+"/forwardEmail?UUID="+uuid+"&mailType=composeHotMail");  
 }
 </script>
 
@@ -1270,7 +1258,7 @@ function forwardEmailToHotMail(uuid){
 		 $("#composeLoading").show();
 			$.ajax({
 				type : "POST",
-				url : sourceleadUrl+"/deleteEmailsByUID?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&messageIds=" + messageIds + "&folderName=" + folderName + "&deleteForever=" + deleteForever,
+				url : atsUrl+"/deleteEmailsByUID?emailAccountId=" + emailAccountId + "&messageIds=" + messageIds + "&folderName=" + folderName + "&deleteForever=" + deleteForever,
 				success : function(data) {
 					if(data && data != null && data.response === "SUCCESS") {
 						readFolder(folderShortName, folderName, emailAccountId, 0, 10, 0);
@@ -1376,7 +1364,7 @@ function forwardEmailToHotMail(uuid){
 		} else {
 			$.ajax({
 				type : "POST",
-				url : sourceleadUrl+"/getEmailByUID?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&uid=" + messageId + "&folderName=" + folderName,
+				url : atsUrl+"/getEmailByUID?emailAccountId=" + emailAccountId + "&uid=" + messageId + "&folderName=" + folderName,
 				success : function(data) {
 					if(data && data != null) {
 						$("#fromEmail").val(activeEmail);
@@ -1432,7 +1420,6 @@ function forwardEmailToHotMail(uuid){
 		if ($('#email_form').validate(false, validationSettings)) {
 			var messageId = $("#replyEmail").data("messageId");
 			var folderName = $("#replyEmail").data("folderName");
-			var sourceleadUrl = '${sourceleadUrl}';
 			
 			nicEditors.findEditor('bodytext').saveContent();
 					
@@ -1453,7 +1440,7 @@ function forwardEmailToHotMail(uuid){
 				  	enctype: 'multipart/form-data',
 				  	processData: false,
 				  	contentType:false, 
-				  	url : sourceleadUrl+"/sendEmailFromMailBox?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&from=" + from + "&sendType=" + sendType + "&messageId=" + messageId + "&folderName=" + folderName,
+				  	url : atsUrl+"/sendEmailFromMailBox?emailAccountId=" + emailAccountId + "&from=" + from + "&sendType=" + sendType + "&messageId=" + messageId + "&folderName=" + folderName,
 				  	success : function(result) {
 				  		if(result && result.response === "SUCCESS") {				  			
 					  		closeComposeEmailPopup();
@@ -1523,7 +1510,7 @@ function forwardEmailToHotMail(uuid){
 		} else {
 			$.ajax({
 				type : "POST",
-				url : sourceleadUrl+"/getEmailByUID?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&uid=" + messageId + "&folderName=" + folderName,
+				url : atsUrl+"/getEmailByUID?emailAccountId=" + emailAccountId + "&uid=" + messageId + "&folderName=" + folderName,
 				success : function(data) {
 					if(data && data != null) {
 						$("#sendSubject").val("FW: " + data.subject);
@@ -1559,7 +1546,6 @@ function forwardEmailToHotMail(uuid){
 	/* function for sending / forwarding emails */
 	function sendEmailFromMailBox(sendType) {
 		if ($('#email_form').validate(false, validationSettings)) {
-			var sourceleadUrl = '${sourceleadUrl}';
 					
 			nicEditors.findEditor('bodytext').saveContent();
 					
@@ -1583,7 +1569,7 @@ function forwardEmailToHotMail(uuid){
 				  	enctype: 'multipart/form-data',
 				  	processData: false,
 				  	contentType:false, 
-				  	url : sourceleadUrl+"/sendEmailFromMailBox?${_csrf.parameterName}=${_csrf.token}&emailAccountId=" + emailAccountId + "&from=" + from + "&sendType=" + sendType,
+				  	url : atsUrl+"/sendEmailFromMailBox?emailAccountId=" + emailAccountId + "&from=" + from + "&sendType=" + sendType,
 				  	success : function(result) {
 				  		if(result && result.response === "SUCCESS") {			  			
 				  			setTimeout(function() {
@@ -1620,7 +1606,7 @@ function forwardEmailToHotMail(uuid){
 		}
 		data.append("type", "Email Attachments");
 		$.ajax({
-			url : sourceleadUrl + "/ws/uploadTaxDocs",
+			url : atsUrl + "/ws/uploadTaxDocs",
 			data : data,
 			processData : false,
 			type : 'POST',
@@ -1685,7 +1671,7 @@ function forwardEmailToHotMail(uuid){
 	
 	function getEmailSettings(settingsType) {
 		$("#emailConfigurationPopup").empty();
-		$.post(sourceleadUrl + "/emailSettings",{source : settingsType}, function(data) {
+		$.post(atsUrl + "/emailSettings",{source : settingsType}, function(data) {
 			$("#configureEmailDiv").hide();
 			$("#emailConfigurationPopup").append(data);
 		});
@@ -1695,7 +1681,7 @@ function forwardEmailToHotMail(uuid){
 		if (confirm('Are you sure, you want to delete mail configuration?')) {
 			$.ajax({
 				type : "POST",
-				url : sourceleadUrl+"/deleteEmailAccount?${_csrf.parameterName}=${_csrf.token}&id="+id,
+				url : atsUrl+"/deleteEmailAccount?id="+id,
 				success : function(data) {
 						location.replace(sourceleadUrl+"/mailBox/mails");
 				},
@@ -1705,7 +1691,7 @@ function forwardEmailToHotMail(uuid){
 	
 	function getConfiguredEmail(id) {
 		$("#emailConfigurationPopup").empty();
-		$.post(sourceleadUrl + "/getEmailConfiguration",{id : id}, function(data) {
+		$.post(atsUrl + "/getEmailConfiguration",{id : id}, function(data) {
 			$("#configureEmailDiv").hide();
 			$("#emailConfigurationPopup").append(data);
 		});
