@@ -73,7 +73,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 							</c:when>
 							<c:otherwise>
 								<button id="composeSourceleadMail" class="newAdBtn" type="button"
-									onClick="javascript:window.location.href = '<c:url value='atsUrl/composeMail'/>'">
+									onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_atsUrl}/composeMail'/>'">
 									<i class="fa fa-envelope-o" aria-hidden="true"></i>Compose
 								</button>
 							</c:otherwise>
@@ -98,7 +98,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 					</c:if>
 					
 					<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-					<button class="btn-block btn btn-primary dropdown-toggle display-block" type="button" onClick="javascript:window.location.href = '<c:url value='atsUrl/composeMail'/>'"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+					<button class="btn-block btn btn-primary dropdown-toggle display-block" type="button" onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_atsUrl}/composeMail'/>'"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
 						Compose
 						</button>
 					</c:if>

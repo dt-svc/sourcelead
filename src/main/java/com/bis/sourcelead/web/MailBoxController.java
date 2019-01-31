@@ -141,7 +141,7 @@ public class MailBoxController {
 	
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
-	@RequestMapping(value = "/ats/composeMail")
+	@RequestMapping(value = "/composeMail")
  	public ModelAndView composeMail(HttpServletRequest request,@RequestParam(value="UUID", required=false) String UUID) throws Exception {
 		    
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
