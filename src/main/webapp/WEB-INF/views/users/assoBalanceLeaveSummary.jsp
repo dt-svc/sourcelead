@@ -6,10 +6,11 @@
 
 
 <script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 function assocBalanceLeaveSummary(userId){
 	$.ajax({
         type : "GET",
-         url: sourceleadUrl+"/getAssociateBalanceLeavesByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,        
+         url: atsUrl+"/getAssociateBalanceLeavesByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,        
          success :function(json) {  
         	    var data = json.data;
         	    var result = "";
@@ -74,7 +75,7 @@ function editAssBalLeave(ele, assoBalLeaveUUID,rowId,userId){
 		$("#"+rowId+"errorDiv").text("");
 		$.ajax({
 	        type : "PUT",
-	         url: sourceleadUrl+"/editAssBalLeave?"+tokenParamName+"="+tokenValue+"&assoBalLeaveUUID="+assoBalLeaveUUID+"&totalLeaves="+totalLeaves,        
+	         url: atsUrl+"/editAssBalLeave?"+tokenParamName+"="+tokenValue+"&assoBalLeaveUUID="+assoBalLeaveUUID+"&totalLeaves="+totalLeaves,        
 	         success :function(json) {  
 	        	 assocBalanceLeaveSummary(userId);
 	        	 $('#'+rowId+'').attr("readonly",true);
