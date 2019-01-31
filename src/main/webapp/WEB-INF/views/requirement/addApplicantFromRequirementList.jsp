@@ -218,7 +218,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 		        		var primarySkill = response.object;
 			        	$("#primarySkill").val(primarySkill);
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(atsUrl);
+		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -395,7 +395,7 @@ function discordApplicant(){
 		    		return false;
 		    	}
 	    	} else if (response.indexOf('Sign In') !== -1) {
-	    		location.replace(atsUrl);
+	    		location.replace(sourceleadUrl);
 	    	} else {
 	    	    showError("Operation failed, please try again");
 	    	}
@@ -470,7 +470,7 @@ function discordApplicant(){
 					        $('#candidateId').trigger("chosen:updated");
 					        getCandidateResumes();
 			        	} else if (response.indexOf('Sign In') !== -1) {
-			        		location.replace(atsUrl);
+			        		location.replace(sourceleadUrl);
 			        	} else {
 			        	    showError("Operation failed, please try again");
 			        	}
@@ -709,13 +709,13 @@ function addApplicantForm(){
 	        success: function(result) {
 	        	 $(".new_side_wrap").removeClass("new_side_wrap_active");
 	        	 if(result.response === "SESSION_TIMEDOUT") {
-						location.replace(atsUrl);
+						location.replace(sourceleadUrl);
 					} else if (result.response === "AWKWARD") {
 						location.href = "/errorPage";
 					} else if (result.response === "SUCCESS") {
 			    		$(".side_mask").fadeOut(200);
 			    		$("body").css('overflow-y', 'auto');
-			    		location.replace(atsUrl+"/jobs");
+			    		location.replace(atsUrl+"/jobsList");
 					}
 	        },
 	    }); 
@@ -856,7 +856,7 @@ function getCandidateSelectionType(){
 			        		 $('#uploadFile').attr("data-validation-optional","true"); 
 			        	}
 			    	}else if (data.indexOf('Sign In') !== -1) {
-			    		location.replace(atsUrl);
+			    		location.replace(sourceleadUrl);
 			    	} else {
 			    		showError("Operation failed, please try again");
 			    	}
@@ -943,7 +943,7 @@ function getCandidateSelectionType(){
 			        		 
 			        	}
 			    	}else if (data.indexOf('Sign In') !== -1) {
-			    		location.replace(atsUrl);
+			    		location.replace(sourceleadUrl);
 			    	} else {
 			    		showError("Operation failed, please try again");
 			    	}
@@ -1124,7 +1124,7 @@ function getCandidateDetails(){
 			        		 $("select[name=currentCTCRateType]").val(json['currentRateCurrency']);
 			        	 } 
 			    	}else if (data.indexOf('Sign In') !== -1) {
-			    		location.replace(atsUrl);
+			    		location.replace(sourceleadUrl);
 			    	} else {
 			    		showError("Operation failed, please try again");
 			    	}
@@ -1398,7 +1398,7 @@ function setRateTypesByLocation(){
 							}
 							 $("#loading").removeAttr("style");
 						} else if (response.indexOf('Sign In') !== -1) {
-							location.replace(atsUrl);
+							location.replace(sourceleadUrl);
 						} else {
 						    showError("Operation failed, please try again");
 						}

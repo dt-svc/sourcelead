@@ -297,7 +297,7 @@
 
 			            <c:if test="${ (requirement.requirementSubmissionStatus =='NEW'  || requirement.requirementSubmissionStatus =='DRAFT' || requirement.requirementSubmissionStatus =='SUBMITTED'  || requirement.requirementSubmissionStatus  == 'APPROVED'  || requirement.requirementSubmissionStatus =='REJECTED'  ||  requirement.requirementSubmissionStatus  == 'OPEN' ||  requirement.requirementSubmissionStatus  == 'ONHOLD' ) && (isAdmin == 'true' || requirement.isLoginUserAsApprover  == 'true' || isManager  == 'true' || requirement.isLoginUserAsInitiator == 'true') }">
 			            	<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">  
-			            		  <a href="<c:url value="${appPath}/requirement?requirementUUID=${requirementUUID}"/>"><button  class="btn btn-primary" type="button">Edit</button></a> 
+			            		  <a href="<c:url value="/requirement?requirementUUID=${requirementUUID}"/>"><button  class="btn btn-primary" type="button">Edit</button></a> 
 			            	</sec:authorize>
 			            </c:if>
 
@@ -459,7 +459,7 @@
 		            		<span class="tbldata-dotdot-big">
 		            			<c:choose>
 								    <c:when test="${!empty requirement.spocName}">
-					                	<%-- <a href="<c:url value="${appPath}/clientDashboard?orgSpocUUID=${requirement.spocUUID}"/>">${requirement.spocName}</a> --%>
+					                	<%-- <a href="<c:url value="/clientDashboard?orgSpocUUID=${requirement.spocUUID}"/>">${requirement.spocName}</a> --%>
 						          	${requirement.spocName}
 						          	</c:when>
 								    <c:otherwise>
@@ -475,7 +475,7 @@
 				                <span class="tbldata-dotdot-big">
 				                <c:choose>
 								    <c:when test="${!empty requirement.clientName}">
-					                	<a href="<c:url value="${appPath}/clientDashboard?orgRelationUUID=${requirement.orgRelationUUID}"/>">${requirement.clientName}</a>
+					                	<a href="<c:url value="/clientDashboard?orgRelationUUID=${requirement.orgRelationUUID}"/>">${requirement.clientName}</a>
 						          	</c:when>
 								    <c:otherwise>
 								    	' -- '
@@ -821,7 +821,7 @@
 function importApplicantsToJob(requirementId){
 	$.ajax({
 		  type: "GET",
-		    url: sourceleadUrl+"/getRequirementSubmissionTemplateForBulkImprtApplicants?requirementId="+requirementId,
+		    url: atsUrl+"/getRequirementSubmissionTemplateForBulkImprtApplicants?requirementId="+requirementId,
 		     success :function(response) {
 		    	    $("#importApplicantsSideDiv").empty();  
 		    	    $("#importApplicantsSideDiv").append(response);
@@ -839,12 +839,12 @@ function importApplicantsToJob(requirementId){
 
 <script>
 function getCustomDependentField(sectionId){
-	console.log(sourceleadUrl);
+	console.log(atsUrl);
 	var requirementId = '${requirement.id}';
 	var type= 'view';
 	 $.ajax({
 			type : "POST" , 
-				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId+"&requirementId="+requirementId+"&requestFrom=requirement&requestType="+type,
+				 url: atsUrl+"/getAllASectionCustomFields?sectionId="+sectionId+"&requirementId="+requirementId+"&requestFrom=requirement&requestType="+type,
 				 success: function(data) {
 		        	$('#customDiv'+sectionId).empty();
 		        	$('#customDiv'+sectionId).append(data);
@@ -882,7 +882,7 @@ function changeStatus(requirementId, requirementStatus){
      if(status == "DRAFT"){
         	 $.ajax({
              type : "POST",
-        	 url: sourceleadUrl+"/saveChangedStatusFromDraft?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&userId="+userId,
+        	 url: atsUrl+"/saveChangedStatusFromDraft?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&userId="+userId,
 	        	 success :function(result) {
 	        		 	if (result.response === "SESSION_TIMEDOUT") {
 			  				location.replace(sourceleadUrl);
@@ -906,7 +906,7 @@ function changeStatus(requirementId, requirementStatus){
          }else{
         	 $.ajax({
              type : "POST",
-        	 url: sourceleadUrl+"/saveChangedStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status,
+        	 url: atsUrl+"/saveChangedStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status,
 	        	 success :function(result) {
 	        		 if (result.response === "SESSION_TIMEDOUT") {
 			  				location.replace(sourceleadUrl);

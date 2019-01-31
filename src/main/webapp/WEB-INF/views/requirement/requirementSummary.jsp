@@ -8,6 +8,7 @@
 
 <link href="/resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 $(document).ready(function() {
 	 var requirementId = '${requirementId}';
 	 var submissionId = '${submissionId}';
@@ -91,7 +92,7 @@ function duplicateCount(requirementId){
     <div class="pull-left">
       <h2>Job Summary</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/jobs'/>"> Jobs List  </a>&raquo; Job Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/jobsList'/>"> Jobs List  </a>&raquo; Job Details</div>
   </section>
   
 
@@ -253,7 +254,7 @@ function saveJobsTags(type){
         		}
         		getJobsTagsList(requirementId);
         	} else if (result.indexOf('Sign In') !== -1) {
-        		location.replace(atsUrl);
+        		location.replace(sourceleadUrl);
         	} else {
         	    showError("Operation failed, please try again");
         	}
@@ -650,7 +651,7 @@ function updateReuqirementStatus(status){
     		  success :function(data) {  
             if(data != null && data != 'undefined' && data != ""){  
           		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(atsUrl);
+			    		location.replace(sourceleadUrl);
 			    	 }
           		 else if (data.indexOf('exception') >= 0) {
           			 location.replace(atsUrl+"/errorPage");
@@ -723,7 +724,7 @@ function updateReuqirementStatusReject(status){
     		  success :function(data) {  
             if(data != null && data != 'undefined' && data != ""){  
           		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(atsUrl);
+			    		location.replace(sourceleadUrl);
 			    	 }
           		 else if (data.indexOf('exception') >= 0) {
           			 location.replace(atsUrl+"/errorPage");
@@ -1062,7 +1063,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     	            	  	  changeYear: true,
     	            	  });
 			    	}else if (data.indexOf('Sign In') !== -1) {
-			    		location.replace(atsUrl);
+			    		location.replace(sourceleadUrl);
 			    	} else {
 			    		showError("Operation failed, please try again");
 			    	}
@@ -1081,7 +1082,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
 		    	} else if (data.response === "SUCCESS") {
 		    		$("tr").removeClass("row-success");
 		    	}else if (data.indexOf('Sign In') !== -1) {
-		    		location.replace(atsUrl);
+		    		location.replace(sourceleadUrl);
 		    	} else {
 		    		showError("Operation failed, please try again");
 		    	}
@@ -1099,7 +1100,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
   		    		$("tr").removeClass("row-success");
   		    		 requirementPipeline(requirementId,submissionType);
   		    	}else if (data.indexOf('Sign In') !== -1) {
-  		    		location.replace(atsUrl);
+  		    		location.replace(sourceleadUrl);
   		    	} else {
   		    		showError("Operation failed, please try again");
   		    	}
@@ -1119,7 +1120,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
   		    		$("tr").removeClass("row-success");
   		    		 requirementPipeline(requirementId,submissionType);
   		    	}else if (data.indexOf('Sign In') !== -1) {
-  		    		location.replace(atsUrl);
+  		    		location.replace(sourceleadUrl);
   		    	} else {
   		    		showError("Operation failed, please try again");
   		    	}
@@ -1275,7 +1276,7 @@ function saveRejectApplicantReason(submissionId,requirementId,submissionType){
 				} else if (result.response === "SUCCESS") {
 					requirementPipeline(requirementId,submissionType);
 				}else if (result.indexOf('Sign In') !== -1) {
-		    		location.replace(atsUrl);
+		    		location.replace(sourceleadUrl);
 		    	} else {
 		    		showError("Operation failed, please try again");
 		    	}
@@ -1334,7 +1335,7 @@ function saveJoinedRequestForApplicant(submissionId,requirementId,submissionType
 	   			 	$(".project_inn_mask").fadeOut(200);
 	   			    requirementPipeline(requirementId,submissionType);
 		    	}else if (data.indexOf('Sign In') !== -1) {
-		    		location.replace(atsUrl);
+		    		location.replace(sourceleadUrl);
 		    	} else {
 		    		showError("Operation failed, please try again");
 		    	}
@@ -1519,7 +1520,7 @@ function reqNotes(requirementId){
 		 success :function(result) {
 			 var json = result.data;
 	      	   if(result.response === "SESSION_TIMEDOUT") {
-						location.replace(atsUrl);
+						location.replace(sourceleadUrl);
 					} else if (result.response === "AWKWARD") {
 						location.href = "/errorPage";
 					} else if (result.response === "SUCCESS") {
@@ -1577,7 +1578,7 @@ function reqNotes(requirementId){
 					$("#clientNotesListDiv").empty(); 
 				    $("#clientNotesListDiv").append(output);
 			} else if (result.indexOf('Sign In') !== -1) {
-				location.replace(atsUrl);
+				location.replace(sourceleadUrl);
 			} else {
 				showError("Operation failed, please try again");
 			}
@@ -1624,7 +1625,7 @@ function reqNotes(requirementId){
 							} else if (result.response === "SUCCESS") {
 								reqNotes(requirementId);
 							}else if (result.indexOf('Sign In') !== -1) {
-					    		location.replace(atsUrl);
+					    		location.replace(sourceleadUrl);
 					    	} else {
 					    		showError("Operation failed, please try again");
 					    	}
@@ -1666,7 +1667,7 @@ function clientSideBar(candidateId,recScore){
            success :function(result) {
         	   var json = result.object;
         	   if(result.response === "SESSION_TIMEDOUT") {
-					location.replace(atsUrl);
+					location.replace(sourceleadUrl);
 				} else if (result.response === "AWKWARD") {
 					location.href = "/errorPage";
 				} else if (result.response === "SUCCESS") {
@@ -1964,7 +1965,7 @@ function clientSideBar(candidateId,recScore){
 					    $("#candidateSideDiv").append(result); 
 	                }
 				} else if (result.indexOf('Sign In') !== -1) {
-					location.replace(atsUrl);
+					location.replace(sourceleadUrl);
 				} else {
 					showError("Operation failed, please try again");
 				}
@@ -2330,7 +2331,7 @@ function getRateListDiv(submissionId, candidateId){
 			      	 		 $("#ratepop").fadeIn(); 
 		            	}
 		    	}else if (data.indexOf('Sign In') !== -1) {
-		    		location.replace(atsUrl);
+		    		location.replace(sourceleadUrl);
 		    	} else {
 		    		showError("Operation failed, please try again");
 		    	}
@@ -2358,7 +2359,7 @@ function getRateListDiv(submissionId, candidateId){
 			    	} else if (data.response === "SUCCESS") {
 			    		$("#ratepop").fadeOut();
 			    	}else if (json.indexOf('Sign In') !== -1) {
-			    		location.replace(atsUrl);
+			    		location.replace(sourceleadUrl);
 			    	} else {
 			    		showError("Operation failed, please try again");
 			    	}
@@ -2392,7 +2393,7 @@ function getRateListDiv(submissionId, candidateId){
 			    	} else if (data.response === "SUCCESS") {
 			    		$("#ratepop").fadeOut();
 			    	}else if (data.indexOf('Sign In') !== -1) {
-			    		location.replace(atsUrl);
+			    		location.replace(sourceleadUrl);
 			    	} else {
 			    		showError("Operation failed, please try again");
 			    	}
@@ -2940,7 +2941,7 @@ function customizeScore(requirementId){
 			    		     
 			   		     tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
 		    	}else if (data.indexOf('Sign In') !== -1) {
-		    		location.replace(atsUrl);
+		    		location.replace(sourceleadUrl);
 		    	} else {
 		    		showError("Operation failed, please try again");
 		    	}
@@ -3053,7 +3054,7 @@ function updateCutomize(requirementId){
 	    							requirementRecommendations(requirementId);	
 	    						}
     				    	}else if (data.indexOf('Sign In') !== -1) {
-    				    		location.replace(atsUrl);
+    				    		location.replace(sourceleadUrl);
     				    	} else {
     				    		showError("Operation failed, please try again");
     				    	}
@@ -3133,7 +3134,7 @@ function refreshImageBlock(candidateId){
            success :function(result) { 
         	   var json = result.object;
         	   if(result.response === "SESSION_TIMEDOUT") {
-					location.replace(atsUrl);
+					location.replace(sourceleadUrl);
 				} else if (result.response === "AWKWARD") {
 					location.href = "/errorPage";
 				} else if (result.response === "SUCCESS") {
@@ -3182,7 +3183,7 @@ function refreshImageBlock(candidateId){
 							 $("#candidateImageId").append(result);
 	                }
 				} else if (result.indexOf('Sign In') !== -1) {
-					location.replace(atsUrl);
+					location.replace(sourceleadUrl);
 				} else {
 					showError("Operation failed, please try again");
 				}
@@ -3225,7 +3226,7 @@ function deleteProfileImage(candidateId){
 		        	 refreshImageBlock(candidateId);
 		        	 applicantQuickViewProfile(candidateId,submissionId);
 	        	} else if (response.indexOf('Sign In') !== -1) {
-	        		location.replace(atsUrl);
+	        		location.replace(sourceleadUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}
@@ -3280,7 +3281,7 @@ function saveCandidateImage(candidateId){
         	} else if (response.response === "SUCCESS") {
         		recommendationAlertCancel(candidateId);        		
         	} else if (response.indexOf('Sign In') !== -1) {
-        		location.replace(atsUrl);
+        		location.replace(sourceleadUrl);
         	} else {
         	    showError("Operation failed, please try again");
         	}

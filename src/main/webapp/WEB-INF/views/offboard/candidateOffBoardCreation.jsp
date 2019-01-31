@@ -640,7 +640,7 @@ function validate_fileupload(fileName)
 		           	$("#offboardUser").append(result); 
 		           	$('#offboardUser').trigger("chosen:updated");
 		    	} else if (response.indexOf('Sign In') !== -1) {
-		    		location.replace(atsUrl);
+		    		location.replace(sourceleadUrl);
 		    	} else {
 		    	    showError("Operation failed, please try again");
 		    	}
@@ -694,7 +694,7 @@ function validate_fileupload(fileName)
 				    	 $("#offboardingTemplate").val('');
 				    	 $('#offboardingTemplate').trigger("chosen:updated");
 			    	} else if (response.indexOf('Sign In') !== -1) {
-			    		location.replace(atsUrl);
+			    		location.replace(sourceleadUrl);
 			    	} else {
 			    	    showError("Operation failed, please try again");
 			    	}
@@ -751,7 +751,7 @@ function getTemplateResignationDocumentsDetails(offboardId){
 	                	 $("#savedResignationAttachments").append(result);
 	                	 $("#offboardTasksList").empty();
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(atsUrl);
+		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -814,7 +814,7 @@ function getTemplateOffboardPackDocumentsDetails(offboardId){
 	                	 $("#offboardTasksList").empty();
 				        
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(atsUrl);
+		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -920,7 +920,7 @@ function loadOffBoardingTemplates(offboardTemplateId){
 	           	$("#offboardingTemplate").append(result); 
 	           	$('#offboardingTemplate').trigger("chosen:updated");
 	    	} else if (response.indexOf('Sign In') !== -1) {
-	    		location.replace(atsUrl);
+	    		location.replace(sourceleadUrl);
 	    	} else {
 	    	    showError("Operation failed, please try again");
 	    	}
@@ -973,7 +973,7 @@ function loadOffBoardingTemplates(offboardTemplateId){
 		     	        $("#saveAndContinue_offboardUser").removeAttr("disabled");
 		     	        $("#loading").removeAttr("style");
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(atsUrl);
+		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -1078,7 +1078,7 @@ function loadOffBoardingTemplates(offboardTemplateId){
 			    	$("#savedoffboardId").val(json['savedoffboardId']);
 			    	$("#loading").removeAttr("style");
 	        	} else if (response.indexOf('Sign In') !== -1) {
-	        		location.replace(atsUrl);
+	        		location.replace(sourceleadUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}
@@ -1105,7 +1105,7 @@ function deleteOffBoardingDocument(documentUUID,documentId,documentType){
         			document.getElementById("offboardPackdocument"+documentId).remove();
         		}
         	} else if (response.indexOf('Sign In') !== -1) {
-        		location.replace(atsUrl);
+        		location.replace(sourceleadUrl);
         	} else {
         	    showError("Operation failed, please try again");
         	}
@@ -1170,7 +1170,7 @@ function createTemplateDocs(saveType){
 			   	   
 			    	  $("#loading").removeAttr("style");
 		    		} else if (response.indexOf('Sign In') !== -1) {
-		    			location.replace(atsUrl);
+		    			location.replace(sourceleadUrl);
 		    		} else {
 		    		    showError("Operation failed, please try again");
 		    		}
@@ -1399,7 +1399,7 @@ function createOffboardCheckList(saveType){
 		    	        	$("#save_continue_checkList_button").removeAttr("disabled");
 		      	        	$("#offboardcheckListLoading").removeAttr("style");
 	      	        	} else if (response.indexOf('Sign In') !== -1) {
-	      	        		location.replace(atsUrl);
+	      	        		location.replace(sourceleadUrl);
 	      	        	} else {
 	      	        	    showError("Operation failed, please try again");
 	      	        	}
@@ -1518,7 +1518,7 @@ function getOffboardingTasksList(){
 			    		$("#offboardingCheckList").empty();
 			           	$("#offboardTasksList").append(result); 
 			    	} else if (response.indexOf('Sign In') !== -1) {
-			    		location.replace(atsUrl);
+			    		location.replace(sourceleadUrl);
 			    	} else {
 			    	    showError("Operation failed, please try again");
 			    	}
@@ -1552,7 +1552,7 @@ function saveAndFinishOffboardTemplate(offboardId) {
 	    		$("#finish_task").removeAttr("disabled");
 		    	 location.replace(atsUrl+"/candidateOnBoardingList"); 
 	    	} else if (response.indexOf('Sign In') !== -1) {
-	    		location.replace(atsUrl);
+	    		location.replace(sourceleadUrl);
 	    	} else {
 	    	    showError("Operation failed, please try again");
 	    	}
@@ -1595,7 +1595,7 @@ function deleteTask(taskId,taskType){
 		        	} else if (response.response === "SUCCESS") {
 		        		document.getElementById("offboardTask"+taskId).remove();
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(atsUrl);
+		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -1668,7 +1668,7 @@ function getAssignToUsersList(){
 	           	 $("#offboardAssignedTo").append(result); 
 	           	 $('#offboardAssignedTo').trigger("chosen:updated");
 	    	} else if (response.indexOf('Sign In') !== -1) {
-	    		location.replace(atsUrl);
+	    		location.replace(sourceleadUrl);
 	    	} else {
 	    	    showError("Operation failed, please try again");
 	    	}
@@ -1714,7 +1714,7 @@ function saveOffboardTask(){
 			        	$("#selector").fadeIn(150);
 			        	$('#selector').delay(1000).fadeOut('slow');
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(atsUrl);
+		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -1751,7 +1751,7 @@ function getEndDate(){
 							$("#loading").removeAttr("style");
 							addValidClass();
 						} else if (response.indexOf('Sign In') !== -1) {
-							location.replace(atsUrl);
+							location.replace(sourceleadUrl);
 						} else {
 						    showError("Operation failed, please try again");
 						}

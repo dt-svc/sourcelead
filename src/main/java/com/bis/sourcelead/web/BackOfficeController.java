@@ -74,7 +74,6 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller
-@RequestMapping("/app")
 public class BackOfficeController {
 	
 private static final Logger logger = LoggerFactory.getLogger(BackOfficeController.class);
@@ -244,6 +243,7 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	
 	@RequestMapping(value = "/assetManagement")
 	public ModelAndView assetManagement(HttpServletRequest request) throws Exception {
+	System.out.println("Inside asset management ATS conroller ====>");
 	
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 

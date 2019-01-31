@@ -14,6 +14,7 @@
 <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
 
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 $(document).ready(function(){
 	getDynamicAssetList();
 	loadCategory();
@@ -178,10 +179,10 @@ $(document).ready(function(){
 					        	<a href="javascript:void(0)"  onClick="addAssetManagementPopup();">Add Asset</a> 
 					        </sec:authorize>
 					        <sec:authorize access="hasRole('ROLE_ADD_ASSET_CATEGORY')"> 
-					        	<a href="<c:url value='${appPath}/assetCategory'/>" class="">Categories List</a>
+					        	<a href="<c:url value='/assetCategory'/>" class="">Categories List</a>
 					        </sec:authorize>	
 					        
-					        <a href="<c:url value='${appPath}/uploadassetManagement'/>">Import</a>	  
+					        <a href="<c:url value='/uploadassetManagement'/>">Import</a>	  
 					</span>
 				</div>
 			</li>
@@ -276,7 +277,7 @@ $(document).ready(function() {
   function addAndEditAssetAssign(assetUUID){
 	  $.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/addAndEditAssetAssign?&assetUUID="+assetUUID, 
+	    	url: atsUrl+"/addAndEditAssetAssign?&assetUUID="+assetUUID, 
 	        success: function(result) {
 	        	$(".assetManagementPopup, .comMask").fadeIn();
 	        	$('#assetManagementPopup').empty();
@@ -374,7 +375,7 @@ $(document).ready(function() {
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-	     		    	 url: sourceleadUrl+"/addCategoryAssets?"+tokenParamName+"="+tokenValue+"", 
+	     		    	 url: atsUrl+"/addCategoryAssets?"+tokenParamName+"="+tokenValue+"", 
 	     		        success: function(result) {
 	     		        	
 	     		       	if (result && result.response === "INVALID_DATA") {
@@ -383,7 +384,7 @@ $(document).ready(function() {
 						} else if (result.response === "AWKWARD") {
 						    location.href = "/errorPage";
 						} else if (result.response === "SUCCESS") {
-							location.replace(sourceleadUrl+ "/assetManagement");
+							location.replace(atsUrl+ "/assetManagement");
 						} else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
 						} else {
@@ -628,7 +629,7 @@ function getDynamicAssetList(){
 	
 	var searchValue = $("#assetDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl	+"/getAssetDynamicList?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus+"&shiftIds="+shiftIds+"&tags="+tags;
+	var url = atsUrl	+"/getAssetDynamicList?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus+"&shiftIds="+shiftIds+"&tags="+tags;
 	prepareDynamicAssetList(url);	
 }
 function prepareDynamicAssetList(url){
@@ -684,7 +685,7 @@ function projectAssetPaginations(url){
     	  		var result = "";
     	  	    result = result+'<td>';
     	  	  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSET_BASIC_DETAILS\',\'ROLE_VIEW_ASSET_ADDITIONAL_DETAILS\')">'; 
-	   	  	     result = result +"<a class='tbldata-dotdot-sm'><a href='<c:url value='/app/assetManagementSummary?assetUUID="+report.assetUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+report.slno+"'>"+report.slno+"</span><i class='fa fa-binoculars'></i></div></a></a>";
+	   	  	     result = result +"<a class='tbldata-dotdot-sm'><a href='<c:url value='/assetManagementSummary?assetUUID="+report.assetUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+report.slno+"'>"+report.slno+"</span><i class='fa fa-binoculars'></i></div></a></a>";
 	   	  	  '</sec:authorize>';
 	   	  	  
 		   	   '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_ASSET_BASIC_DETAILS\',\'ROLE_VIEW_ASSET_ADDITIONAL_DETAILS\')">'; 
@@ -844,7 +845,7 @@ function getDynamicAssignedList(){
 	});
 	var searchValue = $("#assignAssetDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl	+"/getAssignAssetDynamicList?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus+"&shiftIds="+shiftIds+"&tags="+tags;
+	var url = atsUrl	+"/getAssignAssetDynamicList?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus+"&shiftIds="+shiftIds+"&tags="+tags;
 	prepareDynamicAssignAssetList(url);	
 }
 
@@ -934,7 +935,7 @@ function assignAssetPagination(url){
 				  	"render": function(data, type, report) {
 				  		var result = "";
 					  		if(report.serialNumber != null && report.serialNumber != "" && report.serialNumber !="undefined"){
-							   	result = result+"<td><a href='<c:url value='/app/assetManagementSummary?assetUUID="+report.assetUUID+"'/>'><div class='proj_show tbldata-dotdot-vsm'><span class='pull-left' title='"+report.serialNumber+"'>"+report.serialNumber+"</span><i class='fa fa-binoculars'></i></div></a></div></td>";
+							   	result = result+"<td><a href='<c:url value='/assetManagementSummary?assetUUID="+report.assetUUID+"'/>'><div class='proj_show tbldata-dotdot-vsm'><span class='pull-left' title='"+report.serialNumber+"'>"+report.serialNumber+"</span><i class='fa fa-binoculars'></i></div></a></div></td>";
 							   	
 					  		}else{
 							   	result = result+'<td><div class="tbldata-dotdot-vsm">--</div></td>';
@@ -1034,7 +1035,7 @@ function updateWorkingStatus(assetUUID,assetId){
 	}else{
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/updateAssetWorkingStatus?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&workingStatus="+workingStatus,	    	   
+		    url: atsUrl+"/updateAssetWorkingStatus?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&workingStatus="+workingStatus,	    	   
 		    success: function(data) {
 		    	$("#asset"+assetId).empty();
 		    	$("#asset"+assetId).html(rowHtmlContent);
@@ -1136,7 +1137,7 @@ function closePopup(assetUUID,assetId) {
 	$("#assetServicePopUp, .mask").fadeOut();
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/cancelAssetManagementService?"+tokenParamName+"="+tokenValue+"&assetUUID="+assetUUID,	    	   
+		    url: atsUrl+"/cancelAssetManagementService?"+tokenParamName+"="+tokenValue+"&assetUUID="+assetUUID,	    	   
 		    success: function(json) {
 		    	$("#asset"+assetId).empty();
 		    	$("#workingStatus"+assetId).val(json.workingStatus);
@@ -1160,7 +1161,7 @@ function saveAssetService(assetId){
 	 	$.ajax({
 			type: "POST",
 			data: formData,
-			url : sourceleadUrl+ "/saveAssetService?${_csrf.parameterName}=${_csrf.token}",
+			url : atsUrl+ "/saveAssetService?${_csrf.parameterName}=${_csrf.token}",
 			success : function(data) {
 					if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
 			        		showError(data.responseMessage);
@@ -1561,7 +1562,7 @@ function deleteDocument(assetId,url){
 	document.getElementById("dbUploadFile").style.display="none";
 	 $.ajax({
    	  type: "POST",
-      url: sourceleadUrl+"/deleteAssetDocument?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&url="+url, 	   
+      url: atsUrl+"/deleteAssetDocument?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&url="+url, 	   
  	  success: function(data) {  },
 	   });	
 	}
@@ -1638,7 +1639,7 @@ function assetExport(type){
 	var searchValue = $("#assetDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
 	 if(emptyFileSize > 0 ){
-	 	 window.location.href = sourceleadUrl	+"/getAssetmanagementExport?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus+"&shiftIds="+shiftIds+"&tags="+tags+"&exportType="+exportType;
+	 	 window.location.href = atsUrl	+"/getAssetmanagementExport?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus+"&shiftIds="+shiftIds+"&tags="+tags+"&exportType="+exportType;
 	 }else{
 		   $('.mask').show();
 		    var result = "";
@@ -1690,7 +1691,7 @@ function assignAssetExport(type){
 	var searchValue = $("#assignAssetDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
 	 if(fileSize > 0){
-		 window.location.href = sourceleadUrl	+"/getAssignAssetmanagementExport?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus+"&shiftIds="+shiftIds+"&tags="+tags+"&exportType="+exportType;
+		 window.location.href = atsUrl	+"/getAssignAssetmanagementExport?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus+"&shiftIds="+shiftIds+"&tags="+tags+"&exportType="+exportType;
 	 }else{
 		 $('.mask').show();
 		 var result = "";
@@ -1762,14 +1763,14 @@ function removeAssetManagement(assetUUID){
 	
 	 $.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assetUUID="+assetUUID,	    	   
+	    url: atsUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assetUUID="+assetUUID,	    	   
 	    success: function(result) {
   			if (result && result.response === "INVALID_DATA") {
 			    showError(result.responseMessage);
 			} else if (result.response === "AWKWARD") {
 			    location.href = "/errorPage";
 			} else if (result.response === "SUCCESS") {
-				location.replace(sourceleadUrl + "/assetManagement");
+				location.replace(atsUrl + "/assetManagement");
 				/*  var table = $('#assetManagementList').DataTable();
 	  		     table.row("#asset"+assetId).remove().draw( false );  */
 			} else if (result.indexOf('Sign In') !== -1) {

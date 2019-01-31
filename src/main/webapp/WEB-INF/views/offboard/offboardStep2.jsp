@@ -25,7 +25,8 @@
 <script src="/resources/js/offboardCheckList-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
 
 <script type="text/javascript">
- var sourceleadUrl ='${sourceleadUrl}';
+ /* var sourceleadUrl ='${sourceleadUrl}'; */
+ var atsUrl = '${SourceLeadWeb_atsUrl}';
 </script>
 
 <script type="text/javascript">
@@ -76,7 +77,7 @@
 		</div>
 			  
 		<div class="welBtns">
-			<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='/app/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >
+			<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='/ats/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >
 			<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOffboardingCheckList();" class="Brig">
 			<div class="clearfix"></div>
 		</div>
@@ -98,9 +99,9 @@
 function getOffboardCheckList(offboardingId){
 	
 	
-	var sourceleadUrl = '${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	
-	getCheckList(sourceleadUrl,offboardingId);
+	getCheckList(atsUrl,offboardingId);
 	
     var result = "";
 	
@@ -188,12 +189,12 @@ function getOffboardCheckList(offboardingId){
 	         $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	           $.ajax({
 		    	type: "POST",
-		    	url: sourceleadUrl+"/saveOffboardingCheckList?${_csrf.parameterName}=${_csrf.token}&jsonStringValues="+con+"&offboardId="+offboardId, 
+		    	url: atsUrl+"/saveOffboardingCheckList?${_csrf.parameterName}=${_csrf.token}&jsonStringValues="+con+"&offboardId="+offboardId, 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
-		        		location.replace(sourceleadUrl+"/offboardStep3");  
+		        		location.replace(atsUrl+"/offboardStep3");  
 		        	} else if (response.indexOf('Sign In') !== -1) {
 		        		location.replace(sourceleadUrl);
 		        	} else {

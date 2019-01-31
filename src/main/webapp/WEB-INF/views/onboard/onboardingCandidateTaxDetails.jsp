@@ -40,7 +40,9 @@
 </script>
 
 <script type="text/javascript">
- var sourceleadUrl ='${sourceleadUrl}';
+/*  var sourceleadUrl ='${sourceleadUrl}'; */
+ var atsUrl = '${SourceLeadWeb_atsUrl}'; 
+ var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 </script>
 
 <style>
@@ -66,7 +68,7 @@
 	              <ul class="list-unstyled">
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
 		              <li>
-			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
+			              <a href="<c:url value='${atsUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
 				                <div class="clearfix">
 				                   <div class="pull-left image-parent positionRelative">
 				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
@@ -380,7 +382,7 @@
 
 		  
 <div class="welBtns">
-	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/onboardingCandidateBankingDetails'/>'" >
+	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${atsUrl}/onboardingCandidateBankingDetails'/>'" >
 	<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOnboardingCandidateTaxDetails();" class="Brig">
 	<div class="clearfix"></div>
 </div>
@@ -447,7 +449,7 @@
 	         $.ajax({
 		    	type: "POST",
 		    	data: formData,
-		    	 url: sourceleadUrl+"/saveAssociateTax?${_csrf.parameterName}=${_csrf.token}&userId="+userId,
+		    	 url: pmsUrl+"/saveAssociateTax?${_csrf.parameterName}=${_csrf.token}&userId="+userId,
 		        success: function(response) {
 		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
       	    		    showError(response.responseMessage);
@@ -456,7 +458,7 @@
 		        	else if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
-		        		location.replace(sourceleadUrl+"/onboardingCandidateStep3");  
+		        		location.replace(atsUrl+"/onboardingCandidateStep3");  
 		        	} else if (response.indexOf('Sign In') !== -1) {
 		        		location.replace(sourceleadUrl);
 		        	} else {

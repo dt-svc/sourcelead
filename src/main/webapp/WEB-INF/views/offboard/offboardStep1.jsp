@@ -21,7 +21,8 @@
 <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 
 <script type="text/javascript">
-  var sourceleadUrl ='${sourceleadUrl}';
+  /* var sourceleadUrl ='${sourceleadUrl}'; */
+  var atsUrl = '${SourceLeadWeb_atsUrl}';
 </script>
 
 <div class="wraper"> 
@@ -281,8 +282,9 @@
 		    	data: formData,
 		        processData: false,
 		        contentType:false,
-		    	 url: sourceleadUrl+"/saveOffboardingCandidateStep1Details?${_csrf.parameterName}=${_csrf.token}", 
+		    	 url: atsUrl+"/saveOffboardingCandidateStep1Details?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(response) {
+		        	alert("inisde uscesss");
 		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
       	    		    showError(response.responseMessage);
       	    		    $("#loading").removeAttr('style');
@@ -290,7 +292,8 @@
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
-		        		location.replace(sourceleadUrl+"/offboardStep2"); 
+		        		
+		        		location.replace(atsUrl+"/offboardStep2"); 
 		        	} else if (response.indexOf('Sign In') !== -1) {
 		        		location.replace(sourceleadUrl);
 		        	} else {
