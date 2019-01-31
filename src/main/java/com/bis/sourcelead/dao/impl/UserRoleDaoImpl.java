@@ -44,6 +44,7 @@ import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Repository
 public class UserRoleDaoImpl implements UserRoleDao {
@@ -160,6 +161,9 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (userRole != null) {
+				if(StringUtils.isBlank(userRole.getUuid())) {
+					userRole.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				}
 				session.saveOrUpdate(userRole);
 			}
 			logger.debug("UserRole Added Successfully");
