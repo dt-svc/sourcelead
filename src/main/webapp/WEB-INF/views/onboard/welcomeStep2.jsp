@@ -40,7 +40,8 @@
 </script>
 
 <script type="text/javascript">
- var sourceleadUrl ='${sourceleadUrl}';
+/*  var sourceleadUrl ='${sourceleadUrl}'; */
+ var atsUrl = '${SourceLeadWeb_atsUrl}';
 </script>
 
 <style>
@@ -512,7 +513,7 @@ $(function (){
 	         $.ajax({
 		    	type: "POST",
 		    	data: formData,
-		    	 url: sourceleadUrl+"/saveOnboardingCandidateStepDetails?${_csrf.parameterName}=${_csrf.token}", 
+		    	 url: atsUrl+"/saveOnboardingCandidateStepDetails?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(response) {
 		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
       	    		    showError(response.responseMessage);
@@ -521,7 +522,7 @@ $(function (){
 		        	else if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
-			        		location.replace(sourceleadUrl+"/onboardingCandidateBankingDetails");  
+			        		location.replace(atsUrl+"/onboardingCandidateBankingDetails");  
 		        	} else if (response.indexOf('Sign In') !== -1) {
 		        		location.replace(sourceleadUrl);
 		        	} else {

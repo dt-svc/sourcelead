@@ -19,7 +19,7 @@
       <div class="success_pop" id="selector" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
      </div>
-     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a>&raquo;<a href="<c:url value='/jobsList'/>"> Jobs List  </a>&raquo; <c:if test="${empty requirementId}">Add Job</c:if> <c:if test="${!empty requirementId}">Update Job</c:if> </div>
+     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a>&raquo;<a href="<c:url value='/jobsList'/>"> Jobs List  </a>&raquo; <c:if test="${empty requirementId}">Add Job</c:if> <c:if test="${!empty requirementId}">Update Job</c:if> </div>
     </section>
     
     <div class="newPrDetails newPrDetailsPMO"> 
@@ -63,7 +63,7 @@ function clientSideBar(candidateId,recScore){
            success :function(result) {
         	   var json = result.object;
         	   if(result.response === "SESSION_TIMEDOUT") {
-					location.replace(atsUrl);
+					location.replace(sourceleadUrl);
 				} else if (result.response === "AWKWARD") {
 					location.href = "/errorPage";
 				} else if (result.response === "SUCCESS") {
@@ -343,7 +343,7 @@ function clientSideBar(candidateId,recScore){
 							 hilightTab();
 	                }
 				} else if (result.indexOf('Sign In') !== -1) {
-					location.replace(atsUrl);
+					location.replace(sourceleadUrl);
 				} else {
 					showError("Operation failed, please try again");
 				}
