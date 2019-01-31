@@ -647,7 +647,7 @@ $(function() {
 		        	} else if (response.response === "SUCCESS") {
 		        		location.replace(atsUrl+"/onboardingCandidateStep3");  
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(atsUrl);
+		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -689,7 +689,7 @@ $(function() {
 		        		getNomineeDetails();
 		        		$("#nomineeDetails").hide();
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(atsUrl);
+		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}

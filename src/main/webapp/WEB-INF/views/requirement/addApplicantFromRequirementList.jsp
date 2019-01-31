@@ -1,8 +1,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <link rel="stylesheet" href="/resources/css/style.css" />
 <link rel="stylesheet" href="/resources/css/chosen.min.css">
-<script src="/resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-<script src="/resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+<script src="/ats/resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="/ats/resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
@@ -12,7 +12,9 @@
 }
 </style>
 
-
+<script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
+</script>
 
 <!-- For add New Applicant -->
 <script>
@@ -218,7 +220,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 		        		var primarySkill = response.object;
 			        	$("#primarySkill").val(primarySkill);
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(atsUrl);
+		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -395,7 +397,7 @@ function discordApplicant(){
 		    		return false;
 		    	}
 	    	} else if (response.indexOf('Sign In') !== -1) {
-	    		location.replace(atsUrl);
+	    		location.replace(sourceleadUrl);
 	    	} else {
 	    	    showError("Operation failed, please try again");
 	    	}
@@ -470,7 +472,7 @@ function discordApplicant(){
 					        $('#candidateId').trigger("chosen:updated");
 					        getCandidateResumes();
 			        	} else if (response.indexOf('Sign In') !== -1) {
-			        		location.replace(atsUrl);
+			        		location.replace(sourceleadUrl);
 			        	} else {
 			        	    showError("Operation failed, please try again");
 			        	}
@@ -709,7 +711,7 @@ function addApplicantForm(){
 	        success: function(result) {
 	        	 $(".new_side_wrap").removeClass("new_side_wrap_active");
 	        	 if(result.response === "SESSION_TIMEDOUT") {
-						location.replace(atsUrl);
+						location.replace(sourceleadUrl);
 					} else if (result.response === "AWKWARD") {
 						location.href = "/errorPage";
 					} else if (result.response === "SUCCESS") {
@@ -856,7 +858,7 @@ function getCandidateSelectionType(){
 			        		 $('#uploadFile').attr("data-validation-optional","true"); 
 			        	}
 			    	}else if (data.indexOf('Sign In') !== -1) {
-			    		location.replace(atsUrl);
+			    		location.replace(sourceleadUrl);
 			    	} else {
 			    		showError("Operation failed, please try again");
 			    	}
@@ -943,7 +945,7 @@ function getCandidateSelectionType(){
 			        		 
 			        	}
 			    	}else if (data.indexOf('Sign In') !== -1) {
-			    		location.replace(atsUrl);
+			    		location.replace(sourceleadUrl);
 			    	} else {
 			    		showError("Operation failed, please try again");
 			    	}
@@ -1124,7 +1126,7 @@ function getCandidateDetails(){
 			        		 $("select[name=currentCTCRateType]").val(json['currentRateCurrency']);
 			        	 } 
 			    	}else if (data.indexOf('Sign In') !== -1) {
-			    		location.replace(atsUrl);
+			    		location.replace(sourceleadUrl);
 			    	} else {
 			    		showError("Operation failed, please try again");
 			    	}
@@ -1398,7 +1400,7 @@ function setRateTypesByLocation(){
 							}
 							 $("#loading").removeAttr("style");
 						} else if (response.indexOf('Sign In') !== -1) {
-							location.replace(atsUrl);
+							location.replace(sourceleadUrl);
 						} else {
 						    showError("Operation failed, please try again");
 						}

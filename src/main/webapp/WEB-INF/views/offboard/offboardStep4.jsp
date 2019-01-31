@@ -142,7 +142,7 @@ function goToDashboard(){
 	        	} else if (response.response === "SUCCESS") {
 	        		location.replace(atsUrl+"/offboardSuccess"); 
 	        	} else if (response.indexOf('Sign In') !== -1) {
-	        		location.replace(atsUrl);
+	        		location.replace(sourceleadUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}

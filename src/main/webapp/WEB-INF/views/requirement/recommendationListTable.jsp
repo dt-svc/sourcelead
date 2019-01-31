@@ -832,7 +832,7 @@ function shareRecomendedApplicant(requirementId,candidateId){
 	   			eduMsgFadeinFunction();
 	   			toggleShareRecommendation();
 	    	}else if (data.indexOf('Sign In') !== -1) {
-	    		location.replace(atsUrl);
+	    		location.replace(sourceleadUrl);
 	    	} else {
 	    		showError("Operation failed, please try again");
 	    	}
@@ -1004,7 +1004,7 @@ function submitRecommendationCandidatesToJob(requirementId){
 		       			}
 			    		
 			    	}else if (data.indexOf('Sign In') !== -1) {
-			    		location.replace(atsUrl);
+			    		location.replace(sourceleadUrl);
 			    	} else {
 			    		showError("Operation failed, please try again");
 			    	}
@@ -1041,7 +1041,7 @@ function shareAllRecommendations(requirementId){
 		       			eduMsgFadeinFunction();
 		       			toggleShareRecommendation();
 			    	}else if (data.indexOf('Sign In') !== -1) {
-			    		location.replace(atsUrl);
+			    		location.replace(sourceleadUrl);
 			    	} else {
 			    		showError("Operation failed, please try again");
 			    	}

@@ -7,6 +7,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 function requirementHistory(candidateId){
 	var result = "";
 	if(window.candidateStatusGlobal == '0'){
@@ -56,7 +57,7 @@ function requirementHistoryList(candidateId){
 	  }
 	 $.ajax({  
          type : "POST",
-         url: sourceleadUrl+"/getRequirementHistoryListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+         url: atsUrl+"/getRequirementHistoryListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(response) {
         	 if (response.response === "AWKWARD") {
         		    location.href = "/errorPage";
@@ -169,7 +170,7 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
 	var loginUserId = '${SourceLeadWeb_userId}';
 	 $.ajax({  
         type : "POST",
-        url: sourceleadUrl+"/getRequirementHistoryDetailsByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&submissionId="+submissionId,        
+        url: atsUrl+"/getRequirementHistoryDetailsByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&submissionId="+submissionId,        
         success :function(response) {
         	if (response.response === "AWKWARD") {
        		    location.href = "/errorPage";
@@ -180,7 +181,7 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
          		result = result  +'		<div class="reqClose">';
          		result = result  +'			<span><i class="fa fa-angle-double-left"></i>Go Back</span><b class="fa fa-close"></b>';
          		result = result  +'		</div>';
-         		result = result  +'		<h3 title="'+positionType+'"><a href="'+sourceleadUrl+'/requirementSummary?requirementUUID='+requirementUUID+'">'+positionType+'</a><span onclick="getRateListDiv('+candidateId+',\''+submissionId+'\');">Rate</span><i class="ratepop" id="ratepop"></i><div class="clearfix"></div></h3>';
+         		result = result  +'		<h3 title="'+positionType+'"><a href="'+atsUrl+'/requirementSummary?requirementUUID='+requirementUUID+'">'+positionType+'</a><span onclick="getRateListDiv('+candidateId+',\''+submissionId+'\');">Rate</span><i class="ratepop" id="ratepop"></i><div class="clearfix"></div></h3>';
          		result = result  +'		<ul>';
          		   
          		    var report2 = json[0];
@@ -189,10 +190,10 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
     	          			var port = report2.requirementOfferHistoryList[k];
     	          			if(port.offerSourceType == "CLIENT_OFFERMADE"){
     	          				result = result  +'			<li>';
-    		            		result = result  +'	   <img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+loginUserId+'"/>';
+    		            		result = result  +'	   <img onerror="predefineProfileImage(this);" src="'+atsUrl+'/displayUserImage/'+loginUserId+'"/>';
     		            		result = result  +'<span>Issued offer by '+port.clientName+' <b>'+port.createDateStr+'</b></span>';
     		            		if(port.fileContentType != null && port.fileContentType != '' && port.fileContentType!= 'undefined'){
-    		            		result = result  +'<a href=\"'+sourceleadUrl+'/offerDownloadDocument?resumeId='+port.offerResumeId+'\"><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';
+    		            		result = result  +'<a href=\"'+atsUrl+'/offerDownloadDocument?resumeId='+port.offerResumeId+'\"><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';
     		            		}
     		            		result = result  +'<div class="clearfix"></div>';
     		            		result = result  +'			</li>';
@@ -213,7 +214,7 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
     		          			}
     		          			if(sub.interviewSourceType == "CLIENT_INTERVIEW"){
     		          				result = result  +'			<li>';
-    			            		result = result  +'	   <img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+loginUserId+'"/>';
+    			            		result = result  +'	   <img onerror="predefineProfileImage(this);" src="'+atsUrl+'/displayUserImage/'+loginUserId+'"/>';
     			            		result = result  +'<span>Interview scheduled by '+sub.clientName+' <b>'+sub.interviewHistoryCreatedDate+'</b> <h6>Interview Type : '+sub.interviewType+'</h6> <h6>Interview Date : '+sub.dateOfInterviewStr+'</h6><h6>Interview Time : '+sub.startTimeStr+' : '+endTimeStr+'</h6></span>';
     			            		result = result  +'<div class="clearfix"></div>';
     			            		result = result  +'			</li>';
@@ -232,7 +233,7 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
     		        			interviewEndTime = "";
     		        		}
     		        		result = result  +'			<li>';
-    		        		result = result  +'	   <img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+loginUserId+'"/>';
+    		        		result = result  +'	   <img onerror="predefineProfileImage(this);" src="'+atsUrl+'/displayUserImage/'+loginUserId+'"/>';
     		        		if(report.toStage == "SUBMISSION"){
     			        		 result = result  +'<span>Added by  '+report.loginUserName+' <b>'+report.createdDateStr+'</b></span>';
     			        		 result = result  +'<a href=\"'+report.resumeid+'\" download><i class="fa fa-paperclip"></i></a><a href="javascript:void(0)" class="fa fa-eye ml10" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.contentType+'\');"></a><div class="clearfix"></div>';
@@ -294,7 +295,7 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
 <script>
 function getHistoryCandiResume(uuid,title){
 		if (uuid != null && uuid != "") {
-			window.open(sourceleadUrl + '/viewResume/' + title + '?resumeUUID='+ uuid, title, "height=600,width=600");
+			window.open(atsUrl + '/viewResume/' + title + '?resumeUUID='+ uuid, title, "height=600,width=600");
 		}
 	}
 </script>
@@ -315,7 +316,7 @@ function getRateListDiv(candidateId,submissionId){
 	  }  
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getRateHistoryBySubmissionId?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&candidateId="+candidateId,        
+         url: atsUrl+"/getRateHistoryBySubmissionId?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&candidateId="+candidateId,        
          success :function(data) {
         	 
         	 if (data.response === "FAILED") {
