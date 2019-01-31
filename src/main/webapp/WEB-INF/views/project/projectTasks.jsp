@@ -950,7 +950,6 @@ function tasksAssignList(projectId){
 
 <script>
 function saveTasks(){
-	alert(pmsUrl);
 	var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 	 if ($('#projectTask_form').validate(false, validationSettings)) {
 		var form = $('#projectTask_form')[0];
