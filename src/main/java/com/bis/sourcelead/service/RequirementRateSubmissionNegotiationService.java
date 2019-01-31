@@ -24,4 +24,5 @@ public interface RequirementRateSubmissionNegotiationService {
 	
 	public StringBuilder buildNegotiationHistory(List<RequirementRateSubmissionNegotiation>  negotiationList, Requirement requirement, Candidate candidate, Long submissionId, String type) throws Exception;
 
+	public RequirementRateSubmissionNegotiation getRequirementRateSubmissionByMaxId(Long submissionId);
 }
