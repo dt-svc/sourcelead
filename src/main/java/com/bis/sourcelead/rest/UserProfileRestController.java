@@ -40,7 +40,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/app")
 public class UserProfileRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserProfileRestController.class);
