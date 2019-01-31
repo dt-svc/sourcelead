@@ -13,11 +13,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UserGroup;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "IND_PAY_SHEET_FREQUENCY")
@@ -77,6 +79,15 @@ public class IndPaysheetFrequency {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "indPaysheetFrequency")
 	private Set<IndEmployeePayroll> indEmployeepayroll;
+	
+	@Transient
+	@JsonProperty
+    private String frequencyStartDateStr;
+	
+	@Transient
+	@JsonProperty
+    private String frequencyEndDateStr;
+	
 
 	public Long getId() {
 		return id;
@@ -209,6 +220,20 @@ public class IndPaysheetFrequency {
 	public void setPayRunId(Long payRunId) {
 		this.payRunId = payRunId;
 	}
-	
 
+	public String getFrequencyStartDateStr() {
+		return frequencyStartDateStr;
+	}
+
+	public String getFrequencyEndDateStr() {
+		return frequencyEndDateStr;
+	}
+
+	public void setFrequencyStartDateStr(String frequencyStartDateStr) {
+		this.frequencyStartDateStr = frequencyStartDateStr;
+	}
+
+	public void setFrequencyEndDateStr(String frequencyEndDateStr) {
+		this.frequencyEndDateStr = frequencyEndDateStr;
+	}
 }

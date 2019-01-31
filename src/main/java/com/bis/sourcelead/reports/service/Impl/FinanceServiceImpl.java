@@ -115,8 +115,8 @@ public class FinanceServiceImpl implements FinanceService{
 				if(!"invoice".equalsIgnoreCase(missingInvoiceDto.getInvoiceType())) {
 					for (SubmissionApproverHierarchy sah : sahList.getData()) {
 						MissingInvoiceDTO missingInvoice = new MissingInvoiceDTO();
-						if(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId() != null) {
-							Candidate candidate  = candidateService.getCandidateByParentCandidateId(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getId());
+						if(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getParentCandidateId() != null) {
+							Candidate candidate  = candidateService.getCandidateByParentCandidateId(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getParentCandidateId().getId());
 							if(candidate != null && candidate.getOrgRelationId() != null) {
 								OrgRelations orgRelations = orgRelationsService.getOrgRelationById(candidate.getOrgRelationId().getId());
 								StringBuilder name = new StringBuilder();

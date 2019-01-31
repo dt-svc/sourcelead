@@ -495,6 +495,10 @@ function runAssociatePayrollReport(){
 function resetAllData(){
 	 $("#payrollRegister").hide();
 	 $("#fromDate").val('');
+	 $('#toDate').attr('value', '');
+		$('#toDate').datepicker( "option" , {
+	        minDate: null,
+	        maxDate: null} );
 	 $("#toDate").val('');
 	 $("#employees").val('');
 	 $("#employees").trigger("chosen:updated"); 

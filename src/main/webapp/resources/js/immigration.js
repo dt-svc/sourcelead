@@ -53,7 +53,8 @@ function Immigration() {
     }
 
     this.resetFormData = function (formId) {
-        $("#" + formId).closest('form').find("input[type=text], textarea, .selectpicker, .chosen-select").val("").trigger('chosen:updated');
+    	
+        $("#" + formId).closest('form').find("input[type=text], textarea, .form-control,.selectpicker, .chosen-select").val("").trigger('chosen:updated');
         $("#" + formId).closest('form').find(".selectpicker, .chosen-select option[value='']").attr('selected', true).trigger('change');
     }
     
@@ -913,6 +914,7 @@ function Immigration() {
 
 	
 	this.saveEmployerDetails = function(status) {
+		applyKeyEventsToYears();
 		var validationSettings = {
 	            errorMessagePosition: 'element',
 	            borderColorOnError: '',
@@ -920,6 +922,7 @@ function Immigration() {
 	            dateFormat: 'yyyy/mm/dd'
 	        };
 		if ($('#employerDetails_form').validate(false, validationSettings)) {
+		
 	        var formData = getFormData("employerDetails_form");
 	        var candidateId = $('#candidateID').val();
 	        var immigrationId = $('#immigrationID').val();

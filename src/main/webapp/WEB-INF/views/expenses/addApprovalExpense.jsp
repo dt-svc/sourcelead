@@ -239,7 +239,7 @@ $(document).ready(function(){
 						<c:forEach var="project" items="${expEntry.projectsList}">
 						   <c:if test="${project.id == expenses.projectId}">
 					 	    	 <c:forEach var="expCat" items="${project.expenseCategoryList}">
-					 	    	      <c:set var="isAttachmentRequired" value="${!empty expCat.isAttachemtRequired && expCat.isAttachemtRequired == \"Y\" ? 'Y' :'N'}"/>
+					 	    	      <c:set var="isAttachmentRequired" value="${!empty expCat.isAttachemtRequired && expCat.isAttachemtRequired == 'Y' ? 'Y' :'N'}"/>
 					 	    	      <option ${entry.categoryTypeId == expCat.id ? 'selected' : ''} value="${expCat.id},${expCat.allowedAmount}">${expCat.categoryName}</option>
 					 	    	 </c:forEach>
 						  </c:if>

@@ -8,6 +8,7 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	vendorapAging();
+	$("#apagingType").val('Vendor');
 });
 </script>
 
@@ -47,8 +48,8 @@ $(document).ready(function(){
         	 
         	 <div class=" select-fild col-md-2 mt5 pull-right">
                     <select id="apagingType" name="apagingType" onchange="change();">
-                          <option value="Payables">By Vendor</option>
-                          <option value="bill">By Bill</option>
+                          <option value="Vendor">By Vendor</option>
+                          <option value="Payables">By Bill</option>
                     </select>
              </div>
              <div class="col-md-2 dropdown-select positionRelatives mt5 mb5 pull-right" style="display: none" id="customDatesDropdown">
@@ -141,7 +142,7 @@ $(function() {
 <script>
 function change(){
 	var optval = $("#apagingType").val();
-	if(optval === "bill") {
+	if(optval === "Payables") {
 		vendorapagingBill();
 	}else{
 		vendorapAging();
@@ -199,7 +200,7 @@ function vendorapAging(){
 	   $("#dataTableSearch").show();
 	   $("#apagingBillTotal").hide();
 	   $("#apagingTotal").show();
-	    var apagingType = $("#apagingType").val();
+	    var apagingType = "Payables";
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
@@ -368,6 +369,7 @@ function apaging(url){
   <script>
 function customSearch(){
 	vendorapagingBill();
+	$("#custom-select").hide();
 }
 </script>
   
@@ -547,13 +549,15 @@ $(function() {
         $('#apagingType').change(function(){
 			var optval = $(this).val();
 			if(optval === "Payables") {
-				$("#byInvoice").show();
-				$("#byCustomer").hide();
-				$("#customDatesDropdown").hide();
-			}else if(optval === "bill"){
+				$('.selectpicker').selectpicker('refresh');
 				$("#byCustomer").show();
 				$("#byInvoice").hide();
 				$("#customDatesDropdown").show();
+			}else{
+				$("#custom-dates").val('');
+				$("#byInvoice").show();
+				$("#byCustomer").hide();
+				$("#customDatesDropdown").hide();
 			}
         });
     });

@@ -582,9 +582,11 @@ public class LeaveManagementRestController {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<Shift> shiftList = shiftService.getShiftList(orgLocations.getId());
+		LinkedHashSet<String> yearsList = CalendarUtil.getYearsListFromCurrentDate(1, 10);
 		model.addObject("shiftList", shiftList);
 
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("yearsList", yearsList);
 		model.setViewName("leavemanagement/viewHoliday");
 		return model;
 	}
@@ -1014,22 +1016,7 @@ public class LeaveManagementRestController {
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
 			if (loginOrgLocation != null) {
-
-				
-				if (StringUtils.isNotBlank(reportYear)) {
-					holiodaysDTOList = holidayService.getAllHolidaysListBasedOnYear(orgLocationId,
-							Long.parseLong(reportYear));
-				} else {
-					int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-					if(StringUtils.isNotBlank(reportYear) ) {
-						holiodaysDTOList = holidayService.getAllHolidaysListByOrgloationIdAndShiftId(orgLocationId,shiftIds);
-					}else {
-						reportYear = String.valueOf(currentYear);
-						holiodaysDTOList = holidayService.getAllHolidaysListBasedOnYear(orgLocationId,
-								Long.parseLong(reportYear));
-					}
-				}
-				
+						holiodaysDTOList = holidayService.getAllHolidaysListByOrgloationIdAndShiftId(orgLocationId,shiftIds,reportYear);
 				responseList.setData(holiodaysDTOList);
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());

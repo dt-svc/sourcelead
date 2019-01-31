@@ -3395,8 +3395,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 					}
 
 					if (StringUtils.isNotBlank(invoiceExpensesDTO.getEdate())) {
-						Date expenseDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),
-								invoiceExpensesDTO.getEdate());
+						/*Date expenseDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),
+								invoiceExpensesDTO.getEdate());*/
+						Date expenseDate=new SimpleDateFormat("dd-MM-yyyy").parse(invoiceExpensesDTO.getEdate());  
 						invoiceLineItems.setStartDate(expenseDate);
 					}
 					if (StringUtils.isNotBlank(invoiceExpensesDTO.getDescription())) {

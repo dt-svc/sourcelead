@@ -552,7 +552,7 @@ function preventTabkey(e){
         </sec:authorize>
         
          <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
-         	<li><a href="<c:url value='${sourceleadUrl}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
+         	<li><a href="<c:url value='${appPath}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
          </sec:authorize>		
 		
           <li> 
@@ -562,7 +562,7 @@ function preventTabkey(e){
           
          <!--  Setting page 	 -->
          
-           <li><a href="<c:url value='${sourceleadUrl}/settings'/>" title="Settings" id=""><i class="headNavIcon setiIcon"></i></a></li>
+           <li><a href="<c:url value='${appPath}/settings'/>" title="Settings" id=""><i class="headNavIcon setiIcon"></i></a></li>
 		
 	</ul>
 </div>    
@@ -1833,17 +1833,9 @@ function updateMarketplaceCartCountAndPrice(){
 	        	if(object != null){
 	        		$("#headerCartCount").html(object[0]);
 	        		$("#cartCount").html(object[0]);
-	        		if(object[0] === 0){
-		        		$("#cartCount").bind("click", false);
-		        		$("#headerCartCountLink").bind("click", false);
-	        			}else{
-		        		$("#cartCount").unbind("click", false);
-		        		$("#headerCartCountLink").unbind("click", false);
-	        			}
 	        		totalPriceInCurrency = new Intl.NumberFormat('en-US', { minimumFractionDigits : 2 }).format(object[1]);
 	        		$("#totalPrice").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
 	        	}}
 	        });
 	}
 </script>
-

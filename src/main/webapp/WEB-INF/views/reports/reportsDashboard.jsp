@@ -32,6 +32,9 @@
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu1" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
 				<sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
+				<li><a href='${appPath}/offerAcceptanceRate'>Offer Acceptance Rate</a></li>
+				</sec:authorize>
+				<sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
 				<li><a href='${appPath}/applicantsjoinedlist'>Applicants Joined Report</a></li>
 				</sec:authorize>
 				 <sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
@@ -370,6 +373,10 @@
                 <ul class="repSearchList">
                 
                 <sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
+				<li><a href='${appPath}/offerAcceptanceRate'>Offer Acceptance Rate</a></li>
+				</sec:authorize>
+                
+                <sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
 				<li><a href='${appPath}/applicantsjoinedlist'>Applicants Joined Report</a></li>
 				</sec:authorize>
 				
@@ -621,8 +628,28 @@
                   <a href="/app/projectReportList" class="block">
                   <div class="clearfix text-center mb10"><i class="proReport"></i></div>
                   <div class="clearfix text-center"><h4>Project Reports</h4></div> </a>
-                      </div>
-        
+           </div>
+           
+           
+           <c:if test="${SourceLeadWeb_loginCountryName == 'India'}">
+           <div class="col-md-4 reportNewCta">
+                  <!-- DropDown -->
+			<div class="dropdown pull-right report-dropdown">
+				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown" aria-expanded="false"><span class="caret cursorPointer"></span></span>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
+			     <li><a href="${appPath}/indPayrollRegisterReport">Payroll Register</a></li>
+				 <li><a href="${appPath}/indPayrollBankTransferReport">Bank Transfer</a></li>
+				 <li><a href="${appPath}/indPayrollYTDSummaryReport">YTD Summary</a></li>
+				 <li><a href="${appPath}/indPayrollAnnualTaxReport">Annual Tax</a></li>
+				 <li><a href="${appPath}/indPayrollLoanReport">Loan</a></li>
+				</ul>
+			</div>
+                 <!-- Dropdown -->
+                  <a href="/app/indPayrollReportList" class="block">
+                  <div class="clearfix text-center mb10"><i class="proReport"></i></div>
+                  <div class="clearfix text-center"><h4>India Payroll Reports</h4></div> </a>
+           </div>
+        </c:if>
         </div>
         <!--  List View End  --> 
     

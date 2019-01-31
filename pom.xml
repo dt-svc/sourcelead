@@ -789,7 +789,7 @@
                 </configuration>
             </plugin>
 
-            <plugin>
+         <!--    <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.7</version>
                 <executions>
@@ -797,8 +797,8 @@
                         <phase>install</phase>
                         <configuration>
                             <target>
-                                <!-- <copy file="${project.build.directory}/sourcelead.war" todir="C:/apache-tomcat-8.0.30/webapps" 
-                                /> -->
+                                <copy file="${project.build.directory}/sourcelead.war" todir="C:/apache-tomcat-8.0.30/webapps" 
+                                />
                             </target>
                         </configuration>
                         <goals>
@@ -806,10 +806,10 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
 
             <!-- For to create zip -->
-           <plugin>
+           <!-- <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.5.3</version>
                 <executions>
@@ -825,7 +825,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin> 
+            </plugin>  -->
             <!-- For to create zip -->
 
         </plugins>

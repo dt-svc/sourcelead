@@ -51,17 +51,34 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	
 	@Override
 	public OrgLocations addOrgLocations(OrgLocations orgLocations) throws Exception {
+		Boolean newLocation = true;
+		if(orgLocations != null && orgLocations.getId() != null) {
+			newLocation = false;
+		}
 		orgLocations.setCoolingOffPeriod(Constants.DEFAULT_COOLINGOFF_PERIOD); //to set default cooling-off period to three months
-		return orgLocationsDao.addOrgLocations(orgLocations);
+		orgLocations = orgLocationsDao.addOrgLocations(orgLocations);
+		
+		if(orgLocations != null && newLocation) {
+			commonUtil.storeDefaultPayheadsWithOrgLocation(null, orgLocations);
+		}
+		return orgLocations;
 	}
 
 	@Override
 	public OrgLocations updateOrgLocations(OrgLocations orgLocations) throws Exception {
+		Boolean newLocation = true;
+		if(orgLocations != null && orgLocations.getId() != null) {
+			newLocation = false;
+		}
 		orgLocations.setUpdatedDate(commonUtil.currentDate());
 		if(orgLocations.getCoolingOffPeriod() == null || orgLocations.getCoolingOffPeriod().isEmpty()){
 			orgLocations.setCoolingOffPeriod(Constants.DEFAULT_COOLINGOFF_PERIOD); //to set default cooling-off period to three months
 		}
-		return orgLocationsDao.updateOrgLocations(orgLocations);
+		orgLocations = orgLocationsDao.updateOrgLocations(orgLocations);
+		if(orgLocations != null && newLocation) {
+			commonUtil.storeDefaultPayheadsWithOrgLocation(null, orgLocations);
+		}
+		return orgLocations;
 	}
 
 	@Override
