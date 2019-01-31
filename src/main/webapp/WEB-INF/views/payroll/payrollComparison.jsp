@@ -23,7 +23,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Payroll Comparison Report</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/pms/usPayrollReport">US Payroll Reports List</a> &raquo; Payroll Comparison Report</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;
+       <a href="/pms/usPayrollReport">US Payroll Reports List</a> &raquo; Payroll Comparison Report</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
@@ -60,19 +61,11 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
                		<div class="col-md-6">
                		<label >Frequency1<span class="text-danger">&nbsp;*</span></label>
                			<select class="form-control sel" id="payPeriod" onchange="validateComparisonDates();" name="payPeriod" field-name="Frequency1" data-validation="required">
-					   <!--  <option>Select Pay Period</option>
-						<option>01-02-2018 28-02-2018</option>
-						<option>01-03-2018 28-03-2018</option>
-						<option>01-02-2018 28-02-2018</option> -->
 					</select>
                		</div>
                		<div class="col-md-6">
                		 <label >Frequency2<span class="text-danger">&nbsp;*</span></label>
                			<select class="form-control sel" id="payPeriod2" onchange="validateComparisonDates();" name="payPeriod2" field-name="Frequency2" data-validation="required">
-					   <!--  <option>Select Pay Period</option>
-						<option>01-02-2018 28-02-2018</option>
-						<option>01-03-2018 28-03-2018</option>
-						<option>01-02-2018 28-02-2018</option> -->
 					</select>
                		</div>
                </div>
@@ -84,10 +77,6 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
               <div class="col-md-12">
               
                 <select class="form-control chosen-select" id="payrollDepartment" name="payrollDepartment" field-name="Department" data-validation="required">
-					   <!--  <option>Select Department</option>
-						<option>Department-1</option>
-						<option>Department-2</option>
-						<option>Department-3</option> -->
 					</select>
               </div>
             </div>
@@ -114,11 +103,6 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 <div class="positionRelative reportHead clearfix">
   <ul class="pull-right list-unstyled list-inline">
     <li><a class="newAdBtn mr5 hidden" href="/app/userCreation">+  Associate</a></li>
-<!--     <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li> -->
-  <!--   <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-      <div class="newActPop" style="">
-       <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
-    </li> -->
   </ul>
 </div>
         <div class="clearfix tableNtable">
@@ -212,7 +196,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 							<td>Item2</td>
                 <td>20 hrs</td>
                 <td>30 hrs</td>
-						</tr> -->
+						</tr> -->/runPayrollComparison
 					</tbody>
 				</table>
 				
@@ -247,20 +231,6 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				</table>
 
         </div>
-        
-        
- <!--        <nav>
-          <ul id="paging" class="pagination">
-            <li><a href="#">Previous</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li class="disabled"><a href="#">6</a></li>
-            <li data-page="last"><a href="#">Next</a></li>
-          </ul>
-          <div class="clearfix"></div>
-        </nav> -->
       </div>
     </div>
      		

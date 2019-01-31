@@ -212,15 +212,8 @@ function getPariodDates(){
 <script type="text/javascript">
 function getCheckRegisterReports(){
 	 if ($('#check_register_report_form').validate(false, validationSettings)){ 
-// 		 runPayrollregister();
 		 $("#payrollRegister").show();
 		 checkRegisterReports();
-		  /* 	var formData = $($('#check_register_report_form')[0]).serialize();
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			$.post(sourceleadUrl+"/getCheckRegisterReports?"+tokenParamName+"="+tokenValue, formData, function(result) {
-				alert("Done");
-			$("#loading").hide();
-			}); */ 
 			return true;
 	 }else{ 
 			return false;
@@ -404,12 +397,6 @@ function exportToPdf(){
 	var searchValue = $("#dataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	var depositType = 'Cheque';
-	/* alert("groupId = "+groupId);
-	alert("freqStartDate = "+freqStartDate);
-	alert("freqEndDate = "+freqEndDate);
-	alert("contributionId = "+freqEndDate);
-	alert("searchValue = "+searchValue); */
-	
 	window.location.href = pmsUrl+"/exportToPdfCheckRegisterReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&depositType="+depositType;
 }
 </script>
