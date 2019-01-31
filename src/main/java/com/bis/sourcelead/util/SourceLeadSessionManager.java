@@ -41,4 +41,20 @@ public class SourceLeadSessionManager {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	public static void setOrgLocationsJsonString(String userName, String attribute, JsonObject jsonString) {
+		String jsonKey = userName ;
+		try {
+			if (userName != null && attribute != null) {
+					if (jsonString != null) {
+						c.setOrgLocations(userName, jsonKey, jsonString);
+					} else
+						System.out.println("Json String is NuLL : " + attribute);
+			} else
+				System.out.println("Email is NuLL : " + userName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

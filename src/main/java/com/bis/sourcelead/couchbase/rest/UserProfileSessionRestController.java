@@ -47,6 +47,7 @@ public class UserProfileSessionRestController {
 		 List<OrgLocations> orgLocationsList =  orgLocationService.getAllOrgLocations();
 		 
 		 if(orgLocationsList != null && !orgLocationsList.isEmpty()) {
+			 System.out.println("Uploading orgLocations details to Couchbase starts......");
 			 for(OrgLocations orgLocations : orgLocationsList) {
 				 OrgLocationCacheDTO orgLocationDTO = userStatsCacheHelper.getOrgLocationCacheDetails(orgLocations);
 				 ObjectMapper sessionObj = new ObjectMapper();
@@ -55,11 +56,12 @@ public class UserProfileSessionRestController {
 					JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
 					StringBuilder orgLocationKey = new StringBuilder();
 					orgLocationKey.append("OrgLocation_").append(orgLocationDTO.getOrgLocationCode());
-					SourceLeadSessionManager.setUserProfileJsonString(orgLocationKey.toString(), "userProfile", jsonObject);
+					SourceLeadSessionManager.setOrgLocationsJsonString(orgLocationKey.toString(), "userProfile", jsonObject);
 				} catch (JsonProcessingException e) {
 					e.printStackTrace();
 				}
 			 }
+			 System.out.println("Uploading orgLocations details to Couchbase ends");
 		 }
 	 }
 	 
@@ -71,6 +73,7 @@ public class UserProfileSessionRestController {
 		 List<UserRole> userRolesList =  userRoleService.getAllUserRoles();
 		 
 		 if(userRolesList != null && !userRolesList.isEmpty()) {
+			 System.out.println("Uploading userprofile details to Couchbase starts......");
 			 for(UserRole userRole : userRolesList) {
 				 
 				 UserRoleSessionProfileDTO userRoleDTO = userStatsCacheHelper.getUserRoleCacheDetails(userRole);
@@ -85,6 +88,7 @@ public class UserProfileSessionRestController {
 					e.printStackTrace();
 				}
 			 }
+			 System.out.println("Uploading userprofile details to Couchbase ends");
 		 }
 	 }
 
