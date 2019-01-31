@@ -175,6 +175,13 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 	
 	private Double totalPF;
 	
+	//Salary Register
+	private Date effectiveDate;
+	
+	private String incresePercentage;
+	
+	private BigDecimal annualSalary;
+	
 	public Long getId() {
 		return id;
 	}
@@ -815,6 +822,33 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 
 	public Double getEmployeePf() {
 		return employeePf;
+	}
+
+
+	public String getIncresePercentage() {
+		return incresePercentage;
+	}
+
+	public BigDecimal getAnnualSalary() {
+		return annualSalary;
+	}
+
+	 
+
+	public void setIncresePercentage(String incresePercentage) {
+		this.incresePercentage = incresePercentage;
+	}
+
+	public void setAnnualSalary(BigDecimal annualSalary) {
+		this.annualSalary = annualSalary;
+	}
+
+	public Date getEffectiveDate() {
+		return effectiveDate;
+	}
+
+	public void setEffectiveDate(Date effectiveDate) {
+		this.effectiveDate = effectiveDate;
 	}
 	
 }

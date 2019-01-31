@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -784,9 +785,9 @@ public class IndPaySlipPdf {
 							col.column("Associate Name", "employeeName", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER).setColumns(15),
 							col.column("Department", "department", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
 							col.column("ESI Number", "esiNumber", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
-							col.column("Associate Contribution", "asContribution", Templates.currencyType).setHorizontalAlignment(HorizontalAlignment.CENTER),
-							col.column("Emplpyer Contribution", "empContribution", Templates.currencyType).setHorizontalAlignment(HorizontalAlignment.CENTER),
-							col.column("Total", "total", Templates.currencyType).setHorizontalAlignment(HorizontalAlignment.CENTER)).ignorePageWidth()
+							col.column("Associate Contribution(INR)", "asContribution", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Emplpyer Contribution(INR)", "empContribution", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Total(INR)", "total", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER)).ignorePageWidth()
 					.pageFooter(Templates.footerComponent)
 					.setDataSource(createEsiDataSource(payResponseList)).toPdf(pdfExporter);
 		} catch (DRException e) {
@@ -816,9 +817,9 @@ public class IndPaySlipPdf {
 							col.column("Associate Name", "employeeName", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER).setColumns(15),
 							col.column("Department", "department", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
 							col.column("ESI Number", "esiNumber", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER).setColumns(15),
-							col.column("Associate Contribution", "asContribution",  Templates.currencyType).setHorizontalAlignment(HorizontalAlignment.CENTER),
-							col.column("Emplpyer Contribution", "empContribution", Templates.currencyType).setHorizontalAlignment(HorizontalAlignment.CENTER),
-							col.column("Total", "total", Templates.currencyType).setHorizontalAlignment(HorizontalAlignment.CENTER)).ignorePageWidth()
+							col.column("Associate Contribution(INR)", "asContribution",  type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Emplpyer Contribution(INR)", "empContribution", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Total(INR)", "total", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER)).ignorePageWidth()
 					.setDataSource(createEsiDataSource(payResponseList)).toXls(xlsExporter);
 		} catch (DRException e) {
 			e.printStackTrace();
@@ -880,9 +881,9 @@ public class IndPaySlipPdf {
 							col.column("Department", "department", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
 							col.column("PF Number", "pfNumber", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER).setColumns(15),
 							col.column("UAN Number", "uanNumber", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER).setColumns(15),
-							col.column("Associate Contribution", "asContribution", Templates.currencyType).setHorizontalAlignment(HorizontalAlignment.CENTER),
-							col.column("Emplpyer Contribution", "empContribution", Templates.currencyType).setHorizontalAlignment(HorizontalAlignment.CENTER),
-							col.column("Total", "total", Templates.currencyType).setHorizontalAlignment(HorizontalAlignment.CENTER)).ignorePageWidth()
+							col.column("Associate Contribution(INR)", "asContribution", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Emplpyer Contribution(INR)", "empContribution", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Total", "total(INR)", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER)).ignorePageWidth()
 					.pageFooter(Templates.footerComponent)
 					.setDataSource(createPfDataSource(payResponseList)).toPdf(pdfExporter);
 		} catch (DRException e) {
@@ -913,9 +914,9 @@ public class IndPaySlipPdf {
 							col.column("Department", "department", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
 							col.column("PF Number", "pfNumber", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER).setColumns(20),
 							col.column("UAN Number", "uanNumber", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER).setColumns(20),
-							col.column("Associate Contribution", "asContribution", Templates.currencyType).setHorizontalAlignment(HorizontalAlignment.CENTER),
-							col.column("Emplpyer Contribution", "empContribution", Templates.currencyType).setHorizontalAlignment(HorizontalAlignment.CENTER),
-							col.column("Total", "total", Templates.currencyType).setHorizontalAlignment(HorizontalAlignment.CENTER)).ignorePageWidth()
+							col.column("Associate Contribution(INR)", "asContribution", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Emplpyer Contribution(INR)", "empContribution", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Total(INR)", "total", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER)).ignorePageWidth()
 					.setDataSource(createPfDataSource(payResponseList)).toXls(xlsExporter);
 		} catch (DRException e) {
 			e.printStackTrace();
@@ -960,6 +961,86 @@ public class IndPaySlipPdf {
 
 	    }
 	 return dataSource;
+	}
+
+
+	public File getIndPayrollSalaryRegisterPdf(ResponseList<IndEmployeePayrollDTO> payResponseList,OrgLocations orgLocations)throws Exception {
+		File file = null;
+		try {
+			 StringBuilder fileSB = new StringBuilder();
+				file = File.createTempFile(fileSB.append("payrollSalaryRegister_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
+				file.setReadable(true);
+				JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orgLocations.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							col.column("Associate Id", "employeeId", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Associate Name", "employeeName", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER).setColumns(15),
+							col.column("Department", "department", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Effective Date", "effectiveDate", type.dateDayType()).setHorizontalAlignment(HorizontalAlignment.CENTER).setColumns(15),
+							col.column("Increase %", "increase", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER).setColumns(15),
+							col.column("Annual CTC(INR)", "annualCTC", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER)).ignorePageWidth()
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(createSalaryRegisterDataSource(payResponseList)).toPdf(pdfExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+	
+
+	public File getIndPayrollSalaryRegisterExcel(ResponseList<IndEmployeePayrollDTO> payResponseList,OrgLocations orgLocations)throws Exception {
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("payrollSalaryRegister_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
+			file.setReadable(true);
+			
+			JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file).setDetectCellType(true)
+                    .setIgnorePageMargins(true)
+                    .setWhitePageBackground(true)
+                    .setRemoveEmptySpaceBetweenRows(true)
+                    .setRemoveEmptySpaceBetweenColumns(true);
+			
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orgLocations.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							col.column("Associate Id", "employeeId", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Associate Name", "employeeName", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER).setColumns(15),
+							col.column("Department", "department", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Effective Date", "effectiveDate", type.dateDayType()).setHorizontalAlignment(HorizontalAlignment.CENTER).setColumns(15),
+							col.column("Increase %", "increase", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER).setColumns(15),
+							col.column("Annual CTC(INR)", "annualCTC", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.CENTER)).ignorePageWidth()
+					.setDataSource(createSalaryRegisterDataSource(payResponseList)).toXls(xlsExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+
+	
+	private DRDataSource createSalaryRegisterDataSource(ResponseList<IndEmployeePayrollDTO> payResponseList) {
+		DRDataSource dataSource = new DRDataSource("employeeId","employeeName", "department", "effectiveDate","increase", "annualCTC");
+				for(IndEmployeePayrollDTO asi:payResponseList.getData()) {
+   					String employeeId = "--";
+   					String candidateName = "--";
+   					String incresePercentage = "--";
+   					if(!StringUtils.isEmpty(asi.getEmployeeid())) {
+   						employeeId = asi.getEmployeeid();
+   					}
+   					if(!StringUtils.isEmpty(asi.getLastName())) {
+   						candidateName = asi.getFirstName()+" "+asi.getLastName();
+   					}else {
+   						candidateName = asi.getFirstName();
+   					}
+   					if(asi.getIncresePercentage() != null && asi.getIncresePercentage() != "" && asi.getIncresePercentage() !="undefined") {
+   						incresePercentage = asi.getIncresePercentage();
+   					}
+   					
+   					dataSource.add(employeeId,candidateName, asi.getDepartmentName(), asi.getEffectiveDate(),incresePercentage,asi.getAnnualSalary());
+
+   			  }
+		return dataSource;
 	}
 
 	

@@ -153,7 +153,7 @@ public class Templates {
 
 		@Override
 		public String getPattern() {
-			return "₹ #,###.00";
+			return "$ #,###.00";
 		}
 	}
 
