@@ -1,8 +1,7 @@
 function getPayGroupList(id,customEnable){
-	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$.ajax({
 	    	type: "GET",
-	        url: pmsUrl+"/getPayGroupList?"+tokenParamName+"="+tokenValue                 , 
+	        url: pmsUrl+"/getPayGroupList?"+tokenParamName+"="+tokenValue, 
 	        success: function(json) {
 	        var output = "";
 	        output = output + "<option value=''>select group</option>";
@@ -23,7 +22,6 @@ function getPayGroupList(id,customEnable){
 
 
 function getPayPeriodByGroupId(payGroupid,payPeriodId1,payPeriodId2,customDivId){
-	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var groupId = $("#"+payGroupid).val();
 	$("#groupId").val(groupId);
 	if(groupId != "custom"){
@@ -88,7 +86,6 @@ function getFreqdates(freqSDId,fredEDId){
 
 
 function getEmployeesBasedOnDepartment(id){
-	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var departmentId = $("#payrollDepartment").val();
 	$.ajax({
     	type: "GET",
