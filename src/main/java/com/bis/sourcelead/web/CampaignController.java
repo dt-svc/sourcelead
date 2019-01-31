@@ -40,7 +40,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/app")
 public class CampaignController {
 	
 
@@ -82,9 +81,6 @@ public class CampaignController {
 	CampaignService campaignService;
 	
 	
-	
-	
-	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -94,18 +90,19 @@ public class CampaignController {
 	 public @ResponseBody void CampaignMailBox(@PathVariable String mailType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 			
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/app/hotListCampaigns?mailType=").append(mailType).toString());
+		     System.out.println(" /ats/hotListCampaigns?mailType=");
+		     response.sendRedirect(redirectUrl.append("/ats/hotListCampaigns?mailType=").append(mailType).toString());
 			
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')")
+	//@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')")
 	@RequestMapping(value = "/hotListCampaigns")
  	public ModelAndView hotListCampaigns(HttpServletRequest request,@RequestParam(value="mailType", required=false) String mailType) throws Exception {
 		    ModelAndView model = new ModelAndView();
 		   
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		    
+		    System.out.println("inside hotListCampaigns>>>>>>>>>>>>>>");
 		    commonUtil.highLightMenu(Constants.Campaigns, request);
 		    
 		    Integer inboxUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocations.getId(), "Inbox");
