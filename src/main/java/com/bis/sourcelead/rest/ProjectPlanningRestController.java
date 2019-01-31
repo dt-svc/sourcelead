@@ -525,7 +525,7 @@ public class ProjectPlanningRestController {
 	    		 rejectReason = rejectReason.append(jsonObj.getString("rejectedReason"));
 	    		 resourceRequest.setRejectedReason(rejectReason.toString());
 	    		 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_ON_HOLD);
-	    		 
+	    		 resourceRequest.setUpdatedBy(user);
 	    		/* ProjectPlanningRequest projectPlanningRequest = projectPlanningRequestService.getProjectPlanningRequestById(resourceRequest.getProjectPlanningRequestId().getId());
 	    		 projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_REJECTED);*/
 	    		 
