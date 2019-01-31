@@ -7,6 +7,7 @@
 
 <script type="text/javascript">
 var atsUrl ='${SourceLeadWeb_atsUrl}';
+var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 		window.onload = function () {
 			getAssociatesList();
 		 };
@@ -299,7 +300,7 @@ function getOrgLocationRoles(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "GET",
-	        url: atsUrl+"/getOrgLocationRoles?${_csrf.parameterName}=${_csrf.token}&orgLocations="+orgLocations, 
+	        url: pmsUrl+"/getOrgLocationRoles?${_csrf.parameterName}=${_csrf.token}&orgLocations="+orgLocations, 
 	        success: function(json) {
 	        	
 	        	var output = "";
