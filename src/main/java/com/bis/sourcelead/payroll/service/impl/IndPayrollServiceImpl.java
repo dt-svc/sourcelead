@@ -18,6 +18,7 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dao.IndPaysheetFrequencyDao;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
+import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.payroll.service.IndPayrollService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -57,11 +58,10 @@ public class IndPayrollServiceImpl  implements IndPayrollService{
 				StringBuilder sbDate = new StringBuilder();
 				pfd.setPayPeriod(sbDate.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getFrequencyStartDate())).append(" / ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getFrequencyEndDate())).toString());
 				pfd.setPayDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), pay.getPayCheckDate()));
-				//Set<EmployeePayroll> payRollSet = pay.getEmployeepayroll();
-				/*double sum = pay.stream().filter(paySet -> paySet.getPayPeriodNum() != null && Integer.parseInt(paySet.getPayPeriodNum()) == pay.getPayPeriodNum()).mapToDouble(i->i.getNetPay().doubleValue()).sum();
-				pfd.setTotal(BigDecimal.valueOf(sum));*/
+				Set<IndEmployeePayroll> payRollSet = pay.getIndEmployeepayroll();
+				double sum = payRollSet.stream().mapToDouble(i->i.getNetPay().doubleValue()).sum();
+				pfd.setTotal(BigDecimal.valueOf(sum));
 				pfd.setApproverStatus(pay.getApproverStatus());
-	
 				totalList.add(pfd);
 			});
 			res.setData(totalList);

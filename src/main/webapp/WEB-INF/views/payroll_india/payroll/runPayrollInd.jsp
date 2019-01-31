@@ -225,9 +225,9 @@ function payrollDiv(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.total != null && opt.total != '' && opt.total !='undefined'){
-						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.total.toFixed(2)+'</div>';
+						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.total.toFixed(2)+' <i class="paddingLeft">&#8377;</i></div>';
 						              		}else{
-						              		  result = result +'<div class="tbldata-dotdot-vsm">0.0</div>';
+						              		  result = result +'<div class="tbldata-dotdot-vsm">0.0 <i class="paddingLeft">&#8377;</i></div>';
 						              		}
 											return result;
 										}
