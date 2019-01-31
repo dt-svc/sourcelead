@@ -104,6 +104,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UserLoginHelper;
@@ -160,6 +161,9 @@ public class DashboardRestController {
 	 
 	 @Autowired
 	 private RequirementElkUtil requirementElkUtil;
+	 
+	 @Autowired
+	 private ConversionUtil conversionUtil;
 	 
 	 @Autowired
 	 private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
@@ -356,12 +360,12 @@ public class DashboardRestController {
 	
 	@RequestMapping(value = "/switchLocation" , method = RequestMethod.GET)
 	 public @ResponseBody void userSummary(@RequestParam(value="userRoleId") Long userRoleId,HttpServletRequest request,HttpServletResponse response) throws Exception {
-		      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		     String userRoleUUID = userRoleService.getUserRoleUUIDByUserRoleId(userRoleId);
-		     String[] usernameWithRole = auth.getName().split("##");
-		     String uname = usernameWithRole[0]+"##"+userRoleId;
+		      UserRole userRole = userRoleService.getUserRoleById(userRoleId);
+		      User user = userRole.getUser();
+		      String uname = user.getUserName()+"##"+userRole.getId();
+		     
 		     SecurityContextHolder.clearContext();
-			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRoleUUID));
+			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRole.getUuid()));
 				
 		     StringBuilder redirectUrl = new StringBuilder();
 		     response.sendRedirect(redirectUrl.append("/app/dashboard").toString());
@@ -379,14 +383,15 @@ public class DashboardRestController {
   			    userRole.setUserState(Status.ACTIVE);
   			   UserRole userRoleElk = userRoleService.addUserRole(userRole);
   			   
-  			   
-  			   
   			   //user update/save in user Elk
   			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
   		      }
 				
-		     SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 		     SourceLeadSessionManager.setSessionAttribute(request, "productionLoginUserId", productionLoginUserId);
+		     String uname = user.getEmail()+"##"+userRole.getId();
+		     SecurityContextHolder.clearContext();
+			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRole.getUuid()));
+				
 		     
 		     StringBuilder redirectUrl = new StringBuilder();
 		     response.sendRedirect(redirectUrl.append("/app/dashboard").toString());
@@ -1666,12 +1671,15 @@ public class DashboardRestController {
                         String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
                         Integer result = 0;
                         try {
+                        	if(StringUtils.isNotBlank(payTerm)){
                             payTerm=payTerm.replaceAll("\\D", "");
                             result = Integer.parseInt(payTerm);
+                        	}
                         } catch (Exception e) {
                             result = 0;
                         }
                         rshDTO.setPayTerm(result);
+                        
                         }
 
                     }
@@ -1773,6 +1781,8 @@ public class DashboardRestController {
 						List<RequirementOffers> offersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(rsh.getSubmissionId().getId(), loginOrgLocations.getId());
 						for (RequirementOffers requirementOffers : offersList) {
 							rshDTO.setOfferId(requirementOffers.getId());
+							float rate = conversionUtil.rateConvertToYear(requirementOffers.getAmount(),requirementOffers.getPaymentMode(),loginOrgLocations);
+							rshDTO.setOfferRateforYearly(String.format("%.3f", Float.valueOf(rate)));
 							rshDTO.setOfferRate(requirementOffers.getAmount());
 							rshDTO.setPaymentType(requirementOffers.getPaymentType());
 							rshDTO.setPaymentMode(requirementOffers.getPaymentMode());
