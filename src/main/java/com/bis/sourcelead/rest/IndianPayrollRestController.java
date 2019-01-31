@@ -10,12 +10,15 @@ import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -1362,6 +1365,90 @@ public class IndianPayrollRestController {
    					}
    				}
    			}
+   	}
+    
+    
+    
+    @RequestMapping(value = "/app/getFromMonthNames", method = RequestMethod.POST)
+   	public List<String> getMonthNames(@RequestParam(value="financialYear", required=false) String financialYear , HttpServletRequest request, HttpServletResponse response) throws Exception
+   	{
+        OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        String[] finYears  = financialYear.split("-");
+        
+        //Start Year
+		 Date startDate = new SimpleDateFormat("MMMM").parse(orgLocation.getStartMonth());
+		 Calendar cal = Calendar.getInstance();
+		 cal.setTime(startDate);
+		 cal.set(Calendar.YEAR, Integer.valueOf(finYears[0]));
+		 Date sDate = cal.getTime();
+		 java.sql.Date freqStartDate = new java.sql.Date(sDate.getTime());
+		 
+		 //End Year
+		 Date endDate = new SimpleDateFormat("MMMM").parse(orgLocation.getStartMonth());
+		 Calendar endCal = Calendar.getInstance();
+		 endCal.setTime(endDate);
+		 endCal.set(Calendar.YEAR, Integer.valueOf(finYears[1]));
+		 endCal.add(Calendar.MONTH, -1);  
+		 endCal.set(Calendar.DAY_OF_MONTH, 1);  
+		 endCal.add(Calendar.DATE, 1);  
+	     Date eeDate = endCal.getTime();
+	     java.sql.Date freqEndDate = new java.sql.Date(eeDate.getTime());
+	     
+    	String date1 = freqStartDate.toString();
+        String date2 = freqEndDate.toString();
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd", Locale.ROOT);
+        DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMMM-uuuu", Locale.ROOT);
+        YearMonth endMonth = YearMonth.parse(date2, dateFormatter);
+        List<String> months = new ArrayList<>();
+        for (YearMonth month = YearMonth.parse(date1, dateFormatter);
+                ! month.isAfter(endMonth);
+                month = month.plusMonths(1)) {
+        	months.add(month.format(monthFormatter));
+        }
+		return months;
+   	}
+    
+    
+    @RequestMapping(value = "/app/getToMonthNames", method = RequestMethod.POST)
+   	public List<String> getToMonthNames(@RequestParam(value="financialYear", required=false) String financialYear,
+   			@RequestParam(value="fromMonth", required=false) String fromMonth,HttpServletRequest request, HttpServletResponse response) throws Exception
+   	{
+        OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        String[] finYears  = financialYear.split("-");
+        String[] selectMonth = fromMonth.split("-");
+        //Start Year
+		 Date startDate = new SimpleDateFormat("MMMM").parse(selectMonth[0]);
+		 Calendar cal = Calendar.getInstance();
+		 cal.setTime(startDate);
+		 cal.set(Calendar.YEAR, Integer.valueOf(selectMonth[1]));
+		 Date sDate = cal.getTime();
+		 java.sql.Date freqStartDate = new java.sql.Date(sDate.getTime());
+		 
+		 //End Year
+		 Date endDate = new SimpleDateFormat("MMMM").parse(orgLocation.getStartMonth());
+		 Calendar endCal = Calendar.getInstance();
+		 endCal.setTime(endDate);
+		 endCal.set(Calendar.YEAR, Integer.valueOf(finYears[1]));
+		 endCal.add(Calendar.MONTH, -1);  
+		 endCal.set(Calendar.DAY_OF_MONTH, 1);  
+		 endCal.add(Calendar.DATE, 1);  
+	     Date eeDate = endCal.getTime();
+	     java.sql.Date freqEndDate = new java.sql.Date(eeDate.getTime());
+	     
+    	String date1 = freqStartDate.toString();
+        String date2 = freqEndDate.toString();
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd", Locale.ROOT);
+        DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMMM-uuuu", Locale.ROOT);
+        YearMonth endMonth = YearMonth.parse(date2, dateFormatter);
+        List<String> months = new ArrayList<>();
+        for (YearMonth month = YearMonth.parse(date1, dateFormatter);
+                ! month.isAfter(endMonth);
+                month = month.plusMonths(1)) {
+        	months.add(month.format(monthFormatter));
+        }
+		return months;
    	}
     
 }

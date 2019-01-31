@@ -25,7 +25,7 @@ $(document).ready(function(){
           <div class="form-group">
               <label class="col-md-12 paddingRight">Financial Year<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-12">
-					<select class="form-control sel" id="financialYear" name="financialYear">
+					<select class="form-control sel" id="financialYear" name="financialYear" onchange="selectFromMonths();">
 					   <option value ="">Select Year</option>
 				       <c:forEach var="year" items="${finYearList}">
 					       <option value="${year}">${year}</option>
@@ -37,20 +37,7 @@ $(document).ready(function(){
              <div class="form-group">
               <label class="col-md-12">From Month<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
-                  <select class="form-control chosen-select" id="fromMonth" name="fromMonth">
-                        <option value="">Select From Month</option>
-						<option>January</option>
-						<option>Feburary</option>
-						<option>March</option>
-						<option>April</option>
-						<option>May</option>
-						<option>June</option>
-						<option>July</option>
-						<option>August</option>
-						<option>September</option>
-						<option>October</option>
-						<option>November</option>
-						<option>December</option>
+                  <select class="form-control chosen-select" id="fromMonth" name="fromMonth" onchange="selectToMonths();">
 				 </select>
               </div>
             </div>
@@ -67,19 +54,6 @@ $(document).ready(function(){
               <label class="col-md-12">To Month<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
                   <select class="form-control chosen-select" id="toMonth" name="toMonth">
-                        <option value="">Select To Month</option>
-						<option>January</option>
-						<option>Feburary</option>
-						<option>March</option>
-						<option>April</option>
-						<option>May</option>
-						<option>June</option>
-						<option>July</option>
-						<option>August</option>
-						<option>September</option>
-						<option>October</option>
-						<option>November</option>
-						<option>December</option>
 				 </select>
               </div>
             </div>
@@ -365,5 +339,52 @@ $(".overIcon, .newActPop").click(function(e){
 });
 </script>
  
+ 
+ 
+ 
+ <script>
+ function selectFromMonths(){
+	  
+	 var financialYear = $("#financialYear").val();
+	 $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getFromMonthNames?financialYear="+financialYear, 
+	        success: function(json) {
+	        var output = "";
+			for (var i=0; i<json.length; i++)
+			{
+				var opt = json[i];
+				output = output + "<option value='" +opt+ "'>"+opt+"</option>";
+			}
+			$("#fromMonth").empty();
+			$("#fromMonth").append(output);
+			$('#fromMonth').trigger("chosen:updated"); 
+			selectToMonths();
+	        },
+	    });	
+	 
+ }
+ 
+ function selectToMonths(){
+	 var financialYear = $("#financialYear").val();
+	 var fromMonth = $("#fromMonth").val();
+	 $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getToMonthNames?financialYear="+financialYear+"&fromMonth="+fromMonth, 
+	        success: function(json) {
+	        var output = "";
+			for (var i=0; i<json.length; i++)
+			{
+				var opt = json[i];
+				output = output + "<option value='" +opt+ "'>"+opt+"</option>";
+			}
+			$("#toMonth").empty();
+			$("#toMonth").append(output);
+			$('#toMonth').trigger("chosen:updated"); 
+	        },
+	    });	
+	 
+ }
+ </script>
 
 <jsp:include page="../masterFooter.jsp" />

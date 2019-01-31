@@ -656,19 +656,20 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			   .append("OR department.DEPARTMENT_NAME like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )");
 		}
 		
-		String[] finYears  = indEmployeePayrollDTO.getFinancialYear().split("-");
-		 Date startDate = new SimpleDateFormat("MMMM").parse(indEmployeePayrollDTO.getFromMonth());
+		 String[] selectFromMonths = indEmployeePayrollDTO.getFromMonth().split("-");
+		 Date startDate = new SimpleDateFormat("MMMM").parse(selectFromMonths[0]);
 		 Calendar cal = Calendar.getInstance();
 		 cal.setTime(startDate);
-		 cal.set(Calendar.YEAR, Integer.valueOf(finYears[0]));
+		 cal.set(Calendar.YEAR, Integer.valueOf(selectFromMonths[1]));
 		 Date sDate = cal.getTime();
 		 java.sql.Date freqStartDate = new java.sql.Date(sDate.getTime());
 		 
 		 
-		 Date endDate = new SimpleDateFormat("MMMM").parse(indEmployeePayrollDTO.getToMonth());
+		 String[] selectToMonth = indEmployeePayrollDTO.getToMonth().split("-");
+		 Date endDate = new SimpleDateFormat("MMMM").parse(selectToMonth[0]);
 		 Calendar endCal = Calendar.getInstance();
 		 endCal.setTime(endDate);
-		 endCal.set(Calendar.YEAR, Integer.valueOf(finYears[1]));
+		 endCal.set(Calendar.YEAR, Integer.valueOf(selectToMonth[1]));
 		 endCal.add(Calendar.MONTH, 1);  
 		 endCal.set(Calendar.DAY_OF_MONTH, 1);  
 		 endCal.add(Calendar.DATE, -1);  
