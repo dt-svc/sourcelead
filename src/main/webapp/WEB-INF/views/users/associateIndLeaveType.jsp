@@ -30,6 +30,7 @@
           <!--  Tab-2 Banking Starts -->
           
 <script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 	function shiftLoanAndAdvTab(){
 		 var indLoanAndAdvancesDetails = document.getElementById("indLoanAndAdvancesDetails");
 		 document.getElementById("indLoanAndAdvancesDetails").removeAttribute("class");
@@ -55,7 +56,7 @@ function skipToSalaryTab(){
 	 var userId = $("#associateId").val();   
 	 $.ajax({
                 type: "GET",
-                url: sourceleadUrl+"/getAssociateBalanceLeavesByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
+                url: atsUrl+"/getAssociateBalanceLeavesByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
                 success: function(json) {
                 	var data = json.data;
                 	if(data.length >0 && data !=null && json !='' && data != 'undefined'){
@@ -99,7 +100,7 @@ function editAssBalLeave(assoBalLeaveUUID,rowId,userId){
 		$("#"+rowId+"errorDiv").text("");
 		$.ajax({
 	        type : "PUT",
-	         url: sourceleadUrl+"/editAssBalLeave?"+tokenParamName+"="+tokenValue+"&assoBalLeaveUUID="+assoBalLeaveUUID+"&totalLeaves="+totalLeaves,        
+	         url: atsUrl+"/editAssBalLeave?"+tokenParamName+"="+tokenValue+"&assoBalLeaveUUID="+assoBalLeaveUUID+"&totalLeaves="+totalLeaves,        
 	         success :function(json) { },
 	         }); 
 	}else{

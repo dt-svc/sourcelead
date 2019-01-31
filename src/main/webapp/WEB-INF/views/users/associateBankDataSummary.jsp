@@ -4,10 +4,11 @@
  
  
  <script>
+ var atsUrl ='${SourceLeadWeb_atsUrl}';
 function associateBankData(userId){  
 	$.ajax({
            type : "GET",
-           url: sourceleadUrl+"/findAssociateBankDataByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
+           url: atsUrl+"/findAssociateBankDataByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
             success :function(json) {
             	var result = "";
             	result = result + '<div id="editTest" class="col-md-12">';
@@ -66,7 +67,7 @@ function associateBankData(userId){
 function editAssociateBankDataFun(userId){
 	  $.ajax({
           type : "GET",
-          url: sourceleadUrl+"/findAssociateBankDataByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
+          url: atsUrl+"/findAssociateBankDataByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
            success :function(json) {
         	   var result = "";
         	   result += '<div class="clearfix row minHeightcol5 col-md-12 mt">';
@@ -209,7 +210,7 @@ function resetValues(){
 	            $.ajax({
 					type : "POST",
 	        	    data: formData,
-					url : sourceleadUrl+"/saveAssociateBankData?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+					url : atsUrl+"/saveAssociateBankData?"+tokenParamName+"="+tokenValue+"&userId="+userId,
 					success : function(result) {
 						if (result && result.response === "INVALID_DATA") {
 		                    $("#save_associate_bank_data_button").removeAttr("disabled");
