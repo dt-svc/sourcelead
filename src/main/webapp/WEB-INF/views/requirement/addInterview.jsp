@@ -960,6 +960,7 @@ function cancelInterviewPopup(){
 				       	    }
 			        	}
 			        	$("#"+rowId+"applicant").empty();
+			        	$("#"+rowId+"applicant").attr("data-placeholder", json.length + " Applicants available");
 			        	$("#"+rowId+"applicant").append(output);
 			        	$("#"+rowId+"applicant").trigger("chosen:updated");
 			    	}else if (data.indexOf('Sign In') !== -1) {
