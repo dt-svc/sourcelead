@@ -144,7 +144,7 @@ $('body').on('submit', '#addRecomApplicant_form', function(e){
  	    	url : atsUrl+"/saveAddApplicant?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
 	        	if(result.response === "SESSION_TIMEDOUT") {
-					location.replace(atsUrl);
+					location.replace(sourceleadUrl);
 				} else if (result.response === "AWKWARD") {
 					location.href = "/errorPage";
 				} else if (result.response === "SUCCESS") {
@@ -152,7 +152,7 @@ $('body').on('submit', '#addRecomApplicant_form', function(e){
 		        		location.replace(atsUrl+"/requirementSummary?requirementId="+requirementId); 
 			        }
 				} else if (result.indexOf('Sign In') !== -1) {
-					location.replace(atsUrl);
+					location.replace(sourceleadUrl);
 				} else {
 					showError("Operation failed, please try again");
 				}
@@ -378,7 +378,7 @@ function init(){
 							}
 							 $("#loading").removeAttr("style");
 						} else if (response.indexOf('Sign In') !== -1) {
-							location.replace(atsUrl);
+							location.replace(sourceleadUrl);
 						} else {
 						    showError("Operation failed, please try again");
 						}
@@ -436,7 +436,7 @@ function validate_fileupload(fileName)
 			        		$('.jquery_form_error_message').remove();
 			        	} 
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(atsUrl);
+		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}

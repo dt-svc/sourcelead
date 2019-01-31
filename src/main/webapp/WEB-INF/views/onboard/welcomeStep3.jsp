@@ -254,7 +254,7 @@ function deleteDocument(documentUUID){
 	        	} else if (response.response === "SUCCESS") {
 	        		location.replace(atsUrl+"/onboardingCandidateSetp3");  
 	        	} else if (response.indexOf('Sign In') !== -1) {
-	        		location.replace(atsUrl);
+	        		location.replace(sourceleadUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}
@@ -277,7 +277,7 @@ function acceptPolicy(documentUUID){
 	        	} else if (response.response === "SUCCESS") {
 	        		$("#loading").removeAttr("style"); 
 	        	} else if (response.indexOf('Sign In') !== -1) {
-	        		location.replace(atsUrl);
+	        		location.replace(sourceleadUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}
@@ -313,7 +313,7 @@ function saveOnboardingCandidateDocs(saveType){
 		    		} else if (response.response === "SUCCESS") {
 		    			 location.replace(atsUrl+"/onboardingCandidateStep4");  
 		    		} else if (response.indexOf('Sign In') !== -1) {
-		    			location.replace(atsUrl);
+		    			location.replace(sourceleadUrl);
 		    		} else {
 		    		    showError("Operation failed, please try again");
 		    		}

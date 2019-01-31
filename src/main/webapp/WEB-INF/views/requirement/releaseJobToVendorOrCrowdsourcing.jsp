@@ -403,7 +403,7 @@ function releaseTo(){
 	 		           url: atsUrl+"/releaseJobsToClientsOrVendors?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    
 	 		            success :function(result) {
 	 		            	if (result.response === "SESSION_TIMEDOUT") {
-				  				location.replace(atsUrl);
+				  				location.replace(sourceleadUrl);
 			                } else if (result.response === "AWKWARD") {
 			                    location.href = "/errorPage";
 			                } else if (result.response === "SUCCESS") {
@@ -413,7 +413,7 @@ function releaseTo(){
 		 		     		    	   location.replace(atsUrl+"/jobsList");
 		 	     		    	 } 	
 			                } else if (result.indexOf('Sign In') !== -1) {
-								location.replace(atsUrl);
+								location.replace(sourceleadUrl);
 							} else {
 			                    showError("Operation failed, please try again");
 			                }

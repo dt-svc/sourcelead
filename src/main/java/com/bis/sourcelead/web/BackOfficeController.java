@@ -243,6 +243,7 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	
 	@RequestMapping(value = "/assetManagement")
 	public ModelAndView assetManagement(HttpServletRequest request) throws Exception {
+	System.out.println("Inside asset management ATS conroller ====>");
 	
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 

@@ -7,6 +7,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 function assetNotes(assetId,assetUUID){
 		var result = "";
 		result = result  +'<div class="clearfix timesheetHead">';
@@ -100,7 +101,7 @@ function assetNotesList(assetUUID){
 	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+urlForm,        
+         url: atsUrl+urlForm,        
          success :function(data) {
 		var output = "";
 	    if(data != null && data != 'undefined' && data != "" && data != '[]'){
@@ -188,7 +189,7 @@ function assetNotesList(assetUUID){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"",
+						url : atsUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"",
 						success : function(result) {
 							/* closeDocPopup();
 							assetNotesList(assetId); */
@@ -223,7 +224,7 @@ function assetNotesList(assetUUID){
 function assetDetails(assetUUID) {
 	$.ajax({
 			type : "POST",
-			url : sourceleadUrl	+ "/getAssetById?"+tokenParamName+"="+tokenValue+"&assetUUID="+assetUUID,
+			url : atsUrl	+ "/getAssetById?"+tokenParamName+"="+tokenValue+"&assetUUID="+assetUUID,
 			success : function(json) {
 				    var name = "--";
 
@@ -464,7 +465,7 @@ function deleteDocument(assetId,url){
 	document.getElementById("dbUploadFile").style.display="none";
 	 $.ajax({
    	  type: "POST",
-      url: sourceleadUrl+"/deleteAssetDocument?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&url="+url, 	   
+      url: atsUrl+"/deleteAssetDocument?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&url="+url, 	   
  	  success: function(data) {  },
 	   });	
 	}
@@ -477,7 +478,7 @@ function deleteDocument(assetId,url){
   function summaryEditAssetAssign(assetUUID){
 	  $.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/addAndEditAssetAssign?&assetUUID="+assetUUID, 
+	    	url: atsUrl+"/addAndEditAssetAssign?&assetUUID="+assetUUID, 
 	        success: function(result) {
 	        	$(".assetManagementPopup, .comMask").fadeIn();
 	        	$('#assetManagementPopup').empty();
@@ -527,7 +528,7 @@ function uploadShiftFile(shiftIndex){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-	     		    	 url: sourceleadUrl+"/addCategoryAssets?"+tokenParamName+"="+tokenValue+"", 
+	     		    	 url: atsUrl+"/addCategoryAssets?"+tokenParamName+"="+tokenValue+"", 
 	     		        success: function(result) {
 	     		        	
 	     		       	if (result && result.response === "INVALID_DATA") {
