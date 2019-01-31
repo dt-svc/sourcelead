@@ -596,13 +596,15 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 
 		saveEditHistory(savedContracts);
+		String redirectURL = "/contractListbyStatus-params-"+"contractType="+contracts.getContractType()+"-and-status=waiting";
+		Long redirectOrgLocationId = orgLocation.getId();
 		
 		if(null != user && !Constants.DRAFT.equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())){
 				sendMailToOwner(savedContracts,user,org,orgLocation);
 		}
 		
 		if(Constants.WAITING_FOR_APPROVER.equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())){
-			sendMailToContractApprover(user, approverUser, savedContracts, orgLocation);
+			sendMailToContractApprover(user, approverUser, savedContracts, orgLocation,redirectURL,redirectOrgLocationId);
 		}
 		
 		if (!Constants.WAITING_FOR_APPROVER.equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())
@@ -1646,6 +1648,10 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 
+		//Url for redirection
+		String redirectURL = "/contractListbyStatus-params-"+"contractType="+contracts.getContractType()+"-and-status=rejected";		
+		Long redirectOrgLocationId = orgLocation.getId();	
+		 
 		 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
 			 StringBuilder msgBuild = new StringBuilder();
 			 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString()); 
@@ -1691,9 +1697,9 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 			 }
 			 }
 			 StringBuilder linkBuild = new StringBuilder();
-			 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-			
-		//	SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
+			 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Rejected Contract</div></a>").toString());
+		
+			 //	SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 			if(contracts.getStartDate() != null){
 				String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());
 				if(null != timezone && null != timezone.getTimeZoneId()){
@@ -1783,6 +1789,10 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 		emailMessage.setToEmail(createdUser.getEmail());
 		emailMessage.setFromEmail(loginUser.getEmail());
 		emailMessage.setCreatedBy(loginUser.getUserCode());
+		//Url for redirection
+		String redirectURL = "/contractListbyStatus-params-"+"contractType="+contracts.getContractType()+"-and-status=waiting";
+		Long redirectOrgLocationId = orgLocation.getId();	
+		
 		if (null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())) {
 			StringBuilder msgBuild = new StringBuilder();
 			emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
@@ -1833,7 +1843,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 			globalVarsMap.put("clientContact", contracts.getContactUser().getFirstName());
 		}
 		StringBuilder linkBuild = new StringBuilder();
-		globalVarsMap.put("loginLink", linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("loginLink", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Approved Contract</div></a>").toString());		
 		// SimpleDateFormat
 		// dateFormat=orgLocation.getLocFullFormDateFormatter();
 		if (contracts.getStartDate() != null) {
@@ -1895,7 +1905,8 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 
 	}
 
-	private void sendMailToContractApprover(User loginUser, User approverUser, Contracts contracts, OrgLocations orgLocation) throws Exception
+	private void sendMailToContractApprover(User loginUser, User approverUser, Contracts contracts, OrgLocations orgLocation,String redirectURL
+			,Long redirectOrgLocationId) throws Exception
 	{
 		Timezone timezone = null;
 		if(null != orgLocation.getTimezone()){
@@ -1942,9 +1953,9 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 		globalVarsMap.put("OwnerName", ownerSb.toString().replaceAll("\\s*,\\s*$", ""));
 		
 		 StringBuilder linkBuild = new StringBuilder();
-		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-		
-	//	SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
+		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Apporve Contract</div></a>").toString());
+	
+		 //	SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 		if(contracts.getStartDate() != null){
 			String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());
 			if(null != timezone && null != timezone.getTimeZoneId()){
@@ -2867,7 +2878,11 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 	@Override
 	public void sendFinalisedMailToReceiver(Contracts contracts, OrgLocations orgLocation, User loginUser) throws Exception
 	{
-		Timezone timezone = null;
+		Timezone timezone = null;		
+		// URL for redirection
+		String redirectURL = "/viewContract-params-"+"contractUUID="+contracts.getContractUUID();
+		Long redirectOrgLocationId = contracts.getOrgLocationId().getId();
+		
 		if(null != orgLocation.getTimezone()){
 	    	 timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		 }
@@ -2980,7 +2995,17 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 		}else{
 			globalVarsMap.put("loginUser","--");
 		}
-		 
+		StringBuilder linkBuild = new StringBuilder();
+		if(Constants.CLIENT_MSA.equalsIgnoreCase(contracts.getContractType()) || Constants.VENDOR_MSA.equalsIgnoreCase(contracts.getContractType())){
+		globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>MSA Finalised</div></a>")
+				.toString());
+		}else if(Constants.Client_SOW.equalsIgnoreCase(contracts.getContractType()) || Constants.Vendor_SOW.equalsIgnoreCase(contracts.getContractType()))
+		{
+			globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>SOW Finalised</div></a>")
+					.toString());
+		}
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		EmailScenario  emailScenario = null;
 		EmailScenario  notificationScenario = null;
