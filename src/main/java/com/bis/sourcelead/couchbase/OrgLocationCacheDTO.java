@@ -74,6 +74,8 @@ public class OrgLocationCacheDTO implements Serializable{
 	
 	private String isCompanyOnboarded;
 	
+	private String currencyCode;
+	
 	
 	
 	public String getOrgId() {
@@ -346,6 +348,14 @@ public class OrgLocationCacheDTO implements Serializable{
 
 	public void setIsCompanyOnboarded(String isCompanyOnboarded) {
 		this.isCompanyOnboarded = isCompanyOnboarded;
+	}
+
+	public String getCurrencyCode() {
+		return currencyCode;
+	}
+
+	public void setCurrencyCode(String currencyCode) {
+		this.currencyCode = currencyCode;
 	}
 
 	
