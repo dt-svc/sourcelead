@@ -264,6 +264,7 @@
 	                
 	                
 
+
 	                <c:if test="${tabName == 'Campaigns'}">
                          <li class="${sessionData.nav == 'Campaigns' || sessionData.nav == 'CampaignSender' || sessionData.nav == 'CampaignRecipient' ? 'navActive' : ''}"><a href="/ats/campaigns/hotcampaigns" title="Campaigns"><span class="navIcons campIcon"></span><b>Campaigns</b></a></li>				  
                      </c:if>
