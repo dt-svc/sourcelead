@@ -62,7 +62,7 @@
 	                   <li class="${sessionData.nav == 'Vendors' ? 'navActive' : ''}"><a href="<c:url value='/vms/vendorsList'/>" title="Vendors"><span class="navIcons venIcon"></span><b>Vendors</b></a></li>
 	                </c:if> 
 	                 
-	                 <c:if test="${userTabs.tabName == 'Associates'}">
+	                 <c:if test="${tabName == 'Associates'}">
 	                 <li class="${sessionData.nav == 'Users' ? 'navActive' : ''}"><a href="<c:url value='/ats/usersList'/>" title="Associates"><span class="navIcons cliIcon"></span><b>Associates</b></a></li>
 
 	                 </c:if>
