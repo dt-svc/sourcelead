@@ -31,6 +31,9 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.couchbase.client.java.document.json.JsonObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /** 
  * Purpose : 
@@ -253,6 +256,35 @@ public class UserStatsCacheHelper {
 	public List<String> getLoginUserAccounts(String loginUserCode){
 		List<String> userAccountsList = c.getLoginUserAccounts(loginUserCode);
 		return userAccountsList;
+	}
+	
+	public void saveOrgLocationDetailsToCouchbase(OrgLocations orgLocations) {
+		OrgLocationCacheDTO orgLocationDTO = getOrgLocationCacheDetails(orgLocations);
+		 ObjectMapper sessionObj = new ObjectMapper();
+         try {
+			String sessionJsonStr = sessionObj.writeValueAsString(orgLocationDTO);
+			JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
+			StringBuilder orgLocationKey = new StringBuilder();
+			orgLocationKey.append("OrgLocation_").append(orgLocationDTO.getOrgLocationCode());
+			SourceLeadSessionManager.setOrgLocationsJsonString(orgLocationKey.toString(), "userProfile", jsonObject);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void saveUserProfileDetailsToCouchbase(UserRole userRole) {
+		 UserRoleSessionProfileDTO userRoleDTO = getUserRoleCacheDetails(userRole);
+		 ObjectMapper sessionObj = new ObjectMapper();
+         try {
+			String sessionJsonStr = sessionObj.writeValueAsString(userRoleDTO);
+			JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
+			StringBuilder userRoleKey = new StringBuilder();
+			userRoleKey.append(userRole.getUser().getUserName()).append("_AUTH_").append(userRole.getUuid());
+			SourceLeadSessionManager.setUserProfileJsonString(userRoleKey.toString(), "userProfile", jsonObject);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
