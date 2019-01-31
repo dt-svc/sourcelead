@@ -100,7 +100,7 @@ function logoutForConfigure() {
 			   <jsp:include page="dashboardTimesheets.jsp"></jsp:include>  
 	      </sec:authorize>
 	      <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-	      	<c:if test="${userTabs.tabName == 'Jobs'}">
+	      	<c:if test="${userTabs == 'Jobs'}">
 				 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 						<jsp:include page="dashboardRequirement.jsp"></jsp:include> 
 			     </sec:authorize>
@@ -115,7 +115,7 @@ function logoutForConfigure() {
 			</sec:authorize>
 			
 	    		<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-	    		<c:if test="${userTabs.tabName == 'Jobs'}">
+	    		<c:if test="${userTabs == 'Jobs'}">
 	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 					<div class="col-md-12"><jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include> </div>
 					</sec:authorize>
@@ -142,7 +142,7 @@ function logoutForConfigure() {
 					
 			    
 			    <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-			    	<c:if test="${userTabs.tabName == 'Jobs'}">
+			    	<c:if test="${userTabs == 'Jobs'}">
 				    	 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 				   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
 				   	 	 </sec:authorize>
@@ -150,7 +150,7 @@ function logoutForConfigure() {
 			   	 </c:forEach>
 		     	
 		     	<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-			     	<c:if test="${userTabs.tabName == 'Jobs'}">
+			     	<c:if test="${userTabs == 'Jobs'}">
 			     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 			     		<jsp:include page="dashboardApplicants.jsp"></jsp:include>
 			     		</sec:authorize>

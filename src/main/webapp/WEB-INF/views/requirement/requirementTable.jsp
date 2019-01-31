@@ -1357,13 +1357,13 @@ function confirmForceDeleteBtn(){
 	  			showError("Invalid data");
 	  		}else{
 	  			if (result.response === "SESSION_TIMEDOUT") {
-	  				location.replace(atsUrl);
+	  				location.replace(sourceleadUrl);
                 } else if (result.response === "AWKWARD") {
                     location.href = "/errorPage";
                 } else if (result.response === "SUCCESS") {
                 	location.reload();
                 } else if (result.indexOf('Sign In') !== -1) {
-					location.replace(atsUrl);
+					location.replace(sourceleadUrl);
 				} else {
                     showError("Operation failed, please try again");
                 }

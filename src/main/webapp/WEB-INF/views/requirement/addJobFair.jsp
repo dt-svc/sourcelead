@@ -7,7 +7,7 @@
 		<div class="pull-left">
 			<h2>Job Fair</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/jobsList?viewTab=jobFair'/>"> Job Fairs </a> &raquo; JobFair</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/jobsList?viewTab=jobFair'/>"> Job Fairs </a> &raquo; JobFair</div>
 	</section>
 	
 	
@@ -514,7 +514,7 @@
 				};
 				$.post(atsUrl + "/storeFairJob?" + tokenParamName + "=" + tokenValue + "", data, function(result) {
 					if (result.response === "SESSION_TIMEDOUT") {
-						location.replace(atsUrl);
+						location.replace(sourceleadUrl);
 					} else if (result.response === "AWKWARD") {
 						location.href = "/errorPage";
 					} else if (result.response === "DUPLICATE_NAME" || result.response === "INVALID_DATA") {
@@ -526,7 +526,7 @@
 							redirectToJobFairsList();
 				 		}, 500);
 					} else if (result.indexOf('Sign In') !== -1) {
-						location.replace(atsUrl);
+						location.replace(sourceleadUrl);
 					} else {
 						showError("Operation failed, please try again");
 					}

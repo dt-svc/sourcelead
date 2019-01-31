@@ -25,7 +25,7 @@
 			<div class="pull-left">
 				<h2>Associate Summary</h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Associates</a> &raquo; Associate Summary <span id = "fname"></a> </div>				
+			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/ats/usersList">Associates</a> &raquo; Associate Summary <span id = "fname"></a> </div>				
 		</section>
 
 		<!-- Timesheet -->
@@ -38,6 +38,7 @@
 </script>
 
 <script> 
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 $(document).ready(function(){
 	 var userId = '${userId}';
 	 
@@ -135,7 +136,7 @@ $("#associateTagName_chosen").find('ul.chosen-choices > li input').attr("placeho
 function getAssociateTagsList(associateId){
 	$.ajax({  
         type : "POST",
-        url: sourceleadUrl+"/getAssociateTags?"+tokenParamName+"="+tokenValue+"&associateId="+associateId,        
+        url: atsUrl+"/getAssociateTags?"+tokenParamName+"="+tokenValue+"&associateId="+associateId,        
         success :function(json) {
         	var result = "";
 			$.each( json.tagsList, function( i, tags ) {
@@ -168,9 +169,9 @@ function saveAssociateTags(type){
 	 var jsonData = encodeURIComponent(tagName);
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 if(tagName != null && tagName != '' && tagName !='undefined') {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByAssociateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&associateId="+associateId+"&tagName="+jsonData
+		 Urlcheck = atsUrl+"/saveOrUpdateTagsByAssociateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&associateId="+associateId+"&tagName="+jsonData
 	 } else {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByAssociateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&associateId="+associateId+"&tagName="+""
+		 Urlcheck = atsUrl+"/saveOrUpdateTagsByAssociateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&associateId="+associateId+"&tagName="+""
 	 } 
 	 $.ajax({  
          type : "POST",
@@ -188,7 +189,7 @@ function saveAssociateTags(type){
         		}
         		getAssociateTagsList(associateId)
         	} else if (result.indexOf('Sign In') !== -1) {
-        		location.replace(sourceleadUrl);
+        		location.replace(atsUrl);
         	} else {
         	    showError("Operation failed, please try again");
         	}
@@ -347,7 +348,7 @@ window.onload = function () {
 	 $("#loadingSummary").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getUserDetailsById?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
+	        url: atsUrl+"/getUserDetailsById?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
 	        success: function(json) {
 			    //var json = JSON.parse(data);
 			    var result = "";
@@ -996,7 +997,7 @@ function deleteAssociateProfileImage(userId){
 	
 	 $.ajax({
 		    type: "GET",
-            url: sourceleadUrl+"/deleteProfileImage?&userId="+userId,
+            url: atsUrl+"/deleteProfileImage?&userId="+userId,
 	        success: function(data) {
 	        	 var result = data;
      		if(result == "success"){
@@ -1041,7 +1042,7 @@ function getRoles(roleId){
 	 if(roleId != null && roleId != "" && roleId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getRolesExpectSelectedRole?"+tokenParamName+"="+tokenValue+"&roleId="+roleId, 
+		        url: atsUrl+"/getRolesExpectSelectedRole?"+tokenParamName+"="+tokenValue+"&roleId="+roleId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -1068,7 +1069,7 @@ function getChangeRole(userId,userRoleId){
 	if(changeRoleId){
 	 $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getUserPermissionByRole?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&userRoleId="+userRoleId+"&changeRoleId="+changeRoleId, 
+	        url: atsUrl+"/getUserPermissionByRole?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&userRoleId="+userRoleId+"&changeRoleId="+changeRoleId, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var reportingManagers = "";
@@ -1411,7 +1412,7 @@ function getChangeRole(userId,userRoleId){
 	 var updateDepartmentOrgRelationId = $("#updateDepartmentOrgRelationId").val();
 	 $.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getDepartmentsList?"+tokenParamName+"="+tokenValue+"",
+	    	url: atsUrl+"/getDepartmentsList?"+tokenParamName+"="+tokenValue+"",
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#department').append('<option value="">--select Department --</option>');
@@ -1598,7 +1599,7 @@ function getChangeRole(userId,userRoleId){
             $( "#update_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateExistingEmployeeId?"+tokenParamName+"="+tokenValue+"&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId, 
+		        url: atsUrl+"/validateExistingEmployeeId?"+tokenParamName+"="+tokenValue+"&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId, 
 		        success: function(data) {
 		        	if(data == true){
 						  $("input#EmployeeId").after("<p class='jquery_form_error_message'>"+EmpId+" is Already Existed</span>");
@@ -1630,7 +1631,7 @@ function getChangeRole(userId,userRoleId){
 	            $( "#update_user" ).addClass('button').val('Processing..');
 				$.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/validateExistingEmailIdForUser?"+tokenParamName+"="+tokenValue+"&emailId="+emailId+"&userId="+userId, 
+			        url: atsUrl+"/validateExistingEmailIdForUser?"+tokenParamName+"="+tokenValue+"&emailId="+emailId+"&userId="+userId, 
 			        success: function(data) {
 			        	if(data == true){
 							  $("input#EmailId").after("<p class='jquery_form_error_message'>"+emailId+" is Already Existed</span>");
@@ -1684,7 +1685,7 @@ function getChangeRole(userId,userRoleId){
     	  if(EmployeeId != null && EmployeeId != "" && empId != EmployeeId){
           $.ajax({
                 type: "POST",
-                url: sourceleadUrl+"/validateExistingEmployeeId?"+tokenParamName+"="+tokenValue+"&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId,
+                url: atsUrl+"/validateExistingEmployeeId?"+tokenParamName+"="+tokenValue+"&id="+id+"&userId="+userId+"&EmployeeId="+EmployeeId,
                 success: function(data) {
                     if(data == true){
                           $("input#EmployeeId").after("<p class='jquery_form_error_message'>"+EmployeeId+" is Already Existed</span>");
@@ -1702,7 +1703,7 @@ function getChangeRole(userId,userRoleId){
                         $( "#update_user" ).addClass('button').val('Processing..');
                         $.ajax({
                             type: "POST",
-                            url: sourceleadUrl+"/updateUser?"+tokenParamName+"="+tokenValue+"&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
+                            url: atsUrl+"/updateUser?"+tokenParamName+"="+tokenValue+"&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                             success: function(result) {
                             	if(result && result === "DataMissing") {
                             		$("#update_user").removeAttr("disabled");
@@ -1727,7 +1728,7 @@ function getChangeRole(userId,userRoleId){
     		  if(emailId != EmailId){
     			  $.ajax({
                       type: "POST",
-                      url: sourceleadUrl+"/validateExistingEmployeeEmailId?"+tokenParamName+"="+tokenValue+"&id="+id+"&userId="+userId+"&EmailId="+EmailId,
+                      url: atsUrl+"/validateExistingEmployeeEmailId?"+tokenParamName+"="+tokenValue+"&id="+id+"&userId="+userId+"&EmailId="+EmailId,
                       success: function(data) {
                           if(data == true){
                                 $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
@@ -1744,7 +1745,7 @@ function getChangeRole(userId,userRoleId){
                               $( "#update_user" ).addClass('button').val('Processing..');
                               $.ajax({
                                   type: "POST",
-                                  url: sourceleadUrl+"/updateUser?"+tokenParamName+"="+tokenValue+"&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
+                                  url: atsUrl+"/updateUser?"+tokenParamName+"="+tokenValue+"&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                                   success: function(result) {
                                 	  if(result && result === "DataMissing") {
                                 		$("#update_user").removeAttr("disabled");
@@ -1775,7 +1776,7 @@ function getChangeRole(userId,userRoleId){
                   $( "#update_user" ).addClass('button').val('Processing..');
                   $.ajax({
                       type: "POST",
-                      url: sourceleadUrl+"/updateUser?"+tokenParamName+"="+tokenValue+"&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
+                      url: atsUrl+"/updateUser?"+tokenParamName+"="+tokenValue+"&"+$($('#editUser_form')[0]).serialize()+"&userId="+userId+"&emailId="+emailId,
                       success: function(result) {
                     	  if(result && result === "DataMissing") {
                     		$("#update_user").removeAttr("disabled");
@@ -1823,8 +1824,8 @@ function getChangeRole(userId,userRoleId){
 		
          var formData = getFormData("deleteUser_form");
          $("#deleteLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-         $.post(sourceleadUrl+"/terminateUser?"+tokenParamName+"="+tokenValue+"&userId="+userId, formData, function(data) {
-        	 location.replace(sourceleadUrl+"/usersList");
+         $.post(atsUrl+"/terminateUser?"+tokenParamName+"="+tokenValue+"&userId="+userId, formData, function(data) {
+        	 location.replace(atsUrl+"/usersList");
 		});
 		 
 		 return true;
@@ -1855,8 +1856,8 @@ function getChangeRole(userId,userRoleId){
          var formData = getFormData("editRole_form");
          
         $("#editRoleLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-        $.post(sourceleadUrl+"/editUserRole?"+tokenParamName+"="+tokenValue+"&userId="+userId, formData, function(data) {
-        	 location.replace(sourceleadUrl+"/usersList");
+        $.post(atsUrl+"/editUserRole?"+tokenParamName+"="+tokenValue+"&userId="+userId, formData, function(data) {
+        	 location.replace(atsUrl+"/usersList");
 		});
 		 return true;
 	 }else{
@@ -1886,7 +1887,7 @@ function editUserDetails(userId){
 $("#editRoleDetailsList").empty(); 
 	 $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getUserDetailsById?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
+	        url: atsUrl+"/getUserDetailsById?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
 	        success: function(json) {
 			    /* var json = JSON.parse(data); */
 			    var result = "";
@@ -2517,7 +2518,7 @@ $("#editRoleDetailsList").empty();
 function preapareCustomFieldDetails(userId,sectionId){
 	$.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getAllASectionCustomFields?&userId="+userId+"&requestFrom=user"+"&sectionId="+sectionId,        
+         url: atsUrl+"/getAllASectionCustomFields?&userId="+userId+"&requestFrom=user"+"&sectionId="+sectionId,        
          success :function(data) {
         	 $('#customFieldDataId').empty();
         	 $('#customFieldDataId').append(data);
@@ -2547,7 +2548,7 @@ function updateUserDesignationOtherType(){
 	var vendorOrgRelationId = $("#updateVendorOrgRelationId").val();
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getVendorsByOrgLocationId?", 
+		        url: atsUrl+"/getVendorsByOrgLocationId?", 
 		        success: function(json) {
 		        	$('#vendors').empty();
 		        	$('#vendors').append('<option value="">--select Vendor --</option>');
@@ -2577,7 +2578,7 @@ function updateUserDesignationOtherType(){
 		 var vendorSpocId = $("#updateSpocId").val();
 		 $.ajax({
 			    type: "POST",
-		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        url: atsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(json) {
 		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
@@ -2675,7 +2676,7 @@ function removeUser(userId){
 	
 	 $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getUserDetailsByIdForTermination?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
+	        url: atsUrl+"/getUserDetailsByIdForTermination?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	    var reportingManagers = "";
@@ -3207,7 +3208,7 @@ function getStartandEndDate(){
 	if(projectId != null && projectId != ""){
     $.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/getStartAndEndOfProject?"+tokenParamName+"="+tokenValue+"&projectId="+projectId, 
+        url: atsUrl+"/getStartAndEndOfProject?"+tokenParamName+"="+tokenValue+"&projectId="+projectId, 
         success: function(data) {
         	var json = JSON.parse(data);
         	$("#StartDate").val(json.startDateStr);
@@ -3237,7 +3238,7 @@ function getStartandEndDate(){
 	        
 	        $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/saveAssignProject?"+tokenParamName+"="+tokenValue+"&json="+con+"&userId="+userId, 
+		        url: atsUrl+"/saveAssignProject?"+tokenParamName+"="+tokenValue+"&json="+con+"&userId="+userId, 
 		        success: function(data) {
 		        	if(data="success"){
 		        	 	$("#assignProject").modal('hide');
@@ -3270,7 +3271,7 @@ function getStartandEndDate(){
 	        
 	        $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getUnassignedProjects?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
+		        url: atsUrl+"/getUnassignedProjects?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -3345,7 +3346,7 @@ function getStartandEndDate(){
 	         //$("#update_user" ).addClass('button').val('Processing..');
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/validateSSNDuplicate?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber+"&userId="+associateId, 
+			        url: atsUrl+"/validateSSNDuplicate?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber+"&userId="+associateId, 
 			        success: function(data) {
 			        	if(data == true){
 	        				  $('#ssnnum').find('p.jquery_form_error_message').remove();
@@ -3480,7 +3481,7 @@ function saveReason(projectMemberId,userId){
 	
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/saveReason?"+tokenParamName+"="+tokenValue+"&projectMemberId="+projectMemberId+"&reason="+reason, 	   
+		    url: atsUrl+"/saveReason?"+tokenParamName+"="+tokenValue+"&projectMemberId="+projectMemberId+"&reason="+reason, 	   
    		    success: function(data) {
    		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
@@ -3499,7 +3500,7 @@ function inlineEditForEndDate(id,projectMemberId){
 	 var endDate = document.getElementById(id).value;
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/updateEndDateByProjectMemberId?"+tokenParamName+"="+tokenValue+"&endDate="+endDate+"&projectMemberId="+projectMemberId, 	   
+		    url: atsUrl+"/updateEndDateByProjectMemberId?"+tokenParamName+"="+tokenValue+"&endDate="+endDate+"&projectMemberId="+projectMemberId, 	   
    		    success: function(data) {
    			         
    		    }
@@ -3541,12 +3542,12 @@ function userStatusFilter() {
 function reActiveUser(userId){   
          $.ajax({
                type: "POST",
-            url: sourceleadUrl+"/reActiveUser?"+tokenParamName+"="+tokenValue+"&userId="+userId,        
+            url: atsUrl+"/reActiveUser?"+tokenParamName+"="+tokenValue+"&userId="+userId,        
                success: function(data) {
             	   $("#selectoruser").removeAttr("style");
         		   $("#selectoruser").css({ display: "block" });
         		   $("#userMsgDiv").html("Success!! associate reactivated for sourcelead");
-               	   location.replace(sourceleadUrl+"/usersList");
+               	   location.replace(atsUrl+"/usersList");
             	   userDetails(userId);
                }
        });
@@ -3697,7 +3698,7 @@ function reActiveProject(projectMemberId,ProjectName,startDate,endDate,projectEn
 	        con = con.replace(/[{}]/g, "");
 	        $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/saveReAssignProject?"+tokenParamName+"="+tokenValue+"&json="+con+"&projectMemberId="+projectMemberId, 
+		        url: atsUrl+"/saveReAssignProject?"+tokenParamName+"="+tokenValue+"&json="+con+"&projectMemberId="+projectMemberId, 
 		        success: function(data) {
 		        	if(data="success"){
 		        	 	$("#Re-AssignProject").modal('hide');
@@ -3826,7 +3827,7 @@ function profileDetails(candidateId){
 	  var locationCode = '${SourceLeadWeb_locationCode}';
 	  $.ajax({
 		  type: "GET",
-		    url: sourceleadUrl+"/getProfessionalInfo?candidateId="+candidateId+"&locationCode="+locationCode,
+		    url: atsUrl+"/getProfessionalInfo?candidateId="+candidateId+"&locationCode="+locationCode,
            success :function(json) {  
                 if(json != null && json != 'undefined' && json != ""){  
                 	 //var json = JSON.parse(data);
@@ -4291,7 +4292,7 @@ function assocSalarySummary(candidateId){
 	var locationCode = '${SourceLeadWeb_locationCode}';
 	$.ajax({
 		  type: "GET",
-		    url: sourceleadUrl+"/getAssociateSalaryDataByOrgLocation?candidateId="+candidateId+"&locationCode="+locationCode,
+		    url: atsUrl+"/getAssociateSalaryDataByOrgLocation?candidateId="+candidateId+"&locationCode="+locationCode,
 		     success :function(response) {
 		    	 	$("#tab-18").empty();  
 		    	    $("#tab-19").empty();
@@ -4321,7 +4322,7 @@ function associateBankingDetails(candidateId){
 	var locationCode = '${SourceLeadWeb_locationCode}';
 	$.ajax({
 		  type: "GET",
-		    url: sourceleadUrl+"/getAssociateBankingDetailsByOrgLocation?candidateId="+candidateId,
+		    url: atsUrl+"/getAssociateBankingDetailsByOrgLocation?candidateId="+candidateId,
 		     success :function(response) {
 		    	 	$("#tab-18").empty();  
 		    	    $("#tab-19").empty();
@@ -4337,7 +4338,7 @@ function associateInformationDetails(candidateId){
 	var locationCode = '${SourceLeadWeb_locationCode}';
 	$.ajax({
 		  type: "GET",
-		    url: sourceleadUrl+"/getAssociateInformationDetailsByOrgLocation?candidateId="+candidateId,
+		    url: atsUrl+"/getAssociateInformationDetailsByOrgLocation?candidateId="+candidateId,
 		     success :function(response) {
 		    	 	$("#tab-18").empty();  
 		    	    $("#tab-19").empty();
@@ -4352,7 +4353,7 @@ function associateInformationDetails(candidateId){
 function associateLoanAndAdvanceDetails(candidateId){
 	$.ajax({
 		  type: "GET",
-		    url: sourceleadUrl+"/getAssociateLoanAndAdvanceDetailsByCandidateId?candidateId="+candidateId,
+		    url: atsUrl+"/getAssociateLoanAndAdvanceDetailsByCandidateId?candidateId="+candidateId,
 		     success :function(response) {
 		    	 	$("#tab-18").empty();  
 		    	    $("#tab-19").empty();
@@ -4398,7 +4399,7 @@ function deleteProfileImage(candidateId){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({
 		    type: "GET",
-            url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
+            url: atsUrl+"/deleteCandidateImage?candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
 	        success: function(response) {
 	        	if (response.response === "AWKWARD") {
 	        	    location.href = "/errorPage";
@@ -4410,7 +4411,7 @@ function deleteProfileImage(candidateId){
 		        	 //refreshImageBlock(candidateId);
 		        	 //candidateQuickViewProfile(candidateId);
 	        	} else if (response.indexOf('Sign In') !== -1) {
-	        		location.replace(sourceleadUrl);
+	        		location.replace(atsUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}
@@ -4427,11 +4428,11 @@ function deleteProfileImage(candidateId){
 function refreshImageBlock(candidateId){   
 	  $.ajax({
           type : "POST",
-           url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+           url: atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
            success :function(result) {  
         	   var json = result.object;
         	   if(result.response === "SESSION_TIMEDOUT") {
-					location.replace(sourceleadUrl);
+					location.replace(atsUrl);
 				} else if (result.response === "AWKWARD") {
 					location.href = "/errorPage";
 				} else if (result.response === "SUCCESS") {
@@ -4476,7 +4477,7 @@ function refreshImageBlock(candidateId){
 						 $("#candidateImageId").append(result);
                 	}
 				} else if (result.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
+					location.replace(atsUrl);
 				} else {
 					showError("Operation failed, please try again");
 				}
@@ -4491,7 +4492,7 @@ function addFavourite(candidateId){
 	var checked = document.getElementById("fav"+candidateId).checked;
 	 	$.ajax({
 			type : "POST",
-			url : sourceleadUrl+"/saveAssociateAsFavourite?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
+			url : atsUrl+"/saveAssociateAsFavourite?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 			success : function(response) {
 				if (response && response.response === "INVALID_DATA") {
 				    showError(response.responseMessage);
@@ -4521,7 +4522,7 @@ function addFavourite(candidateId){
 						 document.getElementById("favourite"+candidateId).className = 'star-rating' 
 					}
 				} else if (response.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
+					location.replace(atsUrl);
 				} else {
 				    showError("Operation failed, please try again");
 				}
@@ -4668,7 +4669,7 @@ function closeComment(){
 				$("#submit_comment").attr("disabled", "disabled");
          		$("#submit_comment" ).addClass('button').val('Processing..');
 				
-				$.post(sourceleadUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,formData,function(result){
+				$.post(atsUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,formData,function(result){
 					if (result && result.response === "INVALID_USER") {
 		    		    showError(result.responseMessage);
 		    		} else if (result.response === "AWKWARD") {
@@ -4676,7 +4677,7 @@ function closeComment(){
 		    		} else if (result.response === "SUCCESS") {
 		    			savedCommentAndCount(candidateId);
 		    		} else if (result.indexOf('Sign In') !== -1) {
-						location.replace(sourceleadUrl);
+						location.replace(atsUrl);
 					} else {
 					    showError("Operation failed, please try again");
 					}
@@ -4701,7 +4702,7 @@ function closeComment(){
 function savedCommentAndCount(candidateId){
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+         url: atsUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(data) {
         	 if (data && data.response === "INVALID_DATA") {
         		    showError(data.responseMessage);
@@ -4746,7 +4747,7 @@ function savedCommentAndCount(candidateId){
       	 			    $("#latestMessage").append(result);
                   	}
         		} else if (data.indexOf('Sign In') !== -1) {
-        			location.replace(sourceleadUrl);
+        			location.replace(atsUrl);
         		} else {
         		    showError("Operation failed, please try again");
         		}
@@ -4773,7 +4774,7 @@ function savedCommentAndCount(candidateId){
 function getShiftList(shiftId){
 	 $.ajax({
 	        type : "POST",
-	         url: sourceleadUrl+"/getShiftList?"+tokenParamName+"="+tokenValue+"",        
+	         url: atsUrl+"/getShiftList?"+tokenParamName+"="+tokenValue+"",        
 	         success :function(json) {
 	        	 for (var i = 0; i < json.length; i++) {
 	                    var report = json[i];
@@ -4797,7 +4798,7 @@ function calculateConfirmationDate(){
 	    $("#loadingSummary").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    $.ajax({
 			type : "GET",
-			url: sourceleadUrl+"/getConfirmationDateBasedOnJoiningDate?"+tokenParamName+"="+tokenValue+"&joiningDate="+joiningDate+"&probationperiod="+probationperiod,
+			url: atsUrl+"/getConfirmationDateBasedOnJoiningDate?"+tokenParamName+"="+tokenValue+"&joiningDate="+joiningDate+"&probationperiod="+probationperiod,
 			success :function(confirmationDate) {
 				$("#loadingSummary").removeAttr("style");
 				$("#confirmationDate").val(confirmationDate);
@@ -4816,7 +4817,7 @@ function calculateConfirmationDate(){
 function confirmProbation(userId,confirmationDate,designation){
     $.ajax({
 		type : "POST",
-		url: sourceleadUrl+"/confirmProbation?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+		url: atsUrl+"/confirmProbation?"+tokenParamName+"="+tokenValue+"&userId="+userId,
 		success :function() {
 		//$("#confirmButton").removeClass("btn btn-primary").addClass("btn btn-success");
   	    $("#confirmButton").text("Probation Confirmed");
@@ -4843,7 +4844,7 @@ function confirmPopUp(userId,confirmationDate,designation){
 function sendMailConfirmation(userId,confirmationDate,designation){
 	$.ajax({  
         type : "POST",
-        url: sourceleadUrl+"/sendMailConfirmationToAssociate?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&confirmationDate="+confirmationDate+"&designation="+designation,        
+        url: atsUrl+"/sendMailConfirmationToAssociate?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&confirmationDate="+confirmationDate+"&designation="+designation,        
         success :function() {
         $("#selectoruser").removeAttr("style");
         $("#selectoruser").css({ display: "block" });

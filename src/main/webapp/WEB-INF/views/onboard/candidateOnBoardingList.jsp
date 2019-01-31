@@ -603,7 +603,7 @@ $('body').on('submit', '#rejectedReason_form', function(e){
 		        		cancelRejectedReason();
 			        	getOnboardCandidatesList();
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(atsUrl);
+		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -635,7 +635,7 @@ $('body').on('submit', '#rejectedReason_form', function(e){
 		        	} else if (response.response === "SUCCESS") {
 		        		getOnboardCandidatesList();
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(atsUrl);
+		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
