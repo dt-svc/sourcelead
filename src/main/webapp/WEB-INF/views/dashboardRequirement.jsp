@@ -99,7 +99,7 @@ function requirementSubmissionsCount(daterange){
 	$("#dateActiveTab").val(daterange);
 	$("#applicantsCountLoading, #submissionsCountLoading, #interviewsCountLoading, #offersCountLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
     var sourceleadUrl ='${sourceleadUrl}';
-    var userId =  '${SourceLeadWeb_user.id}';
+    var userId =  '${SourceLeadWeb_userId}';
     var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		 $.ajax({
 		    	type: "GET",

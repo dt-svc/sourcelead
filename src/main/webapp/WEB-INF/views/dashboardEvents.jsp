@@ -185,7 +185,7 @@ function getSelectedDateFromCalendar(selectedDate) {
 	if(date == null || date == '' || date == 'undefined'){
 		date = new Date(); 
 		var month = parseInt(date.getMonth())+parseInt(1);
-		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		  if(locationDate.match("yyyy-MM-dd")){
 		      date = date.getFullYear()+"-"+month+"-"+date.getDate();
 		  }if(locationDate.match("dd-MM-yyyy")){
@@ -420,7 +420,7 @@ function dashboardAddInterview(){
 	$('.action-pop').slideUp();
 	interviewTemplate();
 	
-	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	 var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  DashBoardInterViewDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1076,7 +1076,7 @@ function cancelAddInterviewDiv(){
 </script>
 	
 <script>
-	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	var finalDateFormatEDashboardeventCalendar = '';
 	$(document).ready(function () {		
 		if(locationDate.match("yyyy-MM-dd")) {

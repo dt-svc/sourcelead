@@ -299,39 +299,39 @@
               
               
              <%--  <sec:authorize access="hasAnyRole('ROLE_USAGE_REPORT')">    --%>
-      <c:if test="${SourceLeadWeb_loginCountryName == 'United States'}">
+      <c:if test="${SourceLeadWeb_country == 'United States'}">
        <div class="col-md-4 reportNewCta">
                   <!-- DropDown payReport -->
 			<div class="dropdown pull-right report-dropdown">
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
 			     <sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-				<li><a href="${appPath}/payrollRegisterReport">Payroll Register</a></li>
-				<li><a href="${appPath}/payrollComparison">Comparsion</a></li>
-				<li><a href="${appPath}/payrollListSummaryReport">Payroll Summary</a></li>
-				<li><a href="${appPath}/checkRegisterReport">Check Register</a></li>
-				<li><a href="${appPath}/associateWithholding">Associate Withholding</a></li>
-				<li><a href="${appPath}/payrollTaxesAndWagesReport">Taxable Wages Report</a></li>
+				<li><a href="/pms/payrollRegisterReport">Payroll Register</a></li>
+				<li><a href="/pms/payrollComparison">Comparsion</a></li>
+				<li><a href="/pms/payrollListSummaryReport">Payroll Summary</a></li>
+				<li><a href="/pms/checkRegisterReport">Check Register</a></li>
+				<li><a href="/pms/associateWithholding">Associate Withholding</a></li>
+				<li><a href="/pms/payrollTaxesAndWagesReport">Taxable Wages Report</a></li>
 				<!-- <li><a href="companysnapshot.html">Employee Hours Paid</a></li>
 				<li><a href="companysnapshot.html">Taxable Wages Report</a></li> -->
-				<li><a href="${appPath}/deductionReport">Deduction Reports</a></li>
-				<li><a href="${appPath}/contributionReport">Contribution Reports</a></li>
+				<li><a href="/pms/deductionReport">Deduction Reports</a></li>
+				<li><a href="/pms/contributionReport">Contribution Reports</a></li>
 
-				<li><a href="${appPath}/usDeductionSummaryReport" ><!-- Us -->Deduction Summary Report</a></li>
-				<li><a href="${appPath}/usContributionSummaryReport" ><!-- Us -->Contribution Summary Reports</a></li>
+				<li><a href="/pms/usDeductionSummaryReport" ><!-- Us -->Deduction Summary Report</a></li>
+				<li><a href="/pms/usContributionSummaryReport" ><!-- Us -->Contribution Summary Reports</a></li>
 
 				<!-- <li><a href="companysnapshot.html">Tax Liability Report</a></li>
 				<li><a href="companysnapshot.html">Payroll Timesheet Report</a></li> -->
-				<li><a href="${appPath}/directDepositReport">Direct Deposit</a></li>
-				<li><a href="${appPath}/usEmployeePayrollReport">Employee Payroll</a></li>
+				<li><a href="/pms/directDepositReport">Direct Deposit</a></li>
+				<li><a href="/pms/usEmployeePayrollReport">Employee Payroll</a></li>
 
-				<li><a href="${appPath}/contractEmployeePayreport">Contract Employee Payroll</a></li>
+				<li><a href="/pms/contractEmployeePayreport">Contract Employee Payroll</a></li>
 
 				</sec:authorize>
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                  <a href="${appPath}/usPayrollReport" class="block">
+                  <a href="/pms/usPayrollReport" class="block">
                   <div class="clearfix text-center mb10"><i class="payReport"></i></div>
                   <div class="clearfix text-center"><h4>US Payroll Reports</h4></div> </a>
                   </div> 

@@ -211,13 +211,10 @@ public class LoginSessionController {
 			model.setViewName("login");
 			return model;
 		}
-		SourceLeadSessionManager.setSessionAttribute(request, "googleMapsLocationApiKey", googleMapsLocationApiKey);
 		SourceLeadSessionManager.setSessionAttribute(request, "sessionId", request.getSession().getId());
 		User user = userService.findByUserName(authentication.getName());
-		UserRole userRole = null;
-		OrgLocations orgLocations = null;
 
-		if (userRoleId == null) {
+		/*if (userRoleId == null) {
 			userRoleId = (Long) request.getSession().getAttribute("userRoleId");
 			if (userRoleId == null)
 				userRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userRoleId");
@@ -233,19 +230,9 @@ public class LoginSessionController {
 			userRole = userRoleService.getUserRoleById(userRoleId);
 			user = userRole.getUser();
 			orgLocations = userRole.getOrgLocations();
-		}
+		}*/
 
 		Collection<Tabs> tabsList = null;
-		Integer associatesTabsCount = 0;
-		Integer billingTabsCount = 0;
-		Integer expensesTabCount = 0;
-		Integer resourcesTabCount = 0;
-		Integer paryrollTabCount = 0;
-		boolean isJobsTabAccessable = false;
-		SourceLeadSessionManager.setSessionAttribute(request, "isJobsTabAccessable", "N");
-		boolean isReportTabAccessable = false;
-		SourceLeadSessionManager.setSessionAttribute(request, "reportsTabConfigured", "N");
-
 		UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession()
 				.getAttribute("userLoginSession");
 		if (userLoginSession != null) {
@@ -253,81 +240,31 @@ public class LoginSessionController {
 					userLoginSession.getAuthenticated());
 		}
 
-		/*
-		 * if(userLoginSession != null && userLoginSession.getAuthenticated() != null){
-		 * if(!Constants.YES.equalsIgnoreCase(userLoginSession.getAuthenticated())){
-		 * if(Constants.YES.equalsIgnoreCase(orgLocations.getLoginSecurity())){
-		 * model.addObject("userId",user.getId());
-		 * model.addObject("userRoleId",userRole.getId());
-		 * model.addObject("emailId",user.getEmail());
-		 * if(StringUtils.isNotBlank(user.getMobilePhone()))
-		 * model.addObject("mobilePhone",user.getMobilePhone());
-		 * model.setViewName("otpVerification"); return model; } } }
-		 */
-
-		// commented By Pavan jampana -- switchuserType value will be available in the
-		// session no-need to set again.
-		// SourceLeadSessionManager.setSessionAttribute(request, "switchUserType",
-		// switchUserType);
-
+		
 		List<SourceleadActions> actionsList = null;
+		String roleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 
-		if (!userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_PROFESSIONAL)
-				&& !userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_INDEPENDENT_RECRUITER)) {
-			orgLocations = userRole.getOrgLocations();
-			Org org = orgLocations.getOrg();
-			List<Long> modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(orgLocations);
-			actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId,
-					userRole.getRoles().getId(), orgLocations.getId());
-			if (org.getOrgType().equalsIgnoreCase("Company")) {
-				tabsList = tabsService.getTabsListByOrgLocationId(userRole.getRoles().getId(), orgLocations.getId());
-				for (Tabs tabs : tabsList) {
-					if (tabs.getTabName().equalsIgnoreCase("Receivable")
-							|| tabs.getTabName().equalsIgnoreCase("Payables")) {
-						billingTabsCount = billingTabsCount + 1;
-					}
+		if (!roleName.equalsIgnoreCase(Constants.ROLE_NAME_PROFESSIONAL)
+				&& !roleName.equalsIgnoreCase(Constants.ROLE_NAME_INDEPENDENT_RECRUITER)) {
 
-					if (tabs.getTabName().equalsIgnoreCase("My Expenses")
-							|| tabs.getTabName().equalsIgnoreCase("Expenses Approval")) {
-						expensesTabCount = expensesTabCount + 1;
-					}
-
-					if (tabs.getTabName().equalsIgnoreCase("Blog")
-							|| tabs.getTabName().equalsIgnoreCase("User Manuals")) {
-						resourcesTabCount = resourcesTabCount + 1;
-					}
-
-					if (isReportTabAccessable == false) {
-						if (tabs.getTabName().equalsIgnoreCase("Reports")) {
-							isReportTabAccessable = true;
-							SourceLeadSessionManager.setSessionAttribute(request, "reportsTabConfigured", "Y");
-						}
-					}
-					if (tabs.getTabName().equalsIgnoreCase("Run Payroll")
-							|| tabs.getTabName().equalsIgnoreCase("My Payroll")) {
-						paryrollTabCount = paryrollTabCount + 1;
-					}
-
-					if (isJobsTabAccessable == false) {
-						if (tabs.getTabName().equalsIgnoreCase("Jobs")) {
-							isJobsTabAccessable = true;
-							SourceLeadSessionManager.setSessionAttribute(request, "isJobsTabAccessable", "Y");
-						}
-					}
-				}
-
+			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "resetPwdMsg");
+			if (null != msg && !msg.isEmpty()) {
+				model.addObject("msg", msg);
+				SourceLeadSessionManager.removeSessionAttribute(request, "resetPwdMsg");
 			}
+			model.addObject("sourceleadUrl", sourceleadUrl);
 
-			SourceLeadSessionManager.setSessionAttribute(request, "sourceleadUrl", sourceleadUrl);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String currentDate = sdf.format(new Date());
+			Date todayDate = sdf.parse(currentDate);
+			
+			String isCompanyOnboarded = (String) SourceLeadSessionManager.getSessionAttribute(request, "isCompanyOnboarded");
+			String userId = (String) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			String orgLocId = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+			String timeZoneId = (String) SourceLeadSessionManager.getSessionAttribute(request, "timeZoneId");
 
-			if (isNullOrEmpty(orgLocations.getDateFormat()) || isNullOrEmpty(orgLocations.getGeneratedUserId())) {
-				SourceLeadSessionManager.setSessionAttribute(request, "settingsConfigured", "N");
-			} else {
-				SourceLeadSessionManager.setSessionAttribute(request, "settingsConfigured", "Y");
-			}
-
-			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
-			List<String> weekOffDaysList = new ArrayList<>();
+			/*List<String> weekOffDaysList = new ArrayList<>();
 			if (orgLocations.getWeekOffDays() != null && !orgLocations.getWeekOffDays().isEmpty()) {
 				String[] weekOffDays = orgLocations.getWeekOffDays().split(",");
 				for (int i = 0; i < weekOffDays.length; i++) {
@@ -338,56 +275,27 @@ public class LoginSessionController {
 				weekOffDaysList.add("Sun");
 			}
 			SourceLeadSessionManager.setSessionAttribute(request, "weekOffDaysList", weekOffDaysList);
+			 */
 
-			SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours",
-					orgLocations.getAverageWorkingHours());
-			SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
-			SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
-
-			//
 			OrglocationDepositTaxes orgLocDepTaxes = orglocationDepositTaxesService
-					.getOrglocationDepositTaxesByOrgLocationId(orgLocations.getId());
+					.getOrglocationDepositTaxesByOrgLocationId(Long.valueOf(orgLocId));
 			SourceLeadSessionManager.setSessionAttribute(request, "orglocationDepositTaxes", orgLocDepTaxes);
 			
-			AssociateBankData associateBankData = associateBankDataService.getAssociateBankDataByOrgLocationId(orgLocations.getId());
+			AssociateBankData associateBankData = associateBankDataService.getAssociateBankDataByOrgLocationId(Long.valueOf(orgLocId));
 			SourceLeadSessionManager.setSessionAttribute(request, "associateBankData", associateBankData);
 
-			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
-			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
-			SourceLeadSessionManager.setSessionAttribute(request, "billingTabsCount", billingTabsCount);
-			SourceLeadSessionManager.setSessionAttribute(request, "expensesTabCount", expensesTabCount);
-			SourceLeadSessionManager.setSessionAttribute(request, "resourcesTabCount", resourcesTabCount);
-			SourceLeadSessionManager.setSessionAttribute(request, "paryrollTabCount", paryrollTabCount);
+			
 
-			Candidate candidate = candidateService.getCandidateByConsultantUserId(userRole.getUser().getId(),
-					orgLocations.getId());
-			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
-			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
-
-			SourceLeadSessionManager.setSessionAttribute(request, "loginUserFirstName", user.getFirstName());
-			SourceLeadSessionManager.setSessionAttribute(request, "loginUserLastName", user.getLastName());
-			SourceLeadSessionManager.setSessionAttribute(request, "loginUserEmail", user.getEmail());
-
-			boolean isSuperUser = orgLocationService.isLoginUserIsSuperUser(userRole.getUser().getId(),
-					orgLocations.getId());
-			SourceLeadSessionManager.setSessionAttribute(request, "isSuperUser", isSuperUser);
-
-			boolean isSuperAdmin = orgService.isLoginUserIsSuperAdmin(userRole.getUser().getId(), org.getId());
-			if (isSuperAdmin == true) {
-				SourceLeadSessionManager.setSessionAttribute(request, "isSuperAdmin", Constants.YES);
-			} else {
-				SourceLeadSessionManager.setSessionAttribute(request, "isSuperAdmin", Constants.NO);
-			}
 
 			boolean isPayRollApprover = configurePayrollApproverService
-					.isLoginUserIsPayRollApprover(userRole.getUser().getId(), orgLocations.getId());
+					.isLoginUserIsPayRollApprover(Long.valueOf(userId), Long.valueOf(orgLocId));
 			if (isPayRollApprover == true) {
 				SourceLeadSessionManager.setSessionAttribute(request, "isPayRollApprover", Constants.YES);
 			} else {
 				SourceLeadSessionManager.setSessionAttribute(request, "isPayRollApprover", Constants.NO);
 			}
 
-			String[] modules = orgLocations.getModulesId().split(",");
+			/*String[] modules = orgLocations.getModulesId().split(",");
 			for (int i = 0; i < modules.length; i++) {
 				if (modules[i].equalsIgnoreCase(Constants.MODULE_ATS_STR)) {
 					SourceLeadSessionManager.setSessionAttribute(request, "ats", "Y");
@@ -400,15 +308,9 @@ public class LoginSessionController {
 				if (modules[i].equalsIgnoreCase(Constants.MODULE_TIMESHEET_STR)) {
 					SourceLeadSessionManager.setSessionAttribute(request, "timesheet", "Y");
 				}
-			}
+			}*/
 
-			userRole.setNewlyLoginUser(Constants.NO);
-			userRoleService.addUserRole(userRole);
 
-			String userName = (String) authentication.getPrincipal();
-			SecurityContextHolder.getContext().setAuthentication(
-					new UsernamePasswordAuthenticationToken(userName, null, buildUserAuthority(actionsList)));
-			setLoginSession(request, authentication, user, userRole);
 
 			List<Long> accountUserList = new ArrayList<>();
 			List<Long> userIdsList = null;
@@ -417,26 +319,26 @@ public class LoginSessionController {
 			if (productionLoginUserId != null) {
 				userIdsList = userService.getUserIdsListByLinkedUserId(productionLoginUserId);
 			} else {
-				userIdsList = userService.getUserIdsListByLinkedUserId(userRole.getUser().getId());
+				userIdsList = userService.getUserIdsListByLinkedUserId(Long.valueOf(userId));
 			}
 
 			if (userIdsList != null && !userIdsList.isEmpty()) {
-				for (Long userId : userIdsList) {
-					List<Long> linkedUserIdsList = userService.getUserIdsListByLinkedUserId(userId);
+				for (Long loginUserId : userIdsList) {
+					List<Long> linkedUserIdsList = userService.getUserIdsListByLinkedUserId(loginUserId);
 					accountUserList.addAll(linkedUserIdsList);
 				}
 			}
 			userIdsList.addAll(accountUserList);
 			if (productionLoginUserId != null) {
 				userIdsList.add(productionLoginUserId);
-				userIdsList.add(userRole.getUser().getId());
+				userIdsList.add(Long.valueOf(userId));
 			} else {
-				userIdsList.add(userRole.getUser().getId());
+				userIdsList.add(Long.valueOf(userId));
 			}
 
-			if (userRole.getUser().getLinkUserId() != null) {
+			/*if (userRole.getUser().getLinkUserId() != null) {
 				userIdsList.add(userRole.getUser().getLinkUserId().getId());
-			}
+			}*/
 
 			List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
 			if (userSpocRolesList.size() > 1) {
@@ -448,24 +350,8 @@ public class LoginSessionController {
 				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", 0);
 			}
 
-			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
-			SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
-			SourceLeadSessionManager.setSessionAttribute(request, "isGlobalAccess", userRole.getIsGlobal());
-			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
 
-			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "resetPwdMsg");
-			if (null != msg && !msg.isEmpty()) {
-				model.addObject("msg", msg);
-				SourceLeadSessionManager.removeSessionAttribute(request, "resetPwdMsg");
-			}
-			model.addObject("sourceleadUrl", sourceleadUrl);
-
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			String currentDate = sdf.format(new Date());
-			Date todayDate = sdf.parse(currentDate);
-
-			if (StringUtils.isNotBlank(orgLocations.getIsCompanyOnboarded())
-					&& orgLocations.getIsCompanyOnboarded().equalsIgnoreCase(Constants.NO)) {
+			if (isCompanyOnboarded != null && isCompanyOnboarded.equalsIgnoreCase(Constants.NO)) {
 				List<LookUpData> bussinessTypesList = lookUpDataService
 						.getLookUpDataByCategory(Constants.COMPANY_ONBOARD_BUSINESS_TYPE);
 				model.addObject("bussinessTypesList", bussinessTypesList);
@@ -475,7 +361,7 @@ public class LoginSessionController {
 				model.setViewName("onboard/companyOnboard");
 			} else {
 				CandidateOffBoarding candidateOffBoarding = candidateOffBoardingService
-						.getCandidateOffBoardingByUserIdAndLocationId(userRole.getUser().getId(), orgLocations.getId());
+						.getCandidateOffBoardingByUserIdAndLocationId(Long.valueOf(userId), Long.valueOf(orgLocId));
 				if (null != candidateOffBoarding) {
 
 					String endDate = sdf.format(candidateOffBoarding.getEndDate());
@@ -496,8 +382,7 @@ public class LoginSessionController {
 				} else {
 
 					CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService
-							.getCandidateOnBoardingByUserIdAndLocationId(userRole.getUser().getId(),
-									orgLocations.getId());
+							.getCandidateOnBoardingByUserIdAndLocationId(Long.valueOf(userId), Long.valueOf(orgLocId));
 					if (null != candidateOnBoarding && requirementUUID == null) {
 						SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding",
 								candidateOnBoarding);
@@ -510,7 +395,7 @@ public class LoginSessionController {
 									candidateOnBoarding.getOnBoardTeamId());
 						}
 						if (candidateOnBoarding.getOnboardSubmitted().equalsIgnoreCase("N")) {
-							getOnboardingDetails(candidateOnBoarding, user, orgLocations, request);
+							getOnboardingDetails(candidateOnBoarding,orgLocId,dateFormat, request);
 							model.setViewName("onboard/welcomeStep1");
 						} else {
 							model.setViewName("dashboard");
@@ -532,19 +417,19 @@ public class LoginSessionController {
 			model.addObject("skillList", skillList);
 
 			Boolean isManagerWithSubmissionRateStatusAsRequestOrAccept = requirementService
-					.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(
-							userRole.getUser().getId(), orgLocations.getId());
+					.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(Long.valueOf(userId), Long.valueOf(orgLocId));
 			model.addObject("isManagerWithSubmissionRateStatusAsRequestOrAccept",
 					isManagerWithSubmissionRateStatusAsRequestOrAccept);
 
-			Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(userRole.getUser().getId(),
-					orgLocations.getId());
+			Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(Long.valueOf(userId), Long.valueOf(orgLocId));
 			model.addObject("isAdmin", isAdmin);
 			SourceLeadSessionManager.setSessionAttribute(request, "isAdmin", isAdmin);
-
-			setTimeZone(request, orgLocations, model);
+			model.addObject("timezone", timeZoneId);
+			//setTimeZone(request, orgLocations, model);
 
 		} else {
+			OrgLocations orgLocations = null;
+			UserRole userRole = null;
 			commonUtil.highLightMenu(Constants.Dashboard, request);
 
 			actionsList = sourceleadActionsService
@@ -696,9 +581,10 @@ public class LoginSessionController {
 		}
 		boolean redirectFlag = false;
 		if(request.getSession().getAttribute("redirectURL") != null) {
+			String orgLocId = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 			String redirectURL = (String) request.getSession().getAttribute("redirectURL");
 			long redirectOrgLocationId = (Long) request.getSession().getAttribute("redirectOrgLocationId");
-			if(orgLocations != null && orgLocations.getId() == redirectOrgLocationId) {
+			if(orgLocId != null && Long.valueOf(orgLocId) == redirectOrgLocationId) {
 				redirectURL = redirectURL.replaceAll("-params-", "?").replaceAll("-and-", "&");
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				model.addObject("redirectURL", redirectURL);
@@ -711,7 +597,9 @@ public class LoginSessionController {
 		}
 		if(!redirectFlag) {
 			boolean dashboardConfigured = false;
-			DashboardItemsDTO dashboardItems = userService.getDashboardItemsByUserId(user.getId(), orgLocations.getId());
+			String userId = (String) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			String orgLocId = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			DashboardItemsDTO dashboardItems = userService.getDashboardItemsByUserId(Long.valueOf(userId), Long.valueOf(orgLocId));
 			if (dashboardItems != null && dashboardItems.getItemsObjectList().size() > 0) {
 				dashboardConfigured = true;
 			}
@@ -951,21 +839,19 @@ public class LoginSessionController {
 
 	}
 
-	private void getOnboardingDetails(CandidateOnBoarding candidateOnBoarding, User user, OrgLocations orgLocations,
+	private void getOnboardingDetails(CandidateOnBoarding candidateOnBoarding, String orgLocId, String dateFormat,
 			HttpServletRequest request) throws Exception {
 
-		// SimpleDateFormat simpleDateFormat =
-		// orgLocations.getLocFullFormDateFormatter();
-		candidateOnBoarding.setJoiningDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+		candidateOnBoarding.setJoiningDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat,
 				candidateOnBoarding.getStartDate()));
 
 		if (null != candidateOnBoarding.getEndDate()) {
-			candidateOnBoarding.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			candidateOnBoarding.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat,
 					candidateOnBoarding.getEndDate()));
 		}
 
 		if (null != candidateOnBoarding.getDueDate()) {
-			candidateOnBoarding.setDueDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			candidateOnBoarding.setDueDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat,
 					candidateOnBoarding.getDueDate()));
 		}
 
@@ -998,13 +884,13 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "teamOwnerName", teamOwnerUserName);
 
 			UserRole teamOwner = userRoleService.getUserDetailsByUserIdAndLocationId(team.getOwnerUserId().getId(),
-					orgLocations.getId());
+					Long.valueOf(orgLocId));
 			SourceLeadSessionManager.setSessionAttribute(request, "teamOwnerRole",
 					teamOwner.getRoles().getDisplayName());
 			SourceLeadSessionManager.setSessionAttribute(request, "teamOwnerUserId", team.getOwnerUserId().getId());
 
 			List<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByTeamID(team.getId(),
-					orgLocations.getId());
+					Long.valueOf(orgLocId));
 			List<TeamMembers> membersList = new ArrayList<TeamMembers>();
 			if (null != teamMembersList) {
 				for (TeamMembers members : teamMembersList) {
@@ -1019,7 +905,7 @@ public class LoginSessionController {
 					}
 
 					UserRole memberUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(
-							members.getMemberUserId().getId(), orgLocations.getId());
+							members.getMemberUserId().getId(), Long.valueOf(orgLocId));
 					members.setRoleName(memberUserRole.getRoles().getDisplayName());
 
 					membersList.add(members);
