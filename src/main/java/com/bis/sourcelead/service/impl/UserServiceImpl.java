@@ -2267,7 +2267,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column,Ap
 		}
 	
 	   if(userDTO.getRequirementCount() != null){
-		   writeRow.createCell(cellCount++).setCellValue(userDTO.getRequirementCount().longValue());
+		   writeRow.createCell(cellCount++).setCellValue(userDTO.getTotalRequirementCount().longValue());
 	   }
 	   else{
 		   writeRow.createCell(cellCount++).setCellValue("0");   

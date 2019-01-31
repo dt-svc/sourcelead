@@ -52,4 +52,6 @@ public interface RolesDao {
 	List<String> getRolesListByOrgLocationId(Long orgLocationId) throws Exception;
 
 	List<RoleDTO> getRolesDTOListByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	List<Roles> getRolesListUsingMultipleIds(String[] roleIds) throws Exception;
 }
