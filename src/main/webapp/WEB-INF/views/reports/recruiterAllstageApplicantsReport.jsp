@@ -75,6 +75,13 @@ function getDayWiseReports(){
         </div>    		
     		</li>
     		<li><a href="javascript:void(0)" class="btn btn-default btn-sm repFilIcon" title="Filters" onclick="openFilterPopJobs();"><i class="fa fa-filter faFilter"></i></a></li>
+    		<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="exportActions();"></a>
+					<div class="newActPop">
+						<span>
+							<a href="javascript:void(0)" onclick="recruiterReportApplicantsExport();" title="PDF">Export PDF</a>
+						</span>
+					</div>
+				</li>
     		<li class="positionRelative"><input type="text" class="repSearchBar" placeholder='Search' id='jobsDataTableSearch'/><span class="repSearchIcon" onClick="applicantsAllStageList();"></span></li>
     	</ul>
     </div>
@@ -131,6 +138,10 @@ function getDayWiseReports(){
  
  <script type="text/javascript"> 
  
+ function exportActions(){
+		$(".newActPop").slideToggle(200);
+		$(".action-pop").slideUp(200);
+	}
  function resetFilterJobs() {
 	 $("ul#myTeamsULJobs > li input:checkbox").prop("checked",false);
 }
@@ -364,8 +375,8 @@ function associateCandidateListPagination(url,sourceleadUrl){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
 	    	  	   	 result = result +"<td>";
-	    	  	   if(opt.orgLocationName !=null && opt.orgLocationName !="" && opt.orgLocationName !="undefined"){
-	    	  	   	result = result +"<div class='tbldata-dotdot-me' title='"+opt.orgLocationName+"'>"+opt.orgLocationName+"</div>"; 
+	    	  	   if(opt.clientName !=null && opt.clientName !="" && opt.clientName !="undefined"){
+	    	  	   	result = result +"<div class='tbldata-dotdot-me' title='"+opt.clientName+"'>"+opt.clientName+"</div>"; 
 	    	  	   	 }else{
 	    	  	   	result = result +"<div class='tbldata-dotdot'> <span>---</span></div>"; 	 
 	    	  	   	 }
@@ -424,6 +435,51 @@ function associateCandidateListPagination(url,sourceleadUrl){
    	    	$('#jobsDataTableSearch').val(searchData);
     	   }
     	});
+}
+</script>
+
+<script>
+function recruiterReportApplicantsExport()
+{
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var userCode = '${userCode}';
+	 var toStage = '${toStage}';
+	 var searchValue = $("#jobsDataTableSearch").val();
+	 var timePeriod = $('#reportTypeIdJobs').val();
+	 var flag = true;
+	 var startDate = '';
+	 var endDate = '';
+	 if(timePeriod == 'custom'){
+		 custDatesJobs();
+		  startDate = $("#ReportStartDateJobs").val();
+		  endDate = $("#ReportEndDateJobs").val();
+		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
+			  if(startDate == null || startDate == ''){
+				  document.getElementById("reportsStartDateJobs").style.display="block";
+				  $("#reportsStartDateJobs").empty().append("Start Date is Required") ; 
+			  }
+			  
+			  if(endDate == null || endDate == ''){
+				  document.getElementById("reportsEndDateJobs").style.display="block";
+				  $("#reportsEndDateJobs").empty().append("End Date is Required") ; 
+			  }
+			  flag = false;
+		  }
+	 }else{
+		 document.getElementById("reportsStartDateJobs").style.display="none";
+		 document.getElementById("reportsEndDateJobs").style.display="none";
+	 }
+	 var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
+	 if(flag){
+		 searchValue = searchValue ? searchValue : "";
+		 var url = sourceleadUrl+"/getAllSubmissionApplicantsForRecruiterReportsExport?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&userCode="+userCode+"&toStage="+toStage;
+		 window.location.href = url;
+	 }
+	
 }
 </script>
 
