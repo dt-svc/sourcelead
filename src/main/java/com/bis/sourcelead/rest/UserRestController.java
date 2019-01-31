@@ -1586,9 +1586,14 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 @RequestMapping(value = "/ws/dumpUUIDForUserRoles", method = RequestMethod.GET)
 	 public void dumpUUIDForUserRoles() throws Exception {
 		 List<UserRole> userRolesList = userRoleService.getAllUserRoles();
-		 for(UserRole userRole : userRolesList) {
-			 userRole.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-			 userRoleService.addUserRole(userRole);
+		 if(userRolesList != null && !userRolesList.isEmpty()) {
+			 System.out.println("Uploading userroles UUID starts......");
+			 for(UserRole userRole : userRolesList) {
+				 userRole.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				 userRoleService.addUserRole(userRole);
+			 } 
+			 System.out.println("Uploading userroles UUID ends");
 		 }
+		
 	 }
 }
