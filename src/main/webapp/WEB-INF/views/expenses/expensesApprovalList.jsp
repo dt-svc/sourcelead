@@ -121,7 +121,7 @@ margin-top: 3px;
       <ul class="pull-right list-unstyled list-inline">
       
                <sec:authorize access="hasAnyRole('ROLE_ADD_EMPLOYEE_EXPENSES')">
-			   		<li><a href="<c:url value='${appPath}/addApprovalExpense'/>" class="newAdBtn mr5">+ Expenses</a></li>
+			   		<li><a href="/pms/addApprovalExpense" class="newAdBtn mr5">+ Expenses</a></li>
 			   </sec:authorize>	   
 			
 				<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES')">
