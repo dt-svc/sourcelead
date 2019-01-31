@@ -885,7 +885,7 @@ function changeStatus(requirementId, requirementStatus){
         	 url: atsUrl+"/saveChangedStatusFromDraft?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&userId="+userId,
 	        	 success :function(result) {
 	        		 	if (result.response === "SESSION_TIMEDOUT") {
-			  				location.replace(atsUrl);
+			  				location.replace(sourceleadUrl);
 		                } else if (result.response === "AWKWARD") {
 		                    location.href = "/errorPage";
 		                } else if (result.response === "SUCCESS") {
@@ -897,7 +897,7 @@ function changeStatus(requirementId, requirementStatus){
 				                	location.reload();
 		                	 }, 1500);
 		                } else if (result.indexOf('Sign In') !== -1) {
-							location.replace(atsUrl);
+							location.replace(sourceleadUrl);
 						} else {
 		                    showError("Operation failed, please try again");
 		                }
@@ -909,7 +909,7 @@ function changeStatus(requirementId, requirementStatus){
         	 url: atsUrl+"/saveChangedStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status,
 	        	 success :function(result) {
 	        		 if (result.response === "SESSION_TIMEDOUT") {
-			  				location.replace(atsUrl);
+			  				location.replace(sourceleadUrl);
 		                } else if (result.response === "AWKWARD") {
 		                    location.href = "/errorPage";
 		                } else if (result.response === "SUCCESS") {
@@ -921,7 +921,7 @@ function changeStatus(requirementId, requirementStatus){
 				                	location.reload();
 		                	 }, 1500);
 		                } else if (result.indexOf('Sign In') !== -1) {
-							location.replace(atsUrl);
+							location.replace(sourceleadUrl);
 						} else {
 		                    showError("Operation failed, please try again");
 		                }

@@ -87,6 +87,7 @@
   
   
   <script type="text/javascript">
+  var atsUrl ='${SourceLeadWeb_atsUrl}';
  function savePaymentAccount() {
 	 var userId = $("#associateId").val();
 	 var empType = $("#empType").val(); 
@@ -96,7 +97,7 @@
 	            $.ajax({
 					type : "POST",
 					data: formData,
-	  		        url : sourceleadUrl+"/save-ind-associate-payment-account?userId="+userId,
+	  		        url : atsUrl+"/save-ind-associate-payment-account?userId="+userId,
 					success : function(result) {
 						
 						if (result && result.response === "INVALID_DATA") {
@@ -115,7 +116,7 @@
 								 $("#indInformationDetails").click();
 								 
 			                } else if (result.indexOf('Sign In') !== -1) {
-								location.replace(sourceleadUrl);
+								location.replace(atsUrl);
 							} else {
 			                    showError("Operation failed, please try again");
 			                }
@@ -166,7 +167,7 @@ function skipToInfomationTab(){
 		     $("#associateUserId").val(userId);
 			 $.ajax({
 			    	type: "POST",
-			    	url: sourceleadUrl+"/getIndAssociatePaymentAccountDetails?userId="+userId,
+			    	url: atsUrl+"/getIndAssociatePaymentAccountDetails?userId="+userId,
 			        success: function(json) {
 			        	
 			        	if(json != null){

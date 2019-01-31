@@ -304,7 +304,7 @@ public class SubmissionsRateController {
 			
 			Requirement requirement = requirementSubmission.getRequirement();
 			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
-			requirementSubmissionService.applicantAcceptMailAboutRequirement(requirement, user, requirementSubmission.getCandidate(), orgLocations);
+			requirementSubmissionService.applicantAcceptMailAboutRequirement(requirement, user, requirementSubmission, orgLocations);
 		}
 		return model;
 

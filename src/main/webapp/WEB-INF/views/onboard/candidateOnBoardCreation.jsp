@@ -468,7 +468,7 @@ function getEmploymentType(){
 				    			 getVendorsByOrgLocationForAddApplicant();
 				    		 }
 				    	} else if (response.indexOf('Sign In') !== -1) {
-				    		location.replace(atsUrl);
+				    		location.replace(sourceleadUrl);
 				    	} else {
 				    	    showError("Operation failed, please try again");
 				    	}
@@ -869,7 +869,7 @@ function validateUploadFile(id)
 		           	 $("#onboardCandiate").append(result); 
 		           	 $('#onboardCandiate').trigger("chosen:updated");
 		    	} else if (response.indexOf('Sign In') !== -1) {
-		    		location.replace(atsUrl);
+		    		location.replace(sourceleadUrl);
 		    	} else {
 		    	    showError("Operation failed, please try again");
 		    	}
@@ -931,7 +931,7 @@ function validateUploadFile(id)
 				    	 
 				    	 validateOnboardCandidate(json['email']);
 			    	} else if (response.indexOf('Sign In') !== -1) {
-			    		location.replace(atsUrl);
+			    		location.replace(sourceleadUrl);
 			    	} else {
 			    	    showError("Operation failed, please try again");
 			    	}
@@ -1003,7 +1003,7 @@ function validateUploadFile(id)
 					    	 $("#zipCode").val(json['zipCode']);
 				    	 } 
 			    	} else if (response.indexOf('Sign In') !== -1) {
-			    		location.replace(atsUrl);
+			    		location.replace(sourceleadUrl);
 			    	} else {
 			    	    showError("Operation failed, please try again");
 			    	}
@@ -1079,7 +1079,7 @@ function validateUploadFile(id)
 				 			 $("#endDate").datepicker("option", "minDate", dt);
 				    	 }
 			    	} else if (response.indexOf('Sign In') !== -1) {
-			    		location.replace(atsUrl);
+			    		location.replace(sourceleadUrl);
 			    	} else {
 			    	    showError("Operation failed, please try again");
 			    	}
@@ -1227,7 +1227,7 @@ function loadCandidateRoles(onBoardRoleId){
 		           	 $("#onboardCandidateRole").append(result); 
 		           	 $('#onboardCandidateRole').trigger("chosen:updated");
 		    	} else if (response.indexOf('Sign In') !== -1) {
-		    		location.replace(atsUrl);
+		    		location.replace(sourceleadUrl);
 		    	} else {
 		    	    showError("Operation failed, please try again");
 		    	}
@@ -1263,7 +1263,7 @@ function loadTeams(onboardTeamId){
 	           	 $("#team").append(result); 
 	           	 $('#team').trigger("chosen:updated");
 	    	} else if (response.indexOf('Sign In') !== -1) {
-	    		location.replace(atsUrl);
+	    		location.replace(sourceleadUrl);
 	    	} else {
 	    	    showError("Operation failed, please try again");
 	    	}
@@ -1304,7 +1304,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	           	 $('#onboardingTemplate').trigger("chosen:updated");
 	           	$('#onboardingTemplate_chosen').find(".chosen-choices").css({"min-height":"34px"});
 	    	} else if (response.indexOf('Sign In') !== -1) {
-	    		location.replace(atsUrl);
+	    		location.replace(sourceleadUrl);
 	    	} else {
 	    	    showError("Operation failed, please try again");
 	    	}
@@ -1401,7 +1401,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		   	            $("#saveAndContinue_onboardUser").removeAttr("disabled");
 		     	        $("#loading").removeAttr("style");
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(atsUrl);
+		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -1579,7 +1579,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
    		    	$("#savedonboardId").val(json['id']);
    		    	$("#loading").removeAttr("style");
         		} else if (response.indexOf('Sign In') !== -1) {
-        			location.replace(atsUrl);
+        			location.replace(sourceleadUrl);
         		} else {
         		    showError("Operation failed, please try again");
         		}
@@ -1891,7 +1891,7 @@ function deleteCandidateOnboardDocument(documentUUID,documentId,documentType){
 	        			document.getElementById("formsdocument"+documentId).remove();
 	        		}
 	        	} else if (response.indexOf('Sign In') !== -1) {
-	        		location.replace(atsUrl);
+	        		location.replace(sourceleadUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}
@@ -1940,7 +1940,7 @@ function createTemplateDocs(saveType){
 			   	      $("#save_continue_docs_button").removeAttr("disabled");
 			    	  $("#loading").removeAttr("style");
 		    	  	} else if (response.indexOf('Sign In') !== -1) {
-		    			location.replace(atsUrl);
+		    			location.replace(sourceleadUrl);
 		    		} else {
 		    		    showError("Operation failed, please try again");
 		    		}
@@ -2057,7 +2057,7 @@ function getAssignToUsersList(){
 	           	 $("#onboardAssignedTo").append(result); 
 	           	 $('#onboardAssignedTo').trigger("chosen:updated");
 	    	} else if (response.indexOf('Sign In') !== -1) {
-	    		location.replace(atsUrl);
+	    		location.replace(sourceleadUrl);
 	    	} else {
 	    	    showError("Operation failed, please try again");
 	    	}
@@ -2106,7 +2106,7 @@ function saveOnboardTask(){
 			        	$("#selector").fadeIn(150);
 			        	$('#selector').delay(1000).fadeOut('slow');
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(atsUrl);
+		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -2232,7 +2232,7 @@ function deleteTask(taskId,taskType){
 	        		} else if (response.response === "SUCCESS") {
 	        			document.getElementById("onboardTask"+taskId).remove();
 	        		} else if (response.indexOf('Sign In') !== -1) {
-	        			location.replace(atsUrl);
+	        			location.replace(sourceleadUrl);
 	        		} else {
 	        		    showError("Operation failed, please try again");
 	        		}
@@ -2268,7 +2268,7 @@ function saveAndFinishOnboardTemplate(onboardId){
 		    	$("#finish_task").removeAttr("disabled");
 		    	location.replace(atsUrl+"/candidateOnBoardingList"); 
 	    	} else if (response.indexOf('Sign In') !== -1) {
-	    		location.replace(atsUrl);
+	    		location.replace(sourceleadUrl);
 	    	} else {
 	    	    showError("Operation failed, please try again");
 	    	}
@@ -2314,7 +2314,7 @@ function saveAndFinishOnboardTemplate(onboardId){
 	                         $("#saveAndContinue_onboardUser").removeAttr("disabled");
 			        	}
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(atsUrl);
+		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -2345,7 +2345,7 @@ function saveAndFinishOnboardTemplate(onboardId){
 		                         $("#saveAndContinue_onboardUser").removeAttr("disabled");
 				        	}
 			        	} else if (response.indexOf('Sign In') !== -1) {
-			        		location.replace(atsUrl);
+			        		location.replace(sourceleadUrl);
 			        	} else {
 			        	    showError("Operation failed, please try again");
 			        	}
@@ -2371,7 +2371,7 @@ function saveAndFinishOnboardTemplate(onboardId){
 			    			 $("#saveAndContinue_onboardUser" ).attr("disabled", "disabled");
 			        		 alertMessage(candidateName+" is Already exists as onboard user");	
 			        	} else if (response.indexOf('Sign In') !== -1) {
-			        		location.replace(atsUrl);
+			        		location.replace(sourceleadUrl);
 			        	} else {
 			        	    showError("Operation failed, please try again");
 			        	}
