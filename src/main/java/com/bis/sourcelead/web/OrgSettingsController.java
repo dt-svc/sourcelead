@@ -256,7 +256,8 @@ public class OrgSettingsController {
 		 EmailScenarioConfiguration emailSceconf= emailconService.getEmailConfigOrgLocId(orgLocations.getId());
 		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		 Collection<Tabs> tabsList = new ArrayList<>();
-		 Collection<Tabs> modulesList = new ArrayList<>();
+		 Collection<String> modulesNamesList = new ArrayList<>();
+/*		 Collection<Tabs> modulesList = new ArrayList<>();
 		 Collection<String> modulesNamesList = new ArrayList<>();
 		 Tabs dashobardTab = tabsService.getTabListByTabId(1L);
 		 if(!userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")) {
@@ -277,7 +278,8 @@ public class OrgSettingsController {
 			 }
 		 }
 		 
-		 model.addObject("modulesList", modulesList);
+		 model.addObject("modulesList", modulesList);*/
+		 modulesNamesList =  (Collection<String>) SourceLeadSessionManager.getSessionAttribute(request, "tabsList");
 		 model.addObject("modulesNamesList", modulesNamesList);
 		model.addObject("emailSceconf", emailSceconf);
 		model.addObject("orgSubscribedCountriesList", orgSubscribedCountriesList);
@@ -555,7 +557,7 @@ public class OrgSettingsController {
 		 }
 		 
 		 Tabs dashobardTab = tabsService.getTabListByTabId(1L);
-		 if(!userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")) {
+		/* if(!userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")) {
 			 tabsList = (Collection<Tabs>) SourceLeadSessionManager.getSessionAttribute(request, "tabsList");
 		 }else{
 			 if(orgLocations.getId() != null && user.getId() != null) {
@@ -563,7 +565,10 @@ public class OrgSettingsController {
 				 tabsList = tabsService.getTabsListByOrgLocationId(orgUserRole.getRoles().getId(), orgLocations.getId());
 				
 			 }
-		 }
+		 }*/
+		 
+		 UserRole orgUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocations.getId());
+		 tabsList = tabsService.getTabsListByOrgLocationId(orgUserRole.getRoles().getId(), orgLocations.getId());
 		 
 		 modulesList.add(dashobardTab);
 		 for(Tabs tabs : tabsList) {
