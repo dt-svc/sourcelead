@@ -21,6 +21,7 @@ function closeCertificatePopup(){
 --%>
 
 <script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 function candidateCertificate(candidateId){
 	 var candidateType = '${candidateType}';
 	var result = "";
@@ -127,7 +128,7 @@ function storeCertificate(candidateId){
 			 var formData = getFormData("Candidate_certification_form");
 				$("#Candidate_certification_form").attr("disabled", "disabled");
 				 $("#addCandidate").attr("disabled", "disabled");
-		        $.post(sourceleadUrl+"/storeCandidateCertifications?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(response) {
+		        $.post(atsUrl+"/storeCandidateCertifications?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(response) {
 		        	if (response && response.response === "INVALID_DATA") {
 		    		    showError(response.responseMessage);
 		    		} else if (response.response === "AWKWARD") {
@@ -208,7 +209,7 @@ function candidateCertificateList(candidateId){
 	  }
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
         	  	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
         		    showError(response.responseMessage);
@@ -476,7 +477,7 @@ function addCertification(candidateId) {
 	function editCertification(candidateCertificationId, candidateId) {
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl
+			url : atsUrl
 					+ "/getCandidateCertificateBycandidateIdandCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="
 					+ candidateId + "&candidateCertificationId=" + candidateCertificationId,
 			success : function(response) {
@@ -684,7 +685,7 @@ function addCertification(candidateId) {
 			 var formData = getFormData("candidateCertificationEdit_form");
 			//It will escape all the special characters
 			
-			 $.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId, formData, function(result) {
+			 $.post(atsUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId, formData, function(result) {
 				 if (result && result.response === "INVALID_DATA") {
 		    		    showError(result.responseMessage);
 		    		} else if (result.response === "AWKWARD") {
@@ -761,7 +762,7 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
+          url: atsUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
           success :function(result) {
         	  if (result && result.response === "INVALID_DATA") {
 				    showError(result.responseMessage);
