@@ -149,6 +149,12 @@ public class RolesServiceImpl implements RolesService{
 	public List<RoleDTO> getRolesDTOListByOrgLocationId(Long orgLocationId) throws Exception {
 		return rolesDao.getRolesDTOListByOrgLocationId(orgLocationId);
 	}
+
+
+	@Override
+	public List<Roles> getRolesListUsingMultipleIds(String[] roleIds) throws Exception {
+		return rolesDao.getRolesListUsingMultipleIds(roleIds);
+	}
 	
 
 }
