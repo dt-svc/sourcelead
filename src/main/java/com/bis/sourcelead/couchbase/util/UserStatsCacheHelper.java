@@ -66,10 +66,13 @@ public class UserStatsCacheHelper {
 	}
 	
 	/**
-	 * In what case is this method used for get orgLocations details from couch by passing key as orgLocationCode.
-	 * 
+	 * @author Venkat
 	 * @param orgLocationCode
 	 * @return Returns the orglocation details as JSONObject
+	 * 
+	 * This method is used to get orglocation details document form couchbase.
+	 * When user logged into the system we need some details about orglocation. Instead of going to
+	 * db calls, just we pass orglocation code to this method and retrieve the orglocation details as json object.
 	 */
 	@SuppressWarnings("unchecked")
 	public JSONObject getOrgLocationCacheDetails(String orgLocationCode) {
@@ -102,10 +105,16 @@ public class UserStatsCacheHelper {
 	
 
 	/**
+	 * @author Venkat
+	 * @param userRoleAuthKey (loginUserName_<userRoleUUID>)
+	 * @return Returns the UserRole details as JSONObject
 	 * 
-	 * @param userLocKey username##role
-	 * @return Map of stats for the user for the current location
+	 * This method is used to get logged in user details document form couchbase.
+	 * When user logged into the system we need some details about user ie., user information, role information,
+	 * orglocation information etc. Instead of going to
+	 * db calls, just we pass userRoleAuthKey to this method and retrieve the logged in user details as json object.
 	 */
+	
 	public JSONObject getLogInUserRoleStats(String userRoleAuthKey) {
 
 		JSONObject userRoleJson = new JSONObject();
@@ -137,9 +146,10 @@ public class UserStatsCacheHelper {
 	
 	
 	/**
-	 * 
-	 * @param userLocKey username##role
-	 * @return Map of stats for the user for the current location
+	 * @author Venkat
+	 * @param userRoleAuthKey (loginUserName_<userRoleUUID>)
+	 * @return logged in user left menu information as json object
+	 * This method is used to get logged in user left menu access information.
 	 */
 	public JSONObject getLogInUserRoleMenusJson(String userRoleAuthKey) {
 
@@ -175,9 +185,10 @@ public class UserStatsCacheHelper {
 	
 	
 	/**
-	 * 
-	 * @param userLocKey username##role
-	 * @return Map of stats for the user for the current location
+	 * @author Venkat
+	 * @param userRoleAuthKey (loginUserName_<userRoleUUID>)
+	 * @return logged in user left menu information as List<String>
+	 * This method is used to get logged in user left menu access information.
 	 */
 	public List<String> getLogInUserRoleMenusList(String userRoleAuthKey) {
 
@@ -215,9 +226,10 @@ public class UserStatsCacheHelper {
 	
 	
 	/**
-	 * 
-	 * @param userLocKey username##role
-	 * @return Map of stats for the user for the current location
+	 * @author Venkat
+	 * @param userRoleAuthKey (loginUserName_<userRoleUUID>)
+	 * @return logged in user role access information as List<String>
+	 * This method is used to get logged in user role access information.
 	 */
 	public List<String> getLogInUserRoleActionsList(String userRoleAuthKey) {
 
@@ -258,6 +270,13 @@ public class UserStatsCacheHelper {
 		return userAccountsList;
 	}
 	
+	
+	/**
+	 * @author Venkat
+	 * @param orgLocations
+	 * This method is used to store orglocation information in couch.
+	 */
+	
 	public void saveOrgLocationDetailsToCouchbase(OrgLocations orgLocations) {
 		OrgLocationCacheDTO orgLocationDTO = getOrgLocationCacheDetails(orgLocations);
 		 ObjectMapper sessionObj = new ObjectMapper();
@@ -272,7 +291,11 @@ public class UserStatsCacheHelper {
 		}
 	}
 	
-	
+	/**
+	 * @author Venkat
+	 * @param userRole
+	 * This method is used to store userRole information in couch.
+	 */
 	public void saveUserProfileDetailsToCouchbase(UserRole userRole) {
 		 UserRoleSessionProfileDTO userRoleDTO = getUserRoleCacheDetails(userRole);
 		 ObjectMapper sessionObj = new ObjectMapper();
