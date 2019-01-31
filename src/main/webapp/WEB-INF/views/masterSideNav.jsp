@@ -62,8 +62,10 @@
 	                   <li class="${sessionData.nav == 'Vendors' ? 'navActive' : ''}"><a href="<c:url value='/vms/vendorsList'/>" title="Vendors"><span class="navIcons venIcon"></span><b>Vendors</b></a></li>
 	                </c:if> 
 	                 
-	                 <c:if test="${tabName == 'Associates'}">
-	                 <li class="${sessionData.nav == 'Users' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/usersList'/>" title="Associates"><span class="navIcons cliIcon"></span><b>Associates</b></a></li>
+
+	                 <c:if test="${userTabs.tabName == 'Associates'}">
+	                 <li class="${sessionData.nav == 'Users' ? 'navActive' : ''}"><a href="<c:url value='/usersList'/>" title="Associates"><span class="navIcons cliIcon"></span><b>Associates</b></a></li>
+
 	                 </c:if>
 	                 
 	                 <c:if test="${tabName == 'Projects'}">
@@ -262,9 +264,9 @@
 	                      
 	                 </c:if>
 	                
-	                
+	               
 	                <c:if test="${tabName == 'Campaigns'}">
-                         <li class="${sessionData.nav == 'Campaigns' || sessionData.nav == 'CampaignSender' || sessionData.nav == 'CampaignRecipient' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/campaigns/hotcampaigns'/>" title="Campaigns"><span class="navIcons campIcon"></span><b>Campaigns</b></a></li>				  
+                         <li class="${sessionData.nav == 'Campaigns' || sessionData.nav == 'CampaignSender' || sessionData.nav == 'CampaignRecipient' ? 'navActive' : ''}"><a href="/ats/campaigns/hotcampaigns" title="Campaigns"><span class="navIcons campIcon"></span><b>Campaigns</b></a></li>				  
 			         </c:if>
 
 					<c:if test="${SourceLeadWeb_paryrollTabCount == 2 && tabName == 'Run Payroll'}">

@@ -524,7 +524,7 @@ $(function (){
 		        	} else if (response.response === "SUCCESS") {
 			        		location.replace(atsUrl+"/onboardingCandidateBankingDetails");  
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(atsUrl);
+		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
