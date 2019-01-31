@@ -186,5 +186,7 @@ public interface UserRoleService {
    	public List<UserRole> getLoginUserAccountsList(Long userId) throws Exception;
    	
    	public List<UserRole> getAllUserRoles() throws Exception;
+   	
+   	public String getUserRoleUUIDByUserRoleId(Long userRoleId) throws Exception;
 
 }

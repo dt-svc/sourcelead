@@ -1,6 +1,12 @@
 package com.bis.sourcelead.couchbase;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
@@ -9,6 +15,9 @@ import com.couchbase.client.java.document.JsonDocument;
 import com.couchbase.client.java.document.json.JsonObject;
 import com.couchbase.client.java.env.CouchbaseEnvironment;
 import com.couchbase.client.java.env.DefaultCouchbaseEnvironment;
+import com.couchbase.client.java.query.N1qlQuery;
+import com.couchbase.client.java.query.N1qlQueryResult;
+import com.couchbase.client.java.query.N1qlQueryRow;
 
 public class CouchbaseClient {
 	Cluster cluster;
@@ -26,6 +35,33 @@ public class CouchbaseClient {
 
 	public void shutdown() {
 		cluster.disconnect();
+	}
+	
+	
+	public List<String> getLoginUserAccounts(String key) {
+        
+		List<String> userAccountsList = new ArrayList<>();
+		userProfileBucket.bucketManager().createN1qlPrimaryIndex(true, false);
+		JsonObject pVal = JsonObject.create().put("documentType", "User Account");
+		N1qlQueryResult result = userProfileBucket.query(N1qlQuery.parameterized("SELECT meta().id FROM `userProfile`", pVal));
+		if (result != null) {
+			for (N1qlQueryRow row : result) {
+				try {
+					JSONParser parser = new JSONParser();
+					JSONObject jsonObject = (JSONObject) parser.parse(row.value().toString());
+					for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+						String jsonKey = (String) iterator.next();
+						Object jsonValue = jsonObject.get(jsonKey);
+						userAccountsList.add(jsonKey);
+					}
+
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		return userAccountsList;
 	}
 
 
