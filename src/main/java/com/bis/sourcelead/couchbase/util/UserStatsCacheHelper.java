@@ -1,0 +1,418 @@
+package com.bis.sourcelead.couchbase.util;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.ConnectionManager;
+import com.bis.sourcelead.couchbase.CouchbaseClient;
+import com.bis.sourcelead.couchbase.OrgLocationCacheDTO;
+import com.bis.sourcelead.couchbase.UserRoleSessionProfileDTO;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.TabsService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
+
+/** 
+ * Purpose : 
+ */
+
+@Component
+public class UserStatsCacheHelper {
+	
+	@Autowired
+	CountriesService countriesService;
+	
+	@Autowired
+	SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	TabsService tabsService;
+	
+	@Autowired
+	CandidateService candiateService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
+	@Autowired
+	OrgService orgService;
+
+	static CouchbaseClient c = null;
+	static {
+		c = ConnectionManager.instance().getClient();
+	}
+	
+	/**
+	 * In what case is this method used for get orgLocations details from couch by passing key as orgLocationCode.
+	 * 
+	 * @param orgLocationCode
+	 * @return Returns the orglocation details as JSONObject
+	 */
+	@SuppressWarnings("unchecked")
+	public JSONObject getOrgLocationCacheDetails(String orgLocationCode) {
+		JSONObject orgLocationJson = new JSONObject();
+		Object sv = null;
+		sv = c.getOrgLocationsDetails(orgLocationCode);
+		if (sv != null) {
+
+			JSONParser parser = new JSONParser();
+			try {
+
+				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
+				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+					String key = (String) iterator.next();
+					Object jsonValue = jsonObject.get(key);
+					JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
+					for (Object okey : jsonObjVal.keySet()) {
+						String keyStr = (String) okey;
+						Object keyvalue = jsonObjVal.get(keyStr);
+						orgLocationJson.put(keyStr, keyvalue);
+					}
+				}
+
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return orgLocationJson;
+	}
+	
+
+	/**
+	 * 
+	 * @param userLocKey username##role
+	 * @return Map of stats for the user for the current location
+	 */
+	public JSONObject getLogInUserRoleStats(String userRoleAuthKey) {
+
+		JSONObject userRoleJson = new JSONObject();
+		Object sv = null;
+		sv = c.getUserProfile(userRoleAuthKey);
+		if (sv != null) {
+			JSONParser parser = new JSONParser();
+			try {
+				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
+				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+					String key = (String) iterator.next();
+					Object jsonValue = jsonObject.get(key);
+					JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
+					for (Object okey : jsonObjVal.keySet()) {
+						String keyStr = (String) okey;
+						Object keyvalue = jsonObjVal.get(keyStr);
+						if (!keyStr.equalsIgnoreCase("menuList") && !keyStr.equalsIgnoreCase("rolesList")) {
+							userRoleJson.put(keyStr, keyvalue);
+						}
+					}
+				}
+
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return userRoleJson;
+	}
+	
+	
+	/**
+	 * 
+	 * @param userLocKey username##role
+	 * @return Map of stats for the user for the current location
+	 */
+	public JSONObject getLogInUserRoleMenusJson(String userRoleAuthKey) {
+
+		JSONObject userRoleMenusListJson = new JSONObject();
+		Object sv = null;
+		sv = c.getUserProfile(userRoleAuthKey);
+		if (sv != null) {
+			JSONParser parser = new JSONParser();
+			try {
+				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
+				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+					String key = (String) iterator.next();
+					Object jsonValue = jsonObject.get(key);
+					JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
+					for (Object okey : jsonObjVal.keySet()) {
+						String keyStr = (String) okey;
+						if (keyStr.equalsIgnoreCase("menuList")) {
+							Object keyvalue = jsonObjVal.get(keyStr);
+							userRoleMenusListJson.put(keyStr, keyvalue);
+						}
+
+					}
+				}
+
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return userRoleMenusListJson;
+	}
+	
+	
+	
+	
+	/**
+	 * 
+	 * @param userLocKey username##role
+	 * @return Map of stats for the user for the current location
+	 */
+	public List<String> getLogInUserRoleMenusList(String userRoleAuthKey) {
+
+		Object sv = null;
+		List<String> menusList = new ArrayList<>();
+		sv = c.getUserProfile(userRoleAuthKey);
+		if (sv != null) {
+			JSONParser parser = new JSONParser();
+			try {
+				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
+				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+					String key = (String) iterator.next();
+					Object jsonValue = jsonObject.get(key);
+					JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
+					for (Object okey : jsonObjVal.keySet()) {
+						String keyStr = (String) okey;
+						if (keyStr.equalsIgnoreCase("menuList")) {
+							String keyvalue = jsonObjVal.get(keyStr).toString();
+							String[] menusStringArray = keyvalue.toString().substring(1, keyvalue.toString().length()-1).split(",");
+							for(int i=0; i<menusStringArray.length; i++) {
+								menusList.add(menusStringArray[i].substring(1, menusStringArray[i].length()-1));
+							}
+						}
+
+					}
+				}
+
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return menusList;
+	}
+
+	
+	
+	/**
+	 * 
+	 * @param userLocKey username##role
+	 * @return Map of stats for the user for the current location
+	 */
+	public List<String> getLogInUserRoleActionsList(String userRoleAuthKey) {
+
+		Object sv = null;
+		List<String> rolesList = new ArrayList<>();
+		sv = c.getUserProfile(userRoleAuthKey);
+		if (sv != null) {
+			JSONParser parser = new JSONParser();
+			try {
+				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
+				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+					String key = (String) iterator.next();
+					Object jsonValue = jsonObject.get(key);
+					JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
+					for (Object okey : jsonObjVal.keySet()) {
+						String keyStr = (String) okey;
+						if (keyStr.equalsIgnoreCase("rolesList")) {
+							String keyvalue = jsonObjVal.get(keyStr).toString();
+							String[] rolesStringArray = keyvalue.toString().substring(1, keyvalue.toString().length()-1).split(",");
+							for(int i=0; i<rolesStringArray.length; i++) {
+								rolesList.add(rolesStringArray[i].substring(1, rolesStringArray[i].length()-1));
+							}
+						}
+
+					}
+				}
+
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return rolesList;
+	}
+	
+	
+	public List<String> getLoginUserAccounts(String loginUserCode){
+		List<String> userAccountsList = c.getLoginUserAccounts(loginUserCode);
+		return userAccountsList;
+	}
+	
+	
+	public OrgLocationCacheDTO getOrgLocationCacheDetails(OrgLocations orgLocations) {
+		OrgLocationCacheDTO orgLocationDTO = new OrgLocationCacheDTO();
+		 orgLocationDTO.setDocumentType(Constants.COUCH_DOCUMENT_TYPE_ORGLOCATION);
+		 orgLocationDTO.setOrgLocationName(orgLocations.getOrgLocationName());
+		 orgLocationDTO.setOrgLocationId(String.valueOf(orgLocations.getId()));
+		 orgLocationDTO.setOrgName(orgLocations.getOrgName());
+		 orgLocationDTO.setOrgId(String.valueOf((orgLocations.getOrg().getId())));
+		 orgLocationDTO.setImgUrl(orgLocations.getOrg().getFileUrl());
+		 orgLocationDTO.setRegisteredLocation(orgLocations.getOrgLocationAddress());
+		 orgLocationDTO.setCountry(orgLocations.getCountry());
+		 orgLocationDTO.setState(orgLocations.getState());
+		 orgLocationDTO.setCity(orgLocations.getCity());
+		 orgLocationDTO.setZipcode(orgLocations.getZipCode());
+		 orgLocationDTO.setDateFormat(orgLocations.getDateFormat());
+		 orgLocationDTO.setWebsite(orgLocations.getWebsite());
+		 if(StringUtils.isNotBlank(orgLocations.getWeekOffDays())) {
+			 orgLocationDTO.setWeekOffDays(orgLocations.getWeekOffDays());
+		 }else {
+			 orgLocationDTO.setWeekOffDays("Sat,Sun");
+		 }
+		
+		 orgLocationDTO.setWorkingHours(String.valueOf(orgLocations.getWorkingDaysPerWeek()));
+		 orgLocationDTO.setOrgShortCode(orgLocations.getGeneratedUserId());
+		 orgLocationDTO.setOrgLocationCode(orgLocations.getLocationCode());
+		 orgLocationDTO.setOrgCode(orgLocations.getOrg().getOrgCode());
+		 orgLocationDTO.setIsCompanyOnboarded(orgLocations.getIsCompanyOnboarded());
+		 
+		 
+	     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+	     LocalDateTime now = LocalDateTime.now();  
+	     orgLocationDTO.setLastUpdatedDate(dtf.format(now));
+		
+		 if(orgLocations.getUser() != null) {
+			 orgLocationDTO.setPrimaryUserId(String.valueOf(orgLocations.getUser().getId()));
+		 }
+		
+		 if(orgLocations.getTimezone() != null) {
+			 orgLocationDTO.setTimeZoneId(String.valueOf(orgLocations.getTimezone().getId()));
+		 }
+		 
+		 if(orgLocations.getOrg().getUser() != null) {
+			 orgLocationDTO.setSuperUserId(String.valueOf(orgLocations.getOrg().getUser().getId()));
+		 }
+		 
+	    try {
+			  Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			if (countries != null) {
+				orgLocationDTO.setCurrencyCode(countries.getCurrency());
+			}
+		 } catch (Exception e2) {
+			e2.printStackTrace();
+		 }
+		 
+		 return orgLocationDTO;
+	}
+	
+	
+	
+	public UserRoleSessionProfileDTO getUserRoleCacheDetails(UserRole userRole) {
+		
+		UserRoleSessionProfileDTO userRoleDTO = new UserRoleSessionProfileDTO();
+		try {
+			 userRoleDTO.setDocumentType(Constants.COUCH_DOCUMENT_TYPE_USER_LOGIN_ACCOUNT);
+			 userRoleDTO.setUserRoleId(String.valueOf(userRole.getId()));
+			 userRoleDTO.setUserId(String.valueOf(userRole.getUser().getId()));
+			 userRoleDTO.setRoleId(String.valueOf(userRole.getRoles().getId()));
+			 userRoleDTO.setRoleName(userRole.getRoles().getRoleName());
+			 userRoleDTO.setRoleDisplayName(userRole.getRoles().getDisplayName());
+			 userRoleDTO.setEmail(userRole.getUser().getEmail());
+			 userRoleDTO.setFirstName(userRole.getUser().getFirstName());
+			 userRoleDTO.setLastName(userRole.getUser().getLastName());
+			 
+			 if(userRole.getReportingManager() != null) {
+				 userRoleDTO.setReportingManagerId(String.valueOf(userRole.getReportingManager().getId()));
+			 }
+			
+			 if(userRole.getResourceManager() != null) {
+				 userRoleDTO.setResourceManagerId(String.valueOf(userRole.getResourceManager().getId()));
+			 }
+			
+			 userRoleDTO.setOrgLocationId(String.valueOf(userRole.getOrgLocations().getId()));
+			 userRoleDTO.setUserState(userRole.getUserState().toString());
+			 userRoleDTO.setUserType(userRole.getUserType());
+			 userRoleDTO.setDesignation(userRole.getDesignation());
+			 userRoleDTO.setIsGlobalUser(userRole.getIsGlobal());
+			 userRoleDTO.setOrgLocationCode(userRole.getOrgLocations().getLocationCode());
+			 if(userRole.getRoles().getRoleHierarchy() != null) {
+				 userRoleDTO.setRoleHierarchyId(String.valueOf(userRole.getRoles().getRoleHierarchy().getId()));
+			 }
+			 userRoleDTO.setUserCode(userRole.getUser().getUserCode());
+			 Candidate candidate = candiateService.getCandidateByConsultantUserId(userRole.getUser().getId(),userRole.getOrgLocations().getId());
+			 if(candidate != null) {
+				 userRoleDTO.setCandidateId(String.valueOf(candidate.getId()));
+				 userRoleDTO.setCandidateUUID(candidate.getCandidateUUID());
+			 }
+			
+			 StringBuilder userNameSB = new StringBuilder();
+			 if (null != userRole.getUser().getLastName()) {
+				 userNameSB.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName());
+				} else {
+					 userNameSB.append(userRole.getUser().getFirstName());
+				}
+			 userRoleDTO.setUserName(userNameSB.toString());
+			 userRoleDTO.setImgUrl(userRole.getUser().getFileUrl());
+			 
+			 boolean isSuperUser = orgLocationService.isLoginUserIsSuperUser(userRole.getUser().getId(),userRole.getOrgLocations().getId());
+				if(isSuperUser == true) {
+					userRoleDTO.setIsSuperUser(Constants.YES);
+				}else {
+					userRoleDTO.setIsSuperUser(Constants.NO);
+				}
+				
+				boolean isSuperAdmin = orgService.isLoginUserIsSuperAdmin(userRole.getUser().getId(),userRole.getOrgLocations().getOrg().getId());
+				if(isSuperAdmin == true){
+					userRoleDTO.setIsSuperAdmin(Constants.YES);
+				}else{
+					userRoleDTO.setIsSuperAdmin(Constants.NO);
+				}
+			 
+			 if(userRole.getShift() != null) {
+				 userRoleDTO.setShiftId(String.valueOf(userRole.getShift().getId()));
+			 }
+			 
+			 if(userRole.getGradeId() != null) {
+				 userRoleDTO.setGradeId(String.valueOf(userRole.getGradeId().getId()));
+			 }
+			 
+			userRoleDTO.setUuid(userRole.getUuid());
+			
+		    List<SourceleadActions> actionsList = null;
+	        List<String> tabNamesList = null;
+	        List<String> actionRolesList = new ArrayList<String>();
+	        List<Long> actionIdsList = new ArrayList<Long>();
+			 
+	        actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(null, userRole.getRoles().getId(), userRole.getOrgLocations().getId());
+			    
+		   	 if(actionsList != null && !actionsList.isEmpty()) {
+		   		  for(SourceleadActions actions : actionsList){
+		       	    	actionIdsList.add(actions.getId());
+		       	    	actionRolesList.add(actions.getActionRole());
+		       	    }
+		   		  
+		   		 tabNamesList = tabsService.getTabsNamesListByActionsIds(actionIdsList);
+		   		 tabNamesList.add("Dashboard");
+		    	    
+		    	     userRoleDTO.setMenuList(tabNamesList);
+		    	     userRoleDTO.setRolesList(actionRolesList);
+		   	 	}
+		   	 
+		     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+		     LocalDateTime now = LocalDateTime.now();  
+		     userRoleDTO.setLastUpdatedDate(dtf.format(now));
+	}catch (Exception e) {
+			e.printStackTrace();
+	}
+		
+ return userRoleDTO;
+	    
+	}
+}
