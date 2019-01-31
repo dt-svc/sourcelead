@@ -156,6 +156,7 @@ public class UserLoginHelper {
 	                if(null != employee){
 	                    userService.saveOrUpdateUserElkDocument(uRole,employee,uRole.getCreatedBy());
 	                }
+	                userStatsCacheHelper.saveUserProfileDetailsToCouchbase(uRole);
   		  }
 		   } catch (Exception e) {
 			  e.printStackTrace();

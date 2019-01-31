@@ -80,6 +80,8 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	
 	private String offerRateforYearly;
 	
+	private String marginRateYearly;
+	
 	public String getCandidateName()
 	{
 		return candidateName;
@@ -525,5 +527,13 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	public void setOfferRateforYearly(String offerRateforYearly) {
 		this.offerRateforYearly = offerRateforYearly;
 	}
+	public String getMarginRateYearly() {
+		return marginRateYearly;
+	}
+	public void setMarginRateYearly(String marginRateYearly) {
+		this.marginRateYearly = marginRateYearly;
+	}
+	
+	
 	
 }
