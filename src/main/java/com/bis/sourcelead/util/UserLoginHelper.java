@@ -28,6 +28,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -38,6 +39,7 @@ import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -105,6 +107,9 @@ public class UserLoginHelper {
 	
 	@Autowired
 	UserStatsCacheHelper userStatsCacheHelper;
+	
+	@Autowired
+	CountriesService countriesService;
 	
 	   
 
@@ -211,6 +216,9 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "dateFormat", orgLocations.get("dateFormat"));  
 		  SourceLeadSessionManager.setSessionAttribute(req, "country", orgLocations.get("country"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "weekOffDays", orgLocations.get("weekOffDays"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "website", orgLocations.get("website"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "currencyCode", orgLocations.get("currencyCode"));
+		  
 		  List<String> weekOffDaysList = new ArrayList<>();
 		  String[] weekOffDays = orgLocations.get("weekOffDays").toString().split(",");
 			for (int i = 0; i < weekOffDays.length; i++) {
@@ -383,6 +391,19 @@ public class UserLoginHelper {
 			  SourceLeadSessionManager.setSessionAttribute(req, "designation", userRole.getDesignation());
 			  SourceLeadSessionManager.setSessionAttribute(req, "isCompanyOnboarded", orgLocations.getIsCompanyOnboarded());
 			  SourceLeadSessionManager.setSessionAttribute(req, "timeZoneId", orgLocations.getTimezone().getId().toString());
+			  SourceLeadSessionManager.setSessionAttribute(req, "orgName", orgLocations.getOrgLocationName());
+			  SourceLeadSessionManager.setSessionAttribute(req, "website", orgLocations.getWebsite());
+			
+			  try {
+				  Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+				if (countries != null) {
+					SourceLeadSessionManager.setSessionAttribute(req, "currencyCode", countries.getCurrency());
+					SourceLeadSessionManager.setSessionAttribute(req, "loginCountryName", countries.getName());
+				}
+			 } catch (Exception e2) {
+				e2.printStackTrace();
+			 }
+				
 				 
 				 List<String> weekOffDaysList = new ArrayList<>();
 					if (orgLocations.getWeekOffDays() != null && !orgLocations.getWeekOffDays().isEmpty()) {
