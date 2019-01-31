@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<script src="/resources/js/payrollReports.js"></script>
+<script src="/pms/resources/js/payrollReports.js"></script>
 
 <script>
 $(document).ready(function(){
