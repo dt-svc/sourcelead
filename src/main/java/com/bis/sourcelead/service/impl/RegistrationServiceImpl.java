@@ -35,6 +35,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.ExpensesCategoryDao;
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dao.TabsDao;
@@ -246,6 +247,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 	
 	@Autowired
 	EmailScenarioConfigurationService emailScenarioConfigurationService;
+	
+	@Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
 	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -1205,6 +1209,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 * Saving USER DB data as ElasticSearch Documents
 		 */
 		userService.saveOrUpdateUserElkDocument(userRole,employees,orgUser.getUserCode());
+		userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
 		
 		if("Newly Registered".equalsIgnoreCase(orgUser.getRegistrationType()))
 	    	sendActivationEmail(orgUser,orgLocations);

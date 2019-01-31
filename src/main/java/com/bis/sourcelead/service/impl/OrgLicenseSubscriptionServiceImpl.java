@@ -330,10 +330,8 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			sendActivationEmail(user);
 			userService.sendEmail(user, loginUser, password,orgLocations.getId());
 			
-			/*
-			Need to remove comment when couchbase is established
 			userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(orgLocations);
-			userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);*/
+			userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
 			
 			
 		} catch (Exception e) {

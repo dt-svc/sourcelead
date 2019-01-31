@@ -44,6 +44,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
@@ -251,6 +252,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private RequirementSubmissionDao requirementSubmissionDao;
+	
+	@Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
 	
 	@Override
 	public User findByUserName(String username) {
@@ -694,6 +698,7 @@ public class UserServiceImpl implements UserService {
 				registrationService.sendActivationEmail(user1,orgLocations);
 			
 			saveOrUpdateUserElkDocument(userRole,employee,loginuser.getUserCode());
+			userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
 			user1.setTempPwd(password);
 			user1.setCandidateId(candidate.getId());
         return user1;
