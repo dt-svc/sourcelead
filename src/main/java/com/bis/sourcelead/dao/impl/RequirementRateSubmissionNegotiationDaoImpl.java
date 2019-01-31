@@ -89,5 +89,18 @@ public class RequirementRateSubmissionNegotiationDaoImpl  implements Requirement
 		List<RequirementRateSubmissionNegotiation> rateNegotiation =  session.createQuery(query.toString()).setLong("submissionId", submissionId).list();
 		return rateNegotiation;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementRateSubmissionNegotiation getRequirementRateSubmissionByMaxId(Long submissionId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from RequirementRateSubmissionNegotiation rateNegotiation where rateNegotiation.requirementsubmissionId.id =:submissionId and rateNegotiation.id =(SELECT MAX(rate.id) FROM RequirementRateSubmissionNegotiation rate where rate.requirementsubmissionId.id =:submissionId)" ;
+		List<RequirementRateSubmissionNegotiation> rateNegotiationList =session.createQuery(query).setLong("submissionId", submissionId).list(); 
+		RequirementRateSubmissionNegotiation negotiation = null;
+		if(rateNegotiationList != null && !rateNegotiationList.isEmpty()){
+			negotiation = rateNegotiationList.iterator().next();
+		}
+		return negotiation;
+	}
 
 }
