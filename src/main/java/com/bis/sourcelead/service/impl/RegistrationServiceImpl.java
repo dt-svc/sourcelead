@@ -251,6 +251,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	UserStatsCacheHelper userStatsCacheHelper;
 	
+	@Value("${isCouchbaseEnabled}")
+	private String isCouchbaseEnabled;
+	
+	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 	}
@@ -1209,7 +1213,12 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 * Saving USER DB data as ElasticSearch Documents
 		 */
 		userService.saveOrUpdateUserElkDocument(userRole,employees,orgUser.getUserCode());
-		userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+		}
+		
+		
 		
 		if("Newly Registered".equalsIgnoreCase(orgUser.getRegistrationType()))
 	    	sendActivationEmail(orgUser,orgLocations);

@@ -253,6 +253,10 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private RequirementSubmissionDao requirementSubmissionDao;
 	
+	@Value("${isCouchbaseEnabled}")
+	private String isCouchbaseEnabled;
+	
+	
 	@Autowired
 	UserStatsCacheHelper userStatsCacheHelper;
 	
@@ -698,7 +702,11 @@ public class UserServiceImpl implements UserService {
 				registrationService.sendActivationEmail(user1,orgLocations);
 			
 			saveOrUpdateUserElkDocument(userRole,employee,loginuser.getUserCode());
-			userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+			
+			if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+				userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+			}
+			
 			user1.setTempPwd(password);
 			user1.setCandidateId(candidate.getId());
         return user1;
