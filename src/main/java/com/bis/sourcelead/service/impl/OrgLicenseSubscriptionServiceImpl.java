@@ -178,6 +178,9 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 	@Value("${defaultFromEmailAddressForProd}")
 	private String defaultFromEmailAddressForProd;
 	
+	@Value("${isCouchbaseEnabled}")
+	private String isCouchbaseEnabled;
+	
 	@Autowired
 	UserStatsCacheHelper userStatsCacheHelper;
 	
@@ -330,10 +333,11 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			sendActivationEmail(user);
 			userService.sendEmail(user, loginUser, password,orgLocations.getId());
 			
-			/*
-			Need to remove comment when couchbase is established
-			userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(orgLocations);
-			userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);*/
+			if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+				userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(orgLocations);
+				userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+			}
+			
 			
 			
 		} catch (Exception e) {
