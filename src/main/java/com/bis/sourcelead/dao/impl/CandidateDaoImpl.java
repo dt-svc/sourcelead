@@ -9,11 +9,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -38,7 +35,6 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
-import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
@@ -47,7 +43,6 @@ import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
-import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
@@ -58,7 +53,6 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.ReportsUtil;
@@ -95,10 +89,6 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Autowired
 	private RequirementSubmissionDao requirementSubmissionDao;
 
-	
-	@Autowired
-	private OrgLocationService orgLocationService;
-	
 	@Value("${SourceLead.100}")
 	private String notFound;
 
@@ -2461,7 +2451,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		if (searchCandidateIds.length == 0 && orgId != 0 && candidateLocation.equals("") && searchValue.equals("")) {
 			queryList = new ArrayList<>();
 		} else {
-			String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = 'Active' and marketplace.orgLocationId.id <> :candidateOrgLocId and marketplace.candidateId.isSharedInMarketplace = 'Y' and marketplace.candidateId.email not in (select Email from CandidateMarketCart cart where cart.targetOrgLocationId = :candidateOrgLocId and cart.cartStatus = 'Purchased')";
+			String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = 'Active' and marketplace.orgLocationId.id <> :candidateOrgLocId and marketplace.candidateId.isSharedInMarketplace = 'Y'";
 				//System.out.println(listQuery+query1+query2);
 			//Query queryObject = session.createQuery(listQuery+query1+query2).setParameter("candidateOrgLocId", orgId);
 			//if(searchCandidateIds.length != 0 && !searchCandidateIds[0].equals("undefined") ){
@@ -2501,7 +2491,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public void addCandidateToMarketCart(CandidateMarketCart marketcart) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			session.saveOrUpdate(marketcart);
+			session.save(marketcart);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -2511,7 +2501,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public int getMarketCartStatusByMarketIdOrgId(Long marketPlaceId, Long orgId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select count(marketplaceCart) from CandidateMarketCart marketplaceCart where marketplaceCart.targetOrgLocationId.id = :orgId and marketplaceCart.marketplaceId.id = :marketplaceId and marketplaceCart.cartStatus <> :cartStatusVal";
+		String query = "select count(marketplaceCart) from CandidateMarketCart marketplaceCart where marketplaceCart.sourceOrgLocationId.id = :orgId and marketplaceCart.marketplaceId.id = :marketplaceId and marketplaceCart.cartStatus <> :cartStatusVal";
 		int count = ((Long) session.createQuery(query).setParameter("orgId", orgId)
 				.setParameter("marketplaceId", marketPlaceId).setParameter("cartStatusVal", Constants.PURCHASED).uniqueResult()).intValue();
 		return count;
@@ -2558,7 +2548,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole,
-			OrgLocations orgLocation, String creationStartDate, String creationEndDate, Map<String, Date> dateValue, String searchValue) {
+			OrgLocations orgLocation, String creationStartDate, String creationEndDate, Date[] checkedDateArray, String searchValue) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "";
@@ -2572,26 +2562,34 @@ public class CandidateDaoImpl implements CandidateDao {
 				query1.append(" or (marketCartview.skillsName like '%" + searchValue + "%' ))");
 			}
 			StringBuilder dateQuery = new StringBuilder("");
-			if(!dateValue.isEmpty()){
-				dateQuery.append(" and (marketCartview.createdDate >= :endDate and marketCartview.createdDate <= :startDate) ");
+			if (creationStartDate != null && creationEndDate != null && !"".equalsIgnoreCase(creationStartDate)
+					&& !"".equalsIgnoreCase(creationEndDate)) {
+				if (creationStartDate.contains("/") || creationEndDate.contains("/")) {
+					creationStartDate = creationStartDate.replaceAll("/", "-");
+					creationEndDate = creationEndDate.replaceAll("/", "-");
+				}
+				Date formattedStartdate = new ConversionUtil().getDateFromString(creationStartDate);
+				Date formattedEnddate = new ConversionUtil().getDateFromString(creationEndDate);
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String customStartdate = dateFormat.format(formattedStartdate);
+				String customEnddate = dateFormat.format(formattedEnddate);
+				dateQuery.append("and DATE_FORMAT(marketCartview.createdDate, '%Y-%m-%d') between '" + customStartdate
+						+ "' and '" + customEnddate + "'");
+			}
+			StringBuilder checkBoxQuery = new StringBuilder("");
+			if (checkedDateArray != null && checkedDateArray.length > 0) {
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String customStartdate = dateFormat.format(checkedDateArray[0]);
+				String customEnddate = dateFormat.format(checkedDateArray[1]);
+				checkBoxQuery.append("and DATE_FORMAT(marketCartview.createdDate, '%Y-%m-%d') between '"
+						+ customStartdate + "' and '" + customEnddate + "'");
 			}
 			query = "from CandidateMarketPlaceCartView marketCartview where marketCartview.targetOrgLocationId =:orgLocationId and marketCartview.cartStatus = 'In_Cart'";
-			Query queryObj = session.createQuery(query + createdByQuery + dateQuery + query1)
+			Query queryObj = session.createQuery(query + createdByQuery + dateQuery + checkBoxQuery + query1)
 					.setLong("orgLocationId", orgLocation.getId());
+			//System.out.println(query + createdByQuery + dateQuery + checkBoxQuery);
 			if (!userRole.equalsIgnoreCase(Constants.ROLE_ADMIN)) {
 				queryObj.setLong("createdByuser", user.getId());
-			}
-			if(!dateValue.isEmpty()){
-				Iterator it = dateValue.entrySet().iterator();
-			    while (it.hasNext()) {
-			        Map.Entry pair = (Map.Entry)it.next();
-			        if(pair.getKey().equals("fromDate")){
-			        	queryObj.setDate("startDate", dateValue.get("fromDate"));
-			        }
-			        if(pair.getKey().equals("toDate")){
-			        	queryObj.setDate("endDate", dateValue.get("toDate"));
-			        }
-			    }
 			}
 			@SuppressWarnings("unchecked")
 			List<CandidateMarketPlaceCartView> candidatesList = queryObj.list();
@@ -2720,15 +2718,15 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CandidateMarketPlacePaymentTransactionHistory getMarketplaceTransactionDetails(Long orgLocationId) throws Exception{
-		CandidateMarketPlacePaymentTransactionHistory transactionDetails = null;
 		try{
 			Session session = this.sessionFactory.getCurrentSession();	
 			String query = "from CandidateMarketPlacePaymentTransactionHistory transaction where transaction.orgLocationId = :orgLocationId and transaction.id in(select max(transaction.id) from CandidateMarketPlacePaymentTransactionHistory transaction)" ;
-		    transactionDetails =  (CandidateMarketPlacePaymentTransactionHistory) session.createQuery(query).setLong("orgLocationId", orgLocationId).uniqueResult();
+			CandidateMarketPlacePaymentTransactionHistory transactionDetails =  (CandidateMarketPlacePaymentTransactionHistory) session.createQuery(query).setLong("orgLocationId", orgLocationId).uniqueResult();
+			return transactionDetails;
 		}catch (Exception e) {
 			e.printStackTrace();
+			return null;
 		}
-		return transactionDetails;
 	}
 	
 	@Override
@@ -2748,15 +2746,15 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CandidateMarketPlace getCandidateDetailsByCandidateId(Long candidateId) throws Exception{
-		CandidateMarketPlace candidateDetails = null;
 		try{
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from CandidateMarketPlace marketplace where marketplace.candidateId.id IN (:candidateId)";
-			candidateDetails = (CandidateMarketPlace) session.createQuery(query).setLong("candidateId",candidateId).uniqueResult();
+			String query = "from CandidateMarketPlace marketplace where marketplace.candidateId.id IN (:candidateIdList)";
+			CandidateMarketPlace candidateDetails = (CandidateMarketPlace) session.createQuery(query).setLong("candidateIdList",candidateId).uniqueResult();
+			return candidateDetails;
 		}catch(Exception e){
 			e.printStackTrace();
+			return null;
 		}
-		return candidateDetails;
 	}
 
 	@Override
@@ -2886,17 +2884,11 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(Long id, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO) throws Exception{
+	public List<MarketplacePurchaseOrder> getMarketplacePurchaseOrder(Long id, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO) throws Exception{
 		
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			StringBuilder queryBuilder2 = new StringBuilder("");
-			ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
-			List<Long> countlist = null;
-			Integer filterCount = 0;
-			List<MarketplacePurchaseSalesDTO> purchaseOrderDtoList = new ArrayList<>();
-			MarketplacePurchaseSalesDTO purchaseOrderDto = null;
-			String formattedDate =  null;
 			if(marketplacePurchaseSalesDTO != null){
 			if (StringUtils.isNotBlank(marketplacePurchaseSalesDTO.getSortColumn())) {
 				String sortColumnName = marketplacePurchaseSalesDTO.getSortColumn();
@@ -2907,61 +2899,9 @@ public class CandidateDaoImpl implements CandidateDao {
 				}
 			}
 			}
-			
-			Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
-			   Matcher matcher = pattern.matcher(marketplacePurchaseSalesDTO.getSearchValue());
-			   java.sql.Date sqlDate = null;
-			    if(matcher.matches() == true) {
-							if(marketplacePurchaseSalesDTO.getSearchValue().contains("/")||(marketplacePurchaseSalesDTO.getSearchValue().contains("-"))) {
-								String replacedValue = marketplacePurchaseSalesDTO.getSearchValue().replaceAll("/", "-");
-								    OrgLocations orgLoc = orgLocationService.getOrgLocations(marketplacePurchaseSalesDTO.getOrglocationId());
-									SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
-							        java.util.Date utilDate = format.parse(replacedValue);
-							        sqlDate = new java.sql.Date(utilDate.getTime());
-							}
-			    }
-				StringBuilder query1 = new StringBuilder("");
-				if(marketplacePurchaseSalesDTO.getSearchValue() !=null && !"".equalsIgnoreCase(marketplacePurchaseSalesDTO.getSearchValue())) {
-				 query1.append("and (cmpth.orderNo like '%" + marketplacePurchaseSalesDTO.getSearchValue() + "%' ")
-				       .append("OR cmpth.companyName like '%" + marketplacePurchaseSalesDTO.getSearchValue() + "%' ")
-				       .append("OR cmpth.totalPrice like '%" + marketplacePurchaseSalesDTO.getSearchValue() + "%' ")
-				       .append("OR cmpth.serviceFee like '%" + marketplacePurchaseSalesDTO.getSearchValue() + "%' ")
-				       .append("OR cmpth.paymentStatus like '%" + marketplacePurchaseSalesDTO.getSearchValue()  + "%' ")
-					   .append("OR cmpth.discount like '%" + marketplacePurchaseSalesDTO.getSearchValue() + "%' )");
-				    if(sqlDate != null) {
-				    	query1.append("OR cmpth.orderDate like '%" + sqlDate + "%' ");
-					 }
-							
-				}
-				
-			String query="from MarketplacePurchaseOrder cmpth where cmpth.orgLocationId.id = :orgLocationId "+query1+"";
-			String countQuery = "select count(*) from MarketplacePurchaseOrder cmpth  where  cmpth.orgLocationId =:orgLocationId "+query1+"";
+			String query="from MarketplacePurchaseOrder cmpth where cmpth.orgLocationId.id = :orgLocationId";
 			List<MarketplacePurchaseOrder>  marketplacePurchaseOrder= session.createQuery(query).setLong("orgLocationId", id).list();
-			countlist = session.createQuery(countQuery).setLong("orgLocationId", id).list();
-			int totalCount = 0;
-			if (marketplacePurchaseSalesDTO != null) {
-				if (countlist != null && !countlist.isEmpty()) {
-					totalCount = countlist.iterator().next().intValue();
-					filterCount = totalCount;
-				}
-			}
-			responseList.setRecordsTotal(totalCount);
-			if (query.toString() != null && !query.toString().isEmpty()) {
-				responseList.setRecordsFiltered(filterCount);
-			} else {
-				responseList.setRecordsFiltered(totalCount);
-			}
-			if(marketplacePurchaseOrder != null){
-				for(MarketplacePurchaseOrder purchase : marketplacePurchaseOrder){
-					purchaseOrderDto = new MarketplacePurchaseSalesDTO();
-					BeanUtils.copyProperties(purchase, purchaseOrderDto);
-					formattedDate =  commonUtil.dateStrFromOrgDateFormatter("dd-MM-yyyy", purchase.getOrderDate());
-					purchaseOrderDto.setOrderDate(formattedDate);
-					purchaseOrderDtoList.add(purchaseOrderDto);
-					}
-				}
-			responseList.setData(purchaseOrderDtoList);
-			return responseList;
+			return  marketplacePurchaseOrder;
 		}
 		catch(Exception e) {
        	 e.printStackTrace();
@@ -2988,13 +2928,11 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, 
-			String searchValue, String salesOrderFromDate, String salesOrderToDate, Map<String, Date> dateValue) {
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String searchValue) {
 		try{
 			Session session = this.sessionFactory.getCurrentSession();
 			StringBuilder queryBuilder1 = new StringBuilder();
-			StringBuilder queryEndBuilder2 = new StringBuilder();
-			StringBuilder dateQuery1 = new StringBuilder();
+			StringBuilder queryBuilder2 = new StringBuilder();
 			List<Long> countlist = null;
 			Integer filterCount = 0;
 			List<MarketplacePurchaseSalesDTO> salesOrderDtoList = new ArrayList<>();
@@ -3005,39 +2943,21 @@ public class CandidateDaoImpl implements CandidateDao {
 				queryBuilder1.append(" and (salesOrder.totalResumePrice like '%"+searchValue+"%')");
 				queryBuilder1.append(" or (salesOrder.orderNo like '%"+searchValue+"%')) ");
 			}
-			if(!dateValue.isEmpty()){
-				dateQuery1.append(" and (salesOrder.orderDate BETWEEN :endDate AND :startDate) OR (salesOrder.orderDate = :endDate) OR (salesOrder.orderDate = :startDate) ");
-			}
 			if(marketplacePurchaseSalesDTO != null){
 			if (StringUtils.isNotBlank(marketplacePurchaseSalesDTO.getSortColumn())) {
 				String sortColumnName = marketplacePurchaseSalesDTO.getSortColumn();
 				if(sortColumnName.equalsIgnoreCase("totalResumePrice")){
-					queryEndBuilder2.append(" order by salesOrder.orderDate "+marketplacePurchaseSalesDTO.getSortOrder());
+					queryBuilder2.append(" order by salesOrder.orderDate "+marketplacePurchaseSalesDTO.getSortOrder());
 				}else{
-					queryEndBuilder2.append(" order by salesOrder.id "+marketplacePurchaseSalesDTO.getSortOrder());
+					queryBuilder2.append(" order by salesOrder.id "+marketplacePurchaseSalesDTO.getSortOrder());
 				}
 			}
 			}
 			String query = "from MarketplaceSalesOrder salesOrder where salesOrder.orgLocationId.id = :orgLocationId";
 			String countQuery = "select count(*) from MarketplaceSalesOrder salesOrder  where  salesOrder.orgLocationId =:orgLocationId";
-			Query query1 = session.createQuery(query + queryBuilder1.toString() + dateQuery1.toString() + queryEndBuilder2.toString()).setLong("orgLocationId", orgLocations.getId());
-			Query query2 = session.createQuery(countQuery + queryBuilder1.toString() + dateQuery1.toString() + queryEndBuilder2.toString()).setLong("orgLocationId", orgLocations.getId());
-			countlist = query2.list();
+			List<MarketplaceSalesOrder> salesOrderList = session.createQuery(query + queryBuilder1.toString() + queryBuilder2.toString()).setLong("orgLocationId", orgLocations.getId()).list();
+			countlist = session.createQuery(countQuery + queryBuilder1.toString() + queryBuilder2.toString()).setLong("orgLocationId", orgLocations.getId()).list();
 			int totalCount = 0;
-			if(!dateValue.isEmpty()){
-				Iterator it = dateValue.entrySet().iterator();
-			    while (it.hasNext()) {
-			        Map.Entry pair = (Map.Entry)it.next();
-			        if(pair.getKey().equals("fromDate")){
-			        	query1.setDate("startDate", dateValue.get("fromDate"));
-			        	query2.setDate("startDate", dateValue.get("fromDate"));
-			        }
-			        if(pair.getKey().equals("toDate")){
-			        	query1.setDate("endDate", dateValue.get("toDate"));
-			        	query2.setDate("endDate", dateValue.get("toDate"));
-			        }
-			    }
-			}
 			if (marketplacePurchaseSalesDTO != null) {
 				if (countlist != null && !countlist.isEmpty()) {
 					totalCount = countlist.iterator().next().intValue();
@@ -3050,7 +2970,6 @@ public class CandidateDaoImpl implements CandidateDao {
 			} else {
 				responseList.setRecordsFiltered(totalCount);
 			}
-			List<MarketplaceSalesOrder> salesOrderList = query1.list();
 			if(salesOrderList != null){
 			for(MarketplaceSalesOrder sales : salesOrderList){
 				salesOrderDto = new MarketplacePurchaseSalesDTO();
@@ -3089,65 +3008,39 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<MarketplaceWalletDTO> getWalletList(MarketplaceWalletDTO marketplaceWalletDTO,
-			String searchValue, String transactionType, Map<String, Date> dateValue) {
+	public ResponseList<MarketplacePurchaseSalesDTO> getWalletList(MarketplacePurchaseSalesDTO saleOrdersListDTO,
+			String searchValue) {
 		Session session = this.sessionFactory.getCurrentSession();
 		logger.debug(" inside getWalletList searchValue is: " + searchValue);
 		List<Long> countlist = null;
 		Integer filterCount = 0;
 
-		List<CandidateMarketWallet> candidateMarketWallets = null;
-		ResponseList<MarketplaceWalletDTO> responseList = new ResponseList<>();
+		List<MarketplaceSalesOrder> marketplaceSalesOrderList = null;
+		ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
 		try {
 
 			StringBuilder query1 = new StringBuilder("");
 			if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
-				query1.append(" and (cmwallet.transactionId like '%" + searchValue + "%' )");
+				
+				query1.append(" or (saleOrder.totalResumePrice like '%" + searchValue + "%' )");
+				query1.append(" or (saleOrder.orderNo like '%" + searchValue + "%' )) ");
 			}
-			StringBuilder transactionTypeQuery = new StringBuilder("");
-			if(transactionType != null && !"".equalsIgnoreCase(transactionType)){
-				List<String> tranTypeList = Arrays.asList(transactionType.split(","));
-				transactionTypeQuery.append(" and (cmwallet.paymentStatus IN ( :transactionType ) )");
-			}
-			StringBuilder dateValueTypeQuery = new StringBuilder("");
-			if(!dateValue.isEmpty()){
-				dateValueTypeQuery.append(" and (cmwallet.transactionDate BETWEEN :endDate AND :startDate) OR (cmwallet.transactionDate = :endDate) OR (cmwallet.transactionDate = :startDate) ");
-			}
-			
+			StringBuilder query2 = new StringBuilder("");
 			String sortingQry = "";
-			if (StringUtils.isNotBlank(marketplaceWalletDTO.getSortColumn())) {
-				String sortColumnName = marketplaceWalletDTO.getSortColumn();
+			if (StringUtils.isNotBlank(saleOrdersListDTO.getSortColumn())) {
+				String sortColumnName = saleOrdersListDTO.getSortColumn();
 				if(sortColumnName.equalsIgnoreCase("marketPrice")){
-					sortingQry = " order by cmwallet." + sortColumnName + " " + marketplaceWalletDTO.getSortOrder();
+					sortingQry = " order by saleOrder." + sortColumnName + " " + saleOrdersListDTO.getSortOrder();
 				}
 			}
-			String  listQuery = "from CandidateMarketWallet cmwallet  where  cmwallet.orgLocationId.id =:orgLocationId  "+query1+"  "+transactionTypeQuery+" "+dateValueTypeQuery+" "+sortingQry+"";
-			String 	listQueryCount = "select count(*) from CandidateMarketWallet cmwallet  where  cmwallet.orgLocationId.id =:orgLocationId  "+query1+" "+transactionTypeQuery+" "+dateValueTypeQuery+" "+sortingQry+"";
-			Query hqlQuery = session.createQuery(listQuery).setFirstResult(marketplaceWalletDTO.getStart()).setMaxResults(marketplaceWalletDTO.getLength()).setLong("orgLocationId", marketplaceWalletDTO.getOrgLocationId());
-			Query hqlQuery1 = session.createQuery(listQueryCount).setLong("orgLocationId", marketplaceWalletDTO.getOrgLocationId());
-			if(transactionType != null && !"".equalsIgnoreCase(transactionType)){
-				List<String> tranTypeList = Arrays.asList(transactionType.split(","));
-				hqlQuery.setParameterList("transactionType", tranTypeList);
-				hqlQuery1.setParameterList("transactionType", tranTypeList);
-			}
-			if(!dateValue.isEmpty()){
-				Iterator it = dateValue.entrySet().iterator();
-			    while (it.hasNext()) {
-			        Map.Entry pair = (Map.Entry)it.next();
-			        if(pair.getKey().equals("fromDate")){
-			        	hqlQuery.setDate("startDate", dateValue.get("fromDate"));
-			        	hqlQuery1.setDate("startDate", dateValue.get("fromDate"));
-			        }
-			        if(pair.getKey().equals("toDate")){
-			        	hqlQuery.setDate("endDate", dateValue.get("toDate"));
-			        	hqlQuery1.setDate("endDate", dateValue.get("toDate"));
-			        }
-			    }
-			}
-			countlist = hqlQuery1.list();
-			candidateMarketWallets = hqlQuery.list();
+			String  listQuery = "from MarketplaceSalesOrder saleOrder  where  saleOrder.orgLocationId =:orgLocationId  "+query1+"  "+sortingQry+"";
+			String 	listQueryCount = "select count(*) from MarketplaceSalesOrder saleOrder  where  saleOrder.orgLocationId =:orgLocationId  "+query1+"  "+sortingQry+"";
+			Query hqlQuery = session.createQuery(listQuery);
+			marketplaceSalesOrderList = hqlQuery.setFirstResult(saleOrdersListDTO.getStart()).setMaxResults(saleOrdersListDTO.getLength()).setLong("orgLocationId", saleOrdersListDTO.getOrgLocationId()).list();
+			Query hqlQuery1 = session.createQuery(listQueryCount);
+			countlist = hqlQuery1.setLong("orgLocationId", saleOrdersListDTO.getOrgLocationId()).list();
 			int totalCount = 0;
-			if (marketplaceWalletDTO != null) {
+			if (saleOrdersListDTO != null) {
 				if (countlist != null && !countlist.isEmpty()) {
 					totalCount = countlist.iterator().next().intValue();
 					filterCount = totalCount;
@@ -3159,14 +3052,21 @@ public class CandidateDaoImpl implements CandidateDao {
 			} else {
 				responseList.setRecordsFiltered(totalCount);
 			}
-			List<MarketplaceWalletDTO> globalMarketCandDTOList = new ArrayList<MarketplaceWalletDTO>();
+			List<MarketplacePurchaseSalesDTO> globalMarketCandDTOList = new ArrayList<MarketplacePurchaseSalesDTO>();
 			Double totalSum =0d;
-			for (CandidateMarketWallet source : candidateMarketWallets) {
-				MarketplaceWalletDTO target = new MarketplaceWalletDTO();
-				BeanUtils.copyProperties(source, target);
-				target.setTransactionDate(commonUtil.dateStrFromOrgDateFormatter(source.getOrgLocationId().getDateFormat(), source.getTransactionDate()));
+			for (MarketplaceSalesOrder source : marketplaceSalesOrderList) {
+				MarketplacePurchaseSalesDTO target = new MarketplacePurchaseSalesDTO();
+				
+				target.setOrderDate(commonUtil.dateStrFromOrgDateFormatter(source.getOrgLocationId().getDateFormat(), source.getOrderDate()));
+				target.setTotalPrice(source.getTotalResumePrice());
+				target.setOrderNo(source.getOrderNo());
+				//Total Sum Amount calculation for View Purpose(Above The Table In walletList.Jsp)
+				totalSum = totalSum + source.getTotalResumePrice();
+				target.setSumOfOrdersAmount(totalSum);
+				
 				globalMarketCandDTOList.add(target);
 			}
+			logger.debug(" After executing query result  list size is :::>>" + marketplaceSalesOrderList.size());
 			responseList.setData(globalMarketCandDTOList);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -3208,57 +3108,6 @@ public class CandidateDaoImpl implements CandidateDao {
 			List<Candidate> candidates = session.createQuery(query).setParameterList("Ids", Ids).list();
 			return candidates;
 		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public void saveCandidateMarketPlaceWallet(CandidateMarketWallet wallet) throws Exception {
-		logger.debug("Storing CandidateMarketWallet");
-		Session session = this.sessionFactory.getCurrentSession();
-		try {
-			if (wallet != null) {
-				session.save(wallet);
-			}
-			logger.debug("Marketplace Stored Successfully");
-		} catch (Exception exception) {
-			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "CandidateMarketWallet"));
-			throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
-		}
-	}
-
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public Double getBalanceAmountFromWallet(Long id) {
-		logger.debug("getBalanceAmountFromWallet");
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select wallet.totalBalanceAmount from CandidateMarketWallet wallet where wallet.orgLocationId.id = :orgLocationId";
-		Double totalAmount = (Double) session.createQuery(query).setFirstResult(0).setMaxResults(1).setParameter("orgLocationId", id).uniqueResult();
-		return totalAmount;
-	}
-
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public void updateMarketWalletAmount(Double balanceAmountValue, Long id) {
-		logger.debug("updateMarketWalletAmount");
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "update CandidateMarketWallet wallet set wallet.totalBalanceAmount = :totalAmountValue where wallet.orgLocationId.id = :orgLocationId";
-		int count = session.createQuery(query).setParameter("totalAmountValue", balanceAmountValue).setParameter("orgLocationId", id).executeUpdate();
-	}
-	
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public CandidateMarketCart getCandidateFromMarketCartByMarketplaceId(Long marketplaceId) {
-		// TODO Auto-generated method stub
-		try{
-			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from CandidateMarketCart marketcart where marketcart.marketplaceId.id = :marketplaceId";
-			CandidateMarketCart marketcart = (CandidateMarketCart) session.createQuery(query)
-					.setParameter("marketplaceId", marketplaceId).uniqueResult();
-			return marketcart;
-		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
