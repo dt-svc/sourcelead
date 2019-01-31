@@ -748,7 +748,7 @@ public class UsersListRestController {
 			associateTagsStr.toString();
 			request.getSession().setAttribute("associateTags", associateTagsStr.substring(0,associateTagsStr.length()-1));
 		}
-		response.sendRedirect(redirectUrl.append("/app/userSummaryDetails?userCode=").append(userCode).toString());
+		response.sendRedirect(redirectUrl.append("/ats/userSummaryDetails?userCode=").append(userCode).toString());
 
 	}
 

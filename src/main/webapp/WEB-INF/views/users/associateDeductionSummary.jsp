@@ -3,12 +3,13 @@
  
  
  <script>
+ var atsUrl ='${SourceLeadWeb_atsUrl}';
 function associateDeductionSummary(userId){
 	let searchParams = new URLSearchParams(window.location.search);
 	let param = searchParams.get('userCode')
 	$.ajax({
            type : "GET",
-           url: sourceleadUrl+"/findAllDeductionSummaryByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
+           url: atsUrl+"/findAllDeductionSummaryByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
             success :function(json) {
              var data = json.data;
              var result = "";	
@@ -154,7 +155,7 @@ function associateDeductonListPagination(){
 			 var sourceleadUrl ='${sourceleadUrl}';
 			  $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/updateAssociateDeductionAmount?${_csrf.parameterName}=${_csrf.token}&associateDeductionId="+id+"&dedAmount="+amount,
+			        url: atsUrl+"/updateAssociateDeductionAmount?${_csrf.parameterName}=${_csrf.token}&associateDeductionId="+id+"&dedAmount="+amount,
 			        success: function(data) {
 			        	document.getElementById("preDedDiv"+id).style.display="block";
 			   		 	document.getElementById("editDedDiv"+id).style.display="none";
@@ -179,7 +180,7 @@ function associateDeductonListPagination(){
 function deleteDed(assDedId,userId){
  	$.ajax({
 				type : "POST",
-				url : sourceleadUrl+"/deleteAssociateDeduction?"+tokenParamName+"="+tokenValue+"&assDedId="+assDedId,
+				url : atsUrl+"/deleteAssociateDeduction?"+tokenParamName+"="+tokenValue+"&assDedId="+assDedId,
 				success : function(data) {
 					if(data != null && data != null)
 					associateDeductionSummary(userId);

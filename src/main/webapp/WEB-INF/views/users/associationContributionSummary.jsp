@@ -4,12 +4,13 @@
  
  
  <script>
+ var atsUrl ='${SourceLeadWeb_atsUrl}';
 function associateContributionSummary(userId){  
 		let searchParams = new URLSearchParams(window.location.search);
 		let param = searchParams.get('userCode')
 	  $.ajax({
            type : "GET",
-           url: sourceleadUrl+"/findAllContributionSummaryByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
+           url: atsUrl+"/findAllContributionSummaryByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
             success :function(json) {
              var data = json.data;
            
@@ -158,7 +159,7 @@ function associateContributionListPagination(){
 			 var sourceleadUrl ='${sourceleadUrl}';
 			  $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/updateAssociateContributionAmount?${_csrf.parameterName}=${_csrf.token}&associateContributionId="+id+"&contriAmount="+amount,
+			        url: atsUrl+"/updateAssociateContributionAmount?${_csrf.parameterName}=${_csrf.token}&associateContributionId="+id+"&contriAmount="+amount,
 			        success: function(data) {
 			        	document.getElementById("preDedDiv"+id).style.display="block";
 			   		 	document.getElementById("editDedDiv"+id).style.display="none";
@@ -181,7 +182,7 @@ function associateContributionListPagination(){
 function deleteContribution(contrubutionId,userId){
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/deleteAssociateContribution?"+tokenParamName+"="+tokenValue+"&assContriId="+contrubutionId,
+		url : atsUrl+"/deleteAssociateContribution?"+tokenParamName+"="+tokenValue+"&assContriId="+contrubutionId,
 		success : function(data) {
 			if(data != null)
 				associateContributionSummary(userId);
