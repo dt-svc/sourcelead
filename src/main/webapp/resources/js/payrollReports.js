@@ -1,6 +1,5 @@
 function getPayGroupList(id,customEnable){
 	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-	alert(pmsUrl);
 	$.ajax({
 	    	type: "GET",
 	        url: pmsUrl+"/getPayGroupList?"+tokenParamName+"="+tokenValue                 , 
