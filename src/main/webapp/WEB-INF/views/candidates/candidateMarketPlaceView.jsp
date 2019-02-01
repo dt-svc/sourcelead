@@ -55,6 +55,7 @@
     </div>
     </section>
   <script>
+  var atsUrl = '${SourceLeadWeb_atsUrl}';
   function goToCandidateList(){
 		location.href = "ats/candidatesList";
 	}
@@ -87,8 +88,6 @@
 
 	     $("#dynamicGlobalMarketCandidateViewDiv").html(result);
 	     
-         var atsUrl = '${SourceLeadWeb_atsUrl}';
-	     
 	     var searchValue = $("#globalMarketSearh").val();
 	     searchValue = searchValue ? searchValue : "";
 	     
@@ -97,7 +96,6 @@
 	     
 	     dynamicGlobalMarketCandidateListPagination(url);
 	 }
-
 	
 	   function toggleShareCandidates(source){
 			  var checkboxes = document.querySelectorAll('input[class="contactscheckbox"]');

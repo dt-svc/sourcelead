@@ -90,7 +90,6 @@ public class CampaignController {
 	 public @ResponseBody void CampaignMailBox(@PathVariable String mailType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 			
 		     StringBuilder redirectUrl = new StringBuilder();
-		     System.out.println(" /ats/hotListCampaigns?mailType=");
 		     response.sendRedirect(redirectUrl.append("/ats/hotListCampaigns?mailType=").append(mailType).toString());
 			
 	}
@@ -102,7 +101,6 @@ public class CampaignController {
 		   
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		    System.out.println("inside hotListCampaigns>>>>>>>>>>>>>>");
 		    commonUtil.highLightMenu(Constants.Campaigns, request);
 		    
 		    Integer inboxUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocations.getId(), "Inbox");

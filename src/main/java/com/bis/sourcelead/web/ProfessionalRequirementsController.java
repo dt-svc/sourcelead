@@ -317,23 +317,23 @@ public class ProfessionalRequirementsController {
 				return model;
 	}
 	 
-	 @RequestMapping(value = "/app/requirementProfile/{requirementUUID}", method = RequestMethod.GET)
+	 @RequestMapping(value = "/requirementProfile/{requirementUUID}", method = RequestMethod.GET)
 		public @ResponseBody void userRequirementSummary(@PathVariable String requirementUUID, HttpServletRequest request,
 				HttpServletResponse response) throws Exception {
 			StringBuilder redirectUrl = new StringBuilder();
-			response.sendRedirect(redirectUrl.append("/app/requirementProfileDetails?requirementUUID=").append(requirementUUID).toString());
+			response.sendRedirect(redirectUrl.append("/ats/requirementProfileDetails?requirementUUID=").append(requirementUUID).toString());
 
 	 }
 	 
-	 @RequestMapping(value = "/app/requirementProfile/{requirementUUID}/{referUUID}", method = RequestMethod.GET)
+	 @RequestMapping(value = "/requirementProfile/{requirementUUID}/{referUUID}", method = RequestMethod.GET)
 		public @ResponseBody void userSummary(@PathVariable String requirementUUID,@PathVariable String referUUID, HttpServletRequest request,
 				HttpServletResponse response) throws Exception {
 			StringBuilder redirectUrl = new StringBuilder();
-			response.sendRedirect(redirectUrl.append("/app/requirementProfileDetails?requirementUUID=").append(requirementUUID).append("&referUUID=").append(referUUID).toString());
+			response.sendRedirect(redirectUrl.append("/ats/requirementProfileDetails?requirementUUID=").append(requirementUUID).append("&referUUID=").append(referUUID).toString());
 
 	 }
 	 
-	 @RequestMapping(value = "/app/requirementProfileDetails")
+	 @RequestMapping(value = "/requirementProfileDetails")
 		public ModelAndView userSummaryDetails(HttpServletRequest request, @RequestParam(value = "requirementUUID", required = false) String requirementUUID,
 				@RequestParam(value = "referUUID", required = false) String referUUID) throws Exception {
 		 Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");	 
@@ -362,7 +362,7 @@ public class ProfessionalRequirementsController {
 
 		}
 	 
-	    @RequestMapping(value = "/app/getRequirementProfessionalProfileDetails" , method = RequestMethod.GET)
+	    @RequestMapping(value = "/getRequirementProfessionalProfileDetails" , method = RequestMethod.GET)
 		public  @ResponseBody String getRequirementProfessionalProfileDetails(@RequestParam(value="requirementUUID", required=false) String  requirementUUID,
 				@RequestParam(value="referUUID", required=false) String  referUUID,HttpServletRequest request) throws Exception {
 		        String resultJson;
