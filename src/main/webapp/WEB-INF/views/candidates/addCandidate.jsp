@@ -56,7 +56,7 @@
 			<div class="pull-right brud-crum">
 				<a
 					href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-					href="<c:url value='/app/candidatesList'/>"> Candidate List</a>
+					href="/ats/candidatesList"> Candidate List</a>
 				&raquo; Add Candidate
 			</div>
 		</c:if>
@@ -64,7 +64,7 @@
 			test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
 			<div class="pull-right brud-crum">
 				   <a href="<c:url value='${appPath}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}/'/>">Home</a>&raquo;<a
-					href="<c:url value='/app/candidatesList'/>"> Candidate List</a>
+					href="/ats/candidatesList"> Candidate List</a>
 				&raquo; Add Candidate
 			</div>
 		</c:if>
@@ -831,7 +831,7 @@
         var allSkills = $(event.target).val();
         $.ajax({
             type: "POST",
-            url: sourceleadUrl + "/profileBySkillSet?" + tokenParamName + "=" + tokenValue + "&allSkills=" + allSkills,
+            url: atsUrl + "/profileBySkillSet?" + tokenParamName + "=" + tokenValue + "&allSkills=" + allSkills,
             success: function (response) {
             	if (response.response === "AWKWARD") {
             	    location.href = "/errorPage";

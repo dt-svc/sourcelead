@@ -51,12 +51,12 @@
  
 <script>
 function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	$("#detailViewLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getSubmissionDetails?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,
+	    	url: atsUrl+"/getSubmissionDetails?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,
 	    			
 	    	  success: function(data) {
 		       
@@ -606,12 +606,12 @@ $(document).ready(function() {
 
 <script>
 function getInternalInterviewsList(submissionId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	var parentRequirement = '${parentRequirement}';
     
 	 $.ajax({  
          type : "POST",
-         url: sourceleadUrl+"/getAllInternalInterviews?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,        
+         url: atsUrl+"/getAllInternalInterviews?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,        
          success :function(data) {
               
         	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
@@ -885,10 +885,10 @@ function getInternalInterviewsList(submissionId){
 
 <script>
 function changeInterviewStatus(submissionId,interviewId,interviewStatus){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/ws/acceptOrRejectInterview?"+tokenParamName+"="+tokenValue+"&interviewStatus="+interviewStatus+"&requirementInterviewId="+interviewId,	    	   
+		    url: atsUrl+"/ws/acceptOrRejectInterview?"+tokenParamName+"="+tokenValue+"&interviewStatus="+interviewStatus+"&requirementInterviewId="+interviewId,	    	   
 		    success: function(data) {
 		    	 jQuery("#"+(interviewId)+"actionDiv").css("display","none");
 		    	 if(interviewStatus == "Attending"){
@@ -907,10 +907,10 @@ function changeInterviewStatus(submissionId,interviewId,interviewStatus){
 
 <script>
 function sendMailToapplicant(submissionId,interviewId,interviewHistoryId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/sendMailToapplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&requirementInterviewId="+interviewId+"&interviewHistoryId="+interviewHistoryId,	    	   
+		    url: atsUrl+"/sendMailToapplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&requirementInterviewId="+interviewId+"&interviewHistoryId="+interviewHistoryId,	    	   
 		    success: function(data) {
 		    	 jQuery("#"+(interviewHistoryId)+"applicantDiv").css("display","none");
            		 var existingVal = $("#"+(interviewHistoryId)+"notifiedDiv").text();
@@ -928,10 +928,10 @@ function sendMailToapplicant(submissionId,interviewId,interviewHistoryId){
 
 <script>
 function sendMailToVendor(submissionId,interviewId,interviewHistoryId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/sendMailToVendor?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&requirementInterviewId="+interviewId+"&interviewHistoryId="+interviewHistoryId,	    	   
+		    url: atsUrl+"/sendMailToVendor?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&requirementInterviewId="+interviewId+"&interviewHistoryId="+interviewHistoryId,	    	   
 		    success: function(data) {
 		    	jQuery("#"+(interviewHistoryId)+"vendorDiv").css("display","none");
 		    	var existingVal = $("#"+(interviewHistoryId)+"notifiedDiv").text();
@@ -949,10 +949,10 @@ function sendMailToVendor(submissionId,interviewId,interviewHistoryId){
 </script>
 <script>
 function getCustomerInterviewsList(submissionId,requirementId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	 $.ajax({  
          type : "POST",
-         url: sourceleadUrl+"/getAllCustomerInterviews?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&requirementId="+requirementId,        
+         url: atsUrl+"/getAllCustomerInterviews?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&requirementId="+requirementId,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != "" && data != '[]'){
             		
@@ -1097,11 +1097,11 @@ function getCustomerInterviewsList(submissionId,requirementId){
 
 <script>
 function getOfferDetails(submissionId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	var parentRequirement = '${parentRequirement}';
 	 $.ajax({  
          type : "POST",
-         url: sourceleadUrl+"/getOfferDetails?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,        
+         url: atsUrl+"/getOfferDetails?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,        
          success :function(data) {
          if(data != null && data != 'undefined' && data != "" && data != '{}'){
             		
@@ -1245,7 +1245,7 @@ function getOfferDetails(submissionId){
 	                        	 result = result + '<label class="col-md-5">';
 	                        	 result = result + '<strong>Attachment</strong>';
 	                        	 result = result + '</label>';
-	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a download class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/ws/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a><a class="fa fa-eye ml10" onclick="viewOfferDocument(\''+report.offerId.id+'\',\''+report.offerId.fileName+'\')"></a></p>';
+	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a download class="glyphicon glyphicon-download-alt" href=\"'+atsUrl+'/ws/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a><a class="fa fa-eye ml10" onclick="viewOfferDocument(\''+report.offerId.id+'\',\''+report.offerId.fileName+'\')"></a></p>';
 	                        	 result = result + '</div>';
 	                    	 }else{
 	                    		 result = result + '<div class="row clearfix">';
@@ -1295,9 +1295,9 @@ function getOfferDetails(submissionId){
 
 <script>
 function viewOfferDocument(offerId,title){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	if(offerId != null && offerId != ""){
-		window.open(sourceleadUrl+'/viewOfferDocument/'+title+'?offerId='+offerId,title,"height=600,width=600");
+		window.open(atsUrl+'/viewOfferDocument/'+title+'?offerId='+offerId,title,"height=600,width=600");
 	}  
 }
 </script>
@@ -1340,7 +1340,7 @@ function acceptingOffer(offerStatus,submissionId,offerId){
 	 jQuery("#"+(offerId)+"offerActionDiv").css("display","none");
 	 $("#offerLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
- 	var sourceleadUrl ='${sourceleadUrl}';
+	 var atsUrl ='${SourceLeadWeb_atsUrl}';;
 	 var reason;
 	 if ($('#rejectReason').length)
 	 {
@@ -1361,8 +1361,8 @@ function acceptingOffer(offerStatus,submissionId,offerId){
           data: formData,
           processData: false,
           contentType:false, 
-     	  url: sourceleadUrl+"/acceptingOffer",
-         //url: sourceleadUrl+"/acceptingOffer?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&offerStatus="+offerStatus+"&reason="+reason+"&OfferId="+offerId,        
+     	  url: atsUrl+"/acceptingOffer",
+         //url: atsUrl+"/acceptingOffer?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&offerStatus="+offerStatus+"&reason="+reason+"&OfferId="+offerId,        
          success :function(data) {
 
         	 $("#rejectOfferAlert").empty();
@@ -1390,11 +1390,11 @@ function acceptingOffer(offerStatus,submissionId,offerId){
 <script>
 function notifyToApplicant(submissionId,offerId,offerHistoryId){
 	
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	$("#offerLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({  
         type : "POST",
-        url: sourceleadUrl+"/sendNotificationAboutRequirementOfferMade?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&offerId="+offerId+"&notificationtype=Applicant&offerHistoryId="+offerHistoryId,        
+        url: atsUrl+"/sendNotificationAboutRequirementOfferMade?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&offerId="+offerId+"&notificationtype=Applicant&offerHistoryId="+offerHistoryId,        
         success :function(data) {
         	    jQuery("#"+(offerHistoryId)+"offerApplicantDiv").css("display","none");
         	    var existingVal = $("#"+(offerHistoryId)+"offerNotifiedDiv").text();
@@ -1413,10 +1413,10 @@ function notifyToApplicant(submissionId,offerId,offerHistoryId){
 
 <script>
 function notifyToVendor(submissionId,offerId,offerHistoryId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	  $.ajax({  
         type : "POST",
-        url: sourceleadUrl+"/sendNotificationAboutRequirementOfferMade?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&offerId="+offerId+"&notificationtype=Vendor&offerHistoryId="+offerHistoryId,        
+        url: atsUrl+"/sendNotificationAboutRequirementOfferMade?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&offerId="+offerId+"&notificationtype=Vendor&offerHistoryId="+offerHistoryId,        
         success :function(data) {
         	jQuery("#"+(offerHistoryId)+"offerVendorDiv").css("display","none");
 	    	var existingVal = $("#"+(offerHistoryId)+"offerNotifiedDiv").text();
@@ -1635,13 +1635,13 @@ function getApplicantOtherizationRejectedCategory(){
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-						url : sourceleadUrl+"/acceptRejectCandidate?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&decision="+decision,
+						url : atsUrl+"/acceptRejectCandidate?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&decision="+decision,
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
 					    	 }
 		            		 else if (result.indexOf('exception') >= 0) {
-		            			 location.replace(sourceleadUrl+"/errorPage");
+		            			 location.replace(atsUrl+"/errorPage");
 		            		 }
 		            		 else{
 						 		/* $("#popUpDivResume").removeClass("edit-details-active");
@@ -1691,13 +1691,13 @@ function getApplicantOtherizationRejectedCategory(){
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-						url : sourceleadUrl+"/acceptRejectCandidate?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&decision="+decision,
+						url : atsUrl+"/acceptRejectCandidate?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&decision="+decision,
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
 					    	 }
 		            		 else if (result.indexOf('exception') >= 0) {
-		            			 location.replace(sourceleadUrl+"/errorPage");
+		            			 location.replace(atsUrl+"/errorPage");
 		            		 }
 		            		 else{
 		            			 $('#accpet-div').fadeOut();
@@ -1738,13 +1738,13 @@ function getApplicantOtherizationRejectedCategory(){
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
-						url : sourceleadUrl+"/acceptRejectCandidate?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&decision="+decision,
+						url : atsUrl+"/acceptRejectCandidate?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&decision="+decision,
 						success : function(result) {
 							 if( result.indexOf('Sign In') >= 0){
 					    		location.replace(sourceleadUrl);
 					    	 }
 		            		 else if (result.indexOf('exception') >= 0) {
-		            			 location.replace(sourceleadUrl+"/errorPage");
+		            			 location.replace(atsUrl+"/errorPage");
 		            		 }
 		            		 else{
 						 		/* $("#popUpDivResume").removeClass("edit-details-active");
@@ -1811,7 +1811,7 @@ function closeComment(){
 				con = con.replace(/[{}]/g, "");
 				var form = $('#candidateComments_form')[0];
 	      		var formData = new FormData(form); 
-				var sourceleadUrl = '${sourceleadUrl}';
+	      		var atsUrl ='${SourceLeadWeb_atsUrl}';
 				$("#submit_comment").attr("disabled", "disabled");
          		$("#submit_comment" ).addClass('button').val('Processing..');
 				//It will escape all the special characters
@@ -1824,7 +1824,7 @@ function closeComment(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&candidateId="+candidateId+"&submissionId="+submissionId,
+						url : atsUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&candidateId="+candidateId+"&submissionId="+submissionId,
 						success : function(result) {
 							if (result && result.response === "INVALID_USER") {
 				    		    showError(result.responseMessage);
@@ -1839,7 +1839,7 @@ function closeComment(){
 							}
 						},
 				});
-				$.post(sourceleadUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&candidateId="+candidateId+"&submissionId="+submissionId,{},function(result){
+				$.post(atsUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&candidateId="+candidateId+"&submissionId="+submissionId,{},function(result){
 					if (result && result.response === "INVALID_USER") {
 		    		    showError(result.responseMessage);
 		    		} else if (result.response === "AWKWARD") {
@@ -1867,10 +1867,10 @@ function closeComment(){
 
 <script>
 function savedCommentAndCount(candidateId,submissionId) {
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&submissionId="+submissionId,        
+         url: atsUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&submissionId="+submissionId,        
          success :function(data) {
         	 if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
         		    showError(data.responseMessage);
@@ -1933,10 +1933,10 @@ function interviewFeedback(interviewId,templateId,id,submissionId) {
 	$(".proposeTimePop").removeClass("proposeTimePopActive");
 	
 	var locationId = '${SourceLeadWeb_orgLocationId}';
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	$.ajax({
 		type: "GET",
-		url: sourceleadUrl+"/getInterviewrsFeedbackList?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId+"&locationId="+locationId+"&submissionId="+submissionId,
+		url: atsUrl+"/getInterviewrsFeedbackList?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId+"&locationId="+locationId+"&submissionId="+submissionId,
 		success: function(json) {
 			var result = "";
 			result = result +"<strong>Interview Feedback</strong>";
@@ -1979,14 +1979,14 @@ function interviewFeedback(interviewId,templateId,id,submissionId) {
 </script>
 <script type="text/javascript">
 function viewfeedback(requirementInterviewerId,templateId,feedbackStatus){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 		if(feedbackStatus == "Y"){
 			$('.shownofeedback').hide();
 			$('.showfeedback').show();
 			$(".bg_mask").fadeIn(200);
 			$.ajax({
 		    	type: "GET",
-		    	url: sourceleadUrl+"/ws/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewerId, 
+		    	url: atsUrl+"/ws/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewerId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	 var submissionDetails = "";
@@ -2032,7 +2032,7 @@ function viewfeedback(requirementInterviewerId,templateId,feedbackStatus){
 			$(".bg_mask").fadeIn(200);
 			$.ajax({
 		    	type: "GET",
-		    	url: sourceleadUrl+"/ws/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewerId, 
+		    	url: atsUrl+"/ws/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewerId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 			        	if(json.comment != null && json.comment != '' && json.comment != 'undefined'){
@@ -2246,12 +2246,12 @@ function rescheduleInterClose(){
 			con = con.replace(/[{}]/g, "");
 			//It will escape all the special characters
 			var jsonData = encodeURIComponent(con);
-			var sourceleadUrl = '${sourceleadUrl}';
+			var atsUrl ='${SourceLeadWeb_atsUrl}';
 			$("#save_rescheduleIntervie").attr("disabled", "disabled");
 	        $("#save_rescheduleIntervie" ).addClass('button').val('Processing..');
 			$.ajax({
 						type : "POST",
-						url: sourceleadUrl+"/updateRescheduleInterview?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData,
+						url: atsUrl+"/updateRescheduleInterview?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData,
 						success : function(result) {
 							getInternalInterviewsList(submissionId);
 						},
@@ -2370,10 +2370,10 @@ if((dataNotify == '' || dataNotify == 0)){
 </script>
 <script>
 function TimezonesRescheduleList(timezone){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	 $.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getTimezonesList?"+tokenParamName+"="+tokenValue+"", 
+	    	url : atsUrl+"/getTimezonesList?"+tokenParamName+"="+tokenValue+"", 
 	        success: function(data) {
 	        var json = JSON.parse(data);
 	        var output = "";
@@ -2445,14 +2445,14 @@ function reActivateApplicant(submissionId,candidateId,requirementId,type){
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$("#reactiveApplicantBtnDiv").hide();
 	var result = "";
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	//$("#reactiveApplicant").attr("disabled","disabled");
 // 	var message = confirm("You are choosing to ReActivate the Applicant");
 // 	if (message == true) {
 		
 		$.ajax({
 	        type : "POST",
-	         url: sourceleadUrl+"/reActivateRejectedApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&type="+type,        
+	         url: atsUrl+"/reActivateRejectedApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&type="+type,        
 	         success :function(data) {
 	               if(data != null && data != 'undefined' && data != ""){
 	            	   getSubmissionDetailsSideBar(submissionId,candidateId,requirementId);
@@ -2666,7 +2666,7 @@ function timePopUp(){
    <script>
 function saveProposeTime(submissionId){
 	if ($('#proposeTime_form').validate(false, validationSettings)){ 
-		var sourceleadUrl = '${sourceleadUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 		var frm = $('#proposeTime_form').serializeFormJSON();
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, ""); 
@@ -2676,7 +2676,7 @@ function saveProposeTime(submissionId){
 	    var jsonData = encodeURIComponent(con);
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/saveProposeTime?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&submissionId"+submissionId,
+					url : atsUrl+"/saveProposeTime?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&submissionId"+submissionId,
 					success : function(result) {
 						getInternalInterviewsList(submissionId);
 					},
@@ -2696,11 +2696,11 @@ $('body').on('blur', '#proposeTime_form', function() {
 function viewProposeTime(interviewId,submissionId){
 	$(".proposeTimePop").toggleClass("proposeTimePopActive");
 	$(".reSchPop").removeClass("reSchPopActive");
-	var sourceleadUrl = '${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/getProposeTime?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId+"&locationId="+locationId,
+		url : atsUrl+"/getProposeTime?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId+"&locationId="+locationId,
 		success : function(data) {
 			var json = JSON.parse(data);
 	        var result = "";
@@ -2756,9 +2756,9 @@ function viewProposeTime(interviewId,submissionId){
 </script>
 <script>
 function acceptProposeTime(id,proposeDate,proposeTime,submissionId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	if ($('#acceptProposeTime_form').validate(false, validationSettings)){ 
-		var sourceleadUrl = '${sourceleadUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 		var frm = $('#acceptProposeTime_form').serializeFormJSON();
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, ""); 
@@ -2766,7 +2766,7 @@ function acceptProposeTime(id,proposeDate,proposeTime,submissionId){
 	    var jsonData = encodeURIComponent(con);
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/acceptProposeTime?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&proposeTimeId="+id+"&proposeDate="+proposeDate+"&proposeTime="+proposeTime,
+					url : atsUrl+"/acceptProposeTime?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&proposeTimeId="+id+"&proposeDate="+proposeDate+"&proposeTime="+proposeTime,
 					success : function(result) {
 						getInternalInterviewsList(submissionId);
 					},
