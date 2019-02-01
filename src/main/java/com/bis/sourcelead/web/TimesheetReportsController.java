@@ -17,14 +17,6 @@ public class TimesheetReportsController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
-	@RequestMapping(value = "/timeSheetReports")
-	public ModelAndView timeSheetReports(HttpServletRequest request) throws Exception {
-		ModelAndView model = new ModelAndView();
-		 model.setViewName("timesheet/timesheetReports");
-		 model.addObject("sourceleadUrl", sourceleadUrl);
-		return model;
-
-	}
 
 	@RequestMapping(value = "/dailyTimeSheetReports")
 	public ModelAndView dailyTimeSheetReports(HttpServletRequest request) throws Exception {
