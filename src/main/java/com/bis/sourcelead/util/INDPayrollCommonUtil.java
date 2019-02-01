@@ -1299,5 +1299,96 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		return associateSalaryHistoryInd;
 	}
 	
+	@SuppressWarnings("unused")
+	public List<String> getFinancialYearByOrgLocation(OrgLocations orgLocation) {
+		List<String> finYearList = new ArrayList<>();
+		try {
+            Calendar orgCal = Calendar.getInstance();
+            orgCal.setTime(orgLocation.getCreatedDate());
+			 int orgRegisteredYear = orgCal.get(Calendar.YEAR);
+             
+			String fromYear = null;
+			String toYear = null;
+			Calendar c = Calendar.getInstance();
+			int fYear = c.get(Calendar.YEAR);
+			int fMonth = c.get(Calendar.MONTH);
+			if (StringUtils.isNotBlank(orgLocation.getStartMonth())) {
+				Calendar cal = Calendar.getInstance();
+				Date date = new SimpleDateFormat("MMMM").parse(orgLocation.getStartMonth());
+				cal.setTime(date);
+				int startFinMonth = cal.get(Calendar.MONTH);
+				if (fMonth >= startFinMonth && fMonth < 12) {
+					fromYear = Integer.toString(fYear);
+					if(startFinMonth != 0) {
+						toYear = Integer.toString(fYear + 1);
+					}
+					
+				} else {
+					fromYear = Integer.toString(fYear - 1);
+					toYear = Integer.toString(fYear);
+				}
+			} else {
+				fromYear = Integer.toString(fYear);
+				toYear = Integer.toString(fYear);
+			}
+			 
+			 if(toYear != null) {
+				 while(orgRegisteredYear < Integer.parseInt(toYear)) {
+					 String finYear = String.valueOf(orgRegisteredYear)+"-"+String.valueOf(orgRegisteredYear+1);
+					 finYearList.add(finYear);
+					 orgRegisteredYear++;
+				 }
+			 }else {
+				 while(orgRegisteredYear < Integer.parseInt(fromYear)+1) {
+					 String finYear = String.valueOf(orgRegisteredYear);
+					 finYearList.add(finYear);
+					 orgRegisteredYear++;
+				 }
+			 }
+			 
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return finYearList;
+	}
+	
+	
+	@SuppressWarnings("unused")
+	public List<Date> getFinancialYearStartAndEndDateByOrgLocations(OrgLocations orgLocations, String finYear) {
+		List<Date> finYearDates = new ArrayList<>();
+		try {
+			Date sDate = null;
+			 Date eDate = null;
+			if(finYear.contains("-")) {
+				String [] fYears = finYear.split("-");
+				Date startDate = new SimpleDateFormat("MMMM").parse(orgLocations.getStartMonth());
+				 Calendar cal = Calendar.getInstance();
+				 cal.setTime(startDate);
+				 cal.set(Calendar.YEAR, Integer.valueOf(fYears[0].trim()));
+				 sDate = cal.getTime();
+				 
+				 Date endDate = new SimpleDateFormat("MMMM").parse(orgLocations.getEndMonth());
+				 cal.setTime(endDate);
+				 cal.set(Calendar.YEAR, Integer.valueOf(fYears[1].trim()));
+				 eDate = cal.getTime();
+			}else {
+				 Date startDate = new SimpleDateFormat("MMMM").parse(orgLocations.getStartMonth());
+				 Calendar cal = Calendar.getInstance();
+				 cal.setTime(startDate);
+				 cal.set(Calendar.YEAR, Integer.valueOf(finYear.trim()));
+				 sDate = cal.getTime();
+				 
+				 cal.set(Calendar.MONTH, 11);
+				 cal.set(Calendar.DAY_OF_MONTH, 31);
+				 eDate = cal.getTime();
+			}
+			finYearDates.add(sDate);
+			finYearDates.add(eDate);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return finYearDates;
+	}
+	
 }
 

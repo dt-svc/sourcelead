@@ -38,6 +38,7 @@ import com.bis.sourcelead.payroll.entity.Checks;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.INDPayrollCommonUtil;
 
 @Repository
 @Transactional
@@ -51,6 +52,9 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	INDPayrollCommonUtil iNDPayrollCommonUtil;
 	
 	@Override
 	public ResponseList<IndPaysheetFrequency> getIndPaysheetFrequencyListByOrgLocationId(OrgLocations orgLocation, IndPaysheetFrequencyDTO indPaysheetFrequencyDTO) throws Exception {
@@ -547,19 +551,9 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		List<IndEmployeePayroll> indEmployeePayrollList = null;
 		List<Long> countlist  = null;
 		
-		
-		String [] fYears = indEmployeePayrollDTO.getFinancialYear().split("-");
-		 Date startDate = new SimpleDateFormat("MMMM").parse(orgLocations.getStartMonth());
-		 Calendar cal = Calendar.getInstance();
-		 cal.setTime(startDate);
-		 cal.set(Calendar.YEAR, Integer.valueOf(fYears[0].trim()));
-		 Date sDate = cal.getTime();
-		 
-		 Date endDate = new SimpleDateFormat("MMMM").parse(orgLocations.getEndMonth());
-		 cal.setTime(endDate);
-		 cal.set(Calendar.YEAR, Integer.valueOf(fYears[1].trim()));
-		 Date eDate = cal.getTime();
-		
+		List<Date> dates =  iNDPayrollCommonUtil.getFinancialYearStartAndEndDateByOrgLocations(orgLocations, indEmployeePayrollDTO.getFinancialYear());
+		Date sDate = dates.get(0);
+		Date eDate = dates.get(1);
 		
 		//List Query
 		String query = "from IndEmployeePayroll iep left join fetch iep.indPaysheetFrequency ipf where  date(ipf.frequencyStartDate) BETWEEN :startDate and :endDate  and ipf.approverStatus ='APPROVED' and ipf.orgLocation.id =:orgLoactionId "+query1+"";
@@ -594,18 +588,45 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	@Override
 	public List<IndEmployeePayrollDTO> getPayrollSalaryStatementReportList(IndEmployeePayrollDTO indEmployeePayrollDTO,	OrgLocations orgLocations) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		 Date startDate = new SimpleDateFormat("MMMM").parse(indEmployeePayrollDTO.getSalaryMonthName());
-		 Calendar cal = Calendar.getInstance();
-		 cal.setTime(startDate);
-		 cal.set(Calendar.YEAR, Integer.valueOf(indEmployeePayrollDTO.getFinancialYear()));
-		 Date sDate = cal.getTime();
-		 java.sql.Date freqStartDate = new java.sql.Date(sDate.getTime());
-		 
-		 cal.add(Calendar.MONTH, 1);  
-		 cal.set(Calendar.DAY_OF_MONTH, 1);  
-		 cal.add(Calendar.DATE, -1);  
-	     Date eDate = cal.getTime();
-	     java.sql.Date freqEndDate = new java.sql.Date(eDate.getTime());
+			List<Date> dates =  iNDPayrollCommonUtil.getFinancialYearStartAndEndDateByOrgLocations(orgLocations, indEmployeePayrollDTO.getFinancialYear());
+			Date sDate = dates.get(0);
+			Calendar sFCal = Calendar.getInstance();
+			sFCal.setTime(sDate);
+			 
+			Date eDate = dates.get(1);
+			Calendar eFCal = Calendar.getInstance();
+			eFCal.setTime(eDate);
+		
+			java.sql.Date freqStartDate = null;
+			java.sql.Date freqEndDate = null;
+			
+			 Date startDate = new SimpleDateFormat("MMMM").parse(indEmployeePayrollDTO.getSalaryMonthName());
+			 Calendar cal = Calendar.getInstance();
+			 cal.setTime(startDate);
+			 cal.set(Calendar.YEAR, sFCal.get(Calendar.YEAR));
+			 if(cal.getTime().after(sDate) && cal.getTime().before(eDate)) {
+				 sDate = cal.getTime();
+				 cal.add(Calendar.MONTH, 1);  
+				 cal.set(Calendar.DAY_OF_MONTH, 1);  
+				 cal.add(Calendar.DATE, -1);  
+			     eDate = cal.getTime();
+				 freqStartDate = new java.sql.Date(sDate.getTime());
+				 freqEndDate = new java.sql.Date(eDate.getTime());
+			 }else {
+				 cal.set(Calendar.YEAR, eFCal.get(Calendar.YEAR));
+				 sDate = cal.getTime();
+				 cal.add(Calendar.MONTH, 1);  
+				 cal.set(Calendar.DAY_OF_MONTH, 1);  
+				 cal.add(Calendar.DATE, -1);  
+			     eDate = cal.getTime();
+			     freqStartDate = new java.sql.Date(sDate.getTime());
+				 freqEndDate = new java.sql.Date(eDate.getTime());
+			 }
+			 
+			
+			
+			
+			
 	     
 		String query =  " SELECT  can.ID as canId, "+
 						" employee.EMPLOYEE_ID as employeeid, "+

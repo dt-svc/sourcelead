@@ -1113,8 +1113,12 @@ public class IndianPayrollRestController {
 				  
 				  dty.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), dto.getDeteOfJoin()));
 				  for (Map.Entry<String, List<IndEmployeePayrollDTO>> canEntry : map.entrySet())  {
-					  List<IndEmployeePayrollDTO> s = entry.getValue().stream().filter(pd->canEntry.getKey().equalsIgnoreCase(pd.getPayHeadName())).collect(Collectors.toList());
-					  innerMap.put(canEntry.getKey(), String.valueOf(s.get(0).getPayHeadAmount()));
+						  List<IndEmployeePayrollDTO> s = entry.getValue().stream().filter(pd->canEntry.getKey().equalsIgnoreCase(pd.getPayHeadName())).collect(Collectors.toList());
+						  if(s.size() > 0) {
+							  innerMap.put(canEntry.getKey(), String.valueOf(s.get(0).getPayHeadAmount()));
+						  }else {
+							  innerMap.put(canEntry.getKey(), String.valueOf(0.00));
+						  }
 					  }
 				  dty.setPayHeadMapList(innerMap);
 				  mp.add(dty);
@@ -1373,9 +1377,9 @@ public class IndianPayrollRestController {
    	public List<String> getMonthNames(@RequestParam(value="financialYear", required=false) String financialYear , HttpServletRequest request, HttpServletResponse response) throws Exception
    	{
         OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-        String[] finYears  = financialYear.split("-");
+//        String[] finYears  = financialYear.split("-");
         
-        //Start Year
+       /* //Start Year
 		 Date startDate = new SimpleDateFormat("MMMM").parse(orgLocation.getStartMonth());
 		 Calendar cal = Calendar.getInstance();
 		 cal.setTime(startDate);
@@ -1393,9 +1397,15 @@ public class IndianPayrollRestController {
 		 endCal.add(Calendar.DATE, 1);  
 	     Date eeDate = endCal.getTime();
 	     java.sql.Date freqEndDate = new java.sql.Date(eeDate.getTime());
+	     */
 	     
-    	String date1 = freqStartDate.toString();
-        String date2 = freqEndDate.toString();
+	     
+	     List<Date> finYearList = iNDPayrollCommonUtil.getFinancialYearStartAndEndDateByOrgLocations(orgLocation, financialYear);
+	     java.sql.Date freqStartDate = new java.sql.Date(finYearList.get(0).getTime());
+	     java.sql.Date freqEndDate = new java.sql.Date(finYearList.get(1).getTime());
+	    	String date1 = freqStartDate.toString();
+	        String date2 = freqEndDate.toString();
+	        
 
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd", Locale.ROOT);
         DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMMM-uuuu", Locale.ROOT);
@@ -1415,7 +1425,7 @@ public class IndianPayrollRestController {
    			@RequestParam(value="fromMonth", required=false) String fromMonth,HttpServletRequest request, HttpServletResponse response) throws Exception
    	{
         OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-        String[] finYears  = financialYear.split("-");
+        
         String[] selectMonth = fromMonth.split("-");
         //Start Year
 		 Date startDate = new SimpleDateFormat("MMMM").parse(selectMonth[0]);
@@ -1426,14 +1436,24 @@ public class IndianPayrollRestController {
 		 java.sql.Date freqStartDate = new java.sql.Date(sDate.getTime());
 		 
 		 //End Year
+		 Date eeDate = null;
 		 Date endDate = new SimpleDateFormat("MMMM").parse(orgLocation.getStartMonth());
 		 Calendar endCal = Calendar.getInstance();
 		 endCal.setTime(endDate);
-		 endCal.set(Calendar.YEAR, Integer.valueOf(finYears[1]));
-		 endCal.add(Calendar.MONTH, -1);  
-		 endCal.set(Calendar.DAY_OF_MONTH, 1);  
-		 endCal.add(Calendar.DATE, 1);  
-	     Date eeDate = endCal.getTime();
+		 if(financialYear.contains("-")) {
+			 String[] finYears  = financialYear.split("-");
+			 endCal.set(Calendar.YEAR, Integer.valueOf(finYears[1]));
+			 endCal.add(Calendar.MONTH, -1);  
+			 endCal.set(Calendar.DAY_OF_MONTH, 1);  
+			 endCal.add(Calendar.DATE, 1);  
+		      eeDate = endCal.getTime();
+		 }else {
+			 endCal.set(Calendar.YEAR, Integer.valueOf(financialYear));
+			 endCal.set(Calendar.MONTH, 11);
+			 endCal.set(Calendar.DAY_OF_MONTH, 31);
+			 eeDate = endCal.getTime();
+		 }
+		 
 	     java.sql.Date freqEndDate = new java.sql.Date(eeDate.getTime());
 	     
     	String date1 = freqStartDate.toString();
