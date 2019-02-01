@@ -63,7 +63,8 @@
 	                </c:if> 
 	                 
 	                 <c:if test="${tabName == 'Associates'}">
-	                 <li class="${sessionData.nav == 'Users' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/usersList'/>" title="Associates"><span class="navIcons cliIcon"></span><b>Associates</b></a></li>
+	                 <li class="${sessionData.nav == 'Users' ? 'navActive' : ''}"><a href="<c:url value='/ats/usersList'/>" title="Associates"><span class="navIcons cliIcon"></span><b>Associates</b></a></li>
+
 	                 </c:if>
 	                 
 	                 <c:if test="${tabName == 'Projects'}">
