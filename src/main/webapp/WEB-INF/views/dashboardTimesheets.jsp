@@ -9,8 +9,6 @@
  <sec:authorize access="hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')" var="bothTimesheets"/>
  <sec:authorize access="!hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')" var="onlyTimesheets"/>
  <sec:authorize access="hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && !hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')" var="onlyApprovalTimesheets"/>
-
-
 <script> 
 $(document).ready(function(){
 	  if('${bothTimesheets}' == 'true' || '${onlyTimesheets}' == 'true'){
@@ -70,87 +68,72 @@ $(document).ready(function(){
         </div>
       </div>
 <script>
-	var wsocket;  
-	var userId = '${SourceLeadWeb_userId}';
-	var orgLocationCode = '${SourceLeadWeb_locationCode}';
-	var candiadteId = '${SourceLeadWeb_candidateId}';
-	var timesheetType;
-	
-	var sourceleadUrl ='${sourceleadUrl}';
-	var sourceleadWebSocketUrl = sourceleadUrl.replace("http","ws");
-	var isGlobalAccess = '${SourceLeadWeb_isGlobalAccess}';
-   function timeSheetSubmissionStatusCount(type) { 
+   function timeSheetSubmissionStatusCount(timesheetType) { 
 	  $("#rejectLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
 	  $("#waitingLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
 	  $("#draftLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
 	  $("#approvedloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
-	  
-	  timesheetType = type;
-	  wsocket = new WebSocket(sourceleadWebSocketUrl.trim()+"/ws/dashBoardDynamicCount?userId="+userId+"&orgLocationCode="+orgLocationCode+"&candiadteId="+candiadteId+"&timesheetType="+timesheetType+"&isGlobalAccess="+isGlobalAccess+"&countFor=timesheet");       
-	  wsocket.onmessage = onMessage; 
+	  var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getTimeSheetSubmissionStatus?${_csrf.parameterName}=${_csrf.token}&timesheetType="+timesheetType, 
+		        success: function(json) {
+        		  var  savedTimesheetsSubmissionsCount = json.savedTimesheetSubmissionCount;
+	        	  var  waitingTimesheetsSubmissionsCount =json.waitingForApprovalTimesheetSubmissionCount;
+	        	  var  approvalTimesheetsSubmissionsCount =json.approvedTimesheetSubmissionCount;
+	        	  var  rejectedTimesheetsSubmissionsCount = json.rejectedTimesheetSubmissionCount; 
+		       	  
+		       	  $("#draftLoading").removeAttr("style");
+		       	  $("#savedTimesheetsSubmissionsCount").empty();
+		       	  $("#savedCountAnchor").empty();
+		       	  $("#approvedloading").removeAttr("style");
+		       	  $("#approvalTimesheetsSubmissionsCount").empty();
+		       	  $("#approvedCountAnchor").empty();
+		       	 
+		       	  $("#rejectLoading").removeAttr("style");
+		       	  $("#rejectTimesheetsSubmissionsCount").empty();
+		       	  $("#rejectedCountAnchor").empty();
+		       	  $("#waitingLoading").removeAttr("style");
+		       	  $("#waitingTimesheetsSubmissionsCount").empty();
+		       	  $("#waitingCountAnchor").empty();
+		       	 
+		       	  if(rejectedTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
+		       		  $("#rejectTimesheetsSubmissionsCount").html(rejectedTimesheetsSubmissionsCount);
+		                $("#rejectedCountAnchor").html("Rejected");
+		           }else{
+		         	    $("#rejectTimesheetsSubmissionsCount").html(rejectedTimesheetsSubmissionsCount);
+		                 $("#rejectedCountAnchor").html('<a  href="/app/totalTimesheetList/REJECTED">Rejected</a>'); 
+		           }
+		       	  if(savedTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
+		       		  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
+		                $("#savedCountAnchor").html("Draft");
+		            }else{
+		          	  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
+		                $("#savedCountAnchor").html("<a href='/app/totalTimesheetList/DRAFT'>Draft</a>"); 
+		               
+		            }
+		       	 
+		       	 if(waitingTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
+		       		  $("#waitingTimesheetsSubmissionsCount").html(waitingTimesheetsSubmissionsCount);
+		               $("#waitingCountAnchor").html("Submitted");
+		           }else{
+		         	  $("#waitingTimesheetsSubmissionsCount").html(waitingTimesheetsSubmissionsCount);
+		                $("#waitingCountAnchor").html('<a  href="/app/totalTimesheetList/SUBMITTED">Waiting</a>'); 
+		           }
+		       	 
+		       	  if(approvalTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
+		       		  $("#approvalTimesheetsSubmissionsCount").html(approvalTimesheetsSubmissionsCount);
+		                $("#approvedCountAnchor").html("Approved");
+		           }else{
+		          	  $("#approvalTimesheetsSubmissionsCount").html(approvalTimesheetsSubmissionsCount);
+		                $("#approvedCountAnchor").html('<a  href="/app/totalTimesheetList/APPROVED">Approved</a>'); 
+		            }
+		       	 if(timesheetType == "myTimesheets"){
+		       		 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheet'/>");
+		       	 }else{
+		       		 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheetApproval'/>");
+		       	 }
+		 		}
+		  }); 
  }
-  
-  window.onbeforeunload = function() {
-		 var myWebSocket = new WebSocket(sourceleadWebSocketUrl.trim()+"/ws/dashBoardDynamicCount?userId="+userId+"&orgLocationCode="+orgLocationCode+"&candiadteId="+candiadteId+"&timesheetType="+timesheetType+"&isGlobalAccess="+isGlobalAccess+"&countFor=timesheet"); 
-		 myWebSocket.close();
- };
-  
-function onMessage(evt) {
-	  var json = JSON.parse(evt.data);
-	  var  approvalTimesheetsSubmissionsCount =json.approvedTimesheetSubmissionCount;
-	  var  savedTimesheetsSubmissionsCount = json.savedTimesheetSubmissionCount;
-	  var  rejectedTimesheetsSubmissionsCount = json.rejectedTimesheetSubmissionCount;
-	  var  waitingTimesheetsSubmissionsCount = json.waitingForApprovalTimesheetSubmissionCount;
-	  
-	  $("#draftLoading").removeAttr("style");
-	  $("#savedTimesheetsSubmissionsCount").empty();
-	  $("#savedCountAnchor").empty();
-	  $("#approvedloading").removeAttr("style");
-	  $("#approvalTimesheetsSubmissionsCount").empty();
-	  $("#approvedCountAnchor").empty();
-	 
-	  $("#rejectLoading").removeAttr("style");
-	  $("#rejectTimesheetsSubmissionsCount").empty();
-	  $("#rejectedCountAnchor").empty();
-	  $("#waitingLoading").removeAttr("style");
-	  $("#waitingTimesheetsSubmissionsCount").empty();
-	  $("#waitingCountAnchor").empty();
-	 
-	  if(rejectedTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
-		  $("#rejectTimesheetsSubmissionsCount").html(rejectedTimesheetsSubmissionsCount);
-         $("#rejectedCountAnchor").html("Rejected");
-    }else{
-  	    $("#rejectTimesheetsSubmissionsCount").html(rejectedTimesheetsSubmissionsCount);
-          $("#rejectedCountAnchor").html('<a  href="/app/totalTimesheetList/REJECTED">Rejected</a>'); 
-    }
-	  if(savedTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
-		  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
-         $("#savedCountAnchor").html("Draft");
-     }else{
-   	  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
-         $("#savedCountAnchor").html("<a href='/app/totalTimesheetList/DRAFT'>Draft</a>"); 
-        
-     }
-	 
-	 if(waitingTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
-		  $("#waitingTimesheetsSubmissionsCount").html(waitingTimesheetsSubmissionsCount);
-        $("#waitingCountAnchor").html("Submitted");
-    }else{
-  	  $("#waitingTimesheetsSubmissionsCount").html(waitingTimesheetsSubmissionsCount);
-         $("#waitingCountAnchor").html('<a  href="/app/totalTimesheetList/SUBMITTED">Waiting</a>'); 
-    }
-	 
-	  if(approvalTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
-		  $("#approvalTimesheetsSubmissionsCount").html(approvalTimesheetsSubmissionsCount);
-         $("#approvedCountAnchor").html("Approved");
-    }else{
-   	  $("#approvalTimesheetsSubmissionsCount").html(approvalTimesheetsSubmissionsCount);
-         $("#approvedCountAnchor").html('<a  href="/app/totalTimesheetList/APPROVED">Approved</a>'); 
-     }
-	 if(timesheetType == "myTimesheets"){
-		 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheet'/>");
-	 }else{
-		 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheetApproval'/>");
-	 }
-}
 </script>  

@@ -4,6 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <script type="text/javascript">
+
 $(document).ready(function(){
     getSendersList();
 });
@@ -48,9 +49,10 @@ $(document).ready(function(){
 
 <script type="text/javascript">
 function getSendersList(type){
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 $.get( sourceleadUrl+ "/getSendersByLocationId?&orgLocationId="+locationId, function(json) {
+	 $.get( atsUrl+ "/getSendersByLocationId?&orgLocationId="+locationId, function(json) {
 		 
 		 
 		 
@@ -169,8 +171,9 @@ function deleteIdentity(senderId){
  
  <script>
  function deleteSenderIdentity(senderId){
+	 var atsUrl ='${SourceLeadWeb_atsUrl}';
 	 $("#deleteIdentityDiv").empty();
-	 $.get( sourceleadUrl+ "/deleteSenderIdentity?"+tokenParamName+"="+tokenValue+"&senderId="+senderId, function(data) {
+	 $.get( atsUrl+ "/deleteSenderIdentity?&senderId="+senderId, function(data) {
 			if(data == true) {
 				 $("#campainSenderAlertMsg").removeAttr("style");
 	  			 $("#campainSenderAlertMsg").css({ display: "block" });
@@ -178,7 +181,7 @@ function deleteIdentity(senderId){
 	  			 $("#deleteSenderId").hide();
 	 			 $(".mask").hide();
 	             campainSenderAlertMsgFadein();	
-	             location.replace(sourceleadUrl+ "/campaignSendersList");
+	             location.replace(atsUrl+ "/campaignSendersList");
 			}
 		});
 		
@@ -196,7 +199,8 @@ function cancelDeleteIdentity(){
 
 <script>
 function selectMailSender(senderId){
-			$.get(sourceleadUrl+"/selectMailSender?&senderId="+senderId, function(data) {
+	 var atsUrl ='${SourceLeadWeb_atsUrl}';
+			$.get(atsUrl+"/selectMailSender?&senderId="+senderId, function(data) {
 	            });
 }
 </script>
