@@ -558,42 +558,42 @@
                 <h2><a href="javascript:void(0)">US Payroll Reports</a></h2>
 	                <ul class="repSearchList">
 		                <sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="${appPath}/payrollRegisterReport">Payroll Register</a></li>
+							<li><a href="/pms/payrollRegisterReport">Payroll Register</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="${appPath}/payrollComparison">Comparison</a></li>
+							<li><a href="/pms/payrollComparison">Comparison</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="${appPath}/payrollListSummaryReport">Payroll Summary</a></li>
+							<li><a href="/pms/payrollListSummaryReport">Payroll Summary</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="${appPath}/checkRegisterReport">Check Register</a></li>
+							<li><a href="/pms/checkRegisterReport">Check Register</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="${appPath}/associateWithholding">Associate Withholding</a></li>
+							<li><a href="/pms/associateWithholding">Associate Withholding</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="${appPath}/payrollTaxesAndWagesReport">Taxable Wages Report</a></li>
+							<li><a href="/pms/payrollTaxesAndWagesReport">Taxable Wages Report</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="${appPath}/deductionReport">Deduction Reports</a></li>
+							<li><a href="/pms/deductionReport">Deduction Reports</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="${appPath}/contributionReport">Contribution Reports</a></li>
-						</sec:authorize>
-
-						<li><a href="${appPath}/usDeductionSummaryReport" ><!-- Us -->Deduction Summary Report</a></li>
-				        <li><a href="${appPath}/usContributionSummaryReport" ><!-- Us -->Contribution Summary Reports</a></li>
-
-						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="${appPath}/directDepositReport">Direct Deposit</a></li>
-						</sec:authorize>
-						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="${appPath}/usEmployeePayrollReport">Employee Payroll</a></li>
+							<li><a href="/pms/contributionReport">Contribution Reports</a></li>
 						</sec:authorize>
 
+						<li><a href="/pms/usDeductionSummaryReport" ><!-- Us -->Deduction Summary Report</a></li>
+				        <li><a href="/pms/usContributionSummaryReport" ><!-- Us -->Contribution Summary Reports</a></li>
+
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-						<li><a href="${appPath}/contractEmployeePayreport">Contract Employee Payroll</a></li>
+							<li><a href="/pms/directDepositReport">Direct Deposit</a></li>
+						</sec:authorize>
+						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
+							<li><a href="/pms/usEmployeePayrollReport">Employee Payroll</a></li>
+						</sec:authorize>
+
+						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
+						<li><a href="/pms/contractEmployeePayreport">Contract Employee Payroll</a></li>
 						</sec:authorize>
 
 	                </ul>
