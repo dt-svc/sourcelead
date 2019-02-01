@@ -349,7 +349,6 @@ var validationSettings = {
 		    	        contentType:false,
 						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&locationCode="+locationCode,
 						success : function(result) {
-							
 							if (result && result.response === "INVALID_DATA") {
 							    showError(result.responseMessage);
 							} else if (result.response === "AWKWARD") {
@@ -385,6 +384,8 @@ var validationSettings = {
 function selectClientCategory(){
 	$('#clientCategoryContactTypeListDivDiv').val('').trigger("chosen:updated");
 	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
+	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	var orgRelationId = $('#orgRelationId').val(); 
 	var clientLocationId = $('#clientLocationId').val(); 
 	var categoryType = $('#categoryType').val(); 
@@ -394,7 +395,7 @@ function selectClientCategory(){
 			var status = "";
 			$.ajax({
 		    	type: "POST",
-		    	url : sourceleadUrl+"/getVendorJobs?"+tokenParamName+"="+tokenValue+"&orgRelationID="+orgRelationId+"&status="+status,  
+		    	url : atsUrl+"/getVendorJobs?"+tokenParamName+"="+tokenValue+"&orgRelationID="+orgRelationId+"&status="+status,  
 		        success: function(json) {
 		        	 var result ="";
 		        	 result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
@@ -415,7 +416,7 @@ function selectClientCategory(){
 		if(categoryType == "Contacts"){
 			$.ajax({
 		    	type: "POST",
-		    	url : sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Client", 
+		    	url : vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Client", 
 		        success: function(json) {
 		        	// var json = JSON.parse(data);
 		        	 var result ="";
@@ -443,7 +444,7 @@ function selectClientCategory(){
 			var payment ="";
 				$.ajax({
 			    	type: "POST",
-			    	url : sourceleadUrl+"/getInvoiceListBasedOnOrgrelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&clientLocationId="+vendorLocationId+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceStatus="+invoice+"&paymentStatus="+payment+"&invoiceType=payables", 
+			    	url : vmsUrl+"/getInvoiceListBasedOnOrgrelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&clientLocationId="+vendorLocationId+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceStatus="+invoice+"&paymentStatus="+payment+"&invoiceType=payables", 
 			        success: function(json) {
 // 		        	  var json = JSON.parse(data);
 		        	  var result ="";
@@ -466,7 +467,7 @@ function selectClientCategory(){
 			var contractStatus = "";
 			 $.ajax({  
 		          type : "POST",
-		          url: sourceleadUrl+"/getClientOrVendorContracts?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Vendor&contractStatus="+contractStatus,        
+		          url: vmsUrl+"/getClientOrVendorContracts?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Vendor&contractStatus="+contractStatus,        
 		          success :function(data) {
 		        	  var json = JSON.parse(data);
 		        	  var result ="";
