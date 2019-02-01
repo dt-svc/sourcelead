@@ -29,7 +29,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
     <div class="timesheet_head">
       <ul>
           <li>
-               <a href="<c:url value='${appPath}/addShift'/>" title="Add Shift">
+               <a href="/pms/addShift" title="Add Shift">
                 <i class="fa fa-plus paddingRight"></i>Add Shift
               </a>
           </li>
