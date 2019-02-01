@@ -67,57 +67,10 @@ public class AssetsReportController {
 	PdfUtil pdfUtil;
 	
 	
-	
-@RequestMapping(value = "/assetsReport")
-	
-	public ModelAndView assetsReport(HttpServletRequest request)throws Exception{
-		ModelAndView model = new ModelAndView();
-		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
-			List<AssetCategory> assetCategoriesList = assetCategoryService.getAssetCategoryListByLocationId(orgLocation.getId());
-			model.addObject("assetCategoriesList", assetCategoriesList);
-			
-			List<Employees> employeesList = employeesService.getEmployeesByLocationId(orgLocation.getId());
-			model.addObject("employeesList", employeesList);
-			
-			List<Asset> assetList = assetService.getAllAssetByOrgId(orgLocation.getId());
-			model.addObject("assetList", assetList);
-			
-			List<Shift> shiftList = shiftService.getShiftList(orgLocation.getId());
-			model.addObject("shiftList", shiftList);
-		 
-		    model.addObject("sourceleadUrl", sourceleadUrl);
-	     
-		  model.setViewName("reports/assetsReport");
-		 return model;
-	}
 	
 	
-@RequestMapping(value = "/getAssetReport" ,method = RequestMethod.POST)
-public @ResponseBody ResponseList<AssetsReportDTO> getAssetReportList(AssetsReportDTO assetsReportDTO,HttpServletRequest request) throws Exception{
-	 //User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	 
-	 DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
-		DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
-		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-		
-		Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),assetsReportDTO.getFromDate());
-		Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),assetsReportDTO.getToDate());
-		String customStartTimeStr = TZ_DF_CSD.format(startTime);  
-		String customEndTimeStr = TZ_DF_CED.format(endTime);  
-		Date startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
-		Date endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
-	   
-	    assetsReportDTO.setConvertedFromDate(startDateUTC);
-	    assetsReportDTO.setConvertedToDate(endDateUTC);
-	 
-	ResponseList<AssetsReportDTO> assetReportList = assetService.getAssetReportList(assetsReportDTO,orgLocation.getId());
-	
-	return assetReportList; 
-}
-	
+
 		
 
 @ResponseBody
