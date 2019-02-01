@@ -1058,7 +1058,7 @@ public class ProjectPlanningRestController {
 									clientCandidate.setParentCandidateId(candidate);
 									clientCandidate.setConsultantUser(candidate.getConsultantUser());
 									clientCandidate.setOrgRelationId(orl);
-									 Set<OrgSpoc> orgSpocList = orgRelations.getOrgSpocList();
+									 Set<OrgSpoc> orgSpocList = orl.getOrgSpocList();
 									 for(OrgSpoc spoc : orgSpocList){
 										 orgSpoc =  spoc;
 									 }
