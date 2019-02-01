@@ -21,13 +21,12 @@
             <div class="form-group row">
               <label class="col-md-12 paddingRight">Associate Name</label>
               <div class="col-md-12">
-              
-                 <select class="chosen-select form-control" multiple data-placeholder="Select Associate" name="userIds" id="associatesId" onchange ="getProjects();">
+              <select class="chosen-select form-control" data-placeholder="Select Associate" autocomplete="off" onchange="getProjects();" id="associatesId" name="userIds" field-name="Associate" data-validation="required">
+			          <option selected="selected" disabled>Select Associate</option>
 			            <c:forEach var="option" items="${userList}">
 							<option value="${option.id}">${option.fullName}</option>
 						</c:forEach>
 			          </select>
-              
               </div>
             </div>
           </div>
@@ -35,8 +34,7 @@
             <div class="form-group row">
               <label class="col-md-12 paddingRight">Project Name</label>
                 <div class="col-md-9">
-                      <select class="chosen-select form-control" multiple data-placeholder="Select Project" name="projectsIds" id="projects" field-name="Projects" ">
-                        <option value="">-Select Projects-</option>
+                      <select class="chosen-select form-control" multiple data-placeholder="Select Project"  autocomplete="off" name="projectsIds" id="projects" field-name="Projects" ">
                       </select>
                   </div>
             </div>
@@ -46,7 +44,7 @@
             <div class="row">
               <label class="col-md-12 paddingRight">From</label>
               <div class="col-md-12">
-                <input type="text" class="form-control calendar" name = "fromDate" id="fromDate" data-validation="required">
+                <input type="text" class="form-control calendar" name = "fromDate" id="fromDate" data-validation="required" readonly>
               </div>
             </div>
           </div>
@@ -54,7 +52,7 @@
             <div class="row">
               <label class="col-md-12 paddingRight">To</label>
               <div class="col-md-12">
-                <input type="text" class="form-control calendar" name = "toDate" id="toDate" data-validation="required">
+                <input type="text" class="form-control calendar" name = "toDate" id="toDate" data-validation="required" readonly>
               </div>
             </div>
           </div>
@@ -63,18 +61,32 @@
           <div class="col-lg-12">
             <div class="pull-right">
               <input value="Run" class="btn btn-success btnSuccess" type="button" onClick="prepareReport();">
-              <input value="Reset" class="btn btn-defualt ml10" type="button" onclick ="reset();">
+              <input value="Reset" class="btn btn-defualt ml10" type="button" onClick ="resetForm();">
             </div>
           </div>
         </div>
       </div>
       </form>
-        </div>
         
-         <div class="tableStyles">
-	 <div class="require_wrap_table">
-	 <div id="availableAssociatesReporttableList"></div>
-	</div>
+        
+        <div class="clearfix" id="avlbAssociatesReporttableDiv" style="display: none;">
+          
+          <div class="positionRelative reportHead clearfix"> 
+            <ul class="pull-right list-unstyled list-inline">
+                 <li><a href="javascript:void(0)" class="overIcon" id="exportOptions" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+		           	   		<a href="javascript:void(0)" onclick="reportExport('Pdf');" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="reportExport('Excel');" title="Excel">Export Excel</a>            
+						</span>
+					</div>
+				</li>
+            </ul>
+          </div>
+	          <div class="tableNoborder clerfix">
+	               <div id="availableAssociatesReporttableList"></div>
+	          </div>
+        </div>
         </div>
       </section>
       
@@ -92,7 +104,6 @@
 				 $("#projects").empty();
 				 
 				 var projects = "";
-				 projects +=  "<option value=''>-- Select Project --</option>"; 
 				 for(var e in response.data) {
 					 projects += "<option value="+response.data[e].id+">"+response.data[e].projectName+"</option>";
 				 }
@@ -109,13 +120,14 @@
       </script>
       
       <script>
-      function reset(){
+      function resetForm(){
       	$('#fromDate').val('');
     	$('#toDate').val('');
     	$('#associatesId').val('');
     	$('#projects').val('');
     	$('#associatesId').trigger("chosen:updated");
     	$('#projects').trigger("chosen:updated");
+    	document.getElementById("avlbAssociatesReporttableDiv").style.display="none";
       }
       </script>
       
@@ -140,7 +152,8 @@
   		            data: formData,
   	 		        processData: false,
   	 		        contentType:false, 
-  		            success: function (result) { 
+  		            success: function (result) {
+  		            	document.getElementById("avlbAssociatesReporttableDiv").style.display="block";
   		            	$("#availableAssociatesReporttableList").show();
   		          	if(result && result.response === "SUCCESS") {
   		          
@@ -150,28 +163,45 @@
   							text += "  <table class='table' id='availableAssociatesReporttableList1'>";
   							text += " 	<thead>";
   							text += " 	  <tr>";
-  							text += " 	   	<th>Project Name</th>";
-  							text += " 		<th>Project Duration</th>";
-  							text += " 		<th>Associate Duration</th>";
-  							text += " 		<th>Availability %</th>";
-  							text += " 		<th>No.of Hours</th>";
+  							text += " 	   	<th><div class='width180px text-center' style='display:block; margin:0 auto;'>Project Name</div></th>";
+  							text += " 		<th><div class='width180px text-center' style='display:block; margin:0 auto;'>Project Duration</div></th>";
+  							text += " 		<th><div class='width180px text-center' style='display:block; margin:0 auto;'>Associate Duration</div></th>";
+  							text += " 		<th><div class='width180px text-center' style='display:block; margin:0 auto;'> % Of Work</div></th>";
+  							text += " 		<th><div class='width180px text-center' style='display:block; margin:0 auto;'>No.of Hours</div></th>";
   							text += " 	  </tr>";
   							text += " 	</thead>";
   							text += " 	<tbody>";
-  						 text += "		<td><div class='tbldata-dotdot'>" + (result.data[2]) + "</div></td>";
+  							var totalavailable = 0;
+  							var totalHours = 0;
+  							var availability = 0;
   							for(var e in result.data) {
+  								
   								var report = result.data[e];
   								text += "    <tr>";
-  								text += "		<td><div class='tbldata-dotdot'>" + (report[3] !== null ? report[3] : "--" ) + "</div></td>";
-  								text += "		<td><div class='tbldata-dotdot'>" +(report[4] !== null ? report[4] : "--") +"-"+(report[5] !== null ? report[5] : "--") + "</div></td>";
-  								text += "		<td><div class='tbldata-dotdot-vsm'>" +(report[6] !== null ? report[6] : "--") +"-"+(report[7] !== null ? report[7] : "--")  + "</div></td>";
-  								text += "		<td><div class='tbldata-dotdot-100' title='" + (report[8] !== null ? report[8] : "--" ) + "</div></td>";
-  								text += "		<td><div class='tblminwidth-75'>" + (report[9] !== null ? report[9] : "----") + "</div></td>";
+  								text += "		<td><div class='tbldata-dotdot'>" + (report.projectName !== null ? report.projectName : "--" ) + "</div></td>";
+  								text += "		<td><div class='tbldata-dotdot'>" +(report.projectStartDate !== null ? report.projectStartDate : "--") + " to " + (report.projectEndDate !== null ? report.projectEndDate : "--") + "</div></td>";
+  								text += "		<td><div class='tbldata-dotdot'>" +(report.empStartDate !== null ? report.empStartDate : "--") + " to " + (report.empEndDate !== null ? report.empEndDate : "--")  + "</div></td>";
+  								text += "		<td><div class='tbldata-dotdot'>" + (report.availableHours !== null ? report.availableHours  : "--" ) + "</div></td>";
+  								text += "		<td><div class='tbldata-dotdot'>" + (report.hoursperWeek !== null ? parseFloat(report.hoursperWeek).toFixed(2) : "----") + "</div></td>";
   								text += "	</tr>";
+  								
+  								totalavailable += (report.availableHours !== null && report.availableHours !== "") ? parseFloat(report.availableHours) : 0;
+  								
+  								//availability = ((totalavailable)/result.data.length);
+  								
+  								totalHours += (report.hoursperWeek !== null && report.hoursperWeek !== "") ? parseFloat(report.hoursperWeek) : 0;
   							}
-  							
   							text += " 	</tbody>";
+  							text += " 	<tfoot>";
+  							text += " 	<tr>";
+  							text += "<td colspan='2'></td>"
+  							text += "<td><div class='tbldata-dotdot'>" + "Total" + "</div></td>";
+  							text += "<td><div class='tbldata-dotdot'>" + totalavailable + "</div></td>";
+  							text += "<td><div class='tbldata-dotdot'>" + totalHours + "</div></td>";
+  							text += " 	</tr>";
+  							text += " 	</tfoot>";
   							text += "   </table>";
+  							
   							$("#availableAssociatesReporttableList").append(text);
   						} else {
   							$("#availableAssociatesReporttableList").append("<div class='dataTables_empty'></div>");
@@ -185,8 +215,37 @@
         }
      }
       </script>
-    
       
+      <script>
+      function reportExport(type){
+          var associates =$("#associatesId").val();
+    	  var projects = $("#projects").val();
+    	  var fromDate = $('#fromDate').val();
+  		  var toDate = $('#toDate').val();
+    	       if(associates == null || associates == ''|| associates == 'undefined'){
+    		  associates = '';
+    	            }
+    	       if(projects == null || projects == ''|| projects == 'undefined'){
+    		  projects = '';
+    	       }
+    	  window.location.href =  sourceleadUrl+"/availableAssociatereportExport?&type="+type+"&userIds="+associates+"&projects="+projects+"&fromDate="+fromDate+"&toDate="+toDate;
+  	}
+      
+      </script>
+      
+      <script>
+  function newActions(){
+		$(".newActPop").slideToggle(200);
+		$(".action-pop").slideUp(200);
+	}
+	$("html").click(function(){
+		$(".newActPop").slideUp(200);
+	});
+	$(".overIcon, .newActPop").click(function(e){
+	 	e.stopPropagation();
+	});	
+
+</script>
       
       
       <jsp:include page="../masterFooter.jsp" />

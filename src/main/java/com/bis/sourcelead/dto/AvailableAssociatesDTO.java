@@ -22,7 +22,7 @@ import java.util.List;
 	
 	private List<Long> projectsIds;
 	
-	private Long empId;
+	private String empId;
 	
 	private String empName;
 	
@@ -36,10 +36,20 @@ import java.util.List;
 	
 	private String empEndDate;
 	
-	private BigDecimal availableHours;
+	private String availableHours;
 	
-	private BigDecimal hoursperWeek;
+	private String hoursperWeek;
 	
+	private String type;
+	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	public BigDecimal getPercentageOfWork() {
 		return percentageOfWork;
 	}
@@ -48,11 +58,13 @@ import java.util.List;
 		this.percentageOfWork = percentageOfWork;
 	}
 
-	public Long getEmpId() {
+
+
+	public String getEmpId() {
 		return empId;
 	}
 
-	public void setEmpId(Long empId) {
+	public void setEmpId(String empId) {
 		this.empId = empId;
 	}
 
@@ -63,20 +75,21 @@ import java.util.List;
 	public void setEmpName(String empName) {
 		this.empName = empName;
 	}
+  
 
-	public BigDecimal getAvailableHours() {
+	public String getAvailableHours() {
 		return availableHours;
 	}
 
-	public void setAvailableHours(BigDecimal availableHours) {
+	public void setAvailableHours(String availableHours) {
 		this.availableHours = availableHours;
 	}
 
-	public BigDecimal getHoursperWeek() {
+	public String getHoursperWeek() {
 		return hoursperWeek;
 	}
 
-	public void setHoursperWeek(BigDecimal hoursperWeek) {
+	public void setHoursperWeek(String hoursperWeek) {
 		this.hoursperWeek = hoursperWeek;
 	}
 

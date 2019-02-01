@@ -1717,8 +1717,8 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 				+ " pm.projects.endDate as projectEndDate ,"
 				+ " pm.projectAssignedDate as empStartDate,"
 				+ " pm.projectEndDate as empEndDate,"
-				+ " (100 - pm.percentageOfWork) as availableHours,"
-				+ "  ((100 - pm.percentageOfWork)/100) * " + noOfHours + " as hoursperWeek"
+				+ "  pm.percentageOfWork as availableHours,"
+				+ "  (( pm.percentageOfWork)/100) * " + noOfHours + " as hoursperWeek"
 				+ " from ProjectMembers pm"
 				+ " where pm.projects.orgLocationsId=:orgLocations";
 			

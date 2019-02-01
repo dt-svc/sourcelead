@@ -92,6 +92,7 @@ import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.reportsDTO.ProjectReportDTO;
 import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
@@ -2196,5 +2197,43 @@ public class ReportRestController {
 		}
 		return responseList;
 	}
-			
+		
+	@ResponseBody
+	@RequestMapping(value = "/availableAssociatereportExport")
+	public File availableAssociatereportForExport(HttpServletRequest request, HttpServletResponse response, AvailableAssociatesDTO availableAssociatesDTO) throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<AvailableAssociatesDTO> reportList = new ResponseList<>();
+		File file = null;
+		reportList.setData(projectsService.getAvailableAssociatesReport(availableAssociatesDTO, orgLocations));
+		if (reportList.getData() != null && !reportList.getData().isEmpty()) {
+
+			if (availableAssociatesDTO.getType().equalsIgnoreCase("pdf")) {
+				file = pdfUtil.availableAssociatereportReportListOfPdf(reportList.getData(), user, orgLocations);
+			} else {
+				file = projectsService.availableAssociatereportReportListOfExcel(reportList.getData(), user, orgLocations);
+			}
+		}
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+		if (file != null) {
+			file.delete();
+		}
+		return file;
+
+	}
+	
+	
+	
 }

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -158,6 +159,9 @@ public interface ProjectsService {
 		List<Projects> getProjectsListByUserIDAndOrgId(String[] associates,Long orglocationId);
 
 		List<AvailableAssociatesDTO> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO,OrgLocations orgLocations);
+
+		File availableAssociatereportReportListOfExcel(List<AvailableAssociatesDTO> data, User user,
+				OrgLocations orgLocations) throws FileNotFoundException;
 		
 //		public String getProjectId(OrgLocations orgLocations);
 		
