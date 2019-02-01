@@ -783,6 +783,14 @@ public class PaymentController {
                 	}
                 	
                 	System.out.println("org value is "+org.getId());
+                	
+                	CandidateMarketPlacePaymentTransactionHistory transactionHistory = candidateService.getOrderNo(orgLocations.getId());
+                	String purchasedOrgName = transactionHistory.getOrgLocationId().getOrg().getOrgName();
+                	String orderNo = transactionHistory.getOrderId();
+                	String paymentId = transactionHistory.getPaymentId();
+                	candidateService.saveToMarketplacePurchaseOrder(marketCartList,orgLocations,orderNo,purchasedOrgName,paymentId);
+                	candidateService.saveToMarketplaceSalesOrder(marketCartList,orderNo,paymentId);
+                	//candidateService.saveMarketPlaceWallet();
 
                   /*=====================Email Scenario for the profile contributor starts here=====================*/
                 	
@@ -849,15 +857,6 @@ public class PaymentController {
 					
 					/*=====================Email Scenario for the profile contributor ends here=====================*/
                 	
-                	System.out.println("org value is "+org.getId());
-                	
-                	CandidateMarketPlacePaymentTransactionHistory transactionHistory = candidateService.getOrderNo(orgLocations.getId());
-                	String purchasedOrgName = transactionHistory.getOrgLocationId().getOrg().getOrgName();
-                	String orderNo = transactionHistory.getOrderId();
-                	String paymentId = transactionHistory.getPaymentId();
-                	candidateService.saveToMarketplacePurchaseOrder(marketCartList,orgLocations,orderNo,purchasedOrgName,paymentId);
-                	candidateService.saveToMarketplaceSalesOrder(marketCartList,orderNo,paymentId);
-                	//candidateService.saveMarketPlaceWallet();
 
                 	//sending Email.
                 	StringBuilder currentUserName = new StringBuilder();
