@@ -89,8 +89,8 @@ function clientNotes(orgRelationId){
 	var urlForm = "";
 		
 	    urlForm = "/getNotes?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId;
-		
-	var sourceleadUrl ='${sourceleadUrl}';
+	    var sourceleadUrl ='${sourceleadUrl}';
+	    var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+urlForm,        
@@ -305,8 +305,9 @@ var validationSettings = {
 	      		formData.append("userId",userId);
 	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	      	    formData.append("locationCode",locationCode);
-	      	    
+	      	  
 				var sourceleadUrl = '${sourceleadUrl}';
+				var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 				$("#save_note").attr("disabled", "disabled");
          		$("#save_note" ).addClass('button').val('Processing..');
 				$.ajax({
@@ -366,7 +367,8 @@ function getRejectedCategory(){
 <script>
 function selectCategory(){
 	$('#categoryContactTypeListDivDiv').val('').trigger("chosen:updated");
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var orgRelationId = $('#orgRelationId').val(); 
 	var clientLocationId = $('#clientLocationId').val(); 
 	var categoryType = $('#categoryType').val(); 
@@ -375,7 +377,7 @@ function selectCategory(){
 			var status = "";
 			$.ajax({
 		    	type: "POST",
-		    	url : sourceleadUrl+"/getClientReleasedRequirementList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&status="+status, 
+		    	url : atsUrl+"/getClientReleasedRequirementList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&status="+status, 
 		        success: function(json) {
 		        	 //var json = JSON.parse(data);
 		        	 var result ="";
@@ -396,7 +398,7 @@ function selectCategory(){
 		if(categoryType == "Contacts"){
 			$.ajax({
 		    	type: "POST",
-		    	url : sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Client", 
+		    	url : vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Client", 
 		        success: function(json) {
 		        	// var json = JSON.parse(data);
 		        	 var result ="";
@@ -418,7 +420,7 @@ function selectCategory(){
 			var contractStatus = " ";
 			 $.ajax({  
 		          type : "POST",
-		          url: sourceleadUrl+"/getClientOrVendorContracts?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Client&contractStatus="+contractStatus,        
+		          url: vmsUrl+"/getClientOrVendorContracts?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Client&contractStatus="+contractStatus,        
 		          success :function(data) {
 		        	  var json = JSON.parse(data);
 		        	  var result ="";
@@ -446,7 +448,7 @@ function selectCategory(){
 			var payment ="";
 				$.ajax({
 			    	type: "POST",
-			    	url : sourceleadUrl+"/getInvoiceListBasedOnOrgrelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceStatus="+invoice+"&paymentStatus="+payment+"&invoiceType=receivable", 
+			    	url : vmsUrl+"/getInvoiceListBasedOnOrgrelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceStatus="+invoice+"&paymentStatus="+payment+"&invoiceType=receivable", 
 			        success: function(json) {
 // 		        	  var json = JSON.parse(data);
 		        	  var result ="";
