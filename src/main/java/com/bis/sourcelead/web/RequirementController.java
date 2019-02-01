@@ -87,7 +87,6 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
-import com.bis.sourcelead.rest.DashboardRestController;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -217,9 +216,6 @@ public class RequirementController {
 	
 	@Autowired
 	private JobCustomFieldDataService jobCustomFieldDataService;
-	
-	@Autowired
-	private DashboardRestController dashboardRestController;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
