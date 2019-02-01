@@ -40,7 +40,7 @@ function approvePayrollTab(){
       <div class="pull-left">
         <h2>Review Payroll</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;  <a href="/pms/uSPayrollDashboard">Payroll Dashboard</a> &raquo; Review Payroll</div>
+      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;  <a href="/pms/uSPayrollDashboard">Payroll Dashboard</a> &raquo; Review Payroll</div>
     </section>
     
     <div class="tabsMenu clearfix">
@@ -91,7 +91,7 @@ function approvePayrollTab(){
 		<c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
 		<li><a href="#" class="btn btn-default ml mr" id="Confirm" onclick="confirmPayroll('FROMDRAFT');">Confirm</a></li>
 		</c:if>
-		<li><a class="btn btn-default" href="<c:url value='${appPath}/payrollList?&redirect=draft'/>">Cancel</a></li>
+		<li><a class="btn btn-default" href="/pms/payrollList?&redirect=draft">Cancel</a></li>
 	</ul>
 	</div>
 <div class="clearfix"></div>
