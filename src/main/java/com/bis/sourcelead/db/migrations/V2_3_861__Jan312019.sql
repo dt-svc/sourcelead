@@ -137,10 +137,12 @@ set SQL_SAFE_UPDATES=0;
 UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Manager],\n\nThis is to inform you that the following resources have been terminated from Project\nProject Name: [Project_Name]\nEmployee: [Employee_Name]\nLast day: [Project_End_Date]\nDetails and reason: [Reason]\nPlease click here for more details\n\n[Login_Link]'  WHERE `UNIQUE_SCENARIO_NAME`='Employee Termination Mail To Manager' and `ENTITY_TYPE`='Email';
 UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Employee_Name],\nThis is to inform you that you are relieved of your duties from [Project_Name] with [Client_Name]\nPlease find the details below.\nProject Name : [Project_Name]\nLast Day : [Project_End_Date]\nReason : [Reason]\nPlease contact your manager for further details or login to Source Lead\n\n[Login_Link]'  WHERE `UNIQUE_SCENARIO_NAME`='Employee Termination' and `ENTITY_TYPE`='Email';
 UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Employee_Name],\n\nWe are happy to inform you that you are assigned with the following Project work\nThe details of the project are as follows:-\nProject Start date : [Project_Start_Date]\nProject End date : [Project_End_Date]\nManager : [Manager]\nLocation : [Location]\n\nWe are looking forward to work with you.'  WHERE `UNIQUE_SCENARIO_NAME`='Employee Reassign' and `ENTITY_TYPE`='Email';
-set SQL_SAFE_UPDATES=1;
-
 #Budget Request Accepted
 UPDATE `EMAIL_SCENARIO` SET `BODY` ='Dear [Approver_Name],\nThe Budget request for [Project_Name] project got approved.\nPlease log into Sourcelead to go ahead with the further process.'  WHERE `UNIQUE_SCENARIO_NAME`='Budget Request Accepted' and `ENTITY_TYPE`='Email';
+set SQL_SAFE_UPDATES=1;
+
+
+
 
 
 
