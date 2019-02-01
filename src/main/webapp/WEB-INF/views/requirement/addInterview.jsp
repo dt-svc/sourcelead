@@ -45,8 +45,9 @@ function addInterview(requirementId){
 	var parentRequirement = '${parentRequirement}';
 	var clientSubmissions = '${clientSubmissions}';
 	var result = "";
-	result = result + '<div class="add_inter">';
-	result = result + '<form id="addInterview_form" name="addInterview_form" >';
+	result = result + '<div class="add_inter positionRelative">';
+	result = result + '<div id="interviewLoading"></div>';
+	result = result + '<form id="addInterview_form" name="addInterview_form" style="position:reletive; z-index:100;">';
 	result = result + '<input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';
 	result = result + '<input type="hidden" id="changeMaxTsRowNum" name="changeMaxTsRowNum" value="1" />';
 	result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
@@ -909,6 +910,7 @@ function cancelInterviewPopup(){
   
 <script type="text/javascript">
  function getShortListCandidates(rowId) {
+	 $("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 var clientSubmissions = '${clientSubmissions}';
 	 var isClientInterview = "";
 	 if(clientSubmissions == 'Y'){
@@ -941,7 +943,7 @@ function cancelInterviewPopup(){
 			    		location.href = "/errorPage";
 			    	} else if (data.response === "SUCCESS") {
 			    		var json = data.data;
-			        	var output = "";
+			    		var output = "";
 			        	for (var i=0; i<json.length; i++)
 						{
 				        		var opt = json[i];
@@ -963,6 +965,7 @@ function cancelInterviewPopup(){
 			        	$("#"+rowId+"applicant").attr("data-placeholder", json.length + " Applicants available");
 			        	$("#"+rowId+"applicant").append(output);
 			        	$("#"+rowId+"applicant").trigger("chosen:updated");
+			        	$("#interviewLoading").removeAttr("style");
 			    	}else if (data.indexOf('Sign In') !== -1) {
 			    		location.replace(sourceleadUrl);
 			    	} else {
