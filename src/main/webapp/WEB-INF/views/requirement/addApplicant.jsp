@@ -13,15 +13,17 @@
  </c:if>
  
  <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
-<script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
-<script src="/resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
+<script src="/ats/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
+<script src="/ats/resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
 <style type="text/css">
 .mt10 {
     margin-top: 10px !important;
 }
 </style>
 
-
+<script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
+</script>
 
 <!-- For add New Applicant -->
 <script>
@@ -41,7 +43,8 @@ function getAddApplicant(requirementId){
 	  }if(locationDate.match("yyyy-dd-MM")){
 		  finalDateFormatScript = 'yy-dd-mm'; 
 	  }
-	generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript);
+	  
+	generateOrgSubmissionForm(atsUrl,requirementId,finalDateFormatScript);
 	var result = "";
 	result = result + '<form id="addApplicant_form" name="addApplicant_form" enctype="multipart/form-data" method="post">';
 	result = result + '<h3>Add Applicant</h3>';
@@ -224,7 +227,7 @@ function getAddApplicant(requirementId){
 	    	
 	    	$.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
+		        url: atsUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -347,7 +350,7 @@ function submitRecomendedApplicant(requirementId,candidateId,type){
 	  }if(locationDate.match("yyyy-dd-MM")){
 		  finalDateFormatScript = 'yy-dd-mm'; 
 	  }
-	generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript)
+	generateOrgSubmissionForm(atsUrl,requirementId,finalDateFormatScript)
 	var result = "";
 	result = result + '<form id="submitRecomendedApplicant_form" name="submitRecomendedApplicant_form" enctype="multipart/form-data" method="post">';
 	result = result + '<h3>Add Applicant</h3>';
@@ -469,7 +472,7 @@ function editSubmittedApplicant(requirementId,submissionId,candidateId,resumeId)
 	  }if(locationDate.match("yyyy-dd-MM")){
 		  finalDateFormatScript = 'yy-dd-mm'; 
 	  }
-	generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript)
+	generateOrgSubmissionForm(atsUrl,requirementId,finalDateFormatScript)
 	var result = "";
 	result = result + '<form id="editSubmittedApplicant_form" name="editSubmittedApplicant_form" enctype="multipart/form-data" method="post">';
 	result = result + '<h3>Edit Submission</h3>';
@@ -697,7 +700,7 @@ $('body').on('submit', '#editSubmittedApplicant_form', function(e){
 	        processData: false,
 	        contentType:false,
  	        dataType : 'json',
- 	    	url : sourceleadUrl+"/editSubmisionDetails?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
+ 	    	url : atsUrl+"/editSubmisionDetails?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
 	        	
 	        	$("#quickviewTabsdetails").removeClass("active");
@@ -793,7 +796,7 @@ function discordApplicant(){
 	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type: "POST",
-	    url: sourceleadUrl+"/verifyCoolingOffPeriod?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&candidateEmail="+candidateEmail+"&reqCoolingOffPeriod="+reqCoolingOffPeriod+"&orgLocationId="+orgLocationId, 
+	    url: atsUrl+"/verifyCoolingOffPeriod?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&candidateEmail="+candidateEmail+"&reqCoolingOffPeriod="+reqCoolingOffPeriod+"&orgLocationId="+orgLocationId, 
 	    success: function(response) {
 	    	if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
@@ -874,7 +877,7 @@ function discordApplicant(){
 			 }
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/getCandidatesList?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 
+			        url: atsUrl+"/getCandidatesList?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 
 			        success: function(response) {
 			        	if (response.response === "AWKWARD") {
 			        	    location.href = "/errorPage";
@@ -1129,7 +1132,7 @@ function addApplicantSubmission(){
 	        processData: false,
 	        contentType:false,
 	        dataType : 'json',
-	    	url : sourceleadUrl+"/saveAddApplicant?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
+	    	url : atsUrl+"/saveAddApplicant?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
 	        	 $(".new_side_wrap").removeClass("new_side_wrap_active");
 	        	 	if(result.response === "SESSION_TIMEDOUT") {
@@ -1304,7 +1307,7 @@ function addRequirementRecommendations(){
 		        processData: false,
 		        contentType:false,
 	 	        dataType : 'json',
-	 	    	url : sourceleadUrl+"/saveAddApplicant?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
+	 	    	url : atsUrl+"/saveAddApplicant?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
 		        success: function(result) {
 		        	$(".new_side_wrap").removeClass("new_side_wrap_active");
 		        	if(result.response === "SESSION_TIMEDOUT") {
@@ -1404,7 +1407,7 @@ function getCandidateSelectionType(){
 		 $('.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateResumes?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, 
+		        url: atsUrl+"/getCandidateResumes?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, 
 		        success: function(data) {
 		        	var json = data.data;
 		        	if (data.response === "FAILED") {
@@ -1508,7 +1511,7 @@ function getCandidateSelectionType(){
 		 $('.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateResumes?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, 
+		        url: atsUrl+"/getCandidateResumes?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, 
 		        success: function(data) {
 		        	var json = data.data;
 		        	if (data.response === "FAILED") {
@@ -1591,7 +1594,7 @@ function getCandidateSelectionType(){
 		 $('.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateResumes?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, 
+		        url: atsUrl+"/getCandidateResumes?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, 
 		        success: function(data) {
 		        	var json = data.data;
 		        	if (data.response === "FAILED") {
@@ -1666,7 +1669,7 @@ function getCandidateDetails(){
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId, 
+		        url: atsUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId, 
 		        success: function(data) {
 		        	if (data.response === "FAILED") {
 			    		showError(data.responseMessage);
@@ -1856,7 +1859,7 @@ function getSubmittedCandidateDetails(submissionId){
 	if(submissionId != null && submissionId != "" && submissionId != 'undefined'){
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getSubmittedCandidateDetailsForRequriement?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
+		        url: atsUrl+"/getSubmittedCandidateDetailsForRequriement?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
 		        success: function(json) {
 		        	
 		        	 $("input[name=FirstName]").val(json.firstName);
@@ -2061,7 +2064,7 @@ function getRecomededCandidateDetails(candidateId){
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId, 
+		        url: atsUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId, 
 		        success: function(data) {
 		        	if (data.response === "FAILED") {
 			    		showError(data.responseMessage);
@@ -2504,7 +2507,7 @@ editselectedFile.addEventListener("change", function() {
 			        processData: false,
 			        contentType:false,
 		   	        dataType : 'json',
-					url : sourceleadUrl+"/parseResume?"+tokenParamName+"="+tokenValue+"",
+					url : atsUrl+"/parseResume?"+tokenParamName+"="+tokenValue+"",
 					success : function(response) {
 						if (response.response === "AWKWARD") {
 						    location.href = "/errorPage";
@@ -2608,7 +2611,7 @@ function validate_fileupload(fileName)
 		 $("#save_button").attr("disabled", "disabled");
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateRequirementCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&requirementId="+requirementId, 
+		        url: atsUrl+"/validateRequirementCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&requirementId="+requirementId, 
 		        success: function(data) {
 		         	if(data == 'true'){
 			        	  $("#save_button" ).addClass('btn btn-sm btn-primary').val('SUBMIT');
@@ -2638,7 +2641,7 @@ function validate_fileupload(fileName)
 	 if(emailId != null && emailId != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getUserByUserEmail?"+tokenParamName+"="+tokenValue+"&EmailId="+emailId, 
+		        url: atsUrl+"/getUserByUserEmail?"+tokenParamName+"="+tokenValue+"&EmailId="+emailId, 
 		        success: function(json) {
 		        		
 		        		if(json.firstName != null && json.firstName != ''){
@@ -2855,7 +2858,7 @@ function validate_fileupload(fileName)
  function getVendorsByOrgLocationForAddApplicant(){
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getVendorsByOrgLocation?"+tokenParamName+"="+tokenValue+"", 
+	        url: atsUrl+"/getVendorsByOrgLocation?"+tokenParamName+"="+tokenValue+"", 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
@@ -2879,9 +2882,10 @@ function validate_fileupload(fileName)
  <script>
  function getAddApplicantVendorContactList(){
 	 var orgRelationID = $('#vendors').val();
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 $.ajax({
 			    type: "POST",
-		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        url: vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(json) {
 		        	//var json = JSON.parse(data);
 		        	$('#vendorContact').empty();
