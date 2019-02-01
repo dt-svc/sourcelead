@@ -107,8 +107,8 @@
 		<p>Manage Your Job Templates</p>
 		<span>
 		<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
-			<a  class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/addTemplate'/>">Add</a> 
-			<a  class="btn btn-primary btn-sm" href="<c:url value="${appPath}/template" />">View</a>
+			<a  class="btn btn-info btn-sm mr10" href="/ats/addTemplate">Add</a> 
+			<a  class="btn btn-primary btn-sm" href="/ats/template">View</a>
 			</sec:authorize>
 		</span>
 		</div>
