@@ -279,16 +279,16 @@ function indPayrollSalaryStatementPagination(){
             [ 10, 25, 50 ],
             [ '10', '25', '50 ']
         ], 
-        "oLanguage": {
-     		"sSearch": "",
-     		"sZeroRecords": "", "sEmptyTable": ""
-     	},
 		 dom: 'lBfrtip',
         buttons: [{
         	 extend: 'excelHtml5',
              title: 'Salary Statement export'
            }
-         ] 
+         ],
+         "oLanguage": {
+      		"sSearch": "",
+      		"sZeroRecords": "", "sEmptyTable": ""
+      	},
 	
     } );
 }

@@ -39,6 +39,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.INDPayrollCommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -70,6 +71,9 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	
 	@Autowired
 	ProjectsService projectsService;
+	
+	@Autowired
+	INDPayrollCommonUtil iNDPayrollCommonUtil;
 	
 	@Autowired
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
@@ -705,39 +709,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 			public ModelAndView indPayrollAnnualTaxReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
 			 ModelAndView model = new ModelAndView();
              OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			 
-             Calendar orgCal = Calendar.getInstance();
-             orgCal.setTime(orgLocation.getCreatedDate());
- 			 int orgRegisteredYear = orgCal.get(Calendar.YEAR);
-              
-			 String fromYear = null;
-			 String toYear = null;
-			 Calendar c = Calendar.getInstance();
-			 int fYear = c.get(Calendar.YEAR);
-			 int fMonth = c.get(Calendar.MONTH);
-			 if (StringUtils.isNotBlank(orgLocation.getStartMonth())) {
-			 Calendar cal = Calendar.getInstance();
-			 Date date = new SimpleDateFormat("MMMM").parse(orgLocation.getStartMonth());
-			 cal.setTime(date);
-			 int startFinMonth = cal.get(Calendar.MONTH);
-			 if (fMonth >= startFinMonth && fMonth < 12) {
-			 fromYear = Integer.toString(fYear);
-			 toYear = Integer.toString(fYear + 1);
-			 } else {
-			 fromYear = Integer.toString(fYear - 1);
-			 toYear = Integer.toString(fYear);
-			 }
-			 } else {
-			 fromYear = Integer.toString(fYear);
-			 toYear = Integer.toString(fYear);
-			 }
-			 
-			 List<String> finYearList = new ArrayList<>();
-			 while(orgRegisteredYear < Integer.parseInt(toYear)) {
-				 String finYear = String.valueOf(orgRegisteredYear) + " - " + String.valueOf(orgRegisteredYear+1);
-				 finYearList.add(finYear);
-				 orgRegisteredYear++;
-			 }
+             List<String> finYearList = iNDPayrollCommonUtil.getFinancialYearByOrgLocation(orgLocation);
 			 model.addObject("finYearList", finYearList);
 			 model.addObject("sourceleadUrl", sourceleadUrl);
 			 model.setViewName("reports/indPayrollAnnualTaxReport");
@@ -756,39 +728,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 			public ModelAndView indPayrollSalaryStatementReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
 			 ModelAndView model = new ModelAndView();
              OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
-			 Calendar orgCal = Calendar.getInstance();
-             orgCal.setTime(orgLocation.getCreatedDate());
- 			 int orgRegisteredYear = orgCal.get(Calendar.YEAR);
-              
-			 String fromYear = null;
-			 String toYear = null;
-			 Calendar c = Calendar.getInstance();
-			 int fYear = c.get(Calendar.YEAR);
-			 int fMonth = c.get(Calendar.MONTH);
-			 if (StringUtils.isNotBlank(orgLocation.getStartMonth())) {
-			 Calendar cal = Calendar.getInstance();
-			 Date date = new SimpleDateFormat("MMMM").parse(orgLocation.getStartMonth());
-			 cal.setTime(date);
-			 int startFinMonth = cal.get(Calendar.MONTH);
-			 if (fMonth >= startFinMonth && fMonth < 12) {
-			 fromYear = Integer.toString(fYear);
-			 toYear = Integer.toString(fYear + 1);
-			 } else {
-			 fromYear = Integer.toString(fYear - 1);
-			 toYear = Integer.toString(fYear);
-			 }
-			 } else {
-			 fromYear = Integer.toString(fYear);
-			 toYear = Integer.toString(fYear);
-			 }
-			 
-			 List<String> finYearList = new ArrayList<>();
-			 while(orgRegisteredYear < Integer.parseInt(toYear)) {
-				 String finYear =  String.valueOf(orgRegisteredYear+1);
-				 finYearList.add(finYear);
-				 orgRegisteredYear++;
-			 }
+             List<String> finYearList = iNDPayrollCommonUtil.getFinancialYearByOrgLocation(orgLocation);
 			 model.addObject("finYearList", finYearList);
 			 model.addObject("sourceleadUrl", sourceleadUrl);
 			 model.setViewName("reports/indPayrollSalaryStatementReport");
@@ -796,45 +736,11 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 }
 		 
 		 
-		 
-		 
 		 @RequestMapping(value = "/indPayrollESISummaryReport")
 			public ModelAndView indPayrollESISummaryReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
 			 ModelAndView model = new ModelAndView();
              OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			 
-             Calendar orgCal = Calendar.getInstance();
-             orgCal.setTime(orgLocation.getCreatedDate());
- 			 int orgRegisteredYear = orgCal.get(Calendar.YEAR);
-              
-			 String fromYear = null;
-			 String toYear = null;
-			 Calendar c = Calendar.getInstance();
-			 int fYear = c.get(Calendar.YEAR);
-			 int fMonth = c.get(Calendar.MONTH);
-			 if (StringUtils.isNotBlank(orgLocation.getStartMonth())) {
-			 Calendar cal = Calendar.getInstance();
-			 Date date = new SimpleDateFormat("MMMM").parse(orgLocation.getStartMonth());
-			 cal.setTime(date);
-			 int startFinMonth = cal.get(Calendar.MONTH);
-			 if (fMonth >= startFinMonth && fMonth < 12) {
-			 fromYear = Integer.toString(fYear);
-			 toYear = Integer.toString(fYear + 1);
-			 } else {
-			 fromYear = Integer.toString(fYear - 1);
-			 toYear = Integer.toString(fYear);
-			 }
-			 } else {
-			 fromYear = Integer.toString(fYear);
-			 toYear = Integer.toString(fYear);
-			 }
-			 
-			 List<String> finYearList = new ArrayList<>();
-			 while(orgRegisteredYear < Integer.parseInt(toYear)) {
-				 String finYear = String.valueOf(orgRegisteredYear)+"-"+String.valueOf(orgRegisteredYear+1);
-				 finYearList.add(finYear);
-				 orgRegisteredYear++;
-			 }
+             List<String> finYearList = iNDPayrollCommonUtil.getFinancialYearByOrgLocation(orgLocation);
 			 model.addObject("finYearList", finYearList);
 			 model.addObject("sourceleadUrl", sourceleadUrl);
 			 model.setViewName("reports/indPayrollESISummaryReport");
@@ -845,39 +751,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 			public ModelAndView indPayrollPFSummaryReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
 			 ModelAndView model = new ModelAndView();
             OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			 
-             Calendar orgCal = Calendar.getInstance();
-             orgCal.setTime(orgLocation.getCreatedDate());
- 			 int orgRegisteredYear = orgCal.get(Calendar.YEAR);
-              
-			 String fromYear = null;
-			 String toYear = null;
-			 Calendar c = Calendar.getInstance();
-			 int fYear = c.get(Calendar.YEAR);
-			 int fMonth = c.get(Calendar.MONTH);
-			 if (StringUtils.isNotBlank(orgLocation.getStartMonth())) {
-			 Calendar cal = Calendar.getInstance();
-			 Date date = new SimpleDateFormat("MMMM").parse(orgLocation.getStartMonth());
-			 cal.setTime(date);
-			 int startFinMonth = cal.get(Calendar.MONTH);
-			 if (fMonth >= startFinMonth && fMonth < 12) {
-			 fromYear = Integer.toString(fYear);
-			 toYear = Integer.toString(fYear + 1);
-			 } else {
-			 fromYear = Integer.toString(fYear - 1);
-			 toYear = Integer.toString(fYear);
-			 }
-			 } else {
-			 fromYear = Integer.toString(fYear);
-			 toYear = Integer.toString(fYear);
-			 }
-			 
-			 List<String> finYearList = new ArrayList<>();
-			 while(orgRegisteredYear < Integer.parseInt(toYear)) {
-				 String finYear = String.valueOf(orgRegisteredYear)+"-"+String.valueOf(orgRegisteredYear+1);
-				 finYearList.add(finYear);
-				 orgRegisteredYear++;
-			 }
+            List<String> finYearList = iNDPayrollCommonUtil.getFinancialYearByOrgLocation(orgLocation);
 			 model.addObject("finYearList", finYearList);
 			 model.addObject("sourceleadUrl", sourceleadUrl);
 			 model.setViewName("reports/indPayrollPFSummaryReport");
