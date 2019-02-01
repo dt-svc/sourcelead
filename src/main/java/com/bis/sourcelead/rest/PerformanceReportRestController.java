@@ -126,9 +126,9 @@ import com.bis.sourcelead.util.dynamicReport.DynamicReport;
 
 @RestController
 @RequestMapping("/app")
-public class PerformenceReportRestController {
+public class PerformanceReportRestController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(PerformenceReportRestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(PerformanceReportRestController.class);
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
