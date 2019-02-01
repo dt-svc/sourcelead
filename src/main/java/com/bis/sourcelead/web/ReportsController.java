@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -35,6 +36,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -56,6 +58,9 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	TabsService tabsService;
 	
 	@Autowired
+	ReportsUtil reportsUtil;
+	
+	@Autowired
 	private TeamService teamService;
 	
 	@Autowired
@@ -66,6 +71,84 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	
 	@Autowired
 	ProjectsService projectsService;
+	
+	
+	@RequestMapping(value = "/applicantsBackoutReport")
+	public ModelAndView applicantBackout(HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		
+	  	 List<RequirementDTO> requirementsList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocation.getId(), user, userRole,request);
+	  	 
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("requirementsList",requirementsList);
+		 model.setViewName("reports/applicantsBackoutReport");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 return model;
+	}
+	
+	@RequestMapping(value = "/applicantBySource")
+	public ModelAndView applicantBySource(HttpServletRequest request) throws Exception
+	{
+		 
+		 
+	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		
+	  	 ModelAndView model = new ModelAndView();
+	  	 List<RequirementDTO> requirementsDTOList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocation.getId(), user, userRole,request);
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.addObject("requirementsList", requirementsDTOList);
+		 model.setViewName("reports/applicantBySource");
+		 return model;
+	}
+	
+	
+	@RequestMapping(value = "/timeToFill")
+	public ModelAndView timeToFill(HttpServletRequest request) throws Exception
+	{
+		 
+	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		 List<TimeToFillDTO> yearList = new ArrayList<>();
+		 
+		 int year = Calendar.getInstance().get(Calendar.YEAR);
+		 for(int i=0; i<=5; i++) {
+			 TimeToFillDTO timeToFillDTO = new TimeToFillDTO();
+			 timeToFillDTO.setYear(year-i);
+			 yearList.add(timeToFillDTO);
+		 }
+		
+	  	 ModelAndView model = new ModelAndView();
+	  	 List<RequirementDTO> requirementsDTOList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocation.getId(), user, userRole,request);
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.addObject("requirementsList", requirementsDTOList);
+		 model.addObject("currentYear", year);
+		 model.addObject("yearList", yearList);
+		 model.setViewName("reports/timeToFill");
+		 return model;
+	}
+
+	
+	@RequestMapping(value = "/applicantBackoutReportsList")
+	public ModelAndView applicantBackoutReports(HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		
+	  	 List<RequirementDTO> requirementsList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocation.getId(), user, userRole,request);
+	  	 
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("requirementsList",requirementsList);
+		 model.setViewName("reports/applicantsBackoutReportList");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 return model;
+	}
 	
 	@RequestMapping(value = "/recruitersReports")
 	public ModelAndView recruitersReports(HttpServletRequest request,HttpServletResponse response) throws Exception {
@@ -403,6 +486,40 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 model.setViewName("reports/vendorsReport");
 		 return model;
 	 }	
+	 
+	 
+	 @RequestMapping(value = "/applicantDeclineReports")
+		public ModelAndView applicantDeclineReports(HttpServletRequest request) throws Exception
+		{
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			
+		  	 List<RequirementDTO> requirementsList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocation.getId(), user, userRole,request);
+			
+			 ModelAndView model = new ModelAndView();
+			 model.addObject("sourceleadUrl", sourceleadUrl);
+			 model.addObject("requirementsList", requirementsList);
+			 model.setViewName("reports/applicantDecline");
+			 
+			 return model;
+		}
+		
+		@RequestMapping(value = "/applicantDeclineList")
+		public ModelAndView applicantDeclineList(HttpServletRequest request) throws Exception
+		{
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");	
+			 ModelAndView model = new ModelAndView();
+			 List<RequirementDTO> requirementsList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocation.getId(), user, userRole,request);
+			 model.addObject("sourceleadUrl", sourceleadUrl);
+			 model.addObject("requirementsList", requirementsList);
+			 model.setViewName("reports/applicantDeclineList");
+			 
+			 return model;
+		}
 	 
 	 @RequestMapping(value = "/userUsageReport")
 		public ModelAndView userUsageReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
