@@ -167,7 +167,7 @@ public class SubmissionsRestController {
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
 
-	@RequestMapping(value = "/app/getCandidateResumes")
+	@RequestMapping(value = "/getCandidateResumes")
 	@ResponseBody ResponseList<CandidateResumes> getCandidateResumes(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			HttpServletRequest request) throws Exception {
 		ResponseList<CandidateResumes> response = new ResponseList<>();
@@ -310,7 +310,7 @@ public class SubmissionsRestController {
 	   }
 
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_SUBMISSION_TEMPLATE','ROLE_ADD_APPLICANT','ROLE_CROWDSOURCING_REQUIREMENTS')")
-	@RequestMapping(value = {"/app/getRequirmentOrgSubmissionTemplate"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/getRequirmentOrgSubmissionTemplate"}, method = RequestMethod.GET)
 	public String getRequirmentOrgSubmissionTemplate(
 			@RequestParam(value = "requirementId", required = false) Long requirementId) throws Exception {
 
@@ -320,7 +320,7 @@ public class SubmissionsRestController {
 
 	}
 	
-	@RequestMapping(value = {"/app/rest/getRequirmentOrgSubmissionTemplate"}, method = RequestMethod.POST)
+	@RequestMapping(value = {"/rest/getRequirmentOrgSubmissionTemplate"}, method = RequestMethod.POST)
 	@ResponseBody
 	public org.json.simple.JSONArray getRequirmentOrgSubmissionTemplateForMobile(
 			@RequestParam(value = "requirementId", required = false) Long requirementId) throws Exception {
