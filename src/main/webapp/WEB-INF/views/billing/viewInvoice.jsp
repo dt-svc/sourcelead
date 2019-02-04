@@ -9,6 +9,9 @@
 	padding: 0px 0px 0px 0px !important; margin: 0px; font-size: 11px; color: #f12929; font-weight: 500; text-align: center;
 }
 </style>
+<script>
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+</script>
 <script type="text/javascript">
     var invoiceType = '${invoiceType}';
 $(document).ready(function(){
@@ -665,13 +668,13 @@ function getViewInvoice(){
 					result = result +'<div class="col-md-8"> ';
 					if(invoiceType == "Receivable"){
 					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
-					result = result +'<label><strong> <a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'">'+report.clientName+' </a></strong></label>  ';
+					result = result +'<label><strong> <a href="'+vmsUrl+'/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'">'+report.clientName+' </a></strong></label>  ';
 					'</sec:authorize>';
 					}
 					
 					if(invoiceType == "Payables"){
 					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
-					result = result +'<label><strong> <a href="'+sourceleadUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'">'+report.clientName+' </a></strong></label>  ';
+					result = result +'<label><strong> <a href="'+vmsUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'">'+report.clientName+' </a></strong></label>  ';
 					'</sec:authorize>';
 					}
 					'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_VENDOR\')">';
