@@ -76,6 +76,8 @@ public class OrgLocationCacheDTO implements Serializable{
 	
 	private String currencyCode;
 	
+	private String orgDescription;
+	
 	
 	
 	public String getOrgId() {
@@ -356,6 +358,14 @@ public class OrgLocationCacheDTO implements Serializable{
 
 	public void setCurrencyCode(String currencyCode) {
 		this.currencyCode = currencyCode;
+	}
+
+	public String getOrgDescription() {
+		return orgDescription;
+	}
+
+	public void setOrgDescription(String orgDescription) {
+		this.orgDescription = orgDescription;
 	}
 
 	
