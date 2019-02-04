@@ -146,8 +146,8 @@
 	
  
   
-  <script>
-  
+<script>
+ var atsUrl ='${SourceLeadWeb_atsUrl}';
 function closePop(){
 	 $("div.cand-advsrch-popup").hide();
 	 $(".advancedsearch-mask").fadeOut();
@@ -351,14 +351,14 @@ function getCandidatesTableList(){
 	 var searchValue = $("#candDataTableSearch").val();
 	 var requirementId = '${requirementId}';
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getCandidatesListForJobBulkSubmission?searchValue="+searchValue+"&primarySkill="+primarySkill+"&designationType="+designationType+"&noticePeriod="+noticePeriod+"&vendor="+vendor+"&createdDate="+createdDate+"&candidateSkills="+candidateSkills+"&city="+city+"&requirementId="+requirementId;
-	 candidatesListPagination(url,sourceleadUrl);
+	 var url = atsUrl+"/getCandidatesListForJobBulkSubmission?searchValue="+searchValue+"&primarySkill="+primarySkill+"&designationType="+designationType+"&noticePeriod="+noticePeriod+"&vendor="+vendor+"&createdDate="+createdDate+"&candidateSkills="+candidateSkills+"&city="+city+"&requirementId="+requirementId;
+	 candidatesListPagination(url,atsUrl);
 	}
 }
 </script>
 
 <script>
-function candidatesListPagination(url,sourceleadUrl){
+function candidatesListPagination(url,atsUrl){
 	
 	var colIndex = 0;
     $('#candListTable').DataTable( { 
@@ -559,7 +559,7 @@ function submitApplicantsToJob(){
 		 $("#candidatesListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			   $.ajax({
 		          type : "POST",
-		          url: sourceleadUrl+"/submitRecommendationCandidates?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+jobId+"&candidateResume="+candidateResume,    
+		          url: atsUrl+"/submitRecommendationCandidates?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+jobId+"&candidateResume="+candidateResume,    
 		           success :function(data) {
 		        	   if (data.response === "FAILED") {
 		        		   $("#candidatesListLoading").removeAttr("style");
