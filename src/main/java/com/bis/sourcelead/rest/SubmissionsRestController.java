@@ -261,7 +261,7 @@ public class SubmissionsRestController {
 	  * @return
 	  * @throws Exception
 	  */
-	 @RequestMapping(value = "/app/validateRequirementCandidateEmail" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/validateRequirementCandidateEmail" , method = RequestMethod.POST)
 	 public @ResponseBody  String validateRequirementCandidateEmail(@RequestParam(value="email", required=false) String email,@RequestParam(value="requirementId", required=false) Long requirementId,HttpServletRequest request) throws Exception {
 		 	
 		 	String result = null;
@@ -759,7 +759,7 @@ public class SubmissionsRestController {
 	}
 
 	@PreAuthorize("hasRole('ROLE_VIEW_APPLICANT')")
-	@RequestMapping(value = "/app/getSubmissionDetails", method = RequestMethod.POST)
+	@RequestMapping(value = "/getSubmissionDetails", method = RequestMethod.POST)
 	public String getSubmissionDetails(@RequestParam(value = "submissionId", required = false) Long submissionId,
 			HttpServletRequest request) throws Exception {
 
@@ -819,7 +819,7 @@ public class SubmissionsRestController {
 	
 	
 	
-	@RequestMapping(value = "/app/getSubmittedCandidateDetailsForRequriement", method = RequestMethod.GET)
+	@RequestMapping(value = "/getSubmittedCandidateDetailsForRequriement", method = RequestMethod.GET)
 	public RequirementSubmissionTemplateFields getSubmittedCandidateDetailsForRequriement(@RequestParam(value = "submissionId", required = true) Long submissionId) throws Exception {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
