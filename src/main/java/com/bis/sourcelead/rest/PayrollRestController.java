@@ -10,7 +10,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -36,41 +35,35 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.AssetDTO;
-import com.bis.sourcelead.dto.DepartmentDTO;
 import com.bis.sourcelead.dto.PayrollPaySlipIndDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
-import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
-import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Payroll;
 import com.bis.sourcelead.entity.PayrollPaySlipInd;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.indPayroll.dto.INDPayrollDTO;
+import com.bis.sourcelead.indPayroll.dto.IndEmployeePayrollDTO;
+import com.bis.sourcelead.indPayroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.indPayroll.entity.AssociatePayrollPayheadHistory;
+import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
+import com.bis.sourcelead.indPayroll.service.AssociatePayrollPayheadHistoryService;
+import com.bis.sourcelead.indPayroll.service.IndPayrollService;
+import com.bis.sourcelead.indPayroll.service.IndPaysheetFrequencyService;
+import com.bis.sourcelead.indPayroll.utill.INDPayrollCommonUtil;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
-import com.bis.sourcelead.payroll.dto.INDPayrollDTO;
-import com.bis.sourcelead.payroll.dto.IndEmployeePayrollDTO;
-import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
-import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
-import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
-import com.bis.sourcelead.payroll.service.IndPayrollService;
-import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesHistoryService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.PayrollPaySlipIndService;
 import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.PayrollService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.INDPayrollCommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.util.dynamicReport.DynamicReport;
 import com.bis.sourcelead.util.dynamicReport.IndPaySlipPdf;
-import com.bis.sourcelead.web.IndianPayrollController;
 
 /**
  * 
@@ -133,7 +126,7 @@ public class PayrollRestController {
 	 *  
 	 * @throws Exception
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(IndianPayrollController.class);
+	private static final Logger logger = LoggerFactory.getLogger(PayrollRestController.class);
 	
 	@RequestMapping(value = "/getPayrollById", method = RequestMethod.POST)
 	public @ResponseBody String getPayrollById(Long payrollId) throws Exception {
