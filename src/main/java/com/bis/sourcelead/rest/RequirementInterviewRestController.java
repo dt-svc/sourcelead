@@ -113,7 +113,7 @@ public class RequirementInterviewRestController {
 	@Autowired
 	private CandidateService candidateService;
 	
-	@RequestMapping(value = "/app/getAllInterviewers")
+	@RequestMapping(value = "/getAllInterviewers")
 	public @ResponseBody ResponseList<User> getAllApprovers(HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ResponseList<User> response = new ResponseList<>();
@@ -133,7 +133,7 @@ public class RequirementInterviewRestController {
 		return response;
 	}
 	
-	@RequestMapping(value = "/app/getAllShortListCandidates")
+	@RequestMapping(value = "/getAllShortListCandidates")
 	public @ResponseBody ResponseList<RequirementSubmission> getAllShortListCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,
 			                                              @RequestParam(value="existingApplicantsIds", required=false) List<Long> existingApplicantsIds,
 			                                              @RequestParam(value="isClientInterview", required=false) String isClientInterview,
@@ -181,7 +181,7 @@ public class RequirementInterviewRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasRole('ROLE_ADD_INTERVIEW')")
-	@RequestMapping(value = "/app/saveInterview" , method = RequestMethod.POST)
+	@RequestMapping(value = "/saveInterview" , method = RequestMethod.POST)
 	   public String saveInterview(@RequestParam(value="jsonData", required=false) String json, HttpServletRequest request) throws Exception {
 			
 			JSONObject jsonObj = new JSONObject(json);
@@ -502,7 +502,7 @@ public class RequirementInterviewRestController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/app/getInterviewSlotDates")
+	 @RequestMapping(value = "/getInterviewSlotDates")
 		public ResponseList<String> getInterviewSlotDates(@RequestParam(value = "applicantSubmissionIds", required = false) String applicantSubmissionIds,
 				@RequestParam(value = "interviewerIds", required = false) String interviewerIds, HttpServletRequest request) throws Exception {
 		 	ResponseList<String> response = new ResponseList<>();
@@ -563,7 +563,7 @@ public class RequirementInterviewRestController {
 		
 	 
 	 
-	 @RequestMapping(value = "/app/getInterviewerAndApplicantsDetails")
+	 @RequestMapping(value = "/getInterviewerAndApplicantsDetails")
 		public @ResponseBody Response<RequirementInterviewer> getInterviewerAndApplicantsDetails(
 				@RequestParam(value = "applicantSubId", required = false) String applicantSubId,
 				@RequestParam(value = "interviewerIds", required = false) String interviewerIds,
@@ -705,7 +705,7 @@ public class RequirementInterviewRestController {
 			return response;
 		}
 	 
-	 @RequestMapping(value = {"/app/getInterviewsListBySubmission","/rest/getInterviewsListBySubmission"}, method = RequestMethod.POST)
+	 @RequestMapping(value = {"/getInterviewsListBySubmission","/rest/getInterviewsListBySubmission"}, method = RequestMethod.POST)
 		public ModelAndView getInterviewsListBySubmission(@RequestParam(value = "submissionId", required = false) Long submissionId,
 							@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception{
 			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");

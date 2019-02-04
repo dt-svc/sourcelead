@@ -69,7 +69,7 @@ function candidateEducationList(candidateId){
 	 
 	 $.ajax({  
           type : "GET",
-          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
         	 	if (response && response.response === "INVALID_DATA") {
         		    showError(response.responseMessage);
@@ -385,7 +385,7 @@ function addEducation(candidateId) {
 function EditEducation(candidateId,candidateEducationId) {
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+ "/getCandidateEducationBycandidateIdandEducationId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,
+		url : atsUrl+ "/getCandidateEducationBycandidateIdandEducationId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,
 		success : function(response) {
 			if (response && response.response === "INVALID_DATA") {
 			    showError(response.responseMessage);
@@ -649,7 +649,7 @@ function candidateEducationStore(candidateId){
 			$.ajax({
 					type : "POST",
 					data : formData,
-					url : sourceleadUrl+"/storeCandidateEducation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
+					url : atsUrl+"/storeCandidateEducation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 					success :function(response) {
 						if (response && response.response === "INVALID_DATA") {
 						    showError(response.responseMessage);
@@ -767,7 +767,7 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/removeCandidateEducationBycandidateIdandcandidateEducationId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,        
+          url: atsUrl+"/removeCandidateEducationBycandidateIdandcandidateEducationId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,        
           success :function(result) {
         	  
 	        		if (result && result.response === "INVALID_DATA") {
@@ -947,7 +947,7 @@ function clearSearchKey() {
 			$.ajax({
 						type : "POST",
 						data : formData,
-						url : sourceleadUrl+ "/upDateCandidateEducationByCandidateIdAndCandidateEducationId?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
+						url : atsUrl+ "/upDateCandidateEducationByCandidateIdAndCandidateEducationId?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
 						success : function(result) {
 							closePopup();
 							candidateEducationList(candidateId);
@@ -975,7 +975,7 @@ function clearSearchKey() {
 	$('#nameIdDiv').find('p.jquery_form_error_message').remove();
 	$.ajax({
 		type: "POST",
-	    url: sourceleadUrl+"/validateEduname?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&name="+name, 
+	    url: atsUrl+"/validateEduname?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&name="+name, 
         success: function(response) {
         	if (response && response.response === "INVALID_DATA") {
         	    showError(response.responseMessage);

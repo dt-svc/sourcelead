@@ -6,6 +6,7 @@
 
 
 <script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
  window.onload = function() { 
 	 requirementTemplateList();
 };
@@ -18,7 +19,7 @@
 			</div>
 	     </c:if>
     <div class="pull-left"><h2>Job Templates</h2></div>
-	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Job Templates</div>
+	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/orgTemplates"> Templates</a> &raquo; Job Templates</div>
   </section>
   
   <div class="overflow_Auto vendor_wrap">
@@ -27,7 +28,7 @@
 	 <div class="reportHead reportHeadDataTab clearfix">
 	    <ul class="pull-right list-unstyled list-inline">
           <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE')">
-          	<li> <a href="<c:url value='${appPath}/addTemplate'/>" class="newAdBtn">+ Job Template</a></li>
+          	<li> <a href="/ats/addTemplate" class="newAdBtn">+ Job Template</a></li>
          </sec:authorize>	    
 		</ul>
 	</div>	    
@@ -46,11 +47,10 @@
 </script>   
 <script>
 function requirementTemplateList(){  
-	
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getRequirementTemplateListByOrgLocationsId?"+tokenParamName+"="+tokenValue+"",    
+           url: atsUrl+"/getRequirementTemplateListByOrgLocationsId?"+tokenParamName+"="+tokenValue+"",    
             success :function(data) {
                  /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
                		
@@ -76,7 +76,7 @@ function requirementTemplateList(){
 	                    	 result = result +"<tr>"; 
 	                    	 result = result +"<td>";
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\',\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">'; 
-		                     	result = result +'<div class="proj_show tbldata-dotdot"><a href="<c:url value="/app/requirementTemplateSummary?requirementId='+opt.id+'"/>"><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+'</span><i class="fa fa-binoculars"></i></div></a>';
+		                     	result = result +'<div class="proj_show tbldata-dotdot"><a href="/ats/requirementTemplateSummary?requirementId='+opt.id+'"><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+'</span><i class="fa fa-binoculars"></i></div></a>';
 		                     '</sec:authorize>';
 		                     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\',\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">'; 
 		                     	result = result +'<div class="tbldata-dotdot"><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+'</span></div>';
@@ -188,7 +188,7 @@ function deleteRequirementTemplate(requirementId){
 	if (message == true) {
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateRequirementTemplate?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
+		    url: atsUrl+"/terminateRequirementTemplate?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
    		    success: function(data) {
    		    	if( data.indexOf('Sign In') >= 0){
 		    		location.replace(sourceleadUrl);
@@ -197,7 +197,7 @@ function deleteRequirementTemplate(requirementId){
         			 location.replace(sourceleadUrl+"/errorPage");
         		 }
         		 else{
-        			 location.replace(sourceleadUrl+"/template");
+        			 location.replace(atsUrl+"/template");
         			 
         		 }
    		    }
