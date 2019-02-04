@@ -44,6 +44,7 @@ import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Repository
 public class UserRoleDaoImpl implements UserRoleDao {
@@ -160,6 +161,9 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (userRole != null) {
+				if(StringUtils.isBlank(userRole.getUuid())) {
+					userRole.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				}
 				session.saveOrUpdate(userRole);
 			}
 			logger.debug("UserRole Added Successfully");
@@ -1590,5 +1594,30 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return userRoleList;
 
 	
+	}
+
+	@Override
+	@Transactional
+	public List<UserRole> getAllUserRoles() throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole left join fetch userRole.user left join fetch userRole.roles roles "
+				+ " left join fetch roles.roleHierarchy  ";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).list();
+		return userRoleList;
+
+	
+	}
+
+	@Override
+	@Transactional
+	public String getUserRoleUUIDByUserRoleId(Long userRoleId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select userRole.uuid from UserRole userRole where userRole.id = :userRoleId";
+		List<String> UUID = session.createQuery(query).setLong("userRoleId", userRoleId).list();
+		return UUID.get(0);
+
+		
 	}
 }

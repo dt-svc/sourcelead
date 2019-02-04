@@ -140,7 +140,7 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 	public List<OrgLocations> getAllOrgLocations() throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String query = "from OrgLocations orgloc left join fetch orgloc.org ";
+		String query = "from OrgLocations orgloc left join fetch orgloc.user left join fetch orgloc.org org left join fetch org.user  ";
 		
 		List<OrgLocations> locationList = session.createQuery(query).list();
 		return locationList;

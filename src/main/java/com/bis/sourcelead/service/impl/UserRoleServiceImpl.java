@@ -56,6 +56,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.ReportsUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service 
 public class UserRoleServiceImpl implements UserRoleService{
@@ -883,6 +884,16 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public UserRole getProjectmemberUserDetailsByUserIdAndLocationId(Long userId, Long locationId, String designationType)
 			throws Exception {
 		return userRoleDao.getProjectmemberUserDetailsByUserIdAndLocationId(userId,locationId,designationType);
+	}
+
+	@Override
+	public List<UserRole> getAllUserRoles() throws Exception {
+		return userRoleDao.getAllUserRoles();
+	}
+
+	@Override
+	public String getUserRoleUUIDByUserRoleId(Long userRoleId) throws Exception {
+		return userRoleDao.getUserRoleUUIDByUserRoleId(userRoleId);
 	}
 
 

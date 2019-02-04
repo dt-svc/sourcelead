@@ -149,7 +149,10 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
         emailMessage.setFromEmail(loginUser.getEmail());
         emailMessage.setCreatedBy(loginUser.getUserCode());
         emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-       
+        // URL for page redirection
+        String redirectURL = "/projectSummary-params-projectUUID="+projectBudget.getProjectId().getProjectUUID()+"-and-projectClientUUID="+pc.getUuid()+"-and-tabType=projectMembers";
+        Long redirectOrgLocationId = projects.getOrgLocationsId().getId();
+        
         Map<String, String> globalVarsMap = new HashMap<String, String>();
         globalVarsMap.put("projectName", projects.getProjectName());
         globalVarsMap.put("approverName", approverUse.getFullName());
@@ -161,8 +164,8 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
         globalVarsMap.put("estimatedHours", String.valueOf(df.format(projectBudget.getEstimatedHours())));
         
         StringBuilder linkBuild = new StringBuilder();
-        globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-        
+        globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append
+                             ("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Budget Request</div></a>").toString());
         EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
         
         String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
