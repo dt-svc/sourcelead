@@ -226,7 +226,7 @@ right: 15px;
 				 <option value="" >Select Timezone</option>
 				 <c:forEach items="${timezoneList}" var="timezone">
 	                         <c:choose>
-	                             <c:when test="${timezone.timeZoneId eq SourceLeadWeb_timeZoneId}">
+	                             <c:when test="${timezone.id eq SourceLeadWeb_timeZoneId}">
 	                                 <option value= "${timezone.id}" selected="selected">${timezone.timeZoneId}</option>
 	                             </c:when>
 	                             <c:otherwise>
