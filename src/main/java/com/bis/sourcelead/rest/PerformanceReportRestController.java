@@ -13,14 +13,18 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -64,6 +69,8 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -79,14 +86,21 @@ import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.reports.dao.ClientReportDao;
 import com.bis.sourcelead.reports.service.ApplicantDeclineService;
 import com.bis.sourcelead.reports.service.ApplicantsBackoutReportService;
 import com.bis.sourcelead.reports.service.ApplicantsBySourceService;
+import com.bis.sourcelead.reports.service.ClientReportService;
+import com.bis.sourcelead.reports.service.JobsPipelineReportService;
 import com.bis.sourcelead.reports.service.TimeToFillService;
 import com.bis.sourcelead.reportsDTO.ApplicantDeclineDTO;
 import com.bis.sourcelead.reportsDTO.ApplicantsBackoutDTO;
 import com.bis.sourcelead.reportsDTO.ApplicantsBySourceDTO;
+import com.bis.sourcelead.reportsDTO.ClientReportsDTO;
+import com.bis.sourcelead.reportsDTO.ContractReportsDTO;
+import com.bis.sourcelead.reportsDTO.InvoiceReportDTO;
 import com.bis.sourcelead.reportsDTO.JobFilterDTO;
+import com.bis.sourcelead.reportsDTO.JobPipelineDTO;
 import com.bis.sourcelead.reportsDTO.TimeToFillDTO;
 import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.service.CandidateService;
@@ -126,9 +140,9 @@ import com.bis.sourcelead.util.dynamicReport.DynamicReport;
 
 @RestController
 @RequestMapping("/app")
-public class PerformenceReportRestController {
+public class PerformanceReportRestController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(PerformenceReportRestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(PerformanceReportRestController.class);
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -174,6 +188,9 @@ public class PerformenceReportRestController {
 
 	@Autowired
 	TabsService tabsService;
+	
+	@Autowired
+	JobsPipelineReportService jobsPipelineReportService;
 	
 	@Autowired
 	OrgRelationsService orgRelationService;
@@ -259,6 +276,459 @@ public class PerformenceReportRestController {
 	 @Autowired
 	 private ApplicantsBySourceService applicantsBySourceService;
 	 
+	 @Autowired
+	 ClientReportService clientReportService;
+	 
+	 @Autowired
+	 ClientReportDao clientReportDao;
+	 
+	 @SuppressWarnings("unchecked")
+		@RequestMapping(value = "/getTopFiveConracts", method = RequestMethod.GET)
+		public List<ContractReportsDTO> getTopTenFiveConracts(ContractReportsDTO contractReportsDTO, HttpServletRequest request) throws Exception {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			List<ContractReportsDTO> contractList = new ArrayList<>();
+			Map<String, Integer> clientcontractList = clientReportService.getContractsListOFAllClients(orgLocation,user,userRoleName,contractReportsDTO);
+			
+			for(Map.Entry<String,Integer> entry : clientcontractList.entrySet()){
+				ContractReportsDTO conDto = new ContractReportsDTO();
+				if(!"MsaCount".equalsIgnoreCase(entry.getKey()) && !"SowCount".equalsIgnoreCase(entry.getKey())
+						&& !"NdaCount".equalsIgnoreCase(entry.getKey()) && !"NsaCount".equalsIgnoreCase(entry.getKey())){
+					conDto.setClientName(entry.getKey());
+					conDto.setContractsCount(entry.getValue());
+				}
+				contractList.add(conDto);
+			}
+			
+			Collections.sort(contractList, new Comparator() {
+				@Override
+				public int compare(Object obj1, Object obj2)
+				{
+					ContractReportsDTO condto1 = (ContractReportsDTO) obj1;
+					ContractReportsDTO condto2 = (ContractReportsDTO) obj2;
+					if(condto1.getContractsCount() > condto2.getContractsCount()) return -1;
+					if(condto1.getContractsCount() < condto2.getContractsCount()) return 1;
+					return 0;
+				}
+			});
+			
+			if(clientcontractList != null){
+				ContractReportsDTO conDto = new ContractReportsDTO();
+				if(clientcontractList.get("MsaCount") != null)
+					conDto.setMsaCount(clientcontractList.get("MsaCount"));
+				else
+					conDto.setMsaCount(0);
+				if(clientcontractList.get("SowCount") != null)
+					conDto.setSowCount(clientcontractList.get("SowCount"));
+				else
+					conDto.setSowCount(0);
+				if(clientcontractList.get("NdaCount") != null)
+					conDto.setNdaCount(0);
+				else
+					conDto.setNdaCount(0);
+				if(clientcontractList.get("NsaCount") != null)
+					conDto.setNsaCount(0);
+				else
+					conDto.setNsaCount(0);	
+				contractList.add(conDto);
+			}
+			
+			return contractList;
+		}
+		
+		@RequestMapping(value = "/getTopFiveReceivablesReports", method = RequestMethod.GET)
+		public InvoiceReportDTO getTopFiveReceivsblesReports(@RequestParam(value = "type", required = false) String type,@RequestParam(value = "dateFrequency", required = false) String dateFrequency,@RequestParam(value = "fromDate", required = false) String fromDate,@RequestParam(value = "toDate", required = false) String toDate,HttpServletRequest request) throws Exception {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			return clientReportService.getTopFiveReceivsblesReports(orgLocation,user,type,dateFrequency,fromDate,toDate);
+			
+		}
+		
+		@RequestMapping(value = "/getTopTenClientReports", method = RequestMethod.GET)
+
+		public List<ClientReportsDTO> getTopTenClientReports(@RequestParam(value = "frequency", required = false) String frequency,@RequestParam(value = "fromDate", required = false) String fromDate,@RequestParam(value = "toDate", required = false) String toDate,HttpServletRequest request) throws Exception {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			List<ClientReportsDTO> clientDtoList = new ArrayList<>();
+			Date[] freqDates = new Date[2];
+			if("Custom".equalsIgnoreCase(frequency)){
+				freqDates[0] = commonUtil.getDateFormat(fromDate);
+				freqDates[1] = commonUtil.getDateFormat(toDate);
+			}else{
+				freqDates = reportsUtil.getJobFilterDate(frequency,orgLocation);
+			}
+			List<OrgRelations> clientList =  clientReportService.getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(), user.getId());
+			if(clientList != null && clientList.size() > 0) {
+				for(OrgRelations orgRelation : clientList){
+					ClientReportsDTO clientDto = new ClientReportsDTO();
+					if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue()== orgLocation.getId().longValue()){
+						clientDto.setClientName(orgRelation.getResponderLocationId().getOrgLocationName());
+					}else{
+						clientDto.setClientName(orgRelation.getLocationId().getOrgLocationName());
+					}
+					clientDto.setOrgRelationUUID(orgRelation.getUUID());
+					List<OrgSpoc> spocList = clientReportService.getClientSpocListByOrgRelationid(orgRelation.getId(),orgLocation.getId(),user.getId(),freqDates);
+					if(spocList != null && spocList.size() > 0)
+						clientDto.setNoOfContacts(spocList.size());
+					else
+						clientDto.setNoOfContacts(0);
+					
+					List<Requirement> reqList = clientReportService.getClientJobsByOrgRelationId(orgRelation.getId(),orgLocation.getId(),user.getId(),freqDates,null);
+					if(reqList != null && reqList.size() > 0)
+						clientDto.setReleasedJobs(reqList.size());
+					else
+						clientDto.setReleasedJobs(0);
+					for(Requirement req : reqList){
+						Map<String,Integer> subListCount = clientReportService.getSubmissionListByRequirementId(req.getId(),orgLocation.getId(),user.getId(),freqDates);
+						clientDto.setSubmissionCount(subListCount.get("submissionCount"));
+						clientDto.setSubmissionCount(subListCount.get("hiredCount"));
+					}
+					ContractReportsDTO contractReportsDTO = new ContractReportsDTO();
+					contractReportsDTO.setFrequency(frequency);
+					if("Custom".equalsIgnoreCase(frequency)){
+						contractReportsDTO.setFromDate(commonUtil.dateStrFromDate(freqDates[0]));
+						contractReportsDTO.setToDate(commonUtil.dateStrFromDate(freqDates[1]));
+					}
+					
+					List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocation, user,orgRelation.getId(),userRoleName,contractReportsDTO);
+					if(conList != null && conList.size() > 0){
+						clientDto.setTotalContracts(conList.size());
+					}else{
+						clientDto.setTotalContracts(0);
+					}
+					
+					List<Invoice> invoiceList = clientReportService.getClientBasedInvoiceLists(orgRelation.getId(), orgLocation.getId(), Constants.RECEIVABLE,null,freqDates);
+					if(invoiceList != null && invoiceList.size() > 0) {
+						float paidTotalAmount = 0f;
+						for (Invoice invoice : invoiceList) {
+							if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.OVER_DUE.equalsIgnoreCase(invoice.getPaymentStatus())) && 
+									!Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())){
+								Float paidAmount = Float.parseFloat(invoice.getTotal()) - Float.parseFloat(invoice.getDueAmount());
+								paidTotalAmount = paidTotalAmount + paidAmount;
+								clientDto.setTotalPaidAmount(paidTotalAmount);
+							}
+						}
+						if(clientDto.getTotalPaidAmount() != 0)
+						clientDtoList.add(clientDto);
+					}
+					
+					
+				}
+			}
+			
+			clientDtoList.sort(new Comparator<ClientReportsDTO>() {
+				@Override
+				public int compare(ClientReportsDTO o1, ClientReportsDTO o2) {
+					if(o1 != null && (Float)o1.getTotalPaidAmount() != null) {
+						return ((Float)o2.getTotalPaidAmount()).compareTo((Float)o1.getTotalPaidAmount());
+					}
+					return 0;
+				}
+			});
+			return clientDtoList;
+		}
+
+	   
+		
+		@RequestMapping(value = "/getTopTenClientContactReports", method = RequestMethod.GET)
+		public List<ClientReportsDTO> getTopTenClientContactReports(@RequestParam(value = "frequency", required = false) String frequency,@RequestParam(value = "fromDate", required = false) String fromDate,@RequestParam(value = "toDate", required = false) String toDate,HttpServletRequest request) throws Exception {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			List<ClientReportsDTO> clientDtoList = new ArrayList<>();
+			Date[] freqDates = new Date[2];
+			if("Custom".equalsIgnoreCase(frequency)){
+				freqDates[0] = commonUtil.getDateFormat(fromDate);
+				freqDates[1] = commonUtil.getDateFormat(toDate);
+			}else{
+				freqDates = reportsUtil.getJobFilterDate(frequency,orgLocation);
+			}
+			List<OrgRelations> clientList =  clientReportService.getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(), loginUser.getId());
+			if(clientList != null && clientList.size() > 0) {
+				for(OrgRelations orgRelation : clientList){
+					ClientReportsDTO clientDto = new ClientReportsDTO();
+					if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue()== orgLocation.getId().longValue()){
+						clientDto.setClientName(orgRelation.getResponderLocationId().getOrgLocationName());
+					}else{
+						clientDto.setClientName(orgRelation.getLocationId().getOrgLocationName());
+					}
+					clientDto.setOrgRelationUUID(orgRelation.getUUID());
+					List<OrgSpoc> spocList = clientReportService.getClientSpocListByOrgRelationid(orgRelation.getId(),orgLocation.getId(),loginUser.getId(),freqDates);
+					if(spocList != null && spocList.size() > 0)
+						clientDto.setNoOfContacts(spocList.size());
+					else
+						clientDto.setNoOfContacts(0);
+					
+
+					for(OrgSpoc spoc : spocList){
+						StringBuilder sb = new StringBuilder();
+						if(StringUtils.isNotBlank(spoc.getClientUser().getFirstName()) && StringUtils.isNotBlank(spoc.getClientUser().getLastName()))
+							sb.append(spoc.getClientUser().getFirstName()).append(" ").append(spoc.getClientUser().getLastName());
+						else
+							sb.append(spoc.getClientUser().getFirstName());
+						clientDto.setClientContactName(sb.toString());
+						clientDto.setOrgSpocId(spoc.getId());
+						clientDto.setOrgSpocUUID(spoc.getUUID());
+						
+						List<Requirement> reqList = clientReportService.getClientJobsByOrgRelationId(orgRelation.getId(),orgLocation.getId(),loginUser.getId(),freqDates,spoc.getId());
+						if(reqList != null && reqList.size() > 0)
+							clientDto.setReleasedJobs(reqList.size());
+						else
+							clientDto.setReleasedJobs(0);
+						
+						for(Requirement req : reqList){
+							Map<String,Integer> subListCount = clientReportService.getSubmissionListByRequirementId(req.getId(),orgLocation.getId(),loginUser.getId(),freqDates);
+							clientDto.setSubmissionCount(subListCount.get("submissionCount"));
+							clientDto.setSubmissionCount(subListCount.get("hiredCount"));
+						}
+						ContractReportsDTO contractReportsDTO = new ContractReportsDTO();
+						contractReportsDTO.setFrequency(frequency);
+						if("Custom".equalsIgnoreCase(frequency)){
+							contractReportsDTO.setFromDate(commonUtil.dateStrFromDate(freqDates[0]));
+							contractReportsDTO.setToDate(commonUtil.dateStrFromDate(freqDates[1]));
+						}
+						contractReportsDTO.setContactUser(spoc.getClientUser().getId());
+						List<Contracts> conList = clientReportDao.getContractsListOFAllClients(orgLocation, loginUser,orgRelation.getId(),userRoleName,contractReportsDTO);
+						if(conList != null && conList.size() > 0){
+							clientDto.setTotalContracts(conList.size());
+						}else{
+							clientDto.setTotalContracts(0);
+						}
+						
+						List<Invoice> invoiceList = clientReportService.getClientBasedInvoiceLists(orgRelation.getId(), orgLocation.getId(), Constants.RECEIVABLE,spoc.getClientUser().getId(),freqDates);
+						float paidTotalAmount = 0f;
+						for (Invoice invoice : invoiceList) {
+							if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.OVER_DUE.equalsIgnoreCase(invoice.getPaymentStatus())) && 
+									!Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())){
+								Float paidAmount = Float.parseFloat(invoice.getTotal()) - Float.parseFloat(invoice.getDueAmount());
+								paidTotalAmount = paidTotalAmount + paidAmount;
+								clientDto.setTotalPaidAmount(paidTotalAmount);
+							}
+						}
+						if(clientDto.getTotalPaidAmount() != 0)
+						clientDtoList.add(clientDto);
+					}
+					
+				}
+			}
+			
+			clientDtoList.sort(new Comparator<ClientReportsDTO>() {
+				@Override
+				public int compare(ClientReportsDTO o1, ClientReportsDTO o2) {
+					if(o1 != null && (Float)o1.getTotalPaidAmount() != null) {
+						return ((Float)o2.getTotalPaidAmount()).compareTo((Float)o1.getTotalPaidAmount());
+					}
+					return 0;
+				}
+			});
+			return clientDtoList;
+		}
+		
+		@RequestMapping(value = "/getClientreportSummary", method = RequestMethod.POST)
+		public ClientReportsDTO getClientreportSummary(@RequestParam(value = "orgRelationUUID", required = false) String orgRelationUUID,@RequestParam(value = "orgSpocUUID", required = false) String orgSpocUUID,@RequestParam(value = "invoiceType", required = false) String invoiceType,HttpServletRequest request) throws Exception {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			
+			Float totalPaidAmount = 0f;
+			Float totalDraftAmount = 0f;
+			Float dueAfterInvoiceAmount = 0f;
+			Float openInvoiceTotal = 0f;
+			int totalPaidCount = 0;
+			
+			int draftCount = 0;
+			int waitingCount = 0;
+			int signCount = 0;
+			int counterSignCount = 0;
+			int finalizedCount = 0;
+			int expiredCount = 0;
+			int rejectedCount = 0;
+			
+			int openCount = 0;
+			int onholdCount = 0;
+			int cancelledCount = 0;
+			int filledClosedCount = 0;
+			int unfilledClosedCount = 0;
+			int closedCount = 0;
+			int totalPostedCount = 0;
+			
+			Date todayDate = new Date();
+			ClientReportsDTO clientReportDTO = new ClientReportsDTO();
+			OrgRelations orgRel = null;
+			if(orgRelationUUID != null && orgRelationUUID !="") {
+				orgRel = orgRelationsService.getOrgRelationsByUUID(orgRelationUUID);
+				if(orgRel.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					clientReportDTO.setClientName(orgRel.getResponderLocationId().getOrgLocationName());
+				}
+				if(orgRel.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					clientReportDTO.setClientName(orgRel.getLocationId().getOrgLocationName());
+				}
+			}
+			OrgSpoc spoc = null;
+			if(orgSpocUUID != null && orgSpocUUID != "") {
+				 spoc = orgSpocService.getOrgSpocByUUID(orgSpocUUID);
+				StringBuilder spocName = new StringBuilder();
+					if(spoc.getClientUser().getLastName() != null) {
+						clientReportDTO.setClientContactName(spocName.append(spoc.getClientUser().getFirstName()).append(" ").append(spoc.getClientUser().getLastName()).toString());
+					}else {
+						clientReportDTO.setClientContactName(spoc.getClientUser().getFirstName());
+					}
+			}
+			
+			List<Invoice> clientInvoiceList = null;
+			if(orgRel != null) {
+				 clientInvoiceList = clientReportService.getClientBasedInvoiceLists(orgRel.getId(), orgLocation.getId(), invoiceType,null,null);
+			}else if(spoc != null) {
+				 clientInvoiceList = clientReportService.getClientBasedInvoiceLists(spoc.getOrgRelations().getId(), orgLocation.getId(), invoiceType,spoc.getClientUser().getId(),null);
+			}
+			
+			if(clientInvoiceList != null && clientInvoiceList.size() >0) {
+				for(Invoice invoice : clientInvoiceList) {
+					if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.OVER_DUE.equalsIgnoreCase(invoice.getPaymentStatus())) && 
+							!Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())){
+						Float paidAmount = Float.parseFloat(invoice.getTotal()) - Float.parseFloat(invoice.getDueAmount());
+						totalPaidAmount += paidAmount;
+						if(Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus())) {
+							totalPaidCount += 1;
+						}
+					}
+					
+					if(Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) || Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())){
+						totalDraftAmount += Float.parseFloat(invoice.getDueAmount()) ;
+					}
+					
+					
+					if(!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) &&
+							(Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.OVER_DUE.equalsIgnoreCase(invoice.getPaymentStatus()))){
+						
+						String dueDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invoice.getDueDate());
+						Date invoiceDueDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),dueDate);
+						
+						Float dueAmount = Float.parseFloat(invoice.getDueAmount());
+						
+						if(dueAmount > 0){
+						
+							if(todayDate.after(invoiceDueDate)){
+								dueAfterInvoiceAmount += Float.parseFloat(invoice.getDueAmount());
+							}else{
+								openInvoiceTotal += Float.parseFloat(invoice.getDueAmount());
+							}
+						}
+						
+						
+					}
+				}
+			}
+			
+			ContractReportsDTO contractReportsDTO = new ContractReportsDTO();
+			List<Contracts> clientContractsList = null;
+			if(orgRelationUUID != null && orgRelationUUID !="") {
+				 clientContractsList = clientReportService.getClientBasedContractsLists(orgLocation,user,userRoleName,orgRel.getId(),contractReportsDTO);
+			}else if(orgSpocUUID != null && orgSpocUUID != "") {
+				contractReportsDTO.setContactUser(spoc.getClientUser().getId());
+				 clientContractsList = clientReportService.getClientBasedContractsLists(orgLocation,user,userRoleName,spoc.getOrgRelations().getId(),contractReportsDTO);
+			}
+			
+			if(clientContractsList != null && clientContractsList.size() > 0) {
+				for (Contracts contracts : clientContractsList) {
+					
+					if(Constants.DRAFT.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())) {
+						draftCount += 1;
+					}else if(Constants.WAITING_FOR_APPROVER.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())) {
+						waitingCount += 1;
+					}else if(Constants.WAITING_TO_BE_SIGNED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus()) || Constants.PENDING.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())) {
+						signCount += 1;
+					}else if(Constants.WAITING_TO_BE_VERIFY.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())) {
+						counterSignCount += 1;
+					}else if(Constants.FINALIZED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())) {
+						finalizedCount =+ 1;
+					}else if(Constants.EXPIRED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())) {
+						expiredCount += 1;
+					}else if(Constants.REJECTED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())) {
+						rejectedCount += 1;
+					}
+				}
+			}
+			
+			List<Requirement> reqList = null;
+			if(orgRelationUUID != null && orgRelationUUID !="") {
+				 reqList = clientReportService.getClientJobsByOrgRelationId(orgRel.getId(),orgLocation.getId(),user.getId(),null,null);
+			}else if(orgSpocUUID != null && orgSpocUUID != "") {
+				reqList = clientReportService.getClientJobsByOrgRelationId(spoc.getOrgRelations().getId(),orgLocation.getId(),user.getId(),null,spoc.getClientUser().getId());
+			}
+			if(reqList != null && reqList.size() > 0) {
+				int submissionCount = 0;
+				int shortListCount  = 0;
+				int submitToClientCount  = 0;
+				int interviewedCount  = 0;
+				int offermadeCount  = 0;
+				int offeracceptedCount  = 0;
+				int rejectCount  = 0;
+				for(Requirement req : reqList) {
+					Map<String, Integer> reqSubmissionCount = clientReportService.getSubmissionListByRequirementId(req.getId(), orgLocation.getId(), user.getId(), null);
+					
+					submissionCount = submissionCount + reqSubmissionCount.get("submissionCount");
+					shortListCount = shortListCount + reqSubmissionCount.get("shortListCount");
+					submitToClientCount = submitToClientCount + reqSubmissionCount.get("submitToClientCount");
+					interviewedCount = interviewedCount + reqSubmissionCount.get("interviewedCount");
+					offermadeCount = offermadeCount + reqSubmissionCount.get("offermadeCount");
+					offeracceptedCount = offeracceptedCount + reqSubmissionCount.get("offeracceptedCount");
+					rejectCount = rejectCount + reqSubmissionCount.get("rejectedCount");
+					
+					if("open".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())) {
+						openCount += 1;
+					}else if("onhold".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())) {
+						onholdCount +=1;
+					}else if("cancel".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())) {
+						cancelledCount +=1;
+					}else if("filledClosed".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())) {
+						filledClosedCount +=1;
+					}else if("unFilledClosed".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())) {
+						unfilledClosedCount +=1;
+					}else if("closed".equalsIgnoreCase(req.getRequirementSubmissionStatus().toString())) {
+						closedCount += 1;
+					}
+					if(Constants.YES.equalsIgnoreCase(req.getIsClientJob())) {
+						totalPostedCount += 1;
+					}
+					}
+					clientReportDTO.setApplicantsCount(submissionCount);
+					clientReportDTO.setShortlistedCount(shortListCount);
+					clientReportDTO.setSubmitToClientCount(submitToClientCount);
+					clientReportDTO.setInterviewsCount(interviewedCount);
+					clientReportDTO.setOfferedCount(offermadeCount);
+					clientReportDTO.setOfferacceptedCount(offeracceptedCount);
+					clientReportDTO.setRejectedCount(rejectCount);
+				}
+
+			clientReportDTO.setTotalPaidAmount(totalPaidAmount);
+			clientReportDTO.setTotalPaidbillCount(totalPaidCount);
+			clientReportDTO.setTotalDraftAmount(totalDraftAmount);
+			clientReportDTO.setTotalOverdueAmount(dueAfterInvoiceAmount);
+			clientReportDTO.setTotalSentAmount(openInvoiceTotal);
+			clientReportDTO.setTotalReceivableAmount(totalDraftAmount+totalPaidAmount+dueAfterInvoiceAmount+openInvoiceTotal);
+			
+			clientReportDTO.setDraftCount(draftCount);
+			clientReportDTO.setWaitingCount(waitingCount);
+			clientReportDTO.setSignCount(signCount);
+			clientReportDTO.setCounterSignCount(counterSignCount);
+			clientReportDTO.setFinalizedCount(finalizedCount);
+			clientReportDTO.setExpiredCount(expiredCount);
+			clientReportDTO.setRejectedCount(rejectedCount);
+			
+			clientReportDTO.setOpenCount(openCount);
+			clientReportDTO.setOnholdCount(onholdCount);
+			clientReportDTO.setCancelledCount(cancelledCount);
+			clientReportDTO.setFilledClosedCount(filledClosedCount);
+			clientReportDTO.setUnfilledClosedCount(unfilledClosedCount);
+			clientReportDTO.setClosedCount(closedCount);
+			clientReportDTO.setTotalPostedCount(totalPostedCount);
+			
+			return clientReportDTO;
+		}
 	 
 	 @RequestMapping(value = "/getAllRecruiterReportsExport")
 		public File getAllRecruiterReportsExport(UserRoleDTO userRoleDto,UserDTO userDTO,
@@ -2235,6 +2705,443 @@ public class PerformenceReportRestController {
     }
 
 	
+	@Async
+	@RequestMapping(value = "/getAllJobsPipelineReoportsList", method = RequestMethod.POST)
+	@ResponseBody
+	Response<JobPipelineDTO> getAllJobsPipelineReoportsList(JobFilterDTO jobFilterDTO, HttpServletRequest request) throws Exception
+	{
+		Response<JobPipelineDTO> response = new Response<>();
+		try{
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if(loginUser != null){
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				List<Long> jobIdList = new ArrayList<>();
+				Date[] searchDates = null;
+				if(StringUtils.isNotBlank(jobFilterDTO.getDateSelection())) {
+					if(!jobFilterDTO.getDateSelection().equalsIgnoreCase("custom")) {
+						searchDates = reportsUtil.getJobFilterDate(jobFilterDTO.getDateSelection(),orgLocation);
+					}else {
+						Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+						DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+						DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+						Date fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getFromDate());
+			    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), jobFilterDTO.getToDate());
+						String customStartTimeStr = TZ_DF_CSD.format(fromDate);
+						String customEndTimeStr = TZ_DF_CED.format(toDate);
+						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+						String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+						fromDate = TZ_DF_TS.parse(startDateString);
+						toDate = TZ_DF_TS.parse(endDateString);
+						
+			    	    searchDates = new Date[2];
+			    	    searchDates[0] = fromDate;
+			    	    searchDates[1] = toDate;
+					}
+				}
+				
+				if(jobFilterDTO.getFromtype() != null && jobFilterDTO.getFromtype().equalsIgnoreCase(Constants.CLIENT_REPORT)) {
+					
+					jobIdList = getClientRequirementList(orgLocation,user,searchDates);
+				}else{
+					if(StringUtils.isNotBlank(jobFilterDTO.getJobIds())) {
+						String[] jobIds = jobFilterDTO.getJobIds().split(",");
+						for(int i=0; i<jobIds.length; i++) {
+							jobIdList.add(Long.valueOf(jobIds[i]));
+						}
+					}else {
+						jobIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(request, "requirementIdsList");
+					}
+				 }
+			    	int applicantsSum = 0;
+					int requestSentSum = 0;
+					int shortlistedSum = 0;
+					int submitToClientSum = 0;
+					int interviewsSum = 0;
+					int offeredSum = 0;
+					int offeracceptedSum = 0;
+					int rejectedSum = 0;
+					int backoutSum = 0;
+					Map<Integer,Long> applicantMap = new HashMap<>();
+					Map<Integer,Long> shortlistedMap = new HashMap<>();
+					Map<Integer,Long> interviewMap = new HashMap<>();
+					Map<Integer,Long> offerMadeMap = new HashMap<>();
+					Map<Integer,Long> offerAcceptedMap = new HashMap<>();
+					Map<Integer,Long> submitToClientMap = new HashMap<>();
+					Map<Integer,Long> backOutMap = new HashMap<>();
+					Map<Integer,Long> rejectedMap = new HashMap<>();
+					
+					double applicantDuration    = 0l;
+					double shortlistedDuration    = 0l;
+					double interviewDuration     = 0l;
+					double offerMadeDuration      = 0l;
+					double offerAcceptedDuration = 0l;
+					double submitToClientDuration = 0l;
+					double backOutDuration        = 0l;
+					double rejectDuration        = 0l;
+					
+					int rejectedFromSubmissionCount = 0;
+		            int rejectedFromShortlistedCount = 0;
+		            int rejectedFromInterviewCount = 0;
+		            int rejectedFromOffermadeCount = 0;
+		            int rejectedFromRequestSentCount = 0;
+		            int rejectedFromOfferAccepetCount = 0;
+		            int rejectedFromSubmitTOClientCount = 0;
+		            int rejectedFromNewCount = 0;
+		            
+					JobPipelineDTO report = new JobPipelineDTO();
+					
+					Integer openJobcount = new Integer(0);
+					Integer onholdJobcount = new Integer(0);
+					Integer closedJobcount = new Integer(0);
+					Integer unfilledclosedJobcount = new Integer(0);
+					Integer filledclosedJobcount = new Integer(0);
+					Integer cancelJobcount = new Integer(0);
+					
+					List<Requirement> requirementList = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates);
+					if(requirementList != null && !requirementList.isEmpty()) {
+						openJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("OPEN")).collect(Collectors.toList()).size();
+						onholdJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("ONHOLD")).collect(Collectors.toList()).size();
+						closedJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("CLOSED")).collect(Collectors.toList()).size();
+						unfilledclosedJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("UNFILLEDCLOSED")).collect(Collectors.toList()).size();
+						filledclosedJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("FILLEDCLOSED")).collect(Collectors.toList()).size();
+						cancelJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("CANCEL")).collect(Collectors.toList()).size();
+					}
 
+					int count = 1;
+					int dupCount = 0;
+			    	List<RequirementSubmission> reqSubmissionList = jobsPipelineReportService.getAllJobsReportCountByOrglocationIdAndLoginUserCodeAndStartAndEndDate(jobIdList, searchDates);
+			    	if(null != reqSubmissionList && reqSubmissionList.size() > 0){
+				    	for(RequirementSubmission reqSub : reqSubmissionList){
+							int applicantsCount = 0;
+							int requestSentCount = 0;
+							int shortlistedCount = 0;
+					 		int submitToClientCount = 0;
+							int interviewsCount = 0;
+							int offeredCount = 0;
+							int offeracceptedCount = 0;
+							int rejectedCount = 0;
+							int backoutCount = 0;
+							
+							List<RequirementSubmissionHistory> requirementSubmissionHistoryList = jobsPipelineReportService.getAllJobsReportsCountsBySubmmisonId(reqSub.getId());
+							if(null != requirementSubmissionHistoryList && requirementSubmissionHistoryList.size() >0){
+								Date requirementCreatedDate = reqSub.getRequirement().getCreatedDate();
+								Date applicantCreatedDate = null;
+								Date shortlistCreatedDate = null;
+								Date interviewCreatedDate = null;
+								Date offerMadeCreatedDate = null;
+								Date offerAcceptCreatedDate = null;
+								Date submitToClientCreatedDate = null;
+								Date backOutCreatedDate = null;
+								Date rejectedCreatedDate = null;
+								Date rejectedFromCreatedDate = null;
+								Map<String,Date> createdDatesMap = new LinkedHashMap<>();
+								for(RequirementSubmissionHistory rsh : requirementSubmissionHistoryList){
+									createdDatesMap.put(rsh.getToStage(), rsh.getCreatedDate());
+								}
+								for(RequirementSubmissionHistory rsh : requirementSubmissionHistoryList){
+									
+									if("submission".equalsIgnoreCase(rsh.getToStage())){
+										applicantsCount++;
+										dupCount++;
+										applicantCreatedDate= rsh.getCreatedDate();
+									} if("shortList".equalsIgnoreCase(rsh.getToStage()) || (rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("offermade"))|| 
+											(rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("interview"))){
+										shortlistedCount++;
+										dupCount++;
+										if((rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("offermade"))|| (rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("interview")) 
+												|| (rsh.getFromStage().equalsIgnoreCase("shortList") && rsh.getToStage().equalsIgnoreCase("interview"))) {
+											shortlistCreatedDate = createdDatesMap.get("SUBMISSION");
+										}else {
+											shortlistCreatedDate = rsh.getCreatedDate();
+										}
+										
+									} if("interview".equalsIgnoreCase(rsh.getToStage()) || (rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("offermade")) || (rsh.getFromStage().equalsIgnoreCase("shortList") && ((rsh.getToStage().equalsIgnoreCase("offermade") || rsh.getToStage().equalsIgnoreCase("client_offermade")) || rsh.getToStage().equalsIgnoreCase("client_interview")))
+											|| ((rsh.getFromStage().equalsIgnoreCase("submit_to_client") || rsh.getFromStage().equalsIgnoreCase("client_interview")) && rsh.getToStage().equalsIgnoreCase("client_interview"))){
+										interviewsCount++;
+										dupCount++;
+										if(rsh.getFromStage().equalsIgnoreCase("submission") && rsh.getToStage().equalsIgnoreCase("offermade")) {
+											interviewCreatedDate = createdDatesMap.get("SUBMISSION");
+										}else if(rsh.getFromStage().equalsIgnoreCase("shortList") && rsh.getToStage().equalsIgnoreCase("offermade")) {
+											interviewCreatedDate = createdDatesMap.get("SHORTLIST");
+										}else {
+											interviewCreatedDate = rsh.getCreatedDate();
+										}
+										
+									} if("offermade".equalsIgnoreCase(rsh.getToStage())  ||  "client_offermade".equalsIgnoreCase(rsh.getToStage())){
+										offeredCount++;
+										dupCount++;
+										offerMadeCreatedDate = rsh.getCreatedDate();
+									} if("request_sent".equalsIgnoreCase(rsh.getToStage())){
+										requestSentCount++;
+										dupCount++;
+									} if("submit_to_client".equalsIgnoreCase(rsh.getToStage())){
+										submitToClientCount++;
+										dupCount++;
+										submitToClientCreatedDate = rsh.getCreatedDate();
+									} if("rejected".equalsIgnoreCase(rsh.getToStage())){
+										rejectedCount++;
+										dupCount++;
+										rejectedCreatedDate = rsh.getCreatedDate();
+										if(rsh.getFromStage().equalsIgnoreCase("submission")) {
+											rejectedFromSubmissionCount++;
+											rejectedFromCreatedDate =  createdDatesMap.get("SUBMISSION");
+										}else if(rsh.getFromStage().equalsIgnoreCase("shortlist")) {
+											rejectedFromShortlistedCount++;
+											rejectedFromCreatedDate =  createdDatesMap.get("SHORTLIST");
+										}else if(rsh.getFromStage().equalsIgnoreCase("interview")){
+											rejectedFromInterviewCount++;
+											rejectedFromCreatedDate =  createdDatesMap.get("INTERVIEW");
+										}else if(rsh.getFromStage().equalsIgnoreCase("offermade")){
+											rejectedFromOffermadeCount++;
+											rejectedFromCreatedDate =  createdDatesMap.get("OFFERMADE");
+										}else if(rsh.getFromStage().equalsIgnoreCase("request_sent")){
+											rejectedFromRequestSentCount++;
+											rejectedFromCreatedDate =  createdDatesMap.get("REQUEST_SENT");
+										}else if(rsh.getFromStage().equalsIgnoreCase("offeraccepted")){
+											rejectedFromOfferAccepetCount++;
+											rejectedFromCreatedDate =  createdDatesMap.get("OFFERACCEPTED");
+										}else if(rsh.getFromStage().equalsIgnoreCase("submit_to_client")){
+											rejectedFromSubmitTOClientCount++;
+											rejectedFromCreatedDate =  createdDatesMap.get("SUBMIT_TO_CLIENT");
+										}else if(rsh.getFromStage().equalsIgnoreCase("NEW")){
+											rejectedFromNewCount++;
+											rejectedFromCreatedDate =  createdDatesMap.get("NEW");
+										}
+									} if("backout".equalsIgnoreCase(rsh.getToStage())){
+										backoutCount++;
+										backOutCreatedDate = rsh.getCreatedDate();
+									} if("offeraccepted".equalsIgnoreCase(rsh.getToStage())){
+										offeracceptedCount++;
+										offerAcceptCreatedDate = rsh.getCreatedDate();
+									}
+								}
+								
+								if(applicantCreatedDate != null && requirementCreatedDate != null) {
+									applicantMap.put(count, CalendarUtil.getNumberOfDays(requirementCreatedDate,applicantCreatedDate));
+								}
+								
+								if(shortlistCreatedDate != null && applicantCreatedDate != null) {
+									shortlistedMap.put(count, CalendarUtil.getNumberOfDays(applicantCreatedDate,shortlistCreatedDate));
+								}
+								if(interviewCreatedDate != null && shortlistCreatedDate != null) {
+									interviewMap.put(count, CalendarUtil.getNumberOfDays(shortlistCreatedDate,interviewCreatedDate));
+								}
+								if(submitToClientCreatedDate != null && applicantCreatedDate != null) {
+									submitToClientMap.put(count, CalendarUtil.getNumberOfDays(applicantCreatedDate,submitToClientCreatedDate));
+								}
+								if(offerMadeCreatedDate != null && interviewCreatedDate != null) {
+									offerMadeMap.put(count, CalendarUtil.getNumberOfDays(interviewCreatedDate, offerMadeCreatedDate));
+								}
+								if(backOutCreatedDate != null && applicantCreatedDate != null) {
+									backOutMap.put(count, CalendarUtil.getNumberOfDays(applicantCreatedDate,backOutCreatedDate));
+								}
+								if(offerAcceptCreatedDate != null && offerMadeCreatedDate != null) {
+									offerAcceptedMap.put(count, CalendarUtil.getNumberOfDays(offerMadeCreatedDate,offerAcceptCreatedDate));
+								}
+								if(rejectedCreatedDate != null && rejectedFromCreatedDate != null) {
+									rejectedMap.put(count, CalendarUtil.getNumberOfDays(rejectedFromCreatedDate,rejectedCreatedDate));
+								}
+								
+								 applicantsSum = applicantsSum+applicantsCount;
+								 requestSentSum = requestSentSum+requestSentCount;
+								 shortlistedSum = shortlistedSum+shortlistedCount;
+								 submitToClientSum = submitToClientSum+submitToClientCount;
+								 interviewsSum = interviewsSum+interviewsCount;
+								 offeredSum = offeredSum+offeredCount;
+								 offeracceptedSum = offeracceptedSum+offeracceptedCount;
+								 rejectedSum = rejectedSum+rejectedCount;
+								 backoutSum = backoutSum + backoutCount;
+							}
+							count++;
+						}
+				    	if(applicantMap != null && !applicantMap.isEmpty()) {
+				    		Long totalDays = 0l;
+				    		for(Integer flag :applicantMap.keySet()) {
+				    			totalDays = totalDays+applicantMap.get(flag);
+				    		}
+				    		applicantDuration = Math.round((double)totalDays/(double)(applicantMap.size()));
+				    	}
+				    	
+				    	if(shortlistedMap != null && !shortlistedMap.isEmpty()) {
+				    		Long totalDays = 0l;
+				    		for(Integer flag :shortlistedMap.keySet()) {
+				    			totalDays = totalDays+shortlistedMap.get(flag);
+				    		}
+				    		shortlistedDuration = Math.round((double)totalDays/(double)(shortlistedMap.size()));
+				    	}
+				    	if(interviewMap != null && !interviewMap.isEmpty()) {
+				    		Long totalDays = 0l;
+				    		for(Integer flag :interviewMap.keySet()) {
+				    			totalDays = totalDays+interviewMap.get(flag);
+				    		}
+				    		interviewDuration = totalDays/(interviewMap.size());
+				    	}
+				    	if(offerMadeMap != null && !offerMadeMap.isEmpty()) {
+				    		Long totalDays = 0l;
+				    		for(Integer flag :offerMadeMap.keySet()) {
+				    			totalDays = totalDays+offerMadeMap.get(flag);
+				    		}
+				    		offerMadeDuration = Math.round((double)totalDays/(double)(offerMadeMap.size()));
+				    	}
+				    	if(offerAcceptedMap != null && !offerAcceptedMap.isEmpty()) {
+				    		Long totalDays = 0l;
+				    		for(Integer flag :offerAcceptedMap.keySet()) {
+				    			totalDays = totalDays+offerAcceptedMap.get(flag);
+				    		}
+				    		offerAcceptedDuration = (double)totalDays/(double)(offerAcceptedMap.size());
+				    	}
+
+				    	if(submitToClientMap != null && !submitToClientMap.isEmpty()) {
+				    		Long totalDays = 0l;
+				    		for(Integer flag :submitToClientMap.keySet()) {
+				    			totalDays = totalDays+submitToClientMap.get(flag);
+				    		}
+				    		submitToClientDuration = Math.round((double)totalDays/(double)(submitToClientMap.size()));
+				    	}
+				    	
+				    	if(backOutMap != null && !backOutMap.isEmpty()) {
+				    		Long totalDays = 0l;
+				    		for(Integer flag :backOutMap.keySet()) {
+				    			totalDays = totalDays+backOutMap.get(flag);
+				    		}
+				    		backOutDuration = Math.round((double)totalDays/(double)(backOutMap.size()));
+				    	}
+				    	
+				    	if(rejectedMap != null && !rejectedMap.isEmpty()) {
+				    		Long totalDays = 0l;
+				    		for(Integer flag :rejectedMap.keySet()) {
+				    			totalDays = totalDays+rejectedMap.get(flag);
+				    		}
+				    		rejectDuration = Math.round((double)totalDays/(double)(rejectedMap.size()));
+				    	}
+				    	//days
+				    	report.setApplicantsDays(applicantDuration);
+				    	report.setShortlistedDays(shortlistedDuration);
+				    	report.setInterviewsDays(interviewDuration);
+				    	report.setOfferedDays(offerMadeDuration);
+				    	report.setOfferedAcceptedDays(offerAcceptedDuration);
+				    	report.setSubmitToClientDays(submitToClientDuration);
+				    	report.setBackoutDays(backOutDuration);
+				    	report.setRejectedDays(rejectDuration);
+				    	
+				    	//count 
+				    	report.setApplicantsCount(applicantsSum);
+				    	report.setRequestSentCount(requestSentSum);
+				    	report.setShortlistedCount(shortlistedSum);
+				    	report.setSubmitToClientCount(submitToClientSum);
+				    	report.setInterviewsCount(interviewsSum);
+				    	report.setOfferedAcceptedCount(offeracceptedSum);
+				    	report.setOfferedCount(offeredSum);
+				    	report.setRejectedCount(rejectedSum);
+				    	report.setBackoutCount(backoutSum);
+				    	
+				    	
+				    	//Moveforward percentage
+				    	report.setShortlistedMove(Math.round(((double)shortlistedSum/(double)applicantsSum)*100));
+				    	report.setSubmitToClientMove(Math.round(((double)submitToClientSum/(double)shortlistedSum)*100));
+				    	report.setInterviewsMove(Math.round(((double)interviewsSum/(double)shortlistedSum)*100));
+				    	if(interviewsSum<offeredSum) {
+					    	report.setOfferedMove(Math.round((((double)offeredSum/(double)interviewsSum)*100)/offeredSum));
+				    	}else {
+					    	report.setOfferedMove(Math.round(((double)offeredSum/(double)interviewsSum)*100));
+				    	}
+				    	report.setOfferedAcceptedMove(Math.round(((double)offeracceptedSum/(double)offeredSum)*100));
+				    	report.setBackoutMove(Math.round(((double)backoutSum /(double)offeracceptedSum)*100));
+				    	
+				    	Double rejectedMove = 0d;
+				    	int rejctMoveCount = 0;
+				    	if(rejectedFromNewCount > 0 & applicantsSum >0) {
+				    		rejctMoveCount++;
+				    		rejectedMove = rejectedMove+(((double)rejectedFromNewCount/(double)applicantsSum)*100);
+				    	}
+				    	if(rejectedFromSubmissionCount > 0 && applicantsSum >0) {
+				    		rejctMoveCount++;
+				    		rejectedMove = rejectedMove+(((double)rejectedFromSubmissionCount/(double)applicantsSum)*100);
+				    	}
+				    	if(rejectedFromShortlistedCount > 0 && shortlistedSum >0) {
+				    		rejctMoveCount++;
+				    		rejectedMove = rejectedMove+(((double)rejectedFromShortlistedCount/(double)shortlistedSum)*100);
+				    	}
+				    	if(rejectedFromInterviewCount > 0 && interviewsSum > 0) {
+				    		rejctMoveCount++;
+				    		rejectedMove = rejectedMove+(((double)rejectedFromInterviewCount/(double)interviewsSum)*100);
+				    	}
+				    	if(rejectedFromOffermadeCount > 0 && offeredSum > 0) {
+				    		rejctMoveCount++;
+				    		rejectedMove = rejectedMove+(((double)rejectedFromOffermadeCount/(double)offeredSum)*100);
+				    	}
+				    	if(rejectedFromRequestSentCount > 0 && applicantsSum > 0) {
+				    		rejctMoveCount++;
+				    		rejectedMove = rejectedMove+(((double)rejectedFromRequestSentCount/(double)applicantsSum)*100);
+				    	}
+				    	if(rejectedFromOfferAccepetCount > 0 && offeracceptedSum > 0) {
+				    		rejctMoveCount++;
+				    		rejectedMove = rejectedMove+(((double)rejectedFromOfferAccepetCount/(double)offeracceptedSum)*100);
+				    	}
+				    	if(rejectedFromSubmitTOClientCount > 0 && submitToClientSum > 0) {
+				    		rejctMoveCount++;
+				    		rejectedMove = rejectedMove+(((double)rejectedFromSubmitTOClientCount/(double)submitToClientSum)*100);
+				    	}
+				    	report.setRejectedMove(Math.round(rejectedMove/rejctMoveCount));
+				    	 
+				    	//jobs count
+				    	report.setAllJobsCount(openJobcount + onholdJobcount + closedJobcount + cancelJobcount + unfilledclosedJobcount + filledclosedJobcount);
+				    	report.setOpenJobsCount(openJobcount);
+				    	report.setOnHoldJobsCount(onholdJobcount);
+				    	report.setClosedJonbsCount(closedJobcount + unfilledclosedJobcount + filledclosedJobcount);
+				    	report.setCancelledjobsCount(cancelJobcount);
+			    	
+			    	}
+			    	
+			    	if(dupCount > 0) {
+			    		report.setApplicantsMove(100);
+			    	}else {
+			    		report.setApplicantsMove(0);
+			    	}
+			    	
+			    	if(report != null){
+			    		response.setObject(report);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					} else {
+						response.setResponse(Result.FAILED.name());
+						response.setResponseMessage(Result.FAILED.getValue());
+					}	
+			    	
+			}else if (loginUser == null) {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+			
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+		 
+	}
+
+
+	private List<Long> getClientRequirementList(OrgLocations orgLocation, User user, Date[] searchDates) {
+		List<Long> jobIds = new ArrayList<>();
+		List<OrgRelations> clientList = clientReportService.getAllClientsByOrgLocationIdAndUserId(orgLocation.getId(), user.getId());
+		if(clientList != null && clientList.size() > 0) {
+			for(OrgRelations orgRelation : clientList) {
+				List<Requirement> jobsList = clientReportService.getClientJobsByOrgRelationId(orgRelation.getId(), orgLocation.getId(), user.getId(), searchDates, null);
+				if(jobsList != null && jobsList.size() > 0) {
+					for(Requirement req :jobsList) {
+						jobIds.add(req.getId());
+					}
+				}
+			}
+		}
+		return jobIds;
+	}
 
 }
