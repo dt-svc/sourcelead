@@ -34,7 +34,7 @@
           <c:set var="timesheetTabExist" scope="session" value="N"/>
           <c:forEach var="tabName" items="${SourceLeadWeb_tabsList}">
                     <c:if test="${tabName == 'Clients'}">
-                 	  <li class="${sessionData.nav == 'Clients' ? 'navActive' : ''}"><a href="<c:url value='/vms/clientDashboard'/>" title="Clients"><span class="navIcons assIcon"></span><b>Clients</b></a></li>
+                 	  <li class="${sessionData.nav == 'Clients' ? 'navActive' : ''}"><a href="/vms/clientDashboard" title="Clients"><span class="navIcons assIcon"></span><b>Clients</b></a></li>
                     </c:if>
 	                <c:if test="${tabName == 'Jobs'}"> 
 	                <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}"> 
@@ -59,11 +59,12 @@
 	                
                 
 	                <c:if test="${tabName == 'Vendors'}">
-	                   <li class="${sessionData.nav == 'Vendors' ? 'navActive' : ''}"><a href="<c:url value='/vms/vendorsList'/>" title="Vendors"><span class="navIcons venIcon"></span><b>Vendors</b></a></li>
+	                   <li class="${sessionData.nav == 'Vendors' ? 'navActive' : ''}"><a href="/vms/vendorsList" title="Vendors"><span class="navIcons venIcon"></span><b>Vendors</b></a></li>
 	                </c:if> 
 	                 
 	                 <c:if test="${tabName == 'Associates'}">
-	                 <li class="${sessionData.nav == 'Users' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/usersList'/>" title="Associates"><span class="navIcons cliIcon"></span><b>Associates</b></a></li>
+	                 <li class="${sessionData.nav == 'Users' ? 'navActive' : ''}"><a href="<c:url value='/ats/usersList'/>" title="Associates"><span class="navIcons cliIcon"></span><b>Associates</b></a></li>
+
 	                 </c:if>
 	                 
 	                 <c:if test="${tabName == 'Projects'}">
@@ -263,9 +264,11 @@
 	                 </c:if>
 	                
 	                
-	               <c:if test="${tabName == 'Campaigns'}">
+
+
+	                <c:if test="${tabName == 'Campaigns'}">
                          <li class="${sessionData.nav == 'Campaigns' || sessionData.nav == 'CampaignSender' || sessionData.nav == 'CampaignRecipient' ? 'navActive' : ''}"><a href="/ats/campaigns/hotcampaigns" title="Campaigns"><span class="navIcons campIcon"></span><b>Campaigns</b></a></li>				  
-			         </c:if>
+                     </c:if>
 
 					<c:if test="${SourceLeadWeb_paryrollTabCount == 2 && tabName == 'Run Payroll'}">
 						<li class="${sessionData.nav == 'Run Payroll' || sessionData.nav == 'My Payroll' ? 'navActive' : ''}">
