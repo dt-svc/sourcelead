@@ -27,8 +27,8 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.indPayroll.utill.INDPayrollCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.INDPayrollCommonUtil;
 
 @Repository
 @SuppressWarnings("unchecked")
