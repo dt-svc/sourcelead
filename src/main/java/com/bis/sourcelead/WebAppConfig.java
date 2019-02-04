@@ -62,11 +62,6 @@ public class WebAppConfig extends WebMvcConfigurationSupport {
 		return new PropertySourcesPlaceholderConfigurer();
 	}
 
-	@Bean
-	public LoggingAspect loggingAspect(){
-		return  new LoggingAspect();
-	}
-	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/").setCachePeriod(31556926);
