@@ -503,8 +503,8 @@
 								</span>
 								
 									<ul class="dropdown-menu minHeight50 maxHeight250" role="menu" aria-labelledby="menu12">
-									<li><a href="${appPath}/campaignSendersList">Senders</a></li>
-									<li><a href="${appPath}/recipientsList">Recipients</a></li>
+									<li><a href="/ats/campaignSendersList">Senders</a></li>
+									<li><a href="/ats/recipientsList">Recipients</a></li>
 									</ul>
 								</div>
 								<!-- Dropdown -->
