@@ -92,7 +92,7 @@ function storeCertificate(candidateId){
 				$.ajax({
 						type : "POST",
 						data : formData,
-						url : sourceleadUrl+ "/storeCandidateCertifications?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
+						url : atsUrl+ "/storeCandidateCertifications?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
 						success : function(response) {
 							if (response && response.response === "INVALID_DATA") {
 				    		    showError(response.responseMessage);
@@ -185,7 +185,7 @@ function candidateCertificateList(candidateId){
 	 
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
         	  	if (response && response.response === "INVALID_DATA") {
         		    showError(response.responseMessage);
@@ -426,7 +426,7 @@ function addCertification(candidateId) {
 function editCertification(candidateCertificationId, candidateId) {
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl
+		url : atsUrl
 				+ "/getCandidateCertificateBycandidateIdandCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="
 				+ candidateId + "&candidateCertificationId=" + candidateCertificationId,
 		success : function(response) {
@@ -613,7 +613,7 @@ function editCertification(candidateCertificationId, candidateId) {
 			$.ajax({
 						type : "POST",
 						data : formData,
-						url : sourceleadUrl+ "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId,
+						url : atsUrl+ "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId,
 						success : function(result) {
 							if (result && result.response === "INVALID_DATA") {
 				    		    showError(result.responseMessage);
@@ -685,7 +685,7 @@ function deleteSelectedCertification(candidateCertificationId,candidateId){
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';	
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
+          url: atsUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
           success :function(response) {
         	  if (response.response === "AWKWARD") {
                   location.href = "/errorPage";
