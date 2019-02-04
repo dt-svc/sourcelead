@@ -23,6 +23,7 @@
 
 <script>
 var atsUrl ='${SourceLeadWeb_atsUrl}';
+var sourceleadUrl ='${sourceleadUrl}';
 </script>
 
 <!-- For add New Applicant -->
