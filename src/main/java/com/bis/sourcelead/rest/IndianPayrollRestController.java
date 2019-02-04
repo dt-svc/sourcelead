@@ -136,7 +136,7 @@ public class IndianPayrollRestController {
 	@Autowired
 	CommonUtil commonUtil;
 	
-    @RequestMapping(value = "/app/save-ind-associate-payment-account", method = RequestMethod.POST)
+    @RequestMapping(value = "/save-ind-associate-payment-account", method = RequestMethod.POST)
 	public Response<IndAssociatePaymentAccountDTO> savePaymentAccount(HttpServletRequest request, IndAssociatePaymentAccountDTO account,
 			@RequestParam(value="userId", required=false) Long userId){
 		 Response<IndAssociatePaymentAccountDTO> resObj = new Response<>();
@@ -165,7 +165,7 @@ public class IndianPayrollRestController {
    }
     
     
-    @RequestMapping(value = "/app/getIndAssociatePaymentAccountDetails", method = RequestMethod.POST)
+    @RequestMapping(value = "/getIndAssociatePaymentAccountDetails", method = RequestMethod.POST)
 	public IndAssociatePaymentAccountDTO getIndAssociatePaymentAccountDetails(HttpServletRequest request,
 			@RequestParam(value="userId", required=false) Long userId){
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -193,7 +193,7 @@ public class IndianPayrollRestController {
     }  
     
     
-    @RequestMapping(value = "/app/getIndAssociatePFESIAccountDetails", method = RequestMethod.POST)
+    @RequestMapping(value = "/getIndAssociatePFESIAccountDetails", method = RequestMethod.POST)
 	public AssociatePfEsiDetailsDTO getIndAssociatePFESIAccountDetails(HttpServletRequest request,
 			@RequestParam(value="userId", required=false) Long userId){
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -392,7 +392,7 @@ public class IndianPayrollRestController {
 	
 	
 	
-    @RequestMapping(value = "/app/saveAssociateLoanAndAdvanceDetails", method = RequestMethod.POST)
+    @RequestMapping(value = "/saveAssociateLoanAndAdvanceDetails", method = RequestMethod.POST)
 	public Response<AssociateLoanAndAdvancesDTO> saveAssociateLoanAndAdvanceDetails(HttpServletRequest request, 
 			AssociateLoanAndAdvancesDTO loanAndAdvanceDTO){
 		 Response<AssociateLoanAndAdvancesDTO> resObj = new Response<>();
@@ -419,7 +419,7 @@ public class IndianPayrollRestController {
     }
     
     
-    @RequestMapping(value = "/app/verifyLoanEligibilityByAssociateIdAndLoanAdv", method = RequestMethod.POST)
+    @RequestMapping(value = "/verifyLoanEligibilityByAssociateIdAndLoanAdv", method = RequestMethod.POST)
 	public Response<Boolean> verifyLoanEligibilityByAssociateIdAndLoanAdv(HttpServletRequest request, AssociateLoanAndAdvancesDTO loanAndAdvanceDTO){
 		 Response<Boolean> resObj = new Response<>();
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -453,7 +453,7 @@ public class IndianPayrollRestController {
     
     
     
-    @RequestMapping(value = "/app/getAssociateLoanAndAdvanceDetails", method = RequestMethod.POST)
+    @RequestMapping(value = "/getAssociateLoanAndAdvanceDetails", method = RequestMethod.POST)
 	public AssociateLoanAndAdvancesDTO getAssociateLoanAndAdvanceDetails(HttpServletRequest request,
 			@RequestParam(value="userId", required=false) Long userId){
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -469,7 +469,7 @@ public class IndianPayrollRestController {
     } 
     
     
-    @RequestMapping(value = "/app/getAssociateLoanAndAdvanceDetailsById", method = RequestMethod.POST)
+    @RequestMapping(value = "/getAssociateLoanAndAdvanceDetailsById", method = RequestMethod.POST)
 	public AssociateLoanAndAdvancesDTO getAssociateLoanAndAdvanceDetailsById(HttpServletRequest request,
 			@RequestParam(value="loanAdvId", required=false) Long loanAdvId){
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -483,7 +483,7 @@ public class IndianPayrollRestController {
 		 return loanAndAdvDTO;
     } 
     
-    @RequestMapping(value = "/app/deleteAssociateLoanAndAdvanceDetailsById", method = RequestMethod.POST)
+    @RequestMapping(value = "/deleteAssociateLoanAndAdvanceDetailsById", method = RequestMethod.POST)
 	public String deleteAssociateLoanAndAdvanceDetailsById(HttpServletRequest request,
 			@RequestParam(value="loanAdvId", required=false) Long loanAdvId){
 		 try {

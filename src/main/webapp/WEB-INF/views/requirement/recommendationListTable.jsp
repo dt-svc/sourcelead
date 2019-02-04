@@ -69,7 +69,7 @@ function globalRecommendationpagination(){
 	var searchValue = $("#globalRecommendationTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	//$("#globalRecommendationTableSearch").val(searchValue);
-	var url = sourceleadUrl+"/getGlobalDataRecommendations?searchValue="+searchValue;
+	var url = atsUrl+"/getGlobalDataRecommendations?searchValue="+searchValue;
 	var colIndex = 0;
 	 var dt = $('#globalRecommendationTable').DataTable( { 
    	"processing": true,
@@ -294,7 +294,7 @@ function deleteCandidateMarketCart(candidateName, candidateMarketUUID, obj){
 	console.log(candidateName+" "+candidateMarketUUID+" "+obj);
 	$.ajax({
 		type : "GET",
-		url : sourceleadUrl + "/deleteCandidateMarketCart?marketUUID="+candidateMarketUUID,
+		url : atsUrl + "/deleteCandidateMarketCart?marketUUID="+candidateMarketUUID,
 		success : function(result) {
 			if (result.response === "AWKWARD") {
                 location.href = "/errorPage";
@@ -313,7 +313,7 @@ function deleteCandidateMarketCart(candidateName, candidateMarketUUID, obj){
 
 function addCandidateToMarketCart(candidateName, UUID, obj) {
 	  $.ajax({
-	        url: sourceleadUrl + "/addCandidateToMarketCart?id="+UUID,
+	        url: atsUrl + "/addCandidateToMarketCart?id="+UUID,
 	        type:'GET',
 	        success: function (result) {
 	        	 if (result.response === "AWKWARD") {
@@ -352,7 +352,7 @@ function addCandidateToMarketCart(candidateName, UUID, obj) {
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var searchValue = $("#recommendationTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getRequirementRecommendationsByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId+"&searchValue="+searchValue;
+	var url = atsUrl+"/getRequirementRecommendationsByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId+"&searchValue="+searchValue;
 	prepareRecommendationList(url,requirementRecommendationsDate,requirementId, requirementSubmissionStatus);
 }	
  
@@ -815,10 +815,10 @@ function cancelTermination(){
 }
 
 function shareRecomendedApplicant(requirementId,candidateId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	$.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/shareRecomendedApplicant?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&candidateId="+candidateId, 
+        url: atsUrl+"/shareRecomendedApplicant?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&candidateId="+candidateId, 
         success: function(data) {
         	if (data.response === "FAILED") {
 	    		showError(data.responseMessage);
@@ -890,7 +890,7 @@ function checkShareRecommendation(elem) {
 function getSubmittedJobsList(candidateId){
 	$.ajax({
 		  type: "GET",
-		    url: sourceleadUrl+"/getCandidateSubmittedJobsList?candidateId="+candidateId,
+		    url: atsUrl+"/getCandidateSubmittedJobsList?candidateId="+candidateId,
 		     success :function(response) {
 		    	    $("#candidateSubmittedJobsDiv").empty();  
 		    	    $("#candidateSubmittedJobsDiv").append(response);
@@ -965,7 +965,7 @@ function checkResume(){
 
 <script>
 function submitRecommendationCandidatesToJob(requirementId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var candidateIds = new Array();
 	 for(var e in compareCandidates) {
 		 if(!e || !compareCandidates[e] || compareCandidates[e] === "")
@@ -977,7 +977,7 @@ function submitRecommendationCandidatesToJob(requirementId){
 		 $("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 	          type : "POST",
-	          url: sourceleadUrl+"/submitRecommendationCandidates?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+requirementId+"&candidateResume="+candidateResume,    
+	          url: atsUrl+"/submitRecommendationCandidates?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+requirementId+"&candidateResume="+candidateResume,    
 	           success :function(data) {
 	        	   $("#recommendationsLoading").removeAttr("style");
 	        	   if (data.response === "FAILED") {
@@ -1016,7 +1016,7 @@ function submitRecommendationCandidatesToJob(requirementId){
 
 <script>
 function shareAllRecommendations(requirementId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var candidateIds = new Array();
 	 for(var e in compareCandidates) {
 		 if(!e || !compareCandidates[e] || compareCandidates[e] === "")
@@ -1027,7 +1027,7 @@ function shareAllRecommendations(requirementId){
 			$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 	          type : "POST",
-	          url: sourceleadUrl+"/shareAllRecommendations?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+requirementId,    
+	          url: atsUrl+"/shareAllRecommendations?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+requirementId,    
 	           success :function(data) {
 	        	   $("#recommendationsLoading").removeAttr("style");
 	        	   if (data.response === "FAILED") {

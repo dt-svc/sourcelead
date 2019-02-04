@@ -1265,7 +1265,7 @@ public class OrgSettingsRestController {
 	}
 	
 	
-	@RequestMapping(value = "/app/refreshGradesList", method = RequestMethod.POST)
+	@RequestMapping(value = "/refreshGradesList", method = RequestMethod.POST)
 	public List<AssociateGradesDTO> refreshGradesList(HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<AssociateGradesDTO> gradesDTOList = new ArrayList<>();

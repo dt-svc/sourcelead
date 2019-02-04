@@ -20,6 +20,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Controller;
 
+import com.bis.sourcelead.security.JWTSecurityContextRepository;
+
 /**
  * This class is used to read the properties from properties file and configures
  * security context in spring.
@@ -123,7 +125,7 @@ public class SecurityConfig  {
     			.antMatchers("/ats/getRequirementProfessionalProfileDetails/**").permitAll()
     			.anyRequest().authenticated()                                                   
     			.and()
-    			.formLogin().loginPage(sourceleadLoginUrl)
+    			.formLogin().loginPage("/login")
     			.and().logout().logoutUrl(sourceleadLogoutUrl)
     			.and().sessionManagement() .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     			.and().securityContext().securityContextRepository(securityContextRepository)

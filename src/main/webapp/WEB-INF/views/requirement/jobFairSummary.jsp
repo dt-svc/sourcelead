@@ -8,7 +8,7 @@
 			<h2>Job Fair Summary</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="/ats/dashboard/3">Home</a> »<a href="/ats/jobs?viewTab=jobFair">Job Fairs</a>»Job Fair Details
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> »<a href="/ats/jobsList?viewTab=jobFair">Job Fairs</a>»Job Fair Details
 		</div>
 	</section>
 	<div class="timesheet_out">
@@ -307,7 +307,7 @@ var atsUrl = '${SourceLeadWeb_atsUrl}';
 			                    if(checkSize>=10 && i==9) {
 			                       	/* $("#viewmoresDiv").css("display", "block"); */
 			                    	var text = "<div class='pull-right jobMoreBtn' id='viewmoresDiv'>";
-			                    	text += "<a href='/ats/jobs' class='btn btn-sm btn-primary pull-right' title='View more'> View More</a>";
+			                    	text += "<a href='/ats/jobsList' class='btn btn-sm btn-primary pull-right' title='View more'> View More</a>";
 			                       	text += "</div>";
 			                       	$("#requirementListActions").append(text);
 			    	 	   	   	}
@@ -344,7 +344,7 @@ var atsUrl = '${SourceLeadWeb_atsUrl}';
 			            		$("#requirementList").append("<table id='noResultsTable'><tr class='odd'><td colspan='7' class='dataTables_empty' valign='top'></td></tr></table>");
 			            	}
 			    	} else if (data.indexOf('Sign In') !== -1) {
-			    		location.replace(atsUrl);
+			    		location.replace(sourceleadUrl);
 			    	} else {
 			    		showError("Operation failed, please try again");
 			    	}

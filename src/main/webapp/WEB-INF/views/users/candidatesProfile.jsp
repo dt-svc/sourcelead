@@ -24,6 +24,7 @@
 </style>
 	
 	<script>
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	function candUpdateMsgFadeinFunction() {
 		$("#selector1").fadeIn(200);
         $('#selector1').delay(20000).fadeOut('slow');
@@ -44,7 +45,7 @@ function editCandidate(candidateId){
        
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+         url: atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(result) {  
         	   var json = result.object;
 	      	   if(result.response === "SESSION_TIMEDOUT") {
@@ -651,7 +652,7 @@ function deleteCandidate(candidateId,candidateType){
 			  $(".rejectErrorMsgs").empty();
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,        
+         url: atsUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,        
          success :function(response) {
         	 if (response && response.response === "INVALID_DATA") {
         		    showError(response.responseMessage);
@@ -660,7 +661,7 @@ function deleteCandidate(candidateId,candidateType){
         		} else if (response.response === "AWKWARD") {
         		    location.href = "/errorPage";
         		} else if (response.response === "SUCCESS") {
-        			location.replace(sourceleadUrl+"/usersList");
+        			location.replace(atsUrl+"/usersList");
         		} else if (response.indexOf('Sign In') !== -1) {
         			location.replace(sourceleadUrl);
         		} else {
@@ -740,7 +741,7 @@ function reActivateCandidateAlertMessage(candidateId){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	        type : "POST",
-	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,        
+	         url: atsUrl+"/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,        
 	         success :function(result) {
 	        	 if (result && result.response === "INVALID_DATA") {
 	 			    $("#update_candidate").removeAttr("disabled");
@@ -749,7 +750,7 @@ function reActivateCandidateAlertMessage(candidateId){
 	 			} else if (result.response === "AWKWARD") {
 	 			    location.href = "/errorPage";
 	 			} else if (result.response === "SUCCESS") {
-	 				 location.replace(sourceleadUrl+"/usersList");
+	 				 location.replace(atsUrl+"/usersList");
 	 			} else if (result.indexOf('Sign In') !== -1) {
 	 				location.replace(sourceleadUrl);
 	 			} else {
@@ -773,7 +774,7 @@ function candidateProfile(candidateId,candidateType){
 	  var skillsList = '${skillsList}'; 
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+         url: atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(result) {
         	 var json = result.object;
       	   		if(result.response === "SESSION_TIMEDOUT") {
@@ -1161,9 +1162,9 @@ function candidateProfile(candidateId,candidateType){
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(skillName != null && skillName != '' && skillName !='undefined'){
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+jsonData
+		 Urlcheck = atsUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+jsonData
 	 }else{
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+""
+		 Urlcheck = atsUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+""
 	 }
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  
@@ -1227,7 +1228,7 @@ function candidateProfile(candidateId,candidateType){
 			$.ajax({
 				type : "POST",
         	    data: formData,
-				url : sourceleadUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"",
+				url : atsUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"",
 				success : function(response) {
 					if (response && response.response === "INVALID_DATA") {
 					    showError(response.responseMessage);
@@ -1296,7 +1297,7 @@ function cancelEdit(){
 function removeSkillById(candidateId, skillId){
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/removeSkillBySkillId?"+tokenParamName+"="+tokenValue+"&skillId="+skillId,        
+         url: atsUrl+"/removeSkillBySkillId?"+tokenParamName+"="+tokenValue+"&skillId="+skillId,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != ""){
             			 candidateSkillsList(candidateId);
@@ -1352,7 +1353,7 @@ function removeSkillById(candidateId, skillId){
 			var name = local.id;
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/fieldUpdateCandidate?"+tokenParamName+"="+tokenValue+"&candidateSkillId="+candidateSkillId+"&name="+name+"&value="+value,
+						url : atsUrl+"/fieldUpdateCandidate?"+tokenParamName+"="+tokenValue+"&candidateSkillId="+candidateSkillId+"&name="+name+"&value="+value,
 						success : function(result) {
 							 
 						},
@@ -1367,7 +1368,7 @@ function removeSkillById(candidateId, skillId){
 	function employeeSubmissionProfile(candidateId) {
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
+					url : atsUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
 					success : function(response) {
 						if (response && response.response === "INVALID_DATA") {
 						    showError(response.responseMessage);
@@ -1455,7 +1456,7 @@ function removeSkillById(candidateId, skillId){
 function educationSubmissionProfile(candidateId){
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
         	  	if (response && response.response === "INVALID_DATA") {
         		    showError(response.responseMessage);
@@ -1549,7 +1550,7 @@ function educationSubmissionProfile(candidateId){
 function certificationSubmissionProfile(candidateId){
 	 $.ajax({  
           type : "GET",
-          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
         	  	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
         		    showError(response.responseMessage);
@@ -1665,7 +1666,7 @@ function updateDesignationOtherType(){
 	 if(email != null && email != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType="+candidateType, 
+		        url: atsUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType="+candidateType, 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -1834,7 +1835,7 @@ function employementType(){
 	 var vendorOrgRelationId = $("#updateVendorOrgRelationId").val();
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
+		        url: atsUrl+"/getVendorsByOrgLocation?", 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendorName').empty();
@@ -1875,7 +1876,7 @@ function  removeValiationVendorContact() {
 			 var vendorSpocId = $("#updateSpocId").val();
 			 $.ajax({
 				    type: "POST",
-			        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
+			        url: atsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 			        success: function(json) {
 			        	//var json = JSON.parse(data);
 			        	$('#vendorcontactName').empty();
@@ -1937,9 +1938,9 @@ function  removeValiationVendorContact() {
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(visaName != null && visaName != '' && visaName !='undefined'){
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+jsonData
+		 Urlcheck = atsUrl+"/saveOrUpdateOnlyVisaBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+jsonData
 	 }else{
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+""
+		 Urlcheck = atsUrl+"/saveOrUpdateOnlyVisaBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+""
 	 }
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  

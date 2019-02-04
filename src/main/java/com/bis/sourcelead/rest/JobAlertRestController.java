@@ -82,7 +82,7 @@ private static final Logger logger = LoggerFactory.getLogger(JobAlertRestControl
 		return resultJson;
 	 }
 		 
-    @RequestMapping(value = {"/app/ws/storeJobAlert" ,"/app/storeJobAlert"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"/app/ws/storeJobAlert" ,"/storeJobAlert"}, method = RequestMethod.POST)
     @ResponseBody
    	public Response<String> storeJobAlert(JobAlertDTO  jobAlertDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
    	{
@@ -132,7 +132,7 @@ private static final Logger logger = LoggerFactory.getLogger(JobAlertRestControl
 	 }
 	 
 	 
-	 @RequestMapping(value = {"/app/ws/getJobDetailsForJobAlert" ,"/app/getJobDetailsForJobAlert"}, method = RequestMethod.GET)
+	 @RequestMapping(value = {"/app/ws/getJobDetailsForJobAlert" ,"/getJobDetailsForJobAlert"}, method = RequestMethod.GET)
 	 public String getJobDetailsForJobAlert(@RequestParam(value="requirementUUID", required=false) String requirementUUID,HttpServletRequest request) throws Exception{ 
 		 String resultJson;
 		 
@@ -143,7 +143,7 @@ private static final Logger logger = LoggerFactory.getLogger(JobAlertRestControl
 	 }
 	 
 	 
-	 @RequestMapping(value = {"/app/ws/validateAlertUserEmail","/app/validateAlertUserEmail"}, method = RequestMethod.GET)
+	 @RequestMapping(value = {"/app/ws/validateAlertUserEmail","/validateAlertUserEmail"}, method = RequestMethod.GET)
 	 public String validateAlertUserEmail(@RequestParam(value="email", required=false) String email,HttpServletRequest request) throws Exception{ 
 		 
 		 Integer jobAlertCount = jobAlertService.getJobAlertCountByEmail(email);

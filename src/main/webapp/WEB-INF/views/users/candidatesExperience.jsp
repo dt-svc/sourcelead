@@ -12,6 +12,7 @@
      2.parameter : candidateId .
 --%>
 <script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 	function candidateExperience(candidateId) {
 		 var candidateType = '${candidateType}';
 		var result = "";
@@ -124,7 +125,7 @@ function closeCertificatePopup(){
 			else{
 			$("#candidateEmployersAdd").attr("disabled", "disabled");
 			$("#candidateEmployersAdd").addClass('button').val('Processing..'); 
-	        $.post(sourceleadUrl+"/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(result) {
+	        $.post(atsUrl+"/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(result) {
 	        	
 	        	if (result && result.response === "INVALID_DATA") {
 				    showError(result.responseMessage);
@@ -316,7 +317,7 @@ function closeCertificatePopup(){
 	function editEmployer(candidateEmpId, candidateId) {
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl
+			url : atsUrl
 					+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?"+tokenParamName+"="+tokenValue+"&candidateId="
 					+ candidateId + "&candidateEmpId=" + candidateEmpId,
 			success : function(response) {
@@ -627,7 +628,7 @@ function closeCertificatePopup(){
 		  }
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
+					url : atsUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId,
 					success : function(response) {
 						if (response && response.response === "INVALID_DATA") {
@@ -774,7 +775,7 @@ function removeEmployer(candidateemployerId, candidateId){
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
+			url : atsUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
 			success : function(response) {
 				if (response.response === "AWKWARD") {
 				    location.href = "/errorPage";
@@ -872,7 +873,7 @@ function removeEmployer(candidateemployerId, candidateId){
 				
 			}
 			else{
-	        $.post(sourceleadUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId, formData, function(response) {
+	        $.post(atsUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId, formData, function(response) {
 	        	if (response && response.response === "INVALID_DATA") {
 	        	    showError(response.responseMessage);
 	        	} else if (response && response.response === "INVALID_USER") {

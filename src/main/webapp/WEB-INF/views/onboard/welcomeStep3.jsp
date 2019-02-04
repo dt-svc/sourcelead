@@ -36,7 +36,8 @@
 </head>
 
 <script>
- var sourceleadUrl ='${sourceleadUrl}';
+/*  var sourceleadUrl ='${sourceleadUrl}'; */
+ var atsUrl = '${SourceLeadWeb_atsUrl}';
 </script>
 <div class="wraper"> 
 
@@ -200,7 +201,7 @@
 		  
 <div class="welBtns">
 
-	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/onboardingCandidateTaxDetails'/>'" >
+	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${atsUrl}/onboardingCandidateTaxDetails'/>'" >
 	<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOnboardingCandidateDocs();" class="Brig">
 	<div class="clearfix"></div>
 </div>
@@ -241,17 +242,17 @@
 <script>
 function deleteDocument(documentUUID){
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	 $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/deleteOnboardCandidateUploadedDocument?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
+	    	 url: atsUrl+"/deleteOnboardCandidateUploadedDocument?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
 	        success: function(response) {
 	        	if (response && response.response === "INVALID_DATA") {
 	        	    showError(response.responseMessage);
 	        	} else if (response.response === "AWKWARD") {
 	        	    location.href = "/errorPage";
 	        	} else if (response.response === "SUCCESS") {
-	        		location.replace(sourceleadUrl+"/onboardingCandidateSetp3");  
+	        		location.replace(atsUrl+"/onboardingCandidateSetp3");  
 	        	} else if (response.indexOf('Sign In') !== -1) {
 	        		location.replace(sourceleadUrl);
 	        	} else {
@@ -266,10 +267,10 @@ function deleteDocument(documentUUID){
 <script>
 function acceptPolicy(documentUUID){
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	 $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/acceptCandidatePolicyDocument?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
+	    	 url: atsUrl+"/acceptCandidatePolicyDocument?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
 	        success: function(response) {
 	        	if (response.response === "AWKWARD") {
 	        	    location.href = "/errorPage";
@@ -296,7 +297,7 @@ function saveOnboardingCandidateDocs(saveType){
 			dateFormat : 'yyyy/mm/dd' 
          }; 
 	
-	  var sourceleadUrl ='${sourceleadUrl}';
+	  var atsUrl ='${SourceLeadWeb_atsUrl}';
 	  if ($('#onboardCandidateDocs_form').validate(false, validationSettings)){ 
 		 var formData = getFormData1("onboardCandidateDocs_form");
 	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -305,12 +306,12 @@ function saveOnboardingCandidateDocs(saveType){
 		      data: formData,
 	          processData: false,
 	          contentType:false,
-	    	  url: sourceleadUrl+"/storeOnboardingCandidateDocsStep3?${_csrf.parameterName}=${_csrf.token}",		
+	    	  url: atsUrl+"/storeOnboardingCandidateDocsStep3?${_csrf.parameterName}=${_csrf.token}",		
 		      success :function(response) {
 		    	  if (response.response === "AWKWARD") {
 		    		    location.href = "/errorPage";
 		    		} else if (response.response === "SUCCESS") {
-		    			 location.replace(sourceleadUrl+"/onboardingCandidateStep4");  
+		    			 location.replace(atsUrl+"/onboardingCandidateStep4");  
 		    		} else if (response.indexOf('Sign In') !== -1) {
 		    			location.replace(sourceleadUrl);
 		    		} else {

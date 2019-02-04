@@ -40,7 +40,8 @@
 </script>
 
 <script type="text/javascript">
- var sourceleadUrl ='${sourceleadUrl}';
+ /* var sourceleadUrl ='${sourceleadUrl}'; */
+  var atsUrl = '${SourceLeadWeb_atsUrl}';
 </script>
 
 <style>
@@ -66,7 +67,7 @@
 	              <ul class="list-unstyled">
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
 		              <li>
-			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
+			              <a href="<c:url value='${atsUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
 				                <div class="clearfix">
 				                   <div class="pull-left image-parent positionRelative">
 				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
@@ -224,7 +225,7 @@
 //     		  var sourceleadUrl ='${sourceleadUrl}';
     				  $.ajax({
     				    	type: "GET",
-    				        url: sourceleadUrl+"/getNomineeDetails?${_csrf.parameterName}=${_csrf.token}&userId="+userId,
+    				        url: atsUrl+"/getNomineeDetails?${_csrf.parameterName}=${_csrf.token}&userId="+userId,
     				        success: function(json) {
     						 var result = "";				        	
     						result = result + '<table id="incometable" class="display" cellspacing="0" width="100%" >';
@@ -548,7 +549,7 @@
   
 
 <div class="welBtns">
-	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/onboardingCandidateBankingDetails'/>'" >
+	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${atsUrl}/onboardingCandidateBankingDetails'/>'" >
 	<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOnboardingCandidatePfEsiDetails();" class="Brig">
 	<div class="clearfix"></div>
 </div>
@@ -635,7 +636,7 @@ $(function() {
 	         $.ajax({
 		    	type: "POST",
 		    	data: formData,
-		    	 url: sourceleadUrl+"/saveOnboardingCandidatePfEsiDetails?${_csrf.parameterName}=${_csrf.token}",
+		    	 url: atsUrl+"/saveOnboardingCandidatePfEsiDetails?${_csrf.parameterName}=${_csrf.token}",
 		        success: function(response) {
 		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
       	    		    showError(response.responseMessage);
@@ -644,7 +645,7 @@ $(function() {
 		        	else if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
-		        		location.replace(sourceleadUrl+"/onboardingCandidateStep3");  
+		        		location.replace(atsUrl+"/onboardingCandidateStep3");  
 		        	} else if (response.indexOf('Sign In') !== -1) {
 		        		location.replace(sourceleadUrl);
 		        	} else {
@@ -675,7 +676,7 @@ $(function() {
 	         $.ajax({
 		    	type: "POST",
 		    	data: formData,
-		    	 url: sourceleadUrl+"/saveNomineeDetails?${_csrf.parameterName}=${_csrf.token}&userId="+userId,
+		    	 url: atsUrl+"/saveNomineeDetails?${_csrf.parameterName}=${_csrf.token}&userId="+userId,
 		        success: function(response) {
 		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
       	    		    showError(response.responseMessage);
@@ -859,7 +860,7 @@ $(function() {
 function deleteNominee(nomineeId,candidateId){ 
     $.ajax({
   	  type: "POST",
-      url: sourceleadUrl+"/deleteNominee?&id="+nomineeId+"&candidateId="+candidateId, 	  
+      url: atsUrl+"/deleteNominee?&id="+nomineeId+"&candidateId="+candidateId, 	  
  	  success: function(data) { 
  		 getNomineeDetails();
 	  }, 

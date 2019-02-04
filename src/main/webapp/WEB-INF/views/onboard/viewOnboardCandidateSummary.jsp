@@ -424,7 +424,7 @@ padding-left: 25px;
 	            	 $("#onboardCandidateSummaryDetailsId").append(result);
 	            	 loadOnBoardingTemplates(json.onboardTemplateId);
 	        	} else if (response.indexOf('Sign In') !== -1) {
-	        		location.replace(atsUrl);
+	        		location.replace(sourceleadUrl);
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}
@@ -509,7 +509,7 @@ function getTemplateContractsDocumentsDetails(){
 	                	 $("#employmentContractDivId").empty();
 	                	 $("#employmentContractDivId").append(result);
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(atsUrl);
+		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -566,7 +566,7 @@ function getTemplateFormsDocumentsDetails(){
 	                	 $("#formstDivId").empty();
 	                	 $("#formstDivId").append(result);
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(atsUrl);
+		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -618,7 +618,7 @@ function getTemplatePolicyDocumentsDetails(){
 	                	 $("#policiesDivId").empty();
 	                	 $("#policiesDivId").append(result);
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(atsUrl);
+		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -663,7 +663,7 @@ function getTemplateSupportingDocumentsDetails(){
 	                	 $("#supportedDivId").empty();
 	                	 $("#supportedDivId").append(result);
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(atsUrl);
+		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -728,7 +728,7 @@ function getOnboardingTasksList(){
 	    		 $("#onboardTasksListViewId").empty();
 	           	 $("#onboardTasksListViewId").append(result); 
 	    	} else if (response.indexOf('Sign In') !== -1) {
-	    		location.replace(atsUrl);
+	    		location.replace(sourceleadUrl);
 	    	} else {
 	    	    showError("Operation failed, please try again");
 	    	}

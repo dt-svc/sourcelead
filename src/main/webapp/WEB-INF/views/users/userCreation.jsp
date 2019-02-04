@@ -15,6 +15,8 @@
 	});
 </script>  -->
 <script type="text/javascript">
+var atsUrl ='${SourceLeadWeb_atsUrl}';
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		window.onload = function () {
 			initLocationAuto('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','residenceLatitude','residenceLongitude','editAssociate','','address');
 			getDesignationType();
@@ -53,7 +55,7 @@
           <div class="pull-left">
             <h2>Add Associate</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usersList'/>">Associates List</a> &raquo; Add Associate </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/usersList'/>">Associates List</a> &raquo; Add Associate </div>
         </section>
         
         <!--New theme-->
@@ -341,7 +343,7 @@
 			               <span class="input-group-addon cursorPointer bg-blue" onclick="getDepartmentsList();"><i class="fa fa-refresh "></i></span>
                   </div>
                   <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-			<a href="<c:url value="/app/addDepartment " />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			<a href="<c:url value="/addDepartment " />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			</sec:authorize>
                 </div> 
                  </div> 
@@ -375,7 +377,7 @@
 			               <span class="input-group-addon cursorPointer bg-blue" onclick="refreshRoleList();managerListEmpty();"><i class="fa fa-refresh "></i></span>
                   </div>
                        <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE ')"> 
-			             <a href="<c:url value="/app/orgRolesList" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			             <a href="<c:url value="/orgRolesList" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			           </sec:authorize>
                 </div>
                 </div> 
@@ -400,7 +402,7 @@
 			               <span class="input-group-addon cursorPointer bg-blue" onclick="refreshGradesList();"><i class="fa fa-refresh "></i></span>
                   </div>
 		             <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-					<a href="<c:url value="/app/addGrade " />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+					<a href="<c:url value="/addGrade " />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 					</sec:authorize>
                 </div> 
                  </div> 
@@ -425,7 +427,7 @@
 			
 			<span class="col-md-2 noPad clearfix">
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-			<a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			<a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			</sec:authorize>
 			</span>
 		</div>
@@ -562,7 +564,7 @@
             <div class="footerstyelsNew clearfix">
                 <div class="pull-right">
                   <input type="button" value="Save &amp; Continue" id="create_user" onclick="createUser();" class="btn btn-primary">
-                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/usersList'/>'"  class="btn btn-default ml">
+                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/usersList'/>'"  class="btn btn-default ml">
                 </div>
             </div>
             </form:form>
@@ -603,7 +605,7 @@
 function getCustomDependentField(sectionId){
 	 $.ajax({
 			type : "POST" , 
-				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 url: atsUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
 				 success: function(data) {
 		        	$('#customDiv'+sectionId).empty();
 		        	$('#customDiv'+sectionId).append(data);
@@ -679,7 +681,7 @@ function calculateSSNLength(length,ssnNumber){
          //$("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateSSNDuplicate?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber+"&userId="+associateId, 
+		        url: atsUrl+"/validateSSNDuplicate?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber+"&userId="+associateId, 
 		        success: function(data) {
 		        	if(data == true){
 		        		  $('#ssnNumberDiv').find('p.jquery_form_error_message').remove();
@@ -704,7 +706,7 @@ function calculateSSNLength(length,ssnNumber){
 	 
 	 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getVendorsByOrgLocationId?", 
+		        url: atsUrl+"/getVendorsByOrgLocationId?", 
 		        success: function(json) {
 		        	$('#vendors').empty();
 		        	$('#vendors').append('<option value="">--Select Vendor --</option>');
@@ -724,7 +726,7 @@ function calculateSSNLength(length,ssnNumber){
 	 if(orgRelationID != null && orgRelationID !='' && orgRelationID !='undefined'){
 		 $.ajax({
 			    type: "POST",
-		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        url: vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(json) {
 		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
@@ -948,7 +950,7 @@ function getEmployeementType(designationType){
             $.ajax({
 				type : "POST",
         	    data: formData,
-				url : sourceleadUrl+"/createUser?"+tokenParamName+"="+tokenValue+"",
+				url : atsUrl+"/createUser?"+tokenParamName+"="+tokenValue+"",
 				success : function(result) {
 					if(result && result === "DataMissing") {
 						$("#create_user").removeAttr("disabled");
@@ -1014,7 +1016,7 @@ function getEmployeementType(designationType){
         // $("#create_user" ).addClass('button').val('Processing..');
          $.ajax({
                 type: "POST",
-                url: sourceleadUrl+"/validateEmployeeId?"+tokenParamName+"="+tokenValue+"&EmployeeId="+EmployeeId,
+                url: atsUrl+"/validateEmployeeId?"+tokenParamName+"="+tokenValue+"&EmployeeId="+EmployeeId,
                 success: function(data) {
                     if(data == true){
                           $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
@@ -1044,7 +1046,7 @@ function getEmployeementType(designationType){
          //$("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateUserEmail?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId, 
+		        url: atsUrl+"/validateUserEmail?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
@@ -1071,7 +1073,7 @@ function getEmployeementType(designationType){
 		 $("#loading").attr('style','position:absolute; width:100%; height:210%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getUserByUserEmail?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId, 
+		        url: atsUrl+"/getUserByUserEmail?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId, 
 		        success: function(json) {
 		        		
 		        		if(json.firstName != null && json.firstName != ''){
@@ -1154,7 +1156,7 @@ function getAssociateUserDetails(){
 	}
 		$.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getActiveAssociateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+employeementType, 
+	        url: atsUrl+"/getActiveAssociateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+employeementType, 
 	        /* contentType: "application/json; charset=utf-8",
 	        dataType: "json", */
 	        
@@ -1243,7 +1245,7 @@ function getAssociateUserDetails(){
  function getVendors(vendorName,vendorOrgRelationId){
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
+		        url: atsUrl+"/getVendorsByOrgLocation?", 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendors').empty();
@@ -1266,7 +1268,7 @@ function getAssociateUserDetails(){
  function vendorContactList(vendorContactName,vendorOrgRelationId,vendorSpocId){
 		 $.ajax({
 			    type: "POST",
-		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+vendorOrgRelationId+"&type=Vendor",  
+		        url: vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+vendorOrgRelationId+"&type=Vendor",  
 		        success: function(json) {
 		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
@@ -1291,7 +1293,7 @@ function getAssociateUserDetails(){
 	 var employeementType = document.getElementById("employeementType").value;
 	 $.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getActiveAssociateList?"+tokenParamName+"="+tokenValue+"&employeementType="+employeementType,
+	    	url: atsUrl+"/getActiveAssociateList?"+tokenParamName+"="+tokenValue+"&employeementType="+employeementType,
 	        success: function(json) {
 	        	var output = "";
 	        	output = output + "<option value=''>-- Select Associate --</option>"; 
@@ -1314,7 +1316,7 @@ function getAssociateUserDetails(){
  function getDepartmentsList(){
 	 $.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getDepartmentsList?"+tokenParamName+"="+tokenValue+"",
+	    	url: atsUrl+"/getDepartmentsList?"+tokenParamName+"="+tokenValue+"",
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
@@ -1342,7 +1344,7 @@ function getAssociateUserDetails(){
 	 $("#candidatesLoading").attr('style','position:absolute; width:100%; height:210%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getActiveAssociateList?"+tokenParamName+"="+tokenValue+"&employeementType="+employmentDesignationType,
+	    	url: atsUrl+"/getActiveAssociateList?"+tokenParamName+"="+tokenValue+"&employeementType="+employmentDesignationType,
 	        success: function(json) {
 	        	var output = "";
 	        	output = output + "<option value=''>-- Select Candidate --</option>"; 
@@ -1411,7 +1413,7 @@ function removeDateofJoinValid(){
 	 if(role != null && role != "" && role != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAssociateReportingManager?"+tokenParamName+"="+tokenValue+"&role="+role, 
+		        url: atsUrl+"/getAssociateReportingManager?"+tokenParamName+"="+tokenValue+"&role="+role, 
 		        success: function(json) {
 		        	var output = "";
 		        	output = output + "<option value=''>-- Select Manager --</option>"; 
@@ -1448,7 +1450,7 @@ function removeDateofJoinValid(){
 	 $('#chosen-role').find('p.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAssociateResourceManager?"+tokenParamName+"="+tokenValue, 
+		        url: atsUrl+"/getAssociateResourceManager?"+tokenParamName+"="+tokenValue, 
 		        success: function(json) {
 		        	var output = "";
 		        	output = output + "<option value=''>-- Select Manager --</option>"; 
@@ -1546,7 +1548,7 @@ function editMe(local){
 function refreshRoleList(){
 		 $.ajax({
 	      type : "POST",
-	       url: sourceleadUrl+"/refreshRoleList",       
+	       url: atsUrl+"/refreshRoleList",       
 	       success: function(json) {
 	        	var output = "";
 	        	output = output + "<option value=''>Select Role</option>"; 
@@ -1568,7 +1570,7 @@ function refreshRoleList(){
 function refreshGradesList(){
 	 $.ajax({
 	      type : "POST",
-	       url: sourceleadUrl+"/refreshGradesList",       
+	       url: atsUrl+"/refreshGradesList",       
 	       success: function(json) {
 	        	var output = "";
 	        	output = output + "<option value=''>-Select Grade-</option>"; 
@@ -1600,7 +1602,7 @@ function refreshGradesList(){
 	 <script>
 	 function selectedVendor(){
 		 var vid = $('#vendors').val();
-		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+		 window.open(atsUrl+"/addVendorContact?vid="+vid,'_blank');
 	 }
 	 </script>
 	
@@ -1765,7 +1767,7 @@ function calculateConfirmationDate(){
 	    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    $.ajax({
 			type : "GET",
-			url: sourceleadUrl+"/getConfirmationDateBasedOnJoiningDate?"+tokenParamName+"="+tokenValue+"&joiningDate="+joiningDate+"&probationperiod="+probationperiod,
+			url: atsUrl+"/getConfirmationDateBasedOnJoiningDate?"+tokenParamName+"="+tokenValue+"&joiningDate="+joiningDate+"&probationperiod="+probationperiod,
 			success :function(confirmationDate) {
 				$("#loading").removeAttr("style");
 				$("#confirmationDate").val(confirmationDate);

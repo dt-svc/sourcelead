@@ -56,7 +56,6 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/app")
 public class UsersListController {
 	
 private static final Logger logger = LoggerFactory.getLogger(UsersListController.class);
@@ -97,7 +96,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	/* This method is used for landing page of user tab. So, who has user tab access they can see users list. No preAuthorize for this method */
 	@RequestMapping(value = "/usersList")
 	public ModelAndView usersList(@RequestParam(value="searchResult",required = false) String searchResult,@RequestParam(value="searchValue",required = false) String searchValue,HttpServletRequest request) throws Exception { 
-		
+		System.out.println("inside ats controller");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
@@ -256,7 +255,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
  	 		  
  			 FileOutputStream fos = new FileOutputStream(file);
  			 try {
- 				createExcelworkbook.write(fos);
+ 				 createExcelworkbook.write(fos);
  				fos.close();
  			} catch (IOException e) {
  				e.printStackTrace();

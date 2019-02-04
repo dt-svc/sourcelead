@@ -105,7 +105,6 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
-@RequestMapping("/app")
 public class CrowdSourcingRequirementsRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CrowdSourcingRequirementsRestController.class);
