@@ -48,7 +48,7 @@ function submitToClient(requirementId){
 	
 	 $.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getShortListedCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,
+	    	url: atsUrl+"/getShortListedCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,
 	    	success: function(data) {
 	    		if (data.response === "FAILED") {
 		    		showError(data.responseMessage);
@@ -310,7 +310,7 @@ function clientSubmissions(requirementId){
 			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({ 
 			    	type: "POST",
-			    	url: sourceleadUrl+"/submitShortlistedToClient?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionsList="+selectedShortlists+"&selectedShortlistsRate="+selectedShortlistsRate,
+			    	url: atsUrl+"/submitShortlistedToClient?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionsList="+selectedShortlists+"&selectedShortlistsRate="+selectedShortlistsRate,
 			        success: function(result) {
 			        	$(".submitnew-wrap").removeClass("submitnew-wrap_active");
 			    		$(".side_mask").fadeOut(200);
@@ -385,7 +385,7 @@ function addEmailtemplate(requirementId){
 		 if(selectedShortlists.length >0){
 		 $.ajax({ 
 		    	type: "GET",
-		    	url: sourceleadUrl+"/addEmailtemplate?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&selectedShortlistsCount="+selectedShortlists,
+		    	url: atsUrl+"/addEmailtemplate?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&selectedShortlistsCount="+selectedShortlists,
 		        success: function(data) {
 		        	if (data.response === "FAILED") {
 			    		showError(data.responseMessage);
@@ -689,7 +689,7 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate,sel
 	      	         processData: false,
 	      	         contentType:false,
 	          	     dataType : 'json',
-					url : sourceleadUrl+"/submitToClient?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId+"&selectedShortlistsRate="+selectedShortlistsRate+"&selectedShortlistsRatePer="+selectedShortlistsRatePer,
+					url : atsUrl+"/submitToClient?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId+"&selectedShortlistsRate="+selectedShortlistsRate+"&selectedShortlistsRatePer="+selectedShortlistsRatePer,
 					success : function(result) {
 						cancelSubmit();
 						var allApplicants = 'all';

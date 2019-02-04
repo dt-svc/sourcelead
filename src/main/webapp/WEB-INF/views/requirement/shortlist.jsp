@@ -25,7 +25,7 @@ function candidateShortList(requirementId){
 	
 	 $.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getSubmissionCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status,
+	    	url: atsUrl+"/getSubmissionCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status,
 	    			
 	    	success: function(data) {
 	    		if (data.response === "FAILED") {
@@ -166,7 +166,7 @@ function candidateShortList(requirementId){
 <script>
 function viewResumeRequirementSummary(resumeUUID,title){
 	if(resumeUUID != null && resumeUUID != ""){
-		window.open(sourceleadUrl+'/viewProfessionalCandidateResume/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
+		window.open(atsUrl+'/viewProfessionalCandidateResume/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
 	}  
 }
 </script>
@@ -263,7 +263,7 @@ function shortlist(requirementId){
 				 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				 $.ajax({ 
 				    	type: "POST",
-				    	url: sourceleadUrl+"/candidateShortList?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionsList="+selectedsubmissionslists,
+				    	url: atsUrl+"/candidateShortList?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionsList="+selectedsubmissionslists,
 				        success: function(data) {
 				        	if (data.response === "FAILED") {
 					    		showError(data.responseMessage);
