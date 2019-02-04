@@ -20,6 +20,7 @@
 
 <!-- For add New Applicant -->
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	$('.action-pop').slideUp();
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -218,7 +219,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	    	
 	    	$.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+		        url: atsUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -371,7 +372,7 @@ function discordApplicant(){
 	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type: "POST",
-	    url: sourceleadUrl+"/verifyCoolingOffPeriod?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&candidateEmail="+candidateEmail+"&reqCoolingOffPeriod="+reqCoolingOffPeriod+"&orgLocationId="+orgLocationId,
+	    url: atsUrl+"/verifyCoolingOffPeriod?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&candidateEmail="+candidateEmail+"&reqCoolingOffPeriod="+reqCoolingOffPeriod+"&orgLocationId="+orgLocationId,
 	    success: function(response) {
 	    	if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
@@ -437,7 +438,7 @@ function discordApplicant(){
 			
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/getCandidatesList?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 
+			        url: atsUrl+"/getCandidatesList?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 
 			        success: function(response) {
 			        	if (response.response === "AWKWARD") {
 			        	    location.href = "/errorPage";
@@ -697,7 +698,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	        processData: false,
 	        contentType:false,
  	        dataType : 'json',
- 	    	url : sourceleadUrl+"/saveAddApplicant?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&con="+con,
+ 	    	url : atsUrl+"/saveAddApplicant?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
 	        	 $(".new_side_wrap").removeClass("new_side_wrap_active");
 	        	 if(result.response === "SESSION_TIMEDOUT") {
