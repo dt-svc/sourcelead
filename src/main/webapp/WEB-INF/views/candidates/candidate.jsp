@@ -645,7 +645,7 @@ function validate_fileupload(fileName)
     	var allSkills = $(event.target).val();
 	   	$.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
+	        url: atsUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
 	        success: function(response) {
 	        	if (response.response === "AWKWARD") {
 	        	    location.href = "/errorPage";
