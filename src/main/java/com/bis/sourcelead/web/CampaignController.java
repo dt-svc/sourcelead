@@ -274,16 +274,6 @@ public class CampaignController {
 	       return model;
 	}
 	
-	@RequestMapping(value = "/campaignStats")
-	public ModelAndView campaignStats(HttpServletRequest request,HttpServletResponse response) {
-		   ModelAndView model = new ModelAndView();
-		   model.addObject("sourceleadUrl", sourceleadUrl);
-		   model.setViewName("campaign/campaignStats");
-	       return model;
-	}
-	
-	
-	
-	
+
 	
 }
