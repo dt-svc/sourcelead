@@ -2,7 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<script src="/resources/js/payrollReports.js"></script>
+<script src="/pms/resources/js/payrollReports.js"></script>
 
 <script>
 $(document).ready(function(){
@@ -21,15 +21,16 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Associate withholding</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/usPayrollReport'/>"> US Payroll Reports List</a>&raquo;Associate withholding
+      <div class="pull-right brud-crum"><a href="/app/dashboard" title="Home">Home</a>&raquo;<a
+				href="/pms/usPayrollReport"> US Payroll Reports List</a>&raquo;Associate withholding
 		</div>
     </section>
     <div class="contentareaInner-styles clearfix">
   <div class="timesheet_out" id="payrollRegister" style="display: block;">
       <div class="clearfix">
         
-        <div class="positionRelative reportHead clearfix"> <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="refreshPage();"></a></span>
+        <div class="positionRelative reportHead clearfix"> <span class="pull-left refreIcon">
+        <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="refreshPage();"></a></span>
   <ul class="pull-right list-unstyled list-inline">
     <li><a class="newAdBtn mr5 hidden" href="/app/userCreation">+  Associate</a></li>
     <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
