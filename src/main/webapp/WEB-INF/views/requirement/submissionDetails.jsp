@@ -50,6 +50,7 @@
  
  
 <script>
+var sourceleadUrl ='${sourceleadUrl}';
 function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
