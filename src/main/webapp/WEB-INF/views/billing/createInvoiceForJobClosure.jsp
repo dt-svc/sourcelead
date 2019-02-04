@@ -91,7 +91,7 @@ function errRemoveClientContact(){
 				                <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();createInvoiceEmptyClientContact();getInvoiceTemplateList();"><i class="fa fa-refresh "></i></span>
 				                </div>
 				                 <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-                                 <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
+                                 <span class="col-md-2 noPad clearfix"><a href="/vms/client" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
                                  </sec:authorize>
 				               </div> 
 				              <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
@@ -1697,7 +1697,7 @@ function getClients(){
 	
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getClientList?"+tokenParamName+"="+tokenValue+"",
+		url: vmsUrl+"/getClientList?"+tokenParamName+"="+tokenValue+"",
 		success :function(json) {
 // 		var json = JSON.parse(data);
 		var output = "";
