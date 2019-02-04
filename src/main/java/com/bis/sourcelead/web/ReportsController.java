@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,6 +29,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.reports.service.ClientReportService;
 import com.bis.sourcelead.reportsDTO.TimeToFillDTO;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -68,6 +70,9 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	
 	@Autowired
 	private LookUpDataService lookUpDataService;
+	
+	@Autowired
+	ClientReportService clientReportService;
 	
 	@Autowired
 	ProjectsService projectsService;
@@ -487,6 +492,27 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 return model;
 	 }	
 	 
+	 @RequestMapping(value = "/perfomanceClientReports")
+		public ModelAndView clientReports(HttpServletRequest request) throws Exception
+		{
+			OrgLocations location = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			ModelAndView model = new ModelAndView();
+			Map<String, Integer> activeAndInactiveCount = clientReportService.getAllClientsCountByOrgLocationIdAndUserId(location.getId(), user.getId());
+			int activeClientsCount = activeAndInactiveCount.get("activeClient");
+			int inActiveClientsCount = activeAndInactiveCount.get("inActiveClient");
+			int totalClientsCount = activeClientsCount + inActiveClientsCount;
+			model.addObject("activeClientsCount", activeClientsCount);
+			model.addObject("inActiveClientsCount", inActiveClientsCount);
+			model.addObject("totalClientsCount", totalClientsCount);
+			Map<String, Integer> totalSpocCount = clientReportService.getAllClientsSpocCountByOrgLocationIdAndUserId(location.getId(), user.getId());
+			model.addObject("activeSpocCount", totalSpocCount.get("totalactiveCount"));
+			model.addObject("inActiveSpocCount", totalSpocCount.get("totalInactiveCount"));
+			model.addObject("totalSpocCount", totalSpocCount.get("totalSpocCount"));
+			model.setViewName("reports/perfomanceClientReports");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+		}
 	 
 	 @RequestMapping(value = "/applicantDeclineReports")
 		public ModelAndView applicantDeclineReports(HttpServletRequest request) throws Exception
