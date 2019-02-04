@@ -14,7 +14,7 @@ z-index:9999 !important;
 
 <script>
 function compareRecommendedUsers(requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var candidateIds = new Array();
 	 for(var e in compareCandidates) {
@@ -32,7 +32,7 @@ function compareRecommendedUsers(requirementId){
 		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getCandidatesToCompare?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&orgLocationId="+locationId+"&candidatesSelected="+s,
+		        url: atsUrl+"/getCandidatesToCompare?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&orgLocationId="+locationId+"&candidatesSelected="+s,
 		        success: function(data) {
 		        	if (data.response === "FAILED") {
 			    		showError(data.responseMessage);
@@ -81,7 +81,7 @@ function cancelTermination(){
 
 <script>
 function compareRecommendedUsersdiv(data,requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	
 	var jobId = "";
 	if(data.jobId != null && data.jobId != '' && data.jobId != 'undefined'){
@@ -467,7 +467,7 @@ function prepareCandidateGrid(data,requirementId){
 
 <script>
 function getCandidatetoCompare(div,requirementId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var candidateId = "";
 	if(div == 1){
 		candidateId = $("#compareCandidateList1").val();
@@ -489,7 +489,7 @@ function getCandidatetoCompare(div,requirementId){
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId, 
+		        url: atsUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId, 
 		        success: function(data) {
 		        	if (data.response === "FAILED") {
 			    		showError(data.responseMessage);

@@ -75,7 +75,7 @@ function closeCertificatePopup(){
 			else{
 			$("#candidateEmployersAdd").attr("disabled", "disabled");
 			$("#candidateEmployersAdd").addClass('button').val('Processing..'); 
-	        $.post(sourceleadUrl+"/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(response) {
+	        $.post(atsUrl+"/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(response) {
 	        	if (response.response === "AWKWARD") {
                     location.href = "/errorPage";
                 } else if (response.response === "SUCCESS") {
@@ -262,7 +262,7 @@ function closeCertificatePopup(){
 	function editEmployer(candidateEmpId, candidateId) {
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl
+			url : atsUrl
 					+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?"+tokenParamName+"="+tokenValue+"&candidateId="
 					+ candidateId + "&candidateEmpId=" + candidateEmpId,
 			success : function(response) {
@@ -586,7 +586,7 @@ function monthIfYearRequired(){
 		
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
+					url : atsUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId,
 					success : function(response) {
 						if (response && response.response === "INVALID_DATA") {
@@ -724,7 +724,7 @@ function removeEmployer(candidateemployerId, candidateId){
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
+			url : atsUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
 			success : function(response) {
 				if (response.response === "AWKWARD") {
 				    location.href = "/errorPage";
@@ -812,7 +812,7 @@ function removeEmployer(candidateemployerId, candidateId){
 			$.ajax({
 						type : "POST",
 						data : formData, 
-						url : sourceleadUrl+ "/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateExperianceId"+ candidateExperianceId,
+						url : atsUrl+ "/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateExperianceId"+ candidateExperianceId,
 						success : function(response) {
 							if (response && response.response === "INVALID_DATA") {
 							    showError(response.responseMessage);

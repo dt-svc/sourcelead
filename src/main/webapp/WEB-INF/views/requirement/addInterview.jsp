@@ -853,7 +853,7 @@ function getNotifyToOtersValInterview(){
 	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	   	     $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/saveInterview?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData,
+		        url: atsUrl+"/saveInterview?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData,
 		        success: function(result) {
 		        	    $(".add_inter_wrap").removeClass("add_inter_wrap_active");
 		        		$(".side_mask").fadeOut(200);
@@ -933,7 +933,7 @@ function cancelInterviewPopup(){
      
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllShortListCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview,  
+		        url: atsUrl+"/getAllShortListCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview,  
 		        success: function(data) {
 		        	if (data.response === "FAILED") {
 			    		showError(data.responseMessage);
@@ -997,7 +997,7 @@ function cancelInterviewPopup(){
      
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllShortListCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview, 
+		        url: atsUrl+"/getAllShortListCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview, 
 		        success: function(data) {
 		        	if (data.response === "FAILED") {
 			    		showError(data.responseMessage);
@@ -1039,7 +1039,7 @@ function cancelInterviewPopup(){
  function getInterviewers(rowId) {
 	  $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getAllInterviewers?"+tokenParamName+"="+tokenValue+"", 
+	        url: atsUrl+"/getAllInterviewers?"+tokenParamName+"="+tokenValue+"", 
 	        success: function(data) {
 	        	if (data.response === "FAILED") {
 		    		showError(data.responseMessage);
@@ -1116,7 +1116,7 @@ $(function(){
 function interviewTemplate(){
 	 $.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?"+tokenParamName+"="+tokenValue+"", 
+	    	url : atsUrl+"/getInterviewFeedbackTemplatesList?"+tokenParamName+"="+tokenValue+"", 
 	        success: function(data) {
 	        	if (data.response === "FAILED") {
   		    		showError(data.responseMessage);
@@ -1162,7 +1162,7 @@ function getTimezonesList(rowId){
 	var timezone = '${timezone}';
 	 $.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getTimezonesList?"+tokenParamName+"="+tokenValue+"", 
+	    	url : atsUrl+"/getTimezonesList?"+tokenParamName+"="+tokenValue+"", 
 	        success: function(data) {
 	        var json = JSON.parse(data);
 	        var output = "";
@@ -1245,9 +1245,10 @@ function showCal(id){
 			}
 			
 			var sourceleadUrl ='${sourceleadUrl}';
+			var atsUrl = '${SourceLeadWeb_atsUrl}';
 			 $.ajax({
 				type: "POST",
-		        url: sourceleadUrl+"/getInterviewSlotDates?${_csrf.parameterName}=${_csrf.token}&applicantSubmissionIds="+applicantSubId+"&interviewerIds="+interviewerIds,
+		        url: atsUrl+"/getInterviewSlotDates?${_csrf.parameterName}=${_csrf.token}&applicantSubmissionIds="+applicantSubId+"&interviewerIds="+interviewerIds,
 		        success: function(result) {
 		        	if (result.response === "FAILED") {
 			    		showError(result.responseMessage);
@@ -1374,7 +1375,7 @@ function checkAvailability(){
 	}
 		  $.ajax({
 		    	type: "POST",
-		    	url : sourceleadUrl+"/getInterviewerAndApplicantsDetails?"+tokenParamName+"="+tokenValue+"&applicantSubId="+applicantSubId+"&interviewerIds="+interviewerIds+"&date="+date, 
+		    	url : atsUrl+"/getInterviewerAndApplicantsDetails?"+tokenParamName+"="+tokenValue+"&applicantSubId="+applicantSubId+"&interviewerIds="+interviewerIds+"&date="+date, 
 		        success: function(data) {
 		        	if (data.response === "FAILED") {
 			    		showError(data.responseMessage);
