@@ -10,7 +10,7 @@
 <script>
 	function requirementPipelinePaginationOffer(url, requirementId,
 			submissionType) {
-		var sourceleadUrl = '${sourceleadUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var clientSubmissions = '${clientSubmissions}';
 		var isSpocActive = '${isSpocActive}';
@@ -213,7 +213,7 @@
 													&& opt.attachment != 'undefined') {
 												result = result
 														+ '         <td title='+opt.attachment+'><div><span><a download class="glyphicon glyphicon-download-alt" href=\"'
-														+ sourceleadUrl
+														+ atsUrl
 														+ '/ws/downloadOfferAttachment?offerId='
 														+ opt.offerId
 														+ '\"></a><a class="fa fa-eye ml10" onclick="viewOfferDocument(\''
