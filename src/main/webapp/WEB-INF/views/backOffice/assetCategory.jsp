@@ -7,6 +7,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 $(document).ready(function(){
 	getAssetCategoryList();
 });
@@ -24,7 +25,7 @@ $(document).ready(function(){
   <div class="pull-left">
     <h2>Category</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/assetManagement'/>">Assets List</a> &raquo; Category</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/ats/assetManagement">Assets List</a> &raquo; Category</div>
 </section>
 
 
@@ -58,7 +59,7 @@ $(document).ready(function(){
 		$("#assetCategoryLoderDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/getAssetCategoryList?"+tokenParamName+"="+tokenValue+"", 	   
+			    url: atsUrl+"/getAssetCategoryList?"+tokenParamName+"="+tokenValue+"", 	   
 	   		    success: function(data) {
 	   		    	
 	   		    	var json = JSON.parse(data);
@@ -194,7 +195,7 @@ $(".addcon-pop").click(function(){
 					$("#save_button").attr("disabled", "disabled");
 					$( "#save_button" ).addClass('button').val('Processing..');
 					$("#addCategory_form").attr("disabled", "disabled");
-					$.post(sourceleadUrl+"/saveCategory?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId+"&catLocationId="+catLocationId, formData, function(result) {
+					$.post(atsUrl+"/saveCategory?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId+"&catLocationId="+catLocationId, formData, function(result) {
 						if (result && result.response === "INVALID_DATA") {
 							$("#blogLoading").hide();
 						    showError(result.responseMessage);
@@ -237,7 +238,7 @@ function closePopupDemo(){
 function editCategory(catLocationId,categoryId){
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getCategoryById?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId+"&catLocationId="+catLocationId, 	   
+	    url: atsUrl+"/getCategoryById?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId+"&catLocationId="+catLocationId, 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
 		    	if( data.indexOf('Sign In') >= 0){
@@ -319,7 +320,7 @@ function validateCategoryName(){
 		// $( "#save_client" ).addClass('button').val('Processing..');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/validateCategoryName?"+tokenParamName+"="+tokenValue+"&categoryName="+categoryName+"&categoryId="+categoryId,
+			url : atsUrl + "/validateCategoryName?"+tokenParamName+"="+tokenValue+"&categoryName="+categoryName+"&categoryId="+categoryId,
 			success : function(data) {
 				var result = data;
 				if (result == true) {
@@ -365,7 +366,7 @@ function terminateCategory(categoryId){
 		$("#loading"+categoryId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/terminateCategory?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,
+			url : atsUrl + "/terminateCategory?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,
 			success : function(result) {
 					if (result && result.response === "INVALID_DATA") {
 					    showError(result.responseMessage);
