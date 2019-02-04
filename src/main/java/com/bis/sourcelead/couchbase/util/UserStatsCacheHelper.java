@@ -342,8 +342,10 @@ public class UserStatsCacheHelper {
 		 orgLocationDTO.setOrgCode(orgLocations.getOrg().getOrgCode());
 		 orgLocationDTO.setIsTimesheetAvgHoursRequired(orgLocations.getIsTimesheetAvgHoursRequired());
 		 orgLocationDTO.setIsCompanyOnboarded(orgLocations.getIsCompanyOnboarded());
-		 orgLocationDTO.setBusinessTypeId(String.valueOf(orgLocations.getBusinessType().getId()));
-		 orgLocationDTO.setBusinessType(orgLocations.getBusinessType().getName());
+		 if(orgLocations.getBusinessType() != null) {
+			 orgLocationDTO.setBusinessTypeId(String.valueOf(orgLocations.getBusinessType().getId()));
+			 orgLocationDTO.setBusinessType(orgLocations.getBusinessType().getName());
+		 }
 		 orgLocationDTO.setOtherBusinessType(orgLocations.getOtherBusinessType());
 		 orgLocationDTO.setEmailForPO(orgLocations.getPoEmail());
 		 orgLocationDTO.setEmailforRemittance(orgLocations.getRemittanceEmail());
