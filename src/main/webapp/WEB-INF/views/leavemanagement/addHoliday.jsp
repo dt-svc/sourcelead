@@ -58,7 +58,7 @@ $(document).ready(function() {
       <div class="pull-left">
         <h2>Add Holiday</h2>
       </div>
-     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/leaveConfiguration'/>"> Leave Configuration</a> &raquo;<a href="<c:url value='${appPath}/viewHoliday'/>">Holiday List</a> &raquo; Add Holiday</div>
+     <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;<a href="/pms/leaveConfiguration"> Leave Configuration</a> &raquo;<a href="/pms/viewHoliday">Holiday List</a> &raquo; Add Holiday</div>
     </section>
     <div class="content-area content-new clearfix">
     <div id="holidayLoading"></div>
