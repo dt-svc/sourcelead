@@ -9,7 +9,7 @@
     <div id="onboardingLoading"></div>
     <section class="content-header clearfix">
           <div class="pull-left"> <h2 class="pull-left">Templates</h2></div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; Templates</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; Templates</div>
  		<div class="clearfix"></div>
     </section>
     
@@ -107,8 +107,8 @@
 		<p>Manage Your Job Templates</p>
 		<span>
 		<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
-			<a  class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/addTemplate'/>">Add</a> 
-			<a  class="btn btn-primary btn-sm" href="<c:url value="${appPath}/template" />">View</a>
+			<a  class="btn btn-info btn-sm mr10" href="/ats/addTemplate">Add</a> 
+			<a  class="btn btn-primary btn-sm" href="/ats/template">View</a>
 			</sec:authorize>
 		</span>
 		</div>

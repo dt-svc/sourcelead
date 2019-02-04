@@ -24,7 +24,7 @@
    
     if (request.getRequestURL().toString().indexOf("www.") == -1
             && request.getRequestURL().toString().indexOf("localhost") == -1
-                 
+            && request.getRequestURL().toString().indexOf("dev.") == -1
             && request.getRequestURL().toString().indexOf("qa.") == -1
             && request.getRequestURL().toString().indexOf("staging.") == -1
             && request.getRequestURL().toString().indexOf("demo.") == -1) {
@@ -46,6 +46,11 @@ window.onload = function() {
 	var userRoleId = "";
 	if("${redirect_to_login_2_Step_Process}" != ''){
 		validateUserAlreadyAuthenticated(userRoleId,userName,password);
+	}
+	else if("${login_2_Step_Process_Enabled}" != ''){
+		getUserEnrolledLoctions();
+	}else if("${redirect_to_dashboard}" != ''){
+		redirectToDashbord(0,userName,password);
 	}
 }
 </script>

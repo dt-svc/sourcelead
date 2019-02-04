@@ -66,7 +66,7 @@ public class CandidateOffBoardController {
 	}
 	
 	
-	
+	/*
 	@RequestMapping(value = "/offboardStep2")
 	public ModelAndView offboardStep2(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
@@ -186,7 +186,7 @@ public class CandidateOffBoardController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("offboard/candidateOffBoardCreation");
 		return model;
-	}
+	}*/
 	
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')")
 	@RequestMapping(value = "/offboardingTemplatesList")
@@ -235,7 +235,7 @@ public class CandidateOffBoardController {
  	}
 	
 //	@PreAuthorize("hasRole('ROLE_CREATE_OFF_BOARD_USER')")
-	@RequestMapping(value = "/viewOffboardCandidateDetails")
+	/*@RequestMapping(value = "/viewOffboardCandidateDetails")
  	public ModelAndView viewOffboardCandidateDetails(@RequestParam(value="offboardUUID", required=false) String offboardUUID,
  			HttpServletRequest request) throws Exception {
 		   
@@ -255,7 +255,7 @@ public class CandidateOffBoardController {
  			model.addObject("offBoardingId", offBoarding.getId());
  			model.addObject("offBoardingUUID", offBoarding.getOffboardUUID());
  			return model;
- 	}
+ 	}*/
 	
 	
 

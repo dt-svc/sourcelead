@@ -83,6 +83,13 @@ function getDayWiseReports(){
     		<c:if test="${loginUserRole eq 'ROLE_ADMIN'}">
     		<li><a href="javascript:void(0)" class="btn btn-default btn-sm repFilIcon" title="Filters" onclick="openFilterPop();"><i class="fa fa-filter faFilter"></i></a></li>
     	</c:if>
+    	<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="moreActions();"></a>
+					<div class="newActPop">
+						<span>
+							<a href="javascript:void(0)" onclick="recruiterReportExport();" title="PDF">Export PDF</a>
+						</span>
+					</div>
+				</li>
     		<li class="positionRelative"><input type="text" class="repSearchBar" placeholder='Search' id='usersDataTableSearch'/><span class="repSearchIcon" onClick="userDataTableList();"></span></li>
     	</ul>
     </div>
@@ -147,6 +154,53 @@ function getDayWiseReports(){
 		       </div>
  
  </div>
+ <script>
+
+function recruiterReportExport(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var searchValue = $("#usersDataTableSearch").val();
+	 var timePeriod = $('#reportTypeId').val();
+	 var flag = true;
+	 var startDate = '';
+	 var endDate = '';
+	 var searchValueregx = searchValue.replace('^', '');
+	 if(timePeriod == 'custom'){
+		  startDate = $("#ReportStartDate").val();
+		  endDate = $("#ReportEndDate").val();
+		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
+			  if(startDate == null || startDate == ''){
+				  document.getElementById("reportsStartDate").style.display="block";
+				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+			  }
+			  
+			  if(endDate == null || endDate == ''){
+				  document.getElementById("reportsEndDate").style.display="block";
+				  $("#reportsEndDate").empty().append("End Date is Required") ; 
+			  }
+			  flag = false;
+		  }
+	 }else{
+		 document.getElementById("reportsStartDate").style.display="none";
+		 document.getElementById("reportsEndDate").style.display="none";
+	 }
+	 var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
+		var userRoleName = [];
+		$('input:checkbox[name=orgRoles]:checked').each(function() 
+			    {
+			userRoleName.push($(this).val());
+	     });
+	 if(flag){
+		 searchValue = searchValue ? searchValue : "";
+		 var url = sourceleadUrl+"/getAllRecruiterReportsExport?timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&userRoleName="+userRoleName+"&searchValue="+searchValueregx;
+		 window.location.href = url;
+	 }
+	
+}
+</script>
  <script type="text/javascript"> 
  
  function resetFilter() {
@@ -697,6 +751,10 @@ function getRecruiterCandidates(userCode){
 
 
 <script>
+function moreActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
 function getRecruiterApplicantsList(userCode){
 	var searchValue = $("#usersDataTableSearch").val();
 	 var timePeriod = $('#reportTypeId').val();
