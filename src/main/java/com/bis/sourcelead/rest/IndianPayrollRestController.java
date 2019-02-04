@@ -453,7 +453,7 @@ public class IndianPayrollRestController {
     
     
     
-    @RequestMapping(value = "/app/getAssociateLoanAndAdvanceDetails", method = RequestMethod.POST)
+    @RequestMapping(value = "/getAssociateLoanAndAdvanceDetails", method = RequestMethod.POST)
 	public AssociateLoanAndAdvancesDTO getAssociateLoanAndAdvanceDetails(HttpServletRequest request,
 			@RequestParam(value="userId", required=false) Long userId){
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

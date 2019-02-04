@@ -98,13 +98,14 @@
               
               
   <script>
+  var atsUrl ='${SourceLeadWeb_atsUrl}';
     function getNomineeDetailsList(){
     	var userId = '${userId}';
     	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     		  var sourceleadUrl ='${sourceleadUrl}';
     				  $.ajax({
     				    	type: "GET",
-    				        url: sourceleadUrl+"/getNomineeDetails?${_csrf.parameterName}=${_csrf.token}&userId="+userId,
+    				        url: atsUrl+"/getNomineeDetails?${_csrf.parameterName}=${_csrf.token}&userId="+userId,
     				        success: function(json) {
     				        	$("#nomineeDeta").show();
     				        	var result = "";			
@@ -193,7 +194,7 @@
 	         $.ajax({
 		    	type: "POST",
 		    	data: formData,
-		    	 url: sourceleadUrl+"/saveOnboardingCandidatePfEsiDetails?${_csrf.parameterName}=${_csrf.token}",
+		    	 url: atsUrl+"/saveOnboardingCandidatePfEsiDetails?${_csrf.parameterName}=${_csrf.token}",
 		        success: function(response) {
 		        	$("#informationDetailsLoading").removeAttr('style');
 		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
@@ -334,7 +335,7 @@ $("#nomineeShow").click(function() {
 	         $.ajax({
 		    	type: "POST",
 		    	data: formData,
-		    	 url: sourceleadUrl+"/saveNomineeDetails?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&id="+id,
+		    	 url: atsUrl+"/saveNomineeDetails?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&id="+id,
 		        success: function(response) {
                         //$("#nomineeDetails").hide();
                         $("#nomineeDeta").empty();
@@ -385,7 +386,7 @@ function nomineeDetailsPagination(){
 	}
     $.ajax({
 			type: "POST",
-		    url: sourceleadUrl + urlPath, 
+		    url: atsUrl + urlPath, 
 		    success: function(data) {
 		    	$('#nomineePopUpDiv').empty();
 		    	$('#nomineePopUpDiv').append(data);
@@ -403,7 +404,7 @@ function closeNomineePopUp() {
 function deleteNominee(nomineeId,candidateId){ 
     $.ajax({
   	  type: "POST",
-      url: sourceleadUrl+"/deleteNominee?&id="+nomineeId+"&candidateId="+candidateId, 	  
+      url: atsUrl+"/deleteNominee?&id="+nomineeId+"&candidateId="+candidateId, 	  
  	  success: function(data) { 
  		 getNomineeDetailsList();
 	  }, 

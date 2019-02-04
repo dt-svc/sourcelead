@@ -153,6 +153,7 @@
   </div>
 
 <script type="text/javascript">
+var atsUrl ='${SourceLeadWeb_atsUrl}';
  function savePaymentAccount(){
 	 var userId = '${userId}';
 	 var candidateId = '${candidateId}';
@@ -162,7 +163,7 @@
 			$.ajax({
 				 type : "POST",
 				 data: formData,
-			     url : sourceleadUrl+"/save-ind-associate-payment-account?userId="+userId,
+			     url : atsUrl+"/save-ind-associate-payment-account?userId="+userId,
 				 success : function(result) {
 					 if (result && result.response === "INVALID_DATA") {
 							$("#accountDetailsLoading").removeAttr("style");
@@ -235,7 +236,7 @@ function clearPaymentAccount() {
 
 <script>
 function changeDefaultPaymentAccount(ele, id) {
-    $.post(sourceleadUrl+"/change-default-payment-account", {id: id, defaultAccount: $(ele).is(":checked")}, function(data) {
+    $.post(atsUrl+"/change-default-payment-account", {id: id, defaultAccount: $(ele).is(":checked")}, function(data) {
     	 var candidateId = '${candidateId}';
     	 associateBankingDetails(candidateId);
         showError(data.responseMessage);
@@ -243,7 +244,7 @@ function changeDefaultPaymentAccount(ele, id) {
 }
 function changeActivePaymentAccount(id){
 	 var candidateId = '${candidateId}';
-	 $.post(sourceleadUrl+"/change-active-payment-account", {id: id}, function(data) {
+	 $.post(atsUrl+"/change-active-payment-account", {id: id}, function(data) {
 	        showError(data.responseMessage);
 	        associateBankingDetails(candidateId);
 	    });

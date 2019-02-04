@@ -43,7 +43,7 @@ display: none;
       <div class="pull-left">
         <h2>Joblist Mail Box</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/campaigns/hotcampaigns'/>"> Mailbox</a>
+      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="/ats/campaigns/hotcampaigns"> Mailbox</a>
 			&raquo; Joblist Campaign</div>
     </section>
    
@@ -372,10 +372,10 @@ function jobListChange(type){
 
 <script>
 function jobsDataTableList(type){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	 var searchValue = $("#jobsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getJobsForCampaign?searchValue="+searchValue+"&jobCampaignType="+type;
+	 var url = atsUrl+"/getJobsForCampaign?searchValue="+searchValue+"&jobCampaignType="+type;
    jobsPagination(url,type);
 }
 </script>
@@ -1015,8 +1015,8 @@ function contactsDataTableList(){
 	 if($("#groupsFilter").val() != null){
 		 contactsGroups = $("#groupsFilter").val();
 	 }
-	 
-	 var url = sourceleadUrl+"/getUserContactsListForMalling?searchValue="+searchValue+"&groupIdsList="+contactsGroups;
+	 var atsUrl ='${SourceLeadWeb_atsUrl}';
+	 var url = atsUrl+"/getUserContactsListForMalling?searchValue="+searchValue+"&groupIdsList="+contactsGroups;
 	 contactsPagination(url);
 }
 </script>
@@ -1322,10 +1322,10 @@ function vendorContactDataTableList(){
 function listViewPop(viewListId){
 	$(".popMask").show();
 	$(".ReciViewPop").show();	
-	
+    var atsUrl ='${SourceLeadWeb_atsUrl}';
 	$.ajax({
 	       type : "GET",
-	        url: sourceleadUrl+"/listViewPop?"+tokenParamName+"="+tokenValue+"&viewListId="+viewListId,       
+	        url: atsUrl+"/listViewPop?"+tokenParamName+"="+tokenValue+"&viewListId="+viewListId,       
 	        success :function(json) {
 	        	populategViewList(json);
 	       },
@@ -1457,11 +1457,10 @@ function getContactEmails(){
 		 orgRelationIds.push(vendorList[e])
 	  }
 	 
-	 
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var atsUrl ='${SourceLeadWeb_atsUrl}';
 	  $.ajax({
          type : "POST",
-         url: sourceleadUrl+"/getVendorContactsEmailsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationIds="+orgRelationIds,    
+         url: atsUrl+"/getVendorContactsEmailsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationIds="+orgRelationIds,    
           success :function(data) {
        	    var str_array = data.replace(/\"/g, "").split(',');
 				for(var i = 0; i < str_array.length; i++) {
@@ -1541,10 +1540,11 @@ function getRecipients(){
 
 <script>
 function checkUniqueSubject(){
+	 var atsUrl ='${SourceLeadWeb_atsUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var name = $("#campaignSubject").val();
 	if(name != null && name != '' && name != 'undefined'){
-			$.get(sourceleadUrl+"/validateCampaignSubject?&orgLocationId="+locationId+"&campaignName="+name+"&campaignType=1", function(data) {
+			$.get(atsUrl+"/validateCampaignSubject?&orgLocationId="+locationId+"&campaignName="+name+"&campaignType=1", function(data) {
 	          	if(data == true){
 	          		$('#subjectDiv').find('p.jquery_form_error_message').remove();
 	          		$("#campaignSend").removeAttr("disabled");

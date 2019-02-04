@@ -16,6 +16,7 @@
 </script>  -->
 <script type="text/javascript">
 var atsUrl ='${SourceLeadWeb_atsUrl}';
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		window.onload = function () {
 			initLocationAuto('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','residenceLatitude','residenceLongitude','editAssociate','','address');
 			getDesignationType();
@@ -725,7 +726,7 @@ function calculateSSNLength(length,ssnNumber){
 	 if(orgRelationID != null && orgRelationID !='' && orgRelationID !='undefined'){
 		 $.ajax({
 			    type: "POST",
-		        url: atsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        url: vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(json) {
 		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
@@ -1267,7 +1268,7 @@ function getAssociateUserDetails(){
  function vendorContactList(vendorContactName,vendorOrgRelationId,vendorSpocId){
 		 $.ajax({
 			    type: "POST",
-		        url: atsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+vendorOrgRelationId+"&type=Vendor",  
+		        url: vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+vendorOrgRelationId+"&type=Vendor",  
 		        success: function(json) {
 		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();

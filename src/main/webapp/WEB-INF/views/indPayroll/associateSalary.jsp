@@ -247,6 +247,7 @@ function payHeadCalculation(id, shortCode, method, formula){
 </script>
 
 <script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 function saveAssociateSalaryInd(){
 	if ($('#associateSalary_form').validate(false, validationSettings)) {
 		
@@ -314,7 +315,7 @@ function cnfToSaveAssociateSalaryInd(){
 			 data: formData,
 		     processData: false,
 		     contentType:false, 
-			 url : sourceleadUrl+"/saveAssociateSalaryInd?"+tokenParamName+"="+tokenValue,
+			 url : atsUrl+"/saveAssociateSalaryInd?"+tokenParamName+"="+tokenValue,
 			 success : function(result) {
 			  		if(status == "NEW" || status == "NODATA"){
 			  			location.reload();
@@ -368,7 +369,7 @@ function getPayGroups(){
 	var userId = $("#userId").val();
 		 $.ajax({
 				type : "GET",
-				url : sourceleadUrl+"/getPayGroupsByPayFrequency?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency+"&userId="+userId,
+				url : atsUrl+"/getPayGroupsByPayFrequency?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency+"&userId="+userId,
 				success : function(result) {
 				var output = "";
 				output = output + "<option value=''>Select Group</option>";
