@@ -41,7 +41,7 @@ margin-top: -50px;
 		<div class="pull-left">
 			<h2>Create Client</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/clientDashboard'/>"> Clients List</a>
+		<div class="pull-right brud-crum"><a href="<c:url value='app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="'/vms/clientDashboard'"> Clients List</a>
 			&raquo; Add Client</div>
 	</section>
 	
