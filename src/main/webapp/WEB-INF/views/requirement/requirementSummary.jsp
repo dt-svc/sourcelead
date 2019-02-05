@@ -481,13 +481,13 @@ $(".reminder").click(function(){
    });
    });
 </script>
-<script type="text/javascript">
+<!-- <script type="text/javascript">
             $(function () {
                 $('#datetimepicker5').datetimepicker({
 					locale: 'ru'
                 });
             });
-</script>
+</script> -->
 </body>
 </html>
 

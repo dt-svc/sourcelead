@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.indPayroll.utill.INDPayrollCommonUtil;
 import com.bis.sourcelead.reportsDTO.TimeToFillDTO;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -66,7 +67,14 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	
 	@Autowired
 	ProjectsService projectsService;
+
+	@Autowired
+	INDPayrollCommonUtil iNDPayrollCommonUtil;
 	
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	
+
 	@RequestMapping(value = "/recruitersReports")
 	public ModelAndView recruitersReports(HttpServletRequest request,HttpServletResponse response) throws Exception {
 	 
@@ -659,8 +667,6 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		}
 	
 		
-
-		
 		 @RequestMapping(value = "/indPayrollReportList")
 			public ModelAndView indPayrollReportList(HttpServletRequest request,HttpServletResponse response) throws Exception {
 			 ModelAndView model = new ModelAndView();
@@ -787,5 +793,6 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 			 model.setViewName("reports/indPayrollSalaryStatementReport");
 			 return model;
 		 }
+
 
 }

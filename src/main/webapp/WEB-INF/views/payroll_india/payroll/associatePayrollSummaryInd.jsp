@@ -50,71 +50,77 @@
 			<table width="100%" class="table mb0" id="tableNetpay">
 				<tbody>
 			<tr>
-			<td class="padding_right">
-				<table class="table table-bordered tableNetpay mb0">
-					<c:set var="earningTotal" value="${0.00}"/>
-						<thead>
+			<c:if test="${fn:length(earningPayhead) gt 0}">
+				<td class="padding_right">
+					<table class="table table-bordered tableNetpay mb0">
+						<c:set var="earningTotal" value="${0.00}"/>
+							<thead>
+								<tr>
+									<th>Earning</th>
+									<th>Amount <span class="paddingLeft">(&#8377;)</span></th>
+								</tr>
+							</thead>
+							<tbody class="earningPayheadTbady">
+							<c:forEach var="earning" items="${earningPayhead}" varStatus="loop1">
+								<tr>
+									<th><div class="tbldata-dotdot inlineBlock"> <input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].payrollPayheadName" value="${earning.payrollPayheadName}"> ${earning.payrollPayheadName}</div></th>
+									<td><input type="text" id="earningPayheadAmount" name="associateSalaryPayheadIndEarningList[${loop1.index}].monthly" data-validation="validate_Space validate_length length1-20 validate_number" data-validation-optional="true" value="${earning.monthly}" class="formControl" readOnly onBlur="calculateGrossSalary();">
+										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].payrollPayhead" value="${earning.payrollPayhead}">
+										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].payrollPayheadShortCode" value="${earning.payrollPayheadShortCode}">
+										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].indEmployeePayrollId" value="${earning.indEmployeePayrollId}">
+										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].monthlyOld" value="${earning.monthly}">
+										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].payrollPayheadType" value="Earnings">
+									</td>
+									<c:set var="earningTotal" value="${earningTotal + earning.monthly}"/>
+								</tr>
+							</c:forEach>
+							</tbody>
+							<tfoot>
+								<tr><th><strong>Total</strong></th><td id="earningPayheadAmountTotal"><span class="paddingLeft">&#8377;</span> ${earningTotal}</td></tr>
+							</tfoot>
+					</table>
+				</td>
+			</c:if>
+			
+			<c:if test="${fn:length(decuctionPayhead) gt 0}">
+				<td  class="padding_left">		
+					<table class="table table-bordered tableNetpay mb0">
+						<c:set var="decuctionTotal" value="${0.00}"/>
+							<thead>
 							<tr>
-								<th>Earning</th>
-								<th>Amount</th>
+								<th>Deductions</th>
+								<th>Amount <span class="paddingLeft">(&#8377;)</span></th>
 							</tr>
 						</thead>
-						<tbody class="earningPayheadTbady">
-						<c:forEach var="earning" items="${earningPayhead}" varStatus="loop1">
-							<tr>
-								<th><div class="tbldata-dotdot inlineBlock"> <input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].payrollPayheadName" value="${earning.payrollPayheadName}"> ${earning.payrollPayheadName}</div></th>
-								<td><input type="text" id="earningPayheadAmount" name="associateSalaryPayheadIndEarningList[${loop1.index}].monthly" data-validation="validate_Space validate_length length1-20 validate_number" data-validation-optional="true" value="${earning.monthly}" class="formControl" readOnly onBlur="calculateGrossSalary();">
-									<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].payrollPayhead" value="${earning.payrollPayhead}">
-									<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].payrollPayheadShortCode" value="${earning.payrollPayheadShortCode}">
-									<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].indEmployeePayrollId" value="${earning.indEmployeePayrollId}">
-									<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].monthlyOld" value="${earning.monthly}">
-									<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].payrollPayheadType" value="Earnings">
-								</td>
-								<c:set var="earningTotal" value="${earningTotal + earning.monthly}"/>
-							</tr>
-						</c:forEach>
-						</tbody>
-						<tfoot>
-							<tr><th><strong>Total</strong></th><td id="earningPayheadAmountTotal">${earningTotal}</td></tr>
+							<tbody class="deductionPayheadTbady">
+							<c:forEach var="decuction" items="${decuctionPayhead}" varStatus="loop2">
+								<tr>
+									<th><div class="tbldata-dotdot inlineBlock"> <input type="text" hidden name="associateSalaryPayheadIndDeductionList[${loop2.index}].payrollPayheadName" value="${decuction.payrollPayheadName}"> ${decuction.payrollPayheadName}</div></th>
+									<td><input type="text" id="deductionPayheadAmount" name="associateSalaryPayheadIndDeductionList[${loop2.index}].monthly" data-validation="validate_Space validate_length length1-20 validate_number" data-validation-optional="true" value="${decuction.monthly}" class="formControl" readOnly onBlur="calculateNetSalary();">
+										<input type="text" hidden name="associateSalaryPayheadIndDeductionList[${loop2.index}].payrollPayhead" value="${decuction.payrollPayhead}">
+										<input type="text" hidden name="associateSalaryPayheadIndDeductionList[${loop2.index}].payrollPayheadShortCode" value="${decuction.payrollPayheadShortCode}">
+										<input type="text" hidden name="associateSalaryPayheadIndDeductionList[${loop2.index}].indEmployeePayrollId" value="${decuction.indEmployeePayrollId}">
+										<input type="text" hidden name="associateSalaryPayheadIndDeductionList[${loop2.index}].monthlyOld" value="${decuction.monthly}">
+										<input type="text" hidden name="associateSalaryPayheadIndDeductionList[${loop2.index}].payrollPayheadType" value="Deduction">
+									</td>
+									<c:set var="decuctionTotal" value="${decuctionTotal + decuction.monthly}"/>
+								</tr>
+							</c:forEach>
+							<c:if test="${!empty indPayrollDTO.lopAmount && indPayrollDTO.lopAmount != '' && indPayrollDTO.lopAmount != '0' && indPayrollDTO.lopAmount != '0.0' && indPayrollDTO.lopAmount != '0.00'}">
+								<tr>
+									<th><div class="tbldata-dotdot inlineBlock">Loss of Pay</div></th>
+									<td><input type="text" id="lopAmount" name="lopAmount" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" value="${indPayrollDTO.lopAmount}" class="formControl" readOnly onBlur="calculateNetSalary();"> </td>
+								</tr>
+								<c:set var="decuctionTotal" value="${decuctionTotal + indPayrollDTO.lopAmount}"/>
+							</c:if>
+							</tbody>
+							<tfoot>
+							<tr><th><strong>Total</strong></th><td id="deductionPayheadAmountTotal"><span class="paddingLeft">&#8377;</span> ${decuctionTotal}</td></tr>
 						</tfoot>
-				</table>
-			</td>
-			<td  class="padding_left">		
-				<table class="table table-bordered tableNetpay mb0">
-					<c:set var="decuctionTotal" value="${0.00}"/>
-						<thead>
-						<tr>
-							<th>Deductions</th>
-							<th>Amount</th>
-						</tr>
-					</thead>
-						<tbody class="deductionPayheadTbady">
-						<c:forEach var="decuction" items="${decuctionPayhead}" varStatus="loop2">
-							<tr>
-								<th><div class="tbldata-dotdot inlineBlock"> <input type="text" hidden name="associateSalaryPayheadIndDeductionList[${loop2.index}].payrollPayheadName" value="${decuction.payrollPayheadName}"> ${decuction.payrollPayheadName}</div></th>
-								<td><input type="text" id="deductionPayheadAmount" name="associateSalaryPayheadIndDeductionList[${loop2.index}].monthly" data-validation="validate_Space validate_length length1-20 validate_number" data-validation-optional="true" value="${decuction.monthly}" class="formControl" readOnly onBlur="calculateNetSalary();">
-									<input type="text" hidden name="associateSalaryPayheadIndDeductionList[${loop2.index}].payrollPayhead" value="${decuction.payrollPayhead}">
-									<input type="text" hidden name="associateSalaryPayheadIndDeductionList[${loop2.index}].payrollPayheadShortCode" value="${decuction.payrollPayheadShortCode}">
-									<input type="text" hidden name="associateSalaryPayheadIndDeductionList[${loop2.index}].indEmployeePayrollId" value="${decuction.indEmployeePayrollId}">
-									<input type="text" hidden name="associateSalaryPayheadIndDeductionList[${loop2.index}].monthlyOld" value="${decuction.monthly}">
-									<input type="text" hidden name="associateSalaryPayheadIndDeductionList[${loop2.index}].payrollPayheadType" value="Deduction">
-								</td>
-								<c:set var="decuctionTotal" value="${decuctionTotal + decuction.monthly}"/>
-							</tr>
-						</c:forEach>
-						<c:if test="${!empty indPayrollDTO.lopAmount && indPayrollDTO.lopAmount != '' && indPayrollDTO.lopAmount != '0' && indPayrollDTO.lopAmount != '0.0' && indPayrollDTO.lopAmount != '0.00'}">
-							<tr>
-								<th><div class="tbldata-dotdot inlineBlock">Loss of Pay</div></th>
-								<td><input type="text" id="lopAmount" name="lopAmount" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" value="${indPayrollDTO.lopAmount}" class="formControl" readOnly onBlur="calculateNetSalary();"> </td>
-							</tr>
-							<c:set var="decuctionTotal" value="${decuctionTotal + indPayrollDTO.lopAmount}"/>
-						</c:if>
-						</tbody>
-						<tfoot>
-						<tr><th><strong>Total</strong></th><td id="deductionPayheadAmountTotal">${decuctionTotal}</td></tr>
-					</tfoot>
-				</table>
-			</td></tr>
+					</table>
+				</td>
+			</c:if>
+			</tr>
 				</tbody>
 			</table>
 			</form:form>
@@ -125,7 +131,7 @@
 					<table class="table table-bordered tableNetpay mb0">
 					<tbody>
 						<th>Gross Salary</th>
-						<td id="totalGrossPay">${indPayrollDTO.grossPay}</td>
+						<td id="totalGrossPay"><span class="paddingLeft">&#8377;</span> ${indPayrollDTO.grossPay}</td>
 					</tbody>
 					</table>
 				</td>
@@ -133,7 +139,7 @@
 					<table class="table table-bordered tableNetpay mb0">
 					<tbody>
 						<th>Net Salary</th>
-						<td id="totalNetPay">${indPayrollDTO.netPay}</td>
+						<td id="totalNetPay"><span class="paddingLeft">&#8377;</span> ${indPayrollDTO.netPay}</td>
 					</tbody>
 					</table>
 				</td>
