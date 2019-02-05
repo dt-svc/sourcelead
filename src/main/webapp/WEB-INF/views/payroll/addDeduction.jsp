@@ -91,7 +91,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
         <div class="col-lg-12">
           <div class="pull-right">
             <input value="Save" class="btn btn-success btnSuccess" id="save_deductionType" type="button" onclick="saveDeduction();">
-            <input value="Cancel" class="btn btn-defualt ml10" onclick="window.location='${appPath}/payrollConfiguration'" type="button">
+            <input value="Cancel" class="btn btn-defualt ml10" onclick="window.location='/pms/payrollConfiguration'" type="button">
           </div>
         </div>
       </div>      
