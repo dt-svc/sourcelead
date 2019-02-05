@@ -586,7 +586,7 @@
 						<li><a href="payrollRegister-I.html">Invite Company</a></li>
 						</ul>
 					</div> -->
-				            <a href="/app/projectAttributes">
+				            <a href="/pms/projectAttributes">
 							<div class="clearfix text-center mb10"><i class="projectAttributesSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4>Project Attributes</h4>
