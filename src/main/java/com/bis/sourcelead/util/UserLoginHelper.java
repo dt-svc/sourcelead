@@ -190,7 +190,7 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "userId", userRole.get("userId"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRole", userRole.get("roleName"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "userRoleId", userRole.get("userRoleId"));
-		  SourceLeadSessionManager.setSessionAttribute(req, "roleHierarchyId", userRole.get("roleHierarchyId"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "roleHierarchyId", Long.parseLong(userRole.get("roleHierarchyId").toString()));
 		  SourceLeadSessionManager.setSessionAttribute(req, "candidateId", userRole.get("candidateId"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "candidateUUID", userRole.get("candidateUUID"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "isGlobalAccess", userRole.get("isGlobalUser"));
@@ -209,6 +209,8 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "fileUrl", orgLocations.get("imgUrl"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "averageWorkingHours", orgLocations.get("workingHours"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "orgName", orgLocations.get("orgName"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationName", orgLocations.get("orgLocationName"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "dba", orgLocations.get("dba"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationId", orgLocations.get("orgLocationId"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "locationCode", orgLocations.get("orgLocationCode"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "orgShortCode", orgLocations.get("orgShortCode"));
@@ -216,9 +218,22 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "isCompanyOnboarded", orgLocations.get("isCompanyOnboarded"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "dateFormat", orgLocations.get("dateFormat"));  
 		  SourceLeadSessionManager.setSessionAttribute(req, "country", orgLocations.get("country"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "state", orgLocations.get("state"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "city", orgLocations.get("city"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "zipcode", orgLocations.get("zipcode"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "address", orgLocations.get("address"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "phone", orgLocations.get("phone"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "fax", orgLocations.get("fax"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "weekOffDays", orgLocations.get("weekOffDays"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "website", orgLocations.get("website"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "currencyCode", orgLocations.get("currencyCode"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "isTimesheetAvgHoursRequired", orgLocations.get("isTimesheetAvgHoursRequired"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "businessTypeId", orgLocations.get("businessTypeId"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "otherBusinessType", orgLocations.get("otherBusinessType"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "poEmail", orgLocations.get("emailForPO"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "remittanceEmail", orgLocations.get("emailforRemittance"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "orgDescription", orgLocations.get("orgDescription"));
+		  
 		  
 		  List<String> weekOffDaysList = new ArrayList<>();
 		  String[] weekOffDays = orgLocations.get("weekOffDays").toString().split(",");
@@ -387,14 +402,29 @@ public class UserLoginHelper {
 						userRole.getRoles().getRoleHierarchy().getId());
 			  SourceLeadSessionManager.setSessionAttribute(req, "dateFormat", orgLocations.getDateFormat());  
 			  SourceLeadSessionManager.setSessionAttribute(req, "country", orgLocations.getCountry());
+			  SourceLeadSessionManager.setSessionAttribute(req, "state", orgLocations.getState());
+			  SourceLeadSessionManager.setSessionAttribute(req, "city", orgLocations.getCity());
+			  SourceLeadSessionManager.setSessionAttribute(req, "zipcode", orgLocations.getZipCode());
+			  SourceLeadSessionManager.setSessionAttribute(req, "address", orgLocations.getOrgLocationAddress());
 			  SourceLeadSessionManager.setSessionAttribute(req, "userType", userRole.getUserType());
 			  SourceLeadSessionManager.setSessionAttribute(req, "displayName", userRole.getRoles().getDisplayName());
 			  SourceLeadSessionManager.setSessionAttribute(req, "designation", userRole.getDesignation());
 			  SourceLeadSessionManager.setSessionAttribute(req, "isCompanyOnboarded", orgLocations.getIsCompanyOnboarded());
 			  SourceLeadSessionManager.setSessionAttribute(req, "timeZoneId", orgLocations.getTimezone().getId().toString());
-			  SourceLeadSessionManager.setSessionAttribute(req, "orgName", orgLocations.getOrgLocationName());
+			  SourceLeadSessionManager.setSessionAttribute(req, "orgName", orgLocations.getOrg().getOrgName());
+			  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationName", orgLocations.getOrgLocationName());
 			  SourceLeadSessionManager.setSessionAttribute(req, "website", orgLocations.getWebsite());
-			
+			  SourceLeadSessionManager.setSessionAttribute(req, "dba", orgLocations.getDba());
+			  SourceLeadSessionManager.setSessionAttribute(req, "phone", orgLocations.getPhone());
+			  SourceLeadSessionManager.setSessionAttribute(req, "fax", orgLocations.getFax());
+			  SourceLeadSessionManager.setSessionAttribute(req, "orgShortCode", orgLocations.getGeneratedUserId());
+			  SourceLeadSessionManager.setSessionAttribute(req, "isTimesheetAvgHoursRequired", orgLocations.getIsTimesheetAvgHoursRequired());
+			  SourceLeadSessionManager.setSessionAttribute(req, "businessTypeId", orgLocations.getBusinessType().getId());
+			  SourceLeadSessionManager.setSessionAttribute(req, "otherBusinessType", orgLocations.getOtherBusinessType());
+			  SourceLeadSessionManager.setSessionAttribute(req, "poEmail", orgLocations.getPoEmail());
+			  SourceLeadSessionManager.setSessionAttribute(req, "remittanceEmail", orgLocations.getRemittanceEmail());
+			  SourceLeadSessionManager.setSessionAttribute(req, "orgDescription", orgLocations.getOrgDescription());
+			  
 			  try {
 				  Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 				if (countries != null) {
