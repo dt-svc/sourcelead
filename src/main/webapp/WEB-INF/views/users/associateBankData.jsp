@@ -4,6 +4,7 @@
   
 <script>	
 	$(document).ready(function() {
+		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		showHideAccountTypes();
 	});
 </script>
@@ -96,7 +97,7 @@
 		            $.ajax({
 						type : "POST",
 		        	    data: formData,
-						url : sourceleadUrl+"/saveAssociateBankData?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+						url : pmsUrl+"/saveAssociateBankData?"+tokenParamName+"="+tokenValue+"&userId="+userId,
 						success : function(result) {
 							if (result && result.response === "INVALID_DATA") {
 			                    $("#save_associate_bank_data_button").removeAttr("disabled");
@@ -114,7 +115,7 @@
 								$("#save_associate_bank_data_button").addClass('button').val('Save & Continue');
 								getResidenceLocation();
 			                } else if (result.indexOf('Sign In') !== -1) {
-								location.replace(sourceleadUrl);
+								location.replace(pmsUrl);
 							} else {
 			                    $("#save_associate_bank_data_button").removeAttr("disabled");
 			                    $("#save_associate_bank_data_button").addClass('button').val('Save');
