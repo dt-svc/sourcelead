@@ -169,6 +169,8 @@ public class OrgSettingsRestController {
 	private String isCouchbaseEnabled;
 	
 	
+	
+	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/app/saveOrgImage", method = RequestMethod.POST)
 	public String saveOrgImage(CompanyRegistrationDTO companyRegistrationDTO, HttpServletRequest request) throws Exception
@@ -826,6 +828,10 @@ public class OrgSettingsRestController {
 		else {
 			orgLocations.setLoginSecurity(Constants.NO);
 			orgLocationService.updateOrgLocations(orgLocations);
+		}
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(orgLocations);
 		}
 		return "Success";
 	}

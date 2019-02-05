@@ -509,7 +509,6 @@ function getReferredToMeProtletList(startDate,endDate,status){
   
   <script>
   function getJobSummarySerialChart(){
-		
 		var startDate = document.getElementById("serialfromdate").value; 
 		var endDate = document.getElementById("serialtodate").value; 
 		
