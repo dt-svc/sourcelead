@@ -36,8 +36,8 @@ $(document).ready(function(){
     
     <div class="project_side_wrap_inn_tabs clearfix">
 	    <ul class="project-tabs-menu">
-		    <li class=""><a href="/vms/payablesList">Bill List</a></li>
-		    <li class="current"><a href="/vms/debitNoteList">Debit Note List</a></li>
+		    <li class=""><a href="${SourceLeadWeb_vmsUrl}/payablesList">Bill List</a></li>
+		    <li class="current"><a href="${SourceLeadWeb_vmsUrl}/debitNoteList">Debit Note List</a></li>
 		    
 	    </ul>
     </div>    
@@ -59,7 +59,7 @@ $(document).ready(function(){
       <ul class="pull-right list-unstyled list-inline">
       
             <li>
-				<a class="action newAdBtn mr5" href="/vms/addDebitNote">+ Add</a>
+				<a class="action newAdBtn mr5" href="${SourceLeadWeb_vmsUrl}/addDebitNote">+ Add</a>
 			</li>
 			
 				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openCreditNoteFilterPop();"></a></li>

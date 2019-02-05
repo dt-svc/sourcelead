@@ -25,8 +25,8 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
       <div class="pull-left">
         <h2>Project Bill</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
-      <a href="/vms/payablesList">Bill List</a> &raquo; Project Bill</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+      <a href="${SourceLeadWeb_vmsUrl}/payablesList">Bill List</a> &raquo; Project Bill</div>
     <div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
        </div>
@@ -49,7 +49,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();creatProPayInvoiceEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 			</div>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-			          <a href="/vms/addVendor" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			          <a href="${SourceLeadWeb_vmsUrl}/addVendor" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			</sec:authorize>
                <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
                <input type="hidden" name="vendorCurrency" id="vendorCurrency">
@@ -249,7 +249,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
               <div class="pull-right mr">
                   <button type="button" class="btn btn-sm btn-primary" id="saveInvoice" onclick="saveBill('DRAFT');">Save</button>
                   <button type="button" class="btn btn-sm btn-success ml" id="sendInvoice" onclick="saveBill('SENT')">Send</button>
-                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '/vms/payablesList'">Cancel</button>
+                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/payablesList'">Cancel</button>
               </div>
           </footer>
           </form:form>
