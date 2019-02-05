@@ -102,15 +102,15 @@ right: 15px;
 	
 	     <jsp:include page="../userManageAccounts.jsp" />
 				
-			<div class="comLogLogoText">${SourceLeadWeb_orgName}</div>
+			<div class="comLogLogoText">${SourceLeadWeb_orgLocationName}</div>
 			  <div class="welSiO onboard-logoutbtn" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out mt5"></i></div>
 			  <ul>
 				  <li class="hoverLi">Organization details</li>
 				  <li>Locations</li>
-				  <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+				  <c:if test="${SourceLeadWeb_country == 'India'}">
 				  <li>Information</li>
 				  </c:if>
-				  <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+				  <c:if test="${SourceLeadWeb_country == 'United States'}">
 				  <li>Federal & state taxes</li>
 				  </c:if>
 				  <li>Banking details</li>
@@ -131,10 +131,10 @@ right: 15px;
           <form:form class="login-form clearfix"  id="orgImage1_form"  name="orgImage1_form" method="post" >
 				 <div class="well well-sm text-center">
 				  <div class="profile-img-container" style="position:relative;">
-				   <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
-				   <img id="orgImage" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" onerror="predefineOrgImage(this);" alt="Org Image" class="comp-image img-responsive">
+				   <c:if test="${!empty SourceLeadWeb_fileUrl}">
+				   <img id="orgImage" data-id="orgLogoImage" src="${SourceLeadWeb_fileUrl}" onerror="predefineOrgImage(this);" alt="Org Image" class="comp-image img-responsive">
 				   </c:if>
-				   <c:if test="${empty SourceLeadWeb_org.fileContentType}">
+				   <c:if test="${empty SourceLeadWeb_fileUrl}">
 				   <img id="orgImage" data-id="orgLogoImage" onerror="predefineOrgImage(this);" src="<c:url value='/resources/images/office-image.jpg'/>" alt="Org Image" class="comp-image img-responsive">
 				   </c:if>
 				  <div class="btn-group uploadfile-onboard">
@@ -143,7 +143,7 @@ right: 15px;
 					   <label class="btn btn-sm btn-primary" style="padding:4px 5px;">
 	                    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, 'orgImage1_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
 	                  </label>
-	                  <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
+	                  <c:if test="${!empty SourceLeadWeb_fileUrl}">
 	                   <button type="button" class="btn btn-danger" onclick="deleteOnboardImage()">
 				  	 	<i class="fa fa-trash"></i></button>
 	                  </c:if>
@@ -162,7 +162,7 @@ right: 15px;
 	<div class="col-md-6 clearfix mb">
 		<label class="col-md-3 noPad">Company<span class="text-danger">&nbsp;*</span></label>
 		<div class="col-md-9 padding_right" id="companyNameDiv">
-		<input type="text" id="orgLocationCompanyName" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Space validate_length length2-250" onblur="validateCompanyName();"  value="${SourceLeadWeb_orgName}" />
+		<input type="text" id="orgLocationCompanyName" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Space validate_length length2-250" onblur="validateCompanyName();"  value="${SourceLeadWeb_orgLocationName}" />
 		</div>
 		</div>
 		
@@ -171,7 +171,7 @@ right: 15px;
             <label class="col-md-3 noPad">DBA<span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9 padding_right clearfix">
                 <div class="col-md-10 noPad">
-                    <input id="dba" name="dba" class="form-control" type="text" value="${SourceLeadWeb_orgLocations.dba}" field-name="DBA" data-validation="required validate_Space validate_length length1-250">
+                    <input id="dba" name="dba" class="form-control" type="text" value="${SourceLeadWeb_dba}" field-name="DBA" data-validation="required validate_Space validate_length length1-250">
                 </div>
                 <div class="col-md-2 dbaCheck dbaCheck-cs">
                      
@@ -193,14 +193,14 @@ right: 15px;
 		<div class="col-md-6 clearfix mb">
 			<label class="col-md-3 noPad">City<span class="text-danger">&nbsp;*</span></label>
 			<div class="col-md-9 padding_right">
-			<input type="text" class=" form-control" name="city" value="${SourceLeadWeb_orgLocations.city}" onClick="addOrgRefreshGoogleApiLocation();" id="orgEditCity" field-name="City" data-validation="required">
+			<input type="text" class=" form-control" name="city" value="${SourceLeadWeb_city}" onClick="addOrgRefreshGoogleApiLocation();" id="orgEditCity" field-name="City" data-validation="required">
 								 <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshOrgEditGoogleApiLocation('orgEditState','orgEditCity','orgEditZipCode');"></i>
 			</div>
 		</div>
 		<div class="col-md-6 clearfix mb">
 			<label class="col-md-3 noPad">State<span class="text-danger">&nbsp;*</span></label>
 			<div class="col-md-9 padding_right">
-			 <input type="text" class=" form-control" name="state" value="${SourceLeadWeb_orgLocations.state}" id="orgEditState" field-name="State" data-validation="required" >
+			 <input type="text" class=" form-control" name="state" value="${SourceLeadWeb_state}" id="orgEditState" field-name="State" data-validation="required" >
 			</div>
 		</div>
 		
@@ -208,7 +208,7 @@ right: 15px;
 		<div class="col-md-6 clearfix mb">
 			<label class="col-md-3 noPad">ZipCode</label>
 			<div class="col-md-9 padding_right">
-			<input type="text"  class="form-control" name="zipCode" id="orgEditZipCode" field-name="Zip" data-validation="validate_Space validate_length length1-6 validate_int"  data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+			<input type="text"  class="form-control" name="zipCode" id="orgEditZipCode" field-name="Zip" data-validation="validate_Space validate_length length1-6 validate_int"  data-validation-optional="true" value="${SourceLeadWeb_zipcode}" />
 			</div>
 		</div>
 
@@ -226,7 +226,7 @@ right: 15px;
 				 <option value="" >Select Timezone</option>
 				 <c:forEach items="${timezoneList}" var="timezone">
 	                         <c:choose>
-	                             <c:when test="${timezone.timeZoneId eq SourceLeadWeb_orgLocations.timezone.timeZoneId}">
+	                             <c:when test="${timezone.id eq SourceLeadWeb_timeZoneId}">
 	                                 <option value= "${timezone.id}" selected="selected">${timezone.timeZoneId}</option>
 	                             </c:when>
 	                             <c:otherwise>
@@ -243,10 +243,10 @@ right: 15px;
 		<label class="col-md-3 noPad">Date Format</label>
 			<div class="col-md-9 padding_right">
 			 <select class="chosen-select form-control" id="dateFormat1" name="dateFormat1">
-				 <option ${SourceLeadWeb_orgLocations.dateFormat  == 'dd-MM-yyyy' ? 'selected' : ''} value="dd-MM-yyyy">dd-MM-yyyy</option>
-				 <option ${SourceLeadWeb_orgLocations.dateFormat  == 'MM-dd-yyyy' ? 'selected' : ''} value="MM-dd-yyyy">MM-dd-yyyy</option>
-				 <option ${SourceLeadWeb_orgLocations.dateFormat  == 'yyyy-dd-MM' ? 'selected' : ''} value="yyyy-dd-MM">yyyy-dd-MM</option>
-				 <option ${SourceLeadWeb_orgLocations.dateFormat  == 'yyyy-MM-dd' ? 'selected' : ''} value="yyyy-MM-dd">yyyy-MM-dd</option>
+				 <option ${SourceLeadWeb_dateFormat  == 'dd-MM-yyyy' ? 'selected' : ''} value="dd-MM-yyyy">dd-MM-yyyy</option>
+				 <option ${SourceLeadWeb_dateFormat  == 'MM-dd-yyyy' ? 'selected' : ''} value="MM-dd-yyyy">MM-dd-yyyy</option>
+				 <option ${SourceLeadWeb_dateFormat  == 'yyyy-dd-MM' ? 'selected' : ''} value="yyyy-dd-MM">yyyy-dd-MM</option>
+				 <option ${SourceLeadWeb_dateFormat  == 'yyyy-MM-dd' ? 'selected' : ''} value="yyyy-MM-dd">yyyy-MM-dd</option>
 			 </select>
 			</div>
 		</div>
@@ -267,14 +267,14 @@ right: 15px;
 		<div class="col-md-6 clearfix mb">
 			<label class="col-md-3 noPad">Phone</label>
 			<div class="col-md-9 padding_right">
-			<input type="text"  class="form-control" name="phone" field-name="phone" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.phone}" />
+			<input type="text"  class="form-control" name="phone" field-name="phone" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_phone}" />
 			</div>
 		</div>
 		
 		<div class="col-md-6 clearfix mb">
 			<label class="col-md-3 noPad">Fax</label>
 			<div class="col-md-9 padding_right">
-			<input type="text"  class="form-control" name="fax" id="faxId" field-name="fax" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.fax}" />
+			<input type="text"  class="form-control" name="fax" id="faxId" field-name="fax" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_fax}" />
 			</div>
 		</div>
 		
@@ -283,7 +283,7 @@ right: 15px;
 			<div class="col-md-9 padding_right">
 			
 			<div id="generatedUserIdDiv">
-			<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-4"  onkeyup="validateOrgShortCode();" maxlength="4" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
+			<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-4"  onkeyup="validateOrgShortCode();" maxlength="4" value="${SourceLeadWeb_orgShortCode}" />
 			</div>
 			
 			</div>
@@ -318,7 +318,7 @@ right: 15px;
 				<label class="col-md-3 noPad"></label>
 				<div class="col-md-9">
 					<div class="checkBox">
-						<label><input type="checkbox" value="Y" ${SourceLeadWeb_orgLocations.isTimesheetAvgHoursRequired == 'Y' ? 'checked' : ''} name="isTimesheetAvgHoursRequired" id="isTimesheetAvgHoursRequired"> Average Hours Validation Is Required</label> 
+						<label><input type="checkbox" value="Y" ${SourceLeadWeb_isTimesheetAvgHoursRequired == 'Y' ? 'checked' : ''} name="isTimesheetAvgHoursRequired" id="isTimesheetAvgHoursRequired"> Average Hours Validation Is Required</label> 
 					</div>
 				</div>
 	    </div>
@@ -330,7 +330,7 @@ right: 15px;
 				<option value="">--Select Business type--</option>
 				<c:forEach var="bt" items="${bussinessTypesList}">
 			      <c:choose>
-	                      <c:when test="${bt.id eq SourceLeadWeb_orgLocations.businessType.id}">
+	                      <c:when test="${bt.id eq SourceLeadWeb_businessTypeId}">
 	                          <option value= "${bt.id}" selected="selected">${bt.name}</option>
 	                      </c:when>
 	                      <c:otherwise>
@@ -339,10 +339,10 @@ right: 15px;
 	              </c:choose>
                 </c:forEach>  
                 
-                <c:if test="${empty SourceLeadWeb_orgLocations.businessType.id && !empty SourceLeadWeb_orgLocations.otherBusinessType}">
+                <c:if test="${empty SourceLeadWeb_businessTypeId && !empty SourceLeadWeb_otherBusinessType}">
 					<option value="Other" selected="selected">Other</option>
 				</c:if>
-				 <c:if test="${empty SourceLeadWeb_orgLocations.otherBusinessType}">
+				 <c:if test="${empty SourceLeadWeb_otherBusinessType}">
 					<option value="Other">Other</option>
 				</c:if>
 			  </select>
@@ -353,28 +353,28 @@ right: 15px;
 		<div class="col-md-6 clearfix mb" id="otherBusinessTypeDiv" style="display: none;">
 			<label class="col-md-3 noPad">Other Business Type</label>
 			<div class="col-md-9 padding_right">
-			<input type="text"  class="form-control" name="otherBusinessType" id="otherBusinessType" value="${SourceLeadWeb_orgLocations.otherBusinessType}" field-name="Other Business Type"  data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+			<input type="text"  class="form-control" name="otherBusinessType" id="otherBusinessType" value="${SourceLeadWeb_otherBusinessType}" field-name="Other Business Type"  data-validation-optional="true"  />
 			</div>
 		</div>
 		
 		<div class="col-md-6 clearfix mb">
 			<label class="col-md-3 noPad">Email regarding Po</label>
 			<div class="col-md-9 padding_right">
-			<input type="text"  class="form-control" name="poEmail" field-name="po Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.poEmail}" />
+			<input type="text"  class="form-control" name="poEmail" field-name="po Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_poEmail}" />
 			</div>
 		</div>
 		
 		<div class="col-md-6 clearfix mb">
 			<label class="col-md-3 noPad">Email for Remittance</label>
 			<div class="col-md-9 padding_right">
-			<input type="text"  class="form-control" name="remittanceEmail" field-name="Remittance Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.remittanceEmail}" />
+			<input type="text"  class="form-control" name="remittanceEmail" field-name="Remittance Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_remittanceEmail}" />
 			</div>
 		</div>
 			
 	  <div class="col-md-12 comp-textarea clearfix mb mt">
 		  <label class="">About</label>
 			<div class="col-md-12 noPad">
-			   <textarea rows="5" name="aboutCompany" field-name="About" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control">${SourceLeadWeb_orgLocations.orgDescription}</textarea>
+			   <textarea rows="5" name="aboutCompany" field-name="About" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control">${SourceLeadWeb_orgDescription}</textarea>
 			</div>
 		</div>
 			<div class="clearfix"></div>
