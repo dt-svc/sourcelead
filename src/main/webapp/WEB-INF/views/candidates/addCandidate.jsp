@@ -64,7 +64,7 @@
 			test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
 			<div class="pull-right brud-crum">
 				   <a href="<c:url value='${appPath}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}/'/>">Home</a>&raquo;<a
-					href="/ats/candidatesList"> Candidate List</a>
+					href="${SourceLeadWeb_atsUrl}/candidatesList"> Candidate List</a>
 				&raquo; Add Candidate
 			</div>
 		</c:if>
