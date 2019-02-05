@@ -10,6 +10,7 @@
 }
 </style>
 <script type="text/javascript">
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 $(document).ready(function(){
 	var noteType = '${noteType}';
 	getViewCreditDebitNote();
@@ -92,7 +93,7 @@ function getViewCreditDebitNote(){
 	  var viewInvoiceDate = getOrgDateFormat(locationList)
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getCreditDebitNoteDetails?"+tokenParamName+"="+tokenValue+"&creditDebitUUID="+creditDebitUUID,
+	        url: vmsUrl+"/getCreditDebitNoteDetails?"+tokenParamName+"="+tokenValue+"&creditDebitUUID="+creditDebitUUID,
 	        success: function(response) {
  	        	//var json = JSON.parse(data);
 	        	var result = "";

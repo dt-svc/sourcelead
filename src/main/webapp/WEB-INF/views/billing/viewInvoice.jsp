@@ -9,6 +9,9 @@
 	padding: 0px 0px 0px 0px !important; margin: 0px; font-size: 11px; color: #f12929; font-weight: 500; text-align: center;
 }
 </style>
+<script>
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+</script>
 <script type="text/javascript">
     var invoiceType = '${invoiceType}';
 $(document).ready(function(){
@@ -587,7 +590,7 @@ function getViewInvoice(){
 		  }
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getViewInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,
+	        url: vmsUrl+"/getViewInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,
 	        success: function(json) {
 // 	        	var json = JSON.parse(data);
 	        	var result = "";
@@ -665,13 +668,13 @@ function getViewInvoice(){
 					result = result +'<div class="col-md-8"> ';
 					if(invoiceType == "Receivable"){
 					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
-					result = result +'<label><strong> <a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'">'+report.clientName+' </a></strong></label>  ';
+					result = result +'<label><strong> <a href="'+vmsUrl+'/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'">'+report.clientName+' </a></strong></label>  ';
 					'</sec:authorize>';
 					}
 					
 					if(invoiceType == "Payables"){
 					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
-					result = result +'<label><strong> <a href="'+sourceleadUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'">'+report.clientName+' </a></strong></label>  ';
+					result = result +'<label><strong> <a href="'+vmsUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'">'+report.clientName+' </a></strong></label>  ';
 					'</sec:authorize>';
 					}
 					'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_VENDOR\')">';
@@ -1198,7 +1201,7 @@ function getViewInvoice(){
 <script>
 function viewInvoiceDocView(documentId,title){
 	if(documentId != null && documentId != ""){
-		window.open(sourceleadUrl+'/viewInvoiceDocView/'+title+'?documentId='+documentId,title,"height=600,width=600");
+		window.open(vmsUrl+'/viewInvoiceDocView/'+title+'?documentId='+documentId,title,"height=600,width=600");
 	}  
 }
 </script>
@@ -1372,7 +1375,7 @@ function addNotes() {
 		        	    data: formData,
 		    	        processData: false,
 		    	        contentType:false,
-						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"&userId="+userId+"locationCode="+locationCode,
+						url : vmsUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"&userId="+userId+"locationCode="+locationCode,
 						success : function(result) {
 							
 							if (result && result.response === "INVALID_DATA") {
@@ -1409,7 +1412,7 @@ function paymentHistroy(){
 	  var locationId = '${SourceLeadWeb_orgLocationId}';
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getViewPaymentHistory?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&locationId="+locationId,
+	        url: vmsUrl+"/getViewPaymentHistory?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&locationId="+locationId,
 	        success: function(json) {
 // 	        	var json = JSON.parse(data);
 	        	var result = "";                                                                                                
@@ -1564,7 +1567,7 @@ function getInvoiceTagsList(){
 	var invoiceUUID ='${invoiceUUID}';
 	$.ajax({  
         type : "POST",
-        url: sourceleadUrl+"/getInvoiceTags?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,        
+        url: vmsUrl+"/getInvoiceTags?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,        
         success :function(json) {
         	var result = "";
 			$.each( json.tagsList, function( i, tags ) {
@@ -1599,9 +1602,9 @@ function saveInvoiceTags(type){
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(tagName != null && tagName != '' && tagName !='undefined') {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&invoiceUUID="+invoiceUUID+"&tagName="+jsonData
+		 Urlcheck = vmsUrl+"/saveOrUpdateTagsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&invoiceUUID="+invoiceUUID+"&tagName="+jsonData
 	 } else {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&invoiceUUID="+invoiceUUID+"&tagName="+""
+		 Urlcheck = vmsUrl+"/saveOrUpdateTagsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&invoiceUUID="+invoiceUUID+"&tagName="+""
 	 }
 	
 	 $.ajax({  
@@ -1684,7 +1687,7 @@ function getBillsTagsList(){
 	var invoiceUUID ='${invoiceUUID}';
 	$.ajax({  
         type : "POST",
-        url: sourceleadUrl+"/getBillsTags?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,        
+        url: vmsUrl+"/getBillsTags?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,        
         success :function(json) {
         	var result = "";
 			$.each( json.tagsList, function( i, tags ) {
@@ -1719,9 +1722,9 @@ function saveBillsTags(type){
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(tagName != null && tagName != '' && tagName !='undefined') {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByBillsId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&invoiceUUID="+invoiceUUID+"&tagName="+jsonData
+		 Urlcheck = vmsUrl+"/saveOrUpdateTagsByBillsId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&invoiceUUID="+invoiceUUID+"&tagName="+jsonData
 	 } else {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByBillsId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&invoiceUUID="+invoiceUUID+"&tagName="+""
+		 Urlcheck = vmsUrl+"/saveOrUpdateTagsByBillsId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&invoiceUUID="+invoiceUUID+"&tagName="+""
 	 }
 	
 	 $.ajax({  

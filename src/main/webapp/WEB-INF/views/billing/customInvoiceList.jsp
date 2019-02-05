@@ -9,7 +9,7 @@
 			<h2>Invoice Templates</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="/app/dashboard/3">Home</a> &raquo; <a href="<c:url value='${appPath}/clientDashboard'/>"> Clients List </a>&raquo; Invoice Templates
+			<a href="/app/dashboard/3">Home</a> &raquo; <a href="<c:url value='/vms/clientDashboard'/>"> Clients List </a>&raquo; Invoice Templates
 		</div>
 	</section>
 
