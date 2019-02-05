@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -616,40 +617,7 @@ public class OrgSettingsController {
 	   		return model;
 	       }
 	    
-	    
-	    @RequestMapping(value = "/jobsConfigureEmails")
-	   	public ModelAndView reminderJobsConfigureEmails(HttpServletRequest request) throws Exception {
-	   	    ModelAndView model = new ModelAndView();
-	   	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			
-			//get job related reminders
-			List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByTabsIdAndOrgLocationId(8l , orgLocations.getId());
-			//model.addObject("emailReminderList", emailReminderList);
-			
-			for(EmailReminder emailReminder : emailReminderList) {
-				if(emailReminder.getScenarionName().equalsIgnoreCase("ApplicantJoining")) {
-					model.addObject("emailReminder", emailReminder);
-				}
-				
-			}
-			
-	   		model.setViewName("requirement/jobsConfigureEmails");
-	   		model.addObject("sourceleadUrl", sourceleadUrl);
-	   		return model;
-	       }
-	    
-	    
-	    @RequestMapping(value = "/financeConfigureEmails")
-	   	public ModelAndView reminderFinanceConfigureEmails(HttpServletRequest request) throws Exception {
-	   	    ModelAndView model = new ModelAndView();
-	   	    List<LookUpData> referTypeList = lookUpDataService.getReferLookUpDataByCategory(Constants.TASKSEVERITY);
-	   	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	   	    model.addObject("orgLocationId", orgLocations.getId());
-	   		model.addObject("referTypeList", referTypeList);
-	   		model.setViewName("billing/financeConfigureEmails");
-	   		model.addObject("sourceleadUrl", sourceleadUrl);
-	   		return model;
-	       }
+	 
 	    
 	    //for setting page redirection
 	    @RequestMapping(value = "/settings")
