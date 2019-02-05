@@ -1,12 +1,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
  
-<!--  <script>
+ <script>
  $(document).ready(function(){
-	 getAllLeaveType();
+	 var atsUrl ='${SourceLeadWeb_atsUrl}';
+// 	 getAllLeaveType();
 });
 
-</script>  -->
+</script> 
   
  
  <!--  Tab-2 Banking Starts -->
@@ -48,7 +49,7 @@
 	 var userId = $("#associateId").val();   
 	 $.ajax({
                 type: "GET",
-                url: sourceleadUrl+"/getAssociateBalanceLeavesByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
+                url: atsUrl+"/getAssociateBalanceLeavesByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
                 success: function(json) {
                 	var data = json.data;
                 	if(data.length >0 && data !=null && json !='' && data != 'undefined'){
@@ -94,7 +95,7 @@ function editAssBalLeave(assoBalLeaveUUID,rowId,userId){
 		$("#"+rowId+"errorDiv").text("");
 		$.ajax({
 	        type : "PUT",
-	         url: sourceleadUrl+"/editAssBalLeave?"+tokenParamName+"="+tokenValue+"&assoBalLeaveUUID="+assoBalLeaveUUID+"&totalLeaves="+totalLeaves,        
+	         url: atsUrl+"/editAssBalLeave?"+tokenParamName+"="+tokenValue+"&assoBalLeaveUUID="+assoBalLeaveUUID+"&totalLeaves="+totalLeaves,        
 	         success :function(json) { },
 	         }); 
 	}else{
@@ -103,7 +104,7 @@ function editAssBalLeave(assoBalLeaveUUID,rowId,userId){
  	 
 }
 function saveAssociateleave() {
-	location.replace(sourceleadUrl+"/usersList");
+	location.replace(atsUrl+"/usersList");
 }
 </script>
  
