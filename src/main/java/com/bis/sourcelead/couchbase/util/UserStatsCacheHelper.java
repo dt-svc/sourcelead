@@ -362,6 +362,7 @@ public class UserStatsCacheHelper {
 		
 		 if(orgLocations.getTimezone() != null) {
 			 orgLocationDTO.setTimeZoneId(String.valueOf(orgLocations.getTimezone().getId()));
+			 orgLocationDTO.setTimeZone(orgLocations.getTimezone().getTimeZoneId());
 		 }
 		 
 		 if(orgLocations.getOrg().getUser() != null) {
@@ -402,6 +403,7 @@ public class UserStatsCacheHelper {
 			 userRoleDTO.setMobilePhone(userRole.getUser().getMobilePhone());
 			 userRoleDTO.setLocation(userRole.getUser().getLocation());
 			 userRoleDTO.setUserLoginSecurity(userRole.getUser().getLoginSecurity());
+			 userRoleDTO.setNewlyLoginUser(userRole.getNewlyLoginUser());
 			 
 			 if(userRole.getReportingManager() != null) {
 				 userRoleDTO.setReportingManagerId(String.valueOf(userRole.getReportingManager().getId()));

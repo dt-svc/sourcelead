@@ -83,6 +83,8 @@ public class UserRoleSessionProfileDTO implements Serializable{
 	
 	private String userLoginSecurity;
 	
+	private String newlyLoginUser;
+	
 
 	public String getDocumentType() {
 		return documentType;
@@ -386,6 +388,14 @@ public class UserRoleSessionProfileDTO implements Serializable{
 
 	public void setUserLoginSecurity(String userLoginSecurity) {
 		this.userLoginSecurity = userLoginSecurity;
+	}
+
+	public String getNewlyLoginUser() {
+		return newlyLoginUser;
+	}
+
+	public void setNewlyLoginUser(String newlyLoginUser) {
+		this.newlyLoginUser = newlyLoginUser;
 	}
 
 }
