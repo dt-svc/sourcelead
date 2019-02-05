@@ -50,7 +50,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
                             </div>
       <ul>
           <li>
-              <a href="<c:url value='${appPath}/addHoliday'/>" title="Add Holiday"><i class="fa fa-plus paddingRight"></i>Add Holiday</a>
+              <a href="/pms/addHoliday" title="Add Holiday"><i class="fa fa-plus paddingRight"></i>Add Holiday</a>
           </li>
 	      <li id="filterShiftTypePop"><i class="fa fa-filter"></i><span>Shift</span><i class="glyphicon glyphicon-play"></i>
 		           	<div class="statusFiler-1 approved_pop">
