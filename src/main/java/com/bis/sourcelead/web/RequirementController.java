@@ -58,6 +58,7 @@ import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.EmailReminder;
 import com.bis.sourcelead.entity.JobFair;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
@@ -83,6 +84,7 @@ import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.EmailReminderService;
 import com.bis.sourcelead.service.JobCustomFieldDataService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -208,6 +210,10 @@ public class RequirementController {
 	
 	@Autowired
 	private JobCustomFieldDataService jobCustomFieldDataService;
+	
+	@Autowired
+    EmailReminderService emailReminderService;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1627,6 +1633,29 @@ private Sheet createXlsSheet(HSSFWorkbook createExcelworkbook,HSSFSheet createEx
 	        }
 	    }
 	
-	return createExcelsheet;
+	return createExcelsheet;	
 }
+
+@RequestMapping(value = "/jobsConfigureEmails")
+public ModelAndView reminderJobsConfigureEmails(HttpServletRequest request) throws Exception {
+    ModelAndView model = new ModelAndView();
+    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+    
+    //get job related reminders
+    List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByTabsIdAndOrgLocationId(8l , orgLocations.getId());
+    //model.addObject("emailReminderList", emailReminderList);
+    
+    for(EmailReminder emailReminder : emailReminderList) {
+        if(emailReminder.getScenarionName().equalsIgnoreCase("ApplicantJoining")) {
+            model.addObject("emailReminder", emailReminder);
+        }
+        
+    }
+    
+    model.setViewName("requirement/jobsConfigureEmails");
+    model.addObject("sourceleadUrl", sourceleadUrl);
+    return model;
+   }
+
+
 }
