@@ -54,7 +54,7 @@ window.onload = function() {
       <div class="pull-left">
         <h2>Time Off</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/leaveManagementReports'/>">Leave Management</a> &raquo; Apply Leave</div>
+      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="/pms/leaveManagementReports">Leave Management</a> &raquo; Apply Leave</div>
     </section>
     <div class="content-area content-new clearfix">
      <div id="leaveLoading"></div> 
@@ -509,6 +509,7 @@ function removeEndValid(){
 }
 
 function calculateDuration(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
 	if(toDate == ""){
@@ -583,6 +584,7 @@ function calculateDuration(){
  		
  <script type="text/javascript">
  function getPieChartBasedOnUser(onbehalf){
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 var leaveId = '${leave.leaveType.id}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 var userId ='';
@@ -805,6 +807,7 @@ $(function() {
 
 <script type="text/javascript">
 function applyLeave(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	if($("#checkbox-2").is(':checked')){
 		var fromDateFromHalfTime = $("#fromDateHalfTime").val();
 		if(fromDateFromHalfTime != null && fromDateFromHalfTime != '' && fromDateFromHalfTime != 'undefined'){
@@ -882,6 +885,7 @@ $('body').on('blur', '#apply_leave_form', function() {
 
 <script>
 function cancel(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	location.replace(pmsUrl+ "/leaveManagementReports");
 }
 </script>
@@ -913,6 +917,7 @@ $(".close").click(function(){
 
 <script>
 function getLeaveDetails(finalDateFormatEndDate){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 // 	var editLeaveTypeUUID = '${leave.leaveType.leaveTypeUUID}';
 	var leaveTypeUUID = '';
 // 	if(editLeaveTypeUUID != null && editLeaveTypeUUID != '' && editLeaveTypeUUID != 'undefined'){
@@ -1141,6 +1146,7 @@ function validateMinMaxDays(minDays, maxDays){
 
 <script>
 function validateMaxLeave(data){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$('.jquery_form_error_message cOrange').hide();
 	var behalf = $("#checkbox-1");
 	var userId = "";
@@ -1172,6 +1178,7 @@ function validateMaxLeave(data){
 
 <script>
 function validateCarryForwardLeaves(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$('.jquery_form_error_message cOrange').hide();
 	var behalf = $("#checkbox-1");
 	var userId = "";
@@ -1207,6 +1214,7 @@ function validateCarryForwardLeaves(){
 <div class='comMask'></div>
 <script>
 function validateDate(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 // 	$('.warMess').hide();
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var roleId = '${SourceLeadWeb_loginUserRoleId}';
@@ -1268,6 +1276,7 @@ $(".comMask").click(function()
 
 <script>
 function getApproversList(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var behalf = $("#checkbox-1");
 	var userId = "";
 	if(behalf.is(':checked')){
@@ -1354,6 +1363,7 @@ $("#toDateToHalfTime").timepicker({
 
 <script>
 function getUsersBasedOnHierarchy(type){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$("#notifyOtherDiv").hide();
 	if($("#notifyOthersId").is(':checked')){
 		$("#notifyOtherDiv").show();

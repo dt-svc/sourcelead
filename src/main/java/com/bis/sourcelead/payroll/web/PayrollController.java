@@ -164,26 +164,6 @@ public class PayrollController {
 
 	}
 	
-	@RequestMapping(value = "/payrollReport")
-	public ModelAndView payrollReport(HttpServletRequest request) throws Exception
-	{
-		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
-		ModelAndView model = new ModelAndView();
-		if (sessionData == null) {
-			sessionData = new SessionMaintainanceData();
-		}
-		// sessionData.setNav(Constants.PAYROLL);
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<WageTaxSummary> wageTaxSummaryList = wageTaxSummaryService.getUniqueWagesAndTaxListByOrgLocationId(orgLocation);
-		if (wageTaxSummaryList != null) {
-			model.addObject("wageTaxSummaryList", wageTaxSummaryList);
-		}
-		request.getSession().setAttribute("sessionData", sessionData);
-		model.setViewName("payroll/payrollReport");
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		return model;
-	}
 	
 	/**
 	 * Returns payroll documents upload jsp
@@ -213,29 +193,7 @@ public class PayrollController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
-	
-	/**
-	 * Returns all payroll balance reports for all employess jsp
-	 * 
-	 * @param request
-	 * @return ModelAndView
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/payrollAllBalanceReport")
-	public ModelAndView allPayrollReportsJsp(HttpServletRequest request) throws Exception
-	{
-		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
-		ModelAndView model = new ModelAndView();
-		if (sessionData == null) {
-			sessionData = new SessionMaintainanceData();
-		}
-		// sessionData.setNav(Constants.PAYROLL);
-		request.getSession().setAttribute("sessionData", sessionData);
-		model.setViewName("payroll/allPayrollReports");
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		return model;
-	}
-	
+
 	/**
 	 * Returns search based payroll reports
 	 * 
