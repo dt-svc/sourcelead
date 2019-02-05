@@ -145,7 +145,7 @@ padding: 2px 300px 2px 0px;
   <div class="pull-left">
     <h2>Contracts</h2>
   </div>
-   <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; Contracts</div>
+   <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; Contracts</div>
 </section>
 <%-- <section class="contrHead">  --%>
 <!-- <ul>  -->
@@ -178,21 +178,21 @@ padding: 2px 300px 2px 0px;
       <div class="col-md-12"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeContract()"><i class="fa fa-close"></i></a>
       <sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
       <div class="col-md-4 mt25">
-        <div class="small-widget bgGreen"> <a href="/vms/addNewContract" title="New Contract">
+        <div class="small-widget bgGreen"> <a href="${SourceLeadWeb_vmsUrl}/addNewContract" title="New Contract">
           <div class="clearfix mb10"> <i class="fa fa-file-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
           <strong class="clearfix">New Contract</strong> </a> </div>
       </div>
  	</sec:authorize>
 	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')">
         <div class="col-md-4 mt25">
-          <div class="small-widget bg-yellow"> <a href="/vms/addCustomContract" title="Custom Contract">
+          <div class="small-widget bg-yellow"> <a href="${SourceLeadWeb_vmsUrl}/addCustomContract" title="Custom Contract">
             <div class="clearfix mb10"><i class="fa fa-file-code-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
             <strong class="clearfix">Custom Contract</strong> </a> </div>
         </div>
         </sec:authorize>
 	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')">
         <div class="col-md-4 mt25">
-          <div class="small-widget bg-purple"> <a href="/vms/addExistingContract" title="Existing Contract">
+          <div class="small-widget bg-purple"> <a href="${SourceLeadWeb_vmsUrl}/addExistingContract" title="Existing Contract">
             <div class="clearfix mb10"><i class="fa fa-file-text-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
             <strong class="clearfix">Existing Contract</strong> </a> </div>
         </div>
@@ -300,7 +300,7 @@ padding: 2px 300px 2px 0px;
 			</li>
 			
 			<li id="addCustomContractFromWTV" style="display:none">
-				<a href="/vms/addCustomContract?contractFromType=WTVStage" title="Custom Contract"><i class="fa fa-plus"></i>&nbsp;Add Custom Contact</a>
+				<a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractFromType=WTVStage" title="Custom Contract"><i class="fa fa-plus"></i>&nbsp;Add Custom Contact</a>
 			</li>
 	</ul>
 		<div class="clearfix" id="vendorDataTable" style="display: block;">
@@ -784,10 +784,10 @@ function preparedContractVendorListDraftPagination(url,tabType){
 				    	    	    	    			     		'</sec:authorize>';
 				    	    	    	    			     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 				    	    	    	    			     		if(report.typeOfContract == "New"){
-				    	    	    	    			     			result = result + ' <a href="/vms/addNewContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+				    	    	    	    			     			result = result + ' <a href="${SourceLeadWeb_vmsUrl}/addNewContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 				    	    	    	    			     		}
 				    	    	    	    			     		if(report.typeOfContract == "Custom"){
-				    	    	    	    			     			result = result + ' <a href="/vms/addCustomContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+				    	    	    	    			     			result = result + ' <a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 				    	    	    	    			     		}
 				    	    	    	    			     		'</sec:authorize>';
 		    	    	    	    	    	    	}else if(report.templateSubmissionStatus == "Finalized"){
@@ -819,10 +819,10 @@ function preparedContractVendorListDraftPagination(url,tabType){
 		    	    	    	    	   		     		'</sec:authorize>';
 		    	    	    	    	   	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		    	    	    	    	   		     		if(report.typeOfContract == "New"){
-		    	    	    	    	   		     			result = result + '| <a href="/vms/addNewContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		    	    	    	    	   		     			result = result + '| <a href="${SourceLeadWeb_vmsUrl}/addNewContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    	   		     		}
 		    	    	    	    	   		     		if(report.typeOfContract == "Custom"){
-		    	    	    	    	   		     			result = result + '| <a href="/vms/addCustomContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		    	    	    	    	   		     			result = result + '| <a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    	   		     		}
 		    	    	    	    	        			'</sec:authorize>';
 		    	    	    	    	   		         result = result + '</div></td>';
@@ -1015,10 +1015,10 @@ function preparedContractClientListDraftPagination(url,tabType){
 		    	    	    	    		     		  }
 		    	    	    	    		     		 '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		    	    	    	    			     		if(output.typeOfContract == "New"){
-		    	    	    	    			     			opt = opt + '| <a href="/vms/addNewContract?contractUUID='+output.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		    	    	    	    			     			opt = opt + '| <a href="${SourceLeadWeb_vmsUrl}/addNewContract?contractUUID='+output.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    			     		}
 		    	    	    	    			     		if(output.typeOfContract == "Custom"){
-		    	    	    	    			     			opt = opt + '| <a href="/vms/addCustomContract?contractUUID='+output.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		    	    	    	    			     			opt = opt + '| <a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+output.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    			     		}
 		    	    	    	    		     		'</sec:authorize>';
 		    	    	    	    	    	     }else if(output.templateSubmissionStatus == "FINALIZED"){
@@ -1051,10 +1051,10 @@ function preparedContractClientListDraftPagination(url,tabType){
 		    	    	    	    	    	     		 '</sec:authorize>';
 		    	    	    	    	    	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		    	    	    	    	    		     		if(output.typeOfContract == "New"){
-		    	    	    	    	    		     			opt = opt + '| <a href="/vms/addNewContract?contractUUID='+output.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		    	    	    	    	    		     			opt = opt + '| <a href="${SourceLeadWeb_vmsUrl}/addNewContract?contractUUID='+output.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    	    		     		}
 		    	    	    	    	    		     		if(output.typeOfContract == "Custom"){
-		    	    	    	    	    		     			opt = opt + '| <a href="/vms/addCustomContract?contractUUID='+output.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		    	    	    	    	    		     			opt = opt + '| <a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+output.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    	    		     		}
 		    	    	    	    	     				'</sec:authorize>';
 		    	    	    	    	    	     		opt = opt + '</div>';
@@ -1233,10 +1233,10 @@ function preparedContractApplicantListDraftPagination(url,tabType){
 		    	    	    	    			     		'</sec:authorize>';
 		    	    	    	    			     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		    	    	    	    			     		if(res.typeOfContract == "New"){
-		    	    	    	    			     			result = result + '| <a href="/vms/addNewContract?contractUUID='+res.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		    	    	    	    			     			result = result + '| <a href="${SourceLeadWeb_vmsUrl}/addNewContract?contractUUID='+res.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    			     		}
 		    	    	    	    			     		if(res.typeOfContract == "Custom"){
-		    	    	    	    			     			result = result + '| <a href="/vms/addCustomContract?contractUUID='+res.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		    	    	    	    			     			result = result + '| <a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+res.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    			     		}
 		    	    	    	    			     		'</sec:authorize>';
 		    	    	    	    	    	      }else if(res.templateSubmissionStatus == "Finalized"){
@@ -1268,10 +1268,10 @@ function preparedContractApplicantListDraftPagination(url,tabType){
 		    	    	    	    			     		 '</sec:authorize>';
 		    	    	    	    			     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		    	    	    	    				     		if(res.typeOfContract == "New"){
-		    	    	    	    				     			result = result + '| <a href="/vms/addNewContract?contractUUID='+res.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		    	    	    	    				     			result = result + '| <a href="${SourceLeadWeb_vmsUrl}/addNewContract?contractUUID='+res.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    				     		}
 		    	    	    	    				     		if(appReport.typeOfContract == "Custom"){
-		    	    	    	    				     			result = result + '| <a href="/vms/addCustomContract?contractUUID='+res.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		    	    	    	    				     			result = result + '| <a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+res.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    				     		}
 		    	    	    	    		 				'</sec:authorize>';
 		    	    	    	    		 				result = result + '</div>';
@@ -1483,10 +1483,10 @@ function preparedVendorContractListWFAPagination(url,tabType){
 			    	    	    	    		        		  
 			    	    	    	    	 	      	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 			    	    	    	    	 	      	     		if(report.typeOfContract == "New"){
-			    	    	    	    	 	      	     			result = result + '| <a href="/vms/addNewContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+			    	    	    	    	 	      	     			result = result + '| <a href="${SourceLeadWeb_vmsUrl}/addNewContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 			    	    	    	    	 	      	     		}
 			    	    	    	    	 	      	     		if(report.typeOfContract == "Custom"){
-			    	    	    	    	 	      	     			result = result + '| <a href="/vms/addCustomContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+			    	    	    	    	 	      	     			result = result + '| <a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 			    	    	    	    	 	      	     		}
 			    	    	    	    	 	        			'</sec:authorize>';
 			    	    	    	    	 	        			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
@@ -1703,10 +1703,10 @@ function preparedClientContractListWFAPagination(url,tabType){
 		    	    	    	    	        		  
 		    	    	    	    	     	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		    	    	    	    	     	     		if(output.typeOfContract == "New"){
-		    	    	    	    	     	     			opt = opt + '| <a href="/vms/addNewContract?contractUUID='+output.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		    	    	    	    	     	     			opt = opt + '| <a href="${SourceLeadWeb_vmsUrl}/addNewContract?contractUUID='+output.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    	     	     		}
 		    	    	    	    	     	     		if(output.typeOfContract == "Custom"){
-		    	    	    	    	     	     			opt = opt + '| <a href="/vms/addCustomContract?contractUUID='+output.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		    	    	    	    	     	     			opt = opt + '| <a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+output.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    	     	     		}
 		    	    	    	    	       			'</sec:authorize>';
 		    	    	    	    	       			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
@@ -1905,10 +1905,10 @@ function preparedApplicantContractListWFAPagination(url,tabType){
 		    	    	    	    			     		'</sec:authorize>';
 		    	    	    	    			     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		    	    	    	    			     		if(res.typeOfContract == "New"){
-		    	    	    	    			     			result = result + '| <a href="/vms/addNewContract?contractUUID='+res.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		    	    	    	    			     			result = result + '| <a href="${SourceLeadWeb_vmsUrl}/addNewContract?contractUUID='+res.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    			     		}
 		    	    	    	    			     		if(res.typeOfContract == "Custom"){
-		    	    	    	    			     			result = result + '| <a href="/vms/addCustomContract?contractUUID='+res.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		    	    	    	    			     			result = result + '| <a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+res.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    			     		}
 		    	    	    	    			     		'</sec:authorize>';
 		    	    	    	    			     		//res = res + '</div>';
@@ -2107,7 +2107,7 @@ function preparedVendorContractListWTSPagination(url,tabType){
 			    	    	    	    	    	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 			    	    	    	    			         result += '<div class="tbldata-dotdot_80">';
 			    	    	    	    			         if((report.typeOfContract == "New" || report.typeOfContract == "Custom") && (null != report.parentContractId && '' != report.parentContractId && 'undefined' != report.parentContractId)){
-			    	    	    	    			        	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a><a href="/vms/docusign?contractUUID='+report.contractUUID+'" title="Signature"><i class="fa fa-pencil-square-o"></i></a>';
+			    	    	    	    			        	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a><a href="${SourceLeadWeb_vmsUrl}/docusign?contractUUID='+report.contractUUID+'" title="Signature"><i class="fa fa-pencil-square-o"></i></a>';
 			    	    	    	    			        	 result += ' <a title="Revise Contract" onclick="reviseContract(\''+report.contractUUID+'\')"><i class="fa fa-retweet"></i></a>';
 			    	    	    	    			         }else if(report.typeOfContract == "Existing"){
 			    	    	    	    			         result = result + ' <a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a>';
@@ -2118,10 +2118,10 @@ function preparedVendorContractListWTSPagination(url,tabType){
 			    	    	    	    			         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 			    	    	    	    			         if(report.templateSubmissionStatus == "PENDING"){
 			    	    	    	    			        	 if(report.typeOfContract == "New"){
-			    	    	    	    			  	     			result = result + '<a href="/vms/addNewContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+			    	    	    	    			  	     			result = result + '<a href="${SourceLeadWeb_vmsUrl}/addNewContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 			    	    	    	    			  	     		}
 			    	    	    	    			  	     		if(report.typeOfContract == "Custom"){
-			    	    	    	    			  	     			result = result + '<a href="/vms/addCustomContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+			    	    	    	    			  	     			result = result + '<a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 			    	    	    	    			  	     		}
 			    	    	    	    			         }
 			    	    	    	    	    			'</sec:authorize>';
@@ -2320,7 +2320,7 @@ function preparedClientContractListWTSPagination(url,tabType){
 		    	    	    	    	    	      '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		    	    	    	    	 	         opt = opt + '<div class="tbldata-dotdot_80">';
 		    	    	    	    	 	         if((output.typeOfContract == "New" || output.typeOfContract == "Custom") && (null != output.parentContractId && '' != output.parentContractId && 'undefined' != output.parentContractId)){
-		    	    	    	    	 	        	 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a><a href="/vms/docusign?contractUUID='+output.contractUUID+'" title="Signature"><i class="fa fa-pencil-square-o"></i></a>'; 
+		    	    	    	    	 	        	 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a><a href="${SourceLeadWeb_vmsUrl}/docusign?contractUUID='+output.contractUUID+'" title="Signature"><i class="fa fa-pencil-square-o"></i></a>'; 
 		    	    	    	    	 	        	 opt += '<a title="Revise Contract" onclick="reviseContract(\''+output.contractUUID+'\')"><i class="fa fa-retweet"></i></a>';
 		    	    	    	    	 	         }else if(output.typeOfContract == "Existing"){
 		    	    	    	    	 	        	 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a>';
@@ -2331,10 +2331,10 @@ function preparedClientContractListWTSPagination(url,tabType){
 		    	    	    	    	 	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		    	    	    	    	 	         if(output.templateSubmissionStatus == "PENDING"){
 		    	    	    	    	 	        	 if(output.typeOfContract == "New"){
-		    	    	    	    	 		     			opt = opt + '<a href="/vms/addNewContract?contractUUID='+output.contractUUID+'"  title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		    	    	    	    	 		     			opt = opt + '<a href="${SourceLeadWeb_vmsUrl}/addNewContract?contractUUID='+output.contractUUID+'"  title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    	 		     		}
 		    	    	    	    	 		     		if(output.typeOfContract == "Custom"){
-		    	    	    	    	 		     			opt = opt + '<a href="/vms/addCustomContract?contractUUID='+output.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		    	    	    	    	 		     			opt = opt + '<a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+output.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    	 		     		}
 		    	    	    	    	 	         }
 		    	    	    	    	  			'</sec:authorize>';
@@ -2669,7 +2669,7 @@ function preparedVendorContractListWTVPagination(url,tabType){
 	    	    	    	    	  if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
 	    	    	 		        	 if(report.orgRelationUUID != null && report.orgRelationUUID != '' && report.orgRelationUUID != 'undefined'){
 	    	    	 		        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
-	    	    	 		        	   result = result + '<div><span title="'+report.contractWith+'"><a href="'+vmsUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.contractWith+'">'+report.contractWith+'</a></span></div>';
+	    	    	 		        	   result = result + '<div><span title="'+report.contractWith+'"><a href="'+Url+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.contractWith+'">'+report.contractWith+'</a></span></div>';
 	    	    	 		        	 '</sec:authorize>';
 	    	    	 		        	 }else{
 	    	    	 	        		 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
