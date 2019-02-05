@@ -179,7 +179,7 @@ $(document).ready(function(){
 					        	<a href="javascript:void(0)"  onClick="addAssetManagementPopup();">Add Asset</a> 
 					        </sec:authorize>
 					        <sec:authorize access="hasRole('ROLE_ADD_ASSET_CATEGORY')"> 
-					        	<a href="<c:url value='/assetCategory'/>" class="">Categories List</a>
+					        	<a href="/ats/assetCategory" class="">Categories List</a>
 					        </sec:authorize>	
 					        
 					        <a href="<c:url value='/uploadassetManagement'/>">Import</a>	  
