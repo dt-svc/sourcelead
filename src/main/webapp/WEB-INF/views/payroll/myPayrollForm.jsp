@@ -69,6 +69,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 
 <script type="text/javascript">
 function saveUsMyPayrollForm(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	if ($('#us_My_Payroll_form').validate(false, validationSettings)) {
 	  	var formData = getFormData('us_My_Payroll_form');
 		$("#myPayrollFormLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -93,6 +94,7 @@ function saveUsMyPayrollForm(){
 
 <script>
 function getUsMyPayrollForms(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$("#us_My_Payroll_form")[0].reset();
 	$.get(pmsUrl+"/getUsMyPayrollFormsByOrgLocationId", function(res) {
 		if (res && res.response === "INVALID_DATA") {
@@ -164,6 +166,7 @@ function usPayrollFormListTablePagination(){
 
 <script>
 function deleteForm(uuid){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$("#myPayrollFormLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.get(pmsUrl+"/deleteUsMyPayrollFormByUUID?&uuid="+uuid, function(res) {
 		if (res && res.response === "INVALID_DATA") {
