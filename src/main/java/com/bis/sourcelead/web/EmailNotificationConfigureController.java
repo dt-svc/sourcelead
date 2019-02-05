@@ -1,6 +1,7 @@
 package com.bis.sourcelead.web;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.entity.EmailReminder;
 import com.bis.sourcelead.entity.EmailScenarioConfiguration;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.EmailReminderService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -30,6 +33,9 @@ public class EmailNotificationConfigureController {
 	
 	@Autowired
 	EmailScenarioConfigurationService emailconService;
+	
+	@Autowired
+    EmailReminderService emailReminderService;
 
 	@RequestMapping(value = "/app/emailNontificationConfigure")
 	public ModelAndView emailNontificationConfigure(HttpServletRequest request) throws Exception
@@ -46,5 +52,26 @@ public class EmailNotificationConfigureController {
 		 
 		 return model;
 	}
+	
+	@RequestMapping(value = "/emailReminderLeaveConfiguration")
+    public ModelAndView reminderLeaveConfigureEmails(HttpServletRequest request) throws Exception {
+        ModelAndView model = new ModelAndView();
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        
+        //get job related reminders
+        List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByTabsIdAndOrgLocationId(31l , orgLocations.getId());
+        //model.addObject("emailReminderList", emailReminderList);
+        
+        for(EmailReminder emailReminder : emailReminderList) {
+            emailReminder.setEmailReminderHierarchyList(emailReminder.getEmailReminderHierarchyList().stream().filter(h->h.getStatus() != 0).collect(Collectors.toList()));
+            if(emailReminder.getScenarionName().equalsIgnoreCase("employeeholiday")) {
+                model.addObject("Holiday", emailReminder);
+            }
+
+        }
+        model.setViewName("leavemanagement/emailReminderLeaveConfiguration");
+        model.addObject("sourceleadUrl", sourceleadUrl);
+        return model;
+       }
 	
 }
