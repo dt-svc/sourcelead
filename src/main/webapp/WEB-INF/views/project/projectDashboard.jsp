@@ -56,6 +56,10 @@ overflow-x: auto;
 	   }); 
 	</script>
 	
+<script>
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+</script>
+	
       <!-- Content Area -->
        <section class="content-wraper">
         <section class="content-header clearfix">
@@ -642,7 +646,7 @@ function projectsPagination(url,pmsUrl){
 	            	  
 	            	    if(opt.client != null && opt.client != '' && opt.client != 'undefined'){
 	            	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
-	            	    	result = result + '<td><div class="tblminwidth-75"><span title="'+opt.client+'"><a href="'+pmsUrl+'/clientDashboard?orgRelationUUID='+opt.orgRelationUUID+'" title="'+opt.client+'">'+opt.client+'</a></span></div></td>';
+	            	    	result = result + '<td><div class="tblminwidth-75"><span title="'+opt.client+'"><a href="'+vmsUrl+'/clientDashboard?orgRelationUUID='+opt.orgRelationUUID+'" title="'+opt.client+'">'+opt.client+'</a></span></div></td>';
 	            	    	'</sec:authorize>';
 	            	    	
 	            	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';

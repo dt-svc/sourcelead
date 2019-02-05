@@ -203,7 +203,7 @@ $(function() {
 	  var payFrequency = $("#payFrequency").val();
 		  $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getNextPayrollDate?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency, 
+		        url: pmsUrl+"/getNextPayrollDate?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency, 
 		        success: function(data) {
 		        	if(data.payrollFrequency != null && data.payrollFrequency != ''){
 		        		$("#payrollFrequency").val(data.payrollFrequency);
