@@ -69,6 +69,20 @@ public class UserRoleSessionProfileDTO implements Serializable{
 	
 	private String imgUrl;
 	
+	private String mobilePhone;
+	
+	private String location;
+	
+	private String linkedIn;
+	
+	private String facebook;
+	
+	private String twitter;
+	
+	private String googlePlus;
+	
+	private String userLoginSecurity;
+	
 
 	public String getDocumentType() {
 		return documentType;
@@ -317,6 +331,61 @@ public class UserRoleSessionProfileDTO implements Serializable{
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-	
+
+	public String getMobilePhone() {
+		return mobilePhone;
+	}
+
+	public void setMobilePhone(String mobilePhone) {
+		this.mobilePhone = mobilePhone;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getLinkedIn() {
+		return linkedIn;
+	}
+
+	public void setLinkedIn(String linkedIn) {
+		this.linkedIn = linkedIn;
+	}
+
+	public String getFacebook() {
+		return facebook;
+	}
+
+	public void setFacebook(String facebook) {
+		this.facebook = facebook;
+	}
+
+	public String getTwitter() {
+		return twitter;
+	}
+
+	public void setTwitter(String twitter) {
+		this.twitter = twitter;
+	}
+
+	public String getGooglePlus() {
+		return googlePlus;
+	}
+
+	public void setGooglePlus(String googlePlus) {
+		this.googlePlus = googlePlus;
+	}
+
+	public String getUserLoginSecurity() {
+		return userLoginSecurity;
+	}
+
+	public void setUserLoginSecurity(String userLoginSecurity) {
+		this.userLoginSecurity = userLoginSecurity;
+	}
 
 }

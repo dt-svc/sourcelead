@@ -350,6 +350,7 @@ public class UserStatsCacheHelper {
 		 orgLocationDTO.setEmailForPO(orgLocations.getPoEmail());
 		 orgLocationDTO.setEmailforRemittance(orgLocations.getRemittanceEmail());
 		 orgLocationDTO.setOrgDescription(orgLocations.getOrgDescription());
+		 orgLocationDTO.setOrgLocationLoginSecurity(orgLocations.getLoginSecurity());
 		 
 	     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 	     LocalDateTime now = LocalDateTime.now();  
@@ -394,6 +395,13 @@ public class UserStatsCacheHelper {
 			 userRoleDTO.setEmail(userRole.getUser().getEmail());
 			 userRoleDTO.setFirstName(userRole.getUser().getFirstName());
 			 userRoleDTO.setLastName(userRole.getUser().getLastName());
+			 userRoleDTO.setFacebook(userRole.getUser().getFacebook());
+			 userRoleDTO.setTwitter(userRole.getUser().getTwitter());
+			 userRoleDTO.setGooglePlus(userRole.getUser().getGooglePlus());
+			 userRoleDTO.setLinkedIn(userRole.getUser().getLinkedIn());
+			 userRoleDTO.setMobilePhone(userRole.getUser().getMobilePhone());
+			 userRoleDTO.setLocation(userRole.getUser().getLocation());
+			 userRoleDTO.setUserLoginSecurity(userRole.getUser().getLoginSecurity());
 			 
 			 if(userRole.getReportingManager() != null) {
 				 userRoleDTO.setReportingManagerId(String.valueOf(userRole.getReportingManager().getId()));

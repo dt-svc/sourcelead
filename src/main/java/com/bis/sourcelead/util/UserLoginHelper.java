@@ -205,6 +205,14 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserEmail", userRole.get("email"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "displayName", userRole.get("roleDisplayName"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "designation", userRole.get("designation"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "mobilePhone", userRole.get("mobilePhone"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "location", userRole.get("location"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "linkedIn", userRole.get("linkedIn"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "facebook", userRole.get("facebook"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "twitter", userRole.get("twitter"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "googlePlus", userRole.get("googlePlus"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "userLoginSecurity", userRole.get("userLoginSecurity"));
+		  
 		  
 		  SourceLeadSessionManager.setSessionAttribute(req, "fileUrl", orgLocations.get("imgUrl"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "averageWorkingHours", orgLocations.get("workingHours"));
@@ -233,6 +241,7 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "poEmail", orgLocations.get("emailForPO"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "remittanceEmail", orgLocations.get("emailforRemittance"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "orgDescription", orgLocations.get("orgDescription"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationLoginSecurity", orgLocations.get("orgLocationLoginSecurity"));
 		  
 		  
 		  List<String> weekOffDaysList = new ArrayList<>();
@@ -424,6 +433,15 @@ public class UserLoginHelper {
 			  SourceLeadSessionManager.setSessionAttribute(req, "poEmail", orgLocations.getPoEmail());
 			  SourceLeadSessionManager.setSessionAttribute(req, "remittanceEmail", orgLocations.getRemittanceEmail());
 			  SourceLeadSessionManager.setSessionAttribute(req, "orgDescription", orgLocations.getOrgDescription());
+			  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationLoginSecurity", orgLocations.getLoginSecurity());
+			  
+			  SourceLeadSessionManager.setSessionAttribute(req, "location", loginUser.getLocation());
+			  SourceLeadSessionManager.setSessionAttribute(req, "linkedIn", loginUser.getLinkedIn());
+			  SourceLeadSessionManager.setSessionAttribute(req, "facebook", loginUser.getFacebook());
+			  SourceLeadSessionManager.setSessionAttribute(req, "twitter", loginUser.getTwitter());
+			  SourceLeadSessionManager.setSessionAttribute(req, "googlePlus", loginUser.getGooglePlus());
+			  SourceLeadSessionManager.setSessionAttribute(req, "userLoginSecurity", loginUser.getLoginSecurity());
+			 
 			  
 			  try {
 				  Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());

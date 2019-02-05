@@ -78,6 +78,8 @@ public class OrgLocationCacheDTO implements Serializable{
 	
 	private String orgDescription;
 	
+	private String orgLocationLoginSecurity;
+	
 	
 	
 	public String getOrgId() {
@@ -366,6 +368,14 @@ public class OrgLocationCacheDTO implements Serializable{
 
 	public void setOrgDescription(String orgDescription) {
 		this.orgDescription = orgDescription;
+	}
+
+	public String getOrgLocationLoginSecurity() {
+		return orgLocationLoginSecurity;
+	}
+
+	public void setOrgLocationLoginSecurity(String orgLocationLoginSecurity) {
+		this.orgLocationLoginSecurity = orgLocationLoginSecurity;
 	}
 
 	
