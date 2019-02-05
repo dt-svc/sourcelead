@@ -1,5 +1,6 @@
 <jsp:include page="../../masterHeader.jsp" />
 <jsp:include page="../../masterSideNav.jsp" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <script src="/resources/js/tax/my_payroll.js" type="text/javascript"></script>
 
 <section class="content-wraper contentWraper">
@@ -36,11 +37,11 @@
  
 <script>
 	function getMyPays(){ 
-              var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
               $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
        	   $.ajax({
       	          type : "GET",
-       	      	  url: sourceleadUrl+"/getMyPays",		
+       	      	  url: pmsUrl+"/getMyPays",		
        		      success :function(data) {
        		    	  $("#myPayRollTabsContent").empty();
        		  		  $("#myPayRollTabsContent").append(data);
@@ -53,14 +54,12 @@
 
 <script>
 	function getMyForms(){
-              var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+			var pmsUrl ='${SourceLeadWeb_pmsUrl}';
               $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
        	   $.ajax({
       	          type : "GET",
-       	      	  url: sourceleadUrl+"/getMyForms",		
+       	      	  url: pmsUrl+"/getMyForms",		
        		      success :function(data) {
-       		    	  
-       		    	  
        		    	  $("#myPayRollTabsContent").empty();
        		  		  $("#myPayRollTabsContent").append(data);
        		    	  $("#loadTime").removeAttr('style');

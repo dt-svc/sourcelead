@@ -11,16 +11,12 @@
 	});
 </script>
 
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
-
 <section class="content-wraper contentWraper">
 <section class="content-header clearfix">
   <div class="pull-left">
     <h2>Salary Setup</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/pms/payrollConfiguration">Payroll Configure</a> &raquo; <a href="/pms/payheadList">Payhead List</a> &raquo; Salary Setup</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configure</a> &raquo; <a href="<c:url value='${appPath}/payheadList'/>">Payhead List</a> &raquo; Salary Setup</div>
 </section>
  <div class="clearfix"></div>
  
@@ -55,7 +51,7 @@ function salarySetup(event) {
 	var uuid = $(event).attr('id');
     $.ajax({
 			type: "POST",
-		    url: pmsUrl+"/getSalarySetupForPayhead?"+tokenParamName+"="+tokenValue+"&uuid="+uuid, 
+		    url: sourceleadUrl+"/getSalarySetupForPayhead?"+tokenParamName+"="+tokenValue+"&uuid="+uuid, 
 		    success: function(data) {
 		    	$('#salarySetup').empty();
 		    	$('#salarySetup').append(data);
@@ -72,6 +68,7 @@ function closesalarySetup() {
 <script>
  function getPayRollSalarySetupList(){
 	 $("#payrollSalarySetupList").empty();
+	  var sourceleadUrl ='${sourceleadUrl}';
 	  var locationCode = '${SourceLeadWeb_locationCode}';
 	  $("#salarySetupListLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
@@ -112,8 +109,8 @@ function closesalarySetup() {
 	 var locationCode = '${SourceLeadWeb_locationCode}';
 	 var listType = "SSList";
 	 searchValue = searchValue ? searchValue : "";
-	 var url = pmsUrl+"/getPayRollSalarySetupListWithPagination?searchValue="+searchValue+"&locationCode="+locationCode+"&listType="+listType;
-	 salarySetupListPagination(url,pmsUrl);
+	 var url = sourceleadUrl+"/getPayRollSalarySetupListWithPagination?searchValue="+searchValue+"&locationCode="+locationCode+"&listType="+listType;
+	 salarySetupListPagination(url,sourceleadUrl);
 	 $("#salarySetupListLoading").removeAttr("style");
 	 
  }
@@ -122,7 +119,7 @@ function closesalarySetup() {
  
  
  <script>
-function salarySetupListPagination(url,pmsUrl){
+function salarySetupListPagination(url,sourceleadUrl){
 	var colIndex = 0;
     $('#salarySetupListTable').DataTable( { 
 	  "processing": true,

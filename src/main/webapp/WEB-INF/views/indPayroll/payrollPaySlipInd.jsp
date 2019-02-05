@@ -4,11 +4,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
-
  
 <script>
 function validatePayslipName(uuid){
@@ -17,7 +12,7 @@ function validatePayslipName(uuid){
 	$('#payslipNameDiv').find('p.jquery_form_error_message').remove();
 	$.ajax({
 		type : "POST",
-		url : pmsUrl+ "/validatePayslipName?${_csrf.parameterName}=${_csrf.token}&payslipName="+payslipName+"&payslipUUID="+uuid,
+		url : sourceleadUrl+ "/validatePayslipName?${_csrf.parameterName}=${_csrf.token}&payslipName="+payslipName+"&payslipUUID="+uuid,
 		success : function(data) {
 			 if (data == true) {
 				$("input#paySlipName").after("<p class='jquery_form_error_message'>"+ payslipName+ " is Already Existed</span>");
@@ -266,11 +261,11 @@ function validatePayslipName(uuid){
           <div class="pull-right">
           <c:if test="${!empty payslipInd.uuid}">
                <input value="Update" class="btn btn-success btnSuccess" type="button" onclick="savePaySlip();">
-               <input value="Cancel" class="btn btn-default ml10" type="button" onClick="javascript:window.location.href = '/pms/payrollPaySlipView'">
+               <input value="Cancel" class="btn btn-default ml10" type="button" onClick="javascript:window.location.href = '<c:url value='${appPath}/payrollPaySlipView'/>'">
           </c:if>
           <c:if test="${empty payslipInd.uuid}">
                <input value="Save" class="btn btn-success btnSuccess" type="button" onclick="savePaySlip();">
-               <input value="Cancel" class="btn btn-default ml10" type="button" onClick="javascript:window.location.href = '/pms/payrollConfiguration'">
+               <input value="Cancel" class="btn btn-default ml10" type="button" onClick="javascript:window.location.href = '<c:url value='${appPath}/payrollConfiguration'/>'">
           </c:if>
           </div>
         </div>
@@ -287,16 +282,16 @@ function validatePayslipName(uuid){
 		 $.ajax({
 				type: "POST",
 				data: formData,
-				url : pmsUrl+ "/savePayrollPaySlipInd?"+tokenParamName+"="+tokenValue,
+				url : sourceleadUrl+ "/savePayrollPaySlipInd?"+tokenParamName+"="+tokenValue,
 				success : function(data) {
 					 if (data.response === "AWKWARD") {
 	            			location.href = "/errorPage";
 	  	    		    }
 	            		else if(data.response === "SUCCESS"){
 	            			if(uuid != null){
-		            			 location.replace(pmsUrl + "/payrollPaySlipView");
+		            			 location.replace(sourceleadUrl + "/payrollPaySlipView");
 	            			}else{
-		            			 location.replace(pmsUrl + "/indPayrollConfiguration");
+		            			 location.replace(sourceleadUrl + "/indPayrollConfiguration");
 	            			}
 			        	}
 	            		else if (data.indexOf('Sign In') !== -1) {

@@ -29,12 +29,14 @@ function closeRequestLoanPop() {
 	$(".requestPop, .sideMask").fadeOut();
 }
 function getFormSubmissionMasterList() {
-	$.post(sourceleadUrl + "/forms/all", {financialYear: $("#financialYear").val()}, function(response) {
+	alert("pmsUrl >>>"+pmsUrl)
+	$.post(pmsUrl + "/forms/all", {financialYear: $("#financialYear").val()}, function(response) {
 		if (response && response.response === "INVALID_DATA") {
 			showError(response.responseMessage);
 		} else if (response.response === "AWKWARD") {
 			location.href = "/errorPage";
 		} else if (response.response === "SUCCESS") {
+			alert("hello")
 			$("#submissionList").empty();
 			var submissionList = response.data;
 			if(submissionList.length > 0) {
@@ -47,9 +49,9 @@ function getFormSubmissionMasterList() {
 					text += "	<td>";
 					text += "		<ul class='list-unstyled list-inline mb0'>";
 					text += "			<li><a href='javascript:void()' class='text-danger' title='Export' onclick='exportFormToPDF(" + submissionList[e].id + ")'><i class='fa fa-file-pdf-o'></i></a></li>";
-					text += "			<li><a href=" + sourceleadUrl + "/forms/viewForm?uuid=" + submissionList[e].taxFormUUID + "&formUUID=" + submissionList[e].formUUID + " title='View' class='anchor-black'><i class='fa fa-eye'></i></a></li>";
+					text += "			<li><a href=" + pmsUrl + "/forms/viewForm?uuid=" + submissionList[e].taxFormUUID + "&formUUID=" + submissionList[e].formUUID + " title='View' class='anchor-black'><i class='fa fa-eye'></i></a></li>";
 					if(submissionList[e].status === 0) {
-						text += "				<li><a href=" + sourceleadUrl + "/forms/editForm?uuid=" + submissionList[e].taxFormUUID + "&formUUID=" + submissionList[e].formUUID + " title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";	
+						text += "				<li><a href=" + pmsUrl + "/forms/editForm?uuid=" + submissionList[e].taxFormUUID + "&formUUID=" + submissionList[e].formUUID + " title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";	
 					}
 					text += "		</ul>";
 					text += "	</td>";
@@ -80,14 +82,15 @@ function getFormSubmissionMasterList() {
 			}
 			
 		} else if (response.indexOf('Sign In') !== -1) {
-			location.replace(sourceleadUrl);
+			location.replace(pmsUrl);
 		} else {
 			showError("Operation failed, please try again");
 		}
 	});
 }
 function exportFormToPDF(formId) {
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	/*alert("Form Id " + formId);*/
 	var exportType = "pdf";
-	window.location.href = sourceleadUrl+"/itDeclartionSubmissionExport?formId="+formId+"&exportType="+exportType;
+	window.location.href = pmsUrl+"/itDeclartionSubmissionExport?formId="+formId+"&exportType="+exportType;
 }

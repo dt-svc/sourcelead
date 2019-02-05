@@ -55,7 +55,7 @@
 				</div>
 			</form:form>
 		 <div class="modal-footer clearfix">
-			<button type="button" class="btn btn-primary" onclick="bulkAdjustmentSaving();">Save</button>
+			<button type="button" class="btn btn-primary" id="bulkAdjustmentBtn" onclick="bulkAdjustmentSaving();">Save</button>
 	        <button type="button" class="btn btn-default" onclick="bulkAdjustmentClose();">Cancel</button>
 	     </div>
      </div>
@@ -78,6 +78,7 @@ $('#sae').change(function () {
 
 function bulkAdjustmentSaving(){
 	if ($('#bulkPayheadAdjust_form').validate(false, validationSettings)) {
+		$('#bulkAdjustmentBtn').hide();
 		var psfUUID = $('#paySheetFrequencyUUID').val();
 		var formData = getFormData1("bulkPayheadAdjust_form");
 		$.ajax({
