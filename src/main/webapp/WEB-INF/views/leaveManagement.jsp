@@ -28,7 +28,7 @@ $(document).ready(function(){
         <div class="dashboardWidget-new dashNewWrap mb">
             
         	<div class="dashNewWrapHead clearfix">
-				<a class="pull-left" href="<c:url value='${appPath}/leaveManagementReports'/>" title="Leave Management">Leaves</a>
+				<a class="pull-left" href="/pms/leaveManagementReports" title="Leave Management">Leaves</a>
               	<div class="pull-left balLeaves">Balance Leaves<span class="label label-info" id="selfBalancedCounts" title="Balance Leaves"></span></div>				
 	            <ul class="nav nav-tabs pull-right">
 		            <li class="active"><a data-toggle="tab" href="#self">Self</a></li>
