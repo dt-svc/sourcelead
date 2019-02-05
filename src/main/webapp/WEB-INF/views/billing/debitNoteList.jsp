@@ -251,7 +251,7 @@ function creditNotePagination(url){
     	  				}
     	  				}
     	  			if(((report.creditDebitNoteStatus != "Send" ) || (report.creditDebitNoteStatus == "Rejected")) && (report.status !="0")){
-    	  			result = result +' <span class="clearfix"><a href="<c:url value="/app/addDebitNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Debit"/>" <i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
+    	  			result = result +' <span class="clearfix"><a href="<c:url value="/addDebitNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Debit"/>" <i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
     				result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
     				}else if(report.status =="0") {
 	 	    			result = result +' <span class="clearfix"><a onClick="reactiveCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-rotate-left ml10" title="Reactive"></i></a></span>';
@@ -264,7 +264,7 @@ function creditNotePagination(url){
     	  			result = result +'<div class="tbldata-dotdot-vsm">';
     	  			if((report.creditDebitNoteStatus == "Draft") && (report.status !="0"))
    				 {
-					result = result +' <span class="clearfix"><a href="<c:url value="/app/addDebitNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Debit"/>" <i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
+					result = result +' <span class="clearfix"><a href="<c:url value="/addDebitNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Debit"/>" <i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
    				 	result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
 
    				 }else if(report.status !="0"){
@@ -301,7 +301,7 @@ function creditNotePagination(url){
             	  result = result +'         <td>   ';
             	 if(report.generatedId != null && report.generatedId != '' && report.generatedId != 'undefined'){
             		 
-					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/app/viewCreditDebitNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Debit"/>" title="'+report.generatedId+'">'+report.generatedId+'</a></div>';				
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/viewCreditDebitNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Debit"/>" title="'+report.generatedId+'">'+report.generatedId+'</a></div>';				
 
   				     
             	 }else{
