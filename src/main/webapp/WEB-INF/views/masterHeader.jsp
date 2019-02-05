@@ -189,7 +189,7 @@ z-index: 1000000000 !important;
 <script type="text/javascript">
 $(document).ready(function(){
 //   getNotificationsByuserId();
-	updateMarketplaceCartCountAndPrice();
+	//updateMarketplaceCartCountAndPrice();
 });
 </script>
 <!-- notification related include jsp -->
@@ -306,7 +306,7 @@ function preventTabkey(e){
 <c:url var="logoutUrl" value="/logout"/>
 <form action="${logoutUrl}" method="post" id="logoutForm">
   <input type="hidden" name="userSessionId" value="${userLoginSession.id}"/>
-   <input type="hidden" name="orgLocationId" value="${SourceLeadWeb_orgLocations.id}"/>
+   <input type="hidden" name="orgLocationId" value="${SourceLeadWeb_orgLocationId}"/>
  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </form>
 
@@ -339,20 +339,20 @@ function preventTabkey(e){
   <a href="${sourceleadUrl}/recruiterDashboard" title="Source Lead">
   </c:if>
   <i>
- 	 <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
+ 	 <c:if test="${!empty SourceLeadWeb_fileUrl}">
  	 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
- 	 	<img data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}" class="img-responsive mt5">
+ 	 	<img data-id="orgLogoImage" src="${SourceLeadWeb_fileUrl}" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}" class="img-responsive mt5">
  	 </c:if>
  	  <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
- 	  <img data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_orgName}" class="img-responsive mt5">
+ 	  <img data-id="orgLogoImage" src="${SourceLeadWeb_fileUrl}" title="${SourceLeadWeb_orgLocationName}" class="img-responsive mt5">
  	 </c:if>
  	 </c:if>
  	 
- 	 <c:if test="${empty SourceLeadWeb_org.fileContentType}">
+ 	 <c:if test="${empty SourceLeadWeb_fileUrl}">
 				<div class="text-logo">
 				 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-					<c:if test="${!empty SourceLeadWeb_orgName}">
-					<span class="tbldata-dotdot" data-id="orgLogoImage" title="${SourceLeadWeb_orgName}">${SourceLeadWeb_orgName}</span>
+					<c:if test="${!empty SourceLeadWeb_orgLocationName}">
+					<span class="tbldata-dotdot" data-id="orgLogoImage" title="${SourceLeadWeb_orgLocationName}">${SourceLeadWeb_orgLocationName}</span>
 					</c:if>
 				</c:if>
 				<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
@@ -412,12 +412,12 @@ function preventTabkey(e){
 
 
 <div class="headProfile">
-	<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_user.fileUrl}"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_userName}"> ${SourceLeadWeb_userName} </div>
+	<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_imgUrl}"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_userName}"> ${SourceLeadWeb_userName} </div>
 	<div class="headPop" id="profilePop">
 		<div class="headPopInn">
 				<a href="<c:url value='${appPath}/userProfile'/>" title="Profile">
 				<div class="headPopUser clearfix">
-					<div class="pull-left"><img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"></div>
+					<div class="pull-left"><img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_imgUrl}"></div>
 					<div class="pull-right">
 						<p>${SourceLeadWeb_userName}</p>
 		                 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
@@ -628,12 +628,12 @@ function preventTabkey(e){
 	       success :function(result) {
 	    	   if(result == true){
 	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y')){
-	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userId);   
+	    				 location.replace(sourceleadUrl+"/switchLocation?userRoleId="+roleId);    
 	    			 }else if('${SourceLeadWeb_isAuthenticated}' == 'N' && orgSecurity == 'Y'){
 	    				 $(".authenticationMask").fadeIn();
 	    				 getUserDetailsbyroleId(roleId);
 	    			 }else{
-	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userId);    
+	    				 location.replace(sourceleadUrl+"/switchLocation?userRoleId="+roleId);    
 	    			 }
 	    		 }else{
 	    			 $(".location-alert").fadeIn();
@@ -1826,8 +1826,9 @@ $(document).ready(function(){
 <script>
 function updateMarketplaceCartCountAndPrice(){
 	var totalPriceInCurrency;
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	$.ajax({
-		 	url: sourceleadUrl + "/updateMarketplaceCartCountAndPrice",
+		 	url: atsUrl + "/updateMarketplaceCartCountAndPrice",
 	        type: 'GET',
 	        success: function (object) {
 	        	if(object != null){
