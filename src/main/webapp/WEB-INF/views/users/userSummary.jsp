@@ -4,7 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+<script src="/ats/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
 <jsp:include page="userProjectSummary.jsp" />
 <jsp:include page="userAssetManagement.jsp" />
@@ -39,6 +39,7 @@
 
 <script> 
 var atsUrl ='${SourceLeadWeb_atsUrl}';
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 $(document).ready(function(){
 	 var userId = '${userId}';
@@ -4354,7 +4355,7 @@ function associateInformationDetails(candidateId){
 function associateLoanAndAdvanceDetails(candidateId){
 	$.ajax({
 		  type: "GET",
-		    url: atsUrl+"/getAssociateLoanAndAdvanceDetailsByCandidateId?candidateId="+candidateId,
+		    url: pmsUrl+"/getAssociateLoanAndAdvanceDetailsByCandidateId?candidateId="+candidateId,
 		     success :function(response) {
 		    	 	$("#tab-18").empty();  
 		    	    $("#tab-19").empty();
