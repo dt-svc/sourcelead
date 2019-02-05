@@ -103,6 +103,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 
 <script>
 function getVendorDetails(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var vendorOrgLocationId = document.getElementById("vendorOrgLocationId").value;
 	var orgRelationId = document.getElementById("orgRelationId").value;
 	if(orgRelationId){
@@ -254,8 +255,8 @@ function getVendorDetails(){
 			<h2>Create Vendor</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;<a
-				href="/vms/vendorsList"> Vendor List</a> &raquo; Create
+			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;<a
+				href="${SourceLeadWeb_vmsUrl}/vendorsList"> Vendor List</a> &raquo; Create
 			Vendor
 		</div>
 	</section>
@@ -670,7 +671,7 @@ function getVendorDetails(){
 							onclick="updateVendor(); flushSaveClient()" class="btn btn-primary">
 						
 						<input type="button" value="Cancel"
-							onClick="javascript:window.location.href = '/vms/vendorsList'"
+							onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/vendorsList'"
 							class="btn btn-default ml">
 					</div>
 				</div>
@@ -750,6 +751,7 @@ function allowInvoiceEmailSent(){
 
 <script type="text/javascript">
 function getOrgName(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgCode = '${SourceLeadWeb_orgCode}';
 	$.ajax({                           
     	type: "POST",
@@ -799,7 +801,7 @@ function getOrgName(){
 <script type="text/javascript">
 function getOrgDetails()
 {
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 $( "#orgLocationId" ).val( '' );
 	
 	$("#webSite").attr("disabled", false);
@@ -893,6 +895,7 @@ $( "#orgLocationId" ).val( '' );
 
 <script type="text/javascript">
 function validateEmail(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var email = document.getElementById("email").value;
 	if(email != null && email != ''){
 		$.ajax({
@@ -947,6 +950,7 @@ function validateEmail(){
 
 <script type="text/javascript">
 	function saveVendor() {
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		if ($('#client_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
 		  	var formData = $($('#client_form')[0]).serialize();
@@ -981,7 +985,7 @@ function validateEmail(){
 <script type="text/javascript">
 
 function updateVendor(){
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	if ($('#client_form').validate(false, validationSettings)) {
 		var orgRelationId = document.getElementById("orgRelationId").value;
 	  	var formData = $($('#client_form')[0]).serialize();
@@ -1013,6 +1017,7 @@ $('body').on('blur', '#client_form', function() {
 
 <script type="text/javascript">
 function getSpocUserDetails(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var email = document.getElementById("email").value;
 	var orgLocationId = document.getElementById("orgLocationId").value;
 	if(email){
@@ -1091,7 +1096,7 @@ function getSpocUserDetails(){
 
 <script type="text/javascript">
 function validateClientName(){
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var clientName = (document.getElementById("orgName").value).replace(/[{}]/g, "");
 	var vendor = encodeURIComponent(clientName);
 	var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
@@ -1152,7 +1157,7 @@ function validateClientName(){
 
 <script type="text/javascript">
 function validateOrgName(){
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var vendorName = (document.getElementById("orgName").value).replace(/[{}]/g, "");
 	var vendor = encodeURIComponent(vendorName);
 	if(vendor.match(/^[^\s-](.*)*$/) != null){
@@ -1195,6 +1200,7 @@ function validateOrgName(){
 
 <script type="text/javascript">
 	function validateWebsite() {
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var website = document.getElementById("webSite").value;
 		if(website.match(/^[^\s-](.*)*$/) !== null){
 		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';

@@ -59,8 +59,8 @@ function checkBox(){
       <div class="pull-left">
         <h2>Create Invoice</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
-      <a href="/vms/invoiceList">Invoice List</a> &raquo; Create Invoice</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+      <a href="${SourceLeadWeb_vmsUrl}/invoiceList">Invoice List</a> &raquo; Create Invoice</div>
     <div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
        </div>
@@ -81,7 +81,7 @@ function checkBox(){
                   <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();createExpenseRecInvoiceEmptyClientContact()"><i class="fa fa-refresh "></i></span>
                     </div>
               <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-               <span class="col-md-2 noPad clearfix"><a href="/vms/client" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+               <span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_vmsUrl}/client" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
              </sec:authorize>                    
               </div>
                <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
@@ -303,7 +303,7 @@ function checkBox(){
               <div class="pull-right mr">
                   <button type="button" class="btn btn-sm btn-primary" id="saveButtonId" onclick="saveInvoice('DRAFT');">Save</button>
                   <button type="button" class="btn btn-sm btn-success ml" id="sendButtonId" onclick="saveInvoice('SENT')">Send</button>
-                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '/vms/invoiceList'">Cancel</button>
+                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/invoiceList'">Cancel</button>
               </div>
           </footer>
           </form:form>
@@ -320,6 +320,7 @@ function remove(){
 <!-- Diplays client contacts details when clien selected -->
 <script>
 function getClientContacts(clientContactId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgRelationId = $("#clientOrgRelationId").val();
 	$("#clientContact").empty();
 	$.ajax({
@@ -363,6 +364,7 @@ function getClientContacts(clientContactId){
 
 <script>
 function getProjectsList(projectName){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgRelationId = $("#clientOrgRelationId").val();
 	$.ajax({
 	type : "GET",
@@ -391,6 +393,7 @@ function getProjectsList(projectName){
 
 <script>
 function getExpensesDetails(expId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var expensesId = $("#expensesId").val();
 	if(expId !=null && expId !='undefined'){
 		expensesId = expId
@@ -608,6 +611,7 @@ function editExpensesDetailsEdit(data){
 
 <script>
 function getExpenses(projectMemberId,expensesFrequency){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var memberId = $("#projectMemberId").val();
 	if(projectMemberId !=null && projectMemberId !='undefined' && expensesFrequency !=null && expensesFrequency !='undefined'){
 		memberId = projectMemberId
@@ -637,7 +641,7 @@ function getExpenses(projectMemberId,expensesFrequency){
 
 <script>
 function getProjectAssignMembers(pid,projectMemberName){
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var projectId = $("#projectId").val();
 	if(pid != null && pid!='undefined'){
 		projectId =pid;
@@ -959,6 +963,7 @@ function cancelReceivableAlert(){
     <!-- calculating currncy conversion -->
   <script>
   function  conversion(){
+	  var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	   var orgRelationId = $("#clientOrgRelationId").val();
 	   var currencyCode = '${SourceLeadWeb_currencyCode}';
 	   var grandTotal = $("#grandTotal").val();
@@ -1273,6 +1278,7 @@ function calculateTaxDiscount(){
 
 <script type="text/javascript">
  function validateInvoiceId() {
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var invoiceId = document.getElementById("invoiceId").value; 
 	
 	 if(invoiceId != null && invoiceId != ""){
@@ -1309,6 +1315,7 @@ function calculateTaxDiscount(){
 <!-- Saving Project Invoice --> 
 <script>
 function saveInvoice(saveType){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var userId = '${SourceLeadWeb_user.id}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
@@ -1427,7 +1434,7 @@ function toDate(selector) {
 <!-- To Get the Existed invoice details to Edit -->
 <script>
 	function loadInvoiceDetails(invoiceUUID){
-		 
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 $.ajax({
 		    	type: "POST",
 		    	 url: vmsUrl+"/getInvoiceDetailsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
@@ -1529,6 +1536,7 @@ $(document).ready(function(){
   
 <script>
 function getClientContactsExisted(clientContactId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgRelationId = $("#clientOrgRelationId").val();
 	$.ajax({
 	type : "GET",
@@ -1559,6 +1567,7 @@ function getClientContactsExisted(clientContactId){
 <!-- Get alla clients when editing -->
 <script>
 function getClients(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgRelationId ='${orgRelationId}';
 	$.ajax({
 		type : "GET",
@@ -1792,7 +1801,7 @@ function editExpensesInlineItems(invoiceLineItemsList){
 	
 	
 	function deleteInvoiceDocument(documentId){
-		
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		if(documentId){
 			$.ajax({
 		    	type: "POST",
@@ -1877,6 +1886,7 @@ function addTaxDivs(){
 
 <script> 
 function getPaymentTerms(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgRelationId = $("#clientOrgRelationId").val();
 	$.ajax({
 		type : "GET",
@@ -1907,6 +1917,7 @@ function getPaymentTerms(){
 }
 
 function getInvoiceTemplateList() {
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgRelationId = $("#clientOrgRelationId").val();
 	var responderLocationId = $("#clientOrgRelationId :selected").data("responder_location_id");
 	$("#invoiceTemplateId").empty("");
@@ -1927,6 +1938,7 @@ function getInvoiceTemplateList() {
 </script>
 <script>
 function getDueDateByFrequency(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var invoiceDate = document.getElementById("invoiceDate").value;
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
 	 var locationCode ='${SourceLeadWeb_locationCode}';

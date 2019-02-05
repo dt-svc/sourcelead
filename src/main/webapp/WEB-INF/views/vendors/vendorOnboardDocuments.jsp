@@ -22,7 +22,7 @@
 	<div class="form-footer clearfix miniFoot">
 	  <div class="col-lg-12">
 		<div class="pull-right">
-		  <input type="button" value="Cancel"  onClick="javascript:window.location.href = /vms/vendorsList"  class="btn btn-danger">
+		  <input type="button" value="Cancel"  onClick="javascript:window.location.href = ${SourceLeadWeb_vmsUrl}/vendorsList"  class="btn btn-danger">
 		  <input type="button" value="Save & Continue" id="save_continue_doc_button" onClick="validateSavedDocuments();" class="btn btn-primary ml10">
 		  <!-- <input type="button" value="Save & Continue" id="save_continue_doc_button" onClick="validateSavedDocuments(); saveDocuments()" class="btn btn-primary ml10"> -->
 		</div>
@@ -155,7 +155,7 @@ function alertMessage(documentName){
 
 <script>
 function saveDocuments(){
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var validationSettings = {
 	        errorMessagePosition : 'element',
 	       borderColorOnError : '',
@@ -206,7 +206,7 @@ function saveDocuments(){
 
 <script>
 function getOnboardDocuments(){
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgRelationId = document.getElementById("orgRelationId").value;
 	var vendorOnboardId = document.getElementById("vendorOnboardId").value;
 	var documentType = "Documents"
@@ -298,6 +298,7 @@ function deleteTemplateDocument(documentId){
 
 <script>
 function deleteVendorDocument(documentUUID,documentId){
+	   var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	   $.ajax({
 	    	type: "POST",
 	    	 url: vmsUrl+"/deleteVendorTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
