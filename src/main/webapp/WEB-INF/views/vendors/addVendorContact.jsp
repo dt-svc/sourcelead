@@ -72,8 +72,8 @@
           <div class="pull-left">
             <h2>Add Vendor Contact</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;
-          <a href="/vms/vendorsList"> Vendor List</a> &raquo; Add Vendor Contact</div>
+          <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;
+          <a href="${SourceLeadWeb_vmsUrl}/vendorsList"> Vendor List</a> &raquo; Add Vendor Contact</div>
         </section>
         <div class="content-area content-new clearfix">
         <div id="loading"></div>
@@ -103,7 +103,7 @@
                 <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" style="display: none"></i> 
             </div>
             <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
-			<a href="/vms/addVendor" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			<a href="${SourceLeadWeb_vmsUrl}/addVendor" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 		</sec:authorize>
           </div>
           </div>
@@ -242,7 +242,7 @@
               <div class="col-lg-12">
                 <div class="pull-right">
                   <input type="button" value="Save" id="save_vendor_contact" onclick="saveVendorContact();" class="btn btn-primary">
-                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '/vms/vendorsList'" class="btn btn-default ml">
+                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/vendorsList'" class="btn btn-default ml">
                 </div>
               </div>
             </div>
@@ -836,6 +836,7 @@ function getRolesList(){
  }
  
  function getCustomVendorContactDependentField(sectionId){
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
 			type : "POST" , 
 				 url: vmsUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
