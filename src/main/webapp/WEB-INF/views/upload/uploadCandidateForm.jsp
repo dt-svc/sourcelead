@@ -44,11 +44,11 @@ var uploadflag= true;
         <h2>Import Candidates</h2>
       </div>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/candidatesList">Candidates List</a> &raquo; Import Candidates </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_atsUrl}/candidatesList">Candidates List</a> &raquo; Import Candidates </div>
       </c:if>
       
        <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home</a> &raquo; <a href="${appPath}/candidatesList">Candidates List</a> &raquo; Import Candidates </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home</a> &raquo; <a href="${SourceLeadWeb_atsUrl}/candidatesList">Candidates List</a> &raquo; Import Candidates </div>
       </c:if>
     </section>
 	<div id="loading"></div>
@@ -64,7 +64,7 @@ var uploadflag= true;
 					</div>
 					
 						<div class="col-xs-5 col-md-5">
-							<a href="<c:url value='${appPath}/downloadCreateCandidateTemplate'/>"
+							<a href="${SourceLeadWeb_atsUrl}/downloadCreateCandidateTemplate"
 								class="btn btn-success btn-block" title="Download Candidate Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Candidate Template
 							</a>
 						</div>
@@ -77,7 +77,7 @@ var uploadflag= true;
 								</div>
 								<div class="btn-group">
 									<input type="reset" class="btn btn-danger" value="Reset"
-										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadCandidateForm'/>'">
+										 onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/uploadCandidateForm'">
 								</div>
 							</div>
 						</div>
@@ -225,7 +225,7 @@ $('body').on('blur', '#upload_candidate_form', function() {
 
 <script type="text/javascript">
 function cancelFileImport(){
-	location.replace(sourceleadUrl+"/uploadCandidateForm");
+	location.replace(atsUrl+"/uploadCandidateForm");
 }
 </script>
 
