@@ -48,7 +48,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/app")
 public class SourceleadNotesRestController {
 	
 	@Value("${sourceleadUrl}")
