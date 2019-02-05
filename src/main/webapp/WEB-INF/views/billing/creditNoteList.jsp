@@ -38,8 +38,8 @@ $(document).ready(function(){
     
     <div class="project_side_wrap_inn_tabs clearfix">
 	    <ul class="project-tabs-menu">
-		    <li class=""><a href="/vms/invoiceList">Invoice List</a></li>
-		    <li class="current"><a href="/vms/creditNoteList">Credit Note List</a></li>
+		    <li class=""><a href="${SourceLeadWeb_vmsUrl}/invoiceList">Invoice List</a></li>
+		    <li class="current"><a href="${SourceLeadWeb_vmsUrl}/creditNoteList">Credit Note List</a></li>
 		    
 	    </ul>
     </div>    
@@ -61,7 +61,7 @@ $(document).ready(function(){
       <ul class="pull-right list-unstyled list-inline">
       
             <li>
-				<a class="action newAdBtn mr5" href="/vms/addCreditNote">+ Add</a>
+				<a class="action newAdBtn mr5" href="${SourceLeadWeb_vmsUrl}/addCreditNote">+ Add</a>
 			</li>
 			
 				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openCreditNoteFilterPop();"></a></li>
@@ -160,6 +160,7 @@ function removeErr(){
 
 <script>
 function getCreditList(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var creditDebitNoteStatus = [];
 	var orglocationId = '${SourceLeadWeb_orgLocationId}';
 	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';
@@ -517,6 +518,7 @@ function acceptCreditDebitNote(creditDebitUUID){
 }
 
 function acceptCreditDebitNoteSave(creditDebitUUID){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
@@ -557,6 +559,7 @@ function rejectCreditDebitNote(creditDebitUUID){
 
 
 function saveReasonCreditDebitNote(creditDebitUUID){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var reason = document.getElementById("reasonForReject").value;
 	if(reason == null || reason == '' || reason == 'undefined'){
 	      
@@ -787,6 +790,7 @@ function deleteCreditDebitNote(creditDebitUUID){
 }
 
 function deleteCreditDebitMethod(creditDebitUUID){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			 $.ajax({
 				   	type: "POST",
 				    url: vmsUrl+"/deleteCreditDebitNote?"+tokenParamName+"="+tokenValue+"&noteType=Credit&creditDebitUUID="+creditDebitUUID,
@@ -814,6 +818,7 @@ function reactiveCreditDebitNote(creditDebitUUID){
 }
 
 function reactiveCreditDebitMethod(creditDebitUUID){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
 		   	type: "POST",
 		    url: vmsUrl+"/reactiveCreditDebitNote?"+tokenParamName+"="+tokenValue+"&noteType=Credit&creditDebitUUID="+creditDebitUUID,
@@ -835,6 +840,7 @@ function cancelTermination(){
 
 <script type="text/javascript">
 function cancel(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 	location.replace(vmsUrl+"/creditNoteList");	

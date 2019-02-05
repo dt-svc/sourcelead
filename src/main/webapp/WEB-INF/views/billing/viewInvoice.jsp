@@ -11,6 +11,7 @@
 </style>
 <script>
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+var sourceleadUrl ='${sourceleadUrl}';
 </script>
 <script type="text/javascript">
     var invoiceType = '${invoiceType}';
@@ -398,7 +399,7 @@ function timelineHistoryFunction(searchVal, order,dateRange,checkedStatus,namesS
 	console.log(dateRange);
 	$.ajax({
 	  	type: "GET",
-	    url: sourceleadUrl+"/getInvoiceTimelineHistory?"+tokenParamName+"="+tokenValue+"&locationId="+locationId+"&invoiceUUID="+invoiceUUID+"&searchVal="+searchVal+"&orderVal="+order+"&dateRange="+dateRange+"&checkedStatus="+checkedStatus+"&namesStatus="+namesStatus,
+	    url: vmsUrl+"/getInvoiceTimelineHistory?"+tokenParamName+"="+tokenValue+"&locationId="+locationId+"&invoiceUUID="+invoiceUUID+"&searchVal="+searchVal+"&orderVal="+order+"&dateRange="+dateRange+"&checkedStatus="+checkedStatus+"&namesStatus="+namesStatus,
 	    success: function(json) {
 			var resultDiv = "";
 			$("#dynamicTimelineHistoryAppend").empty();
@@ -1375,7 +1376,7 @@ function addNotes() {
 		        	    data: formData,
 		    	        processData: false,
 		    	        contentType:false,
-						url : vmsUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"&userId="+userId+"locationCode="+locationCode,
+						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"&userId="+userId+"locationCode="+locationCode,
 						success : function(result) {
 							
 							if (result && result.response === "INVALID_DATA") {
