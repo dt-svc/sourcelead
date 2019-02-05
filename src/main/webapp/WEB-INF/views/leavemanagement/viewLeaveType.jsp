@@ -31,8 +31,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			<h2>Leave Type</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a
-				href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;
+			<a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;
 			<a href="/pms/leaveConfiguration">Leave
 				Configuration</a> &raquo; Leave Type
 		</div>
@@ -47,7 +46,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				</div>
 				<div class="timesheet_head">
 					<ul>
-						<li><a href="<c:url value='${appPath}/addLeaveType'/>"
+						<li><a href="/pms/addLeaveType"
 							title="Add Leave Type"> <i class="fa fa-plus paddingRight"></i>Add
 								Leave Type
 						</a></li>

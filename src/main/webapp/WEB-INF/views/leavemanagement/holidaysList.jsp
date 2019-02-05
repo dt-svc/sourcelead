@@ -23,7 +23,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
           <div class="pull-left">
             <h2>Holidays List</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Holidays List</div>
+          <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Holidays List</div>
         </section>
         
 		<!-- Timesheet -->
@@ -100,7 +100,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 <script>
 
 function getExpensesList(){
-	
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 $.ajax({
 		 type : "POST",
 		  data: jsonData,
@@ -187,6 +187,7 @@ function holidaysPagination(){
 <script>
 
 function expenseView(expenseId){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$(".project_side_wrap").addClass("project_side_wrap_active");
 	        $(".side_mask").fadeIn(200);
 	        $("body").css('overflow-y', 'hidden');
@@ -425,12 +426,14 @@ function activeTab(){
 
 <script>
 function getEditExpense(eId){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	window.location.replace(pmsUrl+'/addExpense?expenseId='+eId);
 }
 </script>
 
 <script>
-function exportToPdf(type){                                                                        
+function exportToPdf(type){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var temp = $("#temp").val();
 	if(temp != null && temp != ''){
 		var expenseStatus = [];
