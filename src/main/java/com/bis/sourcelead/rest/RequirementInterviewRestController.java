@@ -723,7 +723,7 @@ public class RequirementInterviewRestController {
 		}
 	 
 	 
-	 @RequestMapping(value = "/app/saveInterviewStatusByInterviewId" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/saveInterviewStatusByInterviewId" , method = RequestMethod.POST)
 		   public Response<String> saveInterviewStatusByInterviewId(RequirementInterviewDTO requirementInterviewDTO, HttpServletRequest request) throws Exception {
 		 		Response<String> response = new Response<>();
 		 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
