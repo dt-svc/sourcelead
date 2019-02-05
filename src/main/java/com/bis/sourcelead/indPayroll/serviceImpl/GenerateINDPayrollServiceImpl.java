@@ -1,15 +1,14 @@
-package com.bis.sourcelead.payroll.service.impl;
+package com.bis.sourcelead.indPayroll.serviceImpl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,7 +30,6 @@ import com.bis.sourcelead.dao.ExpensesDao;
 import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.IndPayrollPayheadUtilDTO;
-import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.Employees;
@@ -41,17 +39,19 @@ import com.bis.sourcelead.entity.Tds;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.payroll.dao.GenerateINDPayrollDao;
+import com.bis.sourcelead.indPayroll.dao.GenerateINDPayrollDao;
+import com.bis.sourcelead.indPayroll.dto.INDPayrollDTO;
+import com.bis.sourcelead.indPayroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.indPayroll.entity.AssociatePayrollPayheadHistory;
+import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
+import com.bis.sourcelead.indPayroll.entity.IndPaysheetFrequency;
+import com.bis.sourcelead.indPayroll.service.GenerateINDPayrollService;
+import com.bis.sourcelead.indPayroll.service.IndPaysheetFrequencyService;
+import com.bis.sourcelead.indPayroll.utill.INDPayrollCommonUtil;
 import com.bis.sourcelead.payroll.dto.GenerateINDPayrollDTO;
-import com.bis.sourcelead.payroll.dto.INDPayrollDTO;
-import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.TotalHoursDTO;
-import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
-import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.PayrollLopHis;
-import com.bis.sourcelead.payroll.service.GenerateINDPayrollService;
-import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -61,7 +61,6 @@ import com.bis.sourcelead.service.TaxService;
 import com.bis.sourcelead.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.INDPayrollCommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
@@ -203,7 +202,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					continue;
 				}else if(employee.getHireDate() != null && paySheetFreq.getFrequencyStartDate().compareTo(employee.getHireDate()) * employee.getHireDate().compareTo(paySheetFreq.getFrequencyEndDate()) >= 0){
 					applincablePayrollDays =  TimeUnit.MILLISECONDS.toDays(paySheetFreq.getFrequencyEndDate().getTime() - employee.getHireDate().getTime()) + 1;
-				}else if(userRole.getTerminateDate() != null && paySheetFreq.getFrequencyStartDate().compareTo(userRole.getTerminateDate()) * userRole.getTerminateDate().compareTo(paySheetFreq.getFrequencyEndDate()) >= 0){
+				}else if(userRole.getUserState().toString().equalsIgnoreCase("INACTIVE") && userRole.getTerminateDate() != null && paySheetFreq.getFrequencyStartDate().compareTo(userRole.getTerminateDate()) * userRole.getTerminateDate().compareTo(paySheetFreq.getFrequencyEndDate()) >= 0){
 					applincablePayrollDays =  TimeUnit.MILLISECONDS.toDays(userRole.getTerminateDate().getTime() - paySheetFreq.getFrequencyStartDate().getTime()) + 1;
 				}
 				
@@ -263,8 +262,8 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 								joinDate = employee.getCreatedDate();
 							}
 							Date eligibleDate = null;
-							eligibleDate = DateUtils.addYears(joinDate, Integer.parseInt(org.apache.commons.lang.StringUtils.isNotBlank(associateSalaryPayheadInd.getPayrollPayhead().getExperienceYears()) ? associateSalaryPayheadInd.getPayrollPayhead().getExperienceYears() : "0" ));
-							eligibleDate = DateUtils.addMonths(eligibleDate, Integer.parseInt(org.apache.commons.lang.StringUtils.isNotBlank(associateSalaryPayheadInd.getPayrollPayhead().getExperienceMonths()) ? associateSalaryPayheadInd.getPayrollPayhead().getExperienceMonths() : "0" ));
+							eligibleDate = DateUtils.addYears(joinDate, Integer.parseInt(StringUtils.isNotBlank(associateSalaryPayheadInd.getPayrollPayhead().getExperienceYears()) ? associateSalaryPayheadInd.getPayrollPayhead().getExperienceYears() : "0" ));
+							eligibleDate = DateUtils.addMonths(eligibleDate, Integer.parseInt(StringUtils.isNotBlank(associateSalaryPayheadInd.getPayrollPayhead().getExperienceMonths()) ? associateSalaryPayheadInd.getPayrollPayhead().getExperienceMonths() : "0" ));
 							if(eligibleDate != null && eligibleDate.before(freqStartDate)) {
 								isPayheadApplincable = false;
 							}
@@ -390,10 +389,29 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					
 					// TDS process Calculation
 					if(!isTDS) {
+						String fromYear = null;
+						String toYear = null;
 						Calendar c = Calendar.getInstance();
-						String fromYear = c.get(Calendar.YEAR) + "";
-						c.roll(Calendar.YEAR, 1);
-						String toYear = c.get(Calendar.YEAR) + "";
+						c.setTime(freqStartDate);
+						int fYear = c.get(Calendar.YEAR);
+						int fMonth = c.get(Calendar.MONTH);
+						if (StringUtils.isNotBlank(orgLocation.getStartMonth())) {
+							Calendar cal = Calendar.getInstance();
+							Date date = new SimpleDateFormat("MMMM").parse(orgLocation.getStartMonth());
+							cal.setTime(date);
+							int startFinMonth = cal.get(Calendar.MONTH);
+							if (fMonth >= startFinMonth && fMonth < 12) {
+								fromYear = Integer.toString(fYear);
+								toYear = Integer.toString(fYear + 1);
+							} else {
+								fromYear = Integer.toString(fYear - 1);
+								toYear = Integer.toString(fYear);
+							}
+						} else {
+							fromYear = Integer.toString(fYear);
+							toYear = Integer.toString(fYear);
+						}
+				        
 						int age = 0;
 						if(assoSal.getCandidate().getConsultantUser().getDateOfBirth() != null) {
 							LocalDate today = LocalDate.now();  //Today's date
@@ -463,7 +481,9 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					employeePayroll.setNoOfDays(new BigDecimal(frequencyPayrollDays));
 					employeePayroll.setNoOfLeaves( lopList != null ? new BigDecimal(lopList.size()): BigDecimal.ZERO );
 					employeePayroll.setLoanHistory(assLoanAndAdvDTO.getLoanHis());
-					employeePayroll.setAssociatePayrollPayheadHistory(utilDTO.getAssociatePayrollPayheadHistory());
+					if(utilDTO != null && utilDTO.getAssociatePayrollPayheadHistory() != null && utilDTO.getAssociatePayrollPayheadHistory().size() > 0) {
+						employeePayroll.setAssociatePayrollPayheadHistory(utilDTO.getAssociatePayrollPayheadHistory().stream().filter(app -> app.getMonthly()!=null && app.getMonthly().compareTo(BigDecimal.ZERO) > 0).collect(Collectors.toSet()));
+					}
 					employeePayroll.setGrossPay(utilDTO.getGrossPay().multiply(payAdjustmentConst).setScale(2, BigDecimal.ROUND_HALF_EVEN));
 					employeePayroll.setNetPay((utilDTO.getNetPay().subtract(new BigDecimal(tdsMonthlyTotal)).subtract(new BigDecimal(loanAdvTotal)).subtract(lopAmount).multiply(payAdjustmentConst).setScale(2, BigDecimal.ROUND_HALF_EVEN)));
 					employeePayroll.setProfessionalTax(utilDTO.getProfessionalTax());

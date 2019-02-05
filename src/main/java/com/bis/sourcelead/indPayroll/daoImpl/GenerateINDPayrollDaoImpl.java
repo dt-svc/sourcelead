@@ -1,4 +1,4 @@
-package com.bis.sourcelead.payroll.dao.impl;
+package com.bis.sourcelead.indPayroll.daoImpl;
 
 import java.util.Date;
 import java.util.List;
@@ -16,10 +16,10 @@ import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
-import com.bis.sourcelead.payroll.dao.GenerateINDPayrollDao;
+import com.bis.sourcelead.indPayroll.dao.GenerateINDPayrollDao;
+import com.bis.sourcelead.indPayroll.entity.IndPaysheetFrequency;
+import com.bis.sourcelead.payroll.dao.impl.AccountDeductionsDaoImpl;
 import com.bis.sourcelead.payroll.dto.GenerateINDPayrollDTO;
-import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
-import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.util.CommonUtil;
 

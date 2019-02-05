@@ -1,4 +1,4 @@
-package com.bis.sourcelead.payroll.dto;
+package com.bis.sourcelead.indPayroll.dto;
 
 import java.math.BigDecimal;
 
