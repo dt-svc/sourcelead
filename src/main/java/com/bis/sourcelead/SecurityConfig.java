@@ -125,7 +125,7 @@ public class SecurityConfig  {
     			.antMatchers("/ats/getRequirementProfessionalProfileDetails/**").permitAll()
     			.anyRequest().authenticated()                                                   
     			.and()
-    			.formLogin().loginPage(sourceleadLoginUrl)
+    			.formLogin().loginPage("/login")
     			.and().logout().logoutUrl(sourceleadLogoutUrl)
     			.and().sessionManagement() .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     			.and().securityContext().securityContextRepository(securityContextRepository)

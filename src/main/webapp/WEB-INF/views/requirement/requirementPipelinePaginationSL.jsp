@@ -9,7 +9,7 @@
 
 <script>
 	function requirementPipelinePaginationSL(url, requirementId, submissionType) {
-		var sourceleadUrl = '${sourceleadUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var colIndex = 0;
 		$('#requirementsPagination')

@@ -43,7 +43,7 @@ display: none;
       <div class="pull-left">
         <h2>Joblist Mail Box</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/campaigns/hotcampaigns'/>"> Mailbox</a>
+      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="/ats/campaigns/hotcampaigns"> Mailbox</a>
 			&raquo; Joblist Campaign</div>
     </section>
    
