@@ -11,16 +11,16 @@
       <div class="pull-left">
         <h2>Email Reminder Configuration</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; Email Reminder Configuration</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; Email Reminder Configuration</div>
     </section>
     <div class="clearfix reportNewDash">
       <div class="repDashCta"> <span class="navIcons jobIcon svgReport margin-top0"></span>
         <div class="repDashCtaWrap ml">
           <h2>Jobs</h2>
           <div class="clearfix mt5"></div>
-          <a href="<c:url value='${appPath}/jobsConfigureEmails'/>" class="fontSmall">Configure</a> </div>
+          <a href="/ats/jobsConfigureEmails" class="fontSmall">Configure</a> </div>
       </div>
-      <div class="repDashCta"> <span class="navIcons canIcon svgReport margin-top0"></span>
+      <%-- <div class="repDashCta"> <span class="navIcons canIcon svgReport margin-top0"></span>
         <div class="repDashCtaWrap ml">
           <h2>Candidates</h2>
           <div class="clearfix mt5"></div>
@@ -30,7 +30,7 @@
         <div class="repDashCtaWrap ml">
           <h2>Leaves</h2>
           <div class="clearfix mt5"></div>
-          <a href="javascript:void(0)" class="fontSmall">Configure</a> </div>
+          <a href="/pms/emailReminderLeaveConfiguration" class="fontSmall">Configure</a> </div>
       </div>
       <div class="repDashCta"> <span class="navIcons contIcon svgReport margin-top0"></span>
         <div class="repDashCtaWrap ml">
@@ -57,7 +57,7 @@
           <a href="javascript:void(0)" class="fontSmall">Configure</a> </div>
       </div>
       <div class="clearfix"></div>
-    </div>
+    </div> --%>
   </section>
   
-   <jsp:include page="../masterFooter.jsp" />
+   <jsp:include page="masterFooter.jsp" />

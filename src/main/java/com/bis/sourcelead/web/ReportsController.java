@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -27,6 +29,9 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.entity.WageTaxSummary;
+import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
+import com.bis.sourcelead.reports.service.ClientReportService;
 import com.bis.sourcelead.reportsDTO.TimeToFillDTO;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -35,6 +40,8 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -56,6 +63,9 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	TabsService tabsService;
 	
 	@Autowired
+	ReportsUtil reportsUtil;
+	
+	@Autowired
 	private TeamService teamService;
 	
 	@Autowired
@@ -65,7 +75,92 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	private LookUpDataService lookUpDataService;
 	
 	@Autowired
+	ClientReportService clientReportService;
+	
+	@Autowired
 	ProjectsService projectsService;
+	
+	@Autowired
+	private WageTaxSummaryService wageTaxSummaryService;
+
+	
+	@RequestMapping(value = "/applicantsBackoutReport")
+	public ModelAndView applicantBackout(HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		
+	  	 List<RequirementDTO> requirementsList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocation.getId(), user, userRole,request);
+	  	 
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("requirementsList",requirementsList);
+		 model.setViewName("reports/applicantsBackoutReport");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 return model;
+	}
+	
+	@RequestMapping(value = "/applicantBySource")
+	public ModelAndView applicantBySource(HttpServletRequest request) throws Exception
+	{
+		 
+		 
+	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		
+	  	 ModelAndView model = new ModelAndView();
+	  	 List<RequirementDTO> requirementsDTOList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocation.getId(), user, userRole,request);
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.addObject("requirementsList", requirementsDTOList);
+		 model.setViewName("reports/applicantBySource");
+		 return model;
+	}
+	
+	
+	@RequestMapping(value = "/timeToFill")
+	public ModelAndView timeToFill(HttpServletRequest request) throws Exception
+	{
+		 
+	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		 List<TimeToFillDTO> yearList = new ArrayList<>();
+		 
+		 int year = Calendar.getInstance().get(Calendar.YEAR);
+		 for(int i=0; i<=5; i++) {
+			 TimeToFillDTO timeToFillDTO = new TimeToFillDTO();
+			 timeToFillDTO.setYear(year-i);
+			 yearList.add(timeToFillDTO);
+		 }
+		
+	  	 ModelAndView model = new ModelAndView();
+	  	 List<RequirementDTO> requirementsDTOList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocation.getId(), user, userRole,request);
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.addObject("requirementsList", requirementsDTOList);
+		 model.addObject("currentYear", year);
+		 model.addObject("yearList", yearList);
+		 model.setViewName("reports/timeToFill");
+		 return model;
+	}
+
+	
+	@RequestMapping(value = "/applicantBackoutReportsList")
+	public ModelAndView applicantBackoutReports(HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		
+	  	 List<RequirementDTO> requirementsList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocation.getId(), user, userRole,request);
+	  	 
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("requirementsList",requirementsList);
+		 model.setViewName("reports/applicantsBackoutReportList");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 return model;
+	}
+
 	
 	@RequestMapping(value = "/recruitersReports")
 	public ModelAndView recruitersReports(HttpServletRequest request,HttpServletResponse response) throws Exception {
@@ -404,6 +499,61 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 return model;
 	 }	
 	 
+	 @RequestMapping(value = "/perfomanceClientReports")
+		public ModelAndView clientReports(HttpServletRequest request) throws Exception
+		{
+			OrgLocations location = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			ModelAndView model = new ModelAndView();
+			Map<String, Integer> activeAndInactiveCount = clientReportService.getAllClientsCountByOrgLocationIdAndUserId(location.getId(), user.getId());
+			int activeClientsCount = activeAndInactiveCount.get("activeClient");
+			int inActiveClientsCount = activeAndInactiveCount.get("inActiveClient");
+			int totalClientsCount = activeClientsCount + inActiveClientsCount;
+			model.addObject("activeClientsCount", activeClientsCount);
+			model.addObject("inActiveClientsCount", inActiveClientsCount);
+			model.addObject("totalClientsCount", totalClientsCount);
+			Map<String, Integer> totalSpocCount = clientReportService.getAllClientsSpocCountByOrgLocationIdAndUserId(location.getId(), user.getId());
+			model.addObject("activeSpocCount", totalSpocCount.get("totalactiveCount"));
+			model.addObject("inActiveSpocCount", totalSpocCount.get("totalInactiveCount"));
+			model.addObject("totalSpocCount", totalSpocCount.get("totalSpocCount"));
+			model.setViewName("reports/perfomanceClientReports");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+		}
+	 
+	 @RequestMapping(value = "/applicantDeclineReports")
+		public ModelAndView applicantDeclineReports(HttpServletRequest request) throws Exception
+		{
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			
+		  	 List<RequirementDTO> requirementsList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocation.getId(), user, userRole,request);
+			
+			 ModelAndView model = new ModelAndView();
+			 model.addObject("sourceleadUrl", sourceleadUrl);
+			 model.addObject("requirementsList", requirementsList);
+			 model.setViewName("reports/applicantDecline");
+			 
+			 return model;
+		}
+		
+		@RequestMapping(value = "/applicantDeclineList")
+		public ModelAndView applicantDeclineList(HttpServletRequest request) throws Exception
+		{
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");	
+			 ModelAndView model = new ModelAndView();
+			 List<RequirementDTO> requirementsList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocation.getId(), user, userRole,request);
+			 model.addObject("sourceleadUrl", sourceleadUrl);
+			 model.addObject("requirementsList", requirementsList);
+			 model.setViewName("reports/applicantDeclineList");
+			 
+			 return model;
+		}
+	 
 	 @RequestMapping(value = "/userUsageReport")
 		public ModelAndView userUsageReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		 
@@ -515,50 +665,6 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 			
 	    }
 
-	 	@RequestMapping(value = "/associateJoineReports")
-		public ModelAndView associateJoinedReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
-		 
-		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
-		 String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
-		 List<TimeToFillDTO> yearList = new ArrayList<>();
-		 Calendar now = Calendar.getInstance();
-		 now.add(Calendar.YEAR, 1);
-		 int currentYearyear = Calendar.getInstance().get(Calendar.YEAR);
-		 int year = now.get(Calendar.YEAR);
-		 for(int i=0; i<=5; i++) {
-			 TimeToFillDTO timeToFillDTO = new TimeToFillDTO();
-			 timeToFillDTO.setYear(year-i);
-			 yearList.add(timeToFillDTO);
-		 }
-		 
-		 ModelAndView model = new ModelAndView();
-		 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());	
-		 List<Team> teamsList = null;
-		 if(loginUserRole.equalsIgnoreCase("ROLE_LEAD_RECRUITER")) {
-			teamsList = teamService.getTeamListByTeamOwnerAndStatus(user.getId(),orgLocations.getId()); 
-		 }
-		 else{
-			 teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId()); 
-		 }
-			Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
-			for(OrgRelations ocl :orgClientList){
-				ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
-				ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
-			 }
-		    model.addObject("add_clientList", orgClientList);
-	     model.addObject("teamsList", teamsList);
-		 model.addObject("userList", userList);
-		 model.addObject("requirementTabAccess", requirementTabAccess);
-		 model.addObject("currentYear", currentYearyear);
-		 model.addObject("yearList", yearList);
-		 model.addObject("sourceleadUrl", sourceleadUrl);
-		 model.setViewName("reports/associateJoineReport");
-		 return model;
-			
-	    }
 
 	 @RequestMapping(value = "/employeeTasksReport")
 		public ModelAndView employeeTasksReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
@@ -643,5 +749,109 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
 		}
+		 		 
+		 @RequestMapping(value = "/indPayrollRegisterReport")
+			public ModelAndView indPayrollRegisterReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 ModelAndView model = new ModelAndView();
+			 model.addObject("sourceleadUrl", sourceleadUrl);
+			 model.setViewName("reports/indPayrollRegisterReport");
+			 return model;
+		 }
 		 
+		 @RequestMapping(value = "/payrollReport")
+			public ModelAndView payrollReport(HttpServletRequest request) throws Exception
+			{
+				SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+				ModelAndView model = new ModelAndView();
+				if (sessionData == null) {
+					sessionData = new SessionMaintainanceData();
+				}
+				// sessionData.setNav(Constants.PAYROLL);
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				List<WageTaxSummary> wageTaxSummaryList = wageTaxSummaryService.getUniqueWagesAndTaxListByOrgLocationId(orgLocation);
+				if (wageTaxSummaryList != null) {
+					model.addObject("wageTaxSummaryList", wageTaxSummaryList);
+				}
+				request.getSession().setAttribute("sessionData", sessionData);
+				model.setViewName("reports/payrollReport");
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				return model;
+			}
+			
+			/**
+			 * Returns all payroll balance reports for all employess jsp
+			 * 
+			 * @param request
+			 * @return ModelAndView
+			 * @throws Exception
+			 */
+			@RequestMapping(value = "/payrollAllBalanceReport")
+			public ModelAndView allPayrollReportsJsp(HttpServletRequest request) throws Exception
+			{
+				SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+				ModelAndView model = new ModelAndView();
+				if (sessionData == null) {
+					sessionData = new SessionMaintainanceData();
+				}
+				// sessionData.setNav(Constants.PAYROLL);
+				request.getSession().setAttribute("sessionData", sessionData);
+				model.setViewName("reports/allPayrollReports");
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				return model;
+			}
+			
+			@RequestMapping(value = "/campaignStats")
+			public ModelAndView campaignStats(HttpServletRequest request,HttpServletResponse response) {
+				   ModelAndView model = new ModelAndView();
+				   model.addObject("sourceleadUrl", sourceleadUrl);
+				   model.setViewName("reports/campaignStats");
+			       return model;
+			}
+			
+			@RequestMapping(value = "/associateJoineReports")
+			public ModelAndView associateJoinedReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 
+			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+			 String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
+			 List<TimeToFillDTO> yearList = new ArrayList<>();
+			 Calendar now = Calendar.getInstance();
+			 now.add(Calendar.YEAR, 1);
+			 int currentYearyear = Calendar.getInstance().get(Calendar.YEAR);
+			 int year = now.get(Calendar.YEAR);
+			 for(int i=0; i<=5; i++) {
+				 TimeToFillDTO timeToFillDTO = new TimeToFillDTO();
+				 timeToFillDTO.setYear(year-i);
+				 yearList.add(timeToFillDTO);
+			 }
+			 
+			 ModelAndView model = new ModelAndView();
+			 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());	
+			 List<Team> teamsList = null;
+			 if(loginUserRole.equalsIgnoreCase("ROLE_LEAD_RECRUITER")) {
+				teamsList = teamService.getTeamListByTeamOwnerAndStatus(user.getId(),orgLocations.getId()); 
+			 }
+			 else{
+				 teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId()); 
+			 }
+				Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+				for(OrgRelations ocl :orgClientList){
+					ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
+					ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
+				 }
+			    model.addObject("add_clientList", orgClientList);
+		     model.addObject("teamsList", teamsList);
+			 model.addObject("userList", userList);
+			 model.addObject("requirementTabAccess", requirementTabAccess);
+			 model.addObject("currentYear", currentYearyear);
+			 model.addObject("yearList", yearList);
+			 model.addObject("sourceleadUrl", sourceleadUrl);
+			 model.setViewName("reports/associateJoineReport");
+			 return model;
+				
+		    }
+>>>>>>> 72a7abe7d4ae5e0fb0f6e855416f7a12ffb2e759
 }
