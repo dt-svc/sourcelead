@@ -643,22 +643,5 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
 		}
-	 
-		
-		 @RequestMapping(value = "/indPayrollReportList")
-			public ModelAndView indPayrollReportList(HttpServletRequest request,HttpServletResponse response) throws Exception {
-			 ModelAndView model = new ModelAndView();
-			 model.addObject("sourceleadUrl", sourceleadUrl);
-			 model.setViewName("reports/indPayrollReportList");
-			 return model;
-		 }
 		 
-		 
-		 @RequestMapping(value = "/indPayrollRegisterReport")
-			public ModelAndView indPayrollRegisterReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
-			 ModelAndView model = new ModelAndView();
-			 model.addObject("sourceleadUrl", sourceleadUrl);
-			 model.setViewName("reports/indPayrollRegisterReport");
-			 return model;
-		 }
 }
