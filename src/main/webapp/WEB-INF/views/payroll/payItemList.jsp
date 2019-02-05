@@ -40,7 +40,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 </div>  -->             
 </li>
 <li>
-	<a href="<c:url value='${appPath}/addPayItem'/>" class="addBtn">+ Create</a>
+	<a href="/pms/addPayItem" class="addBtn">+ Create</a>
 </li>
 </ul>
 </div>
