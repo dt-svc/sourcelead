@@ -1,5 +1,7 @@
 var loanAdv = new LoanAndAdvances();
 
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+
 function LoanAndAdvances(){
 this.saveLoanAndAdvanceDetails  = function (){
 	 var validationSettings = {
@@ -15,7 +17,7 @@ this.saveLoanAndAdvanceDetails  = function (){
 	         $.ajax({
 		    	type: "POST",
 		    	data: formData,
-		    	 url: sourceleadUrl+"/saveAssociateLoanAndAdvanceDetails?",
+		    	 url: pmsUrl+"/saveAssociateLoanAndAdvanceDetails?",
 		        success: function(response) {
 		        	$("#loanAndAdvancesDetailsLoading").removeAttr('style');
 		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
@@ -31,7 +33,7 @@ this.saveLoanAndAdvanceDetails  = function (){
 						 indSalaryDetails.href="#tab-5";
 						 $("#indSalaryDetails").click();
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
+		        		location.replace(pmsUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -59,7 +61,7 @@ this.getLoanAndAdvNames = function(loanAndAdvId){
 		 $("#loanAndAdvancesDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getNamesByLoanAndAdvanceType?loanAndAdvType="+loanAndAdvType+"&associateUserId="+associateUserId+"&loanAndAdvId="+loanAndAdvId, 
+		        url: pmsUrl+"/getNamesByLoanAndAdvanceType?loanAndAdvType="+loanAndAdvType+"&associateUserId="+associateUserId+"&loanAndAdvId="+loanAndAdvId, 
 		        success: function(json) {
 		        	var output = "";
 		        	output = output + "<option value=''>-- Select Name --</option>"; 
@@ -100,7 +102,7 @@ this.getLoanAndAdvDetails = function(){
 		 $("#loanAndAdvancesDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');		
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getLoanAndAdvanceDetailsByLoanAndAdvanceId?loanAndAdvId="+loanAndAdvId, 
+		        url: pmsUrl+"/getLoanAndAdvanceDetailsByLoanAndAdvanceId?loanAndAdvId="+loanAndAdvId, 
 		        success: function(json) {
 		        	
 		        	if(json.minAmount != null && json.minAmount != '' && json.minAmount != 'undefined'){
@@ -128,7 +130,7 @@ this.getLoanAndAdvDetails = function(){
 this.getLoanAndAdvApprovers =  function(userId){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getLoanAndAdvanceApprovers?", 
+		        url: pmsUrl+"/getLoanAndAdvanceApprovers?", 
 		        success: function(json) {
 		        	var output = "";
 		        	output = output + "<option value=''>-- Select Name --</option>"; 
@@ -179,7 +181,7 @@ this.getDetuctAmountDetails = function(){
 			
 		    $.ajax({
 				type : "GET",
-				url: sourceleadUrl+"/getLoanAndAdvanceEndDateByEffectiveDate?effectiveDate="+effectiveDate+"&noOfSchedules="+noOfSchedules+"&scheduler="+scheduler,
+				url: pmsUrl+"/getLoanAndAdvanceEndDateByEffectiveDate?effectiveDate="+effectiveDate+"&noOfSchedules="+noOfSchedules+"&scheduler="+scheduler,
 				success :function(endDateStr) {
 					
 					$("#endDate").val(endDateStr);
@@ -205,7 +207,7 @@ this.getIndAssociateLoanAndAdvancesDetails = function(){
 	 $("#loanAndAdvAssociateUserId").val(userId);
     $.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getAssociateLoanAndAdvanceDetails?userId="+userId,
+	    	url: pmsUrl+"/getAssociateLoanAndAdvanceDetails?userId="+userId,
 	        success: function(json) {
 	        	if(json != null && json.id != '0'){
 	        		 $("#loanAndAdvId").val(json.id);

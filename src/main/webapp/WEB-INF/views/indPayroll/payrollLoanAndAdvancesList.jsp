@@ -39,7 +39,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			    </li>
 			  
 			     <li class="positionRelative">
-					<a href="${appPath}/payrollLoanAndAdvances" class="addBtn">+ Create</a>
+					<a href="/pms/payrollLoanAndAdvances" class="addBtn">+ Create</a>
 				</li>
 			  
 			</ul>
