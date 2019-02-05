@@ -88,7 +88,7 @@ function redirect() {
     	var empId = $("#empId").val();
     	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
     	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-    		  var sourceleadUrl ='${sourceleadUrl}';
+    		  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
     				  $.ajax({
     				    	type: "GET",
     				        url: pmsUrl+"/getInvoiceDetailsByEmpId?${_csrf.parameterName}=${_csrf.token}&empId="+empId+"&orgLocationId="+orgLocationId,
@@ -232,7 +232,7 @@ function redirect() {
 	     var empId = $("#empId").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			  var sourceleadUrl ='${sourceleadUrl}';
+			  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 					  $.ajax({
 					    	type: "GET",
 					        url: pmsUrl+"/getChecksListByEmployeeId?employeeId="+empId+"&orgLocationId="+orgLocationId,
@@ -419,10 +419,10 @@ function getWagesTaxSummaryByEmpId(){
 	 var empId = $("#empId").val();
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			  var sourceleadUrl ='${sourceleadUrl}';
+			  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 					  $.ajax({
 					    	type: "GET",
-					    	url: sourceleadUrl+"/getWagesTaxSummaryByEmpId?empId="+empId+"&orgLocationId="+orgLocationId,
+					    	url: pmsUrl+"/getWagesTaxSummaryByEmpId?empId="+empId+"&orgLocationId="+orgLocationId,
 					        success: function(data) {
 							var result = "";				        	
 							result = result + '<table id="WagesAndTaxEmpTable" class="display" cellspacing="0" width="100%" >';
@@ -839,7 +839,7 @@ function getAccontDeductions(){
 	 var empId = $("#empId").val();
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		  var sourceleadUrl ='${sourceleadUrl}';
+		  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				  $.ajax({
 				    	type: "GET",
 				    	url: pmsUrl+"/getAccontDeductionsByEmpId?employeeId="+empId+"&orgLocationId="+orgLocationId,
@@ -978,7 +978,7 @@ function accountDeductionsEmpTablePagination(){
 function getEmpAccountDeductionDetails(accountDedId,empName){
 	$(".sideMask").fadeIn("slow");
 	$(".AccountDedu").fadeIn("slow");
-	  var sourceleadUrl ='${sourceleadUrl}';
+	  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			  $.ajax({
 			    	type: "GET",
 			        url: pmsUrl+"/getDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&deductionId="+accountDedId,
@@ -1063,7 +1063,7 @@ function getHRDeductions(){
 	 var empId = $("#empId").val();
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		  var sourceleadUrl ='${sourceleadUrl}';
+		  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				  $.ajax({
 				    	type: "GET",
 				    	url: pmsUrl+"/getHRDeductionsByEmployeeId?employeeId="+empId+"&orgLocationId="+orgLocationId,
@@ -1197,7 +1197,7 @@ function hrDeductionsEmpTablePagination(){
 function getHrDeductionDetails(hrDedId,empName){
 	$(".sideMask").fadeIn("slow");
 	$(".hrDedu").fadeIn("slow");
-	  var sourceleadUrl ='${sourceleadUrl}';
+	  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			  $.ajax({
 			    	type: "GET",
 			        url: pmsUrl+"/getEmpHrDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&hrDeductionId="+hrDedId,
@@ -1280,7 +1280,7 @@ function employeeHrDeductionsListTablePagination(){
 function finalBalance(){
 	 var empId = $("#empId").val();
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	var sourceleadUrl ='${sourceleadUrl}';
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			  $.ajax({
 			    	type: "GET",
 			    	url: pmsUrl+"/getfinalBalanceByEmpId?empId="+empId+"&orgLocationId="+orgLocationId,
