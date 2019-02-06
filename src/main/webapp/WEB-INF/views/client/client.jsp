@@ -41,7 +41,7 @@ margin-top: -50px;
 		<div class="pull-left">
 			<h2>Create Client</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="'${SourceLeadWeb_vmsUrl}/clientDashboard'"> Clients List</a>
+		<div class="pull-right brud-crum"><a href="<c:url value='app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="/vms/clientDashboard"> Clients List</a>
 			&raquo; Add Client</div>
 	</section>
 	
@@ -376,7 +376,7 @@ margin-top: -50px;
         <div class="col-lg-12">
           <div class="pull-right">
             <input type="button" value="Save" id="save_client" onclick="saveClient(); flushSaveClient()" class="btn btn-primary"> 
-			<input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/clientDashboard'" class="btn btn-default ml">
+			<input type="button" value="Cancel" onClick="javascript:window.location.href = '/vms/clientDashboard'" class="btn btn-default ml">
           </div>
         </div>
       </div>
@@ -430,7 +430,6 @@ function getCustomDependentField(sectionId){
 
 <script type="text/javascript">
 function getOrgName(){
-	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgCode = '${SourceLeadWeb_orgCode}';
 	
 	$.ajax({                           
@@ -481,7 +480,7 @@ function getOrgName(){
 <script type="text/javascript">
 function getOrgDetails()
 {
-	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	
 $( "#orgLocationId" ).val( '' );
 	
 	$("#webSite").attr("disabled", false);
@@ -574,7 +573,6 @@ $( "#orgLocationId" ).val( '' );
 
 <script type="text/javascript">
 function getRolesList(){
-	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgName = document.getElementById("orgName").value;
 	var orgLocationId = document.getElementById("orgLocationId").value;
 	
@@ -632,7 +630,6 @@ function getRolesList(){
 
 <script type="text/javascript">
 	function saveClient() {
-		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		if ($('#client_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
 		  	var formData = $($('#client_form')[0]).serialize();
@@ -653,7 +650,6 @@ function getRolesList(){
 
 <script type="text/javascript">
 function validateEmail(){
-	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var email = document.getElementById("email").value;
 	if(email != null && email != ''){
 		$.ajax({
@@ -686,7 +682,6 @@ function validateEmail(){
  
 <script type="text/javascript">
 function getSpocUserDetails(){
-	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var email = document.getElementById("email").value;
 	var orgLocationId = document.getElementById("orgLocationId").value;
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -760,7 +755,6 @@ function getSpocUserDetails(){
  
    <script type="text/javascript">
 function validateClientName(){
-	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var clientName = (document.getElementById("orgName").value).replace(/[{}]/g, "");
 	var client = encodeURIComponent(clientName);
 	
@@ -819,7 +813,7 @@ function validateClientName(){
 
 <script type="text/javascript">
 function validateOrgName(){
-	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	
 	var clientName = (document.getElementById("orgName").value).replace(/[{}]/g, "");
 	var client = encodeURIComponent(clientName);
 	if(client.match(/^[^\s-](.*)*$/) != null){
@@ -861,7 +855,6 @@ function validateOrgName(){
  
  <script type="text/javascript">
 	function validateWebsite() {
-		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var website = document.getElementById("webSite").value;
 		if(website.match(/^[^\s-](.*)*$/) !== null){
 		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
