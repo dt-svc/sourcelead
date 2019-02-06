@@ -118,12 +118,14 @@ public class JWTSecurityContextRepository implements SecurityContextRepository {
                     } catch (UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
                         log.warn("tampered jwt authentication cookie detected");
                         return null;
+                    }finally {
+                    	 lock.unlock();
                     }
                     System.out.println();
                 }
             }
            }
-           lock.unlock();
+          
     	 }
         log.debug("no [{}] found in request.", tokenName);
         return null;
