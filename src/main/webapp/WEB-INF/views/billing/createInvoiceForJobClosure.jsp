@@ -66,8 +66,8 @@ function errRemoveClientContact(){
 			<h2>Client Invoice</h2>
 		</div>
 		<sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
-		<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
-		<a href="/vms/invoiceList">Invoice List</a> &raquo; Client Invoice</div>
+		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+		<a href="${SourceLeadWeb_vmsUrl}/invoiceList">Invoice List</a> &raquo; Client Invoice</div>
 	</sec:authorize>
 	<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
@@ -91,7 +91,7 @@ function errRemoveClientContact(){
 				                <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();createInvoiceEmptyClientContact();getInvoiceTemplateList();"><i class="fa fa-refresh "></i></span>
 				                </div>
 				                 <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-                                 <span class="col-md-2 noPad clearfix"><a href="/vms/client" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
+                                 <span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_vmsUrl}/client" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
                                  </sec:authorize>
 				               </div> 
 				              <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
@@ -200,7 +200,7 @@ function errRemoveClientContact(){
 						<button type="button" id="sendButtonId" class="btn btn-sm btn-success ml"
 							onclick="saveInvoice('SENT')">Send</button>
 						<button type="button" class="btn btn-sm btn-default ml"
-							onClick="javascript:window.location.href = '/vms/invoiceList'">Cancel</button>
+							onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/invoiceList'">Cancel</button>
 					</div>
 				</footer>
 			</div>
@@ -1602,6 +1602,7 @@ function errDueDate(){
 
 <script>
 function getSowRate(id){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var contractId = $("#"+id+'sow').val();
 	if(contractId !='' && contractId != 'undefined' && contractId != null){
 	$.ajax({
@@ -1693,6 +1694,7 @@ function getSowRate(id){
 
 <script>
 function getClients(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgRelationId ='${orgRelationId}';
 	
 	$.ajax({
@@ -1732,6 +1734,7 @@ function getClients(){
 
 <script>
 function getClientContacts(clientContactId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgRelationId = $("#clientOrgRelationId").val();
 	$("#clientContact").empty();
 	$.ajax({
@@ -1767,6 +1770,7 @@ function getClientContacts(clientContactId){
 
 <script> 
 function getPaymentTerms(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgRelationId = $("#clientOrgRelationId").val();
 	$.ajax({
 		type : "GET",
@@ -1798,6 +1802,7 @@ function getPaymentTerms(){
 </script>
 <script>
 function getDueDateByFrequency(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var invoiceDate = document.getElementById("invoiceDate").value;
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
 	 var locationCode ='${SourceLeadWeb_locationCode}';
@@ -1823,6 +1828,7 @@ function getDueDateByFrequency(){
 
 <script>
 function saveInvoice(saveType){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 	    var selectedAssociates = '';
 		  if(maxTsRowNum > 0){
@@ -1986,6 +1992,7 @@ function getInvoiceTemplateList() {
 </script>
  <script>
 	 function selectedClient(){
+		 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 var cid = $("#clientOrgRelationId").val();
 		 window.open(vmsUrl+"/addClientContact?cid="+cid,'_blank');
 	 }

@@ -15,8 +15,8 @@
      <div class="pull-left">
      <h2>Add Payment</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
-    <a href="/vms/payablesList">Bill List</a> &raquo;  Add Payment </div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+    <a href="${SourceLeadWeb_vmsUrl}/payablesList">Bill List</a> &raquo;  Add Payment </div>
     
     </section>
     <form id= "paymentForm" name="paymentForm" method="post">

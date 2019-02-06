@@ -19,8 +19,8 @@
   <section class="content-header clearfix">
       <div class="pull-left positionRelative"><h2>Add LCA</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="/vms/immigration/viewImmigrationList">Petition List</a>&raquo; 
-     <a href="/vms/immigration/viewLCAList">LCA List</a>&raquo; Add LCA</div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="${SourceLeadWeb_vmsUrl}/immigration/viewImmigrationList">Petition List</a>&raquo; 
+     <a href="${SourceLeadWeb_vmsUrl}/immigration/viewLCAList">LCA List</a>&raquo; Add LCA</div>
   </section>
   <div class="content-area content-new clearfix">
   
@@ -601,7 +601,7 @@
       <div class="pull-right  mr">
         <input type="button" value="Save" id="saveLca" onclick="saveLcaDetails();" class="btn btn-primary">
        <input type="button" value="Cancel"
-							onClick="javascript:window.location.href = '/vms/immigration/viewLCAList'"
+							onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/immigration/viewLCAList'"
 							class="btn btn-default ml">
       </div>
       </div>

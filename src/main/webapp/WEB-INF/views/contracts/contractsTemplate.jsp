@@ -13,7 +13,7 @@
       <!-- <h2>Submission Templates</h2> -->
       <h2 class="pull-left">Contract Templates</h2>
     </div>
-  <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="/vms/orgTemplates"> Templates </a> &raquo; Contract Template List</div>
+  <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_vmsUrl}/orgTemplates"> Templates </a> &raquo; Contract Template List</div>
 </section>
 	
 	
@@ -29,7 +29,7 @@ $(document).ready(function(){
       <ul class="pull-right list-unstyled list-inline">
 			
         	<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')">
-				<li><a href="/vms/addContractTemplate" class="newAdBtn mr5">+ Template</a></li>	
+				<li><a href="${SourceLeadWeb_vmsUrl}/addContractTemplate" class="newAdBtn mr5">+ Template</a></li>	
 			</sec:authorize>      
       
         	<li id="filterContractTypePop"><a href="javascript:void(0)" class="filtIcon" title="Filters"></a>
