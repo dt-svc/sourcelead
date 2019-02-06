@@ -439,7 +439,7 @@ function preventTabkey(e){
 				<a title="Connections"  href="<c:url value='${sourceleadUrl}/loadConnectedList?status=connected'/>" id="connections"><i class="connectionIC"></i>Connections <span class="label label-warning pull-right">${SourceLeadWeb_connectionReceivedCount > 0 ? SourceLeadWeb_connectionReceivedCount : ''}</span></a>
 				</li>
 				
-				<li><a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="contactsIC"></i>Contacts</a></li>
+				<li><a title="Contacts" href="<c:url value='${SourceLeadWeb_atsUrl}/referRequirementList'/>"><i class="contactsIC"></i>Contacts</a></li>
 				
 				<sec:authorize access="!hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')"> 
            		<sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_EDIT_ORG_SETTINGS','ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE','ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')"> 
