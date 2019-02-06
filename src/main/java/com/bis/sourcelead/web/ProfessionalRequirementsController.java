@@ -31,7 +31,6 @@ import com.bis.sourcelead.entity.CrowdSourcingUserBankAccounts;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReferContacts;
-import com.bis.sourcelead.entity.RegistrationOptionalService;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementRefer;
@@ -44,7 +43,6 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ReferContactsService;
-import com.bis.sourcelead.service.RegistrationOptionalServicesService;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
@@ -101,10 +99,6 @@ public class ProfessionalRequirementsController {
 	CandidateResumesService candidateResumesService;
 	
 	@Autowired
-	private RegistrationOptionalServicesService registrationOptionalServicesService;
-	
-	
-	@Autowired
 	private ContactsGroupService contactsGroupService;
 	
 	@Autowired
@@ -114,87 +108,7 @@ public class ProfessionalRequirementsController {
 		return str == null || "".equals(str.trim());
 	}
 	
-	
-	 @RequestMapping(value = "/register")
-	 	public ModelAndView register(@RequestParam(value = "contactUUID", required = false) String contactUUID,
-	 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
-	 			@RequestParam(value = "referUUID", required = false) String referUUID,
-	 			@RequestParam(value = "type", required = false) String type) throws Exception {
-	 			ModelAndView model = new ModelAndView();
-	 			model.addObject("sourceleadUrl", sourceleadUrl);
-	 			
-	 			String registerType = "Wanted to be";
-	 			String registerTypeTwo = "Would like to";
-	 			
-	 			
-				List<RegistrationOptionalService> WantedToBeList = registrationOptionalServicesService.getRegistraionOptionalServiceListByRegisterType(registerType);
-				model.addObject("WantedToBeList",WantedToBeList);
-				
-				List<RegistrationOptionalService> WouldLikeToList = registrationOptionalServicesService.getRegistraionOptionalServiceListByRegisterType(registerTypeTwo);
-				model.addObject("WouldLikeToList",WouldLikeToList);
-				
-				if(!isNullOrEmpty(requirementUUID)){
-					model.addObject("requirementUUID", requirementUUID);
-				}
-				
-				if(!isNullOrEmpty(referUUID)){
-					model.addObject("referUUID", referUUID);
-				}
-	 			
-				List<LookUpData> requestOrgList = lookUpDataService.getLookUpDataByCategory(Constants.REQUEST_ORG);
-				 model.addObject("requestOrgList", requestOrgList);
-				 
-	 			if(!isNullOrEmpty(contactUUID)){
-	 				ReferContacts referContacts = referContactsService.getReferContactsByUUID(contactUUID);
-	 				if(null == referContacts.getContactUser()){
-	 					model.addObject("firstName",referContacts.getFirstName());
-		 				model.addObject("lastName",referContacts.getLastName());
-		 				model.addObject("email",referContacts.getContactUserEmail());
-		 				model.addObject("contactUUID", contactUUID);
-		 				model.setViewName("registration");
-	 				}else{
-	 					User user = userService.getUserById(referContacts.getContactUser().getId());
-	 					if(null == user.getPassword()){
-	 						model.addObject("userName", user.getUserName());
-			 				model.setViewName("resetloginCredentials");
-	 					}else{
-	 						model.setViewName("login");
-	 					}
-	 				}
-	 				
-	 			}else{
-	 				model.addObject("type", type);
-	 				model.setViewName("registration");
-	 			}
-	 			model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
-	 			return model;
-	 	}
 	 
-	 @RequestMapping(value = "/resetloginCredentials")
-	 	public ModelAndView resetloginCredentials(HttpServletRequest request,
-	 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
-	 			@RequestParam(value = "referUUID", required = false) String referUUID) {
-	 			ModelAndView model = new ModelAndView();
-	 			model.setViewName("resetloginCredentials");
-	 			model.addObject("sourceleadUrl", sourceleadUrl);
-	 			
-	 			if(!isNullOrEmpty(requirementUUID)){
-	 				model.addObject("requirementUUID", requirementUUID);
-	 			}
-	 			
-	 			if(!isNullOrEmpty(referUUID)){
-	 				model.addObject("referUUID", referUUID);
-	 			}
-	 			
-	 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg");
-	  			if(!isNullOrEmpty(msg)){
-	  				model.addObject("msg", msg);
-	  				SourceLeadSessionManager.removeSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg");
-	  			}
-	 			return model;
-	 	}
-	 
-	    /*@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")*/
 	    @RequestMapping(value = "/bankAccountDetails")
 	 	public ModelAndView bankAccountDetails(HttpServletRequest request) throws Exception {
 	    	
@@ -212,9 +126,6 @@ public class ProfessionalRequirementsController {
 	 			return model;
 	 	}
 	
-	
-	 
-	 
 	
 	 @RequestMapping(value = "/professionalRequirements")
 		public ModelAndView professionalProfile(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false) String  requirementUUID,
