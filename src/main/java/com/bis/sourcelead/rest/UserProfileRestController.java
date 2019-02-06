@@ -2,6 +2,7 @@ package com.bis.sourcelead.rest;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.PasswordSettingsDTO;
 import com.bis.sourcelead.dto.Response;
@@ -71,6 +73,12 @@ public class UserProfileRestController {
 	
 	@Autowired
 	UserMailUnsubscribeService userMailUnsubscribeService;
+	
+	@Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
+	
+	@Value("${isCouchbaseEnabled}")
+	private String isCouchbaseEnabled;
 	
 	@RequestMapping(value = "/saveUserProfileImage", method = RequestMethod.POST)
 	public String saveProfileImage(AddUserProfileDTO addUserProfileDTO,	
@@ -353,6 +361,17 @@ public class UserProfileRestController {
 			user.setLoginSecurity(Constants.NO);
 			userService.addUser(user);
 		}
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			List<UserRole> userRolesList = userRoleService.getUsersListByUserId(user.getId());
+			if(userRolesList != null && !userRolesList.isEmpty()) {
+				 for(UserRole userRole : userRolesList) {
+					 userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+				 }
+			}
+			
+		}
+	
 		return "Success";
 	}
 	

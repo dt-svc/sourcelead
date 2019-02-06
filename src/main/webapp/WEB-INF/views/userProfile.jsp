@@ -407,9 +407,9 @@ function getBankDetails(){
 					<div class="col-xs-12 col-sm-9 col-md-12">
 					<div class="popHeadTwo mb10">Unsubscribe</div>
 						<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-							<c:if test="${userTabs.tabName == 'Jobs' || userTabs.tabName == 'Projects' || userTabs.tabName == 'Contracts' || userTabs.tabName == 'Campaigns'}">
+							<%-- <c:if test="${userTabs == 'Jobs' || userTabs == 'Projects' || userTabs == 'Contracts' || userTabs == 'Campaigns'}">
 								<div class="form-group">
-									<label class="col-md-3">${userTabs.tabName}<i class="" title="${userTabs.tabName}"></i></label>
+									<label class="col-md-3">${userTabs}<i class="" title="${userTabs}"></i></label>
 									<div class="col-md-7 toggle-button">
 										<label class="switch">
 											<c:set var="disabled" value=""/>
@@ -418,14 +418,14 @@ function getBankDetails(){
 										      	 	<c:set var="disabled" value="checked"/>
 										      	 </c:if>
 			   								</c:forEach>
-											<input name="chkChangeSubscription" type="checkbox" ${disabled} id="${userTabs.tabName}" value="${userTabs.id}" onclick="changeSubscription(this);">
+											<input name="chkChangeSubscription" type="checkbox" ${disabled} id="${userTabs}" value="${userTabs.id}" onclick="changeSubscription(this);">
 											<div class="slider round"></div>
 										</label>
 									</div>
 								</div>
-							</c:if>
+							</c:if> --%>
 							
-							<c:if test="${userTabs.tabName == 'My Timesheets'}">
+							<c:if test="${userTabs == 'My Timesheets'}">
 								<div class="form-group">
 									<label class="col-md-3">Timesheets<i class="" title="Timesheets"></i></label>
 									<div class="col-md-7 toggle-button">
@@ -443,7 +443,7 @@ function getBankDetails(){
 								</div>
 							</c:if>
 							
-							<c:if test="${userTabs.tabName == 'My Expenses'}">
+							<c:if test="${userTabs == 'My Expenses'}">
 								<div class="form-group">
 									<label class="col-md-3">Expenses<i class="" title="Expenses"></i></label>
 									<div class="col-md-7 toggle-button">
