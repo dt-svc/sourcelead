@@ -2,6 +2,11 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+	
+	<script>
+		var atsUrl = '${SourceLeadWeb_atsUrl}'
+	</script>
+	
 	<script type="text/javascript">
 		window.onload = function () {
 			initLocationAuto('profileLocation','profileCountry','profileState','profileCity','profileZipCode','profileLatitude','profileLongitude','','address');
@@ -59,7 +64,7 @@
     <div class="pull-left">
       <h2>Profile Update</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Profile Update</div>
+    <%-- <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Profile Update</div> --%>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
@@ -122,7 +127,7 @@
         <div class="form-group">
           <label class="col-md-3">Mobile</label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="${phone}"  field-name="Mobile Number" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true" value="">
+            <input type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="${SourceLeadWeb_mobilePhone}"  field-name="Mobile Number" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true" value="">
           </div>
         </div>
         
@@ -514,7 +519,7 @@
 		        	    data: formData,
 		        	    processData: false,
 		    	        contentType:false,
-						url : sourceleadUrl+"/storeProfessionalParseCandidate?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+						url : atsUrl+"/storeProfessionalParseCandidate?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 						success : function(response) {
 							if (response && response.response === "INVALID_DATA") {
 			                    $("#store_candidate").removeAttr("disabled");
@@ -523,7 +528,7 @@
 			                } else if (response.response === "AWKWARD") {
 			                    location.href = "/errorPage";
 			                } else if (response.response === "SUCCESS") {
-			                	location.replace(sourceleadUrl+"/professionalProfile");	
+			                	location.replace(atsUrl+"/professionalProfile");	
 			                } else if (response.indexOf('Sign In') !== -1) {
 								location.replace(sourceleadUrl);
 							} else {
@@ -635,7 +640,7 @@ function validate_fileupload(fileName)
 		    	
 		    	$.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+			        url: atsUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
 			        success: function(response) {
 			        	if (response.response === "AWKWARD") {
 			        	    location.href = "/errorPage";
@@ -666,7 +671,7 @@ function validate_fileupload(fileName)
 		
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType=Candidate", 
+		        url: atsUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType=Candidate", 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
