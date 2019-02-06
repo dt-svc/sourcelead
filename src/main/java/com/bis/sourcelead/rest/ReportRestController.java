@@ -49,11 +49,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
+import com.bis.sourcelead.dto.AvailableAssociatesDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.OfferAcceptanceRateDTO;
@@ -62,6 +64,7 @@ import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
@@ -77,6 +80,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -88,6 +92,7 @@ import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.reportsDTO.ProjectReportDTO;
 import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
@@ -2163,4 +2168,72 @@ public class ReportRestController {
 		return responseList;
 	}
 		 
+			
+			@RequestMapping(value = "/getProjectsList")
+			@ResponseBody
+			public ResponseList<Projects> getProjectList(@RequestParam(value="associatesId", required=false) String associatesId,HttpServletRequest request,HttpServletResponse response)throws Exception{
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String[] associates = associatesId.split(",");
+				ResponseList<Projects> list = new ResponseList<Projects>();
+				List<Projects> projectsList = projectsService.getProjectsListByUserIDAndOrgId(associates,orgLocations.getId());
+				list.setData(projectsList);
+				return list;
+				
+			}
+			
+	@RequestMapping(value = "/prepareReport")
+	public ResponseList<AvailableAssociatesDTO> prepareReport(AvailableAssociatesDTO availableAssociatesDTO,
+			HttpServletRequest request, HttpServletResponse response) {
+		ResponseList<AvailableAssociatesDTO> responseList = new ResponseList<>();
+		try {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			responseList.setData(projectsService.getAvailableAssociatesReport(availableAssociatesDTO, orgLocations));
+			responseList.setResponse(Result.SUCCESS.name());
+			responseList.setResponseMessage(Result.SUCCESS.getValue());
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponse(Result.AWKWARD.getValue());
+			e.printStackTrace();
+		}
+		return responseList;
+	}
+		
+	@ResponseBody
+	@RequestMapping(value = "/availableAssociatereportExport")
+	public File availableAssociatereportForExport(HttpServletRequest request, HttpServletResponse response, AvailableAssociatesDTO availableAssociatesDTO) throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<AvailableAssociatesDTO> reportList = new ResponseList<>();
+		File file = null;
+		reportList.setData(projectsService.getAvailableAssociatesReport(availableAssociatesDTO, orgLocations));
+		if (reportList.getData() != null && !reportList.getData().isEmpty()) {
+
+			if (availableAssociatesDTO.getType().equalsIgnoreCase("pdf")) {
+				file = pdfUtil.availableAssociatereportReportListOfPdf(reportList.getData(), user, orgLocations);
+			} else {
+				file = projectsService.availableAssociatereportReportListOfExcel(reportList.getData(), user, orgLocations);
+			}
+		}
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+		if (file != null) {
+			file.delete();
+		}
+		return file;
+
+	}
+	
+	
+	
 }

@@ -239,20 +239,24 @@ public class ExpensesRestController {
 				continue;
 				List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projects.getId(),orgLocations.getId(),eedDTO.getIsGlobalUser());
 				Long orgLocationId = null;
+				String isGlobalAccess = eedDTO.getIsGlobalUser();
 				if(StringUtils.isNotEmpty(eedDTO.getExpenseId())){
 					OrgLocations expLoc = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getExpenseLocationCode());
 					if(expLoc != null) {
 						orgLocationId = expLoc.getId();
 					}
+					isGlobalAccess = "N";
 				}else {
 					if(projects.getOrgLocationsId() != null && projects.getOrgLocationsId().getOrg() != null && StringUtils.isNotEmpty(projects.getOrgLocationsId().getOrg().getOrgType()) && !projects.getOrgLocationsId().getOrg().getOrgType().equalsIgnoreCase(Constants.GUEST)) {
 						orgLocationId = projects.getOrgLocationsId().getId();
+						isGlobalAccess = "N";
 					}else {
 						orgLocationId = orgLocations.getId();
+						isGlobalAccess = "N";
 					}
 				}
 				
-				List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLocationId, Constants.MEMBER_ACTIVE,eedDTO.getIsGlobalUser());
+				List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLocationId, Constants.MEMBER_ACTIVE,isGlobalAccess);
 				ProjectsDTO projectDTO =ProjectDTOConverter.getProjectsDTOFromProjects(projects);
 				if (expensesCategoryList != null && !expensesCategoryList.isEmpty()) {
 					ArrayList<ExpensesCategoryListDTO> ecDTOList = new ArrayList<>();
@@ -320,19 +324,23 @@ public class ExpensesRestController {
 						}
 					}
 					Long orgLocationId = null;
+					String isGlobalAccess = eedDTO.getIsGlobalUser();
 					if(StringUtils.isNotEmpty(eedDTO.getExpenseId())){
 						OrgLocations expLoc = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getExpenseLocationCode());
 						if(expLoc != null) {
 							orgLocationId = expLoc.getId();
 						}
+						isGlobalAccess = "N";
 					}else {
 						if(pm.getProjects().getOrgLocationsId() != null && pm.getProjects().getOrgLocationsId().getOrg() != null && StringUtils.isNotEmpty(pm.getProjects().getOrgLocationsId().getOrg().getOrgType()) && !pm.getProjects().getOrgLocationsId().getOrg().getOrgType().equalsIgnoreCase(Constants.GUEST)) {
 							orgLocationId = pm.getProjects().getOrgLocationsId().getId();
+							isGlobalAccess = "N";
 						}else {
 							orgLocationId = orgLocations.getId();
+							isGlobalAccess = "N";
 						}
 					}
-					List<ExpensesCategory> expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLocationId, "1",eedDTO.getIsGlobalUser());
+					List<ExpensesCategory> expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLocationId, "1",isGlobalAccess);
 					if (expensesCategoryList != null && !expensesCategoryList.isEmpty()) {
 						ArrayList<ExpensesCategoryListDTO> ecDTOList = new ArrayList<>();
 						for (ExpensesCategory ec : expensesCategoryList) {
