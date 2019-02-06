@@ -55,6 +55,7 @@
     </div>
   </section>
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
  $(document).ready(function() {
 	 requirementApplicantList(true);
 	 /* getClientList(); */
@@ -207,7 +208,7 @@ function applicantpagination(url){
 	    	  		  var result = "";
 	    	  		 if(opt.candidateName !=null && opt.candidateName !='' && opt.candidateName !='undefined'){
 							result = result + ' <td>';
-							result = result + ' <div title="'+opt.candidateName+'" class="clearfix mt5 proj_show"><span><a href="'+sourceleadUrl+'/requirementSummary?type=applicants&requirementUUID='+opt.requirementUUID+'&candidateUUID='+opt.candidateUUID+'&submissionId='+opt.submissionId+'" >'+opt.candidateName+'<i class="fa fa-binoculars"></i></a></span></div>';
+							result = result + ' <div title="'+opt.candidateName+'" class="clearfix mt5 proj_show"><span><a href="'+atsUrl+'/requirementSummary?type=applicants&requirementUUID='+opt.requirementUUID+'&candidateUUID='+opt.candidateUUID+'&submissionId='+opt.submissionId+'" >'+opt.candidateName+'<i class="fa fa-binoculars"></i></a></span></div>';
 							result = result + ' <div title="'+opt.email+'" class="clearfix mt5 mb5">'+opt.email+'</div>';
 							result = result + ' </td>';
 						}else{
@@ -247,9 +248,9 @@ function applicantpagination(url){
             	  var result = "";
             	  if(opt.requirementUUID !=null && opt.requirementUUID !='' && opt.requirementUUID !='undefined'){
             		  if(opt.jobGeneratedId != null && opt.jobGeneratedId != ''  && opt.jobGeneratedId !="undefined"){
-                		  result = result + '<td><div class="proj_show"><span title="'+opt.jobGeneratedId+'-'+opt.jobTitle+'"><a href="'+sourceleadUrl+'/requirementSummary?requirementUUID='+opt.requirementUUID+'">'+opt.jobGeneratedId+' - '+opt.jobTitle+'</a></span></div></td>';
+                		  result = result + '<td><div class="proj_show"><span title="'+opt.jobGeneratedId+'-'+opt.jobTitle+'"><a href="'+atsUrl+'/requirementSummary?requirementUUID='+opt.requirementUUID+'">'+opt.jobGeneratedId+' - '+opt.jobTitle+'</a></span></div></td>';
             		  }else{
-                		  result = result + '<td><div class="proj_show"><span title="'+opt.jobGeneratedId+'-'+opt.jobTitle+'"><a href="'+sourceleadUrl+'/requirementSummary?requirementUUID='+opt.requirementUUID+'">'+opt.jobTitle+'</a></span></div></td>';
+                		  result = result + '<td><div class="proj_show"><span title="'+opt.jobGeneratedId+'-'+opt.jobTitle+'"><a href="'+atsUrl+'/requirementSummary?requirementUUID='+opt.requirementUUID+'">'+opt.jobTitle+'</a></span></div></td>';
             		  }
 					}else{
 						result = result + ' <td><div>--</div></td>';
@@ -360,7 +361,7 @@ function applicantpagination(url){
  function applicatDocumentListDocumentView(resumeUUID,title){
 	 var sourceleadUrl ='${sourceleadUrl}';
 		if(resumeUUID != null && resumeUUID != ""){
-			window.open(sourceleadUrl+'/viewInterviewListResumes/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
+			window.open(atsUrl+'/viewInterviewListResumes/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
 		}
  }
 </script>
