@@ -38,7 +38,6 @@ import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.rest.CrowdSourcingRequirementsRestController;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.ContactsGroupService;
 import com.bis.sourcelead.service.CountriesService;
@@ -100,10 +99,6 @@ public class ProfessionalRequirementsController {
 	
 	@Autowired
 	CandidateResumesService candidateResumesService;
-	
-	@Autowired
-	CrowdSourcingRequirementsRestController crowdSourcingRequirementsRestController;
-	
 	
 	@Autowired
 	private RegistrationOptionalServicesService registrationOptionalServicesService;
@@ -200,7 +195,7 @@ public class ProfessionalRequirementsController {
 	 	}
 	 
 	    /*@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")*/
-	    @RequestMapping(value = "/app/bankAccountDetails")
+	    @RequestMapping(value = "/bankAccountDetails")
 	 	public ModelAndView bankAccountDetails(HttpServletRequest request) throws Exception {
 	    	
 	    	    User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -299,7 +294,7 @@ public class ProfessionalRequirementsController {
 				return model;
 	}
 	 
-	 @RequestMapping(value = "/app/professionalRequirementProfile/{requirementId}", method = RequestMethod.GET)
+	 @RequestMapping(value = "/professionalRequirementProfile/{requirementId}", method = RequestMethod.GET)
 		public ModelAndView professionalRequirementProfile(HttpServletRequest request) throws Exception {
 		        Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 		        ModelAndView model = new ModelAndView();
@@ -421,7 +416,7 @@ public class ProfessionalRequirementsController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/app/referRequirementToProfessional")
+	 @RequestMapping(value = "/referRequirementToProfessional")
 		public ModelAndView referRequirementToProfessional(@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
 				@RequestParam(value = "contactUUID", required = false) String contactUUID,
 				@RequestParam(value = "referUUID", required = false) String referUUID) {
@@ -439,7 +434,7 @@ public class ProfessionalRequirementsController {
 	 
 		
 
-	 @RequestMapping(value = "/app/referRequirementList")
+	 @RequestMapping(value = "/referRequirementList")
 	 public ModelAndView referRequirementList(HttpServletRequest request) throws Exception {
 
 	 		ModelAndView model = new ModelAndView();
@@ -483,7 +478,7 @@ public class ProfessionalRequirementsController {
 	 
 	 
 
-	 @RequestMapping(value = "/app/validateContactEmail",  method = RequestMethod.GET)
+	 @RequestMapping(value = "/validateContactEmail",  method = RequestMethod.GET)
 	  public @ResponseBody String validateContactEmail(@RequestParam(value="contactEmail", required=false) String contactEmail,
 	   		HttpServletRequest request) throws Exception {
 		  
@@ -498,7 +493,7 @@ public class ProfessionalRequirementsController {
 		  
 	   }
 	 
-	@RequestMapping(value = "/app/getProfessionalResumesCount",  method = RequestMethod.GET)
+	@RequestMapping(value = "/getProfessionalResumesCount",  method = RequestMethod.GET)
 	   public @ResponseBody Integer getProfessionalResumesCount(HttpServletRequest request) throws Exception {
 		  Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 		  Integer resumesCount = candidateResumesService.getCandidateResumeCountByCandidateId(candidateId);
@@ -506,7 +501,7 @@ public class ProfessionalRequirementsController {
 	   }
  
  
-	 @RequestMapping(value = "/app/referredToMePortletList")
+	 @RequestMapping(value = "/referredToMePortletList")
 	 @ResponseBody
 		public ModelAndView referredToMePortletList(HttpServletRequest request,@RequestParam(value = "startDate", required = false) String startDate,
 				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "requirementStatus", required = false) String requirementStatus) throws Exception {
@@ -527,7 +522,7 @@ public class ProfessionalRequirementsController {
 
 		}
 	 
-	 @RequestMapping(value = "/app/referredByMePortletList")
+	 @RequestMapping(value = "/referredByMePortletList")
 	 @ResponseBody
 		public ModelAndView referredByMePortletList(HttpServletRequest request,@RequestParam(value = "startDate", required = false) String startDate,
 				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "requirementStatus", required = false) String requirementStatus) throws Exception {
@@ -548,7 +543,7 @@ public class ProfessionalRequirementsController {
 
 		}
 	 
-	 @RequestMapping(value = "/app/recruiterSubmttedJobList")
+	 @RequestMapping(value = "/recruiterSubmttedJobList")
 	 @ResponseBody
 		public ModelAndView recruiterSubmttedJobList(HttpServletRequest request,@RequestParam(value = "startDate", required = false) String startDate,
 				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "requirementStatus", required = false) String requirementStatus) throws Exception {
@@ -583,7 +578,7 @@ public class ProfessionalRequirementsController {
 		}
 	 
 	 
-	 @RequestMapping(value = "/app/downloadContactCSVTemplate")
+	 @RequestMapping(value = "/downloadContactCSVTemplate")
 		public void downloadContactCSVTemplate(HttpServletRequest request,HttpServletResponse response) throws Exception{
 			File file = null;
 			String fn;	

@@ -5,6 +5,10 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
+	
+	<script>
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
+	</script>
 
 	<div class="clearfix">
   	<div class="modal-content">
@@ -122,7 +126,7 @@ function saveInterviewStatus(id){
 	}
   	$.ajax({
 		type: "POST",
-	    url: sourceleadUrl+"/saveInterviewStatusByInterviewId?"+tokenParamName+"="+tokenValue+"&id="+id+"&interviewScore="+interviewScore+"&interviewPhase="+interviewPhase+"&interviewComment="+interviewComment, 
+	    url: atsUrl+"/saveInterviewStatusByInterviewId?"+tokenParamName+"="+tokenValue+"&id="+id+"&interviewScore="+interviewScore+"&interviewPhase="+interviewPhase+"&interviewComment="+interviewComment, 
 	    success: function(result) {
 			if (result.response === "SESSION_TIMEDOUT") {
   				location.replace(sourceleadUrl);
@@ -149,7 +153,7 @@ function getInterviewRatings(interviewId){
 	if($("#"+interviewId+"InterviewRatingsClickDiv").hasClass("fa-plus")){
 		$.ajax({
 			type: "POST",
-		    url: sourceleadUrl+"/getInterviewerAndRatingListByInterviewId?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId, 
+		    url: atsUrl+"/getInterviewerAndRatingListByInterviewId?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId, 
 		    success: function(result) {
 				if (result.response === "SESSION_TIMEDOUT") {
 	  				location.replace(sourceleadUrl);

@@ -71,7 +71,7 @@ public class RequirementInterviewController {
 	CommonUtil commonUtil;
 	
 	
-	@RequestMapping(value = "/app/ws/acceptOrRejectInterview")
+	@RequestMapping(value = "/ws/acceptOrRejectInterview")
 	 @ResponseBody  ModelAndView acceptOrRejectInterview(@RequestParam(value="interviewStatus", required=false) String interviewStatus,
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
 			 HttpServletRequest request) throws Exception {
@@ -214,7 +214,7 @@ public class RequirementInterviewController {
 	
 	
 	
-	@RequestMapping(value = "/app/ws/proposeNewTimePublicpage")
+	@RequestMapping(value = "/ws/proposeNewTimePublicpage")
 	 @ResponseBody  ModelAndView proposeNewTimePublicpage(@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
 			 HttpServletRequest request) throws Exception {
 		     ModelAndView model = new ModelAndView();

@@ -7,6 +7,9 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
+</script>
+<script>
 $(document).ready(function() {
 	 $("#myModal").hide();
 	socialInviterScripts();
@@ -471,7 +474,7 @@ function contactsDataTableList(){
 	 
 	 var searchValue = $("#contactsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getRefercontactList?searchValue="+searchValue+"&groupIdsList="+groupIdsList+"&contactType="+contactTypes;
+	 var url = atsUrl+"/getRefercontactList?searchValue="+searchValue+"&groupIdsList="+groupIdsList+"&contactType="+contactTypes;
 	 contactsPagination(url);
 }
 </script>
@@ -728,7 +731,7 @@ function saveReferContacts(){
 					 data: formData,
 	  		         processData: false,
 	  		         contentType:false, 
-					url : sourceleadUrl+"/addCrowdSourcingUserContact?"+tokenParamName+"="+tokenValue+"",
+					url : atsUrl+"/addCrowdSourcingUserContact?"+tokenParamName+"="+tokenValue+"",
 					success : function(result) {
 						
 						if (result && result.response === "INVALID_DATA") {
@@ -737,7 +740,7 @@ function saveReferContacts(){
 						} else if (result.response === "AWKWARD") {
 						    location.href = "/errorPage";
 						} else if (result.response === "SUCCESS") {
-							location.replace(sourceleadUrl+ "/referRequirementList");
+							location.replace(atsUrl+ "/referRequirementList");
 						} else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
 						} else {
@@ -876,14 +879,14 @@ $("#contactsFilter").click(function(){
 	        		$.ajax({
         					type : "POST",
         					data: formData,
-        					url : sourceleadUrl+"/addContactsGroup?"+tokenParamName+"="+tokenValue+"",
+        					url : atsUrl+"/addContactsGroup?"+tokenParamName+"="+tokenValue+"",
         					success : function(result) {
 	        				if (result && result.response === "INVALID_DATA") {
 							    showError(result.responseMessage);
 							} else if (result.response === "AWKWARD") {
 							    location.href = "/errorPage";
 							} else if (result.response === "SUCCESS") {
-								location.replace(sourceleadUrl+"/referRequirementList");
+								location.replace(atsUrl+"/referRequirementList");
 							} else if (result.indexOf('Sign In') !== -1) {
 								location.replace(sourceleadUrl);
 							} else {
@@ -909,7 +912,7 @@ $("#contactsFilter").click(function(){
 function getContactsGroupList(){  
 	  $.ajax({
 		  type : "POST",
-            url: sourceleadUrl+"/getContactsGroupList?"+tokenParamName+"="+tokenValue+"",       
+            url: atsUrl+"/getContactsGroupList?"+tokenParamName+"="+tokenValue+"",       
             success :function(json) {
 			    	     $("#groupList").removeAttr("style");
 	                	 $("#groupList").empty();
@@ -1268,7 +1271,7 @@ function resetContactFilter(){
  <script>
  function editContactType(contactId){
 	 $.ajax({	type : "POST",
-			url : sourceleadUrl+ "/getContactById?"+tokenParamName+"="+tokenValue+"&id="+contactId,
+			url : atsUrl+ "/getContactById?"+tokenParamName+"="+tokenValue+"&id="+contactId,
 			success : function(json) {
 				var firstName = "";
 				var lastName = "";
@@ -1416,7 +1419,7 @@ function saveReEditContacts(contactId){
 	  		         processData: false,
 	  		         contentType:false, 
 					//url : sourceleadUrl+"/addCrowdSourcingUserContact?"+tokenParamName+"="+tokenValue+"",
-					url : sourceleadUrl+ "/addCrowdSourcingUserContact?"+tokenParamName+"="+tokenValue+"&id="+contactId,
+					url : atsUrl+ "/addCrowdSourcingUserContact?"+tokenParamName+"="+tokenValue+"&id="+contactId,
 					success : function(result) {
 						
 						if (result && result.response === "INVALID_DATA") {
@@ -1425,7 +1428,7 @@ function saveReEditContacts(contactId){
 						} else if (result.response === "AWKWARD") {
 						    location.href = "/errorPage";
 						} else if (result.response === "SUCCESS") {
-							location.replace(sourceleadUrl+ "/referRequirementList");
+							location.replace(atsUrl+ "/referRequirementList");
 						} else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
 						} else {
@@ -1474,7 +1477,7 @@ function deleteContactType(contactId){
 function deleteSelectedContact(contactId){
 	
 	$.ajax({	type : "POST",
-		url : sourceleadUrl+ "/deleteContact?"+tokenParamName+"="+tokenValue+"&id="+contactId,
+		url : atsUrl+ "/deleteContact?"+tokenParamName+"="+tokenValue+"&id="+contactId,
 		success : function(result) {
 
 	    	 if (result && result.response === "INVALID_DATA") {
