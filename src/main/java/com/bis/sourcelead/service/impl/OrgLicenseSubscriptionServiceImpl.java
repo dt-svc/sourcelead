@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.CountriesDao;
 import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.dao.ExpensesCategoryDao;
@@ -177,6 +178,12 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 	@Value("${defaultFromEmailAddressForProd}")
 	private String defaultFromEmailAddressForProd;
 	
+	@Value("${isCouchbaseEnabled}")
+	private String isCouchbaseEnabled;
+	
+	@Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -270,7 +277,7 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			UserRole userRole = getUserRoleDetails(user,orgLocations);
 			try {
 				userRole.setShift(shift);
-				userRoleDao.addUserRole(userRole);
+				userRole = userRoleDao.addUserRole(userRole);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -325,6 +332,12 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
 			sendActivationEmail(user);
 			userService.sendEmail(user, loginUser, password,orgLocations.getId());
+			
+			if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+				userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(orgLocations);
+				userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+			}
+			
 			
 			
 		} catch (Exception e) {
@@ -620,6 +633,7 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 		userRole.setOrgLocations(orgLocations);
 		userRole.setUserState(Status.NOT_LOGGEDIN);
 		userRole.setUserType("Admin");
+		userRole.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		Roles roles = null;
 		try {
 			roles = rolesDao.getRolesByRoleNameAndOrgLocationId("ROLE_ADMIN",orgLocations.getId());
@@ -679,7 +693,7 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 		 globalVarsMap.put("registerName", professionalName);
 		 StringBuilder verifylink = new StringBuilder();
 		 
-		 globalVarsMap.put("verifyLink",verifylink.append("<a href='").append(sourceleadUrl).append("/ws/activateEmail?&token=").append(user.getVerificationUUID()).append("'>").append(sourceleadUrl).append("/activateEmail?&token=").append(user.getVerificationUUID()).append("</a>").toString()); 
+		 globalVarsMap.put("verifyLink",verifylink.append("<a href='").append("/app/ws/activateEmail?&token=").append(user.getVerificationUUID()).append("'>").append(sourceleadUrl).append("/activateEmail?&token=").append(user.getVerificationUUID()).append("</a>").toString()); 
 
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
