@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.OrglocationDepositTaxesDao;
 import com.bis.sourcelead.dto.FederalAndStateTaxDTO;
 import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
@@ -98,6 +99,12 @@ public class CompanyOnboardRestController {
 	
 	@Autowired
 	OrglocationDepositTaxesDao orglocationDepositTaxesDao;
+	
+	@Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
+	
+	@Value("${isCouchbaseEnabled}")
+	private String isCouchbaseEnabled;
 	
 	@RequestMapping(value = "/saveOrgLocationsFederalAndStatesTax", method = RequestMethod.POST)
 	@ResponseBody
@@ -655,6 +662,9 @@ public class CompanyOnboardRestController {
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		loginOrgLocation.setIsCompanyOnboarded(Constants.YES);
 		orgLocationService.updateOrgLocations(loginOrgLocation);
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(loginOrgLocation);
+		}
 		SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", loginOrgLocation);
 		commonUtil.onboardCreationCandidateGeneratedIdUpdated(candidate,loginOrgLocation);
 		return "success";
