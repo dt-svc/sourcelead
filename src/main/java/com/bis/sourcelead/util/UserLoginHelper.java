@@ -507,7 +507,13 @@ public class UserLoginHelper {
 			try {
 				isSuperUser = orgLocationService.isLoginUserIsSuperUser(userRole.getUser().getId(),
 						orgLocations.getId());
-				SourceLeadSessionManager.setSessionAttribute(req, "isSuperUser", isSuperUser);
+				
+				if(isSuperUser == true) {
+					SourceLeadSessionManager.setSessionAttribute(req, "isSuperUser", Constants.YES);
+				}else {
+					SourceLeadSessionManager.setSessionAttribute(req, "isSuperUser", Constants.NO);
+				}
+				
 				
 				isSuperAdmin = orgService.isLoginUserIsSuperAdmin(userRole.getUser().getId(), orgLocations.getOrg().getId());
 				if (isSuperAdmin == true) {
