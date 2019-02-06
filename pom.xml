@@ -34,7 +34,7 @@
 	<build>
 		<!-- <resources> <resource> <directory>src/main/webapp/resources/images</directory> 
 			<includes> <include>borderpdf.pdf</include> </includes> </resource> </resources> -->
-		<finalName>pms</finalName>
+		<finalName>vms</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
