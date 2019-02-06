@@ -9,6 +9,7 @@
 	<name>pms</name>
 	<properties>
 		<java.version>1.8</java.version>
+		<tomcat.deploy.dir>C:/apache-tomcat-8.0.36/webapps</tomcat.deploy.dir>
 	</properties>
 	<repositories>
 		<repository>
@@ -70,14 +71,14 @@
 					<showDeprecation>true</showDeprecation>
 				</configuration>
 			</plugin>
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.5</version>
 				<configuration>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
-			</plugin>
+			</plugin> -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
@@ -95,8 +96,9 @@
 						<phase>install</phase>
 						<configuration>
 							<target>
-								<!-- <copy file="${project.build.directory}/sourcelead.war" todir="C:/apache-tomcat-8.0.30/webapps" 
-									/> -->
+							     <copy todir="${tomcat.deploy.dir}/pms">
+						          <fileset dir="${project.build.directory}\pms" includes="**/*" />
+						         </copy>
 							</target>
 						</configuration>
 						<goals>
