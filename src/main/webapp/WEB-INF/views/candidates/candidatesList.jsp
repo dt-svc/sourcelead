@@ -2896,7 +2896,7 @@ function getRequirements(){
 	var managerId = $("#requirementManagerlist").val();
 	$.ajax({
         type : "GET",
-        url: atsUrl+"/getAllRequirementsForJobSharing?postedDateRange="+postedDateRange+"&startDate="+startDate+"&endDate="+endDate+"&managerId="+managerId,    
+        url: sourceleadUrl+"/getAllRequirementsForJobSharing?postedDateRange="+postedDateRange+"&startDate="+startDate+"&endDate="+endDate+"&managerId="+managerId,    
          success :function(json) {
               if(json != null && json != 'undefined' && json != "" && json != '[]'){
             	  var result = "";

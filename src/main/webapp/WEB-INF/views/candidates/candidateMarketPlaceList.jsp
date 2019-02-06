@@ -6,15 +6,20 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
 <title>Welcome to Source Lead :: Marketplace List</title>
+<<script type="text/javascript">
+var atsUrl = '${SourceLeadWeb_atsUrl}';
+</script>
 <div id="popUp"></div>
     <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Marketplace List</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/candidatesList'/>">Candidates</a> &raquo; Marketplace</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;  <div class="pull-right brud-crum"><a href="${SourceLeadWeb_atsUrl}/candidatesList'">Candidates</a> &raquo; Marketplace</div>
     </section>
     <div class="timesheet_out">
       <div class="tablelist-wrap">
@@ -236,7 +241,7 @@ function callValidatePriceAmount(){
  	});
 	
 	$.ajax({
-		url : sourceleadUrl + "/saveMarketPlaceData",		
+		url : atsUrl + "/saveMarketPlaceData",		
 		type : "POST",
 	    headers: { 
 	        'Accept': 'application/json',
@@ -322,7 +327,7 @@ function marketPlacePagination(){
         "searching": false,
         "searchHighlight": true,
         "ajax": $.fn.dataTable.pipeline( {
-            url: sourceleadUrl + "/getMarketPlaceCandidateMovedList",
+            url: atsUrl + "/getMarketPlaceCandidateMovedList",
             method: 'POST',
             pages: 10
         }),

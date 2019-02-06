@@ -39,6 +39,7 @@
 
 <script> 
 var atsUrl ='${SourceLeadWeb_atsUrl}';
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 $(document).ready(function(){
 	 var userId = '${userId}';
@@ -4354,7 +4355,7 @@ function associateInformationDetails(candidateId){
 function associateLoanAndAdvanceDetails(candidateId){
 	$.ajax({
 		  type: "GET",
-		    url: atsUrl+"/getAssociateLoanAndAdvanceDetailsByCandidateId?candidateId="+candidateId,
+		    url: pmsUrl+"/getAssociateLoanAndAdvanceDetailsByCandidateId?candidateId="+candidateId,
 		     success :function(response) {
 		    	 	$("#tab-18").empty();  
 		    	    $("#tab-19").empty();
