@@ -410,7 +410,6 @@ public class DashboardRestController {
 			
 		 
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		     UserRole userRole = null;
 		    
 		     if(!isNullOrEmpty(switchUserType) && switchUserType.equalsIgnoreCase("Professional") && orgLocationId == 1L) {
@@ -427,6 +426,10 @@ public class DashboardRestController {
   			   //user update/save in user Elk
   			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
   		      }
+		     
+		     String uname = user.getEmail()+"##"+userRole.getId();
+		     SecurityContextHolder.clearContext();
+			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRole.getUuid()));
 		     
 		     SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 		     SourceLeadSessionManager.setSessionAttribute(request, "switchUserType", switchUserType);
