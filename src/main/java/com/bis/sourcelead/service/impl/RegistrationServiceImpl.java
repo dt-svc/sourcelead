@@ -442,6 +442,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
 		userService.sendEmail(user, loginUser, password,orgLocations.getId());
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(orgLocations);
+			userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+		}
 	
 	}
 	
