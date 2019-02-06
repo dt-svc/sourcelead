@@ -668,5 +668,19 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		}
 		return model;
 	}
+	
+	
+	@RequestMapping(value = "/availableAssociatesReport")
+	public ModelAndView availableAassociatesReport(HttpServletRequest request,HttpServletResponse response) throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.addObject("userList", userList);
+		 model.setViewName("reports/availableAssociates");
+
+		return model;
+		
+	}
 	 
 }
