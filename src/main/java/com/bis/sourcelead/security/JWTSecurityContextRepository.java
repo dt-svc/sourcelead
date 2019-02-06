@@ -125,7 +125,9 @@ public class JWTSecurityContextRepository implements SecurityContextRepository {
                 }
             }
            }
-          
+            if(lock.isHeldByCurrentThread()) {
+            	lock.unlock();
+            }
     	 }
         log.debug("no [{}] found in request.", tokenName);
         return null;
