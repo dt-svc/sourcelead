@@ -40,6 +40,8 @@ public class OrgLocationCacheDTO implements Serializable{
 	
 	private String timeZoneId;
 	
+	private String timeZone;
+	
 	private String dateFormat;
 	
 	private String orgShortCode;
@@ -77,6 +79,8 @@ public class OrgLocationCacheDTO implements Serializable{
 	private String currencyCode;
 	
 	private String orgDescription;
+	
+	private String orgLocationLoginSecurity;
 	
 	
 	
@@ -368,5 +372,20 @@ public class OrgLocationCacheDTO implements Serializable{
 		this.orgDescription = orgDescription;
 	}
 
+	public String getOrgLocationLoginSecurity() {
+		return orgLocationLoginSecurity;
+	}
+
+	public void setOrgLocationLoginSecurity(String orgLocationLoginSecurity) {
+		this.orgLocationLoginSecurity = orgLocationLoginSecurity;
+	}
+	
+	public String getTimeZone() {
+		return timeZone;
+	}
+
+	public void setTimeZone(String timeZone) {
+		this.timeZone = timeZone;
+	}
 	
 }
