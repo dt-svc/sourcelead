@@ -25,6 +25,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.UserLoginHelper;
 
+import edu.emory.mathcs.backport.java.util.concurrent.locks.ReentrantLock;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -65,9 +66,15 @@ public class JWTSecurityContextRepository implements SecurityContextRepository {
         HttpServletResponse response = requestResponseHolder.getResponse();
         
         requestResponseHolder.setResponse(new SaveToCookieResponseWrapper(request, response, tokenName, secret));
+        ReentrantLock lock = new ReentrantLock(true);
         SecurityContext context = null;
 		try {
-			context = readSecurityContextFromCookie(request);
+			if(lock.tryLock()) {
+				lock.lock();
+				context = readSecurityContextFromCookie(request);
+				lock.unlock();
+			}
+			
 		} catch (Exception e) {}
         if (context == null) {
         	 return SecurityContextHolder.createEmptyContext();
