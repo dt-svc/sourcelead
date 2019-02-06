@@ -4,11 +4,11 @@
  
  
  <script>
- var atsUrl ='${SourceLeadWeb_atsUrl}';
+ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 function associateTaxSummary(userId){  
 	  $.ajax({
            type : "GET",
-           url: atsUrl+"/findAssociateTaxSummaryByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
+           url: pmsUrl+"/findAssociateTaxSummaryByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
             success :function(json) {
             var result = "";
             result = result + '<div id="blankDiv" class="col-md-12 mt minHeight_225" style="display:none;">';
@@ -163,7 +163,7 @@ function associateTaxSummary(userId){
 function getAssociateTaxHistory(userId){
 	$.ajax({
 		type : "GET",
-		url : atsUrl+"/getAssociateTaxHistoryByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+		url : pmsUrl+"/getAssociateTaxHistoryByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,
 		success : function(result) {
 			var json = result.data;
 			var result = "";
@@ -406,7 +406,7 @@ function backToSummary(){
  function editAssociateSummary(userId){
 	 $.ajax({
          type : "GET",
-         url: atsUrl+"/findAssociateTaxSummaryByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
+         url: pmsUrl+"/findAssociateTaxSummaryByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
           success :function(json) {
          
         	  var result = "";
@@ -726,7 +726,7 @@ function getResidenceLocation(userId,localTax){
 // 	var localTax = $("#localTax").val();
 	$.ajax({
 		type : "GET",
-		url : atsUrl+"/getResidenceLocation?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+		url : pmsUrl+"/getResidenceLocation?"+tokenParamName+"="+tokenValue+"&userId="+userId,
 		success : function(result) {
 			var output = "";
 			var noSelected = "";
@@ -760,7 +760,7 @@ function getResidenceLocation(userId,localTax){
 	            $.ajax({
 					type : "POST",
 	        	    data: formData,
-					url : atsUrl+"/saveAssociateTax?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+					url : pmsUrl+"/saveAssociateTax?"+tokenParamName+"="+tokenValue+"&userId="+userId,
 					success : function(result) {
 						 if (result && result.response === "INVALID_DATA") {
 			                    $("#associate_tax_button").removeAttr("disabled");

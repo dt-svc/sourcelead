@@ -4,6 +4,7 @@
 <script type="text/javascript">
 var value = [];
 var tempIndex = null;
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 $(document).ready(function(){
 	
 	$(".add-row").click(function(){
@@ -176,7 +177,7 @@ $('body').on('blur', '#associate_deduction_form', function() {
      $.ajax({
 			type : "POST",
  	    data: formData,
-			url : sourceleadUrl+"/saveAssociateDeduction?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&saveType="+saveType,
+			url : pmsUrl+"/saveAssociateDeduction?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&saveType="+saveType,
 			success : function(result) {
 				 if (result && result.response === "INVALID_DATA") {
 	                    $("#associate_deduction_save_button").removeAttr("disabled");
@@ -193,7 +194,7 @@ $('body').on('blur', '#associate_deduction_form', function() {
 						$("#associate_deduction_save_button").removeAttr("disabled");
 						$("#associate_deduction_save_button").addClass('button').val('Save & Continue');
 	                } else if (result.indexOf('Sign In') !== -1) {
-						location.replace(sourceleadUrl);
+						location.replace(pmsUrl);
 					} else {
 	                    $("#associate_deduction_save_button").removeAttr("disabled");
 	                    $("#associate_deduction_save_button").addClass('button').val('Save');
@@ -253,7 +254,7 @@ function deductionPopup(){
  function getDeductionType(){
 	 $.ajax({
 			type : "POST",
-			url: sourceleadUrl+"/getAllDeductionType?"+tokenParamName+"="+tokenValue+"",
+			url: pmsUrl+"/getAllDeductionType?"+tokenParamName+"="+tokenValue+"",
 			success :function(data) {
 			var json = data.data;
 			var output = "";
@@ -283,7 +284,7 @@ function deductionPopup(){
 	 var dedType = $("#dedType").val();
 	 $.ajax({
 			type : "POST",
-			url: sourceleadUrl+"/getDeductionAmount?"+tokenParamName+"="+tokenValue+"&dedType="+dedType,
+			url: pmsUrl+"/getDeductionAmount?"+tokenParamName+"="+tokenValue+"&dedType="+dedType,
 			success :function(data) {
 				$("#mthd").val(data.payrollDeductionMethod);
 				$("#amt").val(data.deductionAmount); 

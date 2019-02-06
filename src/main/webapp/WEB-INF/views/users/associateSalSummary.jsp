@@ -3,12 +3,12 @@
  
  <input type="hidden" id ="userIdHid"></input>
  <script>
- var atsUrl ='${SourceLeadWeb_atsUrl}';
+ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 function associateSalSummary(userId){
 	$("#userIdHid").val(userId);
 	$.ajax({
            type : "GET",
-           url: atsUrl+"/findAssociateSalary?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
+           url: pmsUrl+"/findAssociateSalary?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
             success :function(json) { 
             	var allCheck = "";
             	if(json.orgPayItems != null && json.orgPayItems != '' && json.orgPayItems != 'undefined' && json.orgPayItems.length > 0){
@@ -371,7 +371,7 @@ function saveOrgPayItems(){
            $.ajax({
 				type : "POST",
       	    	data: formData,
-				url : atsUrl+"/savePayItemsFromSummary?&id="+associateSalaryId,
+				url : pmsUrl+"/savePayItemsFromSummary?&id="+associateSalaryId,
 				success : function(result) {
 					associateSalSummary(user);
 				},
@@ -624,7 +624,7 @@ function esiFunction() {
 function salaryHistory(id) {
 		 $.ajax({
 		    	type: "GET",
-		        url: atsUrl+"/findAssociateSalHistory?"+tokenParamName+"="+tokenValue+"&associateSalid="+id                  , 
+		        url: pmsUrl+"/findAssociateSalHistory?"+tokenParamName+"="+tokenValue+"&associateSalid="+id                  , 
 		        success: function(json) {
 		        var result = "";
 		        result = result + '<table>';
@@ -960,7 +960,7 @@ function calaculateIncDecPer(){
 	            $.ajax({
 					type : "POST",
 	        	    data: formData,
-					url : atsUrl+"/addAssociateSal?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+					url : pmsUrl+"/addAssociateSal?"+tokenParamName+"="+tokenValue+"&userId="+userId,
 					success : function(result) {
 						 if (result && result.response === "INVALID_DATA") {
 			                    $("#update_associate_sal_button").removeAttr("disabled");
@@ -1079,7 +1079,7 @@ function updatePayItems(payItemId){
 	var payAmount = $("#prePayAmount"+payItemId).val();
 	$.ajax({
 		type : "POST",
-		url : atsUrl+"/updateAssociatePayItem?"+tokenParamName+"="+tokenValue+"&id="+payItemId+"&effectiveDate="+effectiveDate+"&endDate="+endDate+"&payItemAmount="+payAmount,
+		url : pmsUrl+"/updateAssociatePayItem?"+tokenParamName+"="+tokenValue+"&id="+payItemId+"&effectiveDate="+effectiveDate+"&endDate="+endDate+"&payItemAmount="+payAmount,
 		success : function(result) {
 			if(result != null){
 				displayNormalDivs(payItemId,effectiveDate,endDate,payAmount);
@@ -1143,7 +1143,7 @@ function proceedToDelete(payItemId,userId){
 	
 	$.ajax({
 		type : "POST",
-		url : atsUrl+"/deleteAssociatePayItem?"+tokenParamName+"="+tokenValue+"&payItemId="+payItemId,
+		url : pmsUrl+"/deleteAssociatePayItem?"+tokenParamName+"="+tokenValue+"&payItemId="+payItemId,
 		success : function(result) {
 			if(result != null){
 				$("#popUp").empty();
@@ -1162,7 +1162,7 @@ function getPayGroups(groupUUID){
 	var userId = $("#userId").val();
 		 $.ajax({
 				type : "GET",
-				url : atsUrl+"/getPayGroupsByPayFrequency?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency+"&userId="+userId,
+				url : pmsUrl+"/getPayGroupsByPayFrequency?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency+"&userId="+userId,
 				success : function(result) {
 				var output = "";
 				output = output + "<option value=''>Select Group</option>";
