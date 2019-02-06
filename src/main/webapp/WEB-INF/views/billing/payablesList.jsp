@@ -64,7 +64,7 @@ $(document).ready(function(){
 			<h2>Bills</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="/app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
 			&raquo; Bill List
 		</div>
 	</section>
@@ -75,8 +75,8 @@ $(document).ready(function(){
 	
 	<div class="project_side_wrap_inn_tabs clearfix">
 	    <ul class="project-tabs-menu">
-		    <li class="current"><a href="/vms/payablesList">Bill List</a></li>
-		    <li class=""><a href="/vms/debitNoteList">Debit Note List</a></li>
+		    <li class="current"><a href="${SourceLeadWeb_vmsUrl}/payablesList">Bill List</a></li>
+		    <li class=""><a href="${SourceLeadWeb_vmsUrl}/debitNoteList">Debit Note List</a></li>
 		    
 	    </ul>
     </div>	
@@ -175,14 +175,14 @@ $(document).ready(function(){
 					<span> 
 						<sec:authorize access="hasAnyRole('ROLE_ADD_BILL')">
 							<!-- <a href="javascript:void(0)" title="Create Bill" onclick="createBill();">Create Bill </a> -->
-					<a href="/vms/createPayables" title="Create Vendor Based Bill">Vendor Based Bill</a>
-					<a href="/vms/createInvoiceProjectPayableBased" title="Create Project Based Bill">Project Based Bill</a>
-		            <a href="/vms/createPaybleForJobClosure" title="Create Job closure Based Bill">Job closure Based Bill</a>
-		            <a href="/vms/createExpensesPayableBill" title="Create Other Bill">Other Bill</a>
+					<a href="${SourceLeadWeb_vmsUrl}/createPayables" title="Create Vendor Based Bill">Vendor Based Bill</a>
+					<a href="${SourceLeadWeb_vmsUrl}/createInvoiceProjectPayableBased" title="Create Project Based Bill">Project Based Bill</a>
+		            <a href="${SourceLeadWeb_vmsUrl}/createPaybleForJobClosure" title="Create Job closure Based Bill">Job closure Based Bill</a>
+		            <a href="${SourceLeadWeb_vmsUrl}/createExpensesPayableBill" title="Create Other Bill">Other Bill</a>
                            </sec:authorize>
 						<a href="javascript:void(0)" title="Generate Automatic Bill" onclick="generateAutomaticInvoice();">Generate Automatic Bill</a>
 						<a href="javascript:void(0)" title="Generate Automatic JobClosure Bill" onclick="generateAutomaticBillForJobClosure();">Generate Automatic JobClosure Bill</a>
-						 <a href="/vms/addPaymentBill">Add Payment</a>
+						 <a href="${SourceLeadWeb_vmsUrl}/addPaymentBill">Add Payment</a>
 					</span>
 				</div>
 			</li>
@@ -684,6 +684,7 @@ function preparePayableList(url,orgLocationDate){
 
 <script>
 function payablePagination(url){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}'; 
 	var colIndex = 0;
     $('#payableListTable').DataTable( { 
 	  "processing": true,
@@ -1720,6 +1721,7 @@ function cancelExport(){
 
 <script type="text/javascript">
 function generateAutomaticInvoice(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}'; 
 	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
     	 type: "POST",
@@ -1739,6 +1741,7 @@ function generateAutomaticInvoice(){
 
 
 function generateAutomaticBillForJobClosure(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}'; 
 	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
    	 type: "POST",
@@ -1759,6 +1762,7 @@ function generateAutomaticBillForJobClosure(){
 
 <script>
 function unLinkBill(invoiceUUID){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}'; 
 	$.ajax({
 	   	 type: "POST",
 		     dataType : 'json',
@@ -1807,6 +1811,7 @@ function cancelTermination(){
 }
 
 function saveBillRejectedReason(invoiceUUID){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}'; 
 	var reason = $("#reasonForBill").val();
 	if(reason != null && reason != ''){
 		 $("#reasonForBillDiv").empty();
@@ -1831,6 +1836,7 @@ function saveBillRejectedReason(invoiceUUID){
 }
 
 function savevoidBill(invoiceUUID){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}'; 
 			 $.ajax({
 				   	type: "POST",
 				    url: vmsUrl+"/voidInvoiceOrBill?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,
@@ -1855,6 +1861,7 @@ function savevoidBill(invoiceUUID){
 }
 
 function continuePaymentOnline() {
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}'; 
         var amount = $("[name=paymentAmountOnline][value=custom]").is(":checked") ? $("#customeAmountOnline").val() : $("#totalAmountOnline").val();
     if(amount === "") {
         showError("Enter payment amount");

@@ -18,7 +18,7 @@
    
     <section class="content-header clearfix">
       <div class="pull-left"><h2>Petition List</h2></div>
-      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Petition List</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Petition List</div>
 	<div class="clearfix"></div>
     </section>    
     
@@ -27,10 +27,10 @@
 	    <ul class="project-tabs-menu">
 		   
 		   <sec:authorize access="hasAnyRole(\'ROLE_ADD_LCA\',\'ROLE_VIEW_LCA\',\'ROLE_VIEW_EDIT_LCA\',\'ROLE_VIEW_DELETE_LCA\',\'ROLE_IMPORT_LCA\',\'ROLE_EXPORT_LCA\')">
-		    <li class=""><a href="/vms/immigration/viewLCAList">LCA List</a></li>
+		    <li class=""><a href="${SourceLeadWeb_vmsUrl}/immigration/viewLCAList">LCA List</a></li>
 		   </sec:authorize> 
 		   
-		   <li class="current"><a href="/vms/immigration/viewImmigrationList">Petition List</a></li>
+		   <li class="current"><a href="${SourceLeadWeb_vmsUrl}/immigration/viewImmigrationList">Petition List</a></li>
 		   
 	    </ul>
     </div>
@@ -229,7 +229,7 @@
       <ul class="pull-right list-unstyled list-inline">
       <%--  <a href="${appPath}/immigration/viewLCAList" class="btn btn-success btnSuccess anchorWhite btn-sm"><i class="paddingRight"></i> LCA List</a> --%>
       		<sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION')">
-            <li><a href="/vms/immigration/loadNewPetition" class="action newAdBtn mr5">+ New </a></li>
+            <li><a href="${SourceLeadWeb_vmsUrl}/immigration/loadNewPetition" class="action newAdBtn mr5">+ New </a></li>
 			</sec:authorize>
 				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a></li>
 				
@@ -237,7 +237,7 @@
 				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
-	                 		<a href="/vms/uploadImmigrationForm">Import</a>
+	                 		<a href="${SourceLeadWeb_vmsUrl}/uploadImmigrationForm">Import</a>
 							<a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a>
 						</span>
 						<!-- <span>
@@ -631,7 +631,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.generatedId !== null && opt.generatedId !== '' && opt.generatedId !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.generatedId+"'><a href=/vms/immigration/viewImmigration?immigrationUUID="+opt.immigrationUUID+"&candidateUUID="+opt.candidateUUID+"&immiTemplateUUID="+opt.immiTemplateUUID+"&myImmigrationPage=N>"+opt.generatedId+"</a></div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.generatedId+"'><a href=${SourceLeadWeb_vmsUrl}/immigration/viewImmigration?immigrationUUID="+opt.immigrationUUID+"&candidateUUID="+opt.candidateUUID+"&immiTemplateUUID="+opt.immiTemplateUUID+"&myImmigrationPage=N>"+opt.generatedId+"</a></div></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
                      }
@@ -766,7 +766,7 @@
                 	 }
                      var result = "";
                      '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_VIEW_PETITION\')">';
-                     result = result + '<td><div><a href=/vms/immigration/editImmigrationDetails?immigrationUUID='+opt.immigrationUUID+'><i id="edit' + opt.immigrationUUID + '" class="glyphicon glyphicon-pencil"></i></a>';
+                     result = result + '<td><div><a href=${SourceLeadWeb_vmsUrl}/immigration/editImmigrationDetails?immigrationUUID='+opt.immigrationUUID+'><i id="edit' + opt.immigrationUUID + '" class="glyphicon glyphicon-pencil"></i></a>';
                      '</sec:authorize>';
                       '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PETITION\')">';
                      result = result + '<i id="delete' + opt.immigrationUUID + '" onclick="deleteImmigrationListId(\''+opt.immigrationUUID+'\');" class="glyphicon glyphicon-trash ml10"></i></div></td>';

@@ -60,7 +60,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 				</span>
 				</h2>
 			</div>
-                  <div class="pull-right brud-crum"><a href="<c:url value='/app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home &raquo;</a> Clients List </div>
+                  <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home &raquo;</a> Clients List </div>
     
 	 	</section>
 
@@ -292,14 +292,14 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 				<div class="action-pop">
 					<span> 
 					  <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-						<a href="/vms/client">Add Client</a>
+						<a href="${SourceLeadWeb_vmsUrl}/client">Add Client</a>
 					 </sec:authorize>
 					 <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
-                        <a href="/vms/addClientContact">Add Contact</a>
+                        <a href="${SourceLeadWeb_vmsUrl}/addClientContact">Add Contact</a>
                      </sec:authorize>		
                      
 						<sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> 
-							<a href="/vms/uploadClientForm">Import</a>
+							<a href="${SourceLeadWeb_vmsUrl}/uploadClientForm">Import</a>
 						 </sec:authorize>                     			
 					</span>
 				</div>
@@ -1478,7 +1478,7 @@ function getVendorContactListsELK(){
 <!-- This script is for resending the invitation mail -->
 <script type="text/javascript"><%-- <jsp:include page="submissionTemplate.jsp" />	 --%>
 function resendClientSpocInvitation(spocUserId,orgSpocId,orgRelationId){
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var rowHtmlContent =  $("#row"+orgSpocId).html();
 	 $("#row"+orgSpocId).empty();
 	 $("#row"+orgSpocId).html("<td colspan='8'  id='loading"+orgSpocId+"'></td>");
@@ -1522,6 +1522,7 @@ function pagination1(){
 
 <script>
 function updateSpocStatus(spocId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
     var spocStatus = $('#spocState'+spocId).val();
 
 	
@@ -1648,7 +1649,7 @@ function listChange(sel){
 
 <script>
 	function clientProjectDetails(clientId) {
-	
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		$
 				.ajax({
 					type : "POST",
@@ -1790,6 +1791,7 @@ function listChange(sel){
 
 <script> 
 function  inlineEditClientProjects(projectId,localFieldName){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var fieldName = localFieldName;
 	var fieldValue = $("#"+localFieldName+""+projectId).val();
 	 $.ajax({
@@ -1803,6 +1805,7 @@ function  inlineEditClientProjects(projectId,localFieldName){
 <div id="popUp"></div>
 <script> 
 function  inlineEditForProjects(orgRelationId,localFieldName){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var fieldName = localFieldName;
 	var fieldValue = $("#"+localFieldName).val();
 	 $.ajax({
@@ -1919,6 +1922,7 @@ $("#selector").fadeIn(200);
 <!-- Scripts for invitations  -->
 <script>
 function acceptInvitation(spocId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var rowHtmlContent =  $("#row"+spocId).html();
 	 $("#row"+spocId).empty();
 	 $("#row"+spocId).html("<td colspan='8'  id='loading"+spocId+"'></td>");
@@ -1978,7 +1982,7 @@ function terminateSpoc1(spocId, orgRelationID, spocEmail){
 </script>
 <script>
 function saveReason1(spocId,spocEmail, orgRelationID){
-
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	var reason1 = document.getElementById("reasonForSpoc").value;
 	var userId = '${SourceLeadWeb_userId}';
@@ -2016,7 +2020,7 @@ function saveReason1(spocId,spocEmail, orgRelationID){
 
 <script>
 function rejectInvitation(spocId){
-	 
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var rowHtmlContent =  $("#row"+spocId).html();
 	 $("#row"+spocId).empty();
 	 $("#row"+spocId).html("<td colspan='8'  id='loading"+spocId+"'></td>");
@@ -2045,6 +2049,7 @@ function rejectInvitation(spocId){
 
 <script>
 function exportClientToPdf(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var values = [];
 	$('input:checkbox[name=clinetLevel]:checked').each(function() 
     {
@@ -2071,6 +2076,7 @@ function exportClientToPdf(){
 
 <script>
 function exportClientToExcel(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var values = [];
 	$('input:checkbox[name=clinetLevel]:checked').each(function() 
     {
@@ -2098,6 +2104,7 @@ function exportClientToExcel(){
 
 <script>
 function exportContactToPdf(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var clientIds = [];
 	$('input:checkbox[name=clientNameById]:checked').each(function() 
     {
@@ -2134,6 +2141,7 @@ function exportContactToPdf(){
 
 <script>
 function exportContactToExcel(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var clientIds = [];
 	$('input:checkbox[name=clientNameById]:checked').each(function() 
     {
@@ -2258,6 +2266,7 @@ $('#selector').delay(2000).fadeOut('slow');
 
 <script type="text/javascript">
 	function searchClient() {
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var validationSettings = {
 				errorMessagePosition : 'element',
 				borderColorOnError : '',
@@ -2344,6 +2353,7 @@ $('#selector').delay(2000).fadeOut('slow');
 
 <script>
 function getStates(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var countryName = $("#countrySearch").val();
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
@@ -2380,6 +2390,7 @@ function getStates(){
 
 <script>
 function getCities(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var countryName = $("#countrySearch").val();
 	var stateName = $("#stateSearch").val();
 	

@@ -28,8 +28,8 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
       <div class="remove_pop" id="selector"  style="display: none;">
 	         <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
-      <div class="pull-right brud-crum"><a href="/vms/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; 
-      <a href="/vms/vendorsList">Vendor & Contact List</a> &raquo; Import Vendor & Contacts </div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_vmsUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; 
+      <a href="${SourceLeadWeb_vmsUrl}/vendorsList">Vendor & Contact List</a> &raquo; Import Vendor & Contacts </div>
     </section>
      <form:form id="upload_form" name="upload_form" enctype="multipart/form-data">
     <div class="content-area clearfix">
@@ -39,7 +39,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
           <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 		  <div class="clearfix mb row">
 			<div class="col-xs-3 col-md-3">
-			 <a href="/vms/downloadVendorTemplate?name=Contact"  class="btn btn-success btn-block" >
+			 <a href="${SourceLeadWeb_vmsUrl}/downloadVendorTemplate?name=Contact"  class="btn btn-success btn-block" >
 					<i class="fa fa-download"></i>&nbsp;&nbsp;Vendor Template
 			</a>
 			</div>
@@ -60,7 +60,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			  <input type="button" class="btn btn-primary" id="upload_button" name="upload_button"  onclick = "saveBulkImport();" value="Import">
 				</div>
 				<div class="btn-group">
-			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '/vms/vendorsList'">
+			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/vendorsList'">
 				</div>
 			  </div>
 			</div>
@@ -193,6 +193,7 @@ $(document).ready(function(){
 
 <script type="text/javascript">
 function saveBulkImport(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var validationSettings = {
 	            errorMessagePosition : 'element',
 	            borderColorOnError : '',
@@ -378,6 +379,7 @@ function prepareExcelDataDiv(json){
 
 <script>
 function removeRecord(recordId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var rowHtmlContent =  $("#row"+recordId).html();
 	 $.ajax({
        type : "POST",
@@ -395,6 +397,7 @@ function removeRecord(recordId){
 
 <script>
 function terminateRecord(recordId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var rowHtmlContent =  $("#row"+recordId).html();
 	 $.ajax({
        type : "POST",
@@ -410,6 +413,7 @@ function terminateRecord(recordId){
 </script>
 <script>
 function addRecord(recordId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var rowHtmlContent =  $("#row"+recordId).html();
 	var templateId = $("#templateId").val();
 	 $.ajax({
@@ -432,6 +436,7 @@ function flush(){
 </script>
 <script>
 function mergeWithRecord(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var recordId = document.getElementById("vendorListIds").value;
 	if(recordId!=null && recordId !=''){
 	$("#clientError").empty();
@@ -460,6 +465,7 @@ function mergeWithRecord(){
 
 <script>
 function mergeRecord(recordId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	flush();
 	 var rowHtmlContent =  $("#row"+recordId).html();
 	$('#vendorListIds').empty();

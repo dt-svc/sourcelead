@@ -51,7 +51,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Invoices</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="/vms/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Invoices List</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Invoices List</div>
     </section>
     
     
@@ -61,8 +61,8 @@ $(document).ready(function(){
     
     <div class="project_side_wrap_inn_tabs clearfix dfsfdsd">
 	    <ul class="project-tabs-menu">
-		    <li class="current"><a href="/vms/invoiceList">Invoice List</a></li>
-		    <li class=""><a href="/vms/creditNoteList">Credit Note List</a></li>
+		    <li class="current"><a href="${SourceLeadWeb_vmsUrl}/invoiceList">Invoice List</a></li>
+		    <li class=""><a href="${SourceLeadWeb_vmsUrl}/creditNoteList">Credit Note List</a></li>
 		    
 	    </ul>
     </div>    
@@ -156,14 +156,14 @@ $(document).ready(function(){
 					<span> 
 					 	<sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE')">                  
 	                      <!-- <a href="javascript:void(0)" title="Create invoice"  onclick="createBill();">Create Invoice</a> -->
-	                      <a  href="/vms/createInvoice" title="Create Client Based Invoice">Client Based Invoice</a>
-						  <a href="/vms/createInvoiceProjectBased" title="Create Project Based Invoice">Project Based Invoice</a>
-						  <a href="/vms/createInvoiceForJobClosure" title="Create Job closure Based Invoice">Job closure Based Invoice </a> 
-						  <a  href="/vms/createReceivableExpensesBill" title="Create Other Invoice">Other Invoice</a>	                      
+	                      <a  href="${SourceLeadWeb_vmsUrl}/createInvoice" title="Create Client Based Invoice">Client Based Invoice</a>
+						  <a href="${SourceLeadWeb_vmsUrl}/createInvoiceProjectBased" title="Create Project Based Invoice">Project Based Invoice</a>
+						  <a href="${SourceLeadWeb_vmsUrl}/createInvoiceForJobClosure" title="Create Job closure Based Invoice">Job closure Based Invoice </a> 
+						  <a  href="${SourceLeadWeb_vmsUrl}/createReceivableExpensesBill" title="Create Other Invoice">Other Invoice</a>	                      
 	                  	</sec:authorize>
 	                   	<a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();">Generate Automatic Invoice</a>
 	                   <a href="javascript:void(0)" class="" title="Generate Automatic Invoice for JobClosure" onclick="generateAutomaticInvoiceForJobClosure();">Generate Automatic JobClosure Invoice</a>
-	                   	 <a href="/vms/addPaymentInvoice">Add Payment</a>
+	                   	 <a href="${SourceLeadWeb_vmsUrl}/addPaymentInvoice">Add Payment</a>
 					</span>
 				</div>
 			</li>
@@ -350,6 +350,7 @@ function removeErr(){
 <!-- modal pop -->
 <script>
 function saveReceivePayment(invoiceId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 if ($('#receivePayment-form').validate(false, validationSettings)){  
 	        $("#save_payment").attr("disabled", "disabled");
      		$("#save_payment" ).addClass('button').val('Processing..');
@@ -384,6 +385,7 @@ $('body').on('blur', '#receivePayment-form', function() {
 
 <script>
 function getInvoiceList(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var invoice = [];
 	var payment = [];
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -486,6 +488,7 @@ function prepareInvoiceList(url,locationdateForList){
 
 <script>
 function invoicePagination(url){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var colIndex = 0;
     $('#invoiceListTable').DataTable( { 
 	  "processing": true,
@@ -862,6 +865,7 @@ function showPopUp(id,invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,file
 <div id="popUp"></div>
 <script>
 function saveReasonforReceivable(invoiceUUID){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var reason = document.getElementById("reasonForDelete").value;
 	if(reason == null || reason == '' || reason == 'undefined'){
 	      
@@ -920,6 +924,7 @@ $('html').click(function(){
 
 <script>
 function sendReminder(invoiceUUID){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
@@ -947,6 +952,7 @@ function sendReminder(invoiceUUID){
 
 <script>
 function acceptedInvoice(invoiceUUID){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
@@ -1201,7 +1207,7 @@ function closePopup() {
 
 <script>
 function exportToReceivablePdf(){
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var invoiceStatus = [];
 	 var paymentStatus = [];
 	 
@@ -1257,7 +1263,7 @@ function exportToReceivablePdf(){
 
 <script>
 function exportToReceivableExcel(){
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var invoiceStatus = [];
 	 var paymentStatus = [];
 	 var tags = [];
@@ -1312,6 +1318,7 @@ function exportToReceivableExcel(){
 
 <script type="text/javascript">
 function linkInvoice(invoiceUUID,totalAmount){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
@@ -1471,6 +1478,7 @@ function LinkInvoicePagination(){
 
 <script type="text/javascript">
 function generateAutomaticInvoice(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
     	 type: "POST",
@@ -1488,6 +1496,7 @@ function generateAutomaticInvoice(){
 }
 
 function generateAutomaticInvoiceForJobClosure(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
    	 type: "POST",
@@ -1545,6 +1554,7 @@ function showDiffAmountPopup(calculatedAmount,currencyCode,checkVal,invoiceUUID)
 
 <script>
 function proceedToMerge(checkVal,invoiceUUID){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$.ajax({
 	   	 type: "POST",
 		     dataType : 'json',
@@ -1560,6 +1570,7 @@ function proceedToMerge(checkVal,invoiceUUID){
 
 <script>
 function unLinkInvoice(invoiceUUID){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$.ajax({
 	   	 type: "POST",
 		     dataType : 'json',
@@ -1608,6 +1619,7 @@ function cancelTermination(){
 }
 
 function saveInvoiceRejectedReason(invoiceUUID){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var reason = $("#reasonForInvoice").val();
 	if(reason != null && reason != ''){
 		 $("#reasonForInvoiceDiv").empty();
@@ -1633,6 +1645,7 @@ function saveInvoiceRejectedReason(invoiceUUID){
 
 
 function savevoidInvoice(invoiceUUID){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
 		   	type: "POST",
 		    url: vmsUrl+"/voidInvoiceOrBill?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,
@@ -1660,6 +1673,7 @@ function savevoidInvoice(invoiceUUID){
 
 <script type="text/javascript">
 function cancel(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 	location.replace(vmsUrl+"/invoiceList");	
