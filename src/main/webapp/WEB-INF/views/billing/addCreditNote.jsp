@@ -20,8 +20,8 @@
       <div class="pull-left">
         <h2>Add Credit Note</h2>
       </div>
-       <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
-       <a href="/vms/creditNoteList">Credit Note List</a> &raquo; Credit Note</div>
+       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+       <a href="${SourceLeadWeb_vmsUrl}/creditNoteList">Credit Note List</a> &raquo; Credit Note</div>
 
     </section>
     <div class="content-area content-new clearfix">
@@ -334,7 +334,7 @@
           <input value="Draft" id="draftButtonId" onClick="saveCreditNote('Draft');" class="btn btn-warning" type="button">
             <input value="Send" id="sendButtonId" onClick="saveCreditNote('Send');" class="btn btn-success mr ml" type="button">
             <input value="Submit" id = "submitButtonId" onClick="saveCreditNote('Submit');" class="btn btn-primary" type="button">
-            <input value="Cancel" class="btn btn-default ml" onClick="javascript:window.location.href = '/vms/creditNoteList'" type="button">
+            <input value="Cancel" class="btn btn-default ml" onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/creditNoteList'" type="button">
           </div>
         </div>
       </div>
@@ -354,7 +354,7 @@ $(document).ready(function(){
 	});
 
 function saveCreditNote(saveType){
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	if ($('#creditNote_form').validate(false, validationSettings)){  
 	 	    var formData = getFormData1("creditNote_form");
 	 	   
@@ -496,6 +496,7 @@ function removeDynamicRowDiv(id,lineItemId){
 <script>
 
 	function getSpocsList() {
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var spocIds = "${creditDebitNote.contactUser}";
 		var orgRelationId = $("#orgRelationId").val();
 		$("#spocUser").empty();
@@ -529,6 +530,7 @@ function removeDynamicRowDiv(id,lineItemId){
 	}
 	
 	function deleteLinteItemEditMode(id) {
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		$.ajax({
 			type : "POST",
 			url : vmsUrl + "/deleteLineItemEditModeId?"+ tokenParamName + "=" + tokenValue + "&id=" + id,
@@ -564,6 +566,7 @@ function removeDynamicRowDiv(id,lineItemId){
 	}
 
 	function getInvoiceList() {
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var invoiceIds = "${creditDebitNote.invoceId}";
 		var orgRelationId = $("#orgRelationId").val();
 		$("#invoceId").empty();
@@ -594,6 +597,7 @@ function removeDynamicRowDiv(id,lineItemId){
 	}
 	
 	function getApproversList() {
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var invoiceIds = "${creditDebitNote.approvers}";
 		$("#approvers").empty();
 		$.ajax({
@@ -779,6 +783,7 @@ function currencyConversionDiv(){
 }
 
 function  conversionRate(){
+	   var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	   var orgRelationId = $("#orgRelationId").val();
 	   var currencyCode = '${SourceLeadWeb_currencyCode}';
 	   var grandTotal = $("#grandTotal").val();

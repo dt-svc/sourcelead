@@ -17,8 +17,8 @@
       <div class="pull-left">
         <h2>Add Debit Note</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
-      <a href="/vms/debitNoteList">Debit Note List</a> &raquo; Debit Note</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+      <a href="${SourceLeadWeb_vmsUrl}/debitNoteList">Debit Note List</a> &raquo; Debit Note</div>
       
     </section>
     <div class="content-area content-new clearfix">
@@ -329,7 +329,7 @@
           <input value="Draft" id="draftButtonId" onClick="saveDebitNote('Draft');" class="btn btn-warning" type="button">
             <input value="Send" id="sendButtonId" onClick="saveDebitNote('Send');" class="btn btn-success mr ml" type="button">
             <input value="Submit" id = "submitButtonId" onClick="saveDebitNote('Submit');" class="btn btn-primary" type="button">
-            <input value="Cancel" class="btn btn-default ml" onClick="javascript:window.location.href = '/vms/debitNoteList'" type="button">
+            <input value="Cancel" class="btn btn-default ml" onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/debitNoteList'" type="button">
           </div>
         </div>
       </div>

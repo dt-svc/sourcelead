@@ -107,7 +107,7 @@
           <div class="pull-right">
             <input value="Run" class="btn btn-success btnSuccess" type="button" onclick="runLCAReport();">
             <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetLcaForm();">
-            <input type="button" value="Cancel" onClick="javascript:window.location.href ='<c:url value='/app/reportsDashboard'/>'"class="btn btn-default ml">
+            <input type="button" value="Cancel" onClick="javascript:window.location.href ='<c:url value='${SourceLeadWeb_sourceleadUrl}/reportsDashboard'/>'"class="btn btn-default ml">
           </div>
         </div>
       </div>      
@@ -306,6 +306,7 @@ function prepareLCAReportList(url){
 
 <script>
 function lcaReportPagination(url){
+	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	var colIndex = 0;
     $('#lcaReportTable').DataTable({ 
     	"processing": true,
@@ -340,7 +341,7 @@ function lcaReportPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 		    	  	 	 if(opt.lcaNo !=null && opt.lcaNo != '' && opt.lcaNo !='undefined'){
-		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.lcaNo+'" ><a href=/vms/immigration/viewLca?lcaUuid='+opt.lcaUuid+'>'+opt.lcaNo+'</a></div>';
+		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.lcaNo+'" ><a href='+vmsUrl+'/immigration/viewLca?lcaUuid='+opt.lcaUuid+'>'+opt.lcaNo+'</a></div>';
 		        		}else{
 		        			result = result + '     <div class="tblminwidth-75">---</div>';
 		        		}  
