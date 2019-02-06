@@ -59,7 +59,7 @@
     <div class="pull-left">
       <h2>Profile Update</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Profile Update</div>
+    <%-- <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Profile Update</div> --%>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
@@ -122,7 +122,7 @@
         <div class="form-group">
           <label class="col-md-3">Mobile</label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="${phone}"  field-name="Mobile Number" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true" value="">
+            <input type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="${SourceLeadWeb_mobilePhone}"  field-name="Mobile Number" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true" value="">
           </div>
         </div>
         
