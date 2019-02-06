@@ -21,8 +21,8 @@
 			<h2>Add Contract Template</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="/app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo;<a href="/vms/orgContractTemplate"> Contract
+			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			&raquo;<a href="${SourceLeadWeb_vmsUrl}/orgContractTemplate"> Contract
 				Template List</a> &raquo; Add Contract Template
 		</div>
 	</section>
@@ -405,7 +405,7 @@
 							<input type="button" value="Save" id="save_template"
 								onclick="saveTemplate(); " class="btn btn-primary"> <input
 								type="button" value="Cancel"
-								onClick="javascript:window.location.href = '/vms/orgContractTemplate'"
+								onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/orgContractTemplate'"
 								class="btn btn-default ml10">
 							<!--  <input type="button" value="Back" class="btn btn-danger">
 			<a href="add-contract-template-preview.html"><input type="button" value="Next" class="btn btn-primary ml10"></a> -->
@@ -615,7 +615,7 @@
 		con = con.replace(/[{}]/g, "");
 		//It will escape all the special characters
 		var jsonData = encodeURIComponent(con);
-		window.open('http://localhost:8080/app/testController/' + id
+		window.open('${SourceLeadWeb_sourceleadUrl}/testController/' + id
 				+ '', '_newtab');
 
 	}
