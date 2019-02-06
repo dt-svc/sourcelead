@@ -316,7 +316,8 @@ public class UserStatsCacheHelper {
 		 orgLocationDTO.setDocumentType(Constants.COUCH_DOCUMENT_TYPE_ORGLOCATION);
 		 orgLocationDTO.setOrgLocationName(orgLocations.getOrgLocationName());
 		 orgLocationDTO.setOrgLocationId(String.valueOf(orgLocations.getId()));
-		 orgLocationDTO.setOrgName(orgLocations.getOrgName());
+		 orgLocationDTO.setOrgName(orgLocations.getOrg().getOrgName());
+		 orgLocationDTO.setDba(orgLocations.getDba());
 		 orgLocationDTO.setOrgId(String.valueOf((orgLocations.getOrg().getId())));
 		 orgLocationDTO.setImgUrl(orgLocations.getOrg().getFileUrl());
 		 orgLocationDTO.setRegisteredLocation(orgLocations.getOrgLocationAddress());
@@ -324,6 +325,9 @@ public class UserStatsCacheHelper {
 		 orgLocationDTO.setState(orgLocations.getState());
 		 orgLocationDTO.setCity(orgLocations.getCity());
 		 orgLocationDTO.setZipcode(orgLocations.getZipCode());
+		 orgLocationDTO.setAdderss(orgLocations.getOrgLocationAddress());
+		 orgLocationDTO.setPhone(orgLocations.getPhone());
+		 orgLocationDTO.setFax(orgLocations.getFax());
 		 orgLocationDTO.setDateFormat(orgLocations.getDateFormat());
 		 orgLocationDTO.setWebsite(orgLocations.getWebsite());
 		 if(StringUtils.isNotBlank(orgLocations.getWeekOffDays())) {
@@ -336,8 +340,17 @@ public class UserStatsCacheHelper {
 		 orgLocationDTO.setOrgShortCode(orgLocations.getGeneratedUserId());
 		 orgLocationDTO.setOrgLocationCode(orgLocations.getLocationCode());
 		 orgLocationDTO.setOrgCode(orgLocations.getOrg().getOrgCode());
+		 orgLocationDTO.setIsTimesheetAvgHoursRequired(orgLocations.getIsTimesheetAvgHoursRequired());
 		 orgLocationDTO.setIsCompanyOnboarded(orgLocations.getIsCompanyOnboarded());
-		 
+		 if(orgLocations.getBusinessType() != null) {
+			 orgLocationDTO.setBusinessTypeId(String.valueOf(orgLocations.getBusinessType().getId()));
+			 orgLocationDTO.setBusinessType(orgLocations.getBusinessType().getName());
+		 }
+		 orgLocationDTO.setOtherBusinessType(orgLocations.getOtherBusinessType());
+		 orgLocationDTO.setEmailForPO(orgLocations.getPoEmail());
+		 orgLocationDTO.setEmailforRemittance(orgLocations.getRemittanceEmail());
+		 orgLocationDTO.setOrgDescription(orgLocations.getOrgDescription());
+		 orgLocationDTO.setOrgLocationLoginSecurity(orgLocations.getLoginSecurity());
 		 
 	     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 	     LocalDateTime now = LocalDateTime.now();  
@@ -349,6 +362,7 @@ public class UserStatsCacheHelper {
 		
 		 if(orgLocations.getTimezone() != null) {
 			 orgLocationDTO.setTimeZoneId(String.valueOf(orgLocations.getTimezone().getId()));
+			 orgLocationDTO.setTimeZone(orgLocations.getTimezone().getTimeZoneId());
 		 }
 		 
 		 if(orgLocations.getOrg().getUser() != null) {
@@ -382,6 +396,14 @@ public class UserStatsCacheHelper {
 			 userRoleDTO.setEmail(userRole.getUser().getEmail());
 			 userRoleDTO.setFirstName(userRole.getUser().getFirstName());
 			 userRoleDTO.setLastName(userRole.getUser().getLastName());
+			 userRoleDTO.setFacebook(userRole.getUser().getFacebook());
+			 userRoleDTO.setTwitter(userRole.getUser().getTwitter());
+			 userRoleDTO.setGooglePlus(userRole.getUser().getGooglePlus());
+			 userRoleDTO.setLinkedIn(userRole.getUser().getLinkedIn());
+			 userRoleDTO.setMobilePhone(userRole.getUser().getMobilePhone());
+			 userRoleDTO.setLocation(userRole.getUser().getLocation());
+			 userRoleDTO.setUserLoginSecurity(userRole.getUser().getLoginSecurity());
+			 userRoleDTO.setNewlyLoginUser(userRole.getNewlyLoginUser());
 			 
 			 if(userRole.getReportingManager() != null) {
 				 userRoleDTO.setReportingManagerId(String.valueOf(userRole.getReportingManager().getId()));
