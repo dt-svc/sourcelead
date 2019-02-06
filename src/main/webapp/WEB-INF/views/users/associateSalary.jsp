@@ -1,12 +1,13 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
   
-<!-- <script>
+<script>
 $(document).ready(function(){
-   getPayItemList();
+//    getPayItemList();
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 });
 </script>
- -->
+
   <div id="tab-6" class="tabsMenu_tabs_inn clearfix">
  	<div id="loading"></div>
  	 <form:form id="associate_salary_form" name="associate_salary_form" method="post">
@@ -273,7 +274,7 @@ function calculateHourlyRateSal(){
 <script>
   function getPayItemList(){
 	    var associateEmpType = $("#empType").val();
-		$.get(sourceleadUrl+"/getPayItemList?"+tokenParamName+"="+tokenValue+"&associateEmpType="+associateEmpType, function(response) {
+		$.get(pmsUrl+"/getPayItemList?"+tokenParamName+"="+tokenValue+"&associateEmpType="+associateEmpType, function(response) {
 			  if (response.response === "AWKWARD") {
 			    location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
@@ -394,7 +395,7 @@ function calculateHourlyRateSal(){
 				} 
 				 
          }else if (response.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
+				location.replace(pmsUrl);
 			} else {
 			    showError("Operation failed, please try again");
 			} 
@@ -424,7 +425,7 @@ function calculateHourlyRateSal(){
 	            $.ajax({
 					type : "POST",
 	        	    data: formData,
-					url : sourceleadUrl+"/addAssociateSal?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+					url : pmsUrl+"/addAssociateSal?"+tokenParamName+"="+tokenValue+"&userId="+userId,
 					success : function(result) {
 						 if (result && result.response === "INVALID_DATA") {
 			                    $("#saveAssocioateSal").removeAttr("disabled");
@@ -438,7 +439,7 @@ function calculateHourlyRateSal(){
 								associateBanking.href="#tab-2"; 
 								$("#associateBanking").click();
 			                } else if (result.indexOf('Sign In') !== -1) {
-								location.replace(sourceleadUrl);
+								location.replace(pmsUrl);
 							} else {
 			                    $("#saveAssocioateSal").removeAttr("disabled");
 			                    $("#saveAssocioateSal").addClass('button').val('Save');
@@ -529,7 +530,7 @@ function getPayGroups(){
 	var userId = $("#associateId").val();
 		 $.ajax({
 				type : "GET",
-				url : sourceleadUrl+"/getPayGroupsByPayFrequency?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency+"&userId="+userId,
+				url : pmsUrl+"/getPayGroupsByPayFrequency?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency+"&userId="+userId,
 				success : function(result) {
 				var output = "";
 				output = output + "<option value=''>Select Group</option>";
