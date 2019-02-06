@@ -9,7 +9,7 @@
 			<h2>Invoice Templates</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/3">Home</a> &raquo; <a href="${SourceLeadWeb_vmsUrl}/clientDashboard"> Clients List </a>&raquo; Invoice Templates
+			<a href="/app/dashboard/3">Home</a> &raquo; <a href="<c:url value='/vms/clientDashboard'/>"> Clients List </a>&raquo; Invoice Templates
 		</div>
 	</section>
 
@@ -17,7 +17,7 @@
 		<div class="vendor_wrap">
 			<div class="positionRelative reportHead clearfix">
 				<ul class="pull-right list-unstyled list-inline">
-					<li><a href="${appPath}/customInvoice/addTemplate?orgLocationId=${orgLocationId}&orgRelationId=${orgRelationId}" class="newAdBtn">+ Template</a></li>
+					<li><a href="/vms/customInvoice/addTemplate?orgLocationId=${orgLocationId}&orgRelationId=${orgRelationId}" class="newAdBtn">+ Template</a></li>
 					<%-- 
 					<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 						<div class="newActPop">
@@ -67,6 +67,7 @@ $(document).ready(function () {
 });
 
 function getInvoiceTemplateList() {
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var result = "";
 	result += "<table id='templatePagination' class='display' cellspacing='0' width='100%' >"; 
  	result += "<thead>"; 
@@ -90,7 +91,7 @@ function getInvoiceTemplateList() {
  	result += " </tbody>";
  	result += "</table>"; 
  	$("#templateList").append(result); 
- 	var url = sourceleadUrl+"/invoiceTemplateList?orgLocationId=" + orgLocationId + "&orgRelationId=" + orgRelationId;
+ 	var url = vmsUrl+"/invoiceTemplateList?orgLocationId=" + orgLocationId + "&orgRelationId=" + orgRelationId;
  	
  	var colIndex = 0;
     $('#templatePagination').DataTable( {
@@ -260,13 +261,14 @@ function closeChangeStatusPopup() {
 }
 
 function changeTemplateStatus() {
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var templateId = $("#confirmId").data("template_id");
 	var status = $("#confirmId").data("status");
 	var data = {
 			templateId: templateId,
 			status : status
 		};
-	$.post(sourceleadUrl + "/changeCustomInvoiceTemplateStatus?orgLocationId=" + orgLocationId + "&orgRelationId=" + orgRelationId, data, function(result) {
+	$.post(vmsUrl + "/changeCustomInvoiceTemplateStatus?orgLocationId=" + orgLocationId + "&orgRelationId=" + orgRelationId, data, function(result) {
 		if (result.response === "SESSION_TIMEDOUT") {
 			location.replace(sourceleadUrl);
 		} else if (result.response === "AWKWARD") {
