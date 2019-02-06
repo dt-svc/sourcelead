@@ -198,7 +198,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assoSal.getCandidate().getConsultantUser().getId(), orgLocation.getId());
 				long frequencyPayrollDays = TimeUnit.MILLISECONDS.toDays(paySheetFreq.getFrequencyEndDate().getTime() - paySheetFreq.getFrequencyStartDate().getTime()) + 1;
 				long applincablePayrollDays = frequencyPayrollDays;
-				if(employee.getHireDate().after(freqEndDate)) {
+				if(employee.getHireDate().after(freqEndDate) || (userRole.getTerminateDate() != null && userRole.getUserState().toString().equalsIgnoreCase("INACTIVE") &&  userRole.getTerminateDate().before(freqStartDate))) {
 					continue;
 				}else if(employee.getHireDate() != null && paySheetFreq.getFrequencyStartDate().compareTo(employee.getHireDate()) * employee.getHireDate().compareTo(paySheetFreq.getFrequencyEndDate()) >= 0){
 					applincablePayrollDays =  TimeUnit.MILLISECONDS.toDays(paySheetFreq.getFrequencyEndDate().getTime() - employee.getHireDate().getTime()) + 1;
@@ -206,8 +206,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					applincablePayrollDays =  TimeUnit.MILLISECONDS.toDays(userRole.getTerminateDate().getTime() - paySheetFreq.getFrequencyStartDate().getTime()) + 1;
 				}
 				
-				BigDecimal payAdjustmentConst = new BigDecimal((float)applincablePayrollDays/(float)frequencyPayrollDays).setScale(2, BigDecimal.ROUND_HALF_EVEN);
-				
+				BigDecimal payAdjustmentConst = new BigDecimal((float)applincablePayrollDays/(float)frequencyPayrollDays);
 				
 				    IndEmployeePayroll employeePayroll = new IndEmployeePayroll();
 				    employeePayroll.setIndPaysheetFrequency(paySheetFreq);
@@ -402,7 +401,9 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 							int startFinMonth = cal.get(Calendar.MONTH);
 							if (fMonth >= startFinMonth && fMonth < 12) {
 								fromYear = Integer.toString(fYear);
-								toYear = Integer.toString(fYear + 1);
+								/*if(startFinMonth != 0) {*/
+									toYear = Integer.toString(fYear + 1);
+								/*}*/
 							} else {
 								fromYear = Integer.toString(fYear - 1);
 								toYear = Integer.toString(fYear);
@@ -411,7 +412,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 							fromYear = Integer.toString(fYear);
 							toYear = Integer.toString(fYear);
 						}
-				        
+						
 						int age = 0;
 						if(assoSal.getCandidate().getConsultantUser().getDateOfBirth() != null) {
 							LocalDate today = LocalDate.now();  //Today's date
@@ -462,7 +463,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 						//TDS amount calculation
 						tdsEligibilityTotal = (assoSal.getAnnualSalary()).subtract(new BigDecimal(tdsExemptionTotal)).doubleValue();
 						tdsYearlyTotal = (tdsEligibilityTotal * taxPercent) / 100 ;
-						tdsMonthlyTotal = tdsYearlyTotal / 12 ;
+						tdsMonthlyTotal = (tdsYearlyTotal / 12) * (payAdjustmentConst.doubleValue());
 						
 						AssociatePayrollPayheadHistory ph = new AssociatePayrollPayheadHistory();
 						ph.setIndEmployeePayrollId(employeePayroll);
@@ -478,7 +479,8 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 						utilDTO.getAssociatePayrollPayheadHistory().add(ph);
 					}
 					
-					employeePayroll.setNoOfDays(new BigDecimal(frequencyPayrollDays));
+					//employeePayroll.setNoOfDays(new BigDecimal(frequencyPayrollDays));
+					employeePayroll.setNoOfDays(new BigDecimal(applincablePayrollDays));
 					employeePayroll.setNoOfLeaves( lopList != null ? new BigDecimal(lopList.size()): BigDecimal.ZERO );
 					employeePayroll.setLoanHistory(assLoanAndAdvDTO.getLoanHis());
 					if(utilDTO != null && utilDTO.getAssociatePayrollPayheadHistory() != null && utilDTO.getAssociatePayrollPayheadHistory().size() > 0) {
