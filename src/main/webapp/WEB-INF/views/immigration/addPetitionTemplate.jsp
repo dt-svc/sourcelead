@@ -11,13 +11,13 @@
 </script>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<script type="text/javascript" src="/vms/resources/js/immigration.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_vmsUrl}/resources/js/immigration.js"></script>
 <section class="content-wraper content-wraperNew">
    
     <section class="content-header clearfix cusFieldHead">
       <div class="pull-left positionRelative"><h2>Add Petition Templates</h2></div>
       <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
-      <a href="/vms/immigration/viewImmigrationTemplateList">Petition Templates</a> &raquo; Add Templates</div>
+      <a href="${SourceLeadWeb_vmsUrl}/immigration/viewImmigrationTemplateList">Petition Templates</a> &raquo; Add Templates</div>
 	<div class="clearfix"></div>
     </section>
     <div id="addNewPetitionTemplateDiv"></div>
@@ -29,7 +29,7 @@
   <!-- Content Area -->
   <script type="text/javascript">
   $( document ).ready(function() {
-	  $("#addNewPetitionTemplateDiv").load("/vms/immigration/addPetitionTemplate?forwardTo=tempDetails");
+	  $("#addNewPetitionTemplateDiv").load("${SourceLeadWeb_vmsUrl}/immigration/addPetitionTemplate?forwardTo=tempDetails");
 	  /* $("#newPetitonPageTwoDiv").hide(); */
 	});
   
