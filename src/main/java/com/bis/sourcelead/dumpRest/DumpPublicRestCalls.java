@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -162,6 +163,9 @@ public class DumpPublicRestCalls {
 	
 	@Autowired
 	AssetService assetService;
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	@RequestMapping(value = "/ws/dumpAllAppliedLeaveDatesData", method = RequestMethod.GET)
 	@ResponseBody
@@ -665,5 +669,40 @@ public class DumpPublicRestCalls {
 		System.out.println("End the method");
 
     }
+	
+	@RequestMapping(value = "/ws/changeExpenseDocumentFileNames")
+	@ResponseBody
+	public String changeExpensesDocumentNames(HttpServletRequest request) {
+		int count = 0;
+		try {
+			System.out.println("Initiated file name change(s) in Expense Documents Folder");
+			count = expensesEntriesService.changeDocumentNameWithWhiteSpacesToUnderScore(staticPath);
+			System.out.println("Changed " + count + " file(s)");
+			System.out.println("Completed file name change(s) in Expense Documents Folder");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "Name successfully changed for " + count + " file(s)";
+	}
+	
+	/*@RequestMapping(value = "/ws/changeDocumentFileNames")
+	@ResponseBody
+	public String changeDocumentNames(HttpServletRequest request) {
+		String result = "";
+		int expensesCount = 0;
+		int resumesCount = 0;
+		try {
+			System.out.println("Initiated file name change(s) in slead-static Folder");
+//			expensesCount = expensesEntriesService.changeDocumentNameWithWhiteSpacesToUnderScore(staticPath);
+//			resumesCount = candidateService.
+			System.out.println("Completed file name change(s) in slead-static Folder");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		result = "Name successfully changed for \n";
+		result += "Expenses : " + expensesCount + " file(s)\n";
+		result += "Resumes : " + resumesCount + " file(s)";
+		return result;
+	}*/
 	
 }
