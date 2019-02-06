@@ -14,10 +14,11 @@ dataTables_empty {
 }
 </style>
 
+<script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
+</script>
+
 <script type="text/javascript">
-
-var atsUrl = '${SourceLeadWeb_atsUrl}'
-
 $(document).ready(function(){
 	getJobSummarySerialChart();
 	getJobSummaryDoNutChart();
