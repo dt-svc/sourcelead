@@ -16,7 +16,7 @@
   <div class="pull-left">
     <h2>Salary Setup</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configure</a> &raquo; <a href="<c:url value='${appPath}/payheadList'/>">Payhead List</a> &raquo; Salary Setup</div>
+  <div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payheadList">Payhead List</a> &raquo; Salary Setup</div>
 </section>
  <div class="clearfix"></div>
  
@@ -49,9 +49,10 @@
 function salarySetup(event) {
 	$(".salarySetup, .comMask").fadeIn();
 	var uuid = $(event).attr('id');
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
     $.ajax({
 			type: "POST",
-		    url: sourceleadUrl+"/getSalarySetupForPayhead?"+tokenParamName+"="+tokenValue+"&uuid="+uuid, 
+		    url: pmsUrl+"/getSalarySetupForPayhead?"+tokenParamName+"="+tokenValue+"&uuid="+uuid, 
 		    success: function(data) {
 		    	$('#salarySetup').empty();
 		    	$('#salarySetup').append(data);
@@ -105,11 +106,12 @@ function closesalarySetup() {
  
  <script>
  function payrollSalarySetupList(){
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 var searchValue = $("#salarySetupDataTableSearch").val();
 	 var locationCode = '${SourceLeadWeb_locationCode}';
 	 var listType = "SSList";
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getPayRollSalarySetupListWithPagination?searchValue="+searchValue+"&locationCode="+locationCode+"&listType="+listType;
+	 var url = pmsUrl+"/getPayRollSalarySetupListWithPagination?searchValue="+searchValue+"&locationCode="+locationCode+"&listType="+listType;
 	 salarySetupListPagination(url,sourceleadUrl);
 	 $("#salarySetupListLoading").removeAttr("style");
 	 
@@ -142,7 +144,7 @@ function salarySetupListPagination(url,sourceleadUrl){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 	    	  		 var pname = opt.name+" ("+opt.shortCode+")";
-	    	  		 result = result +"<td><a href='<c:url value='/app/payrollPayheadSummary?uuid="+opt.uuid+"'/>'><div class='proj_show tbldata-dotdot_140'><span title='"+pname+"'>"+pname+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+	    	  		 result = result +"<td><a href='${SourceLeadWeb_pmsUrl}/payrollPayheadSummary?uuid="+opt.uuid+"'><div class='proj_show tbldata-dotdot_140'><span title='"+pname+"'>"+pname+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 		             return result;
 	    	  	}
 	      },{

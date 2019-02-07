@@ -17,7 +17,7 @@
 <div class="pull-left">
 <h2>Loan & Advances List</h2>
 </div>
- <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configure</a>  &raquo; Loan & Advances List</div>
+ <div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>  &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a>  &raquo; Loan & Advances List</div>
 </section>
 
 <div class="clearfix"></div>
@@ -54,7 +54,7 @@
 <script>
  function getPayRollLoanAndAdvancesList(){
 	 
-	  var sourceleadUrl ='${sourceleadUrl}';
+	  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	  var locationCode = '${SourceLeadWeb_locationCode}';
 	  $("#pldListLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
@@ -87,19 +87,19 @@
  
  <script>
  function payrollLoanAndAdvList(){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 var searchValue = $("#pldDataTableSearch").val();
 	 var locationCode = '${SourceLeadWeb_locationCode}';
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getPayrollLoanAndAdvancesList?searchValue="+searchValue+"&locationCode="+locationCode;
-	 loanAndAdvListPagination(url,sourceleadUrl);
+	 var url = pmsUrl+"/getPayrollLoanAndAdvancesList?searchValue="+searchValue+"&locationCode="+locationCode;
+	 loanAndAdvListPagination(url,pmsUrl);
 	 $("#pldListLoading").removeAttr("style");
  }
  </script>
  
  
  <script>
-function loanAndAdvListPagination(url,sourceleadUrl){
+function loanAndAdvListPagination(url,pmsUrl){
 	var colIndex = 0;
     $('#pldListTable').DataTable( { 
 	  "processing": true,
@@ -186,7 +186,7 @@ function loanAndAdvListPagination(url,sourceleadUrl){
 	            	    var result = "";
 	            	    result = result +"<td>";
 	            	    result = result +"<div class='tbldata-dotdot_50'>";
-	            	    result = result +"<a href='<c:url value='/app/payrollLoanAndAdvances?uuid="+opt.uuid+"'/>'><span title='Edit Loan & Advance'><i class='glyphicon glyphicon-pencil'></i></span></a>&nbsp;&nbsp;";
+	            	    result = result +"<a href='${SourceLeadWeb_pmsUrl}/payrollLoanAndAdvances?uuid="+opt.uuid+"'><span title='Edit Loan & Advance'><i class='glyphicon glyphicon-pencil'></i></span></a>&nbsp;&nbsp;";
 	            	    result = result +'<a><span title="Delete Loan & Advance"><i class="glyphicon glyphicon-trash" onClick="deleteLoanAndAdv(\''+opt.uuid+'\')";></i></span></a>';
 	            	    result = result +"</div>";
 	            	    result = result +"</td>";
@@ -241,17 +241,17 @@ function deleteLoanAndAdv(uuid){
 function deletePayrollLoanAndAdv(uuid){
 	$("#confirm-id").attr("disabled", "disabled");
 	$("#cancel-id").attr("disabled", "disabled");
-	var sourceleadUrl = '${sourceleadUrl}';
+	var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 	$.ajax({
     	type: "POST",
-    	url : sourceleadUrl+"/deletePayrollLoanAndAdvances?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid, 
+    	url : pmsUrl+"/deletePayrollLoanAndAdvances?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid, 
         success: function(result) {
         	if (result.response === "AWKWARD") {
         	    location.href = "/errorPage";
         	} else if (result.response === "SUCCESS") {
-        		 location.replace(sourceleadUrl + "/payrollLoanAndAdvancesList");
+        		 location.replace(pmsUrl + "/payrollLoanAndAdvancesList");
         	} else if (result.indexOf('Sign In') !== -1) {
-        		location.replace(sourceleadUrl);
+        		location.replace(pmsUrl);
         	} else {
         	    showError("Operation failed, please try again");
         	}
