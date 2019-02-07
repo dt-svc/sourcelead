@@ -5,7 +5,7 @@
 <script type="text/javascript">
 function calculateTotalPay(formData,confirmType,payPerionNum,payType){
 			approvePayrollDiv();
-		      $.post(sourceleadUrl+"/confirmPayroll?"+tokenParamName+"="+tokenValue+"&confirmType="+confirmType+"&payPerionNum="+payPerionNum+"&payType="+payType, formData, function(json) {
+		      $.post(pmsUrl+"/confirmPayroll?"+tokenParamName+"="+tokenValue+"&confirmType="+confirmType+"&payPerionNum="+payPerionNum+"&payType="+payType, formData, function(json) {
 		    	  $("#totRegularHours").text(json.regularHours.toFixed(2));
 		    	  $("#totRegularEarningsAmt").text(json.regularHoursAmount.toFixed(2));
 		    	  $("#totOverTimeHours").text(json.overTimeHours.toFixed(2));
@@ -312,12 +312,12 @@ function cancelRedirect(){
 	var status = getUrlParameter("approverStatus");
 	if(status != null && status != "" && status != 'undefined'){
 		if(status == "SENT"){
-			window.location.href = sourceleadUrl + "/payrollList?&redirect=history";
+			window.location.href = pmsUrl + "/payrollList?&redirect=history";
 		}else if(status == "DRAFT"){
-			window.location.href = sourceleadUrl + "/payrollList?&redirect=draft";
+			window.location.href = pmsUrl + "/payrollList?&redirect=draft";
 		}
 	}else{
-		window.location.href = sourceleadUrl + "/payrollList";
+		window.location.href = pmsUrl + "/payrollList";
 	}
 }
 
@@ -340,14 +340,14 @@ function getUrlParameter(paramName){
 function approvePayroll(){
       var formData = $($('#approve_payroll_form')[0]).serialize();
       $("#approvePayrollDivLoding").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-      $.post(sourceleadUrl+"/approvePayroll?"+tokenParamName+"="+tokenValue, formData, function(result) {
+      $.post(pmsUrl+"/approvePayroll?"+tokenParamName+"="+tokenValue, formData, function(result) {
     	  $("#approvePayrollDivLoding").removeAttr('style');
     	  if (result.response === "INVALID_DATA") {
  		    showError(result.responseMessage);
  		} else if (result.response === "AWKWARD") {
  		    location.href = "/errorPage";
  		} else if (result.response === "SUCCESS") {
-		   location.replace(sourceleadUrl+ "/payrollList?&redirect=history"); 
+		   location.replace(pmsUrl+ "/payrollList?&redirect=history"); 
  		} else if (result.indexOf('Sign In') !== -1) {
  			location.replace(sourceleadUrl);
  		} else {
