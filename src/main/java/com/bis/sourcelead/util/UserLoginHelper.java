@@ -99,6 +99,10 @@ public class UserLoginHelper {
 	@Value("${isCouchbaseEnabled}")
 	private String isCouchbaseEnabled;
 	
+	
+	@Value("${sourceleadLogoutUrl}")
+	private String sourceleadLogoutUrl;
+	
 	@Autowired
 	OrgLocationService orgLocationService;
 	
@@ -186,7 +190,7 @@ public class UserLoginHelper {
 			    }
 		  }
 		  
-		  
+		  SourceLeadSessionManager.setSessionAttribute(req, "sourceleadLogoutUrl", sourceleadLogoutUrl);
 		  SourceLeadSessionManager.setSessionAttribute(req, "userId", userRole.get("userId"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRole", userRole.get("roleName"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "userRoleId", userRole.get("userRoleId"));
@@ -371,7 +375,7 @@ public class UserLoginHelper {
 				  e.printStackTrace();
 			   }
 			  
-			  
+			  System.out.println("<<<<<<<<<<<<<<<<<<Checking>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>."+username+"==="+userRoleId+"==="+orgLocations.getId()+"=="+req.getRequestURL());
 			  RequestAttributes attribs = RequestContextHolder.getRequestAttributes();
 			  if (RequestContextHolder.getRequestAttributes() != null) {
 			      HttpServletRequest request = ((ServletRequestAttributes) attribs).getRequest();

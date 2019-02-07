@@ -25,6 +25,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.UserLoginHelper;
 
+import edu.emory.mathcs.backport.java.util.concurrent.locks.ReentrantLock;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -67,7 +68,9 @@ public class JWTSecurityContextRepository implements SecurityContextRepository {
         requestResponseHolder.setResponse(new SaveToCookieResponseWrapper(request, response, tokenName, secret));
         SecurityContext context = null;
 		try {
-			context = readSecurityContextFromCookie(request);
+			  synchronized(this) {
+				  context = readSecurityContextFromCookie(request);
+			  }
 		} catch (Exception e) {}
         if (context == null) {
         	 return SecurityContextHolder.createEmptyContext();
@@ -117,7 +120,7 @@ public class JWTSecurityContextRepository implements SecurityContextRepository {
                     System.out.println();
                 }
             }
-        }
+           }
         log.debug("no [{}] found in request.", tokenName);
         return null;
     }
@@ -134,7 +137,11 @@ public class JWTSecurityContextRepository implements SecurityContextRepository {
 
     @Override
     public boolean containsContext(HttpServletRequest request) {
-        return readSecurityContextFromCookie(request) != null;
+    	boolean flag = false;
+    	synchronized(this) {
+    		flag = (readSecurityContextFromCookie(request) != null);
+    	}
+        return flag;
     }
 
 
