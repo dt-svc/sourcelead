@@ -180,6 +180,7 @@
 
 <!-- Template List code -->	
 <script type="text/javascript">
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
     function immigrationDataTableList() {
         var result = "";
         result = result + "<table id='templateTaskListTable'><thead><tr><th>Subject</th><th>Assign To</th><th>Priority</th><th>Repeat</th><th>Action</th></tr></thead></table>";
@@ -188,7 +189,7 @@
         var sourceleadUrl = '${sourceleadUrl}';
         var searchValue = $("#immigraListTabSerach").val();
         searchValue = searchValue ? searchValue : "";
-        var url = sourceleadUrl + immiModulePath + "/getTemplateTaskList?templateId=" + immTemplId + "&searchValue=" + searchValue;
+        var url = vmsUrl + immiModulePath + "/getTemplateTaskList?templateId=" + immTemplId + "&searchValue=" + searchValue;
         immigrationPagination(url);
     }
 
@@ -373,7 +374,7 @@
     function editImmiTaskList(id) {
         $.ajax({
             type: "GET",
-            url: sourceleadUrl + immiModulePath + "/editImmigrationTaskList?id=" + id,
+            url:vmsUrl + immiModulePath + "/editImmigrationTaskList?id=" + id,
             success: function (data) {
                 console.log(data);
                 document.getElementById("petitionTemplateTaskDetails").reset();
@@ -438,7 +439,7 @@
     function deleteImmigrationTask(id) {
         $.ajax({
             type: "GET",
-            url: sourceleadUrl + immiModulePath + "/deleteImmigrationTaskList?${_csrf.parameterName}=${_csrf.token}&id=" + id,
+            url:vmsUrl + immiModulePath + "/deleteImmigrationTaskList?${_csrf.parameterName}=${_csrf.token}&id=" + id,
             success: function (json) {
             	showTemplateMsg("Successfully Task Deleted");
                 immigrationDataTableList();
@@ -459,7 +460,7 @@
     function getAssignToUsersList(id) {
         $.ajax({
             type: "POST",
-            url: sourceleadUrl + "/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",
+            url:vmsUrl + "/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",
             success: function (json) {
                 var result = "";
                 for (var i = 0; i < json.data.length; i++) {
