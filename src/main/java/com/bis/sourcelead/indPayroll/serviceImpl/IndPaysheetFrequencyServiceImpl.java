@@ -1,4 +1,4 @@
-package com.bis.sourcelead.payroll.service.impl;
+package com.bis.sourcelead.indPayroll.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,19 +19,20 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
-import com.bis.sourcelead.payroll.dao.IndPaysheetFrequencyDao;
-import com.bis.sourcelead.payroll.dto.IndApprovePayrollDTO;
-import com.bis.sourcelead.payroll.dto.IndEmployeePayrollDTO;
-import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.indPayroll.dao.IndPaysheetFrequencyDao;
+import com.bis.sourcelead.indPayroll.dto.IndApprovePayrollDTO;
+import com.bis.sourcelead.indPayroll.dto.IndEmployeePayrollDTO;
+import com.bis.sourcelead.indPayroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
+import com.bis.sourcelead.indPayroll.entity.IndPaysheetFrequency;
+import com.bis.sourcelead.indPayroll.service.IndPaysheetFrequencyService;
+import com.bis.sourcelead.indPayroll.utill.INDPayrollCommonUtil;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
-import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
-import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
-import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
+import com.bis.sourcelead.service.PaymentAccountService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.INDPayrollCommonUtil;
 
 @Service
 public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyService{
@@ -49,6 +50,9 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 	
 	@Autowired
 	ConfigurePayrollApproverService configurePayrollApproverService;
+	
+	@Autowired
+	PaymentAccountService paymentAccountService;
 	
 	@Override
 	public ResponseList<IndPaysheetFrequency> getIndPaysheetFrequencyListByOrgLocationId(OrgLocations orgLocation,
@@ -184,6 +188,9 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 				Set<IndEmployeePayroll> payrollList = indPaysheetFrequency.getIndEmployeepayroll();
 				for (IndEmployeePayroll payroll : payrollList) {
 						payroll.setSubmitForAproverStatus(PayrollConstant.APPROVE);
+						if(payroll.getCandidate() != null) {
+							payroll.setPaymentAccount(paymentAccountService.getPaymentAccountDetailsByCandidateId(payroll.getCandidate().getId()));
+						}
 						payroll.setUpdatedBy(loginUser.getId());
 						payroll.setUpdatedDate(new Date());
 				}
@@ -194,7 +201,7 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 					res.setResponseMessage(Result.SUCCESS.getValue());
 					res.setObject(indApprovePayrollDTO);
 					
-					indPayrollCommonUtil.generatePdfForEmployeeInd(payrollList, orgLocation);
+					//indPayrollCommonUtil.generatePdfForEmployeeInd(payrollList, orgLocation);
 					indPayrollCommonUtil.sendApprovedMailToRequestedUserInd(orgLocation,savedPF,loginUser);
 				}
 			}catch (Exception e) {
@@ -245,6 +252,41 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 	@Override
 	public ResponseList<IndEmployeePayroll> getPayrollRegisterReports(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations) {
 		return indPaysheetFrequencyDao.getPayrollRegisterReports(indEmployeePayrollDTO, orgLocations);
+	}
+
+	@Override
+	public List<IndEmployeePayroll> getYTDIndEmployeePayrollList(Long candidateId, String startMonth) throws Exception {
+		return indPaysheetFrequencyDao.getYTDIndEmployeePayrollList(candidateId, startMonth);
+	}
+
+	@Override
+	public ResponseList<IndEmployeePayroll> getPayrollBankReportReportList(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations) {
+		return indPaysheetFrequencyDao.getPayrollBankReportReportList(indEmployeePayrollDTO, orgLocations);
+	}
+
+	@Override
+	public ResponseList<IndEmployeePayroll> getPayrollYTDSummaryReportReportList( IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations) {
+		return indPaysheetFrequencyDao.getPayrollYTDSummaryReportReportList(indEmployeePayrollDTO, orgLocations);
+	}
+
+	@Override
+	public ResponseList<IndEmployeePayroll> getPayrollAnnualTaxReportReportList(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations) throws Exception {
+		return indPaysheetFrequencyDao.getPayrollAnnualTaxReportReportList(indEmployeePayrollDTO, orgLocations);
+	}
+
+	@Override
+	public List<IndEmployeePayrollDTO> getPayrollSalaryStatementReportList(IndEmployeePayrollDTO indEmployeePayrollDTO,	OrgLocations orgLocations) throws Exception {
+		return indPaysheetFrequencyDao.getPayrollSalaryStatementReportList(indEmployeePayrollDTO, orgLocations);
+	}
+
+	@Override
+	public ResponseList<IndEmployeePayrollDTO> getPayrollESIAndPFReportList(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations) throws Exception {
+		return indPaysheetFrequencyDao.getPayrollESIAndPFReportList(indEmployeePayrollDTO, orgLocations);
+	}
+
+	@Override
+	public ResponseList<IndEmployeePayrollDTO> getPayrollSalaryRegisterReportReportList(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations) {
+		return indPaysheetFrequencyDao.getPayrollSalaryRegisterReportReportList(indEmployeePayrollDTO, orgLocations);
 	}
  
 }
