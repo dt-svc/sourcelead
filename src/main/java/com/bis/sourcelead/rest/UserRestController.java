@@ -1589,19 +1589,6 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		 return viewList;
 	 }
 	 
-	 /**"
-	  * create user group
-	  * @param userGroupDTO
-	  * @param request
-	  * @return UserGroup
-	  * @throws Exception
-	  */
-	 @RequestMapping(value = "/createUserGroup" , method = RequestMethod.POST)
-	 public Response<UserGroup> createUserGroup(UserGroupDTO userGroupDTO,HttpServletRequest request)throws Exception {
-		  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		  User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		  return userGroupService.createUserGroup(orgLocations,userGroupDTO,loginUser);
-	 }
 	 
 	 /**
 	  * 
