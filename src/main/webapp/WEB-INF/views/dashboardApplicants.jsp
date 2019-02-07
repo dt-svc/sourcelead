@@ -35,6 +35,7 @@ $(document).ready(function(){
 });
 </script>
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 function ApplicantAuthorization(status){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUser = '${SourceLeadWeb_userName}';
