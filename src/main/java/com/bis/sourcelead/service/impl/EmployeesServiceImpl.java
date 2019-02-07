@@ -151,5 +151,9 @@ public class EmployeesServiceImpl implements EmployeesService {
 		return userList;
 	}
 
+	@Override
+	public List<Employees> getIndEmployeesBasedOnDepartment(String departmentId, OrgLocations orgLocation) {
+		return employeesDao.getEmployeesBasedOnDepartment(departmentId, orgLocation);
+	}
 	
 }
