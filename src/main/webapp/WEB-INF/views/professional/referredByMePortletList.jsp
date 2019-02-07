@@ -13,6 +13,10 @@ top:0 !important;
     top: 0px !important;
 }
  </style>
+ 
+ <script>
+ var atsUrl = '${SourceLeadWeb_atsUrl}';
+ </script>
 
 <script>
 $(document).ready(function() {
@@ -118,7 +122,7 @@ function portletListFilter(requirementStatus){
   function professionalDashboardPortletListCounts(startDate,endDate,requirementStatus){
 	  $.ajax({ 
 		   	type: "GET",
-			url: sourceleadUrl+"/getReferByMeJobSummaryPortlets?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
+			url: atsUrl+"/getReferByMeJobSummaryPortlets?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
 		    success: function(data) {
 	    	 var json = JSON.parse(data);
 	    	 var result ='';
@@ -148,7 +152,7 @@ function portletListFilter(requirementStatus){
 	  var locationCode ='${SourceLeadWeb_locationCode}'; 
 	  $.ajax({ 
 		   	type: "GET",
-		   	url: sourceleadUrl+"/getReferByMeJobSummaryPortletList?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&requirementStatus="+requirementStatus+"&locationCode="+locationCode,
+		   	url: atsUrl+"/getReferByMeJobSummaryPortletList?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&requirementStatus="+requirementStatus+"&locationCode="+locationCode,
 		    success: function(data) {
 	    	 var json = JSON.parse(data);
 	    	 var result =""; 

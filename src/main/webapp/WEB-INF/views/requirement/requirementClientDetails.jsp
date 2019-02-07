@@ -10,6 +10,8 @@
 --%>
 
 <script>
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 function addClientPopUp() {
 	var result = "";
 	result = result+'<div class="modal-dialog">';
@@ -344,7 +346,7 @@ function getClientSubmissionTemplates(local){
 			var sourceleadUrl = '${sourceleadUrl}';
 			$.ajax({
 		    	type: "POST",
-		    	url : sourceleadUrl+"/getSubmissionTemplatesList?"+tokenParamName+"="+tokenValue+"&clientLocationId="+clientLocationId, 
+		    	url : vmsUrl+"/getSubmissionTemplatesList?"+tokenParamName+"="+tokenValue+"&clientLocationId="+clientLocationId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 					var output = "";
@@ -377,7 +379,7 @@ function getClientSubmissionTemplates(local){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Client", 
+	    	url : vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Client", 
 	        success: function(json) {
 				var output = "";
 				output = output
@@ -421,7 +423,7 @@ function getClientSubmissionTemplates(local){
 			/* $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); */
 	 		$.ajax({
 						type : "POST",
-						url : sourceleadUrl+ "/saveClientContact?"+tokenParamName+"="+tokenValue+"&json="+ jsonData+"&orgRelationId="+orgRelationId,
+						url : atsUrl+ "/saveClientContact?"+tokenParamName+"="+tokenValue+"&json="+ jsonData+"&orgRelationId="+orgRelationId,
 						success : function(data) {
 							var json = JSON.parse(data);
 							var output = "";
