@@ -189,7 +189,7 @@ z-index: 1000000000 !important;
 <script type="text/javascript">
 $(document).ready(function(){
 //   getNotificationsByuserId();
-	//updateMarketplaceCartCountAndPrice();
+	updateMarketplaceCartCountAndPrice();
 });
 </script>
 <!-- notification related include jsp -->
@@ -344,15 +344,15 @@ function preventTabkey(e){
  	 	<img data-id="orgLogoImage" src="${SourceLeadWeb_fileUrl}" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}" class="img-responsive mt5">
  	 </c:if>
  	  <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
- 	  <img data-id="orgLogoImage" src="${SourceLeadWeb_fileUrl}" title="${SourceLeadWeb_orgName}" class="img-responsive mt5">
+ 	  <img data-id="orgLogoImage" src="${SourceLeadWeb_fileUrl}" title="${SourceLeadWeb_orgLocationName}" class="img-responsive mt5">
  	 </c:if>
  	 </c:if>
  	 
  	 <c:if test="${empty SourceLeadWeb_fileUrl}">
 				<div class="text-logo">
 				 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-					<c:if test="${!empty SourceLeadWeb_orgName}">
-					<span class="tbldata-dotdot" data-id="orgLogoImage" title="${SourceLeadWeb_orgName}">${SourceLeadWeb_orgName}</span>
+					<c:if test="${!empty SourceLeadWeb_orgLocationName}">
+					<span class="tbldata-dotdot" data-id="orgLogoImage" title="${SourceLeadWeb_orgLocationName}">${SourceLeadWeb_orgLocationName}</span>
 					</c:if>
 				</c:if>
 				<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
@@ -439,7 +439,7 @@ function preventTabkey(e){
 				<a title="Connections"  href="<c:url value='${sourceleadUrl}/loadConnectedList?status=connected'/>" id="connections"><i class="connectionIC"></i>Connections <span class="label label-warning pull-right">${SourceLeadWeb_connectionReceivedCount > 0 ? SourceLeadWeb_connectionReceivedCount : ''}</span></a>
 				</li>
 				
-				<li><a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="contactsIC"></i>Contacts</a></li>
+				<li><a title="Contacts" href="<c:url value='${SourceLeadWeb_atsUrl}/referRequirementList'/>"><i class="contactsIC"></i>Contacts</a></li>
 				
 				<sec:authorize access="!hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')"> 
            		<sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_EDIT_ORG_SETTINGS','ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE','ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')"> 
@@ -545,7 +545,7 @@ function preventTabkey(e){
          
          <sec:authorize access="hasRole('ROLE_VIEW_CART')">
          <li>
-         		<a id = "headerCartCountLink" href="${appPath}/candidateMarketplaceCart" class="" href="javascript:void(0)">
+         		<a id = "headerCartCountLink" href="${SourceLeadWeb_atsUrl}/candidateMarketplaceCart" class="" href="javascript:void(0)">
          		<b id="headerCartCount" class="headerCartCountShow mt2"></b><i class="shopping-cart" title="Cart"></i>
          		</a>
          </li>	

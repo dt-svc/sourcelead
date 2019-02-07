@@ -36,6 +36,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.WhiteListIpAddressDao;
 import com.bis.sourcelead.dto.AddNewRoleDTO;
 import com.bis.sourcelead.dto.AddNewRoleHierarcyDTO;
@@ -64,6 +65,7 @@ import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SourceleadSignature;
+import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -86,6 +88,7 @@ import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SourceleadSignatureService;
+import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -156,6 +159,18 @@ public class OrgSettingsRestController {
 	@Autowired
 	SourceleadRolesService sourceleadRolesService;
 	
+	@Autowired
+	SubmissionTemplateService submissionTemplateService;
+	
+	@Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
+	
+	@Value("${isCouchbaseEnabled}")
+	private String isCouchbaseEnabled;
+	
+	
+	
+	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/app/saveOrgImage", method = RequestMethod.POST)
 	public String saveOrgImage(CompanyRegistrationDTO companyRegistrationDTO, HttpServletRequest request) throws Exception
@@ -204,6 +219,9 @@ public class OrgSettingsRestController {
 						}
 					}
 					SourceLeadSessionManager.setSessionAttribute(request, "weekOffDaysList", weekOffDaysList);
+					if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+						userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(orgLocations);
+					}
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 			}else{
@@ -810,6 +828,10 @@ public class OrgSettingsRestController {
 		else {
 			orgLocations.setLoginSecurity(Constants.NO);
 			orgLocationService.updateOrgLocations(orgLocations);
+		}
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(orgLocations);
 		}
 		return "Success";
 	}
@@ -1419,6 +1441,137 @@ public class OrgSettingsRestController {
 			probation.setNoOfDays(orgLocations.getNoOfDays());
 		}
 		return probation;
+	}
+	
+	
+	
+	
+	@RequestMapping(value = "/app/loadSavedSubmissionTemplate" , method = RequestMethod.GET)
+	   public String loadSavedSubmissionTemplate(@RequestParam(value="templateId", required=false) Long templateId,HttpServletRequest request) throws Exception {
+			
+		    SubmissionTemplate submissionTemplate = submissionTemplateService.getSubmissionTemplateById(templateId);
+		    
+			return submissionTemplate.getJsonString();
+	    
+	   }
+	
+	
+	
+	@RequestMapping(value = "/app/loadSubmissionTemplate" , method = RequestMethod.GET)
+	   public String loadSubmissionTemplate() throws Exception {
+			
+		    SubmissionTemplate submissionTemplate = submissionTemplateService.getSubmissionTemplateById(1L);
+		    
+			return submissionTemplate.getJsonString();
+	    
+	   }
+	
+	
+	
+	@RequestMapping(value = "/app/validateSubmissionTemplateLabelName" , method = RequestMethod.GET)
+	   public String validateSubmissionTemplateLabelName(@RequestParam(value="templateId", required=true) Long templateId,
+			   @RequestParam(value="labelName", required=true) String labelName,HttpServletRequest request) throws Exception {
+			
+		    SubmissionTemplate submissionTemplate = submissionTemplateService.getSubmissionTemplateByLabelName(templateId, labelName);
+		   
+		    if(submissionTemplate == null){
+		    	return "Success";
+		    }else{
+		    	return "Existed";
+		    }
+	    
+	   }
+	
+	
+	
+	@RequestMapping(value = "/app/validateFeedbackTemplateLabelName" , method = RequestMethod.GET)
+	   public String validateFeedbackTemplateLabelName(@RequestParam(value="templateId", required=false) Long templateId,
+			   @RequestParam(value="labelName", required=false) String labelName,HttpServletRequest request) throws Exception {
+			
+		    SubmissionTemplate submissionTemplate = null;
+		    if(templateId != null){
+		    	submissionTemplate = submissionTemplateService.getSubmissionTemplateByLabelName(templateId, labelName);	
+		    }
+		    if(submissionTemplate == null){
+		    	return "Success";
+		    }else{
+		    	return "Existed";
+		    }
+	    
+	   }
+	
+	
+	
+	@RequestMapping(value = "/app/validateTemplateName", method = RequestMethod.POST)
+	@ResponseBody String validateTemplateName(@RequestParam(value = "clientLocationId", required = false) Long clientLocationId,
+			@RequestParam(value = "templateName", required = false) String templateName,
+			@RequestParam(value = "templateId", required = false) String templateId,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		String result = null;
+		SubmissionTemplate submissiontTemplate = null;
+		
+		if(!isNullOrEmpty(templateId)){
+			submissiontTemplate  = submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
+			if(submissiontTemplate.getTemplateName().equalsIgnoreCase(templateName)){
+				result = "valid";
+			}else{
+				submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateName(clientLocationId, orgLocations.getId(), templateName);
+				if(null != submissiontTemplate){
+					result = "invalid";
+				}else{
+					result = "valid";
+				}
+			}
+		}
+		
+		else{
+			submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateName(clientLocationId, orgLocations.getId(), templateName);
+			if(null != submissiontTemplate){
+				result = "invalid";
+			}else{
+				result = "valid";
+			}
+		}
+		
+		return result;
+		
+	}
+	
+
+	@RequestMapping(value = "/app/validateTemplateNameByOrg", method = RequestMethod.POST)
+	@ResponseBody String validateTemplateNameByOrg(@RequestParam(value = "templateName", required = false) String templateName,
+			@RequestParam(value = "templateId", required = false) String templateId,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		SubmissionTemplate submissiontTemplate = null;
+		String result = null;
+		
+		if(!isNullOrEmpty(templateId)){
+			submissiontTemplate  = submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
+			if(submissiontTemplate.getTemplateName().equalsIgnoreCase(templateName)){
+				result = "valid";
+			}else{
+				submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(orgLocations.getId(), templateName);
+				if(null != submissiontTemplate){
+					result = "invalid";
+				}else{
+					result = "valid";
+				}
+			}
+		}
+		
+		else{
+			submissiontTemplate  = submissionTemplateService.getSubmissionTemplateByTemplateNameByOrg(orgLocations.getId(), templateName);
+			if(null != submissiontTemplate){
+				result = "invalid";
+			}else{
+				result = "valid";
+			}
+		}
+		
+		return result;
+		
 	}
 	
 	
