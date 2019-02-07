@@ -150,7 +150,7 @@ public class UserLoginHelper {
 			  if(userRole != null && userRole.get("userState").toString() != null && userRole.get("userState").toString().equals(Status.NOT_LOGGEDIN)){
 	  			   UserRole uRole = userRoleService.getUserRoleById(Long.valueOf(userRole.get("userRoleId").toString()));
 	  					 uRole.setUserState(Status.ACTIVE);
-	  			         uRole.setNewlyLoginUser(Constants.YES);
+	  			         uRole.setNewlyLoginUser(Constants.NO);
 	  			         userRoleService.addUserRole(uRole);
 	                Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(uRole.getUser().getId(), Long.valueOf(orgLocations.get("orgLocationId").toString()));
 	                if(null != employee){
@@ -360,7 +360,7 @@ public class UserLoginHelper {
 			  try {
 				  if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
 		  			   userRole.setUserState(Status.ACTIVE);
-		  			   userRole.setNewlyLoginUser(Constants.YES);
+		  			   userRole.setNewlyLoginUser(Constants.NO);
 		  			   userRoleService.addUserRole(userRole);
 		                Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocations.getId());
 		                if(null != employee){
