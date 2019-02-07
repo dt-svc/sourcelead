@@ -166,8 +166,8 @@
 
 		  
 <div class="welBtns">
-	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_atsUrl}/onboardingCandidateStep2'/>'" >
-	<input type="button"  value="Proceed to next step" id="save_button"  onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_atsUrl}/onboardingCandidateTaxDetails'/>'" class="Brig">
+	<input type="button"  value="Previous" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/onboardingCandidateStep2'" >
+	<input type="button"  value="Proceed to next step" id="save_button"  onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/onboardingCandidateTaxDetails'" class="Brig">
 	<div class="clearfix"></div>
 </div>
 </form:form>
