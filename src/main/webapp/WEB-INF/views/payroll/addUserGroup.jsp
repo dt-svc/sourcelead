@@ -90,7 +90,7 @@ function moveAss() {
 function validateGroupId(){
 	var groupId = $("#groupId").val();
 	var id = '${userGroup.id}';
-	$.get(sourceleadUrl+"/validateUserGroupIdOrGroupName?"+tokenParamName+"="+tokenValue+"&groupId="+groupId+"&id="+id,  function(result) {
+	$.get(pmsUrl+"/validateUserGroupIdOrGroupName?"+tokenParamName+"="+tokenValue+"&groupId="+groupId+"&id="+id,  function(result) {
 			 if (result.response === "AWKWARD") {
                     location.href = "/errorPage";
                 } else if (result.response === "SUCCESS") {
@@ -108,7 +108,7 @@ function validateGroupId(){
 function validateGroupName(){
 	var groupName = $("#groupName").val();
 	var id = '${userGroup.id}';
-	$.get(sourceleadUrl+"/validateUserGroupIdOrGroupName?"+tokenParamName+"="+tokenValue+"&groupName="+groupName+"&id="+id,  function(result) {
+	$.get(pmsUrl+"/validateUserGroupIdOrGroupName?"+tokenParamName+"="+tokenValue+"&groupName="+groupName+"&id="+id,  function(result) {
 			 if (result.response === "AWKWARD") {
                     location.href = "/errorPage";
                 } else if (result.response === "SUCCESS") {
@@ -133,18 +133,19 @@ function validateGroupName(){
 
  <script type="text/javascript">
  function createUserGroup() {
-	 
+	 alert(1)
 		 if ($('#add_user_group_form').validate(false, validationSettings)){ 
 
 		 		var fromType = '${fromType}';
 			    var formData = getFormData("add_user_group_form");
+			    alert(formData)
 				$("#save_user_group_button").attr("disabled", "disabled");
 				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	            $( "#save_user_group_button" ).addClass('button').val('Processing..');
 	            $.ajax({
 					type : "POST",
 	        	    data: formData,
-					url : sourceleadUrl+"/createUserGroup?"+tokenParamName+"="+tokenValue,
+					url : pmsUrl+"/createUserGroup?"+tokenParamName+"="+tokenValue,
 					success : function(result) {
 						 if (result && result.response === "INVALID_DATA") {
 			                    $("#save_user_group_button").removeAttr("disabled");
@@ -162,7 +163,7 @@ function validateGroupName(){
 			                	 }
 			                	 
 			                } else if (result.indexOf('Sign In') !== -1) {
-								location.replace(sourceleadUrl);
+								location.replace(pmsUrl);
 							} else {
 			                    $("#save_user_group_button").removeAttr("disabled");
 			                    $("#save_user_group_button").addClass('button').val('Save');
