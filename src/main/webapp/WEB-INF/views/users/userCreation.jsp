@@ -4,7 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+<script src="/ats/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
 <!-- <script src="resources/js/masklist.js" type="text/javascript"></script>
 <script src="resources/js/jquery.inputmask.js" type="text/javascript"></script> 
