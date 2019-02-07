@@ -2,6 +2,14 @@
 <jsp:include page="../../masterSideNav.jsp" />
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <section class="content-wraper contentWraper">
+	<section class="content-header clearfix">
+		<div class="pull-left">
+			<h2>Add Form</h2>
+		</div>
+		<div class="pull-right brud-crum">
+			<a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="/pms/runIndianPayRoll">Run Payroll</a> &raquo; Add Form
+		</div>
+	</section>
 	<div class="timesheet_out">
 		<div class="tablelist-wrap">
 			<div class="col-md-10">
@@ -34,9 +42,10 @@
 	</div>
 </section>
 <script type="text/javascript">
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$("#formType").change(
 			function() {
-				location.href = sourceleadUrl + "/forms/getForm?uuid="
+				location.href = pmsUrl + "/forms/getForm?uuid="
 						+ $(this).val();
 			});
 </script>

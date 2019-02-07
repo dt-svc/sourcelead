@@ -1,11 +1,6 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
-
-
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <div id="loading"></div>
@@ -243,7 +238,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			$.ajax({
 				type : "POST",
         	    data: formData,
-				url : pmsUrl+"/savePayrollTax",
+				url : sourceleadUrl+"/savePayrollTax",
 				success : function(response) {
 					if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -315,7 +310,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				&& endMonth != 'undefined') {
 			$.ajax({
 				type : "GET",
-				url : pmsUrl + "/saveFinanacialYear?locationId="
+				url : sourceleadUrl + "/saveFinanacialYear?locationId="
 						+ locationId + "&startMonth=" + startMonth
 						+ "&endMonth=" + endMonth,
 				success : function(result) {
@@ -336,7 +331,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 
 <script>
 function cancel(){
-	window.location.href =  pmsUrl+"/indPayrollConfiguration";
+	window.location.href =  sourceleadUrl+"/indPayrollConfiguration";
 }
 
 
