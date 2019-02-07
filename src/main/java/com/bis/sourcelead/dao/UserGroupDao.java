@@ -8,10 +8,9 @@ import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.entity.UserIdView;
-import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.indPayroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.TotalHoursDTO;
-import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 
 public interface UserGroupDao {
 
