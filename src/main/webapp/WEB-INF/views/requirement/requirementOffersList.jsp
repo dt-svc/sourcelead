@@ -61,6 +61,7 @@
  </script>
  
  <script type="text/javascript">
+ var atsUrl = '${SourceLeadWeb_atsUrl}';
        function requirementOfferist(onloadFlag){
 
     	   var sourceleadUrl ='${sourceleadUrl}';
