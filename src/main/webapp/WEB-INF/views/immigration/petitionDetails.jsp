@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <c:set var = "immigrationDTO" scope = "page" value = '<%= session.getAttribute("immigrationDTO")%>'/>
+<script type="text/javascript" src="${SourceLeadWeb_vmsUrl}/resources/js/immigration.js"></script>
 <section class="addImmiWrap">
 	<div class="addImmiInnWrap">
 		<!-- <div class="immiStepsHead clearfix"> removed steps process.
@@ -955,6 +956,8 @@
    </section>
    
        <script type="text/javascript">
+       var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+       var immiModulePath = "/immigration";
 			var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -1222,7 +1225,6 @@ $("#experienceValue").change(function () {
 	<script>
 	
 	function getPetitionTypeDropDown(petitionType){
-		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		$.ajax({
 		    	type: "GET",
 		        url: vmsUrl+immiModulePath+"/getPetitionTypeDropDown", 
@@ -1457,6 +1459,7 @@ $("#experienceValue").change(function () {
 		  onLoadStatusChange("${immigrationDTO.currUscisStatus}");
 		  employmentLevelDropDown("${immigrationDTO.employmentLevel}");
 		  jobTitleDropDown("${immigrationDTO.jobId}");
+		  
 		  if("${immigrationDTO.immigrationId}" == ""){
 			  $('#templateSelect').prop('disabled', false).trigger("chosen:updated");
 		  }else{

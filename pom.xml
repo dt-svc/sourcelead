@@ -8,104 +8,106 @@
     <packaging>war</packaging>
     <name>vms</name>
     <properties>
-		<java.version>1.8</java.version>
-	</properties>
-	<repositories>
-		<repository>
-			<id>elasticsearch-releases</id>
-			<url>https://artifacts.elastic.co/maven</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-	<dependencies>
-		<!-- Including Common Sourcelead Files -->
+        <java.version>1.8</java.version>
+        <tomcat.deploy.dir>C:/apache-tomcat-8.0.36/webapps</tomcat.deploy.dir>
+    </properties>
+    <repositories>
+        <repository>
+            <id>elasticsearch-releases</id>
+            <url>https://artifacts.elastic.co/maven</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <dependencies>
+   	    <!-- Including Common Sourcelead Files -->
 		<dependency>
 			<groupId>com.bis.sourcelead.commons</groupId>
 			<artifactId>sourcelead-commons</artifactId>
 			<version>1.0.0</version>
 			<scope>compile</scope>
 		</dependency>
-	</dependencies>
-	<build>
-		<!-- <resources> <resource> <directory>src/main/webapp/resources/images</directory> 
-			<includes> <include>borderpdf.pdf</include> </includes> </resource> </resources> -->
-		<finalName>pms</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat8-maven-plugin</artifactId>
-				<version>2.2</version>
-				<configuration>
-					<path>/${project.build.finalName}</path>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.9</version>
-				<configuration>
-					<additionalProjectnatures>
-						<projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
-					</additionalProjectnatures>
-					<additionalBuildcommands>
-						<buildcommand>org.springframework.ide.eclipse.core.springbuilder</buildcommand>
-					</additionalBuildcommands>
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>true</downloadJavadocs>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5</version>
-				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-					<compilerArgument>-Xlint:all</compilerArgument>
-					<showWarnings>true</showWarnings>
-					<showDeprecation>true</showDeprecation>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.2.1</version>
-				<configuration>
-					<mainClass>org.test.int1.Main</mainClass>
-				</configuration>
-			</plugin>
+    </dependencies>
+    <build>
+        <!-- <resources> <resource> <directory>src/main/webapp/resources/images</directory> 
+        <includes> <include>borderpdf.pdf</include> </includes> </resource> </resources> -->
+        <finalName>vms</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat8-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <path>/${project.build.finalName}</path>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <additionalProjectnatures>
+                        <projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
+                    </additionalProjectnatures>
+                    <additionalBuildcommands>
+                        <buildcommand>org.springframework.ide.eclipse.core.springbuilder</buildcommand>
+                    </additionalBuildcommands>
+                    <downloadSources>true</downloadSources>
+                    <downloadJavadocs>true</downloadJavadocs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <compilerArgument>-Xlint:all</compilerArgument>
+                    <showWarnings>true</showWarnings>
+                    <showDeprecation>true</showDeprecation>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <configuration>
+                    <mainClass>org.test.int1.Main</mainClass>
+                </configuration>
+            </plugin>
 
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version>
-				<executions>
-					<execution>
-						<phase>install</phase>
-						<configuration>
-							<target>
-								<!-- <copy file="${project.build.directory}/sourcelead.war" todir="C:/apache-tomcat-8.0.30/webapps" 
-									/> -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <configuration>
+                           <target>
+							     <copy todir="${tomcat.deploy.dir}/vms">
+						          <fileset dir="${project.build.directory}\vms" includes="**/*" />
+						         </copy>
 							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+             <plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.5</version>
 				<executions>
@@ -132,6 +134,6 @@
 					</execution>
 				</executions>
 			</plugin>
-		</plugins>
-	</build>
+        </plugins>
+    </build>
 </project>
