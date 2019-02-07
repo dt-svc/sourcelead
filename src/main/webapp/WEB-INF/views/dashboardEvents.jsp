@@ -125,7 +125,7 @@ width: 75px; padding: 0 !important;
 	var jobFairDates = {};
 	function getJobFairDates() {
 		var sourceleadUrl = '${sourceleadUrl}';
-		var atsUrl = "${SourceLeadWeb_vmsUrl}";
+		var atsUrl = "${SourceLeadWeb_atsUrl}";
 		var dates = {}
 		$.ajax({
 			type : "POST",
