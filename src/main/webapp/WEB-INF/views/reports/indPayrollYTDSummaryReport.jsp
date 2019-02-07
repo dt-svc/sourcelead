@@ -2,9 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
-<script src="/resources/js/indPayrollReports.js"></script>
-
 <script>
 $(document).ready(function(){
    getDepartmentList();
@@ -28,7 +25,7 @@ $(document).ready(function(){
             <div class="form-group">
               <label class="col-md-12 paddingRight">Select Department<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-12">
-					<select class="form-control sel" id="payrollDepartment" name="departmentId" onchange="getAssociateBasedOnDepartment()">
+					<select class="form-control sel" id="payrollDepartment" name="departmentId" onchange="associateList();">
 					</select>
 				</div>
             </div>
@@ -356,21 +353,27 @@ $("#payrollYTDSearch").keyup(function(e) {
 	   }
 	});
 	
-	
-	
-function getAssociateBasedOnDepartment() {
-	alert("jhjhjjh");
+</script>
+<script>
+function associateList(){
 	var departmentId = $("#payrollDepartment").val();
 	$.ajax({
-		type : "GET",
-		url : sourceleadUrl + "/indEmployeesListBasedOnDepartment?&departmentId="+ departmentId,
-		success : function(json) {
-			alert("helloxzcvzxcvzxcv")
-		}
+    	type: "GET",
+        url: sourceleadUrl+"/indEmployeesListBasedOnDepartment?&departmentId="+departmentId, 
+        success: function(json) {
+        	var output = "";
+    		for (var i=0; i<json.length; i++)
+    		{
+    			var opt = json[i];
+    			output = output + "<option value='" +opt.empId+ "'>"+opt.fullName+"</option>";
+    		}
+    		$("#employeeId").empty();
+    		$("#employeeId").append(output);
+    		$("#employeeId").trigger("chosen:updated"); 
+        }
 	});
 }
 </script>
-
 <script>	
 function getActions(){
 	$(".action-pop").slideToggle(200);
