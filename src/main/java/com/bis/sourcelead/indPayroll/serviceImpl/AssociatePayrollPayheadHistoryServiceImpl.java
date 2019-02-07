@@ -1,4 +1,4 @@
-package com.bis.sourcelead.payroll.service.impl;
+package com.bis.sourcelead.indPayroll.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +10,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
-import com.bis.sourcelead.payroll.dao.AssociatePayrollPayheadHistoryDao;
+import com.bis.sourcelead.indPayroll.dao.AssociatePayrollPayheadHistoryDao;
+import com.bis.sourcelead.indPayroll.entity.AssociatePayrollPayheadHistory;
+import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
+import com.bis.sourcelead.indPayroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
-import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
-import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Service

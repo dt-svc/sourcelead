@@ -1,4 +1,4 @@
-package com.bis.sourcelead.payroll.entity;
+package com.bis.sourcelead.indPayroll.entity;
 
 import java.util.Date;
 import java.util.Set;

@@ -1,4 +1,4 @@
-package com.bis.sourcelead.payroll.entity;
+package com.bis.sourcelead.indPayroll.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -15,12 +15,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
-import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.PayrollPaySlipInd;
+import com.bis.sourcelead.payroll.entity.PayrollLopHis;
 
 @Entity
 @Table(name = "IND_EMPLOYEE_PAYROLL")
@@ -127,6 +129,13 @@ public class IndEmployeePayroll implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "IND_PAYSLIP_ID")
 	private PayrollPaySlipInd payrollPaySlipInd;
+	
+	@ManyToOne
+	@JoinColumn(name = "PAYMENT_ACCOUNT_ID")
+	private PaymentAccount paymentAccount;
+	
+	@Transient
+	private Long candidateId;
 	
 	public Long getId() {
 		return id;
@@ -379,5 +388,21 @@ public class IndEmployeePayroll implements Serializable {
 
 	public void setPayrollPaySlipInd(PayrollPaySlipInd payrollPaySlipInd) {
 		this.payrollPaySlipInd = payrollPaySlipInd;
+	}
+
+	public PaymentAccount getPaymentAccount() {
+		return paymentAccount;
+	}
+
+	public void setPaymentAccount(PaymentAccount paymentAccount) {
+		this.paymentAccount = paymentAccount;
+	}
+
+	public Long getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
 	}
 }
