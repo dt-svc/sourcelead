@@ -470,7 +470,7 @@ function cancelOrgImg(){
 					<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_ORG_SETTINGS')">
 					<input type="submit" value="Save" id="save_button" class="btn btn-primary mr">
 					</sec:authorize>
-					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/app/dashboard/${SourceLeadWeb_orgLocationId}'">
+					<input type="button" value="Cancel" class="btn btn-default" onclick="javascript:window.location.href ='${SourceLeadWeb_sourceleadUrl}/settings'"></input>
 					</div>
 					</div>
 					</div>
@@ -3495,8 +3495,8 @@ var validationSettings = {
 <script>
 function cancelBtn(){
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");
+	  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+	  location.replace(sourceleadUrl+"/settings/${SourceLeadWeb_orgLocationId}");
 }
 
 </script>
