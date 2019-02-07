@@ -171,9 +171,10 @@ $(document).ready(function() {
 function netPay(indEmpPayrollUUID, paySheetUUID){
 	$("#netPay").fadeIn();
 	$(".comMask").fadeIn();
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$.ajax({
         type : "GET",
-        url: sourceleadUrl+"/calculateAssociateSalaryInd?"+tokenParamName+"="+tokenValue+"&indEmpPayrollUUID="+indEmpPayrollUUID+"&paySheetFrequencyUUID="+paySheetUUID,    
+        url: pmsUrl+"/calculateAssociateSalaryInd?"+tokenParamName+"="+tokenValue+"&indEmpPayrollUUID="+indEmpPayrollUUID+"&paySheetFrequencyUUID="+paySheetUUID,    
          success :function(result) { 
         	 
         	 $("#associateSalaryIndDiv").empty(); 
@@ -223,12 +224,13 @@ function saveAdjustedPayheads(){
 		
 		var formData = getFormData1("associatePayheadAdjust_form");
 		var psfUUID = $('#paySheetFrequencyUUID').val();
+		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		$.ajax({
 			 type : "POST",
 			 data: formData,
 		     processData: false,
 		     contentType:false, 
-			 url : sourceleadUrl+"/saveAssociatePayheadAdjustInd?"+tokenParamName+"="+tokenValue,
+			 url : pmsUrl+"/saveAssociatePayheadAdjustInd?"+tokenParamName+"="+tokenValue,
 			 success : function(result) {
 				 closeNetPay();
 				 $(location).attr('href', 'employeePayrollList?paySheetFrequencyUUID='+psfUUID);
@@ -276,6 +278,7 @@ function closeCPR() {
 
 <script>
 function sentForApprove(approverStatus){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var totalCheckboxes = $('input:checkbox[name=empPayroll]').length;
 	var numberOfChecked  = $('input:checkbox[name=empPayroll]:checked').length;
 	if(totalCheckboxes > 0 && totalCheckboxes == numberOfChecked){
@@ -288,7 +291,7 @@ function sentForApprove(approverStatus){
 		});
 		$.ajax({
 	        type : "POST",
-	        url: sourceleadUrl+"/sentForApproveIndPayroll?approverStatus="+approverStatus+"&paySheetFrequencyUUID="+feqUUID+"&excludeEmpPayrollUUID="+excludeEmpArr,    
+	        url: pmsUrl+"/sentForApproveIndPayroll?approverStatus="+approverStatus+"&paySheetFrequencyUUID="+feqUUID+"&excludeEmpPayrollUUID="+excludeEmpArr,    
 	         success :function(result) { 
 	        	 $(location).attr('href', 'runIndianPayRoll?stab=payroll');
 	         },
@@ -318,10 +321,11 @@ function cancelTermination(){
 
 <script>
 function cancelIndPayroll(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var feqUUID = $("#paySheetFrequency").val();
 	$.ajax({
         type : "POST",
-        url: sourceleadUrl+"/removePaysheetFrequencyFromSession?paySheetFrequencyUUID="+feqUUID,    
+        url: pmsUrl+"/removePaysheetFrequencyFromSession?paySheetFrequencyUUID="+feqUUID,    
          success :function(result) { 
         	 $(location).attr('href', 'runIndianPayRoll?stab=payroll');
          },
@@ -332,6 +336,7 @@ function cancelIndPayroll(){
 
 <script>
 $('#approveTab , #cnfmPayrollBtn').click(function(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var totalCheckboxes = $('input:checkbox[name=empPayroll]').length;
 	var numberOfChecked  = $('input:checkbox[name=empPayroll]:checked').length;
 	if(totalCheckboxes > 0 && totalCheckboxes == numberOfChecked){
@@ -344,7 +349,7 @@ $('#approveTab , #cnfmPayrollBtn').click(function(){
 		});
 		$.ajax({
 	        type : "GET",
-	        url: sourceleadUrl+"/getApproveInfoIndPayroll?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID+"&excludeEmpPayrollUUID="+excludeEmpArr,   
+	        url: pmsUrl+"/getApproveInfoIndPayroll?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID+"&excludeEmpPayrollUUID="+excludeEmpArr,   
 	         success :function(result) {
 	        	 $("#reviewTab").removeClass("current");
 	        	 $("#approveTab").addClass("current");
@@ -368,11 +373,12 @@ $('#reviewTab').click(function(){
  <div class="modal" style="display: none;" id="bulkimportPOP"></div>
  <script>
  function bulkAdjustment(){
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 $("#bulkimportPOP, .mask").fadeIn();
 	 var feqUUID = $("#paySheetFrequency").val();
 	 $.ajax({
 	        type : "GET",
-	        url: sourceleadUrl+"/bulkPayAdjustmentsForFrequencyInd?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID,    
+	        url: pmsUrl+"/bulkPayAdjustmentsForFrequencyInd?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID,    
 	         success :function(result) {
 	        	 $("#bulkimportPOP").empty();
 	             $("#bulkimportPOP").append(result);

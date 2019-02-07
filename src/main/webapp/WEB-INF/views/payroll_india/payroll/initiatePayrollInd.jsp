@@ -51,9 +51,10 @@
 <script>
 function getGroupFrequency(){
 	var groupUUID = $("#groupId").val();
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getGroupPayPeriod?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID                  , 
+	        url: pmsUrl+"/getGroupPayPeriod?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID                  , 
 	        success: function(json) {
 	        var output = "";
 			for (var i=0; i<json.length; i++)
@@ -102,15 +103,14 @@ function getGroupFrequency(){
 <script>
 function runINDPayroll(){
 	if ($('#generate_payroll_form').validate(false, validationSettings)){  
-		
-		//$("#initiateLoading").attr('style','position:absolute; width:100%; height:140%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		var groupId = $("#groupId").val();
 		var payPeriod = $("#payPeriod").val();
 		var payType = $("#payType").val();
 		var payrollPayDate = $("#payrollPayDate").val();
 		 $.ajax({
 		    	   type: "POST",
-		           url: sourceleadUrl+"/generateINDPayroll?groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate+"&paytype="+payType,                 
+		           url: pmsUrl+"/generateINDPayroll?groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate+"&paytype="+payType,                 
 		           success: function(data) {
 		        	  if(data != null && data != 'undefined' && data != '' && data.paySheetFrequencyUUID != null){
 		        		  $(location).attr('href', 'employeePayrollList?paySheetFrequencyUUID='+data.paySheetFrequencyUUID+'');

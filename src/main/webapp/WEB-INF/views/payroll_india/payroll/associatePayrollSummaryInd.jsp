@@ -76,7 +76,7 @@
 							</c:forEach>
 							</tbody>
 							<tfoot>
-								<tr><th><strong>Total</strong></th><td id="earningPayheadAmountTotal"><span class="paddingLeft">&#8377;</span> ${earningTotal}</td></tr>
+							    <tr><th><strong>Total</strong></th><td ><span class="paddingLeft">&#8377;</span> <label id="earningPayheadAmountTotal"> ${earningTotal}</label></td></tr>
 							</tfoot>
 					</table>
 				</td>
@@ -115,7 +115,7 @@
 							</c:if>
 							</tbody>
 							<tfoot>
-							<tr><th><strong>Total</strong></th><td id="deductionPayheadAmountTotal"><span class="paddingLeft">&#8377;</span> ${decuctionTotal}</td></tr>
+							<tr><th><strong>Total</strong></th><td ><span class="paddingLeft">&#8377;</span> <label id="deductionPayheadAmountTotal"> ${decuctionTotal}</label></td></tr>
 						</tfoot>
 					</table>
 				</td>
@@ -131,7 +131,7 @@
 					<table class="table table-bordered tableNetpay mb0">
 					<tbody>
 						<th>Gross Salary</th>
-						<td id="totalGrossPay"><span class="paddingLeft">&#8377;</span> ${indPayrollDTO.grossPay}</td>
+						<td ><span class="paddingLeft">&#8377;</span> <label id="totalGrossPay"> ${indPayrollDTO.grossPay}</label></td>
 					</tbody>
 					</table>
 				</td>
@@ -139,7 +139,7 @@
 					<table class="table table-bordered tableNetpay mb0">
 					<tbody>
 						<th>Net Salary</th>
-						<td id="totalNetPay"><span class="paddingLeft">&#8377;</span> ${indPayrollDTO.netPay}</td>
+						<td ><span class="paddingLeft">&#8377;</span><label id="totalNetPay"> ${indPayrollDTO.netPay}</label></td>
 					</tbody>
 					</table>
 				</td>

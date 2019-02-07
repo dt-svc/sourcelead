@@ -29,14 +29,12 @@ function closeRequestLoanPop() {
 	$(".requestPop, .sideMask").fadeOut();
 }
 function getFormSubmissionMasterList() {
-	alert("pmsUrl >>>"+pmsUrl)
 	$.post(pmsUrl + "/forms/all", {financialYear: $("#financialYear").val()}, function(response) {
 		if (response && response.response === "INVALID_DATA") {
 			showError(response.responseMessage);
 		} else if (response.response === "AWKWARD") {
 			location.href = "/errorPage";
 		} else if (response.response === "SUCCESS") {
-			alert("hello")
 			$("#submissionList").empty();
 			var submissionList = response.data;
 			if(submissionList.length > 0) {
@@ -89,8 +87,6 @@ function getFormSubmissionMasterList() {
 	});
 }
 function exportFormToPDF(formId) {
-	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-	/*alert("Form Id " + formId);*/
 	var exportType = "pdf";
 	window.location.href = pmsUrl+"/itDeclartionSubmissionExport?formId="+formId+"&exportType="+exportType;
 }

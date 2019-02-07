@@ -71,11 +71,10 @@
 
 <script>
 	function getMyLoansAdv(loanStatus){ 
-             var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-//              $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+			 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       	   $.ajax({
      	          type : "GET",
-      	      	  url: sourceleadUrl+"/getMyLoansAdv?loanStatus="+loanStatus,		
+      	      	  url: pmsUrl+"/getMyLoansAdv?loanStatus="+loanStatus,		
       		      success :function(data) {
       		    	  $("#myPayRollTabsContent").empty();
       		  		  $("#myPayRollTabsContent").append(data);
@@ -95,7 +94,8 @@ function highlight(id) {
 </script>
 <script>
 function downloadPayslip(payslipUUID){
-	 window.location.href = sourceleadUrl+"/getDownloadPayslipInd?indEmpPayrollUUID="+payslipUUID;
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	 window.location.href = pmsUrl+"/getDownloadPayslipInd?indEmpPayrollUUID="+payslipUUID;
 
 }
 

@@ -63,11 +63,11 @@ function employeePayrollList(uuid){
 
  <script>
 	function initiatePayrollDiv(){
-	               var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+		           var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	               $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	        	   $.ajax({
 		      	          type : "POST",
-	        	      	  url: sourceleadUrl+"/initiateIndPayroll",		
+	        	      	  url: pmsUrl+"/initiateIndPayroll",		
 	        		      success :function(data) {
 	        		    	  $("#runPayRollTabsContent").empty();
 	        		  		  $("#runPayRollTabsContent").append(data);
@@ -79,8 +79,8 @@ function employeePayrollList(uuid){
 </script>
 
 <script>
-function payrollDiv(){ 
-	    var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+function payrollDiv(){
+	  
 	    $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	    $("#runPayRollTabsContent").empty();
 	    $("#loadTime").removeAttr('style');
@@ -89,6 +89,7 @@ function payrollDiv(){
   }
   
   function preparePaySheetFrequencyInd() {
+	  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		var result = "";
 		result = result + '<div class="reportHead" id="historySearchIndDiv">';
 		result = result + '	<ul class="pull-right">';
@@ -112,13 +113,12 @@ function payrollDiv(){
 		$("#runPayRollTabsContent").append(result);
 		var searchValue = $("#historyDataTableSearchInd").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+ "/getPaySheetFrequencyDataInd?searchValue="+searchValue;
+		var url = pmsUrl+ "/getPaySheetFrequencyDataInd?searchValue="+searchValue;
 		
 		payFrequencyPagination(url);
 	}
   
   function payFrequencyPagination(url) {
-		var sourceleadUrl = '${sourceleadUrl}';
 		var colIndex = 0;
 		$('#payFrequency').DataTable({
 							"processing" : true,
@@ -273,13 +273,13 @@ function payrollDiv(){
 
  <script>
 	function groupsDiv(){ 
-	               var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+		           var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	               $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	               $("#runPayRollTabsContent").empty();
 	               $("#loadTime").removeAttr('style');
 	               $.ajax({
 	                   type : "POST",
-	         	      	  url: sourceleadUrl+"/indianPayrolluserGroupList",		
+	         	      	  url: pmsUrl+"/indianPayrolluserGroupList",		
 	         		      success :function(data) {
 	         		    	 $("#runPayRollTabsContent").empty();
 	         				$("#runPayRollTabsContent").append(data);
@@ -289,13 +289,13 @@ function payrollDiv(){
 </script>
  <script>
 	function formsDiv(){ 
-       var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
        $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
        $("#runPayRollTabsContent").empty();
        $("#loadTime").removeAttr('style');
        $.ajax({
           type : "POST",
-	      	  url: sourceleadUrl+"/forms/list",		
+	      	  url: pmsUrl+"/forms/list",		
 		      success :function(data) {
 		    	$("#runPayRollTabsContent").empty();
 		  		$("#runPayRollTabsContent").append(data);
