@@ -25,7 +25,7 @@ $(document).ready(function(){
         <div class="dashboardWidget-new dashNewWrap mb">
         	
         	<div class="dashNewWrapHead clearfix">
-        		<a id="timeSheetLink" href="<c:url value="/app/timesheet"/>" class="pull-left"> ${bothTimesheets ? 'Timesheets' : onlyTimesheets ? 'Timesheets' : onlyApprovalTimesheets ? 'Approval' : ''} &nbsp;&nbsp;</a>
+        		<a id="timeSheetLink" href="${SourceLeadWeb_pmsUrl}/timesheet" class="pull-left"> ${bothTimesheets ? 'Timesheets' : onlyTimesheets ? 'Timesheets' : onlyApprovalTimesheets ? 'Approval' : ''} &nbsp;&nbsp;</a>
 	        	<input type="hidden" value="" id="timesheetSocketsFor">
 	             <c:if test="${bothTimesheets}">
 		             <ul class="nav nav-tabs pull-right">
@@ -74,6 +74,7 @@ $(document).ready(function(){
 	  $("#draftLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
 	  $("#approvedloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getTimeSheetSubmissionStatus?${_csrf.parameterName}=${_csrf.token}&timesheetType="+timesheetType, 
@@ -129,9 +130,9 @@ $(document).ready(function(){
 		                $("#approvedCountAnchor").html('<a  href="/app/totalTimesheetList/APPROVED">Approved</a>'); 
 		            }
 		       	 if(timesheetType == "myTimesheets"){
-		       		 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheet'/>");
+		       		 $("#timeSheetLink").attr("href", ""+pmsUrl+"/timesheet");
 		       	 }else{
-		       		 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheetApproval'/>");
+		       		 $("#timeSheetLink").attr("href", ""+pmsUrl+"/timesheetApproval");
 		       	 }
 		 		}
 		  }); 

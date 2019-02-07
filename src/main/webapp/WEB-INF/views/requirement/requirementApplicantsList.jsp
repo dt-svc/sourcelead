@@ -55,7 +55,7 @@
     </div>
   </section>
 <script>
-var atsUrl = '${SourceLeadWeb_atsUrl}';
+
  $(document).ready(function() {
 	 requirementApplicantList(true);
 	 /* getClientList(); */
@@ -180,6 +180,7 @@ function prepareApplicantList(url){
 <script>
 function applicantpagination(url){
 	var colIndex = 0;
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
     $('#applicantpagination').DataTable( { 
     		"processing": true,
         "serverSide": true,
