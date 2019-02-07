@@ -45,7 +45,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
           <div class="pull-left">
             <h2>My Expenses</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; My Expenses</div>
+          <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; My Expenses</div>
         </section>
         
         
@@ -72,7 +72,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       </span>
       <ul class="pull-right list-unstyled list-inline">
                <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES')">
-			   		<li><a href="/pms/addExpense" class="newAdBtn mr5">+ Expenses</a></li>
+			   		<li><a href="${SourceLeadWeb_pmsUrl}/addExpense" class="newAdBtn mr5">+ Expenses</a></li>
 			   </sec:authorize>	      		
 			
         		<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_MY_EXPENSES')">
