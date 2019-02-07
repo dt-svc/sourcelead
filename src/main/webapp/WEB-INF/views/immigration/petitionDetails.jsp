@@ -208,7 +208,7 @@
 								 	<span class="input-group-addon cursorPointer bg-blue" onclick="getAllRelationssByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
 							 	</div>
 							 	<span class="col-md-2 noPad clearfix">
-							<a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							<a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 							</span> 
 								</c:if>
 								</c:if>
@@ -221,7 +221,7 @@
 								<span class="input-group-addon cursorPointer bg-blue" onclick="getAllRelationssByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
 							</div>
 							<span class="col-md-2 noPad clearfix">
-							<a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							<a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 							</span>
 								</c:if>
 								
@@ -304,7 +304,7 @@
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 								</div>
 							<span class="col-md-2 noPad clearfix">
-							<a href="<c:url value="/app/userCreation" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							<a href="<c:url value="${SourceLeadWeb_atsUrl}/userCreation" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 							</span>	
 							</div>
 							</div>
@@ -1625,7 +1625,7 @@ function  removeValidationAttorneyContact() {
 <script>
 	 function selectedAttorney(){
 		 var vid =  $('#attorneyId').val();
-		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+		 window.open(vmsUrl+"/addVendorContact?vid="+vid,'_blank');
 	 }
 	 </script>
 	 
