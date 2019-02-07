@@ -73,7 +73,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 							</c:when>
 							<c:otherwise>
 								<button id="composeSourceleadMail" class="newAdBtn" type="button"
-									onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_atsUrl}/composeMail'/>'">
+									onClick="javascript:window.location.href = '/app/composeMail'">
 									<i class="fa fa-envelope-o" aria-hidden="true"></i>Compose
 								</button>
 							</c:otherwise>
