@@ -40,8 +40,8 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.ReportsUtil;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -749,25 +749,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
 		}
-	 
-		
-		 @RequestMapping(value = "/indPayrollReportList")
-			public ModelAndView indPayrollReportList(HttpServletRequest request,HttpServletResponse response) throws Exception {
-			 ModelAndView model = new ModelAndView();
-			 model.addObject("sourceleadUrl", sourceleadUrl);
-			 model.setViewName("reports/indPayrollReportList");
-			 return model;
-		 }
-		 
-		 
-		 @RequestMapping(value = "/indPayrollRegisterReport")
-			public ModelAndView indPayrollRegisterReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
-			 ModelAndView model = new ModelAndView();
-			 model.addObject("sourceleadUrl", sourceleadUrl);
-			 model.setViewName("reports/indPayrollRegisterReport");
-			 return model;
-		 }
-		 
+		 		 
 		 @RequestMapping(value = "/payrollReport")
 			public ModelAndView payrollReport(HttpServletRequest request) throws Exception
 			{
