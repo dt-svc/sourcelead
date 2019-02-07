@@ -6,6 +6,7 @@
 
 
 <script type="text/javascript">
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 $(document).ready(function(){
 	getJobSummarySerialChart();
 	getJobSummaryDoNutChart();
@@ -173,10 +174,9 @@ $(document).ready(function(){
 		var startDate = document.getElementById("serialfromdate").value; 
 		var endDate = document.getElementById("serialtodate").value; 
 		
-		
 		$.ajax({ 
 			   	type: "GET",
-			   	url: sourceleadUrl+"/getRecruiterJobSummarySerialChart?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
+			   	url: atsUrl+"/getRecruiterJobSummarySerialChart?startDate="+startDate+"&endDate="+endDate,
 			    success: function(data) {
 		        	var json = JSON.parse(data);
 		        	
@@ -279,7 +279,7 @@ $(document).ready(function(){
 	
 	$.ajax({ 
 		   	type: "GET",
-		   	url: sourceleadUrl+"/getRecruiterJobSummaryDoNutChart?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
+		   	url: atsUrl+"/getRecruiterJobSummaryDoNutChart?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
 		    success: function(data) {
 	        	var json = JSON.parse(data);
 	        	
@@ -348,7 +348,7 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
 	  
 	$.ajax({ 
 		   	type: "GET",
-		   	url: sourceleadUrl+"/getRecruiterSubmttedJobSummaryPortlets?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
+		   	url: atsUrl+"/getRecruiterSubmttedJobSummaryPortlets?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
 		    success: function(data) {
 	    	 var json = JSON.parse(data);
 		    	
@@ -447,7 +447,7 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
 
 <script>
 	function recruiterSubmttedJobList(startDate,endDate,status){
-			window.location.href = sourceleadUrl + '/recruiterSubmttedJobList?${_csrf.parameterName}=${_csrf.token}&startDate='+startDate+'&endDate='+endDate+'&requirementStatus='+status;
+			window.location.href = atsUrl + '/recruiterSubmttedJobList?${_csrf.parameterName}=${_csrf.token}&startDate='+startDate+'&endDate='+endDate+'&requirementStatus='+status;
 	}
 </script>
 
@@ -459,7 +459,7 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
 	  
 	$.ajax({ 
 		   	type: "GET",
-		   	url: sourceleadUrl+"/getReferByMeJobSummaryPortlets?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
+		   	url: atsUrl+"/getReferByMeJobSummaryPortlets?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
 		    success: function(data) {
 	    	 var json = JSON.parse(data);
 		    	
@@ -569,7 +569,7 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
   </script>
   <script>
 	function getReferredByMeProtletList(startDate,endDate,status){
-			window.location.href = sourceleadUrl + '/referredByMePortletList?${_csrf.parameterName}=${_csrf.token}&startDate='+startDate+'&endDate='+endDate+'&requirementStatus='+status;
+			window.location.href = atsUrl + '/referredByMePortletList?${_csrf.parameterName}=${_csrf.token}&startDate='+startDate+'&endDate='+endDate+'&requirementStatus='+status;
 	}
 </script>
 
