@@ -51,4 +51,6 @@ public interface EmployeesService {
 	public Employees getEmployeeByUserAndOrgLocationId(Long userId, Long orgLocationId);
 
 	public List<UserDTO> getEmployeesBasedOnDepartment(String departmentId, OrgLocations orgLocation);
+	
+	List<Employees> getIndEmployeesBasedOnDepartment(String departmentId, OrgLocations orgLocation);
 }

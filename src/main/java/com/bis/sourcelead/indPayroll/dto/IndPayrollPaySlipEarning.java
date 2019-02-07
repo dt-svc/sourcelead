@@ -1,8 +1,8 @@
-package com.bis.sourcelead.payroll.dto;
+package com.bis.sourcelead.indPayroll.dto;
 
 import java.math.BigDecimal;
 
-public class IndPayrollPaySlipEarningAndDeducationTotal {
+public class IndPayrollPaySlipEarning {
 	
 	private String earnings;
 
@@ -10,9 +10,7 @@ public class IndPayrollPaySlipEarningAndDeducationTotal {
 
 	private BigDecimal grossSalary;
 	
-    private BigDecimal  deductionAmount;
-	
-	private String deduction;
+	private String earningsTotal;
 
 	public String getEarnings() {
 		return earnings;
@@ -26,11 +24,6 @@ public class IndPayrollPaySlipEarningAndDeducationTotal {
 		return grossSalary;
 	}
 
-	public BigDecimal getDeductionAmount() {
-		return deductionAmount;
-	}
-
-	 
 	public void setEarnings(String earnings) {
 		this.earnings = earnings;
 	}
@@ -43,16 +36,12 @@ public class IndPayrollPaySlipEarningAndDeducationTotal {
 		this.grossSalary = grossSalary;
 	}
 
-	public void setDeductionAmount(BigDecimal deductionAmount) {
-		this.deductionAmount = deductionAmount;
+	public String getEarningsTotal() {
+		return earningsTotal;
 	}
 
-	public String getDeduction() {
-		return deduction;
-	}
-
-	public void setDeduction(String deduction) {
-		this.deduction = deduction;
+	public void setEarningsTotal(String earningsTotal) {
+		this.earningsTotal = earningsTotal;
 	}
 
 }
