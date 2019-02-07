@@ -6,7 +6,7 @@
 	var activeTaxTab = "${activeTaxTab}";
 	var viewPage = "${viewPage}";
 </script>
-<script type="text/javascript" src='/resources/js/tax/tax.js'></script>
+<script type="text/javascript" src='/pms/resources/js/tax/tax.js'></script>
 <section class="content-wraper contentWraper">
 	<jsp:include page="../payroll_india/taxHeader.jsp"></jsp:include>
 	<div class="timesheet_out">
