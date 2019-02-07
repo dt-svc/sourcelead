@@ -36,16 +36,11 @@ window.onload = function() {
 <script type="text/javascript">
 	function getInterviewsandTasks() {
 		var date = $("#eventCalendar").val();
-		var timezone ='${SourceLeadWeb_orgLocations.timezone}'; 
-		var timezoneId = "";
-		if(timezone != null && timezone != '' && timezone != 'undefined'){
-			timezoneId = '${SourceLeadWeb_orgLocations.timezone.id}';
-		}
+		var timezoneId ='${SourceLeadWeb_timeZoneId}'; 
 		var candidateId = '${SourceLeadWeb_candidateId}';
-		var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getProfessionalInterviewsEventDashBoard?${_csrf.parameterName}=${_csrf.token}&dateRange="+date+"&candidateId="+candidateId+"&timezoneId="+timezoneId,
+	        url: atsUrl+"/getProfessionalInterviewsEventDashBoard?${_csrf.parameterName}=${_csrf.token}&dateRange="+date+"&candidateId="+candidateId+"&timezoneId="+timezoneId,
 	        success: function(json) {
 	        	 var result = "";
 				     result = result + '    <div class="eventHeader">                                                      ';
@@ -85,7 +80,7 @@ window.onload = function() {
 					 result = result + '                  <img src="/resources/images/interview_icons.png" class="img-responsive" width="40">    ';
 					 result = result + '                  </figure>                                                                   ';
 					 result = result + '                      <div class="pull-left event_details form-horizontal">                   ';
-					 result = result + '                          <p><label class="text-muted small col-md-2">Job Title   :</label> <a href="'+sourceleadUrl+'/requirementProfile/'+report.requirementUUID+'"><span title ="'+report.requirementTitle+'">'+report.requirementTitle+'</span></a></p>';
+					 result = result + '                          <p><label class="text-muted small col-md-2">Job Title   :</label> <a href="'+atsUrl+'/requirementProfile/'+report.requirementUUID+'"><span title ="'+report.requirementTitle+'">'+report.requirementTitle+'</span></a></p>';
 					 result = result + '                          <p><label class="text-muted small col-md-2">Company Name:</label>'+report.companyName+' </p>    ';
 					 result = result + '                          <p><label class="text-muted small col-md-2">Interview Type:</label> '+interviewType+'</p>    ';
 					 result = result + '                          <p><label class="text-muted small col-md-2">Location:</label>'+location+'</p>    ';
@@ -121,7 +116,7 @@ window.onload = function() {
 	
   <script>
   $(function() {
-	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	  var finalDateFormatProeventCalendar = '';
 	  if(locationDate.match("yyyy-MM-dd")){
 		  finalDateFormatProeventCalendar = 'yy-mm-dd';
