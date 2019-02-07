@@ -1,11 +1,11 @@
-package com.bis.sourcelead.payroll.service;
+package com.bis.sourcelead.indPayroll.service;
 
 import java.util.List;
 
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
+import com.bis.sourcelead.indPayroll.entity.AssociatePayrollPayheadHistory;
+import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
-import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 
 public interface AssociatePayrollPayheadHistoryService {
 
