@@ -6,7 +6,7 @@
  */
 
 //generates the form HTML
-function generateForm(sourceleadUrl,templateId) {
+/*function generateForm(sourceleadUrl,templateId) {
     //empty out the preview area
     $("#sjfb-fields").empty();
     $.ajax({
@@ -174,7 +174,7 @@ function generateForm(sourceleadUrl,templateId) {
     });
     
     
-}
+}*/
 
 
 

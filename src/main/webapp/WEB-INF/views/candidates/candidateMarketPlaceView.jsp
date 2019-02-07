@@ -423,7 +423,6 @@ function saveEditMarketPriceFun(id, obj){
 		popupDisplay("Please enter amount!");
 		return false;
 	}
-	
 	$.ajax({
    		type: "POST",
 	 	url : atsUrl+"/updateMarketPlacePrice?marketPlaceId="+id+"&priceVal="+marketPrice+"&priceValType="+marketPriceCurrency,

@@ -151,7 +151,7 @@ function addInterview(requirementId){
 	result = result + '</div>';
 	result = result +'<span class="col-md-2 noPad clearfix">';
 	result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_TEMPLATE\')">';	
-	result = result +'<a href="<c:url value="/app/interViewFeedBackTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>';
+	result = result +'<a href="/app/interViewFeedBackTemplate" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>';
 	result = result +'</sec:authorize>';	
 	result = result + '</span>';
 	result = result + '</div>';
@@ -605,7 +605,7 @@ function cancelExternalInterviewers(){
 		
 		//$("#timezoneid").trigger("chosen:updated");
 		
-		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		  var finalDateFormatInterview = '';
 		  if(locationDate.match("yyyy-MM-dd")){
 			  finalDateFormatInterview = 'yy-mm-dd';
@@ -1116,7 +1116,7 @@ $(function(){
 function interviewTemplate(){
 	 $.ajax({
 	    	type: "POST",
-	    	url : atsUrl+"/getInterviewFeedbackTemplatesList?"+tokenParamName+"="+tokenValue+"", 
+	    	url : atsUrl+"/getInterviewFeedbackTemplatesList", 
 	        success: function(data) {
 	        	if (data.response === "FAILED") {
   		    		showError(data.responseMessage);
@@ -1126,7 +1126,6 @@ function interviewTemplate(){
   		    		var json = data.data;
 			        var output = "";
 			        if(json.length > 0){
-			        	/* output = output + "<option value=''>--select Template--</option>"; */
 			         	for (var i=0; i<json.length; i++)
 			 			{
 			 	        		var opt = json[i];

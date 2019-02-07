@@ -4,6 +4,8 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <style>
 .ratetype p {
@@ -12,6 +14,10 @@
     bottom: -14px;
 }
 </style>
+
+<script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
+</script>
 
 <script>
 	function alertMsgFadeinFunction() {
@@ -77,7 +83,7 @@ function createAlert(){
 	
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/validateAlertUserEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
+		url: atsUrl+"/validateAlertUserEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
 		success : function(data) {
 			if(data != null && data != ''){
 				
@@ -212,9 +218,9 @@ function createAlert(){
 					 result = result +'         	<div class="col-md-9">';
 					 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills"  multiple id="skills" name="skills" data-validation="required" field-name="Keywords/Skills">';
 					 
-					          		 <c:forEach var="skill" items="${skillsList}">
-											result = result + "<option value='${skill.name}'>${skill.name}</option>";
-						             </c:forEach>
+					 result = result + 			"<c:forEach var='skill' items='${skillsList}'>";
+		     		 result = result + 			"<option value='${skill.name}'>${skill.name}</option>";
+		        	 result = result +'						</c:forEach>';
 						            
 					 result = result +'       </select>';
 					 result = result +'         	</div>';
@@ -254,7 +260,7 @@ function createAlert(){
 					    	var allSkills = $(event.target).val();
 					    	$.ajax({
 						    	type: "POST",
-						        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+						        url: atsUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
 						        success: function(response) {
 						        	if (response.response === "AWKWARD") {
 						        	    location.href = "/errorPage";
@@ -343,7 +349,7 @@ function saveAlert(){
 					data: formData,
 	  		         processData: false,
 	  		         contentType:false, 
-					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
+					url : atsUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
 					success : function(result) {
 						 if(jobAlertUUID != null && jobAlertUUID != '' && jobAlertUUID != 'undefined'){
 							$("#jobAlert2").removeAttr("style");
@@ -357,7 +363,7 @@ function saveAlert(){
 								alertMsgFadeinFunction();
 						} 
 						
-							location.replace(sourceleadUrl+"/jobAlertList");
+							location.replace(atsUrl+"/jobAlertList");
 					},
 				});
 		return true;
@@ -388,7 +394,7 @@ $(document).ready(function(){
 function jobAlertList(){  
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getJobAlertList?${_csrf.parameterName}=${_csrf.token}",    
+           url: atsUrl+"/getJobAlertList?${_csrf.parameterName}=${_csrf.token}",    
             success :function(data) {
                		
 			    	     $("#offboardingLoading").removeAttr("style");
@@ -471,7 +477,7 @@ function editAlert(jobAlertUUID){
 	
 	 $.ajax({
          type : "GET",
-         url: sourceleadUrl+"/getJobAlertDetails?${_csrf.parameterName}=${_csrf.token}&jobAlertUUID="+jobAlertUUID,    
+         url: atsUrl+"/getJobAlertDetails?${_csrf.parameterName}=${_csrf.token}&jobAlertUUID="+jobAlertUUID,    
           success :function(data) {
         	  var json = JSON.parse(data);
         	  var experience = json['experience'];
@@ -771,7 +777,7 @@ function editAlert(jobAlertUUID){
         		    	var allSkills = $(event.target).val();
         		    	$.ajax({
         			    	type: "POST",
-        			        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+        			        url: atsUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
         			        success: function(response) {
         			        	if (response.response === "AWKWARD") {
         			        	    location.href = "/errorPage";
@@ -865,7 +871,7 @@ function alertMessage(jobAlertUUID,alertTitle){
 function deleteAlert(jobAlertUUID){
 	  $.ajax({
         type : "POST",
-        url: sourceleadUrl+"/deleteJobAlert?${_csrf.parameterName}=${_csrf.token}&jobAlertUUID="+jobAlertUUID,    
+        url: atsUrl+"/deleteJobAlert?${_csrf.parameterName}=${_csrf.token}&jobAlertUUID="+jobAlertUUID,    
          success :function(data) {
         	 	$("#jobAlert"+jobAlertUUID).remove();
         	 	$("#choicepopUp").empty();

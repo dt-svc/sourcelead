@@ -1932,9 +1932,9 @@ function interviewFeedback(interviewId,templateId,id,submissionId) {
 	$("#feedbackdiv"+interviewId+"").show();
 	$(".reSchPop").removeClass("reSchPopActive");
 	$(".proposeTimePop").removeClass("proposeTimePopActive");
-	
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var atsUrl ='${SourceLeadWeb_atsUrl}';
+	alert(atsUrl);
 	$.ajax({
 		type: "GET",
 		url: atsUrl+"/getInterviewrsFeedbackList?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId+"&locationId="+locationId+"&submissionId="+submissionId,
