@@ -1588,8 +1588,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		 logger.debug("Response time is "+totalTime);
 		 return viewList;
 	 }
-	 
-
+ 
 	 
 	 @RequestMapping(value = "/getUserGroupByGroupUUID" , method = RequestMethod.GET)
 	 public Response<UserGroupDTO> getUserGroupByGroupUUID(UserGroupDTO userGroupDTO,HttpServletRequest request)throws Exception {

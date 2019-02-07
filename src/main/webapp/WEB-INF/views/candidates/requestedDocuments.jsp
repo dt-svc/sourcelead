@@ -137,7 +137,7 @@ var sourceleadUrl ='${sourceleadUrl}';
    
 <script type="text/javascript">
    function requestDocSave(){
-	   var atsUrl= '${SourceLeadWeb_atsUrl}';
+	   var atsUrl = '${SourceLeadWeb_atsUrl}';
 	   var validationSettings = {
 	        errorMessagePosition : 'element',
 	        borderColorOnError : '',
@@ -154,14 +154,14 @@ var sourceleadUrl ='${sourceleadUrl}';
 				data: formData,
 			    processData: false,
 			    contentType:false, 
-				url : atsUrl+"/ws/uploadRequestedDocuments?"+tokenParamName+"="+tokenValue+"",
+				url :  sourceleadUrl.replace("app", "ats")+"/ws/uploadRequestedDocuments?",
 				success : function(response) {
 					if (response && response.response === "INVALID_DATA") {
 					    showError(response.responseMessage);
 					} else if (response.response === "AWKWARD") {
 					    location.href = "/errorPage";
 					} else if (response.response === "SUCCESS") {
-						location.replace(atsUrl+"/requestedDocuments?requestDocUUID="+requestDocUUID); 
+						location.replace(atsUrl+"/ws/requestedDocuments?requestDocUUID="+requestDocUUID); 
 					} else if (response.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
 					} else {
