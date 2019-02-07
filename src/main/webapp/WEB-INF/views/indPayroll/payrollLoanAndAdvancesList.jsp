@@ -11,17 +11,13 @@
 	});
 </script>
 
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
-
 
 <section class="content-wraper contentWraper">
 <section class="content-header clearfix">
 <div class="pull-left">
 <h2>Loan & Advances List</h2>
 </div>
- <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="/pms/payrollConfiguration">Payroll Configure</a>  &raquo; Loan & Advances List</div>
+ <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configure</a>  &raquo; Loan & Advances List</div>
 </section>
 
 <div class="clearfix"></div>
@@ -91,18 +87,19 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
  
  <script>
  function payrollLoanAndAdvList(){
+	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#pldDataTableSearch").val();
 	 var locationCode = '${SourceLeadWeb_locationCode}';
 	 searchValue = searchValue ? searchValue : "";
-	 var url = pmsUrl+"/getPayrollLoanAndAdvancesList?searchValue="+searchValue+"&locationCode="+locationCode;
-	 loanAndAdvListPagination(url,pmsUrl);
+	 var url = sourceleadUrl+"/getPayrollLoanAndAdvancesList?searchValue="+searchValue+"&locationCode="+locationCode;
+	 loanAndAdvListPagination(url,sourceleadUrl);
 	 $("#pldListLoading").removeAttr("style");
  }
  </script>
  
  
  <script>
-function loanAndAdvListPagination(url,pmsUrl){
+function loanAndAdvListPagination(url,sourceleadUrl){
 	var colIndex = 0;
     $('#pldListTable').DataTable( { 
 	  "processing": true,
@@ -189,7 +186,7 @@ function loanAndAdvListPagination(url,pmsUrl){
 	            	    var result = "";
 	            	    result = result +"<td>";
 	            	    result = result +"<div class='tbldata-dotdot_50'>";
-	            	    result = result +"<a href='/pms/payrollLoanAndAdvances?uuid="+opt.uuid+"'><span title='Edit Loan & Advance'><i class='glyphicon glyphicon-pencil'></i></span></a>&nbsp;&nbsp;";
+	            	    result = result +"<a href='<c:url value='/app/payrollLoanAndAdvances?uuid="+opt.uuid+"'/>'><span title='Edit Loan & Advance'><i class='glyphicon glyphicon-pencil'></i></span></a>&nbsp;&nbsp;";
 	            	    result = result +'<a><span title="Delete Loan & Advance"><i class="glyphicon glyphicon-trash" onClick="deleteLoanAndAdv(\''+opt.uuid+'\')";></i></span></a>';
 	            	    result = result +"</div>";
 	            	    result = result +"</td>";
@@ -247,12 +244,12 @@ function deletePayrollLoanAndAdv(uuid){
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
     	type: "POST",
-    	url : pmsUrl+"/deletePayrollLoanAndAdvances?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid, 
+    	url : sourceleadUrl+"/deletePayrollLoanAndAdvances?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid, 
         success: function(result) {
         	if (result.response === "AWKWARD") {
         	    location.href = "/errorPage";
         	} else if (result.response === "SUCCESS") {
-        		 location.replace(pmsUrl + "/payrollLoanAndAdvancesList");
+        		 location.replace(sourceleadUrl + "/payrollLoanAndAdvancesList");
         	} else if (result.indexOf('Sign In') !== -1) {
         		location.replace(sourceleadUrl);
         	} else {

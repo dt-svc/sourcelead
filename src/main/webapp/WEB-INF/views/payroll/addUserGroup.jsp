@@ -88,9 +88,10 @@ function moveAss() {
 
 <script>
 function validateGroupId(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var groupId = $("#groupId").val();
 	var id = '${userGroup.id}';
-	$.get(sourceleadUrl+"/validateUserGroupIdOrGroupName?"+tokenParamName+"="+tokenValue+"&groupId="+groupId+"&id="+id,  function(result) {
+	$.get(pmsUrl+"/validateUserGroupIdOrGroupName?"+tokenParamName+"="+tokenValue+"&groupId="+groupId+"&id="+id,  function(result) {
 			 if (result.response === "AWKWARD") {
                     location.href = "/errorPage";
                 } else if (result.response === "SUCCESS") {
@@ -106,9 +107,10 @@ function validateGroupId(){
 }
 
 function validateGroupName(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var groupName = $("#groupName").val();
 	var id = '${userGroup.id}';
-	$.get(sourceleadUrl+"/validateUserGroupIdOrGroupName?"+tokenParamName+"="+tokenValue+"&groupName="+groupName+"&id="+id,  function(result) {
+	$.get(pmsUrl+"/validateUserGroupIdOrGroupName?"+tokenParamName+"="+tokenValue+"&groupName="+groupName+"&id="+id,  function(result) {
 			 if (result.response === "AWKWARD") {
                     location.href = "/errorPage";
                 } else if (result.response === "SUCCESS") {
@@ -135,7 +137,7 @@ function validateGroupName(){
  function createUserGroup() {
 	 
 		 if ($('#add_user_group_form').validate(false, validationSettings)){ 
-
+				var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		 		var fromType = '${fromType}';
 			    var formData = getFormData("add_user_group_form");
 				$("#save_user_group_button").attr("disabled", "disabled");
@@ -144,7 +146,7 @@ function validateGroupName(){
 	            $.ajax({
 					type : "POST",
 	        	    data: formData,
-					url : sourceleadUrl+"/createUserGroup?"+tokenParamName+"="+tokenValue,
+					url : pmsUrl+"/createUserGroup?"+tokenParamName+"="+tokenValue,
 					success : function(result) {
 						 if (result && result.response === "INVALID_DATA") {
 			                    $("#save_user_group_button").removeAttr("disabled");
@@ -162,7 +164,7 @@ function validateGroupName(){
 			                	 }
 			                	 
 			                } else if (result.indexOf('Sign In') !== -1) {
-								location.replace(sourceleadUrl);
+								location.replace(pmsUrl);
 							} else {
 			                    $("#save_user_group_button").removeAttr("disabled");
 			                    $("#save_user_group_button").addClass('button').val('Save');

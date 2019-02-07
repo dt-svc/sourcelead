@@ -120,10 +120,10 @@ function getMyLoansAdvList(loanStatus){
 		$("#requestWidget").addClass("currentActive");
 	} 
 	
-	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+ "/getMyLoansAdvList?${_csrf.parameterName}=${_csrf.token}&loanStatus="+loanStatus,
+		url : pmsUrl+ "/getMyLoansAdvList?${_csrf.parameterName}=${_csrf.token}&loanStatus="+loanStatus,
 		success : function(json) {
 			var result = "";
 			result = result +'<table width="100%" id="myLoansAdvPagination">';

@@ -5,10 +5,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
-
 <script> 
 	$(document).ready(function(){
 		getPayRollPayheadList()
@@ -20,7 +16,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
   <div class="pull-left">
     <h2>Payroll</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/pms/payrollConfiguration">Payroll Configure</a> &raquo; Payhead List</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configure</a> &raquo; Payhead List</div>
 </section>
  <div class="clearfix"></div>
  
@@ -54,6 +50,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 <script>
  function getPayRollPayheadList(){
 	 $("#payrollPayheadList").empty();
+	  var sourceleadUrl ='${sourceleadUrl}';
 	  var locationCode = '${SourceLeadWeb_locationCode}';
 	  $("#payheadListLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
@@ -96,8 +93,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 var locationCode = '${SourceLeadWeb_locationCode}';
 	 var listType = "PHList";
 	 searchValue = searchValue ? searchValue : "";
-	 var url = pmsUrl+"/getPayRollPayheadListWithPagination?searchValue="+searchValue+"&locationCode="+locationCode+"&listType="+listType;
-	 payheadListPagination(url,pmsUrl);
+	 var url = sourceleadUrl+"/getPayRollPayheadListWithPagination?searchValue="+searchValue+"&locationCode="+locationCode+"&listType="+listType;
+	 payheadListPagination(url,sourceleadUrl);
 	 $("#payheadListLoading").removeAttr("style");
 	 
  }
@@ -106,7 +103,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
  
  
  <script>
-function payheadListPagination(url,pmsUrl){
+function payheadListPagination(url,sourceleadUrl){
 	var colIndex = 0;
     $('#payheadListTable').DataTable( { 
 	  "processing": true,
