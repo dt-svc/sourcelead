@@ -442,6 +442,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
 		userService.sendEmail(user, loginUser, password,orgLocations.getId());
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(orgLocations);
+			userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+		}
 	
 	}
 	
@@ -1479,7 +1484,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("registerName", professionalName);
 		 StringBuilder verifylink = new StringBuilder();
 		 
-		 globalVarsMap.put("verifyLink",verifylink.append("<a href='").append(sourceleadUrl).append("/ws/activateEmail?&token=").append(user.getVerificationUUID()).append("'>").append(sourceleadUrl).append("/activateEmail?&token=").append(user.getVerificationUUID()).append("</a>").toString()); 
+		 globalVarsMap.put("verifyLink",verifylink.append("<a href='").append("/app/ws/activateEmail?&token=").append(user.getVerificationUUID()).append("'>").append(sourceleadUrl).append("/activateEmail?&token=").append(user.getVerificationUUID()).append("</a>").toString()); 
 
 		 //setting the Recipient information
 		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.ACTIVATE_EMAIL, null);
