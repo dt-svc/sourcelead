@@ -1,4 +1,4 @@
-package com.bis.sourcelead.payroll.dao.impl;
+package com.bis.sourcelead.indPayroll.daoImpl;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -13,10 +13,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
-import com.bis.sourcelead.payroll.dao.AssociatePayrollPayheadHistoryDao;
-import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
+import com.bis.sourcelead.indPayroll.dao.AssociatePayrollPayheadHistoryDao;
+import com.bis.sourcelead.indPayroll.entity.AssociatePayrollPayheadHistory;
+import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
+import com.bis.sourcelead.payroll.dao.impl.AssociateTaxDaoImpl;
 
 @Repository
 public class AssociatePayrollPayheadHistoryDaoImpl implements AssociatePayrollPayheadHistoryDao{
