@@ -60,6 +60,7 @@
  
  </script>
 <script type="text/javascript">
+var atsUrl = '${SourceLeadWeb_atsUrl}';
        function requirementSubmissionList(onloadFlag){
     	   var sourceleadUrl ='${sourceleadUrl}';
    		   var tab = '${tab}';

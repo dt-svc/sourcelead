@@ -63,6 +63,7 @@
  
  
  <script type="text/javascript">
+ var atsUrl = '${SourceLeadWeb_atsUrl}';
        function requirementInterviewList(onloadFlag){
     	   var sourceleadUrl ='${sourceleadUrl}';
    		   var tab = '${tab}';
