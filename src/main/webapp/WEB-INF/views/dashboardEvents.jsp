@@ -91,12 +91,13 @@ width: 75px; padding: 0 !important;
 <script>
 	var allDates = {};
 	var interviewDates = {};
+	var atsUrl = "${SourceLeadWeb_atsUrl}";
 	function getInterviewsDates() {
 		var sourceleadUrl = '${sourceleadUrl}';
 		var dates = {}
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl
+			url : atsUrl
 					+ "/getInterviewsTaskDates?${_csrf.parameterName}=${_csrf.token}",
 			success : function(result) {
 				if (result.response === "FAILED") {
@@ -124,10 +125,11 @@ width: 75px; padding: 0 !important;
 	var jobFairDates = {};
 	function getJobFairDates() {
 		var sourceleadUrl = '${sourceleadUrl}';
+		var atsUrl = "${SourceLeadWeb_atsUrl}";
 		var dates = {}
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl
+			url : atsUrl
 					+ "/getJobFairDatesForCalendar?${_csrf.parameterName}=${_csrf.token}",
 			success : function(result) {
 				if (result.response === "FAILED") {
@@ -253,7 +255,7 @@ function getSelectedDateFromCalendar(selectedDate) {
 						
 						 
 						  if(report.interviewerUUID != null  &&  report.interviewerUUID !='' && report.interviewerUUID !='undefined' && report.interviewTemplateUUId != null && report.interviewTemplateUUId != '' && report.interviewTemplateUUId != 'undefined'){
-	                    	  result = result+'	 <a  href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateUUId+'&requirementInterviewid='+report.interviewerUUID+'" >';
+	                    	  result = result+'	 <a  href="'+sourceleadUrl+'/dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateUUId+'&requirementInterviewid='+report.interviewerUUID+'" >';
 	                    	  if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
 	                        	   result = result+'<i class="fa fa-handshake-o success_color"></i>';
 							  }else{
@@ -342,12 +344,14 @@ function getSelectedDateFromCalendar(selectedDate) {
 	
 	function getJobsForSelectedFairDate() {
 		var sourceleadUrl ='${sourceleadUrl}';
+		var atsUrl = "${SourceLeadWeb_atsUrl}";
+		
 		var date = getSelectedDateFromCalendar($("#jobFairCalendar").val());
 		$("#fairJobsDiv").empty();
 		$("#fairJobsDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getJobFairRequirements?${_csrf.parameterName}=${_csrf.token}&date="+date,
+	        url: atsUrl+"/getJobFairRequirements?${_csrf.parameterName}=${_csrf.token}&date="+date,
 	        success: function(result) {
 	        	if (result.response === "FAILED") {
 		    		showError(result.responseMessage);
@@ -375,11 +379,11 @@ function getSelectedDateFromCalendar(selectedDate) {
 							var text = "<div class='eventList clearfix'>";
 							text += "	<div class='pull-left event_details form-horizontal dashboard_fair_table'>";
 							text += "		<p>";
-							text += "			<a target='_blank' href='" + sourceleadUrl + "/requirementSummary?requirementUUID=" + data[e].requirementUUID + "'>" + data[e].jobTitle + "</a>";
+							text += "			<a target='_blank' href='" + atsUrl + "/requirementSummary?requirementUUID=" + data[e].requirementUUID + "'>" + data[e].jobTitle + "</a>";
 							text += "		</p>";
 							if(data[e].clientId != null) {								
 								text += "		<p>";
-								text += " 			<a target='_blank' href='" + sourceleadUrl + "/clientDashboard?orgRelationUUID=" + data[e].clientId.uuid + "' title='" + data[e].clientId.clientName + "'>" + data[e].clientId.clientName + "</a>";
+								text += " 			<a target='_blank' href='" + atsUrl + "/clientDashboard?orgRelationUUID=" + data[e].clientId.uuid + "' title='" + data[e].clientId.clientName + "'>" + data[e].clientId.clientName + "</a>";
 								text += "		</p>";
 							}
 							text += "		<p>";
@@ -682,12 +686,13 @@ function selectInterviewApplicants(){
 <script>
 function getSeheduledInterviewsList(){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var selectedReqId = $("#requirementsList").val();
 	var selectedSubmissions = $("#1applicant").val();
 	$("#scheduledInterviewsList").empty();
 	$.ajax({
         type : "POST",
-        url: sourceleadUrl+"/getScheduledInterviewsListForSelectedApplicants?${_csrf.parameterName}=${_csrf.token}&selectedReqId="+selectedReqId+"&selectedSubmissions="+selectedSubmissions,    
+        url: atsUrl+"/getScheduledInterviewsListForSelectedApplicants?${_csrf.parameterName}=${_csrf.token}&selectedReqId="+selectedReqId+"&selectedSubmissions="+selectedSubmissions,    
          success :function(data) {
               if(data != null && data != 'undefined' && data != "" && data != '[]'){
             	  var json = JSON.parse(data);
@@ -855,6 +860,7 @@ function selectAndGetApplicantsForRequirement(){
 <script>
 function getApplicantsForRequirement(){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var selectedReqId = $("#requirementsList").val();
 	if(selectedReqId != ""){
 		 var isClientInterview = "";
@@ -866,7 +872,7 @@ function getApplicantsForRequirement(){
 		 var existingApplicantsIds = [];
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+selectedReqId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview,  
+		        url: atsUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+selectedReqId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview,  
 		        success: function(data) {
 		        	if (data.response === "FAILED") {
 			    		showError(data.responseMessage);
@@ -922,10 +928,11 @@ function myFunction(){
 <script type="text/javascript">
 function getTimezonesListForInterview(){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var timezone = '${timezone}';
 	 $.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
+	    	url : atsUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
 	        success: function(data) {
 	        var json = JSON.parse(data);
 	        var output = "";
@@ -951,9 +958,10 @@ function getTimezonesListForInterview(){
 <script type="text/javascript">
  function getInterviewers() {
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 	  $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllInterviewers?${_csrf.parameterName}=${_csrf.token}", 
+		        url: atsUrl+"/getAllInterviewers?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(data) {
 		        	if (data.response === "FAILED") {
 			    		showError(data.responseMessage);
@@ -1035,14 +1043,14 @@ function cancelAddInterviewDiv(){
         var requirementId = '${requirementId}';
         
         var selectedInterviewApplicants =  $('#1applicant_chosen  span').size();
-        
+        var atsUrl = '${SourceLeadWeb_atsUrl}';
         if(selectedInterviewApplicants <= 50){
 	        $("#add_interview").attr("disabled", "disabled");
 	 		$("#add_interview" ).addClass('button').val('Processing..');
 	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	   	     $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/saveInterview?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
+		        url: atsUrl+"/saveInterview?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
 		        success: function(result) {
 		        	    $(".add_inter_wrap").removeClass("add_inter_wrap_active");
 		        		$(".side_mask").fadeOut(200);
