@@ -88,6 +88,7 @@ function moveAss() {
 
 <script>
 function validateGroupId(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var groupId = $("#groupId").val();
 	var id = '${userGroup.id}';
 	$.get(pmsUrl+"/validateUserGroupIdOrGroupName?"+tokenParamName+"="+tokenValue+"&groupId="+groupId+"&id="+id,  function(result) {
@@ -106,6 +107,7 @@ function validateGroupId(){
 }
 
 function validateGroupName(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var groupName = $("#groupName").val();
 	var id = '${userGroup.id}';
 	$.get(pmsUrl+"/validateUserGroupIdOrGroupName?"+tokenParamName+"="+tokenValue+"&groupName="+groupName+"&id="+id,  function(result) {
@@ -135,7 +137,7 @@ function validateGroupName(){
  function createUserGroup() {
 	 alert(1)
 		 if ($('#add_user_group_form').validate(false, validationSettings)){ 
-
+				var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		 		var fromType = '${fromType}';
 			    var formData = getFormData("add_user_group_form");
 			    alert(formData)

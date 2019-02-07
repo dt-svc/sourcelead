@@ -187,7 +187,8 @@
 
 <script>
 function cancel(){
-	window.location.href =  sourceleadUrl+"/stateTax/list";
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	window.location.href =  pmsUrl+"/stateTax/list";
 }
 
 </script>

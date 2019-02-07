@@ -128,7 +128,7 @@
 						<div class="clearfix">
 							<div class="clearfix minHeightcol5">
 								<div class="row">
-									<h4 class="col-md-6">
+									<h4 class="col-md-12 mb">
 										TDS <a href="javascript:void(0)" id="addTDSRow"
 											onclick="tax.addDynamicTDSRow(false);"
 											class="paddingLeft cursorPointer ml" id="clonediv"
@@ -162,7 +162,7 @@
 												<div class="clearfix">
 													<input type="text" id="fromamount" name="tdsTaxList[${tdsRowId}].fromamount"
 														class="form-control" data-name="fromamount"
-														value="${tds.fromamount}" placeholder="Enter">
+														value="${tds.fromamount}" placeholder="Enter" field-name="From" data-validation="required validate_Space validate_int validate_length length1-10">
 												</div>
 											</div>
 											<div class="col-md-2">
@@ -170,23 +170,23 @@
 												<div class="clearfix mb">
 													<input type="text" id="toamount" name="tdsTaxList[${tdsRowId}].toamount"
 														class="form-control" data-name="toamount"
-														value="${tds.toamount}" placeholder="Enter">
+														value="${tds.toamount}" placeholder="Enter" field-name="To" data-validation="required validate_Space validate_int validate_length length1-10">
 												</div>
 											</div>
-											<div class="col-md-2 mb">
-												<label class="clearfix">${tdsRowId==0?"Percentage":""}</label>
+											<div class="col-md-2 mb width150px">
+												<label class="clearfix">${tdsRowId==0?"Percentage (%)":""}</label>
 												<div class="clearfix">
 													<input type="text" id="percentage" name="tdsTaxList[${tdsRowId}].percentage"
 														class="form-control" data-name="percentage"
-														value="${tds.percentage}" placeholder="Enter">
+														value="${tds.percentage}" placeholder="Enter" field-name="Percentage" data-validation="required validate_Space validate_number validate_between between0-99" >
 												</div>
 											</div>
-											<div class="col-md-2 mb">
-												<label class="clearfix">${tdsRowId==0?"Education Ceiss":""}</label>
+											<div class="col-md-2 mb width150px">
+												<label class="clearfix">${tdsRowId==0?"Education Cess":""}</label>
 												<div class="clearfix">
 													<input type="text" id="educationceiss"
 														name="tdsTaxList[${tdsRowId}].educationceiss" class="form-control" data-name="educationceiss"
-														value="${tds.educationceiss}" placeholder="Enter">
+														value="${tds.educationceiss}" placeholder="Enter" field-name="Education Cess" data-validation="validate_length length1-10">
 												</div>
 											</div>
 											<div class="col-md-2 mb">
@@ -194,7 +194,7 @@
 												<div class="clearfix">
 													<input type="text" id="surcharge" name="tdsTaxList[${tdsRowId}].surcharge"
 														class="form-control" data-name="surcharge"
-														value="${tds.surcharge}" placeholder="Enter">
+														value="${tds.surcharge}" placeholder="Enter" field-name="Surcharge" data-validation="validate_length length1-10">
 												</div>
 											</div>
 
@@ -248,7 +248,8 @@
 
 <script>
 function cancel(){
-	window.location.href =  sourceleadUrl+"/centralTax/list";
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	window.location.href =  pmsUrl+"/centralTax/list";
 }
 
 </script>
