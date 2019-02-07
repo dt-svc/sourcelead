@@ -349,8 +349,8 @@
 
 <script>
 var immiModulePath = "/immigration";
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		function exportToPdf(){
-			var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			window.location.href = vmsUrl+"/immigration/getImmigrationListExport?"+tokenParamName+"="+tokenValue+"&exportType=pdf";
 		}
 		
