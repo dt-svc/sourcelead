@@ -5,10 +5,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
-
 <!-- Content Area -->
 <section class="content-wraper contentWraper">
 	<section class="content-header clearfix">
@@ -58,8 +54,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 					<label class="clearfix">Type<span class="text-danger">&nbsp;*</span></label>
 					<div class="clearfix dropdown-select">
 						<select class="form-control chosen-select" id="type" name="type" field-name="Type" data-validation="required">
-							<option value="Earnings" ${payrollPayhead.type  == 'Earnings'  ? 'selected' :''}>Earnings</option>
-							<option value="Deductions" ${payrollPayhead.type  == 'Deductions'  ? 'selected' :''}>Deductions</option>
+							<option value="Earnings" ${payrollPayhead.type  == 'Earnings'  ? 'selected' :''}>Earning</option>
+							<option value="Deduction" ${payrollPayhead.type  == 'Deduction'  ? 'selected' :''}>Deduction</option>
 						</select>
 					</div>
 				</div>
@@ -227,7 +223,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		<div class="col-lg-12">
 			<div class="pull-right">
 				<input value="Save" class="btn btn-success btnSuccess" id="savePayheadBtn" type="button" onclick="storePayhead();">
-				<input value="Cancel" onclick="javascript:window.location.href = '/pms/payheadList'" class="btn btn-default ml10" type="button">
+				<input value="Cancel" onclick="javascript:window.location.href = '/app/payheadList'" class="btn btn-default ml10" type="button">
 			</div>
 		</div>
 	</div>
@@ -299,7 +295,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			  	var name = $("#paytypeName").val();
 		    	$.ajax({
 				 type : "POST",
-				 url : pmsUrl+"/findPayrollPaytypeByNameAndLocationId?name="+name,
+				 url : sourceleadUrl+"/findPayrollPaytypeByNameAndLocationId?name="+name,
 				 success : function(result) {
 					 	if (result.response === "SESSION_TIMEDOUT") {
 			  				location.replace(sourceleadUrl);
@@ -357,7 +353,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 function findPayheadByNameOrShortCode(name, shortCode, listType){
 	$.ajax({
 	 type : "POST",
-	 url : pmsUrl+"/findPayrollPayheadByNameOrShortCodeAndLocationId?name="+name+"&shortCode="+shortCode+"&listType="+listType,
+	 url : sourceleadUrl+"/findPayrollPayheadByNameOrShortCodeAndLocationId?name="+name+"&shortCode="+shortCode+"&listType="+listType,
 	 success : function(result) {
 		 	if (result.response === "SESSION_TIMEDOUT") {
   				location.replace(sourceleadUrl);
@@ -424,7 +420,7 @@ function findPayheadByNameOrShortCode(name, shortCode, listType){
 					 data: formData,
 	 		         processData: false,
 	 		         contentType:false, 
-					  url : pmsUrl+"/storePayhead?"+tokenParamName+"="+tokenValue+"&uuid="+uuid,
+					  url : sourceleadUrl+"/storePayhead?"+tokenParamName+"="+tokenValue+"&uuid="+uuid,
 					  	success : function(result) {
 					  		if(result.object === 'MissingData'){
 					  			showError("Invalid data");
@@ -434,7 +430,7 @@ function findPayheadByNameOrShortCode(name, shortCode, listType){
 				                } else if (result.response === "AWKWARD") {
 				                    location.href = "/errorPage";
 				                } else if (result.response === "SUCCESS") {
-								  	location.replace(pmsUrl+"/payheadList");
+								  	location.replace(sourceleadUrl+"/payheadList");
 				                } else if (result.indexOf('Sign In') !== -1) {
 									location.replace(sourceleadUrl);
 								} else {
@@ -474,7 +470,7 @@ function findPayheadByNameOrShortCode(name, shortCode, listType){
 						 data: formData,
 		 		         processData: false,
 		 		         contentType:false, 
-						 url : pmsUrl+"/storePaytype?"+tokenParamName+"="+tokenValue,
+						 url : sourceleadUrl+"/storePaytype?"+tokenParamName+"="+tokenValue,
 						 success : function(result) {
 							 if(result.object === 'MissingData'){
 						  			showError("Invalid data");
@@ -523,7 +519,7 @@ function findPayheadByNameOrShortCode(name, shortCode, listType){
 	function refreshPaytypeList(){
 		$.ajax({
 			 type : "POST",
-			 url : pmsUrl+"/getPaytypeList",
+			 url : sourceleadUrl+"/getPaytypeList",
 			 success : function(result) {
 				 	if (result.response === "SESSION_TIMEDOUT") {
 		  				location.replace(sourceleadUrl);
