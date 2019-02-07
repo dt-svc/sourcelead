@@ -22,7 +22,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
         <div class="dashboardWidget-new dashNewWrap mb">
             
         	<div class="dashNewWrapHead clearfix">
-				<a class="pull-left" id="expensesLink" href="<c:url value="/app/expenses"/>">Expenses &nbsp;&nbsp;</a>
+				<a class="pull-left" id="expensesLink" href="${SourceLeadWeb_pmsUrl}/expenses">Expenses &nbsp;&nbsp;</a>
 	            <ul class="nav nav-tabs pull-right">
 	              <li class="active"><a data-toggle="tab" onclick="expensesCount('myExpenses');" >Self</a></li>
 	             <sec:authorize access="hasAnyRole('ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">
@@ -72,6 +72,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 <script type="text/javascript">
 function expensesCount(expenseType){
     var sourceleadUrl ='${sourceleadUrl}';
+    var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+    
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getExpensesCount?${_csrf.parameterName}=${_csrf.token}&expenseType="+expenseType, 
@@ -202,9 +204,9 @@ function expensesCount(expenseType){
 		  });
 		 
 		 if(expenseType == "myExpenses"){
-			 $("#expensesLink").attr("href", "<c:url value='/app/expenses'/>");
+			 $("#expensesLink").attr("href", ""+pmsUrl+"/expenses");
 		 }else{
-			 $("#expensesLink").attr("href", "<c:url value='/app/expensesApprovalList'/>");
+			 $("#expensesLink").attr("href", ""+pmsUrl+"/expensesApprovalList");
 		 }
 	}
 </script>

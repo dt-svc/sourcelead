@@ -60,6 +60,7 @@
  </script>
  
  <script type="text/javascript">
+ var atsUrl = '${SourceLeadWeb_atsUrl}';
        function requirementShortList(onloadFlag){
 
     	   var sourceleadUrl ='${sourceleadUrl}';
