@@ -50,15 +50,15 @@
 				
 			 <jsp:include page="../userManageAccounts.jsp" />
 				
-				<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
+				<c:if test="${!empty SourceLeadWeb_fileUrl}">
 					<div class="welLogo">
-					<img class="logo" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_orgName}" />
+					<img class="logo" data-id="orgLogoImage" src="${SourceLeadWeb_fileUrl}" title="${SourceLeadWeb_orgLocationName}" />
 					</div>
 				</c:if>
 				
-				<c:if test="${empty SourceLeadWeb_org.fileContentType}">
+				<c:if test="${empty SourceLeadWeb_fileUrl}">
 					<div class="welLogoText">
-					<span  title="${SourceLeadWeb_orgName}">${SourceLeadWeb_orgName}</span>
+					<span  title="${SourceLeadWeb_orgLocationName}">${SourceLeadWeb_orgLocationName}</span>
 					</div>
 				</c:if>
 				
@@ -201,7 +201,7 @@
 		  
 <div class="welBtns">
 
-	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${atsUrl}/onboardingCandidateTaxDetails'/>'" >
+	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_atsUrl}/onboardingCandidateTaxDetails'/>'" >
 	<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOnboardingCandidateDocs();" class="Brig">
 	<div class="clearfix"></div>
 </div>
