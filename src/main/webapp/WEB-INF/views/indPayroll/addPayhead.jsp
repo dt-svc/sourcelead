@@ -11,7 +11,7 @@
 		<div class="pull-left">
 			<h2>Add Payhead</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configure</a> &raquo; <a href="<c:url value='${appPath}/payheadList'/>">Payhead List</a> &raquo; Add Payhead</div>
+		<div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payheadList">Payhead List</a> &raquo; Add Payhead</div>
 	</section>
 <form:form id="payhead_form" name="payhead_form">
 	<div class="contentareaInner-styles clearfix">
@@ -223,7 +223,7 @@
 		<div class="col-lg-12">
 			<div class="pull-right">
 				<input value="Save" class="btn btn-success btnSuccess" id="savePayheadBtn" type="button" onclick="storePayhead();">
-				<input value="Cancel" onclick="javascript:window.location.href = '/app/payheadList'" class="btn btn-default ml10" type="button">
+				<input value="Cancel" onclick="javascript:window.location.href = '${SourceLeadWeb_pmsUrl}/payheadList'" class="btn btn-default ml10" type="button">
 			</div>
 		</div>
 	</div>
@@ -293,12 +293,14 @@
 			  	})
 			  	.on("blur", function () {
 			  	var name = $("#paytypeName").val();
+			  	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+
 		    	$.ajax({
 				 type : "POST",
-				 url : sourceleadUrl+"/findPayrollPaytypeByNameAndLocationId?name="+name,
+				 url : pmsUrl+"/findPayrollPaytypeByNameAndLocationId?name="+name,
 				 success : function(result) {
 					 	if (result.response === "SESSION_TIMEDOUT") {
-			  				location.replace(sourceleadUrl);
+			  				location.replace(pmsUrl);
 		                } else if (result.response === "AWKWARD") {
 		                    location.href = "/errorPage";
 		                } else if (result.response === "SUCCESS") {
@@ -309,7 +311,7 @@
 		                		$('#savePaytypeBtn').removeAttr("disabled");
 		                	}
 		                } else if (result.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
+							location.replace(pmsUrl);
 						} else {
 		                    showError("Operation failed, please try again");
 		                }
@@ -351,12 +353,13 @@
 	});
 	
 function findPayheadByNameOrShortCode(name, shortCode, listType){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$.ajax({
 	 type : "POST",
-	 url : sourceleadUrl+"/findPayrollPayheadByNameOrShortCodeAndLocationId?name="+name+"&shortCode="+shortCode+"&listType="+listType,
+	 url : pmsUrl+"/findPayrollPayheadByNameOrShortCodeAndLocationId?name="+name+"&shortCode="+shortCode+"&listType="+listType,
 	 success : function(result) {
 		 	if (result.response === "SESSION_TIMEDOUT") {
-  				location.replace(sourceleadUrl);
+  				location.replace(pmsUrl);
             } else if (result.response === "AWKWARD") {
                 location.href = "/errorPage";
             } else if (result.response === "SUCCESS") {
@@ -373,7 +376,7 @@ function findPayheadByNameOrShortCode(name, shortCode, listType){
             		$('#savePayheadBtn').removeAttr("disabled");
             	}
             } else if (result.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
+				location.replace(pmsUrl);
 			} else {
                 showError("Operation failed, please try again");
             }
@@ -415,24 +418,25 @@ function findPayheadByNameOrShortCode(name, shortCode, listType){
 		    	 $('#savePayheadBtn').prop('disabled', true);
       			var formData = getFormData1("payhead_form");
       			var uuid = '${uuid}';
+      			var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				$.ajax({
 					 type : "POST",
 					 data: formData,
 	 		         processData: false,
 	 		         contentType:false, 
-					  url : sourceleadUrl+"/storePayhead?"+tokenParamName+"="+tokenValue+"&uuid="+uuid,
+					  url : pmsUrl+"/storePayhead?"+tokenParamName+"="+tokenValue+"&uuid="+uuid,
 					  	success : function(result) {
 					  		if(result.object === 'MissingData'){
 					  			showError("Invalid data");
 					  		}else{
 					  			if (result.response === "SESSION_TIMEDOUT") {
-					  				location.replace(sourceleadUrl);
+					  				location.replace(pmsUrl);
 				                } else if (result.response === "AWKWARD") {
 				                    location.href = "/errorPage";
 				                } else if (result.response === "SUCCESS") {
-								  	location.replace(sourceleadUrl+"/payheadList");
+								  	location.replace(pmsUrl+"/payheadList");
 				                } else if (result.indexOf('Sign In') !== -1) {
-									location.replace(sourceleadUrl);
+									location.replace(pmsUrl);
 								} else {
 				                    showError("Operation failed, please try again");
 				                }
@@ -464,25 +468,26 @@ function findPayheadByNameOrShortCode(name, shortCode, listType){
 		         }; 
 				 
 			     if ($('#paytype_form').validate(false, validationSettings)){
+			    	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	      			var formData = getFormData1("paytype_form");
 					$.ajax({
 						 type : "POST",
 						 data: formData,
 		 		         processData: false,
 		 		         contentType:false, 
-						 url : sourceleadUrl+"/storePaytype?"+tokenParamName+"="+tokenValue,
+						 url : pmsUrl+"/storePaytype?"+tokenParamName+"="+tokenValue,
 						 success : function(result) {
 							 if(result.object === 'MissingData'){
 						  			showError("Invalid data");
 						  		}else{
 						  			if (result.response === "SESSION_TIMEDOUT") {
-						  				location.replace(sourceleadUrl);
+						  				location.replace(pmsUrl);
 					                } else if (result.response === "AWKWARD") {
 					                    location.href = "/errorPage";
 					                } else if (result.response === "SUCCESS") {
 					                	refreshPaytypeList();
 					                } else if (result.indexOf('Sign In') !== -1) {
-										location.replace(sourceleadUrl);
+										location.replace(pmsUrl);
 									} else {
 					                    showError("Operation failed, please try again");
 					                }
@@ -517,12 +522,13 @@ function findPayheadByNameOrShortCode(name, shortCode, listType){
 	});
 	
 	function refreshPaytypeList(){
+   	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		$.ajax({
 			 type : "POST",
-			 url : sourceleadUrl+"/getPaytypeList",
+			 url : pmsUrl+"/getPaytypeList",
 			 success : function(result) {
 				 	if (result.response === "SESSION_TIMEDOUT") {
-		  				location.replace(sourceleadUrl);
+		  				location.replace(pmsUrl);
 	                } else if (result.response === "AWKWARD") {
 	                    location.href = "/errorPage";
 	                } else if (result.response === "SUCCESS") {
@@ -537,7 +543,7 @@ function findPayheadByNameOrShortCode(name, shortCode, listType){
 				        $("#payType").append(output);
 				        $('#payType').trigger("chosen:updated");
 	                } else if (result.indexOf('Sign In') !== -1) {
-						location.replace(sourceleadUrl);
+						location.replace(pmsUrl);
 					} else {
 	                    showError("Operation failed, please try again");
 	                }
