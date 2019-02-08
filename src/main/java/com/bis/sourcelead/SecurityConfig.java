@@ -128,7 +128,7 @@ public class SecurityConfig  {
     			.antMatchers("/ats/getDemoModulesList/**").permitAll()
     			.antMatchers("/ats/getActionHistoryList/**").permitAll()
     			.antMatchers("/ats/jobCampaignSummary/**").permitAll()
-    			.antMatchers("/ats/getRequirementProfessionalProfileDetails/**").permitAll()
+    			.antMatchers("/getRequirementProfessionalProfileDetails/**").permitAll()
     			.anyRequest().authenticated()                                                   
     			.and()
     			.formLogin().loginPage("/login")
