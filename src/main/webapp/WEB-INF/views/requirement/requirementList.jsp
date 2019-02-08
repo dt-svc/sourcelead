@@ -432,7 +432,7 @@ function statusvalidating(id){
 </div>
 </form:form>
 
-<div class="timesheet_out" id="jobsTabContent">
+<div class="timesheet_out overflow_inherint" id="jobsTabContent">
 		
 <div class="positionRelative reportHead clearfix">
       <span class="pull-left refreIcon" id="filtersDiv">
