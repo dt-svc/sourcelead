@@ -375,7 +375,7 @@ public class UserLoginHelper {
 				  e.printStackTrace();
 			   }
 			  
-			  
+//			  System.out.println("<<<<<<<<<<<<<<<<<<Checking>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>."+username+"==="+userRoleId+"==="+orgLocations.getId()+"=="+req.getRequestURL());
 			  RequestAttributes attribs = RequestContextHolder.getRequestAttributes();
 			  if (RequestContextHolder.getRequestAttributes() != null) {
 			      HttpServletRequest request = ((ServletRequestAttributes) attribs).getRequest();
