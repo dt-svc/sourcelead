@@ -944,6 +944,7 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 		}
 	    
 		@RequestMapping(value = { "/indEmployeesListBasedOnDepartment","/rest/indEmployeesListBasedOnDepartment" }, method = RequestMethod.GET)
+		@ResponseBody
 		public List<Employees> getEmployeesBasedOnDepartment(@RequestParam(value="departmentId", required=true) String departmentId,HttpServletRequest request, HttpServletResponse response) throws Exception
 		{
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

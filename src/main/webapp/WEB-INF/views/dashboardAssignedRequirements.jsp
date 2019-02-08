@@ -66,6 +66,8 @@ width: 100% !important;
 <script>
 function requirementList(isWalkIn, walkInDay){  
 	var atsUrl = '${SourceLeadWeb_atsUrl}';
+	var pmsUrl = '${SourceLeadWeb_pmsUrl}';
+	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var orgATS = '${SourceLeadWeb_ats}';
 	  var orgVMS = '${SourceLeadWeb_vms}';
@@ -178,7 +180,7 @@ function requirementList(isWalkIn, walkInDay){
 			                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
 			                    	
 			                    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
-			                    	  result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+opt.orgRelationUUID+'" title="'+opt.clientName+'">'+opt.clientName+'</a></div></td>';
+			                    	  result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+vmsUrl+'/clientDashboard?orgRelationUUID='+opt.orgRelationUUID+'" title="'+opt.clientName+'">'+opt.clientName+'</a></div></td>';
 				           	         '</sec:authorize>';
            	         
 					           	      '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
