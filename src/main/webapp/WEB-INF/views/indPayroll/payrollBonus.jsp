@@ -5,16 +5,12 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
-
 <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Bonus Setup</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; <a href="/pms/payrollConfiguration">Payroll Configure</a>  &raquo; <a href="/pms/payrollBonusList">Bonus List</a> &raquo; Bonus Setup</div>
+      <div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a>  &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollBonusList">Bonus List</a> &raquo; Bonus Setup</div>
     </section>
   <div class="content-area content-new clearfix">
    <div id="loading"></div> 
@@ -135,7 +131,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				<div class="col-lg-12">
 					<div class="pull-right">
 						<input type="submit" value="Save" class="btn btn-primary"> 
-						<input type="button" value="Cancel" onClick="javascript:window.location.href = '/pms/payrollBonusList'" class="btn btn-default ml">
+						<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/payrollBonusList'/>'" class="btn btn-default ml">
 					</div>
 				</div>
 			</div>
@@ -308,7 +304,7 @@ var validationSettings = {
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
         		var formData = getFormData("createbonus_form");
-         		var sourceleadUrl ='${sourceleadUrl}';
+         		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
          		var uuid = '${uuid}';
          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	
