@@ -253,7 +253,7 @@
                      var result = "";
                      if (opt.lcaNo !== null && opt.lcaNo !== '' && opt.lcaNo !== 'undefined') {
                     	 '<sec:authorize access="hasRole(\'ROLE_VIEW_LCA\')">'; 
-                    	    result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.lcaNo +"'><a href=${SourceLeadWeb_sourceleadUrl}/immigration/viewLca?lcaUuid="+opt.lcaUuid+">"+opt.lcaNo+"</a></div></td>";
+                    	    result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.lcaNo +"'><a href=${SourceLeadWeb_vmsUrl}/immigration/viewLca?lcaUuid="+opt.lcaUuid+">"+opt.lcaNo+"</a></div></td>";
                     	 '</sec:authorize>';
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
@@ -380,7 +380,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_LCA\')">'; 
-                     result = result + '<td><div><a href=${SourceLeadWeb_sourceleadUrl}/immigration/editLcaDetails?lcaUuid='+opt.lcaUuid+'><i id="edit' + opt.lcaUuid + '" class="glyphicon glyphicon-edit" title="Edit"></i></a>';
+                     result = result + '<td><div><a href=${SourceLeadWeb_vmsUrl}/immigration/editLcaDetails?lcaUuid='+opt.lcaUuid+'><i id="edit' + opt.lcaUuid + '" class="glyphicon glyphicon-edit" title="Edit"></i></a>';
                      '</sec:authorize>';
                      if(opt.status  ==  1){
                     '<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_LCA\')">'; 
