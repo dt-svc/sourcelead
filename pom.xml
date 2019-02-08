@@ -9,6 +9,7 @@
     <name>vms</name>
     <properties>
         <java.version>1.8</java.version>
+        <!-- <tomcat.deploy.dir>C:/apache-tomcat-8.0.36/webapps</tomcat.deploy.dir> -->
     </properties>
     <repositories>
         <repository>
@@ -87,28 +88,52 @@
                 </configuration>
             </plugin>
 
-            <plugin>
+           <!--  <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.7</version>
                 <executions>
                     <execution>
                         <phase>install</phase>
                         <configuration>
-                            <target>
-                                <!-- <copy file="${project.build.directory}/sourcelead.war" todir="C:/apache-tomcat-8.0.30/webapps" 
-                                /> -->
-                            </target>
+                           <target>
+							     <copy todir="${tomcat.deploy.dir}/vms">
+						          <fileset dir="${project.build.directory}\vms" includes="**/*" />
+						         </copy>
+							</target>
                         </configuration>
                         <goals>
                             <goal>run</goal>
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-
-           
-
+            </plugin> -->
+             <plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.5</version>
+				<executions>
+					<execution>
+						<id>copy-common-files</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/views</outputDirectory>
+							<overwrite>true</overwrite>
+							<resources>
+								<resource>
+									<directory>../admin/src/main/webapp/WEB-INF/views/</directory>
+									<includes>
+										<include>masterHeader.jsp</include>
+										<include>masterSideNav.jsp</include>
+										<include>masterFooter.jsp</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
         </plugins>
-
     </build>
 </project>
