@@ -33,6 +33,7 @@
 
 
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 var sourceleadUrl = '${sourceleadUrl}';
 var sourceleadLoginUrl = '${sourceleadLoginUrl}';
 </script>
@@ -163,10 +164,9 @@ function publicRequirementProfile(requirementUUID){
 	var contactUUID = '${contactUUID}';
 	var requirementUUID = '${requirementUUID}';
 	var referUUID = '${referUUID}';
-	
 	$.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID+"&contactUUID="+contactUUID, 	   
+	    url: atsUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID+"&contactUUID="+contactUUID, 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
 		    	var result = "";
@@ -232,7 +232,7 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'            <div class="row">';
 				 result = result +'              <div class="col-md-3">';
 				 result = result +' 			 <div class="company-logo">';
-				 result = result +' 				<img id="orgImage" onerror="predefineProfileImage(this);"  src="<c:url value="'+sourceleadUrl+'/displayOrgImageInMail/'+json.orgcode+'"/>" alt="Company" title="Company Logo" class="img-responsive">';
+				 result = result +' 				<img id="orgImage" onerror="predefineProfileImage(this);"  src="<c:url value="'+atsUrl+'/displayOrgImageInMail/'+json.orgcode+'"/>" alt="Company" title="Company Logo" class="img-responsive">';
 				 result = result +' 				</div>';
 				 result = result +'              </div>';
 				 result = result +'              <div class="col-md-9">';
@@ -272,7 +272,7 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'         <div class="openPostBtns">';
 				 
 				 result = result +'<a href="'+sourceleadLoginUrl+'" class="refer">Refer</a>';
-			     result = result +'<a href="'+sourceleadUrl+"/register?contactUUID="+contactUUID+'&requirementUUID='+requirementUUID+'&referUUID='+referUUID+'" class="jobApply">Apply</a>'; 
+			     result = result +'<a href="/register?contactUUID='+contactUUID+'&requirementUUID='+requirementUUID+'&referUUID='+referUUID+'" class="jobApply">Apply</a>'; 
 				
 				 result = result +'          </div>';
 				 result = result +'          </div>';
