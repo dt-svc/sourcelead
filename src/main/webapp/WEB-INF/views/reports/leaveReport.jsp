@@ -577,7 +577,7 @@ var validationSettings = {
 };
 
 function datePickeerTest(){
-		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		  var finalDateFormatProjectSave = '';
 		  if(locationDate.match("yyyy-MM-dd")){
 			  finalDateFormatProjectSave = 'yy-mm-dd';
@@ -634,8 +634,9 @@ function resetValues(){
 <script>
 function getAllUserListBasedOnOrgLocationId(){
 	var ReportsListEmpty = $("#noReports").val(0);
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	$.ajax({
-        url: sourceleadUrl + "/getAllApprovers",
+        url: atsUrl + "/getAllApprovers",
         type: "POST",
         success: function (obj) {
         	 var output = "";
@@ -655,9 +656,10 @@ function getAllUserListBasedOnOrgLocationId(){
 </script>
 <script>
 function refreshRoleList(){
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 		 $.ajax({
 	      type : "POST",
-	       url: sourceleadUrl+"/refreshRoleList",       
+	       url: atsUrl+"/refreshRoleList",       
 	       success: function(json) {
 	        	var output = "";
 	        	for (var i=0; i<json.length; i++)
@@ -675,9 +677,10 @@ function refreshRoleList(){
 </script>
 <script>
  function getDepartmentsList(){
+	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 	 $.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getDepartmentsList?"+tokenParamName+"="+tokenValue+"",
+	    	url: atsUrl+"/getDepartmentsList?"+tokenParamName+"="+tokenValue+"",
 	        success: function(obj) {
 	          	var json = JSON.parse(obj);
 	        	var output = "";
@@ -705,11 +708,12 @@ function refreshRoleList(){
  
  <script>
 	function getLeaveTypesList() {
+		var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 		var locationId = '${SourceLeadWeb_orgLocationId}';
 		var output = "";
 		 $.ajax({
 		    	type: "GET",
-		    	url: sourceleadUrl+"/getLeaveTypesByLocationid?"+tokenParamName+"="+tokenValue+"&orgLocationId="+locationId,
+		    	url: pmsUrl+"/getLeaveTypesByLocationid?"+tokenParamName+"="+tokenValue+"&orgLocationId="+locationId,
 		        
 		        success: function (response) {
 		        	for (i = 0; i < response.data.length; i++) {
