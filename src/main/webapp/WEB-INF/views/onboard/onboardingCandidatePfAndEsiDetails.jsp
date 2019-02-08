@@ -88,15 +88,15 @@
 	            </div>
           </c:if>
 				
-				<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
+				<c:if test="${!empty SourceLeadWeb_fileUrl}">
 					<div class="welLogo">
-					<img class="logo" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_orgName}" />
+					<img class="logo" data-id="orgLogoImage" src="${SourceLeadWeb_fileUrl}" title="${SourceLeadWeb_orgLocationName}" />
 					</div>
 				</c:if>
 				
-				<c:if test="${empty SourceLeadWeb_org.fileContentType}">
+				<c:if test="${empty SourceLeadWeb_fileUrl}">
 					<div class="welLogoText">
-					<span  title="${SourceLeadWeb_orgName}">${SourceLeadWeb_orgName}</span>
+					<span  title="${SourceLeadWeb_orgLocationName}">${SourceLeadWeb_orgLocationName}</span>
 					</div>
 				</c:if>
 				
@@ -186,7 +186,7 @@
 		
 		<div class="clearfix"></div>
 		
-		<div class="col-md-6 mb checkbox-new noPad">
+	<%-- 	<div class="col-md-6 mb checkbox-new noPad">
                    <c:if test="${associatePfEsi.nominee eq 'Y'}">
                              <input class="checkbox-custom" id="nomineeShow" name="nominee" type="checkbox" onClick="nomineeDetails()">
                    </c:if>
@@ -196,7 +196,7 @@
 					<label for="nomineeShow" class="checkbox-custom-label" onClick="nomineeDetails()"><span class="ml10">Nominee</span></label>
                     <div>
                     </div>
-        </div>
+        </div> --%>
 		
 <!--         <div class="clearfix row">  -->
 <!--         	<a href="javascript:void(0)" id="nomineeShow" class="col-md-12" title="Update Nominee Details">Nominee</a> -->
@@ -549,7 +549,7 @@
   
 
 <div class="welBtns">
-	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${atsUrl}/onboardingCandidateBankingDetails'/>'" >
+	<input type="button"  value="Previous" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/onboardingCandidateBankingDetails'" >
 	<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOnboardingCandidatePfEsiDetails();" class="Brig">
 	<div class="clearfix"></div>
 </div>
