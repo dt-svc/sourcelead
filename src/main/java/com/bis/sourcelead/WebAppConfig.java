@@ -29,8 +29,6 @@ import org.springframework.web.servlet.view.JstlView;
  * This class is used for configuring the web and its related information, without web.xml
  */
 
-import com.bis.sourcelead.aspect.LoggingAspect;
-import com.bis.sourcelead.rest.UserRestController;
 import com.bis.sourcelead.web.HomeController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
@@ -44,7 +42,7 @@ import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
  */
 
 @Configuration
-@ComponentScan(basePackageClasses = { HomeController.class, UserRestController.class },
+@ComponentScan(basePackageClasses = { HomeController.class},
 	    excludeFilters = @Filter(
 	        type = FilterType.ASSIGNABLE_TYPE,
 	        value = SecurityConfig.class),

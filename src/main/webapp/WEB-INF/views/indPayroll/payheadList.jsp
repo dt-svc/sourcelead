@@ -5,10 +5,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
-
 <script> 
 	$(document).ready(function(){
 		getPayRollPayheadList()
@@ -20,7 +16,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
   <div class="pull-left">
     <h2>Payroll</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/pms/payrollConfiguration">Payroll Configure</a> &raquo; Payhead List</div>
+  <div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a> &raquo; Payhead List</div>
 </section>
  <div class="clearfix"></div>
  
@@ -28,10 +24,10 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
     <div class="timesheet_head">
       <ul>
          <li>
-               <a href="<c:url value='${appPath}/payrollPayhead'/>" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Add</a>
+               <a href="${SourceLeadWeb_pmsUrl}/payrollPayhead" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Add</a>
          </li>
       <li>
-      <a href="<c:url value='${appPath}/payrollSalarySetup'/>" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Salary Setup</a><small class="text-muted ml">|</small>
+      <a href="${SourceLeadWeb_pmsUrl}/payrollSalarySetup" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Salary Setup</a><small class="text-muted ml">|</small>
       </li>
         <li></li>
         <div class="clearfix"></div>
@@ -92,6 +88,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
  
  <script>
  function payrollPayheadList(){
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 var searchValue = $("#payheadDataTableSearch").val();
 	 var locationCode = '${SourceLeadWeb_locationCode}';
 	 var listType = "PHList";
@@ -130,7 +127,7 @@ function payheadListPagination(url,pmsUrl){
 	    	  	"data": "name",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
-	    	  		 result = result +"<td><a href='<c:url value='/app/payrollPayheadSummary?uuid="+opt.uuid+"'/>'><div class='proj_show tbldata-dotdot_140'><span title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+	    	  		 result = result +"<td><a href='${SourceLeadWeb_pmsUrl}/payrollPayheadSummary?uuid="+opt.uuid+"'><div class='proj_show tbldata-dotdot_140'><span title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 		             return result;
 	    	  	}
 	      },{
@@ -193,7 +190,7 @@ function payheadListPagination(url,pmsUrl){
 	            	    var result = "";
 	            	    result = result +"<td>";
 	            	    result = result +"<div class='tbldata-dotdot_50'>";
-	            	    result = result +"<a href='<c:url value='/app/payrollPayhead?uuid="+opt.uuid+"'/>'><span title='Edit Payhead'><i class='glyphicon glyphicon-pencil'></i></span></a>&nbsp;&nbsp;";
+	            	    result = result +"<a href='${SourceLeadWeb_pmsUrl}/payrollPayhead?uuid="+opt.uuid+"'><span title='Edit Payhead'><i class='glyphicon glyphicon-pencil'></i></span></a>&nbsp;&nbsp;";
 	            	    /* result = result +'<a><span title="Delete Payhead"><i class="glyphicon glyphicon-trash" onClick="deletePayhead(\''+opt.uuid+'\')";></i></span></a>'; */
 	            	    result = result +"</div>";
 	            	    result = result +"</td>";

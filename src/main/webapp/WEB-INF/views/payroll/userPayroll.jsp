@@ -15,7 +15,7 @@ window.onload = function () {
       <div class="pull-left">
         <h2>User Payroll</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;User Payroll</div>
+      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;User Payroll</div>
     </section>
 
 <div class="project_side_wrap_inn_tabs clearfix">
@@ -96,10 +96,10 @@ function getUserPayrollList(){
 	var selectedYear = $("#userPayId").val();
 	
 	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	var sourceleadUrl ='${sourceleadUrl}';
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				  $.ajax({
 				    	type: "GET",
-				        url: sourceleadUrl+"/getUserPayrollList?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId+"&selectedYear="+selectedYear,
+				        url: pmsUrl+"/getUserPayrollList?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId+"&selectedYear="+selectedYear,
 				        success: function(json) {
 				        var result = "";				        	
 						result = result + '<table id="userPayrollList" class="display" cellspacing="0" width="100%" >';
@@ -164,10 +164,10 @@ function getInvoiceData(){
 	var userId = '${SourceLeadWeb_user.id}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	var sourceleadUrl ='${sourceleadUrl}';
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getPayrollInvoiceDataList?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId,
+	        url: pmsUrl+"/getPayrollInvoiceDataList?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId,
 	        success: function(json) {
 	        var result = "";				        	
 			result = result + '<table id="invoiceDataListTable" class="display" cellspacing="0" width="100%" >';

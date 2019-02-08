@@ -21,12 +21,12 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
         <h2>Approval</h2>
       </div>
       <div class="pull-right brud-crum">
-                <a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;
+                <a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;
                 <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-                	<a href="<c:url value='${appPath}/indPayrollConfiguration'/>"> Payroll Configuration</a>
+                	<a href="${SourceLeadWeb_pmsUrl}/indPayrollConfiguration"> Payroll Configuration</a>
                 </c:if>
                 <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-                	<a href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>
+                	<a href="/pms/payrollConfiguration"> Payroll Configuration</a>
                 </c:if>
                 &raquo; Approval
        </div>
@@ -156,7 +156,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
   <script type="text/javascript">
 function savePayrollApprover(){
 		if ($('#payroll_approver_form').validate(false, validationSettings)) {
-	/*   	var formData = getFormData('payroll_approver_form'); */
+			var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	  	var formData = $($('#payroll_approver_form')[0]).serialize();
 		$("#approverLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.post(pmsUrl+"/savePayrollApprover?"+tokenParamName+"="+tokenValue, formData, function(result) {
@@ -168,7 +168,7 @@ function savePayrollApprover(){
     			$("#approverLoading").removeAttr('style');
     			 location.replace(pmsUrl+ "/payrollApprover");
     		} else if (result.indexOf('Sign In') !== -1) {
-    			location.replace(sourceleadUrl);
+    			location.replace(pmsUrl);
     		} else {
     		    showError("Operation failed, please try again");
     		}
@@ -186,6 +186,7 @@ $('body').on('blur', '#payroll_approver_form', function() {
 
 <script>
 function cancelButton(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	location.replace(pmsUrl+ "/payrollConfiguration");
 }
 </script>

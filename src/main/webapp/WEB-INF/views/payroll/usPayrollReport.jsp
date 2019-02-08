@@ -13,8 +13,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>US Payroll Reports</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo; 
-      <a href="/pms/reportsDashboard">Reports Dashboard
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard" title="Home">Home</a>&raquo; 
+      <a href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard">Reports Dashboard
 </a> &raquo;US Payroll Reports</div>
     </section>
     <div class="content-area content-new clearfix">

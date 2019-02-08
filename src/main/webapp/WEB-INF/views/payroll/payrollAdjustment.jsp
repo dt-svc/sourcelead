@@ -1,9 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
+
 
 <div class="sideMask"></div>
 <div class="modal usRunpayroll" style="display: none;" id="usRunpayroll">

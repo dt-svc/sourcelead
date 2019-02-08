@@ -11,7 +11,7 @@
 	      <!-- <h2>Submission Templates</h2> -->
 	      <h2 class="pull-left">Payroll Configure</h2>
 	    </div>
-	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; Payroll Configure</div>
+	    <div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${appPath}/settings">Settings</a>&raquo; Payroll Configure</div>
 	 	<div class="clearfix"></div>
     </section>
     
@@ -23,8 +23,8 @@
           <h4 class="text-muted">Pay Heads</h4>
           <small class="text-muted">Manage your pay heads</small>
           <div class="clearfix mt10"> 
-          	<a href="/pms/payrollPayhead" class="btn btn-info btn-sm mr10" title="Add">Add</a>
-          	<a href="/pms/payheadList" class="btn btn-primary btn-sm" title="View">View</a>
+          	<a href="${SourceLeadWeb_pmsUrl}/payrollPayhead" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+          	<a href="${SourceLeadWeb_pmsUrl}/payheadList" class="btn btn-primary btn-sm" title="View">View</a>
           </div>
         </div>
         <div class="clearfix"></div>
@@ -37,8 +37,8 @@
           <h4 class="text-muted">Pay Slips</h4>
           <small class="text-muted">Manage your pay slips</small>
           <div class="clearfix mt10"> 
-          	<a href="/pms/payrollPaySlip" class="btn btn-info btn-sm mr10" title="Add">Add</a>
-          	<a href="/pms/payrollPaySlipView" class="btn btn-primary btn-sm" title="View">View</a>
+          	<a href="${SourceLeadWeb_pmsUrl}/payrollPaySlip" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+          	<a href="${SourceLeadWeb_pmsUrl}/payrollPaySlipView" class="btn btn-primary btn-sm" title="View">View</a>
           </div>
         </div>
         <div class="clearfix"></div>
@@ -50,8 +50,8 @@
           <h4 class="text-muted">Bonus</h4>
           <small class="text-muted">Manage your bonus</small>
           <div class="clearfix mt10"> 
-          	<a href="/pms/payrollBonus" class="btn btn-info btn-sm mr10" title="Add">Add</a>
-          	<a href="/pms/payrollBonusList" class="btn btn-primary btn-sm" title="View">View</a>
+          	<a href="${SourceLeadWeb_pmsUrl}/payrollBonus" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+          	<a href="${SourceLeadWeb_pmsUrl}/payrollBonusList" class="btn btn-primary btn-sm" title="View">View</a>
           </div>
         </div>
         <div class="clearfix"></div>
@@ -64,8 +64,8 @@
           <h4 class="text-muted">Loan & Advances</h4>
           <small class="text-muted">Manage your loan & advances</small>
           <div class="clearfix mt10"> 
-          	<a href="/pms/payrollLoanAndAdvances" class="btn btn-info btn-sm mr10" title="Add">Add</a>
-          	<a href="/pms/payrollLoanAndAdvancesList class="btn btn-primary btn-sm" title="View">View</a>
+          	<a href="${SourceLeadWeb_pmsUrl}/payrollLoanAndAdvances" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+          	<a href="${SourceLeadWeb_pmsUrl}/payrollLoanAndAdvancesList" class="btn btn-primary btn-sm" title="View">View</a>
           </div>
         </div>
         <div class="clearfix"></div>
@@ -77,7 +77,7 @@
         <div class="pull-left">
           <h4 class="text-muted">Taxes</h4>
           <small class="text-muted">Manage your taxes</small>
-          <div class="clearfix mt10"> <a href="/pms/payrollTaxConfiguration" class="btn btn-info btn-sm mr10" title="Configure">Configure</a>
+          <div class="clearfix mt10"> <a href="${SourceLeadWeb_pmsUrl}/payrollTaxConfiguration" class="btn btn-info btn-sm mr10" title="Configure">Configure</a>
            </div>
         </div>
         <div class="clearfix"></div>
@@ -89,7 +89,7 @@
         <div class="pull-left">
           <h4 class="text-muted">Create Batch</h4>
           <small class="text-muted">Configure Batch</small>
-          <div class="clearfix mt10"> <a href="/pms/userGroupList" class="btn btn-info btn-sm mr10" title="View">View</a>
+          <div class="clearfix mt10"> <a href="${SourceLeadWeb_pmsUrl}/userGroupList" class="btn btn-info btn-sm mr10" title="View">View</a>
            </div>
         </div>
         <div class="clearfix"></div>
@@ -100,7 +100,7 @@
         <div class="pull-left">
           <h4 class="text-muted">Payroll Configure</h4>
           <small class="text-muted">Configure Payroll</small>
-          <div class="clearfix mt10"> <a href="/pms/payrollApprover" class="btn btn-info btn-sm mr10" title="Add">Configure</a>
+          <div class="clearfix mt10"> <a href="${SourceLeadWeb_pmsUrl}/payrollApprover" class="btn btn-info btn-sm mr10" title="Add">Configure</a>
            </div>
         </div>
         <div class="clearfix"></div>
@@ -111,7 +111,7 @@
         <div class="pull-left">
           <h4 class="text-muted">Pay Schedule</h4>
           <small class="text-muted">Configure Pay Schedule</small>
-          <div class="clearfix mt10"> <a href="/pms/payrollScheduleList" class="btn btn-info btn-sm mr10" title="Add">View</a></div>
+          <div class="clearfix mt10"> <a href="${SourceLeadWeb_pmsUrl}/payrollScheduleList" class="btn btn-info btn-sm mr10" title="Add">View</a></div>
         </div>
         <div class="clearfix"></div>
       </div>

@@ -5,10 +5,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
-
 
 <script type="text/javascript">
 	$(window).load(function() {
@@ -21,15 +17,15 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	});
 </script>
 
-<section class="content-wraper contentWraper">
+<section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Loan & Advances</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configure</a>  &raquo; Loan & Advances</div>
+      <div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a>  &raquo; Loan & Advances</div>
     </section>
     
-    <div class="content-area content-new clearfix">
+    <div class="content-area content-new clearfix backgroundWhite">
    <div id="loading"></div> 
     <form:form class="login-form clearfix"  id="createloanAndAdv_form"  name="createloanAndAdv_form" method="post" > 
       <div class="row minHeightcol5">
@@ -159,7 +155,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				<div class="col-lg-12">
 					<div class="pull-right">
 						<input type="submit" value="Save" id="loan_adv"  class="btn btn-primary"> 
-						<input type="button" value="Cancel" onClick="javascript:window.location.href = '/pms/payrollLoanAndAdvancesList'" class="btn btn-default ml">
+						<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/payrollLoanAndAdvancesList'/>'" class="btn btn-default ml">
 					</div>
 				</div>
 			</div>
@@ -177,6 +173,7 @@ function validateName(){
 		if('${uuid}' != null && '${uuid}' != '' && '${uuid}' != 'undefined'){
 			uuid = '${uuid}'
 		}
+		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		 $("#loan_adv").attr("disabled", "disabled");
 		$('#loandAndAdvNameDiv').find('p.jquery_form_error_message').remove();
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -356,39 +353,6 @@ function validateInterestRate(){
 	 }
 }
 
-
-/* function getPayHeadList(){
-	 $.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/getPayheadList?${_csrf.parameterName}=${_csrf.token}",
-	        success: function(json) {
-	        	var output = "";
-	        	output = output + "<option value=''>Select Pay Head</option>"; 
-	        	for (var i=0; i<json.response.length; i++)
-				{
-		        		var opt = json.response[i];
-		        		var payHeadId = '${loanAndAdv.payHeadId}';
-		        		
-		        		if(payHeadId != null && payHeadId != 'undefined' && payHeadId != ''){
-		        			
-		        			var selected = '';
-		        			if(payHeadId == opt.id){
-		        				selected = 'selected';
-		        			}
-		        			
-		        			output = output + "<option "+selected+" value='" +opt.id+ "'>"+opt.name+"</option>";
-		        		}else{
-		        			output = output + "<option value='" +opt.id+ "'>"+opt.name+"</option>";
-		        		} 
-		        		
-				}
-	        	$("#payrollPayHead").empty();
-		        $("#payrollPayHead").append(output);
-		        $('#payrollPayHead').trigger("chosen:updated");
-	        },
-	    });
-} */
-
 </script>
 
 <script type="text/javascript">
@@ -402,7 +366,7 @@ var validationSettings = {
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
         		var formData = getFormData("createloanAndAdv_form");
-         		var sourceleadUrl ='${sourceleadUrl}';
+         		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
          		var uuid = '${uuid}';
          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	
@@ -419,7 +383,7 @@ var validationSettings = {
     		        	} else if (result.response === "SUCCESS") {
     		        		 location.replace(pmsUrl + "/payrollLoanAndAdvancesList");
     		        	} else if (result.indexOf('Sign In') !== -1) {
-    		        		location.replace(sourceleadUrl);
+    		        		location.replace(pmsUrl);
     		        	} else {
     		        		$("#loading").removeAttr('style');
     		        	    showError("Operation failed, please try again");
