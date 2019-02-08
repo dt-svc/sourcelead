@@ -101,53 +101,53 @@
 				<!-- <li><a href="#">Invoice</a></li> -->
 				
 				<sec:authorize access="hasRole('ROLE_BILLING_REPORTS')">
-				<li><a href="/vms/billingReports">Finance</a></li>
+				<li><a href="${appPath}/billingReports">Finance</a></li>
 				</sec:authorize>
 				<!-- <li><a href="#">Invoice Report By Customer / Project</a></li>
 				<li><a href="#">Bill Report By Customer / Project</a></li> -->
 				<sec:authorize access="hasRole('ROLE_A_R_AGING')">
-				<c:if test="${SourceLeadWeb_ats == 'Y'}">
-				<li><a href='/vms/arAgingReport'>A/R Aging</a></li>
-				</c:if>
+				<%-- <c:if test="${SourceLeadWeb_ats == 'Y'}"> --%>
+				<li><a href='${appPath}/arAgingReport'>A/R Aging</a></li>
+				<%-- </c:if> --%>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_A_P_AGING')">
-				<c:if test="${SourceLeadWeb_vms == 'Y'}">
-				<li><a href='/vms/apAgingReport'>A/P Aging</a></li>
-				</c:if>
+				<%-- <c:if test="${SourceLeadWeb_vms == 'Y'}"> --%>
+				<li><a href='${appPath}/apAgingReport'>A/P Aging</a></li>
+<%-- 				</c:if> --%>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_INVOICE')">
-					<c:if test="${SourceLeadWeb_ats == 'Y'}">
-					<li><a href='/vms/missingInvoiceReport'>Missing Invoice(s)</a></li>
-					</c:if>
+					<%-- <c:if test="${SourceLeadWeb_ats == 'Y'}"> --%>
+					<li><a href='${appPath}/missingInvoiceReport'>Missing Invoice(s)</a></li>
+					<%-- </c:if> --%>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_RECEIVED_INVOICES')">
-				<c:if test="${SourceLeadWeb_ats == 'Y'}">
-			     <li><a href='/vms/receivedInvoiceReport'>Received Invoice(s)</a></li>    
-			     </c:if>
+				<%-- <c:if test="${SourceLeadWeb_ats == 'Y'}"> --%>
+			     <li><a href='${appPath}/receivedInvoiceReport'>Received Invoice(s)</a></li>    
+			     <%-- </c:if> --%>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_BILL')">
-				<c:if test="${SourceLeadWeb_vms == 'Y'}">
-				<li><a href='/vms/missingBillReport'>Missing Bill(s)</a></li>
-				</c:if>
+				<%-- <c:if test="${SourceLeadWeb_vms == 'Y'}"> --%>
+				<li><a href='${appPath}/missingBillReport'>Missing Bill(s)</a></li>
+				<%-- </c:if> --%>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_PAID_BILL')">
-					<c:if test="${SourceLeadWeb_vms == 'Y'}">
-				    <li><a href='/vms/paidBillReport'>Paid Bill(s)</a></li>
-				    </c:if>
+					<%-- <c:if test="${SourceLeadWeb_vms == 'Y'}"> --%>
+				    <li><a href='${appPath}/paidBillReport'>Paid Bill(s)</a></li>
+				  <%--   </c:if> --%>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MARGIN_SHEET_REPORT')">
-				<c:if test="${SourceLeadWeb_vms == 'Y'}">
-				<li><a href='/vms/marginSheetReports'>MarginSheetReport</a></li>
-				</c:if>
+			<%-- 	<c:if test="${SourceLeadWeb_vms == 'Y'}"> --%>
+				<li><a href='${appPath}/marginSheetReports'>MarginSheetReport</a></li>
+			<%-- 	</c:if> --%>
 				</sec:authorize>
 				
-			   <li><a href='/vms/assetmanagementGrowth'>Asset Growth</a></li>
+			   <li><a href='${appPath}/assetmanagementGrowth'>Asset Growth</a></li>
 				
 				
 			    
@@ -166,7 +166,7 @@
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                 <a href="/vms/financialReportsList" class="block">
+                 <a href="${appPath}/financialReportsList" class="block">
                   <div class="clearfix text-center mb10"><i class="finReport"></i></div>
                   <div class="clearfix text-center"><h4>Financial Report</h4></div></a>
                   </div>
@@ -426,53 +426,53 @@
                 <h2><a href="javascript:void(0)">Financial Reports</a></h2>
                 <ul class="repSearchList">
                     <sec:authorize access="hasRole('ROLE_BILLING_REPORTS')">
-				<li><a href="/vms/billingReports">Finance</a></li>
+				<li><a href="${appPath}/billingReports">Finance</a></li>
 				</sec:authorize>
 				<!-- <li><a href="#">Invoice Report By Customer / Project</a></li>
 				<li><a href="#">Bill Report By Customer / Project</a></li> -->
 				<sec:authorize access="hasRole('ROLE_A_R_AGING')">
 				<c:if test="${SourceLeadWeb_ats == 'Y'}">
-				<li><a href='/vms/arAgingReport'>A/R Aging</a></li>
+				<li><a href='${appPath}/arAgingReport'>A/R Aging</a></li>
 				</c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_A_P_AGING')">
 				<c:if test="${SourceLeadWeb_vms == 'Y'}">
-				<li><a href='/vms/apAgingReport'>A/P Aging</a></li>
+				<li><a href='${appPath}/apAgingReport'>A/P Aging</a></li>
 				</c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_INVOICE')">
 					<c:if test="${SourceLeadWeb_ats == 'Y'}">
-					<li><a href='/vms/missingInvoiceReport'>Missing Invoice(s)</a></li>
+					<li><a href='${appPath}/missingInvoiceReport'>Missing Invoice(s)</a></li>
 					</c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_RECEIVED_INVOICES')">
 				<c:if test="${SourceLeadWeb_ats == 'Y'}">
-			     <li><a href='/vms/receivedInvoiceReport'>Received Invoice(s)</a></li>    
+			     <li><a href='${appPath}/receivedInvoiceReport'>Received Invoice(s)</a></li>    
 			     </c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_BILL')">
 				<c:if test="${SourceLeadWeb_vms == 'Y'}">
-				<li><a href='/vms/missingBillReport'>Missing Bill(s)</a></li>
+				<li><a href='${appPath}/missingBillReport'>Missing Bill(s)</a></li>
 				</c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_PAID_BILL')">
 					<c:if test="${SourceLeadWeb_vms == 'Y'}">
-				    <li><a href='/vms/paidBillReport'>Paid Bill(s)</a></li>
+				    <li><a href='${appPath}/paidBillReport'>Paid Bill(s)</a></li>
 				    </c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MARGIN_SHEET_REPORT')">
 				<c:if test="${SourceLeadWeb_vms == 'Y'}">
-				<li><a href='/vms/marginSheetReports'>MarginSheetReport</a></li>
+				<li><a href='${appPath}/marginSheetReports'>MarginSheetReport</a></li>
 				</c:if>
 				</sec:authorize>
 				
-				<li><a href='/vms/assetmanagementGrowth'>Asset Growth</a></li>
+				<li><a href='${appPath}/assetmanagementGrowth'>Asset Growth</a></li>
 				
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
@@ -630,9 +630,14 @@
 			<div class="dropdown pull-right report-dropdown">
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown" aria-expanded="false"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
-			     <li><a href="/app/projectReport">Project Report</a></li>
-				<li><a href="/app/employeeTasksReport">Employee Tasks</a></li>
-				<li><a href="/app/overdueTaskReport">Over Due Report</a></li>
+			     <li><a href="${appPath}/indPayrollRegisterReport">Payroll Register</a></li>
+				 <li><a href="${appPath}/indPayrollBankTransferReport">Bank Transfer</a></li>
+				 <li><a href="${appPath}/indPayrollYTDSummaryReport">YTD Summary</a></li>
+				 <li><a href="${appPath}/indPayrollAnnualTaxReport">Annual Tax</a></li>
+<%-- 				 <li><a href="${appPath}/indPayrollLoanReport">Loan</a></li> --%>
+				 <li><a href="${appPath}/indPayrollESISummaryReport">ESI</a></li>
+				 <li><a href="${appPath}/indPayrollPFSummaryReport">PF</a></li>
+				 <li><a href="${appPath}/indPayrollSalaryRegisterReport">Salary Register</a></li>
 					
 				</ul>
 			</div>
