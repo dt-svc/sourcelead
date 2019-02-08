@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.RandomStringUtils;
@@ -121,13 +122,22 @@ public class UserLoginHelper {
 	{
 		
 		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			String clientSessionId = null;
+			Cookie[] cookies = req.getCookies();
+			  for(Cookie mycookie : cookies) {
+			  if(mycookie.getName().equalsIgnoreCase("JSESSIONID")) {
+				  clientSessionId = mycookie.getValue();
+				  break;
+		        }
+			  }
+			  
 			
 		 String[] usernameWithRole = username.split("##");
 		 String uname = usernameWithRole[0];
 		 
-		 JSONObject userRole = userStatsCacheHelper.getLogInUserRoleStats(uname+"_AUTH_"+userRoleUUID);
-		 JSONObject orgLocations = userStatsCacheHelper.getOrgLocationCacheDetails("OrgLocation_"+userRole.get("orgLocationCode").toString());
-		 
+		 JSONObject userSession =  userStatsCacheHelper.getLogInUserSessionJson(clientSessionId+"_SESSION");
+		 JSONObject userRole = userStatsCacheHelper.getLogInUserRoleStats(uname+"_AUTH_"+userSession.get("userRoleUUID").toString());
+		 JSONObject orgLocations = userStatsCacheHelper.getOrgLocationCacheDetails("OrgLocation_"+userSession.get("orgLocationCode").toString());
 		 
 		 /**
 		  * Need to remove this entre try block when couch base is completely established
