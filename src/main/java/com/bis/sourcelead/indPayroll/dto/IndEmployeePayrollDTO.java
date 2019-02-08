@@ -1,11 +1,13 @@
-package com.bis.sourcelead.payroll.dto;
+package com.bis.sourcelead.indPayroll.dto;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
-import com.bis.sourcelead.dto.AssociateSalaryPayheadIndDTO;
 import com.bis.sourcelead.dto.SearchDTO;
+import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
 
 public class IndEmployeePayrollDTO  extends SearchDTO{
 	
@@ -90,6 +92,95 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 	private String employeeName;
 	
 	private String employeeid;
+	
+	private String departmentName;
+	
+	private BigDecimal currentHours;
+	
+	private BigDecimal ytdTaxes;
+	
+	private BigDecimal deducationAmount;
+	
+	private BigDecimal ytdNetPay;
+	
+	private String accountNumber;
+	
+	private String bankName;
+	
+	private String ifscCode;
+	
+	private String exportType;
+	
+	private String employeeIds;
+	
+	private String departmentId;
+	
+	private String startDate;
+	
+	private String endDate;
+	
+	private BigDecimal deducations;
+	
+	private BigDecimal noOfWorkingDays;
+	
+	private String financialYear;
+	
+	//Salary statement related
+	private Date deteOfJoin;
+	
+	private String firstName;
+	
+	private String lastName;
+
+	private String payHeadName;
+	
+	private BigDecimal payHeadAmount;
+	
+	private String salaryMonthName;
+	
+	private BigInteger canId;
+	
+	private String payHeadType;
+
+	private Map<String,String> payHeadMapList;
+	
+	//ESI and PF related
+	private String toMonth;
+	
+	private String fromMonth;
+	
+	private BigInteger payrollPayheadId;
+	
+	private String shortCode;
+	
+	private String uanNumber;
+	
+	private String pfNumber;
+	
+	private String esiNumber;
+	
+	private String eligibleForEsi;
+	
+	private String eligibleForPf;
+	
+	private Double employeeEsi;
+	
+	private Double employerEsi;
+	
+	private Double employeePf;
+	
+	private Double employerPf;
+	
+	private Double totalESI;
+	
+	private Double totalPF;
+	
+	//Salary Register
+	private Date effectiveDate;
+	
+	private String incresePercentage;
+	
+	private BigDecimal annualSalary;
 	
 	public Long getId() {
 		return id;
@@ -412,4 +503,352 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 	public void setEmployeeid(String employeeid) {
 		this.employeeid = employeeid;
 	}
+
+	public String getDepartmentName() {
+		return departmentName;
+	}
+
+	public void setDepartmentName(String departmentName) {
+		this.departmentName = departmentName;
+	}
+
+	public BigDecimal getCurrentHours() {
+		return currentHours;
+	}
+
+	public BigDecimal getYtdTaxes() {
+		return ytdTaxes;
+	}
+
+	public BigDecimal getDeducationAmount() {
+		return deducationAmount;
+	}
+
+	public BigDecimal getYtdNetPay() {
+		return ytdNetPay;
+	}
+
+	public void setCurrentHours(BigDecimal currentHours) {
+		this.currentHours = currentHours;
+	}
+
+	public void setYtdTaxes(BigDecimal ytdTaxes) {
+		this.ytdTaxes = ytdTaxes;
+	}
+
+	public void setDeducationAmount(BigDecimal deducationAmount) {
+		this.deducationAmount = deducationAmount;
+	}
+
+	public void setYtdNetPay(BigDecimal ytdNetPay) {
+		this.ytdNetPay = ytdNetPay;
+	}
+
+	public String getAccountNumber() {
+		return accountNumber;
+	}
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public String getIfscCode() {
+		return ifscCode;
+	}
+
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
+	public void setIfscCode(String ifscCode) {
+		this.ifscCode = ifscCode;
+	}
+
+	public String getExportType() {
+		return exportType;
+	}
+
+	public void setExportType(String exportType) {
+		this.exportType = exportType;
+	}
+
+	public String getEmployeeIds() {
+		return employeeIds;
+	}
+
+	public String getDepartmentId() {
+		return departmentId;
+	}
+
+	public String getStartDate() {
+		return startDate;
+	}
+
+	public String getEndDate() {
+		return endDate;
+	}
+
+	public void setEmployeeIds(String employeeIds) {
+		this.employeeIds = employeeIds;
+	}
+
+	public void setDepartmentId(String departmentId) {
+		this.departmentId = departmentId;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+
+	public BigDecimal getDeducations() {
+		return deducations;
+	}
+
+	public void setDeducations(BigDecimal deducations) {
+		this.deducations = deducations;
+	}
+
+	public BigDecimal getNoOfWorkingDays() {
+		return noOfWorkingDays;
+	}
+
+	public void setNoOfWorkingDays(BigDecimal noOfWorkingDays) {
+		this.noOfWorkingDays = noOfWorkingDays;
+	}
+
+	public String getFinancialYear() {
+		return financialYear;
+	}
+
+	public void setFinancialYear(String financialYear) {
+		this.financialYear = financialYear;
+	}
+
+	public Date getDeteOfJoin() {
+		return deteOfJoin;
+	}
+
+	public void setDeteOfJoin(Date deteOfJoin) {
+		this.deteOfJoin = deteOfJoin;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public String getPayHeadName() {
+		return payHeadName;
+	}
+
+	public BigDecimal getPayHeadAmount() {
+		return payHeadAmount;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public void setPayHeadName(String payHeadName) {
+		this.payHeadName = payHeadName;
+	}
+
+	public void setPayHeadAmount(BigDecimal payHeadAmount) {
+		this.payHeadAmount = payHeadAmount;
+	}
+
+	public String getSalaryMonthName() {
+		return salaryMonthName;
+	}
+
+	public void setSalaryMonthName(String salaryMonthName) {
+		this.salaryMonthName = salaryMonthName;
+	}
+
+	public BigInteger getCanId() {
+		return canId;
+	}
+
+	public void setCanId(BigInteger canId) {
+		this.canId = canId;
+	}
+
+	public Map<String, String> getPayHeadMapList() {
+		return payHeadMapList;
+	}
+
+	public void setPayHeadMapList(Map<String, String> payHeadMapList) {
+		this.payHeadMapList = payHeadMapList;
+	}
+
+	public String getPayHeadType() {
+		return payHeadType;
+	}
+
+	public void setPayHeadType(String payHeadType) {
+		this.payHeadType = payHeadType;
+	}
+
+	public String getToMonth() {
+		return toMonth;
+	}
+
+	public String getFromMonth() {
+		return fromMonth;
+	}
+
+	public void setToMonth(String toMonth) {
+		this.toMonth = toMonth;
+	}
+
+	public void setFromMonth(String fromMonth) {
+		this.fromMonth = fromMonth;
+	}
+
+	public BigInteger getPayrollPayheadId() {
+		return payrollPayheadId;
+	}
+
+	public String getShortCode() {
+		return shortCode;
+	}
+
+	public String getUanNumber() {
+		return uanNumber;
+	}
+
+	public String getPfNumber() {
+		return pfNumber;
+	}
+
+	public String getEsiNumber() {
+		return esiNumber;
+	}
+
+	public String getEligibleForEsi() {
+		return eligibleForEsi;
+	}
+
+	public String getEligibleForPf() {
+		return eligibleForPf;
+	}
+
+	public Double getEmployerEsi() {
+		return employerEsi;
+	}
+
+	public Double getEmployerPf() {
+		return employerPf;
+	}
+
+	public void setPayrollPayheadId(BigInteger payrollPayheadId) {
+		this.payrollPayheadId = payrollPayheadId;
+	}
+
+	public void setShortCode(String shortCode) {
+		this.shortCode = shortCode;
+	}
+
+	public void setUanNumber(String uanNumber) {
+		this.uanNumber = uanNumber;
+	}
+
+	public void setPfNumber(String pfNumber) {
+		this.pfNumber = pfNumber;
+	}
+
+	public void setEsiNumber(String esiNumber) {
+		this.esiNumber = esiNumber;
+	}
+
+	public void setEligibleForEsi(String eligibleForEsi) {
+		this.eligibleForEsi = eligibleForEsi;
+	}
+
+	public void setEligibleForPf(String eligibleForPf) {
+		this.eligibleForPf = eligibleForPf;
+	}
+
+	public void setEmployeeEsi(Double employeeEsi) {
+		this.employeeEsi = employeeEsi;
+	}
+
+	public void setEmployerEsi(Double employerEsi) {
+		this.employerEsi = employerEsi;
+	}
+
+	public void setEmployeePf(Double employeePf) {
+		this.employeePf = employeePf;
+	}
+
+	public void setEmployerPf(Double employerPf) {
+		this.employerPf = employerPf;
+	}
+
+	public Double getTotalESI() {
+		return totalESI;
+	}
+
+	public Double getTotalPF() {
+		return totalPF;
+	}
+
+	public void setTotalESI(Double totalESI) {
+		this.totalESI = totalESI;
+	}
+
+	public void setTotalPF(Double totalPF) {
+		this.totalPF = totalPF;
+	}
+
+	public Double getEmployeeEsi() {
+		return employeeEsi;
+	}
+
+	public Double getEmployeePf() {
+		return employeePf;
+	}
+
+
+	public String getIncresePercentage() {
+		return incresePercentage;
+	}
+
+	public BigDecimal getAnnualSalary() {
+		return annualSalary;
+	}
+
+	 
+
+	public void setIncresePercentage(String incresePercentage) {
+		this.incresePercentage = incresePercentage;
+	}
+
+	public void setAnnualSalary(BigDecimal annualSalary) {
+		this.annualSalary = annualSalary;
+	}
+
+	public Date getEffectiveDate() {
+		return effectiveDate;
+	}
+
+	public void setEffectiveDate(Date effectiveDate) {
+		this.effectiveDate = effectiveDate;
+	}
+	
 }
