@@ -16,7 +16,7 @@ $(document).ready(function(){
   <div class="pull-left">
     <h2>Configure Payslip View</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configure</a> &raquo; Payslip View</div>
+  <div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a> &raquo; Payslip View</div>
 </section>
  <div class="clearfix"></div>
  
@@ -36,10 +36,10 @@ $(document).ready(function(){
  
 <script>
 function getIndPayslipList(){
-	 var sourceleadUrl = '${sourceleadUrl}';
+	 var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl+ "/getPayrollPaySlipViewList?${_csrf.parameterName}=${_csrf.token}",
+			url : pmsUrl+ "/getPayrollPaySlipViewList?${_csrf.parameterName}=${_csrf.token}",
 			success : function(json) {
 				var result = "";
 				result = result +'<table id="paySlipPagination">';
@@ -82,7 +82,7 @@ function getIndPayslipList(){
    		    		
    		    		result = result +'<td>'
    		    		result = result +'  <div class="tbldata-dotdot-100 text-center">';
-		    			result = result +'<a href="<c:url value="${appPath}/payrollPaySlip?paySlipUUID='+report.uuid+'"/>"  class="glyphicon glyphicon-edit" title="Edit"></a>';	
+		    			result = result +'<a href="${SourceLeadWeb_pmsUrl}/payrollPaySlip?paySlipUUID='+report.uuid+'"  class="glyphicon glyphicon-edit" title="Edit"></a>';	
 		    			if(report.deletePermission != "N"){
 	   		    			result = result +'<a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deletePayslipInd(\''+report.uuid+'\','+report.id+');"></a>';	
 		    			}else{
@@ -116,21 +116,21 @@ function payslipPagination(){
 }
 
 function deletePayslipInd(uuid,id){
-	var sourceleadUrl = '${sourceleadUrl}';
+	var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 	var defaultStatus = $("#"+id+"defaultPayslip").val();
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+ "/deletePayrollPaySlip?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid+"&defaultStatus="+defaultStatus,
+		url : pmsUrl+ "/deletePayrollPaySlip?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid+"&defaultStatus="+defaultStatus,
 		success : function(json) {
 			getIndPayslipList();
 		}
 	});
 }
 function changeDefaultPayslip(uuid){
-	var sourceleadUrl = '${sourceleadUrl}';
+	var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+ "/changeDefaultPayslip?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,
+		url : pmsUrl+ "/changeDefaultPayslip?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,
 		success : function(json) {
 			getIndPayslipList();
 		}

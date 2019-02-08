@@ -10,7 +10,7 @@
       <div class="pull-left">
         <h2>Bonus Setup</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configure</a>  &raquo; <a href="${appPath}/payrollBonusList">Bonus List</a> &raquo; Bonus Setup</div>
+      <div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a>  &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollBonusList">Bonus List</a> &raquo; Bonus Setup</div>
     </section>
   <div class="content-area content-new clearfix">
    <div id="loading"></div> 
@@ -304,14 +304,14 @@ var validationSettings = {
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
         		var formData = getFormData("createbonus_form");
-         		var sourceleadUrl ='${sourceleadUrl}';
+         		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
          		var uuid = '${uuid}';
          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	
           		 $.ajax({
           	      type: "POST",
           	    	data: formData,
-                	  url: sourceleadUrl+"/saveBonus?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,
+                	  url: pmsUrl+"/saveBonus?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,
                   	success: function(result) {
                   		if (result && result.response === "INVALID_DATA") {
                   			$("#loading").removeAttr('style');
@@ -320,7 +320,7 @@ var validationSettings = {
                         	$("#loading").removeAttr('style');
     		        	    location.href = "/errorPage";
     		        	} else if (result.response === "SUCCESS") {
-    		        		 location.replace(sourceleadUrl + "/payrollBonusList");
+    		        		 location.replace(pmsUrl + "/payrollBonusList");
     		        	} else if (result.indexOf('Sign In') !== -1) {
     		        		location.replace(sourceleadUrl);
     		        	} else {
