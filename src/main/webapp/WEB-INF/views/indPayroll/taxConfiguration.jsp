@@ -9,7 +9,7 @@
 		<div class="pull-left">
 			<h2>Taxes</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Taxes</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a> &raquo;Taxes</div>
 	</section>
 	<div class="contentareaInner-styles clearfix">
 		<div class="clearfix form-horizontal minHeight_225 minHeightcol5">
@@ -235,10 +235,12 @@
 			$("#saveTaxConfig").attr("disabled","disabled");
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			var formData = getFormData("addTaxConfigForm");
+			var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+
 			$.ajax({
 				type : "POST",
         	    data: formData,
-				url : sourceleadUrl+"/savePayrollTax",
+				url : pmsUrl+"/savePayrollTax",
 				success : function(response) {
 					if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -255,7 +257,7 @@
 		        	} else if(response.response === "FAILED") {
 		        		showError(response.responseMessage);
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
+		        		location.replace(pmsUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -308,9 +310,11 @@
 		var endMonth = $("#financialEndMonth").val();
 		if (startMonth != null && startMonth != 'undefined' && endMonth != null
 				&& endMonth != 'undefined') {
+			var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/saveFinanacialYear?locationId="
+				url : pmsUrl + "/saveFinanacialYear?locationId="
 						+ locationId + "&startMonth=" + startMonth
 						+ "&endMonth=" + endMonth,
 				success : function(result) {
@@ -331,7 +335,8 @@
 
 <script>
 function cancel(){
-	window.location.href =  sourceleadUrl+"/indPayrollConfiguration";
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	window.location.href =  pmsUrl+"/indPayrollConfiguration";
 }
 
 

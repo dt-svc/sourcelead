@@ -31,10 +31,10 @@ function validatePayslipName(uuid){
     <h2>Configure Payslip</h2>
   </div>
   <c:if test="${empty payslipInd.uuid}">
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configure</a> &raquo; Payslip</div>
+    <div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a> &raquo; Payslip</div>
   </c:if>
   <c:if test="${!empty payslipInd.uuid}">
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configure</a> &raquo; <a href="<c:url value='${appPath}/payrollPaySlipView'/>">Payroll Configure List</a> &raquo; Payslip Edit</div>
+    <div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollPaySlipView">Payroll Configure List</a> &raquo; Payslip Edit</div>
   </c:if>
 </section>
  <div class="clearfix"></div>
@@ -261,11 +261,11 @@ function validatePayslipName(uuid){
           <div class="pull-right">
           <c:if test="${!empty payslipInd.uuid}">
                <input value="Update" class="btn btn-success btnSuccess" type="button" onclick="savePaySlip();">
-               <input value="Cancel" class="btn btn-default ml10" type="button" onClick="javascript:window.location.href = '<c:url value='${appPath}/payrollPaySlipView'/>'">
+               <input value="Cancel" class="btn btn-default ml10" type="button" onClick="javascript:window.location.href = '${SourceLeadWeb_pmsUrl}/payrollPaySlipView'">
           </c:if>
           <c:if test="${empty payslipInd.uuid}">
                <input value="Save" class="btn btn-success btnSuccess" type="button" onclick="savePaySlip();">
-               <input value="Cancel" class="btn btn-default ml10" type="button" onClick="javascript:window.location.href = '<c:url value='${appPath}/payrollConfiguration'/>'">
+               <input value="Cancel" class="btn btn-default ml10" type="button" onClick="javascript:window.location.href = '${SourceLeadWeb_pmsUrl}/payrollConfiguration'">
           </c:if>
           </div>
         </div>
@@ -277,21 +277,21 @@ function validatePayslipName(uuid){
  function savePaySlip(){
 	 var uuid = '${payslipInd.uuid}';
 	 if ($('#payslip_form').validate(false, validationSettings)) {
-		 var sourceleadUrl = '${sourceleadUrl}';
+		 var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 		 var formData = getFormData("payslip_form");
 		 $.ajax({
 				type: "POST",
 				data: formData,
-				url : sourceleadUrl+ "/savePayrollPaySlipInd?"+tokenParamName+"="+tokenValue,
+				url : pmsUrl+ "/savePayrollPaySlipInd?"+tokenParamName+"="+tokenValue,
 				success : function(data) {
 					 if (data.response === "AWKWARD") {
 	            			location.href = "/errorPage";
 	  	    		    }
 	            		else if(data.response === "SUCCESS"){
 	            			if(uuid != null){
-		            			 location.replace(sourceleadUrl + "/payrollPaySlipView");
+		            			 location.replace(pmsUrl + "/payrollPaySlipView");
 	            			}else{
-		            			 location.replace(sourceleadUrl + "/indPayrollConfiguration");
+		            			 location.replace(pmsUrl + "/indPayrollConfiguration");
 	            			}
 			        	}
 	            		else if (data.indexOf('Sign In') !== -1) {
