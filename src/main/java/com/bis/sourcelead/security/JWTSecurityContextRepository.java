@@ -70,14 +70,7 @@ public class JWTSecurityContextRepository implements SecurityContextRepository {
     	requestResponseHolder.getRequest().getSession(false);
         HttpServletRequest request = requestResponseHolder.getRequest();
         HttpServletResponse response = requestResponseHolder.getResponse();
-        
-        Cookie[] cookies = request.getCookies();
-		  for(Cookie mycookie : cookies) {
-		  if(mycookie.getName().equalsIgnoreCase("JSESSIONID")) {
-			  System.out.println("JsessionId>>>>>"+mycookie.getValue());
-			  break;
-	        }
-		  }
+          
         
         requestResponseHolder.setResponse(new SaveToCookieResponseWrapper(request, response, tokenName, secret));
         SecurityContext context = null;
@@ -121,7 +114,7 @@ public class JWTSecurityContextRepository implements SecurityContextRepository {
 								e.printStackTrace();
 							}
                         }
-                        String uname = username+"##"+userRoleId;
+                        String uname = username+"##"+userRoleId+"##"+usernameWithRole[2];
                         SecurityContext context = SecurityContextHolder.createEmptyContext();
                         
                         

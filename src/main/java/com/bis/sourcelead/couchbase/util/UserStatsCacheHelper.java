@@ -529,34 +529,24 @@ public class UserStatsCacheHelper {
 	}
 	
 	
-	public void saveLoginUserSessionStoreToCouchbase(UserRole userRole,HttpServletRequest request) {
+	public void saveLoginUserSessionStoreToCouchbase(String generatedCustomTocken,UserRole userRole,HttpServletRequest request) {
 		LoginUserSessionStoreDTO sessionDTO = new LoginUserSessionStoreDTO();
 		
 		sessionDTO.setDocumentType(Constants.COUCH_DOCUMENT_TYPE_USER_LOGIN_SESSION);
 		sessionDTO.setUserRoleUUID(userRole.getUuid());
-		request.getSession(false);
-		String clientSessionId = null;
-		Cookie[] cookies = request.getCookies();
-		  for(Cookie mycookie : cookies) {
-		  if(mycookie.getName().equalsIgnoreCase("JSESSIONID")) {
-			  clientSessionId = mycookie.getValue();
-			  break;
-	        }
-		  }
-		  
-		sessionDTO.setSessionId(clientSessionId);
+		sessionDTO.setSessionId(generatedCustomTocken);
 		sessionDTO.setOrgLocationCode(userRole.getOrgLocations().getLocationCode());
 		sessionDTO.setLoginUserName(userRole.getUser().getUserName());
 	    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 	    LocalDateTime now = LocalDateTime.now();  
 	    sessionDTO.setLastUpdatedDate(dtf.format(now));
-		     
-		 ObjectMapper sessionObj = new ObjectMapper();
+		
+	    ObjectMapper sessionObj = new ObjectMapper();
         try {
 			String sessionJsonStr = sessionObj.writeValueAsString(sessionDTO);
 			JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
 			StringBuilder userSessionKey = new StringBuilder();
-			userSessionKey.append(clientSessionId).append("_SESSION");
+			userSessionKey.append(generatedCustomTocken).append("_SESSION");
 			SourceLeadSessionManager.setUserLoginSessionJsonString(userSessionKey.toString(), "userLoginSessionStore", jsonObject);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
