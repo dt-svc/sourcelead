@@ -1,4 +1,4 @@
-package com.bis.sourcelead.entity;
+package com.bis.sourcelead.indPayroll.entity;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -13,7 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
+import com.bis.sourcelead.entity.PayrollPayhead;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
 
 @Entity
 @Table(name = "ASSOCIATE_PAYROLL_PAYHEAD_HISTORY")
