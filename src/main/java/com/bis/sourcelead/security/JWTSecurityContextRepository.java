@@ -68,8 +68,9 @@ public class JWTSecurityContextRepository implements SecurityContextRepository {
         requestResponseHolder.setResponse(new SaveToCookieResponseWrapper(request, response, tokenName, secret));
         SecurityContext context = null;
 		try {
-				context = readSecurityContextFromCookie(request);
-			
+			  synchronized(this) {
+				  context = readSecurityContextFromCookie(request);
+			  }
 		} catch (Exception e) {}
         if (context == null) {
         	 return SecurityContextHolder.createEmptyContext();
@@ -78,9 +79,6 @@ public class JWTSecurityContextRepository implements SecurityContextRepository {
     }
 
     private SecurityContext readSecurityContextFromCookie(HttpServletRequest request) {
-    	 ReentrantLock lock = new ReentrantLock(true);
-    	 if(lock.tryLock()) {
-		  lock.lock();
     	 String userRoleID = request.getParameter("userRoleId");
         if(StringUtils.isNotEmpty(userRoleID) && StringUtils.isNumeric(userRoleID)) {
         	userRoleId = new Long(userRoleID.trim());
@@ -123,8 +121,6 @@ public class JWTSecurityContextRepository implements SecurityContextRepository {
                 }
             }
            }
-           lock.unlock();
-    	 }
         log.debug("no [{}] found in request.", tokenName);
         return null;
     }
@@ -141,7 +137,11 @@ public class JWTSecurityContextRepository implements SecurityContextRepository {
 
     @Override
     public boolean containsContext(HttpServletRequest request) {
-        return readSecurityContextFromCookie(request) != null;
+    	boolean flag = false;
+    	synchronized(this) {
+    		flag = (readSecurityContextFromCookie(request) != null);
+    	}
+        return flag;
     }
 
 
