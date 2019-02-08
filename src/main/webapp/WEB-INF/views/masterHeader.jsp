@@ -188,7 +188,6 @@ z-index: 1000000000 !important;
 
 <script type="text/javascript">
 $(document).ready(function(){
-//   getNotificationsByuserId();
 	updateMarketplaceCartCountAndPrice();
 });
 </script>
@@ -1826,9 +1825,9 @@ $(document).ready(function(){
 <script>
 function updateMarketplaceCartCountAndPrice(){
 	var totalPriceInCurrency;
-	var atsUrl = '${SourceLeadWeb_atsUrl}';
+	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
-		 	url: atsUrl + "/updateMarketplaceCartCountAndPrice",
+		 	url: sourceleadUrl + "/getMarketplaceCartCountAndPrice",
 	        type: 'GET',
 	        success: function (object) {
 	        	if(object != null){
