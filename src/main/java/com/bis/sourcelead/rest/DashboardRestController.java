@@ -465,6 +465,10 @@ public class DashboardRestController {
  			   //user update/save in user Elk
  			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
  		      }
+		     
+		     String uname = user.getEmail()+"##"+userRole.getId();
+		     SecurityContextHolder.clearContext();
+			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRole.getUuid()));
 				
 		     SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 		     SourceLeadSessionManager.setSessionAttribute(request, "switchUserType", switchUserType);
@@ -498,6 +502,10 @@ public class DashboardRestController {
   			   //user update/save in user Elk
   			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
   		      }
+		     
+		     String uname = user.getEmail()+"##"+userRole.getId();
+		     SecurityContextHolder.clearContext();
+			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRole.getUuid()));
 				
 		     SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 		     SourceLeadSessionManager.setSessionAttribute(request, "switchUserType", switchUserType);
