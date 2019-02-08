@@ -620,7 +620,7 @@
   
   
   <script type="text/javascript">
-
+  var immiModulePath = "/immigration";
   function saveLcaDetails(){
 	  var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	  privilingWageValidations();
