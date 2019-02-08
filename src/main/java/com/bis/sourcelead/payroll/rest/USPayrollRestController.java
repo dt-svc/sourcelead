@@ -2244,31 +2244,5 @@ public class USPayrollRestController {
 			return commonPayrollDataDTO;
 		}
 		
-		 /**"
-		  * create user group
-		  * @param userGroupDTO
-		  * @param request
-		  * @return UserGroup
-		  * @throws Exception
-		  */
-		 @RequestMapping(value = "/createUserGroup" , method = RequestMethod.POST)
-		 public Response<UserGroup> createUserGroup(UserGroupDTO userGroupDTO,HttpServletRequest request)throws Exception {
-			  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			  User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			  return userGroupService.createUserGroup(orgLocations,userGroupDTO,loginUser);
-		 }
-		 
-		 /**
-		  * 
-		  * @param userGroupDTO
-		  * @param request
-		  * @return
-		  * @throws Exception
-		  */
-		 @RequestMapping(value = "/validateUserGroupIdOrGroupName" , method = RequestMethod.GET)
-		 public Response<UserGroup> validateUserGroupIdOrGroupName(UserGroupDTO userGroupDTO,HttpServletRequest request)throws Exception {
-			  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			  User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			  return userGroupService.validateUserGroupIdOrGroupName(orgLocations,userGroupDTO);
-		 }
+		
 }
