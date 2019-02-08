@@ -109,7 +109,7 @@ public class RequirementRateSubmissionNegotiationServiceImpl implements Requirem
 			         tempHTML.append("</tr>");
 	            }
 		        tempHTML.append("</table> ");
-		        
+		        sourceleadUrl = sourceleadUrl.replace("app", "ats"); // updated to navigate ATS module link.
 		        if("user".equalsIgnoreCase(type)){
 		        	//these links are provided in user to applicant Negotiate email
 		        	tempHTML.append("<a href='").append(sourceleadUrl).append("/ws/acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Accepted&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left; margin-left:25px;'><div style=' width:160px; border-radius:20px; background-color:#5cb85c; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:0px;'>Accept</div></a>");
