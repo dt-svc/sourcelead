@@ -1,7 +1,7 @@
 function getIndPayGroupList(id,customEnable){
 	$.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getPayGroupList?"+tokenParamName+"="+tokenValue                 , 
+	        url: sourceleadUrl+"/getIndPayGroupList?"+tokenParamName+"="+tokenValue                 , 
 	        success: function(json) {
 	        var output = "";
 	        output = output + "<option value=''>select group</option>";
@@ -86,11 +86,10 @@ function getFreqdates(freqSDId,fredEDId){
 
 
 function getEmployeesBasedOnDepartment(id){
-	
 	var departmentId = $("#payrollDepartment").val();
 	$.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getEmployeesBasedOnDepartment?&departmentId="+departmentId, 
+        url: sourceleadUrl+"/indEmployeesListBasedOnDepartment?&departmentId="+departmentId, 
         success: function(json) {
         var output = "";
 		for (var i=0; i<json.length; i++)
@@ -101,7 +100,7 @@ function getEmployeesBasedOnDepartment(id){
 		$("#"+id).empty();
 		$("#"+id).append(output);
 		$('#'+id).trigger("chosen:updated"); 
-        },
+        }
     });	
 	
 }
