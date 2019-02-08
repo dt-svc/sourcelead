@@ -20,6 +20,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name="EMPLOYEE")
 public class Employees implements Serializable{
@@ -137,6 +139,13 @@ public class Employees implements Serializable{
 	@Transient
     private String userType;
 	
+	@Transient
+	@JsonProperty
+    private String fullName;
+	
+	@Transient
+	@JsonProperty
+	private Long empId;
 	
 	public Long getId() {
 		return id;
@@ -413,6 +422,22 @@ public class Employees implements Serializable{
 
 	public void setProbationStatus(String probationStatus) {
 		this.probationStatus = probationStatus;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public Long getEmpId() {
+		return empId;
+	}
+
+	public void setEmpId(Long empId) {
+		this.empId = empId;
 	}
 
 }

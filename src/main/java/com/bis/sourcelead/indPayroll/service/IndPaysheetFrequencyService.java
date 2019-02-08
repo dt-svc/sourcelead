@@ -1,15 +1,16 @@
-package com.bis.sourcelead.payroll.service;
+package com.bis.sourcelead.indPayroll.service;
+
+import java.util.List;
 
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.payroll.dto.IndApprovePayrollDTO;
-import com.bis.sourcelead.payroll.dto.IndEmployeePayrollDTO;
-import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
-import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
-import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
-import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
+import com.bis.sourcelead.indPayroll.dto.IndApprovePayrollDTO;
+import com.bis.sourcelead.indPayroll.dto.IndEmployeePayrollDTO;
+import com.bis.sourcelead.indPayroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
+import com.bis.sourcelead.indPayroll.entity.IndPaysheetFrequency;
 
 public interface IndPaysheetFrequencyService {
 
@@ -37,6 +38,18 @@ public interface IndPaysheetFrequencyService {
 	
 	ResponseList<IndEmployeePayroll> getPayrollRegisterReports(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations);
 	
+	ResponseList<IndEmployeePayroll> getPayrollBankReportReportList(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations);
+
+	ResponseList<IndEmployeePayroll> getPayrollYTDSummaryReportReportList(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations);
+
+	ResponseList<IndEmployeePayroll> getPayrollAnnualTaxReportReportList(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations) throws Exception;
 	
+	List<IndEmployeePayroll> getYTDIndEmployeePayrollList(Long candidateId, String startMonth)throws Exception;
+
+	List<IndEmployeePayrollDTO> getPayrollSalaryStatementReportList(IndEmployeePayrollDTO indEmployeePayrollDTO,OrgLocations orgLocations)throws Exception;
+
+	ResponseList<IndEmployeePayrollDTO> getPayrollESIAndPFReportList(IndEmployeePayrollDTO indEmployeePayrollDTO,OrgLocations orgLocations)throws Exception;
+
+	ResponseList<IndEmployeePayrollDTO> getPayrollSalaryRegisterReportReportList(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations);
 
 }

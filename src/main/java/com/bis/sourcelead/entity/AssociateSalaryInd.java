@@ -82,6 +82,9 @@ public class AssociateSalaryInd {
 	@Column(name = "VARIABLE_PAY")
 	private BigDecimal variablePay;*/
 	
+	@Column( name ="STOP_SALARY")
+	private String stopSalary;
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -284,5 +287,13 @@ public class AssociateSalaryInd {
 
 	public void setEffectiveDateStr(String effectiveDateStr) {
 		this.effectiveDateStr = effectiveDateStr;
+	}
+
+	public String getStopSalary() {
+		return stopSalary;
+	}
+
+	public void setStopSalary(String stopSalary) {
+		this.stopSalary = stopSalary;
 	}
 }
