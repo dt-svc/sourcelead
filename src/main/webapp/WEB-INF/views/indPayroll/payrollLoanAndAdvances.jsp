@@ -22,7 +22,7 @@
       <div class="pull-left">
         <h2>Loan & Advances</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a>  &raquo; Loan & Advances</div>
+      <div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a>  &raquo; Loan & Advances</div>
     </section>
     
     <div class="content-area content-new clearfix backgroundWhite">
@@ -173,12 +173,13 @@ function validateName(){
 		if('${uuid}' != null && '${uuid}' != '' && '${uuid}' != 'undefined'){
 			uuid = '${uuid}'
 		}
+		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		 $("#loan_adv").attr("disabled", "disabled");
 		$('#loandAndAdvNameDiv').find('p.jquery_form_error_message').remove();
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateLoandAndAdvanceName?loanAdvType="+loanAdvType+"&loanAdvName="+loanAdvName+"&uuid="+uuid, 
+		        url: pmsUrl+"/validateLoandAndAdvanceName?loanAdvType="+loanAdvType+"&loanAdvName="+loanAdvName+"&uuid="+uuid, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#loandAndAdvNameDiv').find('p.jquery_form_error_message').remove();
@@ -352,39 +353,6 @@ function validateInterestRate(){
 	 }
 }
 
-
-/* function getPayHeadList(){
-	 $.ajax({
-	    	type: "POST",
-	        url: sourceleadUrl+"/getPayheadList?${_csrf.parameterName}=${_csrf.token}",
-	        success: function(json) {
-	        	var output = "";
-	        	output = output + "<option value=''>Select Pay Head</option>"; 
-	        	for (var i=0; i<json.response.length; i++)
-				{
-		        		var opt = json.response[i];
-		        		var payHeadId = '${loanAndAdv.payHeadId}';
-		        		
-		        		if(payHeadId != null && payHeadId != 'undefined' && payHeadId != ''){
-		        			
-		        			var selected = '';
-		        			if(payHeadId == opt.id){
-		        				selected = 'selected';
-		        			}
-		        			
-		        			output = output + "<option "+selected+" value='" +opt.id+ "'>"+opt.name+"</option>";
-		        		}else{
-		        			output = output + "<option value='" +opt.id+ "'>"+opt.name+"</option>";
-		        		} 
-		        		
-				}
-	        	$("#payrollPayHead").empty();
-		        $("#payrollPayHead").append(output);
-		        $('#payrollPayHead').trigger("chosen:updated");
-	        },
-	    });
-} */
-
 </script>
 
 <script type="text/javascript">
@@ -398,14 +366,14 @@ var validationSettings = {
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
         		var formData = getFormData("createloanAndAdv_form");
-         		var sourceleadUrl ='${sourceleadUrl}';
+         		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
          		var uuid = '${uuid}';
          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	
           		  $.ajax({
           	      type: "POST",
           	    	data: formData,
-                	  url: sourceleadUrl+"/savePayrollLoanAndAdvance?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,
+                	  url: pmsUrl+"/savePayrollLoanAndAdvance?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,
                   	success: function(result) {
                   		if (result && result.response === "INVALID_DATA") {
                   			$("#loading").removeAttr('style');
@@ -413,9 +381,9 @@ var validationSettings = {
                         }else if (result.response === "AWKWARD") {
     		        	    location.href = "/errorPage";
     		        	} else if (result.response === "SUCCESS") {
-    		        		 location.replace(sourceleadUrl + "/payrollLoanAndAdvancesList");
+    		        		 location.replace(pmsUrl + "/payrollLoanAndAdvancesList");
     		        	} else if (result.indexOf('Sign In') !== -1) {
-    		        		location.replace(sourceleadUrl);
+    		        		location.replace(pmsUrl);
     		        	} else {
     		        		$("#loading").removeAttr('style');
     		        	    showError("Operation failed, please try again");
