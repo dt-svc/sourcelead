@@ -173,6 +173,4 @@ public class ExpensesEntriesDaoImpl implements ExpensesEntriesDao {
 		}
 		return count;
 	}
-
-	
 }

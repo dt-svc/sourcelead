@@ -69,12 +69,14 @@ import com.bis.sourcelead.payroll.service.HrDeductionsService;
 import com.bis.sourcelead.payroll.service.UserPayrollService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.service.AssetService;
+import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UploadFileService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -108,6 +110,9 @@ public class DumpPublicRestCalls {
 	
 	@Autowired
 	CandidateService candidateService;
+	
+	@Autowired
+	UploadFileService uploadFileService;
 	
 	@Autowired
 	ProjectMembersHistoryDao projectMembersHistoryDao;
@@ -685,24 +690,18 @@ public class DumpPublicRestCalls {
 		return "Name successfully changed for " + count + " file(s)";
 	}
 	
-	/*@RequestMapping(value = "/ws/changeDocumentFileNames")
+	@RequestMapping(value = "/ws/changeDocumentFileNames")
 	@ResponseBody
 	public String changeDocumentNames(HttpServletRequest request) {
-		String result = "";
-		int expensesCount = 0;
-		int resumesCount = 0;
 		try {
 			System.out.println("Initiated file name change(s) in slead-static Folder");
-//			expensesCount = expensesEntriesService.changeDocumentNameWithWhiteSpacesToUnderScore(staticPath);
-//			resumesCount = candidateService.
+			uploadFileService.changeDocumentNamesWithWhiteSpacesToUnderScore(staticPath);
 			System.out.println("Completed file name change(s) in slead-static Folder");
 		} catch (Exception e) {
 			e.printStackTrace();
+			return "Exception occured while changing document name(s), please check error log";
 		}
-		result = "Name successfully changed for \n";
-		result += "Expenses : " + expensesCount + " file(s)\n";
-		result += "Resumes : " + resumesCount + " file(s)";
-		return result;
-	}*/
+		return "Successfully changed document names in 'slead-static' folder";
+	}
 	
 }
