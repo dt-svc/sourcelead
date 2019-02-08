@@ -35,6 +35,7 @@ $(document).ready(function(){
 });
 </script>
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 function ApplicantAuthorization(status){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUser = '${SourceLeadWeb_userName}';
@@ -99,7 +100,7 @@ function ApplicantAuthorization(status){
                                           resultToday  = resultToday + '           <td><div>-----</div></td>';
                                       }
                                       if(report.requirementName != '' && report.requirementName != null && report.requirementName !='undefined'){
-                                          resultToday = resultToday +'<td><div class="tbldata-dotdot-sm"> <a href="'+sourceleadUrl+'/requirementSummary?requirementUUID='+report.requirementUUID+'"><span title="'+report.requirementName+'">'+report.requirementName+'</span></a></div></td>';
+                                          resultToday = resultToday +'<td><div class="tbldata-dotdot-sm"> <a href="'+atsUrl+'/requirementSummary?requirementUUID='+report.requirementUUID+'"><span title="'+report.requirementName+'">'+report.requirementName+'</span></a></div></td>';
 
                                       }else{
                                           resultToday  = resultToday + '           <td><div>-----</div></td>';
