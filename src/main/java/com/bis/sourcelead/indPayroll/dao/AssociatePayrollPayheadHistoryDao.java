@@ -1,9 +1,9 @@
-package com.bis.sourcelead.payroll.dao;
+package com.bis.sourcelead.indPayroll.dao;
 
 import java.util.List;
 
-import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
-import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
+import com.bis.sourcelead.indPayroll.entity.AssociatePayrollPayheadHistory;
+import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
 
 public interface AssociatePayrollPayheadHistoryDao {
 
