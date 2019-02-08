@@ -25,8 +25,8 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
       <div class="pull-left">
         <h2>Project Invoice</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;
-       <a href="/vms/invoiceList">Invoice List</a> &raquo; Project Invoice</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;
+       <a href="${SourceLeadWeb_vmsUrl}/invoiceList">Invoice List</a> &raquo; Project Invoice</div>
     <div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
        </div>
@@ -48,7 +48,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();createProjectRecInviceEmptyClientContact();"><i class="fa fa-refresh "></i></span>
               </div>
               <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-                      <span class="col-md-2 noPad clearfix"><a href="/vms/client" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
+                      <span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_vmsUrl}/client" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
                </sec:authorize>
                <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
                <input type="hidden" name="clientCurrency" id="clientCurrency">
@@ -266,7 +266,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
               <div class="pull-right mr">
                   <button type="button" class="btn btn-sm btn-primary" id="saveInvoice" onclick="saveInvoiceTest('DRAFT');">Save</button>
                   <button type="button" class="btn btn-sm btn-success ml" id="sendInvoice" onclick="saveInvoiceTest('SENT')">Send</button>
-                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '/vms/invoiceList'">Cancel</button>
+                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/invoiceList'">Cancel</button>
               </div>
           </footer>
           </form:form>
@@ -697,7 +697,7 @@ function populateInlineItemsGrid1(data){
   <script>
   function getSow(contractId){
 	  var orgRelationId = $("#clientOrgRelationId").val();
-	  var vmsdUrl ='${SourceLeadWeb_vmsUrl}';
+	  var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	  var maxRowNum = $("#maxTsRowNum").val();
 		  for(var id=0;id < maxRowNum;id++){
 			    var result = "";

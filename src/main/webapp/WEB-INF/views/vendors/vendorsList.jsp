@@ -50,7 +50,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                 </span>            	
             </h2>
           </div>
-            <div class="pull-right brud-crum"><a href="<c:url value='app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home &raquo;</a> Vendors List </div>
+            <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home &raquo;</a> Vendors List </div>
         
         </section>
 		<!-- Project -->
@@ -295,13 +295,13 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 				<div class="action-pop">
 					<span> 					
 						   <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-                       			<a href="/vms/addVendor">Add Vendor</a>	
+                       			<a href="${SourceLeadWeb_vmsUrl}/addVendor">Add Vendor</a>	
                            </sec:authorize>
 						   <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')">
-					         <a href="/vms/addVendorContact">Add Contact</a>
+					         <a href="${SourceLeadWeb_vmsUrl}/addVendorContact">Add Contact</a>
 						  </sec:authorize>	
 		               		 <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')">
-		                 		<a href="/vms/uploadVendorForm">Import</a>
+		                 		<a href="${SourceLeadWeb_vmsUrl}/uploadVendorForm">Import</a>
 		           	   		</sec:authorize> 						  				
 					</span>
 				</div>
