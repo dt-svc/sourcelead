@@ -43,7 +43,7 @@ $(document).ready(function(){
 function requirementApproverList(statusType){  
 	
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  
+	  var atsUrl = '${SourceLeadWeb_atsUrl}';
 	  //$("#requirementApproverList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "GET",
@@ -81,9 +81,9 @@ function requirementApproverList(statusType){
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
 	                    	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined'){
-		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title = '"+opt.jobId+"-"+opt.jobTitle+"'>"+opt.jobId+"-"+opt.jobTitle+"</span></a></div></td>";
+		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+atsUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title = '"+opt.jobId+"-"+opt.jobTitle+"'>"+opt.jobId+"-"+opt.jobTitle+"</span></a></div></td>";
 		                     }else{
-		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title = '"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
+		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+atsUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title = '"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 		                     }
 		                     if(opt.rate!=null && opt.rate !='' && opt.rate !='undefined' && opt.maxRate != null && opt.maxRate != '' && opt.maxRate !='undefined'){
 		                    	 result = result +"<td><div><span title = '"+opt.currencyCode+"-"+opt.rate+"-"+opt.maxRate+"-"+opt.rateType+"'>"+opt.currencyCode+"&nbsp;"+opt.rate+"-"+opt.maxRate+"&nbsp;"+opt.rateType+"</span></div></td>";
