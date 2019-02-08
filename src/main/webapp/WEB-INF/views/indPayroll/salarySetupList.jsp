@@ -11,16 +11,12 @@
 	});
 </script>
 
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
-
 <section class="content-wraper contentWraper">
 <section class="content-header clearfix">
   <div class="pull-left">
     <h2>Salary Setup</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/pms/payrollConfiguration">Payroll Configure</a> &raquo; <a href="/pms/payheadList">Payhead List</a> &raquo; Salary Setup</div>
+  <div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payheadList">Payhead List</a> &raquo; Salary Setup</div>
 </section>
  <div class="clearfix"></div>
  
@@ -53,6 +49,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 function salarySetup(event) {
 	$(".salarySetup, .comMask").fadeIn();
 	var uuid = $(event).attr('id');
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
     $.ajax({
 			type: "POST",
 		    url: pmsUrl+"/getSalarySetupForPayhead?"+tokenParamName+"="+tokenValue+"&uuid="+uuid, 
@@ -72,6 +69,7 @@ function closesalarySetup() {
 <script>
  function getPayRollSalarySetupList(){
 	 $("#payrollSalarySetupList").empty();
+	  var sourceleadUrl ='${sourceleadUrl}';
 	  var locationCode = '${SourceLeadWeb_locationCode}';
 	  $("#salarySetupListLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
@@ -108,12 +106,13 @@ function closesalarySetup() {
  
  <script>
  function payrollSalarySetupList(){
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 var searchValue = $("#salarySetupDataTableSearch").val();
 	 var locationCode = '${SourceLeadWeb_locationCode}';
 	 var listType = "SSList";
 	 searchValue = searchValue ? searchValue : "";
 	 var url = pmsUrl+"/getPayRollSalarySetupListWithPagination?searchValue="+searchValue+"&locationCode="+locationCode+"&listType="+listType;
-	 salarySetupListPagination(url,pmsUrl);
+	 salarySetupListPagination(url,sourceleadUrl);
 	 $("#salarySetupListLoading").removeAttr("style");
 	 
  }
@@ -122,7 +121,7 @@ function closesalarySetup() {
  
  
  <script>
-function salarySetupListPagination(url,pmsUrl){
+function salarySetupListPagination(url,sourceleadUrl){
 	var colIndex = 0;
     $('#salarySetupListTable').DataTable( { 
 	  "processing": true,
@@ -145,7 +144,7 @@ function salarySetupListPagination(url,pmsUrl){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 	    	  		 var pname = opt.name+" ("+opt.shortCode+")";
-	    	  		 result = result +"<td><a href='<c:url value='/app/payrollPayheadSummary?uuid="+opt.uuid+"'/>'><div class='proj_show tbldata-dotdot_140'><span title='"+pname+"'>"+pname+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+	    	  		 result = result +"<td><a href='${SourceLeadWeb_pmsUrl}/payrollPayheadSummary?uuid="+opt.uuid+"'><div class='proj_show tbldata-dotdot_140'><span title='"+pname+"'>"+pname+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 		             return result;
 	    	  	}
 	      },{

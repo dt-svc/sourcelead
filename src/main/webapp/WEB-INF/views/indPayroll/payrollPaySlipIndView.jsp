@@ -11,16 +11,12 @@ $(document).ready(function(){
 });
 </script>
 
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
-
 <section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left">
     <h2>Configure Payslip View</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/pms/payrollConfiguration">Payroll Configure</a> &raquo; Payslip View</div>
+  <div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a> &raquo; Payslip View</div>
 </section>
  <div class="clearfix"></div>
  
@@ -40,6 +36,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
  
 <script>
 function getIndPayslipList(){
+	 var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 		$.ajax({
 			type : "POST",
 			url : pmsUrl+ "/getPayrollPaySlipViewList?${_csrf.parameterName}=${_csrf.token}",
@@ -85,7 +82,7 @@ function getIndPayslipList(){
    		    		
    		    		result = result +'<td>'
    		    		result = result +'  <div class="tbldata-dotdot-100 text-center">';
-		    			result = result +'<a href="/pms/payrollPaySlip?paySlipUUID='+report.uuid+'"  class="glyphicon glyphicon-edit" title="Edit"></a>';	
+		    			result = result +'<a href="${SourceLeadWeb_pmsUrl}/payrollPaySlip?paySlipUUID='+report.uuid+'"  class="glyphicon glyphicon-edit" title="Edit"></a>';	
 		    			if(report.deletePermission != "N"){
 	   		    			result = result +'<a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deletePayslipInd(\''+report.uuid+'\','+report.id+');"></a>';	
 		    			}else{
@@ -119,6 +116,7 @@ function payslipPagination(){
 }
 
 function deletePayslipInd(uuid,id){
+	var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 	var defaultStatus = $("#"+id+"defaultPayslip").val();
 	$.ajax({
 		type : "POST",
@@ -129,6 +127,7 @@ function deletePayslipInd(uuid,id){
 	});
 }
 function changeDefaultPayslip(uuid){
+	var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 	$.ajax({
 		type : "POST",
 		url : pmsUrl+ "/changeDefaultPayslip?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,
