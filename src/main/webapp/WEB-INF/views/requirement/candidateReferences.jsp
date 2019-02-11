@@ -23,6 +23,7 @@
      1.usage     : used at clientSideBar().
 --%>
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 function candidateReferences(candidateId){
 	var candidateType = '${candidateType}';
 	var result = "";

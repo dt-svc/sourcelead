@@ -60,11 +60,12 @@ $(function(){
 
 
 <script type="text/javascript">
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 	function interViewTemplateList() {
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?"+tokenParamName+"="+tokenValue+"", 
+	    	url : atsUrl+"/getInterviewFeedbackTemplatesList?"+tokenParamName+"="+tokenValue+"", 
 	        success: function(data) {
 	        	if (data.response === "FAILED") {
   		    		showError(data.responseMessage);
@@ -387,10 +388,10 @@ function cancelPop(){
           	    	data: formData,
           	    	 processData: false,
  	    	        contentType:false,
-          	        url: sourceleadUrl+"/saveInterviewFeedBackTemplate?"+tokenParamName+"="+tokenValue+"&templateId="+templateId, 
+          	        url: atsUrl+"/saveInterviewFeedBackTemplate?"+tokenParamName+"="+tokenValue+"&templateId="+templateId, 
           	        success: function(result) {
           	        	if((result == 'interViewFeedBackTemplate')){
-          	        		location.replace(sourceleadUrl+"/interViewFeedBackTemplate"); 
+          	        		location.replace(atsUrl+"/interViewFeedBackTemplate"); 
           		        } 
           	        },
           	    });  
@@ -529,7 +530,7 @@ $("#add-tm").click(function(){
 <script>
 function cancelTemplate(){
 	var sourceleadUrl = '${sourceleadUrl}';
-	location.replace(sourceleadUrl+"/interViewFeedBackTemplate");  
+	location.replace(atsUrl+"/interViewFeedBackTemplate");  
 }
 </script>
 

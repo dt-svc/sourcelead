@@ -7,7 +7,7 @@
 <div class="content-area clearfix">
       <div id="accordion-sl" class="release-jobs">
         
-        <c:if test="${SourceLeadWeb_vms == 'Y'}">
+      <%--   <c:if test="${SourceLeadWeb_vms == 'Y'}"> --%>
         <div class="clearfix">
 
           <h2 id="jobTitle" onclick="openVendors();">Profile</h2>
@@ -70,7 +70,7 @@
           </div>
         </div>
 	  <!-- Accordion First Tab Ends -->
-	  </c:if>
+	  <%-- </c:if> --%>
 
       <!-- Accordion second Tab -->
          <form:form id="releaseToCrowdSourcing_form"  name="releaseToCrowdSourcing_form" method="post">
@@ -298,6 +298,7 @@ function getPercentageValue(){
 $(document).ready(function(){
 	getVendorLists();
 	 var sourceleadShareUrl ='${sourceleadShareUrl}';
+	 
 	var referLink = "${sourceleadShareUrl}/job/${requirement.url}-${requirement.id}"
 	//alert(sourceleadShareUrl);		
 	$("#referralLink").val(referLink);
@@ -1401,7 +1402,7 @@ $('#selectorReleaseMsg').delay(2000).fadeOut('slow');
 	function msgFadein() {
 		$("#selector").fadeIn(200);
         $('#selector').delay(2000).fadeOut('slow');
-	}
+}
 </script> 
 <style>
 .footer-area {
