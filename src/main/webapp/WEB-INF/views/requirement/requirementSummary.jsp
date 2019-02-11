@@ -1,3 +1,4 @@
+0
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 
@@ -9,6 +10,7 @@
 <link href="/resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 <script>
 var atsUrl = '${SourceLeadWeb_atsUrl}';
+var sourceleadUrl ='${sourceleadUrl}';
 $(document).ready(function() {
 	 var requirementId = '${requirementId}';
 	 var submissionId = '${submissionId}';
@@ -1512,11 +1514,9 @@ function closeDocPopup(){
 function reqNotes(requirementId){
 	var urlForm = "";
 	    urlForm = "/getRequirementNotes?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId;
-		
-	    var atsUrl = '${SourceLeadWeb_atsUrl}';
 	  $.ajax({
         type : "POST",
-         url: atsUrl+urlForm,        
+         url: sourceleadUrl+urlForm,        
 		 success :function(result) {
 			 var json = result.data;
 	      	   if(result.response === "SESSION_TIMEDOUT") {
@@ -1615,7 +1615,7 @@ function reqNotes(requirementId){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : atsUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"",
+						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"",
 						success : function(result) {
 							closeDocPopup();
 							if(result.response === "FAILED") {
