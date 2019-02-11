@@ -220,7 +220,7 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRoleId", userRole.get("roleId"));	
 		  SourceLeadSessionManager.setSessionAttribute(req, "userType", userRole.get("userType"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "userCode", userRole.get("userCode"));
-		  SourceLeadSessionManager.setSessionAttribute(req, "userName", userRole.get("userName"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserFullName", userRole.get("loginUserFullName"));
 	      SourceLeadSessionManager.setSessionAttribute(req, "loginUserFirstName", userRole.get("firstName"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserLastName", userRole.get("lastName"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserEmail", userRole.get("email"));

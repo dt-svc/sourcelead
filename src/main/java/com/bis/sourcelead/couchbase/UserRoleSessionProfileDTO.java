@@ -65,7 +65,7 @@ public class UserRoleSessionProfileDTO implements Serializable{
 	
 	private String email;
 	
-	private String userName;
+	private String loginUserFullName;
 	
 	private String imgUrl;
 	
@@ -302,12 +302,12 @@ public class UserRoleSessionProfileDTO implements Serializable{
 		this.candidateUUID = candidateUUID;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getLoginUserFullName() {
+		return loginUserFullName;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setLoginUserFullName(String loginUserFullName) {
+		this.loginUserFullName = loginUserFullName;
 	}
 
 	public String getImgUrl() {

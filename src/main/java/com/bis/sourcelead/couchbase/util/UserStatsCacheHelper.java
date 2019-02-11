@@ -466,12 +466,18 @@ public class UserStatsCacheHelper {
 			 }
 			
 			 StringBuilder userNameSB = new StringBuilder();
-			 if (null != userRole.getUser().getLastName()) {
-				 userNameSB.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName());
-				} else {
-					 userNameSB.append(userRole.getUser().getFirstName());
+			 
+			 if(StringUtils.isNotEmpty(userRole.getUser().getFirstName()) && StringUtils.isEmpty(userRole.getUser().getLastName()) && StringUtils.isEmpty(userRole.getUser().getMiddelName())){
+				 userNameSB.append(userRole.getUser().getFirstName());
+				}else if(StringUtils.isNotEmpty(userRole.getUser().getFirstName()) && StringUtils.isNotEmpty(userRole.getUser().getLastName()) && StringUtils.isEmpty(userRole.getUser().getMiddelName())){
+					 userNameSB.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName());
+				}else if(StringUtils.isNotEmpty(userRole.getUser().getFirstName()) && StringUtils.isEmpty(userRole.getUser().getLastName()) && StringUtils.isNotEmpty(userRole.getUser().getMiddelName())){
+					userNameSB.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getMiddelName());
+				}else if(StringUtils.isNotEmpty(userRole.getUser().getFirstName()) && StringUtils.isNotEmpty(userRole.getUser().getLastName()) && StringUtils.isNotEmpty(userRole.getUser().getMiddelName())){
+					userNameSB.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getMiddelName()).append(" ").append(userRole.getUser().getLastName());
 				}
-			 userRoleDTO.setUserName(userNameSB.toString());
+			 userRoleDTO.setLoginUserFullName(userNameSB.toString());
+			 
 			 userRoleDTO.setImgUrl(userRole.getUser().getFileUrl());
 			 
 			 boolean isSuperUser = orgLocationService.isLoginUserIsSuperUser(userRole.getUser().getId(),userRole.getOrgLocations().getId());
