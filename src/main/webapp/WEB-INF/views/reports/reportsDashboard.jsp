@@ -106,45 +106,45 @@
 				<!-- <li><a href="#">Invoice Report By Customer / Project</a></li>
 				<li><a href="#">Bill Report By Customer / Project</a></li> -->
 				<sec:authorize access="hasRole('ROLE_A_R_AGING')">
-				<c:if test="${SourceLeadWeb_ats == 'Y'}">
+				<%-- <c:if test="${SourceLeadWeb_ats == 'Y'}"> --%>
 				<li><a href='${appPath}/arAgingReport'>A/R Aging</a></li>
-				</c:if>
+				<%-- </c:if> --%>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_A_P_AGING')">
-				<c:if test="${SourceLeadWeb_vms == 'Y'}">
+				<%-- <c:if test="${SourceLeadWeb_vms == 'Y'}"> --%>
 				<li><a href='${appPath}/apAgingReport'>A/P Aging</a></li>
-				</c:if>
+<%-- 				</c:if> --%>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_INVOICE')">
-					<c:if test="${SourceLeadWeb_ats == 'Y'}">
+					<%-- <c:if test="${SourceLeadWeb_ats == 'Y'}"> --%>
 					<li><a href='${appPath}/missingInvoiceReport'>Missing Invoice(s)</a></li>
-					</c:if>
+					<%-- </c:if> --%>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_RECEIVED_INVOICES')">
-				<c:if test="${SourceLeadWeb_ats == 'Y'}">
+				<%-- <c:if test="${SourceLeadWeb_ats == 'Y'}"> --%>
 			     <li><a href='${appPath}/receivedInvoiceReport'>Received Invoice(s)</a></li>    
-			     </c:if>
+			     <%-- </c:if> --%>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_BILL')">
-				<c:if test="${SourceLeadWeb_vms == 'Y'}">
+				<%-- <c:if test="${SourceLeadWeb_vms == 'Y'}"> --%>
 				<li><a href='${appPath}/missingBillReport'>Missing Bill(s)</a></li>
-				</c:if>
+				<%-- </c:if> --%>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_PAID_BILL')">
-					<c:if test="${SourceLeadWeb_vms == 'Y'}">
+					<%-- <c:if test="${SourceLeadWeb_vms == 'Y'}"> --%>
 				    <li><a href='${appPath}/paidBillReport'>Paid Bill(s)</a></li>
-				    </c:if>
+				  <%--   </c:if> --%>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MARGIN_SHEET_REPORT')">
-				<c:if test="${SourceLeadWeb_vms == 'Y'}">
+			<%-- 	<c:if test="${SourceLeadWeb_vms == 'Y'}"> --%>
 				<li><a href='${appPath}/marginSheetReports'>MarginSheetReport</a></li>
-				</c:if>
+			<%-- 	</c:if> --%>
 				</sec:authorize>
 				
 			   <li><a href='${appPath}/assetmanagementGrowth'>Asset Growth</a></li>
@@ -345,13 +345,13 @@
 			<div class="dropdown pull-right report-dropdown">
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
-					<li><a href="${appPath}/petitionReport">Petition Report</a></li>
-					<li><a href="${appPath}/petitionAttorneyReport">Petition Attorney Report</a></li>
-					<li><a href="${appPath}/lcaReport">LCA Report</a></li>
+					<li><a href="/vms/petitionReport">Petition Report</a></li>
+					<li><a href="/vms/petitionAttorneyReport">Petition Attorney Report</a></li>
+					<li><a href="/vms/lcaReport">LCA Report</a></li>
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                  <a href="${appPath}/petitionReport" class="block">
+                  <a href="/vms/petitionReport" class="block">
                   <div class="clearfix text-center mb10"><i class="petitionReport"></i></div>
                   <div class="clearfix text-center"><h4>Immigration Reports</h4></div> </a>
 
@@ -558,42 +558,42 @@
                 <h2><a href="javascript:void(0)">US Payroll Reports</a></h2>
 	                <ul class="repSearchList">
 		                <sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="${appPath}/payrollRegisterReport">Payroll Register</a></li>
+							<li><a href="/pms/payrollRegisterReport">Payroll Register</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="${appPath}/payrollComparison">Comparison</a></li>
+							<li><a href="/pms/payrollComparison">Comparison</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="${appPath}/payrollListSummaryReport">Payroll Summary</a></li>
+							<li><a href="/pms/payrollListSummaryReport">Payroll Summary</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="${appPath}/checkRegisterReport">Check Register</a></li>
+							<li><a href="/pms/checkRegisterReport">Check Register</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="${appPath}/associateWithholding">Associate Withholding</a></li>
+							<li><a href="/pms/associateWithholding">Associate Withholding</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="${appPath}/payrollTaxesAndWagesReport">Taxable Wages Report</a></li>
+							<li><a href="/pms/payrollTaxesAndWagesReport">Taxable Wages Report</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="${appPath}/deductionReport">Deduction Reports</a></li>
+							<li><a href="/pms/deductionReport">Deduction Reports</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="${appPath}/contributionReport">Contribution Reports</a></li>
-						</sec:authorize>
-
-						<li><a href="${appPath}/usDeductionSummaryReport" ><!-- Us -->Deduction Summary Report</a></li>
-				        <li><a href="${appPath}/usContributionSummaryReport" ><!-- Us -->Contribution Summary Reports</a></li>
-
-						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="${appPath}/directDepositReport">Direct Deposit</a></li>
-						</sec:authorize>
-						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="${appPath}/usEmployeePayrollReport">Employee Payroll</a></li>
+							<li><a href="/pms/contributionReport">Contribution Reports</a></li>
 						</sec:authorize>
 
+						<li><a href="/pms/usDeductionSummaryReport" ><!-- Us -->Deduction Summary Report</a></li>
+				        <li><a href="/pms/usContributionSummaryReport" ><!-- Us -->Contribution Summary Reports</a></li>
+
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-						<li><a href="${appPath}/contractEmployeePayreport">Contract Employee Payroll</a></li>
+							<li><a href="/pms/directDepositReport">Direct Deposit</a></li>
+						</sec:authorize>
+						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
+							<li><a href="/pms/usEmployeePayrollReport">Employee Payroll</a></li>
+						</sec:authorize>
+
+						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
+						<li><a href="/pms/contractEmployeePayreport">Contract Employee Payroll</a></li>
 						</sec:authorize>
 
 	                </ul>
@@ -630,9 +630,14 @@
 			<div class="dropdown pull-right report-dropdown">
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown" aria-expanded="false"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
-			     <li><a href="/app/projectReport">Project Report</a></li>
-				<li><a href="/app/employeeTasksReport">Employee Tasks</a></li>
-				<li><a href="/app/overdueTaskReport">Over Due Report</a></li>
+			     <li><a href="${appPath}/indPayrollRegisterReport">Payroll Register</a></li>
+				 <li><a href="${appPath}/indPayrollBankTransferReport">Bank Transfer</a></li>
+				 <li><a href="${appPath}/indPayrollYTDSummaryReport">YTD Summary</a></li>
+				 <li><a href="${appPath}/indPayrollAnnualTaxReport">Annual Tax</a></li>
+<%-- 				 <li><a href="${appPath}/indPayrollLoanReport">Loan</a></li> --%>
+				 <li><a href="${appPath}/indPayrollESISummaryReport">ESI</a></li>
+				 <li><a href="${appPath}/indPayrollPFSummaryReport">PF</a></li>
+				 <li><a href="${appPath}/indPayrollSalaryRegisterReport">Salary Register</a></li>
 					
 				</ul>
 			</div>

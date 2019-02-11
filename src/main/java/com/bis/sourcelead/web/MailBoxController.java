@@ -55,6 +55,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/app")
 public class MailBoxController {
 	
 
@@ -141,7 +142,7 @@ public class MailBoxController {
 	
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
-	@RequestMapping(value = "/app/composeMail")
+	@RequestMapping(value = "/composeMail")
  	public ModelAndView composeMail(HttpServletRequest request,@RequestParam(value="UUID", required=false) String UUID) throws Exception {
 		    
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -229,7 +230,7 @@ public class MailBoxController {
  	}
 	
 	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
-	@RequestMapping(value = "/app/hotlistMail")
+	@RequestMapping(value = "/hotlistMail")
  	public ModelAndView hotlistMail(HttpServletRequest request) throws Exception {
 		
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -300,11 +301,10 @@ public class MailBoxController {
 	
 	
 	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
-	@RequestMapping(value = "/app/getUserMailsFromELK")
+	@RequestMapping(value = "/getUserMailsFromELK")
 	public @ResponseBody String getUserMailsFromELK(@RequestParam(value = "type", required = false) String type,
 			@RequestParam(value = "mailType", required = false) String mailType,
 			HttpServletRequest request) throws Exception {
-
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
