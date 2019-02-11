@@ -46,7 +46,7 @@ var uploadflag= true;
 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/jobsList'/>">Job List</a>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="/ats/jobsList">Job List</a>
 			&raquo; Import Jobs
 		</div>
 	</section>
