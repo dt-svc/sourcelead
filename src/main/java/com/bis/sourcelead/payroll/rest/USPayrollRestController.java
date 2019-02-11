@@ -1808,7 +1808,9 @@ public class USPayrollRestController {
 					 dto = new CandidateDTO();
 					
 					StringBuilder name = new StringBuilder();
-					if(StringUtils.isNotBlank(associateSalary.getCandidate().getLastName())){
+					if(StringUtils.isNotBlank(associateSalary.getCandidate().getMiddelName()) && StringUtils.isNotBlank(associateSalary.getCandidate().getLastName())){
+						name.append(associateSalary.getCandidate().getFirstName()).append(" ").append(associateSalary.getCandidate().getMiddelName()).append(" ").append(associateSalary.getCandidate().getLastName());
+					}else if(StringUtils.isNotBlank(associateSalary.getCandidate().getLastName()) && StringUtils.isBlank(associateSalary.getCandidate().getMiddelName())){
 						name.append(associateSalary.getCandidate().getFirstName()).append(" ").append(associateSalary.getCandidate().getLastName());
 					}else {
 						name.append(associateSalary.getCandidate().getFirstName());
@@ -2241,4 +2243,6 @@ public class USPayrollRestController {
 			
 			return commonPayrollDataDTO;
 		}
+		
+		
 }

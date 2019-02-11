@@ -1,6 +1,10 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<script src="/resources/js/tax/my_payroll.js" type="text/javascript"></script>
+<script src="/pms/resources/js/tax/my_payroll.js" type="text/javascript"></script>
+
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
 	<div class="tablelist-wrap">
 		<div class="positionRelative reportHead clearfix">
 			<ul class="pull-right list-unstyled list-inline">
