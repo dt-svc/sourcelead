@@ -37,7 +37,6 @@ public class UserProfileSessionRestController {
 	@Autowired
 	TabsService tabsService;
 	
-	
 	@Autowired
 	UserStatsCacheHelper userStatsCacheHelper;
 	
