@@ -709,6 +709,26 @@ public class Constants {
 	
 	public static final String[] PURCHASE_CANDIDATE_HEADERS = {"Order No", "Order Date", "Company Name", "Total Resumes", "Total Price", "Service Fee", "Discount", "Grand Total", "Payment Status"};
 
+	public static final String[] RECRUITER_REPORTS_HEADERS = { "Associate Name", "Jobs","Candidates","Applicants", "Shortlisted","Submitted","Interviewed", "Offered", "Rejected","Joined","Back-Out","OnHold", "No-Response"};
+
+	public static final String[] RECRUITER_REPORTS_CANDIDATE_HEADERS = { "Candidate Name", "Email","Phone Number","Emp Type", "Vendor","Vendor Contact","Location", "Designation", "Current Rate","Expected Rate","Experience","Primary Skill", "Updated On"};
+
+	public static final String[] RECRUITER_REPORTS_ALL_APPLICANTS_HEADERS = { "Applicant Name", "Email","Phone Number","Job Title", "Client","Job Location","Rate", "Submitted On", "Current Stage"};
+	
+	public static final String[] RECRUITER_REPORTS_SHORTLIST_HEADERS = { "Applicant Name", "Email","Phone Number","Job Title", "Client","Job Location","Rate", "Shortlisted On", "Current Stage"};
+	
+	public static final String[] RECRUITER_REPORTS_SUBMIT_TO_CLIENT_HEADERS = { "Applicant Name", "Email","Phone Number","Job Title", "Client","Job Location","Rate","Submitted Rate", "Submitted On", "Current Stage"};
+
+	public static final String[] RECRUITER_REPORTS_INTERVIEW_HEADERS = { "Applicant Name", "Email","Phone Number","Job Title", "Client","Job Location","Rate", "No of Interviews", "Current Stage"};
+
+	public static final String[] RECRUITER_REPORTS_OFFERMADE_HEADERS = { "Applicant Name", "Email","Phone Number","Job Title", "Client","Job Location","Rate","Offered Rate", "Offered On", "Current Stage"};
+
+	public static final String[] RECRUITER_REPORTS_REJECTED_HEADERS = { "Applicant Name", "Email","Phone Number","Job Title", "Client","Job Location","Rate","Rejected On", "Category","Comment", "Current Stage"};
+
+	public static final String[] RECRUITER_REPORTS_JOINED_HEADERS = { "Applicant Name", "Email","Phone Number","Job Title", "Client","Job Location","Rate","Offered On", "Join Date", "Current Stage"};
+
+	public static final String[] RECRUITER_REPORTS_BACKOUT_HEADERS = { "Applicant Name", "Email","Phone Number","Job Title", "Client","Job Location","Rate","Backout On", "Category","Comment", "Current Stage"};
+
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
@@ -950,6 +970,8 @@ public class Constants {
 
 	public static final String[] ASSETS_REPORT_EXPORT_HEADDERS = { "Employee Id", "Employee Name","Asset Name", "Category","Serial Number",
 			"Assigned On", "Returned On" ,"Shift", "Document", "Assigned By",};
+	
+	public static final String[] AVAILABLE_ASSOCIATES_REPORT_EXPORT_HEADDERS = {"Employee Name", "Project Name", "Project Duration","Associate Duration", "Availability %","No.of Hours",};
 	
 	public static final String[] JOBFAIR_EXPORT_HEADERS = {"Generated ID", "Title", "Start Date", "End Date", "No.of Jobs", "Applicants", "Offered", "Venue", "Status"};
 	

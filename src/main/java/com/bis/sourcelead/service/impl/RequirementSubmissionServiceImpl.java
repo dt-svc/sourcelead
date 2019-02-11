@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -270,8 +271,19 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 	@Override
-	public List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception {
-		return requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations,requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
+	public List<RequirementSubmissionsDTO> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception {
+		List<RequirementSubmissionsDTO> requirementSubmissionsDTOList = new LinkedList<>();
+		List<Object[]> objList = requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations,requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
+		if(objList != null && !objList.isEmpty()) {
+			for(Object[] obj : objList) {
+				RequirementSubmissionsDTO requirementSubmissionsDTO = new RequirementSubmissionsDTO();
+				requirementSubmissionsDTO.setId(Long.parseLong(String.valueOf(obj[0])));
+				requirementSubmissionsDTO.setCreatedUser(String.valueOf(obj[1]));
+				requirementSubmissionsDTO.setClientSubmissions(String.valueOf(obj[2]));
+				requirementSubmissionsDTOList.add(requirementSubmissionsDTO);
+			}
+		}
+		return requirementSubmissionsDTOList;
 	}
 	
 	@Override
@@ -645,7 +657,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				 candidateResumes.setFileName(jsonObj.get("fileInfo[0].fileName").toString());
 				 candidateResumes.setTitle(jsonObj.get("fileInfo[0].fileName").toString());
 				 candidateResumes.setFileContentType(jsonObj.get("fileInfo[0].contentType").toString());
-				 candidateResumes.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString());
+				 candidateResumes.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString().replaceAll(" ", "_"));
  				 candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
  				 candidateResumes.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
  				 candidateResumes.setCreatedDate(new Date());
@@ -2230,12 +2242,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 clientSubmission.setCreatedDate(new Date());
    		 clientSubmission.setCreatedBy(user.getUserCode());
    		 clientSubmission.setUpdatedDate(commonUtil.currentDate());
-   		 if(user.getLastName() !=null){
-   			 sb.append(user.getFirstName()).append(" ").append(user.getLastName());
-   		 }else{
-   			 sb.append(user.getFirstName());
-   		 }
-   		 clientSubmission.setCreatedUser(sb.toString());
+   		 clientSubmission.setCreatedUser(user.getFullName());
 		 if(null != submission.getCandidateScore() && !"".equalsIgnoreCase(submission.getCandidateScore())){
 			 clientSubmission.setCandidateScore(submission.getCandidateScore());		 
 		 }
@@ -2316,6 +2323,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 String clientRatePer = submissionratePer[i];
 			 rateNegotiation.setExpectedRate(clientRate);
 			 rateNegotiation.setExpectedRateType(clientRatePer);
+			 rateNegotiation.setCurrentRate(templateFields.getExpectedCTC());
+			 rateNegotiation.setCurrentRateType(templateFields.getExpectedRatePer());
 		 }
 			 rateNegotiation.setRateInitiatorType(SubmissionRateStatus.VENDOR);
 			 rateNegotiation.setInitiatorOrgLocationId(loginOrgLocation);
@@ -2429,8 +2438,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	   		clientSubmissionHistory.setFromStage(ApplicantSubmissionStatus.NEW.toString());
 			requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, user, clientSubmissionHistory, clientUser.getUserCode());
 	   		 
-	   		 
-	   		 if(requirementSubmissionHistoryForCoolingOff != null){
+	   		 /*if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
 					 RequirementSubmissionHistory requirementSubmissionHistoryNewToSubmission = new RequirementSubmissionHistory();
 					 requirementSubmissionHistoryNewToSubmission.setFromStage(Submission_Status.NEW.toString());
@@ -2443,7 +2451,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					 requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, null, requirementSubmissionHistorySubmissionToRejected, clientUser.getUserCode());
 					 
 				 }
-	   		}
+	   		}*/
    		 }
    		 
    		 
