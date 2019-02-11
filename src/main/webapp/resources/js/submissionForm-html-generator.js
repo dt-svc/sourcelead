@@ -6,6 +6,7 @@
  */
 
 //generates the form HTML
+ var atsUrl = '${SourceLeadWeb_atsUrl}';
 function generateForm(sourceleadUrl,templateId) {
     //empty out the preview area
     $("#sjfb-fields").empty();
@@ -185,7 +186,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
     $("#sjfb-fields").empty();
     $.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getRequirmentOrgSubmissionTemplate?requirementId="+requirementId, 
+        url: atsUrl+"/getRequirmentOrgSubmissionTemplate?requirementId="+requirementId, 
         success: function(data) {
         	 var data = eval(data);
         	 
