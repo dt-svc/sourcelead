@@ -303,7 +303,7 @@ function preventTabkey(e){
 </script>
 
 <body>
-<c:url var="logoutUrl" value="/logout"/>
+<c:url var="logoutUrl" value="${SourceLeadWeb_sourceleadLogoutUrl}"/>
 <form action="${logoutUrl}" method="post" id="logoutForm">
   <input type="hidden" name="userSessionId" value="${userLoginSession.id}"/>
    <input type="hidden" name="orgLocationId" value="${SourceLeadWeb_orgLocationId}"/>
@@ -415,7 +415,7 @@ function preventTabkey(e){
 	<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_imgUrl}"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_userName}"> ${SourceLeadWeb_userName} </div>
 	<div class="headPop" id="profilePop">
 		<div class="headPopInn">
-				<a href="<c:url value='${appPath}/userProfile'/>" title="Profile">
+				<a href="<c:url value='${sourceleadUrl}/userProfile'/>" title="Profile">
 				<div class="headPopUser clearfix">
 					<div class="pull-left"><img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_imgUrl}"></div>
 					<div class="pull-right">
@@ -465,7 +465,7 @@ function preventTabkey(e){
 	              <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
 	              <li><a href="<c:url value='${appPath}/userProfile'/>" title="Profile">Profile</a></li>
 	              </c:if> --%>				
-				 <li><a class="logColor" href="javascript:logoutFormSubmit()" title="Log Out"><i class="logOutIC"></i>Log Out</a></li>
+				 <li><a class="logColor" href="javascript:logoutFormSubmit();" title="Log Out"><i class="logOutIC"></i>Log Out</a></li>
 			</ul>
 		</div>
 	</div>
