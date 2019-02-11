@@ -607,9 +607,6 @@ public class DashboardRestController {
 		if(user != null) {
 			try {
 				 
-				 String customTocken = userLoginHelper.getLoginUserAuthenticationTocken();
-				 org.json.simple.JSONObject userSession =  userStatsCacheHelper.getLogInUserSessionJson(customTocken+"_SESSION");
-				 org.json.simple.JSONObject loginOrgLocation = userStatsCacheHelper.getOrgLocationCacheDetails(userSession.get("orgLocationCode").toString());
 				 
 				 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
