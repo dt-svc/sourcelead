@@ -3,9 +3,10 @@ package com.bis.sourcelead.couchbase.util;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONObject;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.couchbase.ConnectionManager;
 import com.bis.sourcelead.couchbase.CouchbaseClient;
+import com.bis.sourcelead.couchbase.LoginUserSessionStoreDTO;
 import com.bis.sourcelead.couchbase.OrgLocationCacheDTO;
 import com.bis.sourcelead.couchbase.UserRoleSessionProfileDTO;
 import com.bis.sourcelead.entity.Candidate;
@@ -34,6 +36,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.couchbase.client.java.document.json.JsonObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.servlet.http.Cookie;
 
 /** 
  * Purpose : 
@@ -76,6 +79,7 @@ public class UserStatsCacheHelper {
 	 */
 	@SuppressWarnings("unchecked")
 	public JSONObject getOrgLocationCacheDetails(String orgLocationCode) {
+		orgLocationCode = "OrgLocation_"+orgLocationCode;
 		JSONObject orgLocationJson = new JSONObject();
 		Object sv = null;
 		sv = c.getOrgLocationsDetails(orgLocationCode);
@@ -181,7 +185,39 @@ public class UserStatsCacheHelper {
 		return userRoleMenusListJson;
 	}
 	
-	
+	/**
+	 * @author Venkat
+	 * @param userSessionAuthKey (<sessionId>_SESSION)
+	 * @return logged in user session information
+	 * This method is used to get logged in user session details.
+	 */
+	public JSONObject getLogInUserSessionJson(String userSessionAuthKey) {
+
+		JSONObject userSessionListJson = new JSONObject();
+		Object sv = null;
+		sv = c.getUserLoginSession(userSessionAuthKey);
+		if (sv != null) {
+			JSONParser parser = new JSONParser();
+			try {
+				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
+				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+					String key = (String) iterator.next();
+					Object jsonValue = jsonObject.get(key);
+					JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
+					for (Object okey : jsonObjVal.keySet()) {
+						String keyStr = (String) okey;
+						Object keyvalue = jsonObjVal.get(keyStr);
+						userSessionListJson.put(keyStr, keyvalue);
+
+					}
+				}
+
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return userSessionListJson;
+	}
 	
 	
 	/**
@@ -396,6 +432,7 @@ public class UserStatsCacheHelper {
 			 userRoleDTO.setEmail(userRole.getUser().getEmail());
 			 userRoleDTO.setFirstName(userRole.getUser().getFirstName());
 			 userRoleDTO.setLastName(userRole.getUser().getLastName());
+			 userRoleDTO.setMiddleName(userRole.getUser().getMiddelName());
 			 userRoleDTO.setFacebook(userRole.getUser().getFacebook());
 			 userRoleDTO.setTwitter(userRole.getUser().getTwitter());
 			 userRoleDTO.setGooglePlus(userRole.getUser().getGooglePlus());
@@ -430,12 +467,18 @@ public class UserStatsCacheHelper {
 			 }
 			
 			 StringBuilder userNameSB = new StringBuilder();
-			 if (null != userRole.getUser().getLastName()) {
-				 userNameSB.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName());
-				} else {
-					 userNameSB.append(userRole.getUser().getFirstName());
+			 
+			 if(StringUtils.isNotEmpty(userRole.getUser().getFirstName()) && StringUtils.isEmpty(userRole.getUser().getLastName()) && StringUtils.isEmpty(userRole.getUser().getMiddelName())){
+				 userNameSB.append(userRole.getUser().getFirstName());
+				}else if(StringUtils.isNotEmpty(userRole.getUser().getFirstName()) && StringUtils.isNotEmpty(userRole.getUser().getLastName()) && StringUtils.isEmpty(userRole.getUser().getMiddelName())){
+					 userNameSB.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName());
+				}else if(StringUtils.isNotEmpty(userRole.getUser().getFirstName()) && StringUtils.isEmpty(userRole.getUser().getLastName()) && StringUtils.isNotEmpty(userRole.getUser().getMiddelName())){
+					userNameSB.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getMiddelName());
+				}else if(StringUtils.isNotEmpty(userRole.getUser().getFirstName()) && StringUtils.isNotEmpty(userRole.getUser().getLastName()) && StringUtils.isNotEmpty(userRole.getUser().getMiddelName())){
+					userNameSB.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getMiddelName()).append(" ").append(userRole.getUser().getLastName());
 				}
-			 userRoleDTO.setUserName(userNameSB.toString());
+			 userRoleDTO.setLoginUserFullName(userNameSB.toString());
+			 
 			 userRoleDTO.setImgUrl(userRole.getUser().getFileUrl());
 			 
 			 boolean isSuperUser = orgLocationService.isLoginUserIsSuperUser(userRole.getUser().getId(),userRole.getOrgLocations().getId());
@@ -489,7 +532,33 @@ public class UserStatsCacheHelper {
 			e.printStackTrace();
 	}
 		
- return userRoleDTO;
+		return userRoleDTO;
 	    
 	}
+	
+	
+	public void saveLoginUserSessionStoreToCouchbase(String generatedCustomTocken,UserRole userRole,HttpServletRequest request) {
+		LoginUserSessionStoreDTO sessionDTO = new LoginUserSessionStoreDTO();
+		
+		sessionDTO.setDocumentType(Constants.COUCH_DOCUMENT_TYPE_USER_LOGIN_SESSION);
+		sessionDTO.setUserRoleUUID(userRole.getUuid());
+		sessionDTO.setSessionId(generatedCustomTocken);
+		sessionDTO.setOrgLocationCode(userRole.getOrgLocations().getLocationCode());
+		sessionDTO.setLoginUserName(userRole.getUser().getUserName());
+	    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+	    LocalDateTime now = LocalDateTime.now();  
+	    sessionDTO.setLastUpdatedDate(dtf.format(now));
+		
+	    ObjectMapper sessionObj = new ObjectMapper();
+        try {
+			String sessionJsonStr = sessionObj.writeValueAsString(sessionDTO);
+			JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
+			StringBuilder userSessionKey = new StringBuilder();
+			userSessionKey.append(generatedCustomTocken).append("_SESSION");
+			SourceLeadSessionManager.setUserLoginSessionJsonString(userSessionKey.toString(), "userLoginSessionStore", jsonObject);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+	}
+	
 }
