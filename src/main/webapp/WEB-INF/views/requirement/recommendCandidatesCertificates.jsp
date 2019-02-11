@@ -18,6 +18,7 @@ function closeCertificatePopup(){
 --%>
 
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 function candidateCertificate(candidateId){
 	 
 	var result = "";
