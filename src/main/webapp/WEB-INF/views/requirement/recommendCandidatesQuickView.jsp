@@ -10,6 +10,7 @@
 --%>
 
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 function recomendcandidateQuickViewProfile(candidateId,recScore){
 	  var skillsList = '${skillsList}'; 
 	  $.ajax({

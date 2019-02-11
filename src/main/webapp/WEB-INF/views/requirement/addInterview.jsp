@@ -151,7 +151,7 @@ function addInterview(requirementId){
 	result = result + '</div>';
 	result = result +'<span class="col-md-2 noPad clearfix">';
 	result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_TEMPLATE\')">';	
-	result = result +'<a href="/ats/interViewFeedBackTemplate" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>';
+	result = result +'<a href="/app/interViewFeedBackTemplate" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>';
 	result = result +'</sec:authorize>';	
 	result = result + '</span>';
 	result = result + '</div>';
