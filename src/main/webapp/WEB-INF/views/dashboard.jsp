@@ -166,7 +166,7 @@ function logoutForConfigure() {
 	       	<sec:authorize access="hasAnyRole('ROLE_VIEW_CONTRACT')">
 				<div class="col-md-12"><jsp:include page="dashboardContracts.jsp"></jsp:include> </div>
 			</sec:authorize>
-
+ 
 		<jsp:include page="dashboard_configure_popup.jsp"></jsp:include>
 		</div> 
 </section>
