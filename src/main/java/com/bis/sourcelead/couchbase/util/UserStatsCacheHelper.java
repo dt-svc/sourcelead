@@ -432,6 +432,7 @@ public class UserStatsCacheHelper {
 			 userRoleDTO.setEmail(userRole.getUser().getEmail());
 			 userRoleDTO.setFirstName(userRole.getUser().getFirstName());
 			 userRoleDTO.setLastName(userRole.getUser().getLastName());
+			 userRoleDTO.setMiddleName(userRole.getUser().getMiddelName());
 			 userRoleDTO.setFacebook(userRole.getUser().getFacebook());
 			 userRoleDTO.setTwitter(userRole.getUser().getTwitter());
 			 userRoleDTO.setGooglePlus(userRole.getUser().getGooglePlus());

@@ -13,6 +13,8 @@ public class UserRoleSessionProfileDTO implements Serializable{
 	
 	private String lastName;
 	
+	private String middleName;
+	
 	private String userRoleId;
 	
 	private String userId;
@@ -396,6 +398,14 @@ public class UserRoleSessionProfileDTO implements Serializable{
 
 	public void setNewlyLoginUser(String newlyLoginUser) {
 		this.newlyLoginUser = newlyLoginUser;
+	}
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
 	}
 
 }
