@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.security.web.context.SaveContextOnUpdateOrErrorResponseWrapper;
 import org.springframework.security.web.context.SecurityContextRepository;
 
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -48,6 +50,9 @@ public class JWTSecurityContextRepository implements SecurityContextRepository {
     
     @Autowired
     UserService userService;
+    
+    @Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
 
     private final String tokenName;
     private final String secret;
@@ -62,8 +67,10 @@ public class JWTSecurityContextRepository implements SecurityContextRepository {
     @Override
     public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
     	
+    	requestResponseHolder.getRequest().getSession(false);
         HttpServletRequest request = requestResponseHolder.getRequest();
         HttpServletResponse response = requestResponseHolder.getResponse();
+          
         
         requestResponseHolder.setResponse(new SaveToCookieResponseWrapper(request, response, tokenName, secret));
         SecurityContext context = null;
@@ -107,8 +114,10 @@ public class JWTSecurityContextRepository implements SecurityContextRepository {
 								e.printStackTrace();
 							}
                         }
-                        String uname = username+"##"+userRoleId;
+                        String uname = username+"##"+userRoleId+"##"+usernameWithRole[2];
                         SecurityContext context = SecurityContextHolder.createEmptyContext();
+                        
+                        
                         context.setAuthentication(userLoginHelper.redirectToDashboard(request,uname, null, null,userRoleUUID));
                         return context;
                     } catch (ExpiredJwtException ex) {
