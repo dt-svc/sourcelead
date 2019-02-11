@@ -15,6 +15,7 @@
 <div id="candidateSubmittedJobsDiv" class="project_tabs clearfix"></div>  
 <div id="popUpDeleteCart"></div>
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 function globalDataRecommendations(){
 	//$("#actionsDiv" ).hide();
  	//$("#globalRecommendationsLoading").removeAttr('style');

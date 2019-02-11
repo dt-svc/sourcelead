@@ -10,6 +10,7 @@
      2.parameter : candidateId .
 --%>
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 	function candidateExperience(candidateId) {
 
 		var result = "";

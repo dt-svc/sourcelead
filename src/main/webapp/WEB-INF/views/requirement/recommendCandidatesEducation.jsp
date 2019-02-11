@@ -10,6 +10,7 @@
      1.usage     : used at clientSideBar().
 --%>
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 function candidateEducation(candidateId){
 	
 	var result = "";

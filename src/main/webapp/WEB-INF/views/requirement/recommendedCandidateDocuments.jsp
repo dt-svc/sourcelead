@@ -19,6 +19,7 @@ color:red !important;
      1.usage     : used at clientSideBar().
 --%>
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 function candidateDocuments(candidateId){
 	var result = "";
 	if(window.candidateStatusGlobal == '0'){
