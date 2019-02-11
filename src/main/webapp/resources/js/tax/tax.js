@@ -96,7 +96,7 @@ $(document).ready(function() {
 				$.ajax({
 					type : "POST",
 	        	    data: formData,
-					url : sourceleadUrl+"/stateTax/add",
+					url : pmsUrl+"/stateTax/add",
 					success : function(response) {
 						if (response.response === "AWKWARD") {
 			        	    location.href = "/errorPage";
@@ -105,7 +105,7 @@ $(document).ready(function() {
 			        			$(".success_pop").css("display","block");
 				        		$(".success_pop span").html("StateTax " + (stateTaxId === 0 ? "added" : "updated" ) + " successfully....");
 				        		setTimeout(function() {
-				        			location.href=sourceleadUrl+"/stateTax/list";					 			
+				        			location.href=pmsUrl+"/stateTax/list";					 			
 						 		},100);
 			        		} else if (response.object === -1) {
 			        			showError("Tax record already exists for the selected fields");
@@ -113,7 +113,7 @@ $(document).ready(function() {
 			        	} else if (response.response === "INVALID_DATA") {
 			        		showError(response.responseMessage);
 			        	} else if (response.indexOf('Sign In') !== -1) {
-			        		location.replace(sourceleadUrl);
+			        		location.replace(pmsUrl);
 			        	} else {
 			        	    showError("Operation failed, please try again");
 			        	}
@@ -155,7 +155,7 @@ $(document).ready(function() {
 				$.ajax({
 					type : "POST",
 	        	    data: formData,
-					url : sourceleadUrl+"/centralTax/add",
+					url : pmsUrl+"/centralTax/add",
 					success : function(response) {
 						if (response.response === "AWKWARD") {
 			        	    location.href = "/errorPage";
@@ -164,7 +164,7 @@ $(document).ready(function() {
 				        		$(".success_pop").css("display","block");
 				        		$(".success_pop span").html("CentralTax " + (centralTaxId === 0 ? "added" : "updated" ) + " successfully....");
 				        		setTimeout(function() {
-				        			location.href=sourceleadUrl+"/centralTax/list";					 			
+				        			location.href=pmsUrl+"/centralTax/list";					 			
 						 		},100);    
 			        		} else if (response.object === -1) {
 			        			showError("Tax record already exists for the selected fields");
@@ -172,7 +172,7 @@ $(document).ready(function() {
 			        	} else if(response.response === "FAILED") {
 			        		showError(response.responseMessage);
 			        	} else if (response.indexOf('Sign In') !== -1) {
-			        		location.replace(sourceleadUrl);
+			        		location.replace(pmsUrl);
 			        	} else {
 			        	    showError("Operation failed, please try again");
 			        	}
@@ -190,7 +190,7 @@ $(document).ready(function() {
 function Tax() {
 	this.getCentralTaxList = function() {
 		var selectedYear = $("#centralTaxYearList").val();
-		$.post(sourceleadUrl + "/getCentralTaxes", {yearFrequency:selectedYear}, function(response) {
+		$.post(pmsUrl + "/getCentralTaxes", {yearFrequency:selectedYear}, function(response) {
 			if (response && response.response === "INVALID_DATA") {
 				showError(response.responseMessage);
 			} else if (response.response === "AWKWARD") {
@@ -229,7 +229,7 @@ function Tax() {
 					$("#noResultsTable").show();
 				}
 			} else if (result.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
+				location.replace(pmsUrl);
 			} else {
 				showError("Operation failed, please try again");
 			}
@@ -241,7 +241,7 @@ function Tax() {
 		var selectedYear = $("#stateTaxYearList").val();
 		var selectedState = $("#stateTaxStateList").val();
 		$("#stateList").empty();
-		$.post(sourceleadUrl + "/getStateTaxes", {yearFrequency:selectedYear, stateId:selectedState, pageNo:pageNo, pageSize:pageSize}, function(response) {
+		$.post(pmsUrl + "/getStateTaxes", {yearFrequency:selectedYear, stateId:selectedState, pageNo:pageNo, pageSize:pageSize}, function(response) {
 			if (response && response.response === "INVALID_DATA") {
 				showError(response.responseMessage);
 			} else if (response.response === "AWKWARD") {
@@ -295,7 +295,7 @@ function Tax() {
 					$("#noResultsTable").show();
 				}
 			} else if (response.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
+				location.replace(pmsUrl);
 			} else {
 				showError("Operation failed, please try again");
 			}
@@ -480,7 +480,7 @@ function Tax() {
 		if(type===1) {
 			var pageNo = $("#confirmId").data("pageNo");
 		}
-		$.post(sourceleadUrl + "/" + (type === 1 ? "stateTax" : "centralTax") + "/changeStatus", {taxId: $("#confirmId").data("id")}, function(response) {
+		$.post(pmsUrl + "/" + (type === 1 ? "stateTax" : "centralTax") + "/changeStatus", {taxId: $("#confirmId").data("id")}, function(response) {
 			if (response && response.response === "INVALID_DATA") {
 				showError(response.responseMessage);
 			} else if (response.response === "AWKWARD") {
@@ -498,7 +498,7 @@ function Tax() {
         			$(".success_pop").css("display","none");
 		 		},1000);
 			} else if (response.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
+				location.replace(pmsUrl);
 			} else {
 				showError("Operation failed, please try again");
 			}
@@ -508,7 +508,7 @@ function Tax() {
 	this.changeFormStatus = function() {
 		var type = $("#confirmId").data("type");
 		var status = $("#confirmId").data("status");
-		$.post(sourceleadUrl + "/form/changeStatus", {id: $("#confirmId").data("id")}, function(response) {
+		$.post(pmsUrl + "/form/changeStatus", {id: $("#confirmId").data("id")}, function(response) {
 			if (response && response.response === "INVALID_DATA") {
 				showError(response.responseMessage);
 			} else if (response.response === "AWKWARD") {
@@ -522,7 +522,7 @@ function Tax() {
         			$(".success_pop").css("display","none");
 		 		},1000);
 			} else if (response.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
+				location.replace(pmsUrl);
 			} else {
 				showError("Operation failed, please try again");
 			}
@@ -532,7 +532,7 @@ function Tax() {
 	this.changeFormSectionStatus = function() {
 		var type = $("#confirmId").data("type");
 		var status = $("#confirmId").data("status");
-		$.post(sourceleadUrl + "/form/itDeclaration/changeStatus", {id: $("#confirmId").data("id"),type:type}, function(response) {
+		$.post(pmsUrl + "/form/itDeclaration/changeStatus", {id: $("#confirmId").data("id"),type:type}, function(response) {
 			if (response && response.response === "INVALID_DATA") {
 				showError(response.responseMessage);
 			} else if (response.response === "AWKWARD") {
@@ -546,7 +546,7 @@ function Tax() {
         			$(".success_pop").css("display","none");
 		 		},1000);
 			} else if (response.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
+				location.replace(pmsUrl);
 			} else {
 				showError("Operation failed, please try again");
 			}
@@ -571,7 +571,7 @@ function Tax() {
 	
 	this.getTaxFormList = function() {
 		$("#formList").empty();
-		$.post(sourceleadUrl + "/form/list", {}, function(response) {
+		$.post(pmsUrl + "/form/list", {}, function(response) {
 			if (response && response.response === "INVALID_DATA") {
 				showError(response.responseMessage);
 			} else if (response.response === "AWKWARD") {
@@ -615,7 +615,7 @@ function Tax() {
 					$("#noResultsTable").show();
 				}
 			} else if (response.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
+				location.replace(pmsUrl);
 			} else {
 				showError("Operation failed, please try again");
 			}
@@ -624,7 +624,7 @@ function Tax() {
 	
 	this.getDynamicTaxForm = function(formId, isEditable) {
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-		$("#dynamicForm").load(sourceleadUrl+"/form/getDynamicForm?formId=" + formId + "&isEditable=" + isEditable, function(response, status, xhr){
+		$("#dynamicForm").load(pmsUrl+"/form/getDynamicForm?formId=" + formId + "&isEditable=" + isEditable, function(response, status, xhr){
 			if(status === "success") {
 				$("#loading").removeAttr("style");
 				
@@ -716,7 +716,7 @@ function callAddITDeclarationSectionRestService(formData, type) {
 	$.ajax({
 		type : "POST",
 	    data: formData,
-		url : sourceleadUrl+"/form/addITDeclarationSection",
+		url : pmsUrl+"/form/addITDeclarationSection",
 		success : function(response) {
 			if (response.response === "AWKWARD") {
         	    location.href = "/errorPage";
@@ -731,7 +731,7 @@ function callAddITDeclarationSectionRestService(formData, type) {
         	} else if (response.response === "INVALID_DATA" || response.response === "FAILED") {
         		showError(response.responseMessage);
         	} else if (response.indexOf('Sign In') !== -1) {
-        		location.replace(sourceleadUrl);
+        		location.replace(pmsUrl);
         	} else {
         	    showError("Operation failed, please try again");
         	}
@@ -757,7 +757,7 @@ function callAddITDeclarationSectionItemRestService(formData, type) {
 	$.ajax({
 		type : "POST",
 	    data: formData,
-		url : sourceleadUrl+"/form/addITDeclarationSectionItem",
+		url : pmsUrl+"/form/addITDeclarationSectionItem",
 		success : function(response) {
 			if (response.response === "AWKWARD") {
         	    location.href = "/errorPage";
@@ -772,7 +772,7 @@ function callAddITDeclarationSectionItemRestService(formData, type) {
         	} else if (response.response === "INVALID_DATA" || response.response === "FAILED") {
         		showError(response.responseMessage);
         	} else if (response.indexOf('Sign In') !== -1) {
-        		location.replace(sourceleadUrl);
+        		location.replace(pmsUrl);
         	} else {
         	    showError("Operation failed, please try again");
         	}
@@ -811,7 +811,7 @@ function callAddITChallanSectionRestService(formData, type) {
 	$.ajax({
 		type : "POST",
 	    data: formData,
-		url : sourceleadUrl+"/form/addITChallanSection",
+		url : pmsUrl+"/form/addITChallanSection",
 		success : function(response) {
 			if (response.response === "AWKWARD") {
         	    location.href = "/errorPage";
@@ -826,7 +826,7 @@ function callAddITChallanSectionRestService(formData, type) {
         	} else if (response.response === "INVALID_DATA" || response.response === "FAILED") {
         		showError(response.responseMessage);
         	} else if (response.indexOf('Sign In') !== -1) {
-        		location.replace(sourceleadUrl);
+        		location.replace(pmsUrl);
         	} else {
         	    showError("Operation failed, please try again");
         	}
@@ -861,7 +861,7 @@ function callAddITChallanSectionItemRestService(formData, type) {
 	$.ajax({
 		type : "POST",
 	    data: formData,
-		url : sourceleadUrl+"/form/addITChallanSectionItem",
+		url : pmsUrl+"/form/addITChallanSectionItem",
 		success : function(response) {
 			if (response.response === "AWKWARD") {
         	    location.href = "/errorPage";
@@ -876,7 +876,7 @@ function callAddITChallanSectionItemRestService(formData, type) {
         	} else if (response.response === "INVALID_DATA" || response.response === "FAILED") {
         		showError(response.responseMessage);
         	} else if (response.indexOf('Sign In') !== -1) {
-        		location.replace(sourceleadUrl);
+        		location.replace(pmsUrl);
         	} else {
         	    showError("Operation failed, please try again");
         	}
@@ -916,7 +916,7 @@ function addChallaItem(sectionId, sectionName){
 function editItemDetails(itemRowId){
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/form/editChallanItem?&itemRowId="+itemRowId,
+		url : pmsUrl+"/form/editChallanItem?&itemRowId="+itemRowId,
 		success : function(data) {
 			$("#itChallanCustomPopup").empty();
 			$("#itChallanCustomPopup").append(data);
@@ -928,7 +928,7 @@ function editItemDetails(itemRowId){
 function changeChallanItemStatus(itemId){
        $.ajax({
            type : "POST",
-           url : sourceleadUrl+"/form/changeChallanItemStatus?&itemId="+itemId,
+           url : pmsUrl+"/form/changeChallanItemStatus?&itemId="+itemId,
            success : function(response) {
         	   
         	   if (response.response === "AWKWARD") {
@@ -942,7 +942,7 @@ function changeChallanItemStatus(itemId){
            	} else if (response.response === "INVALID_DATA" || response.response === "FAILED") {
            		showError(response.responseMessage);
            	} else if (response.indexOf('Sign In') !== -1) {
-           		location.replace(sourceleadUrl);
+           		location.replace(pmsUrl);
            	} else {
            	    showError("Operation failed, please try again");
            	}
@@ -956,7 +956,7 @@ function changeChallanItemStatus(itemId){
 function changeChallanSectionStatus(sectionId){
 	$.ajax({
 		 type : "POST",
-		 url : sourceleadUrl+"/form/changeChallanSectionStatus?&sectionId="+sectionId,
+		 url : pmsUrl+"/form/changeChallanSectionStatus?&sectionId="+sectionId,
          success : function(response) {
         	 
         	   if (response.response === "AWKWARD") {
@@ -970,7 +970,7 @@ function changeChallanSectionStatus(sectionId){
               	} else if (response.response === "INVALID_DATA" || response.response === "FAILED") {
               		showError(response.responseMessage);
               	} else if (response.indexOf('Sign In') !== -1) {
-              		location.replace(sourceleadUrl);
+              		location.replace(pmsUrl);
               	} else {
               	    showError("Operation failed, please try again");
               	}

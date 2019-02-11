@@ -24,7 +24,7 @@ $(document).ready(function(){
     </div>
      <div class="pull-right brud-crum">
                 <a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="/pms/payrollConfiguration"> Payroll Configuration</a>&raquo; Batches
+				href="${SourceLeadWeb_pmsUrl}/payrollConfiguration"> Payroll Configuration</a>&raquo; Batches
       </div>
   </section>
   <div class="timesheet_out">

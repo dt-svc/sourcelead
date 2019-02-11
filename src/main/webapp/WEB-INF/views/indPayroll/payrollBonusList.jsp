@@ -4,9 +4,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
 
 <script> 
 	$(document).ready(function(){
@@ -20,7 +17,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 <div class="pull-left">
 <h2>Bonus List</h2>
 </div>
- <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="/pms/payrollConfiguration">Payroll Configure</a>  &raquo; Bonus List</div>
+ <div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>  &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a>  &raquo; Bonus List</div>
 </section>
 
 <div class="clearfix"></div>
@@ -38,7 +35,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			    </li>
 			  
 			     <li class="positionRelative">
-					<a href="${appPath}/payrollBonus" class="addBtn">+ Create</a>
+					<a href="${SourceLeadWeb_pmsUrl}/payrollBonus" class="addBtn">+ Create</a>
 				</li>
 			  
 			</ul>
@@ -62,6 +59,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 
 	 $("#payrollBonusList").empty();
 	 
+	  var sourceleadUrl ='${sourceleadUrl}';
 	  var locationCode = '${SourceLeadWeb_locationCode}';
 	  $("#bonusListLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
@@ -103,6 +101,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
  
  <script>
  function payrollBonusList(){
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 var searchValue = $("#bonusDataTableSearch").val();
 	 var locationCode = '${SourceLeadWeb_locationCode}';
 	 searchValue = searchValue ? searchValue : "";
@@ -191,7 +190,7 @@ function bonusListPagination(url,pmsUrl){
 	            	    var result = "";
 	            	    result = result +"<td>";
 	            	    result = result +"<div class='tbldata-dotdot_50'>";
-	            	    result = result +"<a href='/pms/payrollBonus?uuid="+opt.uuid+"'><span title='Edit Bonus'><i class='glyphicon glyphicon-pencil'></i></span></a>&nbsp;&nbsp;";
+	            	    result = result +"<a href='${SourceLeadWeb_pmsUrl}/payrollBonus?uuid="+opt.uuid+"'><span title='Edit Bonus'><i class='glyphicon glyphicon-pencil'></i></span></a>&nbsp;&nbsp;";
 	            	    result = result +'<a><span title="Delete Bonus"><i class="glyphicon glyphicon-trash" onClick="deleteBonus(\''+opt.uuid+'\')";></i></span></a>';
 	            	    result = result +"</div>";
 	            	    result = result +"</td>";
@@ -246,7 +245,7 @@ function deleteBonus(uuid){
 function deletePayrollBonus(uuid){
 	$("#confirm-id").attr("disabled", "disabled");
 	$("#cancel-id").attr("disabled", "disabled");
-	var sourceleadUrl = '${sourceleadUrl}';
+	var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 	$.ajax({
     	type: "POST",
     	url : pmsUrl+"/deletePayrollBonus?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid, 
@@ -254,7 +253,7 @@ function deletePayrollBonus(uuid){
         	if (result.response === "AWKWARD") {
         	    location.href = "/errorPage";
         	} else if (result.response === "SUCCESS") {
-        		 location.replace(pmsUrl + "/payrollBonusList");
+        		 location.replace(sourceleadUrl + "/payrollBonusList");
         	} else if (result.indexOf('Sign In') !== -1) {
         		location.replace(sourceleadUrl);
         	} else {
