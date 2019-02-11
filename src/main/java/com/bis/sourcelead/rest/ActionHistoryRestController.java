@@ -2,6 +2,7 @@ package com.bis.sourcelead.rest;
 
 import java.util.List;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 @RequestMapping("/app")
@@ -55,7 +57,7 @@ public class ActionHistoryRestController {
 	@RequestMapping(value = "/ws/getRestLocationActionHistoryList", method = RequestMethod.GET)
 	public @ResponseBody List<ActionHistory> getRestLocationActionHistoryList(@RequestParam(value = "actionUUID", required = true) String actionUUID,HttpServletRequest request) throws Exception {
 		UserLoginLogoutSession userLoginLogoutSession = userLoginLogoutSessionService.getUserLoginLogoutSessionByActionUUID(actionUUID);
-		
+				
 		List<ActionHistory> actionHistoryListOrgLocations = actionHistoryService.getAllOrglocationsActionHistoryListActionUUID(userLoginLogoutSession.getActionUUID());
 		return actionHistoryListOrgLocations;
 	}

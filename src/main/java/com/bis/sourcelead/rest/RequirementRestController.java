@@ -243,46 +243,6 @@ public class RequirementRestController {
 	}
 	
 	
-	@RequestMapping(value="/getJobFairDatesForCalendar")
-	public ResponseList<String> getJobFairDatesForCalendar(HttpServletRequest request){
-		ResponseList<String> responseList = new ResponseList<>();
-		try {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			String roleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "displayName");
-			if(user !=null) {
-				OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				boolean adminFlag = false;
-				if("Admin".equalsIgnoreCase(roleName)) {
-					adminFlag = true;	
-				}
-				/*Set<UserRole> userRoleSet = user.getUserRole();
-				if (userRoleSet != null && !userRoleSet.isEmpty()) {
-					for (UserRole userRole : userRoleSet) {
-						if ((loginOrgLocations.getId().longValue() == userRole.getOrgLocations().getId().longValue()) && (user.getId().longValue() == userRole.getUser().getId().longValue()) 
-								&& !userRole.getUser().getUserRole().isEmpty()) {
-							for (UserRole uRole : userRole.getUser().getUserRole()) {
-								if (uRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)) {
-									adminFlag = true;
-								}
-							}
-						}
-					}
-				}*/
-				responseList.setData(requirementService.getJobFairDatesForCalendar(user.getId(), loginOrgLocations.getId(), loginOrgLocations.getDateFormat(), adminFlag));
-				responseList.setResponse(Result.SUCCESS.name());
-				responseList.setResponseMessage(Result.SUCCESS.getValue());
-			} else {
-				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
-				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			responseList.setResponse(Result.AWKWARD.name());
-			responseList.setResponseMessage(Result.AWKWARD.getValue());
-		}
-		return responseList;
-	}
-	
 	@RequestMapping(value = "/getJobFairRequirements")
 	public ResponseList<Requirement> getJobFairRequirements(HttpServletRequest request, @RequestParam(defaultValue="") String date) {
 		ResponseList<Requirement> responseList = new ResponseList<>();
