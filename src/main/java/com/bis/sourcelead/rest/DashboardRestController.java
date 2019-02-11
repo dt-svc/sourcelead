@@ -606,8 +606,13 @@ public class DashboardRestController {
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if(user != null) {
 			try {
-				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				 
+				 String customTocken = userLoginHelper.getLoginUserAuthenticationTocken();
+				 org.json.simple.JSONObject userSession =  userStatsCacheHelper.getLogInUserSessionJson(customTocken+"_SESSION");
+				 org.json.simple.JSONObject loginOrgLocation = userStatsCacheHelper.getOrgLocationCacheDetails(userSession.get("orgLocationCode").toString());
+				 
+				 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 				
 				String userCode = user.getUserCode();
 				String userType = null;
@@ -629,9 +634,9 @@ public class DashboardRestController {
 			
 				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
 					userType = Constants.ADMIN;
-					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode, isWalkIn, dayString);
+					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(orgLocationId, userType, user.getId(), userCode, isWalkIn, dayString);
 				}else{
-					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode, isWalkIn, dayString);
+					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(orgLocationId, userType, user.getId(), userCode, isWalkIn, dayString);
 				}
 				// your code here...
 				 
