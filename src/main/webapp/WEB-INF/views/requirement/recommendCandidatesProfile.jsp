@@ -32,6 +32,7 @@ position: relative; top:7px;
 <!-- Edit Recommended Candidate Script Start Here -->
 
 <script>
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 function editCandidate(candidateId){
 	  
 	  var loginCountryName = '${loginCountryName}';
@@ -1855,7 +1856,7 @@ function employementType(){
 			 var vendorSpocId = $("#updateSpocId").val();
 			 $.ajax({
 				    type: "POST",
-			        url: atsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
+			        url: vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 			        success: function(json) {
 			        //	var json = JSON.parse(data);
 			        	$('#vendorcontactName').empty();
