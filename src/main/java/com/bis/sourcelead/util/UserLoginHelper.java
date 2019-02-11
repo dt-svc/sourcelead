@@ -417,7 +417,7 @@ public class UserLoginHelper {
 				    }
 			  }
 			  
-			  
+			  SourceLeadSessionManager.setSessionAttribute(req, "sourceleadLogoutUrl", sourceleadLogoutUrl);
 			  SourceLeadSessionManager.setSessionAttribute(req, "user", loginUser);
 			  SourceLeadSessionManager.setSessionAttribute(req, "userId", loginUser.getId());
 			  SourceLeadSessionManager.setSessionAttribute(req, "org", orgLocations.getOrg());
