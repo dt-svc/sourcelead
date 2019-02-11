@@ -182,7 +182,7 @@ function statusvalidating(id){
 					Jobs</a></span>
 		</div> --%>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Job List
+			<a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Job List
 		</div>
 	</section>
 	<div class="clearfix">
