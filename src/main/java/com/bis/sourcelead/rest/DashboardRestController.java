@@ -30,6 +30,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +41,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dto.AssociateJoineReportDTO;
 import com.bis.sourcelead.dto.DashboardCountsDTO;
@@ -47,7 +49,8 @@ import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.EventsDTO;
 import com.bis.sourcelead.dto.ExpensesAndTimesheetDashBordCountDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
-import com.bis.sourcelead.dto.OrgRelationDTO;
+import com.bis.sourcelead.dto.LeaveDTO;
+import com.bis.sourcelead.dto.ProjectPlanningResourceRequestDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
@@ -62,17 +65,15 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.DashboardCounts;
 import com.bis.sourcelead.entity.ExpensesCount;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectPlanningResourceRequest;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
-import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
-import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Tasks;
-import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -84,8 +85,10 @@ import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExpensesApproverHierarchyService;
 import com.bis.sourcelead.service.InvoiceService;
+import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.ProjectPlanningResourceRequestService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
@@ -93,7 +96,6 @@ import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOffersService;
-import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TaskService;
@@ -211,8 +213,13 @@ public class DashboardRestController {
 	 UserLoginHelper userLoginHelper;
 	 
 	 @Autowired
-	 private RequirementRateSubmissionNegotiationService requirementRateSubmissionNegotiationService;
+	 UserStatsCacheHelper userStatsCacheHelper;
 	 
+	 @Autowired
+	 LeaveService leaveService;
+	 
+	 @Autowired
+	 ProjectPlanningResourceRequestService projectPlanningResourceRequestService;
 	 
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -353,8 +360,12 @@ public class DashboardRestController {
    			   //user update/save in user Elk
    			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
    		      }
-				
-		     String uname = user.getUserName()+"##"+userRole.getId();
+		     
+		      Authentication auth = SecurityContextHolder.getContext().getAuthentication();	
+		      String authToken[] = auth.getName().split("##");
+		      String uname = user.getUserName()+"##"+userRole.getId()+"##"+authToken[2];
+		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole, request);
+				 
 		     SecurityContextHolder.clearContext();
 			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRole.getUuid()));
 				
@@ -369,8 +380,12 @@ public class DashboardRestController {
 	 public @ResponseBody void userSummary(@RequestParam(value="userRoleId") Long userRoleId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		      UserRole userRole = userRoleService.getUserRoleById(userRoleId);
 		      User user = userRole.getUser();
-		      String uname = user.getUserName()+"##"+userRole.getId();
-		     
+		      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		      String authToken[] = auth.getName().split("##");
+		      String uname = user.getUserName()+"##"+userRole.getId()+"##"+authToken[2];
+		      
+			 userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole, request);
+				
 		     SecurityContextHolder.clearContext();
 			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRole.getUuid()));
 				
@@ -393,9 +408,13 @@ public class DashboardRestController {
   			   //user update/save in user Elk
   			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
   		      }
+		     
+		      Authentication auth = SecurityContextHolder.getContext().getAuthentication();	
+		      String authToken[] = auth.getName().split("##");
+		      String uname = user.getUserName()+"##"+userRole.getId()+"##"+authToken[2];
+		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole, request);
 				
 		     SourceLeadSessionManager.setSessionAttribute(request, "productionLoginUserId", productionLoginUserId);
-		     String uname = user.getEmail()+"##"+userRole.getId();
 		     SecurityContextHolder.clearContext();
 			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRole.getUuid()));
 				
@@ -427,7 +446,11 @@ public class DashboardRestController {
   			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
   		      }
 		     
-		     String uname = user.getEmail()+"##"+userRole.getId();
+		      Authentication auth = SecurityContextHolder.getContext().getAuthentication();	
+		      String authToken[] = auth.getName().split("##");
+		      String uname = user.getUserName()+"##"+userRole.getId()+"##"+authToken[2];
+		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole, request);
+		     
 		     SecurityContextHolder.clearContext();
 			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRole.getUuid()));
 		     
@@ -466,7 +489,11 @@ public class DashboardRestController {
  			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
  		      }
 		     
-		     String uname = user.getEmail()+"##"+userRole.getId();
+		      Authentication auth = SecurityContextHolder.getContext().getAuthentication();	
+		      String authToken[] = auth.getName().split("##");
+		      String uname = user.getUserName()+"##"+userRole.getId()+"##"+authToken[2];
+		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole, request);
+		     
 		     SecurityContextHolder.clearContext();
 			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRole.getUuid()));
 				
@@ -503,7 +530,11 @@ public class DashboardRestController {
   			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
   		      }
 		     
-		     String uname = user.getEmail()+"##"+userRole.getId();
+		      Authentication auth = SecurityContextHolder.getContext().getAuthentication();	
+		      String authToken[] = auth.getName().split("##");
+		      String uname = user.getUserName()+"##"+userRole.getId()+"##"+authToken[2];
+		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole, request);
+		     
 		     SecurityContextHolder.clearContext();
 			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRole.getUuid()));
 				
@@ -575,8 +606,10 @@ public class DashboardRestController {
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if(user != null) {
 			try {
-				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				 
+				 
+				 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 				
 				String userCode = user.getUserCode();
 				String userType = null;
@@ -598,9 +631,9 @@ public class DashboardRestController {
 			
 				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
 					userType = Constants.ADMIN;
-					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode, isWalkIn, dayString);
+					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(orgLocationId, userType, user.getId(), userCode, isWalkIn, dayString);
 				}else{
-					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode, isWalkIn, dayString);
+					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(orgLocationId, userType, user.getId(), userCode, isWalkIn, dayString);
 				}
 				// your code here...
 				 
@@ -2264,5 +2297,156 @@ public class DashboardRestController {
 		response.setObject(invoiceDTO);
 		return response;
 	}
+	
+	
+	@RequestMapping(value = "/getMarketplaceCartCountAndPrice")
+	public Object[] getMarketplaceCartCountAndPrice( HttpServletRequest request)throws Exception{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		Object[] countAndSum = null;
+		if(user!= null) {
+			if(StringUtils.isNotBlank(userRoleName)) {
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					countAndSum = candidateService.updateMarketplaceCartCountAndPrice(orgLocation.getId(), userRoleName, user);
+			}
+		}
+		return countAndSum;
+	}
+	
+	@RequestMapping(value = { "/getCountsForSelfLeaves","/rest/getCountsForSelfLeaves" }, method = RequestMethod.GET)
+	@ResponseBody
+	public LeaveDTO getCountsForSelfLeaves(
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
+		return leaveService.getAllSelfLeavesCounts(orgLocationId, userId);
 
+	}
+	
+	
+	@RequestMapping(value="/getAllJobFairDatesForCalendar")
+	public ResponseList<String> getAllJobFairDatesForCalendar(HttpServletRequest request){
+		ResponseList<String> responseList = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			String roleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "displayName");
+			if(user !=null) {
+				OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				boolean adminFlag = false;
+				if("Admin".equalsIgnoreCase(roleName)) {
+					adminFlag = true;	
+				}
+				
+				responseList.setData(requirementService.getJobFairDatesForCalendar(user.getId(), loginOrgLocations.getId(), loginOrgLocations.getDateFormat(), adminFlag));
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return responseList;
+	}
+	
+	
+	
+	@RequestMapping(value = "/getAllJobFairRequirements")
+	public ResponseList<Requirement> getAllJobFairRequirements(HttpServletRequest request, @RequestParam(defaultValue="") String date) {
+		ResponseList<Requirement> responseList = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			String roleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "displayName");
+			OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (user != null) {
+				Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(), date);
+				DateFormat week_Day = new SimpleDateFormat ("EEEE");
+				String dayOfweek = week_Day.format(startTime);
+				SimpleDateFormat formatter = new SimpleDateFormat("MMM dd yyyy");
+				String selectedDate  = formatter.format(startTime);
+				
+				boolean adminFlag = false;
+				if("Admin".equalsIgnoreCase(roleName)) {
+					adminFlag = true;
+				}
+				
+				responseList.setData(requirementService.getJobFairRequirementsByDate(user.getId(), loginOrgLocations.getId(), loginOrgLocations.getDateFormat(), date, adminFlag));
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(dayOfweek + "<>" + selectedDate);
+			} else {
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return responseList;
+	}
+	
+	
+	
+	  @RequestMapping(value = "/getAllProjectResourceRequestsCounts", method = RequestMethod.GET)
+		public @ResponseBody ProjectPlanningResourceRequestDTO getAllProjectResourceRequestsCounts(HttpServletRequest request) throws Exception {
+		   
+  	  OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		  List<ProjectPlanningResourceRequest> projectPlanningRequestList = projectPlanningResourceRequestService.getResourceRequestListByApproverIdAndOrgLocationIdAndStatus(user.getId(), orgLocation.getId(), userRoleName);
+		 
+		  ProjectPlanningResourceRequestDTO projectPlanningResourceRequestDTO = new ProjectPlanningResourceRequestDTO();
+		  
+		  Integer waitingCount = 0;
+		  Integer approvedCount = 0;
+		  Integer rejectedCount = 0;
+		  Integer onholdCount = 0;
+		  
+		  if(projectPlanningRequestList != null && projectPlanningRequestList.size() > 0) {
+			  for(ProjectPlanningResourceRequest planningRequest : projectPlanningRequestList){
+				  if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
+					  approvedCount = approvedCount + 1;
+				  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL)){
+					  waitingCount = waitingCount + 1;
+				  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_REJECTED)){
+					  rejectedCount = rejectedCount + 1;
+				  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_ON_HOLD)){
+					  onholdCount = onholdCount + 1;
+				  }
+			  }
+		  }
+		  
+		  projectPlanningResourceRequestDTO.setWaitingCount(waitingCount);
+		  projectPlanningResourceRequestDTO.setApprovedCount(approvedCount);
+		  projectPlanningResourceRequestDTO.setRejectedCount(rejectedCount);
+		  projectPlanningResourceRequestDTO.setOnholdCount(onholdCount);
+		  
+		  return projectPlanningResourceRequestDTO;
+		  
+	    }
+      
+      @RequestMapping(value = "/getAllProjectPlanningResourceRequestList", method = RequestMethod.GET)
+    	public ResponseList<ProjectPlanningResourceRequestDTO> getAllProjectPlanningResourceRequestList(ProjectPlanningResourceRequestDTO resourceRequestDTO,HttpServletRequest request) throws Exception {
+
+    		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+    		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+    		 String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+    		 
+    		String[] tableColumns = {"projectPlanningRequestId","projectName", "candidateName", "requestedUser", "approverName", "consultingType"};
+		    int sortColumnIndex = 1; //by default sorting using updated date
+			String sortColumnOrder = "desc"; //by default referContactsDTO order
+			if(resourceRequestDTO.getOrder() != null && !resourceRequestDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(resourceRequestDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = resourceRequestDTO.getOrder().get(0).get("dir");
+			}
+			resourceRequestDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			resourceRequestDTO.setSortOrder(sortColumnOrder);
+    		
+			ResponseList<ProjectPlanningResourceRequestDTO> requestDTOList = projectPlanningResourceRequestService.getResourceRequestListByApproverIdAndOrgLocationId(resourceRequestDTO,user.getId(), orgLocation.getId(),userRoleName);
+    		
+    		return requestDTOList;
+  		}
+      
 }
