@@ -20,6 +20,7 @@
 
 <!-- For add New Applicant -->
 <script>
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 var atsUrl = '${SourceLeadWeb_atsUrl}';
 function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	$('.action-pop').slideUp();
@@ -792,7 +793,7 @@ function getCandidateSelectionType(){
 		 $('.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+		        url: atsUrl+"/getCandidateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
 		        success: function(data) {
 		        	var json = data.data;
 		        	if (data.response === "FAILED") {
@@ -891,7 +892,7 @@ function getCandidateSelectionType(){
 		 $('.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+		        url: atsUrl+"/getCandidateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
 		        success: function(data) {
 		        	var json = data.data;
 		        	if (data.response === "FAILED") {
@@ -967,7 +968,7 @@ function getCandidateDetails(){
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId, 
+		        url: atsUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId, 
 		        success: function(data) {
 		        	if (data.response === "FAILED") {
 			    		showError(data.responseMessage);
@@ -1425,7 +1426,7 @@ function validate_fileupload(fileName)
 		 $("#save_button").attr("disabled", "disabled");
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateRequirementCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId, 
+		        url: atsUrl+"/validateRequirementCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId, 
 		        success: function(data) {
 		         	if(data == 'true'){
 			        	  $("#save_button" ).addClass('btn btn-sm btn-primary').val('SUBMIT');
@@ -1455,7 +1456,7 @@ function validate_fileupload(fileName)
 	 if(emailId != null && emailId != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getUserByUserEmail?${_csrf.parameterName}=${_csrf.token}&EmailId="+emailId, 
+		        url: atsUrl+"/getUserByUserEmail?${_csrf.parameterName}=${_csrf.token}&EmailId="+emailId, 
 		        success: function(json) {
 		        	
 		        		if(json.firstName != null && json.firstName != ''){
@@ -1668,7 +1669,7 @@ function validate_fileupload(fileName)
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getVendorsByOrgLocation?${_csrf.parameterName}=${_csrf.token}", 
+	        url: atsUrl+"/getVendorsByOrgLocation?${_csrf.parameterName}=${_csrf.token}", 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
@@ -1695,7 +1696,7 @@ function validate_fileupload(fileName)
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 			    type: "POST",
-		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        url: vmsUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(json) {
 		        	//var json = JSON.parse(data);
 		        	$('#vendorContact').empty();
