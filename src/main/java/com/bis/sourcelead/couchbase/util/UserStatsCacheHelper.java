@@ -79,6 +79,7 @@ public class UserStatsCacheHelper {
 	 */
 	@SuppressWarnings("unchecked")
 	public JSONObject getOrgLocationCacheDetails(String orgLocationCode) {
+		orgLocationCode = "OrgLocation_"+orgLocationCode;
 		JSONObject orgLocationJson = new JSONObject();
 		Object sv = null;
 		sv = c.getOrgLocationsDetails(orgLocationCode);

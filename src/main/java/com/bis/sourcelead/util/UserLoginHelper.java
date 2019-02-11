@@ -19,8 +19,10 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -129,7 +131,7 @@ public class UserLoginHelper {
 		 
 		 JSONObject userSession =  userStatsCacheHelper.getLogInUserSessionJson(generatedToken+"_SESSION");
 		 JSONObject userRole = userStatsCacheHelper.getLogInUserRoleStats(uname+"_AUTH_"+userSession.get("userRoleUUID").toString());
-		 JSONObject orgLocations = userStatsCacheHelper.getOrgLocationCacheDetails("OrgLocation_"+userSession.get("orgLocationCode").toString());
+		 JSONObject orgLocations = userStatsCacheHelper.getOrgLocationCacheDetails(userSession.get("orgLocationCode").toString());
 		 
 		 /**
 		  * Need to remove this entre try block when couch base is completely established
@@ -198,8 +200,6 @@ public class UserLoginHelper {
 			  SourceLeadSessionManager.setSessionAttribute(req, "userId", Long.parseLong(userRole.get("userId").toString()));
 		  }
 		  
-		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRole", userRole.get("roleName"));
-		 
 		  if(userRole.get("userRoleId") != null) {
 			  SourceLeadSessionManager.setSessionAttribute(req, "userRoleId", Long.parseLong(userRole.get("userRoleId").toString()));
 		  }
@@ -212,6 +212,7 @@ public class UserLoginHelper {
 			  SourceLeadSessionManager.setSessionAttribute(req, "candidateId", Long.parseLong(userRole.get("candidateId").toString()));
 		  }
 		  
+		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRole", userRole.get("roleName"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "candidateUUID", userRole.get("candidateUUID"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "isGlobalAccess", userRole.get("isGlobalUser"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "isSuperUser", userRole.get("isSuperUser"));
@@ -744,5 +745,12 @@ public class UserLoginHelper {
 		}
         
 	    return ip;  
+	}
+	
+	
+	public String getLoginUserAuthenticationTocken() {
+		   Authentication auth = SecurityContextHolder.getContext().getAuthentication();	
+	       String authToken[] = auth.getName().split("##");
+	       return authToken[2];
 	}
 }
