@@ -1622,7 +1622,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	}
 
 	@Override
-	@Autowired
+	@Transactional
 	public List<UserRole> getAllUserRolesByRoleId(Long roleId) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
