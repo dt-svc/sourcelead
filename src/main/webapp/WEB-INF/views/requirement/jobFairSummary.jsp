@@ -8,7 +8,7 @@
 			<h2>Job Fair Summary</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> »<a href="/ats/jobsList?viewTab=jobFair">Job Fairs</a>»Job Fair Details
+			<a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> »<a href="/ats/jobsList?viewTab=jobFair">Job Fairs</a>»Job Fair Details
 		</div>
 	</section>
 	<div class="timesheet_out">
