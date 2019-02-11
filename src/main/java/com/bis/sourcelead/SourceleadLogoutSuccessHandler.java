@@ -3,6 +3,7 @@ package com.bis.sourcelead;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,6 +19,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
  * Custom AuthenticationSuccessHandler
