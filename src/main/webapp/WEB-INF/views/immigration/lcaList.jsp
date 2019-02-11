@@ -11,17 +11,17 @@
    
     <section class="content-header clearfix">
       <div class="pull-left"><h2>LCA</h2></div>
-      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
-      <a href="/vms/immigration/viewImmigrationList">Petition List</a> &raquo; LCA List</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+      <a href="${SourceLeadWeb_vmsUrl}/immigration/viewImmigrationList">Petition List</a> &raquo; LCA List</div>
 	<div class="clearfix"></div>
     </section>
     
      <div class="project_side_wrap_inn_tabs clearfix">
 	    <ul class="project-tabs-menu">
 		   
-		    <li class="current"><a href="/vms/immigration/viewLCAList" >LCA List</a></li>
+		    <li class="current"><a href="${SourceLeadWeb_vmsUrl}/immigration/viewLCAList" >LCA List</a></li>
 		    
-		     <li><a href="/vms/immigration/viewImmigrationList" >Petition List</a></li>
+		     <li><a href="${SourceLeadWeb_vmsUrl}/immigration/viewImmigrationList" >Petition List</a></li>
 	    </ul>
     </div>
         
@@ -32,7 +32,7 @@
 <div class="positionRelative reportHead clearfix">
       <ul class="pull-right list-unstyled list-inline">
         <sec:authorize access="hasRole('ROLE_ADD_LCA')">
-			<li><a href="/vms/immigration/loadNewLCA" class="newAdBtn mr5">+ New </a></li>
+			<li><a href="${SourceLeadWeb_vmsUrl}/immigration/loadNewLCA" class="newAdBtn mr5">+ New </a></li>
 		</sec:authorize>	
 			<li>
 			    <select id="daysFilter" onchange="getDynamicLCAList()" style="padding: 3px 5px;">
@@ -253,7 +253,7 @@
                      var result = "";
                      if (opt.lcaNo !== null && opt.lcaNo !== '' && opt.lcaNo !== 'undefined') {
                     	 '<sec:authorize access="hasRole(\'ROLE_VIEW_LCA\')">'; 
-                    	    result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.lcaNo +"'><a href=/vms/immigration/viewLca?lcaUuid="+opt.lcaUuid+">"+opt.lcaNo+"</a></div></td>";
+                    	    result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.lcaNo +"'><a href=${SourceLeadWeb_vmsUrl}/immigration/viewLca?lcaUuid="+opt.lcaUuid+">"+opt.lcaNo+"</a></div></td>";
                     	 '</sec:authorize>';
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
@@ -380,7 +380,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_LCA\')">'; 
-                     result = result + '<td><div><a href=/vms/immigration/editLcaDetails?lcaUuid='+opt.lcaUuid+'><i id="edit' + opt.lcaUuid + '" class="glyphicon glyphicon-edit" title="Edit"></i></a>';
+                     result = result + '<td><div><a href=${SourceLeadWeb_vmsUrl}/immigration/editLcaDetails?lcaUuid='+opt.lcaUuid+'><i id="edit' + opt.lcaUuid + '" class="glyphicon glyphicon-edit" title="Edit"></i></a>';
                      '</sec:authorize>';
                      if(opt.status  ==  1){
                     '<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_LCA\')">'; 

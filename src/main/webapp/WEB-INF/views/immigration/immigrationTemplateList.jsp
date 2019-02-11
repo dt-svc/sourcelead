@@ -11,7 +11,7 @@
 </script>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"> 
-<script type="text/javascript" src="/vms/resources/js/immigration.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_vmsUrl}/resources/js/immigration.js"></script>
 <script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script>
 <!-- <script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script> -->
@@ -30,7 +30,7 @@
 
     <section class="content-header clearfix cusFieldHead">
         <div class="pull-left positionRelative"><h2>Petition Templates</h2></div>
-        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a>&raquo; Petition Templates</div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/orgTemplates'/>"> Templates</a>&raquo; Petition Templates</div>
         <div class="clearfix"></div>
     </section>
 
@@ -171,7 +171,7 @@
                       <option value="2">Draft</option>
                 </select>
                 <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION_TEMPLATE','ROLE_EDIT_VIEW_PETITION_TEMPLATE','ROLE_DELETE_PETITION_TEMPLATE')">
-                <a href="/vms/immigration/addNewPetitionTemplate"><i class="glyphicon glyphicon-plus"></i> Add Template</a>
+                <a href="${SourceLeadWeb_vmsUrl}/immigration/addNewPetitionTemplate"><i class="glyphicon glyphicon-plus"></i> Add Template</a>
  				</sec:authorize>
                 <span><input class="immigraTabSerach" id ="immiTemplateSerach" placeholder="Name/Description" type="text"></span>
             </div>
