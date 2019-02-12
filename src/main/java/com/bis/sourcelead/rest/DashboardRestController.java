@@ -108,6 +108,7 @@ import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.ReportsUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UserLoginHelper;
 import com.bis.sourcelead.web.DashboardController;
@@ -2448,5 +2449,22 @@ public class DashboardRestController {
     		
     		return requestDTOList;
   		}
+      
+      
+      
+ 	 @RequestMapping(value = "/ws/dumpUUIDForUserRoles", method = RequestMethod.GET)
+ 	 public void dumpUUIDForUserRoles() throws Exception {
+ 		
+ 		 List<UserRole> userRolesList =  userRoleService.getAllUserRoles();
+ 		 
+ 		 if(userRolesList != null && !userRolesList.isEmpty()) {
+ 			 System.out.println("dumping uuid for userroles starts......");
+ 			 for(UserRole userRole : userRolesList) {
+ 				userRole.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+ 				userRoleService.addUserRole(userRole);
+ 			 }
+ 			 System.out.println("dumping uuid for userroles ends");
+ 		 }
+ 	 }
       
 }
