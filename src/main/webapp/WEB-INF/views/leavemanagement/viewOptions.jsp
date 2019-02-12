@@ -20,7 +20,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Leave Options</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; <a href="/pms/leaveConfiguration">Leave Configuration</a> &raquo; Leave Options</div>
+		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; <a href="${SourceLeadWeb_pmsUrl}/leaveConfiguration">Leave Configuration</a> &raquo; Leave Options</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -30,7 +30,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
     <div class="timesheet_head">
       <ul>
           <li>
-              <a href="/pms/addOptions" title="Add Leave Type"><i class="fa fa-plus paddingRight"></i>Add Leave options</a>
+              <a href="${SourceLeadWeb_pmsUrl}/addOptions" title="Add Leave Type"><i class="fa fa-plus paddingRight"></i>Add Leave options</a>
           </li>
         <div class="clearfix"></div>
       </ul>
