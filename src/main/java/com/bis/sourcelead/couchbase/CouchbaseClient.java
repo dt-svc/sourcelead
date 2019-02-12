@@ -8,7 +8,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.CouchbaseCluster;
@@ -135,6 +137,8 @@ public class CouchbaseClient {
 
 		// Store the session Document
 		userLoginSessionStoreBucket.upsert(JsonDocument.create(id, value));
+			
+		
 	}
 	
 	public Object getUserLoginSession(String key) {
