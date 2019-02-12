@@ -30,9 +30,9 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
         <div class="success_pop" id="selector2" style="display: none;">
           <i class="fa fa-check-circle"></i><span id="msgFadeDiv"></span>
         </div>
-        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo;
-          <a href="/pms/payrollConfiguration"> Payroll Configuration</a>&raquo;
-          <a href="/pms/payrollScheduleList"> Pay Schedule List</a>&raquo;Add Pay Schedule
+        <div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>  &raquo;
+          <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration"> Payroll Configuration</a>&raquo;
+          <a href="${SourceLeadWeb_pmsUrl}/payrollScheduleList"> Pay Schedule List</a>&raquo;Add Pay Schedule
         </div>
     </section>
     <div class="clearfix"></div>
@@ -133,7 +133,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			  <div class="col-md-12 mb mt">
 			  	<div class="pull-right mr">
 					<button type="button" class="btn btn-primary mr" id="save_pay_schedule_button" name="save_pay_schedule_button" onclick="savePayrollSchedule();">Save</button> 
-					<button type="button" class="btn btn-default" id="" name="save_pay_schedule_button" onclick="javascript:window.location.href = '/app/payrollScheduleList'">Cancel</button>  
+					<button type="button" class="btn btn-default" id="" name="save_pay_schedule_button" onclick="javascript:window.location.href = '/pms/payrollScheduleList'">Cancel</button>  
 				</div>
 			  </div>
 			  </form:form>
@@ -162,7 +162,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 <script>
 function savePayrollSchedule(){
 	if ($('#add_payroll_schedule_form').validate(false, validationSettings)){  
-// 	 	    var formData = getFormData("add_payroll_schedule_form");
+		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 	   var formData = $($('#add_payroll_schedule_form')[0]).serialize();
 	        	  $("#loaderDIV").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	  $.post(pmsUrl+"/savePayrollSchedule?"+tokenParamName+"="+tokenValue, formData, function(result) {
@@ -180,7 +180,7 @@ function savePayrollSchedule(){
 				     			 $("#msgFadeDiv").html("Added Successfully");
 				     			msgFadein();
 		                } else if (result.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
+							location.replace(pmsUrl);
 						} else {
 		                    $("#save_pay_schedule_button").removeAttr("disabled");
 		                    $("#save_pay_schedule_button").addClass('button').val('Save');
@@ -257,13 +257,8 @@ $('#payPeriodStartDate').datepicker({
 			$("#payCheckDate").datepicker("option", "minDate", dt);
 			removePayPeriodStartDate();
 	}
-    //minDate: 0  this line for to restrict selection of previous dates  Bi-Weekly
 });
 	 
-	
-	/* function addValidClass(){
-		 $('#payrollPayDateDivId').find('p.jquery_form_error_message').remove(); 
-	} */
 </script>
 
 <script>
@@ -330,16 +325,6 @@ function removepPayCheckDate(){
 		      			  	$("#payFrequency").after("<p class='jquery_form_error_message'>"+payFrequency+" already exists..!!</span>");
 		      				$("#save_pay_schedule_button").attr("disabled", true);
 		                }
-	/* 	        var output = "";
-				for (var i=0; i<data.length; i++)
-				{
-				var opt = data[i];
-				 output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"  ("+opt.role+")</option>";
-				}
-				$("#notifyMember").empty();
-				$("#notifyMember").append(output);
-				$('#notifyMember').trigger("chosen:updated"); */
-				
 		        },
 		    });
   }
@@ -371,16 +356,6 @@ function removepPayCheckDate(){
 	        $("#runPayrollDate").val(json.runPayDate); 
 	        $("#nextPayMonth").val(json.nextPayMonth); 
 	        $("#notifyMember").val(json.notifyMember)
-	          
-	        	/*   var output = "";
-			for (var i=0; i<data.length; i++)
-			{
-			var opt = data[i];
-			 output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"  ("+opt.role+")</option>";
-			}
-			$("#notifyMember").empty();
-			$("#notifyMember").append(output);
-			$('#notifyMember').trigger("chosen:updated"); */
 			
 	        },
 	    });

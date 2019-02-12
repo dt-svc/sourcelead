@@ -62,8 +62,9 @@
 
 <script>
 function validateGroupId(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var groupId = $("#groupId").val();
-	$.get(sourceleadUrl+"/validateUserGroupIdOrGroupName?"+tokenParamName+"="+tokenValue+"&groupId="+groupId,  function(result) {
+	$.get(pmsUrl+"/validateUserGroupIdOrGroupName?"+tokenParamName+"="+tokenValue+"&groupId="+groupId,  function(result) {
 			 if (result.response === "AWKWARD") {
                     location.href = "/errorPage";
                 } else if (result.response === "SUCCESS") {
@@ -78,7 +79,8 @@ function validateGroupId(){
 
 function validateGroupName(){
 	var groupName = $("#groupName").val();
-	$.get(sourceleadUrl+"/validateUserGroupIdOrGroupName?"+tokenParamName+"="+tokenValue+"&groupName="+groupName,  function(result) {
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	$.get(pmsUrl+"/validateUserGroupIdOrGroupName?"+tokenParamName+"="+tokenValue+"&groupName="+groupName,  function(result) {
 			 if (result.response === "AWKWARD") {
                     location.href = "/errorPage";
                 } else if (result.response === "SUCCESS") {
@@ -134,13 +136,14 @@ function closeBatch() {
 
 <script>
  function getUsersByDepartment(){
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var department = $("#department").val();
 	if(groupUUID == null || groupUUID == '' || groupUUID == 'undefined'){
 		groupUUID = "";
 	}
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getUsersByDepartment?"+tokenParamName+"="+tokenValue+"&departmentId="+department                  , 
+		        url: pmsUrl+"/getUsersByDepartment?"+tokenParamName+"="+tokenValue+"&departmentId="+department                  , 
 		        success: function(json) {
 		       var output = "";
 				for (var i=0; i<json.length; i++)

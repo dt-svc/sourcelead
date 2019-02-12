@@ -5,14 +5,13 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
 <!-- Content Area -->
 <section class="content-wraper contentWraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
 			<h2>Payhead Summary</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/pms/payrollConfiguration">Payroll Configure</a> &raquo; <a href="/pms/payheadList">Payhead List</a> &raquo; Payhead Summary</div>
+		<div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payheadList">Payhead List</a> &raquo; Payhead Summary</div>
 	</section>
 	<div class="clearfix"></div>
 	<div class="timesheet_out">
@@ -21,7 +20,7 @@
 		      <div class="modal-body">
 		          
 		          <div class="viewgrid-header pull-right zIndex">
-		              <a href="<c:url value='/app/payrollPayhead?uuid=${uuid}'/>" class="btn btn-default btn-sm" title="Edit"><i class="fa fa-pencil paddingRight"></i>Edit</a>
+		              <a href="<c:url value='${SourceLeadWeb_pmsUrl}/payrollPayhead?uuid=${uuid}'/>" class="btn btn-default btn-sm" title="Edit"><i class="fa fa-pencil paddingRight"></i>Edit</a>
 		          </div>
 		          <div class="row">
 		              <div class="clearfix">
