@@ -16,7 +16,9 @@ public class CouchbaseConnectionConfig {
 	
 	@Value("${userLoginSessionStoreBucket}")
 	private String userLoginSessionStoreBucket;
-
+	
+	@Value("${orgLocationsBucket}")
+	private String orgLocationsBucket;
 
 	@Value("${couchbase.password}")
 	private String password;
@@ -54,4 +56,14 @@ public class CouchbaseConnectionConfig {
 	public void setUserLoginSessionStoreBucket(String userLoginSessionStoreBucket) {
 		this.userLoginSessionStoreBucket = userLoginSessionStoreBucket;
 	}
+
+	public String getOrgLocationsBucket() {
+		return orgLocationsBucket;
+	}
+
+	public void setOrgLocationsBucket(String orgLocationsBucket) {
+		this.orgLocationsBucket = orgLocationsBucket;
+	}
+
+	
 }
