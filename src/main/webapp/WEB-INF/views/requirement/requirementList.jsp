@@ -182,7 +182,7 @@ function statusvalidating(id){
 					Jobs</a></span>
 		</div> --%>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Job List
+			<a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Job List
 		</div>
 	</section>
 	<div class="clearfix">
@@ -432,7 +432,7 @@ function statusvalidating(id){
 </div>
 </form:form>
 
-<div class="timesheet_out" id="jobsTabContent">
+<div class="timesheet_out overflow_inherint" id="jobsTabContent">
 		
 <div class="positionRelative reportHead clearfix">
       <span class="pull-left refreIcon" id="filtersDiv">

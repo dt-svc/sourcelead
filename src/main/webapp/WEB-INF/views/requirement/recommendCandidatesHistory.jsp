@@ -4,6 +4,7 @@
 
 
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 function candidateHistory(candidateId){
 	var result = "";
 	result  = result + '   <div class="project_tabs_inn_head addUser-org"> ';
