@@ -22,7 +22,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Add Leave Options</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="/pms/leaveConfiguration"> Leave Configuration</a> &raquo; <a href="/pms/viewOptions">Leave Options List</a> &raquo; Add Leave Options</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/leaveConfiguration"> Leave Configuration</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/viewOptions">Leave Options List</a> &raquo; Add Leave Options</div>
     </section>
     <div class="content-area content-new clearfix">
     <div id="loading"></div> 
