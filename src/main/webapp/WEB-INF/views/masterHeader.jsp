@@ -188,7 +188,6 @@ z-index: 1000000000 !important;
 
 <script type="text/javascript">
 $(document).ready(function(){
-//   getNotificationsByuserId();
 	updateMarketplaceCartCountAndPrice();
 });
 </script>
@@ -303,7 +302,7 @@ function preventTabkey(e){
 </script>
 
 <body>
-<c:url var="logoutUrl" value="/logout"/>
+<c:url var="logoutUrl" value="${SourceLeadWeb_sourceleadLogoutUrl}"/>
 <form action="${logoutUrl}" method="post" id="logoutForm">
   <input type="hidden" name="userSessionId" value="${userLoginSession.id}"/>
    <input type="hidden" name="orgLocationId" value="${SourceLeadWeb_orgLocationId}"/>
@@ -465,7 +464,7 @@ function preventTabkey(e){
 	              <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
 	              <li><a href="<c:url value='${appPath}/userProfile'/>" title="Profile">Profile</a></li>
 	              </c:if> --%>				
-				 <li><a class="logColor" href="https://dev.sourcelead.com/logout" title="Log Out"><i class="logOutIC"></i>Log Out</a></li>
+				 <li><a class="logColor" href="javascript:logoutFormSubmit();" title="Log Out"><i class="logOutIC"></i>Log Out</a></li>
 			</ul>
 		</div>
 	</div>
@@ -1826,9 +1825,9 @@ $(document).ready(function(){
 <script>
 function updateMarketplaceCartCountAndPrice(){
 	var totalPriceInCurrency;
-	var atsUrl = '${SourceLeadWeb_atsUrl}';
+	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
-		 	url: atsUrl + "/updateMarketplaceCartCountAndPrice",
+		 	url: sourceleadUrl + "/getMarketplaceCartCountAndPrice",
 	        type: 'GET',
 	        success: function (object) {
 	        	if(object != null){
