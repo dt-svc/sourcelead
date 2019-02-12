@@ -41,7 +41,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.couchbase.UserRoleSessionProfileDTO;
 import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dto.AssociateJoineReportDTO;
@@ -113,9 +112,6 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UserLoginHelper;
 import com.bis.sourcelead.web.DashboardController;
-import com.couchbase.client.java.document.json.JsonObject;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.icu.util.Calendar;
 
 /**
@@ -2462,12 +2458,12 @@ public class DashboardRestController {
  		 List<UserRole> userRolesList =  userRoleService.getAllUserRoles();
  		 
  		 if(userRolesList != null && !userRolesList.isEmpty()) {
- 			 System.out.println("Uploading userprofile details to Couchbase starts......");
+ 			 System.out.println("dumping uuid for userroles starts......");
  			 for(UserRole userRole : userRolesList) {
  				userRole.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
  				userRoleService.addUserRole(userRole);
  			 }
- 			 System.out.println("Uploading userprofile details to Couchbase ends");
+ 			 System.out.println("dumping uuid for userroles ends");
  		 }
  	 }
       
