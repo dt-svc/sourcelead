@@ -130,6 +130,9 @@ public class UserLoginHelper {
 		 String generatedToken = usernameWithRole[2];
 		 
 		 JSONObject userSession =  userStatsCacheHelper.getLogInUserSessionJson(generatedToken+"_SESSION");
+		 while(userSession.isEmpty()) {
+			 userSession =  userStatsCacheHelper.getLogInUserSessionJson(generatedToken+"_SESSION");
+		 }
 		 JSONObject userRole = userStatsCacheHelper.getLogInUserRoleStats(uname+"_AUTH_"+userSession.get("userRoleUUID").toString());
 		 JSONObject orgLocations = userStatsCacheHelper.getOrgLocationCacheDetails(userSession.get("orgLocationCode").toString());
 		 
