@@ -97,7 +97,7 @@ width: 75px; padding: 0 !important;
 		var dates = {}
 		$.ajax({
 			type : "POST",
-			url : atsUrl
+			url : sourceleadUrl
 					+ "/getInterviewsTaskDates?${_csrf.parameterName}=${_csrf.token}",
 			success : function(result) {
 				if (result.response === "FAILED") {
@@ -125,12 +125,12 @@ width: 75px; padding: 0 !important;
 	var jobFairDates = {};
 	function getJobFairDates() {
 		var sourceleadUrl = '${sourceleadUrl}';
-		var atsUrl = "${SourceLeadWeb_vmsUrl}";
+		var atsUrl = "${SourceLeadWeb_atsUrl}";
 		var dates = {}
 		$.ajax({
 			type : "POST",
-			url : atsUrl
-					+ "/getJobFairDatesForCalendar?${_csrf.parameterName}=${_csrf.token}",
+			url : sourceleadUrl
+					+ "/getAllJobFairDatesForCalendar?${_csrf.parameterName}=${_csrf.token}",
 			success : function(result) {
 				if (result.response === "FAILED") {
 					showError(result.responseMessage);
@@ -351,7 +351,7 @@ function getSelectedDateFromCalendar(selectedDate) {
 		$("#fairJobsDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
-	        url: atsUrl+"/getJobFairRequirements?${_csrf.parameterName}=${_csrf.token}&date="+date,
+	        url: sourceleadUrl+"/getAllJobFairRequirements?${_csrf.parameterName}=${_csrf.token}&date="+date,
 	        success: function(result) {
 	        	if (result.response === "FAILED") {
 		    		showError(result.responseMessage);

@@ -292,7 +292,7 @@ function getSelfTotalCounts(){
 	var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
 	      type : "GET",
-	      url: pmsUrl+"/totalCountsForSelfLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
+	      url: sourceleadUrl+"/getCountsForSelfLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
 	       success :function(report) { 
 	   	   if(report.selfPendingCounts != null && report.selfPendingCounts != '' && report.selfPendingCounts != 'undefined'){
 	   		if(report.selfPendingCounts == 0){
