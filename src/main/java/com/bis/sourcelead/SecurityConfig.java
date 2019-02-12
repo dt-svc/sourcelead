@@ -130,7 +130,7 @@ public class SecurityConfig  {
     			.anyRequest().authenticated()                                                   
     			.and()
     			.formLogin().loginPage("/login")
-    			.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessHandler(sourceleadLogoutSuccessHandler).logoutSuccessUrl("/logout.done").deleteCookies("JSESSIONID")
+    			.and().logout().logoutUrl(sourceleadLogoutUrl)
     			.and().sessionManagement() .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     			.and().securityContext().securityContextRepository(securityContextRepository)
     			.and().csrf().disable();
