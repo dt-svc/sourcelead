@@ -2,6 +2,7 @@ package com.bis.sourcelead.web;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -123,5 +124,16 @@ public class HomeController {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("errorPage");
 		return model;
+	}
+	
+	@RequestMapping(value = {"/login"}, method = { RequestMethod.GET, RequestMethod.POST })
+	public String loginPage(HttpServletRequest request,HttpServletResponse response) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.getPrincipal() != null) {
+			return "redirect:" + sourceleadUrl + "/dashboard";
+		}
+		else {
+			return "redirect:" + sourceleadLoginUrl;
+		}	
 	}
 }

@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <c:set var = "immigrationDTO" scope = "page" value = '<%= session.getAttribute("immigrationDTO")%>'/>
+<script type="text/javascript" src="${SourceLeadWeb_vmsUrl}/resources/js/immigration.js"></script>
 <section class="addImmiWrap">
 	<div class="addImmiInnWrap">
 		<!-- <div class="immiStepsHead clearfix"> removed steps process.
@@ -207,7 +208,7 @@
 								 	<span class="input-group-addon cursorPointer bg-blue" onclick="getAllRelationssByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
 							 	</div>
 							 	<span class="col-md-2 noPad clearfix">
-							<a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							<a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 							</span> 
 								</c:if>
 								</c:if>
@@ -220,7 +221,7 @@
 								<span class="input-group-addon cursorPointer bg-blue" onclick="getAllRelationssByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
 							</div>
 							<span class="col-md-2 noPad clearfix">
-							<a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							<a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 							</span>
 								</c:if>
 								
@@ -303,7 +304,7 @@
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 								</div>
 							<span class="col-md-2 noPad clearfix">
-							<a href="<c:url value="/app/userCreation" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							<a href="<c:url value="${SourceLeadWeb_atsUrl}/userCreation" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 							</span>	
 							</div>
 							</div>
@@ -955,6 +956,8 @@
    </section>
    
        <script type="text/javascript">
+       var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+       var immiModulePath = "/immigration";
 			var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -1222,7 +1225,6 @@ $("#experienceValue").change(function () {
 	<script>
 	
 	function getPetitionTypeDropDown(petitionType){
-		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		$.ajax({
 		    	type: "GET",
 		        url: vmsUrl+immiModulePath+"/getPetitionTypeDropDown", 
@@ -1457,6 +1459,7 @@ $("#experienceValue").change(function () {
 		  onLoadStatusChange("${immigrationDTO.currUscisStatus}");
 		  employmentLevelDropDown("${immigrationDTO.employmentLevel}");
 		  jobTitleDropDown("${immigrationDTO.jobId}");
+		  
 		  if("${immigrationDTO.immigrationId}" == ""){
 			  $('#templateSelect').prop('disabled', false).trigger("chosen:updated");
 		  }else{
@@ -1622,7 +1625,7 @@ function  removeValidationAttorneyContact() {
 <script>
 	 function selectedAttorney(){
 		 var vid =  $('#attorneyId').val();
-		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+		 window.open(vmsUrl+"/addVendorContact?vid="+vid,'_blank');
 	 }
 	 </script>
 	 
