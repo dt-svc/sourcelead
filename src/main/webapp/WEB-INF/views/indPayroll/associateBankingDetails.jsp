@@ -4,9 +4,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
 
 <div id="tab-6" class="tabsMenu_tabs_inn project_wrap noPad" style="display: block;">
 <div class="reportHead clearfix">
@@ -157,6 +154,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 
 <script type="text/javascript">
  function savePaymentAccount(){
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 var userId = '${userId}';
 	 var candidateId = '${candidateId}';
 		if ($('#associate_bankingDetails_form').validate(false, validationSettings)) {
@@ -179,7 +177,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 						     closePaymentAccountPopup();
 						     associateBankingDetails(candidateId);
 		                } else if (result.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
+							location.replace(pmsUrl);
 						} else {
 		                    showError("Operation failed, please try again");
 		                }
@@ -238,15 +236,18 @@ function clearPaymentAccount() {
 
 <script>
 function changeDefaultPaymentAccount(ele, id) {
-    $.post(pmsUrl+"/change-default-payment-account", {id: id, defaultAccount: $(ele).is(":checked")}, function(data) {
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	candidateId = '${candidateId}';
+    $.post(pmsUrl+"/change-associate-default-payment-account", {id: id, candidateId: candidateId, defaultAccount: $(ele).is(":checked")}, function(data) {
     	 var candidateId = '${candidateId}';
     	 associateBankingDetails(candidateId);
         showError(data.responseMessage);
     });
 }
 function changeActivePaymentAccount(id){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 var candidateId = '${candidateId}';
-	 $.post(pmsUrl+"/change-active-payment-account", {id: id}, function(data) {
+	 $.post(pmsUrl+"/change-associate-active-payment-account", {id: id}, function(data) {
 	        showError(data.responseMessage);
 	        associateBankingDetails(candidateId);
 	    });

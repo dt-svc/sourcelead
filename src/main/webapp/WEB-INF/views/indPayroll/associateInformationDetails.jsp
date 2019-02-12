@@ -376,6 +376,8 @@ function nomineeDetailsPagination(){
 
 <script>
  function addNomineeDetails(id){
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+
 	$(".salarySetup, .comMask").fadeIn();
 	var urlPath = '';
 	if(id != null && id != 'undefined' && id != ''){
@@ -385,7 +387,7 @@ function nomineeDetailsPagination(){
 	}
     $.ajax({
 			type: "POST",
-		    url: sourceleadUrl + urlPath, 
+		    url: pmsUrl + urlPath, 
 		    success: function(data) {
 		    	$('#nomineePopUpDiv').empty();
 		    	$('#nomineePopUpDiv').append(data);
@@ -406,6 +408,7 @@ function deleteNominee(nomineeId,candidateId){
       url: sourceleadUrl+"/deleteNominee?&id="+nomineeId+"&candidateId="+candidateId, 	  
  	  success: function(data) { 
  		 getNomineeDetailsList();
+ 		 $("#nomineeShow").prop('checked', false);
 	  }, 
     });
 	   

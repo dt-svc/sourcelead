@@ -33,10 +33,11 @@ $(document).ready(function() {
 				$("#submitBtn").attr("disabled","disabled");
 				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 				var formData = getFormData("itDeclarationForm");
+				var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				$.ajax({
 					type : "POST",
 	        	    data: formData,
-					url : sourceleadUrl+"/itDeclaration/save",
+					url : pmsUrl+"/itDeclaration/save",
 					success : function(response) {
 						if (response.response === "AWKWARD") {
 			        	    location.href = "/errorPage";
@@ -45,13 +46,13 @@ $(document).ready(function() {
 			        			$(".success_pop").css("display","block");
 				        		$(".success_pop span").html("ITDeclaration added successfully....");
 				        		setTimeout(function() {
-				        			location.href = sourceleadUrl + "/myPayrollInd?redirectionTab=forms";
+				        			location.href = pmsUrl + "/myPayrollInd?redirectionTab=forms";
 						 		}, 100);
 			        		}
 			        	} else if (response.response === "INVALID_DATA" || response.response === "DUPLICATE_TAX_RECORD") {
 			        		showError(response.responseMessage);
 			        	} else if (response.indexOf('Sign In') !== -1) {
-			        		location.replace(sourceleadUrl);
+			        		location.replace(pmsUrl);
 			        	} else {
 			        	    showError("Operation failed, please try again");
 			        	}
@@ -231,7 +232,8 @@ function approveOrRejectForm(formId, status) {
 function changeFormStatus() {
 	var formId = $("#confirmId").data("id");
 	var status = $("#confirmId").data("status");
-	$.post(sourceleadUrl + "/itDeclaration/changeStatus", {id: $("#confirmId").data("id"), status: $("#confirmId").data("status")}, function(response) {
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	$.post(pmsUrl + "/itDeclaration/changeStatus", {id: $("#confirmId").data("id"), status: $("#confirmId").data("status")}, function(response) {
 		if (response && response.response === "INVALID_DATA") {
 			showError(response.responseMessage);
 		} else if (response.response === "AWKWARD") {
@@ -245,7 +247,7 @@ function changeFormStatus() {
     			$(".success_pop").css("display","none");
 	 		},500);
 		} else if (response.indexOf('Sign In') !== -1) {
-			location.replace(sourceleadUrl);
+			location.replace(pmsUrl);
 		} else {
 			showError("Operation failed, please try again");
 		}
@@ -260,7 +262,8 @@ function closeChangeStatusPopup() {
 function getItDeclarationSubmissionList(uuid, pageNo) {
 	var pageSize = $("#pageSize").val();
 	$("#formList").empty();
-	$.post(sourceleadUrl + "/itDeclaration/list", {pageNo:pageNo, pageSize:pageSize}, function(response) {
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	$.post(pmsUrl + "/itDeclaration/list", {pageNo:pageNo, pageSize:pageSize}, function(response) {
 		if (response && response.response === "INVALID_DATA") {
 			showError(response.responseMessage);
 		} else if (response.response === "AWKWARD") {
@@ -317,25 +320,20 @@ function getItDeclarationSubmissionList(uuid, pageNo) {
 				$("#emptyRecordsDiv").show();
 			}
 		} else if (response.indexOf('Sign In') !== -1) {
-			location.replace(sourceleadUrl);
+			location.replace(pmsUrl);
 		} else {
 			showError("Operation failed, please try again");
 		}
 	});
 }
+
 function exportFormToPDF(formId) {
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var exportType = "pdf";
-	/*$.ajax({
-		type : "POST",
-		 url : sourceleadUrl+"/itDeclartionSubmissionExport?&formId="+formId+"&exportType="+exportType,
-	});*/
-	window.location.href = sourceleadUrl+"/itDeclartionSubmissionExport?formId="+formId+"&exportType="+exportType;
+	window.location.href = pmsUrl+"/itDeclartionSubmissionExport?formId="+formId+"&exportType="+exportType;
 }
 function exportFormToExcel(formId) {
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var exportType = "excel";
-	/*$.ajax({
-		type : "POST",
-		 url : sourceleadUrl+"/itDeclartionSubmissionExport?&formId="+formId+"&exportType="+exportType,
-	})*/
-	window.location.href = sourceleadUrl+"/itDeclartionSubmissionExport?formId="+formId+"&exportType="+exportType;
+	window.location.href = pmsUrl+"/itDeclartionSubmissionExport?formId="+formId+"&exportType="+exportType;
 }
