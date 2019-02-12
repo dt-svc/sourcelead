@@ -7,6 +7,7 @@
  }
  </style>
  <script>
+ var atsUrl ='${SourceLeadWeb_atsUrl}';
  var dropdownSelectedUserIds = []; 
  </script>
 	  <div class="modal-dialog modal-lg">
@@ -396,7 +397,7 @@ function deleteAssignDocument(index,id){
 	
    $.ajax({
   	  type: "POST",
-     url: sourceleadUrl+"/deleteAssignAssetDoc?"+tokenParamName+"="+tokenValue+"&assetAssignId="+id, 	   
+     url: atsUrl+"/deleteAssignAssetDoc?"+tokenParamName+"="+tokenValue+"&assetAssignId="+id, 	   
 	  success: function(data) {  },
    });
 	   
@@ -426,7 +427,7 @@ function getCustomDependentField(sectionId){
 		 $("#add_asset").attr("disabled", "disabled");
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateAssetSno?"+tokenParamName+"="+tokenValue+"&assetSno="+assetSno+"&assetId="+assetId, 
+		        url: atsUrl+"/validateAssetSno?"+tokenParamName+"="+tokenValue+"&assetSno="+assetSno+"&assetId="+assetId, 
 		        success: function(data) {
 		        	if(data == true){
 		        		     $('#snoDiv').find('p.jquery_form_error_message').remove();

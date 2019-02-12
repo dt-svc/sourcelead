@@ -9,6 +9,7 @@
 <script>
 	function requirementPipelinePaginationRejected(url, requirementId,
 			submissionType) {
+		var atsUrl = '${SourceLeadWeb_atsUrl}';
 		var sourceleadUrl = '${sourceleadUrl}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var clientSubmissions = '${clientSubmissions}';

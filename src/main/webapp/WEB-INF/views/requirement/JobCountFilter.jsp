@@ -25,33 +25,34 @@
 			</div>
 			
    <script type="text/javascript">
+   var atsUrl = '${SourceLeadWeb_atsUrl}';
 	function loadRequirementList(){
 		var tab = $('#tabList').val();
 		var reqList = $('#reqList').val();
 		var sourceleadUrl = '${sourceleadUrl}';
 		var orgLocId = '${SourceLeadWeb_orgLocationId}';
 		if(reqList == 'appList'){
-			window.location.replace(sourceleadUrl + "/requirementApplicantsList?&tab="+tab+"&orgLocationId="+orgLocId);
+			window.location.replace(atsUrl + "/requirementApplicantsList?&tab="+tab+"&orgLocationId="+orgLocId);
 		}else if(reqList == 'shortlist'){
-			window.location.replace(sourceleadUrl + "/requirementShortList?&tab="+tab+"&orgLocationId="+orgLocId);
+			window.location.replace(atsUrl + "/requirementShortList?&tab="+tab+"&orgLocationId="+orgLocId);
 		}
 		else if(reqList == 'subList'){
-			window.location.replace(sourceleadUrl + "/requirementSubmissionsList?&tab="+tab+"&orgLocationId="+orgLocId);
+			window.location.replace(atsUrl + "/requirementSubmissionsList?&tab="+tab+"&orgLocationId="+orgLocId);
 		}
 		else if(reqList == 'interList'){
-			window.location.replace(sourceleadUrl + "/requirementInterviewsList?&tab="+tab+"&orgLocationId="+orgLocId);		
+			window.location.replace(atsUrl + "/requirementInterviewsList?&tab="+tab+"&orgLocationId="+orgLocId);		
 	    }
 		else if(reqList == 'offerlist'){
-			window.location.replace(sourceleadUrl + "/requirementOffersList?&tab="+tab+"&orgLocationId="+orgLocId);
+			window.location.replace(atsUrl + "/requirementOffersList?&tab="+tab+"&orgLocationId="+orgLocId);
 		}
 		else if(reqList == 'rejectedlist'){
-			window.location.replace(sourceleadUrl + "/requirementRejectedList?&tab="+tab+"&orgLocationId="+orgLocId);
+			window.location.replace(atsUrl + "/requirementRejectedList?&tab="+tab+"&orgLocationId="+orgLocId);
 		}
 		else if(reqList == 'joinedlist'){
-			window.location.replace(sourceleadUrl + "/requirementJoinedList?&tab="+tab+"&orgLocationId="+orgLocId);
+			window.location.replace(atsUrl + "/requirementJoinedList?&tab="+tab+"&orgLocationId="+orgLocId);
 		}
 		else if(reqList == 'backoutlist'){
-			window.location.replace(sourceleadUrl + "/requirementBackoutList?&tab="+tab+"&orgLocationId="+orgLocId);
+			window.location.replace(atsUrl + "/requirementBackoutList?&tab="+tab+"&orgLocationId="+orgLocId);
 		}
 	 }
 	</script> 

@@ -85,7 +85,7 @@ right: 15px;
 			<section class="comLogInn">
 				<div class="comLogHead">
 				<jsp:include page="../userManageAccounts.jsp" />
-				 <div class="comLogLogoText">${SourceLeadWeb_orgName}</div>
+				 <div class="comLogLogoText">${SourceLeadWeb_orgLocationName}</div>
 				  <div class="welSiO onboard-logoutbtn" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out mt5"></i></div>
 				       <ul>
 						  <li class="actLi">Organization details<i class="fa fa-check-circle"></i></li>
@@ -115,15 +115,15 @@ right: 15px;
 					<jsp:include page="locationIndiaBankingDetails.jsp" />
 					
 					<div class="welBtns welBtnsA">
-									<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+									<c:if test="${SourceLeadWeb_country == 'United States'}">
 									<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardFederalAndStateTaxes'/>'">
 									</c:if>
 									
-									<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+									<c:if test="${SourceLeadWeb_country == 'India'}">
 									<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardInformationDetails'/>'">
 									</c:if>
 									
-									<c:if test="${SourceLeadWeb_orgLocations.country != 'India' && SourceLeadWeb_orgLocations.country != 'United States'}">
+									<c:if test="${SourceLeadWeb_country != 'India' && SourceLeadWeb_country != 'United States'}">
 									<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardLocations'/>'">
 									</c:if>
 									

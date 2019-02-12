@@ -4,6 +4,7 @@
   <script type="text/javascript">
  var conValue = [];
  var conTempIndex = null;
+ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
     $(document).ready(function(){
     	$(".add-contribution-row").click(function(){
     		var i = $("#index").val(); 
@@ -177,7 +178,7 @@ $('body').on('blur', '#associate_contribution_form', function() {
       $.ajax({
 				type : "POST",
   	    data: formData,
-				url : sourceleadUrl+"/saveAssociateContribution?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&saveType="+saveType,
+				url : pmsUrl+"/saveAssociateContribution?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&saveType="+saveType,
 				success : function(result) {
 					 if (result && result.response === "INVALID_DATA") {
 		                    $("#contribution_save_button").removeAttr("disabled");
@@ -197,7 +198,7 @@ $('body').on('blur', '#associate_contribution_form', function() {
 							$("#contribution_save_button").removeAttr("disabled");
 							$("#contribution_save_button").addClass('button').val('Save & Continue');
 		                } else if (result.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
+							location.replace(pmsUrl);
 						} else {
 		                    $("#contribution_save_button").removeAttr("disabled");
 		                    $("#contribution_save_button").addClass('button').val('Save & Continue');
@@ -254,7 +255,7 @@ function contributionPopup(){
  function getContributionType(){
 	 $.ajax({
 			type : "POST",
-			url: sourceleadUrl+"/getAllContributionType?"+tokenParamName+"="+tokenValue+"",
+			url: pmsUrl+"/getAllContributionType?"+tokenParamName+"="+tokenValue+"",
 			success :function(data) {
 			var json = data;
 			var output = "";
@@ -284,7 +285,7 @@ function contributionPopup(){
 	 var contributionId = $("#contriType").val();
 	 $.ajax({
 			type : "POST",
-			url: sourceleadUrl+"/getContributionAmount?"+tokenParamName+"="+tokenValue+"&contributionId="+contributionId,
+			url: pmsUrl+"/getContributionAmount?"+tokenParamName+"="+tokenValue+"&contributionId="+contributionId,
 			success :function(data) {
 				$("#contricontributionMethod").val(data.payrollContributionMethod);
 				$("#contriAmt").val(data.contributionAmount); 

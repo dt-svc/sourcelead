@@ -37,7 +37,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 			<a href="javascript:void(0)" onclick="getEmialSettings();"><i class="fa fa-cog ml"></i></a>        
         </h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Mailbox</div>
+      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Mailbox</div>
     </section>
     
     <div class="content-dashboard clearfix">
@@ -73,7 +73,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 							</c:when>
 							<c:otherwise>
 								<button id="composeSourceleadMail" class="newAdBtn" type="button"
-									onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_atsUrl}/composeMail'/>'">
+									onClick="javascript:window.location.href = '/app/composeMail'">
 									<i class="fa fa-envelope-o" aria-hidden="true"></i>Compose
 								</button>
 							</c:otherwise>

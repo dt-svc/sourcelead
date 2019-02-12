@@ -6,6 +6,8 @@
 <link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 
 	<script type="text/javascript">
+	 var atsUrl = '${SourceLeadWeb_atsUrl}';
+	 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 		window.onload = function () {
 			initLocationAuto('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode','candidateLatitude','candidateLongitude','','address');
 			disableMonths();
@@ -40,11 +42,11 @@
       <h2>Import Candidate</h2>
     </div>
      <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/app/candidatesList'/>"> Candidate List</a> &raquo; Import Candidate</div>
+    	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="${SourceLeadWeb_atsUrl}/candidatesList"> Candidate List</a> &raquo; Import Candidate</div>
      </c:if>
       
       <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-    	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}'/>">Home</a>&raquo;<a href="<c:url value='/app/candidatesList'/>"> Candidate List</a> &raquo; Import Candidate</div>
+    	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}'/>">Home</a>&raquo;<a href="${SourceLeadWeb_atsUrl}/candidatesList"> Candidate List</a> &raquo; Import Candidate</div>
      </c:if>
   </section>
   <div class="content-area content-new clearfix">
@@ -534,6 +536,7 @@
      3.ajax url implementation in CandidateRestController.
     --%>
 <script type="text/javascript">
+
 	function storeCandidate() {
 		rateValidations();
 		var validationSettings = {
@@ -555,7 +558,7 @@
 						 data: formData,
 			    	     processData: false,
 			    	     contentType:false,
-			        	    	url : sourceleadUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue,
+			        	    	url : atsUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue,
 						        success : function(result) {
 						        	
 						        	if (result.response === "AWKWARD") {
@@ -566,7 +569,7 @@
 											$("#store_candidate").removeAttr('button').val('Save');	
 											showError("Invalid data");
 										}else{
-											location.replace(sourceleadUrl+"/candidatesList");	
+											location.replace(atsUrl+"/candidatesList");	
 										}
 						        	} else if (result.indexOf('Sign In') !== -1) {
 						        		location.replace(sourceleadUrl);
@@ -642,7 +645,7 @@ function validate_fileupload(fileName)
     	var allSkills = $(event.target).val();
 	   	$.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
+	        url: atsUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
 	        success: function(response) {
 	        	if (response.response === "AWKWARD") {
 	        	    location.href = "/errorPage";
@@ -670,7 +673,7 @@ function validate_fileupload(fileName)
 		
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType=Candidate", 
+		        url: atsUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType=Candidate", 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -819,7 +822,7 @@ var currentRate = document.getElementById("currentRate").value;
  function getVendorsByOrgLocation(){
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
+		        url: atsUrl+"/getVendorsByOrgLocation?", 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendors').empty();
@@ -849,10 +852,11 @@ function  removeValiationVendorContact() {
 </script>
 <script>
  function getVendorContactList(){
+	 
 	var orgRelationID = $('#vendors').val();
 		 $.ajax({
 			    type: "POST",
-		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        url: vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(json) {
 		        //	var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();

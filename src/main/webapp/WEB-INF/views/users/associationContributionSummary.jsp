@@ -4,13 +4,13 @@
  
  
  <script>
- var atsUrl ='${SourceLeadWeb_atsUrl}';
+ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 function associateContributionSummary(userId){  
 		let searchParams = new URLSearchParams(window.location.search);
 		let param = searchParams.get('userCode')
 	  $.ajax({
            type : "GET",
-           url: atsUrl+"/findAllContributionSummaryByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
+           url: pmsUrl+"/findAllContributionSummaryByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
             success :function(json) {
              var data = json.data;
            
@@ -19,7 +19,7 @@ function associateContributionSummary(userId){
             result = result + '<div class="table-header clearfix">';
             result = result + '<h4 class="pull-left margin-top0">Contribution</h4>';
             result = result + '<ul class="list-unstyled list-inline pull-right">';
-            result = result + '<li><a href="<c:url value="${appPath}/addAssociateContribution?userCode='+param+'&saveType=edit"/>" class="fa fa-plus paddingRight" title="Add">Add</a></li>';
+            result = result + '<li><a href="/pms/addAssociateContribution?userCode='+param+'&saveType=edit" class="fa fa-plus paddingRight" title="Add">Add</a></li>';
             result = result + '<div class="clearfix"></div>';
             result = result + '</ul>';
             result = result + '</div>';
@@ -159,7 +159,7 @@ function associateContributionListPagination(){
 			 var sourceleadUrl ='${sourceleadUrl}';
 			  $.ajax({
 			    	type: "POST",
-			        url: atsUrl+"/updateAssociateContributionAmount?${_csrf.parameterName}=${_csrf.token}&associateContributionId="+id+"&contriAmount="+amount,
+			        url: pmsUrl+"/updateAssociateContributionAmount?${_csrf.parameterName}=${_csrf.token}&associateContributionId="+id+"&contriAmount="+amount,
 			        success: function(data) {
 			        	document.getElementById("preDedDiv"+id).style.display="block";
 			   		 	document.getElementById("editDedDiv"+id).style.display="none";
@@ -182,7 +182,7 @@ function associateContributionListPagination(){
 function deleteContribution(contrubutionId,userId){
 	$.ajax({
 		type : "POST",
-		url : atsUrl+"/deleteAssociateContribution?"+tokenParamName+"="+tokenValue+"&assContriId="+contrubutionId,
+		url : pmsUrl+"/deleteAssociateContribution?"+tokenParamName+"="+tokenValue+"&assContriId="+contrubutionId,
 		success : function(data) {
 			if(data != null)
 				associateContributionSummary(userId);
