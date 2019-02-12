@@ -9,7 +9,6 @@
     <name>vms</name>
     <properties>
         <java.version>1.8</java.version>
-        <tomcat.deploy.dir>C:/apache-tomcat-8.0.36/webapps</tomcat.deploy.dir>
     </properties>
     <repositories>
         <repository>
@@ -86,26 +85,6 @@
                 <configuration>
                     <mainClass>org.test.int1.Main</mainClass>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <configuration>
-                           <target>
-							     <copy todir="${tomcat.deploy.dir}/vms">
-						          <fileset dir="${project.build.directory}\vms" includes="**/*" />
-						         </copy>
-							</target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
              <plugin>
 				<artifactId>maven-resources-plugin</artifactId>
