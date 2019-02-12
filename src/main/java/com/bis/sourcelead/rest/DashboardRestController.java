@@ -2458,12 +2458,12 @@ public class DashboardRestController {
  		 List<UserRole> userRolesList =  userRoleService.getAllUserRoles();
  		 
  		 if(userRolesList != null && !userRolesList.isEmpty()) {
- 			 System.out.println("Uploading userprofile details to Couchbase starts......");
+ 			 System.out.println("dumping uuid for userroles starts......");
  			 for(UserRole userRole : userRolesList) {
  				userRole.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
  				userRoleService.addUserRole(userRole);
  			 }
- 			 System.out.println("Uploading userprofile details to Couchbase ends");
+ 			 System.out.println("dumping uuid for userroles ends");
  		 }
  	 }
       
