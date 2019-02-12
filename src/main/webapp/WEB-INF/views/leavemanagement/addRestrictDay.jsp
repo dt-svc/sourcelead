@@ -29,7 +29,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Add Restrict Day</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="/pms/leaveConfiguration">Leave Configuration</a> &raquo; <a href="/pms/viewRestrictDay">Restrict Day List</a> &raquo; Add Restrict Day</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/leaveConfiguration">Leave Configuration</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/viewRestrictDay">Restrict Day List</a> &raquo; Add Restrict Day</div>
     </section>
     <div class="content-area content-new clearfix">
     <div id="restrictLoading"></div>
@@ -130,7 +130,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
         <div class="col-lg-12">
           <div class="pull-right">
             <input type="button" value="Save" class="btn btn-primary" onclick="storeRestrictedDay();">
-            <input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '/pms/viewRestrictDay'" >
+            <input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '${SourceLeadWeb_pmsUrl}/viewRestrictDay'" >
           </div>
         </div>
       </div>

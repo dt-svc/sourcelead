@@ -31,7 +31,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
     <div class="timesheet_head">
       <ul>
           <li>
-              <a href="/pms/addRestrictDay" title="Add Restrict Day">
+              <a href="${SourceLeadWeb_pmsUrl}/addRestrictDay" title="Add Restrict Day">
                 <i class="fa fa-plus paddingRight"></i>Add Restrict Day
               </a>
           </li>
@@ -120,7 +120,9 @@ function populateRestrictDayList(response){
     	result = result +'  </td>                                                                                                                      ';
     	result = result +'  <td>                                                                                                                       ';
     	result = result +'     <div class="tblminwidth-50">                                                                                            ';
-    	result = result +'          <span title="Edit" class="paddingRight"><a href="<c:url value="'+pmsUrl+'/addRestrictDay?restrictUUID='+report.restrictUUID+'"/>"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span>             ';
+
+    	result = result +'          <span title="Edit" class="paddingRight"><a href="'+pmsUrl+'/addRestrictDay?restrictUUID='+report.restrictUUID+'"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span>             ';
+
     	result = result +'          <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteRestrictDay(\''+report.restrictUUID+'\');"></i></span>              ';
     	result = result +'      </div>                                                                                                                 ';
     	result = result +'  </td>                                                                                                                      ';
