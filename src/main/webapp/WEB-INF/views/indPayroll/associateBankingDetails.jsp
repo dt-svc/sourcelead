@@ -154,6 +154,7 @@
 
 <script type="text/javascript">
  function savePaymentAccount(){
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 var userId = '${userId}';
 	 var candidateId = '${candidateId}';
 		if ($('#associate_bankingDetails_form').validate(false, validationSettings)) {
@@ -162,7 +163,7 @@
 			$.ajax({
 				 type : "POST",
 				 data: formData,
-			     url : sourceleadUrl+"/save-ind-associate-payment-account?userId="+userId,
+			     url : pmsUrl+"/save-ind-associate-payment-account?userId="+userId,
 				 success : function(result) {
 					 if (result && result.response === "INVALID_DATA") {
 							$("#accountDetailsLoading").removeAttr("style");
@@ -176,7 +177,7 @@
 						     closePaymentAccountPopup();
 						     associateBankingDetails(candidateId);
 		                } else if (result.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
+							location.replace(pmsUrl);
 						} else {
 		                    showError("Operation failed, please try again");
 		                }
@@ -235,16 +236,18 @@ function clearPaymentAccount() {
 
 <script>
 function changeDefaultPaymentAccount(ele, id) {
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	candidateId = '${candidateId}';
-    $.post(sourceleadUrl+"/change-associate-default-payment-account", {id: id, candidateId: candidateId, defaultAccount: $(ele).is(":checked")}, function(data) {
+    $.post(pmsUrl+"/change-associate-default-payment-account", {id: id, candidateId: candidateId, defaultAccount: $(ele).is(":checked")}, function(data) {
     	 var candidateId = '${candidateId}';
     	 associateBankingDetails(candidateId);
         showError(data.responseMessage);
     });
 }
 function changeActivePaymentAccount(id){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 var candidateId = '${candidateId}';
-	 $.post(sourceleadUrl+"/change-active-payment-account", {id: id}, function(data) {
+	 $.post(pmsUrl+"/change-associate-active-payment-account", {id: id}, function(data) {
 	        showError(data.responseMessage);
 	        associateBankingDetails(candidateId);
 	    });
