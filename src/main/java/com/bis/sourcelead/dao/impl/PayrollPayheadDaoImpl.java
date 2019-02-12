@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.indPayroll.entity.AssociateSalaryHistoryInd;
 import com.bis.sourcelead.indPayroll.utill.INDPayrollCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -344,5 +345,22 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 			payrollPayhead = (PayrollPayhead) payrollPayheadList.iterator().next();
 		}
 		return payrollPayhead;
+	}
+
+	@Override
+	@Transactional
+	public AssociateSalaryHistoryInd saveAssociateSalaryHistoryInd(AssociateSalaryHistoryInd associateSalaryHistoryInd) throws Exception {
+		logger.debug("Adding AssociateSalaryHistoryInd");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (associateSalaryHistoryInd != null) {
+				session.saveOrUpdate(associateSalaryHistoryInd);
+			}
+			logger.debug("associateSalaryHistoryInd Added Successfully");
+		} catch (ConstraintViolationException exception) {
+			StringBuffer message= new StringBuffer(MessageFormat.format(duplicateValue,"ASSOCIATE_SALARY_HISTORY_IND"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return associateSalaryHistoryInd;
 	}
 }

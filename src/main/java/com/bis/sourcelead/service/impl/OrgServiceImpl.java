@@ -207,4 +207,9 @@ public class OrgServiceImpl implements OrgService {
 	public PaymentAccount getCandidateAcitivatePaymentAccount(long candidateId) {
 		return orgDao.getCandidateAcitivatePaymentAccount(candidateId);
 	}
+
+	@Override
+	public int changeAssociateDefaultPaymentAccount(long id, long candidateId, boolean defaultAccount) {
+		return orgDao.changeAssociateDefaultPaymentAccount(id, candidateId, defaultAccount);
+	}
 }
