@@ -72,4 +72,9 @@ public class SourceLeadRandomCodeHelper {
 		String UUID = RandomStringUtils.randomNumeric(5);
 		return UUID;
 	}
+	
+	public static String generateRandomCustomToken() {
+		String UUID = RandomStringUtils.randomAlphanumeric(15);
+		return UUID;
+	}
 }

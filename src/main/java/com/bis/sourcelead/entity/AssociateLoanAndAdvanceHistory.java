@@ -12,8 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
-import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
