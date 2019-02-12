@@ -496,7 +496,6 @@ function getClientBasedOnSelectedProject(){
 			 $('#expenseAutoId').val('${pm.expenseId}');
 			 $('#clientNameId').val('${pm.clientName}');
 			   projectStartDate = '${pm.memberStartDate}';
-			   alert(projectStartDate);
  			   projectEndDate = '${pm.memberEndDate}';
  			  expensesDatePickerStartDate(projectStartDate,projectEndDate);
 		 }  
