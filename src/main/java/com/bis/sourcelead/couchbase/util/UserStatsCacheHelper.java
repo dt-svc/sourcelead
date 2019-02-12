@@ -3,9 +3,10 @@ package com.bis.sourcelead.couchbase.util;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONObject;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.couchbase.ConnectionManager;
 import com.bis.sourcelead.couchbase.CouchbaseClient;
+import com.bis.sourcelead.couchbase.LoginUserSessionStoreDTO;
 import com.bis.sourcelead.couchbase.OrgLocationCacheDTO;
 import com.bis.sourcelead.couchbase.UserRoleSessionProfileDTO;
 import com.bis.sourcelead.entity.Candidate;
@@ -76,31 +78,23 @@ public class UserStatsCacheHelper {
 	 */
 	@SuppressWarnings("unchecked")
 	public JSONObject getOrgLocationCacheDetails(String orgLocationCode) {
+		orgLocationCode = "OrgLocation_"+orgLocationCode;
 		JSONObject orgLocationJson = new JSONObject();
-		Object sv = null;
-		sv = c.getOrgLocationsDetails(orgLocationCode);
-		if (sv != null) {
-
-			JSONParser parser = new JSONParser();
+		JSONObject jsonObject = c.getOrgLocationDetails(orgLocationCode);
+		if (jsonObject != null) {
 			try {
-
-				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
-				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
-					String key = (String) iterator.next();
-					Object jsonValue = jsonObject.get(key);
-					JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
-					for (Object okey : jsonObjVal.keySet()) {
-						String keyStr = (String) okey;
-						Object keyvalue = jsonObjVal.get(keyStr);
-						orgLocationJson.put(keyStr, keyvalue);
-					}
+				for (Object okey : jsonObject.keySet()) {
+					String keyStr = (String) okey;
+					Object keyvalue = jsonObject.get(keyStr);
+				    orgLocationJson.put(keyStr, keyvalue);
 				}
 
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		return orgLocationJson;
+		
 	}
 	
 
@@ -118,26 +112,18 @@ public class UserStatsCacheHelper {
 	public JSONObject getLogInUserRoleStats(String userRoleAuthKey) {
 
 		JSONObject userRoleJson = new JSONObject();
-		Object sv = null;
-		sv = c.getUserProfile(userRoleAuthKey);
-		if (sv != null) {
-			JSONParser parser = new JSONParser();
+		JSONObject jsonObject = c.getUserProfileDetails(userRoleAuthKey);
+		if (jsonObject != null) {
 			try {
-				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
-				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
-					String key = (String) iterator.next();
-					Object jsonValue = jsonObject.get(key);
-					JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
-					for (Object okey : jsonObjVal.keySet()) {
-						String keyStr = (String) okey;
-						Object keyvalue = jsonObjVal.get(keyStr);
-						if (!keyStr.equalsIgnoreCase("menuList") && !keyStr.equalsIgnoreCase("rolesList")) {
-							userRoleJson.put(keyStr, keyvalue);
-						}
+				for (Object okey : jsonObject.keySet()) {
+					String keyStr = (String) okey;
+					Object keyvalue = jsonObject.get(keyStr);
+					if (!keyStr.equalsIgnoreCase("menuList") && !keyStr.equalsIgnoreCase("rolesList")) {
+						userRoleJson.put(keyStr, keyvalue);
 					}
 				}
 
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -152,36 +138,52 @@ public class UserStatsCacheHelper {
 	 * This method is used to get logged in user left menu access information.
 	 */
 	public JSONObject getLogInUserRoleMenusJson(String userRoleAuthKey) {
-
 		JSONObject userRoleMenusListJson = new JSONObject();
-		Object sv = null;
-		sv = c.getUserProfile(userRoleAuthKey);
-		if (sv != null) {
-			JSONParser parser = new JSONParser();
+		JSONObject jsonObject = c.getUserProfileDetails(userRoleAuthKey);
+		if (jsonObject != null) {
 			try {
-				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
-				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
-					String key = (String) iterator.next();
-					Object jsonValue = jsonObject.get(key);
-					JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
-					for (Object okey : jsonObjVal.keySet()) {
-						String keyStr = (String) okey;
-						if (keyStr.equalsIgnoreCase("menuList")) {
-							Object keyvalue = jsonObjVal.get(keyStr);
-							userRoleMenusListJson.put(keyStr, keyvalue);
-						}
-
+				for (Object okey : jsonObject.keySet()) {
+					String keyStr = (String) okey;
+					Object keyvalue = jsonObject.get(keyStr);
+					if (keyStr.equalsIgnoreCase("menuList") && !keyStr.equalsIgnoreCase("rolesList")) {
+						userRoleMenusListJson.put(keyStr, keyvalue);
 					}
 				}
 
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		return userRoleMenusListJson;
+	
+		
 	}
 	
-	
+	/**
+	 * @author Venkat
+	 * @param userSessionAuthKey (<sessionId>_SESSION)
+	 * @return logged in user session information
+	 * This method is used to get logged in user session details.
+	 */
+	public JSONObject getLogInUserSessionJson(String userSessionAuthKey) {
+		
+		JSONObject sessionStoreJson = new JSONObject();
+		JSONObject jsonObject = c.getUserLoginSessionStoreDetails(userSessionAuthKey);
+		if (jsonObject != null) {
+			try {
+				for (Object okey : jsonObject.keySet()) {
+					String keyStr = (String) okey;
+					Object keyvalue = jsonObject.get(keyStr);
+					sessionStoreJson.put(keyStr, keyvalue);
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return sessionStoreJson;
+		
+	}
 	
 	
 	/**
@@ -191,32 +193,23 @@ public class UserStatsCacheHelper {
 	 * This method is used to get logged in user left menu access information.
 	 */
 	public List<String> getLogInUserRoleMenusList(String userRoleAuthKey) {
-
-		Object sv = null;
+		
 		List<String> menusList = new ArrayList<>();
-		sv = c.getUserProfile(userRoleAuthKey);
-		if (sv != null) {
-			JSONParser parser = new JSONParser();
+		JSONObject jsonObject = c.getUserProfileDetails(userRoleAuthKey);
+		if (jsonObject != null) {
 			try {
-				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
-				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
-					String key = (String) iterator.next();
-					Object jsonValue = jsonObject.get(key);
-					JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
-					for (Object okey : jsonObjVal.keySet()) {
-						String keyStr = (String) okey;
-						if (keyStr.equalsIgnoreCase("menuList")) {
-							String keyvalue = jsonObjVal.get(keyStr).toString();
-							String[] menusStringArray = keyvalue.toString().substring(1, keyvalue.toString().length()-1).split(",");
-							for(int i=0; i<menusStringArray.length; i++) {
-								menusList.add(menusStringArray[i].substring(1, menusStringArray[i].length()-1));
-							}
+				for (Object okey : jsonObject.keySet()) {
+					String keyStr = (String) okey;
+					if (keyStr.equalsIgnoreCase("menuList")) {
+						String keyvalue = jsonObject.get(keyStr).toString();
+						String[] menusStringArray = keyvalue.toString().substring(1, keyvalue.toString().length()-1).split(",");
+						for(int i=0; i<menusStringArray.length; i++) {
+							menusList.add(menusStringArray[i].substring(1, menusStringArray[i].length()-1));
 						}
-
 					}
 				}
 
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -233,35 +226,27 @@ public class UserStatsCacheHelper {
 	 */
 	public List<String> getLogInUserRoleActionsList(String userRoleAuthKey) {
 
-		Object sv = null;
 		List<String> rolesList = new ArrayList<>();
-		sv = c.getUserProfile(userRoleAuthKey);
-		if (sv != null) {
-			JSONParser parser = new JSONParser();
+		JSONObject jsonObject = c.getUserProfileDetails(userRoleAuthKey);
+		if (jsonObject != null) {
 			try {
-				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
-				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
-					String key = (String) iterator.next();
-					Object jsonValue = jsonObject.get(key);
-					JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
-					for (Object okey : jsonObjVal.keySet()) {
-						String keyStr = (String) okey;
-						if (keyStr.equalsIgnoreCase("rolesList")) {
-							String keyvalue = jsonObjVal.get(keyStr).toString();
-							String[] rolesStringArray = keyvalue.toString().substring(1, keyvalue.toString().length()-1).split(",");
-							for(int i=0; i<rolesStringArray.length; i++) {
-								rolesList.add(rolesStringArray[i].substring(1, rolesStringArray[i].length()-1));
-							}
+				for (Object okey : jsonObject.keySet()) {
+					String keyStr = (String) okey;
+					if (keyStr.equalsIgnoreCase("rolesList")) {
+						String keyvalue = jsonObject.get(keyStr).toString();
+						String[] rolesStringArray = keyvalue.toString().substring(1, keyvalue.toString().length()-1).split(",");
+						for(int i=0; i < rolesStringArray.length; i++) {
+							rolesList.add(rolesStringArray[i].substring(1, rolesStringArray[i].length()-1));
 						}
-
 					}
 				}
 
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		return rolesList;
+	
 	}
 	
 	
@@ -396,6 +381,7 @@ public class UserStatsCacheHelper {
 			 userRoleDTO.setEmail(userRole.getUser().getEmail());
 			 userRoleDTO.setFirstName(userRole.getUser().getFirstName());
 			 userRoleDTO.setLastName(userRole.getUser().getLastName());
+			 userRoleDTO.setMiddleName(userRole.getUser().getMiddelName());
 			 userRoleDTO.setFacebook(userRole.getUser().getFacebook());
 			 userRoleDTO.setTwitter(userRole.getUser().getTwitter());
 			 userRoleDTO.setGooglePlus(userRole.getUser().getGooglePlus());
@@ -430,12 +416,18 @@ public class UserStatsCacheHelper {
 			 }
 			
 			 StringBuilder userNameSB = new StringBuilder();
-			 if (null != userRole.getUser().getLastName()) {
-				 userNameSB.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName());
-				} else {
-					 userNameSB.append(userRole.getUser().getFirstName());
+			 
+			 if(StringUtils.isNotEmpty(userRole.getUser().getFirstName()) && StringUtils.isEmpty(userRole.getUser().getLastName()) && StringUtils.isEmpty(userRole.getUser().getMiddelName())){
+				 userNameSB.append(userRole.getUser().getFirstName());
+				}else if(StringUtils.isNotEmpty(userRole.getUser().getFirstName()) && StringUtils.isNotEmpty(userRole.getUser().getLastName()) && StringUtils.isEmpty(userRole.getUser().getMiddelName())){
+					 userNameSB.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName());
+				}else if(StringUtils.isNotEmpty(userRole.getUser().getFirstName()) && StringUtils.isEmpty(userRole.getUser().getLastName()) && StringUtils.isNotEmpty(userRole.getUser().getMiddelName())){
+					userNameSB.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getMiddelName());
+				}else if(StringUtils.isNotEmpty(userRole.getUser().getFirstName()) && StringUtils.isNotEmpty(userRole.getUser().getLastName()) && StringUtils.isNotEmpty(userRole.getUser().getMiddelName())){
+					userNameSB.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getMiddelName()).append(" ").append(userRole.getUser().getLastName());
 				}
-			 userRoleDTO.setUserName(userNameSB.toString());
+			 userRoleDTO.setLoginUserFullName(userNameSB.toString());
+			 
 			 userRoleDTO.setImgUrl(userRole.getUser().getFileUrl());
 			 
 			 boolean isSuperUser = orgLocationService.isLoginUserIsSuperUser(userRole.getUser().getId(),userRole.getOrgLocations().getId());
@@ -489,7 +481,33 @@ public class UserStatsCacheHelper {
 			e.printStackTrace();
 	}
 		
- return userRoleDTO;
+		return userRoleDTO;
 	    
 	}
+	
+	
+	public void saveLoginUserSessionStoreToCouchbase(String generatedCustomTocken,UserRole userRole,HttpServletRequest request) {
+		LoginUserSessionStoreDTO sessionDTO = new LoginUserSessionStoreDTO();
+		
+		sessionDTO.setDocumentType(Constants.COUCH_DOCUMENT_TYPE_USER_LOGIN_SESSION);
+		sessionDTO.setUserRoleUUID(userRole.getUuid());
+		sessionDTO.setSessionId(generatedCustomTocken);
+		sessionDTO.setOrgLocationCode(userRole.getOrgLocations().getLocationCode());
+		sessionDTO.setLoginUserName(userRole.getUser().getUserName());
+	    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+	    LocalDateTime now = LocalDateTime.now();  
+	    sessionDTO.setLastUpdatedDate(dtf.format(now));
+		
+	    ObjectMapper sessionObj = new ObjectMapper();
+        try {
+			String sessionJsonStr = sessionObj.writeValueAsString(sessionDTO);
+			JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
+			StringBuilder userSessionKey = new StringBuilder();
+			userSessionKey.append(generatedCustomTocken).append("_SESSION");
+			SourceLeadSessionManager.setUserLoginSessionJsonString(userSessionKey.toString(), "userLoginSessionStore", jsonObject);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+	}
+	
 }
