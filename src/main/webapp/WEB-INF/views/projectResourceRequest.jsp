@@ -109,7 +109,7 @@ var sourceleadUrl = '${sourceleadUrl}';
  function getProjectResourceReqestsListCount(){
 	 $.ajax({
 	    	type: "GET",
-	        url: pmsUrl+"/getProjectResourceRequestsCounts?${_csrf.parameterName}=${_csrf.token}", 
+	        url: sourceleadUrl+"/getAllProjectResourceRequestsCounts?${_csrf.parameterName}=${_csrf.token}", 
 	        success: function(json) {
 	        	$("#waitingCount").html(json.waitingCount);
 	        	$("#approvedCount").html(json.approvedCount);
@@ -173,7 +173,7 @@ function requestAssociatesDataTableList(requestType){
 	 
 	 var searchValue = $("#requestAssociatesTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = pmsUrl+"/getProjectPlanningResourceRequestList?searchValue="+searchValue+"&resourceStatus="+requestType;
+	 var url = sourceleadUrl+"/getAllProjectPlanningResourceRequestList?searchValue="+searchValue+"&resourceStatus="+requestType;
 	 resourceRequestPagination(url,requestType,pmsUrl);
 	 
 	   if(requestType == 'Waiting For Approval'){

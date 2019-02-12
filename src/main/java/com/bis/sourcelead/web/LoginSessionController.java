@@ -256,22 +256,22 @@ public class LoginSessionController {
 			Date todayDate = sdf.parse(currentDate);
 			
 			String isCompanyOnboarded = (String) SourceLeadSessionManager.getSessionAttribute(request, "isCompanyOnboarded");
-			String userId = (String) SourceLeadSessionManager.getSessionAttribute(request, "userId");
-			String orgLocId = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 			String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
 			String timeZoneId = (String) SourceLeadSessionManager.getSessionAttribute(request, "timeZoneId");
 
 			OrglocationDepositTaxes orgLocDepTaxes = orglocationDepositTaxesService
-					.getOrglocationDepositTaxesByOrgLocationId(Long.valueOf(orgLocId));
+					.getOrglocationDepositTaxesByOrgLocationId(orgLocId);
 			SourceLeadSessionManager.setSessionAttribute(request, "orglocationDepositTaxes", orgLocDepTaxes);
 			
-			AssociateBankData associateBankData = associateBankDataService.getAssociateBankDataByOrgLocationId(Long.valueOf(orgLocId));
+			AssociateBankData associateBankData = associateBankDataService.getAssociateBankDataByOrgLocationId(orgLocId);
 			SourceLeadSessionManager.setSessionAttribute(request, "associateBankData", associateBankData);
 
 			setLoginSession(request);
 
 			boolean isPayRollApprover = configurePayrollApproverService
-					.isLoginUserIsPayRollApprover(Long.valueOf(userId), Long.valueOf(orgLocId));
+					.isLoginUserIsPayRollApprover(userId, orgLocId);
 			if (isPayRollApprover == true) {
 				SourceLeadSessionManager.setSessionAttribute(request, "isPayRollApprover", Constants.YES);
 			} else {
@@ -286,7 +286,7 @@ public class LoginSessionController {
 			if (productionLoginUserId != null) {
 				userIdsList = userService.getUserIdsListByLinkedUserId(productionLoginUserId);
 			} else {
-				userIdsList = userService.getUserIdsListByLinkedUserId(Long.valueOf(userId));
+				userIdsList = userService.getUserIdsListByLinkedUserId(userId);
 			}
 
 			if (userIdsList != null && !userIdsList.isEmpty()) {
@@ -298,9 +298,9 @@ public class LoginSessionController {
 			userIdsList.addAll(accountUserList);
 			if (productionLoginUserId != null) {
 				userIdsList.add(productionLoginUserId);
-				userIdsList.add(Long.valueOf(userId));
+				userIdsList.add(userId);
 			} else {
-				userIdsList.add(Long.valueOf(userId));
+				userIdsList.add(userId);
 			}
 
 			/*if (userRole.getUser().getLinkUserId() != null) {
@@ -328,7 +328,7 @@ public class LoginSessionController {
 				model.setViewName("onboard/companyOnboard");
 			} else {
 				CandidateOffBoarding candidateOffBoarding = candidateOffBoardingService
-						.getCandidateOffBoardingByUserIdAndLocationId(Long.valueOf(userId), Long.valueOf(orgLocId));
+						.getCandidateOffBoardingByUserIdAndLocationId(userId, orgLocId);
 				if (null != candidateOffBoarding) {
 
 					String endDate = sdf.format(candidateOffBoarding.getEndDate());
@@ -349,7 +349,7 @@ public class LoginSessionController {
 				} else {
 
 					CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService
-							.getCandidateOnBoardingByUserIdAndLocationId(Long.valueOf(userId), Long.valueOf(orgLocId));
+							.getCandidateOnBoardingByUserIdAndLocationId(userId, orgLocId);
 					if (null != candidateOnBoarding && requirementUUID == null) {
 						SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding",
 								candidateOnBoarding);
@@ -384,11 +384,11 @@ public class LoginSessionController {
 			model.addObject("skillList", skillList);
 
 			Boolean isManagerWithSubmissionRateStatusAsRequestOrAccept = requirementService
-					.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(Long.valueOf(userId), Long.valueOf(orgLocId));
+					.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(userId, orgLocId);
 			model.addObject("isManagerWithSubmissionRateStatusAsRequestOrAccept",
 					isManagerWithSubmissionRateStatusAsRequestOrAccept);
 
-			Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(Long.valueOf(userId), Long.valueOf(orgLocId));
+			Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(userId, orgLocId);
 			model.addObject("isAdmin", isAdmin);
 			SourceLeadSessionManager.setSessionAttribute(request, "isAdmin", isAdmin);
 			model.addObject("timezone", timeZoneId);
@@ -397,7 +397,7 @@ public class LoginSessionController {
 		} else {
 			commonUtil.highLightMenu(Constants.Dashboard, request);
 			
-			String userId = (String) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 			String newlyLoginUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "newlyLoginUser");
 
 			List<Long> accountUserList = new ArrayList<>();
@@ -407,7 +407,7 @@ public class LoginSessionController {
 			if (productionLoginUserId != null) {
 				userIdsList = userService.getUserIdsListByLinkedUserId(productionLoginUserId);
 			} else {
-				userIdsList = userService.getUserIdsListByLinkedUserId(Long.valueOf(userId));
+				userIdsList = userService.getUserIdsListByLinkedUserId(userId);
 			}
 
 			if (userIdsList != null && !userIdsList.isEmpty()) {
@@ -419,9 +419,9 @@ public class LoginSessionController {
 			userIdsList.addAll(accountUserList);
 			if (productionLoginUserId != null) {
 				userIdsList.add(productionLoginUserId);
-				userIdsList.add(Long.valueOf(userId));
+				userIdsList.add(userId);
 			} else {
-				userIdsList.add(Long.valueOf(userId));
+				userIdsList.add(userId);
 			}
 
 		/*	if (userRole.getUser().getLinkUserId() != null) {
@@ -476,10 +476,10 @@ public class LoginSessionController {
 		}
 		boolean redirectFlag = false;
 		if(request.getSession().getAttribute("redirectURL") != null) {
-			String orgLocId = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 			String redirectURL = (String) request.getSession().getAttribute("redirectURL");
 			long redirectOrgLocationId = (Long) request.getSession().getAttribute("redirectOrgLocationId");
-			if(orgLocId != null && Long.valueOf(orgLocId) == redirectOrgLocationId) {
+			if(orgLocId != null && orgLocId == redirectOrgLocationId) {
 				redirectURL = redirectURL.replaceAll("-params-", "?").replaceAll("-and-", "&");
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				model.addObject("redirectURL", redirectURL);
@@ -492,9 +492,9 @@ public class LoginSessionController {
 		}
 		if(!redirectFlag) {
 			boolean dashboardConfigured = false;
-			String userId = (String) SourceLeadSessionManager.getSessionAttribute(request, "userId");
-			String orgLocId = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
-			DashboardItemsDTO dashboardItems = userService.getDashboardItemsByUserId(Long.valueOf(userId), Long.valueOf(orgLocId));
+			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			DashboardItemsDTO dashboardItems = userService.getDashboardItemsByUserId(userId, orgLocId);
 			if (dashboardItems != null && dashboardItems.getItemsObjectList().size() > 0) {
 				dashboardConfigured = true;
 			}
@@ -520,8 +520,8 @@ public class LoginSessionController {
 		String isSuperUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isSuperUser");
 		String isSuperAdmin = (String) SourceLeadSessionManager.getSessionAttribute(request, "isSuperAdmin");
 		String roleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		String userId = (String) SourceLeadSessionManager.getSessionAttribute(request, "userId");
-		String orgLocationId = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		String orgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 		String locationCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		String timeZone = (String) SourceLeadSessionManager.getSessionAttribute(request, "timeZone");
@@ -541,28 +541,28 @@ public class LoginSessionController {
 		}
 
 
-		Integer notificationCount = notificationsService.getNotificationsCountByUserId(Long.valueOf(userId), orgCode,
+		Integer notificationCount = notificationsService.getNotificationsCountByUserId(userId, orgCode,
 				locationCode);
 
 		SourceLeadSessionManager.removeSessionAttribute(request, "notificationCount");
 		SourceLeadSessionManager.setSessionAttribute(request, "notificationCount", notificationCount);
 
-		Long receivedConnectionCount = connectionsService.getConnectionReceivedCount(Long.valueOf(userId));
+		Long receivedConnectionCount = connectionsService.getConnectionReceivedCount(userId);
 		SourceLeadSessionManager.removeSessionAttribute(request, "connectionReceivedCount");
 		SourceLeadSessionManager.setSessionAttribute(request, "connectionReceivedCount", receivedConnectionCount);
 
 		// get notification list by user id
-		List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(Long.valueOf(userId),
+		List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(userId,
 				orgCode, locationCode);
 		calculateDays(notificationList, timeZone);
 
 		SourceLeadSessionManager.removeSessionAttribute(request, "notificationList");
 		SourceLeadSessionManager.setSessionAttribute(request, "notificationList", notificationList);
 
-		Integer inboxUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(Long.valueOf(userId),
-				Long.valueOf(orgLocationId), "Inbox");
+		Integer inboxUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(userId,
+				orgLocId, "Inbox");
 		Integer requestedUnreadMailsCount = userMailBoxService
-				.getUnReadMessagesByUserIdAndLocationIdAndType(Long.valueOf(userId), Long.valueOf(orgLocationId), "Requested");
+				.getUnReadMessagesByUserIdAndLocationIdAndType(userId, orgLocId, "Requested");
 		Integer totalUnReadMailsCount = inboxUnreadMailsCount + requestedUnreadMailsCount;
 		SourceLeadSessionManager.setSessionAttribute(request, "unReadMailsCount", totalUnReadMailsCount);
 
@@ -678,7 +678,7 @@ public class LoginSessionController {
 
 	}
 
-	private void getOnboardingDetails(CandidateOnBoarding candidateOnBoarding, String orgLocId, String dateFormat,
+	private void getOnboardingDetails(CandidateOnBoarding candidateOnBoarding, Long orgLocId, String dateFormat,
 			HttpServletRequest request) throws Exception {
 
 		candidateOnBoarding.setJoiningDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat,
@@ -723,13 +723,13 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "teamOwnerName", teamOwnerUserName);
 
 			UserRole teamOwner = userRoleService.getUserDetailsByUserIdAndLocationId(team.getOwnerUserId().getId(),
-					Long.valueOf(orgLocId));
+					orgLocId);
 			SourceLeadSessionManager.setSessionAttribute(request, "teamOwnerRole",
 					teamOwner.getRoles().getDisplayName());
 			SourceLeadSessionManager.setSessionAttribute(request, "teamOwnerUserId", team.getOwnerUserId().getId());
 
 			List<TeamMembers> teamMembersList = teamMembersService.getTeamMembersListByTeamID(team.getId(),
-					Long.valueOf(orgLocId));
+					orgLocId);
 			List<TeamMembers> membersList = new ArrayList<TeamMembers>();
 			if (null != teamMembersList) {
 				for (TeamMembers members : teamMembersList) {
@@ -744,7 +744,7 @@ public class LoginSessionController {
 					}
 
 					UserRole memberUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(
-							members.getMemberUserId().getId(), Long.valueOf(orgLocId));
+							members.getMemberUserId().getId(), orgLocId);
 					members.setRoleName(memberUserRole.getRoles().getDisplayName());
 
 					membersList.add(members);
