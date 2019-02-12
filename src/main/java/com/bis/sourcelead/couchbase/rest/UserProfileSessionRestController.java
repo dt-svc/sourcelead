@@ -55,7 +55,7 @@ public class UserProfileSessionRestController {
 					JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
 					StringBuilder orgLocationKey = new StringBuilder();
 					orgLocationKey.append("OrgLocation_").append(orgLocationDTO.getOrgLocationCode());
-					SourceLeadSessionManager.setOrgLocationsJsonString(orgLocationKey.toString(), "userProfile", jsonObject);
+					SourceLeadSessionManager.setOrgLocationsJsonString(orgLocationKey.toString(), "orgLocations", jsonObject);
 				} catch (JsonProcessingException e) {
 					e.printStackTrace();
 				}
