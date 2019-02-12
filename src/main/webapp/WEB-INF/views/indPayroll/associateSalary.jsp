@@ -337,12 +337,13 @@ function cnfToSaveAssociateSalaryInd(){
 	if ($('#associateSalary_form').validate(false, validationSettings)) {
 		var formData = getFormData1("associateSalary_form");
 		var status = $("#status").val();
+		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		$.ajax({
 			 type : "POST",
 			 data: formData,
 		     processData: false,
 		     contentType:false, 
-			 url : sourceleadUrl+"/saveAssociateSalaryInd?"+tokenParamName+"="+tokenValue,
+			 url : pmsUrl+"/saveAssociateSalaryInd?"+tokenParamName+"="+tokenValue,
 			 success : function(result) {
 			  		if(status == "NEW" || status == "NODATA"){
 			  			location.reload();
@@ -597,9 +598,11 @@ function calculatePercentSal(){
 	        	stopsalary = 'NO';
 	        	//$('.switchSalary').find('.slider').css({"background":"#ccc"});
 	        }
+	        var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+
 	        $.ajax({
 	        	type : "POST",
-				url : sourceleadUrl+"/stopSalaryProcessingForEmployee?"+tokenParamName+"="+tokenValue+"&stopSalary="+stopsalary+"&uuid="+uuid,
+				url : pmsUrl+"/stopSalaryProcessingForEmployee?"+tokenParamName+"="+tokenValue+"&stopSalary="+stopsalary+"&uuid="+uuid,
 				success : function(result) {
 					if(result != null && result.object === "DataMissing") {
 						if($('#stopsalary').is(':checked')){
