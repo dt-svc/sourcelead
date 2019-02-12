@@ -239,7 +239,7 @@ function saveAssociateLoanAndAdvanceDetails(){
 		        		var candidateId = '${candidateId}';
 		        		associateLoanAndAdvanceDetails(candidateId);
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
+		        		location.replace(pmsUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -356,7 +356,6 @@ function editLoanAndAdvance(loanAdvId){
 </script>
   
 <script>
-var sourceleadUrl = '${sourceleadUrl}';
 function showAssociateLoanAndAdvancePopup() {
 	loanAdv.clearLoanAndAdvances();
 	loanAdv.getLoanAndAdvNames();

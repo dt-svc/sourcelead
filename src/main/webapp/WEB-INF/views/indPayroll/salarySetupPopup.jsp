@@ -4,10 +4,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
-
 <!-- Content Area -->
 
 <div class="modal-dialog">
@@ -199,7 +195,7 @@ $('#method').on('change', function() {
 				$.ajax({
 					 type : "POST",
 					 data: formData,
-					  url : +"/storePayheadWithSalarySetup?uuid="+uuid,
+					  url : sourceleadUrl+"/storePayheadWithSalarySetup?uuid="+uuid,
 					  	success : function(result) {
 					  		if (result && result.response === "INVALID_DATA") {
 			                    showError("Invalid data");

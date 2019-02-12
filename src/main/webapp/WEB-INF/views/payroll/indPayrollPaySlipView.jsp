@@ -89,7 +89,7 @@ display: inline-block;
       <div class="pull-left">
         <h2>Payslip Preview</h2>
       </div>
-            <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a>&raquo;<a href="${appPath}/myPayrollInd"> My Payroll </a> &raquo;  View Payslip </div>
+            <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a>&raquo;<a href="${SourceLeadWeb_pmsUrl}/myPayrollInd"> My Payroll </a> &raquo;  View Payslip </div>
     </section>
 		    <div class="contentareaInner-styles clearfix payslip-generation" id="payslipPreview">
 		        <div class="row">
@@ -123,7 +123,7 @@ display: inline-block;
 									<div class="col-md-2">
 								<ul class="pull-right list-unstyled list-inline noPad">
 									<li>
-										<a href="<c:url value="${appPath}/getDownloadPayslipInd?indEmpPayrollUUID=${empPayrollUUID}"/>" class="downloadIC" title="Download"></a>
+										<a href="<c:url value="${SourceLeadWeb_pmsUrl}/getDownloadPayslipInd?indEmpPayrollUUID=${empPayrollUUID}"/>" class="downloadIC" title="Download"></a>
 									</li>
 									<!-- <li>
 										<a href="javascript:void(0)" title="Print" class="printIC" onclick="window.print();"></a>
