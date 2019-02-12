@@ -182,7 +182,7 @@ $(document).ready(function(){
 					        	<a href="/ats/assetCategory" class="">Categories List</a>
 					        </sec:authorize>	
 					        
-					        <a href="<c:url value='/uploadassetManagement'/>">Import</a>	  
+					        <a href="/app/uploadassetManagement">Import</a>	  
 					</span>
 				</div>
 			</li>

@@ -10,6 +10,7 @@
 <div id="popUp" ></div>
 <div id="customizePopUp"></div>
 <script type="text/javascript">
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 		window.onload = function () {
 			var requirementId = '${requirementId}';
 			var requirementSubmissionStatus = '${requirementSubmissionStatus}';

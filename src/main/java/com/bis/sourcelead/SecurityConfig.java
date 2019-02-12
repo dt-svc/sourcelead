@@ -128,11 +128,11 @@ public class SecurityConfig  {
     			.antMatchers("/ats/getDemoModulesList/**").permitAll()
     			.antMatchers("/ats/getActionHistoryList/**").permitAll()
     			.antMatchers("/ats/jobCampaignSummary/**").permitAll()
-    			.antMatchers("/ats/getRequirementProfessionalProfileDetails/**").permitAll()
+    			.antMatchers("/getRequirementProfessionalProfileDetails/**").permitAll()
     			.anyRequest().authenticated()                                                   
     			.and()
     			.formLogin().loginPage("/login")
-    			.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessHandler(sourceleadLogoutSuccessHandler).logoutSuccessUrl("/logout.done").deleteCookies("JSESSIONID")
+    			.and().logout().logoutUrl(sourceleadLogoutUrl)
     			.and().sessionManagement() .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     			.and().securityContext().securityContextRepository(securityContextRepository)
     			.and().csrf().disable();
