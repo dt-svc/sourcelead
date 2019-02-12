@@ -21,6 +21,7 @@ public class ConnectionManager {
 	private String couchUrl;
 	List<String> urls;
 	private String userProfileCouchBucket;
+	private String userLoginSessionStoreBucket;
 	private String couchPass;
 	
 	
@@ -54,6 +55,16 @@ public class ConnectionManager {
 
 	
 
+	public String getUserLoginSessionStoreBucket() {
+		return userLoginSessionStoreBucket;
+	}
+
+	public void setUserLoginSessionStoreBucket(String userLoginSessionStoreBucket) {
+		if(couchUrl == null)
+			throw new RuntimeException("Couchbase BUCKET Not Specified");
+		this.userLoginSessionStoreBucket = userLoginSessionStoreBucket;
+	}
+
 	public String getCouchPassword() {
 		return couchPass;
 	}
@@ -73,6 +84,7 @@ public class ConnectionManager {
 					hosts = Arrays.asList(new URI(getCouchUrl()));
 					List<String> couchBuckets = new ArrayList<>();
 					couchBuckets.add(getUserProfileCouchBucket());
+					couchBuckets.add(getUserLoginSessionStoreBucket());
 					client = new CouchbaseClient(urls, couchBuckets,getCouchPassword());
 				}
 			} catch (URISyntaxException e) {
@@ -106,6 +118,7 @@ public class ConnectionManager {
 		try {
 			setCouchUrl(couchConfig.getCouchbaseUrl().trim());
 			setUserProfileCouchBucket(couchConfig.getUserProfileBucket().trim());
+			setUserLoginSessionStoreBucket(couchConfig.getUserLoginSessionStoreBucket().trim());
 			setCouchPassword(couchConfig.getPassword().trim());
 		} catch (Exception e) {
 			e.printStackTrace();

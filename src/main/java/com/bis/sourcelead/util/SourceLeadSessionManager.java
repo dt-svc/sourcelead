@@ -26,6 +26,10 @@ public class SourceLeadSessionManager {
 		request.getSession().removeAttribute("SourceLeadWeb_"+attribute);
 	}
 	
+	public static void deleteUserLoginSessionFromBucket(String sessionId) {
+		c.deleteSessionDocumentsFromBucket(sessionId);
+	}
+	
 	
 	public static void setUserProfileJsonString(String userName, String attribute, JsonObject jsonString) {
 		String jsonKey = userName ;
@@ -53,6 +57,23 @@ public class SourceLeadSessionManager {
 						System.out.println("Json String is NuLL : " + attribute);
 			} else
 				System.out.println("Email is NuLL : " + userName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	public static void setUserLoginSessionJsonString(String sessionId, String attribute, JsonObject jsonString) {
+		String jsonKey = sessionId ;
+		try {
+			if (sessionId != null && attribute != null) {
+					if (jsonString != null) {
+						c.setUserLoginSession(sessionId, jsonKey, jsonString);
+					} else
+						System.out.println("Json String is NuLL : " + attribute);
+			} else
+				System.out.println("Session Id is NuLL : " + sessionId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
