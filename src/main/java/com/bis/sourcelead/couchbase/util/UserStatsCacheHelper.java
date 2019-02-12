@@ -232,7 +232,7 @@ public class UserStatsCacheHelper {
 			try {
 				for (Object okey : jsonObject.keySet()) {
 					String keyStr = (String) okey;
-					if (keyStr.equalsIgnoreCase("menuList")) {
+					if (keyStr.equalsIgnoreCase("rolesList")) {
 						String keyvalue = jsonObject.get(keyStr).toString();
 						String[] rolesStringArray = keyvalue.toString().substring(1, keyvalue.toString().length()-1).split(",");
 						for(int i=0; i < rolesStringArray.length; i++) {
