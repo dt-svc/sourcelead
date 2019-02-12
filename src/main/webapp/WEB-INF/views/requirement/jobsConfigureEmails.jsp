@@ -54,7 +54,7 @@ function hideandshowjobclosing(){
     <div class="pull-left">
       <h2>Jobs</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/emailreminderConfigurationDashboard'/>"> Email Reminder Configuration</a> &raquo; Jobs Configuration</div>
+    <div class="pull-right brud-crum"><a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="<c:url value='${appPath}/emailreminderConfigurationDashboard'/>"> Email Reminder Configuration</a> &raquo; Jobs Configuration</div>
   </section>
    
   <div class="content-area content-new clearfix bgWhite" style="min-height: 50px;">

@@ -16,7 +16,7 @@
 		<thead>
 			<tr>
 			  <th>Type</th>           
-			  <th>Bank Name</th>         
+			  <th>Bank Namzcvzx cve</th>         
 			  <th>Account Number</th>     
 			  <th>Routing Number</th>     
 			  <th>First Name</th>        
