@@ -25,6 +25,7 @@ import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
 import com.bis.sourcelead.entity.PayrollPaytype;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
+import com.bis.sourcelead.indPayroll.entity.AssociateSalaryHistoryInd;
 import com.bis.sourcelead.indPayroll.utill.INDPayrollCommonUtil;
 import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -363,6 +364,16 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 			throws Exception {
 		
 		return payrollPayheadDao.getPayrollPayheadByShortCodeAndOrglocation(shortCode, orgLocationId);
+	}
+
+	@Override
+	public AssociateSalaryInd saveAssociateSalaryInd(AssociateSalaryInd associateSalaryInd) throws Exception {
+		return payrollPayheadDao.saveAssociateSalaryInd(associateSalaryInd);
+	}
+	
+	@Override
+	public AssociateSalaryHistoryInd saveAssociateSalaryHistoryInd(AssociateSalaryHistoryInd associateSalaryHistoryInd) throws Exception {
+		return payrollPayheadDao.saveAssociateSalaryHistoryInd(associateSalaryHistoryInd);
 	}
 	
 }
