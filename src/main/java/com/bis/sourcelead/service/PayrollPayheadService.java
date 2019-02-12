@@ -8,6 +8,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.indPayroll.entity.AssociateSalaryHistoryInd;
 
 public interface PayrollPayheadService {
 
@@ -34,4 +35,10 @@ public interface PayrollPayheadService {
 	AssociateSalaryInd getAssociateSalaryIndByUUID(String uuid) throws Exception;
 	
 	AssociateSalaryInd getAssociateSalaryIndByCandidateId(Long id) throws Exception;
+	
+	AssociateSalaryInd saveAssociateSalaryInd(AssociateSalaryInd associateSalaryInd) throws Exception;
+	
+	AssociateSalaryHistoryInd saveAssociateSalaryHistoryInd(AssociateSalaryHistoryInd associateSalaryHistoryInd) throws Exception;
+
+
 }

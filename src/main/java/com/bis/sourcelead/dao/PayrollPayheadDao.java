@@ -9,6 +9,7 @@ import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
+import com.bis.sourcelead.indPayroll.entity.AssociateSalaryHistoryInd;
 
 
 public interface PayrollPayheadDao {
@@ -38,4 +39,7 @@ public interface PayrollPayheadDao {
 	AssociateSalaryPayheadInd getAssociateSalaryPayheadIndById(Long id) throws Exception;
 	
 	PayrollPayhead getPayrollPayheadByShortCodeAndOrglocation(String shortCode, Long orgLocationId);
+	
+	AssociateSalaryHistoryInd saveAssociateSalaryHistoryInd(AssociateSalaryHistoryInd associateSalaryHistoryInd) throws Exception;
+
 }
