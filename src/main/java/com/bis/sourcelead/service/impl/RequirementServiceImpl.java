@@ -1121,20 +1121,15 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 		}
 		// for URL redirections from mail
-		String redirectURL = "/requirementSummary-params-requirementUUID="+savedRequirement.getRequirementUUID();
+		String redirectURL ="";
 		Long redirectOrgLocationId = orgLocations.getId();
 		
 		// store recommended customizeScore
 		RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService
 				.saveCustomizeScore(requirement);
-		if (!requirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT)) {
-			
-			
-	
-			 String redirectURL1 = "/requirementSummary?requirementUUID="+requirement.getRequirementUUID();
-			
-			
-			
+		if (!requirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT)) {			
+			    redirectURL = "/requirementSummary?requirementUUID="+requirement.getRequirementUUID();
+									
 			// mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
 			// send mail to sequential approver1
 			if (StringUtils.isNotBlank(requirementDTO.getSequentialApprover1())) {
@@ -1142,7 +1137,7 @@ public class RequirementServiceImpl implements RequirementService {
 				User approverUser = userService.getUserById(Long.parseLong(approverNames));
 				if (!approverUser.getId().equals(user.getId())) {
 					
-					approverEmailScenario(user, approverUser, savedRequirement, location, orgLocations,redirectURL1,redirectOrgLocationId);
+					approverEmailScenario(user, approverUser, savedRequirement, location, orgLocations,redirectURL,redirectOrgLocationId);
 				}
 			}
 			// send mail to parallel approver
@@ -1151,7 +1146,7 @@ public class RequirementServiceImpl implements RequirementService {
 				for (String approver : approvers) {
 					User approverUser = userService.getUserById(Long.parseLong(approver));
 					if (!approverUser.getId().equals(user.getId())) {
-						approverEmailScenario(user, approverUser, savedRequirement, location, orgLocations,redirectURL1,redirectOrgLocationId);
+						approverEmailScenario(user, approverUser, savedRequirement, location, orgLocations,redirectURL,redirectOrgLocationId);
 					}
 				}
 			}
@@ -1171,6 +1166,7 @@ public class RequirementServiceImpl implements RequirementService {
 						}
 					}
 					if (!found) {
+						redirectURL = "/requirementSummary-params-requirementUUID="+savedRequirement.getRequirementUUID();
 						List<RequirementAssignTo> newlyAddedList = new ArrayList<RequirementAssignTo>();
 						newlyAddedList.add(newList);
 						for (RequirementAssignTo newly : newlyAddedList) {
@@ -1193,6 +1189,7 @@ public class RequirementServiceImpl implements RequirementService {
 			if (!savedRequirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED)) {
 				// Set<RequirementAssignTo> updatedRequirementAssignToList =
 				// savedRequirement.getRequirementAssignTo();
+				redirectURL = "/requirementSummary-params-requirementUUID="+savedRequirement.getRequirementUUID();
 				Set<RequirementAssignTo> teamMembers = getRequirementAssignedToTeamByRequirementId(
 						savedRequirement.getId());
 				Set<RequirementAssignTo> updatedRequirementAssignToList = teamMembers;
@@ -1212,6 +1209,7 @@ public class RequirementServiceImpl implements RequirementService {
 			// condition : if login user as team member then mail should not
 			// send
 			if (!savedRequirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED)) {
+				redirectURL = "/requirementSummary-params-requirementUUID="+savedRequirement.getRequirementUUID();
 				Set<RequirementAssignTo> updatedRequirementAssignToList = savedRequirement.getRequirementAssignTo();
 				if (updatedRequirementAssignToList != null) {
 					for (RequirementAssignTo requirementAssignTo : updatedRequirementAssignToList) {
@@ -1232,9 +1230,11 @@ public class RequirementServiceImpl implements RequirementService {
 			if (savedRequirement.getManagerUserId() != null
 					&& !user.getId().equals(savedRequirement.getManagerUserId().getId())
 					&& savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())) {
+				redirectURL = "/requirementSummary-params-requirementUUID="+savedRequirement.getRequirementUUID();
 				mailRequirementtoManager(user, user, savedRequirement, location, orgLocations,redirectURL,redirectOrgLocationId);
 			} else if (!savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())
 					&& !user.getId().equals(savedRequirement.getManagerUserId().getId())) {
+				redirectURL = "/requirementSummary-params-requirementUUID="+savedRequirement.getRequirementUUID();
 				updatedRequirementMailToManager(user, user, savedRequirement, location, orgLocations,redirectURL,redirectOrgLocationId);
 			}
 		}
@@ -1571,6 +1571,11 @@ public class RequirementServiceImpl implements RequirementService {
 				msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		// setting the class filed values
+		
+		//URL for page redirection
+		String redirectURL = "/requirementSummary-params-requirementUUID="+requirement.getRequirementUUID();
+		Long redirectOrgLocationId = spoc.getVendorLocationId().getId();
+				
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		if (requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle())) {
 			globalVarsMap.put("RequirementTitle", requirement.getJobTitle());
@@ -1637,11 +1642,11 @@ public class RequirementServiceImpl implements RequirementService {
 			globalVarsMap.put("status", requirement.getRequirementSubmissionStatus().getValue());
 		} else {
 			globalVarsMap.put("status", "--");
-		}
+		}		
 		StringBuilder linkBuild = new StringBuilder();
-		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append(
-				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
-				.toString());
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append
+				("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Updated Job</div></a>")
+				.toString());		
 		if (loginUser.getFirstName() != null && loginUser.getLastName() != null
 				&& !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())) {
 			StringBuilder userBuild = new StringBuilder();
@@ -1795,7 +1800,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 	@Override
 	public void approverEmailScenario(User loginUser, User approverUser, Requirement requirement,
-			StringBuilder location, OrgLocations loginOrgLocation,String redirectURL1,Long redirectOrgLocationId) throws Exception {
+			StringBuilder location, OrgLocations loginOrgLocation,String redirectURL,Long redirectOrgLocationId) throws Exception {
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(loginUser.getFirstName());
 		emailMessage.setLastName(loginUser.getLastName());
@@ -2074,6 +2079,10 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setToEmail(intiatorUser.getEmail());
 		emailMessage.setFromEmail(loginUser.getEmail());
 		emailMessage.setCreatedBy(loginUser.getUserCode());
+		//Url for redirection
+			String redirectURL = "/requirementSummary-params-requirementUUID="+requirement.getRequirementUUID();
+			Long redirectOrgLocationId = orgLocations.getId();
+		
 		StringBuilder msgBuild = new StringBuilder();
 		emailMessage.setFromName(
 				msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
@@ -2140,11 +2149,13 @@ public class RequirementServiceImpl implements RequirementService {
 			globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrgLocationName());
 		} else {
 			globalVarsMap.put("client", "--");
-		}
+		}		
+		
 		StringBuilder linkBuild = new StringBuilder();
-		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append(
-				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+		globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Approved Job</div></a>")
 				.toString());
+			
 		if (loginUser.getFirstName() != null && loginUser.getLastName() != null
 				&& !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())) {
 			StringBuilder userBuild = new StringBuilder();
@@ -2650,6 +2661,10 @@ public class RequirementServiceImpl implements RequirementService {
 		emailMessage.setToEmail(requirement.getManagerUserId().getEmail());
 		emailMessage.setFromEmail(loginUser.getEmail());
 		emailMessage.setCreatedBy(loginUser.getUserCode());
+		//Url for redirection
+		String redirectURL = "/requirementSummary-params-requirementUUID="+requirement.getRequirementUUID();
+		Long redirectOrgLocationId = loginOrgLocation.getId();
+		
 		StringBuilder msgBuild = new StringBuilder();
 		emailMessage.setFromName(
 				msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
@@ -2711,11 +2726,11 @@ public class RequirementServiceImpl implements RequirementService {
 			globalVarsMap.put("requirementName", requirement.getJobTitle());
 		} else {
 			globalVarsMap.put("requirementName", "--");
-		}
+		}	
 		StringBuilder linkBuild = new StringBuilder();
-		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append(
-				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
-				.toString());
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Rejected Job</div></a>")
+				.toString());		
 		// setting the Recipient information
 		/*
 		 * ArrayList<EmailRecipient> emailRecipientList = new

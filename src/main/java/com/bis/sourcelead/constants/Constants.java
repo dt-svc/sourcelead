@@ -955,6 +955,26 @@ public class Constants {
 	
 	public static final String[] ALL_MY_EXPENSES_HEADERS ={"Expense ID","purpose","Project","Client","Start Date","End Date","No of Items","Amount","Status"};
 
+	public static final String[] RECRUITER_REPORTS_HEADERS = { "Associate Name", "Jobs","Candidates","Applicants", "Shortlisted","Submitted","Interviewed", "Offered", "Rejected","Joined","Back-Out","OnHold", "No-Response"};
+
+	public static final String[] RECRUITER_REPORTS_CANDIDATE_HEADERS = { "Candidate Name", "Email","Phone Number","Emp Type", "Vendor","Vendor Contact","Location", "Designation", "Current Rate","Expected Rate","Experience","Primary Skill", "Updated On"};
+
+	public static final String[] RECRUITER_REPORTS_ALL_APPLICANTS_HEADERS = { "Applicant Name", "Email","Phone Number","Job Title", "Client","Job Location","Rate", "Submitted On", "Current Stage"};
+	
+	public static final String[] RECRUITER_REPORTS_SHORTLIST_HEADERS = { "Applicant Name", "Email","Phone Number","Job Title", "Client","Job Location","Rate", "Shortlisted On", "Current Stage"};
+	
+	public static final String[] RECRUITER_REPORTS_SUBMIT_TO_CLIENT_HEADERS = { "Applicant Name", "Email","Phone Number","Job Title", "Client","Job Location","Rate","Submitted Rate", "Submitted On", "Current Stage"};
+
+	public static final String[] RECRUITER_REPORTS_INTERVIEW_HEADERS = { "Applicant Name", "Email","Phone Number","Job Title", "Client","Job Location","Rate", "No of Interviews", "Current Stage"};
+
+	public static final String[] RECRUITER_REPORTS_OFFERMADE_HEADERS = { "Applicant Name", "Email","Phone Number","Job Title", "Client","Job Location","Rate","Offered Rate", "Offered On", "Current Stage"};
+
+	public static final String[] RECRUITER_REPORTS_REJECTED_HEADERS = { "Applicant Name", "Email","Phone Number","Job Title", "Client","Job Location","Rate","Rejected On", "Category","Comment", "Current Stage"};
+
+	public static final String[] RECRUITER_REPORTS_JOINED_HEADERS = { "Applicant Name", "Email","Phone Number","Job Title", "Client","Job Location","Rate","Offered On", "Join Date", "Current Stage"};
+
+	public static final String[] RECRUITER_REPORTS_BACKOUT_HEADERS = { "Applicant Name", "Email","Phone Number","Job Title", "Client","Job Location","Rate","Backout On", "Category","Comment", "Current Stage"};
+
     public static final String BILLABLE_HOURS = "BILLABLE_HOURS";
 	public static final String JOB_ALERT_DURATION_DIALY = "Daily";
 	public static final String JOB_ALERT_DURATION_WEEKLY = "Weekly";
@@ -1381,4 +1401,6 @@ public class Constants {
 	public static final String COUCH_DOCUMENT_TYPE_ORGLOCATION = "OrgLocation";
 	
 	public static final String COUCH_DOCUMENT_TYPE_USER_LOGIN_ACCOUNT = "User Account";
+	
+	public static final String COUCH_DOCUMENT_TYPE_USER_LOGIN_SESSION = "Session";
 }

@@ -853,6 +853,38 @@ public class OrgDaoImpl implements OrgDao {
     		}
     		return paymentAcoount;
 	}
+
+	@Override
+	@Transactional(rollbackFor = {Exception.class})
+	public int changeAssociateDefaultPaymentAccount(long id, long candidateId, boolean defaultAccount) {
+        try {
+            Session session = this.sessionFactory.getCurrentSession();
+            PaymentAccount pay = session.get(PaymentAccount.class, id);
+            if (Objects.equals(pay.getCandidateId().getId(), candidateId)) {
+                pay.setDefaultAccount(defaultAccount);
+                if(defaultAccount) {
+                	pay.setDisabled(false);
+                    String query = "from PaymentAccount p where ";
+                    query += "  p.candidateId.id = :candidateId and p.id != :id";
+                    Query queryObj = session.createQuery(query);
+                    queryObj.setLong("id", pay.getId());
+                    queryObj.setLong("candidateId", pay.getCandidateId().getId());
+                    List<PaymentAccount> list = queryObj.list();
+                    for (PaymentAccount p : list) {
+                        p.setDefaultAccount(false);
+                        session.saveOrUpdate(p);
+                    }
+                }
+                session.saveOrUpdate(pay);
+                return 1;
+            } else {
+                return -1;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
 	 
 }
 

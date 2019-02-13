@@ -13,6 +13,8 @@ public class UserRoleSessionProfileDTO implements Serializable{
 	
 	private String lastName;
 	
+	private String middleName;
+	
 	private String userRoleId;
 	
 	private String userId;
@@ -65,9 +67,27 @@ public class UserRoleSessionProfileDTO implements Serializable{
 	
 	private String email;
 	
-	private String userName;
+	private String loginUserFullName;
 	
 	private String imgUrl;
+	
+	private String mobilePhone;
+	
+	private String location;
+	
+	private String linkedIn;
+	
+	private String facebook;
+	
+	private String twitter;
+	
+	private String googlePlus;
+	
+	private String userLoginSecurity;
+	
+	private String newlyLoginUser;
+	
+	private String isPayRollApprover;
 	
 
 	public String getDocumentType() {
@@ -286,12 +306,12 @@ public class UserRoleSessionProfileDTO implements Serializable{
 		this.candidateUUID = candidateUUID;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getLoginUserFullName() {
+		return loginUserFullName;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setLoginUserFullName(String loginUserFullName) {
+		this.loginUserFullName = loginUserFullName;
 	}
 
 	public String getImgUrl() {
@@ -317,6 +337,85 @@ public class UserRoleSessionProfileDTO implements Serializable{
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-	
+
+	public String getMobilePhone() {
+		return mobilePhone;
+	}
+
+	public void setMobilePhone(String mobilePhone) {
+		this.mobilePhone = mobilePhone;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getLinkedIn() {
+		return linkedIn;
+	}
+
+	public void setLinkedIn(String linkedIn) {
+		this.linkedIn = linkedIn;
+	}
+
+	public String getFacebook() {
+		return facebook;
+	}
+
+	public void setFacebook(String facebook) {
+		this.facebook = facebook;
+	}
+
+	public String getTwitter() {
+		return twitter;
+	}
+
+	public void setTwitter(String twitter) {
+		this.twitter = twitter;
+	}
+
+	public String getGooglePlus() {
+		return googlePlus;
+	}
+
+	public void setGooglePlus(String googlePlus) {
+		this.googlePlus = googlePlus;
+	}
+
+	public String getUserLoginSecurity() {
+		return userLoginSecurity;
+	}
+
+	public void setUserLoginSecurity(String userLoginSecurity) {
+		this.userLoginSecurity = userLoginSecurity;
+	}
+
+	public String getNewlyLoginUser() {
+		return newlyLoginUser;
+	}
+
+	public void setNewlyLoginUser(String newlyLoginUser) {
+		this.newlyLoginUser = newlyLoginUser;
+	}
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
+	}
+
+	public String getIsPayRollApprover() {
+		return isPayRollApprover;
+	}
+
+	public void setIsPayRollApprover(String isPayRollApprover) {
+		this.isPayRollApprover = isPayRollApprover;
+	}
 
 }

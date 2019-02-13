@@ -20,4 +20,6 @@ public interface RequirementRateSubmissionNegotiationDao {
 	public RequirementRateSubmissionNegotiation getLatestRequirementRateSubmissionNegotiationBySubmissionId(Long submissionId);
 	
 	public List<RequirementRateSubmissionNegotiation> getAllRateHistoryBySubmissionIdAndCandidateId(Long submissionId, Long candidateId) throws Exception;
+
+	public RequirementRateSubmissionNegotiation getRequirementRateSubmissionByMaxId(Long submissionId);
 }
