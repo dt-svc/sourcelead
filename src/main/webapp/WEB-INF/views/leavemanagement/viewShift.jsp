@@ -19,7 +19,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Shift</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; <a href="/pms/leaveConfiguration">Leave Configuration</a> &raquo; Shift</div>
+		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; <a href="${SourceLeadWeb_pmsUrl}/leaveConfiguration">Leave Configuration</a> &raquo; Shift</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -29,7 +29,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
     <div class="timesheet_head">
       <ul>
           <li>
-               <a href="/pms/addShift" title="Add Shift">
+               <a href="${SourceLeadWeb_pmsUrl}/addShift" title="Add Shift">
                 <i class="fa fa-plus paddingRight"></i>Add Shift
               </a>
           </li>
