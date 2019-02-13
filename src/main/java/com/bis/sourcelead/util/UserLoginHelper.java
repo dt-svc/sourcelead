@@ -395,6 +395,7 @@ public class UserLoginHelper {
 					}
 					
 					accountsDTO.setOrgLocationName(accountOrgLocations.get("orgLocationName").toString());
+					accountsDTO.setOrgName(accountOrgLocations.get("orgName").toString());
 					
 					if(accountOrgLocations.get("country") != null) {
 						accountsDTO.setCountry(accountOrgLocations.get("country").toString());

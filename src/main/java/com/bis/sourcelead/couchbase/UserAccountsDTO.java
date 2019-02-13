@@ -22,6 +22,8 @@ public class UserAccountsDTO implements Serializable{
 	
 	private String orgLocationName;
 	
+	private String orgName;
+	
 	private String country;
 	
 	private String state;
@@ -136,5 +138,13 @@ public class UserAccountsDTO implements Serializable{
 
 	public void setUserType(String userType) {
 		this.userType = userType;
+	}
+
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
 	}
 }
