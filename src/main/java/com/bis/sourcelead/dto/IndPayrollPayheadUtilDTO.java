@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 
-import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
+import com.bis.sourcelead.indPayroll.entity.AssociatePayrollPayheadHistory;
 
 public class IndPayrollPayheadUtilDTO implements Serializable{
 	
