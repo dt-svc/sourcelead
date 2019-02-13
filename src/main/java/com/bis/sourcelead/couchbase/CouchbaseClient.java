@@ -71,43 +71,19 @@ public class CouchbaseClient {
 		}
 	
 	
-	public List<JSONObject> getLoginUserAccounts(String key) {
-        
-		List<JSONObject> userAccountsJsonList = new ArrayList<JSONObject>();
-		userProfileBucket.bucketManager().createN1qlPrimaryIndex(true, false);
-		JsonObject pVal = JsonObject.create().put("documentType", "User Account").put("userCode", key);
-		N1qlQueryResult result = userProfileBucket.query(N1qlQuery.parameterized("SELECT * FROM `userProfile` where documentType = $documentType and userCode = $userCode", pVal));
-		if (result != null && result.info().resultCount() > 1) {
-			for (N1qlQueryRow row : result) {
-				try {
-				    JSONParser parser = new JSONParser(); 
-				    JSONObject sessionJson = (JSONObject) parser.parse(row.value().toString());
-				    for (Iterator iterator = sessionJson.keySet().iterator(); iterator.hasNext();) {
-						String jsonKey = (String) iterator.next();
-						Object jsonValue = sessionJson.get(jsonKey);
-						JSONObject userAccountsJson = (JSONObject) parser.parse(jsonValue.toString());
-						userAccountsJsonList.add(userAccountsJson);
-			    	 }
-			  } catch (ParseException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		return userAccountsJsonList;
-	}
-
 
 	public void setUserProfile(String id, String key, JsonObject value) throws Exception {
 
-		// Store the user profile Document
-		userProfileBucket.upsert(JsonDocument.create(id, value));
+		JsonObject arthur = JsonObject.create().put(key, value);
+		// Store the Document
+		userProfileBucket.upsert(JsonDocument.create(id, arthur));
 	}
 	
 	public void setOrgLocations(String id, String key, JsonObject value) throws Exception {
 
-		// Store the orglocations document
-		orgLocationsBucket.upsert(JsonDocument.create(id, value));
+		JsonObject arthur = JsonObject.create().put(key, value);
+		// Store the Document
+		orgLocationsBucket.upsert(JsonDocument.create(id, arthur));
 	}
 	
 	
@@ -135,10 +111,9 @@ public class CouchbaseClient {
 	
 	public void setUserLoginSession(String id, String key, JsonObject value) throws Exception {
 
-		// Store the session Document
-		userLoginSessionStoreBucket.upsert(JsonDocument.create(id, value));
-			
-		
+		JsonObject arthur = JsonObject.create().put(key, value);
+		// Store the Document
+		userLoginSessionStoreBucket.upsert(JsonDocument.create(id, arthur));
 	}
 	
 	public Object getUserLoginSession(String key) {
@@ -151,81 +126,5 @@ public class CouchbaseClient {
 
 	}
 	
-	
-	public JSONObject getUserProfileDetails(String key) {
-		
-		JSONObject userRoleJson = new JSONObject();
-		userProfileBucket.bucketManager().createN1qlPrimaryIndex(true, false);
-			N1qlQueryResult result = userProfileBucket.query(N1qlQuery.simple("SELECT * FROM `userProfile` where meta().id = '"+key+"'"));
-			if(result != null) {
-				for (N1qlQueryRow row : result) {
-					  try {
-						    JSONParser parser = new JSONParser(); 
-						    JSONObject sessionJson = (JSONObject) parser.parse(row.value().toString());
-						    for (Iterator iterator = sessionJson.keySet().iterator(); iterator.hasNext();) {
-								String jsonKey = (String) iterator.next();
-								Object jsonValue = sessionJson.get(jsonKey);
-								userRoleJson = (JSONObject) parser.parse(jsonValue.toString());
-					    	 }
-					  }
-					 catch (ParseException e) {
-						e.printStackTrace();
-					}
-		        }
-			}
-			return userRoleJson;	
-	   }
-	
-	
-	public JSONObject getOrgLocationDetails(String key) {
-		
-		JSONObject orglocationJson = new JSONObject();
-		orgLocationsBucket.bucketManager().createN1qlPrimaryIndex(true, false);
-			N1qlQueryResult result = orgLocationsBucket.query(N1qlQuery.simple("SELECT * FROM `orgLocations` where meta().id = '"+key+"'"));
-			if(result != null) {
-				for (N1qlQueryRow row : result) {
-					  try {
-						    JSONParser parser = new JSONParser(); 
-						    JSONObject sessionJson = (JSONObject) parser.parse(row.value().toString());
-						    for (Iterator iterator = sessionJson.keySet().iterator(); iterator.hasNext();) {
-								String jsonKey = (String) iterator.next();
-								Object jsonValue = sessionJson.get(jsonKey);
-								orglocationJson = (JSONObject) parser.parse(jsonValue.toString());
-					    	 }
-					  }
-					 catch (ParseException e) {
-						e.printStackTrace();
-					}
-		        }
-				
-			}
-			return orglocationJson;	
-	   }
-	
-	
-	public JSONObject getUserLoginSessionStoreDetails(String key) {
-		
-		JSONObject sessionStoreJson = new JSONObject();
-		userLoginSessionStoreBucket.bucketManager().createN1qlPrimaryIndex(true, false);
-			N1qlQueryResult result = userLoginSessionStoreBucket.query(N1qlQuery.simple("SELECT * FROM `userLoginSessionStore` where meta().id = '"+key+"'"));
-			if(result != null) {
-				for (N1qlQueryRow row : result) {
-					  try {
-						    JSONParser parser = new JSONParser(); 
-						    JSONObject sessionJson = (JSONObject) parser.parse(row.value().toString());
-						    for (Iterator iterator = sessionJson.keySet().iterator(); iterator.hasNext();) {
-								String jsonKey = (String) iterator.next();
-								Object jsonValue = sessionJson.get(jsonKey);
-								sessionStoreJson = (JSONObject) parser.parse(jsonValue.toString());
-					    	 }
-					  }
-					 catch (ParseException e) {
-						e.printStackTrace();
-					}
-		        }
-			}
-			return sessionStoreJson;	
-			
-	   }
 
 }
