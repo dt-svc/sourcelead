@@ -36,7 +36,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.couchbase.client.java.document.json.JsonObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.servlet.http.Cookie;
 
 /** 
  * Purpose : 
@@ -80,31 +79,9 @@ public class UserStatsCacheHelper {
 	@SuppressWarnings("unchecked")
 	public JSONObject getOrgLocationCacheDetails(String orgLocationCode) {
 		orgLocationCode = "OrgLocation_"+orgLocationCode;
-		JSONObject orgLocationJson = new JSONObject();
-		Object sv = null;
-		sv = c.getOrgLocationsDetails(orgLocationCode);
-		if (sv != null) {
-
-			JSONParser parser = new JSONParser();
-			try {
-
-				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
-				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
-					String key = (String) iterator.next();
-					Object jsonValue = jsonObject.get(key);
-					JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
-					for (Object okey : jsonObjVal.keySet()) {
-						String keyStr = (String) okey;
-						Object keyvalue = jsonObjVal.get(keyStr);
-						orgLocationJson.put(keyStr, keyvalue);
-					}
-				}
-
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-		}
+		JSONObject orgLocationJson = c.getOrgLocationDetails(orgLocationCode);
 		return orgLocationJson;
+		
 	}
 	
 
@@ -122,30 +99,8 @@ public class UserStatsCacheHelper {
 	public JSONObject getLogInUserRoleStats(String userRoleAuthKey) {
 
 		JSONObject userRoleJson = new JSONObject();
-		Object sv = null;
-		sv = c.getUserProfile(userRoleAuthKey);
-		if (sv != null) {
-			JSONParser parser = new JSONParser();
-			try {
-				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
-				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
-					String key = (String) iterator.next();
-					Object jsonValue = jsonObject.get(key);
-					JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
-					for (Object okey : jsonObjVal.keySet()) {
-						String keyStr = (String) okey;
-						Object keyvalue = jsonObjVal.get(keyStr);
-						if (!keyStr.equalsIgnoreCase("menuList") && !keyStr.equalsIgnoreCase("rolesList")) {
-							userRoleJson.put(keyStr, keyvalue);
-						}
-					}
-				}
-
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-		}
-		return userRoleJson;
+		JSONObject jsonObject = c.getUserProfileDetails(userRoleAuthKey);
+		return jsonObject;
 	}
 	
 	
@@ -156,33 +111,25 @@ public class UserStatsCacheHelper {
 	 * This method is used to get logged in user left menu access information.
 	 */
 	public JSONObject getLogInUserRoleMenusJson(String userRoleAuthKey) {
-
 		JSONObject userRoleMenusListJson = new JSONObject();
-		Object sv = null;
-		sv = c.getUserProfile(userRoleAuthKey);
-		if (sv != null) {
-			JSONParser parser = new JSONParser();
+		JSONObject jsonObject = c.getUserProfileDetails(userRoleAuthKey);
+		if (jsonObject != null) {
 			try {
-				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
-				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
-					String key = (String) iterator.next();
-					Object jsonValue = jsonObject.get(key);
-					JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
-					for (Object okey : jsonObjVal.keySet()) {
-						String keyStr = (String) okey;
-						if (keyStr.equalsIgnoreCase("menuList")) {
-							Object keyvalue = jsonObjVal.get(keyStr);
-							userRoleMenusListJson.put(keyStr, keyvalue);
-						}
-
+				for (Object okey : jsonObject.keySet()) {
+					String keyStr = (String) okey;
+					Object keyvalue = jsonObject.get(keyStr);
+					if (keyStr.equalsIgnoreCase("menuList") && !keyStr.equalsIgnoreCase("rolesList")) {
+						userRoleMenusListJson.put(keyStr, keyvalue);
 					}
 				}
 
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		return userRoleMenusListJson;
+	
+		
 	}
 	
 	/**
@@ -192,31 +139,10 @@ public class UserStatsCacheHelper {
 	 * This method is used to get logged in user session details.
 	 */
 	public JSONObject getLogInUserSessionJson(String userSessionAuthKey) {
-
-		JSONObject userSessionListJson = new JSONObject();
-		Object sv = null;
-		sv = c.getUserLoginSession(userSessionAuthKey);
-		if (sv != null) {
-			JSONParser parser = new JSONParser();
-			try {
-				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
-				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
-					String key = (String) iterator.next();
-					Object jsonValue = jsonObject.get(key);
-					JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
-					for (Object okey : jsonObjVal.keySet()) {
-						String keyStr = (String) okey;
-						Object keyvalue = jsonObjVal.get(keyStr);
-						userSessionListJson.put(keyStr, keyvalue);
-
-					}
-				}
-
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-		}
-		return userSessionListJson;
+		
+		JSONObject sessionStoreJson = c.getUserLoginSessionStoreDetails(userSessionAuthKey);
+		return sessionStoreJson;
+		
 	}
 	
 	
@@ -227,32 +153,23 @@ public class UserStatsCacheHelper {
 	 * This method is used to get logged in user left menu access information.
 	 */
 	public List<String> getLogInUserRoleMenusList(String userRoleAuthKey) {
-
-		Object sv = null;
+		
 		List<String> menusList = new ArrayList<>();
-		sv = c.getUserProfile(userRoleAuthKey);
-		if (sv != null) {
-			JSONParser parser = new JSONParser();
+		JSONObject jsonObject = c.getUserProfileDetails(userRoleAuthKey);
+		if (jsonObject != null) {
 			try {
-				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
-				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
-					String key = (String) iterator.next();
-					Object jsonValue = jsonObject.get(key);
-					JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
-					for (Object okey : jsonObjVal.keySet()) {
-						String keyStr = (String) okey;
-						if (keyStr.equalsIgnoreCase("menuList")) {
-							String keyvalue = jsonObjVal.get(keyStr).toString();
-							String[] menusStringArray = keyvalue.toString().substring(1, keyvalue.toString().length()-1).split(",");
-							for(int i=0; i<menusStringArray.length; i++) {
-								menusList.add(menusStringArray[i].substring(1, menusStringArray[i].length()-1));
-							}
+				for (Object okey : jsonObject.keySet()) {
+					String keyStr = (String) okey;
+					if (keyStr.equalsIgnoreCase("menuList")) {
+						String keyvalue = jsonObject.get(keyStr).toString();
+						String[] menusStringArray = keyvalue.toString().substring(1, keyvalue.toString().length()-1).split(",");
+						for(int i=0; i<menusStringArray.length; i++) {
+							menusList.add(menusStringArray[i].substring(1, menusStringArray[i].length()-1));
 						}
-
 					}
 				}
 
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -269,35 +186,27 @@ public class UserStatsCacheHelper {
 	 */
 	public List<String> getLogInUserRoleActionsList(String userRoleAuthKey) {
 
-		Object sv = null;
 		List<String> rolesList = new ArrayList<>();
-		sv = c.getUserProfile(userRoleAuthKey);
-		if (sv != null) {
-			JSONParser parser = new JSONParser();
+		JSONObject jsonObject = c.getUserProfileDetails(userRoleAuthKey);
+		if (jsonObject != null) {
 			try {
-				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
-				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
-					String key = (String) iterator.next();
-					Object jsonValue = jsonObject.get(key);
-					JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
-					for (Object okey : jsonObjVal.keySet()) {
-						String keyStr = (String) okey;
-						if (keyStr.equalsIgnoreCase("rolesList")) {
-							String keyvalue = jsonObjVal.get(keyStr).toString();
-							String[] rolesStringArray = keyvalue.toString().substring(1, keyvalue.toString().length()-1).split(",");
-							for(int i=0; i<rolesStringArray.length; i++) {
-								rolesList.add(rolesStringArray[i].substring(1, rolesStringArray[i].length()-1));
-							}
+				for (Object okey : jsonObject.keySet()) {
+					String keyStr = (String) okey;
+					if (keyStr.equalsIgnoreCase("rolesList")) {
+						String keyvalue = jsonObject.get(keyStr).toString();
+						String[] rolesStringArray = keyvalue.toString().substring(1, keyvalue.toString().length()-1).split(",");
+						for(int i=0; i < rolesStringArray.length; i++) {
+							rolesList.add(rolesStringArray[i].substring(1, rolesStringArray[i].length()-1));
 						}
-
 					}
 				}
 
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		return rolesList;
+	
 	}
 	
 	
