@@ -287,8 +287,8 @@
 							</c:if>
 							
 							<c:if test="${SourceLeadWeb_country == 'India'}">
-								<li class="${sessionData.nav == 'MyPayroll' ? 'treview-active' : ''}"><a href="/pms/myPayrollInd" title="My Pays"><i class="fa fa-chevron-right"></i> My Pays</a></li>
-								<li class="${sessionData.nav == 'RunPayroll' ? 'treview-active' : ''}"><a href="/pms/runIndianPayRoll" title="Payroll"><i class="fa fa-chevron-right"></i> Payroll</a></li>
+								<li class="${sessionData.nav == 'MyPayroll' ? 'treview-active' : ''}"><a href="/pms/myPayrollInd" title="My Pays"><i class="fa fa-chevron-right"></i> My Payroll</a></li>
+								<li class="${sessionData.nav == 'RunPayroll' ? 'treview-active' : ''}"><a href="/pms/runIndianPayRoll" title="Payroll"><i class="fa fa-chevron-right"></i>Org Payroll</a></li>
 							</c:if>
 							</ul>
 						</c:if>
@@ -303,7 +303,7 @@
 							
 							<c:if test="${SourceLeadWeb_country == 'India'}">
 								<li class="${sessionData.nav == 'MyPayroll' ? 'treview-active' : ''}"><a href="/pms/myPayrollInd" title="My Pays"><i class="fa fa-chevron-right"></i>My Payroll</a></li>
-								<li class="${sessionData.nav == 'RunPayroll' ? 'treview-active' : ''}"><a href="/pms/runIndianPayRoll" title="Payroll"><i class="fa fa-chevron-right"></i>Run Payroll</a></li>
+								<li class="${sessionData.nav == 'RunPayroll' ? 'treview-active' : ''}"><a href="/pms/runIndianPayRoll" title="Payroll"><i class="fa fa-chevron-right"></i>Org Payroll</a></li>
 							</c:if>
 							</ul>
 						</c:if>
@@ -317,7 +317,7 @@
 							</c:if>
 							
 							<c:if test="${SourceLeadWeb_country == 'India'}">
-								<li class="${sessionData.nav == 'RunPayroll' ? 'navActive' : ''}"><a href="/pms/runIndianPayRoll" title="Payroll"><span class="navIcons payIcon"></span><b>Run Payroll</b></a></li>
+								<li class="${sessionData.nav == 'RunPayroll' ? 'navActive' : ''}"><a href="/pms/runIndianPayRoll" title="Payroll"><span class="navIcons payIcon"></span><b>Org Payroll</b></a></li>
 							</c:if>
 					</c:if>
 					
