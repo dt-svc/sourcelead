@@ -33,17 +33,17 @@
 	              <ul class="list-unstyled">
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
 		              <li>
-			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
+			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocationId}'/>" class="sopcSwith">
 				                <div class="clearfix">
 				                   <div class="pull-left image-parent positionRelative">
-				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-				                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
+				                   <div class="imageParent org-imagelink ${links.orgLocationId == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
+				                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgImgUrl}">
 				                     </div>
 				                   </div>
 				                   <div class="pull-left mt5">
-				                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-				                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
-				                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+				                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgName}</p>
+				                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.city ? links.city : ""} ${links.country}</p>
+				                     <p><i class="fa fa-user"></i>&nbsp;${links.displayName}</p>
 				                   </div>
 				                </div>
 			                </a>
