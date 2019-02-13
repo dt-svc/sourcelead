@@ -14,6 +14,7 @@
 
 <script>
 var atsUrl ='${SourceLeadWeb_atsUrl}';
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 </script>
 
 <!-- For add New Applicant -->
@@ -1710,7 +1711,7 @@ function validate_fileupload(fileName)
 	 var orgRelationID = $('#vendors').val();
 		 $.ajax({
 			    type: "POST",
-		        url: atsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        url: vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(json) {
 		        	//var json = JSON.parse(data);
 		        	$('#vendorContact').empty();
