@@ -210,8 +210,8 @@ public class UserStatsCacheHelper {
 	}
 	
 	
-	public List<String> getLoginUserAccounts(String loginUserCode){
-		List<String> userAccountsList = c.getLoginUserAccounts(loginUserCode);
+	public List<JSONObject> getLoginUserAccounts(String loginUserCode){
+		List<JSONObject> userAccountsList = c.getLoginUserAccounts(loginUserCode);
 		return userAccountsList;
 	}
 	
@@ -453,7 +453,12 @@ public class UserStatsCacheHelper {
 		sessionDTO.setUserRoleUUID(userRole.getUuid());
 		sessionDTO.setSessionId(generatedCustomTocken);
 		sessionDTO.setOrgLocationCode(userRole.getOrgLocations().getLocationCode());
+		sessionDTO.setOrgLocationName(userRole.getOrgLocations().getOrgLocationName());
+		sessionDTO.setOrgImgUrl(userRole.getOrgLocations().getOrg().getFileUrl());
 		sessionDTO.setLoginUserName(userRole.getUser().getUserName());
+		sessionDTO.setCountry(userRole.getOrgLocations().getCountry());
+		sessionDTO.setState(userRole.getOrgLocations().getState());
+		sessionDTO.setCity(userRole.getOrgLocations().getCity());
 	    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 	    LocalDateTime now = LocalDateTime.now();  
 	    sessionDTO.setLastUpdatedDate(dtf.format(now));
