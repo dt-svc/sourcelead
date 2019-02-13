@@ -10,11 +10,12 @@
 --%>
 
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 function recomendcandidateQuickViewProfile(candidateId,recScore){
 	  var skillsList = '${skillsList}'; 
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+         url: atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(result) {
         	 var json = result.object;
         	 if(result.response === "SESSION_TIMEDOUT") {
@@ -237,7 +238,7 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 	function recQvemployeeSubmission(candidateId) {
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
+					url : atsUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
 					success : function(response) {
 						if (response && response.response === "INVALID_DATA") {
 						    showError(response.responseMessage);
@@ -326,7 +327,7 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 function recQveducationSubmission(candidateId){
 	 $.ajax({  
           type : "GET",
-          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateEducationListByCandidateId?&candidateId="+candidateId,        
           success :function(response) {
         	  	if (response && response.response === "INVALID_DATA") {
         		    showError(response.responseMessage);
@@ -414,7 +415,7 @@ function recQveducationSubmission(candidateId){
 function recQwikCertificates(candidateId){
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
         	  	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
         		    showError(response.responseMessage);

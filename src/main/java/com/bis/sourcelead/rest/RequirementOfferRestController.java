@@ -65,7 +65,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 
 @RestController
-@RequestMapping("/app")
 public class RequirementOfferRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(RequirementOfferRestController.class);

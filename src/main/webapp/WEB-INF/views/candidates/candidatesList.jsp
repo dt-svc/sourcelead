@@ -111,7 +111,7 @@ function closeCandiatesSubmitedList() {
     padding-right: 5px;
 }
 </style>
-<script type="text/javascript" src="/resources/js/candidateTable.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_atsUrl}/resources/js/candidateTable.js"></script>
 
 <input type="hidden" id="noCandidates" name="noCandidates" />
 
@@ -2896,7 +2896,7 @@ function getRequirements(){
 	var managerId = $("#requirementManagerlist").val();
 	$.ajax({
         type : "GET",
-        url: atsUrl+"/getAllRequirementsForJobSharing?postedDateRange="+postedDateRange+"&startDate="+startDate+"&endDate="+endDate+"&managerId="+managerId,    
+        url: sourceleadUrl+"/getAllRequirementsForJobSharing?postedDateRange="+postedDateRange+"&startDate="+startDate+"&endDate="+endDate+"&managerId="+managerId,    
          success :function(json) {
               if(json != null && json != 'undefined' && json != "" && json != '[]'){
             	  var result = "";

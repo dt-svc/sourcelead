@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -32,13 +31,9 @@ import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.Name;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddressList;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,7 +48,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
@@ -61,10 +55,10 @@ import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.JobFairRequirementsDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
-import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.EmailReminder;
 import com.bis.sourcelead.entity.JobFair;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
@@ -87,10 +81,10 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
-import com.bis.sourcelead.rest.DashboardRestController;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.EmailReminderService;
 import com.bis.sourcelead.service.JobCustomFieldDataService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -218,7 +212,8 @@ public class RequirementController {
 	private JobCustomFieldDataService jobCustomFieldDataService;
 	
 	@Autowired
-	private DashboardRestController dashboardRestController;
+    EmailReminderService emailReminderService;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1638,6 +1633,29 @@ private Sheet createXlsSheet(HSSFWorkbook createExcelworkbook,HSSFSheet createEx
 	        }
 	    }
 	
-	return createExcelsheet;
+	return createExcelsheet;	
 }
+
+@RequestMapping(value = "/jobsConfigureEmails")
+public ModelAndView reminderJobsConfigureEmails(HttpServletRequest request) throws Exception {
+    ModelAndView model = new ModelAndView();
+    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+    
+    //get job related reminders
+    List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByTabsIdAndOrgLocationId(8l , orgLocations.getId());
+    //model.addObject("emailReminderList", emailReminderList);
+    
+    for(EmailReminder emailReminder : emailReminderList) {
+        if(emailReminder.getScenarionName().equalsIgnoreCase("ApplicantJoining")) {
+            model.addObject("emailReminder", emailReminder);
+        }
+        
+    }
+    
+    model.setViewName("requirement/jobsConfigureEmails");
+    model.addObject("sourceleadUrl", sourceleadUrl);
+    return model;
+   }
+
+
 }

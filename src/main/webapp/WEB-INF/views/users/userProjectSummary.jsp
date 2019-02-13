@@ -7,6 +7,7 @@
 --%>
 <script>
 var atsUrl ='${SourceLeadWeb_atsUrl}';
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 function userAssignedProjects(userId){  
 	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 	  $.ajax({
@@ -89,7 +90,7 @@ function prepareAssignedProjectsData(data){
 	
 	result = result +"<td>";
    	if(opt.projectName != '' && opt.projectName != null && opt.projectName != 'undefined'){
-   		result = result +"<div class='tbldata-dotdot'><a href='"+atsUrl+"/projectSummary?projectUUID="+opt.projectUUID+"&projectClientUUID="+opt.projectClientUUID+"'><span title='"+opt.projectName+"'>"+opt.projectName+"</span></a></div>";
+   		result = result +"<div class='tbldata-dotdot'><a href='"+pmsUrl+"/projectSummary?projectUUID="+opt.projectUUID+"&projectClientUUID="+opt.projectClientUUID+"'><span title='"+opt.projectName+"'>"+opt.projectName+"</span></a></div>";
    	}else{
    		result = result +"<div>-----</div>";
    	}

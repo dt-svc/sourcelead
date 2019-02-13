@@ -54,6 +54,7 @@ $(document).ready(function() {
 </script>
 
 <script type="text/javascript">
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 var postdatavalues = { title: "", link: "", picture: "", description: "", comment: "" };
 function setPostValues(title,link,picture,description,comment){
 	 if (title) {
@@ -151,15 +152,15 @@ window.onload = function () {
 	    
           </div>
            <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalDashboard'/>">Home </a> &raquo; Jobs List  </div>
+           <div class="pull-right brud-crum"><a href="${appPath}/professionalDashboard">Home </a> &raquo; Jobs List  </div>
            </c:if>
            
            <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home </a> &raquo; Jobs List  </div>
+           <div class="pull-right brud-crum"><a href="${appPath}/recruiterDashboard">Home </a> &raquo; Jobs List  </div>
            </c:if>
            
            <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <a href="<c:url value='/jobsList'/>">Jobs List </a> &raquo; Crowdsourcing Jobs</div>
+           <div class="pull-right brud-crum"><a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; <a href="<c:url value='/jobsList'/>">Jobs List </a> &raquo; Crowdsourcing Jobs</div>
            </c:if>
           
           <div class="clearfix"></div> 
@@ -949,9 +950,9 @@ function requirementsList(offset){
 			 				result = result +'<div class="OpenJob">';
 			 				
 			 				if(requirements.referUUID != null && requirements.referUUID != 'undefined'){
-			 					result = result +'<a href="<c:url value="/app/requirementProfile/'+requirements.requirementUUID+'/'+requirements.referUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
+			 					result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'/'+requirements.referUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
 			 				}else{
-			 					result = result +'<a href="<c:url value="/app/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
+			 					result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
 			 					
 			 				}
 			 				result = result +'<input type="hidden" id="postedOrg" value=""/>';
@@ -1564,6 +1565,7 @@ function referToJob(requirementId,referId){
 
 <script>
 function getUserContats(requirementId){
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	 $.ajax({
 	    	type: "POST",
 	        url: atsUrl+"/getCrowdSourcingUserContacts?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,  

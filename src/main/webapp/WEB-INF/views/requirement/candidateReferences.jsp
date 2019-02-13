@@ -23,6 +23,7 @@
      1.usage     : used at clientSideBar().
 --%>
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 function candidateReferences(candidateId){
 	var candidateType = '${candidateType}';
 	var result = "";
@@ -80,7 +81,7 @@ function candReferencesList(candidateId){
 	
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateReferencesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&locationCode="+locationCode,        
+          url: atsUrl+"/getCandidateReferencesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&locationCode="+locationCode,        
           success :function(json) {
            
              			/*  var json = JSON.parse(data);  */
@@ -169,7 +170,7 @@ function candReferencesList(candidateId){
 <script>
 function candidateReferencesList(candidateId){
 	 var sourceleadUrl ='${sourceleadUrl}';
-	
+	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 }
 </script>
 
@@ -343,7 +344,7 @@ function addReference(candidateId) {
 					
 					 $("#save_ref").attr("disabled", "disabled");
 					$("#save_ref").addClass('button').val('Processing..'); 
-			        $.post(sourceleadUrl+"/saveCandidateReferences?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(response) {
+			        $.post(atsUrl+"/saveCandidateReferences?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(response) {
 			        	if (response && response.response === "INVALID_DATA") {
 			        	    showError(response.responseMessage);
 			        	} else if (response && response.response === "INVALID_USER") {
@@ -435,7 +436,7 @@ function deleteReference(candidateId,refId){
 	 var userCode = '${SourceLeadWeb_userCode}';
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateReference?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&refId="+refId+"&userCode="+userCode, 	   
+		    url: atsUrl+"/terminateReference?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&refId="+refId+"&userCode="+userCode, 	   
    		    success: function(response) {
    		    	if (response.response === "AWKWARD") {
                     location.href = "/errorPage";
@@ -474,7 +475,7 @@ function deleteReference(candidateId,refId){
 			
 			 $("#save_ref").attr("disabled", "disabled");
 			$("#save_ref").addClass('button').val('Processing..'); 
-	        $.post(sourceleadUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(result) {
+	        $.post(atsUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(result) {
 	        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
 	    		    showError(result.responseMessage);
 	    		} else if (result.response === "AWKWARD") {
@@ -510,7 +511,7 @@ function deleteReference(candidateId,refId){
 
 		$.ajax({
 				type : "POST",
-				url : sourceleadUrl
+				url : atsUrl
 									+ "/getCandidateReferencesByCandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="
 									+ candidateId + "&refId=" + refId,
 				success : function(response) {
@@ -724,7 +725,7 @@ function validateReferenceEmail(candidateId,referId){
 	 if (email != null && email != "") {
 	$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateReferEmail?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&referId="+referId+"&email="+email,
+			url : atsUrl + "/validateReferEmail?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&referId="+referId+"&email="+email,
 			success : function(response) {
 				if (response.response === "AWKWARD") {
 				    location.href = "/errorPage";
