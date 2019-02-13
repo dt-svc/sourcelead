@@ -113,9 +113,6 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public UserRole addUserRole(UserRole userRole) throws Exception {
 		userRole.setCreatedDate(new Date());
 		userRole.setUpdatedDate(new Date());
-		if(StringUtils.isBlank(userRole.getUuid())) {
-			userRole.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-		}
 		return userRoleDao.addUserRole(userRole);
 	}
 
@@ -897,6 +894,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 	@Override
 	public String getUserRoleUUIDByUserRoleId(Long userRoleId) throws Exception {
 		return userRoleDao.getUserRoleUUIDByUserRoleId(userRoleId);
+	}
+
+	@Override
+	public List<UserRole> getAllUserRolesByRoleId(Long roleId) throws Exception {
+		return userRoleDao.getAllUserRolesByRoleId(roleId);
 	}
 
 

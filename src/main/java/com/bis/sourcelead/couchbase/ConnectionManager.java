@@ -6,16 +6,28 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ResourceBundle;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.couchbase.connection.CouchbaseConnectionConfig;
+import com.bis.sourcelead.couchbase.connection.CouchbasePropertyPathConfiguration;
+
+@Component
 public class ConnectionManager {
 	private static CouchbaseClient client;
 	private static ConnectionManager ref;
 	private String couchUrl;
 	List<String> urls;
 	private String userProfileCouchBucket;
+	private String userLoginSessionStoreBucket;
+	private String orgLocationsBucket;
 	private String couchPass;
+	
+	
+	 ApplicationContext ctx = new AnnotationConfigApplicationContext(CouchbasePropertyPathConfiguration.class);
+	 CouchbaseConnectionConfig couchConfig = ctx.getBean(CouchbaseConnectionConfig.class);
 	
 	public String getCouchUrl() {
 		return couchUrl;
@@ -41,8 +53,27 @@ public class ConnectionManager {
 			throw new RuntimeException("Couchbase BUCKET Not Specified");
 		this.userProfileCouchBucket = userProfileCouchBucket;
 	}
-
 	
+
+	public String getOrgLocationsBucket() {
+		return orgLocationsBucket;
+	}
+
+	public void setOrgLocationsBucket(String orgLocationsBucket) {
+		if(couchUrl == null)
+			throw new RuntimeException("Couchbase BUCKET Not Specified");
+		this.orgLocationsBucket = orgLocationsBucket;
+	}
+
+	public String getUserLoginSessionStoreBucket() {
+		return userLoginSessionStoreBucket;
+	}
+
+	public void setUserLoginSessionStoreBucket(String userLoginSessionStoreBucket) {
+		if(couchUrl == null)
+			throw new RuntimeException("Couchbase BUCKET Not Specified");
+		this.userLoginSessionStoreBucket = userLoginSessionStoreBucket;
+	}
 
 	public String getCouchPassword() {
 		return couchPass;
@@ -59,10 +90,12 @@ public class ConnectionManager {
 		if (client == null) {		
 			List<URI> hosts;
 			try {
-				if (getCouchUrl() != null && !getCouchUrl().isEmpty() && getUserProfileCouchBucket() != null && !getUserProfileCouchBucket().isEmpty()) {
+				if (getCouchUrl() != null && !getCouchUrl().isEmpty()) {
 					hosts = Arrays.asList(new URI(getCouchUrl()));
 					List<String> couchBuckets = new ArrayList<>();
 					couchBuckets.add(getUserProfileCouchBucket());
+					couchBuckets.add(getUserLoginSessionStoreBucket());
+					couchBuckets.add(getOrgLocationsBucket());
 					client = new CouchbaseClient(urls, couchBuckets,getCouchPassword());
 				}
 			} catch (URISyntaxException e) {
@@ -94,13 +127,11 @@ public class ConnectionManager {
 
 	public void loadProperties() {
 		try {
-			ResourceBundle rb = ResourceBundle.getBundle("application");
-			if (rb != null) {
-				setCouchUrl(rb.getString("couchbaseUrl"));
-				setUserProfileCouchBucket(rb.getString("userProfileBucket"));
-				setCouchPassword(rb.getString("password"));
-			}
-
+			setCouchUrl(couchConfig.getCouchbaseUrl().trim());
+			setUserProfileCouchBucket(couchConfig.getUserProfileBucket().trim());
+			setUserLoginSessionStoreBucket(couchConfig.getUserLoginSessionStoreBucket().trim());
+			setOrgLocationsBucket(couchConfig.getOrgLocationsBucket().trim());
+			setCouchPassword(couchConfig.getPassword().trim());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

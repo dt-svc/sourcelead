@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.RandomStringUtils;
@@ -18,16 +19,20 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.UserAccountsDTO;
 import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -37,7 +42,9 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -97,6 +104,10 @@ public class UserLoginHelper {
 	@Value("${isCouchbaseEnabled}")
 	private String isCouchbaseEnabled;
 	
+	
+	@Value("${sourceleadLogoutUrl}")
+	private String sourceleadLogoutUrl;
+	
 	@Autowired
 	OrgLocationService orgLocationService;
 	
@@ -105,6 +116,12 @@ public class UserLoginHelper {
 	
 	@Autowired
 	UserStatsCacheHelper userStatsCacheHelper;
+	
+	@Autowired
+	CountriesService countriesService;
+	
+	@Autowired
+	ConfigurePayrollApproverService configurePayrollApproverService;
 	
 	   
 
@@ -115,10 +132,14 @@ public class UserLoginHelper {
 			
 		 String[] usernameWithRole = username.split("##");
 		 String uname = usernameWithRole[0];
+		 String generatedToken = usernameWithRole[2];
 		 
-		 JSONObject userRole = userStatsCacheHelper.getLogInUserRoleStats(uname+"_AUTH_"+userRoleUUID);
-		 JSONObject orgLocations = userStatsCacheHelper.getOrgLocationCacheDetails("OrgLocation_"+userRole.get("orgLocationCode").toString());
-		 
+		 JSONObject userSession =  userStatsCacheHelper.getLogInUserSessionJson(generatedToken+"_SESSION");
+		 while(userSession.isEmpty()) {
+			 userSession =  userStatsCacheHelper.getLogInUserSessionJson(generatedToken+"_SESSION");
+		 }
+		 JSONObject userRole = userStatsCacheHelper.getLogInUserRoleStats(uname+"_AUTH_"+userSession.get("userRoleUUID").toString());
+		 JSONObject orgLocations = userStatsCacheHelper.getOrgLocationCacheDetails(userSession.get("orgLocationCode").toString());
 		 
 		 /**
 		  * Need to remove this entre try block when couch base is completely established
@@ -145,12 +166,13 @@ public class UserLoginHelper {
 			  if(userRole != null && userRole.get("userState").toString() != null && userRole.get("userState").toString().equals(Status.NOT_LOGGEDIN)){
 	  			   UserRole uRole = userRoleService.getUserRoleById(Long.valueOf(userRole.get("userRoleId").toString()));
 	  					 uRole.setUserState(Status.ACTIVE);
-	  			         uRole.setNewlyLoginUser(Constants.YES);
+	  			         uRole.setNewlyLoginUser(Constants.NO);
 	  			         userRoleService.addUserRole(uRole);
 	                Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(uRole.getUser().getId(), Long.valueOf(orgLocations.get("orgLocationId").toString()));
 	                if(null != employee){
 	                    userService.saveOrUpdateUserElkDocument(uRole,employee,uRole.getCreatedBy());
 	                }
+	                userStatsCacheHelper.saveUserProfileDetailsToCouchbase(uRole);
   		  }
 		   } catch (Exception e) {
 			  e.printStackTrace();
@@ -180,12 +202,25 @@ public class UserLoginHelper {
 			    }
 		  }
 		  
+		  SourceLeadSessionManager.setSessionAttribute(req, "sourceleadLogoutUrl", sourceleadLogoutUrl);
 		  
-		  SourceLeadSessionManager.setSessionAttribute(req, "userId", userRole.get("userId"));
+		  if(userRole.get("userId") != null) {
+			  SourceLeadSessionManager.setSessionAttribute(req, "userId", Long.parseLong(userRole.get("userId").toString()));
+		  }
+		  
+		  if(userRole.get("userRoleId") != null) {
+			  SourceLeadSessionManager.setSessionAttribute(req, "userRoleId", Long.parseLong(userRole.get("userRoleId").toString()));
+		  }
+		  
+		  if(userRole.get("roleHierarchyId") != null) {
+			  SourceLeadSessionManager.setSessionAttribute(req, "roleHierarchyId", Long.parseLong(userRole.get("roleHierarchyId").toString()));
+		  }
+		  
+		  if(userRole.get("candidateId") != null) {
+			  SourceLeadSessionManager.setSessionAttribute(req, "candidateId", Long.parseLong(userRole.get("candidateId").toString()));
+		  }
+		  
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRole", userRole.get("roleName"));
-		  SourceLeadSessionManager.setSessionAttribute(req, "userRoleId", userRole.get("userRoleId"));
-		  SourceLeadSessionManager.setSessionAttribute(req, "roleHierarchyId", userRole.get("roleHierarchyId"));
-		  SourceLeadSessionManager.setSessionAttribute(req, "candidateId", userRole.get("candidateId"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "candidateUUID", userRole.get("candidateUUID"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "isGlobalAccess", userRole.get("isGlobalUser"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "isSuperUser", userRole.get("isSuperUser"));
@@ -193,24 +228,62 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRoleId", userRole.get("roleId"));	
 		  SourceLeadSessionManager.setSessionAttribute(req, "userType", userRole.get("userType"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "userCode", userRole.get("userCode"));
-		  SourceLeadSessionManager.setSessionAttribute(req, "userName", userRole.get("userName"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserFullName", userRole.get("loginUserFullName"));
 	      SourceLeadSessionManager.setSessionAttribute(req, "loginUserFirstName", userRole.get("firstName"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserLastName", userRole.get("lastName"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserMiddleName", userRole.get("middleName"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "userImgUrl", userRole.get("imgUrl"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserEmail", userRole.get("email"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "displayName", userRole.get("roleDisplayName"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "designation", userRole.get("designation"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "mobilePhone", userRole.get("mobilePhone"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "location", userRole.get("location"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "linkedIn", userRole.get("linkedIn"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "facebook", userRole.get("facebook"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "twitter", userRole.get("twitter"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "googlePlus", userRole.get("googlePlus"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "userLoginSecurity", userRole.get("userLoginSecurity"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "newlyLoginUser", userRole.get("newlyLoginUser"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "userCode", userRole.get("userCode"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "isPayRollApprover", userRole.get("isPayRollApprover"));
+		  
 		  
 		  SourceLeadSessionManager.setSessionAttribute(req, "fileUrl", orgLocations.get("imgUrl"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "averageWorkingHours", orgLocations.get("workingHours"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "orgName", orgLocations.get("orgName"));
-		  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationId", orgLocations.get("orgLocationId"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "orgCode", orgLocations.get("orgCode"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationName", orgLocations.get("orgLocationName"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "dba", orgLocations.get("dba"));
+		  
+		  if(orgLocations.get("orgLocationId") != null) {
+			  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationId", Long.parseLong(orgLocations.get("orgLocationId").toString()));
+		  }
+		 
 		  SourceLeadSessionManager.setSessionAttribute(req, "locationCode", orgLocations.get("orgLocationCode"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "orgShortCode", orgLocations.get("orgShortCode"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "timeZoneId", orgLocations.get("timeZoneId"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "timeZone",orgLocations.get("timeZone"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "isCompanyOnboarded", orgLocations.get("isCompanyOnboarded"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "dateFormat", orgLocations.get("dateFormat"));  
 		  SourceLeadSessionManager.setSessionAttribute(req, "country", orgLocations.get("country"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "state", orgLocations.get("state"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "city", orgLocations.get("city"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "zipcode", orgLocations.get("zipcode"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "address", orgLocations.get("address"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "phone", orgLocations.get("phone"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "fax", orgLocations.get("fax"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "weekOffDays", orgLocations.get("weekOffDays"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "website", orgLocations.get("website"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "currencyCode", orgLocations.get("currencyCode"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "isTimesheetAvgHoursRequired", orgLocations.get("isTimesheetAvgHoursRequired"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "businessTypeId", orgLocations.get("businessTypeId"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "otherBusinessType", orgLocations.get("otherBusinessType"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "poEmail", orgLocations.get("emailForPO"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "remittanceEmail", orgLocations.get("emailforRemittance"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "orgDescription", orgLocations.get("orgDescription"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationLoginSecurity", orgLocations.get("orgLocationLoginSecurity"));
+		  
+		  
 		  List<String> weekOffDaysList = new ArrayList<>();
 		  String[] weekOffDays = orgLocations.get("weekOffDays").toString().split(",");
 			for (int i = 0; i < weekOffDays.length; i++) {
@@ -245,8 +318,7 @@ public class UserLoginHelper {
 		boolean isReportTabAccessable = false;
 		SourceLeadSessionManager.setSessionAttribute(req, "reportsTabConfigured", "N");
 		
-		if(!userRole.get("roleName").toString().equalsIgnoreCase(Constants.ROLE_NAME_PROFESSIONAL) && !userRole.get("roleName").toString().equalsIgnoreCase(Constants.ROLE_NAME_INDEPENDENT_RECRUITER)){
-			try {
+		try {
 				tabsList =  userStatsCacheHelper.getLogInUserRoleMenusList(uname+"_AUTH_"+userRoleUUID);
 				actionsList = userStatsCacheHelper.getLogInUserRoleActionsList(uname+"_AUTH_"+userRoleUUID);
 				
@@ -296,9 +368,7 @@ public class UserLoginHelper {
 			SourceLeadSessionManager.setSessionAttribute(req, "resourcesTabCount", resourcesTabCount);
 			SourceLeadSessionManager.setSessionAttribute(req, "paryrollTabCount", paryrollTabCount);
 			
-			
-		  } 
-		  return  new UsernamePasswordAuthenticationToken(username, password,  buildUserAuthority(actionsList));
+		    return  new UsernamePasswordAuthenticationToken(username, password,  buildUserAuthority(actionsList));
 		}else {
 			
 			 String[] usernameWithRole = username.split("##");
@@ -324,7 +394,7 @@ public class UserLoginHelper {
 			  try {
 				  if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
 		  			   userRole.setUserState(Status.ACTIVE);
-		  			   userRole.setNewlyLoginUser(Constants.YES);
+		  			   userRole.setNewlyLoginUser(Constants.NO);
 		  			   userRoleService.addUserRole(userRole);
 		                Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocations.getId());
 		                if(null != employee){
@@ -335,7 +405,7 @@ public class UserLoginHelper {
 				  e.printStackTrace();
 			   }
 			  
-			  
+//			  System.out.println("<<<<<<<<<<<<<<<<<<Checking>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>."+username+"==="+userRoleId+"==="+orgLocations.getId()+"=="+req.getRequestURL());
 			  RequestAttributes attribs = RequestContextHolder.getRequestAttributes();
 			  if (RequestContextHolder.getRequestAttributes() != null) {
 			      HttpServletRequest request = ((ServletRequestAttributes) attribs).getRequest();
@@ -357,32 +427,94 @@ public class UserLoginHelper {
 				    }
 			  }
 			  
-			  
-			  req.getSession().setAttribute("userRoleId", userRole.getId());
+			  SourceLeadSessionManager.setSessionAttribute(req, "sourceleadLogoutUrl", sourceleadLogoutUrl);
 			  SourceLeadSessionManager.setSessionAttribute(req, "user", loginUser);
-			  SourceLeadSessionManager.setSessionAttribute(req, "userId", loginUser.getId().toString());
+			  SourceLeadSessionManager.setSessionAttribute(req, "userId", loginUser.getId());
 			  SourceLeadSessionManager.setSessionAttribute(req, "org", orgLocations.getOrg());
 			  SourceLeadSessionManager.setSessionAttribute(req, "orgLocations", orgLocations);
+			  SourceLeadSessionManager.setSessionAttribute(req, "orgCode", orgLocations.getOrg().getOrgCode());
 			  SourceLeadSessionManager.setSessionAttribute(req, "loginOrgLocation", orgLocations);
 			  SourceLeadSessionManager.setSessionAttribute(req, "averageWorkingHours", orgLocations.getAverageWorkingHours());
-			  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationId", orgLocations.getId().toString());
+			  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationId", orgLocations.getId());
 			  SourceLeadSessionManager.setSessionAttribute(req, "locationCode", orgLocations.getLocationCode());
 			  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRole", userRole.getRoles().getRoleName());
+			  
+		      SourceLeadSessionManager.setSessionAttribute(req, "loginUserFirstName", loginUser.getFirstName());
+			  SourceLeadSessionManager.setSessionAttribute(req, "loginUserLastName", loginUser.getLastName());
+			  SourceLeadSessionManager.setSessionAttribute(req, "loginUserEmail", loginUser.getEmail());
+			  SourceLeadSessionManager.setSessionAttribute(req, "mobilePhone", loginUser.getMobilePhone());
+				  
 			  SourceLeadSessionManager.setSessionAttribute(req, "sourceleadUrl", sourceleadUrl);
 			  SourceLeadSessionManager.setSessionAttribute(req, "pmsUrl", pmsUrl);
 			  SourceLeadSessionManager.setSessionAttribute(req, "atsUrl", atsUrl);
 			  SourceLeadSessionManager.setSessionAttribute(req, "vmsUrl", vmsUrl);
 			  SourceLeadSessionManager.setSessionAttribute(req, "googleMapsLocationApiKey", googleMapsLocationApiKey);
 			  SourceLeadSessionManager.setSessionAttribute(req, "userRoleId", userRoleId);
-			  SourceLeadSessionManager.setSessionAttribute(req, "roleHierarchyId",
-						userRole.getRoles().getRoleHierarchy().getId());
+			  if(userRole.getRoles().getRoleHierarchy() != null) {
+				  SourceLeadSessionManager.setSessionAttribute(req, "roleHierarchyId",
+							userRole.getRoles().getRoleHierarchy().getId());
+			  }
+			 
 			  SourceLeadSessionManager.setSessionAttribute(req, "dateFormat", orgLocations.getDateFormat());  
-			  SourceLeadSessionManager.setSessionAttribute(req, "country", orgLocations.getCountry());
+			  SourceLeadSessionManager.setSessionAttribute(req, "state", orgLocations.getState());
+			  SourceLeadSessionManager.setSessionAttribute(req, "city", orgLocations.getCity());
+			  SourceLeadSessionManager.setSessionAttribute(req, "zipcode", orgLocations.getZipCode());
+			  SourceLeadSessionManager.setSessionAttribute(req, "address", orgLocations.getOrgLocationAddress());
 			  SourceLeadSessionManager.setSessionAttribute(req, "userType", userRole.getUserType());
 			  SourceLeadSessionManager.setSessionAttribute(req, "displayName", userRole.getRoles().getDisplayName());
 			  SourceLeadSessionManager.setSessionAttribute(req, "designation", userRole.getDesignation());
 			  SourceLeadSessionManager.setSessionAttribute(req, "isCompanyOnboarded", orgLocations.getIsCompanyOnboarded());
 			  SourceLeadSessionManager.setSessionAttribute(req, "timeZoneId", orgLocations.getTimezone().getId().toString());
+			  SourceLeadSessionManager.setSessionAttribute(req, "timeZone", orgLocations.getTimezone().getTimeZoneId());
+			  SourceLeadSessionManager.setSessionAttribute(req, "orgName", orgLocations.getOrg().getOrgName());
+			  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationName", orgLocations.getOrgLocationName());
+			  SourceLeadSessionManager.setSessionAttribute(req, "website", orgLocations.getWebsite());
+			  SourceLeadSessionManager.setSessionAttribute(req, "dba", orgLocations.getDba());
+			  SourceLeadSessionManager.setSessionAttribute(req, "phone", orgLocations.getPhone());
+			  SourceLeadSessionManager.setSessionAttribute(req, "fax", orgLocations.getFax());
+			  SourceLeadSessionManager.setSessionAttribute(req, "orgShortCode", orgLocations.getGeneratedUserId());
+			  SourceLeadSessionManager.setSessionAttribute(req, "isTimesheetAvgHoursRequired", orgLocations.getIsTimesheetAvgHoursRequired());
+			  if(orgLocations.getBusinessType() != null) {
+				  SourceLeadSessionManager.setSessionAttribute(req, "businessTypeId", orgLocations.getBusinessType().getId());
+			  }
+			  SourceLeadSessionManager.setSessionAttribute(req, "otherBusinessType", orgLocations.getOtherBusinessType());
+			  SourceLeadSessionManager.setSessionAttribute(req, "poEmail", orgLocations.getPoEmail());
+			  SourceLeadSessionManager.setSessionAttribute(req, "remittanceEmail", orgLocations.getRemittanceEmail());
+			  SourceLeadSessionManager.setSessionAttribute(req, "orgDescription", orgLocations.getOrgDescription());
+			  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationLoginSecurity", orgLocations.getLoginSecurity());
+			  
+			  SourceLeadSessionManager.setSessionAttribute(req, "location", loginUser.getLocation());
+			  SourceLeadSessionManager.setSessionAttribute(req, "linkedIn", loginUser.getLinkedIn());
+			  SourceLeadSessionManager.setSessionAttribute(req, "facebook", loginUser.getFacebook());
+			  SourceLeadSessionManager.setSessionAttribute(req, "twitter", loginUser.getTwitter());
+			  SourceLeadSessionManager.setSessionAttribute(req, "googlePlus", loginUser.getGooglePlus());
+			  SourceLeadSessionManager.setSessionAttribute(req, "userLoginSecurity", loginUser.getLoginSecurity());
+			  SourceLeadSessionManager.setSessionAttribute(req, "newlyLoginUser", userRole.getNewlyLoginUser());
+			  
+			  if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL") || 
+					  userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")) {
+				  
+				  if (StringUtils.isNoneBlank(loginUser.getRecruiterRegisterCountry())) {
+						SourceLeadSessionManager.setSessionAttribute(req, "country", loginUser.getLocation());
+					} else {
+						SourceLeadSessionManager.setSessionAttribute(req, "country",
+								loginUser.getRecruiterRegisterCountry());
+					}
+			  }else {
+				  SourceLeadSessionManager.setSessionAttribute(req, "country", orgLocations.getCountry());
+			  }
+			
+			  
+			  try {
+				  Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+				if (countries != null) {
+					SourceLeadSessionManager.setSessionAttribute(req, "currencyCode", countries.getCurrency());
+					SourceLeadSessionManager.setSessionAttribute(req, "loginCountryName", countries.getName());
+				}
+			 } catch (Exception e2) {
+				e2.printStackTrace();
+			 }
+				
 				 
 				 List<String> weekOffDaysList = new ArrayList<>();
 					if (orgLocations.getWeekOffDays() != null && !orgLocations.getWeekOffDays().isEmpty()) {
@@ -409,7 +541,13 @@ public class UserLoginHelper {
 			try {
 				isSuperUser = orgLocationService.isLoginUserIsSuperUser(userRole.getUser().getId(),
 						orgLocations.getId());
-				SourceLeadSessionManager.setSessionAttribute(req, "isSuperUser", isSuperUser);
+				
+				if(isSuperUser == true) {
+					SourceLeadSessionManager.setSessionAttribute(req, "isSuperUser", Constants.YES);
+				}else {
+					SourceLeadSessionManager.setSessionAttribute(req, "isSuperUser", Constants.NO);
+				}
+				
 				
 				isSuperAdmin = orgService.isLoginUserIsSuperAdmin(userRole.getUser().getId(), orgLocations.getOrg().getId());
 				if (isSuperAdmin == true) {
@@ -420,6 +558,13 @@ public class UserLoginHelper {
 				
 			} catch (Exception e1) {
 				e1.printStackTrace();
+			}
+			
+			boolean isPayRollApprover = configurePayrollApproverService.isLoginUserIsPayRollApprover(userRole.getUser().getId(), orgLocations.getId());
+			if (isPayRollApprover == true) {
+			SourceLeadSessionManager.setSessionAttribute(req, "isPayRollApprover", Constants.YES);
+			} else {
+			SourceLeadSessionManager.setSessionAttribute(req, "isPayRollApprover", Constants.NO);
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(req, "loginUserRoleId", userRole.getRoles().getId());	
@@ -507,7 +652,19 @@ public class UserLoginHelper {
 				SourceLeadSessionManager.setSessionAttribute(req, "paryrollTabCount", paryrollTabCount);
 				
 					
-			  } 
+			  } else {
+				  
+			   try {
+					tabsList = tabsService.getCrowdSourcingTabsListByRoleId(userRole.getRoles().getId());
+					actionsList = sourceleadActionsService.getLoginCrowdSourcingUserRoleActionsByOrgLocationId(userRole.getRoles().getId());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				  for(Tabs tabs : tabsList){
+					  tabNamesList.add(tabs.getTabName());
+				  }
+				SourceLeadSessionManager.setSessionAttribute(req, "tabsList", tabNamesList);
+			  }
 			  return  new UsernamePasswordAuthenticationToken(username, password,  buildUserAuthorityDummy(actionsList));
 		   
 		}
@@ -607,5 +764,12 @@ public class UserLoginHelper {
 		}
         
 	    return ip;  
+	}
+	
+	
+	public String getLoginUserAuthenticationTocken() {
+		   Authentication auth = SecurityContextHolder.getContext().getAuthentication();	
+	       String authToken[] = auth.getName().split("##");
+	       return authToken[2];
 	}
 }
