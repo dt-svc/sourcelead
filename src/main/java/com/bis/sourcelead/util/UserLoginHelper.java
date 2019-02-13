@@ -42,6 +42,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -118,6 +119,9 @@ public class UserLoginHelper {
 	
 	@Autowired
 	CountriesService countriesService;
+	
+	@Autowired
+	ConfigurePayrollApproverService configurePayrollApproverService;
 	
 	   
 
@@ -241,7 +245,7 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "userLoginSecurity", userRole.get("userLoginSecurity"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "newlyLoginUser", userRole.get("newlyLoginUser"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "userCode", userRole.get("userCode"));
-		  
+		  SourceLeadSessionManager.setSessionAttribute(req, "isPayRollApprover", userRole.get("isPayRollApprover"));
 		  
 		  
 		  SourceLeadSessionManager.setSessionAttribute(req, "fileUrl", orgLocations.get("imgUrl"));
@@ -554,6 +558,13 @@ public class UserLoginHelper {
 				
 			} catch (Exception e1) {
 				e1.printStackTrace();
+			}
+			
+			boolean isPayRollApprover = configurePayrollApproverService.isLoginUserIsPayRollApprover(userRole.getUser().getId(), orgLocations.getId());
+			if (isPayRollApprover == true) {
+			SourceLeadSessionManager.setSessionAttribute(req, "isPayRollApprover", Constants.YES);
+			} else {
+			SourceLeadSessionManager.setSessionAttribute(req, "isPayRollApprover", Constants.NO);
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(req, "loginUserRoleId", userRole.getRoles().getId());	

@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -61,7 +62,10 @@ public class UserStatsCacheHelper {
 	
 	@Autowired
 	OrgService orgService;
-
+	
+	@Autowired
+	ConfigurePayrollApproverService configurePayrollApproverService;
+	
 	static CouchbaseClient c = null;
 	static {
 		c = ConnectionManager.instance().getClient();
@@ -598,7 +602,14 @@ public class UserStatsCacheHelper {
 				 userRoleDTO.setGradeId(String.valueOf(userRole.getGradeId().getId()));
 			 }
 			 
-			userRoleDTO.setUuid(userRole.getUuid());
+			 boolean isPayRollApprover = configurePayrollApproverService.isLoginUserIsPayRollApprover(userRole.getUser().getId(),userRole.getOrgLocations().getId());
+			 if (isPayRollApprover == true) {
+				 userRoleDTO.setIsPayRollApprover(Constants.YES);
+			 }else {
+				 userRoleDTO.setIsPayRollApprover(Constants.NO);
+			 }
+			
+			 userRoleDTO.setUuid(userRole.getUuid());
 			
 		    List<SourceleadActions> actionsList = null;
 	        List<String> tabNamesList = null;
