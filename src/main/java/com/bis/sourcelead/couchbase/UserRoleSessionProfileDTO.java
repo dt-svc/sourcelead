@@ -87,6 +87,8 @@ public class UserRoleSessionProfileDTO implements Serializable{
 	
 	private String newlyLoginUser;
 	
+	private String isPayRollApprover;
+	
 
 	public String getDocumentType() {
 		return documentType;
@@ -406,6 +408,14 @@ public class UserRoleSessionProfileDTO implements Serializable{
 
 	public void setMiddleName(String middleName) {
 		this.middleName = middleName;
+	}
+
+	public String getIsPayRollApprover() {
+		return isPayRollApprover;
+	}
+
+	public void setIsPayRollApprover(String isPayRollApprover) {
+		this.isPayRollApprover = isPayRollApprover;
 	}
 
 }
