@@ -2,7 +2,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 
-<c:if test="${!empty SourceLeadWeb_userSpocRolesList && SourceLeadWeb_prodSupportLoginUserRole != 'ROLE_PRODUCTION_SUPPORT'}">
+c:if test="${!empty SourceLeadWeb_userSpocRolesList && SourceLeadWeb_prodSupportLoginUserRole != 'ROLE_PRODUCTION_SUPPORT'}">
 		<div class="offOrg offOrgCompanyOnboard ">
              <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
 	              <div id="spockLinksList" style="display: none;">
@@ -37,7 +37,7 @@
           </c:if>
           
           
-          <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == 'ROLE_PRODUCTION_SUPPORT'}">
+          <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_PRODUCTION_SUPPORT'}">
           	<div class="offOrg offOrgCompanyOnboard ">
              <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
 	              <div id="spockLinksList" style="display: none;">

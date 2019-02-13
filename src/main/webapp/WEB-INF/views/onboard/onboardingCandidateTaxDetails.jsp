@@ -68,7 +68,7 @@
 	              <ul class="list-unstyled">
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
 		              <li>
-			              <a href="<c:url value='${atsUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
+			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
 				                <div class="clearfix">
 				                   <div class="pull-left image-parent positionRelative">
 				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
