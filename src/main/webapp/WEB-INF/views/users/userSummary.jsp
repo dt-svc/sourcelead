@@ -4,7 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+<script src="/ats/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
 <jsp:include page="userProjectSummary.jsp" />
 <jsp:include page="userAssetManagement.jsp" />
@@ -39,6 +39,8 @@
 
 <script> 
 var atsUrl ='${SourceLeadWeb_atsUrl}';
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 $(document).ready(function(){
 	 var userId = '${userId}';
 	 
@@ -2578,7 +2580,7 @@ function updateUserDesignationOtherType(){
 		 var vendorSpocId = $("#updateSpocId").val();
 		 $.ajax({
 			    type: "POST",
-		        url: atsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        url: vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(json) {
 		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
@@ -4290,9 +4292,10 @@ function profileDetails(candidateId){
 <script>
 function assocSalarySummary(candidateId){
 	var locationCode = '${SourceLeadWeb_locationCode}';
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$.ajax({
 		  type: "GET",
-		    url: atsUrl+"/getAssociateSalaryDataByOrgLocation?candidateId="+candidateId+"&locationCode="+locationCode,
+		    url: pmsUrl+"/getAssociateSalaryDataByOrgLocation?candidateId="+candidateId+"&locationCode="+locationCode,
 		     success :function(response) {
 		    	 	$("#tab-18").empty();  
 		    	    $("#tab-19").empty();
@@ -4320,9 +4323,10 @@ function assocSalarySummary(candidateId){
 <script>
 function associateBankingDetails(candidateId){
 	var locationCode = '${SourceLeadWeb_locationCode}';
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$.ajax({
 		  type: "GET",
-		    url: atsUrl+"/getAssociateBankingDetailsByOrgLocation?candidateId="+candidateId,
+		    url: pmsUrl+"/getAssociateBankingDetailsByOrgLocation?candidateId="+candidateId,
 		     success :function(response) {
 		    	 	$("#tab-18").empty();  
 		    	    $("#tab-19").empty();
@@ -4336,9 +4340,10 @@ function associateBankingDetails(candidateId){
 	
 function associateInformationDetails(candidateId){
 	var locationCode = '${SourceLeadWeb_locationCode}';
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$.ajax({
 		  type: "GET",
-		    url: atsUrl+"/getAssociateInformationDetailsByOrgLocation?candidateId="+candidateId,
+		    url: pmsUrl+"/getAssociateInformationDetailsByOrgLocation?candidateId="+candidateId,
 		     success :function(response) {
 		    	 	$("#tab-18").empty();  
 		    	    $("#tab-19").empty();
@@ -4351,9 +4356,10 @@ function associateInformationDetails(candidateId){
 }	
 
 function associateLoanAndAdvanceDetails(candidateId){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$.ajax({
 		  type: "GET",
-		    url: atsUrl+"/getAssociateLoanAndAdvanceDetailsByCandidateId?candidateId="+candidateId,
+		    url: pmsUrl+"/getAssociateLoanAndAdvanceDetailsByCandidateId?candidateId="+candidateId,
 		     success :function(response) {
 		    	 	$("#tab-18").empty();  
 		    	    $("#tab-19").empty();

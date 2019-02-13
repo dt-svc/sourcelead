@@ -29,7 +29,6 @@ import org.springframework.web.servlet.view.JstlView;
  * This class is used for configuring the web and its related information, without web.xml
  */
 
-import com.bis.sourcelead.aspect.LoggingAspect;
 import com.bis.sourcelead.rest.UserRestController;
 import com.bis.sourcelead.web.HomeController;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -62,11 +61,6 @@ public class WebAppConfig extends WebMvcConfigurationSupport {
 		return new PropertySourcesPlaceholderConfigurer();
 	}
 
-	@Bean
-	public LoggingAspect loggingAspect(){
-		return  new LoggingAspect();
-	}
-	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/").setCachePeriod(31556926);

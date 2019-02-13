@@ -20,6 +20,7 @@
 
 <script>
 var atsUrl = '${SourceLeadWeb_atsUrl}';
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		$(document).ready(function() {
 			//getProjectsList();
 			$("#txtEditor").Editor();
@@ -214,7 +215,7 @@ $(document).ready(function () {
 		</div>
 		<div class="pull-right brud-crum">
 			<a
-				href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home
+				href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home
 			</a>&raquo;<a href="<c:url value='/jobsList'/>"> Jobs List </a>&raquo;
 			<c:if test="${empty requirementId}">Add Job</c:if>
 			<c:if test="${!empty requirementId}">Update Job</c:if>
@@ -1484,7 +1485,7 @@ $(document).ready(function () {
 													<c:if test="${requirement.isClientJob != 'Y'}">
 														<sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')">
 															<span class="col-md-3 noPad clearfix"><a
-																href="<c:url value="/app/client" />" target="_blank"><i
+																href="/vms/client" target="_blank"><i
 																	class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 																<span
 																class="input-group-addon cursorPointer bg-blue refreshBtn"
@@ -4088,7 +4089,7 @@ function refreshRequirementClientList(){
 		 var loginOrgLocId = '${SourceLeadWeb_orgLocationId}';
 		 $.ajax({
 	      type : "POST",
-	       url: atsUrl+"/refreshRequirementClientList",       
+	       url: vmsUrl+"/refreshRequirementClientList",       
 	       success: function(result) {
 	    	   if (result.response === "SESSION_TIMEDOUT") {
 	  				location.replace(sourceleadUrl);
@@ -4125,7 +4126,7 @@ function refreshRequirementClientList(){
 		 var a = $("#addClientId").val();
 		 var valueArray = a.split(",");
 		 var cid = valueArray[0]             
-		 window.open(atsUrl+"/addClientContact?cid="+cid,'_blank');
+		 window.open(vmsUrl+"/addClientContact?cid="+cid,'_blank');
 	 }
 </script>
 

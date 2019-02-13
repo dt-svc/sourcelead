@@ -31,11 +31,11 @@ $(document).ready(function() {
       <h2>Job Details</h2>
     </div>
     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalRequirements'/>">Jobs List </a> &raquo; Job Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/professionalRequirements'/>">Jobs List </a> &raquo; Job Details</div>
     </c:if>
     
     <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/jobs'/>">Jobs List </a> &raquo; <a href="<c:url value='${appPath}/professionalRequirements'/>">Crowdsourcing Jobs List </a> &raquo; Job Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/jobsList'/>">Jobs List </a> &raquo; <a href="<c:url value='/professionalRequirements'/>">Crowdsourcing Jobs List </a> &raquo; Job Details</div>
     </c:if>
   
   </section>
@@ -55,6 +55,7 @@ $(document).ready(function() {
 
   </section>
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 function requirementProfile(requirementUUID){
 	var candidateId = '${SourceLeadWeb_candidateId}'
     var loginUserRole = '${SourceLeadWeb_loginUserRole}';
@@ -62,7 +63,7 @@ function requirementProfile(requirementUUID){
     
     $.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID+"&referUUID="+referUUID, 	   
+	    url: atsUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID+"&referUUID="+referUUID, 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
 		    	var result = "";
@@ -306,7 +307,7 @@ function requirementProfile(requirementUUID){
 function requirementDetails(requirementUUID){
 	$.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID, 	   
+	    url: atsUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID, 	   
 		    success: function(data) {
 		    	
 		    	var json = JSON.parse(data);
@@ -456,7 +457,7 @@ function requirementDetails(requirementUUID){
 <script>
 function viewProfessionalRequirementProfile(jobId,title){
 		if(jobId != null && jobId != ""){
-			window.open(sourceleadUrl+'/viewJobSummaryDocumentDocView/'+title+'?jobId='+jobId,title,"height=600,width=600");
+			window.open(atsUrl+'/viewJobSummaryDocumentDocView/'+title+'?jobId='+jobId,title,"height=600,width=600");
 		}  
 }
 </script>
@@ -467,7 +468,7 @@ function getReferalDetails(requirementUUID){
 	
 	$.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/getReferalListByRequirementId?requirementUUID="+requirementUUID, 	   
+	    url: atsUrl+"/getReferalListByRequirementId?requirementUUID="+requirementUUID, 	   
 		    success: function(data) {
 		    	 var json = JSON.parse(data);
 		    	 var result =""; 
@@ -550,7 +551,7 @@ function getSubmissionDetails(requirementUUID){
 	
 	$.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/getRecruiterRequirementSubmissionsList?requirementUUID="+requirementUUID, 	   
+	    url: atsUrl+"/getRecruiterRequirementSubmissionsList?requirementUUID="+requirementUUID, 	   
 		    success: function(data) {
 		    	 var json = JSON.parse(data);
 		    	 var result =""; 
@@ -608,7 +609,7 @@ function getRateNegotiationDetails(submissionId, candidateId){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 	   	type: "POST",
-	   	url: sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId, 	   
+	   	url: atsUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId, 	   
 		    success: function(data) {
 		    	if (data.response === "FAILED") {
 		    		showError(data.responseMessage);
@@ -838,7 +839,7 @@ function proposeNewRate(submissionId, candidateId) {
 			processData: false,
 		    contentType:false, 
 			data: formData,
-			url : sourceleadUrl+'/ws/storeNegotiation?'+tokenParamName+'='+tokenValue+'&submissionId='+submissionId+'&type='+type,
+			url : atsUrl+'/ws/storeNegotiation?'+tokenParamName+'='+tokenValue+'&submissionId='+submissionId+'&type='+type,
 				success: function(output) {
 					if (output.response === "FAILED") {
 			    		showError(output.responseMessage);
@@ -866,7 +867,7 @@ function proposeNewRate(submissionId, candidateId) {
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 			type: "POST",
-			url: sourceleadUrl+"/acceptRejectRate?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,
+			url: atsUrl+"/acceptRejectRate?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,
 				success: function(data) {
 					if (data.response === "FAILED") {
 			    		showError(data.responseMessage);
@@ -1002,7 +1003,7 @@ function getUserContats(requirementId){
 	 
 	 $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getCrowdSourcingUserContacts?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,  
+	        url: atsUrl+"/getCrowdSourcingUserContacts?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,  
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
@@ -1073,7 +1074,7 @@ $('body').on('submit', '#referToContacts', function(e){
 		    	type: "POST",
 		    	data: formData,
 		    	processData :false,
-		    	 url: sourceleadUrl+"/submitUserContactsToRequirement?${_csrf.parameterName}=${_csrf.token}", 
+		    	 url: atsUrl+"/submitUserContactsToRequirement?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(result) {
 		        	cancelReferPopUp();
 		        },
@@ -1108,7 +1109,7 @@ $('body').on('submit', '#referToJob_form', function(e){
     					 data: formData,
     	  		         processData: false,
     	  		         contentType:false, 
-    					url : sourceleadUrl+"/submitReferToJob?"+tokenParamName+"="+tokenValue+"",
+    					url : atsUrl+"/submitReferToJob?"+tokenParamName+"="+tokenValue+"",
     					success : function(result) {
     						cancelReferPopUp();
     					},
@@ -1143,7 +1144,7 @@ function appendReferToJob(requirementId){
 		  $("#submit_refer").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: sourceleadUrl+"/validateReferedEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId,
+		       url: atsUrl+"/validateReferedEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){

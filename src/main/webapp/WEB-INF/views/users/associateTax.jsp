@@ -3,6 +3,7 @@
   
   <script>
   $(document).ready(function(){
+	  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	   $("#localTaxMessageDiv").hide();
 	});
   </script>
@@ -222,7 +223,7 @@
 	            $.ajax({
 					type : "POST",
 	        	    data: formData,
-					url : sourceleadUrl+"/saveAssociateTax?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+					url : pmsUrl+"/saveAssociateTax?"+tokenParamName+"="+tokenValue+"&userId="+userId,
 					success : function(result) {
 						 if (result && result.response === "INVALID_DATA") {
 			                    $("#associate_tax_button").removeAttr("disabled");
@@ -239,7 +240,7 @@
 								$("#associate_tax_button").removeAttr("disabled");
 								$("#associate_tax_button").addClass('button').val('Save & Continue');
 			                } else if (result.indexOf('Sign In') !== -1) {
-								location.replace(sourceleadUrl);
+								location.replace(pmsUrl);
 							} else {
 			                    $("#associate_tax_button").removeAttr("disabled");
 			                    $("#associate_tax_button").addClass('button').val('Save');
@@ -286,7 +287,7 @@ function shiftToBankingTab(){
 function isLocalTaxYes(){
 		   var localTax = $("#localTax").val();
 		   if(localTax != 'NO_TAX'){
-			$.post(sourceleadUrl+"/isLocalTaxYes?"+tokenParamName+"="+tokenValue+"&localTax="+localTax, function(data) {
+			$.post(pmsUrl+"/isLocalTaxYes?"+tokenParamName+"="+tokenValue+"&localTax="+localTax, function(data) {
 				var locationTax = "";
 				if(data.object.isLocalTaxYes === 'YES'){
 					locationTax = locationTax + data.object.state;
@@ -324,7 +325,7 @@ function getResidenceLocation(){
 	var userId = $("#associateId").val();  
 	$.ajax({
 		type : "GET",
-		url : sourceleadUrl+"/getResidenceLocation?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+		url : pmsUrl+"/getResidenceLocation?"+tokenParamName+"="+tokenValue+"&userId="+userId,
 		success : function(result) {
 			var output = "";
 			var selected = "selected";

@@ -4,6 +4,7 @@
 
 
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 function candidateHistory(candidateId){
 	var result = "";
 	result  = result + '   <div class="project_tabs_inn_head addUser-org"> ';
@@ -30,7 +31,7 @@ function candidateHistory(candidateId){
 function candidateHistoryList(candidateId){
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateHistoryList?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateHistoryList?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
              		 
 	                	 $("#candidateHistoryList").empty();

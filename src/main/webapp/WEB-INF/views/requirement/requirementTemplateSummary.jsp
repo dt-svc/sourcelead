@@ -8,6 +8,7 @@
 
 
 <script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
  window.onload = function() { 
 	 viewRequirementTemplateDetails();
 	
@@ -20,7 +21,7 @@
 			<h2>Job Template Details</h2> 
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>»<a href="<c:url value='${appPath}/template'/>">Job Template List </a>»
+			<a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>»<a href="/ats/template">Job Template List </a>»
 			View Job Template
 		</div>
 	</section>
@@ -38,7 +39,7 @@
 	 var requirementId= '${requirementId}';
 	 $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getRequirementTemplateByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 
+	        url: atsUrl+"/getRequirementTemplateByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 
 	        success: function(data) {
 	        	 
 			    var json = JSON.parse(data);
@@ -92,7 +93,7 @@
 			    result = result + ' <div class="useredit">';
 			    result = result + ' <div class="pull-right mt">';
 			    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\')">';
-			        result = result + ' <a id="edit-user" href="<c:url value="/app/addTemplate?requirementId='+requirementId+'"/>"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+			        result = result + ' <a id="edit-user" href="/ats/addTemplate?requirementId='+requirementId+'"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 			    '</sec:authorize>';
 			   /*   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">';    
 			        result = result + ' <a id="edit-user" href="#" onClick="deleteRequirementTemplate(\''+requirementId+'\',\''+remove+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>';

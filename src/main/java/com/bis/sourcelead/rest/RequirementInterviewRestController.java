@@ -113,7 +113,7 @@ public class RequirementInterviewRestController {
 	@Autowired
 	private CandidateService candidateService;
 	
-	@RequestMapping(value = "/app/getAllInterviewers")
+	@RequestMapping(value = "/getAllInterviewers")
 	public @ResponseBody ResponseList<User> getAllApprovers(HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ResponseList<User> response = new ResponseList<>();
@@ -133,7 +133,7 @@ public class RequirementInterviewRestController {
 		return response;
 	}
 	
-	@RequestMapping(value = "/app/getAllShortListCandidates")
+	@RequestMapping(value = "/getAllShortListCandidates")
 	public @ResponseBody ResponseList<RequirementSubmission> getAllShortListCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,
 			                                              @RequestParam(value="existingApplicantsIds", required=false) List<Long> existingApplicantsIds,
 			                                              @RequestParam(value="isClientInterview", required=false) String isClientInterview,
@@ -181,7 +181,7 @@ public class RequirementInterviewRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasRole('ROLE_ADD_INTERVIEW')")
-	@RequestMapping(value = "/app/saveInterview" , method = RequestMethod.POST)
+	@RequestMapping(value = "/saveInterview" , method = RequestMethod.POST)
 	   public String saveInterview(@RequestParam(value="jsonData", required=false) String json, HttpServletRequest request) throws Exception {
 			
 			JSONObject jsonObj = new JSONObject(json);
@@ -197,7 +197,7 @@ public class RequirementInterviewRestController {
 
   }
 	
-    @RequestMapping(value = "/app/updateRescheduleInterview" , method = RequestMethod.POST)
+    @RequestMapping(value = "/updateRescheduleInterview" , method = RequestMethod.POST)
     public String updateRescheduleInterview(@RequestParam(value="jsonData", required=false) String json, HttpServletRequest request) throws Exception {
 			
  	    String json1 = "{" + json + "}";
@@ -212,7 +212,7 @@ public class RequirementInterviewRestController {
 	
 	
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW')")
-	@RequestMapping(value = "/app/getAllInternalInterviews" , method = RequestMethod.POST)
+	@RequestMapping(value = "/getAllInternalInterviews" , method = RequestMethod.POST)
 	 public @ResponseBody  String getAllInternalInterviews(@RequestParam(value="submissionId", required=false) Long submissionId, HttpServletRequest request) throws Exception {
 		
 	     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -225,7 +225,7 @@ public class RequirementInterviewRestController {
 	   }
 	
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW')")
-	@RequestMapping(value = "/app/getScheduledInterviewsListForSelectedApplicants" , method = RequestMethod.POST)
+	@RequestMapping(value = "/getScheduledInterviewsListForSelectedApplicants" , method = RequestMethod.POST)
 	 public @ResponseBody  String getScheduledInterviewsListForSelectedApplicants(@RequestParam(value="selectedReqId", required=false) String selectedReqId, @RequestParam(value="selectedSubmissions", required=false) String selectedSubmissions, HttpServletRequest request) throws Exception {
 		
 	     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -293,7 +293,7 @@ public class RequirementInterviewRestController {
 	
 	  
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW')")
-	@RequestMapping(value = "/app/getAllCustomerInterviews" , method = RequestMethod.POST)
+	@RequestMapping(value = "/getAllCustomerInterviews" , method = RequestMethod.POST)
 	 public @ResponseBody  String getAllCustomerInterviews(@RequestParam(value="submissionId", required=false) Long submissionId,
 			 @RequestParam(value = "requirementId", required = false) Long requirementId,
 			 HttpServletRequest request) throws Exception {
@@ -314,7 +314,7 @@ public class RequirementInterviewRestController {
 	 * @throws Exception
 	 */
 	
-	@RequestMapping(value = {"/saveProposeTime", "/app/saveProposeTime"} , method = RequestMethod.POST)
+	@RequestMapping(value = "/saveProposeTime" , method = RequestMethod.POST)
 	   public String saveProposeTime(@RequestParam(value="jsonData", required=false) String json,@RequestParam(value="submissionId", required=false) Long submissionId, HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -373,7 +373,7 @@ public class RequirementInterviewRestController {
 	 * @return resultJson
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/app/getProposeTime" , method = RequestMethod.POST)
+	@RequestMapping(value = "/getProposeTime" , method = RequestMethod.POST)
 	 public @ResponseBody  String getProposeTime(@RequestParam(value="interviewId", required=false) Long interviewId, @RequestParam(value="locationId", required=false) Long locationId,HttpServletRequest request) throws Exception {
 		 String resultJson = null;
 		 List<ProposeTime> proposeTimeList = proposeTimeService.getProposeTimeByInterViewId(interviewId);
@@ -397,7 +397,7 @@ public class RequirementInterviewRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	 @RequestMapping(value = "/app/acceptProposeTime" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/acceptProposeTime" , method = RequestMethod.POST)
 	    public String acceptProposeTime(@RequestParam(value="jsonData", required=false) String json,@RequestParam(value="proposeTimeId", required=false) Long proposeTimeId,
 	    		@RequestParam(value="proposeDate", required=false) String proposeDate,@RequestParam(value="proposeTime", required=false) String proposeTime,HttpServletRequest request) throws Exception {
 				
@@ -411,30 +411,7 @@ public class RequirementInterviewRestController {
 	   }
 	 
 	 
-	 /*@RequestMapping(value = "/ws/acceptOrRejectInterview")
-	 @ResponseBody  String acceptOrRejectInterview(@RequestParam(value="interviewStatus", required=false) String interviewStatus,
-				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
-			 HttpServletRequest request) throws Exception {
-		 
-		 RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(requirementInterviewId);
-		 
-		 String message = " ";
-		 if(requirementInterview.getInterviewStatus() == null && !("").equals(requirementInterview.getInterviewStatus())){
-			 requirementInterview.setInterviewStatus(interviewStatus);
-			 requirementInterviewService.saveRequirementInterview(requirementInterview);
-			 if(interviewStatus.equalsIgnoreCase("Attending")){
-				 message = "You have Accepted the Interview.";
-			 }
-			 if(interviewStatus.equalsIgnoreCase("Not Attending")){
-				 message = "You have Rejected the Interview.";
-			 }
-			 if(interviewStatus.equalsIgnoreCase("Maybe")){
-				 message = "Not sure for the Interview.";
-			 }
-		return message;
-	 }	*/
-	 
-	 @RequestMapping(value = "/app/sendMailToapplicant")
+	 @RequestMapping(value = "/sendMailToapplicant")
 	 @ResponseBody String sendMailToapplicant(@RequestParam(value="submissionId", required=false) String submissionId,
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
 				@RequestParam(value = "interviewHistoryId", required = false) String interviewHistoryId,
@@ -456,7 +433,7 @@ public class RequirementInterviewRestController {
 		 
 		return "success";
 	 }		
-	 @RequestMapping(value = "/app/sendMailToVendor")
+	 @RequestMapping(value = "/sendMailToVendor")
 	 @ResponseBody String sendMailToVendor(@RequestParam(value="submissionId", required=false) String submissionId,
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
 				@RequestParam(value = "interviewHistoryId", required = false) String interviewHistoryId,
@@ -502,7 +479,7 @@ public class RequirementInterviewRestController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/app/getInterviewSlotDates")
+	 @RequestMapping(value = "/getInterviewSlotDates")
 		public ResponseList<String> getInterviewSlotDates(@RequestParam(value = "applicantSubmissionIds", required = false) String applicantSubmissionIds,
 				@RequestParam(value = "interviewerIds", required = false) String interviewerIds, HttpServletRequest request) throws Exception {
 		 	ResponseList<String> response = new ResponseList<>();
@@ -563,7 +540,7 @@ public class RequirementInterviewRestController {
 		
 	 
 	 
-	 @RequestMapping(value = "/app/getInterviewerAndApplicantsDetails")
+	 @RequestMapping(value = "/getInterviewerAndApplicantsDetails")
 		public @ResponseBody Response<RequirementInterviewer> getInterviewerAndApplicantsDetails(
 				@RequestParam(value = "applicantSubId", required = false) String applicantSubId,
 				@RequestParam(value = "interviewerIds", required = false) String interviewerIds,
@@ -705,7 +682,7 @@ public class RequirementInterviewRestController {
 			return response;
 		}
 	 
-	 @RequestMapping(value = {"/app/getInterviewsListBySubmission","/rest/getInterviewsListBySubmission"}, method = RequestMethod.POST)
+	 @RequestMapping(value = {"/getInterviewsListBySubmission","/rest/getInterviewsListBySubmission"}, method = RequestMethod.POST)
 		public ModelAndView getInterviewsListBySubmission(@RequestParam(value = "submissionId", required = false) Long submissionId,
 							@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception{
 			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -723,7 +700,7 @@ public class RequirementInterviewRestController {
 		}
 	 
 	 
-	 @RequestMapping(value = "/app/saveInterviewStatusByInterviewId" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/saveInterviewStatusByInterviewId" , method = RequestMethod.POST)
 		   public Response<String> saveInterviewStatusByInterviewId(RequirementInterviewDTO requirementInterviewDTO, HttpServletRequest request) throws Exception {
 		 		Response<String> response = new Response<>();
 		 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");

@@ -37,6 +37,7 @@
 </style>
 
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 function candidateResume(candidateId){
 	var result ="";
 	result = result+'	    <div class="project_tabs_inn_head addUser-org">';
@@ -204,7 +205,7 @@ function addResume(candidateId) {
 		        	    data: formData,
 		    	        processData: false,
 		    	        contentType:false,
-						url : sourceleadUrl+"/saveCandidateResume?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&resumeId="+resumeId,
+						url : atsUrl+"/saveCandidateResume?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&resumeId="+resumeId,
 						success : function(response) {
 							if (response && response.response === "INVALID_DATA") {
 							    showError(response.responseMessage);
@@ -285,7 +286,7 @@ function addResume(candidateId) {
 	  var resumesCount = 0;
 	  $.ajax({
 			type : "POST",
-			url : sourceleadUrl+"/candidateResumesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
+			url : atsUrl+"/candidateResumesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 			success : function(json) {
 // // 				var json = JSON.parse(data);
 // 				if( json.indexOf('Sign In') >= 0){
@@ -385,7 +386,7 @@ function deleteResume(candidateId, resumeId){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateResume?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
+		    url: atsUrl+"/terminateResume?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
    		    success: function(response) {
    		    	if (response && response.response === "INVALID_DATA") {
    		    	    showError(response.responseMessage);
@@ -466,7 +467,7 @@ function deleteResumePopup(){
 function getResume(candidateId, resumeId){
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getResume?"+tokenParamName+"="+tokenValue+"&resumeId="+resumeId, 	   
+		    url: atsUrl+"/getResume?"+tokenParamName+"="+tokenValue+"&resumeId="+resumeId, 	   
    		    success: function(response) {
    		    	if (response.response === "AWKWARD") {
    		    	    location.href = "/errorPage";

@@ -120,7 +120,7 @@ public class PaymentAccountController {
     }
 
     @SuppressWarnings("rawtypes")
-	@RequestMapping(value = "/app/save-payment-account", method = RequestMethod.POST)
+	@RequestMapping(value = "/save-payment-account", method = RequestMethod.POST)
     @ResponseBody
     public com.bis.sourcelead.dto.Response saveAccount(HttpServletRequest request, PaymentAccountDTO account) {
         com.bis.sourcelead.dto.Response response = new com.bis.sourcelead.dto.Response();
@@ -223,7 +223,7 @@ public class PaymentAccountController {
         return response;
     }
 
-    @RequestMapping(value = "/app/change-default-payment-account", method = RequestMethod.POST)
+    @RequestMapping(value = "/ats/change-default-payment-account", method = RequestMethod.POST)
     @ResponseBody
     public com.bis.sourcelead.dto.Response changeDefaultAccount(HttpServletRequest request, 
             long id, boolean defaultAccount) {
@@ -327,7 +327,7 @@ public class PaymentAccountController {
         return false;
     }
     
-    @RequestMapping(value = "/app/change-active-payment-account", method = RequestMethod.POST)
+    @RequestMapping(value = "/ats/change-active-payment-account", method = RequestMethod.POST)
     @ResponseBody
     public com.bis.sourcelead.dto.Response changeActiveAccount(HttpServletRequest request,  long id) {
         com.bis.sourcelead.dto.Response response = new com.bis.sourcelead.dto.Response();

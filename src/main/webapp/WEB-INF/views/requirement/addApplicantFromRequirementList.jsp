@@ -1,8 +1,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <link rel="stylesheet" href="/resources/css/style.css" />
 <link rel="stylesheet" href="/resources/css/chosen.min.css">
-<script src="/resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-<script src="/resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+<script src="/ats/resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="/ats/resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
@@ -12,7 +12,10 @@
 }
 </style>
 
-
+<script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+</script>
 
 <!-- For add New Applicant -->
 <script>
@@ -1708,7 +1711,7 @@ function validate_fileupload(fileName)
 	 var orgRelationID = $('#vendors').val();
 		 $.ajax({
 			    type: "POST",
-		        url: atsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        url: vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(json) {
 		        	//var json = JSON.parse(data);
 		        	$('#vendorContact').empty();
