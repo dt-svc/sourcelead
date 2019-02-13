@@ -281,9 +281,9 @@ function cancelOrgImg(){
 							</div>
 							
 						<div class="clearfix mb">
-							<label class="labText">Email id for PO</label>
+							<label class="labText">Email for Purchase Order</label>
 							<div class="clearfix">
-							<input type="text"  class="form-control" name="poEmail" field-name="po Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.poEmail}" />
+							<input type="text"  class="form-control" name="poEmail" field-name="Email for Purchase Order" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.poEmail}" />
 							</div>
 						</div>
 						
@@ -345,15 +345,15 @@ function cancelOrgImg(){
 					<div class="col-md-6">
 							
 						<div class="clearfix mb">
-							<label class="labText">DBA <b class="valStar">*</b></label>
+							<label class="labText">DBA </label>
 							<div class="clearfix">
 								 <div class="col-md-10 noPad">
-				                    <input id="dba" name="dba" class="form-control" type="text" value="${SourceLeadWeb_orgLocations.dba}" field-name="DBA" data-validation="required validate_Space validate_length length2-250">
+				                    <input id="dba" name="dba" class="form-control" type="text" value="${SourceLeadWeb_orgLocations.dba}" field-name="DBA" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
 				                </div>
 				                <div class="col-md-2 dbaCheck dbaCheck-cs">
 				                     
 				                   <div class="ml10">
-						              			<input id="dbaCheckbox" name="dbaCheckbox"  class="checkbox-custom" onclick="getDBAName();"  type="checkbox">
+                                                <input id="dbaCheckbox" name="dbaCheckbox" ${empty SourceLeadWeb_orgLocations.dba ? 'checked' : SourceLeadWeb_orgLocations.dba == SourceLeadWeb_orgName ? 'checked' : ''} class="checkbox-custom" onclick="getDBAName();" type="checkbox">
 						              			<label for="dbaCheckbox" class="checkbox-custom-label" title="Make company name as dba"></label>
 				          			</div>
 				                </div>
@@ -392,9 +392,9 @@ function cancelOrgImg(){
 							
 						
 						<div class="clearfix mb" id="averageWorkingHoursDiv">
-							<label class="labText">Working Hours <b class="valStar">*</b></label>
+							<label class="labText">Max hours per day<b class="valStar">*</b></label>
 							<div class="clearfix">
-							<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required validate_int" field-name="Average Working Hours" value="${SourceLeadWeb_orgLocations.averageWorkingHours}"/>
+							<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required validate_int" field-name="Max hours per day" value="${SourceLeadWeb_orgLocations.averageWorkingHours}"/>
 							</div>
 						</div>
 						
@@ -457,9 +457,9 @@ function cancelOrgImg(){
 						
 					    
 					    <div class="clearfix mb comp-textarea">
-							<label class="labText">About </label>
+							<label class="labText">Company Descrption</label>
 							<div class="clearfix">
-							   <textarea rows="6" name="aboutCompany" field-name="About" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control">${SourceLeadWeb_orgLocations.orgDescription}</textarea>
+							   <textarea rows="6" name="aboutCompany" field-name="Company Descrption" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control">${SourceLeadWeb_orgLocations.orgDescription}</textarea>
 							</div>
 						</div>
 							
@@ -470,7 +470,7 @@ function cancelOrgImg(){
 					<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_ORG_SETTINGS')">
 					<input type="submit" value="Save" id="save_button" class="btn btn-primary mr">
 					</sec:authorize>
-					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/app/dashboard/${SourceLeadWeb_orgLocationId}'">
+					<input type="button" value="Cancel" class="btn btn-default" onclick="javascript:window.location.href ='${SourceLeadWeb_sourceleadUrl}/settings'"></input>
 					</div>
 					</div>
 					</div>
@@ -1774,6 +1774,7 @@ function validateCompanyName(){
 		   }); 
 		 
 	 }
+	 getDBAName();
 }
 </script>
 
@@ -2760,10 +2761,10 @@ function createOrg(){
 	        	
 	        	
 	        	result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">Working Hours<span class="text-danger">&nbsp;*</span></label>';
+	            result = result +'<label class="col-md-3">Max hours per day<span class="text-danger">&nbsp;*</span></label>';
 	            result = result +'<div class="col-md-9" id="averageLocWorkingHoursDiv">';
-	            result = result +'<input type="text" class="form-control" onblur="validateWorkingHours()" id="averageLocWorkingHours" name="averageWorkingHours" maxlength="2" field-name="Working Hours" data-validation="required validate_int" />';
-	            result = result +'<span class="hidden">Working Hours</span>';
+	            result = result +'<input type="text" class="form-control" onblur="validateWorkingHours()" id="averageLocWorkingHours" name="averageWorkingHours" maxlength="2" field-name="Max hours per day" data-validation="required validate_int" />';
+	            result = result +'<span class="hidden">Max hours per day</span>';
 	            result = result +'</div>';
 	            result = result +'</div>';
           
@@ -3495,8 +3496,8 @@ var validationSettings = {
 <script>
 function cancelBtn(){
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");
+	  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+	  location.replace(sourceleadUrl+"/settings/${SourceLeadWeb_orgLocationId}");
 }
 
 </script>
@@ -3569,7 +3570,7 @@ $(function(){
         $('#averageWorkingHoursDiv').parent().find('p.jquery_form_error_message').remove(); 
         if(ew > 24){
 //         	$("#averageWorkingHours").val('');
-        	$("input#averageWorkingHours").parent().after("<p class='jquery_form_error_message'><span>Average Working Hours should be less then or equal to 24</span>");
+        	$("input#averageWorkingHours").parent().after("<p class='jquery_form_error_message'><span>Max hours per day should be less then or equal to 24</span>");
         	$('#averageWorkingHours').removeAttr('data-validation');
         	$("#save_button").attr("disabled","true");
         }else{
@@ -3587,7 +3588,7 @@ function validateWorkingHours(){
       var ew = $("#averageLocWorkingHours").val();
       $('#averageLocWorkingHoursDiv').parent().find('p.jquery_form_error_message').remove(); 
       if(ew > 24){
-      	$("input#averageLocWorkingHours").parent().after("<p class='jquery_form_error_message'><span>Average Working Hours should be less then or equal to 24</span>");
+      	$("input#averageLocWorkingHours").parent().after("<p class='jquery_form_error_message'><span>Max hours per day should be less then or equal to 24</span>");
       	$("#register_button").attr("disabled","true");
       }else{
     	  $("#register_button").removeAttr("disabled","false");
@@ -3606,7 +3607,12 @@ function getDBAName(){
 			$("#dba").val(companyName); 
 		 }
      }else{
+    	 var dbaName = '${SourceLeadWeb_orgLocations.dba}';
+    	 if(dbaName != null && dbaName != '' && dbaName != 'undefined'){
+    	 $("#dba").val(dbaName);
+    	 }else{
     	 $("#dba").val('');
+    	 }
      } 
 }
 </script>
