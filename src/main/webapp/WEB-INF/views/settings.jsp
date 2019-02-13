@@ -503,8 +503,8 @@
 								</span>
 								
 									<ul class="dropdown-menu minHeight50 maxHeight250" role="menu" aria-labelledby="menu12">
-									<li><a href="${appPath}/campaignSendersList">Senders</a></li>
-									<li><a href="${appPath}/recipientsList">Recipients</a></li>
+									<li><a href="/ats/campaignSendersList">Senders</a></li>
+									<li><a href="/ats/recipientsList">Recipients</a></li>
 									</ul>
 								</div>
 								<!-- Dropdown -->
@@ -586,7 +586,7 @@
 						<li><a href="payrollRegister-I.html">Invite Company</a></li>
 						</ul>
 					</div> -->
-				            <a href="/app/projectAttributes">
+				            <a href="/pms/projectAttributes">
 							<div class="clearfix text-center mb10"><i class="projectAttributesSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4>Project Attributes</h4>
@@ -683,7 +683,7 @@
 				    <div class="col-md-2">
 				       <h5>Alerts</h5>
 				       <ul class="repSearchList list-unstyled">
-					   <li><a href="/app/jobAlertList" title="Tags">Alerts</a></li>
+					   <li><a href="/ats/jobAlertList" title="Tags">Alerts</a></li>
 				       </ul>
 				       <div class="noDate noDateSm" style="display: none;"></div>
 			        </div>

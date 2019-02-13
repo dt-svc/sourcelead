@@ -21,7 +21,7 @@
 			<div id="requirementListTabHead">
 				<div id="requirementListActions">
 					<div class="pull-right jobMoreBtn" id="viewmoresDiv" style="display: none;">
-						<a href="/app/jobs" class="btn btn-sm btn-primary pull-right"
+						<a href="/ats/jobsList" class="btn btn-sm btn-primary pull-right"
 							title="View more"> View More</a>
 					</div>
 				</div>
@@ -65,7 +65,9 @@ width: 100% !important;
 
 <script>
 function requirementList(isWalkIn, walkInDay){  
-	
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
+	var pmsUrl = '${SourceLeadWeb_pmsUrl}';
+	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var orgATS = '${SourceLeadWeb_ats}';
 	  var orgVMS = '${SourceLeadWeb_vms}';
@@ -149,9 +151,9 @@ function requirementList(isWalkIn, walkInDay){
 			         	       '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 			                     if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 			                    	 if(opt.isRequirementReleasedByuser == 'Y'){
-			                       		 result = result +"<div class='pull-left'><a href='<c:url value='/app/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success' title='Release Job'></i></a></div>"; 
+			                       		 result = result +"<div class='pull-left'><a href='"+atsUrl+"/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'><i class='fa fa-bullhorn success' title='Release Job'></i></a></div>"; 
 			                       	 }else{	
-			                       	 result = result +"<div class='pull-left'><a href='<c:url value='/app/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn' title='Release Job'></i></a></div>";
+			                       	 result = result +"<div class='pull-left'><a href='"+atsUrl+"/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'><i class='fa fa-bullhorn' title='Release Job'></i></a></div>";
 			                       	 }
 			                     }else{
 				                     result = result +"<div class='pull-left'>---</div>";
@@ -167,9 +169,9 @@ function requirementList(isWalkIn, walkInDay){
 	                    		 result = result +"<td><div>---</div></td>";
 	                    	 }
 	                    	 if(opt.jobId!=null && opt.jobId !='' && opt.jobId !='undefined'){
-	                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
+	                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+atsUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 	                    	 }else{
-		                    	 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
+		                    	 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+atsUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 		                     }
 	                    	 if(isWalkIn) {
 	                    		 result = result +"<td><div class=''><span title='"+opt.walkInDays+"'>"+opt.walkInDays+"</span></a></div></td>";
@@ -178,7 +180,7 @@ function requirementList(isWalkIn, walkInDay){
 			                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
 			                    	
 			                    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
-			                    	  result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+opt.orgRelationUUID+'" title="'+opt.clientName+'">'+opt.clientName+'</a></div></td>';
+			                    	  result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+vmsUrl+'/clientDashboard?orgRelationUUID='+opt.orgRelationUUID+'" title="'+opt.clientName+'">'+opt.clientName+'</a></div></td>';
 				           	         '</sec:authorize>';
            	         
 					           	      '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
@@ -208,27 +210,27 @@ function requirementList(isWalkIn, walkInDay){
 		                     
 // 		                     if(opt.noOfApplicants != null && opt.noOfApplicants != '' && opt.noOfApplicants != 'undefined'){
 	
-	                    	 result = result +"<td><input type='hidden' class='requirementDashboardCount'  id='"+opt.id+"' /><a href='<c:url value='/app/requirementSummary?type=applicants&requirementUUID="+opt.requirementUUID+"'/>'><div id='"+opt.id+"applicantCount'><i class='fa fa-spinner fa-pulse'></i></div></a></td>";
+	                    	 result = result +"<td><input type='hidden' class='requirementDashboardCount'  id='"+opt.id+"' /><a href='"+atsUrl+"/requirementSummary?type=applicants&requirementUUID="+opt.requirementUUID+"'><div id='"+opt.id+"applicantCount'><i class='fa fa-spinner fa-pulse'></i></div></a></td>";
 	                    	 
 // 		                     }
 // 		                     if(opt.noOfShortlistedApplicants != null && opt.noOfShortlistedApplicants != '' && opt.noOfShortlistedApplicants != 'undefined'){
 	
-		                     result = result +"<td><a href='<c:url value='/app/requirementSummary?type=SHORTLIST&requirementUUID="+opt.requirementUUID+"'/>'><div id='"+opt.id+"shortlistedCount'><i class='fa fa-spinner fa-pulse'></i></div></a></td>";
+		                     result = result +"<td><a href='"+atsUrl+"/requirementSummary?type=SHORTLIST&requirementUUID="+opt.requirementUUID+"'><div id='"+opt.id+"shortlistedCount'><i class='fa fa-spinner fa-pulse'></i></div></a></td>";
 		                     
 // 		                     }
 // 		                     if(opt.noOfSubmittedApplicants != null && opt.noOfSubmittedApplicants != '' && opt.noOfSubmittedApplicants != 'undefined'){
 	
-			                 result = result +"<td><a href='<c:url value='/app/requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+opt.requirementUUID+"'/>'><div id='"+opt.id+"submittedCount'><i class='fa fa-spinner fa-pulse'></i></div></a></td>";
+			                 result = result +"<td><a href='"+atsUrl+"/requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+opt.requirementUUID+"'><div id='"+opt.id+"submittedCount'><i class='fa fa-spinner fa-pulse'></i></div></a></td>";
 			                 
 // 		                     }
 // 		                     if(opt.noOfInterviewedApplicants != null && opt.noOfInterviewedApplicants != '' && opt.noOfInterviewedApplicants != 'undefined'){
-		                     result = result +"<td><a href='<c:url value='/app/requirementSummary?type=INTERVIEW&requirementUUID="+opt.requirementUUID+"'/>'><div id='"+opt.id+"interviewedCount'><i class='fa fa-spinner fa-pulse'></i></div></a></td>";
+		                     result = result +"<td><a href='"+atsUrl+"/requirementSummary?type=INTERVIEW&requirementUUID="+opt.requirementUUID+"'><div id='"+opt.id+"interviewedCount'><i class='fa fa-spinner fa-pulse'></i></div></a></td>";
 // 		                     }
 // 		                     if(opt.noOfOfferedApplicants != null && opt.noOfOfferedApplicants != '' && opt.noOfOfferedApplicants != 'undefined'){
-		                     result = result +"<td><a href='<c:url value='/app/requirementSummary?type=OFFERMADE&requirementUUID="+opt.requirementUUID+"'/>'><div id='"+opt.id+"offeredCount'><i class='fa fa-spinner fa-pulse'></i></div></a></td>";
+		                     result = result +"<td><a href='"+atsUrl+"/requirementSummary?type=OFFERMADE&requirementUUID="+opt.requirementUUID+"'><div id='"+opt.id+"offeredCount'><i class='fa fa-spinner fa-pulse'></i></div></a></td>";
 // 		                     }
 // 		                     if(opt.noOfJoinedApplicants != null && opt.noOfJoinedApplicants != '' && opt.noOfJoinedApplicants != 'undefined'){
-			                     result = result +"<td><a href='<c:url value='/app/requirementSummary?type=JOINED&requirementUUID="+opt.requirementUUID+"'/>'><div id='"+opt.id+"joinedCount'><i class='fa fa-spinner fa-pulse'></i></div></a></td>";
+			                     result = result +"<td><a href='"+atsUrl+"/requirementSummary?type=JOINED&requirementUUID="+opt.requirementUUID+"'><div id='"+opt.id+"joinedCount'><i class='fa fa-spinner fa-pulse'></i></div></a></td>";
 // 			                     }
 
 
@@ -244,7 +246,7 @@ function requirementList(isWalkIn, walkInDay){
 		                    if(checkSize>=10 && i==9 ){
 		                    	/* $("#viewmoresDiv").css("display", "block"); */
 		                    	var text = "<div class='pull-right' id='viewmoresDiv'>";
-		                    	text += "<a href='/app/jobs' class='btn btn-sm btn-primary pull-right' title='View more'> View More</a>";
+		                    	text += "<a href='/ats/jobsList' class='btn btn-sm btn-primary pull-right' title='View more'> View More</a>";
 		                    	text += "</div>";
 		                    	$("#requirementListActions").append(text);
 			 	   	   	    } 
