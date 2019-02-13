@@ -80,4 +80,6 @@ public interface OrgService {
     
     public PaymentAccount getCandidateAcitivatePaymentAccount(long candidateId);
     
+    public int changeAssociateDefaultPaymentAccount(long id,long candidateId, boolean defaultAccount);
+    
 }
