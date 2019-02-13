@@ -364,7 +364,7 @@ public class UserLoginHelper {
 			SourceLeadSessionManager.setSessionAttribute(req, "resourcesTabCount", resourcesTabCount);
 			SourceLeadSessionManager.setSessionAttribute(req, "paryrollTabCount", paryrollTabCount);
 			
-			List<UserAccountsDTO> accountsList = new ArrayList<>();
+		/*	List<UserAccountsDTO> accountsList = new ArrayList<>();
 			List<JSONObject> userAccountsList = userStatsCacheHelper.getLoginUserAccounts(userRole.get("userCode").toString());
 			if(userAccountsList != null && !userAccountsList.isEmpty()) {
 				for(JSONObject accountsJson : userAccountsList) {
@@ -414,7 +414,7 @@ public class UserLoginHelper {
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(req, "userSpocRolesList", accountsList);
-			SourceLeadSessionManager.setSessionAttribute(req, "userSpocRolesListCount", accountsList.size());
+			SourceLeadSessionManager.setSessionAttribute(req, "userSpocRolesListCount", accountsList.size());*/
 			
 			
 		    return  new UsernamePasswordAuthenticationToken(username, password,  buildUserAuthority(actionsList));
