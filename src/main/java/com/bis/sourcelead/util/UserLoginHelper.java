@@ -29,6 +29,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.UserAccountsDTO;
 import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
@@ -239,6 +240,8 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "googlePlus", userRole.get("googlePlus"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "userLoginSecurity", userRole.get("userLoginSecurity"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "newlyLoginUser", userRole.get("newlyLoginUser"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "userCode", userRole.get("userCode"));
+		  
 		  
 		  
 		  SourceLeadSessionManager.setSessionAttribute(req, "fileUrl", orgLocations.get("imgUrl"));
@@ -360,6 +363,59 @@ public class UserLoginHelper {
 			SourceLeadSessionManager.setSessionAttribute(req, "expensesTabCount", expensesTabCount);
 			SourceLeadSessionManager.setSessionAttribute(req, "resourcesTabCount", resourcesTabCount);
 			SourceLeadSessionManager.setSessionAttribute(req, "paryrollTabCount", paryrollTabCount);
+			
+			List<UserAccountsDTO> accountsList = new ArrayList<>();
+			List<JSONObject> userAccountsList = userStatsCacheHelper.getLoginUserAccounts(userRole.get("userCode").toString());
+			if(userAccountsList != null && !userAccountsList.isEmpty()) {
+				for(JSONObject accountsJson : userAccountsList) {
+					UserAccountsDTO accountsDTO = new UserAccountsDTO();
+					accountsDTO.setRoleName(accountsJson.get("roleName").toString());
+					accountsDTO.setDisplayName(accountsJson.get("roleDisplayName").toString());
+					accountsDTO.setOrgLocationId(accountsJson.get("orgLocationId").toString());
+					accountsDTO.setUserRoleId(accountsJson.get("userRoleId").toString());
+					
+					if(accountsJson.get("userLoginSecurity") != null) {
+						accountsDTO.setLoginSecurity(accountsJson.get("userLoginSecurity").toString());
+					}
+					
+					accountsDTO.setUserId(accountsJson.get("userId").toString());
+					
+					if(accountsJson.get("designation") != null) {
+						accountsDTO.setDesignation(accountsJson.get("designation").toString());
+					}
+					
+					if(userSession.get("userType") != null) {
+						accountsDTO.setUserType(accountsJson.get("userType").toString());
+					}
+				
+					JSONObject accountOrgLocations = userStatsCacheHelper.getOrgLocationCacheDetails(accountsJson.get("orgLocationCode").toString());
+					
+					if(accountOrgLocations.get("imgUrl") != null) {
+						accountsDTO.setOrgImgUrl(accountOrgLocations.get("imgUrl").toString());
+					}
+					
+					accountsDTO.setOrgLocationName(accountOrgLocations.get("orgLocationName").toString());
+					accountsDTO.setOrgName(accountOrgLocations.get("orgName").toString());
+					
+					if(accountOrgLocations.get("country") != null) {
+						accountsDTO.setCountry(accountOrgLocations.get("country").toString());
+					}
+					
+					if(accountOrgLocations.get("state") != null) {
+						accountsDTO.setState(accountOrgLocations.get("state").toString());
+					}
+					
+					if(accountOrgLocations.get("city") != null) {
+						accountsDTO.setCity(accountOrgLocations.get("city").toString());
+					}
+					
+					accountsList.add(accountsDTO);
+				}
+			}
+			
+			SourceLeadSessionManager.setSessionAttribute(req, "userSpocRolesList", accountsList);
+			SourceLeadSessionManager.setSessionAttribute(req, "userSpocRolesListCount", accountsList.size());
+			
 			
 		    return  new UsernamePasswordAuthenticationToken(username, password,  buildUserAuthority(actionsList));
 		}else {

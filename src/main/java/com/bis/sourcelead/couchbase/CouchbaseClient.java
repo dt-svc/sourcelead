@@ -71,30 +71,30 @@ public class CouchbaseClient {
 		}
 	
 	
-	public List<String> getLoginUserAccounts(String key) {
+	public List<JSONObject> getLoginUserAccounts(String key) {
         
-		List<String> userAccountsList = new ArrayList<>();
+		List<JSONObject> userAccountsJsonList = new ArrayList<JSONObject>();
 		userProfileBucket.bucketManager().createN1qlPrimaryIndex(true, false);
-		JsonObject pVal = JsonObject.create().put("documentType", "User Account");
-		N1qlQueryResult result = userProfileBucket.query(N1qlQuery.parameterized("SELECT meta().id FROM `userProfile`", pVal));
-		if (result != null) {
+		JsonObject pVal = JsonObject.create().put("documentType", "User Account").put("userCode", key);
+		N1qlQueryResult result = userProfileBucket.query(N1qlQuery.parameterized("SELECT * FROM `userProfile` where documentType = $documentType and userCode = $userCode", pVal));
+		if (result != null && result.info().resultCount() > 1) {
 			for (N1qlQueryRow row : result) {
 				try {
-					JSONParser parser = new JSONParser();
-					JSONObject jsonObject = (JSONObject) parser.parse(row.value().toString());
-					for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+				    JSONParser parser = new JSONParser(); 
+				    JSONObject sessionJson = (JSONObject) parser.parse(row.value().toString());
+				    for (Iterator iterator = sessionJson.keySet().iterator(); iterator.hasNext();) {
 						String jsonKey = (String) iterator.next();
-						Object jsonValue = jsonObject.get(jsonKey);
-						userAccountsList.add(jsonKey);
-					}
-
-				} catch (ParseException e) {
+						Object jsonValue = sessionJson.get(jsonKey);
+						JSONObject userAccountsJson = (JSONObject) parser.parse(jsonValue.toString());
+						userAccountsJsonList.add(userAccountsJson);
+			    	 }
+			  } catch (ParseException e) {
 					e.printStackTrace();
 				}
 			}
 		}
 		
-		return userAccountsList;
+		return userAccountsJsonList;
 	}
 
 
