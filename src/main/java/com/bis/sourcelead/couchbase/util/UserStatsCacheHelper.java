@@ -79,20 +79,7 @@ public class UserStatsCacheHelper {
 	@SuppressWarnings("unchecked")
 	public JSONObject getOrgLocationCacheDetails(String orgLocationCode) {
 		orgLocationCode = "OrgLocation_"+orgLocationCode;
-		JSONObject orgLocationJson = new JSONObject();
-		JSONObject jsonObject = c.getOrgLocationDetails(orgLocationCode);
-		if (jsonObject != null) {
-			try {
-				for (Object okey : jsonObject.keySet()) {
-					String keyStr = (String) okey;
-					Object keyvalue = jsonObject.get(keyStr);
-				    orgLocationJson.put(keyStr, keyvalue);
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		JSONObject orgLocationJson = c.getOrgLocationDetails(orgLocationCode);
 		return orgLocationJson;
 		
 	}
@@ -113,21 +100,7 @@ public class UserStatsCacheHelper {
 
 		JSONObject userRoleJson = new JSONObject();
 		JSONObject jsonObject = c.getUserProfileDetails(userRoleAuthKey);
-		if (jsonObject != null) {
-			try {
-				for (Object okey : jsonObject.keySet()) {
-					String keyStr = (String) okey;
-					Object keyvalue = jsonObject.get(keyStr);
-					if (!keyStr.equalsIgnoreCase("menuList") && !keyStr.equalsIgnoreCase("rolesList")) {
-						userRoleJson.put(keyStr, keyvalue);
-					}
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return userRoleJson;
+		return jsonObject;
 	}
 	
 	
@@ -167,20 +140,7 @@ public class UserStatsCacheHelper {
 	 */
 	public JSONObject getLogInUserSessionJson(String userSessionAuthKey) {
 		
-		JSONObject sessionStoreJson = new JSONObject();
-		JSONObject jsonObject = c.getUserLoginSessionStoreDetails(userSessionAuthKey);
-		if (jsonObject != null) {
-			try {
-				for (Object okey : jsonObject.keySet()) {
-					String keyStr = (String) okey;
-					Object keyvalue = jsonObject.get(keyStr);
-					sessionStoreJson.put(keyStr, keyvalue);
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		JSONObject sessionStoreJson = c.getUserLoginSessionStoreDetails(userSessionAuthKey);
 		return sessionStoreJson;
 		
 	}
