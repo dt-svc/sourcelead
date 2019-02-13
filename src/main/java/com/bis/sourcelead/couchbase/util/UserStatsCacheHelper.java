@@ -400,11 +400,6 @@ public class UserStatsCacheHelper {
 	}*/
 	
 	
-	public List<JSONObject> getLoginUserAccounts(String loginUserCode){
-		List<JSONObject> userAccountsList = c.getLoginUserAccounts(loginUserCode);
-		return userAccountsList;
-	}
-	
 	
 	/**
 	 * @author Venkat
