@@ -221,9 +221,11 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		Properties props = new Properties();
 		final String username = emailMessage.getUserName();
 		final String password = emailMessage.getPassword();
-
-		props.put("mail.smtp.host", "secure.emailsrvr.com");
-//		props.put("mail.smtp.host", "smtp.sendgrid.net");
+		if (environment.equalsIgnoreCase("prod")) {
+			props.put("mail.smtp.host", "secure.emailsrvr.com");
+		} else {
+			props.put("mail.smtp.host", "smtp.sendgrid.net");
+		}
 		props.put("mail.smtp.localhost", "localhost");
 		props.put("mail.stmp.user", username);
 		props.put("mail.smtp.auth", "true");
@@ -604,8 +606,11 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		Properties props = new Properties();
 		final String username = emailMessage.getUserName();
 		final String password = emailMessage.getPassword();
-
-		props.put("mail.smtp.host", "secure.emailsrvr.com");
+		if (environment.equalsIgnoreCase("prod")) {
+			props.put("mail.smtp.host", "secure.emailsrvr.com");
+		} else {
+			props.put("mail.smtp.host", "smtp.sendgrid.net");
+		}
 		props.put("mail.smtp.localhost", "localhost");
 		props.put("mail.stmp.user", username);
 		props.put("mail.smtp.auth", "true");

@@ -2754,13 +2754,13 @@ public class LeaveServiceImpl implements LeaveService{
 				   writeRow.createCell(11).setCellValue(leaveReportDTO.getApprover());
 			   }
 			 else{
-				   writeRow.createCell(12).setCellValue("--");   
+				   writeRow.createCell(11).setCellValue("--");   
 			   }
 			 if(leaveReportDTO.getApprovedOnDateStr() != null){
-				   writeRow.createCell(13).setCellValue(leaveReportDTO.getApprovedOnDateStr() );
+				   writeRow.createCell(12).setCellValue(leaveReportDTO.getApprovedOnDateStr() );
 			   }
 			 else{
-				   writeRow.createCell(14).setCellValue("--");   
+				   writeRow.createCell(12).setCellValue("--");   
 			   }
 			
 			
