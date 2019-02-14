@@ -4,10 +4,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
-
 <!-- Content Area -->
 
 <div class="modal-dialog">
@@ -194,12 +190,13 @@ $('#method').on('change', function() {
 				dateFormat : 'yyyy/mm/dd' 
 	         };
 		     if ($('#salarySetup_form').validate(false, validationSettings)){
+		    	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       			var formData = getFormData("salarySetup_form");
       			var uuid = '${uuid}';
 				$.ajax({
 					 type : "POST",
 					 data: formData,
-					  url : +"/storePayheadWithSalarySetup?uuid="+uuid,
+					  url : pmsUrl+"/storePayheadWithSalarySetup?uuid="+uuid,
 					  	success : function(result) {
 					  		if (result && result.response === "INVALID_DATA") {
 			                    showError("Invalid data");
@@ -216,7 +213,7 @@ $('#method').on('change', function() {
 			                	closesalarySetup();
 			                    
 			                } else if (result.indexOf('Sign In') !== -1) {
-								location.replace(sourceleadUrl);
+								location.replace(pmsUrl);
 							} else {
 			                    showError("Operation failed, please try again");
 			                }

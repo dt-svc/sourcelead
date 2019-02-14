@@ -58,7 +58,7 @@ background-color: #fcfcfc;
       <div class="pull-left">
         <h2>Leave Management</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Leave Management</div>
+      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Leave Management</div>
     </section>
     
     <div class="project_wrap">
@@ -540,6 +540,7 @@ $("#tab-1").show();
 
 <script>
 function getHolidaysList(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_userId}';
 	var reportYear = "";
@@ -631,6 +632,7 @@ $("#filterDepartmentPop, .statusFiler-1").click(function(e) {
 
 <script>
 function getEmployeeLeavesList(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_userId}';
 	var date = $("#leavesCalendar").val();
@@ -758,6 +760,7 @@ function getEmployeeLeavesList(){
 
 <script type="text/javascript">
 function getLeaveTakersBarChat(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_userId}';
 	var barChartYear ="";
@@ -862,6 +865,7 @@ function totalLeaveByEmployeeBarChart(data){
 
 <script>
 function getPieChartBasedOnUser(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
@@ -1203,7 +1207,7 @@ function getPieChartBasedOnUser(){
  <script>
 	function getTopLeaveTakers() {
 		
-		
+		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var userId = '${SourceLeadWeb_userId}';
 		var reportYear = "";
@@ -1438,7 +1442,7 @@ $('#mypop').click(function(){
 
 <script>
 function leavePdfExport(){
-	
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var reportYear = "";
 	var reportMonth = "";
 	var reportFromDate = "";
@@ -1482,7 +1486,7 @@ function cancel(){
 
 <script>
 function leaveExcelExport(){
-	
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var reportYear = "";
 	var reportMonth = "";
 	var reportFromDate = "";
@@ -1535,6 +1539,7 @@ function leaveImpPopClose(){
 
 <script type="text/javascript">
 function importLeaves(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var validationSettings = {
             errorMessagePosition : 'element',
             borderColorOnError : '',
@@ -1597,6 +1602,7 @@ function resetUpload(){
 
 <script>
 function getEmployeeTotalCounts(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
@@ -1644,6 +1650,7 @@ function getEmployeeTotalCounts(){
 
 <script>
 function getSelfTotalCounts(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({

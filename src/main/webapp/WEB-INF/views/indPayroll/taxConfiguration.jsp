@@ -1,11 +1,6 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
-
-
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <div id="loading"></div>
@@ -14,7 +9,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		<div class="pull-left">
 			<h2>Taxes</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Taxes</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a> &raquo;Taxes</div>
 	</section>
 	<div class="contentareaInner-styles clearfix">
 		<div class="clearfix form-horizontal minHeight_225 minHeightcol5">
@@ -240,6 +235,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			$("#saveTaxConfig").attr("disabled","disabled");
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			var formData = getFormData("addTaxConfigForm");
+			var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+
 			$.ajax({
 				type : "POST",
         	    data: formData,
@@ -260,7 +257,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		        	} else if(response.response === "FAILED") {
 		        		showError(response.responseMessage);
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
+		        		location.replace(pmsUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -313,6 +310,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		var endMonth = $("#financialEndMonth").val();
 		if (startMonth != null && startMonth != 'undefined' && endMonth != null
 				&& endMonth != 'undefined') {
+			var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+
 			$.ajax({
 				type : "GET",
 				url : pmsUrl + "/saveFinanacialYear?locationId="
@@ -336,6 +335,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 
 <script>
 function cancel(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	window.location.href =  pmsUrl+"/indPayrollConfiguration";
 }
 

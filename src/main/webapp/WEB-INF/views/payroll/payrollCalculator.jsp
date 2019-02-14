@@ -45,7 +45,7 @@ function approvePayrollDiv(){
   <div class="pull-left">
     <h2>Payroll</h2>
   </div>
-<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payroll</div>
+<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Payroll</div>
 </section>
 
 <div id="initiateLoading"></div>

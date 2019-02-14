@@ -2,7 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<script src="/resources/js/payrollReports.js"></script>
+<script src="/pms/resources/js/payrollReports.js"></script>
 
 <script>
 $(document).ready(function(){
@@ -20,8 +20,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Direct Deposit</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/usPayrollReport'/>"> US Payroll Reports List</a>&raquo;Direct Deposit
+      <div class="pull-right brud-crum"><a href="/app/dashboard" title="Home">Home</a>&raquo;<a
+				href="/pms/usPayrollReport"> US Payroll Reports List</a>&raquo;Direct Deposit
 		</div>
     </section>
     
@@ -68,34 +68,6 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
      <div class="clearfix"></div>
       <div class="timesheet_out" id="payrollRegister" style="display: none;">
        
-<!--        <div class="clearfix">
-                  	<div class="col-md-12">
-                  		<div class="row">
-                  			<label class="col-md-2">No.of Check:</label>
-                  			<span class="col-md-5" id="noOfChecks">0</span>
-                  		</div>
-                  	</div>
-                  	<div class="col-md-12">
-                  		<div class="row">
-                  			<label class="col-md-2">Employee Live Checks:</label>
-                  			<span class="col-md-5" id="liveChecks">0</span>
-                  		</div>
-                  	</div>
-                  	<div class="col-md-12">
-                  		<div class="row">
-                  			<label class="col-md-2">Void Checks:</label>
-                  			<span class="col-md-5">0</span>
-                  		</div>
-                  	</div>
-                  	<div class="col-md-12">
-                  		<div class="row">
-                  			<label class="col-md-2">Manual Checks:</label>
-                  			<span class="col-md-5">0</span>
-                  		</div>
-                  	</div>
-
-                  	<div class="clearfix mb mt"></div>
-       </div> -->
        
            <div class="styleTables clearfix mt">
         <div class='reportHead'>
@@ -116,70 +88,6 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
        </div>
     		
     		
-    		
-<!--     		
-  <div class="timesheet_out" id="payrollRegister" style="display: none;">
-      <div class="clearfix">
-        <div class="positionRelative reportHead clearfix"> <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
-  <ul class="pull-right list-unstyled list-inline">
-    <li><a class="newAdBtn mr5 hidden" href="/app/userCreation">+  Associate</a></li>
-    <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
-    <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-      <div class="newActPop" style="">
-       <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
-    </li>
-    <li class="">
-      <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-      <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
-  </ul>
-</div>
-       <div class="clearfix"></div>
-        <div class="require_wrap_table tableFirstSecond clearfix">
-              	<div class="clearfux row mt mb">
-              <label class="col-md-4">No. of Employees</label>
-              <div class="col-md-2">
-              20000
-              </div>
-            </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Employee ID</th>
-                <th>Employee Name</th>
-                <th>Department</th>
-                <th>Account Number</th>
-                <th>Amount</th>
-                <th>YTD<br/>Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><div class="tblminwidth-75">MIS00414</div></td>
-                <td><div class="tbldata-dotdot">Karan Kumar Sahoo</div></td>
-                <td><div class="tbldata-dotdot-vsm">Depatment</div></td>
-                <td><div class="tbldata-dotdot-vsm">Department Type</div></td>
-                <td><div class="tblminwidth-50">Amount</div></td>
-                <td><div class="tblminwidth-50">QTD</div></td>
-                <td><div class="tblminwidth-50">YTD</div></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <nav>
-          <ul id="paging" class="pagination">
-            <li><a href="#">Previous</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li class="disabled"><a href="#">6</a></li>
-            <li data-page="last"><a href="#">Next</a></li>
-          </ul>
-          <div class="clearfix"></div>
-        </nav>
-      </div>
-    </div> -->
-      <!-- Content Area Ends--> 
   </section>
   
   <script type="text/javascript">

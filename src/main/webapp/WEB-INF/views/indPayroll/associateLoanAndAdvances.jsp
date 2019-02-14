@@ -3,7 +3,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<script type="text/javascript" src="/resources/js/loanAndAdvances.js"></script>
+<script type="text/javascript" src="/pms/resources/js/loanAndAdvances.js"></script>
 
 <script>
 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
@@ -239,7 +239,7 @@ function saveAssociateLoanAndAdvanceDetails(){
 		        		var candidateId = '${candidateId}';
 		        		associateLoanAndAdvanceDetails(candidateId);
 		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
+		        		location.replace(pmsUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -356,7 +356,6 @@ function editLoanAndAdvance(loanAdvId){
 </script>
   
 <script>
-var sourceleadUrl = '${sourceleadUrl}';
 function showAssociateLoanAndAdvancePopup() {
 	loanAdv.clearLoanAndAdvances();
 	loanAdv.getLoanAndAdvNames();

@@ -45,7 +45,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/app")
 public class TaxSubmissionController {
 	private static final Logger logger = LoggerFactory.getLogger(TaxSubmissionController.class);
 
