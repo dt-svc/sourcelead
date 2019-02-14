@@ -12,9 +12,6 @@
 
   <div id="shareEmptypopUp"></div>
   
-  <script>
-  var atsUrl = '${SourceLeadWeb_atsUrl}';
-  </script>
   
 <script>
   function noAccess(id){ 	
@@ -111,6 +108,9 @@ function closeCandiatesSubmitedList() {
     padding-right: 5px;
 }
 </style>
+   <script>
+  var atsUrl = '${SourceLeadWeb_atsUrl}';
+  </script>
 <script type="text/javascript" src="${SourceLeadWeb_atsUrl}/resources/js/candidateTable.js"></script>
 
 <input type="hidden" id="noCandidates" name="noCandidates" />
