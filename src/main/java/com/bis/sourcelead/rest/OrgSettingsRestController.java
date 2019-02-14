@@ -98,6 +98,7 @@ import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.UserLoginHelper;
 import com.ibm.icu.util.Calendar;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -510,6 +511,14 @@ public class OrgSettingsRestController {
 			}
 			roles.setActionId(actionIds);
 			rolesService.storeRoles(roles);
+			
+			List<UserRole> userRolesList = userRoleService.getAllUserRolesByRoleId(roles.getId());
+			if(userRolesList != null && !userRolesList.isEmpty()) {
+				for(UserRole userRole : userRolesList) {
+					userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+				}
+			}
+			
 			SourceLeadSessionManager.setSessionAttribute(request, "actionRolesMsg", "Action Roles Modified Successfully");
 		}
 		return "success";

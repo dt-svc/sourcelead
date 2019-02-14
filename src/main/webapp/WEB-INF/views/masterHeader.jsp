@@ -188,7 +188,6 @@ z-index: 1000000000 !important;
 
 <script type="text/javascript">
 $(document).ready(function(){
-//   getNotificationsByuserId();
 	updateMarketplaceCartCountAndPrice();
 });
 </script>
@@ -303,7 +302,7 @@ function preventTabkey(e){
 </script>
 
 <body>
-<c:url var="logoutUrl" value="/logout"/>
+<c:url var="logoutUrl" value="${SourceLeadWeb_sourceleadLogoutUrl}"/>
 <form action="${logoutUrl}" method="post" id="logoutForm">
   <input type="hidden" name="userSessionId" value="${userLoginSession.id}"/>
    <input type="hidden" name="orgLocationId" value="${SourceLeadWeb_orgLocationId}"/>
@@ -412,14 +411,14 @@ function preventTabkey(e){
 
 
 <div class="headProfile">
-	<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_imgUrl}"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_userName}"> ${SourceLeadWeb_userName} </div>
+	<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_loginUserFullName}" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_imgUrl}"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_loginUserFullName}"> ${SourceLeadWeb_loginUserFullName} </div>
 	<div class="headPop" id="profilePop">
 		<div class="headPopInn">
 				<a href="<c:url value='${sourceleadUrl}/userProfile'/>" title="Profile">
 				<div class="headPopUser clearfix">
-					<div class="pull-left"><img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_imgUrl}"></div>
+					<div class="pull-left"><img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_loginUserFullName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_imgUrl}"></div>
 					<div class="pull-right">
-						<p>${SourceLeadWeb_userName}</p>
+						<p>${SourceLeadWeb_loginUserFullName}</p>
 		                 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
 		                 	<b>${!empty SourceLeadWeb_designation ? SourceLeadWeb_designation : 'Job Seeker'}</b>
 		                 </c:if>
@@ -465,7 +464,7 @@ function preventTabkey(e){
 	              <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
 	              <li><a href="<c:url value='${appPath}/userProfile'/>" title="Profile">Profile</a></li>
 	              </c:if> --%>				
-				 <li><a class="logColor" href="https://dev.sourcelead.com/logout" title="Log Out"><i class="logOutIC"></i>Log Out</a></li>
+				 <li><a class="logColor" href="javascript:logoutFormSubmit();" title="Log Out"><i class="logOutIC"></i>Log Out</a></li>
 			</ul>
 		</div>
 	</div>
@@ -537,7 +536,7 @@ function preventTabkey(e){
 	            </div>
 	            </div>
 	          </li>
-	          </c:if>	
+	          </c:if>
 		
         <c:if test="${SourceLeadWeb_reportsTabConfigured == 'Y'}"> 
         	 <li><a title="Reports" href="<c:url value='${appPath}/reportsDashboard'/>"><i class="headNavIcon reporIcon"></i></a></li>
@@ -1826,9 +1825,9 @@ $(document).ready(function(){
 <script>
 function updateMarketplaceCartCountAndPrice(){
 	var totalPriceInCurrency;
-	var atsUrl = '${SourceLeadWeb_atsUrl}';
+	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
-		 	url: atsUrl + "/updateMarketplaceCartCountAndPrice",
+		 	url: sourceleadUrl + "/getMarketplaceCartCountAndPrice",
 	        type: 'GET',
 	        success: function (object) {
 	        	if(object != null){
