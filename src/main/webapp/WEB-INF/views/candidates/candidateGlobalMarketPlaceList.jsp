@@ -19,7 +19,7 @@
     <div class="clearfix"></div>
 	  <div class="clearfix">
 			<ul class="project-tabs-menu projecttabs-custom clearfix">
-		         <li id="" ><a href="/ats/candidatesList">Candidate List</a></li>
+		         <li id="" ><a href="${SourceLeadWeb_atsUrl}/candidatesList">Candidate List</a></li>
 		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
 		         <li id="" class="current"><a href="javascript:void(0)">Global Marketplace</a></li>
 		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToCartList();">Cart</a></li>
@@ -66,7 +66,7 @@
                 <div class="col-md-9">
 				 <ul class="pull-right mb0 list-unstyled list-inline ulliBorder">
 				 <sec:authorize access="hasRole('ROLE_VIEW_CART')">
-				  <li><i class="shopping-cart inlineBlock pull-left mr10" title="Cart"></i><a id = "cartCount" href="/ats/candidateMarketplaceCart" class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0</a></li>
+				  <li><i class="shopping-cart inlineBlock pull-left mr10" title="Cart"></i><a id = "cartCount" href="${SourceLeadWeb_atsUrl}/candidateMarketplaceCart" class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0</a></li>
 				  <li><i class="dollarSvg inlineBlock pull-left mr10" title="Cart"></i><a id = "totalPrice" class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0.00</a></li>
 				  </sec:authorize>
                   <li> <a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a> </li>
@@ -565,7 +565,7 @@ function mySkillsFunction() {
 
 
   function goToCandidateList(){
-		location.href = "/ats/candidatesList";
+		location.href = "${SourceLeadWeb_atsUrl}/candidatesList";
 	}
   $(document).ready(function () {
 	 getGloblaMarketPlaceCandidates('listModel'); 
@@ -614,7 +614,7 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 							result = result + '</div>';
 							result = result + '<div class="media-body">';
 							result = result + '<div class="col-md-9">';
-							result = result + ' <h4 class="media-heading mb10"><a href="/ats/globalCandidateSummary?marketplaceUUID='+object[i].marketplaceUUID+'">'+(object[i].fullName == null ? "---" : object[i].fullName)+'</a></h4>';
+							result = result + ' <h4 class="media-heading mb10"><a href="${SourceLeadWeb_atsUrl}/globalCandidateSummary?marketplaceUUID='+object[i].marketplaceUUID+'">'+(object[i].fullName == null ? "---" : object[i].fullName)+'</a></h4>';
 							result = result + ' <h5 class="text-muted mb5">'+(object[i].designation == null ? "---" : object[i].designation)+'</h5>';
 							result = result + ' <div class="clearfix"></div>';
 							result = result + '  <ul class="list-unstyled list-inline mt10">';
@@ -709,7 +709,7 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 							result = result + '<div class="media-body"><div id="deleteIconCardModel'+object[i].marketplaceUUID+'">';
 							result = result + marketDelelIcon;
 							result = result + '</div><div class="col-md-12 padding_right">';
-							result = result + '<h4 class="media-heading mb0 tbldata-dotdot-me inlineBlock"><a href="/ats/globalCandidateSummary?marketplaceUUID='+object[i].marketplaceUUID+'">'+(object[i].fullName == null ? "---" : object[i].fullName)+'</a></h4>';
+							result = result + '<h4 class="media-heading mb0 tbldata-dotdot-me inlineBlock"><a href="${SourceLeadWeb_atsUrl}/globalCandidateSummary?marketplaceUUID='+object[i].marketplaceUUID+'">'+(object[i].fullName == null ? "---" : object[i].fullName)+'</a></h4>';
 							result = result + '<h5 class="text-muted mb5">'+(object[i].designation == null ? "---" : object[i].designation)+'</h5>';
 							result = result + '<div class="clearfix"></div>';
 							result = result + '<ul class="list-unstyled list-inline mt10">';
@@ -841,19 +841,19 @@ function cardModel() {
 }
 
 function goToOrgMarketPlaceList(){
-	location.href = "/ats/OrgMarketplace";
+	location.href = "${SourceLeadWeb_atsUrl}/OrgMarketplace";
 }
 function goToCartList(){
-	location.href = "/ats/candidateMarketplaceCart";
+	location.href = "${SourceLeadWeb_atsUrl}/candidateMarketplaceCart";
 }
 function goToPurchaseOrderList(){
-	location.href ="/ats/PurchaseOrderList";
+	location.href ="${SourceLeadWeb_atsUrl}/PurchaseOrderList";
 	}
 function goToSalesOrderList(){
-	location.href = "/ats/SalesOrderList";
+	location.href = "${SourceLeadWeb_atsUrl}/SalesOrderList";
 }
 function goToWalletList(){
-    location.href = "/ats/walletList";
+    location.href = "${SourceLeadWeb_atsUrl}/walletList";
 }
 
 </script>

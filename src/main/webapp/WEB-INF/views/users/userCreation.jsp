@@ -343,7 +343,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			               <span class="input-group-addon cursorPointer bg-blue" onclick="getDepartmentsList();"><i class="fa fa-refresh "></i></span>
                   </div>
                   <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-			<a href="<c:url value="/addDepartment " />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			<a href="${sourceleadUrl}/addDepartment" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			</sec:authorize>
                 </div> 
                  </div> 
@@ -377,7 +377,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			               <span class="input-group-addon cursorPointer bg-blue" onclick="refreshRoleList();managerListEmpty();"><i class="fa fa-refresh "></i></span>
                   </div>
                        <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE ')"> 
-			             <a href="<c:url value="/orgRolesList" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			             <a href="${sourceleadUrl}/orgRolesList" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			           </sec:authorize>
                 </div>
                 </div> 
@@ -402,7 +402,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			               <span class="input-group-addon cursorPointer bg-blue" onclick="refreshGradesList();"><i class="fa fa-refresh "></i></span>
                   </div>
 		             <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-					<a href="<c:url value="/addGrade " />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+					<a href="${sourceleadUrl}/addGrade " target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 					</sec:authorize>
                 </div> 
                  </div> 

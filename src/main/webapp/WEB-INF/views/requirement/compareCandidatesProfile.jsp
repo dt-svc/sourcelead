@@ -22,6 +22,7 @@ function compareRecommendedUsers(requirementId){
 			   continue;
 		 candidateIds.push(compareCandidates[e]);
 	 }
+	 
 	if(candidateIds.length >= 2 && candidateIds.length <= 4){
 		var s = "";
 		for(var e in compareCandidates) {

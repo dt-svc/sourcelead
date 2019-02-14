@@ -6,6 +6,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  
+<script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
+</script>
 
 <script>
 function getCandidateResume(candidateId){
@@ -36,16 +39,9 @@ function candidateResumeById(candidateId){
 	  var resumesCount = 0;
 	  $.ajax({
 			type : "POST",
-			url : sourceleadUrl+"/candidateResumesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
+			url : atsUrl+"/candidateResumesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 			success : function(json) {
-// 				var json = JSON.parse(data);
-// 				if( data.indexOf('Sign In') >= 0){
-// 		    		location.replace(sourceleadUrl);
-// 		    	 }
-//        		 else if (data.indexOf('exception') >= 0) {
-//        			 location.replace(sourceleadUrl+"/errorPage");
-//        		 }
-//        		 else{
+
 					if(json.data.length<=0 || (json == null && json == 'undefined' && json == "")){
 							result = result+"   <div class='row'>"; 
 						 	result = result+"	<div class='col-lg-12'>"; 
@@ -104,7 +100,6 @@ function candidateResumeById(candidateId){
 					$("#resumesList").empty();
 					$("#resumesList").append(result);
 					
-//        		}
 				},
 		});
 }
