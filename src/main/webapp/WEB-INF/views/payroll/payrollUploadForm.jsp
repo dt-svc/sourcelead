@@ -21,7 +21,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
   <div class="success_pop" id="selector1" style="display: none;">
 		<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payroll</div>
+  <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Payroll</div>
 </section>
 
 
@@ -42,7 +42,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
                   
                   <li class="mr10">
                   <a href="javascript:void(0)" class="bulk_addconpop paddingRight hidden" onclick="flush();"> <i class="glyphicon glyphicon-plus paddingRight"></i>Bulk</a>
-                  <a href="<c:url value='${appPath}/userMapping'/>" class="btn btn-primary ml10 ColWhite" title="User Mapping" onClick="userMaping();">User Mapping </a>
+                  <a href="${SourceLeadWeb_pmsUrl}/userMapping" class="btn btn-primary ml10 ColWhite" title="User Mapping" onClick="userMaping();">User Mapping </a>
                   <!-- Popup Div -->
                   	<form:form id="upload_bulk_payroll_form" name="upload_bulk_payroll_form" method="post">
                   <div class="collapse-bulk-adduser col-md-4 mt" id="addbulkDiv" style='width:400px; right: 110px; top:25px; padding:10px 0'> <i class="fa fa-close close-div"></i>
@@ -645,17 +645,17 @@ function changeButtonVal(){
 	var fn = "";
 	$('#selectTemplateDiv').find('p.jquery_form_error_message').remove();
 	if ("EMPLOYEE_PAYROLL" === templateType) {
-		fn = '<c:url value="${appPath}/downloadPayrollTemplates?templateType=EMPLOYEE_PAYROLL"/>';
+		fn = pmsUrl+'/downloadPayrollTemplates?templateType=EMPLOYEE_PAYROLL';
 	}else if ("WAGE_TAX" === templateType) {
-		fn = '<c:url value="${appPath}/downloadPayrollTemplates?templateType=WAGE_TAX"/>';
+		fn = pmsUrl+'/downloadPayrollTemplates?templateType=WAGE_TAX';
 	}else if ("ACCOUNT_DEDUCTIONS" === templateType) {
-		fn = '<c:url value="${appPath}/downloadPayrollTemplates?templateType=ACCOUNT_DEDUCTIONS"/>';
+		fn = pmsUrl+'/downloadPayrollTemplates?templateType=ACCOUNT_DEDUCTIONS';
 	}else if ("HR_DEDUCTIONS" === templateType) {
-		fn = '<c:url value="${appPath}/downloadPayrollTemplates?templateType=HR_DEDUCTIONS"/>';
+		fn = pmsUrl+'/downloadPayrollTemplates?templateType=HR_DEDUCTIONS';
 	}else if ("BIS_CHECKS" === templateType) {
-		fn = '<c:url value="${appPath}/downloadPayrollTemplates?templateType=BIS_CHECKS"/>';
+		fn = pmsUrl+'/downloadPayrollTemplates?templateType=BIS_CHECKS';
 	}else if ("INVOICE" === templateType) {
-		fn = '<c:url value="${appPath}/downloadPayrollTemplates?templateType=INVOICE"/>';
+		fn = pmsUrl+'/downloadPayrollTemplates?templateType=INVOICE';
 	}else if("" == templateType || templateType == null || templateType == 'undefined'){
 		$('#selectTemplateDiv').find('p.jquery_form_error_message').remove();
 	    $("#templateDownload").after("<p class='jquery_form_error_message'>Select Template type</span>");

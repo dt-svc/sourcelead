@@ -20,7 +20,7 @@ window.onload = function () {
   <div class="success_pop" id="selector1" style="display: none;">
 		<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; 
+  <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
                            <a href="/pms/payrollConfiguration">Payroll Configuration</a> &raquo; Payroll</div>
 </section>
 
@@ -40,7 +40,7 @@ window.onload = function () {
 <script type="text/javascript">
 function loadFilteredClientList(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	var userId = '${SourceLeadWeb_user.id}';
+	var userId = '${SourceLeadWeb_userId}';
 	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.get(pmsUrl+ "/getFilteredClientList?${_csrf.parameterName}=${_csrf.token}", function(data) {
 		var response = data.data;
