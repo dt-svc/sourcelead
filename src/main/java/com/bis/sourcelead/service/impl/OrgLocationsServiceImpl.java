@@ -149,6 +149,8 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
       
         if(StringUtils.isNotBlank(orgSettings.getDba())){
         	orgLocations.setDba(orgSettings.getDba());
+        }else {
+        	orgLocations.setDba(null);
         }
         
         
