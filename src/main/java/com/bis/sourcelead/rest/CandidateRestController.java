@@ -1062,7 +1062,6 @@ public class CandidateRestController {
 	public Response<String> saveMarketPlaceData(@RequestBody List<CandidateMarketPlaceDTO> marketPlaceList,
 			HttpServletRequest request) throws NumberFormatException, Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		System.out.println("before method in controller");
 		Response<String> response = new Response<>();
 		if (user != null) {
 			try {

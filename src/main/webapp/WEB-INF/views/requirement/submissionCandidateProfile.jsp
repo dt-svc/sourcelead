@@ -6,14 +6,17 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  
- 
+<script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
+</script>
+	
 <script>
 function getCandidateProfile(candidateId){
 	  var skillsList = '${skillsList}'; 
 	  
 	  $.ajax({
       type : "POST",
-       url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+       url: atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
        success :function(result) { 
 	    	   var json = result.object;
 	    	   if(result.response === "SESSION_TIMEDOUT") {
@@ -178,7 +181,7 @@ function getCandidateProfile(candidateId){
 function candidateSkillsList(candidateId){  
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidatesSkillsBycandidateID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidatesSkillsBycandidateID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
                if(data != null && data != 'undefined' && data != "" && data != '[]'){
              		 if( data.indexOf('Sign In') >= 0){
@@ -306,7 +309,7 @@ function candidateSkillsList(candidateId){
 	function reqEmployeeSubmissionProfile(candidateId) {
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
+					url : atsUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
 					success : function(response) {
 						if (response && response.response === "INVALID_DATA") {
 						    showError(response.responseMessage);
@@ -382,7 +385,7 @@ function candidateSkillsList(candidateId){
 function reqEducationSubmissionProfile(candidateId){
 	 $.ajax({  
           type : "GET",
-          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
         	  	if (response && response.response === "INVALID_DATA") {
         		    showError(response.responseMessage);
@@ -468,7 +471,7 @@ function reqEducationSubmissionProfile(candidateId){
 function reqCertificationSubmissionProfile(candidateId){
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
         	  	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
         		    showError(response.responseMessage);

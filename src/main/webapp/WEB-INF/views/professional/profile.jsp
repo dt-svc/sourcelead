@@ -36,7 +36,7 @@ $(document).ready(function(){
       </div>
        
        <!-- Redirect to main dashboard -->
-       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo;<a href="<c:url value='${appPath}/professionalProfile'/>">Profile </a> &raquo; Update Profile</div>
+       <div class="pull-right brud-crum"><a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; Profile</div>
    
     </section>
     
@@ -195,7 +195,7 @@ function getProfessionalInfo(){
 				 result = result +'	    <div class="col-md-5">';
 				 result = result +'	        <h5>Profile Info</h5>';
 				 result = result +'	        <div class="chip">';
-				 result = result +'	        <img data-id="userProfileImage" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_user.fileUrl}" alt="Profile Image" width="96" height="96">';
+				 result = result +'	        <img data-id="userProfileImage" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_userImgUrl}" alt="Profile Image" width="96" height="96">';
 				 
 				 result = result +'	        <span>';
 				  result = result +'	        <strong>'+firstName+' '+middelName+' '+lastName+'</strong> <br>'; 
