@@ -246,6 +246,7 @@ function deletePayrollBonus(uuid){
 	$("#confirm-id").attr("disabled", "disabled");
 	$("#cancel-id").attr("disabled", "disabled");
 	var pmsUrl = '${SourceLeadWeb_pmsUrl}';
+	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
     	type: "POST",
     	url : pmsUrl+"/deletePayrollBonus?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid, 
@@ -253,7 +254,7 @@ function deletePayrollBonus(uuid){
         	if (result.response === "AWKWARD") {
         	    location.href = "/errorPage";
         	} else if (result.response === "SUCCESS") {
-        		 location.replace(sourceleadUrl + "/payrollBonusList");
+        		 location.replace(pmsUrl + "/payrollBonusList");
         	} else if (result.indexOf('Sign In') !== -1) {
         		location.replace(sourceleadUrl);
         	} else {
