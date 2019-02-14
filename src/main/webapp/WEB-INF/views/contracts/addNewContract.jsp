@@ -184,7 +184,7 @@
 					 <span class="input-group-addon cursorPointer bg-blue" onclick="getContractTemplates();"><i class="fa fa-refresh "></i></span>
 					 </div>
 					  <sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')"> 
-					 <span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_sourceleadUrl}/addContractTemplate" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>           
+					 <span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_vmsUrl}/addContractTemplate" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>           
                    </sec:authorize>
                   <c:choose>
 				    <c:when test="${fn:length(contractsTemplateList) gt 0}">
@@ -2426,8 +2426,8 @@ function flush(){
 
 <script>
 function cancelContract(){
-	var sourceleadUrl = '${sourceleadUrl}';
-	location.replace(sourceleadUrl+"/contractListbyStatus");
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	location.replace(vmsUrl+"/contractListbyStatus");
 }
 
 </script>
