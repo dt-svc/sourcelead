@@ -41,7 +41,7 @@
           </div>
           
           <div class="col-md-5">
-                  <label>MICR Code<span class="text-danger">&nbsp;*</span></label>
+                  <label>MICR Codecxcbcxvbcv<span class="text-danger">&nbsp;*</span></label>
                   <div>
                   <input type="text" id="micrCode"  field-name="MICR Code" name="micrCode" class="form-control" data-validation="required validate_Space validate_length length9-15"/>
                   </div>
