@@ -1107,7 +1107,7 @@ function offerpagination(url){
     } );
     $("#offerpagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#dataTableSearch").keyup(function(e) {
+    $("#associateJoinedListDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
     		   getAssociatesJoinedList();
     	   }
