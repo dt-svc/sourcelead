@@ -968,6 +968,7 @@ function validateEmail(type){
 		       url: sourceleadUrl+"/ws/validateCrowdSourcingRegistrationEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
 		       success: function(data) {
 		    		if(data != null && data != ''){
+		    			alert(data);
 					     if(data == 'Invalid'){
 					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
 					    	    $('#pwdDiv').attr("style" , "display : none"); 
