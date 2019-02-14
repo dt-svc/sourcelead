@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URLConnection;
 import java.text.DateFormat;
@@ -50,12 +49,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
+import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
+import com.bis.sourcelead.dto.AssociateJoineReportDTO;
 import com.bis.sourcelead.dto.AvailableAssociatesDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
@@ -64,10 +64,6 @@ import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
-
-import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
-import com.bis.sourcelead.dto.Response;
-
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
@@ -83,11 +79,8 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectTasks;
-
-import com.bis.sourcelead.entity.RecruiterJobsReportView;
-
 import com.bis.sourcelead.entity.Projects;
-
+import com.bis.sourcelead.entity.RecruiterJobsReportView;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -99,11 +92,6 @@ import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
-
-import com.bis.sourcelead.reportsDTO.AssetGrowthDTO;
-
-import com.bis.sourcelead.reportsDTO.ProjectReportDTO;
-
 import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
@@ -220,6 +208,9 @@ public class ReportRestController {
 	
 	@Autowired
 	UserRoleDao userRoleDao;
+	
+	@Autowired
+	private RequirementSubmissionDao requirementSubmissionDao;
 	
 	@Autowired
 	UserLoginLogoutSessionService userLoginLogoutSessionService;
@@ -2136,7 +2127,7 @@ public class ReportRestController {
 								clientIdsList.add(Long.parseLong(clients[i]));
 							}
 						}*/
-					String[] tableColumns = { "uid", "employeeName", "clientName", "payRate", "billRate", "Margin"};
+					String[] tableColumns = { "employeeId", "employeeName", "clientName", "payRate", "billRate", "Margin"};
 					int sortColumnIndex = 1; // by default sorting using updated date
 					String sortColumnOrder = "desc"; // by default descending order
 					
@@ -2165,6 +2156,142 @@ public class ReportRestController {
 				}
 			
 
+			@RequestMapping(value = "/getMarginSheetListExport")
+			public void getMarginSheetListExport(@RequestParam(value="timePeriod", required=false) String timePeriod,
+					@RequestParam(value="customStartDate", required=false) String customStartDate,
+					@RequestParam(value="customEndDate", required=false) String customEndDate,
+					@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
+					@RequestParam(value="searchValue", required=false) String searchValue,
+					@RequestParam(value="exportType", required=false) String exportType,
+					MarginSheetReportDTO marginSheetReportDTO,
+					HttpServletRequest request,HttpServletResponse response) throws Exception {
+			      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+					Date[] searchDates = null;
+					ResponseList<MarginSheetReportDTO> projectMembersDTOList = new ResponseList<MarginSheetReportDTO>();
+					
+						if(!"custom".equalsIgnoreCase(timePeriod)){
+							searchDates = reportsUtil.getJobFilterDate(timePeriod,orgLocations);
+						}else if("custom".equalsIgnoreCase(timePeriod) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
+				    	    
+				    	    DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+							DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+							DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+							
+							Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
+							Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
+							String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+							String customEndTimeStr = TZ_DF_CED.format(endTime);  
+							Date startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+							Date endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+				    	   
+				    	    searchDates = new Date[2];
+				    	    searchDates[0] = startDateUTC;
+				    	    searchDates[1] = endDateUTC;
+						}
+						
+						String[] tableColumns = { "employeeId", "employeeName", "clientName", "payRate", "billRate", "Margin"};
+						int sortColumnIndex = 1; // by default sorting using updated date
+						String sortColumnOrder = "desc"; // by default descending order
+						if (marginSheetReportDTO.getOrder() != null && !marginSheetReportDTO.getOrder().isEmpty()) {
+							sortColumnIndex = Integer.parseInt(marginSheetReportDTO.getOrder().get(0).get("column"));
+							sortColumnOrder = marginSheetReportDTO.getOrder().get(0).get("dir");
+						}
+						marginSheetReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+						marginSheetReportDTO.setSortOrder(sortColumnOrder);
+						
+					projectMembersDTOList = projectMembersService.getProjectMemeberByClientProjectAndOrglocation(orgLocationId,searchDates,marginSheetReportDTO);
+					
+					File file = null;
+				    if(exportType.equalsIgnoreCase("pdf")) {
+				    	 file=  dynamicReport.marginSheetReportPdfExport(projectMembersDTOList,orgLocations.getDateFormat(),orgLocations.getOrgLocationName());
+				    }else {
+				    	file=  dynamicReport.marginSheetReportExcelExport(projectMembersDTOList,orgLocations.getDateFormat(),orgLocations.getOrgLocationName());
+				    }
+					
+					String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+					if (mimeType == null) {
+						mimeType = "application/octet-stream";
+					}
+					response.setContentType(mimeType);
+					StringBuilder fileNameSB = new StringBuilder();
+					response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+					response.setContentLength((int) file.length());
+					InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+					FileCopyUtils.copy(inputStream, response.getOutputStream());
+					inputStream.close();
+					response.getOutputStream().close();
+					response.getOutputStream().flush();	
+					if(file!= null){
+						file.delete();
+					}
+				}
+			
+			@RequestMapping(value = "/associateJoinedReportExport")
+			public void associateJoinedReportExport(AssociateJoineReportDTO associateJoineReportDTO,
+					@RequestParam(value="exportType", required=false) String exportType,
+					HttpServletRequest request,HttpServletResponse response) throws Exception {
+						OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+						
+						String[] tableColumns = {"employeeId","empName", "gender","empType","deptName", "userRole","rate","hireDate", "reportingManager", "shiftName"};
+
+						   int sortColumnIndex = 1; //by default sorting using updated date
+						   String sortColumnOrder = "desc"; //by default descending order
+						if(associateJoineReportDTO.getOrder() != null && !associateJoineReportDTO.getOrder().isEmpty()) {
+							sortColumnIndex = Integer.parseInt(associateJoineReportDTO.getOrder().get(0).get("column"));
+							sortColumnOrder = associateJoineReportDTO.getOrder().get(0).get("dir");
+						}
+						associateJoineReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+						associateJoineReportDTO.setSortOrder(sortColumnOrder);
+						
+						Date[] freqDates = new Date[2];
+						Date startUTCDate = null;
+						Date endUTCDate = null;
+						DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+						 DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+						 DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+						 if("Custom".equalsIgnoreCase(associateJoineReportDTO.getFrequency())){
+							 Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),associateJoineReportDTO.getFromDate());
+								Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),associateJoineReportDTO.getToDate());
+								String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+								String customEndTimeStr = TZ_DF_CED.format(endTime);  
+								startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+								endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+						 }else {
+							 freqDates = reportsUtil.getJobFilterDate(associateJoineReportDTO.getFrequency(),loginOrgLocations);
+							 String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
+							 String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
+							 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+							 endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+						 }
+						 
+					   ResponseList<AssociateJoineReportDTO> toDayReqApplicantscount =requirementSubmissionDao.getAssociateJoineReport(associateJoineReportDTO, loginOrgLocations.getId(),startUTCDate,endUTCDate);
+						
+					File file = null;
+				    if(exportType.equalsIgnoreCase("pdf")) {
+				    	 file=  dynamicReport.associateJoinedReportPdfExport(toDayReqApplicantscount,loginOrgLocations.getDateFormat(),loginOrgLocations.getOrgLocationName());
+				    }else {
+				    	file=  dynamicReport.associateJoinedReportExcelExport(toDayReqApplicantscount,loginOrgLocations.getDateFormat(),loginOrgLocations.getOrgLocationName());
+				    }
+					
+					String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+					if (mimeType == null) {
+						mimeType = "application/octet-stream";
+					}
+					response.setContentType(mimeType);
+					StringBuilder fileNameSB = new StringBuilder();
+					response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+					response.setContentLength((int) file.length());
+					InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+					FileCopyUtils.copy(inputStream, response.getOutputStream());
+					inputStream.close();
+					response.getOutputStream().close();
+					response.getOutputStream().flush();	
+					if(file!= null){
+						file.delete();
+					}
+				}
+			
 	@RequestMapping(value = "/offerAcceptanceRateList")
 	public ResponseList<OfferAcceptanceRateDTO> getOfferAcceptanceRateList(HttpServletRequest request, 
 			@RequestParam(defaultValue = "") String selectedClients,
