@@ -4200,7 +4200,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						Query countQueryString;
 						List<Long> countlist = null;
 						String sortingQry = "";
-					 String query="SELECT emp.ID as empId, emp.USER_ID as userId,emp.ORG_LOCATIONS_ID as orgLocationsId, emp.HIRE_DATE as hireDate, urole.USER_TYPE as userRole,"
+					 String query="SELECT emp.EMPLOYEE_ID as employeeId, emp.USER_ID as userId,emp.ORG_LOCATIONS_ID as orgLocationsId, emp.HIRE_DATE as hireDate, urole.USER_TYPE as userRole,"
 +" emp.EMPLOYMENT_TYPE as empType,user.GENDER as gender, emp.CURRENT_CURRENCY as currency,emp.RATE as rate,emp.RATE_PER as ratePer,emp.PROBATION_STATUS as probationStatus,"
 +" (SELECT CONCAT(u.FIRST_NAME,space(1),u.LAST_NAME) from USER u where u.ID = emp.USER_ID) as empName,"
 +"(SELECT CONCAT(u.FIRST_NAME,space(1),u.LAST_NAME) from USER u where u.ID = urole.REPORTING_MANAGER_ID) as reportingManager," 
@@ -4243,7 +4243,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 								 .append("OR urole.USER_TYPE like '%"
 			                                + requirementSubmissionHistoryDTO.getSearchValue()
 			                                + "%'")
-								 .append("OR emp.ID like '%"
+								 .append("OR emp.EMPLOYEE_ID like '%"
 			                                + requirementSubmissionHistoryDTO.getSearchValue()
 			                                + "%')");
 			                }
@@ -4256,7 +4256,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			            }
 					 
 					 
-					  queryString =  session.createSQLQuery(query.toString() + " " + query1.toString() + " " + sortingQry).addScalar("empId", StandardBasicTypes.LONG)
+					  queryString =  session.createSQLQuery(query.toString() + " " + query1.toString() + " " + sortingQry).addScalar("employeeId", StandardBasicTypes.STRING)
 							  		.addScalar("empName",StandardBasicTypes.STRING).addScalar("empType", StandardBasicTypes.STRING)
 							  		.addScalar("deptName", StandardBasicTypes.STRING).addScalar("userRole", StandardBasicTypes.STRING)
 							  		.addScalar("reportingManager", StandardBasicTypes.STRING)

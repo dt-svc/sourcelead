@@ -317,6 +317,14 @@
 							</span>
 						</div>
 					</li> -->
+					<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="exportReportOptions();"></a>
+						<div class="newActPop" style="display: none;">
+							<span>
+			           	   		<a href="javascript:void(0)" onclick="exportAssociateJoinedSheet('Pdf');" title="PDF">Export PDF</a>
+								<a href="javascript:void(0)" onclick="exportAssociateJoinedSheet('Excel');" title="Excel">Export Excel</a>            
+							</span>
+						</div>
+					</li>
 			  <li class="" id="associateTeminateSearchId" style="display: none" ><input type="text" class="repSearchBar" placeholder="Search" id="dataTableSearch" ><span class="repSearchIcon" onclick="getAssociatesTerminatedList();"></span></li>
 	     	 <li class="" id="associateJoinSearchId" style="display: block;"><input type="text" class="repSearchBar" placeholder="Search" id="associateJoinedListDataTableSearch"><span class="repSearchIcon" onclick="getAssociatesJoinedList();"></span></li>
 	        </ul>
@@ -420,6 +428,10 @@
   </section>
   
   <script>
+  function exportReportOptions(){
+		$(".newActPop").slideToggle(200);
+		$(".action-pop").slideUp(200);
+	}
  $(document).ready(function() {
 	 getAssociatesJoinedList();
 //	 getAssociatesTerminatedList();
@@ -751,6 +763,59 @@ $("#associateJoinedListDataTableSearch").keydown(function(e) {
 	});
 </script>
  
+ <script type="text/javascript">
+function exportAssociateJoinedSheet(exportType){
+	var sourceleadUrl ='${sourceleadUrl}';
+	   var tab = '${tab}';
+	   var frequency=$("#reportTypeId").val();
+	   var graphFrequency=$("#year").val();
+	   
+	  var  noApplicantJoinedList=$("#noApplicantJoinedList").val(0); 
+	    var fromDate='';
+	    var toDate='';
+		var searchValue = $("#associateJoinedListDataTableSearch").val();
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		searchValue = searchValue ? searchValue : "";
+		var employmentType = [];
+		 $('input:checkbox[name=employmentType]:checked').each(function() 
+		 {
+			employmentType.push($(this).val());
+		 });
+		 var clientNameById = [];
+		 $('input:checkbox[name=clientNameById]:checked').each(function() 
+		 {
+			 clientNameById.push($(this).val());
+		 });
+		 var teamNameById = [];
+		 $('input:checkbox[name=teamNameById]:checked').each(function() 
+		 {
+			 teamNameById.push($(this).val());
+		 });
+		 var incentivizedType = [];
+		 $('input:checkbox[name=incentivizedType]:checked').each(function() 
+		 {
+			 incentivizedType.push($(this).val());
+		 });
+		 var searchType = $('input[name=searchType]:checked').val();
+	    if(frequency == "custom"){
+	        var fromDate = $("#ReportStartDate").val();
+	  		  var toDate = $("#ReportEndDate").val();
+	    	if(fromDate == ''){
+	    		  document.getElementById("reportsStartDate").style.display="block";
+				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+	        }
+	        if(toDate == ''){
+	        	 document.getElementById("reportsEndDate").style.display="block";
+			  $("#reportsEndDate").empty().append("End Date is Required") ; 
+	        }
+		window.location.href = sourceleadUrl+"/associateJoinedReportExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&graphFrequency="+graphFrequency+"&exportType="+exportType+"&type=applicantReport";
+}else{
+	 document.getElementById("reportsStartDate").style.display="none";
+	 document.getElementById("reportsEndDate").style.display="none";
+	 window.location.href = sourceleadUrl+"/associateJoinedReportExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&graphFrequency="+graphFrequency+"&exportType="+exportType+"&type=applicantReport";
+} 
+}
+</script>
  
  <script type="text/javascript">
        function getAssociatesJoinedList(){
@@ -876,8 +941,8 @@ function offerpagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 $("#noApplicantJoinedList").val(1); 
 	    	  		var result = "";
-	    	  		 if(opt.empId !=null && opt.empId !='' && opt.empId !='undefined'){
-               		  result = result + '<td><div><span title='+opt.empId+'>'+opt.empId+'</span></div></td>';
+	    	  		 if(opt.employeeId !=null && opt.employeeId !='' && opt.employeeId !='undefined'){
+               		  result = result + '<td><div><span title='+opt.employeeId+'>'+opt.employeeId+'</span></div></td>';
 						}else{
 							result = result + ' <td><div>--</div></td>';
 						}
@@ -1042,7 +1107,7 @@ function offerpagination(url){
     } );
     $("#offerpagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#dataTableSearch").keyup(function(e) {
+    $("#associateJoinedListDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
     		   getAssociatesJoinedList();
     	   }
