@@ -8,7 +8,7 @@
 
 <script>
 $(document).ready(function(){
-	 loc ="${SourceLeadWeb_orgLocations.dateFormat}";
+	 loc ="${SourceLeadWeb_dateFormat}";
 	 getAllRelationssByOrgLocation();
 	  if(loc.match("yyyy-MM-dd")){
 		  locDateFormat = 'YYYY-MM-DD';
@@ -239,7 +239,7 @@ $(document).ready(function(){
         $('#custToDate').removeAttr('data-validation');
     }
     
-    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+    var locationDate ='${SourceLeadWeb_dateFormat}'; 
       var finalDateFormatEndDate = '';
       if(locationDate.match("yyyy-MM-dd")){
           finalDateFormatEndDate = 'yy-mm-dd';
