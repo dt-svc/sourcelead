@@ -231,7 +231,7 @@ function selectOfferApplicants(){
 <script type="text/javascript">
 	function addOfferRow() {
 		
-		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		  var finalDateFormatOffer = '';
 		  if(locationDate.match("yyyy-MM-dd")){
 			  finalDateFormatOffer = 'yy-mm-dd';
