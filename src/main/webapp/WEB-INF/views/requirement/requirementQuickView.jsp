@@ -6,7 +6,9 @@
 
  <jsp:include page="requirementAssignedTo.jsp"></jsp:include>
  
- 
+ <script>
+ vmsUrl = '${SourceLeadWeb_vmsUrl}'
+ </script>
  <script>
 		$(document).ready(function() {
 			 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
@@ -150,14 +152,14 @@
 							
 								<c:if test="${(requirement.level1ApproverUserId != null && requirement.level1ApproverUserId != '' && requirement.level1ApproverUserId != 'undefined') || (requirement.level2ApproverUserId != null && requirement.level2ApproverUserId !='' && requirement.level2ApproverUserId != 'undefined')}">
 									<c:if test="${requirement.level2ApproverUserId != null && requirement.level2ApproverUserId !=''}">
-											${SourceLeadWeb_user.id} ${requirement.level2ApproverUserId}
+											${SourceLeadWeb_userId} ${requirement.level2ApproverUserId}
 										<c:choose>
-											<c:when test="${SourceLeadWeb_user.id == requirement.level2ApproverUserId}">
+											<c:when test="${SourceLeadWeb_userId == requirement.level2ApproverUserId}">
 												<c:set var="approver" value="true"></c:set>
 											</c:when>
 											<c:otherwise>
 												<c:forEach items="${requirement.level1ApproverUserId}" var="a">
-													<c:if test="${SourceLeadWeb_user.id == requirement.level1ApproverUserId[a]}">
+													<c:if test="${SourceLeadWeb_userId == requirement.level1ApproverUserId[a]}">
 														<c:set var="approver" value="true"></c:set>
 													</c:if>
 												</c:forEach>
@@ -166,7 +168,7 @@
 									</c:if>
 								</c:if>
 								<c:if test="${requirement.managerUserId != null && requirement.managerUserId != ''}">
-									<c:if test="${requirement.managerUserId.id == SourceLeadWeb_user.id}">
+									<c:if test="${requirement.managerUserId.id == SourceLeadWeb_userId}">
 										<c:set var="contains" value="true"></c:set>
 									</c:if>
 								</c:if>
@@ -475,7 +477,7 @@
 				                <span class="tbldata-dotdot-big">
 				                <c:choose>
 								    <c:when test="${!empty requirement.clientName}">
-					                	<a href="<c:url value="/clientDashboard?orgRelationUUID=${requirement.orgRelationUUID}"/>">${requirement.clientName}</a>
+					                	<a href="${SourceLeadWeb_vmsUrl}/clientDashboard?orgRelationUUID=${requirement.orgRelationUUID}">${requirement.clientName}</a>
 						          	</c:when>
 								    <c:otherwise>
 								    	' -- '
