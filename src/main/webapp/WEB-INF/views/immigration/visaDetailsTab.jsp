@@ -1,6 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
- <c:set var ="visaListCount" value ="${fn:length(PassportList)}"/>
+ <c:set var ="visaListCount" value ="${fn:length(visaList)}"/>
 <div class="immigraTabsHead">
 			<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
@@ -44,47 +44,39 @@
 				    </c:otherwise>
 				</c:choose>
 			  </tr>
-			  <c:forEach var="visadetails" items="${PassportList}" varStatus="rows">
+			  <c:forEach var="visadetails" items="${visaList}" varStatus="rows">
 			  <tr>
 				<td><div class="tbldata-dotdot-sm" title = "${visadetails.visaType}">${!empty visadetails.visaType ? visadetails.visaType : '---'}</div></td>
-				<td><div class="tbldata-dotdot-sm" title = "${visadetails.idNumber}">${!empty visadetails.idNumber ? visadetails.idNumber : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm" title = "${visadetails.visaNumber}">${!empty visadetails.visaNumber ? visadetails.visaNumber : '---'}</div></td>
 				<td><div class="tbldata-dotdot-sm" title = "${visadetails.country}">${!empty visadetails.country ? visadetails.country : '---'}</div></td>
-				<td><div class="tbldata-dotdot-sm" title = "${visadetails.validFromDateStr}">${!empty visadetails.validFromDateStr ? visadetails.validFromDateStr : '---'}</div></td>
-				<td><div class="tbldata-dotdot-sm" title = "${visadetails.validToDateStr}">${!empty visadetails.validToDateStr ? visadetails.validToDateStr : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm" title = "${visadetails.validFrom}">${!empty visadetails.validFrom ? visadetails.validFrom : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm" title = "${visadetails.validTo}">${!empty visadetails.validTo ? visadetails.validTo : '---'}</div></td>
 				<td><div class="tbldata-dotdot-sm" title = "${visadetails.currentStatus}">${visadetails.currentStatus}</div></td>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
-				        <td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${visadetails.id},'${visadetails.idType}');"
+				        <td><div><i id="edit" onclick="immigration.editVisaDetailsByRowId(${visadetails.id});"
 				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-				 onclick="deleteImmigrationRecord('immigration.deletePassportVisaDetails',${visadetails.id},'${visadetails.idType}');" 
-				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
+				 onclick="deleteImmigrationRecord('immigration.deleteVisaDetails',${visadetails.id});" 
+				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i> </div></td>
 				    </c:when>
 				    <c:otherwise>
 				        <c:choose>
 						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
-						      <td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${visadetails.id},'${visadetails.idType}');"
+						      <td><div><i id="edit" onclick="immigration.editVisaDetailsByRowId(${visadetails.id});"
 				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-				 onclick="deleteImmigrationRecord('immigration.deletePassportVisaDetails',${visadetails.id},'${visadetails.idType}');" 
+				 onclick="deleteImmigrationRecord('immigration.deleteVisaDetails',${visadetails.id});" 
 				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 						    </c:when>
 						    <c:otherwise>
 						    </c:otherwise>
 						</c:choose>
 				    </c:otherwise>
-				</c:choose>
+				</c:choose> 
 				
-				<!-- <td class="immigraAction">
-					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-					<div class="mmigraActionInn">
-						<span>
-							<a href="javascript:void(0)" class="fa fa-trash"></a>
-							<a href="javascript:void(0)" class="fa fa-pencil"></a>
-						</span>
-					</div>
-				</td> -->
+				
 			  </tr>
 			   </c:forEach>
-			    <c:if test="${empty PassportList}">
+			    <c:if test="${empty visaList}">
 				<tr>
 				 <td colspan="7" valign="top" class="dataTables_empty"></td>
 				</tr>
@@ -95,9 +87,8 @@
 			 
 		<!--popcode start  -->
 		<form id="CandidateVisaform" name="CandidateVisaform" method="post"> 
-		 <input type="hidden" id="Visa" name="Visa" value="Visa">
 		<div class="popUpOut" id="popUpVisa">
-		<input type = "hidden" id="candidateVisaId"  name="candidatePassportId">
+		<input type = "hidden" id="candidateVisaId"  name="candidateVisaId">
 		<div class="popupHead">
 			<h2>Add Visa</h2><a href="javascript:void(0)" class="fa fa-close popCan" onClick="popFun();"></a>
 		</div>
@@ -109,7 +100,7 @@
               	<div class="col-md-8 padding_right">
 					<select class="selectpicker width100percnt" name = "visaType" id = "visaType" field-name = "Visa Type"  data-validation = "required" data-live-search="true">
 					  <option value="" selected>Select Visa Type</option>
-					  <c:forEach var="visaType" items="${visaList}">
+					  <c:forEach var="visaType" items="${canVisaList}">
 						<option value="${visaType}">${visaType}</option>
 					</c:forEach>
 					</select>
@@ -119,7 +110,7 @@
           <div class="col-sm-12 noPad mt clearfix" id="idNumberVisaDiv">
 				<label class="col-md-4 padding_left">Visa Id<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" name = "idNumber" id = "idNumber" placeholder="Visa Id" field-name = "Visa Id" class="form-control" data-validation = "required validate_length length8-20 validate_AtLeastOneAlphaNumber" onchange="immigration.validateCandidatePassportVisa('Visa');" onkeyup="immigration.validateCandidatePassportVisa('Visa');"/>
+              		<input type="text" name ="visaNumber" id ="visaNumber" placeholder="Visa Id" field-name = "Visa Id" class="form-control" data-validation = "required validate_length length8-20 validate_AtLeastOneAlphaNumber"/>
 				</div>
 			</div>				          
           	<div class="col-sm-12 noPad mt clearfix">
@@ -146,13 +137,24 @@
               	<div class="col-md-8 padding_right">
               	<div class="input-group errorInptgroup">
               		<input type="text" class="form-control calendar" value="" name = "validTo" placeholder="Valid To" id = "visaValidTo" field-name = "Valid To" data-validation="required"/>
-				 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('visaValidTo');"></i></span>
+				 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer"  onBlur="isCurrentValidate();"onClick="clearDateValue('visaValidTo')"></i></span>
 				</div>
-			</div>	</div>								
+			</div>	
+			
+			</div>	
+			
+			 <div class="clearfix"></div>
+		  <div class="col-md-4 col-md-offset-4">
+		   	<div class="mt5 clearfix">
+			   <input id="isCurr" title="Is Current" name="isCurrent"  type="checkbox" onclick="isCurrentValidate();">
+			   <label class="padding_left">Is Current</label>
+			</div>
+		   </div>
+		   							
 		</div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" class="" type="button" id="visa_save_id" onclick="immigration.savePassportVisaDetails('Visa')">
+            <input value="Save" class="" type="button" id="visa_save_id" onclick="immigration.saveVisaDetails()">
             <input value="Cancel" class="popCan" type="button" onClick="popFun();">
           </div>		
 	</div><!--popcode end  -->	
@@ -244,5 +246,32 @@
   $('#visaCountry').selectpicker('refresh');
 </script>
 		
-
+<script type="text/javascript">
+function isCurrentValidate(){
+	
+	var flag = document.getElementById("isCurr").checked;
+	 if(flag == true){
+		 $("#isCurr").val("Y"); 
+		alert("checked ");
+	 }else{
+		 $("#isCurr").val("N"); 
+		 alert("uncheked");
+	 } 
+	
+	/* var ckVal=$("#multipleCheckBox123").val();
+	var fullDate = new Date()
+	var twoDigitMonth = ((fullDate.getMonth().length+1) === 1)? (fullDate.getMonth()+1) : '0' + (fullDate.getMonth()+1);
+	var currentDate = twoDigitMonth + "-" + fullDate.getDate() + "-" + fullDate.getFullYear();
+	alert("currentDate="+currentDate);
+	var toDate=$("#visaValidTo").val();
+	alert("toDate=="+toDate);
+	
+	if(toDate > currentDate){
+		alert("Valid To  Should be greter than current date")
+	}else{
+		alert("Yfff");
+	} */
+	
+}
+</script>
 		
