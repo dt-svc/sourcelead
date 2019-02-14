@@ -140,7 +140,7 @@ function getGroupFrequency(){
 
 <script>
   $( function() {
-	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	  // written common method in slead-common.js for date formats start
 	  var finalDateFormat = getJSDateFormat(locationDate);
 	  //end
@@ -157,7 +157,7 @@ function getGroupFrequency(){
 <script>
 	$(function() {
 		
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		 var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		  // written common method in slead-common.js for date formats start
 		  var finalDateFormat = getJSDateFormat(locationDate);
 		  //end
