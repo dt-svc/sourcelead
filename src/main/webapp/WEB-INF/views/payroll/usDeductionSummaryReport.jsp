@@ -77,7 +77,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
   
   <script>
 	$(function() {
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		 var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		 var finalDateFormatEndDate = '';
 		  if(locationDate.match("yyyy-MM-dd")){
 			  finalDateFormatEndDate = 'yy-mm-dd';

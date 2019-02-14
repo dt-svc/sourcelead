@@ -21,7 +21,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Employee Payroll</h2>
       </div>
-       <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
        <a href="/pms/usPayrollReport">US Payroll Reports List</a> &raquo; Employee Payroll</div>
     </section>
     
@@ -115,7 +115,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
   
     <script>
 	$(function() {
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		 var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		 var finalDateFormatEndDate = '';
 		  if(locationDate.match("yyyy-MM-dd")){
 			  finalDateFormatEndDate = 'yy-mm-dd';
