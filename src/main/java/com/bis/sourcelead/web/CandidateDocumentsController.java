@@ -27,6 +27,9 @@ public class CandidateDocumentsController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${atsUrl}")
+	private String atsUrl;
+	
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
@@ -51,7 +54,7 @@ public class CandidateDocumentsController {
 			ModelAndView model = new ModelAndView();
 			model.setViewName("candidates/candidate");
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			
+			model.addObject("atsUrl", atsUrl);
 			 List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 			 model.addObject("documentsList", documentsList);
 			 
@@ -67,6 +70,7 @@ public class CandidateDocumentsController {
 					List<CandidateDocuments> candidateDocumentsList = candidateDocumentsService.getCandidateDocumentsListByRequestedDocumentsId(requestedDocuments.getId());
 					model.setViewName("candidates/requestedDocuments");
 					model.addObject("sourceleadUrl", sourceleadUrl);
+					model.addObject("atsUrl", atsUrl);
 					model.addObject("requestDocUUID", requestDocUUID);
 					model.addObject("candidateDocumentsList", candidateDocumentsList);
 					model.addObject("candidateDocumentsListSize", candidateDocumentsList.size());
