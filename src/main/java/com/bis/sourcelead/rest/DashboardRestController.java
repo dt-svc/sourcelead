@@ -2101,7 +2101,7 @@ public class DashboardRestController {
 				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 				
-				String[] tableColumns = {"empId","empName", "gender","empType","deptName", "userRole","rate","hireDate", "reportingManager", "shiftName"};
+				String[] tableColumns = {"employeeId","empName", "gender","empType","deptName", "userRole","rate","hireDate", "reportingManager", "shiftName"};
 
 				   int sortColumnIndex = 1; //by default sorting using updated date
 				   String sortColumnOrder = "desc"; //by default descending order
@@ -2146,8 +2146,10 @@ public class DashboardRestController {
 				for(AssociateJoineReportDTO rsh: toDayReqApplicantscount.getData()){
 					AssociateJoineReportDTO rshDTO = new AssociateJoineReportDTO();
 					StringBuilder sb = new StringBuilder();
-					if(rsh.getEmpId() !=null){
-						rshDTO.setEmpId(rsh.getEmpId());
+					if(rsh.getEmployeeId() !=null){
+						rshDTO.setEmployeeId(rsh.getEmployeeId());
+					}else{
+						rshDTO.setEmployeeId("---");
 					}
 					if(rsh.getEmpName() !=null){
 						rshDTO.setEmpName(rsh.getEmpName());
