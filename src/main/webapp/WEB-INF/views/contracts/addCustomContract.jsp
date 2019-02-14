@@ -2179,8 +2179,8 @@ function flush(){
 
 <script>
 function cancelContract(){
-	var sourceleadUrl = '${sourceleadUrl}';
-	location.replace(sourceleadUrl+"/contractListbyStatus");
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	location.replace(vmsUrl+"/contractListbyStatus");
 }
 
 </script>
