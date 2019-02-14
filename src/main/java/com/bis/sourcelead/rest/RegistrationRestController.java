@@ -60,6 +60,7 @@ import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.RegistrationOptionalService;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Tabs;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
@@ -76,6 +77,7 @@ import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TabsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -156,6 +158,9 @@ public class RegistrationRestController {
 	 
 	 @Autowired
 	 UserStatsCacheHelper userStatsCacheHelper;
+	 
+	 @Autowired
+	 TimeZoneService timeZoneService;
 	 
 	 
 	 @RequestMapping(value = "/app/getOrgsList")
@@ -1511,6 +1516,15 @@ public class RegistrationRestController {
 		String ipAddress = userLoginHelper.getClientIpAddr(request);
 		boolean alreadyVerifiedBefore = userLoginLogoutSessionService.validatePreviouslyAuthenticatedByUserIdAndIpAddress(ipAddress, userRole.getUser().getId());
 		return alreadyVerifiedBefore;
+	}
+	
+	@RequestMapping(value = "/app/getTimezonesList")
+	public @ResponseBody String getTimezonesList(HttpServletRequest request) throws Exception
+	{
+		String resultJson = null;
+		List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
+		resultJson = commonUtil.toJSON(timezoneList);
+		return resultJson;
 	}
 	
 	

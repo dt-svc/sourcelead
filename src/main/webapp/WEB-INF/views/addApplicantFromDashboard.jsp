@@ -5,8 +5,8 @@
  </c:if>
  
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
-<script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
-<script src="/resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
+<script src="/ats/resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="/ats/resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
@@ -36,7 +36,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	  }if(locationDate.match("yyyy-dd-MM")){
 		  finalDateFormatScript = 'yy-dd-mm'; 
 	  }
-	generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript)
+	generateOrgSubmissionForm(atsUrl,requirementId,finalDateFormatScript)
 	var result = "";
 	result = result + '<form id="addApplicant_form" name="addApplicant_form" enctype="multipart/form-data" method="post">';
 	result = result + '<h3>Add Applicant</h3>';
@@ -687,7 +687,6 @@ $('body').on('submit', '#addApplicant_form', function(e){
       var con = JSON.stringify(fields);
       
       con = encodeURIComponent(con);
-     
 		
        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       
@@ -1329,6 +1328,7 @@ function setRateTypesByLocation(){
 		var form = $('#addApplicant_form')[0];
   		var formData = new FormData(form); 
 		var sourceleadUrl = '${sourceleadUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 		   $.ajax({
 				    type: "POST",
 			    	data: formData,
@@ -1337,7 +1337,7 @@ function setRateTypesByLocation(){
 			        processData: false,
 			        contentType:false,
 		   	        dataType : 'json',
-					url : sourceleadUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}",
+					url : atsUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}",
 					success : function(response) {
 						if (response.response === "AWKWARD") {
 						    location.href = "/errorPage";
