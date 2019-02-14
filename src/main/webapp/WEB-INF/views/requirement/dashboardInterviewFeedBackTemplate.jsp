@@ -429,12 +429,12 @@ $('body').on('blur', '#interviewTemplate_form', function() {
 <script>
 
 function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
     //empty out the preview area
     $("#interviewsjfb-fields").empty();
-  
     $.ajax({
     	type: "GET",
-        url:"/getInterviewrsViewFeedbackList?templateId="+templateId, 
+        url: atsUrl+"/getInterviewrsViewFeedbackList?templateId="+templateId, 
         success: function(data) {
         	 var data = eval(data);
         	 
