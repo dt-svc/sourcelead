@@ -35,7 +35,7 @@
   <div class="col-lg-12">
 	<div class="pull-right">
 	  <input type="submit" value="Register" onClick="registerCompanyModules()" class="btn btn-primary ml10">
-	   <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/enrolledOrgsList'/>'"  class="btn btn-default ml">
+	   <input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/enrolledOrgsList'"  class="btn btn-default ml">
 	</div>
   </div>
 </div>
