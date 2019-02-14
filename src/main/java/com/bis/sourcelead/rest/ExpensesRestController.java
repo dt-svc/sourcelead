@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,6 +52,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.CurrencyCodes;
@@ -73,9 +73,6 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
-
-import gherkin.lexer.Is;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
@@ -276,7 +273,24 @@ public class ExpensesRestController {
 				ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
 				for (ProjectMembers pm : projectMembersList) {
 					ProjectMembersDTO pmDTO =ProjectMemberDTOConverter.getProjectMembersDTOFromProjectMembers(pm);
-					 HashMap<String, Date> dateMap = projectMembersHistoryService.getProjectMembersStartDateAndEndDateByProjectMemberId(pm.getId(),"");
+					
+					 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
+					 if(pmh != null) {
+						 Date pmStartDate = pmh.getProjectAssignedDate();
+						 Date pmEndDate =  null;
+						 if(pmh.getProjectTerminationDate() != null) {
+							 pmEndDate = pmh.getProjectTerminationDate();
+						 }else if(pmh.getProjectMemberId().getProjects().getEndDate() != null)	{
+							 pmEndDate = pmh.getProjectMemberId().getProjects().getEndDate();
+						 }
+						   pmDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmStartDate));
+						 if(null != pmEndDate){
+							 pmDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmEndDate));
+						  }
+					 }
+					
+				/*	
+					HashMap<String, Date> dateMap = projectMembersHistoryService.getProjectMembersStartDateAndEndDateByProjectMemberId(pm.getId(),"");
 					 if(dateMap != null && !dateMap.isEmpty()) {
 						 Date pmStartDate = dateMap.get("STARTDATE");
 						 Date pmEndDate =  dateMap.get("ENDDATE");
@@ -284,7 +298,7 @@ public class ExpensesRestController {
 						 if(null != pmEndDate){
 							 pmDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmEndDate));
 						  }
-					 }
+					 }*/
 					pmDTOList.add(pmDTO);
 					
 				}
@@ -367,10 +381,15 @@ public class ExpensesRestController {
 				    	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(pm.getProjectClientsId().getOrgRelationId().getId());
 				    	 pmDTO.setOrgRelationUUID(orgRelations.getUUID());
 				    }
-					 HashMap<String, Date> dateMap = projectMembersHistoryService.getProjectMembersStartDateAndEndDateByProjectMemberId(pm.getId(),"");
-					 if(dateMap != null && !dateMap.isEmpty()) {
-						 Date pmStartDate = dateMap.get("STARTDATE");
-						 Date pmEndDate =  dateMap.get("ENDDATE");
+					 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
+					 if(pmh != null) {
+						 Date pmStartDate = pmh.getProjectAssignedDate();
+						 Date pmEndDate =  null;
+						 if(pmh.getProjectTerminationDate() != null) {
+							 pmEndDate = pmh.getProjectTerminationDate();
+						 }else if(pmh.getProjectMemberId().getProjects().getEndDate() != null)	{
+							 pmEndDate = pmh.getProjectMemberId().getProjects().getEndDate();
+						 }
 						   pmDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmStartDate));
 						 if(null != pmEndDate){
 							 pmDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmEndDate));

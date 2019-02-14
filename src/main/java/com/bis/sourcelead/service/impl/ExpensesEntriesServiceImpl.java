@@ -225,5 +225,15 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 		return expensesEntriesDao.dumpExpenceCategoryAmountToOldRecords();
 	}
 
+	@Override
+	public int changeDocumentNameWithWhiteSpacesToUnderScore(String staticPath) {
+		try {
+			return expensesEntriesDao.changeDocumentNameWithWhiteSpacesToUnderScore(staticPath);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
 	
 }
