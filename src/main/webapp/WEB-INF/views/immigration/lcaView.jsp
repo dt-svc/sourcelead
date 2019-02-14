@@ -31,7 +31,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
         <h2></h2>
       </div>
      
-	   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/vms/immigration/viewLCAList">LCA List</a> &raquo; LCA Summary</div>
+	   <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_vmsUrl}/immigration/viewLCAList">LCA List</a> &raquo; LCA Summary</div>
       
         <input type="hidden" id ="lcaId" value ="${lcaId}">
     </section>

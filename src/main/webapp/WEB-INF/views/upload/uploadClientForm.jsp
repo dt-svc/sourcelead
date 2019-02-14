@@ -31,7 +31,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	         <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
       <%-- <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="clientDashboard">Client & Contact List</a> &raquo; Client & Contact Import </div> --%>
-    <div class="pull-right brud-crum"><a href="#">Home</a> &raquo; <a href="/vms/clientDashboard">Client & Contact List</a> &raquo; Import Client & Contacts </div>
+    <div class="pull-right brud-crum"><a href="#">Home</a> &raquo; <a href="${SourceLeadWeb_vmsUrl}/clientDashboard">Client & Contact List</a> &raquo; Import Client & Contacts </div>
     </section>
     <form:form id="upload_form" name="upload_form" enctype="multipart/form-data">
     <%-- <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="clientFileUpload?${_csrf.parameterName}=${_csrf.token}&type=Client"> --%>
@@ -44,7 +44,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		  <div class="clearfix mb row">
 
 			<div class="col-xs-8 col-md-8">
-			 <a href="/vms/downloadClientTemplate?name=Contact" class="btn btn-success btn-block">
+			 <a href="${SourceLeadWeb_vmsUrl}/downloadClientTemplate?name=Contact" class="btn btn-success btn-block">
 					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Client Template
 			</a>
 			</div>
@@ -54,7 +54,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			  <input type="button" class="btn btn-primary" id="upload_button" name="upload_button"  onclick = "saveBulkImport();" value="Import">
 				</div>
 				<div class="btn-group">
-			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '/vms/clientDashboard'">
+			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/clientDashboard'">
 				</div>
 			  </div>
 			</div>
@@ -170,6 +170,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 
 <script type="text/javascript">
 function saveBulkImport(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var validationSettings = {
             errorMessagePosition : 'element',
             borderColorOnError : '',
@@ -360,6 +361,7 @@ excelimportDataPagination();
 
 <script>
 function removeRecord(recordId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var rowHtmlContent =  $("#row"+recordId).html();
 	 $.ajax({
        type : "POST",
@@ -377,6 +379,7 @@ function removeRecord(recordId){
 
 <script>
 function terminateRecord(recordId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var rowHtmlContent =  $("#row"+recordId).html();
 	 $.ajax({
        type : "POST",
@@ -392,6 +395,7 @@ function terminateRecord(recordId){
 </script>
 <script>
 function addRecord(recordId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var rowHtmlContent =  $("#row"+recordId).html();
 	 $.ajax({
        type : "POST",
@@ -413,6 +417,7 @@ function flush(){
 </script>
 <script>
 function mergeWithRecord(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var recordId = document.getElementById("clientListIds").value;
 	if(recordId!=null && recordId !=''){
 	$("#clientError").empty();
@@ -441,6 +446,7 @@ function mergeWithRecord(){
 
 <script>
 function mergeRecord(recordId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	flush();
 	 var rowHtmlContent =  $("#row"+recordId).html();
 	$('#clientListIds').empty();

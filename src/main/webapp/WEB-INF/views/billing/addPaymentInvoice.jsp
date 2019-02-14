@@ -17,8 +17,8 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
      <div class="pull-left">
      <h2>Add Payment</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
-    <a href="/vms/invoiceList">Invoice List</a> &raquo;  Add Payment </div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+    <a href="${SourceLeadWeb_vmsUrl}/invoiceList">Invoice List</a> &raquo;  Add Payment </div>
     
     </section>
     <form id= "paymentForm" name="paymentForm" method="post">
@@ -324,6 +324,7 @@ $('body').on('blur', '#paymentForm', function() {
 
 <script type="text/javascript">
 function getInvoiceTemplateList() {
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgRelationId = $("#client").val();
 	var responderLocationId = $("#client :selected").data("responder_location_id");
 	$("#invoiceTemplateId").empty("");

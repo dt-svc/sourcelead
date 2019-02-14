@@ -18,6 +18,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Controller;
 
 import com.bis.sourcelead.security.JWTSecurityContextRepository;
@@ -86,6 +87,9 @@ public class SecurityConfig  {
     	@Value("${sourceleadLogoutUrl}")
     	private String sourceleadLogoutUrl;
     	
+    	@Autowired
+    	SourceleadLogoutSuccessHandler sourceleadLogoutSuccessHandler;
+    	
         @Override
         protected void configure(HttpSecurity http) throws Exception {
         	http
@@ -125,7 +129,7 @@ public class SecurityConfig  {
     			.antMatchers("/vms/getRequirementProfessionalProfileDetails/**").permitAll()
     			.anyRequest().authenticated()                                                   
     			.and()
-    			.formLogin().loginPage(sourceleadLoginUrl)
+    			.formLogin().loginPage("/login")
     			.and().logout().logoutUrl(sourceleadLogoutUrl)
     			.and().sessionManagement() .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     			.and().securityContext().securityContextRepository(securityContextRepository)
