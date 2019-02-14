@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.RandomStringUtils;
@@ -18,14 +19,17 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.UserAccountsDTO;
 import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
@@ -38,6 +42,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -115,6 +120,9 @@ public class UserLoginHelper {
 	@Autowired
 	CountriesService countriesService;
 	
+	@Autowired
+	ConfigurePayrollApproverService configurePayrollApproverService;
+	
 	   
 
 	public  UsernamePasswordAuthenticationToken redirectToDashboard(HttpServletRequest req,String username, String password,String verfDone,String userRoleUUID) 
@@ -124,10 +132,14 @@ public class UserLoginHelper {
 			
 		 String[] usernameWithRole = username.split("##");
 		 String uname = usernameWithRole[0];
+		 String generatedToken = usernameWithRole[2];
 		 
-		 JSONObject userRole = userStatsCacheHelper.getLogInUserRoleStats(uname+"_AUTH_"+userRoleUUID);
-		 JSONObject orgLocations = userStatsCacheHelper.getOrgLocationCacheDetails("OrgLocation_"+userRole.get("orgLocationCode").toString());
-		 
+		 JSONObject userSession =  userStatsCacheHelper.getLogInUserSessionJson(generatedToken+"_SESSION");
+		 while(userSession.isEmpty()) {
+			 userSession =  userStatsCacheHelper.getLogInUserSessionJson(generatedToken+"_SESSION");
+		 }
+		 JSONObject userRole = userStatsCacheHelper.getLogInUserRoleStats(uname+"_AUTH_"+userSession.get("userRoleUUID").toString());
+		 JSONObject orgLocations = userStatsCacheHelper.getOrgLocationCacheDetails(userSession.get("orgLocationCode").toString());
 		 
 		 /**
 		  * Need to remove this entre try block when couch base is completely established
@@ -154,7 +166,7 @@ public class UserLoginHelper {
 			  if(userRole != null && userRole.get("userState").toString() != null && userRole.get("userState").toString().equals(Status.NOT_LOGGEDIN)){
 	  			   UserRole uRole = userRoleService.getUserRoleById(Long.valueOf(userRole.get("userRoleId").toString()));
 	  					 uRole.setUserState(Status.ACTIVE);
-	  			         uRole.setNewlyLoginUser(Constants.YES);
+	  			         uRole.setNewlyLoginUser(Constants.NO);
 	  			         userRoleService.addUserRole(uRole);
 	                Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(uRole.getUser().getId(), Long.valueOf(orgLocations.get("orgLocationId").toString()));
 	                if(null != employee){
@@ -191,11 +203,24 @@ public class UserLoginHelper {
 		  }
 		  
 		  SourceLeadSessionManager.setSessionAttribute(req, "sourceleadLogoutUrl", sourceleadLogoutUrl);
-		  SourceLeadSessionManager.setSessionAttribute(req, "userId", userRole.get("userId"));
+		  
+		  if(userRole.get("userId") != null) {
+			  SourceLeadSessionManager.setSessionAttribute(req, "userId", Long.parseLong(userRole.get("userId").toString()));
+		  }
+		  
+		  if(userRole.get("userRoleId") != null) {
+			  SourceLeadSessionManager.setSessionAttribute(req, "userRoleId", Long.parseLong(userRole.get("userRoleId").toString()));
+		  }
+		  
+		  if(userRole.get("roleHierarchyId") != null) {
+			  SourceLeadSessionManager.setSessionAttribute(req, "roleHierarchyId", Long.parseLong(userRole.get("roleHierarchyId").toString()));
+		  }
+		  
+		  if(userRole.get("candidateId") != null) {
+			  SourceLeadSessionManager.setSessionAttribute(req, "candidateId", Long.parseLong(userRole.get("candidateId").toString()));
+		  }
+		  
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRole", userRole.get("roleName"));
-		  SourceLeadSessionManager.setSessionAttribute(req, "userRoleId", userRole.get("userRoleId"));
-		  SourceLeadSessionManager.setSessionAttribute(req, "roleHierarchyId", Long.parseLong(userRole.get("roleHierarchyId").toString()));
-		  SourceLeadSessionManager.setSessionAttribute(req, "candidateId", userRole.get("candidateId"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "candidateUUID", userRole.get("candidateUUID"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "isGlobalAccess", userRole.get("isGlobalUser"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "isSuperUser", userRole.get("isSuperUser"));
@@ -203,9 +228,11 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRoleId", userRole.get("roleId"));	
 		  SourceLeadSessionManager.setSessionAttribute(req, "userType", userRole.get("userType"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "userCode", userRole.get("userCode"));
-		  SourceLeadSessionManager.setSessionAttribute(req, "userName", userRole.get("userName"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserFullName", userRole.get("loginUserFullName"));
 	      SourceLeadSessionManager.setSessionAttribute(req, "loginUserFirstName", userRole.get("firstName"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserLastName", userRole.get("lastName"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserMiddleName", userRole.get("middleName"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "userImgUrl", userRole.get("imgUrl"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserEmail", userRole.get("email"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "displayName", userRole.get("roleDisplayName"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "designation", userRole.get("designation"));
@@ -217,6 +244,8 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "googlePlus", userRole.get("googlePlus"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "userLoginSecurity", userRole.get("userLoginSecurity"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "newlyLoginUser", userRole.get("newlyLoginUser"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "userCode", userRole.get("userCode"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "isPayRollApprover", userRole.get("isPayRollApprover"));
 		  
 		  
 		  SourceLeadSessionManager.setSessionAttribute(req, "fileUrl", orgLocations.get("imgUrl"));
@@ -225,7 +254,11 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "orgCode", orgLocations.get("orgCode"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationName", orgLocations.get("orgLocationName"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "dba", orgLocations.get("dba"));
-		  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationId", orgLocations.get("orgLocationId"));
+		  
+		  if(orgLocations.get("orgLocationId") != null) {
+			  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationId", Long.parseLong(orgLocations.get("orgLocationId").toString()));
+		  }
+		 
 		  SourceLeadSessionManager.setSessionAttribute(req, "locationCode", orgLocations.get("orgLocationCode"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "orgShortCode", orgLocations.get("orgShortCode"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "timeZoneId", orgLocations.get("timeZoneId"));
@@ -285,8 +318,7 @@ public class UserLoginHelper {
 		boolean isReportTabAccessable = false;
 		SourceLeadSessionManager.setSessionAttribute(req, "reportsTabConfigured", "N");
 		
-		if(!userRole.get("roleName").toString().equalsIgnoreCase(Constants.ROLE_NAME_PROFESSIONAL) && !userRole.get("roleName").toString().equalsIgnoreCase(Constants.ROLE_NAME_INDEPENDENT_RECRUITER)){
-			try {
+		try {
 				tabsList =  userStatsCacheHelper.getLogInUserRoleMenusList(uname+"_AUTH_"+userRoleUUID);
 				actionsList = userStatsCacheHelper.getLogInUserRoleActionsList(uname+"_AUTH_"+userRoleUUID);
 				
@@ -336,9 +368,7 @@ public class UserLoginHelper {
 			SourceLeadSessionManager.setSessionAttribute(req, "resourcesTabCount", resourcesTabCount);
 			SourceLeadSessionManager.setSessionAttribute(req, "paryrollTabCount", paryrollTabCount);
 			
-			
-		  } 
-		  return  new UsernamePasswordAuthenticationToken(username, password,  buildUserAuthority(actionsList));
+		    return  new UsernamePasswordAuthenticationToken(username, password,  buildUserAuthority(actionsList));
 		}else {
 			
 			 String[] usernameWithRole = username.split("##");
@@ -364,7 +394,7 @@ public class UserLoginHelper {
 			  try {
 				  if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
 		  			   userRole.setUserState(Status.ACTIVE);
-		  			   userRole.setNewlyLoginUser(Constants.YES);
+		  			   userRole.setNewlyLoginUser(Constants.NO);
 		  			   userRoleService.addUserRole(userRole);
 		                Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocations.getId());
 		                if(null != employee){
@@ -397,15 +427,15 @@ public class UserLoginHelper {
 				    }
 			  }
 			  
-			  
+			  SourceLeadSessionManager.setSessionAttribute(req, "sourceleadLogoutUrl", sourceleadLogoutUrl);
 			  SourceLeadSessionManager.setSessionAttribute(req, "user", loginUser);
-			  SourceLeadSessionManager.setSessionAttribute(req, "userId", loginUser.getId().toString());
+			  SourceLeadSessionManager.setSessionAttribute(req, "userId", loginUser.getId());
 			  SourceLeadSessionManager.setSessionAttribute(req, "org", orgLocations.getOrg());
 			  SourceLeadSessionManager.setSessionAttribute(req, "orgLocations", orgLocations);
 			  SourceLeadSessionManager.setSessionAttribute(req, "orgCode", orgLocations.getOrg().getOrgCode());
 			  SourceLeadSessionManager.setSessionAttribute(req, "loginOrgLocation", orgLocations);
 			  SourceLeadSessionManager.setSessionAttribute(req, "averageWorkingHours", orgLocations.getAverageWorkingHours());
-			  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationId", orgLocations.getId().toString());
+			  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationId", orgLocations.getId());
 			  SourceLeadSessionManager.setSessionAttribute(req, "locationCode", orgLocations.getLocationCode());
 			  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRole", userRole.getRoles().getRoleName());
 			  
@@ -528,6 +558,13 @@ public class UserLoginHelper {
 				
 			} catch (Exception e1) {
 				e1.printStackTrace();
+			}
+			
+			boolean isPayRollApprover = configurePayrollApproverService.isLoginUserIsPayRollApprover(userRole.getUser().getId(), orgLocations.getId());
+			if (isPayRollApprover == true) {
+			SourceLeadSessionManager.setSessionAttribute(req, "isPayRollApprover", Constants.YES);
+			} else {
+			SourceLeadSessionManager.setSessionAttribute(req, "isPayRollApprover", Constants.NO);
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(req, "loginUserRoleId", userRole.getRoles().getId());	
@@ -727,5 +764,12 @@ public class UserLoginHelper {
 		}
         
 	    return ip;  
+	}
+	
+	
+	public String getLoginUserAuthenticationTocken() {
+		   Authentication auth = SecurityContextHolder.getContext().getAuthentication();	
+	       String authToken[] = auth.getName().split("##");
+	       return authToken[2];
 	}
 }

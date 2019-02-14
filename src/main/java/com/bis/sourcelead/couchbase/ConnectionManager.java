@@ -21,6 +21,8 @@ public class ConnectionManager {
 	private String couchUrl;
 	List<String> urls;
 	private String userProfileCouchBucket;
+	private String userLoginSessionStoreBucket;
+	private String orgLocationsBucket;
 	private String couchPass;
 	
 	
@@ -51,8 +53,27 @@ public class ConnectionManager {
 			throw new RuntimeException("Couchbase BUCKET Not Specified");
 		this.userProfileCouchBucket = userProfileCouchBucket;
 	}
-
 	
+
+	public String getOrgLocationsBucket() {
+		return orgLocationsBucket;
+	}
+
+	public void setOrgLocationsBucket(String orgLocationsBucket) {
+		if(couchUrl == null)
+			throw new RuntimeException("Couchbase BUCKET Not Specified");
+		this.orgLocationsBucket = orgLocationsBucket;
+	}
+
+	public String getUserLoginSessionStoreBucket() {
+		return userLoginSessionStoreBucket;
+	}
+
+	public void setUserLoginSessionStoreBucket(String userLoginSessionStoreBucket) {
+		if(couchUrl == null)
+			throw new RuntimeException("Couchbase BUCKET Not Specified");
+		this.userLoginSessionStoreBucket = userLoginSessionStoreBucket;
+	}
 
 	public String getCouchPassword() {
 		return couchPass;
@@ -69,10 +90,12 @@ public class ConnectionManager {
 		if (client == null) {		
 			List<URI> hosts;
 			try {
-				if (getCouchUrl() != null && !getCouchUrl().isEmpty() && getUserProfileCouchBucket() != null && !getUserProfileCouchBucket().isEmpty()) {
+				if (getCouchUrl() != null && !getCouchUrl().isEmpty()) {
 					hosts = Arrays.asList(new URI(getCouchUrl()));
 					List<String> couchBuckets = new ArrayList<>();
 					couchBuckets.add(getUserProfileCouchBucket());
+					couchBuckets.add(getUserLoginSessionStoreBucket());
+					couchBuckets.add(getOrgLocationsBucket());
 					client = new CouchbaseClient(urls, couchBuckets,getCouchPassword());
 				}
 			} catch (URISyntaxException e) {
@@ -106,6 +129,8 @@ public class ConnectionManager {
 		try {
 			setCouchUrl(couchConfig.getCouchbaseUrl().trim());
 			setUserProfileCouchBucket(couchConfig.getUserProfileBucket().trim());
+			setUserLoginSessionStoreBucket(couchConfig.getUserLoginSessionStoreBucket().trim());
+			setOrgLocationsBucket(couchConfig.getOrgLocationsBucket().trim());
 			setCouchPassword(couchConfig.getPassword().trim());
 		} catch (Exception e) {
 			e.printStackTrace();
