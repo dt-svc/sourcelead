@@ -160,7 +160,7 @@ window.onload = function () {
            </c:if>
            
            <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-           <div class="pull-right brud-crum"><a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; <a href="<c:url value='/jobsList'/>">Jobs List </a> &raquo; Crowdsourcing Jobs</div>
+           <div class="pull-right brud-crum"><a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; <a href="${SourceLeadWeb_atsUrl}/jobsList">Jobs List </a> &raquo; Crowdsourcing Jobs</div>
            </c:if>
           
           <div class="clearfix"></div> 
