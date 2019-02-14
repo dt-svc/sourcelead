@@ -56,7 +56,7 @@
 			<div class="pull-right brud-crum">
 				<a
 					href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-					href="/ats/candidatesList"> Candidate List</a>
+					href="${SourceLeadWeb_atsUrl}/candidatesList"> Candidate List</a>
 				&raquo; Add Candidate
 			</div>
 		</c:if>
@@ -1062,10 +1062,11 @@
 
 <script>
     function getVendorContactList() {
+    	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
         var orgRelationID = $('#vendors').val();
         $.ajax({
             type: "POST",
-            url: sourceleadUrl + "/getOrgSpocsList?" + tokenParamName + "=" + tokenValue + "&orgRelationId=" + orgRelationID + "&type=Vendor",
+            url: vmsUrl + "/getOrgSpocsList?" + tokenParamName + "=" + tokenValue + "&orgRelationId=" + orgRelationID + "&type=Vendor",
             success: function (json) {
                 //var json = JSON.parse(data);
                 $('#vendorcontact').empty();
@@ -1104,14 +1105,15 @@
 <script>
 
 	 function selectedVendor(){
+		 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 		 var vid =  $('#vendors').val();
-		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+		 window.open(vmsUrl+"/addVendorContact?vid="+vid,'_blank');
 	 }
 	 </script>
 	 
 <script>
   $( function() {
-	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	  // written common method in slead-common.js for date formats start
 	  var finalDateFormat = getJSDateFormat(locationDate);
 	  //end
