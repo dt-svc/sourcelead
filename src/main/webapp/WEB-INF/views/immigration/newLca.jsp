@@ -737,7 +737,7 @@
 
 <script type="text/javascript">
 
-var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var locationDate ='${SourceLeadWeb_dateFormat}'; 
 var finalDateFormatLcaSave = getJSDateFormat(locationDate);
 
 function validDateClass(){

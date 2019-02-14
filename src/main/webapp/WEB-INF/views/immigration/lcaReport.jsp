@@ -8,7 +8,7 @@
 
 <script>
 	$(document).ready(function(){
-		 loc ="${SourceLeadWeb_orgLocations.dateFormat}";
+		 loc ="${SourceLeadWeb_dateFormat}";
 		  if(loc.match("yyyy-MM-dd")){
 			  locDateFormat = 'YYYY-MM-DD';
 		  }if(loc.match("dd-MM-yyyy")){

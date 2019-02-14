@@ -314,7 +314,7 @@
 				this.value = this.value.replace(/[^a-zA-Z0-9 ]/g, '');
 			}
 		});
-		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		  var finalDateFormatImmiEduSave = getJSDateFormat(locationDate);
 		$('#immigrationEduStartDate12').datepicker({
 		      dateFormat: finalDateFormatImmiEduSave,
