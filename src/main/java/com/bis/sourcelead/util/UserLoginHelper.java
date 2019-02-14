@@ -443,6 +443,9 @@ public class UserLoginHelper {
 			  SourceLeadSessionManager.setSessionAttribute(req, "loginUserLastName", loginUser.getLastName());
 			  SourceLeadSessionManager.setSessionAttribute(req, "loginUserEmail", loginUser.getEmail());
 			  SourceLeadSessionManager.setSessionAttribute(req, "mobilePhone", loginUser.getMobilePhone());
+			  
+			  SourceLeadSessionManager.setSessionAttribute(req, "userImgUrl", loginUser.getFileUrl());
+			  SourceLeadSessionManager.setSessionAttribute(req, "loginUserFullName", loginUser.getFullName());
 				  
 			  SourceLeadSessionManager.setSessionAttribute(req, "sourceleadUrl", sourceleadUrl);
 			  SourceLeadSessionManager.setSessionAttribute(req, "pmsUrl", pmsUrl);
@@ -498,7 +501,7 @@ public class UserLoginHelper {
 						SourceLeadSessionManager.setSessionAttribute(req, "country", loginUser.getLocation());
 					} else {
 						SourceLeadSessionManager.setSessionAttribute(req, "country",
-								loginUser.getRecruiterRegisterCountry());
+								loginUser.getCountry());
 					}
 			  }else {
 				  SourceLeadSessionManager.setSessionAttribute(req, "country", orgLocations.getCountry());
