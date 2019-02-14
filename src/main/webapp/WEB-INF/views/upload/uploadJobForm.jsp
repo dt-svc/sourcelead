@@ -46,7 +46,7 @@ var uploadflag= true;
 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/jobsList'/>">Job List</a>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="/ats/jobsList">Job List</a>
 			&raquo; Import Jobs
 		</div>
 	</section>
@@ -76,7 +76,7 @@ var uploadflag= true;
 								</div>
 								<div class="btn-group">
 									<input type="reset" class="btn btn-danger" value="Reset"
-										onClick="javascript:window.location.href = '<c:url value='/uploadJobs'/>'">
+										onClick="javascript:window.location.href = '/app/uploadJobs'">
 								</div>
 							</div>
 						</div>
@@ -192,7 +192,7 @@ function cancelFileImport(){
 	/* $("#jobFieldsDiv").attr("style","display:none");
 	$('#jobFileImportDiv').removeAttr("style");
 	$('#jobFieldsDiv').empty(); */
-	location.replace(atsUrl+"/uploadJobs");
+	location.replace(sourceleadUrl+"/uploadJobs");
 }
 </script>
 

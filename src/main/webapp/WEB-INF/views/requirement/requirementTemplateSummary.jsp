@@ -21,7 +21,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 			<h2>Job Template Details</h2> 
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>»<a href="/ats/template">Job Template List </a>»
+			<a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>»<a href="/ats/template">Job Template List </a>»
 			View Job Template
 		</div>
 	</section>
