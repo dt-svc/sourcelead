@@ -98,10 +98,11 @@
             <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
             <span class="repSearchIcon" onclick="getMarginSheetList();"></span></li>
         </ul>
+        <div id="emptyPopup"></div>
 	 <div class="clearfix"></div>	  
 		  
 
-		  
+		  <input type="hidden" id="noMarginReportList" name="noMarginReportList"  value="0"/>
       </div>
    <div id="previousOfferDiv" style="display: block"></div>
     </div>
@@ -118,6 +119,10 @@
  function exportOptions(){
 		$(".newActPop").slideToggle(200);
 		$(".action-pop").slideUp(200);
+	}
+ function candidtaeCancel(){
+		$("#emptyPopup").empty();
+		$(".project_inn_mask").fadeOut(200);
 	}
 	$(function() {
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -173,6 +178,7 @@
 function exportSheet(exportType){
 	   var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dynamicUserDataTableSearch").val();
+		var checkEmptyList = $("#noMarginReportList").val();
 		searchValue = searchValue ? searchValue : "";
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var timePeriod = $("#reportTypeId").val();
@@ -201,7 +207,21 @@ function exportSheet(exportType){
 		$('input:checkbox[name=clientNameById]:checked').each(function() {
 			clients.push($(this).val());
 		});
+		if(checkEmptyList !=0){
 		window.location.href = sourceleadUrl+"/getMarginSheetListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&clientId="+clients+"&exportType="+exportType;
+		}else{
+			var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
+			result = result +"	</div>";
+			$("#emptyPopup").append(result);
+			$("#candidate_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+		}
+		
 }
 </script>
  <script type="text/javascript">
@@ -311,6 +331,7 @@ function marginpagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 // 	    	  		 $("#noApplicantJoinedList").val(1); 
 	    	  		var result = "";
+	    	  		$("#noMarginReportList").val(1);
 	    	  		 if(opt.employeeId !=null && opt.employeeId !='' && opt.employeeId !='undefined'){
 							result = result + ' <div title='+opt.employeeId+' class="clearfix mt5 mb5">'+opt.employeeId+'</div>';
 						}else{
