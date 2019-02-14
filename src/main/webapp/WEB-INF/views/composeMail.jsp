@@ -208,10 +208,10 @@ $(function() {
   
    <script>
   function loadMailBoxDetails(UUID){
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  var atsUrl = '${SourceleadWeb_atsUrl}';
 			 $.ajax({
 				 type: "POST",
-			        url: sourceleadUrl+"/getUserMailBoxDetailsByUUID?${_csrf.parameterName}=${_csrf.token}&UUID="+UUID, 
+			        url: atsUrl+"/getUserMailBoxDetailsByUUID?${_csrf.parameterName}=${_csrf.token}&UUID="+UUID, 
 			        success: function(data) {
 			        	var json = JSON.parse(data);
 			        	 $("input[name=subject]").val(json['subject']);
@@ -256,6 +256,7 @@ $(function() {
   
   <script type="text/javascript">
 	function sendEmails() {
+		 var atsUrl = '${SourceleadWeb_atsUrl}';
 		if ($('#email_form').validate(false, validationSettings)){ 
 				var sourceleadUrl = '${sourceleadUrl}';
 				
@@ -278,9 +279,9 @@ $(function() {
 			  	    	    enctype: 'multipart/form-data',
 			  		        processData: false,
 			  		        contentType:false, 
-			  				url : sourceleadUrl+"/sendEmailToUsers?${_csrf.parameterName}=${_csrf.token}",
+			  				url : atsUrl+"/sendEmailToUsers?${_csrf.parameterName}=${_csrf.token}",
 			  				success : function(result) {
-			  						location.replace(sourceleadUrl+"/mailBox/mails");
+			  						location.replace(atsUrl+"/mailBox/mails");
 			  				},
 			  			});  
 			  		
@@ -388,12 +389,12 @@ function textBoxCancel(){
   
   <script>
 function getUserList(teamType){  
-	  var sourceleadUrl ='${sourceleadUrl}';
+	 var atsUrl = '${SourceleadWeb_atsUrl}';
 	  $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $("#userList").empty(); 
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getMailingUserList?${_csrf.parameterName}=${_csrf.token}&teamType="+teamType,    
+           url: atsUrl+"/getMailingUserList?${_csrf.parameterName}=${_csrf.token}&teamType="+teamType,    
             success :function(data) {
             	
             	getTeamsList(teamType);
@@ -543,7 +544,7 @@ function getContactsList(){
 
 <script>
 function contactsDataTableList(){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var atsUrl = '${SourceleadWeb_atsUrl}';
 	 var searchValue = $("#contactsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
 	 var contactsGroups = '';
@@ -552,7 +553,7 @@ function contactsDataTableList(){
 	 }
 	
 	 
-	 var url = sourceleadUrl+"/getUserContactsListForMalling?searchValue="+searchValue+"&groupIdsList="+contactsGroups;
+	 var url = atsUrl+"/getUserContactsListForMalling?searchValue="+searchValue+"&groupIdsList="+contactsGroups;
 	 contactsPagination(url);
 }
 </script>
@@ -673,10 +674,10 @@ function checkContactUsers(ele) {
 
 <script>
 function getTeamsList(teamType){  
-	  var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceleadWeb_atsUrl}';
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getComposeMailTeamsList?${_csrf.parameterName}=${_csrf.token}",    
+           url: atsUrl+"/getComposeMailTeamsList?${_csrf.parameterName}=${_csrf.token}",    
             success :function(data) {
             	var json = JSON.parse(data);
 				var output = "";
