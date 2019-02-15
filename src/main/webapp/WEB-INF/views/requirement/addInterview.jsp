@@ -686,32 +686,7 @@ function cancelExternalInterviewers(){
 	    $("#"+maxRowNum+"interviewType").chosen();
 		$("#"+maxRowNum+"interviewType").trigger('chosen:update');
 		
-	   /*  $("#"+maxRowNum+"applicant").on('change', function (e) {
-	    	getUpdatedShortListCandidates();
-	    }); */ 
-	    
-	/* 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatProjectSave = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatProjectSave = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatProjectSave = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatProjectSave = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatProjectSave = 'yy-dd-mm'; 
-		  }
-		  
-		$( "#scheduleCalendar" ).datepicker({
-			  changeMonth: true,
-		      changeYear: true,
-		      dateFormat : finalDateFormatProjectSave,
-		      dateFormat : finalDateFormatInterview,
-		      minDate: 0  ,
-			  onSelect : function(selected) {
-				checkAvailability();
-		 	  }
-		    }); */
+	  
 		    
 		    
 				
@@ -1278,7 +1253,7 @@ function showCal(id){
   <script>
   function eventCalendar(dates) {
 	  
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		 var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		  var finalDateFormatProjectSave = '';
 		  if(locationDate.match("yyyy-MM-dd")){
 			  finalDateFormatProjectSave = 'yy-mm-dd';
@@ -1348,7 +1323,7 @@ function checkAvailability(){
 	if(date == null || date == '' || date == 'undefined'){
 		date = new Date(); 
 		var month = parseInt(date.getMonth())+parseInt(1);
-		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		  if(locationDate.match("yyyy-MM-dd")){
 			date = date.getFullYear()+"-"+month+"-"+date.getDate();
 		  }if(locationDate.match("dd-MM-yyyy")){

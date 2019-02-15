@@ -456,7 +456,7 @@ function candidateSideBar(candidateId){
 			            result = result+'    <i class="fa fa-comments"></i>';
 			            result = result+'        <div class="commentsimg-inner">';
 			            
-			            result = result+'        	<img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"/>';
+			            result = result+'        	<img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_userImgUrl}"/>';
 			            result = result+'        </div>';
 			            result = result+'    </div>';
 			            result = result+'     <div class="comments-content">';
@@ -3162,27 +3162,27 @@ $(".overIcon, .newActPop").click(function(e){
 		}); 
 	}  */
 function goToCandidateList(){
-	location.href = "/ats/candidatesList";
+	location.href = "${SourceLeadWeb_atsUrl}/candidatesList";
 }
 	
 function goToGlobalMarketPlaceList(){
-	location.href = "/ats/globalMarketplacePage";
+	location.href = "${SourceLeadWeb_atsUrl}/globalMarketplacePage";
 }
 
 function goToOrgMarketPlaceList(){
-	location.href = "/ats/OrgMarketplace";
+	location.href = "${SourceLeadWeb_atsUrl}/OrgMarketplace";
 }
 function goToPurchaseOrderList(){
-	location.href ="/ats/PurchaseOrderList";
+	location.href ="${SourceLeadWeb_atsUrl}/PurchaseOrderList";
 	}
 function goToSalesOrderList(){
-	location.href = "/ats/SalesOrderList";
+	location.href = "${SourceLeadWeb_atsUrl}/SalesOrderList";
 }
 function goToCartList(){
-	location.href = "/ats/candidateMarketplaceCart";
+	location.href = "${SourceLeadWeb_atsUrl}/candidateMarketplaceCart";
 }
 function goToWalletList(){
-	location.href = "/ats/walletList";
+	location.href = "${SourceLeadWeb_atsUrl}/walletList";
 }
 
 </script> 

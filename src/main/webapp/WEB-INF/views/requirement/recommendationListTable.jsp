@@ -334,7 +334,7 @@ function addCandidateToMarketCart(candidateName, UUID, obj) {
 	 	$("#recommendationsLoading").removeAttr('style');
 		$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		
-		 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+		 var locationList ='${SourceLeadWeb_dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
 			  requirementRecommendationsDate = 'YYYY-MM-DD';
 		  }if(locationList.match("dd-MM-yyyy")){
