@@ -26,8 +26,8 @@
 							</p>
 						</div>
 					</li>
-					<li class="col-md-3"><a href="javascript:void(0)"
-						class="pull-right" onClick="requestLoanPop();">Request</a></li>
+					<!-- <li class="col-md-3"><a href="javascript:void(0)"
+						class="pull-right" onClick="requestLoanPop();">Request</a></li> -->
 				</ul>
 			</div>
 			<div class="clearfix"></div>
@@ -38,7 +38,7 @@
 		
 		
 <div class="sideMask"></div>
-<div class="modal requestPop">
+<!--  <div class="modal requestPop">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -102,7 +102,7 @@
 			</div>
 		</div>
 	</div>
-</div>
+</div> -->
 		
 <script>
 function getMyLoansAdvList(loanStatus){
