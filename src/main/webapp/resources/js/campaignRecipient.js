@@ -1,7 +1,7 @@
 
 
 function campaignRecipient(ele,listId, fromType) {
-		$.post(sourceleadUrl+"/campaignAddRecipient?listId="+listId+"", {}, function(data) {
+		$.post(atsUrl+"/campaignAddRecipient?listId="+listId+"", {}, function(data) {
 			$(".mask").show();
 			$("#campaignRecipient").fadeIn(100);
 			$("#campaignRecipient").html(data);
@@ -17,7 +17,7 @@ function campaignRecipient(ele,listId, fromType) {
 					  	var formData = $($('#capn_add_Recipient_List')[0]).serialize();
 					  	/* var formData = getFormData('capn_add_Recipient_List');*/
 						$("#loadingRecipient").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-						$.post(sourceleadUrl+"/saveRecipientList?"+tokenParamName+"="+tokenValue, formData, function(data) {
+						$.post(atsUrl+"/saveRecipientList?"+tokenParamName+"="+tokenValue, formData, function(data) {
 							
 							if(data == 'success'){
 								 recipientClose();
@@ -34,12 +34,12 @@ function campaignRecipient(ele,listId, fromType) {
 					  			
 					             if(fromType == "hotList" || fromType == "jobList"){
 					            	 if(fromType == "hotList"){
-					            		 location.replace(sourceleadUrl+ "/hotlistMail");
+					            		 location.replace(atsUrl+ "/hotlistMail");
 					            	 }else if(fromType == "jobList"){
-					            		 location.replace(sourceleadUrl+ "/joblistMail");
+					            		 location.replace(atsUrl+ "/joblistMail");
 					            	 }
 					             }else{
-					            	 location.replace(sourceleadUrl+ "/recipientsList");
+					            	 location.replace(atsUrl+ "/recipientsList");
 					             }
 					             $("#popUp").empty();
 					 			 $(".mask").hide();

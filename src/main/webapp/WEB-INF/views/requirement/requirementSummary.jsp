@@ -93,7 +93,7 @@ function duplicateCount(requirementId){
     <div class="pull-left">
       <h2>Job Summary</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/jobsList'/>"> Jobs List  </a>&raquo; Job Details</div>
+    <div class="pull-right brud-crum"><a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="<c:url value='${atsUrl}/jobsList'/>"> Jobs List  </a>&raquo; Job Details</div>
   </section>
   
 
@@ -775,7 +775,7 @@ function requirementPipeline(requirementId,submissionType){
 	$("#emptyPipelinelist").val('');
 	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	var userId = '${SourceLeadWeb_user.id}';
+	var userId = '${SourceLeadWeb_userId}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	var userCode = '${SourceLeadWeb_userCode}';
 	var searchValue = $("#submissionDataTableSearch").val();
@@ -794,7 +794,7 @@ function requirementPipelineList(url, requirementId, submissionType){
 	  $("#status-data").removeAttr("style");
 	  $("#status-data").empty();
 	  
-	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  requirementPipelineListDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1047,7 +1047,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     	                $("#popUp").append(result);
     	                $("#joinedApplicant"+submissionId).slideDown(200);
     	                $(".project_inn_mask").fadeIn(200);
-    	                var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+    	                var locationDate ='${SourceLeadWeb_dateFormat}'; 
     	            	  var jsDateFormat= '';
     	            	  if(locationDate.match("yyyy-MM-dd")){
     	            		  jsDateFormat = 'yy-mm-dd';
@@ -1529,7 +1529,7 @@ function reqNotes(requirementId){
 					    output  = output + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 				     	for(var i=0;i<json.length;i++){
 				       	var report = json[i];
-				    	if(report.checkBox == 'Y' || (report.checkBox == 'N' && '${SourceLeadWeb_user.id}' == report.userIdStr)){
+				    	if(report.checkBox == 'Y' || (report.checkBox == 'N' && '${SourceLeadWeb_userId}' == report.userIdStr)){
 				   	  	output = output+'<div class="comments-div comments-inner commentsNotes clearfix">';
 				   	    output = output+'    <div class="commentsimg">';
 				   	    output = output+'    <i class="fa fa-comments"></i>';
@@ -1597,7 +1597,7 @@ function reqNotes(requirementId){
 	      		var formData = new FormData(form);
 	      		formData.append("json",con);
 	      		
-	      		var userId = '${SourceLeadWeb_user.id}';
+	      		var userId = '${SourceLeadWeb_userId}';
 	      		formData.append("userId",userId);
 	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	      	    formData.append("locationCode",locationCode);
@@ -2098,7 +2098,7 @@ function getRateListDiv(submissionId, candidateId){
 	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  
-	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  rateListDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){

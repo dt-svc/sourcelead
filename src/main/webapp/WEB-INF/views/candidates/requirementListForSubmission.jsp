@@ -302,7 +302,7 @@ function getRequirementTableList(){
 		 var city = $("#city").val();
 	 }
 	
-	 
+	 var atsUrl ='${SourceLeadWeb_atsUrl}';
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#reqDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";

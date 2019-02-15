@@ -95,7 +95,7 @@ function candidateEducation(candidateId){
 <script>
 function candidateEducationList(candidateId){
 	var candidateType = '${candidateType}';
-	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	 var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  canEduDatePattern = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -338,7 +338,7 @@ function addEducation(candidateId) {
 	
 	function educationStartDate(){
 	}
-	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	 var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	  var finalDateFormatEduSave = getJSDateFormat(locationDate);
 	  
 	$('#startDate').datepicker({
@@ -575,7 +575,7 @@ function EditEducation(candidateId,candidateEducationId) {
 					function educationStartDate(){ }
 					var eduStartDate = $("#startDateEdit").val();
 					var eduEndDate = $("#endDateEdit").val(); 
-					var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+					var locationDate ='${SourceLeadWeb_dateFormat}'; 
 					var finalDateFormatEduEditOneSave = '';
 					// written common method in slead-common.js for date formats start
 					var eduStartDateEdit = getJSDate(eduStartDate,locationDate);
