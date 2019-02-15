@@ -271,9 +271,9 @@ public class USPayrollRestController {
 	@ResponseBody
 	public PayrollDeductionDTO savePayrollDeduction(PayrollDeductionDTO payrollDeductionDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		return  payrollDeductionService.savePayrollDeduction(payrollDeductionDTO,orgLocation,user);	
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		String userCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "userCode");
+		return  payrollDeductionService.savePayrollDeduction(payrollDeductionDTO,orgLocationId,userCode);	
 	}
 	
 	/**
@@ -1294,10 +1294,11 @@ public class USPayrollRestController {
 			@RequestParam(value = "searchFrequency", required = false) String searchFrequency,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
 		if(searchFrequency !=null)
 			paysheetFrequencyDTO.setPayFrequency(searchFrequency);
-		return usPayPeriodService.getPayPeriodListByOrgLocationId(orgLocation, paysheetFrequencyDTO);
+		return usPayPeriodService.getPayPeriodListByOrgLocationId(orgLocationId, paysheetFrequencyDTO,dateFormat);
 	}
 	
 	/**
@@ -1715,8 +1716,9 @@ public class USPayrollRestController {
 	@ResponseBody
 	public List<PaysheetFrequencyDTO> getPaysheetFrequencyDraftData(HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		return paysheetFrequencyService.getPaysheetFrequencyDraftDataByOrgLocationId(orgLocation);
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+		return paysheetFrequencyService.getPaysheetFrequencyDraftDataByOrgLocationId(orgLocationId,dateFormat);
 	}
 	
 	@RequestMapping(value = "/getEmpOutstandingLoansAdvances", method = RequestMethod.GET)

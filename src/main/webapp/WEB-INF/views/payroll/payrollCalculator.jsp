@@ -682,6 +682,7 @@ $('body').on('blur', '#generate_payroll_form', function() {
 <script type="text/javascript">
 function sendPayrollForApprover(){
       var formData = $($('#submit_for_approver')[0]).serialize();
+      alert(formData)
       $.post(pmsUrl+"/sendPayrollForApprover?"+tokenParamName+"="+tokenValue, formData, function(result) {
         if (result && result.response === "INVALID_DATA") {
               showError(result.responseMessage);
