@@ -458,12 +458,12 @@ function preventTabkey(e){
 				<li><a href="/app/sourceleadTicketList" title="Report Issue"><i class="reporttaskIC"></i>Report Issue</a></li>
 				</sec:authorize>
 				
-	             <%-- <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-	              <li><a href="<c:url value='${appPath}/professionalProfile'/>" title="Profile">Profile</a></li>
+	              <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+	              <li><a title="Profile" href="${SourceLeadWeb_atsUrl}/professionalProfile"><i class="contactsIC"></i>Profile</a></li>
 	              </c:if>
-	              <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-	              <li><a href="<c:url value='${appPath}/userProfile'/>" title="Profile">Profile</a></li>
-	              </c:if> --%>				
+	             <%--  <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+	               <li><a title="Profile" href="<c:url value='${SourceLeadWeb_atsUrl}/userProfile'/>"><i class="Profile"></i>Profile</a></li>
+	              </c:if>  --%>				
 				 <li><a class="logColor" href="javascript:logoutFormSubmit();" title="Log Out"><i class="logOutIC"></i>Log Out</a></li>
 			</ul>
 		</div>

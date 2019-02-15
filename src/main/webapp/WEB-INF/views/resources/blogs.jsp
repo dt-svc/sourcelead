@@ -18,13 +18,13 @@ window.onload = function() {
     <div class="pull-left">
       <h2>Blog List</h2>
     </div>
-   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Blog </div>
+   <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'">Home</a> &raquo; Blog </div>
   </section>
   <div class="content-area content-new clearfix">
    <div class="timesheet_head minHeight50 list-borderright">
 		<ul>
-			<li><a href="/app/categoryList" title="Add Blog"><i class="fa fa-plus paddingRight"></i>Category</a></li>
-			<li><a href="/app/addBlog" title="Add Blog"><i class="fa fa-plus paddingRight"></i>Add Blog</a></li>
+			<li><a href="${SourceLeadWeb_sourceleadUrl}/categoryList" title="Add Blog"><i class="fa fa-plus paddingRight"></i>Category</a></li>
+			<li><a href="${SourceLeadWeb_sourceleadUrl}/addBlog" title="Add Blog"><i class="fa fa-plus paddingRight"></i>Add Blog</a></li>
 		</ul>
 	<div class="clearfix"></div>
 	<div class="remove_search">
