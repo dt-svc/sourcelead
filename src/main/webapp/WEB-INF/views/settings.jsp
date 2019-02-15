@@ -432,7 +432,7 @@
 									</ul>
 								</div> -->
 								<!-- Dropdown -->
-								<a href="/app/bankAccountDetails">
+								<a href="${SourceLeadWeb_atsUrl}/bankAccountDetails">
 								<div class="clearfix text-center mb10"><i class="bankacountsSVG"></i></div>
 								<div class="clearfix text-center">
 									<h4>Bank Accounts</h4>
@@ -675,7 +675,7 @@
 				    <div class="col-md-2">
 				       <h5>Bank Account</h5>
 				        <ul class="repSearchList list-unstyled">
-					    <li><a href="/app/bankAccountDetails" title="Tags">Bank Account</a></li>
+					    <li><a href="${SourceLeadWeb_atsUrl}/bankAccountDetails" title="Tags">Bank Account</a></li>
 				        </ul>
 				        <div class="noDate noDateSm" style="display: none;"></div>
 			        </div>
@@ -683,7 +683,7 @@
 				    <div class="col-md-2">
 				       <h5>Alerts</h5>
 				       <ul class="repSearchList list-unstyled">
-					   <li><a href="/ats/jobAlertList" title="Tags">Alerts</a></li>
+					   <li><a href="${SourceLeadWeb_atsUrl}/jobAlertList" title="Tags">Alerts</a></li>
 				       </ul>
 				       <div class="noDate noDateSm" style="display: none;"></div>
 			        </div>
@@ -725,7 +725,7 @@
 						<li><a href="payrollRegister-I.html">Invite Company</a></li>
 						</ul>
 					</div> -->	
-					<a href="/app/bankAccountDetails">		
+					<a href="${SourceLeadWeb_atsUrl}/bankAccountDetails">		
 							<div class="clearfix text-center mb10"><i class="bankacountsSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4>Bank Account</h4>
@@ -744,7 +744,7 @@
 						<li><a href="payrollRegister-I.html">Invite Company</a></li>
 						</ul>
 					</div> -->
-					<a href="/app/jobAlertList">
+					<a href="${SourceLeadWeb_atsUrl}/jobAlertList">
 							<div class="clearfix text-center mb10"><i class="reminderconfigSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4> Alerts</h4>
