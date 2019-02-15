@@ -5,6 +5,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+
+<script type="text/javascript">
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+</script>
 <script type="text/javascript" src="/resources/js/contractCommonScripts.js"></script>
 
 <script>
