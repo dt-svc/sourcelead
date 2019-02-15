@@ -61,6 +61,9 @@ public class MailBoxController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${atsUrl}")
+	private String atsUrl;
+	
 	@Autowired
 	private CommonUtil commonUtil;
 	
@@ -103,16 +106,16 @@ public class MailBoxController {
 	}
 	
 	
-	@RequestMapping(value = "/ats/mailBox/{mailType}", method = RequestMethod.GET)
+	@RequestMapping(value = "/mailBox/{mailType}", method = RequestMethod.GET)
 	 public @ResponseBody void mailBox(@PathVariable String mailType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 			
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/ats/userMailBox?mailType=").append(mailType).toString());
+		     response.sendRedirect(redirectUrl.append(atsUrl+"/userMailBox?mailType=").append(mailType).toString());
 			
 	}
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
-	@RequestMapping(value = "/ats/userMailBox")
+	@RequestMapping(value = "/userMailBox")
  	public ModelAndView userMailBox(HttpServletRequest request,@RequestParam(value="mailType", required=false) String mailType) throws Exception {
 
 		    ModelAndView model = new ModelAndView();
@@ -130,7 +133,7 @@ public class MailBoxController {
 			if(emailAccountSettingsServiceList != null){
 				model.addObject("emailAccountSettingsServiceList", emailAccountSettingsServiceList);
 			}
- 			model.setViewName("mailBox");
+ 			model.setViewName("campaign/mailBox");
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			model.addObject("inboxUnreadMailsCount", inboxUnreadMailsCount);
  			model.addObject("requestedUnreadMailsCount", requestedUnreadMailsCount);
@@ -234,7 +237,7 @@ public class MailBoxController {
 		
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    ModelAndView model = new ModelAndView();
- 			model.setViewName("hotlistMail");
+ 			model.setViewName("campaign/hotlistMail");
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			 commonUtil.highLightMenu(Constants.Campaigns, request);
  			 List<ContactsGroup> contactsGroupList = contactsGroupService.getContactsGroupListByUserId(user.getId());

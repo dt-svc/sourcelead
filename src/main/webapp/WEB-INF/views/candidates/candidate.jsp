@@ -3,8 +3,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
-
+<link href="${SourceLeadWeb_atsUrl}/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
+<script type="text/javascript" src="${appPath}/resources/js/sourcelead.common.js"></script>
 	<script type="text/javascript">
 	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 	 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
@@ -852,7 +852,7 @@ function  removeValiationVendorContact() {
 </script>
 <script>
  function getVendorContactList(){
-	 
+	 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	var orgRelationID = $('#vendors').val();
 		 $.ajax({
 			    type: "POST",
@@ -888,7 +888,7 @@ function  removeValiationVendorContact() {
  </script>
  <script>
   $( function() {
-	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	  // written common method in slead-common.js for date formats start
 	  var finalDateFormat = getJSDateFormat(locationDate);
 	  //end
@@ -916,9 +916,10 @@ function candidateEmptyVendorContact(){
 }
 </script>
 <script>
+     var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	 function selectedVendor(){
 		 var vid =  $('#vendors').val();
-		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+		 window.open(vmsUrl+"/addVendorContact?vid="+vid,'_blank');
 	 }
 	 </script>
 	 
