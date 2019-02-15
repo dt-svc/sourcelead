@@ -339,7 +339,7 @@ function addReference(candidateId) {
 			 if ($('#canReference_form').validate(false, validationSettings)) {
 					
 				    var formData = getFormData("canReference_form");
-				    var userId = '${SourceLeadWeb_user.id}';
+				    var userId = '${SourceLeadWeb_userId}';
 				    var locationCode = '${SourceLeadWeb_locationCode}';
 					
 					 $("#save_ref").attr("disabled", "disabled");
@@ -470,7 +470,7 @@ function deleteReference(candidateId,refId){
 		if ($('#canReferenceEdit_form').validate(false,	validationSettings)) {
 
 			var formData = getFormData("canReferenceEdit_form");
-		    var userId = '${SourceLeadWeb_user.id}';
+		    var userId = '${SourceLeadWeb_userId}';
 		    var locationCode = '${SourceLeadWeb_locationCode}';
 			
 			 $("#save_ref").attr("disabled", "disabled");

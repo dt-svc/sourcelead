@@ -56,11 +56,11 @@ $(document).ready(function() {
       <h2>Referred By Me</h2>
     </div>
      <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalDashboard'/>">Home</a> » <span class="applicantStatus"></span>&nbsp; List </div>
+       <div class="pull-right brud-crum"><a href="${appPath}/professionalDashboard">Home</a> » <span class="applicantStatus"></span>&nbsp; List </div>
      </c:if>
      
      <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home</a> » <span class="applicantStatus"></span>&nbsp; List </div>
+       <div class="pull-right brud-crum"><a href="${appPath}/recruiterDashboard">Home</a> » <span class="applicantStatus"></span>&nbsp; List </div>
      </c:if>
     
   </section>

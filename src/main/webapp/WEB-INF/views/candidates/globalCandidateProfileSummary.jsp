@@ -255,7 +255,7 @@
 									<div class="media-body">
 									<div class="row">
 										<div class="col-md-12">
-											<h5 class="margin-top0"><a href="/ats/globalCandidateSummary?marketplaceUUID=${suggestedProfilesObj.marketplaceUUID}">${suggestedProfilesObj.fullName}</a></h5>
+											<h5 class="margin-top0"><a href="${SourceLeadWeb_atsUrl}/globalCandidateSummary?marketplaceUUID=${suggestedProfilesObj.marketplaceUUID}">${suggestedProfilesObj.fullName}</a></h5>
 									<p class="text-muted small mb5">${suggestedProfilesObj.designation}</p>
 																		<p class="text-muted small mb5">${suggestedProfilesObj.companyName}</p>
 									<p class="text-muted small">${suggestedProfilesObj.location}</p>
