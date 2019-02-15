@@ -8,7 +8,7 @@
 
 <script>
 $(document).ready(function(){
-	 loc ="${SourceLeadWeb_orgLocations.dateFormat}";
+	 loc ="${SourceLeadWeb_dateFormat}";
 	  getAllRelationssByOrgLocation();
 	  if(loc.match("yyyy-MM-dd")){
 		  locDateFormat = 'YYYY-MM-DD';
@@ -27,8 +27,8 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Petition Attorney Report</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="/app/dashboard'/>" title="Home">Home</a>&raquo;<a
-					href="<c:url value='/app/reportsDashboard'/>"> Reports Dashboard</a>&raquo;Petition Attorney Report</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard'/>" title="Home">Home</a>&raquo;<a
+					href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard"> Reports Dashboard</a>&raquo;Petition Attorney Report</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
@@ -114,7 +114,7 @@ $(document).ready(function(){
           <div class="pull-right">
             <input value="Run" class="btn btn-success btnSuccess" type="button" onclick="runImmigrationReport();">
             <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetImmForm();">
-            <input type="button" value="Cancel" onClick="javascript:window.location.href ='<c:url value='/app/reportsDashboard'/>'"class="btn btn-default ml">
+            <input type="button" value="Cancel" onClick="javascript:window.location.href ='${SourceLeadWeb_sourceleadUrl}/reportsDashboard'"class="btn btn-default ml">
           </div>
         </div>
       </div>      
@@ -244,7 +244,7 @@ $(document).ready(function(){
         $('#custToDate').removeAttr('data-validation');
     }
     
-    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+    var locationDate ='${SourceLeadWeb_dateFormat}'; 
       var finalDateFormatEndDate = '';
       if(locationDate.match("yyyy-MM-dd")){
           finalDateFormatEndDate = 'yy-mm-dd';

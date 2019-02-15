@@ -380,7 +380,7 @@ padding: 2px 300px 2px 0px;
 			var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             $.post( vmsUrl+ "/saveDocContracts?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId, formData, function(data) {
-            		location.replace(sourceleadUrl+"/contractListbyStatus");
+            		location.replace(vmsUrl+"/contractListbyStatus");
                     });
 			
 			
@@ -3186,7 +3186,8 @@ function previewContractPDF(fileURL, fileName, fileType) {
 }
 
 function previewNewContractPDF(uuid, templateName) {
- 	window.open(sourceleadUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+ 	window.open(vmsUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
 }
 </script>
 
