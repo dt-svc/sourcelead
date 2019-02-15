@@ -375,9 +375,10 @@ function getClientSubmissionTemplates(local){
 <script type="text/javascript">
 	function clientContactList(orgRelationID,clientLocationId) {
 		var sourceleadUrl = '${sourceleadUrl}';
+		var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Client", 
+	    	url : vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Client", 
 	        success: function(json) {
 				var output = "";
 				output = output

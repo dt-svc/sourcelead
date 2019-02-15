@@ -10,6 +10,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
  <script>
+ var atsUrl = '${SourceLeadWeb_atsUrl}';
 	function predefineProfileImage(imageId){
 		$(imageId).attr('src','/resources/images/userprofileImg.jpg');
 	}
@@ -144,7 +145,7 @@ function getConnectionsList(type){
 		$("#loadingConnectionDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({ 
 	    	type : "POST",
-			url : sourceleadUrl+"/getUserListForConnections?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&offset="+offset,
+			url : '${SourceLeadWeb_atsUrl}'+"/getUserListForConnections?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&offset="+offset,
             success: function(json) {
 	        var result = "";
 	        var mutualResult = "";
