@@ -2266,12 +2266,77 @@ public class ReportRestController {
 						 }
 						 
 					   ResponseList<AssociateJoineReportDTO> toDayReqApplicantscount =requirementSubmissionDao.getAssociateJoineReport(associateJoineReportDTO, loginOrgLocations.getId(),startUTCDate,endUTCDate);
+					   String isTerminated = Constants.NO;
+					File file = null;
+				    if(exportType.equalsIgnoreCase("pdf")) {
+				    	 file=  dynamicReport.associateJoinedAndTerminatedReportPdfExport(toDayReqApplicantscount,loginOrgLocations.getDateFormat(),loginOrgLocations.getOrgLocationName(),isTerminated);
+				    }else {
+				    	file=  dynamicReport.associateJoinedAndTerminatedReportExcelExport(toDayReqApplicantscount,loginOrgLocations.getDateFormat(),loginOrgLocations.getOrgLocationName(),isTerminated);
+				    }
+					
+					String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+					if (mimeType == null) {
+						mimeType = "application/octet-stream";
+					}
+					response.setContentType(mimeType);
+					StringBuilder fileNameSB = new StringBuilder();
+					response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+					response.setContentLength((int) file.length());
+					InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+					FileCopyUtils.copy(inputStream, response.getOutputStream());
+					inputStream.close();
+					response.getOutputStream().close();
+					response.getOutputStream().flush();	
+					if(file!= null){
+						file.delete();
+					}
+				}
+			
+			@RequestMapping(value = "/associateTerminatedReportExport")
+			public void associateTerminatedReportExport(AssociateJoineReportDTO associateJoineReportDTO,
+					@RequestParam(value="exportType", required=false) String exportType,
+					HttpServletRequest request,HttpServletResponse response) throws Exception {
+						OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+						
+						String[] tableColumns = {"employeeId","empName", "empType","hireDate","reportingManager", "terminateDate","terminatedReason","userRole", "gender", "shiftName", "deptName", "rate"};
+
+						   int sortColumnIndex = 1; //by default sorting using updated date
+						   String sortColumnOrder = "desc"; //by default descending order
+						if(associateJoineReportDTO.getOrder() != null && !associateJoineReportDTO.getOrder().isEmpty()) {
+							sortColumnIndex = Integer.parseInt(associateJoineReportDTO.getOrder().get(0).get("column"));
+							sortColumnOrder = associateJoineReportDTO.getOrder().get(0).get("dir");
+						}
+						associateJoineReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+						associateJoineReportDTO.setSortOrder(sortColumnOrder);
+						
+						Date[] freqDates = new Date[2];
+						Date startUTCDate = null;
+						Date endUTCDate = null;
+						DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+						 DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+						 DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+						 if("Custom".equalsIgnoreCase(associateJoineReportDTO.getFrequency())){
+							 Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),associateJoineReportDTO.getFromDate());
+								Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),associateJoineReportDTO.getToDate());
+								String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+								String customEndTimeStr = TZ_DF_CED.format(endTime);  
+								startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+								endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+						 }else {
+							 freqDates = reportsUtil.getJobFilterDate(associateJoineReportDTO.getFrequency(),loginOrgLocations);
+							 String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
+							 String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
+							 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+							 endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+						 }
+						 String isTerminated = Constants.YES;
+						ResponseList<AssociateJoineReportDTO> toDayReqApplicantscount =requirementSubmissionDao.getAssociateTerminateReport(associateJoineReportDTO, loginOrgLocations.getId(),startUTCDate,endUTCDate);
 						
 					File file = null;
 				    if(exportType.equalsIgnoreCase("pdf")) {
-				    	 file=  dynamicReport.associateJoinedReportPdfExport(toDayReqApplicantscount,loginOrgLocations.getDateFormat(),loginOrgLocations.getOrgLocationName());
+				    	 file=  dynamicReport.associateJoinedAndTerminatedReportPdfExport(toDayReqApplicantscount,loginOrgLocations.getDateFormat(),loginOrgLocations.getOrgLocationName(),isTerminated);
 				    }else {
-				    	file=  dynamicReport.associateJoinedReportExcelExport(toDayReqApplicantscount,loginOrgLocations.getDateFormat(),loginOrgLocations.getOrgLocationName());
+				    	file=  dynamicReport.associateJoinedAndTerminatedReportExcelExport(toDayReqApplicantscount,loginOrgLocations.getDateFormat(),loginOrgLocations.getOrgLocationName(),isTerminated);
 				    }
 					
 					String mimeType = URLConnection.guessContentTypeFromName(file.getName());

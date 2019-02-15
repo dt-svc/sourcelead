@@ -815,12 +815,13 @@ public class DynamicReport {
 		return dataSource;
 	}
 	
-	public File associateJoinedReportPdfExport(ResponseList<AssociateJoineReportDTO> associateDTOList, String orgLocationsDateFormat,String orgLocationName) throws IOException {
+	public File associateJoinedAndTerminatedReportPdfExport(ResponseList<AssociateJoineReportDTO> associateDTOList, String orgLocationsDateFormat,String orgLocationName,String isTerminated) throws IOException {
 		 File file = null;
 		try {
 		    StringBuilder fileSB = new StringBuilder();
 			file = File.createTempFile(fileSB.append("associateJoined_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocationsDateFormat,new Date())).toString(),".pdf");
 			file.setReadable(true);
+			if(isTerminated.equalsIgnoreCase(Constants.YES)){
 			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
 			report().setTemplate(Templates.reportTemplate)
 					.title(cmp.text(orgLocationName).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
@@ -834,22 +835,44 @@ public class DynamicReport {
 							col.column("Rate", "Rate", type.stringType()),
 							col.column("Date of Join", "Date of Join", type.stringType()),
 							col.column("Manager", "Manager", type.stringType()),
+							col.column("Terminated On", "Terminated On", type.stringType()),
+							col.column("Terminate Reason", "Terminate Reason", type.stringType()),
 							col.column("Shift", "Shift", type.stringType()),
 							col.column("Probation Status", "Probation Status", type.stringType()))
 					.pageFooter(Templates.footerComponent)
-					.setDataSource(associateJoinedReportDataSource(associateDTOList,orgLocationsDateFormat)).toPdf(pdfExporter);
+					.setDataSource(associateJoinedReportDataSource(associateDTOList,orgLocationsDateFormat,isTerminated)).toPdf(pdfExporter);
+			}else{
+				JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+				report().setTemplate(Templates.reportTemplate)
+						.title(cmp.text(orgLocationName).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+						.columns(
+								col.column("Associate Id", "Associate Id", type.stringType()),
+								col.column("Associate Name", "Associate Name", type.stringType()),
+								col.column("Gender", "Gender", type.stringType()),
+								col.column("Emp Type", "Emp Type", type.stringType()),
+								col.column("Department", "Department", type.stringType()),
+								col.column("Role", "Role", type.stringType()),
+								col.column("Rate", "Rate", type.stringType()),
+								col.column("Date of Join", "Date of Join", type.stringType()),
+								col.column("Manager", "Manager", type.stringType()),
+								col.column("Shift", "Shift", type.stringType()),
+								col.column("Probation Status", "Probation Status", type.stringType()))
+						.pageFooter(Templates.footerComponent)
+						.setDataSource(associateJoinedReportDataSource(associateDTOList,orgLocationsDateFormat,isTerminated)).toPdf(pdfExporter);
+			}
 		} catch (DRException e) {
 			e.printStackTrace();
 		}
 		return file;
 	}
 	
-	public File associateJoinedReportExcelExport(ResponseList<AssociateJoineReportDTO> associateDTOList, String orgLocationsDateFormat,String orgLocationName) throws IOException {
+	public File associateJoinedAndTerminatedReportExcelExport(ResponseList<AssociateJoineReportDTO> associateDTOList, String orgLocationsDateFormat,String orgLocationName,String isTerminated) throws IOException {
 		 File file = null;
 			try {
 			    StringBuilder fileSB = new StringBuilder();
 				file = File.createTempFile(fileSB.append("associateJoined_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocationsDateFormat,new Date())).toString(),".xls");
 				file.setReadable(true);
+				if(isTerminated.equalsIgnoreCase(Constants.YES)){
 				JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
                       .setIgnorePageMargins(true)
                       .setWhitePageBackground(false)
@@ -870,20 +893,54 @@ public class DynamicReport {
 								col.column("Rate", "Rate", type.stringType()),
 								col.column("Date of Join", "Date of Join", type.stringType()),
 								col.column("Manager", "Manager", type.stringType()),
+								col.column("Terminated On", "Terminated On", type.stringType()),
+								col.column("Terminate Reason", "Terminate Reason", type.stringType()),
 								col.column("Shift", "Shift", type.stringType()),
 								col.column("Probation Status", "Probation Status", type.stringType()))
-						.setDataSource(associateJoinedReportDataSource(associateDTOList,orgLocationsDateFormat)).toXls(xlsExporter);
-			} catch (DRException e) {
+						.setDataSource(associateJoinedReportDataSource(associateDTOList,orgLocationsDateFormat,isTerminated)).toXls(xlsExporter);
+				}else{
+					JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
+		                      .setIgnorePageMargins(true)
+		                      .setWhitePageBackground(false)
+		                      .setRemoveEmptySpaceBetweenColumns(true);
+
+						report().setTemplate(Templates.reportTemplate)
+								.setColumnTitleStyle(Templates.columnTitleStyle)
+								.addProperty(JasperProperty.EXPORT_XLS_FREEZE_ROW, "1")
+								.ignorePageWidth()
+								.ignorePagination()
+								.columns(
+										col.column("Associate Id", "Associate Id", type.stringType()),
+										col.column("Associate Name", "Associate Name", type.stringType()),
+										col.column("Gender", "Gender", type.stringType()),
+										col.column("Emp Type", "Emp Type", type.stringType()),
+										col.column("Department", "Department", type.stringType()),
+										col.column("Role", "Role", type.stringType()),
+										col.column("Rate", "Rate", type.stringType()),
+										col.column("Date of Join", "Date of Join", type.stringType()),
+										col.column("Manager", "Manager", type.stringType()),
+										col.column("Shift", "Shift", type.stringType()),
+										col.column("Probation Status", "Probation Status", type.stringType()))
+								.setDataSource(associateJoinedReportDataSource(associateDTOList,orgLocationsDateFormat,isTerminated)).toXls(xlsExporter);
+				}
+				} catch (DRException e) {
 				e.printStackTrace();
 			}
 		return file;
   }
 	
-	private DRDataSource associateJoinedReportDataSource(ResponseList<AssociateJoineReportDTO> associateDTOList,String dateFormat) {
-		DRDataSource dataSource = new DRDataSource("Associate Id","Associate Name", "Gender", "Emp Type", "Department", "Role","Rate","Date of Join","Manager","Shift","Probation Status");
+	private DRDataSource associateJoinedReportDataSource(ResponseList<AssociateJoineReportDTO> associateDTOList,String dateFormat,String isTerminated) {
+		DRDataSource dataSource = null;
+		if(isTerminated.equalsIgnoreCase(Constants.YES)){
+		 dataSource = new DRDataSource("Associate Id","Associate Name", "Gender", "Emp Type", "Department", "Role","Rate","Date of Join","Manager","Terminated On","Terminate Reason","Shift","Probation Status");
+		}else{
+		 dataSource = new DRDataSource("Associate Id","Associate Name", "Gender", "Emp Type", "Department", "Role","Rate","Date of Join","Manager","Shift","Probation Status");
+		}
 		for(AssociateJoineReportDTO associateData:associateDTOList.getData()) {
 			String empId = "--";
 			String rate = "--";
+			String trminateReason = "--";
+			String terminatedOn = "--";
 			
 			if(associateData.getEmployeeId() !=null) {
 			 empId = associateData.getEmployeeId();
@@ -911,7 +968,17 @@ public class DynamicReport {
 			
 			String probationStatus = associateData.getProbationStatus();
 			
-			dataSource.add(empId,associateName, gender, empType,departmentName,role,rate,dateOfJoin,manager,shift,probationStatus);
+			if(isTerminated.equalsIgnoreCase(Constants.YES)){
+			trminateReason = associateData.getTerminatedReason();
+			
+			terminatedOn = commonUtil.dateStrFromOrgDateFormatter(dateFormat,associateData.getTerminateDate());
+			}
+			
+			if(isTerminated.equalsIgnoreCase(Constants.YES)){
+			dataSource.add(empId,associateName, gender, empType,departmentName,role,rate,dateOfJoin,manager,terminatedOn,trminateReason,shift,probationStatus);
+			}else{
+			dataSource.add(empId,associateName, gender, empType,departmentName,role,rate,dateOfJoin,manager,shift,probationStatus);	
+			}
 		}
 		return dataSource;
 	}
