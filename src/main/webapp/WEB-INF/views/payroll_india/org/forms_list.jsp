@@ -36,7 +36,7 @@
 							<!-- <th>Action</th> -->
 						</tr>
 					</thead>
-					<tbody>
+					<tbody id="formsTabl">
 						<c:forEach items="${formList}" var="form">
 							<tr>
 								<td><div class="tblminwidth proj_show">
@@ -65,6 +65,39 @@
 	</div>
 <script type="text/javascript">
 	$("#yearList").change(function() {
-		location.href = 'list?financialYear='+$(this).val();
+		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+		$.ajax({
+		 type : "POST",
+		 url : pmsUrl+"/getFormsByFinancialYear?financialYear="+$(this).val(),
+		 success : function(result) {
+			 	if (result.response === "SESSION_TIMEDOUT") {
+	  				location.replace(pmsUrl);
+	            } else if (result.response === "AWKWARD") {
+	                location.href = "/errorPage";
+	            } else if (result.response === "SUCCESS") {
+  		  		  var opt = "";
+	  		  		for (var i = 0; i < result.data.length; i++) {
+	  		  			var res = result.data[i];
+		  		  		opt = opt + '<tr>';
+		  		  		opt = opt + '<td><div class="tblminwidth proj_show">';
+		  		 		opt = opt + '		<span>'+${form.name}+'</span> <i class="fa fa-binoculars"';
+		  				opt = opt + '			onclick="location.href="forms/list?uuid='+${res.uuid}+'&financialYear='+${selectedYear}+'""></i>';
+		  				opt = opt + '		</div></td>';
+		  				opt = opt + '		<td><div class="tbldata-dotdot-verybig">'+${res.financialYear}+'</div></td>';
+		  				opt = opt + '		<td><div class="tbldata-dotdot-verybig">'+${res.totalFormsCount}+'</div></td> ';
+		  				opt = opt + '	</tr>';
+	  		  		}
+	  		  	  $("#formsTabl").empty();
+		  		  $("#formsTabl").append(result.data);
+	            } else if (result.indexOf('Sign In') !== -1) {
+					location.replace(pmsUrl);
+				} else {
+	                showError("Operation failed, please try again");
+	            }
+		  	},
+		});
+		
+		
 	});
 </script>
+

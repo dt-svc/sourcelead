@@ -49,12 +49,10 @@
 <script>
 function getRequestedAssociatesList(){
 	var requestUUID = '${requestUUID}';
-	
-	var sourceleadUrl ='${sourceleadUrl}';
-	    	 
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$.ajax({
     	type: "POST",
-    	 url: sourceleadUrl+"/getResourceRequestDetailsByRequestUUID?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID, 
+    	 url: pmsUrl+"/getResourceRequestDetailsByRequestUUID?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID, 
          success: function(json) {
         	
         	 var result = "";
@@ -325,11 +323,10 @@ function saveRejectAssociate(requestUUID){
 	    var form = $('#rejectedReason_form')[0];
 	    var formData = new FormData(form);
 	  	formData.append("json",jsonData)
-        var sourceleadUrl ='${sourceleadUrl}';
         var userId = '${SourceLeadWeb_userId}';
         var orglocationId = '${SourceLeadWeb_orgLocationId}';
         $("#submit_rejectedReason").attr("disabled", "disabled");
-		
+        var pmsUrl ='${SourceLeadWeb_pmsUrl}';
         $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 	 $.ajax({
 	 		    type : "POST",
@@ -338,7 +335,7 @@ function saveRejectAssociate(requestUUID){
 		        processData: false,
 		        contentType:false, 
 	    	    dataType : 'json',
-		    	url: sourceleadUrl+"/rejectNewRequestedResource?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orglocationId="+orglocationId,
+		    	url: pmsUrl+"/rejectNewRequestedResource?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orglocationId="+orglocationId,
 		        success: function(result) {
 		        	cancelRejectedReason();
 		        	$("#action"+requestUUID).html("<span>Rejected</span>")
@@ -368,13 +365,13 @@ function cancelRejectedReason(){
 
 <script>
 function acceptNewResourceRequest(requestUUID){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 var userId = '${SourceLeadWeb_userId}';
      var orglocationId = '${SourceLeadWeb_orgLocationId}';
 	 $("#requestedAssociatesDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	 $.ajax({
 		    type : "POST",
-	    	url: sourceleadUrl+"/acceptNewRequestedResource?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId,
+	    	url: pmsUrl+"/acceptNewRequestedResource?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId,
 	        success: function(result) {
 	        	$("#action"+requestUUID).html("<span>Accepted</span>");
 	        	$("#requestedAssociatesDivLoading").removeAttr("style"); 
@@ -434,8 +431,7 @@ if ($('#newRequestOnHold_form').validate(false, validationSettings)){
 	    var form = $('#newRequestOnHold_form')[0];
 	    var formData = new FormData(form);
 	  	formData.append("json",jsonData)
-	  	
-        var sourceleadUrl ='${sourceleadUrl}';
+	  	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
         var userId = '${SourceLeadWeb_userId}';
         var orglocationId = '${SourceLeadWeb_orgLocationId}';
         
@@ -448,7 +444,7 @@ if ($('#newRequestOnHold_form').validate(false, validationSettings)){
 		        processData: false,
 		        contentType:false, 
 	    	    dataType : 'json',
-		    	url: sourceleadUrl+"/onholdRequestedNewAssociate?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId,
+		    	url: pmsUrl+"/onholdRequestedNewAssociate?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId,
 		        success: function(result) {
 		        	
 		        	cancelRequestOnholdReason();

@@ -20,11 +20,10 @@ $(document).ready(function(){
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2>Batches</h2>
+      <h2>Groups</h2>
     </div>
      <div class="pull-right brud-crum">
-                <a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="${SourceLeadWeb_pmsUrl}/payrollConfiguration"> Payroll Configuration</a>&raquo; Batches
+          <a href=" ${appPath}/dashboard" title="Home">Home</a> &raquo; <a href=" ${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configuration</a> &raquo; Groups
       </div>
   </section>
   <div class="timesheet_out">
@@ -33,7 +32,7 @@ $(document).ready(function(){
 	<div class="pull-right">
 		<ul class="list-unstyled list-inline clearfix">
 		<li>
-			<a onClick="addbatches()" class="newAdBtn mr5" id="createbatches">+ Add Batch</a>
+			<a onClick="addbatches()" class="newAdBtn mr5" id="createbatches">+ Add Group</a>
 		</li>
 			<li>
 			<div class="dynamic_search mt10">
@@ -117,9 +116,10 @@ function closeBatch() {
 	if(groupUUID == null || groupUUID == '' || groupUUID == 'undefined'){
 		groupUUID = "";
 	}
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getUsersByDepartment?"+tokenParamName+"="+tokenValue+"&departmentId="+department                  , 
+		        url: atsUrl+"/getUsersByDepartment?"+tokenParamName+"="+tokenValue+"&departmentId="+department                  , 
 		        success: function(json) {
 		       var output = "";
 				for (var i=0; i<json.length; i++)
