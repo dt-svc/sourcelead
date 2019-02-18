@@ -51,6 +51,7 @@ function getSearchResults(searchType,searchValue,isAssociate){
 	    url: sourceleadUrl+"/universalSearch?"+tokenParamName+"="+tokenValue+"&searchType="+searchType+"&searchValue="+searchValue+"&isAssociate="+isAssociate,	    	   
 	    success: function(data) {
 	    	var result='';
+	    	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	    	var json = JSON.parse(data);
 	    	var checkSize = json.length;
             if(checkSize>5){
@@ -79,9 +80,9 @@ function getSearchResults(searchType,searchValue,isAssociate){
 	   			    	
 	   			    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 	   			    	if(report.jobTitle !=null && report.jobTitle != '' && report.jobTitle !="undefined" && report.jobType !=null && report.jobType != '' && report.jobType !="undefined"){
-	   			    		result = result+'<p><label><strong><a href="/ats/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
+	   			    		result = result+'<p><label><strong><a href="'+atsUrl+'/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
 	   			    	}else{
-	   			    		result = result+'<p><label><strong><a href="/ats/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label></p>';	
+	   			    		result = result+'<p><label><strong><a href="'+atsUrl+'/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label></p>';	
 	   			    	}
 	   			    	if(report.city !=null && report.city != '' && report.city !="undefined"){
 	   			    		result = result+'          <p><label>'+report.city+' , '+report.state+' , '+report.country+'</label>';
