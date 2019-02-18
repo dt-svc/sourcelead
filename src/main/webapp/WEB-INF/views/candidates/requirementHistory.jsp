@@ -44,7 +44,7 @@ function requirementHistory(candidateId){
 <script>
 function requirementHistoryList(candidateId){
 	
-	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  canHisDatePattern = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -305,7 +305,7 @@ function getHistoryCandiResume(uuid,title){
           <script>
 function getRateListDiv(candidateId,submissionId){
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  reqHistryRateListDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){

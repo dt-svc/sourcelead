@@ -305,7 +305,7 @@ function addResume(candidateId) {
 	  var candidateType = '${candidateType}';
 	  var result = "";
 	  var resumesCount = 0;
-	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  var locationList ='${SourceLeadWeb_dateFormat}';	
 	  candResumeListDate = "MM-DD-YYYY";
 	  if(locationList.match("yyyy-MM-dd")){
 		  candResumeListDate = 'YYYY-MM-DD';

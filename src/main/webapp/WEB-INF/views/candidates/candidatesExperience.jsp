@@ -619,7 +619,7 @@ function applyKeyEventsToYears() {
 <script>
 	function candidateEmployersList(candidateId) {
 		 var candidateType = '${candidateType}';
-		 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+		 var locationList ='${SourceLeadWeb_dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
 			  candExpListDate = 'YYYY-MM-DD';
 		  }if(locationList.match("dd-MM-yyyy")){
@@ -631,7 +631,7 @@ function applyKeyEventsToYears() {
 		  }
 				$.ajax({
 					type : "POST",
-					url : atsUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
+					url : atsUrl+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId,
 					success : function(json) {
 						if (json && json.response === "INVALID_DATA") {
@@ -777,7 +777,7 @@ function removeEmployer(candidateemployerId, candidateId){
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		$.ajax({
 			type : "POST",
-			url : atsUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
+			url : atsUrl+"/removeCandidateEmployerBycandidateIdandCandidateEmployerID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
 			success : function(response) {
 				if (response.response === "AWKWARD") {
 				    location.href = "/errorPage";

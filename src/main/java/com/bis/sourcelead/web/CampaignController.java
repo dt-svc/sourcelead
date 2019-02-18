@@ -120,7 +120,7 @@ public class CampaignController {
  	public ModelAndView joblistMail(HttpServletRequest request) throws Exception{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    ModelAndView model = new ModelAndView();
- 			model.setViewName("joblistMail");
+ 			model.setViewName("campaign/joblistMail");
  			 commonUtil.highLightMenu(Constants.Campaigns, request);
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			 List<ContactsGroup> contactsGroupList = contactsGroupService.getContactsGroupListByUserId(user.getId());
