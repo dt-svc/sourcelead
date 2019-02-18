@@ -110,7 +110,7 @@ function assetNotesList(assetUUID){
 	    output  = output + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
      	for(var i=0;i<json.length;i++){
        	var report = json[i];
-    	if(report.checkBox == 'Y' || (report.checkBox == 'N' && '${SourceLeadWeb_user.id}' == report.userIdStr)){
+    	if(report.checkBox == 'Y' || (report.checkBox == 'N' && '${SourceLeadWeb_userId}' == report.userIdStr)){
    	  	output = output+'<div class="comments-div comments-inner commentsNotes clearfix">';
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
@@ -172,7 +172,7 @@ function assetNotesList(assetUUID){
 	      		var formData = new FormData(form);
 	      		formData.append("json",con);
 	      		
-	      		var userId = '${SourceLeadWeb_user.id}';
+	      		var userId = '${SourceLeadWeb_userId}';
 	      		formData.append("userId",userId);
 	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	      	    formData.append("locationCode",locationCode);
