@@ -529,7 +529,7 @@ function offerpagination(url){
               "render": function ( data, type, opt, meta ) {
               		var result = "";
               		if(opt.offerRate !=null && opt.offerRate !='' && opt.offerRate !='undefined'){
-							result = result + ' <td><div><span>'+opt.offerRate+'</span></div></td>';
+							result = result + ' <td><div><span>'+opt.paymentType+' '+opt.offerRate+'/'+opt.paymentMode+'</span></div></td>';
 						}else{
 							result = result + ' <td><div><span>---</span></div></td>';
 						}
