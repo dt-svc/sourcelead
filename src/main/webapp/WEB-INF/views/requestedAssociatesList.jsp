@@ -50,7 +50,7 @@
    <div id="rejectedReasonDiv"></div>
    <div id="requestOnHoldReasonDiv"></div>
    <div class="modal-footer">
-   <button class="btn btn-primary" type="button" value="Back to list" onClick="javascript:window.location.href = '<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >Back to list</button>
+   <button class="btn btn-primary" type="button" value="Back to list" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >Back to list</button>
    </div>
 					
  </div>
@@ -65,12 +65,10 @@
 <script>
 function getRequestedAssociatesList(){
 	var requestUUID = '${requestUUID}';
-	
-	var sourceleadUrl ='${sourceleadUrl}';
-	    	 
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$.ajax({
-    	type: "POST",
-    	 url: sourceleadUrl+"/getResourceRequestDetailsByRequestUUID?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID, 
+    	type: "GET",
+    	 url: pmsUrl+"/getResourceRequestDetailsByRequestUUID?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID, 
          success: function(json) {
         	
         	 var result = "";
@@ -261,11 +259,11 @@ function cancelRejectedReason(){
 function acceptAssociate(requestUUID){
 	 var userId = '${SourceLeadWeb_userId}';
      var orglocationId = '${SourceLeadWeb_orgLocationId}';
-	 var sourceleadUrl ='${sourceleadUrl}';
+     var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 $("#requestedAssociatesDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	 $.ajax({
 		    type : "POST",
-	    	url: sourceleadUrl+"/acceptRequestedAssociate?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId, 
+	    	url: pmsUrl+"/acceptRequestedAssociate?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId, 
 	        success: function(result) {
 	        	$("#action"+requestUUID).html("<span>Approved</span>");
 	        	$("#requestedAssociatesDivLoading").removeAttr("style"); 
@@ -287,8 +285,7 @@ function saveRejectAssociate(requestUUID){
 	  	formData.append("json",jsonData)
 	  	 var userId = '${SourceLeadWeb_userId}';
         var orglocationId = '${SourceLeadWeb_orgLocationId}';
-        var sourceleadUrl ='${sourceleadUrl}';
-      
+        var pmsUrl ='${SourceLeadWeb_pmsUrl}';
         $("#submit_rejectedReason").attr("disabled", "disabled");
 		
         $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -299,7 +296,7 @@ function saveRejectAssociate(requestUUID){
 		        processData: false,
 		        contentType:false, 
 	    	    dataType : 'json',
-		    	url: sourceleadUrl+"/rejectRequestedAssociate?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orglocationId="+orglocationId, 
+		    	url: pmsUrl+"/rejectRequestedAssociate?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orglocationId="+orglocationId, 
 		        success: function(result) {
 		        	cancelRejectedReason();
 		        	$("#action"+requestUUID).html("<span>Rejected</span>")
@@ -373,10 +370,9 @@ if ($('#onHold_form').validate(false, validationSettings)){
 	    var formData = new FormData(form);
 	  	formData.append("json",jsonData)
 	  	
-        var sourceleadUrl ='${sourceleadUrl}';
         var userId = '${SourceLeadWeb_userId}';
         var orglocationId = '${SourceLeadWeb_orgLocationId}';
-        
+        var pmsUrl ='${SourceLeadWeb_pmsUrl}';
         $("#submit_onHold").attr("disabled", "disabled");
         $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	 	 $.ajax({
@@ -386,7 +382,7 @@ if ($('#onHold_form').validate(false, validationSettings)){
 		        processData: false,
 		        contentType:false, 
 	    	    dataType : 'json',
-		    	url: sourceleadUrl+"/onholdRequestedAssociate?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId,
+		    	url: pmsUrl+"/onholdRequestedAssociate?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId,
 		        success: function(result) {
 		        	
 		        	cancelRequestOnholdReason();
