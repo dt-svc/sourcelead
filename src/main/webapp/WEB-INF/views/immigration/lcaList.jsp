@@ -56,7 +56,7 @@
 					<div class="newActPop">
 						<span>
 						<sec:authorize access="hasAnyRole(\'ROLE_IMPORT_LCA\')">
-							<a href="/app/uploadLcaForm">Import LCA</a>
+							<a href="${SourceLeadWeb_sourceleadUrl}/uploadLcaForm">Import LCA</a>
 						 </sec:authorize>
 						  
 						  <sec:authorize access="hasAnyRole(\'ROLE_EXPORT_LCA\')">
