@@ -80,6 +80,8 @@ public class CampaignController {
 	@Autowired
 	CampaignService campaignService;
 	
+	@Value("${atsUrl}")
+	private String atsUrl;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -90,7 +92,7 @@ public class CampaignController {
 	 public @ResponseBody void CampaignMailBox(@PathVariable String mailType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 			
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/ats/hotListCampaigns?mailType=").append(mailType).toString());
+		     response.sendRedirect(redirectUrl.append(atsUrl+"/hotListCampaigns?mailType=").append(mailType).toString());
 			
 	}
 	
@@ -107,7 +109,7 @@ public class CampaignController {
 			Integer requestedUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocations.getId(), "Requested");
 			SourceLeadSessionManager.setSessionAttribute(request, "unReadMailsCount", inboxUnreadMailsCount+requestedUnreadMailsCount);
 			
- 			model.setViewName("mailBox");
+ 			model.setViewName("campaign/mailBox");
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			model.addObject("inboxUnreadMailsCount", inboxUnreadMailsCount);
  			model.addObject("requestedUnreadMailsCount", requestedUnreadMailsCount);
