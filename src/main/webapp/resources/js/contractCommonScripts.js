@@ -1,4 +1,5 @@
 function validateAlreadyGeneratedContract(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var startDate = $('#startDate').val();
 	var endDate = $('#endDate').val();
 	var orgRelationId = $("#orgRelationId").val();
@@ -8,15 +9,16 @@ function validateAlreadyGeneratedContract(){
 	var submissionOffersList = $("#submissionOffersList").val();
 	var url = "";
 	if((contractType == "Client MSA" || contractType == "Vendor MSA")  && (orgRelationId != "" && orgRelationId != 'undefined')){
-		url = sourceleadUrl+"/validateAlreadyGeneratedContract?startDate="+startDate+"&endDate="+endDate+"&orgRelationId="+orgRelationId+"&contractType="+contractType;
+		url = vmsUrl+"/validateAlreadyGeneratedContract?startDate="+startDate+"&endDate="+endDate+"&orgRelationId="+orgRelationId+"&contractType="+contractType;
 		validateAlreadyGeneratedContractMainFunc(url,startDate,endDate,contractType);
 	}else if(contractType == "Client SOW" || contractType == "Vendor SOW"){
-		url = sourceleadUrl+"/validateAlreadyGeneratedContract?startDate="+startDate+"&endDate="+endDate+"&submissionOffersList="+submissionOffersList+"&contractType="+contractType;
+		url = vmsUrl+"/validateAlreadyGeneratedContract?startDate="+startDate+"&endDate="+endDate+"&submissionOffersList="+submissionOffersList+"&contractType="+contractType;
 		validateAlreadyGeneratedContractMainFunc(url,startDate,endDate,contractType);
 	}
 }
 
 function validateAlreadyGeneratedContractMainFunc(url,startDate,endDate,contractType){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	if(startDate != "" && startDate != 'undefined' && endDate != "" && endDate != 'undefined'){
 		$.ajax({
 		     type : "GET",
@@ -35,9 +37,9 @@ function validateAlreadyGeneratedContractMainFunc(url,startDate,endDate,contract
 			      						&& opt.contractUUID != null && opt.contractUUID != '' && opt.contractUUID != 'undefined'
 			      							&& opt.contractTitle != null && opt.contractTitle != '' && opt.contractTitle != 'undefined'){
 			      				if(contractType == "Client SOW" || contractType == "Vendor SOW"){
-			      					result += '<li class="mb10">'+contractType+' Contract generated for '+opt.applicantName+' with '+opt.contractWith+' from '+opt.startDateStr+' - '+opt.endDateStr+'. <strong>'+opt.autoGenId+' - <a href="'+sourceleadUrl+'/viewContract?contractUUID='+opt.contractUUID+'" target="_blank"> '+opt.contractTitle+'</a></strong> </li>';
+			      					result += '<li class="mb10">'+contractType+' Contract generated for '+opt.applicantName+' with '+opt.contractWith+' from '+opt.startDateStr+' - '+opt.endDateStr+'. <strong>'+opt.autoGenId+' - <a href="'+vmsUrl+'/viewContract?contractUUID='+opt.contractUUID+'" target="_blank"> '+opt.contractTitle+'</a></strong> </li>';
 			      				}else if(contractType == "Client MSA" || contractType == "Vendor MSA"){
-			      					result += '<li class="mb10">'+contractType+' Contract generated with '+opt.contractWith+' from '+opt.startDateStr+' - '+opt.endDateStr+'. <strong>'+opt.autoGenId+' - <a href="'+sourceleadUrl+'/viewContract?contractUUID='+opt.contractUUID+'" target="_blank"> '+opt.contractTitle+'</a></strong> </li>';
+			      					result += '<li class="mb10">'+contractType+' Contract generated with '+opt.contractWith+' from '+opt.startDateStr+' - '+opt.endDateStr+'. <strong>'+opt.autoGenId+' - <a href="'+vmsUrl+'/viewContract?contractUUID='+opt.contractUUID+'" target="_blank"> '+opt.contractTitle+'</a></strong> </li>';
 			      				}
 			      			}
 			      		}
@@ -65,10 +67,11 @@ function reviseContract(contractUUID){
 }
 
 function submitReviseContractReason(contractUUID){
+//	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var reviseReason =  $("#reviseContractId").val();
 	if(reviseReason != null && reviseReason !='undefined' && reviseReason !=''){
 		$("#reviseContractIdDiv").find('p.jquery_form_error_message').remove();
-		$.get(sourceleadUrl+"/reviseContract?"+tokenParamName+"="+tokenValue+"&contractUUID="+contractUUID+"&revisedReason="+reviseReason, function(data) {
+		$.get(vmsUrl+"/reviseContract?"+tokenParamName+"="+tokenValue+"&contractUUID="+contractUUID+"&revisedReason="+reviseReason, function(data) {
 			if(data == true){
 				cancelTermination();
 				getTemplateList();
