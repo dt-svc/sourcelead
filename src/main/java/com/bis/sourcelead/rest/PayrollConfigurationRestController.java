@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +27,7 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AssociateNomineeDTO;
 import com.bis.sourcelead.dto.AssociateSalaryIndDTO;
+import com.bis.sourcelead.dto.EmailReminderDTO;
 import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.bis.sourcelead.dto.PayrollBonusDTO;
 import com.bis.sourcelead.dto.PayrollLoanAndAdvancesDTO;
@@ -34,13 +36,14 @@ import com.bis.sourcelead.dto.PayrollPaytypeDTO;
 import com.bis.sourcelead.dto.PayrollTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.EmailReminderDTO;
+import com.bis.sourcelead.dto.SourceleadTaxFormDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociateNominee;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.EmailReminder;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -51,8 +54,9 @@ import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
 import com.bis.sourcelead.entity.PayrollPaytype;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
-import com.bis.sourcelead.entity.EmailReminder;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.indPayroll.entity.AssociateSalaryHistoryInd;
+import com.bis.sourcelead.indPayroll.utill.INDPayrollCommonUtil;
 import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
@@ -68,6 +72,7 @@ import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
 import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.PayrollPaytypeService;
 import com.bis.sourcelead.service.PayrollTaxService;
+import com.bis.sourcelead.service.TaxService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.util.CalendarUtil;
@@ -138,6 +143,11 @@ public class PayrollConfigurationRestController {
 	@Autowired
 	EmailReminderService emailReminderService;
 	
+	@Autowired
+	INDPayrollCommonUtil payrollCommonUtil;
+	
+	@Autowired
+	TaxService taxService;
 	
 	@RequestMapping(value = "/saveBonus" , method = RequestMethod.POST)
 	public Response<String> saveBonus(PayrollBonusDTO payrollBonusDTO, HttpServletRequest request)
@@ -1120,4 +1130,74 @@ public class PayrollConfigurationRestController {
 			}
 			return response;
 		}
+	 
+	 
+	 @RequestMapping(value = { "/stopSalaryProcessingForEmployee","/rest/stopSalaryProcessingForEmployee" } , method = RequestMethod.POST)
+	 public Response<String> stopSalaryProcessingForEmployee(AssociateSalaryIndDTO associateSalaryIndDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+	    	Response<String> resObj = new Response<>();
+	    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+		    	try {
+		    		AssociateSalaryHistoryInd associateSalaryHistoryInd = new AssociateSalaryHistoryInd();
+						AssociateSalaryInd associateSalaryInd = payrollPayheadService.getAssociateSalaryIndByUUID(associateSalaryIndDTO.getUuid());
+						associateSalaryHistoryInd =  payrollCommonUtil.setPreviousDataToAssociateSalaryHistoryInd(associateSalaryInd, associateSalaryHistoryInd);
+						if(associateSalaryInd != null) {
+							associateSalaryInd.setStopSalary(associateSalaryIndDTO.getStopSalary());
+							associateSalaryInd.setUpdatedBy(user);
+							associateSalaryInd.setUpdatedDate(new Date());
+							associateSalaryInd = payrollPayheadService.saveAssociateSalaryInd(associateSalaryInd);
+							
+							//save History
+							associateSalaryHistoryInd =  payrollCommonUtil.setNewDataToAssociateSalaryHistoryInd(associateSalaryInd, associateSalaryHistoryInd);
+							payrollPayheadService.saveAssociateSalaryHistoryInd(associateSalaryHistoryInd);
+							
+							resObj.setResponse(Result.SUCCESS.name());
+							resObj.setResponseMessage(Result.SUCCESS.getValue());
+						}else {
+							resObj.setObject("DataMissing");
+							resObj.setResponse(Result.INVALID_DATA.name());
+							resObj.setResponseMessage(Result.INVALID_DATA.getValue());
+						}
+				 }catch (Exception e) {
+					 resObj.setResponse(Result.AWKWARD.name());
+					 resObj.setResponseMessage(Result.AWKWARD.getValue());
+					 logger.error(ExceptionUtils.getFullStackTrace(e));
+				}
+			}else {
+				resObj.setResponse(Result.SESSION_TIMEDOUT.name());
+				resObj.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+			return resObj;
+			
+		}
+	 
+	 
+	 @RequestMapping(value = { "/getFormsByFinancialYear" ,"/rest/getFormsByFinancialYear" }, method = RequestMethod.POST)
+	 public ResponseList<SourceleadTaxFormDTO> getFormsByFinancialYear(SourceleadTaxFormDTO sourceleadTaxFormDTO, HttpServletRequest request)
+				throws Exception {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			ResponseList<SourceleadTaxFormDTO> response = new ResponseList<>();
+			if (user != null) {
+				if (StringUtils.isNotBlank(sourceleadTaxFormDTO.getFinancialYear())) {
+					try {
+						response.setData(taxService.getTaxFormTypeListForSubmission(sourceleadTaxFormDTO.getFinancialYear(), orgLocations.getId()));
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					} catch (Exception e) {
+						response.setResponse(Result.AWKWARD.name());
+						response.setResponseMessage(Result.AWKWARD.getValue());
+						logger.error(ExceptionUtils.getFullStackTrace(e));
+					}
+				}else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+			return response;
+	}
 }

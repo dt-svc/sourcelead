@@ -22,11 +22,11 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       </div>
       <div class="pull-right brud-crum">
                 <a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;
-                <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+                <c:if test="${SourceLeadWeb_country == 'India'}">
                 	<a href="${SourceLeadWeb_pmsUrl}/indPayrollConfiguration"> Payroll Configuration</a>
                 </c:if>
-                <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-                	<a href="/pms/payrollConfiguration"> Payroll Configuration</a>
+                <c:if test="${SourceLeadWeb_country == 'United States'}">
+                	<a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration"> Payroll Configuration</a>
                 </c:if>
                 &raquo; Approval
        </div>

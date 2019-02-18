@@ -20,7 +20,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Payroll List Summary</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="/app/dashboard" title="Home">Home</a>&raquo;<a
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard" title="Home">Home</a>&raquo;<a
 				href="/pms/usPayrollReport"> US Payroll Reports List</a>&raquo;Payroll List Summary
 		</div>
     </section>
@@ -74,7 +74,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
   <script>
 	$(function() {
 		
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		 var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		  // written common method in slead-common.js for date formats start
 		  var finalDateFormat = getJSDateFormat(locationDate);
 		  //end

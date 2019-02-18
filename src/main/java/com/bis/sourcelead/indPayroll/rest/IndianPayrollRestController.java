@@ -83,6 +83,7 @@ import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PaymentAccountService;
 import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
 import com.bis.sourcelead.service.PayrollPayheadService;
@@ -157,6 +158,9 @@ public class IndianPayrollRestController {
 	
 	@Autowired
 	private TaxService taxService;
+	
+	@Autowired
+    private OrgService orgService;
 	
     @RequestMapping(value = "/save-ind-associate-payment-account", method = RequestMethod.POST)
 	public Response<IndAssociatePaymentAccountDTO> savePaymentAccount(HttpServletRequest request, IndAssociatePaymentAccountDTO account,
@@ -826,4 +830,59 @@ public class IndianPayrollRestController {
 		  User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		  return userGroupService.createUserGroup(orgLocations,userGroupDTO,loginUser);
 	 }
+	 
+	 
+	 
+	 @RequestMapping(value = "/change-associate-active-payment-account", method = RequestMethod.POST)
+	    @ResponseBody
+	    public com.bis.sourcelead.dto.Response changeAssociateActiveAccount(HttpServletRequest request,  long id) {
+	        com.bis.sourcelead.dto.Response response = new com.bis.sourcelead.dto.Response();
+	        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	        response.setResponse(Result.INVALID_DATA.name());
+	        response.setResponseMessage(Result.INVALID_DATA.getValue());
+	        if (orgLocations != null) {
+	            int flag = orgService.changePaymentAccountStatus(id, orgLocations.getId());
+	            if (flag > 0) {
+	                response.setResponse(Result.SUCCESS.name());
+	                response.setResponseMessage(Result.SUCCESS.getValue());
+	            } else if (flag < 0) {
+	                response.setResponse(Result.DUPLICATE_EMAIL.name());
+	                response.setResponseMessage(Result.DUPLICATE_EMAIL.getValue());
+	            } else if (flag == 0) {
+	                response.setResponse(Result.FAILED.name());
+	                response.setResponseMessage(Result.FAILED.getValue());
+	            }
+	        } else {
+	            response.setResponse(Result.SESSION_TIMEDOUT.name());
+	            response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+	        }
+	        return response;
+	    }
+	 
+	  @RequestMapping(value = "/change-associate-default-payment-account", method = RequestMethod.POST)
+	    @ResponseBody
+	    public com.bis.sourcelead.dto.Response changeassociateDefaultAccount(HttpServletRequest request, 
+	            long id,long candidateId, boolean defaultAccount) {
+	        com.bis.sourcelead.dto.Response response = new com.bis.sourcelead.dto.Response();
+	        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	        response.setResponse(Result.INVALID_DATA.name());
+	        response.setResponseMessage(Result.INVALID_DATA.getValue());
+	        if (orgLocations != null) {
+	            int flag = orgService.changeAssociateDefaultPaymentAccount(id,candidateId, defaultAccount);
+	            if (flag > 0) {
+	                response.setResponse(Result.SUCCESS.name());
+	                response.setResponseMessage(Result.SUCCESS.getValue());
+	            } else if (flag < 0) {
+	                response.setResponse(Result.DUPLICATE_EMAIL.name());
+	                response.setResponseMessage(Result.DUPLICATE_EMAIL.getValue());
+	            } else if (flag == 0) {
+	                response.setResponse(Result.FAILED.name());
+	                response.setResponseMessage(Result.FAILED.getValue());
+	            }
+	        } else {
+	            response.setResponse(Result.SESSION_TIMEDOUT.name());
+	            response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+	        }
+	        return response;
+	    }
 }

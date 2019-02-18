@@ -15,7 +15,7 @@ window.onload = function () {
       <div class="pull-left">
         <h2>User Payroll</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;User Payroll</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;User Payroll</div>
     </section>
 
 <div class="project_side_wrap_inn_tabs clearfix">
@@ -91,7 +91,7 @@ window.onload = function () {
 
 <script>
 function getUserPayrollList(){
-	var userId = '${SourceLeadWeb_user.id}';
+	var userId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var selectedYear = $("#userPayId").val();
 	

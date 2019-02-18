@@ -22,7 +22,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Holidays List</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; <a href="/pms/leaveConfiguration">Leave Configuration</a> &raquo; Holiday</div>
+		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; <a href="${SourceLeadWeb_pmsUrl}/leaveConfiguration">Leave Configuration</a> &raquo; Holiday</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -50,7 +50,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
                             </div>
       <ul>
           <li>
-              <a href="/pms/addHoliday" title="Add Holiday"><i class="fa fa-plus paddingRight"></i>Add Holiday</a>
+              <a href="${SourceLeadWeb_pmsUrl}/addHoliday" title="Add Holiday"><i class="fa fa-plus paddingRight"></i>Add Holiday</a>
           </li>
 	      <li id="filterShiftTypePop"><i class="fa fa-filter"></i><span>Shift</span><i class="glyphicon glyphicon-play"></i>
 		           	<div class="statusFiler-1 approved_pop">
@@ -140,7 +140,7 @@ function getHolidaysList(){
 			        		 result = result + '  </td>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="tblminwidth-50">';
-			        		 result = result +' <span title="Edit" class="paddingRight"><a href="<c:url value="/app/editHoliday?holidayUUID='+opt.holidayUUID+'"/>"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span> ';
+			        		 result = result +' <span title="Edit" class="paddingRight"><a href="${SourceLeadWeb_pmsUrl}/editHoliday?holidayUUID='+opt.holidayUUID+'"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span> ';
 			        		 result = result +' <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteHoliday(\''+opt.holidayUUID+'\');"></i></span> ';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';

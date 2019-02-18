@@ -5,6 +5,7 @@
 
 <!-- Content Area -->
 <script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 $(document).ready(function(){
    getMappedUserList();
 });
@@ -15,7 +16,7 @@ $(document).ready(function(){
   <div class="pull-left">
     <h2>User Mapping</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; User Mapping</div>
+  <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; User Mapping</div>
 </section>
 	<div id="loading"></div>
 	<div id="popUp"></div>
@@ -104,7 +105,7 @@ $(document).ready(function(){
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		$.ajax({
 					type : "GET",
-					url : sourceleadUrl+ "/getMappedUserList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+					url : pmsUrl+ "/getMappedUserList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
 					success : function(data) {
 						var result = "";				        	
 						result = result + '<table id="userMappingTable" class="display" cellspacing="0" width="100%" >';
@@ -174,19 +175,22 @@ function showAlertMessage(){
 
 <script type="text/javascript">
 function mergeDiffUsers(){ 
+	alert(pmsUrl)
 	var frm = $('#userMapping_form').serializeFormJSON();
 	var con = JSON.stringify(frm);
 	con = con.replace(/[{}]/g, "");
 	  //It will escape all the special characters
     var jsonData = encodeURIComponent(con);
 	var sourceleadUrl = '${sourceleadUrl}';
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 				type : "POST",
-				url : sourceleadUrl+ "/mergeUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+				url : pmsUrl+ "/mergeUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 				success : function(result) {
 					if (result == true) {
-						location.replace(sourceleadUrl+ "/userMapping");
+						location.replace(pmsUrl+ "/userMapping");
 					}
 				},
 			}); 

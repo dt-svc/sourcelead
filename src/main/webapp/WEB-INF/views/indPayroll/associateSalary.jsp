@@ -113,7 +113,7 @@
                  </div>
          <div class="clearfix clients_wrap_table">
          <div class="clearfix mb5">
-         	<a href="<c:url value='${appPath}/payrollPayhead'/>" class="btn btn-primary  pull-right mr"><i class="fa fa-plus paddingRight"></i>Add Payhead</a>
+         	<a href="${SourceLeadWeb_pmsUrl}/payrollPayhead"class="btn btn-primary  pull-right mr"><i class="fa fa-plus paddingRight"></i>Add Payhead</a>
          </div>
                <table>
                		<thead>
@@ -168,7 +168,7 @@
                   <div class="col-md-6">
                    <div class="pull-right" id="saveAssociateBtnDiv">
                     <input value="Save & Finish" class="btn btn-success btnSuccess" type="button" onclick="saveAssociateSalaryInd();">
-                    <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '/app/usersList'" type="button">
+                    <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/usersList'" type="button">
 <%--                    <c:if test="${status == 'NEW' || status == 'NODATA'}">						     --%>
 <!-- 						<input value="Cancel" class="btn btn-default ml10" type="button" id="cancelAssociateSalaryIndBtn">                     -->
 <%--                     </c:if>  --%>
@@ -337,12 +337,13 @@ function cnfToSaveAssociateSalaryInd(){
 	if ($('#associateSalary_form').validate(false, validationSettings)) {
 		var formData = getFormData1("associateSalary_form");
 		var status = $("#status").val();
+		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		$.ajax({
 			 type : "POST",
 			 data: formData,
 		     processData: false,
 		     contentType:false, 
-			 url : sourceleadUrl+"/saveAssociateSalaryInd?"+tokenParamName+"="+tokenValue,
+			 url : pmsUrl+"/saveAssociateSalaryInd?"+tokenParamName+"="+tokenValue,
 			 success : function(result) {
 			  		if(status == "NEW" || status == "NODATA"){
 			  			location.reload();
@@ -394,11 +395,12 @@ $('.selectall').click(function() {
 
 <script>
 function getPayGroups(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var payFrequency = $("#payFrequency").val();
 	var userId = $("#userId").val();
 		 $.ajax({
 				type : "GET",
-				url : sourceleadUrl+"/getPayGroupsByPayFrequency?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency+"&userId="+userId,
+				url : pmsUrl+"/getPayGroupsByPayFrequency?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency+"&userId="+userId,
 				success : function(result) {
 				var output = "";
 				output = output + "<option value=''>Select Group</option>";
@@ -597,9 +599,11 @@ function calculatePercentSal(){
 	        	stopsalary = 'NO';
 	        	//$('.switchSalary').find('.slider').css({"background":"#ccc"});
 	        }
+	        var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+
 	        $.ajax({
 	        	type : "POST",
-				url : sourceleadUrl+"/stopSalaryProcessingForEmployee?"+tokenParamName+"="+tokenValue+"&stopSalary="+stopsalary+"&uuid="+uuid,
+				url : pmsUrl+"/stopSalaryProcessingForEmployee?"+tokenParamName+"="+tokenValue+"&stopSalary="+stopsalary+"&uuid="+uuid,
 				success : function(result) {
 					if(result != null && result.object === "DataMissing") {
 						if($('#stopsalary').is(':checked')){
