@@ -52,9 +52,7 @@
 display: inline-block;
 }
 </style>
-<script
-	src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${SourceLeadWeb_googleMapsLocationApiKey}"
-	type="text/javascript"></script>
+ <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${googleMapsLocationApiKey}" type="text/javascript"></script>
 <script
 	src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
 <script
@@ -2428,10 +2426,10 @@ function alertClose(){
 <!-- <script src="/resources/js/jobs/js/bootstrap-select.min.js"></script> -->
 <script>
 function createAlert(requirementUUID){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${atsUrl}';
 	 $.ajax({
         type : "GET",
-        url: sourceleadUrl + "/ws/getJobDetailsForJobAlert?${_csrf.parameterName}=${_csrf.token}&requirementUUID="+requirementUUID,    
+        url: atsUrl + "/ws/getJobDetailsForJobAlert?${_csrf.parameterName}=${_csrf.token}&requirementUUID="+requirementUUID,    
          success :function(data) {
         	 
         	 var json = JSON.parse(data);
@@ -2479,7 +2477,7 @@ function createAlert(requirementUUID){
         	 result = result +'         <div class="form-group clearfix" id="emailDiv">';
         	 result = result +'         	<label class="col-md-3">Email<span class="text-danger paddingLeft">*</span></label>';
         	 result = result +'         	<div class="col-md-9">';
-        	 result = result +'         		<input type="text" class="form-control input-sm" placeholder="Email" id="email" name="email" field-name="Email" onblur="validateAlertUserEmail();" data-validation="required validate_Space validate_length length2-100 validate_email">';
+        	 result = result +'         		<input type="text" class="form-control input-sm" placeholder="Email" id="alertEmail" name="email" field-name="Email" onblur="validateAlertUserEmail();" data-validation="required validate_Space validate_length length2-100 validate_email">';
         	 result = result +'         	</div>';
         	 result = result +'         </div>';
         	 
@@ -2801,13 +2799,13 @@ var sourceleadUrl ='${sourceleadUrl}';
         		
         		e.preventDefault();
         	    var formData = getFormData1("create_alert_form");
-        	    
+        	    var atsUrl ='${atsUrl}';
         		$.ajax({
 		        		    type : "POST",
 							data: formData,
 			  		        processData: false,
 			  		        contentType:false, 
-        					url : sourceleadUrl + "/ws/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
+        					url : atsUrl + "/ws/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
         					success : function(result) {
         						if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
         							showError(result.responseMessage);
@@ -2908,25 +2906,25 @@ function getRate(){
 
 <script>
 function validateAlertUserEmail(){
-	var email = document.getElementById("email").value;
-	var sourceleadUrl ='${sourceleadUrl}';
+	var email = document.getElementById("alertEmail").value;
+	var atsUrl ='${atsUrl}';
 	if(email != null && email != ''){
 		$("#alert_button").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: sourceleadUrl + "/ws/validateAlertUserEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
+		       url: atsUrl + "/ws/validateAlertUserEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
 					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-					    	    $("input#email").after("<p class='jquery_form_error_message'>You can configure maximum 5 job alerts</span>");
-			    				$('input#email').attr('record-exist','yes');
-			    				$('input#email').attr('record-exist-errorMsg','You can configure maximum 5 job alerts'); 
+					    	    $("input#alertEmail").after("<p class='jquery_form_error_message'>You can configure maximum 5 job alerts</span>");
+			    				$('input#alertEmail').attr('record-exist','yes');
+			    				$('input#alertEmail').attr('record-exist-errorMsg','You can configure maximum 5 job alerts'); 
 					     } 
 					     
 				       	else{
 				       		 $("#alert_button").removeAttr("disabled");
-							 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+							 $('input#alertEmail').removeAttr( "record-exist record-exist-errormsg");
 			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
 							 $( "#alert_button" ).removeAttr("style");
 							 $( "#alert_button" ).click(function() {
