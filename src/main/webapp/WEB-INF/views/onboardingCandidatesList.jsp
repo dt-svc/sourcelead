@@ -65,6 +65,7 @@ function onboardingCandidatesList(){
             	} else if (response.response === "SUCCESS") {
             		$("#onboardingLoading").removeAttr("style");
                	 $("#onboardingCandidatesList").empty();
+               	var atsUrl ='${SourceLeadWeb_atsUrl}';
                	 var result = "";
                	 result = result +"<table id='onboardingPagination' class='display' cellspacing='0' width='99.9%' >"; 
                     result = result +"<thead>"; 
@@ -91,7 +92,7 @@ function onboardingCandidatesList(){
                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.candidateName+"'>"+opt.candidateName+"</span></div></td>";
                    		 result = result +"<td><div><span title='"+opt.candidateEmail+"'>"+opt.candidateEmail+"</span></div></td>";
                    		 if(opt.reqManagerId == userId || opt.reqReleaseAllJobUserStatus == "Y" || loginUserRole == 'ROLE_ADMIN'){
-                   		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.requirementName+"'>"+opt.requirementName+"</span></a></div></td>";
+                   		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+atsUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.requirementName+"'>"+opt.requirementName+"</span></a></div></td>";
                    		 }
                    		 else{
 	                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.requirementName+"'>"+opt.requirementName+"</span></div></td>";
@@ -124,9 +125,9 @@ function onboardingCandidatesList(){
 		                     '<sec:authorize access="hasRole(\'ROLE_CREATE_ON_BOARD_USER\')">'
 			                     if(opt.onboardUUId != null && opt.onboardUUId != '' && opt.onboardUUId != 'undefined'){
 			                    	 if(opt.onboardStatus == 'Draft'){
-			                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardUUId+"'><span class='text-success'>View Onboard</span></a></div></td>";
+			                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+atsUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardUUId+"'><span class='text-success'>View Onboard</span></a></div></td>";
 			                    	 }else{
-			                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/viewOnboardCandidateSummary?onboardUUID="+opt.onboardUUId+"'> <span class='text-success'>View Onboard</span></i></a> ";
+			                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+atsUrl+"/viewOnboardCandidateSummary?onboardUUID="+opt.onboardUUId+"'> <span class='text-success'>View Onboard</span></i></a> ";
 			                    		 if(opt.onboardStatus == 'Submitted'){
 			                    			 result = result	+ '<span>&nbsp;&nbsp;|&nbsp;&nbsp;<a><i class="fa fa-check text-success" title="Accept" onclick="acceptOnboardingCandiate(\''+opt.onboardUUId+'\');"></i></a></span>&nbsp;&nbsp;&nbsp;<span><a><i class="fa fa-close text-danger" title="Reject" onclick="rejectedReason(\''+opt.onboardUUId+'\',\''+opt.candidateName+'\',\''+opt.candidateEmail+'\');"></i></a></span>';
 			                    		 }
@@ -135,7 +136,7 @@ function onboardingCandidatesList(){
 			                    	 result = result +"</div></td>";
 			                    	
 			                    }else{
-			                    	result = result +"<td><div class='tbldata-dotdot-sm'><a href='"+sourceleadUrl+"/candidateOnBoardingDetails?candidateUUId="+opt.candidateUUID+"&offerUUID="+opt.offerUUID+"'><span class='text-success'>Onboard</span></a></div></td>";
+			                    	result = result +"<td><div class='tbldata-dotdot-sm'><a href='"+atsUrl+"/candidateOnBoardingDetails?candidateUUId="+opt.candidateUUID+"&offerUUID="+opt.offerUUID+"'><span class='text-success'>Onboard</span></a></div></td>";
 			                    }
 		                     '</sec:authorize>';  
 

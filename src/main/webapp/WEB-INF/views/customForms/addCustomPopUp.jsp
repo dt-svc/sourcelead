@@ -153,7 +153,7 @@
 
 <c:if test="${not empty type and type eq 'summary' and type ne 'SourceleadSummary'}">
 		
-		<div class="popupWrap popupWrapFixed" id="popUpDataCustom">
+		<div class="popupWrap popupWrapFixed newCustomFieldPopup" id="popUpDataCustom">
 		<input name="id" id="customFieldId" value="${customFormPopDetails.id}" type="hidden"/>
 		<div class="popupHead">Summary <i class="closePop pull-right popClose"></i></div>
 	
@@ -270,7 +270,7 @@
       </div>
 </c:if>
 <c:if test="${not empty type and type eq 'SourceleadSummary'}">
-<div class="popupWrap popupWrapFixed" id="popUpDataCustom">
+<div class="popupWrap popupWrapFixed newCustomFieldPopup" id="popUpDataCustom">
 	<div class="popupHead">Summary <i class="closePop pull-right popClose"></i></div>
 	
 		<div class="popupContent popupContentFixed clearfix">

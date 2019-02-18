@@ -18,13 +18,13 @@ window.onload = function() {
     <div class="pull-left">
       <h2>Blog List</h2>
     </div>
-   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Blog </div>
+   <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'">Home</a> &raquo; Blog </div>
   </section>
   <div class="content-area content-new clearfix">
    <div class="timesheet_head minHeight50 list-borderright">
 		<ul>
-			<li><a href="/app/categoryList" title="Add Blog"><i class="fa fa-plus paddingRight"></i>Category</a></li>
-			<li><a href="/app/addBlog" title="Add Blog"><i class="fa fa-plus paddingRight"></i>Add Blog</a></li>
+			<li><a href="${SourceLeadWeb_sourceleadUrl}/categoryList" title="Add Blog"><i class="fa fa-plus paddingRight"></i>Category</a></li>
+			<li><a href="${SourceLeadWeb_sourceleadUrl}/addBlog" title="Add Blog"><i class="fa fa-plus paddingRight"></i>Add Blog</a></li>
 		</ul>
 	<div class="clearfix"></div>
 	<div class="remove_search">
@@ -167,7 +167,7 @@ function blogListPagination(url){
 		          "render": function ( data, type, opt, meta ) {
 		          	var result = ""; 
 		          	 if(opt.status !=null && opt.status !='' && opt.status !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot-100"><a href="<c:url value="${appPath}/blogPreview?blogUUID='+opt.blogUUID+'"/>" class="text-primary" title="View"><i class="fa fa-eye"></i></a>&nbsp;&nbsp;<a href="<c:url value="${appPath}/addBlog?blogUUID='+opt.blogUUID+'"/>" class="text-warning" title="Edit"  ><i class="fa fa-pencil"></i></a>&nbsp;&nbsp;<a href="javascript:void(0)" class="text-danger" title="Delete" onclick="deleteBlog('+opt.id+');"><i class="fa fa-trash"></i></div></td>';
+							result = result + ' <td><div class="tbldata-dotdot-100"><a href="${SourceLeadWeb_sourceleadUrl}/blogPreview?blogUUID='+opt.blogUUID+'"/>" class="text-primary" title="View"><i class="fa fa-eye"></i></a>&nbsp;&nbsp;<a href="<c:url value="${SourceLeadWeb_sourceleadUrl}/addBlog?blogUUID='+opt.blogUUID+'"/>" class="text-warning" title="Edit"  ><i class="fa fa-pencil"></i></a>&nbsp;&nbsp;<a href="javascript:void(0)" class="text-danger" title="Delete" onclick="deleteBlog('+opt.id+');"><i class="fa fa-trash"></i></div></td>';
 						}else{
 							result = result + ' <td><div class="tbldata-dotdot-100">--</div></td>';
 						}
