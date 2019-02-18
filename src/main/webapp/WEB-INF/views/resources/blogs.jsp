@@ -167,7 +167,7 @@ function blogListPagination(url){
 		          "render": function ( data, type, opt, meta ) {
 		          	var result = ""; 
 		          	 if(opt.status !=null && opt.status !='' && opt.status !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot-100"><a href="<c:url value="${appPath}/blogPreview?blogUUID='+opt.blogUUID+'"/>" class="text-primary" title="View"><i class="fa fa-eye"></i></a>&nbsp;&nbsp;<a href="<c:url value="${appPath}/addBlog?blogUUID='+opt.blogUUID+'"/>" class="text-warning" title="Edit"  ><i class="fa fa-pencil"></i></a>&nbsp;&nbsp;<a href="javascript:void(0)" class="text-danger" title="Delete" onclick="deleteBlog('+opt.id+');"><i class="fa fa-trash"></i></div></td>';
+							result = result + ' <td><div class="tbldata-dotdot-100"><a href="${SourceLeadWeb_sourceleadUrl}/blogPreview?blogUUID='+opt.blogUUID+'"/>" class="text-primary" title="View"><i class="fa fa-eye"></i></a>&nbsp;&nbsp;<a href="<c:url value="${SourceLeadWeb_sourceleadUrl}/addBlog?blogUUID='+opt.blogUUID+'"/>" class="text-warning" title="Edit"  ><i class="fa fa-pencil"></i></a>&nbsp;&nbsp;<a href="javascript:void(0)" class="text-danger" title="Delete" onclick="deleteBlog('+opt.id+');"><i class="fa fa-trash"></i></div></td>';
 						}else{
 							result = result + ' <td><div class="tbldata-dotdot-100">--</div></td>';
 						}
