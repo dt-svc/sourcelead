@@ -12,7 +12,7 @@ $(document).ready(function(){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left"><h2>Release Note</h2></div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/app/dashboard'/>"> Home </a>  &raquo; Release Note List</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard"> Home </a>  &raquo; Release Note List</div>
     </section>
     
     <div class="project_wrap">
@@ -21,7 +21,7 @@ $(document).ready(function(){
           <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh"></a></span>
       
           <ul class="pull-right list-unstyled list-inline">
-            <li><a class="action newAdBtn mr5" href="${appPath}/addReleaseNote">+ Add</a></li>
+            <li><a class="action newAdBtn mr5" href="${SourceLeadWeb_sourceleadUrl}/addReleaseNote">+ Add</a></li>
 <!--           <li class=""><input class="repSearchBar" placeholder="Search" type="text"><span class="repSearchIcon"></span></li> -->
         </ul>
       </div>   
@@ -60,8 +60,8 @@ $(document).ready(function(){
 	                result = result +'<td>'+report.publishDateStr+'</td>';
 	                result = result +'<td>';
 	                result = result +' <div class="">';
-	                result = result +'  <a href="<c:url value="${appPath}/viewReleaseNote?releaseUUID='+report.releaseUUID+'"/>" class="text-warning"> <i class="fa fa-eye mr5" title="View File"></i></a>';
-	                result = result +'   <a href="<c:url value="${appPath}/addReleaseNote?releaseUUID='+report.releaseUUID+'"/>" class="text-warning" title="Edit"><i class="fa fa-pencil mr5" title="edit file"></i></a>';
+	                result = result +'  <a href="${SourceLeadWeb_sourceleadUrl}/viewReleaseNote?releaseUUID='+report.releaseUUID+'" class="text-warning"> <i class="fa fa-eye mr5" title="View File"></i></a>';
+	                result = result +'   <a href="${SourceLeadWeb_sourceleadUrl}/addReleaseNote?releaseUUID='+report.releaseUUID+'" class="text-warning" title="Edit"><i class="fa fa-pencil mr5" title="edit file"></i></a>';
 	                result = result +'   <i class="fa fa-trash" title="Delete" onclick="deleteReleaseNote(\''+report.releaseUUID+'\');"></i> ';                               
 	                result = result +' </div>';
 	                result = result +'  </td>';    
