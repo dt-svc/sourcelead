@@ -40,9 +40,9 @@ $(function(){
           <%-- <a href="${appPath}/addUserManual" class="pull-right btn btn-primary btn-sm mb">Add</a> --%>
           <%-- <a href="${appPath}/applicantDeclineReports" title="Grid View" id="GView" class="btn btn-default " ><i class="fa fa-pie-chart"></i></a>
           --%> 
-          <div class="pull-right brud-crum" id="level1Bred" style="display:block"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>" class="paddingLeft">Home</a> &raquo; Level-1 User Manuals </div>
-          <div class="pull-right brud-crum" id="level2Bred" style="display:none"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>" class="paddingLeft">Home</a> &raquo; <a onclick="getUserManualList();" class="paddingLeft">Level-1</a> &raquo; Level-2 User Manuals </div>
-          <div class="pull-right brud-crum" id="level3Bred" style="display:none"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>" class="paddingLeft">Home</a> &raquo;<a onclick="getUserManualList();" class="paddingLeft">Level-1</a> &raquo;<a id="level2cum" style="display:none" class="paddingLeft"></a> &raquo; Level-3 User Manuals </div>
+          <div class="pull-right brud-crum" id="level1Bred" style="display:block"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}" class="paddingLeft">Home</a> &raquo; Level-1 User Manuals </div>
+          <div class="pull-right brud-crum" id="level2Bred" style="display:none"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}" class="paddingLeft">Home</a> &raquo; <a onclick="getUserManualList();" class="paddingLeft">Level-1</a> &raquo; Level-2 User Manuals </div>
+          <div class="pull-right brud-crum" id="level3Bred" style="display:none"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}" class="paddingLeft">Home</a> &raquo;<a onclick="getUserManualList();" class="paddingLeft">Level-1</a> &raquo;<a id="level2cum" style="display:none" class="paddingLeft"></a> &raquo; Level-3 User Manuals </div>
        
         </section>
         
@@ -88,7 +88,7 @@ $('.note-editable').css({"min-height":"200px"});
 	result = result	+ '<ul class="list-unstyled list-inline pull-right">';
 	
 	result = result	+ '<li>';
-	result = result	+ '<a href="${appPath}/addUserManual" class="btn mr mt10 anchorBlack"><i class="fa fa-plus mr"></i>Add user manual</a>';
+	result = result	+ '<a href="${SourceLeadWeb_sourceleadUrl}/addUserManual" class="btn mr mt10 anchorBlack"><i class="fa fa-plus mr"></i>Add user manual</a>';
 	result = result	+ '</li>';
 	
 	result = result	+ '<li>';
@@ -276,7 +276,7 @@ function cancelTermination(){
 	result = result	+ '<ul class="list-unstyled list-inline pull-right">';
 	
 	result = result	+ '<li>';
-	result = result	+ '<a href="${appPath}/addUserManual" class="btn mr mt10 anchorBlack"><i class="fa fa-plus mr"></i>Add user manual</a>';
+	result = result	+ '<a href="${SourceLeadWeb_sourceleadUrl}/addUserManual" class="btn mr mt10 anchorBlack"><i class="fa fa-plus mr"></i>Add user manual</a>';
 	result = result	+ '</li>';
 	
 	result = result	+ '<li>';
@@ -485,7 +485,7 @@ function cancelTermination(){
 		result = result	+ '<ul class="list-unstyled list-inline pull-right">';
 		
 		result = result	+ '<li>';
-		result = result	+ '<a href="${appPath}/addUserManual" class="btn mr mt10 anchorBlack"><i class="fa fa-plus mr"></i>Add user manual</a>';
+		result = result	+ '<a href="${SourceLeadWeb_sourceleadUrl}/addUserManual" class="btn mr mt10 anchorBlack"><i class="fa fa-plus mr"></i>Add user manual</a>';
 		result = result	+ '</li>';
 		
 		result = result	+ '<li>';
