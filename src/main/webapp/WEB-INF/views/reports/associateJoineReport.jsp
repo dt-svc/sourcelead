@@ -327,7 +327,11 @@
        </div>
        <div id="emptyPopup"></div>
         <div class="clients_wrap_table datatable_filter">
-        
+       
+         <div id="emptyJoinedPopup"></div>
+          
+           <div id="emptyTerminatedPopup"></div>
+         
         <div id="applicantJoinedDiv" style="display: block"></div>
 	           <div id="associateTerminatedDiv" style="display: none"></div>
 				<input type="hidden" id="noApplicantJoinedList" name="noApplicantJoinedList"  value="0"/>
@@ -438,7 +442,7 @@ function exportAssociateTerminatedSheet(exportType){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#associateTerminatedListDataTableSearch").val();
 	 var timePeriod = $("#reportTypeId").val();
-	 var  noRecruiterApplicantJoinedList=$("#noRecruiterApplicantJoinedList").val(0); 
+	 var  noRecruiterApplicantJoinedList=$("#noRecruiterApplicantJoinedList").val(); 
 	 var flag = true;
 	 var startDate = '';
 	 var endDate = '';
@@ -470,11 +474,27 @@ function exportAssociateTerminatedSheet(exportType){
 		$('input:checkbox[name=clientNameById]:checked').each(function() {
 			clients.push($(this).val());
 		});
-		 
+		if(noRecruiterApplicantJoinedList !=0){
 		if(flag){
 			 searchValue = searchValue ? searchValue : "";
 			 window.location.href = sourceleadUrl+"/associateTerminatedReportExport?frequency="+timePeriod+"&fromDate="+startDate+"&toDate="+endDate+"&orgTeams="+orgTeams+"&clients="+clients+"&searchValue="+searchValue+"&exportType="+exportType;
 		 }
+		}else{
+			var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='terminatedAssociateCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='terminatedAssociateCancel();'></b>";
+			result = result +"	</div>";
+			$("#emptyTerminatedPopup").append(result);
+			$("#candidate_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+		}
+}
+function terminatedAssociateCancel(){
+	$("#emptyTerminatedPopup").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 </script>
  
@@ -483,7 +503,7 @@ function getAssociatesTerminatedList(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#associateTerminatedListDataTableSearch").val();
 	 var timePeriod = $("#reportTypeId").val();
-	 var  noRecruiterApplicantJoinedList=$("#noRecruiterApplicantJoinedList").val(0); 
+	 var  noRecruiterApplicantJoinedList=$("#noRecruiterApplicantJoinedList").val(); 
 	 var flag = true;
 	 var startDate = '';
 	 var endDate = '';
@@ -518,7 +538,6 @@ function getAssociatesTerminatedList(){
 	 if(flag){
 		 searchValue = searchValue ? searchValue : "";
 		 var url = sourceleadUrl+"/associateTerminatedReport?frequency="+timePeriod+"&fromDate="+startDate+"&toDate="+endDate+"&orgTeams="+orgTeams+"&clients="+clients+"&searchValue="+searchValue;
-// 		 usersListPagination(url,sourceleadUrl);
 			associateTerminatedReportList(url);
 
 	 }
@@ -591,7 +610,7 @@ function daywiseLeaveReportsListPagination(url){
     	  	"sortable": true,
     	  	"visible": $("input[data-name='terminatedempId']").is(":checked"),
     	  	"render": function(data, type, opt, meta) {
-    	  		 $("#noApplicantJoinedList").val(1); 
+    	  		 $("#noRecruiterApplicantJoinedList").val(1); 
     	  		var result = "";
     	  		 if(opt.employeeId !=null && opt.employeeId !='' && opt.employeeId !='undefined'){
            		  result = result + '<td><div><span title='+opt.employeeId+'>'+opt.employeeId+'</span></div></td>';
@@ -806,7 +825,7 @@ function exportAssociateJoinedSheet(exportType){
 	   var frequency=$("#reportTypeId").val();
 	   var graphFrequency=$("#year").val();
 	   
-	  var  noApplicantJoinedList=$("#noApplicantJoinedList").val(0); 
+	  var  noApplicantJoinedList=$("#noApplicantJoinedList").val(); 
 	    var fromDate='';
 	    var toDate='';
 		var searchValue = $("#associateJoinedListDataTableSearch").val();
@@ -833,6 +852,7 @@ function exportAssociateJoinedSheet(exportType){
 			 incentivizedType.push($(this).val());
 		 });
 		 var searchType = $('input[name=searchType]:checked').val();
+		 if(noApplicantJoinedList !=0){
 	    if(frequency == "custom"){
 	        var fromDate = $("#ReportStartDate").val();
 	  		  var toDate = $("#ReportEndDate").val();
@@ -850,6 +870,22 @@ function exportAssociateJoinedSheet(exportType){
 	 document.getElementById("reportsEndDate").style.display="none";
 	 window.location.href = sourceleadUrl+"/associateJoinedReportExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&graphFrequency="+graphFrequency+"&exportType="+exportType+"&type=applicantReport";
 } 
+}else{
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>List is Empty</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='joinedAssociateCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='joinedAssociateCancel();'></b>";
+	result = result +"	</div>";
+	$("#emptyJoinedPopup").append(result);
+	$("#candidate_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+}
+function joinedAssociateCancel(){
+	$("#emptyJoinedPopup").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 </script>
  

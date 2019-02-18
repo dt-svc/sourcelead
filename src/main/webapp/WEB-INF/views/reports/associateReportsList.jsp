@@ -47,7 +47,18 @@
 		</div>
 	</div>
 	</a>
-	</sec:authorize>		
+	</sec:authorize>	
+	
+	<sec:authorize access="hasRole('ROLE_ASSOCIATE_JOINED_REPORT')">
+				<a href='${appPath}/associateJoineReports'>
+				<div class="repDashCta">
+		<span><i class="fa fa-users"></i></span>
+		<div class="repDashCtaWrap">
+		<h2>Associate Joined Report</h2><b>View</b>
+		</div>
+	</div>
+	</a>
+		</sec:authorize>	
 	
 				
 	<div class="clearfix"></div>	
