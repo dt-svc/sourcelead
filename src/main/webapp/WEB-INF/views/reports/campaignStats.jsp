@@ -36,8 +36,9 @@
 function getCampaignStats(){
 		var searchValue = $("#campaignStatsTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getCampaignStats?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
+		var url = atsUrl+"/getCampaignStats?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
 	    prepareCampaignStatsList(url);
 }
 </script> 
@@ -71,6 +72,7 @@ function prepareCampaignStatsList(url){
 
 <script>
 function campaignStatsPagination(url){
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	var colIndex = 0;
     $('#campaignStatsPagination').DataTable( { 
    		"processing": true,
@@ -98,7 +100,7 @@ function campaignStatsPagination(url){
 	    	  	"data": "categoryName",
 	    	  	"render": function(data, type, report, meta) {
 	    	  		  var result = "";
-	    	  		   result = result +'  <div class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/campaignStatsGraph?campaignName='+report.categoryName+'" title="'+report.categoryName+'">'+report.categoryName+'</a></div>';
+	    	  		   result = result +'  <div class="tbldata-dotdot-sm"><a href="'+atsUrl+'/campaignStatsGraph?campaignName='+report.categoryName+'" title="'+report.categoryName+'">'+report.categoryName+'</a></div>';
 		             return result;
 	    	  	}
 	      },{
@@ -207,14 +209,15 @@ function campaignStatsPagination(url){
  
  <script>
  function deleteStats(categoryName){
+	 var atsUrl ='${SourceLeadWeb_atsUrl}';
 				 $.ajax({
 					   	type: "GET",
-					    url: sourceleadUrl+"/deleteStats?"+tokenParamName+"="+tokenValue+"&categoryName="+categoryName,
+					    url: atsUrl+"/deleteStats?"+tokenParamName+"="+tokenValue+"&categoryName="+categoryName,
 			   		    success: function(data) {
 			   		    	if(data == true){
 			   		    		$("#popUp").empty();
 				   			 	$(".project_inn_mask").fadeOut(200);
-				   			 	location.replace(sourceleadUrl+"/campaignStats");	
+				   			 	location.replace(atsUrl+"/campaignStats");	
 			   		    	}
 			   		    }
 				     });
