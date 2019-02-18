@@ -183,7 +183,7 @@
 		   	
 		</script>
 		<script>
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		 var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		  var finalDateFormatVisaSave = getJSDateFormat(locationDate);
 		 $('#visaValidFrom').datepicker({
 		      dateFormat: finalDateFormatVisaSave,
