@@ -1,6 +1,10 @@
 
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
+
+<script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
+</script>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <section class="content-wraper">
   <section class="content-header clearfix">
@@ -8,11 +12,11 @@
       <h2 class="pull-left">Org chart view</h2>
     </div>
     <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; Org Chart View </div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings</a>&raquo; Org Chart View </div>
     </c:if> 
     
     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home </a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; Org Chart View  </div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/recruiterDashboard">Home </a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings</a>&raquo; Org Chart View  </div>
     </c:if> 
   </section>
   
@@ -165,7 +169,7 @@ function initChart(data) {
 	            'class': 'fa fa-info-circle second-menu-icon',
 	            'title': "Show Profile",
 	            click: function() {
-	            	window.open('${sourceleadUrl}/userSummaryDetails?userCode='+data["userCode"], "_blank");
+	            	window.open('${SourceLeadWeb_atsUrl}/userSummaryDetails?userCode='+data["userCode"], "_blank");
 	            }
 	          });
 //	          var secondMenu = '<div class="second-menu">Extra Details</div>';
