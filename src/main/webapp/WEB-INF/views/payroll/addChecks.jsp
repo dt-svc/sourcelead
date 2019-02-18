@@ -15,7 +15,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
   <div class="success_pop" id="selector1" style="display: none;">
 		<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payroll</div>
+  <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Payroll</div>
 </section>
 
 
@@ -105,13 +105,13 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 <script type="text/javascript">
 function saveChecks(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	var userId = '${SourceLeadWeb_user.id}';
+	var userId = '${SourceLeadWeb_userId}';
 	 if ($('#add_cheques_form').validate(false, validationSettings)) { 
 			$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			var formData = getFormData("add_cheques_form");
 			$.post(pmsUrl+ "/addCheques?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(data) {
 				if(data == true){
-					location.replace(pmsUrl+'/payrollList');
+					location.replace(pmsUrl+'/payrollImports');
 				}
 			}); 
 		
@@ -121,7 +121,7 @@ function saveChecks(){
 
 <script type="text/javascript">
 function cancelChecks(){
-	location.replace(pmsUrl+'/payrollList');
+	location.replace(pmsUrl+'/payrollImports');
 }
 </script>
 

@@ -30,8 +30,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
    <!--    <div class="pull-right brud-crum">Home &raquo; Payhead List &raquo; Add Contribution</div> -->
       
       <div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="/pms/payrollConfiguration"> Payroll Configuration</a>&raquo;Add Contribution
+			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;<a
+				href="${SourceLeadWeb_pmsUrl}/payrollConfiguration"> Payroll Configuration</a>&raquo;Add Contribution
 		</div>
       
       
