@@ -1078,7 +1078,7 @@
    isValidBeneficiary = false;
 });
  */
- var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+ var locationDate ='${SourceLeadWeb_dateFormat}'; 
  var finalDateFormatOrg = getOrgDateFormat(locationDate);
  var orgLocationId = "";
  
@@ -1394,7 +1394,7 @@ $("#experienceValue").change(function () {
 			  }
 		}else{
 			type = "Vendor";
-			orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+			orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		}
 	 	
 			 $.ajax({
@@ -1497,7 +1497,7 @@ $("#experienceValue").change(function () {
         	}
 		  }
 		  
-		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		  var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 		 
 		  $('#openDate').datepicker({
@@ -1669,7 +1669,7 @@ function  removeValidationAttorneyContact() {
 	     $("#clearUploads").click(function(){
 	    	 $("#uploadFile").val("");
 	     });
-	     var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	     var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		 var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 		function showStartDatePicker(id){
 		  $("#residenceStartDate"+id).datepicker({
@@ -1709,7 +1709,7 @@ function  removeValidationAttorneyContact() {
 <!-- LcaNumber AutoPopulate Ui script -->
 <script type="text/javascript">
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
-var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var locationDate ='${SourceLeadWeb_dateFormat}'; 
 var finalDateFormatOrg = getOrgDateFormat(locationDate);
  $("#lcaNumber").autocomplete({ 
 	 minLength: 2, 
@@ -1796,7 +1796,7 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 
 <script type="text/javascript">
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
-var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var locationDate ='${SourceLeadWeb_dateFormat}'; 
 var finalDateFormatOrg = getOrgDateFormat(locationDate);
  $("#prevLcaNumber").autocomplete({ 
 	 minLength: 2, 
