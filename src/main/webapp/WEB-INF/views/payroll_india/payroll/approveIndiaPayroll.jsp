@@ -86,10 +86,11 @@
 
 <script>
 function sentForApprove(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var feqUUID = $("#paySheetFrequency").val();
 	$.ajax({
         type : "POST",
-        url: sourceleadUrl+"/approveIndPayroll?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID,    
+        url: pmsUrl+"/approveIndPayroll?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID,    
          success :function(result) { 
         	 
         	 $(location).attr('href', 'runIndianPayRoll?stab=payroll');
@@ -99,10 +100,11 @@ function sentForApprove(){
 </script>
 <script>
 function cancelIndPayroll(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var feqUUID = $("#paySheetFrequency").val();
 	$.ajax({
         type : "POST",
-        url: sourceleadUrl+"/removePaysheetFrequencyFromSession?paySheetFrequencyUUID="+feqUUID,    
+        url: pmsUrl+"/removePaysheetFrequencyFromSession?paySheetFrequencyUUID="+feqUUID,    
          success :function(result) { 
         	 $(location).attr('href', 'runIndianPayRoll?stab=payroll');
          },

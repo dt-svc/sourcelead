@@ -22,7 +22,7 @@
                   </div>
                   <div class="col-md-5">
                     <label>Date of Birth<span class="text-danger paddingLeft">*</span></label>
-                    <div>
+                    <div id="dateOfBirthErr">
                       <input type="text" id="dateOfBirth" class="form-control calendar" name="dateOfBirth"  value="${nominee.dateOfBirth}" field-name="Date of Birth" data-validation="required">
                     </div>
                   </div>
@@ -226,7 +226,14 @@
 		changeMonth: true,
 		changeYear: true,
 		maxDate : 0,
+		onSelect : function(selected) {
+			removeErr();
+		}
 	});
+	
+		function removeErr(){
+			$('#dateOfBirthErr').find('p.jquery_form_error_message').remove(); 
+		}
  </script>
 <script>
 $("#illness").click(function() {

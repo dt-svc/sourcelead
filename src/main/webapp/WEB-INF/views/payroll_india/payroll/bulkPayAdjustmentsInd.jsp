@@ -77,6 +77,7 @@ $('#sae').change(function () {
 });
 
 function bulkAdjustmentSaving(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	if ($('#bulkPayheadAdjust_form').validate(false, validationSettings)) {
 		$('#bulkAdjustmentBtn').hide();
 		var psfUUID = $('#paySheetFrequencyUUID').val();
@@ -86,7 +87,7 @@ function bulkAdjustmentSaving(){
 			 data: formData,
 		     processData: false,
 		     contentType:false, 
-			 url : sourceleadUrl+"/saveBulkPayheadAdjustInd?"+tokenParamName+"="+tokenValue,
+			 url : pmsUrl+"/saveBulkPayheadAdjustInd?"+tokenParamName+"="+tokenValue,
 			 success : function(result) {
 				 bulkAdjustmentClose();
 				 $(location).attr('href', 'employeePayrollList?paySheetFrequencyUUID='+psfUUID);
