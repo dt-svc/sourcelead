@@ -26,7 +26,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	<section class="content-header clearfix">
 		<div class="pull-left">
 			<h2>
-				Pay Roll <a href="/pms/uploadDocuments"
+				Pay Roll <a href="${SourceLeadWeb_pmsUrl}/uploadDocuments"
 					class="jobHeadBtn" id="uloadDocs" title="Upload Files">Upload
 					Files</a>
 			</h2>
