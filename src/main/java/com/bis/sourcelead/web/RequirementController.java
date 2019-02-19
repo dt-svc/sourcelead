@@ -739,8 +739,7 @@ public class RequirementController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
 		// isAdmin value is set to true as 'SourceLeadSessionManager.getSessionAttribute' method is returning null.
-		Boolean isAdmin = true;
-				//(Boolean) SourceLeadSessionManager.getSessionAttribute(request,"isAdmin");
+		Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request,"isAdmin");
 		
 		ModelAndView model = new ModelAndView();
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
