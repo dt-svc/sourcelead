@@ -3053,8 +3053,7 @@ public class TimesheetRestController {
 		Long projectMemberId = eedDTO.getProjectMembersId();
 		Long projectId = eedDTO.getProjectsId();
 		Long masterCandidateId = eedDTO.getMasterCandidatesId();
-		List<ProjectMembers> projectMembersList = projectMembersService
-				.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(), candidate.getId());
+		List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(), orgLocations.getOrg().getId(),candidate.getId());
 		ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
 		if (projectMembersList != null && !projectMembersList.isEmpty()) {
 			long count = 1;
