@@ -108,9 +108,9 @@ function closeCandiatesSubmitedList() {
     padding-right: 5px;
 }
 </style>
-   <script>
+<script>
   var atsUrl = '${SourceLeadWeb_atsUrl}';
-  </script>
+</script>
 <script type="text/javascript" src="${SourceLeadWeb_atsUrl}/resources/js/candidateTable.js"></script>
 
 <input type="hidden" id="noCandidates" name="noCandidates" />
@@ -1438,7 +1438,7 @@ function imageCancel(){
 					<span> 
 						<a href="<c:url value='/candidate'/>">Parse Resume</a>
                         <a href="<c:url value='/addCandidate'/>">Add Manual</a>
-                        <a href="<c:url value='${appPath}/bulk-resume-import.html'/>">Bulk Resume Parsing</a>
+                        <a href="${SourceLeadWeb_sourceleadUrl}/bulk-resume-import.html">Bulk Resume Parsing</a>
                         <a href="uploadCandidateForm">Import XLS</a>
 					</span>
 				</div>
