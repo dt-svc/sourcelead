@@ -536,6 +536,16 @@ public class UserStatsCacheHelper {
 			 userRoleDTO.setUserLoginSecurity(userRole.getUser().getLoginSecurity());
 			 userRoleDTO.setNewlyLoginUser(userRole.getNewlyLoginUser());
 			 
+			  if (userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER") && 
+					  StringUtils.isNotBlank(userRole.getUser().getRecruiterRegisterCountry())) {
+				  userRoleDTO.setCountry(userRole.getUser().getRecruiterRegisterCountry());
+				} else if (userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL") && 
+						  StringUtils.isNotBlank(userRole.getUser().getProfessionalRegisterCountry())) {
+					userRoleDTO.setCountry(userRole.getUser().getProfessionalRegisterCountry());
+			  }else {
+				  userRoleDTO.setCountry(userRole.getOrgLocations().getCountry()); 
+			  }
+				 
 			 if(userRole.getReportingManager() != null) {
 				 userRoleDTO.setReportingManagerId(String.valueOf(userRole.getReportingManager().getId()));
 			 }
@@ -558,6 +568,7 @@ public class UserStatsCacheHelper {
 			 if(candidate != null) {
 				 userRoleDTO.setCandidateId(String.valueOf(candidate.getId()));
 				 userRoleDTO.setCandidateUUID(candidate.getCandidateUUID());
+				 userRoleDTO.setMasterCandidateId(String.valueOf(candidate.getMasterCandidateId().getId()));
 			 }
 			
 			 StringBuilder userNameSB = new StringBuilder();

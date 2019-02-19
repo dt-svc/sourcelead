@@ -14,6 +14,8 @@ public interface ExpensesEntriesService {
 	public Set<ExpensesEntries> prepareExpensesEntriesListByJson(ExpensesDTO addExpensesDTO, HttpServletRequest request,Expenses expenses) throws Exception;
 
 	public List<ExpensesEntries> getExpensesEntriesByExpenseId(long parseLong);
+	
+	public int changeDocumentNameWithWhiteSpacesToUnderScore(String staticPath);
 
 	public int dumpExpenceCategoryAmountToOldRecords();
 
