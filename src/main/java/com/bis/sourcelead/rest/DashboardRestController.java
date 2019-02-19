@@ -73,6 +73,7 @@ import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
@@ -98,6 +99,7 @@ import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
@@ -221,6 +223,10 @@ public class DashboardRestController {
 	 
 	 @Autowired
 	 ProjectPlanningResourceRequestService projectPlanningResourceRequestService;
+	 
+	 
+	 @Autowired
+	 private SubmissionTemplateService submissionTemplateService;
 	 
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -2449,6 +2455,62 @@ public class DashboardRestController {
     		
     		return requestDTOList;
   		}
+      
+      
+      
+      
+      @RequestMapping(value = "/getOrgSubmissionTemplatesList", method = RequestMethod.POST)
+  	@ResponseBody
+  	String getOrgSubmissionTemplatesList(HttpServletRequest request) throws Exception {
+  		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+  				"orgLocations");
+  		List<SubmissionTemplate> submissiontTemplateList = submissionTemplateService
+  				.getOrgSubmissionTemplatesByOrgLocationIdAndTemplateType(orgLocations.getId(), "Submission");
+
+  		return commonUtil.toJSON(submissiontTemplateList);
+  	}
+
+  	@RequestMapping(value = "/saveOrgSubmissionTemplate", method = RequestMethod.POST)
+  	public String saveClientSubmissionTemplate(@RequestParam(value = "jsonData", required = false) String json,
+  			@RequestParam(value = "templateId", required = false) String templateId,
+  			@RequestParam(value = "jsonStringData", required = false) String jsonStringData, HttpServletRequest request)
+  			throws Exception {
+
+  		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+  				"orgLocations");
+  		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
+  		String json1 = "{" + json + "}";
+  		JSONObject jsonObj = new JSONObject(json1);
+
+  		try {
+  			SubmissionTemplate submissionTemplate = null;
+  			if (!isNullOrEmpty(templateId)) {
+  				submissionTemplate = submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
+  			} else {
+  				submissionTemplate = new SubmissionTemplate();
+  				submissionTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+  			}
+
+  			submissionTemplate.setTemplateName(jsonObj.getString("templateName").trim());
+  			submissionTemplate.setDescription(jsonObj.getString("description"));
+  			submissionTemplate.setOrgLocationId(orgLocations);
+  			submissionTemplate.setJsonString(jsonStringData);
+  			submissionTemplate.setTemplateType("Submission");
+  			submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+  			submissionTemplate.setCreatedBy(user.getUserCode());
+  			submissionTemplate.setCreatedDate(new Date());
+  			submissionTemplate.setUpdatedBy(user.getUserCode());
+  			submissionTemplate.setUpdatedDate(new Date());
+  			submissionTemplateService.addSubmissionTemplate(submissionTemplate);
+  			SourceLeadSessionManager.setSessionAttribute(request, "SubmissionTemplateCreateMsg", "Success!! New Submission Template created");
+
+  		} catch (Exception e) {
+  			e.printStackTrace();
+  		}
+  		return "home";
+
+  	}
       
       
       
