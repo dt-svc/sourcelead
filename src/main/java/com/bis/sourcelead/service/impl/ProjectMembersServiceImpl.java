@@ -626,8 +626,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 
 	@Override
-	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndCandidateId(Long locationsId, Long candidateId) {
-		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndCandidateId(locationsId, candidateId);
+	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndCandidateId(Long locationsId,Long orgId, Long candidateId) {
+		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndCandidateId(locationsId, orgId, candidateId);
 	}
 	
 	@Override
@@ -2318,5 +2318,13 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 			Long projectClientsId) throws Exception {
 		return projectMembersDao.getProjectMembersByMasterCandiateIdAndProjectClientId(masterCandidateId, projectClientsId);
 	}
+
+	@Override
+	public ProjectMembers getAllProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId,
+			Long projectId, Long locationId, String isGlobalUser) throws Exception {
+		return projectMembersDao.getAllProjectMembersByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId, isGlobalUser);
+	}
+
+
 
 }
