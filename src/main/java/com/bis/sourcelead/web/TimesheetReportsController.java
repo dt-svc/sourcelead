@@ -18,7 +18,22 @@ public class TimesheetReportsController {
 	private String sourceleadUrl;
 	
 	
+	@RequestMapping(value = "/dailyTimeSheetReports")
+	public ModelAndView dailyTimeSheetReports(HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+		 model.setViewName("timesheet/dailyTimesheetReports");
+		 return model;
+	}
 	
-	
+	@RequestMapping(value = "/daywiseTimeSheetReports")
+	public ModelAndView daywiseTimeSheetReports(HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 model.setViewName("timesheet/dayWiseTimesheetReports");
+		 model.addObject("SourceLeadWeb_orgLocationId",orgLocations.getId());
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+
+	}
 
 }

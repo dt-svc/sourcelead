@@ -6,7 +6,7 @@
             && request.getRequestURL().toString().indexOf("dev.") == -1
             && request.getRequestURL().toString().indexOf("staging.") == -1
             && request.getRequestURL().toString().indexOf("demo.") == -1) {
-        response.sendRedirect("https://www.sourcelead.com/login");
+        /* response.sendRedirect("https://www.sourcelead.com/login"); */
     } %>
 <jsp:include page="../staticHeader.jsp" /> 
 <div class="homeBanner">

@@ -162,15 +162,15 @@ function getBankDetails(){
       </div>
     
      <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-       <div class="pull-right brud-crum"><a href="<c:url value='/app/professionalProfile'/>">Home</a> &raquo; Account Settings</div>
+       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard">Home</a> &raquo; Account Settings</div>
      </c:if>
    
       <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalDashboard'/>">Home </a> &raquo; Account Settings  </div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/professionalDashboard">Home </a> &raquo; Account Settings  </div>
       </c:if>
       
       <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home </a> &raquo; Account Settings  </div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/recruiterDashboard">Home </a> &raquo; Account Settings  </div>
       </c:if>
     
     </section>
@@ -198,16 +198,16 @@ function getBankDetails(){
 			  
 			  <form:form class="login-form clearfix"  id="profileImage_form"  name="profileImage_form" method="post" >
 		<div class="well well-sm text-center">
-			  <p><strong>${SourceLeadWeb_user.firstName} ${SourceLeadWeb_user.lastName}</strong></p>
+			  <p><strong>${SourceLeadWeb_firstName} ${SourceLeadWeb_lastName}</strong></p>
 				  <div class="profile-img-container profile-image" style="position:relative;">
-				   <img  id="userImage" data-id="userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}" alt="Profile Image" class="img-circle img-responsive">
+				   <img  id="userImage" data-id="userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_userImgUrl}" alt="Profile Image" class="img-circle img-responsive">
 				  <div class="btn-group uploadfile">
 				  <button type="button" class="btn btn-sm btn-primary">
 				  <i class="fa fa-upload"></i></button>
 				  <label class="btn btn-sm btn-primary">
                     Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, 'profileImage_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
                   </label>
-                  <c:if test="${!empty SourceLeadWeb_user.fileContentType}">
+                  <c:if test="${!empty SourceLeadWeb_userImgUrl}">
                   <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
 				  <i class="fa fa-trash"></i></button>
 				  </c:if>
@@ -235,19 +235,19 @@ function getBankDetails(){
 					<div class="form-group" id="firstNameDiv">
 					<label class="col-md-4">First Name<span class="text-danger paddingLeft">*</span></label>
 					<div class="col-md-8">
-					  <input type="text" name="firstName" id="firstName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required validate_Alphanumeric validate_Space validate_length length1-100"  >
+					  <input type="text" name="firstName" id="firstName" value="${SourceLeadWeb_loginUserFirstName}" field-name="First Name" class="form-control" data-validation="required validate_Alphanumeric validate_Space validate_length length1-100"  >
 					</div>
 					</div>
 				   <div class="form-group" id="lastNameDiv">
 					<label class="col-md-4">Last Name</label>
 					<div class="col-md-8">
-					  <input type="text" name="lastName" id="lastName" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" class="form-control" data-validation="validate_Alphanumeric validate_Space validate_length length1-100" data-validation-optional="true" />
+					  <input type="text" name="lastName" id="lastName" value="${SourceLeadWeb_loginUserLastName}" field-name="Last Name" class="form-control" data-validation="validate_Alphanumeric validate_Space validate_length length1-100" data-validation-optional="true" />
 					</div>
 				   </div>
 				  <div class="form-group">
 					<label class="col-md-4">Email<span class="text-danger paddingLeft">*</span></label>
 					<div class="col-md-8">
-					<input type="text" readonly="readonly" id="email" value="${SourceLeadWeb_user.email}" class="form-control">
+					<input type="text" readonly="readonly" id="email" value="${SourceLeadWeb_loginUserEmail}" class="form-control">
 					</div>
 				  </div>
 		
@@ -263,14 +263,14 @@ function getBankDetails(){
 						  <div class="form-group" id="phoneDiv">
 							<label class="col-md-4">Phone</label>
 							<div class="col-md-8">
-							  <input type="text" name="mobilePhone" id="mobilePhone" field-name="Mobile Phone" value="${SourceLeadWeb_user.mobilePhone}" class="form-control" data-validation-optional="true" data-validation="validate_Space validate_length length9-20 validate_phone" />
+							  <input type="text" name="mobilePhone" id="mobilePhone" field-name="Mobile Phone" value="${SourceLeadWeb_mobilePhone}" class="form-control" data-validation-optional="true" data-validation="validate_Space validate_length length9-20 validate_phone" />
 							</div>
 						  </div>
 						  <div class="form-group" id="loactionDiv">
 							<label class="col-md-4">Location</label>
 							<div class="col-md-8">
 							  <%-- <textarea rows="1" name="location" field-name="Location"  id="userLocation" class="form-control"  />${SourceLeadWeb_user.location}</textarea> --%>
-							  <input type="text" value="${SourceLeadWeb_user.location}" class="form-control" name="location" field-name="Location"  id="userLocation" />
+							  <input type="text" value="${SourceLeadWeb_location}" class="form-control" name="location" field-name="Location"  id="userLocation" />
 							  <i class="fa fa-refresh btn btn-primary refresh-icon mr" title="Refresh" onclick="refreshLocation();"></i>
 							</div>
 						</div>
@@ -286,13 +286,13 @@ function getBankDetails(){
 					<div class="form-group" id="linkedInDiv">
 					<label class="col-md-4">LinkedIn</label>
 					<div class="col-md-8">
-					  <input type="text" name="linkedIn" id="linkedIn" value="${SourceLeadWeb_user.linkedIn}" field-name="Linked In" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" >
+					  <input type="text" name="linkedIn" id="linkedIn" value="${SourceLeadWeb_linkedIn}" field-name="Linked In" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" >
 					</div>
 					</div>
 				   <div class="form-group" id="fbDiv">
 					<label class="col-md-4">Facebook</label>
 					<div class="col-md-8">
-					  <input type="text" name="facebook" id="facebook" value="${SourceLeadWeb_user.facebook}" field-name="Facebook" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true">
+					  <input type="text" name="facebook" id="facebook" value="${SourceLeadWeb_facebook}" field-name="Facebook" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true">
 					</div>
 				   </div>
 				</div>
@@ -301,13 +301,13 @@ function getBankDetails(){
 					<div class="form-group">
 					<label class="col-md-4">Twitter</label>
 					<div class="col-md-8">
-					  <input type="text" name="twitter" id="twitter" value="${SourceLeadWeb_user.twitter}" field-name="Twiter" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" >
+					  <input type="text" name="twitter" id="twitter" value="${SourceLeadWeb_twitter}" field-name="Twiter" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" >
 					</div>
 					</div>
 				   <div class="form-group" id="gplusDiv">
 					<label class="col-md-4">Google+</label>
 					<div class="col-md-8">
-					  <input type="text" name="googlePlus"  id="googlePlus" value="${SourceLeadWeb_user.googlePlus}" field-name="Google+" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true">
+					  <input type="text" name="googlePlus"  id="googlePlus" value="${SourceLeadWeb_googlePlus}" field-name="Google+" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true">
 					</div>
 				   </div>
 		
@@ -317,7 +317,7 @@ function getBankDetails(){
 						 <hr>
 							<div class="pull-right">
 							  <input type="submit" class="btn btn-primary mr" id="profile_submit" value="Save">
-							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/app/dashboard'" >
+							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='${SourceLeadWeb_sourceleadUrl}/dashboard'" >
 							</div>
 					  </div>
 			 </div>
@@ -371,7 +371,7 @@ function getBankDetails(){
 				 <hr class="mr">
 					<div class="pull-right mr">
 					  <input type="submit" value="Save" id="save_button" onclick="checkPass();" class="btn btn-primary mr" />
-					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/app/dashboard'">
+					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='${SourceLeadWeb_sourceleadUrl}/dashboard'">
 					</div>
 				  </div>
 				  </form:form>
@@ -387,13 +387,13 @@ function getBankDetails(){
 						<label class="col-md-3">Login Security<i class="" title="Login Security"></i></label>
 						<div class="col-md-7 toggle-button">
 							<label class="switch">
-							<c:if test="${SourceLeadWeb_user.loginSecurity == 'Y'}">
+							<c:if test="${SourceLeadWeb_userLoginSecurity == 'Y'}">
 							<input type="checkbox" checked id="loginSecurityId" onclick="switchLoginSecurity();">
 							</c:if>
-							<c:if test="${SourceLeadWeb_user.loginSecurity == 'N'}">
+							<c:if test="${SourceLeadWeb_userLoginSecurity == 'N'}">
 							<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
 							</c:if>	
-							<c:if test="${empty SourceLeadWeb_user.loginSecurity}">
+							<c:if test="${empty SourceLeadWeb_userLoginSecurity}">
 							<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
 							</c:if>	
 								<div class="slider round"></div>

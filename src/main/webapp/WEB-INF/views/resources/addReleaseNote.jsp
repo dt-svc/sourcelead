@@ -47,7 +47,7 @@ function validateReleaseNoteName(releaseUUID){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left"><h2>Release Note</h2></div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/app/dashboard'/>"> Home </a> &raquo; <a href="<c:url value='/app/releaseNote'/>">Release Note</a></div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard"> Home </a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/releaseNote">Release Note</a></div>
     </section>
     
     <div class="project_wrap">
@@ -101,7 +101,7 @@ function validateReleaseNoteName(releaseUUID){
 	    <div class="footerstyelsNew clearfix">
 	        <div class="pull-right mr">
 	          <input value="Save" id="save_release" class="btn btn-primary" type="button" onclick="saveReleaseNote();">
-	          <input value="Cancel" class="btn btn-default ml" type="button" onClick="javascript:window.location.href = '<c:url value='${appPath}/releaseNote'/>'">
+	          <input value="Cancel" class="btn btn-default ml" type="button" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/releaseNote'">
 	        </div>
 	    </div>
 	    </form:form>            
