@@ -333,30 +333,23 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		return projectMemberList;
 	}
 	
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndCandidateId(Long locationsId, Long candidateId) {
-		
-		 Calendar cal = Calendar.getInstance(TimeZone.getDefault());
-		 cal.setLenient(false);
-		 cal.setTime(commonUtil.currentDate());
-		 Date previousMonthStartDate = CalendarUtil.getMonthStartDateByGivenDate(cal.getTime(),Constants.PREVIOUS_MONTH).get("STARTDATE");
-		 Date nextMonthEndDate =  CalendarUtil.getMonthEndDateByGivenDate(cal.getTime(),Constants.NEXT_MONTH).get("ENDDATE");
-		 
-	     java.sql.Date sqlStartDate = null;
-		 if(previousMonthStartDate != null){
-			sqlStartDate = new java.sql.Date(previousMonthStartDate.getTime());
-		 }
-			
-		 java.sql.Date sqlEndDate = null;
-		 if(nextMonthEndDate != null){
-			sqlEndDate = new java.sql.Date(nextMonthEndDate.getTime());
-		 }
-		 
+	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndCandidateId(Long locationsId,Long orgId, Long candidateId) {
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectMembers pm left join fetch pm.projectClientsId pc   left join fetch pc.orgRelationId rl left join fetch rl.locationId left join fetch rl.responderLocationId left join fetch pm.employee left join fetch pm.masterCandidateId left join fetch pm.projectMemberCandidteId  where pm.id IN(select pmh.projectMemberId.id  from ProjectMembersHistory pmh  where  pmh.projectTerminationDate IS NULL OR (pmh.projectTerminationDate IS NOT NULL and pmh.projectTerminationDate > pmh.projectAssignedDate)) and  pm.projectMemberCandidteId.id = :candidateId and  pc.orgLocationsId.id = :locationsId ";
-		List<ProjectMembers> projectMemberList =  session.createQuery(query.toString()).setLong("locationsId", locationsId).setLong("candidateId", candidateId).list();
+		String query = "from ProjectMembers pm left join fetch pm.projectClientsId pc   "
+				         + "  left join fetch pc.orgRelationId rl left join fetch rl.locationId "
+				         + " left join fetch rl.responderLocationId "
+				         + " left join fetch pm.employee "
+				         + " left join fetch pm.masterCandidateId "
+				         + " left join fetch pm.projectMemberCandidteId  "
+				         + " where pm.status != 0  and  "
+				         + " pm.id IN(select pmh.projectMemberId.id  from ProjectMembersHistory pmh  where  pmh.projectTerminationDate IS NULL OR (pmh.projectTerminationDate IS NOT NULL and pmh.projectTerminationDate > pmh.projectAssignedDate)) "
+				         + " and  (pm.projectMemberCandidteId.parentCandidateId.id = :candidateId OR pm.projectMemberCandidteId.id = :candidateId) and "
+				         + " ((pm.projectMemberCandidteId.designationType IS NOT NULL and pm.projectMemberCandidteId.designationType ='"+Constants.OFFSHORE_C2C+"' and pc.orgLocationsId.org.id = :orgId) OR ((pm.projectMemberCandidteId.designationType IS  NULL OR (pm.projectMemberCandidteId.designationType IS  NOT NULL and pm.projectMemberCandidteId.designationType !='"+Constants.OFFSHORE_C2C+"')) and pc.orgLocationsId.id = :locationsId)) GROUP By pm.projects.id";
+		List<ProjectMembers> projectMemberList =  session.createQuery(query.toString()).setLong("locationsId", locationsId).setLong("orgId", orgId).setLong("candidateId", candidateId).list();
 		return projectMemberList;
 	}
 	
@@ -1547,6 +1540,31 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	}
 	
 	
+	// This method is for fetching all project members irrespective of their status
+	@Override
+	@Transactional
+	public ProjectMembers getAllProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,Long locationId,String isGlobalUser)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String globalUserQuery = "";
+		 if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
+		    	globalUserQuery = " pc.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :locationId)";
+		    }else {
+		    	globalUserQuery = " pc.orgLocationsId.id = :locationId";
+		    }
+		 
+		String query = " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects where  "
+				+ "pm.projects.id = :projectId and pm.masterCandidateId.id = :masterCandidateId and "+globalUserQuery+" " ;
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectId", projectId).setLong("locationId", locationId).setLong("masterCandidateId", masterCandidateId).list(); 
+		ProjectMembers pm = null;
+		if(pmList != null && !pmList.isEmpty())  {
+			pm  = pmList.iterator().next();
+		}
+		return pm;  
+	}
+		
+	
 	@Override
 	@Transactional
 	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,Long locationId,String isGlobalUser)
@@ -1821,12 +1839,40 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ProjectMembers> getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(Long locationsId, Long candidateId,String timesheetFrequency) {
+	public List<String> getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndMasterCandidateId(Long locationsId,Long orgId, Long masterCandidateId) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " SELECT DISTINCT PROJ.INVOICE_FREQUENCY FROM PROJECTS PROJ"
+			       + " LEFT JOIN PROJECT_CLIENTS PC ON PC.PROJECT_ID = PROJ.ID"
+			       + " LEFT JOIN PROJECT_MEMBERS PM ON PM.PROJECT_ID = PROJ.ID"
+			       + " LEFT JOIN CANDIDATE CAN ON CAN.ID = PM.CANDIDATE_ID"
+			       + " LEFT JOIN ORG_LOCATIONS OL ON OL.ID = CAN.ORG_LOCATION_ID"
+			       + " LEFT JOIN ORG org ON org.ID = OL.ORG_ID"
+			       + "  WHERE "
+			       + "  ((CAN.DESIGNATION_TYPE IS NOT NULL AND CAN.DESIGNATION_TYPE ='"+Constants.OFFSHORE_C2C+"' AND org.ID = :orgId ) OR ((CAN.DESIGNATION_TYPE IS  NULL OR (CAN.DESIGNATION_TYPE IS NOT NULL AND CAN.DESIGNATION_TYPE != '"+Constants.OFFSHORE_C2C+"')) AND  CAN.ORG_LOCATION_ID = :locationsId))"
+			       + "  AND PM.ID IN(SELECT PMH.PROJECT_MEMBERS_ID FROM PROJECT_MEMBERS_HISTORY PMH WHERE PMH.PROJECT_TERMINATION_DATE IS NULL OR ( PMH.PROJECT_TERMINATION_DATE IS NOT NULL AND PMH.PROJECT_TERMINATION_DATE > PMH.PROJECT_ASSIGNED_DATE )) "
+			       + "  AND PM.MASTER_CANDIDATE_ID = :masterCandidateId AND PM.STATUS !=0 ";
+		List<String> projectMemberList =  session.createSQLQuery(query.toString()).setLong("locationsId", locationsId).setLong("orgId", orgId).setLong("masterCandidateId", masterCandidateId).list();
+		return projectMemberList;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(Long locationsId,Long orgId, Long candidateId,String timesheetFrequency) {
 			 
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectMembers pm left join fetch pm.projectClientsId pc   left join fetch pc.orgRelationId rl left join fetch rl.locationId left join fetch rl.responderLocationId left join fetch pm.employee left join fetch pm.masterCandidateId left join fetch pm.projectMemberCandidteId  where pm.projects.invoiceFrequency = :timesheetFrequency and  pm.id IN(select pmh.projectMemberId.id  from ProjectMembersHistory pmh  where  pmh.projectTerminationDate IS NULL OR (pmh.projectTerminationDate IS NOT NULL and pmh.projectTerminationDate > pmh.projectAssignedDate)) and  pm.projectMemberCandidteId.id = :candidateId and  pc.orgLocationsId.id = :locationsId ";
-		List<ProjectMembers> projectMemberList =  session.createQuery(query.toString()).setString("timesheetFrequency", timesheetFrequency).setLong("locationsId", locationsId).setLong("candidateId", candidateId).list();
+		String query = "from ProjectMembers pm left join fetch pm.projectClientsId pc   "
+				         + "  left join fetch pc.orgRelationId rl left join fetch rl.locationId "
+				         + " left join fetch rl.responderLocationId "
+				         + " left join fetch pm.employee "
+				         + " left join fetch pm.masterCandidateId "
+				         + " left join fetch pm.projectMemberCandidteId  "
+				         + " where pm.status != 0 and pm.projects.invoiceFrequency = :timesheetFrequency and  "
+				         + " pm.id IN(select pmh.projectMemberId.id  from ProjectMembersHistory pmh  where  pmh.projectTerminationDate IS NULL OR (pmh.projectTerminationDate IS NOT NULL and pmh.projectTerminationDate > pmh.projectAssignedDate)) "
+				         + " and  (pm.projectMemberCandidteId.parentCandidateId.id = :candidateId OR pm.projectMemberCandidteId.id = :candidateId) and "
+				         + " ((pm.projectMemberCandidteId.designationType IS NOT NULL and pm.projectMemberCandidteId.designationType ='"+Constants.OFFSHORE_C2C+"' and pc.orgLocationsId.org.id = :orgId) OR ((pm.projectMemberCandidteId.designationType IS  NULL OR (pm.projectMemberCandidteId.designationType IS  NOT NULL and pm.projectMemberCandidteId.designationType !='"+Constants.OFFSHORE_C2C+"')) and pc.orgLocationsId.id = :locationsId)) GROUP BY pm.projects.id";
+		List<ProjectMembers> projectMemberList =  session.createQuery(query.toString()).setString("timesheetFrequency", timesheetFrequency).setLong("locationsId", locationsId).setLong("orgId", orgId).setLong("candidateId", candidateId).list();
 		return projectMemberList;
 	}
 

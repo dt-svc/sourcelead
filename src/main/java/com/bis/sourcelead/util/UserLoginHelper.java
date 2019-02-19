@@ -264,8 +264,7 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "timeZoneId", orgLocations.get("timeZoneId"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "timeZone",orgLocations.get("timeZone"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "isCompanyOnboarded", orgLocations.get("isCompanyOnboarded"));
-		  SourceLeadSessionManager.setSessionAttribute(req, "dateFormat", orgLocations.get("dateFormat"));  
-		  SourceLeadSessionManager.setSessionAttribute(req, "country", orgLocations.get("country"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "dateFormat", orgLocations.get("dateFormat")); 
 		  SourceLeadSessionManager.setSessionAttribute(req, "state", orgLocations.get("state"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "city", orgLocations.get("city"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "zipcode", orgLocations.get("zipcode"));
@@ -304,7 +303,13 @@ public class UserLoginHelper {
 				SourceLeadSessionManager.setSessionAttribute(req, "settingsConfigured", "Y");
 			}
 		  
-		  
+		  if(userRole.get("roleName").toString().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER") || 
+				  userRole.get("roleName").toString().equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")) {
+			  SourceLeadSessionManager.setSessionAttribute(req, "country", userRole.get("country"));
+		  }else {
+			  SourceLeadSessionManager.setSessionAttribute(req, "country", orgLocations.get("country"));
+		  }
+		 
         List<String> tabsList = null;
 	    List<String> actionsList = null;
 		Integer associatesTabsCount = 0; 
@@ -405,7 +410,6 @@ public class UserLoginHelper {
 				  e.printStackTrace();
 			   }
 			  
-//			  System.out.println("<<<<<<<<<<<<<<<<<<Checking>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>."+username+"==="+userRoleId+"==="+orgLocations.getId()+"=="+req.getRequestURL());
 			  RequestAttributes attribs = RequestContextHolder.getRequestAttributes();
 			  if (RequestContextHolder.getRequestAttributes() != null) {
 			      HttpServletRequest request = ((ServletRequestAttributes) attribs).getRequest();
@@ -443,6 +447,9 @@ public class UserLoginHelper {
 			  SourceLeadSessionManager.setSessionAttribute(req, "loginUserLastName", loginUser.getLastName());
 			  SourceLeadSessionManager.setSessionAttribute(req, "loginUserEmail", loginUser.getEmail());
 			  SourceLeadSessionManager.setSessionAttribute(req, "mobilePhone", loginUser.getMobilePhone());
+			  
+			  SourceLeadSessionManager.setSessionAttribute(req, "userImgUrl", loginUser.getFileUrl());
+			  SourceLeadSessionManager.setSessionAttribute(req, "loginUserFullName", loginUser.getFullName());
 				  
 			  SourceLeadSessionManager.setSessionAttribute(req, "sourceleadUrl", sourceleadUrl);
 			  SourceLeadSessionManager.setSessionAttribute(req, "pmsUrl", pmsUrl);
@@ -492,14 +499,19 @@ public class UserLoginHelper {
 			  SourceLeadSessionManager.setSessionAttribute(req, "newlyLoginUser", userRole.getNewlyLoginUser());
 			  
 			  if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL") || 
-					  userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")) {
+					  userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")) {
 				  
-				  if (StringUtils.isNoneBlank(loginUser.getRecruiterRegisterCountry())) {
-						SourceLeadSessionManager.setSessionAttribute(req, "country", loginUser.getLocation());
+				  
+				  if (userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER") && 
+						  StringUtils.isNotBlank(loginUser.getRecruiterRegisterCountry())) {
+						SourceLeadSessionManager.setSessionAttribute(req, "country", loginUser.getRecruiterRegisterCountry());
+					} else if (userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL") && 
+							  StringUtils.isNotBlank(loginUser.getProfessionalRegisterCountry())) {
+							SourceLeadSessionManager.setSessionAttribute(req, "country", loginUser.getProfessionalRegisterCountry());
 					} else {
 						SourceLeadSessionManager.setSessionAttribute(req, "country",
-								loginUser.getRecruiterRegisterCountry());
-					}
+								loginUser.getCountry());
+				   }
 			  }else {
 				  SourceLeadSessionManager.setSessionAttribute(req, "country", orgLocations.getCountry());
 			  }
