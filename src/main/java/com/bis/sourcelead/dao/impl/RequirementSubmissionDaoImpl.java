@@ -2917,7 +2917,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			}else if(submissionStatus.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
 				submissionStages = " and rsh.submissionStatus = 'SUBMIT_TO_CLIENT'";
 			}else if(submissionStatus.equalsIgnoreCase("INTERVIEW")){
-				submissionStages = " and (rsh.submissionStatus = 'INTERVIEW' or rsh.submissionStatus = 'CLIENT_INTERVIEW')";
+				submissionStages = " and (rsh.submissionStatus = 'INTERVIEW' or rsh.submissionStatus = 'CLIENT_INTERVIEW' or rsh.submissionStatus ='SELECTED_ON_INTERVIEW')";
 			}else if(submissionStatus.equalsIgnoreCase("OFFERMADE")){
 				submissionStages = " and (rsh.submissionStatus = 'OFFERMADE' OR rsh.submissionStatus = 'OFFERACCEPTED' OR rsh.submissionStatus = 'OFFERREJECTED' "
 						+ " OR rsh.submissionStatus = 'CLIENT_OFFERMADE' OR rsh.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rsh.submissionStatus = 'CLIENT_OFFERREJECTED') ";
@@ -3975,7 +3975,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						Query countQueryString;
 						List<Long> countlist = null;
 						String sortingQry = "";
-					 String query="SELECT emp.ID as empId, emp.USER_ID as userId,emp.ORG_LOCATIONS_ID as orgLocationsId, emp.HIRE_DATE as hireDate, urole.TERMINATE_DATE as terminateDate,urole.USER_TYPE as userRole,"
+					 String query="SELECT emp.EMPLOYEE_ID as employeeId, emp.USER_ID as userId,emp.ORG_LOCATIONS_ID as orgLocationsId, emp.HIRE_DATE as hireDate, urole.TERMINATE_DATE as terminateDate,urole.USER_TYPE as userRole,"
 +" emp.EMPLOYMENT_TYPE as empType,user.GENDER as gender, COUNT(urole.TERMINATE_DATE) as terminatedCount,COUNT(emp.HIRE_DATE) as hiredCount, "
 +" COUNT(case when emp.EMPLOYMENT_TYPE='Full Time' then 1 end) as empTypeFullTimeCount,"
 +"COUNT(case when emp.EMPLOYMENT_TYPE='Part Time' then 1 end) as empTypePartTimeCount,"
@@ -4021,7 +4021,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 								 .append("OR urole.USER_TYPE like '%"
 			                                + requirementSubmissionHistoryDTO.getSearchValue()
 			                                + "%'")
-								 .append("OR emp.ID like '%"
+								 .append("OR emp.EMPLOYEE_ID like '%"
 			                                + requirementSubmissionHistoryDTO.getSearchValue()
 			                                + "%')");
 			                }
@@ -4034,7 +4034,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			            }*/
 					 
 					 
-					  queryString =  session.createSQLQuery(query.toString() + " " + query1.toString() + " " + sortingQry).addScalar("empId", StandardBasicTypes.LONG)
+					  queryString =  session.createSQLQuery(query.toString() + " " + query1.toString() + " " + sortingQry).addScalar("employeeId", StandardBasicTypes.STRING)
 							  		.addScalar("empType", StandardBasicTypes.STRING)
 							  		.addScalar("userRole", StandardBasicTypes.STRING)
 							  		.addScalar("gender", StandardBasicTypes.STRING)
@@ -4083,7 +4083,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						Query countQueryString;
 						List<Long> countlist = null;
 						String sortingQry = "";
-					 String query="SELECT emp.ID as empId, emp.USER_ID as userId,emp.ORG_LOCATIONS_ID as orgLocationsId,"
+					 String query="SELECT emp.EMPLOYEE_ID as employeeId, emp.USER_ID as userId,emp.ORG_LOCATIONS_ID as orgLocationsId,"
 					 		+ " urole.TERMINATE_DATE as terminateDate, urole.TERMINATE_REASON as terminatedReason,emp.HIRE_DATE as hireDate,  urole.USER_TYPE as userRole,"
 +" emp.EMPLOYMENT_TYPE as empType,user.GENDER as gender, emp.CURRENT_CURRENCY as currency,emp.RATE as rate,emp.RATE_PER as ratePer,emp.PROBATION_STATUS as probationStatus,"
 +" (SELECT CONCAT(u.FIRST_NAME,space(1),u.LAST_NAME) from USER u where u.ID = emp.USER_ID) as empName,"
@@ -4127,7 +4127,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 								 .append("OR urole.USER_TYPE like '%"
 			                                + requirementSubmissionHistoryDTO.getSearchValue()
 			                                + "%'")
-								 .append("OR emp.ID like '%"
+								 .append("OR emp.EMPLOYEE_ID like '%"
 			                                + requirementSubmissionHistoryDTO.getSearchValue()
 			                                + "%')");
 			                }
@@ -4140,7 +4140,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			            }
 					 
 					 
-					  queryString =  session.createSQLQuery(query.toString() + " " + query1.toString() + " " + sortingQry).addScalar("empId", StandardBasicTypes.LONG)
+					  queryString =  session.createSQLQuery(query.toString() + " " + query1.toString() + " " + sortingQry).addScalar("employeeId", StandardBasicTypes.STRING)
 							  		.addScalar("empName",StandardBasicTypes.STRING).addScalar("empType", StandardBasicTypes.STRING)
 							  		.addScalar("deptName", StandardBasicTypes.STRING).addScalar("userRole", StandardBasicTypes.STRING)
 							  		.addScalar("reportingManager", StandardBasicTypes.STRING)
@@ -4192,7 +4192,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						Query countQueryString;
 						List<Long> countlist = null;
 						String sortingQry = "";
-					 String query="SELECT emp.ID as empId, emp.USER_ID as userId,emp.ORG_LOCATIONS_ID as orgLocationsId, emp.HIRE_DATE as hireDate, urole.USER_TYPE as userRole,"
+					 String query="SELECT emp.EMPLOYEE_ID as employeeId, emp.USER_ID as userId,emp.ORG_LOCATIONS_ID as orgLocationsId, emp.HIRE_DATE as hireDate, urole.USER_TYPE as userRole,"
 +" emp.EMPLOYMENT_TYPE as empType,user.GENDER as gender, emp.CURRENT_CURRENCY as currency,emp.RATE as rate,emp.RATE_PER as ratePer,emp.PROBATION_STATUS as probationStatus,"
 +" (SELECT CONCAT(u.FIRST_NAME,space(1),u.LAST_NAME) from USER u where u.ID = emp.USER_ID) as empName,"
 +"(SELECT CONCAT(u.FIRST_NAME,space(1),u.LAST_NAME) from USER u where u.ID = urole.REPORTING_MANAGER_ID) as reportingManager," 
@@ -4235,7 +4235,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 								 .append("OR urole.USER_TYPE like '%"
 			                                + requirementSubmissionHistoryDTO.getSearchValue()
 			                                + "%'")
-								 .append("OR emp.ID like '%"
+								 .append("OR emp.EMPLOYEE_ID like '%"
 			                                + requirementSubmissionHistoryDTO.getSearchValue()
 			                                + "%')");
 			                }
@@ -4248,7 +4248,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			            }
 					 
 					 
-					  queryString =  session.createSQLQuery(query.toString() + " " + query1.toString() + " " + sortingQry).addScalar("empId", StandardBasicTypes.LONG)
+					  queryString =  session.createSQLQuery(query.toString() + " " + query1.toString() + " " + sortingQry).addScalar("employeeId", StandardBasicTypes.STRING)
 							  		.addScalar("empName",StandardBasicTypes.STRING).addScalar("empType", StandardBasicTypes.STRING)
 							  		.addScalar("deptName", StandardBasicTypes.STRING).addScalar("userRole", StandardBasicTypes.STRING)
 							  		.addScalar("reportingManager", StandardBasicTypes.STRING)
