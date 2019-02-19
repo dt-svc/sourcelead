@@ -229,6 +229,7 @@ window.onload = function () {
 	 var loginCurrencyCode = '${SourceLeadWeb_currencyCode}';
 	 var country = '${SourceLeadWeb_orgLocations.country}'
 	 var loginCountry = '${SourceLeadWeb_country}';
+	 var tabType = '${tabType}';
 
 	 
 		 result = result + ' <div class="user_summ_wrap">';
@@ -256,8 +257,8 @@ window.onload = function () {
 			 '<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 
 				 result = result + '<li><a href="#tab-21" onClick="associateBankData('+userId+')" >Banking</a></li>';
 				 result = result + '<li><a href="#tab-22" onClick="associateTaxSummary('+userId+')" >TAX</a></li>';
-				 result = result + '<li><a href="#tab-23" onClick="associateDeductionSummary('+userId+')" >Deduction</a></li>';
-				 result = result + '<li><a href="#tab-24" onClick="associateContributionSummary('+userId+')"  >Contribution</a></li>';
+				 result = result + '<li id="deductionLiId"><a href="#tab-23" onClick="associateDeductionSummary('+userId+')" >Deduction</a></li>';
+				 result = result + '<li id="contributionLiId"><a href="#tab-24" onClick="associateContributionSummary('+userId+')"  >Contribution</a></li>';
 				 result = result + '<li><a href="#tab-25" onClick="associateSalSummary('+userId+')" >Salary</a></li>';
 			 '</sec:authorize>';
 		 }
@@ -309,7 +310,7 @@ window.onload = function () {
 		 result = result + '<div id="tab-24" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative taxes-details">';
 		 result = result + '</div>';
 		 
-		 result = result + '<div id="tab-25" class="clearfix axes-details">';
+		 result = result + '<div id="tab-25" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative taxes-details">';
 		 result = result + '</div>';
 		 
 		 result = result + '<div id="tab-29" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative">';
@@ -323,8 +324,14 @@ window.onload = function () {
 	     $("#candidateSideDiv").empty();
 	     $("#candidateSideDiv").append(result);
 	    
+	     if(tabType == 'contribution'){
+			 associateContributionSummary(userId,tabType);
+		 }else if(tabType == 'deduction'){
+			 associateDeductionSummary(userId,tabType);
+		 }else{
+			 userDetails(userId);
+		 }
 	  	
-	  	userDetails(userId);
  }
 </script>
 <script>
