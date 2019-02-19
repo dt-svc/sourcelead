@@ -200,5 +200,12 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	public int updateSourceUserCodeForSubmissionHistory() {
 		return requirementSubmissionHistoryDao.updateSourceUserCodeForSubmissionHistory();
 	}
+	
+	@Override
+	public List<RecruiterJobsReportView> getSubmissionApplicantCountsForRecruiterJobreports(Long orgLocationId, User user,
+			Date[] searchDates, Long requirementId) throws Exception {
+		List<RecruiterJobsReportView> rjrvList = requirementSubmissionHistoryDao.getSubmissionApplicantCountsForRecruiterJobreports(orgLocationId,user,searchDates,requirementId);
+		return rjrvList;
+	}
 
 }
