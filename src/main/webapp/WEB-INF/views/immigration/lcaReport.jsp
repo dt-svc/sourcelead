@@ -8,7 +8,7 @@
 
 <script>
 	$(document).ready(function(){
-		 loc ="${SourceLeadWeb_orgLocations.dateFormat}";
+		 loc ="${SourceLeadWeb_dateFormat}";
 		  if(loc.match("yyyy-MM-dd")){
 			  locDateFormat = 'YYYY-MM-DD';
 		  }if(loc.match("dd-MM-yyyy")){
@@ -26,8 +26,8 @@
       <div class="pull-left">
         <h2>LCA Report</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
-					href="<c:url value='/app/reportsDashboard'/>"> Reports Dashboard</a>&raquo;LCA Report</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard" title="Home">Home</a>&raquo;<a
+					href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard"> Reports Dashboard</a>&raquo;LCA Report</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
@@ -107,7 +107,7 @@
           <div class="pull-right">
             <input value="Run" class="btn btn-success btnSuccess" type="button" onclick="runLCAReport();">
             <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetLcaForm();">
-            <input type="button" value="Cancel" onClick="javascript:window.location.href ='<c:url value='${SourceLeadWeb_sourceleadUrl}/reportsDashboard'/>'"class="btn btn-default ml">
+            <input type="button" value="Cancel" onClick="javascript:window.location.href ='${SourceLeadWeb_sourceleadUrl}/reportsDashboard'" class="btn btn-default ml">
           </div>
         </div>
       </div>      
