@@ -55,7 +55,7 @@
 			test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 			<div class="pull-right brud-crum">
 				<a
-					href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+					href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;<a
 					href="${SourceLeadWeb_atsUrl}/candidatesList"> Candidate List</a>
 				&raquo; Add Candidate
 			</div>
@@ -63,7 +63,7 @@
 		<c:if
 			test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
 			<div class="pull-right brud-crum">
-				   <a href="<c:url value='${appPath}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}/'/>">Home</a>&raquo;<a
+				   <a href="${SourceLeadWeb_sourceleadUrl}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}">Home</a>&raquo;<a
 					href="${SourceLeadWeb_atsUrl}/candidatesList"> Candidate List</a>
 				&raquo; Add Candidate
 			</div>
@@ -653,7 +653,7 @@
 						<input type="button" value="Save" id="store_candidate"
 							onclick="storeCandidate();" class="btn btn-primary"> <input
 							type="button" value="Cancel"
-							onClick="javascript:window.location.href = '<c:url value='/ats/candidatesList'/>'"
+							onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/candidatesList'"
 							class="btn btn-default ml">
 					</div>
 				</div>
