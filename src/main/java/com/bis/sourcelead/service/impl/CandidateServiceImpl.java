@@ -1390,9 +1390,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public Long getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(Long orgLocationId, Long userId,
 			String candidateType) throws Exception {
+		// TODO Auto-generated method stub
 		return candidateDao.getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(orgLocationId, userId, candidateType);
 	}
-
+	
 	@Override
 	public List<Candidate> getCandidatesListByOrgLocationIDAndUserId(Long orgLocationId, Long userId) throws Exception {
 		return candidateDao.getCandidatesListByOrgLocationIDAndUserId(orgLocationId, userId);
@@ -2930,7 +2931,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		candidateDao.updateMarketPlacePrice(marketPlace);
 		//updating cart price in global marketplace after it is edited and saved in local marketplace.
 		
-		if(marketCart!=null) {
+		if(marketPlace != null && marketCart != null){
 		marketCart.setAmount(Double.parseDouble(priceVal));
 		candidateDao.addCandidateToMarketCart(marketCart);
 		}
@@ -3114,8 +3115,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public void deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid) throws Exception {
-		candidateDao.deleteCandidateFromMarketcartByCandidateUuid(candidateUuid);
+	public Boolean deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid) throws Exception {
+		return candidateDao.deleteCandidateFromMarketcartByCandidateUuid(candidateUuid);
 		
 	}
 	
@@ -3709,6 +3710,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public void updateMarketWalletAmount(Double balanceAmountValue, Long id) {
 		candidateDao.updateMarketWalletAmount(balanceAmountValue, id);
+	}
+
+	@Override
+	public void deleteCandidateFromMarketplaceByCandidateUuid(String candidateUuid) throws Exception {
+		candidateDao.deleteCandidateFromMarketplaceByCandidateUuid(candidateUuid);
 	}
 	
 }
