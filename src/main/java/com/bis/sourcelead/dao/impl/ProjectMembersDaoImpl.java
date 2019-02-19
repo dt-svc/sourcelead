@@ -1955,7 +1955,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 				.append("OR user.FIRST_NAME like '%" + marginSheetReport.getSearchValue() + "%' ")
 				.append("OR user.LAST_NAME like '%" + marginSheetReport.getSearchValue() + "%' ")
 				.append("OR ol.ORG_NAME like '%" + marginSheetReport.getSearchValue() + "%' ")
-				.append("OR user.ID like '%" + marginSheetReport.getSearchValue() + "%' )");
+				.append("OR emp.EMPLOYEE_ID like '%" + marginSheetReport.getSearchValue() + "%' )");
 /*			    if(sqlDate != null) {
 			    	query1.append("OR userRole.updatedDate like '%" + sqlDate + "%' ");
 			    	query1.append("OR userRole.user.id IN(select employee.user.id from Employees employee where employee.hireDate like '%" + sqlDate + "%')");
@@ -1986,7 +1986,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
     		}
 	     
 //		String 	query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orglocationId) and ps.isClientProject = 'Y' ";
-		String 	query ="SELECT projects.ID as projectId, projects.PROJECT_NAME as projectName, user.ID as uid,(SELECT  CONCAT(user.FIRST_NAME,user.LAST_NAME)) as employeeName, pm.PAY_RATE as payRate,"
+		String 	query ="SELECT projects.ID as projectId, projects.PROJECT_NAME as projectName, emp.EMPLOYEE_ID as employeeId,(SELECT  CONCAT(user.FIRST_NAME,user.LAST_NAME)) as employeeName, pm.PAY_RATE as payRate,"
 				+" pm.PAY_RATE_TYPE as payRateType, pm.PAY_RATE_CURRENCY as payRateCurrency, pm.CURRENT_BILL_RATE as billRate, pm.RATE_TYPE as billRateType,"
 				+" pm.BILL_RATE_CURRENCY as billRateTypeCurrency, "
 				+" ol.ORG_NAME as clientName, ol.ID as orglocationId, orl.ID as orgRelationId"
@@ -2019,7 +2019,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			  mts.setEmployeeName(mm[3].toString());
 			  mts.setProjectName(mm[1].toString());
 			  mts.setPayRate((double)mm[4]);
-			  mts.setUid((BigInteger)mm[2]);
+			  mts.setEmployeeId(mm[2].toString());
 			  mts.setPayRateType(mm[5].toString());
 			  mts.setPayRateCurrency(mm[6].toString());
 			  mts.setBillRate((double)mm[7]);
