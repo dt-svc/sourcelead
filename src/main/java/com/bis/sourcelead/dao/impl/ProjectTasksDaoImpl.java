@@ -388,11 +388,11 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	
 	/*@Override
 	@Transactional(rollbackFor = { Exception.class })*/
-	public List<ProjectTasks> addProjectTasksForLoginUserAndLeaveType(User user,Long orgLocationId,String leaveType,String billableType) throws Exception {
+	public List<ProjectTasks> addProjectTasksForLoginUserAndLeaveType(User user,Long orgId,Long orgLocationId,String leaveType,String billableType) throws Exception {
 		List<ProjectTasks> projectTaskList = new ArrayList<>();
 		Candidate candidate = candidateDao.findByCandidateEmail(user.getEmail(), orgLocationId);
 		if(candidate != null){
-			List<ProjectMembers> projectMembersList =  projectMembersDao.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocationId,candidate.getId());
+			List<ProjectMembers> projectMembersList =  projectMembersDao.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocationId,orgId,candidate.getId());
 			if(projectMembersList != null && !projectMembersList.isEmpty()){
 				
 			}
