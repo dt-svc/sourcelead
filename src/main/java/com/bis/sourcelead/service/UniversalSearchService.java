@@ -12,7 +12,7 @@ public interface UniversalSearchService {
 
 	List<Object> univesalSearch(OrgLocations orgLocation, String searchType, String searchValue, Org org,String userRole, User user,String isAssociate) throws Exception;
 
-	List<List<Object>> univesalSearchForAll(OrgLocations orgLocation, String searchType, String searchValue, Org org,String userRole, User user, Collection<Tabs> tabList)throws Exception;
+	List<List<Object>> univesalSearchForAll(OrgLocations orgLocation, String searchType, String searchValue, Org org,String userRole, User user, List<String> tabList)throws Exception;
 
 	
 }
