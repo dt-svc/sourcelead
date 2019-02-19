@@ -62,7 +62,7 @@ function changeCountry(){
     <div class="pull-left">
       <h2>Org Registration</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="${appPath}/dashboard">Home</a> &raquo; <a href="${appPath}/enrolledOrgsList">Orgs List</a> &raquo; Org Registration </div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/enrolledOrgsList">Orgs List</a> &raquo; Org Registration </div>
   </section>
   
   
@@ -270,7 +270,7 @@ function changeCountry(){
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="submit" value="Save & Continue" class="btn btn-primary" id="register_button" onclick="createOrg();">
-          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/enrolledOrgsList'/>'"  class="btn btn-default ml">
+          <input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/enrolledOrgsList'"  class="btn btn-default ml">
         </div>
       </div>
     </div>
@@ -359,7 +359,7 @@ var validationSettings = {
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
         		var formData = getFormData("createOrg_form");
-         		var sourceleadUrl ='${sourceleadUrl}';
+         		var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
          		
          		$("#enrollOrgLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	
@@ -695,7 +695,7 @@ $(function(){
 		  })
 		  
 		  
-		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	 	  var finalDateFormat = getJSDateFormat(locationDate);
 	 	  $('#subscriptionDate').datepicker({
 	 	      dateFormat: finalDateFormat,

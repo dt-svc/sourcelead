@@ -20,7 +20,7 @@
 			  </c:forEach>
 		  </select>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; Custom Fields</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings</a>&raquo; Custom Fields</div>
 	<div class="clearfix"></div> 
 </section>
    
