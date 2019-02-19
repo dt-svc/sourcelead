@@ -341,7 +341,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	            result = result+'    <i class="fa fa-comments"></i>';
 	            result = result+'        <div class="commentsimg-inner">';
 	            
-	            result = result+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"/>';
+	            result = result+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_userImgUrl}"/>';
 	            result = result+'        </div>';
 	            result = result+'    </div>';
 	            result = result+'     <div class="comments-content">';
@@ -1934,7 +1934,6 @@ function interviewFeedback(interviewId,templateId,id,submissionId) {
 	$(".proposeTimePop").removeClass("proposeTimePopActive");
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var atsUrl ='${SourceLeadWeb_atsUrl}';
-	alert(atsUrl);
 	$.ajax({
 		type: "GET",
 		url: atsUrl+"/getInterviewrsFeedbackList?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId+"&locationId="+locationId+"&submissionId="+submissionId,
@@ -2194,7 +2193,7 @@ $('.chosen-container').css({'width': '100%'});
 $("#rescheduleTimeZone").chosen();
 $("#rescheduleTimeZone").trigger('chosen:update');
 
-var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var locationDate ='${SourceLeadWeb_dateFormat}'; 
 var finalDateFormatRescheduleDate = '';
 if(locationDate.match("yyyy-MM-dd")){
 	finalDateFormatRescheduleDate = 'yy-mm-dd';
@@ -2550,7 +2549,7 @@ function proposeTime(interviewId,submissionId){
 	})
 	
 	
-	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	 var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	  var finalDateFormatInterviewDate = '';
 	  if(locationDate.match("yyyy-MM-dd")){
 		  finalDateFormatInterviewDate = 'yy-mm-dd';

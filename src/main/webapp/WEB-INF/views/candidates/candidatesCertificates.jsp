@@ -192,7 +192,7 @@ function storeCertificate(candidateId) {
 <script>
 function candidateCertificateList(candidateId){
 	var candidateType = '${candidateType}';
-	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  canCerDatePattern = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -447,7 +447,7 @@ function addCertification(candidateId) {
 			 e.stopPropagation();
 		 });
 		 
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		 var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		  var finalDateFormatCerSave = getJSDateFormat(locationDate);
 		  
 		 
@@ -614,7 +614,7 @@ function addCertification(candidateId) {
 	    			});
 	    			var cerStartDate = $("#StartDateEdit").val();
 	    			var cerEndDate = $("#EndDateEdit").val(); 
-	    			var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	    			var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	    			var finalDateFormatCerEditOneSave = '';
 	    			 // written common method in slead-common.js for date formats start
 	    			var cerStartDateEdit = getJSDate(cerStartDate,locationDate);

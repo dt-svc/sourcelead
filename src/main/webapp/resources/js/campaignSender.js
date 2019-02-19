@@ -2,7 +2,7 @@
 
 function campaignSender(ele,senderId, fromType) {
 	/*fromProfile = fromProfile ? fromProfile : false;*/
-	$.post(sourceleadUrl+"/campaignSender?senderId="+senderId+"", {}, function(data) {
+	$.post(atsUrl+"/campaignSender?senderId="+senderId+"", {}, function(data) {
 			$(".popMask").fadeIn(200);
 			$("#campaignSender").fadeIn(100);
 			$("#campaignSender").html(data);
@@ -14,7 +14,7 @@ function campaignSender(ele,senderId, fromType) {
 					  /*	var formData = $($('#capn_add_sender')[0]).serialize();*/
 					 var formData = getFormData('capn_add_sender');
 						$("#senderLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-						$.post(sourceleadUrl+"/saveCampaignSender?"+tokenParamName+"="+tokenValue, formData, function(data) {
+						$.post(atsUrl+"/saveCampaignSender?"+tokenParamName+"="+tokenValue, formData, function(data) {
 							if(data == 'success'){
 								senderClose();
 								if(senderId != ''){
@@ -27,7 +27,7 @@ function campaignSender(ele,senderId, fromType) {
 						  			 $("#campainSenderAlertMsgDiv").html("Successfully Created sender identity");
 								}
 					  			
-								 location.replace(sourceleadUrl+ "/campaignSendersList");
+								 location.replace(atsUrl+ "/campaignSendersList");
 								 $("#popUp").empty();
 					  			 $(".mask").fadeOut(200);
 								 campainSenderAlertMsgFadein();	
@@ -85,7 +85,7 @@ function validateNickName(senderId){
 	if(nickName != null && nickName != ''){
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/validateNickName?"+tokenParamName+"="+tokenValue+"&nickName="+nickName+"&senderId="+senderId,
+			url : atsUrl + "/validateNickName?"+tokenParamName+"="+tokenValue+"&nickName="+nickName+"&senderId="+senderId,
 			success : function(data) {
 				var result = data;
 				if(result == true) {
@@ -116,7 +116,7 @@ function validateFromMail(toWhom,id){
 	 if(email != null && email != null && email !='undefined' ){
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/validateFromMail?"+tokenParamName+"="+tokenValue+"&email="+email+"&toWhom="+toWhom+"&id="+id,
+			url : atsUrl + "/validateFromMail?"+tokenParamName+"="+tokenValue+"&email="+email+"&toWhom="+toWhom+"&id="+id,
 			success : function(data) {
 				var result = data;
 				 if(result == true) {
@@ -146,7 +146,7 @@ function validateReplyMail(toWhom,id){
 	if(email != null && email != null && email !='undefined' ){
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/validateFromMail?"+tokenParamName+"="+tokenValue+"&email="+email+"&toWhom="+toWhom+"&id="+id,
+			url : atsUrl + "/validateFromMail?"+tokenParamName+"="+tokenValue+"&email="+email+"&toWhom="+toWhom+"&id="+id,
 			success : function(data) {
 				var result = data;
 				if(result == true) {

@@ -543,6 +543,6 @@
 	}
 	
 	function redirectToJobFairsList() {
-		location.href = "/ats/jobsList?viewTab=jobFair";
+		location.href = "${SourceLeadWeb_atsUrl}/jobsList?viewTab=jobFair";
 	}
 </script>
