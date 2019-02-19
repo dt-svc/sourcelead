@@ -72,7 +72,7 @@ $(document).ready(function(){
 <section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left"><h2>Asset Management</h2></div>
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Asset Management</div>
+  <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Asset Management</div>
 </section>
 
 <div class="project_wrap">
@@ -179,10 +179,10 @@ $(document).ready(function(){
 					        	<a href="javascript:void(0)"  onClick="addAssetManagementPopup();">Add Asset</a> 
 					        </sec:authorize>
 					        <sec:authorize access="hasRole('ROLE_ADD_ASSET_CATEGORY')"> 
-					        	<a href="/ats/assetCategory" class="">Categories List</a>
+					        	<a href="${SourceLeadWeb_atsUrl}/assetCategory" class="">Categories List</a>
 					        </sec:authorize>	
 					        
-					        <a href="/app/uploadassetManagement">Import</a>	  
+					        <a href="${SourceLeadWeb_sourceleadUrl}/uploadassetManagement">Import</a>	  
 					</span>
 				</div>
 			</li>
@@ -298,7 +298,7 @@ $(document).ready(function() {
    
   <script>
   function issueDateScript1(){
-  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+  var locationDate ='${SourceLeadWeb_dateFormat}'; 
   var finalDateFormat = getJSDateFormat(locationDate);
   $('#issueDate').datepicker({
       dateFormat: finalDateFormat,
@@ -1099,7 +1099,7 @@ function assetmanagemetServicePopUp(assetId,workingStatus,assetUUID){
 	$("#assetServicePopUp").empty();
 	$("#assetServicePopUp").append(result)
 	
-	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	var finalDateFormat = getJSDateFormat(locationDate);
 	$('#serviceDate').datepicker({
 	    dateFormat: finalDateFormat,

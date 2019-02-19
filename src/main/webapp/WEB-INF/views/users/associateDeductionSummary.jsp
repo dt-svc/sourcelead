@@ -4,7 +4,7 @@
  
  <script>
  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-function associateDeductionSummary(userId){
+function associateDeductionSummary(userId,tabType){
 	let searchParams = new URLSearchParams(window.location.search);
 	let param = searchParams.get('userCode')
 	$.ajax({
@@ -18,7 +18,7 @@ function associateDeductionSummary(userId){
             result = result + '<div class="table-header clearfix">';
             result = result + '<h4 class="pull-left margin-top0">Deductions</h4>';
             result = result + '<ul class="list-unstyled list-inline pull-right">';
-            result = result + '<li><a href="/pms/addAssociateDeduction?userCode='+param+'&saveType=edit" class="fa fa-plus paddingRight" title="Add">Add</a></li>';
+            result = result + '<li><a href="'+pmsUrl+'/addAssociateDeduction?userCode='+param+'&saveType=edit" class="fa fa-plus paddingRight" title="Add">Add</a></li>';
             result = result + '<div class="clearfix"></div>';
             result = result + '</ul>';
             result = result + '</div>';
@@ -105,6 +105,16 @@ function associateDeductionSummary(userId){
                 $("#tab-23").empty();
                 $("#tab-25").empty();
                 $("#tab-23").append(result); 
+                
+                if(tabType == 'deduction'){
+                	$("#deductionLiId").addClass("current");
+       	         	$("#deductionLiId").siblings().removeClass("current");
+       	         	var tab = $("#deductionLiId").attr("href");
+       	         	$(".project_tabs_inn").not(tab).css("display", "none");
+       	         	$(tab).fadeIn();
+       	         	$("#tab-23").show();
+                }
+                
                 associateDeductonListPagination();
                 
           },
