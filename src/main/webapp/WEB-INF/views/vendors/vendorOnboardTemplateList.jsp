@@ -13,7 +13,7 @@
     <div id="onboardingLoading"></div>
     <section class="content-header clearfix">
         <div class="pull-left"><h2 class="pull-left">Vendor Onboard Templates</h2></div>
-     	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Vendor Onboard Templates List</div>
+     	<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/orgTemplates"> Templates</a> &raquo; Vendor Onboard Templates List</div>
  		<div class="clearfix"></div>
     </section>
     
@@ -22,7 +22,7 @@
 	 <div class="reportHead reportHeadDataTab clearfix">
 	    <ul class="pull-right list-unstyled list-inline">
 		 <sec:authorize access="hasRole('ROLE_CREATE_ON_BOARD_TEMPLATE')"> 
-		 	<li><a href="<c:url value='${appPath}/addNewVendorOnboardTemplate'/>" class="newAdBtn">+ Template</a></li>
+		 	<li><a href="<c:url value='${SourceLeadWeb_vmsUrl}/addNewVendorOnboardTemplate'/>" class="newAdBtn">+ Template</a></li>
 	 	 </sec:authorize>	    
 		</ul>
 	</div>		
@@ -42,10 +42,11 @@ $(document).ready(function(){
 
 <script>
 function onboardingTemplatesList(){  
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getVendorOnboardingTemplatesList?${_csrf.parameterName}=${_csrf.token}",    
+           url: vmsUrl+"/getVendorOnboardingTemplatesList?${_csrf.parameterName}=${_csrf.token}",    
             success :function(response) {
 		            	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
 			    		    showError(response.responseMessage);
@@ -100,7 +101,7 @@ function onboardingTemplatesList(){
 		                    		 
 			                    	 result = result +"<td>";
 			                    	 result = result +"<div class='tblicons'>";
-			                    	 result = result +"<a href='"+sourceleadUrl+"/viewVendorOnboardTemplateByTemplateUUID?templateUUID="+opt.templateUUID+"' title='Edit' class='mr10'><i class='fa fa-pencil'></i></a> ";
+			                    	 result = result +"<a href='"+vmsUrl+"/viewVendorOnboardTemplateByTemplateUUID?templateUUID="+opt.templateUUID+"' title='Edit' class='mr10'><i class='fa fa-pencil'></i></a> ";
 			                    	
 			                    	 if(opt.isDefaultTemplate != 'Y'){
 			                    		 result = result +'| <a href="javascript:void(0)" onclick="deleteOnboadTemplate(\''+opt.templateUUID+'\','+opt.id+');" title="Delete"><i class="fa fa-trash text-danger"></i></a>';
@@ -119,7 +120,7 @@ function onboardingTemplatesList(){
 	    
 			    			
 			    		}else if (response.indexOf('Sign In') !== -1) {
-			    			location.replace(sourceleadUrl);
+			    			location.replace(vmsUrl);
 			    		} else {
 			    		    showError("Operation failed, please try again");
 			    		}
@@ -132,11 +133,12 @@ function onboardingTemplatesList(){
 
 <script>
 function deleteOnboadTemplate(templateUUID,id){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  
 	  $.ajax({
           type : "POST",
-          url: sourceleadUrl+"/deleteVendorOnboardTemplateByTemplateUUID?${_csrf.parameterName}=${_csrf.token}&templateUUID="+templateUUID,    
+          url: vmsUrl+"/deleteVendorOnboardTemplateByTemplateUUID?${_csrf.parameterName}=${_csrf.token}&templateUUID="+templateUUID,    
            success :function(response) {
         	   if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
 	    		    showError(response.responseMessage);
@@ -146,7 +148,7 @@ function deleteOnboadTemplate(templateUUID,id){
 	    			document.getElementById("template"+id).remove();
 	    			 $("#onboardingLoading").removeAttr("style");
 	    		}else if (response.indexOf('Sign In') !== -1) {
-	    			location.replace(sourceleadUrl);
+	    			location.replace(vmsUrl);
 	    		} else {
 	    		    showError("Operation failed, please try again");
 	    		}
