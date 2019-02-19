@@ -1517,7 +1517,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				 if("accepted".equalsIgnoreCase(status)){
 					 statusQuery = "reqSub.submissionRateStatus = 'ACCEPTED' and reqSub.needApplicantPermit <>'N'  and reqSub.submissionRateStatus IS NOT NULL ";
 				}else if("requestSent".equalsIgnoreCase(status)){
-					statusQuery= "  reqSub.submissionRateStatus = 'REQUEST' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
+					statusQuery= "  reqSub.submissionRateStatus = 'REQUEST_SENT' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
 				}
 				else if("REJECTED".equalsIgnoreCase(status)){
 					statusQuery= "  reqSub.submissionRateStatus = 'REJECTED' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
@@ -1531,7 +1531,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				 if("accepted".equalsIgnoreCase(status)){
 					 statusQuery = "reqSub.submissionRateStatus = 'ACCEPTED' and reqSub.needApplicantPermit <>'N'  and reqSub.submissionRateStatus IS NOT NULL ";
 				}else if("requestSent".equalsIgnoreCase(status)){
-					statusQuery= "  reqSub.submissionRateStatus = 'REQUEST' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
+					statusQuery= "  reqSub.submissionRateStatus = 'REQUEST_SENT' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
 				}
 				else if("REJECTED".equalsIgnoreCase(status)){
 					statusQuery= "  reqSub.submissionRateStatus = 'REJECTED' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
