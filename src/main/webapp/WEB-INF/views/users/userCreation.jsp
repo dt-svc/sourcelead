@@ -4,7 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="/ats/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_atsUrl}/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
 <!-- <script src="resources/js/masklist.js" type="text/javascript"></script>
 <script src="resources/js/jquery.inputmask.js" type="text/javascript"></script> 
@@ -55,7 +55,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
           <div class="pull-left">
             <h2>Add Associate</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/usersList'/>">Associates List</a> &raquo; Add Associate </div>
+          <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_atsUrl}/usersList">Associates List</a> &raquo; Add Associate </div>
         </section>
         
         <!--New theme-->
