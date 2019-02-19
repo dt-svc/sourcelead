@@ -5,13 +5,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.FileCopyUtils;
@@ -24,7 +22,6 @@ import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.DayEntryReportsService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -114,13 +111,6 @@ public void exportDaywiseTimesheetReport(DayWiseTimesheetReoprtsDTO dayWiseTimes
 }
 
 
-@RequestMapping(value="/getAllUserListBasedOnOrgLocationId", method= RequestMethod.POST)
-public List<ProjectMembers> getAllUserListBasedOnOrgLocationId(HttpServletRequest request) throws Exception {
-	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-	List<ProjectMembers> projectMemberList = projectMemberService.getAllProjectsByOrgLocationId(orgLocations.getId());
-	projectMemberList.forEach(pm -> pm.setUserId(String.valueOf(pm.getProjectMemberCandidteId().getConsultantUser().getId())));
-	return projectMemberList;
-}
 
 
 	
