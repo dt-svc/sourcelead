@@ -225,6 +225,7 @@ $('body').on('blur', '#upload_candidate_form', function() {
 
 <script type="text/javascript">
 function cancelFileImport(){
+	var atsUrl='${SourceLeadWeb_atsUrl}';
 	location.replace(atsUrl+"/uploadCandidateForm");
 }
 </script>

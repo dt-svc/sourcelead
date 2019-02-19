@@ -27,7 +27,7 @@ function campaignSender(ele,senderId, fromType) {
 						  			 $("#campainSenderAlertMsgDiv").html("Successfully Created sender identity");
 								}
 					  			
-								 location.replace(sourceleadUrl+ "/campaignSendersList");
+								 location.replace(atsUrl+ "/campaignSendersList");
 								 $("#popUp").empty();
 					  			 $(".mask").fadeOut(200);
 								 campainSenderAlertMsgFadein();	
