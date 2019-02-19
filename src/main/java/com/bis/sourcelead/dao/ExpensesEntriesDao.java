@@ -19,4 +19,6 @@ public interface ExpensesEntriesDao {
 
 	public int dumpExpenceCategoryAmountToOldRecords();
 
+	public int changeDocumentNameWithWhiteSpacesToUnderScore(String staticPath);
+
 }
