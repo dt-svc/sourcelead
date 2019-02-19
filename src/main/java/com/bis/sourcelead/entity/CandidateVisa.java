@@ -44,11 +44,6 @@ public class CandidateVisa implements Serializable {
 	@Column(name = "COUNTRY")
 	private String country;
 	
-	@Column(name = "VALID_FROM_DATE")
-	private Date validFromDate;
-
-	@Column(name = "VALID_TO_DATE")
-	private Date validToDate;
 
 
 	@Column(name = "STATUS")
@@ -183,22 +178,6 @@ public class CandidateVisa implements Serializable {
 
 	public void setCurrentStatus(String currentStatus) {
 		this.currentStatus = currentStatus;
-	}
-
-	public Date getValidFromDate() {
-		return validFromDate;
-	}
-
-	public void setValidFromDate(Date validFromDate) {
-		this.validFromDate = validFromDate;
-	}
-
-	public Date getValidToDate() {
-		return validToDate;
-	}
-
-	public void setValidToDate(Date validToDate) {
-		this.validToDate = validToDate;
 	}
 
 	

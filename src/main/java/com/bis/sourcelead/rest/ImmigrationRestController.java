@@ -106,7 +106,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.ImmigrationActivityCommonUtil;
-import com.bis.sourcelead.util.LcaActivityCommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -167,8 +166,8 @@ public class ImmigrationRestController {
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
 	
-	@Autowired
-	LcaActivityCommonUtil lcaActivityCommonUtil;
+	/*@Autowired
+	LcaActivityCommonUtil lcaActivityCommonUtil;*/
 	
 	
 	// for mobile 
@@ -1295,43 +1294,6 @@ public class ImmigrationRestController {
 		return response;
 	}
 
-	/*@RequestMapping(value = { "/savePassportVisaDetailsPage" }, method = RequestMethod.POST)
-	public Response<String> savePassportDetailsPage(ImmigrationPassportDTO immigrationPassportVisaDTO,
-			HttpServletRequest request, @RequestParam(value = "candidateId", required = false) String candidateId,
-			@RequestParam(value = "immigrationId", required = false) String immigrationId) {
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		Response<String> response = new Response<>();
-		logger.debug("Candidate ID ----> :  " + immigrationPassportVisaDTO.getCandidateId());
-		if (user != null) {
-			try {
-				if (Validator.validate(immigrationPassportVisaDTO)) {
-					if (immigrationPassportVisaDTO.getIdType().trim().equalsIgnoreCase(Constants.ID_TYPE_PASSPORT)) {
-						immigrationPassportVisaDTO.setIdType(Constants.ID_TYPE_PASSPORT);
-					} else if (immigrationPassportVisaDTO.getIdType().trim().equalsIgnoreCase(Constants.ID_TYPE_VISA)) {
-						immigrationPassportVisaDTO.setIdType(Constants.ID_TYPE_VISA);
-					}
-					immigrationCommonService.savePassportDetails(immigrationPassportVisaDTO, user, orgLocations,
-							Long.parseLong(immigrationId));
-					response.setResponse(Result.SUCCESS.name());
-					response.setResponseMessage(Result.SUCCESS.getValue());
-				} else {
-					response.setObject("DataMissing");
-					response.setResponse(Result.INVALID_DATA.name());
-					response.setResponseMessage(Result.INVALID_DATA.getValue());
-				}
-			} catch (Exception e) {
-				logger.error("Exception caugth in savePassportVisaDetailsPage controller" + e.getMessage());
-				e.printStackTrace();
-			}
-		} else {
-			response.setResponse(Result.SESSION_TIMEDOUT.name());
-			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
-		}
-		return response;
-
-	}*/
 	
 	/**
 	 * 
@@ -1344,18 +1306,25 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/saveVisaDetailsPage" }, method = RequestMethod.POST)
 	public Response<String> saveVisaDetailsPage(ImmigrationVisaDTO immigrationVisaDTO,
 			HttpServletRequest request, @RequestParam(value = "candidateId", required = false) String candidateId,
-			@RequestParam(value = "immigrationId", required = false) String immigrationId) {
+			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
+			@RequestParam(value = "visaHistoryId", required = false) Long visaHistoryId) {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		Response<String> response = new Response<>();
 		logger.debug("Candidate ID ----> :  " + immigrationVisaDTO.getCandidateId());
+		if(immigrationVisaDTO.getIsCurrent()== null || immigrationVisaDTO.getIsCurrent().isEmpty()) {
+			immigrationVisaDTO.setIsCurrent(ImmigrationConstants.IS_CURRENT_NO);// setting value as "N"
+		}
+		if(visaHistoryId != null) {
+			immigrationVisaDTO.setId(visaHistoryId);// setting value as "N"
+		}
 		if (user != null) {
 			try {
 				if (Validator.validate(immigrationVisaDTO)) {
 					
 					immigrationCommonService.saveVisaDetails(immigrationVisaDTO, user, orgLocations,
-							Long.parseLong(immigrationId));
+							  immigrationId, visaHistoryId); // in edit mode we will get visaHistoryId from the UI as a request parameter.
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				} else {
@@ -1751,54 +1720,6 @@ public class ImmigrationRestController {
 		return model;
 	}
 
-	/*@RequestMapping(value = { "/getCandidatePassportVisaDetails" })
-	public ModelAndView getCandidatePassportVisaDetails(
-			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request,
-			@RequestParam(value = "idType", required = true) String idType,
-			@RequestParam(value = "searchValue", required = true) String searchValue) throws Exception {
-		ModelAndView model = new ModelAndView();
-		logger.debug(" inisde getCandidatePassportDetails controller test -->");
-		List<CandidatePassportVisa> PassportList = new ArrayList<CandidatePassportVisa>();
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		Date toDayDate = new Date();
-		try {
-			PassportList = immigrationCommonService.getCandidatePassportVisaDetails(candidateId, idType, searchValue);
-			for (CandidatePassportVisa canPassportVisa : PassportList) {
-				canPassportVisa.setValidFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
-						canPassportVisa.getValidFromDate()));
-				canPassportVisa.setValidToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
-						canPassportVisa.getValidToDate()));
-
-				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-				String currentDateStr = dateFormat.format(toDayDate);
-				Date newDate = dateFormat.parse(currentDateStr);
-				Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
-
-				if (currentDate.before(canPassportVisa.getValidToDate())) {
-					canPassportVisa.setCurrentStatus("Active");
-				} else {
-					canPassportVisa.setCurrentStatus("Expired");
-				}
-			}
-
-			List<Countries> countryList = countriesService.getAllCountries();
-			model.addObject("PassportList", PassportList);
-			model.addObject("countryList", countryList);
-		} catch (Exception e) {
-			logger.error("Exception caught in controller --->" + e.getMessage());
-			e.printStackTrace();
-		}
-		logger.debug(" after getCandidatePassportVisaDetails controller -->");
-		if (idType.equalsIgnoreCase("Passport")) {
-			model.setViewName("/immigration/passportDetailsTab");
-		} else {
-			List<String> visaList = lookUpDataService.getAllVisaByCategory();
-			model.addObject("visaList", visaList);
-			model.setViewName("/immigration/visaDetailsTab");
-		}
-		return model;
-	}*/
 	
 	//Visa List
 	@RequestMapping(value = { "/getCandidateVisaDetails" })
@@ -1811,24 +1732,25 @@ public class ImmigrationRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		Date toDayDate = new Date();
+		List<Long> expiredVisaIdList= new ArrayList<Long>();
 		try {
 			visaList = immigrationCommonService.getCandidateVisaDetails(candidateId,searchValue);
 			for (ImmigrationVisaDTO canVisa : visaList) {
-				//canVisa.setValidFromStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
-				//.getValidFrom()));
-				//canVisa.setValidToStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
-				//		canVisa.getValidTo().toString()));
-
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 				String currentDateStr = dateFormat.format(toDayDate);
 				Date newDate = dateFormat.parse(currentDateStr);
 				Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			
 
-				if (currentDate.before(commonUtil.stringToDate(canVisa.getValidTo()))) {
+				if (StringUtils.isNoneBlank(canVisa.getValidTo()) && currentDate.before(commonUtil.stringToDate(canVisa.getValidTo()))) {
 					canVisa.setCurrentStatus("Active");
 				} else {
 					canVisa.setCurrentStatus("Expired");
+					if(canVisa.getStatus() == 1)
+					expiredVisaIdList.add(canVisa.getCandidateVisaId());
 				}
+				canVisa.setValidFrom(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),  commonUtil.stringToDate(canVisa.getValidFrom())));
+				canVisa.setValidTo(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),  commonUtil.stringToDate(canVisa.getValidTo())));
 			}
 
 			List<Countries> countryList = countriesService.getAllCountries();
@@ -1836,6 +1758,7 @@ public class ImmigrationRestController {
 			model.addObject("canVisaList", canVisaList);
 			model.addObject("visaList", visaList);
 			model.addObject("countryList", countryList);
+			model.addObject("expiredVisaIdList", expiredVisaIdList);
 			model.setViewName("/immigration/visaDetailsTab");
 		} catch (Exception e) {
 			logger.error("Exception caught in controller --->" + e.getMessage());
@@ -1845,7 +1768,30 @@ public class ImmigrationRestController {
 		
 		return model;
 	}
-	
+	//Visa List
+	@RequestMapping(value = { "/addVisaExtensionDate" })
+	public void addCandidateExtensionDatebyVisaId(
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request,
+			@RequestParam(value = "immigrationId", required = true) long immigrationId,
+			@RequestParam(value = "extensionDate", required = true) String extensionDate,
+			@RequestParam(value = "visaId", required = true) long visaId) throws Exception {
+		logger.debug(" inisde getCandidateVisaDetailsByVisaNuimebr controller test -->");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		try {
+			ImmigrationVisaDTO immigrationVisaDTO = new ImmigrationVisaDTO();
+			immigrationVisaDTO.setValidTo(extensionDate);
+			immigrationVisaDTO.setIsCurrent(ImmigrationConstants.IS_CURRENT); // setting value as "Y" for updated record.
+			immigrationVisaDTO.setCandidateVisaId(visaId);
+			immigrationCommonService.saveVisaHistoryDetails(immigrationVisaDTO, user, orgLocations, immigrationId);
+		} catch (Exception e) {
+			logger.error("Exception caught in controller --->" + e.getMessage());
+			e.printStackTrace();
+		}
+		logger.debug(" after getCandidateVisaDetails controller -->");
+		
+	}
 	//passport list
 	@RequestMapping(value = { "/getCandidatePassportDetails" })
 	public ModelAndView getCandidatePassportVisaDetails(
@@ -2070,27 +2016,19 @@ public class ImmigrationRestController {
 
 	}
 
-	/*@RequestMapping(value = { "/deleteCandidatePassportVisaDetails" })
-	public String deleteCandidatePassportVisaDetails(@RequestParam(value = "id", required = true) Long id,
-			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request,
-			@RequestParam(value = "idType", required = true) String idType) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		immigrationCommonService.removeCandidatePassportVisaDetails(candidateId, id, user, orgLocations, idType);
-
-		return "success";
-	}*/
 	//visa
 	@RequestMapping(value = { "/deleteCandidateVisaDetails" })
-	public String deleteCandidateVisaDetails(@RequestParam(value = "id", required = true) Long id,
-			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request
+	public String deleteCandidateVisaDetails(@RequestParam(value = "visaHistoryId", required = true) Long visaHistoryId, HttpServletRequest request
 			) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		immigrationCommonService.removeCandidateVisaDetails(candidateId, id, user, orgLocations);
-
+		try {
+		immigrationCommonService.removeCandidateVisaDetails(visaHistoryId);
+		}catch(Exception e) {
+			e.printStackTrace();
+			logger.error("Exception while deleting visa history record.");
+		}
 		return "success";
 	}
 	
@@ -2158,48 +2096,20 @@ public class ImmigrationRestController {
 		return residenceObj;
 	}
 
-	/*@RequestMapping(value = { "/getCandidatePassportVisaDetailsById" })
-	public @ResponseBody CandidatePassportVisa getCandidatePassportVisaDetailsById(
-			@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		String status = "";
-		logger.debug(" in controller method getCandidateFamilyDetailsById id ---> " + id);
-		CandidatePassportVisa passportVisaObj = null;
-		try {
-			passportVisaObj = immigrationCommonService.getCandidatePassportVisaDetailsById(id);
-
-			passportVisaObj.setValidFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
-					passportVisaObj.getValidFromDate()));
-			passportVisaObj.setValidToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
-					passportVisaObj.getValidToDate()));
-
-			logger.debug(" in controller status " + status);
-		} catch (Exception e) {
-			logger.error("Exception caught in controller test --->" + e.getMessage());
-			e.printStackTrace();
-		}
-
-		return passportVisaObj;
-	}*/
 	// visa
-	@RequestMapping(value = { "/getCandidateVisaDetailsById" })
-	public @ResponseBody CandidateVisa getCandidateVisaDetailsById(
+	@RequestMapping(value = { "/getCandidateVisaDetailsByVisaHistoryId" })
+	public @ResponseBody ImmigrationVisaDTO getCandidateVisaDetailsByVisaHistoryId(
 			@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		String status = "";
-		logger.debug(" in controller method getCandidateVisaDetailsById id ---> " + id);
-		CandidateVisa visaObj = null;
+		logger.debug(" in controller method getCandidateVisaDetailsByVisaHistoryId id ---> " + id);
+		ImmigrationVisaDTO visaObj = null;
 		try {
-			visaObj = immigrationCommonService.getCandidateVisaDetailsById(id);
-
-			visaObj.setValidFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
-					visaObj.getValidFromDate()));
-			visaObj.setValidToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
-					visaObj.getValidToDate()));
-
-			logger.debug(" in controller status " + status);
+			
+			visaObj = immigrationCommonService.getCandidateVisaDetailsByVisaHistoryId(id);
+			visaObj.setValidFrom(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),  commonUtil.stringToDate(visaObj.getValidFrom())));
+			visaObj.setValidTo(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),  commonUtil.stringToDate(visaObj.getValidTo())));
 		} catch (Exception e) {
 			logger.error("Exception caught in controller test --->" + e.getMessage());
 			e.printStackTrace();
@@ -2483,40 +2393,18 @@ public class ImmigrationRestController {
 		return model;
 	}
 
-	/*@RequestMapping(value = { "/validateCandidatePassportVisa" })
-	public Boolean validateCandidatePassportVisa(
-			@RequestParam(value = "candidateId", required = false) Long candidateId,
-			@RequestParam(value = "idNumberVal", required = false) String idNumberVal,
-			@RequestParam(value = "idType", required = false) String idType,
-			@RequestParam(value = "id", required = false) Long id, HttpServletRequest request) throws Exception {
-
-		CandidatePassportVisa candidatePassportVisa = null;
-		if (null != id) {
-			candidatePassportVisa = immigrationCommonService.getCandidatePassportVisaDetailsByIdNumberAndId(idNumberVal,
-					idType, candidateId, id);
-		}
-		Boolean flag = false;
-		if (candidatePassportVisa == null) {
-			flag = immigrationCommonService.validateCandidatePassportVisa(candidateId, idType, idNumberVal);
-		}
-		return flag;
-	}*/
-	
-	
 	@RequestMapping(value = { "/validateCandidateVisa" })
 	public Boolean validateCandidateVisa(
 			@RequestParam(value = "candidateId", required = false) Long candidateId,
-			@RequestParam(value = "idNumberVal", required = false) String idNumberVal,
-			@RequestParam(value = "idType", required = false) String idType,
+			@RequestParam(value = "visaNumber", required = false) String visaNmuber,
 			@RequestParam(value = "id", required = false) Long id, HttpServletRequest request) throws Exception {
-
 		CandidateVisa candidateVisa = null;
 		if (null != id) {
-			candidateVisa = immigrationCommonService.getCandidateVisaDetailsByIdNumberAndId(idNumberVal, candidateId, id);
+			candidateVisa = immigrationCommonService.getCandidateVisaDetailsByIdNumberAndId(visaNmuber, candidateId, id);
 		}
 		Boolean flag = false;
 		if (candidateVisa == null) {
-			flag = immigrationCommonService.validateCandidateVisa(candidateId, idNumberVal);
+			flag = immigrationCommonService.validateCandidateVisa(candidateId, visaNmuber);
 		}
 		return flag;
 	}
@@ -2538,7 +2426,6 @@ public class ImmigrationRestController {
 		}
 		return flag;
 	}
-
 	@RequestMapping(value = { "/validateImmigrationCandidateForms" })
 	public Boolean validateImmigrationCandidateForms(
 			@RequestParam(value = "candidateId", required = false) Long candidateId,
@@ -2790,7 +2677,7 @@ public class ImmigrationRestController {
 			actionDesc.append(Constants.LCA_DELETED).toString();
 		} 
 		
-		lcaActivityCommonUtil.saveLcaActivities(user, orgLocations, lca, null, actionDesc.toString());
+	//	lcaActivityCommonUtil.saveLcaActivities(user, orgLocations, lca, null, actionDesc.toString());
 		
 		String result = immigrationCommonService.deleteLcaDetailsById(lcaId);
 		
@@ -2813,7 +2700,7 @@ public class ImmigrationRestController {
 		if (lca != null) {
 			actionDesc.append(Constants.LCA_RE_ACTIVE).toString();
 		} 
-		lcaActivityCommonUtil.saveLcaActivities(user, orgLocations, lca, null, actionDesc.toString());
+		//lcaActivityCommonUtil.saveLcaActivities(user, orgLocations, lca, null, actionDesc.toString());
 		
 		String result = immigrationCommonService.reActiveLcaById(lcaId);
 		return result;

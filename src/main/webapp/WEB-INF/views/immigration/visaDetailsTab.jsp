@@ -54,18 +54,32 @@
 				<td><div class="tbldata-dotdot-sm" title = "${visadetails.currentStatus}">${visadetails.currentStatus}</div></td>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
-				        <td><div><i id="edit" onclick="immigration.editVisaDetailsByRowId(${visadetails.id});"
-				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
+				    
+				        <td>
+				        <div class="tblminwidth-100">
+				           <c:if test ="${visadetails.currentStatus == 'Expired' && visadetails.status == 1}">
+				        	<input type="text" class="calendar visaCalendarInput" id="visaExtendDate${visadetails.candidateVisaId}" readonly="readonly">
+				        
+						      <i id="edit" onclick="immigration.editVisaDetailsByRowId(${visadetails.id});"
+						    
+				class="glyphicon glyphicon-pencil cursorPointer"></i>
+					</c:if>
+				<i id="delete" 
 				 onclick="deleteImmigrationRecord('immigration.deleteVisaDetails',${visadetails.id});" 
 				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i> </div></td>
 				    </c:when>
 				    <c:otherwise>
 				        <c:choose>
 						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
-						      <td><div><i id="edit" onclick="immigration.editVisaDetailsByRowId(${visadetails.id});"
-				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-				 onclick="deleteImmigrationRecord('immigration.deleteVisaDetails',${visadetails.id});" 
-				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
+						      <td><div class="tblminwidth-100">
+				           <c:if test ="${visadetails.currentStatus == 'Expired' && visadetails.status == 1}">
+				        	<input type="text" class="calendar visaCalendarInput" id="visaExtendDate${visadetails.candidateVisaId}" readonly="readonly">
+						      <i id="edit" onclick="immigration.editVisaDetailsByRowId(${visadetails.id});"
+								class="glyphicon glyphicon-pencil cursorPointer"></i>
+							</c:if>
+								<i id="delete" 
+							 onclick="deleteImmigrationRecord('immigration.deleteVisaDetails',${visadetails.id});" 
+							 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 						    </c:when>
 						    <c:otherwise>
 						    </c:otherwise>
@@ -89,6 +103,7 @@
 		<form id="CandidateVisaform" name="CandidateVisaform" method="post"> 
 		<div class="popUpOut" id="popUpVisa">
 		<input type = "hidden" id="candidateVisaId"  name="candidateVisaId">
+		 <input type = "hidden" id="visaHistoryId"  name="visaHistoryId">
 		<div class="popupHead">
 			<h2>Add Visa</h2><a href="javascript:void(0)" class="fa fa-close popCan" onClick="popFun();"></a>
 		</div>
@@ -110,7 +125,7 @@
           <div class="col-sm-12 noPad mt clearfix" id="idNumberVisaDiv">
 				<label class="col-md-4 padding_left">Visa Id<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" name ="visaNumber" id ="visaNumber" placeholder="Visa Id" field-name = "Visa Id" class="form-control" data-validation = "required validate_length length8-20 validate_AtLeastOneAlphaNumber"/>
+              		<input type="text" name ="visaNumber" id ="visaNumber" placeholder="Visa Id" field-name = "Visa Id" class="form-control" onchange="immigration.validateCandidateVisa();"  data-validation = "required validate_length length8-20 validate_AtLeastOneAlphaNumber"/>
 				</div>
 			</div>				          
           	<div class="col-sm-12 noPad mt clearfix">
@@ -139,14 +154,24 @@
               		<input type="text" class="form-control calendar" value="" name = "validTo" placeholder="Valid To" id = "visaValidTo" field-name = "Valid To" data-validation="required"/>
 				 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer"  onBlur="isCurrentValidate();"onClick="clearDateValue('visaValidTo')"></i></span>
 				</div>
+				
 			</div>	
 			
 			</div>	
 			
 			 <div class="clearfix"></div>
+		 <!--  <div class="col-md-4 col-md-offset-4">
+		   	<div class="mt5 clearfix">
+			   <input id="isCurrent" title="Is Current" name="isCurrent"  type="checkbox" onclick="isCurrentValidate();" >
+			   <input type="checkbox" id ="isname="isCurrent" value="N" onclick="isCurrentValidate();"/>
+			   <label class="padding_left">Is Current</label>
+			</div>
+		   </div> -->
+		   
+		    <div class="clearfix"></div>
 		  <div class="col-md-4 col-md-offset-4">
 		   	<div class="mt5 clearfix">
-			   <input id="isCurr" title="Is Current" name="isCurrent"  type="checkbox" onclick="isCurrentValidate();">
+			   <input id="isCurr" title="Is Current" name="isCurrent"  type="checkbox"  onclick="isCurrentValidate();" value="N" >
 			   <label class="padding_left">Is Current</label>
 			</div>
 		   </div>
@@ -166,6 +191,26 @@
             </div>
 		</div>	
 	</form>
+	
+	<script>
+	 $(function(){
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatVisaSave = getJSDateFormat(locationDate);
+		 <c:forEach var="visaId" items="${expiredVisaIdList}">
+		    $('#visaExtendDate'+${visaId}).datepicker({
+		      dateFormat: finalDateFormatVisaSave,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  minDate:1,
+		      onSelect: function (selected) {
+		    	  var extensionDate = $(this).val();
+		    	  immigration.addvisaExtensionDate(${visaId},extensionDate);
+		         }
+		    });
+		  </c:forEach>
+	});
+	 
+</script>
 	<script>
 		 // Add addVisa Div  
 			$("#addVisa").click(function(){
@@ -252,10 +297,8 @@ function isCurrentValidate(){
 	var flag = document.getElementById("isCurr").checked;
 	 if(flag == true){
 		 $("#isCurr").val("Y"); 
-		alert("checked ");
 	 }else{
 		 $("#isCurr").val("N"); 
-		 alert("uncheked");
 	 } 
 	
 	/* var ckVal=$("#multipleCheckBox123").val();
