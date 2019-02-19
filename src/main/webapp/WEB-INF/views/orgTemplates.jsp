@@ -91,8 +91,8 @@
 		<h2 class="text-warning">Vendor Onboard</h2>
 		<p>Manage Your Vendor Onboard Templates</p>
 		<span>
-			<a  class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/addNewVendorOnboardTemplate'/>">Add</a> 
-			<a  class="btn btn-primary btn-sm" href="<c:url value="${appPath}/vendorOnboardTemplateList" />">View</a>
+			<a  class="btn btn-info btn-sm mr10" href="${SourceLeadWeb_vmsUrl}/addNewVendorOnboardTemplate">Add</a> 
+			<a  class="btn btn-primary btn-sm" href="${SourceLeadWeb_vmsUrl}/vendorOnboardTemplateList">View</a>
 		</span>
 		</div>
 	</div>
