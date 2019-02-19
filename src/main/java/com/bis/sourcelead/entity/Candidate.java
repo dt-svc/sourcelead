@@ -594,10 +594,13 @@ public class Candidate implements Serializable {
 	 @JsonProperty
 	 private Set<String> candidateTagsList;
      
+     @Transient
+ 	 @JsonProperty
+ 	 private String candidateAssignedJobsCount;
      
      @Transient
- 	@JsonProperty
- 	private String candidateAssignedJobsCount;
+ 	 @JsonProperty
+     private Long masterCandId;
 	 
 	public int getProfilePercentage()
 	{
@@ -1915,6 +1918,14 @@ public class Candidate implements Serializable {
 
 	public void setCandidateCertifications(Set<CandidateCertifications> candidateCertifications) {
 		this.candidateCertifications = candidateCertifications;
+	}
+
+	public Long getMasterCandId() {
+		return masterCandId;
+	}
+
+	public void setMasterCandId(Long masterCandId) {
+		this.masterCandId = masterCandId;
 	}
 
 	
