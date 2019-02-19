@@ -224,6 +224,10 @@ public class UserLoginHelper {
 			  SourceLeadSessionManager.setSessionAttribute(req, "candidateId", Long.parseLong(userRole.get("candidateId").toString()));
 		  }
 		  
+		  if(userRole.get("masterCandidateId") != null) {
+			  SourceLeadSessionManager.setSessionAttribute(req, "masterCandidateId", Long.parseLong(userRole.get("masterCandidateId").toString()));
+		  }
+		  
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRole", userRole.get("roleName"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "candidateUUID", userRole.get("candidateUUID"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "isGlobalAccess", userRole.get("isGlobalUser"));
@@ -551,6 +555,7 @@ public class UserLoginHelper {
 				candidate.setMasterCandId(candidate.getMasterCandidateId().getId());
 				SourceLeadSessionManager.setSessionAttribute(req, "candidate", candidate);
 				SourceLeadSessionManager.setSessionAttribute(req, "candidateId", candidate.getId());
+			    SourceLeadSessionManager.setSessionAttribute(req, "masterCandidateId", candidate.getMasterCandidateId().getId());
 			} catch (Exception e) {}
 			SourceLeadSessionManager.setSessionAttribute(req, "isGlobalAccess", userRole.getIsGlobal());
 			
@@ -807,7 +812,7 @@ public class UserLoginHelper {
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(Long.valueOf(orgLocationJson.get("orgLocationId").toString()));
 		orgLocations.setDateFormat(orgLocationJson.get("dateFormat").toString());
-		orgLocations.setTimeZoneId(orgLocationJson.get("timeZoneId").toString());
+		orgLocations.setTimeZoneId(orgLocationJson.get("timeZone").toString());
 		orgLocations.setLocationCode(orgLocationJson.get("orgLocationCode").toString());
 		
 		if(orgLocationJson.get("primaryUserId") != null) {
