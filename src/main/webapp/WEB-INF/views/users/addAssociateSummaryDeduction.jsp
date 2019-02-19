@@ -78,7 +78,8 @@ getDeductionType();
         <h2>Deduction</h2>
       </div>
 <%--       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home >>Deduction List</a> &raquo; Deduction </div> --%>
-       <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Deduction List</a> &raquo; Deduction </div>
+       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="${SourceLeadWeb_atsUrl}/userSummaryDetails?tabType=deduction&userCode=${userCode}">Deduction List</a> &raquo; Deduction </div>
+       
     </section>
     <div class="content-area content-new clearfix">
 
