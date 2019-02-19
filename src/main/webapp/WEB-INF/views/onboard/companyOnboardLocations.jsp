@@ -332,10 +332,10 @@ function createOrg(){
 
 	
 	result = result +'<div class="form-group clearfix">';
-	result = result +'<label class="col-md-4 noPad">DBA<span class="text-danger">&nbsp;*</span></label>';
+	result = result +'<label class="col-md-4 noPad">DBA</label>';
 	result = result +'<div class="col-md-8 padding_right clearfix">';
 	result = result +'<div class="col-md-10 noPad">';
-	result = result +'<input id="dba" name="dba" class="form-control" type="text" field-name="DBA" data-validation="required validate_Space validate_length length2-250">';
+	result = result +'<input id="dba" name="dba" class="form-control" type="text" field-name="DBA" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">';
 	result = result +'</div>';
 	result = result +'<div class="col-md-2 dbaCheck dbaCheck-cs">';
              
@@ -401,10 +401,10 @@ function createOrg(){
 	
 	
 	result = result +'<div class="form-group clearfix">';
-	result = result +'<label class="col-md-4 noPad">Working Hours<span class="text-danger">*</span></label>';
+	result = result +'<label class="col-md-4 noPad">Max hours per day<span class="text-danger">*</span></label>';
 	result = result +'<div class="col-md-8 padding_right">';
-	result = result +'<input  type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required" field-name="Average Working Hours" />';
-    result = result +'<span class="hidden">Working Hours</span>';
+	result = result +'<input  type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required" field-name="Max hours per day" />';
+    result = result +'<span class="hidden">Max hours per day</span>';
 	result = result +'</div>';
 	result = result +'</div>';
 	
@@ -530,7 +530,12 @@ function getDBAName(){
 			$("#dba").val(companyName); 
 		 }
      }else{
+    	 var dbaName = '${SourceLeadWeb_orgLocations.dba}';
+    	 if(dbaName != null && dbaName != '' && dbaName != 'undefined'){
+    	 $("#dba").val(dbaName);
+    	 }else{
     	 $("#dba").val('');
+    	 }
      } 
 }
 </script>
@@ -603,7 +608,7 @@ $(function(){
         $('#averageWorkingHoursDiv').parent().find('p.jquery_form_error_message').remove(); 
         if(ew > 24){
         	$("#averageWorkingHours").val('');
-        	$("input#averageWorkingHours").parent().after("<p class='jquery_form_error_message'><span>Average Working Hours should be less then or equal to 24</span>");
+        	$("input#averageWorkingHours").parent().after("<p class='jquery_form_error_message'><span>Max hours per day should be less then or equal to 24</span>");
         }
     });
 });
@@ -722,6 +727,7 @@ function validateCompanyName(){
 		   }); 
 		 
 	 }
+	 getDBAName();
 }
 </script>
 
