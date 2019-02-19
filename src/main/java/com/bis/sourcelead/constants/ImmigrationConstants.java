@@ -38,6 +38,10 @@ public class ImmigrationConstants {
 	
 	public static final String SOC_TYPE = "SocDetails";
 	
+	public static final String IS_CURRENT = "Y";
+	
+	public static final String IS_CURRENT_NO = "N";
+	
 	public static final String EMAIL_TO_LCA_MANAGER_EXPIRED = "EmailToLcaManagerExpired";
 	
 	

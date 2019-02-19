@@ -31,7 +31,6 @@ import com.bis.sourcelead.entity.ImmigrationListExportView;
 import com.bis.sourcelead.entity.ImmigrationTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.Lca;
-import com.bis.sourcelead.entity.LcaActivityHistory;
 import com.bis.sourcelead.entity.LcaDocumentHistory;
 import com.bis.sourcelead.entity.LcaHistory;
 import com.bis.sourcelead.entity.LcaListExportView;
@@ -102,7 +101,7 @@ public interface ImmigrationCommonDao {
 	//void removeCandidatePassportVisaDetails(Long candidateId, Long id, User user, OrgLocations orgLocations, String idType);
 	
 	//visa delete
-	void removeCandidateVisaDetails(Long candidateId, Long id, User user, OrgLocations orgLocations);
+	void removeCandidateVisaDetails(Long visaHistoryId);
 		
 	//passport delete
 	void removeCandidatePassportDetails(Long candidateId, Long id, User user, OrgLocations orgLocations);
@@ -291,12 +290,17 @@ public interface ImmigrationCommonDao {
 	
 	public Lca updateAvailablePositionCountByLcaId(Long lcaId) throws Exception;
 	
-	public LcaActivityHistory storeLcaActivities(LcaActivityHistory lcaActivityHistory) throws Exception;
+//	public LcaActivityHistory storeLcaActivities(LcaActivityHistory lcaActivityHistory) throws Exception;
 
 	CandidateVisaHistory saveVisaHistoaryDetails(CandidateVisaHistory visaHistory);
 
 	CandidateVisa getCandidateVisaDetailsByVisaNumber(String visaNumber);
 	
 	CandidateVisaHistory getCandidateVisaHistoryByStatus(Long visaId,  String isCurrent);
+
+	ImmigrationVisaDTO getCandidateVisaDetailsByVisaHistoryId(Long visaHistoryId);
+	
+	int updateCanVisaHistoryDetails(Long visaHistoryId,  Long visaId);
+
 	
 }

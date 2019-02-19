@@ -1,4 +1,4 @@
-package com.bis.sourcelead.util;
+/*package com.bis.sourcelead.util;
 
 import java.util.Date;
 
@@ -9,17 +9,16 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.entity.Lca;
-import com.bis.sourcelead.entity.LcaActivityHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.dao.ImmigrationCommonDao;
-/**
+*//**
  * This is the commonutil for saving LCA activities throughout the
  * application
  * 
  * @author: PrasadK
  * 
- */
+ *//*
 @Component
 public class LcaActivityCommonUtil {
 	private static final Logger logger = LoggerFactory.getLogger(LcaActivityCommonUtil.class);
@@ -44,3 +43,4 @@ public class LcaActivityCommonUtil {
 	}
 	
 }
+*/

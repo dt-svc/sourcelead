@@ -1,8 +1,10 @@
 package com.bis.sourcelead.dto;
 
+import java.io.Serializable;
+
 import com.bis.sourcelead.annotations.Required;
 
-public class ImmigrationVisaDTO{
+public class ImmigrationVisaDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	 
@@ -41,6 +43,7 @@ public class ImmigrationVisaDTO{
 	private String updatedDate;
 
 	private String updatedBy;
+
 
 	public Long getId() {
 		return id;

@@ -373,6 +373,7 @@ $("#packageZipfile").click(function() {
 		$(".project_inn_mask").fadeOut(200);
 		$("#deletepopUp").empty();
 	}
+
 	function deleteImmigrationRecordById(elem, arg1, arg2){	
 		if(typeof elem ==='function') {
 			if(typeof arg2 == 'undefiend'){

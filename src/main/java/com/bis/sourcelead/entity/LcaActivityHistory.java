@@ -1,4 +1,4 @@
-package com.bis.sourcelead.entity;
+/*package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -165,3 +165,4 @@ private static final long serialVersionUID = 1L;
 		this.createdDateString = createdDateString;
 	}
 }
+*/
