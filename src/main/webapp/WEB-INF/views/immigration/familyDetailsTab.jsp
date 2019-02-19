@@ -425,7 +425,7 @@
 	<script>	
 	familyMemberId ="" // empty the value of familyMemberId which is used for edit mode. 
 	
-	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	  var finalDateFormatFamilySave = getJSDateFormat(locationDate);
 	</script>
 	<script>

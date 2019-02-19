@@ -237,7 +237,7 @@
 				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
-	                 		<a href="${SourceLeadWeb_vmsUrl}/uploadImmigrationForm">Import</a>
+	                 		<a href="${SourceLeadWeb_sourceleadUrl}/uploadImmigrationForm">Import</a>
 							<a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a>
 						</span>
 						<!-- <span>
