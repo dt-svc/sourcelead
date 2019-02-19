@@ -186,10 +186,6 @@ $(document).ready(function(){
 	function goToSalesOrderList(){
 		location.href = "${SourceLeadWeb_atsUrl}/SalesOrderList";
 	}
-	function refreshPage(){
-		$("#purchaseOrderDataTableSearch").val('');
-		getPurchaseOrderList();
-	}
 	function goToWalletList(){
 	    location.href = "${SourceLeadWeb_atsUrl}/walletList";
 	}

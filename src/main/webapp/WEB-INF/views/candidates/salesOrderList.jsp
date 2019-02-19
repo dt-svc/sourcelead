@@ -385,8 +385,7 @@
 	    location.href = "${SourceLeadWeb_atsUrl}/walletList";
 	}
 	function refreshPage(){
-		$("#searchByValue").val('');
-		getDynamicSalesOrderList();
+		location.reload();
 	}
   </script>
   <script>
