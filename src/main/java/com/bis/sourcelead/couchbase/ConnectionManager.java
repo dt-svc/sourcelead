@@ -86,22 +86,25 @@ public class ConnectionManager {
 	}
 
 	private ConnectionManager() {
-		loadProperties();
-		if (client == null) {		
-			List<URI> hosts;
-			try {
-				if (getCouchUrl() != null && !getCouchUrl().isEmpty()) {
-					hosts = Arrays.asList(new URI(getCouchUrl()));
-					List<String> couchBuckets = new ArrayList<>();
-					couchBuckets.add(getUserProfileCouchBucket());
-					couchBuckets.add(getUserLoginSessionStoreBucket());
-					couchBuckets.add(getOrgLocationsBucket());
-					client = new CouchbaseClient(urls, couchBuckets,getCouchPassword());
+		String isCouchbaseEnabled = couchConfig.getIsCouchbaseEnabled();
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			loadProperties();
+			if (client == null) {		
+				List<URI> hosts;
+				try {
+					if (getCouchUrl() != null && !getCouchUrl().isEmpty()) {
+						hosts = Arrays.asList(new URI(getCouchUrl()));
+						List<String> couchBuckets = new ArrayList<>();
+						couchBuckets.add(getUserProfileCouchBucket());
+						couchBuckets.add(getUserLoginSessionStoreBucket());
+						couchBuckets.add(getOrgLocationsBucket());
+						client = new CouchbaseClient(urls, couchBuckets,getCouchPassword());
+					}
+				} catch (URISyntaxException e) {
+					e.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 		/*
