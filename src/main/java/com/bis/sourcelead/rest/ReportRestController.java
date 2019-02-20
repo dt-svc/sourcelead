@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -50,6 +51,7 @@ import com.bis.sourcelead.dto.AssociateJoineReportDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
@@ -62,6 +64,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.RecruiterJobsReportView;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
@@ -1908,4 +1911,81 @@ public class ReportRestController {
 					file.delete();
 				}
 			}
+		
+			@RequestMapping(value = "/getAllJobsByUserIdAndOrgLocationId")
+			public @ResponseBody ResponseList<RequirementDTO> getAllJobsByUserIdAndOrgLocationId(RequirementDTO requirementDTO, @RequestParam(value="recruiterUserId", required=false) Long recruiterUserId, @RequestParam(value="timePeriod", required=false) String timePeriod,@RequestParam(value="customStartDate", required=false) String customStartDate,@RequestParam(value="customEndDate", required=false) String customEndDate,
+					HttpServletRequest request) throws Exception {
+
+			      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			      User recruiterUser = userService.getUserById(recruiterUserId);
+					
+					Date[] searchDates = null;
+					
+						if(!"custom".equalsIgnoreCase(timePeriod)){
+							searchDates = reportsUtil.getJobFilterDate(timePeriod,orgLocations);
+							if(timePeriod.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
+								Date newDate = DateUtils.addHours(searchDates[0], 24);
+								searchDates[1] = newDate;
+							}
+						}else if("custom".equalsIgnoreCase(timePeriod) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
+				    	    
+				    	    DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+							DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+							DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+							
+							Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
+							Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
+							String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+							String customEndTimeStr = TZ_DF_CED.format(endTime);  
+							Date startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+							Date endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+				    	   
+				    	    searchDates = new Date[2];
+				    	    searchDates[0] = startDateUTC;
+				    	    searchDates[1] = endDateUTC;
+						}
+						List<Long> teamsList = new ArrayList<>();
+						if(requirementDTO.getOrgTeams() != null && !requirementDTO.getOrgTeams().isEmpty()) {
+							String[] orgTeams = requirementDTO.getOrgTeams().split(",");
+							for(int i=0; i < orgTeams.length; i++) {
+								teamsList.add(Long.parseLong(orgTeams[i]));
+							}
+						}
+					
+					String[] tableColumns = { "generatedId", "jobTitle", "client", "location", "applicants", "shortlist", "submitToClient", "interview", "offer", "rejected","joined", "backout" };
+					int sortColumnIndex = 1; // by default sorting using updated date
+					String sortColumnOrder = "desc"; // by default descending order
+					if (requirementDTO.getOrder() != null && !requirementDTO.getOrder().isEmpty()) {
+						sortColumnIndex = Integer.parseInt(requirementDTO.getOrder().get(0).get("column"));
+						sortColumnOrder = requirementDTO.getOrder().get(0).get("dir");
+					}
+					requirementDTO.setSortColumn(tableColumns[sortColumnIndex]);
+					requirementDTO.setSortOrder(sortColumnOrder);
+					requirementDTO.setOrgLocationId(orgLocations.getId());
+					ResponseList<RequirementDTO> requirementDTOList = requirementService.getJobListOfRecruiter(requirementDTO, recruiterUserId,searchDates,teamsList);
+					for(RequirementDTO reqDTO : requirementDTOList.getData()) {
+						List<RecruiterJobsReportView> rjrvList = requirementSubmissionHistoryService.getSubmissionApplicantCountsForRecruiterJobreports(orgLocations.getId(), recruiterUser, searchDates, reqDTO.getId());
+						
+						double  applicantSubmittedApplicantCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantSubmissionCount().doubleValue()));
+						double  applicantShortlistCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantShortlistedCount().doubleValue()));
+						double  applicantSubmittedCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantSubmittedClientCount().doubleValue()));
+						double  applicantInterviewCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantInterviewCount().doubleValue()));
+						double  applicantOfferCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantOfferMadeCount().doubleValue()));
+						double  applicantJoinedCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantJoinedCount().doubleValue()));
+						double  applicantRejectedCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantRejectedCount().doubleValue()));
+						double  applicantBackoutCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantBackOutCount().doubleValue()));
+
+						reqDTO.setNoOfApplicants(String.valueOf(applicantSubmittedApplicantCount));
+						reqDTO.setNoOfShortlistApplicants(String.valueOf(applicantShortlistCount));
+						reqDTO.setNoOfSubmittedApplicants(String.valueOf(applicantSubmittedCount));
+						reqDTO.setNoOfInterviewedApplicants(String.valueOf(applicantInterviewCount));
+						reqDTO.setNoOfOfferedApplicants(String.valueOf(applicantOfferCount));
+						reqDTO.setNoOfJoinedApplicants(String.valueOf(applicantJoinedCount));
+						reqDTO.setNoOfRejectedApplicants(String.valueOf(applicantRejectedCount));
+						reqDTO.setNoOfBackoutApplicants(String.valueOf(applicantBackoutCount));
+						
+					}
+					
+					return requirementDTOList;
+				}
 }
