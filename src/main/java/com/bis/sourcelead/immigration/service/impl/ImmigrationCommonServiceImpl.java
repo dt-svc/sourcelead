@@ -2104,7 +2104,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				Date newDate = dateFormat.parse(currentDateStr);
 				Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
 				if (exportView.getVisaValidToDate() != null &&
-						currentDate.before(commonUtil.stringToDate(exportView.getVisaValidToDate().toString()))) {
+						currentDate.before(exportView.getVisaValidToDate())) {
 					exportView.setVisaStatus("Active");
 				} else {
 					exportView.setVisaStatus("Expired");

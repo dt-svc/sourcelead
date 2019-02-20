@@ -180,7 +180,6 @@ public class ImmigrationListExportView implements Serializable {
 	private String location;
 	
 	@Transient
-	@JsonProperty
 	private String visaStatus;
 	
 	public Long getId() {
