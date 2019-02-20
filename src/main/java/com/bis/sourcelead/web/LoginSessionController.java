@@ -279,7 +279,7 @@ public class LoginSessionController {
 			}
 
 
-			List<Long> accountUserList = new ArrayList<>();
+		/*	List<Long> accountUserList = new ArrayList<>();
 			List<Long> userIdsList = null;
 			Long productionLoginUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request,
 					"productionLoginUserId");
@@ -303,9 +303,9 @@ public class LoginSessionController {
 				userIdsList.add(userId);
 			}
 
-			/*if (userRole.getUser().getLinkUserId() != null) {
+			if (userRole.getUser().getLinkUserId() != null) {
 				userIdsList.add(userRole.getUser().getLinkUserId().getId());
-			}*/
+			}
 
 			List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
 			if (userSpocRolesList.size() > 1) {
@@ -315,7 +315,7 @@ public class LoginSessionController {
 			} else {
 				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", null);
 				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", 0);
-			}
+			}*/
 
 
 			if (isCompanyOnboarded != null && isCompanyOnboarded.equalsIgnoreCase(Constants.NO)) {
@@ -400,7 +400,7 @@ public class LoginSessionController {
 			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 			String newlyLoginUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "newlyLoginUser");
 
-			List<Long> accountUserList = new ArrayList<>();
+			/*List<Long> accountUserList = new ArrayList<>();
 			List<Long> userIdsList = null;
 			Long productionLoginUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request,
 					"productionLoginUserId");
@@ -424,9 +424,9 @@ public class LoginSessionController {
 				userIdsList.add(userId);
 			}
 
-		/*	if (userRole.getUser().getLinkUserId() != null) {
+			if (userRole.getUser().getLinkUserId() != null) {
 				userIdsList.add(userRole.getUser().getLinkUserId().getId());
-			}*/
+			}
 
 			List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
 			if (userSpocRolesList.size() > 1) {
@@ -436,7 +436,7 @@ public class LoginSessionController {
 			} else {
 				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", null);
 				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", 0);
-			}
+			}*/
 
 
 			if (roleName.equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")) {
