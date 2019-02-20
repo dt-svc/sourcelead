@@ -1247,6 +1247,10 @@ $(function() {
 			
 			$("#joinedCustomFields").hide();
 			$("#terminatedCustomFields").show();
+			$("#associateTeminateExportPdf").show();
+			$("#associateTeminateExportExcel").show();
+			$("#associateJoinExportPdf").hide();
+			$("#associateJoinExportExcel").hide();
 			$("#joinedCustomFieldscolPopMid").hide();
 			$("#terminatedCustomFieldscolPopMid").show();
 		}else if(optval === "associateJoined"){
