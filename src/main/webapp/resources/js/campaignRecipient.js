@@ -2,9 +2,10 @@
 
 function campaignRecipient(ele,listId, fromType) {
 		$.post(atsUrl+"/campaignAddRecipient?listId="+listId+"", {}, function(data) {
-			$(".mask").show();
+//			$(".mask").css({ display: "block" });
 			$("#campaignRecipient").fadeIn(100);
 			$("#campaignRecipient").html(data);
+			$("#campaignRecipient").parent().append("<div class='mask' style='display:block;'></div>");
 			var campaignType = $("#typeOfCampaign").val();
 			if(campaignType == "1"){
 				$("#jobRadio").prop("checked", true);
@@ -85,7 +86,7 @@ $('body').on('blur', '#capn_add_Recipient_List', function() {
 
 function refreshPage()
 {
-	location.reload();
+//	location.reload();
 
 }
 function recipientClose() {
