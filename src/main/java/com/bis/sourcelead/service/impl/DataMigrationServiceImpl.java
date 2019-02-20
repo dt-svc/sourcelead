@@ -44,6 +44,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.DataMigrationDao;
 import com.bis.sourcelead.dto.AssetAssignDTO;
 import com.bis.sourcelead.dto.AssetDTO;
@@ -53,6 +54,7 @@ import com.bis.sourcelead.dto.DataMigrationDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationPassportDTO;
+import com.bis.sourcelead.dto.ImmigrationVisaDTO;
 import com.bis.sourcelead.dto.LcaDTO;
 import com.bis.sourcelead.dto.LcaPlaceOfEmploymentDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
@@ -62,6 +64,8 @@ import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidatePassport;
+import com.bis.sourcelead.entity.CandidateVisa;
+import com.bis.sourcelead.entity.CandidateVisaHistory;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -1147,20 +1151,22 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				immDto.setLocation(dataMigrationDTOJsonCopy.getString("benficiarylocation"));
 			}
 			// depends on associate id populate visa Object.
-			ImmigrationPassportDTO passVisaDto = new ImmigrationPassportDTO(); // need to do later
+			ImmigrationVisaDTO visaDto = new ImmigrationVisaDTO(); // need to do later
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaNo"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("visaNo"))) {
 			//	passVisaDto.setIdType(Constants.ID_TYPE_VISA);
-				passVisaDto.setCandidateId(dataMigrationDTOJsonCopy.getString("candidateId"));
-			//	passVisaDto.setIdNumber(dataMigrationDTOJsonCopy.getString("visaNo"));
-				passVisaDto.setValidFrom(dataMigrationDTOJsonCopy.getString("visaStartDate"));
-				passVisaDto.setValidTo(dataMigrationDTOJsonCopy.getString("visaEndDate"));
-				passVisaDto.setCountry(dataMigrationDTOJsonCopy.getString("visaCountry"));
-			//	passVisaDto.setVisaType(dataMigrationDTOJsonCopy.getString("visaType"));
+				visaDto.setCandidateId(Long.parseLong(dataMigrationDTOJsonCopy.getString("candidateId")));
+				visaDto.setVisaNumber(dataMigrationDTOJsonCopy.getString("visaNo"));
+				
+				visaDto.setValidFrom(dataMigrationDTOJsonCopy.getString("visaStartDate"));
+				visaDto.setValidTo(dataMigrationDTOJsonCopy.getString("visaEndDate"));
+				
+				visaDto.setCountry(dataMigrationDTOJsonCopy.getString("visaCountry"));
+			    visaDto.setVisaType(dataMigrationDTOJsonCopy.getString("visaType"));
 
 			}
 			
-			
+			ImmigrationPassportDTO passVisaDto = new ImmigrationPassportDTO();
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("passportNo"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("passportNo"))) {
 			//	passVisaDto.setIdType(Constants.ID_TYPE_PASSPORT);
@@ -1228,12 +1234,46 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			// pending prevLcaTitle in excel mapping.
 			Immigration immigration = immigrationCommonService.savePetitionDetails(immDto, user, orgLocation, null);
 			CandidatePassport candidatePassport = null;
-			/*if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaNo"))
-					&& !"null".equals(dataMigrationDTOJsonCopy.getString("visaNo"))
-					&& passVisaDto.getIdType().equalsIgnoreCase(Constants.ID_TYPE_VISA)) {
-				candidatePassportVisa = immigrationCommonService.savePassportDetails(passVisaDto, user, orgLocation,
-						immigration.getId());
-			}*/
+			
+			//save visa details here based on visa number active or in-active
+			CandidateVisa candidateVisa = null;
+			CandidateVisaHistory candidateVisaHistory = null;
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaNo")) && !"null".equals(dataMigrationDTOJsonCopy.getString("visaNo"))) {
+				
+				System.out.println(" dataMigrationDTOJsonCopy.visaNo "+dataMigrationDTOJsonCopy.getString("visaNo"));
+			   ImmigrationVisaDTO candRecentVisaDetails = immigrationCommonService.getCandidateVisaDetailsByCandidateIdAndVisaNumber(immigration.getCandidate().getId(), dataMigrationDTOJsonCopy.getString("visaNo"));
+			   
+			   SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			    Date toDayDate = new Date();
+				String currentDateStr = dateFormat.format(toDayDate);
+				Date newDate = dateFormat.parse(currentDateStr);
+				String visaEndDate = dataMigrationDTOJsonCopy.getString("visaEndDate");
+			    Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), newDate);
+
+			  if(candRecentVisaDetails == null) {
+				 
+						if (StringUtils.isNotBlank(visaEndDate)
+								&& currentDate.before(commonUtil.stringToDate(visaEndDate))) {
+							visaDto.setIsCurrent(Constants.NO);
+							
+						} else {
+							visaDto.setIsCurrent(ImmigrationConstants.IS_CURRENT);
+						}
+				  candidateVisa = immigrationCommonService.saveVisaDetails(visaDto, user, orgLocation, immigration.getId(), null);
+			  }else {
+				  String candRecentVisaDetailsEndDate = null;
+				   candRecentVisaDetailsEndDate =  candRecentVisaDetails.getValidTo();
+				    if (StringUtils.isNotBlank(candRecentVisaDetailsEndDate)
+							&& currentDate.before(commonUtil.stringToDate(candRecentVisaDetailsEndDate))) {
+						visaDto.setIsCurrent(Constants.NO);
+					} else {
+						visaDto.setIsCurrent(ImmigrationConstants.IS_CURRENT);
+					}
+				   visaDto.setCandidateVisaId(candRecentVisaDetails.getCandidateVisaId());
+				  candidateVisa = immigrationCommonService.saveVisaDetails(visaDto, user, orgLocation, immigration.getId(), candRecentVisaDetails.getId());
+			  }
+				
+			}
 			//passport saving from import
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("passportNo"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("passportNo"))) {
