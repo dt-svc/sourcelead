@@ -299,6 +299,13 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "countryCode", orgLocations.get("countryCode"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "currencyCode", orgLocations.get("currencyCode"));
 		  
+		  String redirectURL = (String) req.getSession().getAttribute("redirectURL");
+			 if(redirectURL != null) {
+				 long redirectOrgLocationId = (Long) req.getSession().getAttribute("redirectOrgLocationId");
+				 SourceLeadSessionManager.setSessionAttribute(req, "redirectURL", redirectURL);
+				 SourceLeadSessionManager.setSessionAttribute(req, "redirectOrgLocationId", redirectOrgLocationId);
+			 }
+		  
 		  List<String> weekOffDaysList = new ArrayList<>();
 		  String[] weekOffDays = orgLocations.get("weekOffDays").toString().split(",");
 			for (int i = 0; i < weekOffDays.length; i++) {
@@ -790,6 +797,10 @@ public class UserLoginHelper {
 						
 						if(ur.getUser().getLoginSecurity() != null) {
 							accountsDTO.setLoginSecurity(ur.getUser().getLoginSecurity());
+						}
+						
+						if(ur.getOrgLocations().getLoginSecurity() != null) {
+							accountsDTO.setOrgLocationLoginSecurity(ur.getOrgLocations().getLoginSecurity());
 						}
 						
 						accountsDTO.setUserId(String.valueOf(ur.getUser().getId()));
