@@ -103,22 +103,9 @@ public class JWTSecurityContextRepository implements SecurityContextRepository {
                                 return jws.getBody().getSubject();
                             }
                         });
-                        String[] usernameWithRole = username.split("##");
-                        if(usernameWithRole.length >1  && NumberUtils.isNumber(usernameWithRole[1])) {
-                        	username = usernameWithRole[0];
-                        	userRoleId = new Long(usernameWithRole[1]);
-                        	try {
-								UserRole userRole = userRoleService.getUserRoleById(userRoleId);
-								userRoleUUID = userRole.getUuid();
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-                        }
-                        String uname = username+"##"+userRoleId+"##"+usernameWithRole[2];
+                      
                         SecurityContext context = SecurityContextHolder.createEmptyContext();
-                        
-                        
-                        context.setAuthentication(userLoginHelper.redirectToDashboard(request,uname, null, null,userRoleUUID));
+                        context.setAuthentication(userLoginHelper.redirectToDashboard(request,username, null, null));
                         return context;
                     } catch (ExpiredJwtException ex) {
                         log.debug("authentication cookie is expired");

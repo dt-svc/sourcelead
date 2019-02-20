@@ -16,6 +16,8 @@ public class UserAccountsDTO implements Serializable{
 	
 	private String loginSecurity;
 	
+	private String orgLocationLoginSecurity;
+	
 	private String userId;
 	
 	private String orgImgUrl;
@@ -146,5 +148,13 @@ public class UserAccountsDTO implements Serializable{
 
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
+	}
+
+	public String getOrgLocationLoginSecurity() {
+		return orgLocationLoginSecurity;
+	}
+
+	public void setOrgLocationLoginSecurity(String orgLocationLoginSecurity) {
+		this.orgLocationLoginSecurity = orgLocationLoginSecurity;
 	}
 }
