@@ -28,9 +28,9 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			<h2>Request Associates</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="/app/projectDashboard">Home</a>
+			<a href="${SourceLeadWeb_sourceleadUrl}/projectDashboard">Home</a>
 			&raquo; <a
-				href="/pms/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers">Planning</a>
+				href="${SourceLeadWeb_pmsUrl}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers">Planning</a>
 			&raquo; Request Associates
 		</div>
 	</section>
@@ -114,7 +114,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 									type="button" value="Send" class="btn btn-primary"
 									onclick="requestAssociate('Send');"> <input
 									type="button" value="Cancel"
-									onClick="javascript:window.location.href = '/pms/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers'"
+									onClick="javascript:window.location.href = '${SourceLeadWeb_pmsUrl}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers'"
 									class="btn btn-default ml">
 							</div>
 						</div>
