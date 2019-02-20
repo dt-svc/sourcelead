@@ -27,6 +27,8 @@ public class LoginUserSessionStoreDTO implements Serializable {
 	private String city;
 	
 	private String state;
+	
+	private String loginUserAccounts;
 
 	public String getDocumentType() {
 		return documentType;
@@ -114,6 +116,14 @@ public class LoginUserSessionStoreDTO implements Serializable {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	public String getLoginUserAccounts() {
+		return loginUserAccounts;
+	}
+
+	public void setLoginUserAccounts(String loginUserAccounts) {
+		this.loginUserAccounts = loginUserAccounts;
 	}
 	
 	

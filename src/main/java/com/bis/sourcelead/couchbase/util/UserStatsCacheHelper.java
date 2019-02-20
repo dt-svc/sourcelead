@@ -33,6 +33,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TabsService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.couchbase.client.java.document.json.JsonObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -65,6 +66,9 @@ public class UserStatsCacheHelper {
 	
 	@Autowired
 	ConfigurePayrollApproverService configurePayrollApproverService;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	
 	static CouchbaseClient c = null;
 	static {
@@ -666,6 +670,23 @@ public class UserStatsCacheHelper {
 	    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 	    LocalDateTime now = LocalDateTime.now();  
 	    sessionDTO.setLastUpdatedDate(dtf.format(now));
+	    StringBuilder accountsList = new StringBuilder();
+	    String userAccounts = null;
+	    try {
+			List<UserRole> userRolesList = userRoleService.getLoginUserAccountsList(userRole.getUser().getId());
+			if(userRolesList != null && userRolesList.size() > 1) {
+				for(UserRole ur : userRolesList) {
+					accountsList.append(ur.getUuid()).append(",").toString();
+				}
+				 userAccounts = accountsList.deleteCharAt(accountsList.length()-1).toString(); 
+				 sessionDTO.setLoginUserAccounts(userAccounts);
+			}else {
+				sessionDTO.setLoginUserAccounts(userAccounts);
+			}
+			
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 		
 	    ObjectMapper sessionObj = new ObjectMapper();
         try {
