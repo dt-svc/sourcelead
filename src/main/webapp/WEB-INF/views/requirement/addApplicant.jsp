@@ -13,8 +13,8 @@
  </c:if>
  
  <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
-<script src="/ats/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
-<script src="/ats/resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
+<script src="${SourceLeadWeb_atsUrl}/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
+<script src="${SourceLeadWeb_atsUrl}/resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
 <style type="text/css">
 .mt10 {
     margin-top: 10px !important;

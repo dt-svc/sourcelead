@@ -19,15 +19,15 @@
       </div>
       
      <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; Bank Accounts</div>
+       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings</a>&raquo; Bank Accounts</div>
      </c:if>
      
       <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalDashboard'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; Bank Accounts</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/professionalDashboard">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings</a>&raquo; Bank Accounts</div>
       </c:if>
       
        <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; Bank Accounts</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/recruiterDashboard">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings</a>&raquo; Bank Accounts</div>
       </c:if>
     </section>
     <div class="project_wrap clearfix">
@@ -111,11 +111,11 @@
 							  <input type="submit" class="btn btn-primary mr" id="profile_submit" value="Save">
 							  
 							  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-							    <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/app/professionalDashboard'" >
+							    <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='${SourceLeadWeb_sourceleadUrl}/settings'" >
 							  </c:if>
 							  
 							   <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-							    <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/app/recruiterDashboard'" >
+							    <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='${SourceLeadWeb_sourceleadUrl}/settings'" >
 							   </c:if>
 							  
 							</div>
