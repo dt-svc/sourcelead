@@ -3,6 +3,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
+</script>
+
+<script type="text/javascript" src="${SourceLeadWeb_atsUrl}/resources/js/campaignSender.js"></script>
+
 <script type="text/javascript">
 $(document).ready(function(){
     getSendersList();
@@ -19,14 +25,14 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Senders list</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; Senders list </div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings</a>&raquo; Senders list </div>
     </section>
     <div class="project_wrap">
     
  	<div class="reportHead reportHeadDataTab  clearfix">
       	<ul class="pull-right list-unstyled list-inline">
 			<li>
-				<a href="javascript:void(0)" class="newAdBtn" title="" id="addSen" onclick="campaignSender(this,'');">+ Sender</a>
+				<a class="newAdBtn" title="" id="addSen" onclick="campaignSender(this,'');">+ Sender</a>
 			</li>
         </ul>
 	</div>    
@@ -171,7 +177,7 @@ function deleteIdentity(senderId){
  <script>
  function deleteSenderIdentity(senderId){
 	 $("#deleteIdentityDiv").empty();
-	 $.get( sourceleadUrl+ "/deleteSenderIdentity?"+tokenParamName+"="+tokenValue+"&senderId="+senderId, function(data) {
+	 $.get( atsUrl+ "/deleteSenderIdentity?"+tokenParamName+"="+tokenValue+"&senderId="+senderId, function(data) {
 			if(data == true) {
 				 $("#campainSenderAlertMsg").removeAttr("style");
 	  			 $("#campainSenderAlertMsg").css({ display: "block" });
@@ -179,7 +185,7 @@ function deleteIdentity(senderId){
 	  			 $("#deleteSenderId").hide();
 	 			 $(".mask").hide();
 	             campainSenderAlertMsgFadein();	
-	             location.replace(sourceleadUrl+ "/campaignSendersList");
+	             location.replace(atsUrl+ "/campaignSendersList");
 			}
 		});
 		
@@ -195,9 +201,10 @@ function cancelDeleteIdentity(){
 
 </script>
 
-<script>
+<!-- <script>
 function selectMailSender(senderId){
-			$.get(sourceleadUrl+"/selectMailSender?&senderId="+senderId, function(data) {
+	//there is no requestMapping found for this function so commenting this for now(Rakshith)
+			$.get(atsUrl+"/selectMailSender?&senderId="+senderId, function(data) {
 	            });
 }
-</script>
+</script> -->

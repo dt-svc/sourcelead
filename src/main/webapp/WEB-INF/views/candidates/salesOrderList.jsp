@@ -379,14 +379,13 @@
 		location.href ="${SourceLeadWeb_atsUrl}/PurchaseOrderList";
 		}
 	function goToSalesOrderList(){
-		location.href = "/ats/SalesOrderList";
+		location.href = "${SourceLeadWeb_atsUrl}/SalesOrderList";
 	}
 	function goToWalletList(){
 	    location.href = "${SourceLeadWeb_atsUrl}/walletList";
 	}
 	function refreshPage(){
-		$("#searchByValue").val('');
-		getDynamicSalesOrderList();
+		location.reload();
 	}
   </script>
   <script>

@@ -17,7 +17,7 @@
 	</c:if>
 	
     <div class="pull-left"><h2 class="pull-left">Offboard Templates</h2></div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Offboard Templates List</div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/orgTemplates"> Templates</a> &raquo; Offboard Templates List</div>
  	<div class="clearfix"></div>
  	
     </section>
@@ -27,7 +27,7 @@
 	 <div class="reportHead reportHeadDataTab clearfix">
 	    <ul class="pull-right list-unstyled list-inline">
 			<sec:authorize access="hasRole('ROLE_CREATE_OFF_BOARD_TEMPLATE')"> 
-				<li><a href="<c:url value='${appPath}/addNewOffboardTemplate'/>" class="newAdBtn">+ Template</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/addNewOffboardTemplate" class="newAdBtn">+ Template</a></li>
 			</sec:authorize>	 	 
 		</ul>
 	</div>		
@@ -49,7 +49,7 @@ $(document).ready(function(){
 
 <script>
 function offboardingTemplatesList(){  
-	  var sourceleadUrl ='${sourceleadUrl}';
+	  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
