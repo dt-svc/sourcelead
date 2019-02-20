@@ -2,7 +2,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="/resources/js/campaignRecipient.js"></script>
+<script src="${SourceLeadWeb_atsUrl}/resources/js/campaignRecipient.js"></script>
 <link rel="stylesheet" href="/resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
 <link rel="stylesheet" href="/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
 
@@ -13,9 +13,11 @@ z-index: 1040 !important;
 </style>
 
 <script type="text/javascript">
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
     var staticTime='${staticTime}'
     
-    	var tokenParamName = "${_csrf.parameterName}";
+    var tokenParamName = "${_csrf.parameterName}";
     var tokenValue = "${_csrf.token}";
  </script>
 
@@ -270,7 +272,7 @@ function clientContactDataTableList(){
 		  recipientsEmails = $("#recipientEmail").val();
 	 }
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/searchClientContactDetails?searchValue="+searchValue+"&responderType="+responderType+"&recipientsEmails="+recipientsEmails;
+	 var url = vmsUrl+"/searchClientContactDetails?searchValue="+searchValue+"&responderType="+responderType+"&recipientsEmails="+recipientsEmails;
 	 clientContactpagination(url);
 }
 </script>
@@ -430,7 +432,7 @@ function vendorContactDataTableList(){
 	 var searchValue = $("#vendorContactsDataTableSearch").val();
 	 var responderType ="JobCampaignVendor";
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/searchClientContactDetails?searchValue="+searchValue+"&responderType="+responderType;
+	 var url = vmsUrl+"/searchClientContactDetails?searchValue="+searchValue+"&responderType="+responderType;
 	 vendorContactpagination(url);
 }
 </script>
@@ -582,11 +584,10 @@ function clientsList(){
 
 <script>
 function clientsDataTableList(){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#clientDataTableSearch").val();
 	 var responderType ="ClientHotListCampaign";
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/searchClientDetails?searchValue="+searchValue+"&responderType="+responderType;
+	 var url = vmsUrl+"/searchClientDetails?searchValue="+searchValue+"&responderType="+responderType;
 	 clientsPagination(url);
 	 
 }
@@ -807,11 +808,10 @@ function vendorsList(){
 
 <script>
 function vendorsDataTableList(){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#vendorDataTableSearch").val();
 	 var responderType ="JobCampaignVendor";
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/searchClientDetails?searchValue="+searchValue+"&responderType="+responderType;
+	 var url = vmsUrl+"/searchClientDetails?searchValue="+searchValue+"&responderType="+responderType;
 	 vendorsPagination(url);
 	 
 }
@@ -1035,7 +1035,6 @@ function getContactsList(){
 
 <script>
 function contactsDataTableList(){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#contactsDataTableSearch").val();
 	 
 	 var contactsGroups = '';
@@ -1044,7 +1043,7 @@ function contactsDataTableList(){
 	 }
 	 
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getUserContactsListForMalling?searchValue="+searchValue+"&groupIdsList="+contactsGroups;
+	 var url = atsUrl+"/getUserContactsListForMalling?searchValue="+searchValue+"&groupIdsList="+contactsGroups;
 	 contactsPagination(url);
 }
 </script>
@@ -1285,10 +1284,9 @@ function getContactEmails(){
 		  recipientsEmails = $("#recipientEmail").val();
 	 }
 	 
-	 var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
          type : "POST",
-         url: sourceleadUrl+"/getVendorContactsEmailsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationIds="+orgRelationIds,    
+         url: atsUrl+"/getVendorContactsEmailsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationIds="+orgRelationIds,    
           success :function(data) {
        	    var str_array = data.replace(/\"/g, "").split(',');
 				for(var i = 0; i < str_array.length; i++) {
@@ -1423,10 +1421,9 @@ function getClientEmails(){
 	 if($("#recipientEmail").val() != null){
 		  recipientsEmails = $("#recipientEmail").val();
 	 }
-	 var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
          type : "POST",
-         url: sourceleadUrl+"/getClientContactsEmailsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationIds="+orgRelationIds+"&recipientsEmails="+recipientsEmails,    
+         url: atsUrl+"/getClientContactsEmailsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationIds="+orgRelationIds+"&recipientsEmails="+recipientsEmails,    
           success :function(data) {
         	  if(data != null){
         		  var str_array = data.replace(/\"/g, "").split(',');
@@ -1479,7 +1476,7 @@ function validateCampaignListName(){
 	var name = $("#cpnListName").val();
 	if(name != null && name != '' && name != 'undefined'){
 		if(name.length < 100){
-			$.get(sourceleadUrl+"/validateCampaignListName?&orgLocationId="+locationId+"&from=CampaignList&name="+name, function(data) {
+			$.get(atsUrl+"/validateCampaignListName?&orgLocationId="+locationId+"&from=CampaignList&name="+name, function(data) {
 	          	if(data == true){
 	          		$('#cpnListNameDiv').find('p.jquery_form_error_message').remove();
 	          		$("#addList").removeAttr("disabled");
