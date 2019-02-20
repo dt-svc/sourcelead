@@ -503,6 +503,7 @@ public class UserStatsCacheHelper {
 			  Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			if (countries != null) {
 				orgLocationDTO.setCurrencyCode(countries.getCurrency());
+				orgLocationDTO.setCountryCode(countries.getCode2());
 			}
 		 } catch (Exception e2) {
 			e2.printStackTrace();

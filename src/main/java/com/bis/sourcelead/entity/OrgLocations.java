@@ -320,6 +320,13 @@ public class OrgLocations implements Serializable{
     
     @Transient
 	private Long primaryUserId;
+    
+    @Transient
+	private String countryCode;
+   
+    @Transient
+	private String currencyCode;
+   
    
    
 	public Timezone getTimezone() {
@@ -1114,6 +1121,22 @@ public class OrgLocations implements Serializable{
 
 	public void setPrimaryUserId(Long primaryUserId) {
 		this.primaryUserId = primaryUserId;
+	}
+
+	public String getCountryCode() {
+		return countryCode;
+	}
+
+	public void setCountryCode(String countryCode) {
+		this.countryCode = countryCode;
+	}
+
+	public String getCurrencyCode() {
+		return currencyCode;
+	}
+
+	public void setCurrencyCode(String currencyCode) {
+		this.currencyCode = currencyCode;
 	}
 	
 }
