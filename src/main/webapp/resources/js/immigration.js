@@ -1255,7 +1255,7 @@ function Immigration() {
 	        type: "GET",
 	        success: function (result) {
 	        	if(result=='success'){
-	        		    showTemplateMsg("Successfully Record Deleted.");
+	        			showSuccessMsg("Successfully Record Deleted.");
 	        			immigration.displayVisaDetails(candidateId);
 	            	    deleteImmigrationPopupDiv(); // removes the existing added delete popup div in html code.
 	        	}
@@ -1351,7 +1351,7 @@ function Immigration() {
 	    	 url:sourceleadUrl + immiModulePath + "/addVisaExtensionDate?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId
 	    	                       +"&immigrationId="+immigrationId+"&extensionDate="+extensionDate+"&visaId="+visaId, 
 	        success: function(visaDetails) {
-	        	showTemplateMsg("Successfully Visa Date updated.");
+	        	showSuccessMsg("Successfully Visa Date updated.");
 	        	immigration.displayVisaDetails(candidateId);
 	        }
 		});
