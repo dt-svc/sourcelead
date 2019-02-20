@@ -705,7 +705,6 @@ public class CandidateDaoImpl implements CandidateDao {
 				.setLong("orgLocationId", orgLocationId)
 
 				.list();
-		/* System.err.println("das"+candidateList.size()); */
 		return candidateList;
 	}
 
@@ -2191,12 +2190,8 @@ public class CandidateDaoImpl implements CandidateDao {
 			Query hqlQuery = session.createQuery(listQuery);
 			globalMarketCandList = hqlQuery.setFirstResult(candidateMarketPlaceDTO.getStart())
 					.setMaxResults(candidateMarketPlaceDTO.getLength()).list();
-			// System.out.println(" after executing query result list size is
-			// :::>>"+globalMarketCandList.size());
 			Query hqlQuery1 = session.createQuery(listQueryCount);
 			countlist = hqlQuery1.list();
-			// System.out.println(" after executing query countlist
-			// :::>>"+countlist);
 			int totalCount = 0;
 			if (candidateMarketPlaceDTO != null) {
 				if (countlist != null && !countlist.isEmpty()) {
@@ -2463,10 +2458,8 @@ public class CandidateDaoImpl implements CandidateDao {
 			queryList = new ArrayList<>();
 		} else {
 			String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = 'Active' and marketplace.orgLocationId.id <> :candidateOrgLocId and marketplace.candidateId.isSharedInMarketplace = 'Y' and marketplace.candidateId.email not in (select Email from CandidateMarketCart cart where cart.targetOrgLocationId = :candidateOrgLocId and cart.cartStatus = 'Purchased')";
-				//System.out.println(listQuery+query1+query2);
 			//Query queryObject = session.createQuery(listQuery+query1+query2).setParameter("candidateOrgLocId", orgId);
 			//if(searchCandidateIds.length != 0 && !searchCandidateIds[0].equals("undefined") ){
-			//System.out.println(listQuery + query1 + query2);
 			Query queryObject = session.createQuery(listQuery + query1 + query2).setParameter("candidateOrgLocId",
 					orgId);
 			
@@ -2611,13 +2604,15 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public void deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid) {
+	public Boolean deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "delete from CandidateMarketCart marketCart where marketCart.candidateUUID = :candidateUuid";
 			session.createQuery(query).setParameter("candidateUuid", candidateUuid).executeUpdate();
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
@@ -2694,7 +2689,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			marketPlaceDTO.setLocation(candidateMarketPlace.getCandidateId().getLocation());
 			marketPlaceDTO.setProfilePercentage(candidateMarketPlace.getCandidateId().getCandidateProfilePercentage());
 			int count = getMarketCartStatusByMarketIdOrgId(candidateMarketPlace.getId(),
-					candidateMarketPlace.getOrgLocationId().getId());
+					orgLocations.getId());
 			if (count != 0) {
 				marketPlaceDTO.setMarketCartStatus(Constants.ADDED_CART);
 			}
@@ -3289,4 +3284,15 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 	}
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteCandidateFromMarketplaceByCandidateUuid(String candidateUuid) throws Exception {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "delete from CandidateMarketPlace marketPlace where marketPlace.candidateUUID = :candidateUuid";
+			session.createQuery(query).setParameter("candidateUuid", candidateUuid).executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+	}
 }
