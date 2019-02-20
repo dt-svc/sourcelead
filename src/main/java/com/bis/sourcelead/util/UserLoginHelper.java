@@ -398,7 +398,7 @@ public class UserLoginHelper {
 			
 			
 			
-			if(StringUtils.isNotBlank(userSession.get("loginUserAccounts").toString())) {
+			if(userSession.get("loginUserAccounts") != null) {
 				List<UserAccountsDTO> accountsList = new ArrayList<>();
 				String[] userAccountsList = userSession.get("loginUserAccounts").toString().split(",");
 				for(int i=0; i<userAccountsList.length; i++) {
