@@ -229,6 +229,13 @@ public class UserLoginHelper {
 		  }
 		  
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRole", userRole.get("roleName"));
+		  
+		  if(userRole.get("roleName").toString().equalsIgnoreCase("ROLE_ADMIN")) {
+			  SourceLeadSessionManager.setSessionAttribute(req, "isAdmin", true);
+		  }else {
+			  SourceLeadSessionManager.setSessionAttribute(req, "isAdmin", false);
+		  }
+		  
 		  SourceLeadSessionManager.setSessionAttribute(req, "candidateUUID", userRole.get("candidateUUID"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "isGlobalAccess", userRole.get("isGlobalUser"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "isSuperUser", userRole.get("isSuperUser"));
@@ -453,6 +460,12 @@ public class UserLoginHelper {
 			  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationId", orgLocations.getId());
 			  SourceLeadSessionManager.setSessionAttribute(req, "locationCode", orgLocations.getLocationCode());
 			  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRole", userRole.getRoles().getRoleName());
+			  
+			  if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_ADMIN")) {
+				  SourceLeadSessionManager.setSessionAttribute(req, "isAdmin", true);
+			  }else {
+				  SourceLeadSessionManager.setSessionAttribute(req, "isAdmin", false);
+			  }
 			  
 		      SourceLeadSessionManager.setSessionAttribute(req, "loginUserFirstName", loginUser.getFirstName());
 			  SourceLeadSessionManager.setSessionAttribute(req, "loginUserLastName", loginUser.getLastName());
