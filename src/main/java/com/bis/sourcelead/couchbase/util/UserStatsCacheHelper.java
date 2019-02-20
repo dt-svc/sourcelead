@@ -503,6 +503,7 @@ public class UserStatsCacheHelper {
 			  Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			if (countries != null) {
 				orgLocationDTO.setCurrencyCode(countries.getCurrency());
+				orgLocationDTO.setCountryCode(countries.getCode2());
 			}
 		 } catch (Exception e2) {
 			e2.printStackTrace();
@@ -568,6 +569,7 @@ public class UserStatsCacheHelper {
 			 if(candidate != null) {
 				 userRoleDTO.setCandidateId(String.valueOf(candidate.getId()));
 				 userRoleDTO.setCandidateUUID(candidate.getCandidateUUID());
+				 userRoleDTO.setMasterCandidateId(String.valueOf(candidate.getMasterCandidateId().getId()));
 			 }
 			
 			 StringBuilder userNameSB = new StringBuilder();
