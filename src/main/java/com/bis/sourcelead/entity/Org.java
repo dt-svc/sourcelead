@@ -166,6 +166,9 @@ public class Org implements Serializable{
 	@JsonProperty
 	private int noOfDays;
 	
+	@Transient
+	private Long superUserId;
+	
 	public Long getId() {
 		return id;
 	}
@@ -452,6 +455,14 @@ public class Org implements Serializable{
 
 	public void setCareerPageKeyActive(Boolean careerPageKeyActive) {
 		this.careerPageKeyActive = careerPageKeyActive;
+	}
+
+	public Long getSuperUserId() {
+		return superUserId;
+	}
+
+	public void setSuperUserId(Long superUserId) {
+		this.superUserId = superUserId;
 	}
 
 	
