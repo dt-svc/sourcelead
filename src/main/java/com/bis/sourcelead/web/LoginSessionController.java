@@ -4,28 +4,23 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,11 +29,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Countries;
-import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
@@ -46,14 +39,12 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationDepositTaxes;
 import com.bis.sourcelead.entity.SourceleadActions;
-import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.payroll.entity.AssociateBankData;
 import com.bis.sourcelead.payroll.service.AssociateBankDataService;
 import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
@@ -279,7 +270,7 @@ public class LoginSessionController {
 			}
 
 
-			List<Long> accountUserList = new ArrayList<>();
+		/*	List<Long> accountUserList = new ArrayList<>();
 			List<Long> userIdsList = null;
 			Long productionLoginUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request,
 					"productionLoginUserId");
@@ -303,9 +294,9 @@ public class LoginSessionController {
 				userIdsList.add(userId);
 			}
 
-			/*if (userRole.getUser().getLinkUserId() != null) {
+			if (userRole.getUser().getLinkUserId() != null) {
 				userIdsList.add(userRole.getUser().getLinkUserId().getId());
-			}*/
+			}
 
 			List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
 			if (userSpocRolesList.size() > 1) {
@@ -315,7 +306,7 @@ public class LoginSessionController {
 			} else {
 				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", null);
 				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", 0);
-			}
+			}*/
 
 
 			if (isCompanyOnboarded != null && isCompanyOnboarded.equalsIgnoreCase(Constants.NO)) {
@@ -400,7 +391,7 @@ public class LoginSessionController {
 			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 			String newlyLoginUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "newlyLoginUser");
 
-			List<Long> accountUserList = new ArrayList<>();
+			/*List<Long> accountUserList = new ArrayList<>();
 			List<Long> userIdsList = null;
 			Long productionLoginUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request,
 					"productionLoginUserId");
@@ -424,9 +415,9 @@ public class LoginSessionController {
 				userIdsList.add(userId);
 			}
 
-		/*	if (userRole.getUser().getLinkUserId() != null) {
+			if (userRole.getUser().getLinkUserId() != null) {
 				userIdsList.add(userRole.getUser().getLinkUserId().getId());
-			}*/
+			}
 
 			List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
 			if (userSpocRolesList.size() > 1) {
@@ -436,7 +427,7 @@ public class LoginSessionController {
 			} else {
 				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", null);
 				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", 0);
-			}
+			}*/
 
 
 			if (roleName.equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")) {
