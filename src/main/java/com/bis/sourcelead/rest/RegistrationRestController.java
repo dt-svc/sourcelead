@@ -162,6 +162,8 @@ public class RegistrationRestController {
 	 @Autowired
 	 TimeZoneService timeZoneService;
 	 
+	 @Value("${isCouchbaseEnabled}")
+	 private String isCouchbaseEnabled;
 	 
 	 @RequestMapping(value = "/app/getOrgsList")
 	 		public @ResponseBody String getUsersList(HttpServletRequest request,
@@ -1427,12 +1429,13 @@ public class RegistrationRestController {
 		
 		StringBuilder generatedToken = new StringBuilder();
 		generatedToken.append(SourceLeadRandomCodeHelper.generateRandomCustomToken());
-		userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(generatedToken.toString(),userRole, request);
-		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(generatedToken.toString(),userRole, request);
+		}
 		StringBuilder userNameString = new StringBuilder();
 		userNameString.append(userName).append("##").append(userRole.getId()).append("##").append(generatedToken.toString());
 		SecurityContextHolder.clearContext();
-		SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, userNameString.toString(), password, verfDone,userRole.getUuid()));
+		SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, userNameString.toString(), password, verfDone));
 		return "true";
 	}
 	

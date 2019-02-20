@@ -304,20 +304,18 @@
 		          </select>          
 <!-- 				<div class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="getAssociatesJoinedList();" style="display: none;">Run</button></div>  -->
 	      	  </li>
-<!-- 					<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openFilterPop();"></a></li>
-					
-					<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="exportReportOptions();"></a>
 						<div class="newActPop" style="display: none;">
 							<span>
-			           	   		<a href="javascript:void(0)" id="applicantExportPdf" onclick="projectExport('Pdf');" title="PDF" style="display: none">Export PDF</a>
-								<a href="javascript:void(0)" id="applicantExportExcel" onclick="projectExport('Excel');" title="Excel" style="display: none">Export Excel</a>  
+			           	   		<a href="javascript:void(0)" id="associateTeminateExportPdf" onclick="exportAssociateTerminatedSheet('Pdf');" title="PDF" style="display: none">Export PDF</a>
+								<a href="javascript:void(0)" id="associateTeminateExportExcel" onclick="exportAssociateTerminatedSheet('Excel');" title="Excel" style="display: none">Export Excel</a>  
 								
-								 		<a href="javascript:void(0)" id="recurterExportPdf" onclick="exportToPdf();" title="PDF" style="display: block">Export PDF</a>
-								<a href="javascript:void(0)" id="recurterExportExcel" onclick="exportUserData();" title="Excel" style="display: block">Export Excel</a>           
+								<a href="javascript:void(0)" id="associateJoinExportPdf" onclick="exportAssociateJoinedSheet('Pdf');" title="PDF" style="display: block">Export PDF</a>
+								<a href="javascript:void(0)" id="associateJoinExportExcel" onclick="exportAssociateJoinedSheet('Excel');" title="Excel" style="display: block">Export Excel</a>           
 							</span>
 						</div>
-					</li> -->
-			  <li class="" id="associateTeminateSearchId" style="display: none" ><input type="text" class="repSearchBar" placeholder="Search" id="dataTableSearch" ><span class="repSearchIcon" onclick="getAssociatesTerminatedList();"></span></li>
+					</li> 			
+			  <li class="" id="associateTeminateSearchId" style="display: none" ><input type="text" class="repSearchBar" placeholder="Search" id="associateTerminatedListDataTableSearch" ><span class="repSearchIcon" onclick="getAssociatesTerminatedList();"></span></li>
 	     	 <li class="" id="associateJoinSearchId" style="display: block;"><input type="text" class="repSearchBar" placeholder="Search" id="associateJoinedListDataTableSearch"><span class="repSearchIcon" onclick="getAssociatesJoinedList();"></span></li>
 	        </ul>
 	      </div>
@@ -326,7 +324,8 @@
        </div>
        <div id="emptyPopup"></div>
         <div class="clients_wrap_table datatable_filter">
-        
+        <div id="emptyJoinedPopup"></div>
+        <div id="emptyTerminatedPopup"></div>
         <div id="applicantJoinedDiv" style="display: block"></div>
 	           <div id="associateTerminatedDiv" style="display: none"></div>
 				<input type="hidden" id="noApplicantJoinedList" name="noApplicantJoinedList"  value="0"/>
@@ -433,9 +432,9 @@
   <script>
 function getAssociatesTerminatedList(){
 	var sourceleadUrl ='${sourceleadUrl}';
-	 var searchValue = $("#dataTableSearch").val();
+	 var searchValue = $("#associateTerminatedListDataTableSearch").val();
 	 var timePeriod = $("#reportTypeId").val();
-	 var  noRecruiterApplicantJoinedList=$("#noRecruiterApplicantJoinedList").val(0); 
+	 var  noRecruiterApplicantJoinedList=$("#noRecruiterApplicantJoinedList").val(); 
 	 var flag = true;
 	 var startDate = '';
 	 var endDate = '';
@@ -545,8 +544,8 @@ function daywiseLeaveReportsListPagination(url){
     	  	"render": function(data, type, opt, meta) {
     	  		 $("#noApplicantJoinedList").val(1); 
     	  		var result = "";
-    	  		 if(opt.empId !=null && opt.empId !='' && opt.empId !='undefined'){
-           		  result = result + '<td><div><span title='+opt.empId+'>'+opt.empId+'</span></div></td>';
+    	  		 if(opt.employeeId !=null && opt.employeeId !='' && opt.employeeId !='undefined'){
+           		  result = result + '<td><div><span title='+opt.employeeId+'>'+opt.employeeId+'</span></div></td>';
 					}else{
 						result = result + ' <td><div>--</div></td>';
 					}
@@ -744,7 +743,7 @@ function daywiseLeaveReportsListPagination(url){
     initializeTerminatedTable();
 }
 
-$("#associateJoinedListDataTableSearch").keydown(function(e) {
+$("#associateTerminatedListDataTableSearch").keydown(function(e) {
 	   if(e.which === 13) {
 		   getAssociatesTerminatedList();
 	   }
@@ -876,8 +875,8 @@ function offerpagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 $("#noApplicantJoinedList").val(1); 
 	    	  		var result = "";
-	    	  		 if(opt.empId !=null && opt.empId !='' && opt.empId !='undefined'){
-               		  result = result + '<td><div><span title='+opt.empId+'>'+opt.empId+'</span></div></td>';
+	    	  		 if(opt.employeeId !=null && opt.employeeId !='' && opt.employeeId !='undefined'){
+               		  result = result + '<td><div><span title='+opt.employeeId+'>'+opt.employeeId+'</span></div></td>';
 						}else{
 							result = result + ' <td><div>--</div></td>';
 						}
@@ -1042,7 +1041,7 @@ function offerpagination(url){
     } );
     $("#offerpagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#dataTableSearch").keyup(function(e) {
+    $("#associateJoinedListDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
     		   getAssociatesJoinedList();
     	   }
@@ -1226,6 +1225,10 @@ function addValidClass(){
 	});
 </script>	
 <script>
+function exportReportOptions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
 $(function() {
     $('#araginglistSel').change(function(){
     	var optval = $(this).val();
@@ -1250,10 +1253,10 @@ $(function() {
 			getAssociatesJoinedList();
 			$("#recruiter_search_requiremet").hide();
 			$("#applicant_search_requiremet").show();
-			$("#recurterExportPdf").hide();
-			$("#recurterExportExcel").hide();
-			$("#applicantExportPdf").show();
-			$("#applicantExportExcel").show();
+			$("#associateTeminateExportPdf").hide();
+			$("#associateTeminateExportExcel").hide();
+			$("#associateJoinExportPdf").show();
+			$("#associateJoinExportExcel").show();
 			
 			$("#associateJoinSearchId").show();
 			$("#associateTeminateSearchId").hide();
@@ -1402,6 +1405,136 @@ $(function() {
 	}
 	
 	</script>
+<script type="text/javascript">
+function exportAssociateJoinedSheet(exportType){
+	var sourceleadUrl ='${sourceleadUrl}';
+	   var tab = '${tab}';
+	   var frequency=$("#reportTypeId").val();
+	   var graphFrequency=$("#year").val();
+	   
+	  var  noApplicantJoinedList=$("#noApplicantJoinedList").val(); 
+	    var fromDate='';
+	    var toDate='';
+		var searchValue = $("#associateJoinedListDataTableSearch").val();
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		searchValue = searchValue ? searchValue : "";
+		var employmentType = [];
+		 $('input:checkbox[name=employmentType]:checked').each(function() 
+		 {
+			employmentType.push($(this).val());
+		 });
+		 var clientNameById = [];
+		 $('input:checkbox[name=clientNameById]:checked').each(function() 
+		 {
+			 clientNameById.push($(this).val());
+		 });
+		 var teamNameById = [];
+		 $('input:checkbox[name=teamNameById]:checked').each(function() 
+		 {
+			 teamNameById.push($(this).val());
+		 });
+		 var incentivizedType = [];
+		 $('input:checkbox[name=incentivizedType]:checked').each(function() 
+		 {
+			 incentivizedType.push($(this).val());
+		 });
+		 var searchType = $('input[name=searchType]:checked').val();
+		 if(noApplicantJoinedList !=0){
+	    if(frequency == "custom"){
+	        var fromDate = $("#ReportStartDate").val();
+	  		  var toDate = $("#ReportEndDate").val();
+	    	if(fromDate == ''){
+	    		  document.getElementById("reportsStartDate").style.display="block";
+				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+	        }
+	        if(toDate == ''){
+	        	 document.getElementById("reportsEndDate").style.display="block";
+			  $("#reportsEndDate").empty().append("End Date is Required") ; 
+	        }
+		window.location.href = sourceleadUrl+"/associateJoinedReportExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&graphFrequency="+graphFrequency+"&exportType="+exportType+"&type=applicantReport";
+}else{
+	 document.getElementById("reportsStartDate").style.display="none";
+	 document.getElementById("reportsEndDate").style.display="none";
+	 window.location.href = sourceleadUrl+"/associateJoinedReportExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&graphFrequency="+graphFrequency+"&exportType="+exportType+"&type=applicantReport";
+} 
+}else{
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>List is Empty</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='joinedAssociateCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='joinedAssociateCancel();'></b>";
+	result = result +"	</div>";
+	$("#emptyJoinedPopup").append(result);
+	$("#candidate_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+}
+function joinedAssociateCancel(){
+	$("#emptyJoinedPopup").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>	
+<script type="text/javascript">
+function exportAssociateTerminatedSheet(exportType){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 var searchValue = $("#associateTerminatedListDataTableSearch").val();
+	 var timePeriod = $("#reportTypeId").val();
+	 var  noRecruiterApplicantJoinedList=$("#noRecruiterApplicantJoinedList").val(); 
+	 var flag = true;
+	 var startDate = '';
+	 var endDate = '';
+   if(timePeriod == 'custom'){
+   	startDate = $("#ReportStartDate").val();
+		  endDate = $("#ReportEndDate").val();
+		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
+			  if(startDate == null || startDate == ''){
+				  document.getElementById("reportsStartDate").style.display="block";
+				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+			  }
+			  
+			  if(endDate == null || endDate == ''){
+				  document.getElementById("reportsEndDate").style.display="block";
+				  $("#reportsEndDate").empty().append("End Date is Required") ; 
+			  }
+			  flag = false;
+		  }
+	 }else{
+		 document.getElementById("reportsStartDate").style.display="none";
+		 document.getElementById("reportsEndDate").style.display="none";
+	 } 
+   var orgTeams = [];
+	$('input:checkbox[name=teamNameById]:checked').each(function() 
+		    {
+		orgTeams.push($(this).val());
+    });
+		var clients = [];
+		$('input:checkbox[name=clientNameById]:checked').each(function() {
+			clients.push($(this).val());
+		});
+		if(noRecruiterApplicantJoinedList !=0){
+		if(flag){
+			 searchValue = searchValue ? searchValue : "";
+			 window.location.href = sourceleadUrl+"/associateTerminatedReportExport?frequency="+timePeriod+"&fromDate="+startDate+"&toDate="+endDate+"&orgTeams="+orgTeams+"&clients="+clients+"&searchValue="+searchValue+"&exportType="+exportType;
+		 }
+		}else{
+			var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='terminatedAssociateCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='terminatedAssociateCancel();'></b>";
+			result = result +"	</div>";
+			$("#emptyTerminatedPopup").append(result);
+			$("#candidate_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+		}
+}
+function terminatedAssociateCancel(){
+	$("#emptyTerminatedPopup").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 	
 	
 <script src="js/bootstrap-datetimepicker.min.js"></script> 
