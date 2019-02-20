@@ -29,7 +29,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Assign Project Members <span id="projectName"></span></h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=team'/>">Project Members</a> &raquo; Request Associates</div>
+		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=team">Project Members</a> &raquo; Request Associates</div>
     </section>
     
     <div class="content-area content-new clearfix">
@@ -49,7 +49,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				  <div class="col-lg-12">
 					<div class="pull-right">
 
-					  <input type="button" value="Cancel"  onClick="javascript:window.location.href = '/pms/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=team'"  class="btn btn-danger">
+					  <input type="button" value="Cancel"  onClick="javascript:window.location.href = '${SourceLeadWeb_pmsUrl}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=team'"  class="btn btn-danger">
 
 					  <input type="button" value="Save" onClick="assignMembers()" class="btn btn-primary ml10">
 					</div>

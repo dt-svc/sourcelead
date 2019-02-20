@@ -58,7 +58,7 @@ background-color: #fcfcfc;
       <div class="pull-left">
         <h2>Leave Management</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Leave Management</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Leave Management</div>
     </section>
     
     <div class="project_wrap">
@@ -82,7 +82,7 @@ background-color: #fcfcfc;
 						        			<div class="modalBody">
 						        				<div class="row">
 						        					<div class="col-md-12 mb5 clearfix">
-						        					<a href="<c:url value='${appPath}/downloadLeaveTemplate'/>" class="text-primary">
+						        					<a href="<c:url value='${SourceLeadWeb_pmsUrl}/downloadLeaveTemplate'/>" class="text-primary">
 						        						Download Template :
 														<i class="ml fa fa-download"></i>
 														</a>
