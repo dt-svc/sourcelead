@@ -227,11 +227,12 @@ function rejectApplicantAlertMessage(submissionId, status){
 <script type="text/javascript">
     function acceptCandidateFromDashboard(submissionId, status){
 		if ($('#rejected_from_dashboard').validate(false, validationSettings)) {
+			var atsUrl ='${SourceLeadWeb_atsUrl}';
 	  		var formData = getFormData('rejected_from_dashboard'); 
 			$.ajax({
 				type : "POST",
 	    	    data: formData,
-			    url: sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,	    	   
+			    url: atsUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,	    	   
 			    success: function(result) {
 				    	if (result.response === "FAILED") {
 		  		    		showError(result.responseMessage);
@@ -305,12 +306,12 @@ function cancelAlert(){
 	function acceptRejectCandidateFromDashboard(submissionId, status){
 		
 		if ($('#rejected_from_dashboard').validate(false, validationSettings)) {
-			
+			var atsUrl ='${SourceLeadWeb_atsUrl}';
 	  		var formData = getFormData('rejected_from_dashboard'); 
 			$.ajax({
 				type : "POST",
 	    	    data: formData,
-			    url: sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,	    	   
+			    url: atsUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,	    	   
 			    success: function(result) {
 			    	if (result.response === "FAILED") {
 	  		    		showError(result.responseMessage);
