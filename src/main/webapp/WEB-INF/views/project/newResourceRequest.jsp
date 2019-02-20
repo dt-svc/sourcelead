@@ -171,7 +171,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		         <i class="fa fa-check-circle"></i><span>${msg}</span> 
 			</div>
 	     </c:if>
-          <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="/pms/projectDashboard">Projects List</a> &raquo;<a href="/pms/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources">Project Summary</a> &raquo; New Resource Request</div>
+          <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/projectDashboard">Projects List</a> &raquo;<a href="${SourceLeadWeb_pmsUrl}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources">Project Summary</a> &raquo; New Resource Request</div>
         </section>
 	   
 		   <div class="content-area content-new clearfix">
@@ -260,7 +260,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 					<div class="pull-right">
 					  <input type="button" value="Draft" class="btn btn-warning mr" onclick="saveNewResourceRequest('Draft');">
 					  <input type="button" value="Send" class="btn btn-primary" onclick="saveNewResourceRequest('Send');">
-					  <input type="button" value="Cancel" onClick="javascript:window.location.href = '/pms/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources'" class="btn btn-default ml">
+					  <input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_pmsUrl}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources'" class="btn btn-default ml">
 					</div>
 				  </div>
 			</div>    	    
