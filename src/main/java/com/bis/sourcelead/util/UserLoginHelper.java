@@ -405,6 +405,7 @@ public class UserLoginHelper {
 	 	     }
 			  OrgLocations orgLocations = userRole.getOrgLocations();
 			  orgLocations.setTimeZoneId(orgLocations.getTimezone().getTimeZoneId());
+			  orgLocations.setOrgCode(orgLocations.getOrg().getOrgCode());
 			  try {
 				  if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
 		  			   userRole.setUserState(Status.ACTIVE);
@@ -814,7 +815,7 @@ public class UserLoginHelper {
 		orgLocations.setDateFormat(orgLocationJson.get("dateFormat").toString());
 		orgLocations.setTimeZoneId(orgLocationJson.get("timeZone").toString());
 		orgLocations.setLocationCode(orgLocationJson.get("orgLocationCode").toString());
-		
+		orgLocations.setOrgCode(orgLocationJson.get("orgCode").toString());
 		if(orgLocationJson.get("primaryUserId") != null) {
 			orgLocations.setPrimaryUserId(Long.valueOf(orgLocationJson.get("primaryUserId").toString()));
 		}
