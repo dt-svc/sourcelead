@@ -784,6 +784,10 @@ public class UserLoginHelper {
 							accountsDTO.setLoginSecurity(ur.getUser().getLoginSecurity());
 						}
 						
+						if(ur.getOrgLocations().getLoginSecurity() != null) {
+							accountsDTO.setOrgLocationLoginSecurity(ur.getOrgLocations().getLoginSecurity());
+						}
+						
 						accountsDTO.setUserId(String.valueOf(ur.getUser().getId()));
 						
 						if(ur.getDesignation() != null) {
