@@ -128,7 +128,7 @@ public class UserLoginHelper {
 	public  UsernamePasswordAuthenticationToken redirectToDashboard(HttpServletRequest req,String username, String password,String verfDone) 
 	{
 		
-		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+		if("true".equalsIgnoreCase("isCouchbaseEnabled")) {
 			
 		 String[] usernameWithRole = username.split("##");
 		 String uname = usernameWithRole[0];
@@ -289,7 +289,8 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "remittanceEmail", orgLocations.get("emailforRemittance"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "orgDescription", orgLocations.get("orgDescription"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationLoginSecurity", orgLocations.get("orgLocationLoginSecurity"));
-		  
+		  SourceLeadSessionManager.setSessionAttribute(req, "countryCode", orgLocations.get("countryCode"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "currencyCode", orgLocations.get("currencyCode"));
 		  
 		  List<String> weekOffDaysList = new ArrayList<>();
 		  String[] weekOffDays = orgLocations.get("weekOffDays").toString().split(",");
@@ -405,6 +406,7 @@ public class UserLoginHelper {
 	 	     }
 			  OrgLocations orgLocations = userRole.getOrgLocations();
 			  orgLocations.setTimeZoneId(orgLocations.getTimezone().getTimeZoneId());
+			  orgLocations.setOrgCode(orgLocations.getOrg().getOrgCode());
 			  try {
 				  if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
 		  			   userRole.setUserState(Status.ACTIVE);
@@ -822,7 +824,9 @@ public class UserLoginHelper {
 		orgLocations.setDateFormat(orgLocationJson.get("dateFormat").toString());
 		orgLocations.setTimeZoneId(orgLocationJson.get("timeZone").toString());
 		orgLocations.setLocationCode(orgLocationJson.get("orgLocationCode").toString());
-		
+		orgLocations.setOrgCode(orgLocationJson.get("orgCode").toString());
+		orgLocations.setCurrencyCode(orgLocationJson.get("currencyCode").toString());
+		orgLocations.setCountryCode(orgLocationJson.get("countryCode").toString());
 		if(orgLocationJson.get("primaryUserId") != null) {
 			orgLocations.setPrimaryUserId(Long.valueOf(orgLocationJson.get("primaryUserId").toString()));
 		}

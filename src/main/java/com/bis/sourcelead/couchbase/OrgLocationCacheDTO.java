@@ -82,6 +82,7 @@ public class OrgLocationCacheDTO implements Serializable{
 	
 	private String orgLocationLoginSecurity;
 	
+	private String countryCode;
 	
 	
 	public String getOrgId() {
@@ -387,5 +388,14 @@ public class OrgLocationCacheDTO implements Serializable{
 	public void setTimeZone(String timeZone) {
 		this.timeZone = timeZone;
 	}
+
+	public String getCountryCode() {
+		return countryCode;
+	}
+
+	public void setCountryCode(String countryCode) {
+		this.countryCode = countryCode;
+	}
+	
 	
 }
