@@ -5,7 +5,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script type="text/javascript" src="/resources/js/contractCommonScripts.js"></script>
+
+<script type="text/javascript">
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+</script>
+<script type="text/javascript" src="/vms/resources/js/contractCommonScripts.js"></script>
 
 <style type="text/css">
 .chosen-container {
@@ -323,7 +327,7 @@
 			                  <span class="input-group-addon cursorPointer bg-blue" onclick="refreshVendorList();addCustomEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 			              </div>
 	              		<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-	               			<span class="col-md-2 noPad clearfix"><a href="<c:url value="${SourceLeadWeb_sourceleadUrl}/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+	               			<span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_vmsUrl}/addVendor" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
 	                 	</sec:authorize>
                 	</c:if>
                 
@@ -381,7 +385,7 @@
 		                   <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();addCustomEmptyClientContact()"><i class="fa fa-refresh "></i></span>
 		              	</div>
 		                <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-		               		<span class="col-md-2 noPad clearfix"><a href="<c:url value="${SourceLeadWeb_sourceleadUrl}/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+		               		<span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_vmsUrl}/client" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
 	             	    </sec:authorize>
               		</c:if>
                

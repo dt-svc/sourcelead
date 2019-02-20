@@ -2558,7 +2558,7 @@ function preparedApplicantContractListWTSPagination(url,tabType){
 
 <script>
 function preparedContractListVendorWTV(url,tabType){
-	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
+	 var SourceLeadWeb_loginOrg = '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
@@ -2573,10 +2573,10 @@ function preparedContractListVendorWTV(url,tabType){
 	  }if(locationList.match("yyyy-dd-MM")){
 		  locationDate = 'YYYY-DD-MM'; 
 	  } 
-	  preparedVendorContractListWTV(url,tabType);
+	  preparedVendorContractListWTV(url,tabType); 
 }
 
-function preparedVendorContractListWTV(url,tabType){
+ function preparedVendorContractListWTV(url,tabType){
 // 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableWTV" class="display" cellspacing="0" width="100%" >';
@@ -2598,9 +2598,9 @@ function preparedVendorContractListWTV(url,tabType){
 		$("#vendorContractsList").empty();
 	    $("#vendorContractsList").append(result);
 		preparedVendorContractListWTVPagination(url,tabType);
-}
+} 
 
-function preparedVendorContractListWTVPagination(url,tabType){
+ function preparedVendorContractListWTVPagination(url,tabType){
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var colIndex = 0;
     $('#contractListTableWTV').DataTable( {
@@ -2669,7 +2669,7 @@ function preparedVendorContractListWTVPagination(url,tabType){
 	    	    	    	    	  if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
 	    	    	 		        	 if(report.orgRelationUUID != null && report.orgRelationUUID != '' && report.orgRelationUUID != 'undefined'){
 	    	    	 		        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
-	    	    	 		        	   result = result + '<div><span title="'+report.contractWith+'"><a href="'+Url+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.contractWith+'">'+report.contractWith+'</a></span></div>';
+	    	    	 		        	   result = result + '<div><span title="'+report.contractWith+'"><a href="'+vmsUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.contractWith+'">'+report.contractWith+'</a></span></div>';
 	    	    	 		        	 '</sec:authorize>';
 	    	    	 		        	 }else{
 	    	    	 	        		 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
@@ -2773,7 +2773,7 @@ function preparedVendorContractListWTVPagination(url,tabType){
 	
 	
 	
-}
+} 
 
 function preparedContractListClientWTV(url,tabType){
 	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
