@@ -333,8 +333,8 @@ function getUsersSearchResult(searchValue){
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
 									<span> 
-									<a href="/ats/userCreation">Add Associate</a>
-									<a href="/ats/addAssociateFromLocations">Add From Loc</a>
+									<a href="${SourceLeadWeb_atsUrl}/userCreation">Add Associate</a>
+									<a href="${SourceLeadWeb_atsUrl}/addAssociateFromLocations">Add From Loc</a>
 									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
 										<a href="<c:url value='${sourceleadUrl}/uploadForm'/>">Import</a>
 									</sec:authorize>									
@@ -349,9 +349,9 @@ function getUsersSearchResult(searchValue){
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
 									<span> 
-									<a href="/ats/userCreation">Add Associate</a>
+									<a href="${SourceLeadWeb_atsUrl}/userCreation">Add Associate</a>
 									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
-										<a href="<c:url value='${appPath}/uploadForm'/>">Import</a>
+										<a href="${SourceLeadWeb_sourceleadUrl}/uploadForm">Import</a>
 									</sec:authorize>									
 									</span>
 								</div>
@@ -359,7 +359,7 @@ function getUsersSearchResult(searchValue){
 							</sec:authorize>
 							
 				<sec:authorize access="!hasRole('ROLE_USER_BULK_IMPORTS')"> 
-						<li><a class="newAdBtn mr5" href="/ats/userCreation">+  Associate</a></li>
+						<li><a class="newAdBtn mr5" href="${SourceLeadWeb_atsUrl}/userCreation">+  Associate</a></li>
 				</sec:authorize>
 							
 				</c:if>	
