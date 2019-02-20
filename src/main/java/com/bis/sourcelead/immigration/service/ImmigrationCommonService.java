@@ -237,5 +237,7 @@ public interface ImmigrationCommonService {
 
 	CandidateVisaHistory saveVisaHistoryDetails(ImmigrationVisaDTO immigrationVisaDTO, User user, OrgLocations orgLocations,
 			long immigrationId);
+	
+	ImmigrationVisaDTO getCandidateVisaDetailsByCandidateIdAndVisaNumber(Long candidateId,String visaNumber);
     
 }
