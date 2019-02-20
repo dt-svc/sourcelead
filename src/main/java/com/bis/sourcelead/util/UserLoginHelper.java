@@ -422,6 +422,7 @@ public class UserLoginHelper {
 						accountsDTO.setOrgImgUrl(accountOrgLocations.get("imgUrl").toString());
 					}
 					
+					accountsDTO.setOrgLocationLoginSecurity(accountOrgLocations.get("orgLocationLoginSecurity").toString());
 					accountsDTO.setOrgLocationName(accountOrgLocations.get("orgLocationName").toString());
 					accountsDTO.setOrgName(accountOrgLocations.get("orgName").toString());
 					
