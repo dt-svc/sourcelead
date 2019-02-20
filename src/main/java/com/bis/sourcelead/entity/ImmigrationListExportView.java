@@ -11,8 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "IMMIGRATION_LIST_EXPORT_VIEW")
@@ -175,6 +178,10 @@ public class ImmigrationListExportView implements Serializable {
 	
 	@Column(name = "LOCATION", columnDefinition = "LONGTEXT default NULL")
 	private String location;
+	
+	@Transient
+	@JsonProperty
+	private String visaStatus;
 	
 	public Long getId() {
 		return id;
@@ -583,5 +590,14 @@ public class ImmigrationListExportView implements Serializable {
 	public void setJobId(String jobId) {
 		this.jobId = jobId;
 	}
+	
+	public String getVisaStatus() {
+		return visaStatus;
+	}
+
+	public void setVisaStatus(String visaStatus) {
+		this.visaStatus = visaStatus;
+	}
+
 
 }
