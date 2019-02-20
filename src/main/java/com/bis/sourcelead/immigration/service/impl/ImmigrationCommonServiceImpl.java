@@ -3081,41 +3081,51 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 	}
 
 	@Override
-	public CandidateVisaHistory saveVisaHistoryDetails(ImmigrationVisaDTO immigrationVisaDTO, User user, OrgLocations orgLocations,
-			long immigrationId) {
-		CandidateVisaHistory candVisaHistory= null;
-		CandidateVisa candidateVisa = new CandidateVisa();
-		candidateVisa.setId(immigrationVisaDTO.getCandidateVisaId());
-		Immigration immigration = new Immigration();
-		candVisaHistory = immigrationCommonDao.getCandidateVisaHistoryByStatus(immigrationVisaDTO.getCandidateVisaId(), ImmigrationConstants.IS_CURRENT_NO);
-		immigration.setId(immigrationId);
-		candVisaHistory.setVisaId(candidateVisa);
-		candVisaHistory.setIsCurrent(immigrationVisaDTO.getIsCurrent()); // "Y"
-		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
-		candVisaHistory.setUpdatedBy(user);
-		candVisaHistory.setUpdatedDate(currentDate);
-		candVisaHistory.setId(null); // setting null for inserting new record.
-		candVisaHistory.setValidToDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationVisaDTO.getValidTo()));
-		StringBuilder actionDesc = new StringBuilder();
-		
-		candVisaHistory = immigrationCommonDao.saveVisaHistoaryDetails(candVisaHistory);
-		int count= immigrationCommonDao.updateCanVisaHistoryDetails(immigrationVisaDTO.getCandidateVisaId(), candVisaHistory.getId());
-		
-		if (immigrationVisaDTO.getId()  != null) {
-			Candidate candidate = new Candidate();
-			candidate.setId(immigrationVisaDTO.getCandidateId());
-			actionDesc.append("Visa Details Updated ").toString();
-			try {
-				immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate, immigration,
-						actionDesc.toString());
-			} catch (Exception e) {
-				e.printStackTrace();
+	public CandidateVisaHistory saveVisaHistoryDetails(ImmigrationVisaDTO immigrationVisaDTO, User user,
+			OrgLocations orgLocations, long immigrationId) {
+		CandidateVisaHistory candVisaHistory = null;
+		try {
+
+			CandidateVisa candidateVisa = new CandidateVisa();
+			candidateVisa.setId(immigrationVisaDTO.getCandidateVisaId());
+			Immigration immigration = new Immigration();
+			candVisaHistory = immigrationCommonDao.getCandidateVisaHistoryByStatus(
+													immigrationVisaDTO.getCandidateVisaId(), ImmigrationConstants.IS_CURRENT_NO);
+			immigration.setId(immigrationId);
+			if (candVisaHistory != null) {
+				candVisaHistory.setVisaId(candidateVisa);
+				candVisaHistory.setIsCurrent(immigrationVisaDTO.getIsCurrent()); // "Y"
+				Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+				candVisaHistory.setUpdatedBy(user);
+				candVisaHistory.setUpdatedDate(currentDate);
+				candVisaHistory.setId(null); // setting null for inserting new record.
+				candVisaHistory.setValidToDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
+														immigrationVisaDTO.getValidTo()));
+				StringBuilder actionDesc = new StringBuilder();
+				candVisaHistory = immigrationCommonDao.saveVisaHistoaryDetails(candVisaHistory);
+				int count = immigrationCommonDao.updateCanVisaHistoryDetails(immigrationVisaDTO.getCandidateVisaId(),
+																						candVisaHistory.getId());
+				if (immigrationVisaDTO.getId() != null) {
+					Candidate candidate = new Candidate();
+					candidate.setId(immigrationVisaDTO.getCandidateId());
+					actionDesc.append("Visa Details Updated ").toString();
+					try {
+						immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate,
+								immigration, actionDesc.toString());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+				}
+				logger.debug(count + "Records are upated in Visa History Table >>>>>>>>>>");
 			}
 
-		} 
-		logger.debug(count +"Records are upated in Visa History Table >>>>>>>>>>");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception caught while extending visa details " + e.getMessage());
+		}
 		return candVisaHistory;
-	   }
+	}
 
 
 }
