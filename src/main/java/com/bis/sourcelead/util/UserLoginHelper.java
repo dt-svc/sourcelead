@@ -584,6 +584,14 @@ public class UserLoginHelper {
 			  SourceLeadSessionManager.setSessionAttribute(req, "userLoginSecurity", loginUser.getLoginSecurity());
 			  SourceLeadSessionManager.setSessionAttribute(req, "newlyLoginUser", userRole.getNewlyLoginUser());
 			  
+			  
+			  String redirectURL = (String) req.getSession().getAttribute("redirectURL");
+				 if(redirectURL != null) {
+					 long redirectOrgLocationId = (Long) req.getSession().getAttribute("redirectOrgLocationId");
+					 SourceLeadSessionManager.setSessionAttribute(req, "redirectURL", redirectURL);
+					 SourceLeadSessionManager.setSessionAttribute(req, "redirectOrgLocationId", redirectOrgLocationId);
+				 }
+			  
 			  if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL") || 
 					  userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")) {
 				  
