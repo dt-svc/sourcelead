@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +19,9 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
+import com.bis.sourcelead.dto.AssociateJoineReportDTO;
+import com.bis.sourcelead.dto.MarginSheetReportDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetAssign;
@@ -734,4 +736,380 @@ public class DynamicReport {
 		return dataSource;
 	}
 	
+	public File marginSheetReportPdfExport(ResponseList<MarginSheetReportDTO> projectMembersDTOList, String orgLocationDateFormat,String orglocationName) throws IOException {
+		 File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("margin_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocationDateFormat,new Date())).toString(),".pdf");
+			file.setReadable(true);
+			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orglocationName).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							col.column("Associate Id", "Associate Id", type.stringType()),
+							col.column("Associate Name", "Associate Name", type.stringType()),
+							col.column("Client Name", "Client Name", type.stringType()),
+							col.column("Paid Amount", "Paid Amount", type.stringType()),
+							col.column("Billed Amount", "Billed Amount", type.stringType()),
+							col.column("Margin", "Margin", type.stringType()))
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(marginSheetReportDataSource(projectMembersDTOList)).toPdf(pdfExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+	
+	
+	public File marginSheetReportExcelExport(ResponseList<MarginSheetReportDTO> projectMembersDTOList,String orgLocationDateFormat,String orglocationName) throws IOException {
+		 File file = null;
+			try {
+			    StringBuilder fileSB = new StringBuilder();
+				file = File.createTempFile(fileSB.append("margin_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocationDateFormat,new Date())).toString(),".xls");
+				file.setReadable(true);
+				JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
+                      .setIgnorePageMargins(true)
+                      .setWhitePageBackground(false)
+                      .setRemoveEmptySpaceBetweenColumns(true);
+
+				report().setTemplate(Templates.reportTemplate)
+						.setColumnTitleStyle(Templates.columnTitleStyle)
+						.addProperty(JasperProperty.EXPORT_XLS_FREEZE_ROW, "1")
+						.ignorePageWidth()
+						.ignorePagination()
+						.columns(
+								col.column("Associate Id", "Associate Id", type.stringType()),
+								col.column("Associate Name", "Associate Name", type.stringType()),
+								col.column("Client Name", "Client Name", type.stringType()),
+								col.column("Paid Amount", "Paid Amount", type.stringType()),
+								col.column("Billed Amount", "Billed Amount", type.stringType()),
+								col.column("Margin", "Margin", type.stringType()))
+						.setDataSource(marginSheetReportDataSource(projectMembersDTOList)).toXls(xlsExporter);
+			} catch (DRException e) {
+				e.printStackTrace();
+			}
+		return file;
+  }
+	
+	private DRDataSource marginSheetReportDataSource(ResponseList<MarginSheetReportDTO> responseList) {
+		DRDataSource dataSource = new DRDataSource("Associate Id","Associate Name", "Client Name", "Paid Amount", "Billed Amount", "Margin");
+		for(MarginSheetReportDTO margin:responseList.getData()) {
+			String empId = "--";
+			
+			if(margin.getEmployeeId() !=null) {
+			 empId = margin.getEmployeeId();
+			}
+			
+			String	associateName = margin.getEmployeeName();
+		
+			String	clientName = margin.getClinetName();
+			
+			String	 paidAmount = margin.getPayRateCurrency() +" "+String.valueOf(margin.getPayRate())+" "+margin.getPayRateType();
+				 
+			String	 billedAmount = margin.getBillRateTypeCurrency() +" "+String.valueOf(margin.getBillRate())+" "+margin.getBillRateType();
+			 
+			String marginRate = String.valueOf(margin.getMarginRate());
+			
+			dataSource.add(empId,associateName, clientName, paidAmount,billedAmount,marginRate);
+		}
+		return dataSource;
+	}
+	
+	public File associateJoinedAndTerminatedReportPdfExport(ResponseList<AssociateJoineReportDTO> associateDTOList, String orgLocationsDateFormat,String orgLocationName,String isTerminated) throws IOException {
+		 File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("associateJoined_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocationsDateFormat,new Date())).toString(),".pdf");
+			file.setReadable(true);
+			if(isTerminated.equalsIgnoreCase(Constants.YES)){
+			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orgLocationName).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							col.column("Associate Id", "Associate Id", type.stringType()),
+							col.column("Associate Name", "Associate Name", type.stringType()),
+							col.column("Gender", "Gender", type.stringType()),
+							col.column("Emp Type", "Emp Type", type.stringType()),
+							col.column("Department", "Department", type.stringType()),
+							col.column("Role", "Role", type.stringType()),
+							col.column("Rate", "Rate", type.stringType()),
+							col.column("Date of Join", "Date of Join", type.stringType()),
+							col.column("Manager", "Manager", type.stringType()),
+							col.column("Terminated On", "Terminated On", type.stringType()),
+							col.column("Terminate Reason", "Terminate Reason", type.stringType()),
+							col.column("Shift", "Shift", type.stringType()),
+							col.column("Probation Status", "Probation Status", type.stringType()))
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(associateJoinedReportDataSource(associateDTOList,orgLocationsDateFormat,isTerminated)).toPdf(pdfExporter);
+			}else{
+				JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+				report().setTemplate(Templates.reportTemplate)
+						.title(cmp.text(orgLocationName).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+						.columns(
+								col.column("Associate Id", "Associate Id", type.stringType()),
+								col.column("Associate Name", "Associate Name", type.stringType()),
+								col.column("Gender", "Gender", type.stringType()),
+								col.column("Emp Type", "Emp Type", type.stringType()),
+								col.column("Department", "Department", type.stringType()),
+								col.column("Role", "Role", type.stringType()),
+								col.column("Rate", "Rate", type.stringType()),
+								col.column("Date of Join", "Date of Join", type.stringType()),
+								col.column("Manager", "Manager", type.stringType()),
+								col.column("Shift", "Shift", type.stringType()),
+								col.column("Probation Status", "Probation Status", type.stringType()))
+						.pageFooter(Templates.footerComponent)
+						.setDataSource(associateJoinedReportDataSource(associateDTOList,orgLocationsDateFormat,isTerminated)).toPdf(pdfExporter);
+			}
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+	
+	public File associateJoinedAndTerminatedReportExcelExport(ResponseList<AssociateJoineReportDTO> associateDTOList, String orgLocationsDateFormat,String orgLocationName,String isTerminated) throws IOException {
+		 File file = null;
+			try {
+			    StringBuilder fileSB = new StringBuilder();
+				file = File.createTempFile(fileSB.append("associateJoined_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocationsDateFormat,new Date())).toString(),".xls");
+				file.setReadable(true);
+				if(isTerminated.equalsIgnoreCase(Constants.YES)){
+				JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
+                     .setIgnorePageMargins(true)
+                     .setWhitePageBackground(false)
+                     .setRemoveEmptySpaceBetweenColumns(true);
+
+				report().setTemplate(Templates.reportTemplate)
+						.setColumnTitleStyle(Templates.columnTitleStyle)
+						.addProperty(JasperProperty.EXPORT_XLS_FREEZE_ROW, "1")
+						.ignorePageWidth()
+						.ignorePagination()
+						.columns(
+								col.column("Associate Id", "Associate Id", type.stringType()),
+								col.column("Associate Name", "Associate Name", type.stringType()),
+								col.column("Gender", "Gender", type.stringType()),
+								col.column("Emp Type", "Emp Type", type.stringType()),
+								col.column("Department", "Department", type.stringType()),
+								col.column("Role", "Role", type.stringType()),
+								col.column("Rate", "Rate", type.stringType()),
+								col.column("Date of Join", "Date of Join", type.stringType()),
+								col.column("Manager", "Manager", type.stringType()),
+								col.column("Terminated On", "Terminated On", type.stringType()),
+								col.column("Terminate Reason", "Terminate Reason", type.stringType()),
+								col.column("Shift", "Shift", type.stringType()),
+								col.column("Probation Status", "Probation Status", type.stringType()))
+						.setDataSource(associateJoinedReportDataSource(associateDTOList,orgLocationsDateFormat,isTerminated)).toXls(xlsExporter);
+				}else{
+					JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
+		                      .setIgnorePageMargins(true)
+		                      .setWhitePageBackground(false)
+		                      .setRemoveEmptySpaceBetweenColumns(true);
+
+						report().setTemplate(Templates.reportTemplate)
+								.setColumnTitleStyle(Templates.columnTitleStyle)
+								.addProperty(JasperProperty.EXPORT_XLS_FREEZE_ROW, "1")
+								.ignorePageWidth()
+								.ignorePagination()
+								.columns(
+										col.column("Associate Id", "Associate Id", type.stringType()),
+										col.column("Associate Name", "Associate Name", type.stringType()),
+										col.column("Gender", "Gender", type.stringType()),
+										col.column("Emp Type", "Emp Type", type.stringType()),
+										col.column("Department", "Department", type.stringType()),
+										col.column("Role", "Role", type.stringType()),
+										col.column("Rate", "Rate", type.stringType()),
+										col.column("Date of Join", "Date of Join", type.stringType()),
+										col.column("Manager", "Manager", type.stringType()),
+										col.column("Shift", "Shift", type.stringType()),
+										col.column("Probation Status", "Probation Status", type.stringType()))
+								.setDataSource(associateJoinedReportDataSource(associateDTOList,orgLocationsDateFormat,isTerminated)).toXls(xlsExporter);
+				}
+				} catch (DRException e) {
+				e.printStackTrace();
+			}
+		return file;
+ }
+	
+	private DRDataSource associateJoinedReportDataSource(ResponseList<AssociateJoineReportDTO> associateDTOList,String dateFormat,String isTerminated) {
+		DRDataSource dataSource = null;
+		if(isTerminated.equalsIgnoreCase(Constants.YES)){
+		 dataSource = new DRDataSource("Associate Id","Associate Name", "Gender", "Emp Type", "Department", "Role","Rate","Date of Join","Manager","Terminated On","Terminate Reason","Shift","Probation Status");
+		}else{
+		 dataSource = new DRDataSource("Associate Id","Associate Name", "Gender", "Emp Type", "Department", "Role","Rate","Date of Join","Manager","Shift","Probation Status");
+		}
+		for(AssociateJoineReportDTO associateData:associateDTOList.getData()) {
+			String empId = "--";
+			String rate = "--";
+			String trminateReason = "--";
+			String terminatedOn = "--";
+			
+			if(associateData.getEmployeeId() !=null) {
+			 empId = associateData.getEmployeeId();
+			}
+			
+			String	associateName = associateData.getEmpName();
+		
+			String	gender = associateData.getGender();
+			
+			String	empType = associateData.getEmpType();
+				 
+			String	departmentName = associateData.getDeptName();
+			 
+			String role = associateData.getUserRole();
+			
+			if(rate !=null){
+			rate = associateData.getCurrency()+" "+associateData.getRate()+" "+associateData.getRatePer();
+			}
+			
+			String	dateOfJoin = commonUtil.dateStrFromOrgDateFormatter(dateFormat,associateData.getHireDate());
+			 
+			String	manager = associateData.getReportingManager();
+			 
+			String shift = associateData.getShiftName();
+			
+			String probationStatus = associateData.getProbationStatus();
+			
+			if(isTerminated.equalsIgnoreCase(Constants.YES)){
+			trminateReason = associateData.getTerminatedReason();
+			
+			terminatedOn = commonUtil.dateStrFromOrgDateFormatter(dateFormat,associateData.getTerminateDate());
+			}
+			
+			if(isTerminated.equalsIgnoreCase(Constants.YES)){
+			dataSource.add(empId,associateName, gender, empType,departmentName,role,rate,dateOfJoin,manager,terminatedOn,trminateReason,shift,probationStatus);
+			}else{
+			dataSource.add(empId,associateName, gender, empType,departmentName,role,rate,dateOfJoin,manager,shift,probationStatus);	
+			}
+		}
+		return dataSource;
+	}
+	
+	public File applicantsJoinedListExportPdf(ResponseList<RequirementSubmissionHistoryDTO> historyDTOList, String orgLocationDateFormat,String orglocationName) throws IOException {
+		 File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("margin_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocationDateFormat,new Date())).toString(),".pdf");
+			file.setReadable(true);
+			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orglocationName).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							col.column("Applicant Name", "Applicant Name", type.stringType()),
+							col.column("Email Id", "Email Id", type.stringType()),
+							col.column("Contact Number", "Contact Number", type.stringType()),
+							col.column("Job Title", "Job Title", type.stringType()),
+							col.column("Job Rating", "Job Rating", type.stringType()),
+							col.column("Client", "Client", type.stringType()),
+							col.column("Date Of Interview", "Date Of Interview", type.stringType()),
+							col.column("Source", "Source", type.stringType()),
+							col.column("Submitted On", "Submitted On", type.stringType()),
+							col.column("Date Of Join", "Date Of Join", type.stringType()),
+							col.column("Offer Rate", "Offer Rate", type.stringType()),
+							col.column("Offer Rate Yearly", "Offer Rate Yearly", type.stringType()),
+							col.column("Margin Rate Yearly", "Margin Rate Yearly", type.stringType()),
+							col.column("Payment Term", "Payment Term", type.stringType()),
+							col.column("Generate Invoice", "Generate Invoice", type.stringType()))
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(applicantsJoinedSheetReportDataSource(historyDTOList)).toPdf(pdfExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+	
+
+	
+	public File applicantsJoinedListExportExcel(ResponseList<RequirementSubmissionHistoryDTO> historyDTOList,String orgLocationDateFormat,String orglocationName) throws IOException {
+		 File file = null;
+			try {
+			    StringBuilder fileSB = new StringBuilder();
+				file = File.createTempFile(fileSB.append("margin_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocationDateFormat,new Date())).toString(),".xls");
+				file.setReadable(true);
+				JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
+                     .setIgnorePageMargins(true)
+                     .setWhitePageBackground(false)
+                     .setRemoveEmptySpaceBetweenColumns(true);
+
+				report().setTemplate(Templates.reportTemplate)
+						.setColumnTitleStyle(Templates.columnTitleStyle)
+						.addProperty(JasperProperty.EXPORT_XLS_FREEZE_ROW, "1")
+						.ignorePageWidth()
+						.ignorePagination()
+						.columns(
+								col.column("Applicant Name", "Applicant Name", type.stringType()),
+								col.column("Email Id", "Email Id", type.stringType()),
+								col.column("Contact Number", "Contact Number", type.stringType()),
+								col.column("Job Title", "Job Title", type.stringType()),
+								col.column("Job Rating", "Job Rating", type.stringType()),
+								col.column("Client", "Client", type.stringType()),
+								col.column("Date Of Interview", "Date Of Interview", type.stringType()),
+								col.column("Source", "Source", type.stringType()),
+								col.column("Submitted On", "Submitted On", type.stringType()),
+								col.column("Date Of Join", "Date Of Join", type.stringType()),
+								col.column("Offer Rate", "Offer Rate", type.stringType()),
+								col.column("Offer Rate Yearly", "Offer Rate Yearly", type.stringType()),
+								col.column("Margin Rate Yearly", "Margin Rate Yearly", type.stringType()),
+								col.column("Payment Term", "Payment Term", type.stringType()),
+								col.column("Generate Invoice", "Generate Invoice", type.stringType()))
+						.setDataSource(applicantsJoinedSheetReportDataSource(historyDTOList)).toXls(xlsExporter);
+			} catch (DRException e) {
+				e.printStackTrace();
+			}
+		return file;
+ }
+	
+	private DRDataSource applicantsJoinedSheetReportDataSource(ResponseList<RequirementSubmissionHistoryDTO> responseList) {
+		DRDataSource dataSource = new DRDataSource( "Applicant Name", "Email Id","Contact Number","Job Title", "Job Rating","Client", "Date Of Interview","Source","Submitted On","Date Of Join","Offer Rate","Offer Rate Yearly","Margin Rate Yearly", "Payment Term","Generate Invoice");
+		for(RequirementSubmissionHistoryDTO history:responseList.getData()) {
+			
+			String jobRate = "---";
+			
+			String client = "---";
+			
+			String marginRateYearly = "---";
+			
+			String invoiceDate = "---";
+			
+			String applicantName = history.getCandidateName();
+			
+			String emailId = history.getEmail();
+		
+			String contactNumber = history.getMobilePhone();
+			
+			String jobTitle = history.getJobTitle();
+			
+			if(history.getJobRate() !=null){
+			jobRate = history.getJobRate();
+			}
+			
+			if(history.getOrgLocationName() !=null){
+		    client = history.getOrgLocationName();
+			}
+			
+			String dateOfInterview = history.getInterviewOn();
+			
+			String source = history.getCreatedUser();
+			
+			String submittedOn = history.getSubmittedOn();
+			
+			String joinedDate = history.getJoinDate();
+			
+			String offerRate = history.getOfferRate();
+			
+			String offerRateYearly = history.getOfferRateforYearly();
+			
+			if(history.getMarginRateYearly() !=null){
+			
+			marginRateYearly = history.getMarginRateYearly();
+			}
+			
+			String paymentTerm = String.valueOf(history.getPayTerm());
+			
+			if(history.getGenerateInvoice() !=null){
+			invoiceDate = history.getGenerateInvoice();
+			}
+			
+			dataSource.add(applicantName,emailId,contactNumber,jobTitle,jobRate,client,dateOfInterview,source,submittedOn,joinedDate,offerRate,offerRateYearly,marginRateYearly,paymentTerm,invoiceDate);
+		}
+		return dataSource;
+	}
 }

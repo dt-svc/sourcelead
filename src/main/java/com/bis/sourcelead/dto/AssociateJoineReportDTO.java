@@ -48,6 +48,7 @@ public class AssociateJoineReportDTO extends SearchDTO implements Serializable{
 	private long totalJoinedCount;
 	private long totalTerminatedCount;
 	private String probationStatus;
+	private String employeeId;
 	
 	
 	
@@ -379,4 +380,11 @@ public class AssociateJoineReportDTO extends SearchDTO implements Serializable{
 	{
 		this.probationStatus = probationStatus;
 	}
+	public String getEmployeeId() {
+		return employeeId;
+	}
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
+	
 }

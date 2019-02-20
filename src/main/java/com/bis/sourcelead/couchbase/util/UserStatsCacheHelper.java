@@ -568,6 +568,7 @@ public class UserStatsCacheHelper {
 			 if(candidate != null) {
 				 userRoleDTO.setCandidateId(String.valueOf(candidate.getId()));
 				 userRoleDTO.setCandidateUUID(candidate.getCandidateUUID());
+				 userRoleDTO.setMasterCandidateId(String.valueOf(candidate.getMasterCandidateId().getId()));
 			 }
 			
 			 StringBuilder userNameSB = new StringBuilder();
