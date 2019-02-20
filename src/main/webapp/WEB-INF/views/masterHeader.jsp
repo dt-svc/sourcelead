@@ -490,7 +490,7 @@ function preventTabkey(e){
 					              <c:if test="${links.orgLocationId == SourceLeadWeb_orgLocationId}">
 					              		<a class="sopcSwith noPad">
 					              </c:if>
-					              		<a onclick="checkAuth(${links.orgLocationId},${links.userRoleId},'${links.loginSecurity}','${links.userId}');" class="sopcSwith noPad">
+					              		<a onclick="checkAuth(${links.orgLocationId},${links.userRoleId},'${links.orgLocationLoginSecurity}','${links.userId}');" class="sopcSwith noPad">
 						                <div class="clearfix  ${links.orgLocationId == SourceLeadWeb_orgLocationId && SourceLeadWeb_userId == links.userId ? 'orgAct' : ''}">
 						                <div class="orgProfile"><img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgImgUrl}"></div>
 										<div class="orgDetails">
