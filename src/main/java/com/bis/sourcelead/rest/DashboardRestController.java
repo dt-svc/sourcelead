@@ -244,6 +244,7 @@ public class DashboardRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Candidate candidate =(Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		Long masterCandidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "masterCandidateId");
 		TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
 		if(StringUtils.isEmpty(timesheetCountType)) {
 			timesheetCountType = "All";
@@ -251,7 +252,7 @@ public class DashboardRestController {
 		if("employes".equalsIgnoreCase(timesheetType)){
 			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId(),timesheetCountType,isGlobalAccess);
 		}else if("myTimesheets".equalsIgnoreCase(timesheetType)){
-			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), loginOrgLocations.getId(),timesheetCountType);
+			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(masterCandidateId, loginOrgLocations.getId(),timesheetCountType);
 		}
 		
 		return timeSheetSubmissionCount;
@@ -270,6 +271,7 @@ public class DashboardRestController {
 		}
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		Long masterCandidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "masterCandidateId");
 		if(orgLoc == null && StringUtils.isNotEmpty(tedDTO.getLocationCode())){
 			orgLoc = orgLocationService.getOrgLocationsByLocationCode(tedDTO.getLocationCode());
 		}
@@ -292,14 +294,14 @@ public class DashboardRestController {
 			if("employes".equalsIgnoreCase(timesheetFor)){
 				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(loginUser.getId(), orgLoc.getId(),"All",isGlobalAccess);
 			}else if("myTimesheets".equalsIgnoreCase(timesheetFor)){
-				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), orgLoc.getId(),"All");
+				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(masterCandidateId, orgLoc.getId(),"All");
 			}
 			
 			ExpensesCount expensesCount = new ExpensesCount();
 			if("employes".equalsIgnoreCase(expenseFor)){
 				expensesCount = expensesApproverHierarchyService.getExpensesCountByUserIdAndOrgLocationIdForApprover(loginUser.getId(), orgLoc.getId(),isGlobalAccess);
 			}else if("myExpenses".equalsIgnoreCase(expenseFor)){
-				expensesCount = expensesApproverHierarchyService.getExpensesCountByMasterCandidateId(candidate.getMasterCandidateId().getId());
+				expensesCount = expensesApproverHierarchyService.getExpensesCountByMasterCandidateId(masterCandidateId);
 			}
 			
 			if(timeSheetSubmissionCount != null) {
@@ -374,7 +376,7 @@ public class DashboardRestController {
 		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole, request);
 				 
 		     SecurityContextHolder.clearContext();
-			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRole.getUuid()));
+			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null));
 				
 		     StringBuilder redirectUrl = new StringBuilder();
 		     response.sendRedirect(redirectUrl.append("/app/dashboard").toString());
@@ -394,7 +396,7 @@ public class DashboardRestController {
 			 userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole, request);
 				
 		     SecurityContextHolder.clearContext();
-			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRole.getUuid()));
+			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null));
 				
 		     StringBuilder redirectUrl = new StringBuilder();
 		     response.sendRedirect(redirectUrl.append("/app/dashboard").toString());
@@ -423,7 +425,7 @@ public class DashboardRestController {
 				
 		     SourceLeadSessionManager.setSessionAttribute(request, "productionLoginUserId", productionLoginUserId);
 		     SecurityContextHolder.clearContext();
-			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRole.getUuid()));
+			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null));
 				
 		     
 		     StringBuilder redirectUrl = new StringBuilder();
@@ -459,7 +461,7 @@ public class DashboardRestController {
 		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole, request);
 		     
 		     SecurityContextHolder.clearContext();
-			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRole.getUuid()));
+			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null));
 		     
 		     SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 		     SourceLeadSessionManager.setSessionAttribute(request, "switchUserType", switchUserType);
@@ -502,7 +504,7 @@ public class DashboardRestController {
 		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole, request);
 		     
 		     SecurityContextHolder.clearContext();
-			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRole.getUuid()));
+			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null));
 				
 		     SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 		     SourceLeadSessionManager.setSessionAttribute(request, "switchUserType", switchUserType);
@@ -543,7 +545,7 @@ public class DashboardRestController {
 		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole, request);
 		     
 		     SecurityContextHolder.clearContext();
-			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null,userRole.getUuid()));
+			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null));
 				
 		     SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 		     SourceLeadSessionManager.setSessionAttribute(request, "switchUserType", switchUserType);
@@ -1483,13 +1485,13 @@ public class DashboardRestController {
 			
 			    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-				Candidate candidate  =  (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 				String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+				Long masterCandidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "masterCandidateId");
 				ExpensesCount expensesCount = new ExpensesCount();
 				if("employeeExpenses".equalsIgnoreCase(expenseType)){
 					expensesCount = expensesApproverHierarchyService.getExpensesCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId(),isGlobalAccess);
 				}else if("myExpenses".equalsIgnoreCase(expenseType)){
-					expensesCount = expensesApproverHierarchyService.getExpensesCountByMasterCandidateId(candidate.getMasterCandidateId().getId());
+					expensesCount = expensesApproverHierarchyService.getExpensesCountByMasterCandidateId(masterCandidateId);
 				}
 				return expensesCount;
 		   }
