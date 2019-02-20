@@ -2326,10 +2326,11 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 
 				}
+				
 				if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("passportNo"))
 				&& !dataMigrationDTOJsonCopy.getString("passportNo").equals("null") && !dataMigrationDTOJsonCopy.getString("candidateId").equals("null")) {
-				boolean flag = immigrationCommonService.validateCandidatePassportVisa(Long.parseLong(dataMigrationDTOJsonCopy.getString("candidateId")),
-				Constants.ID_TYPE_PASSPORT,dataMigrationDTOJsonCopy.getString("passportNo") );
+				boolean flag = immigrationCommonService.validateCandidatePassport(Long.parseLong(dataMigrationDTOJsonCopy.getString("candidateId")),
+				dataMigrationDTOJsonCopy.getString("passportNo") );
 				if(!flag) {
 
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("passportCountry")) || dataMigrationDTOJsonCopy.getString("passportCountry").equals("null")) {
@@ -2353,7 +2354,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 
 
-				if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaNo"))
+				/*if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaNo"))
 				&& !dataMigrationDTOJsonCopy.getString("visaNo").equals("null") && !dataMigrationDTOJsonCopy.getString("candidateId").equals("null")) {
 				boolean flag = immigrationCommonService.validateCandidatePassportVisa(Long.parseLong(dataMigrationDTOJsonCopy.getString("candidateId")),
 				Constants.ID_TYPE_VISA,dataMigrationDTOJsonCopy.getString("visaNo") );
@@ -2393,7 +2394,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				errorSet.put("visaNo", "visaNo is already exist.");
 				}
 
-				}
+				}*/
 
 
 				if (!dataMigrationDTOJsonCopy.getString("dateOfArrival").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("dateOfArrival"))) {

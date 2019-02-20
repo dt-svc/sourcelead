@@ -10,9 +10,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
 import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
-import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
+import com.bis.sourcelead.dto.ImmigrationPassportDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
+import com.bis.sourcelead.dto.ImmigrationVisaDTO;
 import com.bis.sourcelead.dto.LcaDTO;
 import com.bis.sourcelead.dto.LcaDetailsDTO;
 import com.bis.sourcelead.dto.LcaListViewDTO;
@@ -21,8 +22,10 @@ import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
-import com.bis.sourcelead.entity.CandidatePassportVisa;
+import com.bis.sourcelead.entity.CandidatePassport;
 import com.bis.sourcelead.entity.CandidateResidence;
+import com.bis.sourcelead.entity.CandidateVisa;
+import com.bis.sourcelead.entity.CandidateVisaHistory;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationActivityHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
@@ -49,8 +52,10 @@ public interface ImmigrationCommonService {
 	ImmigrationDTO getImmigrationDetails(String immigrationId, OrgLocations orgLocations);
 	
 	String saveCandidateFamilyMemberDetails(CandidateFamilyDetailsDTO familyDetailsDTO, OrgLocations orgLocations, User user,Long immigrationId) throws Exception;
-
-	CandidatePassportVisa savePassportDetails(ImmigrationPassportVisaDTO immigrationPassportVisaDTO, User user, OrgLocations orgLocations,Long immigrationId)throws Exception;
+	
+	CandidateVisa saveVisaDetails(ImmigrationVisaDTO immigrationVisaDTO, User user, OrgLocations orgLocations,Long immigrationId,  Long visaHistoryId)throws Exception;
+	
+	CandidatePassport savePassportDetails(ImmigrationPassportDTO immigrationPassportDTO, User user, OrgLocations orgLocations,Long immigrationId)throws Exception;
 	
 	CandidateResidence saveResidenceDetails(ResidenceDTO residenceDTO, OrgLocations orgLocations, User user, Long candidateId,Long immigrationId) throws Exception;
 
@@ -68,11 +73,17 @@ public interface ImmigrationCommonService {
 	
 	List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId, String searchVal);
 	
-	List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType, String searchValue);
+	List<ImmigrationVisaDTO> getCandidateVisaDetails(Long candidateId, String searchValue);
+	
+	List<CandidatePassport> getCandidatePassportDetails(Long candidateId,String searchValue);
 	
 	CandidateFamilyDetails getCandidateFamilyDetailsById(Long id);
 
-	 void removeCandidatePassportVisaDetails(Long candidateId, Long id, User user, OrgLocations orgLocations, String idType);
+	//passport delete
+	 void removeCandidateVisaDetails(Long visaHistoryId);
+		 
+	 //passport delete
+	 void removeCandidatePassportDetails(Long candidateId, Long id, User user, OrgLocations orgLocations);
 	 
 	 String deleteCandidateResidenceDetails(Long id,Long candidateId);
 	 
@@ -83,8 +94,10 @@ public interface ImmigrationCommonService {
 	 String deletetImmigrationCandidateFormsById(Long id);
 	 
 	 String deleteDocumentHistoryRecordById(Long id);
-	 
-	 CandidatePassportVisa getCandidatePassportVisaDetailsById(Long id);
+	 //visa
+	 CandidateVisa getCandidateVisaDetailsById(Long id);
+	//passport 
+	 CandidatePassport getCandidatePassportDetailsById(Long id);
 	 
 	 ImmigrationCandidateDocuments saveImmigrationCandidateDocs(ImmigrationTemplateDocDTO immigrationTemplateDocDTO,User user, OrgLocations orgLocations) throws Exception;
 
@@ -131,9 +144,19 @@ public interface ImmigrationCommonService {
 	
 	Integer getTableRecordCountByImmigrationId(String entityName,Long immigrationId, String condition);
 	
-	public Boolean validateCandidatePassportVisa(Long candidateId,String idType,String idNumVal) throws Exception;
 	
-	public CandidatePassportVisa getCandidatePassportVisaDetailsByIdNumberAndId(String idNumber, String idType, Long candidateId,Long id) throws Exception;
+	//visa
+	 public Boolean validateCandidateVisa(Long candidateId,String idNumVal) throws Exception;
+	
+	//passport
+	public Boolean validateCandidatePassport(Long candidateId,String idNumVal) throws Exception;
+	
+	
+	//visa
+	public CandidateVisa getCandidateVisaDetailsByIdNumberAndId(String idNumber, Long candidateId,Long id) throws Exception;
+	
+	//passport
+	public CandidatePassport getCandidatePassportDetailsByIdNumberAndId(String idNumber, Long candidateId,Long id) throws Exception;
 
 	Long getImmigrationIdByUUID(String immigrationUUID);
 
@@ -204,11 +227,15 @@ public interface ImmigrationCommonService {
  //   void deleteLcaPlaceOfEmpmntDetails(Long remaininglpoeIds[]);
     
     // for Immigration reports
-    
     ResponseList<ImmigrationReportViewDTO> getImmigrationReports(ImmigrationReportViewDTO immigrationReportDTO, OrgLocations orgLocations);
     
     ResponseList<ImmigrationReportViewDTO> getImmigrationAttorneyReports(ImmigrationReportViewDTO immigrationReportDTO, OrgLocations orgLocations);
  // for LCA reports
     ResponseList<LcaReportViewDTO> getLcaReportsList(LcaReportViewDTO lcaReportViewDTO, String status,String lcaStatus, String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal,String filterByDays,String positionsAvaialble) throws Exception;
+
+	ImmigrationVisaDTO getCandidateVisaDetailsByVisaHistoryId(Long visaHistoryId);
+
+	CandidateVisaHistory saveVisaHistoryDetails(ImmigrationVisaDTO immigrationVisaDTO, User user, OrgLocations orgLocations,
+			long immigrationId);
     
 }

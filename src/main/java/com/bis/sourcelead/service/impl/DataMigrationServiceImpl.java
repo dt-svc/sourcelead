@@ -13,8 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -54,7 +52,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DataMigrationDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationDTO;
-import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
+import com.bis.sourcelead.dto.ImmigrationPassportDTO;
 import com.bis.sourcelead.dto.LcaDTO;
 import com.bis.sourcelead.dto.LcaPlaceOfEmploymentDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
@@ -63,7 +61,7 @@ import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidatePassportVisa;
+import com.bis.sourcelead.entity.CandidatePassport;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -1149,25 +1147,25 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				immDto.setLocation(dataMigrationDTOJsonCopy.getString("benficiarylocation"));
 			}
 			// depends on associate id populate visa Object.
-			ImmigrationPassportVisaDTO passVisaDto = new ImmigrationPassportVisaDTO(); // need to do later
+			ImmigrationPassportDTO passVisaDto = new ImmigrationPassportDTO(); // need to do later
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaNo"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("visaNo"))) {
-				passVisaDto.setIdType(Constants.ID_TYPE_VISA);
+			//	passVisaDto.setIdType(Constants.ID_TYPE_VISA);
 				passVisaDto.setCandidateId(dataMigrationDTOJsonCopy.getString("candidateId"));
-				passVisaDto.setIdNumber(dataMigrationDTOJsonCopy.getString("visaNo"));
+			//	passVisaDto.setIdNumber(dataMigrationDTOJsonCopy.getString("visaNo"));
 				passVisaDto.setValidFrom(dataMigrationDTOJsonCopy.getString("visaStartDate"));
 				passVisaDto.setValidTo(dataMigrationDTOJsonCopy.getString("visaEndDate"));
 				passVisaDto.setCountry(dataMigrationDTOJsonCopy.getString("visaCountry"));
-				passVisaDto.setVisaType(dataMigrationDTOJsonCopy.getString("visaType"));
+			//	passVisaDto.setVisaType(dataMigrationDTOJsonCopy.getString("visaType"));
 
 			}
 			
 			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("passportNo"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("passportNo"))) {
-				passVisaDto.setIdType(Constants.ID_TYPE_PASSPORT);
+			//	passVisaDto.setIdType(Constants.ID_TYPE_PASSPORT);
 				passVisaDto.setCandidateId(dataMigrationDTOJsonCopy.getString("candidateId"));
-				passVisaDto.setIdNumber(dataMigrationDTOJsonCopy.getString("passportNo"));
+			//	passVisaDto.setIdNumber(dataMigrationDTOJsonCopy.getString("passportNo"));
 				passVisaDto.setValidFrom(dataMigrationDTOJsonCopy.getString("passportStartDate"));
 				passVisaDto.setValidTo(dataMigrationDTOJsonCopy.getString("passportEndDate"));
 				passVisaDto.setCountry(dataMigrationDTOJsonCopy.getString("passportCountry"));
@@ -1229,17 +1227,17 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			
 			// pending prevLcaTitle in excel mapping.
 			Immigration immigration = immigrationCommonService.savePetitionDetails(immDto, user, orgLocation, null);
-			CandidatePassportVisa candidatePassportVisa = null;
-			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaNo"))
+			CandidatePassport candidatePassport = null;
+			/*if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaNo"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("visaNo"))
 					&& passVisaDto.getIdType().equalsIgnoreCase(Constants.ID_TYPE_VISA)) {
 				candidatePassportVisa = immigrationCommonService.savePassportDetails(passVisaDto, user, orgLocation,
 						immigration.getId());
-			}
+			}*/
+			//passport saving from import
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("passportNo"))
-					&& !"null".equals(dataMigrationDTOJsonCopy.getString("passportNo"))
-					&& passVisaDto.getIdType().equalsIgnoreCase(Constants.ID_TYPE_PASSPORT)) {
-				candidatePassportVisa = immigrationCommonService.savePassportDetails(passVisaDto, user, orgLocation,
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("passportNo"))) {
+				candidatePassport = immigrationCommonService.savePassportDetails(passVisaDto, user, orgLocation,
 						immigration.getId());
 			}
 			}catch (Exception e) {
