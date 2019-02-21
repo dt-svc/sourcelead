@@ -375,7 +375,7 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 	 */
 	public Date[] last7Days(OrgLocations orgLocations) throws Exception {
 		
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		Timezone timezone = timeZoneService.getTimezone(Long.valueOf(orgLocations.getTimeZoneId()));
 		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
