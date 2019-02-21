@@ -138,7 +138,7 @@ public class UserLoginHelper {
 		 while(userSession.isEmpty()) {
 			 userSession =  userStatsCacheHelper.getLogInUserSessionJson(generatedToken+"_SESSION");
 		 }
-		 JSONObject userRole = userStatsCacheHelper.getLogInUserRoleStats(uname+"_AUTH_"+userSession.get("userRoleUUID").toString());
+		 JSONObject userRole = userStatsCacheHelper.getLogInUserRoleStats(uname.toLowerCase()+"_AUTH_"+userSession.get("userRoleUUID").toString());
 		 JSONObject orgLocations = userStatsCacheHelper.getOrgLocationCacheDetails(userSession.get("orgLocationCode").toString());
 		 
 		 
@@ -347,8 +347,8 @@ public class UserLoginHelper {
 		SourceLeadSessionManager.setSessionAttribute(req, "reportsTabConfigured", "N");
 		
 		try {
-				tabsList =  userStatsCacheHelper.getLogInUserRoleMenusList(uname+"_AUTH_"+userSession.get("userRoleUUID").toString());
-				actionsList = userStatsCacheHelper.getLogInUserRoleActionsList(uname+"_AUTH_"+userSession.get("userRoleUUID").toString());
+				tabsList =  userStatsCacheHelper.getLogInUserRoleMenusList(uname.toLowerCase()+"_AUTH_"+userSession.get("userRoleUUID").toString());
+				actionsList = userStatsCacheHelper.getLogInUserRoleActionsList(uname.toLowerCase()+"_AUTH_"+userSession.get("userRoleUUID").toString());
 				
 			} catch (Exception e) {}
 			for(String tab : tabsList){
@@ -402,7 +402,7 @@ public class UserLoginHelper {
 				List<UserAccountsDTO> accountsList = new ArrayList<>();
 				String[] userAccountsList = userSession.get("loginUserAccounts").toString().split(",");
 				for(int i=0; i<userAccountsList.length; i++) {
-					JSONObject accountsJson = userStatsCacheHelper.getLogInUserRoleStats(uname+"_AUTH_"+userAccountsList[i]);
+					JSONObject accountsJson = userStatsCacheHelper.getLogInUserRoleStats(uname.toLowerCase()+"_AUTH_"+userAccountsList[i]);
 					UserAccountsDTO accountsDTO = new UserAccountsDTO();
 					accountsDTO.setRoleName(accountsJson.get("roleName").toString());
 					accountsDTO.setDisplayName(accountsJson.get("roleDisplayName").toString());
@@ -970,7 +970,8 @@ public class UserLoginHelper {
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(Long.valueOf(orgLocationJson.get("orgLocationId").toString()));
 		orgLocations.setDateFormat(orgLocationJson.get("dateFormat").toString());
-		orgLocations.setTimeZoneId(orgLocationJson.get("timeZone").toString());
+		orgLocations.setTimeZoneId(orgLocationJson.get("timeZoneId").toString());
+		orgLocations.setTimeZoneName(orgLocationJson.get("timeZone").toString());
 		orgLocations.setLocationCode(orgLocationJson.get("orgLocationCode").toString());
 		orgLocations.setOrgCode(orgLocationJson.get("orgCode").toString());
 		orgLocations.setCurrencyCode(orgLocationJson.get("currencyCode").toString());
@@ -989,6 +990,7 @@ public class UserLoginHelper {
 		User user = new User();
 		user.setId(Long.valueOf(userRoleJson.get("userId").toString()));
 		user.setUserCode(userRoleJson.get("userCode").toString());
+		user.setFullName(userRoleJson.get("loginUserFullName").toString());
 		return user;
 	}
 	
