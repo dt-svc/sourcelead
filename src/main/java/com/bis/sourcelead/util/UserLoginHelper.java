@@ -970,7 +970,8 @@ public class UserLoginHelper {
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(Long.valueOf(orgLocationJson.get("orgLocationId").toString()));
 		orgLocations.setDateFormat(orgLocationJson.get("dateFormat").toString());
-		orgLocations.setTimeZoneId(orgLocationJson.get("timeZone").toString());
+		orgLocations.setTimeZoneId(orgLocationJson.get("timeZoneId").toString());
+		orgLocations.setTimeZoneName(orgLocationJson.get("timeZone").toString());
 		orgLocations.setLocationCode(orgLocationJson.get("orgLocationCode").toString());
 		orgLocations.setOrgCode(orgLocationJson.get("orgCode").toString());
 		orgLocations.setCurrencyCode(orgLocationJson.get("currencyCode").toString());
@@ -989,6 +990,7 @@ public class UserLoginHelper {
 		User user = new User();
 		user.setId(Long.valueOf(userRoleJson.get("userId").toString()));
 		user.setUserCode(userRoleJson.get("userCode").toString());
+		user.setFullName(userRoleJson.get("loginUserFullName").toString());
 		return user;
 	}
 	

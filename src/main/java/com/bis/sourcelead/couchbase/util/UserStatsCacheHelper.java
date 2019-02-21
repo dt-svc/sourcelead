@@ -431,17 +431,21 @@ public class UserStatsCacheHelper {
 	 * This method is used to store userRole information in couch.
 	 */
 	public void saveUserProfileDetailsToCouchbase(UserRole userRole) {
-		 UserRoleSessionProfileDTO userRoleDTO = getUserRoleCacheDetails(userRole);
-		 ObjectMapper sessionObj = new ObjectMapper();
-         try {
-			String sessionJsonStr = sessionObj.writeValueAsString(userRoleDTO);
-			JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
-			StringBuilder userRoleKey = new StringBuilder();
-			userRoleKey.append(userRole.getUser().getUserName()).append("_AUTH_").append(userRole.getUuid());
-			SourceLeadSessionManager.setUserProfileJsonString(userRoleKey.toString(), "userProfile", jsonObject);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+		
+		if(userRole.getUser() != null && StringUtils.isNotBlank(userRole.getUser().getUserName())) {
+			 UserRoleSessionProfileDTO userRoleDTO = getUserRoleCacheDetails(userRole);
+			 ObjectMapper sessionObj = new ObjectMapper();
+	         try {
+				String sessionJsonStr = sessionObj.writeValueAsString(userRoleDTO);
+				JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
+				StringBuilder userRoleKey = new StringBuilder();
+				userRoleKey.append(userRole.getUser().getUserName().toLowerCase()).append("_AUTH_").append(userRole.getUuid());
+				SourceLeadSessionManager.setUserProfileJsonString(userRoleKey.toString(), "userProfile", jsonObject);
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
 		}
+		
 	}
 	
 	

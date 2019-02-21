@@ -434,7 +434,7 @@ public class CommonUtil {
 	
 	public Date orgLocationCommonDate(Date date, OrgLocations loginOrgLocation){
 		DateTime dt = new DateTime(date);
-		DateTimeZone dtZone = DateTimeZone.forID(loginOrgLocation.getTimeZoneId());
+		DateTimeZone dtZone = DateTimeZone.forID(loginOrgLocation.getTimeZoneName());
 		DateTime dtus = dt.withZone(dtZone); 
 		Date dateWithTimezone = dtus.toLocalDateTime().toDate();
 		return dateWithTimezone;
