@@ -4,6 +4,12 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
+</script>
+
+<script type="text/javascript" src="${SourceLeadWeb_atsUrl}/resources/js/campaignRecipient.js"></script>
+
+<script>
  $( document ).ready(function() {
 	 getCampaignRecipientList();
 	});
@@ -23,7 +29,7 @@
                 </span>            	
             </h2>
           </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; Recipient list</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings</a>&raquo; Recipient list</div>
     </section>
     
       <div class="project_wrap">
@@ -45,11 +51,11 @@
 <script>
 function getCampaignRecipientList(){
        var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-       var userId = '${SourceLeadWeb_user.id}';
+       var userId = '${SourceLeadWeb_userId}';
        var typeOfCampaign = $("#typeOfCampaign").val();
        $.ajax({
        type : "GET",
-        url: sourceleadUrl+"/getCampaignRecipientList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&typeOfCampaign="+typeOfCampaign,       
+        url: atsUrl+"/getCampaignRecipientList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&typeOfCampaign="+typeOfCampaign,       
         success :function(json) {
         	   var json = json.data;
                 populategRecipientList(json);
@@ -112,7 +118,7 @@ function listViewPop(viewListId){
 	
 	$.ajax({
 	       type : "GET",
-	        url: sourceleadUrl+"/listViewPop?"+tokenParamName+"="+tokenValue+"&viewListId="+viewListId,       
+	        url: atsUrl+"/listViewPop?"+tokenParamName+"="+tokenValue+"&viewListId="+viewListId,       
 	        success :function(json) {
 	        	populategViewList(json);
 	       },
@@ -232,7 +238,7 @@ function deleteCampaignContactList(id){
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
       $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/deleteCampaignContactList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&id="+id,       
+       url: atsUrl+"/deleteCampaignContactList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&id="+id,       
        success :function(data){ 
 			 $("#selector11").removeAttr("style");
   			 $("#selector11").css({ display: "block" });
@@ -240,7 +246,7 @@ function deleteCampaignContactList(id){
   			 $("#popUp").empty();
  			 $(".mask").hide();
              msgFadein();
-             location.replace(sourceleadUrl+ "/recipientsList");
+             location.replace(atsUrl+ "/recipientsList");
     	   
       }
        

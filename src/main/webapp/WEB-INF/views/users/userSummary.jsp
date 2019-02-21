@@ -4,7 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="/ats/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_atsUrl}/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
 <jsp:include page="userProjectSummary.jsp" />
 <jsp:include page="userAssetManagement.jsp" />
@@ -25,7 +25,7 @@
 			<div class="pull-left">
 				<h2>Associate Summary</h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="/ats/usersList">Associates</a> &raquo; Associate Summary <span id = "fname"></a> </div>				
+			<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_atsUrl}/usersList">Associates</a> &raquo; Associate Summary <span id = "fname"></a> </div>				
 		</section>
 
 		<!-- Timesheet -->
