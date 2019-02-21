@@ -437,7 +437,7 @@ public class UserStatsCacheHelper {
 			String sessionJsonStr = sessionObj.writeValueAsString(userRoleDTO);
 			JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
 			StringBuilder userRoleKey = new StringBuilder();
-			userRoleKey.append(userRole.getUser().getUserName()).append("_AUTH_").append(userRole.getUuid());
+			userRoleKey.append(userRole.getUser().getUserName().toLowerCase()).append("_AUTH_").append(userRole.getUuid());
 			SourceLeadSessionManager.setUserProfileJsonString(userRoleKey.toString(), "userProfile", jsonObject);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
