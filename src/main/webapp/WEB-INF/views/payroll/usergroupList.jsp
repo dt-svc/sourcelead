@@ -23,7 +23,7 @@ $(document).ready(function(){
       <h2>Groups</h2>
     </div>
      <div class="pull-right brud-crum">
-          <a href=" ${appPath}/dashboard" title="Home">Home</a> &raquo; <a href=" ${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configuration</a> &raquo; Groups
+          <a href="${SourceLeadWeb_sourceleadUrl}/dashboard" title="Home">Home</a> &raquo; <a href=" ${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configuration</a> &raquo; Groups
       </div>
   </section>
   <div class="timesheet_out">
