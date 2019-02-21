@@ -138,7 +138,7 @@ public class UserLoginHelper {
 		 while(userSession.isEmpty()) {
 			 userSession =  userStatsCacheHelper.getLogInUserSessionJson(generatedToken+"_SESSION");
 		 }
-		 JSONObject userRole = userStatsCacheHelper.getLogInUserRoleStats(uname+"_AUTH_"+userSession.get("userRoleUUID").toString());
+		 JSONObject userRole = userStatsCacheHelper.getLogInUserRoleStats(uname.toLowerCase()+"_AUTH_"+userSession.get("userRoleUUID").toString());
 		 JSONObject orgLocations = userStatsCacheHelper.getOrgLocationCacheDetails(userSession.get("orgLocationCode").toString());
 		 
 		 
@@ -299,6 +299,13 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "countryCode", orgLocations.get("countryCode"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "currencyCode", orgLocations.get("currencyCode"));
 		  
+		  String redirectURL = (String) req.getSession().getAttribute("redirectURL");
+			 if(redirectURL != null) {
+				 long redirectOrgLocationId = (Long) req.getSession().getAttribute("redirectOrgLocationId");
+				 SourceLeadSessionManager.setSessionAttribute(req, "redirectURL", redirectURL);
+				 SourceLeadSessionManager.setSessionAttribute(req, "redirectOrgLocationId", redirectOrgLocationId);
+			 }
+		  
 		  List<String> weekOffDaysList = new ArrayList<>();
 		  String[] weekOffDays = orgLocations.get("weekOffDays").toString().split(",");
 			for (int i = 0; i < weekOffDays.length; i++) {
@@ -340,8 +347,8 @@ public class UserLoginHelper {
 		SourceLeadSessionManager.setSessionAttribute(req, "reportsTabConfigured", "N");
 		
 		try {
-				tabsList =  userStatsCacheHelper.getLogInUserRoleMenusList(uname+"_AUTH_"+userSession.get("userRoleUUID").toString());
-				actionsList = userStatsCacheHelper.getLogInUserRoleActionsList(uname+"_AUTH_"+userSession.get("userRoleUUID").toString());
+				tabsList =  userStatsCacheHelper.getLogInUserRoleMenusList(uname.toLowerCase()+"_AUTH_"+userSession.get("userRoleUUID").toString());
+				actionsList = userStatsCacheHelper.getLogInUserRoleActionsList(uname.toLowerCase()+"_AUTH_"+userSession.get("userRoleUUID").toString());
 				
 			} catch (Exception e) {}
 			for(String tab : tabsList){
@@ -391,11 +398,11 @@ public class UserLoginHelper {
 			
 			
 			
-			if(StringUtils.isNotBlank(userSession.get("loginUserAccounts").toString())) {
+			if(userSession.get("loginUserAccounts") != null) {
 				List<UserAccountsDTO> accountsList = new ArrayList<>();
 				String[] userAccountsList = userSession.get("loginUserAccounts").toString().split(",");
 				for(int i=0; i<userAccountsList.length; i++) {
-					JSONObject accountsJson = userStatsCacheHelper.getLogInUserRoleStats(uname+"_AUTH_"+userAccountsList[i]);
+					JSONObject accountsJson = userStatsCacheHelper.getLogInUserRoleStats(uname.toLowerCase()+"_AUTH_"+userAccountsList[i]);
 					UserAccountsDTO accountsDTO = new UserAccountsDTO();
 					accountsDTO.setRoleName(accountsJson.get("roleName").toString());
 					accountsDTO.setDisplayName(accountsJson.get("roleDisplayName").toString());
@@ -790,6 +797,10 @@ public class UserLoginHelper {
 						
 						if(ur.getUser().getLoginSecurity() != null) {
 							accountsDTO.setLoginSecurity(ur.getUser().getLoginSecurity());
+						}
+						
+						if(ur.getOrgLocations().getLoginSecurity() != null) {
+							accountsDTO.setOrgLocationLoginSecurity(ur.getOrgLocations().getLoginSecurity());
 						}
 						
 						accountsDTO.setUserId(String.valueOf(ur.getUser().getId()));
