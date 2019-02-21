@@ -28,7 +28,7 @@ public class CouchbaseClient {
 	Bucket userLoginSessionStoreBucket;
 	Bucket orgLocationsBucket;
 
-	private static final CouchbaseEnvironment ENV = DefaultCouchbaseEnvironment.builder().socketConnectTimeout(336699)
+	private static final CouchbaseEnvironment ENV = DefaultCouchbaseEnvironment.builder().socketConnectTimeout(536699)
 			.connectTimeout(36678).keepAliveInterval(3600 * 30000).build();
 
 	public CouchbaseClient(List<String> urls, List<String> couchBucketList, String password) {
