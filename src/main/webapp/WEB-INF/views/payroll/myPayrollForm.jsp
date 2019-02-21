@@ -82,7 +82,7 @@ function saveUsMyPayrollForm(){
     			$("#uploaddocument, .sideMask").fadeOut();
     			getUsMyPayrollForms();
     		} else if (result.indexOf('Sign In') !== -1) {
-    			location.replace(sourceleadUrl);
+    			location.replace(pmsUrl);
     		} else {
     		    showError("Operation failed, please try again");
     		}
@@ -138,7 +138,7 @@ function getUsMyPayrollForms(){
 			$("#myPayrollFormLoading").removeAttr("style");
 			usPayrollFormListTablePagination(); 
 		} else if (res.indexOf('Sign In') !== -1) {
-			location.replace(sourceleadUrl);
+			location.replace(pmsUrl);
 		} else {
 		    showError("Operation failed, please try again");
 		}
@@ -176,7 +176,7 @@ function deleteForm(uuid){
 		} else if (res.response === "SUCCESS") {
 			getUsMyPayrollForms();
 		} else if (res.indexOf('Sign In') !== -1) {
-			location.replace(sourceleadUrl);
+			location.replace(pmsUrl);
 		} else {
 		    showError("Operation failed, please try again");
 		}
