@@ -989,6 +989,7 @@ public class UserLoginHelper {
 		User user = new User();
 		user.setId(Long.valueOf(userRoleJson.get("userId").toString()));
 		user.setUserCode(userRoleJson.get("userCode").toString());
+		user.setFullName(userRoleJson.get("loginUserFullName").toString());
 		return user;
 	}
 	
