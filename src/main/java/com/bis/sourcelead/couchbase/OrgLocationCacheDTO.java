@@ -50,7 +50,9 @@ public class OrgLocationCacheDTO implements Serializable{
 	
 	private String weekOffDays;
 	
-	private String workingHours;
+	private String workingDaysPerWeek;
+	
+	private String averageWorkingHours;
 	
 	private String phone;
 	
@@ -237,12 +239,20 @@ public class OrgLocationCacheDTO implements Serializable{
 		this.weekOffDays = weekOffDays;
 	}
 
-	public String getWorkingHours() {
-		return workingHours;
+	public String getWorkingDaysPerWeek() {
+		return workingDaysPerWeek;
 	}
 
-	public void setWorkingHours(String workingHours) {
-		this.workingHours = workingHours;
+	public void setWorkingDaysPerWeek(String workingDaysPerWeek) {
+		this.workingDaysPerWeek = workingDaysPerWeek;
+	}
+
+	public String getAverageWorkingHours() {
+		return averageWorkingHours;
+	}
+
+	public void setAverageWorkingHours(String averageWorkingHours) {
+		this.averageWorkingHours = averageWorkingHours;
 	}
 
 	public String getPhone() {

@@ -474,7 +474,14 @@ public class UserStatsCacheHelper {
 			 orgLocationDTO.setWeekOffDays("Sat,Sun");
 		 }
 		
-		 orgLocationDTO.setWorkingHours(String.valueOf(orgLocations.getWorkingDaysPerWeek()));
+		 if(orgLocations.getWorkingDaysPerWeek() != null) {
+			 orgLocationDTO.setWorkingDaysPerWeek(String.valueOf(orgLocations.getWorkingDaysPerWeek()));
+		 }
+		
+		 if(orgLocations.getAverageWorkingHours() != null) {
+			 orgLocationDTO.setAverageWorkingHours(String.valueOf(orgLocations.getAverageWorkingHours()));
+		 }
+		
 		 orgLocationDTO.setOrgShortCode(orgLocations.getGeneratedUserId());
 		 orgLocationDTO.setOrgLocationCode(orgLocations.getLocationCode());
 		 orgLocationDTO.setOrgCode(orgLocations.getOrg().getOrgCode());
