@@ -2360,13 +2360,7 @@ public class PerformanceReportRestController {
 	@RequestMapping(value = "/getAllApplicantJoinedListByOrgLocationsId")
 	public @ResponseBody ResponseList<ApplicantsJoinedReportDTO> getAllApplicantJoinedListByOrgLocationsId(ApplicantsJoinedReportDTO userRoleDto,@RequestParam(value="timePeriod", required=false) String timePeriod,@RequestParam(value="customStartDate", required=false) String customStartDate,@RequestParam(value="customEndDate", required=false) String customEndDate,
 			ApplicantsJoinedReportDTO userDTO,HttpServletRequest request) throws Exception {
-			ResponseList<ApplicantsJoinedReportDTO> responseList = new ResponseList<>();
 	      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	      Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-	      User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	      String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
-	      String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-	    
 			
 			Date[] searchDates = null;
 			
@@ -2419,8 +2413,6 @@ public class PerformanceReportRestController {
 
 			ResponseList<ApplicantsJoinedReportDTO> userDTOList = userService.getApplicantsJoinedReport(userRoleDto,orgLocations.getId(),searchDates,teamsList,type,clientIdsList);
 
-//			ResponseList<ApplicantsJoinedReportDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates,teamsList,type,clientIdsList);
-//			responseList.setData(userDTOList);
 			return userDTOList;
 		}
 	

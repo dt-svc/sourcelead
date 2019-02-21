@@ -2,7 +2,9 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
+<script type="text/javascript">
+var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+</script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
   <!-- Header Area -->
   <section class="content-wraper">
@@ -10,7 +12,7 @@
     	<div class="pull-left">
 				<h2>Applicants Joined Report</h2>
 		</div>
-        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Applicants Joined Report  </div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/performanceReportList'/>">Performance Reports</a> &raquo; Applicants Joined Report  </div>
     </section>
        
     <!-- Project -->
@@ -113,7 +115,7 @@
  
   <script>
 function getAppliantJoinedListByRecruiter(){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	 var searchValue = $("#daywiseReportDataTableSearch").val();
 	 var timePeriod = $("#reportTypeId").val();
 	 var  noRecruiterApplicantJoinedList=$("#noRecruiterApplicantJoinedList").val(0); 
@@ -307,7 +309,7 @@ $("#daywiseReportDataTableSearch").keydown(function(e) {
  
  <script type="text/javascript">
        function getApplicantsJoinedList(){
-    	   var sourceleadUrl ='${sourceleadUrl}';
+    	   var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
    		   var tab = '${tab}';
     	   var frequency=$("#reportTypeId").val();
     	  var  noApplicantJoinedList=$("#noApplicantJoinedList").val(0); 
@@ -1105,7 +1107,7 @@ $(function() {
 </script> 
 <script>
 function exportByRecruiter(exportType){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	 var searchValue = $("#daywiseReportDataTableSearch").val();
 	 var timePeriod = $("#reportTypeId").val();
 	 var  noRecruiterApplicantJoinedList=$("#noRecruiterApplicantJoinedList").val(); 
