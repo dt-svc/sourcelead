@@ -15,6 +15,7 @@
 <script>
 var atsUrl ='${SourceLeadWeb_atsUrl}';
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 </script>
 
 <!-- For add New Applicant -->

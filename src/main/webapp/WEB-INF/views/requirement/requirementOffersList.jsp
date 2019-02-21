@@ -269,7 +269,7 @@ function offerpagination(url){
                 	  var result = "";
   	    	  		   if(opt.contentType != null && opt.contentType !='' && opt.contentType != 'undefined' && opt.attachment!=null){
   	    	  			result = result + ' <td><div><span></span></div></td>';
-	  	    	  		result = result +'<a href="<c:url value="/app/ws/downloadOfferAttachment?offerId='+opt.offerId+'"/>"><i class="fa fa-paperclip"></i></a>';
+	  	    	  		result = result +'<a href="<c:url value=\"'+atsUrl+'/ws/downloadOfferAttachment?offerId='+opt.offerId+'"/>"><i class="fa fa-paperclip"></i></a>';
 	  	    	  		result = result + ' <a class="fa fa-eye ml10" onclick="viewOffersListAttachment(\''+opt.offerId+'\',\''+opt.attachment+'\');"></a>';
 //			          
 	  	    	  	    result = result + '</span></div></td>';
