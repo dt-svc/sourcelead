@@ -29,6 +29,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.reports.service.ClientReportService;
@@ -635,9 +636,9 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 String loginUserRoleId = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 		 String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
+		 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(Long.parseLong(loginUserRoleId), orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
 		
 		 
 		 
