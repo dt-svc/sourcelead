@@ -2354,12 +2354,11 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 
 
-				/*if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaNo"))
+				if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaNo"))
 				&& !dataMigrationDTOJsonCopy.getString("visaNo").equals("null") && !dataMigrationDTOJsonCopy.getString("candidateId").equals("null")) {
-				boolean flag = immigrationCommonService.validateCandidatePassportVisa(Long.parseLong(dataMigrationDTOJsonCopy.getString("candidateId")),
-				Constants.ID_TYPE_VISA,dataMigrationDTOJsonCopy.getString("visaNo") );
-				if(!flag) {
-
+				//boolean flag = immigrationCommonService.validateCandidatePassportVisa(Long.parseLong(dataMigrationDTOJsonCopy.getString("candidateId")),
+				//.ID_TYPE_VISA,dataMigrationDTOJsonCopy.getString("visaNo") );
+				//if(!flag) {
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaCountry")) || dataMigrationDTOJsonCopy.getString("visaCountry").equals("null")) {
 				errorSet.put("visaCountry", "visaCountry is mandatory if you have entered visano");/// dropdown value.
 				}
@@ -2373,7 +2372,15 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaEndDate")) || dataMigrationDTOJsonCopy.getString("visaEndDate").equals("null")) {
 				errorSet.put("visaEndDate", "visaEndDate is mandatory if you have entered visano");/// dropdown value.
 				}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("visaEndDate"))) {
-				errorSet.put("visaEndDate", "visaEndDate is invalid date");
+					errorSet.put("visaEndDate", "visaEndDate is invalid date");
+				}
+			   if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaStartDate")) && StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaEndDate"))) {
+					Date visaStartDate = commonUtil.stringToDate(dataMigrationDTOJsonCopy.getString("visaStartDate"));
+					Date visaEndDate = commonUtil.stringToDate(dataMigrationDTOJsonCopy.getString("visaEndDate"));
+					if(visaEndDate.before(visaStartDate)) {
+						errorSet.put("visaEndDate", "VisaEndDate should be greater than visaStartDate"); /// dropdown value.
+					}
+					
 				}
 
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaType")) || dataMigrationDTOJsonCopy.getString("visaType").equals("null")) {
@@ -2390,11 +2397,11 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 
 				}
-				}else {
-				errorSet.put("visaNo", "visaNo is already exist.");
-				}
+				//}else {
+			//	errorSet.put("visaNo", "visaNo is already exist.");
+			//	}
 
-				}*/
+				}
 
 
 				if (!dataMigrationDTOJsonCopy.getString("dateOfArrival").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("dateOfArrival"))) {

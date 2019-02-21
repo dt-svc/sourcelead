@@ -1238,7 +1238,10 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			//save visa details here based on visa number active or in-active
 			CandidateVisa candidateVisa = null;
 			CandidateVisaHistory candidateVisaHistory = null;
-			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaNo")) && !"null".equals(dataMigrationDTOJsonCopy.getString("visaNo"))) {
+			String visaEndDate = dataMigrationDTOJsonCopy.getString("visaEndDate");
+			String visaStartDate = dataMigrationDTOJsonCopy.getString("visaStartDate");
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaNo")) && !"null".equals(dataMigrationDTOJsonCopy.getString("visaNo"))
+					&& StringUtils.isNotBlank(visaStartDate) &&  StringUtils.isNotBlank(visaEndDate)) {
 				
 				System.out.println(" dataMigrationDTOJsonCopy.visaNo "+dataMigrationDTOJsonCopy.getString("visaNo"));
 			   ImmigrationVisaDTO candRecentVisaDetails = immigrationCommonService.getCandidateVisaDetailsByCandidateIdAndVisaNumber(immigration.getCandidate().getId(), dataMigrationDTOJsonCopy.getString("visaNo"));
@@ -1247,7 +1250,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			    Date toDayDate = new Date();
 				String currentDateStr = dateFormat.format(toDayDate);
 				Date newDate = dateFormat.parse(currentDateStr);
-				String visaEndDate = dataMigrationDTOJsonCopy.getString("visaEndDate");
+				
 			    Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), newDate);
 
 			  if(candRecentVisaDetails == null) {
@@ -1263,14 +1266,16 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			  }else {
 				  String candRecentVisaDetailsEndDate = null;
 				   candRecentVisaDetailsEndDate =  candRecentVisaDetails.getValidTo();
+				   candRecentVisaDetails.setValidFrom(visaStartDate);      
+				   candRecentVisaDetails.setValidTo(visaEndDate);
 				    if (StringUtils.isNotBlank(candRecentVisaDetailsEndDate)
 							&& currentDate.before(commonUtil.stringToDate(candRecentVisaDetailsEndDate))) {
-						visaDto.setIsCurrent(Constants.NO);
+				    	candRecentVisaDetails.setIsCurrent(Constants.NO);
 					} else {
-						visaDto.setIsCurrent(ImmigrationConstants.IS_CURRENT);
+						candRecentVisaDetails.setIsCurrent(ImmigrationConstants.IS_CURRENT);
 					}
-				   visaDto.setCandidateVisaId(candRecentVisaDetails.getCandidateVisaId());
-				  candidateVisa = immigrationCommonService.saveVisaDetails(visaDto, user, orgLocation, immigration.getId(), candRecentVisaDetails.getId());
+				    candRecentVisaDetails.setCandidateVisaId(candRecentVisaDetails.getCandidateVisaId());
+				    candidateVisa = immigrationCommonService.saveVisaDetails(candRecentVisaDetails, user, orgLocation, immigration.getId(), candRecentVisaDetails.getId());
 			  }
 				
 			}
