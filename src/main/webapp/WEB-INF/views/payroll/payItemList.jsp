@@ -40,7 +40,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 </div>  -->             
 </li>
 <li>
-	<a href="/pms/addPayItem" class="addBtn">+ Create</a>
+	<a href="${SourceLeadWeb_pmsUrl}/addPayItem" class="addBtn">+ Create</a>
 </li>
 </ul>
 </div>
