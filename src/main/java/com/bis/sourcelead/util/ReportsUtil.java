@@ -331,8 +331,7 @@ public class ReportsUtil {
      
 	public Date[] today(OrgLocations orgLocations) throws Exception {
 	
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTime zoned = new DateTime(DateTimeZone.forID(orgLocations.getTimeZoneName()));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
 		String startDate = outputFormatter.print(zoned);
@@ -350,8 +349,7 @@ public class ReportsUtil {
 	
 public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 		
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+	    DateTime zoned = new DateTime(DateTimeZone.forID(orgLocations.getTimeZoneName()));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
 		String startDate = outputFormatter.print(zoned);
@@ -374,9 +372,7 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 	 * @throws Exception 
 	 */
 	public Date[] last7Days(OrgLocations orgLocations) throws Exception {
-		
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTime zoned = new DateTime(DateTimeZone.forID(orgLocations.getTimeZoneName()));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
 		String startDate = outputFormatter.print(zoned);
@@ -399,8 +395,7 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 	 */
 	public Date[] lastWeek(OrgLocations orgLocations) throws Exception {
 		
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTime zoned = new DateTime(DateTimeZone.forID(orgLocations.getTimeZoneName()));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
 		String startDate = outputFormatter.print(zoned);
@@ -428,8 +423,7 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 	 */
 	public Date[] lastMonth(OrgLocations orgLocations) throws Exception {
 		
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTime zoned = new DateTime(DateTimeZone.forID(orgLocations.getTimeZoneName()));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
 		String startDate = outputFormatter.print(zoned);
@@ -456,8 +450,7 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 	 */
 	public Date[] last15DaysDates(OrgLocations orgLocations) throws Exception {
 		
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTime zoned = new DateTime(DateTimeZone.forID(orgLocations.getTimeZoneName()));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
 		String startDate = outputFormatter.print(zoned);
@@ -480,8 +473,7 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 	 * @return Date[] Date[0] = start date ,Date[1] = End date
 	 */
 	public Date[] last1MonthDates(OrgLocations orgLocations) throws Exception {
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTime zoned = new DateTime(DateTimeZone.forID(orgLocations.getTimeZoneName()));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
 		String startDate = outputFormatter.print(zoned);
@@ -509,8 +501,7 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 		c.set(Calendar.DAY_OF_MONTH, 1);
 		
 		//System.out.println(c.getTime());
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTime zoned = new DateTime(DateTimeZone.forID(orgLocations.getTimeZoneName()));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
 		String startDate = outputFormatter.print(zoned);
@@ -530,8 +521,7 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 	}
 
 	public Date[] last2MonthDates(OrgLocations orgLocations) throws Exception {
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTime zoned = new DateTime(DateTimeZone.forID(orgLocations.getTimeZoneName()));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
 		String startDate = outputFormatter.print(zoned);
@@ -556,8 +546,7 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 	 */
 	public Date[] last3MonthDates(OrgLocations orgLocations) throws Exception {
 		
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTime zoned = new DateTime(DateTimeZone.forID(orgLocations.getTimeZoneName()));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
 		String startDate = outputFormatter.print(zoned);
@@ -582,8 +571,7 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 	 */
 	public Date[] last6MonthDates(OrgLocations orgLocations) throws Exception {
 		
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTime zoned = new DateTime(DateTimeZone.forID(orgLocations.getTimeZoneName()));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
 		String startDate = outputFormatter.print(zoned);
@@ -603,8 +591,7 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 	
    public Date[] last2Weeks(OrgLocations orgLocations) throws Exception {
 		
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+	    DateTime zoned = new DateTime(DateTimeZone.forID(orgLocations.getTimeZoneName()));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
 		String startDate = outputFormatter.print(zoned);
@@ -780,7 +767,6 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 	}
 	
 	public Date[] customeDates(OrgLocations orgLocations,String customStartDate,String customEndDate) throws Exception {
-		    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 			DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 			DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
@@ -788,8 +774,8 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
  	        Date toDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), customEndDate);
 			String customStartTimeStr = TZ_DF_CSD.format(fromDate);
 			String customEndTimeStr = TZ_DF_CED.format(toDate);
-			String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
-			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+			String startDateString = CommonUtil.convertTimeZones(orgLocations.getTimeZoneName(), Constants.UTC_TIMEZONE, customStartTimeStr);
+			String endDateString = CommonUtil.convertTimeZones(orgLocations.getTimeZoneName(), Constants.UTC_TIMEZONE, customEndTimeStr);
 			fromDate = TZ_DF_TS.parse(startDateString);
 			toDate = TZ_DF_TS.parse(endDateString);
 			
@@ -801,7 +787,6 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 	}
 	
 	public Date[] projectUpToDates(OrgLocations orgLocations,Date customStartDate,Date customEndDate) throws Exception {
-	    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 		DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
@@ -809,8 +794,8 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 	    Date toDate =  commonUtil.orgLocationCommonDate(customEndDate,orgLocations);
 		String customStartTimeStr = TZ_DF_CSD.format(fromDate);
 		String customEndTimeStr = TZ_DF_CED.format(toDate);
-		String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
-		String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+		String startDateString = CommonUtil.convertTimeZones(orgLocations.getTimeZoneName(), Constants.UTC_TIMEZONE, customStartTimeStr);
+		String endDateString = CommonUtil.convertTimeZones(orgLocations.getTimeZoneName(), Constants.UTC_TIMEZONE, customEndTimeStr);
 		fromDate = TZ_DF_TS.parse(startDateString);
 		toDate = TZ_DF_TS.parse(endDateString);
 		
