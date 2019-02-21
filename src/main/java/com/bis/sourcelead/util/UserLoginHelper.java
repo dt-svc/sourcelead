@@ -347,8 +347,8 @@ public class UserLoginHelper {
 		SourceLeadSessionManager.setSessionAttribute(req, "reportsTabConfigured", "N");
 		
 		try {
-				tabsList =  userStatsCacheHelper.getLogInUserRoleMenusList(uname+"_AUTH_"+userSession.get("userRoleUUID").toString());
-				actionsList = userStatsCacheHelper.getLogInUserRoleActionsList(uname+"_AUTH_"+userSession.get("userRoleUUID").toString());
+				tabsList =  userStatsCacheHelper.getLogInUserRoleMenusList(uname.toLowerCase()+"_AUTH_"+userSession.get("userRoleUUID").toString());
+				actionsList = userStatsCacheHelper.getLogInUserRoleActionsList(uname.toLowerCase()+"_AUTH_"+userSession.get("userRoleUUID").toString());
 				
 			} catch (Exception e) {}
 			for(String tab : tabsList){
@@ -402,7 +402,7 @@ public class UserLoginHelper {
 				List<UserAccountsDTO> accountsList = new ArrayList<>();
 				String[] userAccountsList = userSession.get("loginUserAccounts").toString().split(",");
 				for(int i=0; i<userAccountsList.length; i++) {
-					JSONObject accountsJson = userStatsCacheHelper.getLogInUserRoleStats(uname+"_AUTH_"+userAccountsList[i]);
+					JSONObject accountsJson = userStatsCacheHelper.getLogInUserRoleStats(uname.toLowerCase()+"_AUTH_"+userAccountsList[i]);
 					UserAccountsDTO accountsDTO = new UserAccountsDTO();
 					accountsDTO.setRoleName(accountsJson.get("roleName").toString());
 					accountsDTO.setDisplayName(accountsJson.get("roleDisplayName").toString());
