@@ -240,7 +240,7 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "isGlobalAccess", userRole.get("isGlobalUser"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "isSuperUser", userRole.get("isSuperUser"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "isSuperAdmin", userRole.get("isSuperAdmin"));
-		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRoleId", userRole.get("roleId"));	
+		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRoleId", Long.parseLong(userRole.get("roleId").toString()));	
 		  SourceLeadSessionManager.setSessionAttribute(req, "userType", userRole.get("userType"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "userCode", userRole.get("userCode"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserFullName", userRole.get("loginUserFullName"));
@@ -262,9 +262,10 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "userCode", userRole.get("userCode"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "isPayRollApprover", userRole.get("isPayRollApprover"));
 		  
-		  
 		  SourceLeadSessionManager.setSessionAttribute(req, "fileUrl", orgLocations.get("imgUrl"));
-		  SourceLeadSessionManager.setSessionAttribute(req, "averageWorkingHours", orgLocations.get("workingHours"));
+		  
+		  SourceLeadSessionManager.setSessionAttribute(req, "averageWorkingHours", orgLocations.get("averageWorkingHours"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "workingDaysPerWeek", orgLocations.get("workingDaysPerWeek"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "orgName", orgLocations.get("orgName"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "orgCode", orgLocations.get("orgCode"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationName", orgLocations.get("orgLocationName"));
@@ -276,7 +277,11 @@ public class UserLoginHelper {
 		 
 		  SourceLeadSessionManager.setSessionAttribute(req, "locationCode", orgLocations.get("orgLocationCode"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "orgShortCode", orgLocations.get("orgShortCode"));
-		  SourceLeadSessionManager.setSessionAttribute(req, "timeZoneId", orgLocations.get("timeZoneId"));
+		  
+		  if(orgLocations.get("timeZoneId") != null) {
+			  SourceLeadSessionManager.setSessionAttribute(req, "timeZoneId", Long.parseLong(orgLocations.get("timeZoneId").toString()));
+		  }
+		  
 		  SourceLeadSessionManager.setSessionAttribute(req, "timeZone",orgLocations.get("timeZone"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "isCompanyOnboarded", orgLocations.get("isCompanyOnboarded"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "dateFormat", orgLocations.get("dateFormat")); 
@@ -290,7 +295,9 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "website", orgLocations.get("website"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "currencyCode", orgLocations.get("currencyCode"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "isTimesheetAvgHoursRequired", orgLocations.get("isTimesheetAvgHoursRequired"));
-		  SourceLeadSessionManager.setSessionAttribute(req, "businessTypeId", orgLocations.get("businessTypeId"));
+		  if(orgLocations.get("businessTypeId") != null) {
+			  SourceLeadSessionManager.setSessionAttribute(req, "businessTypeId", Long.parseLong(orgLocations.get("businessTypeId").toString()));
+		  }
 		  SourceLeadSessionManager.setSessionAttribute(req, "otherBusinessType", orgLocations.get("otherBusinessType"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "poEmail", orgLocations.get("emailForPO"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "remittanceEmail", orgLocations.get("emailforRemittance"));
@@ -526,6 +533,7 @@ public class UserLoginHelper {
 			  SourceLeadSessionManager.setSessionAttribute(req, "orgCode", orgLocations.getOrg().getOrgCode());
 			  SourceLeadSessionManager.setSessionAttribute(req, "loginOrgLocation", orgLocations);
 			  SourceLeadSessionManager.setSessionAttribute(req, "averageWorkingHours", orgLocations.getAverageWorkingHours());
+			  SourceLeadSessionManager.setSessionAttribute(req, "workingDaysPerWeek", orgLocations.getWorkingDaysPerWeek());
 			  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationId", orgLocations.getId());
 			  SourceLeadSessionManager.setSessionAttribute(req, "locationCode", orgLocations.getLocationCode());
 			  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRole", userRole.getRoles().getRoleName());
@@ -976,6 +984,11 @@ public class UserLoginHelper {
 		orgLocations.setOrgCode(orgLocationJson.get("orgCode").toString());
 		orgLocations.setCurrencyCode(orgLocationJson.get("currencyCode").toString());
 		orgLocations.setCountryCode(orgLocationJson.get("countryCode").toString());
+		orgLocations.setGeneratedUserId(orgLocationJson.get("orgShortCode").toString());
+		
+		if(orgLocationJson.get("averageWorkingHours") != null) {
+			orgLocations.setAverageWorkingHours(Integer.valueOf(orgLocationJson.get("averageWorkingHours").toString()));
+		}
 		if(orgLocationJson.get("primaryUserId") != null) {
 			orgLocations.setPrimaryUserId(Long.valueOf(orgLocationJson.get("primaryUserId").toString()));
 		}
