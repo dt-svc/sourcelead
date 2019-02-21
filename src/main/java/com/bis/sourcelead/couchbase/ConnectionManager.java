@@ -86,8 +86,8 @@ public class ConnectionManager {
 	}
 
 	private ConnectionManager() {
-		String isCouchbaseEnabled = couchConfig.getIsCouchbaseEnabled();
-		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+		/*String isCouchbaseEnabled = couchConfig.getIsCouchbaseEnabled();
+		if(isCouchbaseEnabled.trim().equalsIgnoreCase("true")) {*/
 			loadProperties();
 			if (client == null) {		
 				List<URI> hosts;
@@ -106,7 +106,10 @@ public class ConnectionManager {
 					e.printStackTrace();
 				}
 			}
-		}
+		/*}*/
+		
+		
+		
 		/*
 		 * if (client == null) { String bucket = "default"; String password =
 		 * ""; try { List hosts = Arrays.asList(new URI[] { new
