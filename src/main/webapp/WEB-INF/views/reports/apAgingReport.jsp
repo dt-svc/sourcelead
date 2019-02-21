@@ -17,7 +17,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>A/P Aging</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/financialReportsList'/>">Financial Reports</a> &raquo; A/P Aging</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/financialReportsList'/>">Financial Reports</a> &raquo; A/P Aging</div>
     </section>
     <div class="clearfix"></div>
 
@@ -25,8 +25,8 @@ $(document).ready(function(){
       
     <div class="ReqRepHead clearfix">
       <div class="col-md-3 pull-left reqListBtn">
-          <a href='${appPath}/apAgingGraphReport' title="Graph View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
-          <a href='${appPath}/apAgingReport' title="List View" id="LView" class="btn btn-default"><i class="fa fa-list"></i></a>
+          <a href='${SourceLeadWeb_sourceleadUrl}/apAgingGraphReport' title="Graph View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
+          <a href='${SourceLeadWeb_sourceleadUrl}/apAgingReport' title="List View" id="LView" class="btn btn-default"><i class="fa fa-list"></i></a>
      </div>
       
       <!-- <div class="col-md-1 col-md-offset-8">
