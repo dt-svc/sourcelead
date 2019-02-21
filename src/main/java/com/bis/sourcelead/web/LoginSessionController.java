@@ -203,7 +203,6 @@ public class LoginSessionController {
 			return model;
 		}
 		SourceLeadSessionManager.setSessionAttribute(request, "sessionId", request.getSession().getId());
-		User user = userService.findByUserName(authentication.getName());
 
 		/*if (userRoleId == null) {
 			userRoleId = (Long) request.getSession().getAttribute("userRoleId");
@@ -250,7 +249,7 @@ public class LoginSessionController {
 			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 			Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 			String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
-			String timeZoneId = (String) SourceLeadSessionManager.getSessionAttribute(request, "timeZoneId");
+			Long timeZoneId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "timeZoneId");
 
 			OrglocationDepositTaxes orgLocDepTaxes = orglocationDepositTaxesService
 					.getOrglocationDepositTaxesByOrgLocationId(orgLocId);
