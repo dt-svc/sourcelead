@@ -658,14 +658,15 @@ public class CompanyOnboardRestController {
 	@RequestMapping(value = "/skipAndSaveOrglocationSignatory", method = RequestMethod.POST)
 	public @ResponseBody String skipAndSaveOrglocationSignatory(HttpServletRequest request) throws Exception
 	{
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		loginOrgLocation.setIsCompanyOnboarded(Constants.YES);
 		orgLocationService.updateOrgLocations(loginOrgLocation);
 		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
 			userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(loginOrgLocation);
 		}
-		SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", loginOrgLocation);
 		commonUtil.onboardCreationCandidateGeneratedIdUpdated(candidate,loginOrgLocation);
 		return "success";
 	}
