@@ -1252,12 +1252,13 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				Date newDate = dateFormat.parse(currentDateStr);
 				
 			    Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), newDate);
+			    
 
 			  if(candRecentVisaDetails == null) {
 				 
 						if (StringUtils.isNotBlank(visaEndDate)
-								&& currentDate.before(commonUtil.stringToDate(visaEndDate))) {
-							visaDto.setIsCurrent(Constants.NO);
+								&& currentDate.after(commonUtil.stringToDateByOrgLocationFormat(visaEndDate, orgLocation.getDateFormat()))) {
+							visaDto.setIsCurrent(ImmigrationConstants.IS_CURRENT_NO);
 							
 						} else {
 							visaDto.setIsCurrent(ImmigrationConstants.IS_CURRENT);
@@ -1265,17 +1266,14 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				  candidateVisa = immigrationCommonService.saveVisaDetails(visaDto, user, orgLocation, immigration.getId(), null);
 			  }else {
 				  String candRecentVisaDetailsEndDate = null;
-				   candRecentVisaDetailsEndDate =  candRecentVisaDetails.getValidTo();
-				   candRecentVisaDetails.setValidFrom(visaStartDate);      
-				   candRecentVisaDetails.setValidTo(visaEndDate);
-				    if (StringUtils.isNotBlank(candRecentVisaDetailsEndDate)
-							&& currentDate.before(commonUtil.stringToDate(candRecentVisaDetailsEndDate))) {
-				    	candRecentVisaDetails.setIsCurrent(Constants.NO);
+				    if (StringUtils.isNotBlank(visaEndDate)
+							&& currentDate.after(commonUtil.stringToDateByOrgLocationFormat(visaEndDate,orgLocation.getDateFormat()))) {
+				    	visaDto.setIsCurrent(ImmigrationConstants.IS_CURRENT_NO);
 					} else {
-						candRecentVisaDetails.setIsCurrent(ImmigrationConstants.IS_CURRENT);
+						visaDto.setIsCurrent(ImmigrationConstants.IS_CURRENT);
 					}
-				    candRecentVisaDetails.setCandidateVisaId(candRecentVisaDetails.getCandidateVisaId());
-				    candidateVisa = immigrationCommonService.saveVisaDetails(candRecentVisaDetails, user, orgLocation, immigration.getId(), candRecentVisaDetails.getId());
+				    visaDto.setCandidateVisaId(candRecentVisaDetails.getCandidateVisaId());
+				    candidateVisa = immigrationCommonService.saveVisaDetails(visaDto, user, orgLocation, immigration.getId(), null);
 			  }
 				
 			}

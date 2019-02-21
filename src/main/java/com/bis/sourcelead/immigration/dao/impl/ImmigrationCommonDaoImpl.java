@@ -3172,9 +3172,11 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		try {
 			if (visaId != null) {
 				logger.debug(" before query execute to get lcaHistory " + visaId);
-				String queryString = "from CandidateVisaHistory cvh  where cvh.status=1 and cvh.isCurrent =:isCurrent and  cvh.visaId = :visaId ";
+				System.out.print(" updated string 1");
+				String queryString = "from CandidateVisaHistory cvh  where cvh.status=1 and cvh.isCurrent =:isCurrent and  cvh.visaId = :visaId order by cvh.id desc ";
 				canVisaHistory = (CandidateVisaHistory) session.createQuery(queryString).setLong("visaId", visaId)
-																		  .setString("isCurrent", isCurrent).uniqueResult();
+																		  .setString("isCurrent", isCurrent).setMaxResults(1).uniqueResult();
+				System.out.print(" updated string 2 ");
 			}
 		} catch (Exception exception) {
 			logger.error("Exception caught while  lcaHistory information " + exception.getMessage());

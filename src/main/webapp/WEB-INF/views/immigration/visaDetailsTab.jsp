@@ -59,7 +59,8 @@
 				        <div class="tblminwidth-100">
 				           <c:if test ="${visadetails.currentStatus == 'Expired' && visadetails.status == 1}">
 				        	<input type="text" class="calendar visaCalendarInput" id="visaExtendDate${visadetails.candidateVisaId}" readonly="readonly">
-				        
+				        </c:if>
+				         <c:if test ="${visadetails.currentStatus == 'Active' && visadetails.status == 1}">
 						      <i id="edit" onclick="immigration.editVisaDetailsByRowId(${visadetails.id});"
 						    
 				class="glyphicon glyphicon-pencil cursorPointer"></i>
@@ -74,9 +75,12 @@
 						      <td><div class="tblminwidth-100">
 				           <c:if test ="${visadetails.currentStatus == 'Expired' && visadetails.status == 1}">
 				        	<input type="text" class="calendar visaCalendarInput" id="visaExtendDate${visadetails.candidateVisaId}" readonly="readonly">
+						       </c:if>
+				        		 <c:if test ="${visadetails.currentStatus == 'Active' && visadetails.status == 1}">
 						      <i id="edit" onclick="immigration.editVisaDetailsByRowId(${visadetails.id});"
+						    
 								class="glyphicon glyphicon-pencil cursorPointer"></i>
-							</c:if>
+								</c:if>
 								<i id="delete" 
 							 onclick="deleteImmigrationRecord('immigration.deleteVisaDetails',${visadetails.id});" 
 							 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>

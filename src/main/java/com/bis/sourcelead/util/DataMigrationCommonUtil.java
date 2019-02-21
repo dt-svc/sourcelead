@@ -2359,6 +2359,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				//boolean flag = immigrationCommonService.validateCandidatePassportVisa(Long.parseLong(dataMigrationDTOJsonCopy.getString("candidateId")),
 				//.ID_TYPE_VISA,dataMigrationDTOJsonCopy.getString("visaNo") );
 				//if(!flag) {
+
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaCountry")) || dataMigrationDTOJsonCopy.getString("visaCountry").equals("null")) {
 				errorSet.put("visaCountry", "visaCountry is mandatory if you have entered visano");/// dropdown value.
 				}
@@ -2372,15 +2373,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaEndDate")) || dataMigrationDTOJsonCopy.getString("visaEndDate").equals("null")) {
 				errorSet.put("visaEndDate", "visaEndDate is mandatory if you have entered visano");/// dropdown value.
 				}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("visaEndDate"))) {
-					errorSet.put("visaEndDate", "visaEndDate is invalid date");
-				}
-			   if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaStartDate")) && StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaEndDate"))) {
-					Date visaStartDate = commonUtil.stringToDate(dataMigrationDTOJsonCopy.getString("visaStartDate"));
-					Date visaEndDate = commonUtil.stringToDate(dataMigrationDTOJsonCopy.getString("visaEndDate"));
-					if(visaEndDate.before(visaStartDate)) {
-						errorSet.put("visaEndDate", "VisaEndDate should be greater than visaStartDate"); /// dropdown value.
-					}
-					
+				errorSet.put("visaEndDate", "visaEndDate is invalid date");
 				}
 
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaType")) || dataMigrationDTOJsonCopy.getString("visaType").equals("null")) {
@@ -2393,7 +2386,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				errorSet.put("visaType", "Visa Type is not found"); /// dropdown value.
 				} else {
 				// dataMigrationDTOJsonCopy.setString("petitionType", data.getId().toString());
-				dataMigrationDTOJsonCopy.put("visaType", data.getId());
+				dataMigrationDTOJsonCopy.put("visaType",data.getName());
 				}
 
 				}
