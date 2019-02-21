@@ -190,36 +190,21 @@ public class OrgSettingsRestController {
 		 * Iterator<String> itrator = request.getFileNames(); MultipartFile
 		 * multiFile = request.getFile(itrator.next());
 		 */
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Response<String> response = new Response<>();
 	
 		try {
 			if(user != null){
 			if (Validator.validate(orgSettingsDTO)) {
+				Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 				ModelMapper mapper1 = new ModelMapper();
 				OrgSettings orgSettings = mapper1.map(orgSettingsDTO, OrgSettings.class);
-				
-					orgLocations = orgLocationService.saveOrgLocations(orgSettings, orgLocations);
+				OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+				orgLocations = orgLocationService.saveOrgLocations(orgSettings, orgLocations);
 					if (orgLocations.getGeneratedUserId() != null) {
 						changeShortCodeForExpenses(orgLocations.getGeneratedUserId(), orgLocations.getId());
 					}
-					SourceLeadSessionManager.setSessionAttribute(request, "org", org);
-					SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
-					SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
-					SourceLeadSessionManager.setSessionAttribute(request, "address", orgLocations.getOrgLocationAddress());
-					SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
-					SourceLeadSessionManager.setSessionAttribute(request, "dba", orgLocations.getDba());
-					SourceLeadSessionManager.setSessionAttribute(request, "businessType", orgSettings.getBusinessType());
-					List<String> weekOffDaysList = new ArrayList<>();
-					if(orgLocations.getWeekOffDays() != null && !orgLocations.getWeekOffDays().isEmpty()) {
-						String[] weekOffDays = orgLocations.getWeekOffDays().split(",");
-						for(int i=0; i < weekOffDays.length; i++) {
-							weekOffDaysList.add(weekOffDays[i]);
-						}
-					}
-					SourceLeadSessionManager.setSessionAttribute(request, "weekOffDaysList", weekOffDaysList);
+		
 					if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
 						userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(orgLocations);
 					}
