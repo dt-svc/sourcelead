@@ -274,7 +274,11 @@ public class UserLoginHelper {
 		  if(orgLocations.get("orgLocationId") != null) {
 			  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationId", Long.parseLong(orgLocations.get("orgLocationId").toString()));
 		  }
-		 
+		  
+		  if(orgLocations.get("orgId") != null) {
+			  SourceLeadSessionManager.setSessionAttribute(req, "orgId", Long.parseLong(orgLocations.get("orgId").toString()));
+		  }
+		  
 		  SourceLeadSessionManager.setSessionAttribute(req, "locationCode", orgLocations.get("orgLocationCode"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "orgShortCode", orgLocations.get("orgShortCode"));
 		  
@@ -535,6 +539,7 @@ public class UserLoginHelper {
 			  SourceLeadSessionManager.setSessionAttribute(req, "averageWorkingHours", orgLocations.getAverageWorkingHours());
 			  SourceLeadSessionManager.setSessionAttribute(req, "workingDaysPerWeek", orgLocations.getWorkingDaysPerWeek());
 			  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationId", orgLocations.getId());
+			  SourceLeadSessionManager.setSessionAttribute(req, "orgId", orgLocations.getOrg().getId());
 			  SourceLeadSessionManager.setSessionAttribute(req, "locationCode", orgLocations.getLocationCode());
 			  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRole", userRole.getRoles().getRoleName());
 			  
@@ -984,14 +989,23 @@ public class UserLoginHelper {
 		orgLocations.setOrgCode(orgLocationJson.get("orgCode").toString());
 		orgLocations.setCurrencyCode(orgLocationJson.get("currencyCode").toString());
 		orgLocations.setCountryCode(orgLocationJson.get("countryCode").toString());
-		orgLocations.setGeneratedUserId(orgLocationJson.get("orgShortCode").toString());
+		
+		if(orgLocationJson.get("orgShortCode") != null) {
+			orgLocations.setGeneratedUserId(orgLocationJson.get("orgShortCode").toString());
+		}
 		
 		if(orgLocationJson.get("averageWorkingHours") != null) {
 			orgLocations.setAverageWorkingHours(Integer.valueOf(orgLocationJson.get("averageWorkingHours").toString()));
 		}
+		
 		if(orgLocationJson.get("primaryUserId") != null) {
 			orgLocations.setPrimaryUserId(Long.valueOf(orgLocationJson.get("primaryUserId").toString()));
 		}
+		
+		if(orgLocationJson.get("isCompanyOnboarded") != null) {
+			orgLocations.setIsCompanyOnboarded(orgLocationJson.get("isCompanyOnboarded").toString());
+		}
+		
 		
 		return orgLocations;
 		
@@ -1004,6 +1018,19 @@ public class UserLoginHelper {
 		user.setId(Long.valueOf(userRoleJson.get("userId").toString()));
 		user.setUserCode(userRoleJson.get("userCode").toString());
 		user.setFullName(userRoleJson.get("loginUserFullName").toString());
+		
+		if(userRoleJson.get("firstName") != null) {
+			user.setFirstName(userRoleJson.get("firstName").toString());
+		}
+		
+		if(userRoleJson.get("lastName") != null) {
+			user.setLastName(userRoleJson.get("lastName").toString());
+		}
+		
+		if(userRoleJson.get("middleName") != null) {
+			user.setMiddelName(userRoleJson.get("middleName").toString());
+		}
+		
 		return user;
 	}
 	
