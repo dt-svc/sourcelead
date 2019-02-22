@@ -1085,6 +1085,13 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			
 			
 			visaHistory = immigrationCommonDao.saveVisaHistoaryDetails(visaHistory);
+			// below condition is added for upload functionality for multiple visa details. if current visa comes earlier visas will be in inactive mode.
+			// for upload we are passing visa history id as null. 
+			if(immigrationVisaDTO.getId() == null && immigrationVisaDTO.getIsCurrent().equalsIgnoreCase("Y")){
+				int count= immigrationCommonDao.updateCanVisaHistoryDetails(immigrationVisaDTO.getCandidateVisaId(), visaHistory.getId());
+				logger.debug("updated records count in visa history detials for visa id "+visaHistory.getVisaId() +" in visa history table " +count);
+				
+			}
 			
 		}
 		

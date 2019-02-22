@@ -175,11 +175,14 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	int candidateIndexKey = 0;
 	List<Candidate> uploadedCandidatesList = null;
 	
-	Map<String, String> candidateVisaMap = null;
+	Map<String, String> candidateVisaMap = new HashMap<String, String>();
 	Immigration immigration = null;
 	@Override
 	public Map<String, String> getfileData(String filePath, String headerPosition) throws Exception {
-		candidateVisaMap.clear();// clearing the map for a new file import not to insert duplicate immigration petition for when user uploaded with multiple visas.
+	   // clearing the map for a new file import not to insert duplicate immigration petition for when user uploaded with multiple visas.
+		if(candidateVisaMap != null ) {
+			candidateVisaMap.clear();
+		}
 		FileInputStream inputStream = new FileInputStream(new File(filePath.replace("/dataMigration/", "/temp/")));
 		Workbook workbook = null;
 		DataFormatter objDefaultFormat = new DataFormatter();
@@ -1234,7 +1237,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			String candiateId = dataMigrationDTOJsonCopy.getString("candidateId");
 			String canVisaNumber = dataMigrationDTOJsonCopy.getString("visaNo");
 			
-			if(candidateVisaMap.get(canVisaNumber) == null) {
+			if(candidateVisaMap == null || candidateVisaMap.get(canVisaNumber) == null) {
 			// pending prevLcaTitle in excel mapping.
 			   immigration = immigrationCommonService.savePetitionDetails(immDto, user, orgLocation, null);
 			}
@@ -1282,14 +1285,17 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			  }
 			
 			}
-			if(candidateVisaMap.get(canVisaNumber) != null)  break;
+			if(candidateVisaMap != null && candidateVisaMap.get(canVisaNumber) != null)  break;
 			//passport saving from import
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("passportNo"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("passportNo"))) {
 				candidatePassport = immigrationCommonService.savePassportDetails(passVisaDto, user, orgLocation,
 						immigration.getId());
 			}
-			  candidateVisaMap.put(candidateVisa.getVisaNumber(), candiateId); 
+			if(candidateVisaMap == null) {
+				candidateVisaMap = new HashMap<String, String>();
+				candidateVisaMap.put(candidateVisa.getVisaNumber(), candiateId); 
+			}
 			  //preparing map not to regenerate the petition for the same visa,  for same candidate, for multiple records for same visa number
 			}catch (Exception e) {
 				UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
