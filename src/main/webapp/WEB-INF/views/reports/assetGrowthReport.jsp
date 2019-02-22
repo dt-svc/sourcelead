@@ -108,7 +108,7 @@ function getAssetReportCustomDates(){
       <div class="pull-left">
         <h2>Asset Growth</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/financialReportsList'/>">Financial Reports</a> &raquo; Asset Growth
+      <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/reportsDashboard'/>"> Reports Dashboard</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/financialReportsList'/>">Financial Reports</a> &raquo; Asset Growth
        </div>
     </section>
     

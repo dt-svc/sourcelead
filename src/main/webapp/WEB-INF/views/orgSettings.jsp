@@ -156,7 +156,7 @@ function cancelOrgImg(){
       <div class="pull-left">
         <h2>Org Settings</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; Account Settings</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings</a>&raquo; Account Settings</div>
     </section>
     
     <div class="project_wrap clearfix">
@@ -2366,14 +2366,14 @@ function cancel(){
 
 <script type="text/javascript">
 function restSignature(){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	$("#restorePopUp").empty();
 	$(".mask").hide();
 	$("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	   $.ajax({
 			type : "POST",
-			url : sourceleadUrl+"/restoreSignature?${_csrf.parameterName}=${_csrf.token}",
+			url : atsUrl+"/restoreSignature?${_csrf.parameterName}=${_csrf.token}",
 			success : function(result) {
 				
 				if(result == "success"){

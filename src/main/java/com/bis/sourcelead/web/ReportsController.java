@@ -29,6 +29,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.reports.service.ClientReportService;
@@ -235,9 +236,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 			@RequestParam(value="orgTeams", required=false)String orgTeams,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
-		 
 		 
 		 User recruiterUser = userService.getUserByUserCode(recruiterUserCode);
 		 
@@ -271,7 +270,6 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 			@RequestParam(value="orgTeams", required=false)String orgTeams,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 		 
 		 
@@ -309,7 +307,6 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 			@RequestParam(value="orgTeams", required=false)String orgTeams,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 		 
 		 
@@ -373,7 +370,6 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	public ModelAndView billingReports(HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 		 boolean billingTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_BILLING));
 
@@ -487,7 +483,6 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		public ModelAndView vendorsReports(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		 
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 		 
 		 boolean vendorTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_VENDOR));
@@ -557,12 +552,6 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	 @RequestMapping(value = "/userUsageReport")
 		public ModelAndView userUsageReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		 
-		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
-		 
-//		 boolean vendorTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_VENDOR));
-		 
 		 ModelAndView model = new ModelAndView();
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 //		 model.addObject("vendorTabAccess", vendorTabAccess);
@@ -572,13 +561,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	 
 	 @RequestMapping(value = "/userUsageReportsGraph")
 		public ModelAndView userUsageReportsGraph(HttpServletRequest request,HttpServletResponse response) throws Exception {
-		 
-		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
-		 
-//		 boolean vendorTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_VENDOR));
-		 
+		
 		 ModelAndView model = new ModelAndView();
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 //		 model.addObject("vendorTabAccess", vendorTabAccess);
@@ -734,11 +717,9 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		public ModelAndView marginSheetReports(HttpServletRequest request) throws Exception
 		{
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 			 boolean billingTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_BILLING));
 			Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
-
 			 
 			ModelAndView model = new ModelAndView();
 			List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
@@ -760,7 +741,6 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 				}
 				// sessionData.setNav(Constants.PAYROLL);
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				List<WageTaxSummary> wageTaxSummaryList = wageTaxSummaryService.getUniqueWagesAndTaxListByOrgLocationId(orgLocation);
 				if (wageTaxSummaryList != null) {
 					model.addObject("wageTaxSummaryList", wageTaxSummaryList);
