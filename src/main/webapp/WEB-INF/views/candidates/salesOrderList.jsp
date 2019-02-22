@@ -1,169 +1,224 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 
- <section class="content-wraper">
-    <section class="content-header clearfix">
-      <div class="pull-left">
-        <h2>Sales Orders List</h2>
-      </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Sales Order List</div>
-    </section>
-    
-       <div class="clearfix">
-	<ul class="project-tabs-menu projecttabs-custom clearfix">
-         <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
-          <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
-          <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
-          <li id=""><a href="javascript:void(0)" onclick="javascript:goToCartList();">Cart</a></li>
-          <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
-            <li id="" class="current"><a href="javascript:void(0)">Sales Orderlist</a></li>
-            <li id=""><a href="javascript:void(0)" onclick="javascript:goToWalletList();">Wallet</a></li>       
-     
-     </ul>
-</div>
-    
-    <div class="clearfix">
-      <div class="timesheet_out" id="payrollRegister" style="display: block;">
-        <div class="clearfix">
-    	 <div class="positionRelative reportHead clearfix">
-			  <span class="pull-left refreIcon mb10">
-				  <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="refreshPage();"></a>
-			  </span>
-            <ul class="pull-right list-unstyled list-inline mr">
-              <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
-              <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-                <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportSalesOrderToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportSalesOrderToExcel();" title="Excel">Export Excel</a> </span> </div>
-              </li>
-            <li class="noMar">
+<section class="content-wraper">
+	<section class="content-header clearfix">
+		<div class="pull-left">
+			<h2>Sales Orders List</h2>
+		</div>
+		<div class="pull-right brud-crum">
+			<a
+				href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			&raquo; Sales Order List
+		</div>
+	</section>
 
-                <input class="repSearchBar" placeholder="Search" id="searchByValue" type="text" value="">
-                <span class="repSearchIcon" onclick="getDynamicSalesOrderList();"></span>
+	<div class="clearfix">
+		<ul class="project-tabs-menu projecttabs-custom clearfix">
+			<li id=""><a href="${appPath}/candidatesList">Candidate
+					List</a></li>
+			<li id=""><a href="javascript:void(0)"
+				onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
+			<li id=""><a href="javascript:void(0)"
+				onclick="javascript:goToGlobalMarketPlaceList();">Global
+					Marketplace</a></li>
+			<li id=""><a href="javascript:void(0)"
+				onclick="javascript:goToCartList();">Cart</a></li>
+			<li id=""><a href="javascript:void(0)"
+				onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
+			<li id="" class="current"><a href="javascript:void(0)">Sales
+					Orderlist</a></li>
+			<li id=""><a href="javascript:void(0)"
+				onclick="javascript:goToWalletList();">Wallet</a></li>
 
-			</li>
-            </ul>
-          </div>
-          
-          
-          <div  class="require_wrap_table tableFirstSecond clearfix datatable_filter">
-          	<div id="dynamicSalesOrderList"></div>
-               
-      		</div>
-        </div>
-      </div>
-    </div> 
-  </section>
-  
-  <div id="emptyPopup"></div>
+		</ul>
+	</div>
+
+	<div class="clearfix">
+		<div class="timesheet_out" id="payrollRegister"
+			style="display: block;">
+			<div class="clearfix">
+				<div class="positionRelative reportHead clearfix">
+					<span class="pull-left refreIcon mb10"> <a
+						href="javascript:void(0)" class="refeIcon" title="Refresh"
+						onclick="refreshPage();"></a>
+					</span>
+					<ul class="pull-right list-unstyled list-inline mr">
+						<li><a href="javascript:void(0)" class="filtIcon"
+							title="Filters" onclick="openPop();"></a></li>
+						<li><a href="javascript:void(0)" class="overIcon"
+							title="Actions" onclick="newActions();"></a>
+							<div class="newActPop" style="">
+								<span><a href="javascript:void(0)"
+									onclick="exportSalesOrderToPdf();" title="PDF">Export PDF</a> <a
+									href="javascript:void(0)" onclick="exportSalesOrderToExcel();"
+									title="Excel">Export Excel</a> </span>
+							</div></li>
+						<li class="noMar"><input class="repSearchBar"
+							placeholder="Search" id="searchByValue" type="text" value="">
+							<span class="repSearchIcon" onclick="getDynamicSalesOrderList();"></span>
+
+						</li>
+					</ul>
+				</div>
+
+
+				<div
+					class="require_wrap_table tableFirstSecond clearfix datatable_filter">
+					<div id="dynamicSalesOrderList"></div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<div id="emptyPopup"></div>
 <div class="advancedsearch-mask"></div>
 <div class="popupWrap" id="modalSalesOrder">
-      <div class="popupHead"><span>Task Type</span><i class="closePop pull-right popClose" onclick = "closePop();"></i></div>
-        <form id="#" name="" action="" method="post">
-        <div class="popupContent">
+	<div class="popupHead">
+		<span>Task Type</span><i class="closePop pull-right popClose"
+			onclick="closePop();"></i>
+	</div>
+	<form id="#" name="" action="" method="post">
+		<div class="popupContent">
 			<div class="addInner">
-      <div class="row">
-        <div class="col-md-6 mb positionRelative">
-        <div class="clearfix dynamic_search filterDynamicsearch">
-        	<h5>Payment Status</h5>
-		</div>
-          <div class="clearfix filterSearch-ul">
-            <ul class="list-unstyled positionRelative filterSearch mt5" id="salesOrderPaymentStatus">
-              <li class="checkBox positionRelative">
-                <input name="orgManagers" value="" type="checkbox" class="mt2" id = "paymentSuccessCheckBox">
-                <label>Success</label>
-              </li>
-              <li class="checkBox positionRelative">
-                <input name="orgManagers" value="" type="checkbox" class="mt2" id = "paymentFailureCheckBox">
-                <label>Failure</label>
-              </li>
-            </ul>
-          </div>
-        </div>
-        
-        <div class="col-md-6 positionRelative">
-          <!-- <div class="clearfix dynamic_search filterDynamicsearch">
+				<div class="row">
+					<div class="col-md-6 mb positionRelative">
+						<div class="clearfix dynamic_search filterDynamicsearch">
+							<h5>Payment Status</h5>
+						</div>
+						<div class="clearfix filterSearch-ul">
+							<ul class="list-unstyled positionRelative filterSearch mt5"
+								id="salesOrderPaymentStatus">
+								<li class="checkBox positionRelative"><input
+									name="orgManagers" value="" type="checkbox" class="mt2"
+									id="paymentSuccessCheckBox"> <label>Success</label></li>
+								<li class="checkBox positionRelative"><input
+									name="orgManagers" value="" type="checkbox" class="mt2"
+									id="paymentFailureCheckBox"> <label>Failure</label></li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="col-md-6 positionRelative">
+						<!-- <div class="clearfix dynamic_search filterDynamicsearch">
             <input id="myRolesInput" onkeyup="myRolesFunction()" placeholder="By Date" title="Type in a roles" type="text">
             <span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span> </div> -->
-          <div class="clearfix filterSearch-ul">
-            <ul class="list-unstyled positionRelative filterSearch mt5" id="salesOrderCheckBox">
-			<li class="checkBox positionRelative">
-                <input name="dateCheckBox" value="today" type="radio" class="mt2">
-                <label>Today</label>
-            </li>
-			<li class="checkBox positionRelative">
-                <input name="dateCheckBox" value="1_week" type="radio" class="mt2">
-                <label>Week Ago</label>
-            </li>
-			  <li class="checkBox positionRelative">
-				<input name="dateCheckBox" value="1_month" type="radio" class="mt2">
-				<label>This Month</label>
-			  </li>
-			  <li class="checkBox positionRelative">
-				<input name="dateCheckBox" value="3_months" type="radio" class="mt2">
-				<label>3 months ago</label>
-			  </li>
-			  <li class="checkBox positionRelative">
-				<input name="dateCheckBox" value="6_months" type="radio" class="mt2">
-				<label>6 Months ago</label>
-			  </li>
-			  <li class="checkBox positionRelative">
-				<input name="dateCheckBox" value="YTD" type="radio" class="mt2">
-				<label>1 Year ago</label>
-			  </li>
-			  <li class="checkBox positionRelative">
-				<input name="dateCheckBox" value="custom" type="radio" id = "salesOrderCustomDate" class="mt2">
-				<label>Custom Dates</label>
-			  </li>
-			  </ul>
-          </div>
-        </div>
-        <div class="clearfix"></div>
-		  <div class="clearfix" id="customDates" style="display: none;">
-		<div class="col-md-12 positionRelative">
-          <div class="clearfix dynamic_search filterDynamicsearch" >
-          <h5 class="margin-top0">Custom Dates<span class="text-danger paddingLeft">*</span></h5>
-            <ul class="list-unstyled positionRelative filterSearch mb0">
-              <li class="positionRelative">
-                <div class="row">
-                <div class="col-md-6" id="custFromDateDiv">
-                	<input type="text" value="" class="form-control calendar input-sm" field-name="From Date" placeholder="From Date"  id="salesOrderFromDate">
-                </div>
-                <div class="col-md-6" id="custToDateDiv">
-                	<input type="text" value="" class="form-control calendar input-sm" field-name="To Date" placeholder="To Date"  id="salesOrderToDate">
+						<div class="clearfix filterSearch-ul">
+							<ul class="list-unstyled positionRelative filterSearch mt5"
+								id="salesOrderCheckBox">
+								<li class="checkBox positionRelative"><input
+									name="dateCheckBox" value="today" type="radio" class="mt2">
+									<label>Today</label></li>
+								<li class="checkBox positionRelative"><input
+									name="dateCheckBox" value="1_week" type="radio" class="mt2">
+									<label>Week Ago</label></li>
+								<li class="checkBox positionRelative"><input
+									name="dateCheckBox" value="1_month" type="radio" class="mt2">
+									<label>This Month</label></li>
+								<li class="checkBox positionRelative"><input
+									name="dateCheckBox" value="3_months" type="radio" class="mt2">
+									<label>3 months ago</label></li>
+								<li class="checkBox positionRelative"><input
+									name="dateCheckBox" value="6_months" type="radio" class="mt2">
+									<label>6 Months ago</label></li>
+								<li class="checkBox positionRelative"><input
+									name="dateCheckBox" value="YTD" type="radio" class="mt2">
+									<label>1 Year ago</label></li>
+								<li class="checkBox positionRelative"><input
+									name="dateCheckBox" value="custom" type="radio"
+									id="salesOrderCustomDate" class="mt2"> <label>Custom
+										Dates</label></li>
+							</ul>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+					<div class="clearfix" id="customDates" style="display: none;">
+						<div class="col-md-12 positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<h5 class="margin-top0">
+									Custom Dates<span class="text-danger paddingLeft">*</span>
+								</h5>
+								<ul class="list-unstyled positionRelative filterSearch mb0">
+									<li class="positionRelative">
+										<div class="row">
+											<div class="col-md-6" id="custFromDateDiv">
+												<input type="text" value=""
+													class="form-control calendar input-sm"
+													field-name="From Date" placeholder="From Date"
+													id="salesOrderFromDate">
+											</div>
+											<div class="col-md-6" id="custToDateDiv">
+												<input type="text" value=""
+													class="form-control calendar input-sm" field-name="To Date"
+													placeholder="To Date" id="salesOrderToDate">
+											</div>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
 				</div>
-             </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-	</div>
-      </div>
-    </div>			
+			</div>
 		</div>
-        
-        <div class="popupFoot text-right">
-         <button type="button" class="slBtn md colorBtn" onclick="validateSalesOrderFilter();">Apply</button>
-          <button type="button" class="slBtn md" onclick="resetSalesOrderFilter()">Reset</button>
-        </div>
-        
-        <div>
-</div></form>
-  </div>
-  
-  
-  <script>
+
+		<div class="popupFoot text-right">
+			<button type="button" class="slBtn md colorBtn"
+				onclick="validateSalesOrderFilter();">Apply</button>
+			<button type="button" class="slBtn md"
+				onclick="resetSalesOrderFilter()">Reset</button>
+		</div>
+
+		<div></div>
+	</form>
+</div>
+
+
+<script>
    var table = "";
    var paymentStatus = "";
    $(document).ready(function () {
 	   getDynamicSalesOrderList();
 	 });
   
-   function getDynamicSalesOrderList(){
-	   var salesOrderFilterDate = $('input[name=dateCheckBox]:checked').val();
-	 	var salesOrderFromDate = $("#salesOrderFromDate").val();
-		var salesOrderToDate = $("#salesOrderToDate").val(); 
+   function validateSalesOrderFilter(){ 
+	   		   var salesOrderFilterDate = $('input[name=dateCheckBox]:checked').val(); 
+	   		   var salesOrderFromDate = $("#salesOrderFromDate").val(); 
+	   		   var salesOrderToDate = $("#salesOrderToDate").val(); 
+	   		   if(salesOrderFilterDate === "custom"){ 
+	   		   if(salesOrderFromDate === '' && salesOrderToDate != null){ 
+	   		   $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
+	   		   $("input#salesOrderFromDate").after( "<p class='jquery_form_error_message'>From Date is required.</span>"); 
+	   		   $("input#salesOrderFromDate").empty(); 
+	   		   return false; 
+	   		   } 
+	   		   if(salesOrderToDate === '' && salesOrderFromDate !== ''){ 
+	   		   $('#custToDateDiv').find('p.jquery_form_error_message').remove(); 
+	   		   $("input#salesOrderToDate").after( "<p class='jquery_form_error_message'>To Date is required.</span>"); 
+	   		   $("input#salesOrderToDate").empty(); 
+	   		   return false; 
+	   		   } 
+	   		   if((salesOrderFromDate != '' && salesOrderFromDate != 'undefined' && salesOrderFromDate != null) && 
+	   		   (salesOrderToDate != '' && salesOrderToDate != 'undefined' && salesOrderToDate != null)){ 
+	   		   $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
+	   		   $('#custToDateDiv').find('p.jquery_form_error_message').remove(); 
+	   		   } 
+	   		   } 
+	   		   else{
+	   		   $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
+	   		   $('#custToDateDiv').find('p.jquery_form_error_message').remove(); 
+	   		   }
+	   		   closePop(); 
+	   		   getDynamicSalesOrderList(salesOrderFilterDate, salesOrderFromDate, salesOrderToDate);
+	   		   } 
+	      
+	   function getDynamicSalesOrderList(salesOrderFilterDate, salesOrderFromDate, salesOrderToDate){
 	  	var result = "";
 	  	var searchValue = $("#searchByValue").val();
 	  	var url = "";
@@ -329,7 +384,7 @@
 	}
 
    </script>
-   <script>
+<script>
   	function goToCandidateList(){
 			location.href = "${appPath}/candidatesList";
 	}
@@ -354,11 +409,10 @@
 	    location.href = "${appPath}/walletList";
 	}
 	function refreshPage(){
-		$("#searchByValue").val('');
-		getDynamicSalesOrderList();
+		location.reload();
 	}
   </script>
-  <script>
+<script>
   
   	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
   	var locationDateFormat = '';
@@ -403,33 +457,8 @@
   		 createSalesOrderToDate();
   	 });
   	
-  	function validateSalesOrderFilter(){
-  		var customDate = $("#salesOrderCustomDate").val();
-  		var otherDate = $('input[name=dateCheckBox]:checked').val();
-  		var fromDate = $("#salesOrderFromDate").val();
-  		var toDate = $("#salesOrderToDate").val();
-  		if(customDate === "custom"){
-  			if(fromDate === ''){
-  				$("#salesOrderFromDate").focus();
-  			}
-  			if(toDate === '' && fromDate !== ''){
-				$("#salesOrderToDate").focus();  				
-	  		}
-  	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
-  	        	closePop();
-  	        	getDynamicSalesOrderList();
-        	}
-  			}
-  		if(otherDate != null && otherDate != 'undefined' && otherDate != ''){
-  				closePop();
-	        	getDynamicSalesOrderList();
-  		}
-  		if(otherDate === '' && customDate != 'custom'){
-  			alert('Kindly Select a Check Box.');
-  		}
-  	}
  </script>
-   <script>	
+<script>	
    function closePop(){
 		$("div.popupWrap").hide();
 		$(".advancedsearch-mask").hide();
@@ -443,40 +472,25 @@
     	$("#modalSalesOrder, .advancedsearch-mask").fadeOut();
     }
   
-	 
-	/* $("#paymentSuccessCheckBox").click(function() {
-		if($(this).is(":checked")){
-			paymentStatus = 'success';
-		}
-	});
-	$("#paymentFailureCheckBox").click(function() {
-		if($(this).is(":checked")){
-			paymentStatus = 'failure';
-		}
-	}); */
-	//Custom Dates
-	$("#salesOrderCustomDate").click(function() {
-	if($(this).is(":checked")){
-		$("#customDates").show();
-	}else {
-		$("#customDates").hide();
-	}
-	});
+    $('input[name=dateCheckBox]').on('change', function() {
+    	   		if($(this).val() == "custom"){
+    	   			$("#customDates").show();
+    		   		$('#salesOrderFromDate').attr('data-validation',"required");
+    		        $('#salesOrderToDate').attr('data-validation',"required");
+    	   		}else{
+    	   			$("#customDates").hide();
+    	   			$('#salesOrderFromDate').removeAttr('data-validation');
+    	   	        $('#salesOrderToDate').removeAttr('data-validation');
+    	   	     	$('#salesOrderToDate, #salesOrderFromDate').val('').datepicker('setDate', null);
+    	   		}
 	
 	function resetSalesOrderFilter(){
-		emptySalesOrderSearchValues();
+		$('#salesOrderFromDate, #salesOrderToDate').val('').datepicker('setDate', null);
 		$("#customDates").hide();
 		$("ul#salesOrderCheckBox > li input:radio").prop("checked", false);
 		$("ul#salesOrderPaymentStatus > li input:checkbox").prop("checked", false);
 	}
 	
-	function emptySalesOrderSearchValues(){
-		$("#salesOrderCustomDate").val('');
-		$("#salesOrderFromDate").val('');
-		$("#salesOrderToDate").val('');
-		salesOrderFilterDate = '';
-		paymentStatus = '';
-	}
 	
 	function getActions(){
 		$(".action-pop").slideToggle(200);
@@ -500,7 +514,7 @@
  		e.stopPropagation();
 	});	
   </script>
-  <script>
+<script>
   function popupDisplay(){
 		$(".project_inn_mask").remove();
 		var result = "";
@@ -520,5 +534,5 @@
 		$(".project_inn_mask").fadeOut(200);
 	}
   </script>
-  
-  <jsp:include page="../masterFooter.jsp" /> 
+
+<jsp:include page="../masterFooter.jsp" />
