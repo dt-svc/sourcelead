@@ -74,7 +74,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 getParallelApprovers();
 	 }
 	 
-	 if(contractType != null && contractType != 'undefined' && contractType !=''){
+	 if(type != null && type != 'undefined' && type !=''){
 // 	 	 getContractTemplates();
 	 	 contractTypeLabels()
 	 }
@@ -327,7 +327,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			                  <span class="input-group-addon cursorPointer bg-blue" onclick="refreshVendorList();addCustomEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 			              </div>
 	              		<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-	               			<span class="col-md-2 noPad clearfix"><a href="<c:url value="${SourceLeadWeb_sourceleadUrl}/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+	               			<span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_vmsUrl}/addVendor" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
 	                 	</sec:authorize>
                 	</c:if>
                 
@@ -385,7 +385,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		                   <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();addCustomEmptyClientContact()"><i class="fa fa-refresh "></i></span>
 		              	</div>
 		                <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-		               		<span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_sourceleadUrl}/client" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+		               		<span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_vmsUrl}/client" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
 	             	    </sec:authorize>
               		</c:if>
                
