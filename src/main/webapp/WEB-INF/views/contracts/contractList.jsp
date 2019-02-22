@@ -632,7 +632,7 @@ function preparedContractListVendorDraft(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -873,7 +873,7 @@ function preparedContractListClientDraft(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1102,7 +1102,7 @@ function preparedContractListApplicantDraft(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1326,7 +1326,7 @@ function preparedContractListVendorWFA(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#clientContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1547,7 +1547,7 @@ function preparedContractListClientWFA(url,tabType){
 		$("#vendorContractsList").empty();
 	    $("#clientContractsList").empty();
 	    $("#clientContractsList").empty();
-	    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	    var locationList ='${SourceLeadWeb_dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
 			  locationDate = 'YYYY-MM-DD';
 		  }if(locationList.match("dd-MM-yyyy")){
@@ -1762,7 +1762,7 @@ function preparedContractListApplicantWFA(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#clientContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1961,7 +1961,7 @@ function preparedContractListVendorWTS(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -2175,7 +2175,7 @@ function preparedContractListClientWTS(url,tabType){
 		$("#vendorContractsList").empty();
 	    $("#clientContractsList").empty();
 	    $("#applicantsContractsList").empty();
-	    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	    var locationList ='${SourceLeadWeb_dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
 			  locationDate = 'YYYY-MM-DD';
 		  }if(locationList.match("dd-MM-yyyy")){
@@ -2387,7 +2387,7 @@ function preparedContractListApplicantWTS(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -2571,7 +2571,7 @@ function preparedContractListVendorWTV(url,tabType){
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
     
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -2788,7 +2788,7 @@ function preparedContractListClientWTV(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -3000,7 +3000,7 @@ function preparedContractListApplicantWTV(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
