@@ -695,9 +695,17 @@ function preparedContractVendorListDraftPagination(url,tabType){
         "render": function(data, type, report, meta) {
         	var result = "";
             if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-            	result = result + '<div class="proj_show tblminwidth-150" onclick="PopUp(\''+report.contractUUID+'\',\'DRAFT\');"><div class="pull-left tbldata-dotdot-big inlineBlock text-left" title="'+report.autoGenId+' - '+report.contractTitle+'">'+report.autoGenId+' - '+report.contractTitle+'</div><i class="fa fa-binoculars" style="position: absolute; right: 0; top: 0;"></i></div>';
+            	if(report.autoGenId != null && report.autoGenId != '' && report.autoGenId != 'undefined'){
+            		result = result + '<div class="proj_show tblminwidth-150" onclick="PopUp(\''+report.contractUUID+'\',\'DRAFT\');"><div class="pull-left tbldata-dotdot-big inlineBlock text-left" title="'+report.autoGenId+' - '+report.contractTitle+'">'+report.autoGenId+' - '+report.contractTitle+'</div><i class="fa fa-binoculars" style="position: absolute; right: 0; top: 0;"></i></div>';
+            	}else{
+            		result = result + '<div class="proj_show tblminwidth-150" onclick="PopUp(\''+report.contractUUID+'\',\'DRAFT\');"><div class="pull-left tbldata-dotdot-big inlineBlock text-left" title="'+report.contractTitle+'">'+report.contractTitle+'</div><i class="fa fa-binoculars" style="position: absolute; right: 0; top: 0;"></i></div>';
+            	}
 	        }else{
-	        	result = result + '<div class="proj_show tblminwidth-150"><div class="pull-left tbldata-dotdot-big inlineBlock text-left" title="'+report.autoGenId+' - '+report.contractTitle+'">'+report.autoGenId+' - '+report.contractTitle+'</div></div>';
+	        	if(report.autoGenId != null && report.autoGenId != '' && report.autoGenId != 'undefined'){
+	        		result = result + '<div class="proj_show tblminwidth-150"><div class="pull-left tbldata-dotdot-big inlineBlock text-left" title="'+report.autoGenId+' - '+report.contractTitle+'">'+report.autoGenId+' - '+report.contractTitle+'</div></div>';
+	        	}else{
+	        		result = result + '<div class="proj_show tblminwidth-150"><div class="pull-left tbldata-dotdot-big inlineBlock text-left" title="'+report.contractTitle+'">'+report.contractTitle+'</div></div>';
+	        	}
 	        }
              return result; 
             }
