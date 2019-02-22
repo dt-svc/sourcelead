@@ -328,7 +328,7 @@ function createOrg(){
 	result = result +'</div>';
 	result = result +'</div>';
 	
-	result = result +'<input type="hidden" name="registeredOrgId" id="registeredOrgId"  value="${SourceLeadWeb_org.id}" />';
+	result = result +'<input type="hidden" name="registeredOrgId" id="registeredOrgId"  value="${SourceLeadWeb_orgId}" />';
 
 	
 	result = result +'<div class="form-group clearfix">';
