@@ -64,6 +64,7 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	private String joinDate;
 	private String incentivizedType;
 	private String applicants;
+	private String interviewOn;
 	
 	private int payTerm;
 	
@@ -532,6 +533,12 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	}
 	public void setMarginRateYearly(String marginRateYearly) {
 		this.marginRateYearly = marginRateYearly;
+	}
+	public String getInterviewOn() {
+		return interviewOn;
+	}
+	public void setInterviewOn(String interviewOn) {
+		this.interviewOn = interviewOn;
 	}
 	
 	

@@ -101,6 +101,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
 	
+	@Value("${vmsUrl}")
+	private String vmsUrl;
 	
 	@Autowired
 	private UserService userService;
@@ -267,7 +269,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		}
 		
-        Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+        Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 		if(Constants.NDA.equalsIgnoreCase(contractsDTO.getContractType()) || Constants.NSA.equalsIgnoreCase(contractsDTO.getContractType())){
 			contracts.setContractType("Vendor "+contractsDTO.getContractType());
 		}
@@ -1073,7 +1075,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				}
 				
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-				Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+				Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 				//SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
 				if(null != contracts && null != contracts.getStartDate()){
 					String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());  
@@ -1279,7 +1281,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					contracts.setEndDateStr(Constants.DF_DMY.format(contracts.getEndDate()));	
 				}
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-				Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+				Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 				//SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
 				
 				if(null != contracts && null != contracts.getStartDate()){
@@ -1433,7 +1435,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 				}
 				
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-				Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+				Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 			//	SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
 				
 				if(null != contracts && null != contracts.getJoinDate()){
@@ -1637,8 +1639,8 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 	
 	private void contractRejectEmail(Contracts contracts, User loginUser, Org org, OrgLocations orgLocation) throws Exception {
 		Timezone timezone = null;
-		if(null != orgLocation.getTimezone()){
-	    	 timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		if(null != orgLocation.getTimeZoneId()){
+	    	 timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 		 }
 		User createdUser = userService.getUserByUserCode(contracts.getCreatedBy());
 		EmailMessage emailMessage = new EmailMessage();
@@ -1697,7 +1699,8 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 			 }
 			 }
 			 StringBuilder linkBuild = new StringBuilder();
-			 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Rejected Contract</div></a>").toString());
+
+			 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +vmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Rejected Contract</div></a>").toString());
 		
 			 //	SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 			if(contracts.getStartDate() != null){
@@ -1768,7 +1771,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 //		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
-	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("contractListbyStatus?"+"contractType="+contracts.getContractType()+"&status=rejected").toString();
+	     actionLink = notificationLink.append(vmsUrl).append("/").append("contractListbyStatus?"+"contractType="+contracts.getContractType()+"&status=rejected").toString();
 
 //		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 
@@ -1779,8 +1782,8 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 	private void contractApproveEmail(Contracts contracts, User loginUser, Org org, OrgLocations orgLocation) throws Exception
 	{
 		Timezone timezone = null;
-		if (null != orgLocation.getTimezone()) {
-			timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		if (null != orgLocation.getTimeZoneId()) {
+			timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 		}
 		User createdUser = userService.getUserByUserCode(contracts.getCreatedBy());
 		EmailMessage emailMessage = new EmailMessage();
@@ -1843,7 +1846,9 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 			globalVarsMap.put("clientContact", contracts.getContactUser().getFirstName());
 		}
 		StringBuilder linkBuild = new StringBuilder();
-		globalVarsMap.put("loginLink", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Approved Contract</div></a>").toString());		
+
+		globalVarsMap.put("loginLink", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +vmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Approved Contract</div></a>").toString());		
+
 		// SimpleDateFormat
 		// dateFormat=orgLocation.getLocFullFormDateFormatter();
 		if (contracts.getStartDate() != null) {
@@ -1909,8 +1914,8 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 			,Long redirectOrgLocationId) throws Exception
 	{
 		Timezone timezone = null;
-		if(null != orgLocation.getTimezone()){
-	    	 timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		if(null != orgLocation.getTimeZoneId()){
+	    	 timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 		 }
 		
 		 EmailMessage emailMessage = new EmailMessage();
@@ -1953,7 +1958,9 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 		globalVarsMap.put("OwnerName", ownerSb.toString().replaceAll("\\s*,\\s*$", ""));
 		
 		 StringBuilder linkBuild = new StringBuilder();
-		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Apporve Contract</div></a>").toString());
+
+		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +vmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Apporve Contract</div></a>").toString());
+
 	
 		 //	SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 		if(contracts.getStartDate() != null){
@@ -2110,7 +2117,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 					&& !"".equalsIgnoreCase(contracts.getEndDate().toString())) {
 				String currentTimeStr = Constants.TZ_DF.format(contracts.getEndDate());
 				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				String interviewDateInTimezone = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, orgLocation.getTimezone().getTimeZoneId(), currentTimeStr);
+				String interviewDateInTimezone = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, orgLocation.getTimeZoneId(), currentTimeStr);
 				Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
 				interviewDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), interviewConverteDate);
 				globalVarsMap.put("endDate", interviewDateInTimezone);
@@ -2122,7 +2129,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 					&& !"".equalsIgnoreCase(contracts.getStartDate().toString())) {
 				String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());
 				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				String interviewDateInTimezone = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, orgLocation.getTimezone().getTimeZoneId(), currentTimeStr);
+				String interviewDateInTimezone = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, orgLocation.getTimeZoneId(), currentTimeStr);
 				Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
 				interviewDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), interviewConverteDate);
 				globalVarsMap.put("startDate", interviewDateInTimezone);
@@ -2205,7 +2212,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 		Contracts contracts = new Contracts();
 		Contracts vendorContracts = new Contracts();
         
-        Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+        Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 		
 		if(Constants.NDA.equalsIgnoreCase(contractsDTO.getContractType()) || Constants.NSA.equalsIgnoreCase(contractsDTO.getContractType())){
 			contracts.setContractType("Vendor "+contractsDTO.getContractType());
@@ -2636,7 +2643,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 		}
 		
 		StringBuilder loginBuilder = new StringBuilder();
-		globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(vmsUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
 		 if(contracts.getContactUser().getFirstName() != null && contracts.getContactUser().getLastName()!=null && !"".equalsIgnoreCase(contracts.getContactUser().getFirstName()) && !"".equalsIgnoreCase(contracts.getContactUser().getLastName())){
 			 StringBuilder userBuild = new StringBuilder();
@@ -2716,7 +2723,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 				}
 				contracts.setVendorContactName(vendorName.toString());
 				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+				Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocations.getTimeZoneId()));
 				  // SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 				if (null != contracts && null != contracts.getStartDate()) {
 					String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());
@@ -2815,7 +2822,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 				 * getEndDate())); }
 				 */
 				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+				Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocations.getTimeZoneId()));
 				//SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 				if (null != contracts && null != contracts.getStartDate()) {
 					String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());
@@ -2997,12 +3004,14 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 		}
 		StringBuilder linkBuild = new StringBuilder();
 		if(Constants.CLIENT_MSA.equalsIgnoreCase(contracts.getContractType()) || Constants.VENDOR_MSA.equalsIgnoreCase(contracts.getContractType())){
-		globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+
+		globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +vmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
 				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>MSA Finalised</div></a>")
 				.toString());
 		}else if(Constants.Client_SOW.equalsIgnoreCase(contracts.getContractType()) || Constants.Vendor_SOW.equalsIgnoreCase(contracts.getContractType()))
 		{
-			globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+
+			globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +vmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
 					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>SOW Finalised</div></a>")
 					.toString());
 		}
@@ -3142,7 +3151,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 			}
 			globalVarsMap.put("receiverOrg", contracts.getContractOrgLocationId().getOrgLocationName());
 			StringBuilder loginBuilder = new StringBuilder();
-			globalVarsMap.put("loginUrl", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			globalVarsMap.put("loginUrl", loginBuilder.append("<a href='").append(vmsUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			// setting the Recipient information
 //			InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			// getting the current EmailScenario by EmailScenario unique name and
@@ -3304,7 +3313,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 			}
 			globalVarsMap.put("PartnerOrganisation", contracts.getContractOrgLocationId().getOrgLocationName());
 			StringBuilder loginBuilder = new StringBuilder();
-			globalVarsMap.put("loginUrl", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			globalVarsMap.put("loginUrl", loginBuilder.append("<a href='").append(vmsUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			// setting the Recipient information
 //			InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			// getting the current EmailScenario by EmailScenario unique name and
@@ -3411,7 +3420,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 			 }
 		 
 		 StringBuilder linkBuild = new StringBuilder();
-		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px; float:left;'>Login</div></a>").toString());
+		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(vmsUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px; float:left;'>Login</div></a>").toString());
 		 
 		 StringBuilder signatureBuild = new StringBuilder();
 		 globalVarsMap.put("signatureLink",signatureBuild.append("<a href='").append(sourceleadUrl).append("/").append("ws/docusign?contractUUID=").append(contracts.getContractUUID()).append("&type=public").append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px; float:left;'>Sign Here</div></a>").toString());
@@ -3611,7 +3620,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 	{
 		Timezone timezone = null;
 		if(null != orgLocation.getTimezone()){
-	    	 timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+	    	 timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 		 }
 //		User createdUser = userService.getUserByUserCode(contracts.getCreatedBy());
 		for(ContractOwnerHierarchy coh : contracts.getOwnerHierarchyList()){

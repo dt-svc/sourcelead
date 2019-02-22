@@ -18,6 +18,7 @@ import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -33,9 +34,13 @@ public class CandidateIndexHelper {
 	@Autowired
 	private CommonUtil commonUtil;
 	
+	@Autowired
+	CandidateService candidateService;
+	
 	public CandidateIndex getCandidateIndexFromCandidate(Candidate candidate) throws Exception{
 		CandidateIndex candidateIndex = null;
 		if(null != candidate && null != candidate.getId()){
+			candidate = candidateService.getCandidateByCandidateId(candidate.getId());
 			candidateIndex = new CandidateIndex();
 			candidateIndex.setCandidateId(candidate.getId());
 			candidateIndex.setOrgLocationId(candidate.getOrgLocationId().getId());
