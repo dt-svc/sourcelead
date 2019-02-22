@@ -83,30 +83,30 @@ $(function(){
 			<div class="comLogHead">
 			
 			
-			<c:if test="${!empty SourceLeadWeb_userSpocRolesList && SourceLeadWeb_prodSupportLoginUserRole != 'ROLE_PRODUCTION_SUPPORT'}">
+			<c:if test="${!empty SourceLeadWeb_userSpocRolesList && SourceLeadWeb_loginUserRole != 'ROLE_PRODUCTION_SUPPORT'}">
 		<div class="offOrg offOrgCompanyOnboard ">
              <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
 	              <div id="spockLinksList" style="display: none;">
 	              <ul class="list-unstyled">
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
 		              <li>
-		              <a onclick="checkAuth(${links.orgLocations.id},${links.id},'${links.orgLocations.loginSecurity}','${links.user.id}');" class="sopcSwith">
+		              <a onclick="checkAuth(${links.orgLocationId},${links.userRoleId},'${links.orgLocationLoginSecurity}','${links.userId}');" class="sopcSwith">
 				                <div class="clearfix">
 				                   <div class="pull-left image-parent positionRelative">
-				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-				                   <c:if test="${!empty links.orgLocations.org.fileContentType}">
-				                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
+				                   <div class="imageParent org-imagelink ${links.orgLocationId == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
+				                   <c:if test="${!empty links.orgImgUrl}">
+				                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgImgUrl}">
 				                   </c:if>
-				                   <c:if test="${empty links.orgLocations.org.fileContentType}">
+				                   <c:if test="${empty links.orgImgUrl}">
 				                     <img src="/resources/images/office-image.jpg">
 				                   </c:if>
 				                     
 				                     </div>
 				                   </div>
 				                   <div class="pull-left mt5">
-				                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-				                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
-				                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+				                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgName}</p>
+				                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.city ? links.city : ""} ${links.country}</p>
+				                     <p><i class="fa fa-user"></i>&nbsp;${links.displayName}</p>
 				                   </div>
 				                </div>
 			                </a>
@@ -118,7 +118,7 @@ $(function(){
           </c:if>
           
           
-          <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == 'ROLE_PRODUCTION_SUPPORT'}">
+          <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_PRODUCTION_SUPPORT'}">
           	<div class="offOrg offOrgCompanyOnboard ">
              <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
 	              <div id="spockLinksList" style="display: none;">
