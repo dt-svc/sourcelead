@@ -2673,14 +2673,14 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public void updateMarketPlacePrice(Long id, String priceVal, String priceValType)throws Exception {
-		CandidateMarketPlace marketPlace= candidateDao.getCandidateMarketPlaceById(id);
+	public void updateMarketPlacePrice(Long id, String priceVal, String priceValType) throws Exception {
+		CandidateMarketPlace marketPlace = candidateDao.getCandidateMarketPlaceById(id);
 		CandidateMarketCart marketCart = candidateDao.getCandidateFromMarketCartByMarketplaceId(id);
 		marketPlace.setMarketPrice(priceVal);
 		marketPlace.setMarketRateCurrencey(priceValType);
 		candidateDao.updateMarketPlacePrice(marketPlace);
-		//updating cart price in global marketplace after it is edited and saved in local marketplace.
-		if (marketCart != null) {
+		// updating cart price in global marketplace after it is edited and saved in local marketplace.
+		if (marketPlace != null && marketCart != null) {
 			marketCart.setAmount(Double.parseDouble(priceVal));
 			candidateDao.addCandidateToMarketCart(marketCart);
 		}
@@ -2864,8 +2864,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public void deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid) throws Exception {
-		candidateDao.deleteCandidateFromMarketcartByCandidateUuid(candidateUuid);
+	public Boolean deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid) throws Exception {
+		return candidateDao.deleteCandidateFromMarketcartByCandidateUuid(candidateUuid);
 		
 	}
 	
@@ -3159,6 +3159,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		Date formattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), today);
 		Calendar calendar = Calendar.getInstance();
 		Map<String, Date> dateValue = new HashMap<>();
+		if(salesOrderFilterDate != null){
 		if(salesOrderFilterDate.equalsIgnoreCase("today")){
 			dateValue.put("fromDate", formattedDate);
 			dateValue.put("toDate", formattedDate);
@@ -3208,6 +3209,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			Date toDateVal = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), salesOrderToDate);
 			dateValue.put("fromDate", toDateVal);
 			dateValue.put("toDate", fromDateVal);
+		}
 		}
 		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue, salesOrderFromDate, salesOrderToDate, dateValue);
 		return responseList;
@@ -3402,6 +3404,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public void updateMarketWalletAmount(Double balanceAmountValue, Long id) {
 		candidateDao.updateMarketWalletAmount(balanceAmountValue, id);
+	}
+
+	@Override
+	public void deleteCandidateFromMarketplaceByCandidateUuid(String candidateUuid) throws Exception {
+		candidateDao.deleteCandidateFromMarketplaceByCandidateUuid(candidateUuid);
 	}
 	
 }
