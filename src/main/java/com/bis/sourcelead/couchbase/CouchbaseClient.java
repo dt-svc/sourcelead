@@ -41,10 +41,12 @@ public class CouchbaseClient {
 			.connectTimeout(36678).keepAliveInterval(3600 * 30000).build();
 
 	public CouchbaseClient() {
-		cluster = CouchbaseCluster.create(ENV, couchConfig.getCouchbaseUrl());
-		userProfileBucket = cluster.openBucket(couchConfig.getUserProfileBucket(), couchConfig.getPassword());
-		userLoginSessionStoreBucket = cluster.openBucket(couchConfig.getUserLoginSessionStoreBucket(), couchConfig.getPassword());
-		orgLocationsBucket = cluster.openBucket(couchConfig.getOrgLocationsBucket(), couchConfig.getPassword());
+		if(couchConfig.getIsCouchbaseEnabled().equalsIgnoreCase("true")) {
+			cluster = CouchbaseCluster.create(ENV, couchConfig.getCouchbaseUrl());
+			userProfileBucket = cluster.openBucket(couchConfig.getUserProfileBucket(), couchConfig.getPassword());
+			userLoginSessionStoreBucket = cluster.openBucket(couchConfig.getUserLoginSessionStoreBucket(), couchConfig.getPassword());
+			orgLocationsBucket = cluster.openBucket(couchConfig.getOrgLocationsBucket(), couchConfig.getPassword());
+		}
 	}
 
 	public void shutdown() {
