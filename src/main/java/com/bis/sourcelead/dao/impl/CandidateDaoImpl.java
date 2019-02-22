@@ -2881,11 +2881,12 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(Long id, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,  String purchaseOrderFromDate, String purchaseOrderToDate, Map<String, Date> dateValue) throws Exception{
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(Long id, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, String purchaseOrderFromDate, String purchaseOrderToDate, Map<String, Date> dateValue) throws Exception{
 		
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			StringBuilder queryBuilder2 = new StringBuilder("");
+			StringBuilder dateQuery1 = new StringBuilder();
 			ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
 			List<Long> countlist = null;
 			Integer filterCount = 0;
@@ -2915,6 +2916,12 @@ public class CandidateDaoImpl implements CandidateDao {
 							        sqlDate = new java.sql.Date(utilDate.getTime());
 							}
 			    }
+			    
+			    
+			    			    if(!dateValue.isEmpty()){
+			    					dateQuery1.append(" and (cmpth.orderDate BETWEEN :endDate AND :startDate) OR (cmpth.orderDate = :endDate) OR (cmpth.orderDate = :startDate) ");
+			    				}
+			    			    
 				StringBuilder query1 = new StringBuilder("");
 				if(marketplacePurchaseSalesDTO.getSearchValue() !=null && !"".equalsIgnoreCase(marketplacePurchaseSalesDTO.getSearchValue())) {
 				 query1.append("and (cmpth.orderNo like '%" + marketplacePurchaseSalesDTO.getSearchValue() + "%' ")
@@ -2931,8 +2938,24 @@ public class CandidateDaoImpl implements CandidateDao {
 				
 			String query="from MarketplacePurchaseOrder cmpth where cmpth.orgLocationId.id = :orgLocationId "+query1+"";
 			String countQuery = "select count(*) from MarketplacePurchaseOrder cmpth  where  cmpth.orgLocationId =:orgLocationId "+query1+"";
-			List<MarketplacePurchaseOrder>  marketplacePurchaseOrder= session.createQuery(query).setLong("orgLocationId", id).list();
-			countlist = session.createQuery(countQuery).setLong("orgLocationId", id).list();
+			Query qeury =  session.createQuery(query + dateQuery1.toString()).setLong("orgLocationId", id);
+						Query q = session.createQuery(countQuery + dateQuery1.toString()).setLong("orgLocationId", id);
+						if(!dateValue.isEmpty()){
+							Iterator it = dateValue.entrySet().iterator();
+						    while (it.hasNext()) {
+						        Map.Entry pair = (Map.Entry)it.next();
+						        if(pair.getKey().equals("fromDate")){
+						        	qeury.setDate("startDate", dateValue.get("fromDate"));
+						        	q.setDate("startDate", dateValue.get("fromDate"));
+						        }
+						        if(pair.getKey().equals("toDate")){
+						        	qeury.setDate("endDate", dateValue.get("toDate"));
+						        	q.setDate("endDate", dateValue.get("toDate"));
+						        }
+						    }
+						}
+						List<MarketplacePurchaseOrder>  marketplacePurchaseOrder = qeury.list();
+						countlist = q.list();
 			int totalCount = 0;
 			if (marketplacePurchaseSalesDTO != null) {
 				if (countlist != null && !countlist.isEmpty()) {
@@ -2963,6 +2986,7 @@ public class CandidateDaoImpl implements CandidateDao {
        	 return null;
         }
 	}
+
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -3017,7 +3041,6 @@ public class CandidateDaoImpl implements CandidateDao {
 			String countQuery = "select count(*) from MarketplaceSalesOrder salesOrder  where  salesOrder.orgLocationId =:orgLocationId";
 			Query query1 = session.createQuery(query + queryBuilder1.toString() + dateQuery1.toString() + queryEndBuilder2.toString()).setLong("orgLocationId", orgLocations.getId());
 			Query query2 = session.createQuery(countQuery + queryBuilder1.toString() + dateQuery1.toString() + queryEndBuilder2.toString()).setLong("orgLocationId", orgLocations.getId());
-			countlist = query2.list();
 			int totalCount = 0;
 			if(!dateValue.isEmpty()){
 				Iterator it = dateValue.entrySet().iterator();
@@ -3033,6 +3056,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			        }
 			    }
 			}
+			countlist = query2.list();
 			if (marketplacePurchaseSalesDTO != null) {
 				if (countlist != null && !countlist.isEmpty()) {
 					totalCount = countlist.iterator().next().intValue();

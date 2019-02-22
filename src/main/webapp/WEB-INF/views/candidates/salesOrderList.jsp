@@ -483,6 +483,7 @@
     	   	        $('#salesOrderToDate').removeAttr('data-validation');
     	   	     	$('#salesOrderToDate, #salesOrderFromDate').val('').datepicker('setDate', null);
     	   		}
+    });
 	
 	function resetSalesOrderFilter(){
 		$('#salesOrderFromDate, #salesOrderToDate').val('').datepicker('setDate', null);
