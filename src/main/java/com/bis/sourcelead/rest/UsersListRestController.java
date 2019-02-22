@@ -48,6 +48,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.AssociateSalaryDao;
 import com.bis.sourcelead.dao.PayrollPayheadDao;
 import com.bis.sourcelead.dto.AddUserDTO;
@@ -283,6 +284,13 @@ public class UsersListRestController {
 	
 	@Autowired
 	PayrollPayheadDao payrollPayheadDao;
+	
+	@Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
+	
+	@Value("${isCouchbaseEnabled}")
+	private String isCouchbaseEnabled;
+	
 	
 	
 	/**
@@ -1250,10 +1258,6 @@ public class UsersListRestController {
 
 			}
 			
-			
-			
-			
-			
 			if (StringUtils.isNotBlank(addUserDTO.getAssignResourceManagers())) {
 				List<UserRole> userRolesList = userRoleService.getAllAssignedUsersByResourceManagerId(userId,
 						orgLocations.getId());
@@ -1555,6 +1559,9 @@ public class UsersListRestController {
 					orgLocations.getId());
 			userService.saveOrUpdateUserElkDocument(updateUserRole, employee, user.getUserCode());
 			
+			if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+				userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+			}
 			 
 		}
 		
