@@ -1,16 +1,18 @@
 package com.bis.sourcelead.couchbase;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 
-import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
+import com.bis.sourcelead.couchbase.connection.CouchbaseConnectionConfig;
+import com.bis.sourcelead.couchbase.connection.CouchbasePropertyPathConfiguration;
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.CouchbaseCluster;
@@ -22,21 +24,27 @@ import com.couchbase.client.java.query.N1qlQuery;
 import com.couchbase.client.java.query.N1qlQueryResult;
 import com.couchbase.client.java.query.N1qlQueryRow;
 
+
+@Component
 public class CouchbaseClient {
-	Cluster cluster;
 	Bucket userProfileBucket;
 	Bucket userLoginSessionStoreBucket;
 	Bucket orgLocationsBucket;
+    private Cluster cluster;
+    
+    
+     ApplicationContext ctx = new AnnotationConfigApplicationContext(CouchbasePropertyPathConfiguration.class);
+	 CouchbaseConnectionConfig couchConfig = ctx.getBean(CouchbaseConnectionConfig.class);
+		 
 
 	private static final CouchbaseEnvironment ENV = DefaultCouchbaseEnvironment.builder().socketConnectTimeout(536699)
 			.connectTimeout(36678).keepAliveInterval(3600 * 30000).build();
 
-	public CouchbaseClient(List<String> urls, List<String> couchBucketList, String password) {
-
-		cluster = CouchbaseCluster.create(ENV, urls);
-		userProfileBucket = cluster.openBucket(couchBucketList.get(0), password);
-		userLoginSessionStoreBucket = cluster.openBucket(couchBucketList.get(1), password);
-		orgLocationsBucket = cluster.openBucket(couchBucketList.get(2), password);
+	public CouchbaseClient() {
+		cluster = CouchbaseCluster.create(ENV, couchConfig.getCouchbaseUrl());
+		userProfileBucket = cluster.openBucket(couchConfig.getUserProfileBucket(), couchConfig.getPassword());
+		userLoginSessionStoreBucket = cluster.openBucket(couchConfig.getUserLoginSessionStoreBucket(), couchConfig.getPassword());
+		orgLocationsBucket = cluster.openBucket(couchConfig.getOrgLocationsBucket(), couchConfig.getPassword());
 	}
 
 	public void shutdown() {
