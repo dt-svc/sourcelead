@@ -176,7 +176,7 @@ right: 15px;
                 <div class="col-md-2 dbaCheck dbaCheck-cs">
                      
                    <div class="mrleft8 mr mt5">
-                        <input id="dbaCheckbox" name="dbaCheckbox" ${empty SourceLeadWeb_orgLocations.dba ? 'checked' : SourceLeadWeb_orgLocations.dba == SourceLeadWeb_orgName ? 'checked' : ''} class="checkbox-custom" onclick="getDBAName();" type="checkbox">
+                        <input id="dbaCheckbox" name="dbaCheckbox" ${empty SourceLeadWeb_dba ? '' : SourceLeadWeb_dba == SourceLeadWeb_orgName ? 'checked' : ''} class="checkbox-custom" onclick="getDBAName();" type="checkbox">
               			<label for="dbaCheckbox" class="checkbox-custom-label" title="Make company name as dba"></label>
           			</div>
                 </div>
@@ -309,7 +309,7 @@ right: 15px;
 			<label class="col-md-3 noPad">Max hours per day<span class="text-danger">&nbsp;*</span></label>
 			<div class="col-md-9 padding_right">
 			<div id="averageWorkingHoursDiv">
-			<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required" field-name="Max hours per day" value="${SourceLeadWeb_orgLocations.averageWorkingHours}"/>
+			<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required" field-name="Max hours per day" value="${SourceLeadWeb_averageWorkingHours}"/>
 			</div>
 			</div>
 		</div>
