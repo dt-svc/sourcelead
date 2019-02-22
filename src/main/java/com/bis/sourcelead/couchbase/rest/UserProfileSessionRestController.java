@@ -41,6 +41,9 @@ public class UserProfileSessionRestController {
 	@Autowired
 	UserStatsCacheHelper userStatsCacheHelper;
 	
+	@Autowired
+	SourceLeadSessionManager sourceLeadSessionManager;
+	
 	 @RequestMapping(value = "/ws/storeOrgLocationsInCouch", method = RequestMethod.GET)
 	 public void storeOrgLocationsInCouch() throws Exception {
 		
@@ -56,7 +59,7 @@ public class UserProfileSessionRestController {
 					JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
 					StringBuilder orgLocationKey = new StringBuilder();
 					orgLocationKey.append("OrgLocation_").append(orgLocationDTO.getOrgLocationCode());
-					SourceLeadSessionManager.setOrgLocationsJsonString(orgLocationKey.toString(), "orgLocations", jsonObject);
+					sourceLeadSessionManager.setOrgLocationsJsonString(orgLocationKey.toString(), "orgLocations", jsonObject);
 				} catch (JsonProcessingException e) {
 					e.printStackTrace();
 				}
@@ -84,7 +87,7 @@ public class UserProfileSessionRestController {
 						JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
 						StringBuilder userRoleKey = new StringBuilder();
 						userRoleKey.append(userRole.getUser().getUserName().toLowerCase()).append("_AUTH_").append(userRole.getUuid());
-						SourceLeadSessionManager.setUserProfileJsonString(userRoleKey.toString(), "userProfile", jsonObject);
+						sourceLeadSessionManager.setUserProfileJsonString(userRoleKey.toString(), "userProfile", jsonObject);
 					} catch (JsonProcessingException e) {
 						e.printStackTrace();
 					}
