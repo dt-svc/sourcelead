@@ -2674,7 +2674,7 @@ public class ImmigrationRestController {
 		Lca lca= immigrationCommonService.getLcaByLcaId(lcaId);
 		StringBuilder actionDesc = new StringBuilder();
 		if (lca != null) {
-			actionDesc.append(Constants.LCA_DELETED).toString();
+			actionDesc.append(ImmigrationConstants.LCA_DELETED).toString();
 		} 
 		
 	//	lcaActivityCommonUtil.saveLcaActivities(user, orgLocations, lca, null, actionDesc.toString());
@@ -2698,7 +2698,7 @@ public class ImmigrationRestController {
 		Lca lca= immigrationCommonService.getLcaByLcaId(lcaId);
 		StringBuilder actionDesc = new StringBuilder();
 		if (lca != null) {
-			actionDesc.append(Constants.LCA_RE_ACTIVE).toString();
+			actionDesc.append(ImmigrationConstants.LCA_RE_ACTIVE).toString();
 		} 
 		//lcaActivityCommonUtil.saveLcaActivities(user, orgLocations, lca, null, actionDesc.toString());
 		
