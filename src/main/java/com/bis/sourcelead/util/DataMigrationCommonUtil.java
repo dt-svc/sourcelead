@@ -2381,7 +2381,6 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				} else {
 				LookUpData data = lookUpDataService.getLookUpdataByCategoryAndName(Constants.VISA,
 				dataMigrationDTOJsonCopy.getString("visaType"));
-				System.out.println(" Visa Type--->"+dataMigrationDTOJsonCopy.getString("visaType"));
 				if (data == null) {
 				errorSet.put("visaType", "Visa Type is not found"); /// dropdown value.
 				} else {
