@@ -3,14 +3,16 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
+<script type="text/javascript">
+var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+</script>
 <section class="content-wraper">
 
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Reports Dashboard</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Reports Dashboard</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Reports Dashboard</div>
     </section>
     
     <div class="reportNewDash clearfix">
@@ -32,56 +34,56 @@
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu1" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
 				<sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
-				<li><a href='${appPath}/applicantsjoinedlist'>Applicants Joined Report</a></li>
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/applicantsjoinedlist'>Applicants Joined Report</a></li>
 				</sec:authorize>
 				 <sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
-				 <li><a href='${appPath}/recruitersReports'>Recruiter(s) Report</a></li>
+				 <li><a href='${SourceLeadWeb_sourceleadUrl}/recruitersReports'>Recruiter(s) Report</a></li>
 				 </sec:authorize>
 				 <sec:authorize access="hasRole('ROLE_MY_PERFORMANCE_REPORT')">
-				 <li><a href='${appPath}/myPerformanceReports'>My Performance Report</a></li>
+				 <li><a href='${SourceLeadWeb_sourceleadUrl}/myPerformanceReports'>My Performance Report</a></li>
 				 </sec:authorize>
 				 <sec:authorize access="hasRole('ROLE_VENDORS_REPORT')">
-				 <li><a href="${appPath}/vendorsReports">Vendor(s) Report</a></li>
+				 <li><a href="${SourceLeadWeb_sourceleadUrl}/vendorsReports">Vendor(s) Report</a></li>
 				 </sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_CLIENT_REPORT')">
-				<li><a href="${appPath}/perfomanceClientReports">Client(s) Report</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/perfomanceClientReports">Client(s) Report</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_APPLICANT_DECLINE')">
-				<li><a href="${appPath}/applicantDeclineReports">Applicant(s) Decline</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/applicantDeclineReports">Applicant(s) Decline</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_APPLICANT_BACKOUT')">
-				<li><a href="${appPath}/applicantsBackoutReport">Applicant(s) Backout</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/applicantsBackoutReport">Applicant(s) Backout</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_JOBS_PIPELINE')">
-				<li><a href="${appPath}/jobPipelineReports">Job(s) Pipeline</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/jobPipelineReports">Job(s) Pipeline</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_APPLICANT_SOURCE')">
-				<li><a href="${appPath}/applicantBySource">Applicant(s) by Source</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/applicantBySource">Applicant(s) by Source</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_TIME_TO_FILL')">
-				<li><a href="${appPath}/timeToFill">Time to Fill</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/timeToFill">Time to Fill</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_APPLICANT_RECEIVED')">
-				<li><a href="${appPath}/applicantsReceivedListForReports">Applicant(s) Received</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/applicantsReceivedListForReports">Applicant(s) Received</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_JOBS_STAGES')">
-				<li><a href="${appPath}/requirementStagesListForReports">Job(s) Stage</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/requirementStagesListForReports">Job(s) Stage</a></li>
 				</sec:authorize>
 				
-				<li><a href="${appPath}/jobsPerformanceReport">Jobs Report</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/jobsPerformanceReport">Jobs Report</a></li>
 				
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                  <a href="${appPath}/performanceReportList" class="block">
+                  <a href="${SourceLeadWeb_sourceleadUrl}/performanceReportList" class="block">
  				<div class="clearfix text-center mb10"><i class="perReport"></i></div>
                   <div class="clearfix text-center"> <h4>Performance Report</h4></div>
                    </a>
@@ -101,53 +103,53 @@
 				<!-- <li><a href="#">Invoice</a></li> -->
 				
 				<sec:authorize access="hasRole('ROLE_BILLING_REPORTS')">
-				<li><a href="${appPath}/billingReports">Finance</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/billingReports">Finance</a></li>
 				</sec:authorize>
 				<!-- <li><a href="#">Invoice Report By Customer / Project</a></li>
 				<li><a href="#">Bill Report By Customer / Project</a></li> -->
 				<sec:authorize access="hasRole('ROLE_A_R_AGING')">
 				<%-- <c:if test="${SourceLeadWeb_ats == 'Y'}"> --%>
-				<li><a href='${appPath}/arAgingReport'>A/R Aging</a></li>
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/arAgingReport'>A/R Aging</a></li>
 				<%-- </c:if> --%>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_A_P_AGING')">
 				<%-- <c:if test="${SourceLeadWeb_vms == 'Y'}"> --%>
-				<li><a href='${appPath}/apAgingReport'>A/P Aging</a></li>
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/apAgingReport'>A/P Aging</a></li>
 <%-- 				</c:if> --%>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_INVOICE')">
 					<%-- <c:if test="${SourceLeadWeb_ats == 'Y'}"> --%>
-					<li><a href='${appPath}/missingInvoiceReport'>Missing Invoice(s)</a></li>
+					<li><a href='${SourceLeadWeb_sourceleadUrl}/missingInvoiceReport'>Missing Invoice(s)</a></li>
 					<%-- </c:if> --%>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_RECEIVED_INVOICES')">
 				<%-- <c:if test="${SourceLeadWeb_ats == 'Y'}"> --%>
-			     <li><a href='${appPath}/receivedInvoiceReport'>Received Invoice(s)</a></li>    
+			     <li><a href='${SourceLeadWeb_sourceleadUrl}/receivedInvoiceReport'>Received Invoice(s)</a></li>    
 			     <%-- </c:if> --%>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_BILL')">
 				<%-- <c:if test="${SourceLeadWeb_vms == 'Y'}"> --%>
-				<li><a href='${appPath}/missingBillReport'>Missing Bill(s)</a></li>
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/missingBillReport'>Missing Bill(s)</a></li>
 				<%-- </c:if> --%>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_PAID_BILL')">
 					<%-- <c:if test="${SourceLeadWeb_vms == 'Y'}"> --%>
-				    <li><a href='${appPath}/paidBillReport'>Paid Bill(s)</a></li>
+				    <li><a href='${SourceLeadWeb_sourceleadUrl}/paidBillReport'>Paid Bill(s)</a></li>
 				  <%--   </c:if> --%>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MARGIN_SHEET_REPORT')">
 			<%-- 	<c:if test="${SourceLeadWeb_vms == 'Y'}"> --%>
-				<li><a href='${appPath}/marginSheetReports'>MarginSheetReport</a></li>
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/marginSheetReports'>MarginSheetReport</a></li>
 			<%-- 	</c:if> --%>
 				</sec:authorize>
 				
-			   <li><a href='${appPath}/assetmanagementGrowth'>Asset Growth</a></li>
+			   <li><a href='${SourceLeadWeb_sourceleadUrl}/assetmanagementGrowth'>Asset Growth</a></li>
 				
 				
 			    
@@ -159,14 +161,14 @@
 				<li><a href="#">Bad debt</a></li>
 				<li><a href="#">Cashflow projection</a></li>
 				<li><a href="#">Cashflow Requirement</a></li> 
-				<li><a href='${appPath}/missingInvoiceReport'>Missing Invoice</a></li>
-				<li><a href='${appPath}/missingBillReport'>Missing Bill</a></li>
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/missingInvoiceReport'>Missing Invoice</a></li>
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/missingBillReport'>Missing Bill</a></li>
 				<li><a href="#">Associate Billed vs Paid Report</a></li> -->
 				
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                 <a href="${appPath}/financialReportsList" class="block">
+                 <a href="${SourceLeadWeb_sourceleadUrl}/financialReportsList" class="block">
                   <div class="clearfix text-center mb10"><i class="finReport"></i></div>
                   <div class="clearfix text-center"><h4>Financial Report</h4></div></a>
                   </div>
@@ -183,38 +185,38 @@
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu3" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
 
-                <li><a href="${appPath}/assetsReport">Assigned Assets History</a></li>
+                <li><a href="${SourceLeadWeb_sourceleadUrl}/assetsReport">Assigned Assets History</a></li>
 
 				<sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
-				<li><a href="${appPath}/daywiseTimeSheetReports">Daywise Timesheet Report</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/daywiseTimeSheetReports">Daywise Timesheet Report</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_TIMESHEET_REPORT')">
-				  <li><a href="${appPath}/timeSheetReports">Timesheet Monthly Report</a></li>
+				  <li><a href="${SourceLeadWeb_sourceleadUrl}/timeSheetReports">Timesheet Monthly Report</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_EXPENSES_REPORT')">
-				<li><a href="${appPath}/expensesReportsList">Expense(s)</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/expensesReportsList">Expense(s)</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_TIMESHEETS')">
-                <li><a href="${appPath}/missingTimesheetsReport">Missing Timesheet(s)</a></li>
+                <li><a href="${SourceLeadWeb_sourceleadUrl}/missingTimesheetsReport">Missing Timesheet(s)</a></li>
                 </sec:authorize>
                 
                 <sec:authorize access="hasRole('ROLE_PENDING_FOR_APPROVAL')">
-				<li><a href="${appPath}/pendingForApprovalReport">Pending for Approval</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/pendingForApprovalReport">Pending for Approval</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
-				<li><a href="${appPath}/employementVerificationReport">Employement Verification Report</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/employementVerificationReport">Employement Verification Report</a></li>
 				</sec:authorize>
         
-				<li><a href="${appPath}/daywiseLeaveReport">Daywise Leave Report</a></li>
-				<li><a href="${appPath}/leaveReport">Leave Report</a></li>
-				<li><a href="${appPath}/leaveBalancesReport">Leave Balance Report</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/daywiseLeaveReport">Daywise Leave Report</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/leaveReport">Leave Report</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/leaveBalancesReport">Leave Balance Report</a></li>
 
 
-				<li><a href="${appPath}/topLeaveTakenReports">Top Leave Taken Report</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/topLeaveTakenReports">Top Leave Taken Report</a></li>
 	
 				<!-- <li><a href="#">Employment Verficication</a></li>
 				<li><a href="#">Wage and Tax</a></li>
@@ -225,7 +227,7 @@
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                  <a href="${appPath}/hrReportsList" class="block">
+                  <a href="${SourceLeadWeb_sourceleadUrl}/hrReportsList" class="block">
                   <div class="clearfix text-center mb10"><i class="hrReport"></i></div>
                   <div class="clearfix text-center"><h4>HR Report</h4></div> </a>
      </div>
@@ -243,17 +245,17 @@
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
 					<sec:authorize access="hasRole('ROLE_ASSOCIATE_ROI')">
-					<li><a href="${appPath}/payrollReport">Associate(s) ROI</a></li>
+					<li><a href="${SourceLeadWeb_sourceleadUrl}/payrollReport">Associate(s) ROI</a></li>
 					</sec:authorize>
 					
 					<sec:authorize access="hasRole('ROLE_ALL_ASSOCIATE_ROI')">
-					<li><a href="${appPath}/payrollAllBalanceReport">All Associates ROI</a></li>
+					<li><a href="${SourceLeadWeb_sourceleadUrl}/payrollAllBalanceReport">All Associates ROI</a></li>
 					</sec:authorize>
 					<sec:authorize access="hasRole('ROLE_CAMPAIGN_REPORTS')">
-					<li><a href='${appPath}/campaignStats'>Campaign(s) Report</a></li>
+					<li><a href='${SourceLeadWeb_sourceleadUrl}/campaignStats'>Campaign(s) Report</a></li>
 					</sec:authorize>
 					<sec:authorize access="hasRole('ROLE_ASSOCIATE_JOINED_REPORT')">
-				<li><a href='${appPath}/associateJoineReports'>Associate Joined Report</a></li>
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/associateJoineReports'>Associate Joined Report</a></li>
 				</sec:authorize>  
 					<!--<li><a href="#">Bank Report</a></li>
 					 <li><a href="#">Performance</a></li>
@@ -265,7 +267,7 @@
 			</div>
                  <!-- Dropdown -->
                   
-                  <a href="${appPath}/associateReportsList" class="block">
+                  <a href="${SourceLeadWeb_sourceleadUrl}/associateReportsList" class="block">
                   <div class="clearfix text-center mb10"><i class="assReport"></i></div>
                   <div class="clearfix text-center"><h4>Associate Report</h4></div> </a> 
                       </div>
@@ -283,13 +285,13 @@
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
 			     <sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-				<li><a href="${appPath}/userUsageReport">Usage Report(s)</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/userUsageReport">Usage Report(s)</a></li>
 				</sec:authorize>
 					
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                  <a href="${appPath}/userUsageReport" class="block">
+                  <a href="${SourceLeadWeb_sourceleadUrl}/userUsageReport" class="block">
                   <div class="clearfix text-center mb10"><i class="useReport"></i></div>
                   <div class="clearfix text-center"><h4>Users Usage Report</h4></div> </a>
                       </div>
@@ -306,32 +308,32 @@
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
 			     <sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-				<li><a href="/pms/payrollRegisterReport">Payroll Register</a></li>
-				<li><a href="/pms/payrollComparison">Comparsion</a></li>
-				<li><a href="/pms/payrollListSummaryReport">Payroll Summary</a></li>
-				<li><a href="/pms/checkRegisterReport">Check Register</a></li>
-				<li><a href="/pms/associateWithholding">Associate Withholding</a></li>
-				<li><a href="/pms/payrollTaxesAndWagesReport">Taxable Wages Report</a></li>
+				<li><a href="${SourceLeadWeb_pmsUrl}/payrollRegisterReport">Payroll Register</a></li>
+				<li><a href="${SourceLeadWeb_pmsUrl}/payrollComparison">Comparsion</a></li>
+				<li><a href="${SourceLeadWeb_pmsUrl}/payrollListSummaryReport">Payroll Summary</a></li>
+				<li><a href="${SourceLeadWeb_pmsUrl}/checkRegisterReport">Check Register</a></li>
+				<li><a href="${SourceLeadWeb_pmsUrl}/associateWithholding">Associate Withholding</a></li>
+				<li><a href="${SourceLeadWeb_pmsUrl}/payrollTaxesAndWagesReport">Taxable Wages Report</a></li>
 				<!-- <li><a href="companysnapshot.html">Employee Hours Paid</a></li>
 				<li><a href="companysnapshot.html">Taxable Wages Report</a></li> -->
-				<li><a href="/pms/deductionReport">Deduction Reports</a></li>
-				<li><a href="/pms/contributionReport">Contribution Reports</a></li>
+				<li><a href="${SourceLeadWeb_pmsUrl}/deductionReport">Deduction Reports</a></li>
+				<li><a href="${SourceLeadWeb_pmsUrl}/contributionReport">Contribution Reports</a></li>
 
-				<li><a href="/pms/usDeductionSummaryReport" ><!-- Us -->Deduction Summary Report</a></li>
-				<li><a href="/pms/usContributionSummaryReport" ><!-- Us -->Contribution Summary Reports</a></li>
+				<li><a href="${SourceLeadWeb_pmsUrl}/usDeductionSummaryReport" ><!-- Us -->Deduction Summary Report</a></li>
+				<li><a href="${SourceLeadWeb_pmsUrl}/usContributionSummaryReport" ><!-- Us -->Contribution Summary Reports</a></li>
 
 				<!-- <li><a href="companysnapshot.html">Tax Liability Report</a></li>
 				<li><a href="companysnapshot.html">Payroll Timesheet Report</a></li> -->
-				<li><a href="/pms/directDepositReport">Direct Deposit</a></li>
-				<li><a href="/pms/usEmployeePayrollReport">Employee Payroll</a></li>
+				<li><a href="${SourceLeadWeb_pmsUrl}/directDepositReport">Direct Deposit</a></li>
+				<li><a href="${SourceLeadWeb_pmsUrl}/usEmployeePayrollReport">Employee Payroll</a></li>
 
-				<li><a href="/pms/contractEmployeePayreport">Contract Employee Payroll</a></li>
+				<li><a href="${SourceLeadWeb_pmsUrl}/contractEmployeePayreport">Contract Employee Payroll</a></li>
 
 				</sec:authorize>
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                  <a href="/pms/usPayrollReport" class="block">
+                  <a href="${SourceLeadWeb_pmsUrl}/usPayrollReport" class="block">
                   <div class="clearfix text-center mb10"><i class="payReport"></i></div>
                   <div class="clearfix text-center"><h4>US Payroll Reports</h4></div> </a>
                   </div> 
@@ -345,13 +347,13 @@
 			<div class="dropdown pull-right report-dropdown">
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
-					<li><a href="/vms/petitionReport">Petition Report</a></li>
-					<li><a href="/vms/petitionAttorneyReport">Petition Attorney Report</a></li>
-					<li><a href="/vms/lcaReport">LCA Report</a></li>
+					<li><a href="${SourceLeadWeb_vmsUrl}/petitionReport">Petition Report</a></li>
+					<li><a href="${SourceLeadWeb_vmsUrl}/petitionAttorneyReport">Petition Attorney Report</a></li>
+					<li><a href="${SourceLeadWeb_vmsUrl}/lcaReport">LCA Report</a></li>
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                  <a href="/vms/petitionReport" class="block">
+                  <a href="${SourceLeadWeb_vmsUrl}/petitionReport" class="block">
                   <div class="clearfix text-center mb10"><i class="petitionReport"></i></div>
                   <div class="clearfix text-center"><h4>Immigration Reports</h4></div> </a>
 
@@ -362,14 +364,14 @@
 			<div class="dropdown pull-right report-dropdown">
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown" aria-expanded="false"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
-			     <li><a href="/app/projectReport">Project Report</a></li>
-				<li><a href="/app/employeeTasksReport">Employee Tasks</a></li>
-				<li><a href="/app/overdueTaskReport">Over Due Report</a></li>
+			     <li><a href="${SourceLeadWeb_sourceleadUrl}/projectReport">Project Report</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/employeeTasksReport">Employee Tasks</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/overdueTaskReport">Over Due Report</a></li>
 					
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                  <a href="/app/projectReportList" class="block">
+                  <a href="${SourceLeadWeb_sourceleadUrl}/projectReportList" class="block">
                   <div class="clearfix text-center mb10"><i class="proReport"></i></div>
                   <div class="clearfix text-center"><h4>Project Reports</h4></div> </a>
         </div>
@@ -381,19 +383,19 @@
 			<div class="dropdown pull-right report-dropdown">
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown" aria-expanded="false"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
-			     <li><a href="${appPath}/indPayrollRegisterReport">Payroll Register</a></li>
-				 <li><a href="${appPath}/indPayrollBankTransferReport">Bank Transfer</a></li>
-				 <li><a href="${appPath}/indPayrollYTDSummaryReport">YTD Summary</a></li>
-				 <li><a href="${appPath}/indPayrollAnnualTaxReport">Annual Tax</a></li>
-<%-- 				 <li><a href="${appPath}/indPayrollLoanReport">Loan</a></li> --%>
-				 <li><a href="${appPath}/indPayrollESISummaryReport">ESI</a></li>
-				 <li><a href="${appPath}/indPayrollPFSummaryReport">PF</a></li>
-				 <li><a href="${appPath}/indPayrollSalaryRegisterReport">Salary Register</a></li>
+			     <li><a href="${SourceLeadWeb_sourceleadUrl}/indPayrollRegisterReport">Payroll Register</a></li>
+				 <li><a href="${SourceLeadWeb_sourceleadUrl}/indPayrollBankTransferReport">Bank Transfer</a></li>
+				 <li><a href="${SourceLeadWeb_sourceleadUrl}/indPayrollYTDSummaryReport">YTD Summary</a></li>
+				 <li><a href="${SourceLeadWeb_sourceleadUrl}/indPayrollAnnualTaxReport">Annual Tax</a></li>
+<%-- 				 <li><a href="${SourceLeadWeb_sourceleadUrl}/indPayrollLoanReport">Loan</a></li> --%>
+				 <li><a href="${SourceLeadWeb_sourceleadUrl}/indPayrollESISummaryReport">ESI</a></li>
+				 <li><a href="${SourceLeadWeb_sourceleadUrl}/indPayrollPFSummaryReport">PF</a></li>
+				 <li><a href="${SourceLeadWeb_sourceleadUrl}/indPayrollSalaryRegisterReport">Salary Register</a></li>
 					
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                  <a href="/app/indPayrollReportList" class="block">
+                  <a href="${SourceLeadWeb_sourceleadUrl}/indPayrollReportList" class="block">
                   <div class="clearfix text-center mb10"><i class="proReport"></i></div>
                   <div class="clearfix text-center"><h4>India Payroll Reports</h4></div> </a>
            </div>
@@ -413,54 +415,54 @@
                 <ul class="repSearchList">
                 
                 <sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
-				<li><a href='${appPath}/applicantsjoinedlist'>Applicants Joined Report</a></li>
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/applicantsjoinedlist'>Applicants Joined Report</a></li>
 				</sec:authorize>
 				
  				<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
-				 <li><a href='${appPath}/recruitersReports'>Recruiter(s) Report</a></li>
+				 <li><a href='${SourceLeadWeb_sourceleadUrl}/recruitersReports'>Recruiter(s) Report</a></li>
 				 </sec:authorize>
 				 
 				  <sec:authorize access="hasRole('ROLE_MY_PERFORMANCE_REPORT')">
-				 <li><a href='${appPath}/myPerformanceReports'>My Performance Report</a></li>
+				 <li><a href='${SourceLeadWeb_sourceleadUrl}/myPerformanceReports'>My Performance Report</a></li>
 				 </sec:authorize>
 				
 				 <sec:authorize access="hasRole('ROLE_VENDORS_REPORT')">
-				 <li><a href="${appPath}/vendorsReports">Vendor(s) Report</a></li>
+				 <li><a href="${SourceLeadWeb_sourceleadUrl}/vendorsReports">Vendor(s) Report</a></li>
 				 </sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_CLIENT_REPORT')">
-				<li><a href="${appPath}/perfomanceClientReports">Client(s) Report</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/perfomanceClientReports">Client(s) Report</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_APPLICANT_DECLINE')">
-				<li><a href="${appPath}/applicantDeclineReports">Applicant(s) Decline</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/applicantDeclineReports">Applicant(s) Decline</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_APPLICANT_BACKOUT')">
-				<li><a href="${appPath}/applicantsBackoutReport">Applicant(s) Backout</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/applicantsBackoutReport">Applicant(s) Backout</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_JOBS_PIPELINE')">
-				<li><a href="${appPath}/jobPipelineReports">Job(s) Pipeline</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/jobPipelineReports">Job(s) Pipeline</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_APPLICANT_SOURCE')">
-				<li><a href="${appPath}/applicantBySource">Applicant(s) by Source</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/applicantBySource">Applicant(s) by Source</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_TIME_TO_FILL')">
-				<li><a href="${appPath}/timeToFill">Time to Fill</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/timeToFill">Time to Fill</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_APPLICANT_RECEIVED')">
-				<li><a href="${appPath}/applicantsReceivedListForReports">Applicant(s) Received</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/applicantsReceivedListForReports">Applicant(s) Received</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_JOBS_STAGES')">
-				<li><a href="${appPath}/requirementStagesListForReports">Job(s) Stage</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/requirementStagesListForReports">Job(s) Stage</a></li>
 				</sec:authorize>
 				
-				<li><a href="${appPath}/jobsPerformanceReport">Jobs Report</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/jobsPerformanceReport">Jobs Report</a></li>
 				
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
@@ -469,53 +471,53 @@
                 <h2><a href="javascript:void(0)">Financial Reports</a></h2>
                 <ul class="repSearchList">
                     <sec:authorize access="hasRole('ROLE_BILLING_REPORTS')">
-				<li><a href="${appPath}/billingReports">Finance</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/billingReports">Finance</a></li>
 				</sec:authorize>
 				<!-- <li><a href="#">Invoice Report By Customer / Project</a></li>
 				<li><a href="#">Bill Report By Customer / Project</a></li> -->
 				<sec:authorize access="hasRole('ROLE_A_R_AGING')">
 				<c:if test="${SourceLeadWeb_ats == 'Y'}">
-				<li><a href='${appPath}/arAgingReport'>A/R Aging</a></li>
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/arAgingReport'>A/R Aging</a></li>
 				</c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_A_P_AGING')">
 				<c:if test="${SourceLeadWeb_vms == 'Y'}">
-				<li><a href='${appPath}/apAgingReport'>A/P Aging</a></li>
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/apAgingReport'>A/P Aging</a></li>
 				</c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_INVOICE')">
 					<c:if test="${SourceLeadWeb_ats == 'Y'}">
-					<li><a href='${appPath}/missingInvoiceReport'>Missing Invoice(s)</a></li>
+					<li><a href='${SourceLeadWeb_sourceleadUrl}/missingInvoiceReport'>Missing Invoice(s)</a></li>
 					</c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_RECEIVED_INVOICES')">
 				<c:if test="${SourceLeadWeb_ats == 'Y'}">
-			     <li><a href='${appPath}/receivedInvoiceReport'>Received Invoice(s)</a></li>    
+			     <li><a href='${SourceLeadWeb_sourceleadUrl}/receivedInvoiceReport'>Received Invoice(s)</a></li>    
 			     </c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_BILL')">
 				<c:if test="${SourceLeadWeb_vms == 'Y'}">
-				<li><a href='${appPath}/missingBillReport'>Missing Bill(s)</a></li>
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/missingBillReport'>Missing Bill(s)</a></li>
 				</c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_PAID_BILL')">
 					<c:if test="${SourceLeadWeb_vms == 'Y'}">
-				    <li><a href='${appPath}/paidBillReport'>Paid Bill(s)</a></li>
+				    <li><a href='${SourceLeadWeb_sourceleadUrl}/paidBillReport'>Paid Bill(s)</a></li>
 				    </c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MARGIN_SHEET_REPORT')">
 				<c:if test="${SourceLeadWeb_vms == 'Y'}">
-				<li><a href='${appPath}/marginSheetReports'>MarginSheetReport</a></li>
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/marginSheetReports'>MarginSheetReport</a></li>
 				</c:if>
 				</sec:authorize>
 				
-				<li><a href='${appPath}/assetmanagementGrowth'>Asset Growth</a></li>
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/assetmanagementGrowth'>Asset Growth</a></li>
 				
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
@@ -526,36 +528,36 @@
                 <h2><a href="javascript:void(0)">HR Reports</a></h2>
                 <ul class="repSearchList">
                 
-                <li><a href="${appPath}/projectReport">Project Report</a></li>
+                <li><a href="${SourceLeadWeb_sourceleadUrl}/projectReport">Project Report</a></li>
                 
                 <sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
-					<li><a href="${appPath}/daywiseTimeSheetReports">Daywise Timesheet Report</a></li>
+					<li><a href="${SourceLeadWeb_sourceleadUrl}/daywiseTimeSheetReports">Daywise Timesheet Report</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_TIMESHEET_REPORT')">
-				  <li><a href="${appPath}/timeSheetReports">Timesheet Monthly Report</a></li>
+				  <li><a href="${SourceLeadWeb_sourceleadUrl}/timeSheetReports">Timesheet Monthly Report</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_EXPENSES_REPORT')">
-				<li><a href="${appPath}/expensesReportsList">Expense(s)</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/expensesReportsList">Expense(s)</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_TIMESHEETS')">
-                <li><a href="${appPath}/missingTimesheetsReport">Missing Timesheet(s)</a></li>
+                <li><a href="${SourceLeadWeb_sourceleadUrl}/missingTimesheetsReport">Missing Timesheet(s)</a></li>
                 </sec:authorize>
                 
                 <sec:authorize access="hasRole('ROLE_PENDING_FOR_APPROVAL')">
-				<li><a href="${appPath}/pendingForApprovalReport">Pending for Approval</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/pendingForApprovalReport">Pending for Approval</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
-				<li><a href="${appPath}/employementVerificationReport">Employement Verification Report</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/employementVerificationReport">Employement Verification Report</a></li>
 				</sec:authorize>
 
-				<li><a href="${appPath}/daywiseLeaveReport">Daywise Leave Report</a></li>
-				<li><a href="${appPath}/leaveReport">Leave Report</a></li>
-				<li><a href="${appPath}/leaveBalancesReport">Leave Balance Report</a></li>
-            	<li><a href="${appPath}/topLeaveTakenReports">Top Leave Taken Report</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/daywiseLeaveReport">Daywise Leave Report</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/leaveReport">Leave Report</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/leaveBalancesReport">Leave Balance Report</a></li>
+            	<li><a href="${SourceLeadWeb_sourceleadUrl}/topLeaveTakenReports">Top Leave Taken Report</a></li>
 
 
                 </ul>
@@ -567,17 +569,17 @@
                 <h2><a href="javascript:void(0)">Associate Report</a></h2>
                 <ul class="repSearchList">
 					<sec:authorize access="hasRole('ROLE_ASSOCIATE_ROI')">
-					<li><a href="${appPath}/payrollReport">Associate(s) ROI</a></li>
+					<li><a href="${SourceLeadWeb_sourceleadUrl}/payrollReport">Associate(s) ROI</a></li>
 					</sec:authorize>
 					
 					<sec:authorize access="hasRole('ROLE_ALL_ASSOCIATE_ROI')">
-					<li><a href="${appPath}/payrollAllBalanceReport">All Associates ROI</a></li>
+					<li><a href="${SourceLeadWeb_sourceleadUrl}/payrollAllBalanceReport">All Associates ROI</a></li>
 					</sec:authorize>
 					<sec:authorize access="hasRole('ROLE_CAMPAIGN_REPORTS')">
-					<li><a href='${appPath}/campaignStats'>Campaign(s) Report</a></li>
+					<li><a href='${SourceLeadWeb_sourceleadUrl}/campaignStats'>Campaign(s) Report</a></li>
 					</sec:authorize>  
 					<sec:authorize access="hasRole('ROLE_ASSOCIATE_JOINED_REPORT')">
-				<li><a href='${appPath}/associateJoineReports'>Associate Joined Report</a></li>
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/associateJoineReports'>Associate Joined Report</a></li>
 				</sec:authorize>             
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
@@ -589,7 +591,7 @@
                 <h2><a href="javascript:void(0)">Users Usage Reports</a></h2>
                 <ul class="repSearchList">
                 <sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-				<li><a href="${appPath}/userUsageReport">Usage Report(s)</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/userUsageReport">Usage Report(s)</a></li>
 				</sec:authorize>
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
@@ -598,9 +600,9 @@
             <div class="newRepListCta">
                 <h2><a href="javascript:void(0)">Project Reports</a></h2>
                 <ul class="repSearchList">
-                <li><a href="${appPath}/projectReport">Project Report</a></li>
-				<li><a href="${appPath}/employeeTasksReport">Employee Tasks</a></li>
-				<li><a href="${appPath}/overdueTaskReport">Over Due Report</a></li>
+                <li><a href="${SourceLeadWeb_sourceleadUrl}/projectReport">Project Report</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/employeeTasksReport">Employee Tasks</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/overdueTaskReport">Over Due Report</a></li>
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div>
@@ -609,14 +611,14 @@
             <div class="newRepListCta">
                 <h2><a href="javascript:void(0)">India Payroll Reports</a></h2>
                 <ul class="repSearchList">
-                <li><a href="${appPath}/indPayrollRegisterReport">Payroll Register</a></li>
-				 <li><a href="${appPath}/indPayrollBankTransferReport">Bank Transfer</a></li>
-				 <li><a href="${appPath}/indPayrollYTDSummaryReport">YTD Summary</a></li>
-				 <li><a href="${appPath}/indPayrollAnnualTaxReport">Annual Tax</a></li>
-<%-- 				 <li><a href="${appPath}/indPayrollLoanReport">Loan</a></li> --%>
-				 <li><a href="${appPath}/indPayrollESISummaryReport">ESI</a></li>
-				 <li><a href="${appPath}/indPayrollPFSummaryReport">PF</a></li>
-				 <li><a href="${appPath}/indPayrollSalaryRegisterReport">Salary Register</a></li>
+                <li><a href="${SourceLeadWeb_sourceleadUrl}/indPayrollRegisterReport">Payroll Register</a></li>
+				 <li><a href="${SourceLeadWeb_sourceleadUrl}/indPayrollBankTransferReport">Bank Transfer</a></li>
+				 <li><a href="${SourceLeadWeb_sourceleadUrl}/indPayrollYTDSummaryReport">YTD Summary</a></li>
+				 <li><a href="${SourceLeadWeb_sourceleadUrl}/indPayrollAnnualTaxReport">Annual Tax</a></li>
+<%-- 				 <li><a href="${SourceLeadWeb_sourceleadUrl}/indPayrollLoanReport">Loan</a></li> --%>
+				 <li><a href="${SourceLeadWeb_sourceleadUrl}/indPayrollESISummaryReport">ESI</a></li>
+				 <li><a href="${SourceLeadWeb_sourceleadUrl}/indPayrollPFSummaryReport">PF</a></li>
+				 <li><a href="${SourceLeadWeb_sourceleadUrl}/indPayrollSalaryRegisterReport">Salary Register</a></li>
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div>
@@ -627,42 +629,42 @@
                 <h2><a href="javascript:void(0)">US Payroll Reports</a></h2>
 	                <ul class="repSearchList">
 		                <sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="/pms/payrollRegisterReport">Payroll Register</a></li>
+							<li><a href="${SourceLeadWeb_pmsUrl}/payrollRegisterReport">Payroll Register</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="/pms/payrollComparison">Comparison</a></li>
+							<li><a href="${SourceLeadWeb_pmsUrl}/payrollComparison">Comparison</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="/pms/payrollListSummaryReport">Payroll Summary</a></li>
+							<li><a href="${SourceLeadWeb_pmsUrl}/payrollListSummaryReport">Payroll Summary</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="/pms/checkRegisterReport">Check Register</a></li>
+							<li><a href="${SourceLeadWeb_pmsUrl}/checkRegisterReport">Check Register</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="/pms/associateWithholding">Associate Withholding</a></li>
+							<li><a href="${SourceLeadWeb_pmsUrl}/associateWithholding">Associate Withholding</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="/pms/payrollTaxesAndWagesReport">Taxable Wages Report</a></li>
+							<li><a href="${SourceLeadWeb_pmsUrl}/payrollTaxesAndWagesReport">Taxable Wages Report</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="/pms/deductionReport">Deduction Reports</a></li>
+							<li><a href="${SourceLeadWeb_pmsUrl}/deductionReport">Deduction Reports</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="/pms/contributionReport">Contribution Reports</a></li>
-						</sec:authorize>
-
-						<li><a href="/pms/usDeductionSummaryReport" ><!-- Us -->Deduction Summary Report</a></li>
-				        <li><a href="/pms/usContributionSummaryReport" ><!-- Us -->Contribution Summary Reports</a></li>
-
-						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="/pms/directDepositReport">Direct Deposit</a></li>
-						</sec:authorize>
-						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-							<li><a href="/pms/usEmployeePayrollReport">Employee Payroll</a></li>
+							<li><a href="${SourceLeadWeb_pmsUrl}/contributionReport">Contribution Reports</a></li>
 						</sec:authorize>
 
+						<li><a href="${SourceLeadWeb_pmsUrl}/usDeductionSummaryReport" ><!-- Us -->Deduction Summary Report</a></li>
+				        <li><a href="${SourceLeadWeb_pmsUrl}/usContributionSummaryReport" ><!-- Us -->Contribution Summary Reports</a></li>
+
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-						<li><a href="/pms/contractEmployeePayreport">Contract Employee Payroll</a></li>
+							<li><a href="${SourceLeadWeb_pmsUrl}/directDepositReport">Direct Deposit</a></li>
+						</sec:authorize>
+						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
+							<li><a href="${SourceLeadWeb_pmsUrl}/usEmployeePayrollReport">Employee Payroll</a></li>
+						</sec:authorize>
+
+						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
+						<li><a href="${SourceLeadWeb_pmsUrl}/contractEmployeePayreport">Contract Employee Payroll</a></li>
 						</sec:authorize>
 
 	                </ul>
