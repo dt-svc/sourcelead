@@ -2,17 +2,17 @@ package com.bis.sourcelead.util;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.bis.sourcelead.couchbase.ConnectionManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.bis.sourcelead.couchbase.CouchbaseClient;
 import com.couchbase.client.java.document.json.JsonObject;
 
+@Component
 public class SourceLeadSessionManager {
 	
-	
-	static CouchbaseClient c = null;
-	static{
-		c = ConnectionManager.instance().getClient();
-	}
+	@Autowired
+	CouchbaseClient couchbaseClient;
 
 	public static void setSessionAttribute(HttpServletRequest request, String attribute, Object obj) {
 		request.getSession().setAttribute("SourceLeadWeb_"+attribute, obj);
@@ -26,17 +26,17 @@ public class SourceLeadSessionManager {
 		request.getSession().removeAttribute("SourceLeadWeb_"+attribute);
 	}
 	
-	public static void deleteUserLoginSessionFromBucket(String sessionId) {
-		c.deleteSessionDocumentsFromBucket(sessionId);
+	public  void deleteUserLoginSessionFromBucket(String sessionId) {
+		couchbaseClient.deleteSessionDocumentsFromBucket(sessionId);
 	}
 	
 	
-	public static void setUserProfileJsonString(String userName, String attribute, JsonObject jsonString) {
+	public  void setUserProfileJsonString(String userName, String attribute, JsonObject jsonString) {
 		String jsonKey = userName ;
 		try {
 			if (userName != null && attribute != null) {
 					if (jsonString != null) {
-						c.setUserProfile(userName, jsonKey, jsonString);
+						couchbaseClient.setUserProfile(userName, jsonKey, jsonString);
 					} else
 						System.out.println("Json String is NuLL : " + attribute);
 			} else
@@ -47,12 +47,12 @@ public class SourceLeadSessionManager {
 	}
 	
 	
-	public static void setOrgLocationsJsonString(String userName, String attribute, JsonObject jsonString) {
+	public  void setOrgLocationsJsonString(String userName, String attribute, JsonObject jsonString) {
 		String jsonKey = userName ;
 		try {
 			if (userName != null && attribute != null) {
 					if (jsonString != null) {
-						c.setOrgLocations(userName, jsonKey, jsonString);
+						couchbaseClient.setOrgLocations(userName, jsonKey, jsonString);
 					} else
 						System.out.println("Json String is NuLL : " + attribute);
 			} else
@@ -64,12 +64,12 @@ public class SourceLeadSessionManager {
 	
 	
 	
-	public static void setUserLoginSessionJsonString(String sessionId, String attribute, JsonObject jsonString) {
+	public  void setUserLoginSessionJsonString(String sessionId, String attribute, JsonObject jsonString) {
 		String jsonKey = sessionId ;
 		try {
 			if (sessionId != null && attribute != null) {
 					if (jsonString != null) {
-						c.setUserLoginSession(sessionId, jsonKey, jsonString);
+						couchbaseClient.setUserLoginSession(sessionId, jsonKey, jsonString);
 					} else
 						System.out.println("Json String is NuLL : " + attribute);
 			} else
