@@ -910,6 +910,7 @@ public class UserServiceImpl implements UserService {
 		userRole.setCreatedBy(userCode);
 		userRole.setUpdatedDate(commonUtil.currentDate());
 		userRole.setUpdatedBy(userCode);
+		userRole.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		return userRole;
 	}
 	
