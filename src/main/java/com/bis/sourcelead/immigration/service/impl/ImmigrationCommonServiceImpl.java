@@ -1083,6 +1083,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			visaHistory.setUpdatedDate(currentDate);
 			visaHistory.setCreatedDate(currentDate);
 			
+			
 			visaHistory = immigrationCommonDao.saveVisaHistoaryDetails(visaHistory);
 			
 		}
@@ -1090,7 +1091,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		StringBuilder actionDesc = new StringBuilder();
 		if (immigrationVisaDTO.getId() != null) {
 			
-			actionDesc.append("Passport Details Updated ").toString();
+			actionDesc.append("Visa Details Updated ").toString();
 			
 			immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate, immigration,
 					actionDesc.toString());
@@ -3155,6 +3156,12 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 			logger.error("Exception caught while extending visa details " + e.getMessage());
 		}
 		return candVisaHistory;
+	}
+
+	@Override
+	public ImmigrationVisaDTO getCandidateVisaDetailsByCandidateIdAndVisaNumber(Long candidateId,
+			String visaNumber) {
+		return immigrationCommonDao.getCandidateVisaDetailsByCandidateIdAndVisaNumber(candidateId, visaNumber);
 	}
 
 

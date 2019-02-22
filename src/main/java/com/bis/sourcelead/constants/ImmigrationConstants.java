@@ -50,13 +50,13 @@ public class ImmigrationConstants {
             "Beneficiary Email", "Phone Number", "Experience", "SSN", "I-94 Number",    "I-20 SEVIS Number If Student", "EAD Number If Student", "DOB",    
             "Marital status", "Petition Type", "Template", "Date of arrival", "Open on", "Status","Passport No","Passport Country","Passport Start Date","Passport End Date","Visa No.","Visa Type", "Visa Country","Visa Start Date", "Visa End Date","Company",
             "Attorney/Contact email", "Receipt No.", "Location", "LCA Start Date", "LCA End Date","LCA Number", "LCA Rate Currency","LCA Rate","LCA Rate Per", "LCA Location","LCA Title","Job ID",
-            "Previous LCA Start Date", "Previous LCA end Date","Previous LCA Number","Previous LCA Title","Previous LCA Location"};
+            "Previous LCA Start Date", "Previous LCA end Date","Previous LCA Number","Previous LCA Title","Previous LCA Location","Active Indicator"};
    
    public static final String[] IMPORT_DOWNLOAD_IMMIGRATION_EXCEL_HEADERS = {"Beneficiary First Name*","Beneficiary Last Name*",
             "Beneficiary Email*", "Phone Number", "Experience", "SSN", "I-94 Number",    "I-20 SEVIS Number If Student", "EAD Number If Student", "DOB*",    
             "Marital status", "Petition Type*", "Template*", "Date of arrival", "Open on*", "Status*","Passport No","Passport Country","Passport Start Date","Passport End Date","Visa No.","Visa Type", "Visa Country","Visa Start Date", "Visa End Date","Company*",
             "Attorney/Contact email*", "Receipt No.", "Location", "LCA Start Date", "LCA End Date","LCA Number", "LCA Rate Currency","LCA Rate","LCA Rate Per", "LCA Location","LCA Title","Job ID*",
-            "Previous LCA Start Date", "Previous LCA end Date","Previous LCA Number","Previous LCA Title","Previous LCA Location"};
+            "Previous LCA Start Date", "Previous LCA end Date","Previous LCA Number","Previous LCA Title","Previous LCA Location","Active Indicator"};
    
    public static final String[] IMPORT_LCA_EXCEL_HEADERS = {"LCA Number","LCA Title",
            "No. of positions", "Current Client Location (Address 1, City, State, Country, PIN)", "Current Prim Vendor Location (Address 1, City, State, Country, PIN)",

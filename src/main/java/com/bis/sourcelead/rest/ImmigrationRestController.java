@@ -1742,7 +1742,7 @@ public class ImmigrationRestController {
 				Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
 			
 
-				if (StringUtils.isNoneBlank(canVisa.getValidTo()) && currentDate.before(commonUtil.stringToDate(canVisa.getValidTo()))) {
+				if (StringUtils.isNotBlank(canVisa.getValidTo()) && currentDate.before(commonUtil.stringToDate(canVisa.getValidTo()))) {
 					canVisa.setCurrentStatus("Active");
 				} else {
 					canVisa.setCurrentStatus("Expired");

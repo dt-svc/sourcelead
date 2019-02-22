@@ -16,10 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.transform.Transformers;
@@ -79,7 +77,6 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.immigration.dao.ImmigrationCommonDao;
 import com.bis.sourcelead.payroll.dto.ImmigrationReportViewDTO;
-import com.bis.sourcelead.reportsDTO.AssetGrowthDTO;
 import com.bis.sourcelead.util.CommonUtil;
 
 /**
@@ -551,6 +548,40 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 					   .setLong("candidateId", candidateId).setResultTransformer(Transformers.aliasToBean(ImmigrationVisaDTO.class)).list();
 		}
 		return visaList;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ImmigrationVisaDTO getCandidateVisaDetailsByCandidateIdAndVisaNumber(Long candidateId,
+			String visaNumber) {
+		ImmigrationVisaDTO candRecentVisaDetails =null;
+		logger.debug("Getting  getCandidateVisaDetailsByCandidateIdAndVisaNumber --->  "+visaNumber);
+		Session session = this.sessionFactory.getCurrentSession();
+		if (StringUtils.isNotBlank(visaNumber)) {
+
+			String sqlQueryString = "select cvh.ID as id,  cv.CANDIDATE_ID as candidateId, cvh.VISA_ID as candidateVisaId , "+
+											"cv.VISA_NUMBER as visaNumber, cv.VISA_TYPE as visaType, cvh.status as status," + 
+											" cv.COUNTRY as country, CAST(cvh.VALID_FROM_DATE AS char) as validFrom," + 
+											" CAST(cvh.VALID_TO_DATE AS char) as validTo " + 
+											"  from CANDIDATE_VISA cv, CANDIDATE_VISA_HISTORY cvh  Where cv.ID= cvh.VISA_ID  "+
+											" and cv.CANDIDATE_ID=:candidateId and cv.VISA_NUMBER=:visaNumber order by cvh.ID desc LIMIT 1";
+			candRecentVisaDetails = (ImmigrationVisaDTO) session.createSQLQuery(sqlQueryString)
+					   .addScalar("id", StandardBasicTypes.LONG)
+					   .addScalar("candidateId", StandardBasicTypes.LONG)
+					   .addScalar("candidateVisaId", StandardBasicTypes.LONG)
+					   .addScalar("visaNumber", StandardBasicTypes.STRING)
+					   .addScalar("country", StandardBasicTypes.STRING)
+					   .addScalar("visaType", StandardBasicTypes.STRING)
+					   .addScalar("status", StandardBasicTypes.INTEGER)
+					   .addScalar("validFrom", StandardBasicTypes.STRING)
+					   .addScalar("validTo", StandardBasicTypes.STRING)
+					   .setLong("candidateId", candidateId)
+					   .setString("visaNumber", visaNumber)
+					   .setResultTransformer(Transformers.aliasToBean(ImmigrationVisaDTO.class)).uniqueResult();
+		} 
+		return candRecentVisaDetails;
 	}
 	
 	//Passport List
@@ -3141,9 +3172,11 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		try {
 			if (visaId != null) {
 				logger.debug(" before query execute to get lcaHistory " + visaId);
-				String queryString = "from CandidateVisaHistory cvh  where cvh.status=1 and cvh.isCurrent =:isCurrent and  cvh.visaId = :visaId ";
+				System.out.print(" updated string 1");
+				String queryString = "from CandidateVisaHistory cvh  where cvh.status=1 and cvh.isCurrent =:isCurrent and  cvh.visaId = :visaId order by cvh.id desc ";
 				canVisaHistory = (CandidateVisaHistory) session.createQuery(queryString).setLong("visaId", visaId)
-																		  .setString("isCurrent", isCurrent).uniqueResult();
+																		  .setString("isCurrent", isCurrent).setMaxResults(1).uniqueResult();
+				System.out.print(" updated string 2 ");
 			}
 		} catch (Exception exception) {
 			logger.error("Exception caught while  lcaHistory information " + exception.getMessage());
@@ -3186,6 +3219,41 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return visaDTO;
 	}
 	
+	//getVisanumber
+	/*@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ImmigrationVisaDTO getCandidateVisaDetailsByVisaNumber(Long visaNumber) {
+		Session session = this.sessionFactory.getCurrentSession();
+		ImmigrationVisaDTO visaDTO= null;
+		try {
+			if (visaNumber != null) {
+				logger.debug(" before query execute to get  visa details by visa number  " + visaNumber);
+				String sqlQueryString = "select cvh.ID as id,  cv.CANDIDATE_ID as candidateId, cvh.VISA_ID as candidateVisaId ,"+
+						" cv.VISA_NUMBER as visaNumber, cv.VISA_TYPE as visaType, cvh.IS_CURRENT as isCurrent, " + 
+						" cv.COUNTRY as country, CAST(cvh.VALID_FROM_DATE AS char) as validFrom," + 
+						" CAST(cvh.VALID_TO_DATE AS char) as validTo " + 
+						"  from CANDIDATE_VISA cv, CANDIDATE_VISA_HISTORY cvh  Where cv.ID= cvh.VISA_ID  "+
+						"  and cvh.status = 1 and cv.VISA_NUMBER=:visaHistoryId ";
+				visaDTO = (ImmigrationVisaDTO) session.createSQLQuery(sqlQueryString)
+										   .addScalar("id", StandardBasicTypes.LONG)
+										   .addScalar("candidateId", StandardBasicTypes.LONG)
+										   .addScalar("candidateVisaId", StandardBasicTypes.LONG)
+										   .addScalar("visaNumber", StandardBasicTypes.STRING)
+										   .addScalar("country", StandardBasicTypes.STRING)
+										   .addScalar("visaType", StandardBasicTypes.STRING)
+										   .addScalar("isCurrent", StandardBasicTypes.STRING)
+										   .addScalar("validFrom", StandardBasicTypes.STRING)
+										   .addScalar("validTo", StandardBasicTypes.STRING)
+										   .setLong("visaNumber", visaNumber)
+										   .setResultTransformer(Transformers.aliasToBean(ImmigrationVisaDTO.class)).uniqueResult();
+		  }
+		} catch (Exception exception) {
+			logger.error("Exception caught while  getting Visa History details >>>>>>>>" + exception.getMessage());
+			exception.printStackTrace();
+		}
+		return visaDTO;
+	}*/
+	
 	@Override
 	@Transactional
 	public int updateCanVisaHistoryDetails(Long visaId, Long visaHistoryId)
@@ -3197,5 +3265,4 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	    int result = query.executeUpdate();
 	    return result;
 	}
-
 }	

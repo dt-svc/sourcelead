@@ -91,6 +91,8 @@ public interface ImmigrationCommonDao {
  	// visa List
  	List<ImmigrationVisaDTO> getCandidateVisaDetails(Long candidateId,String searchValue);
  	
+ 	ImmigrationVisaDTO getCandidateVisaDetailsByCandidateIdAndVisaNumber(Long candidateId,String visaNumber);
+ 	
  	//passport list
 	List<CandidatePassport> getCandidatePassportDetails(Long candidateId,String searchValue);
 	
