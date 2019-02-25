@@ -13,7 +13,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Leave Configuration</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}"> Home</a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; Leave Configuration</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}"> Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings</a>&raquo; Leave Configuration</div>
     </section>
     <div class="project_wrap clearfix">
       <div class="clearfix form-horizontal inner-content mt mb col-md-12">
@@ -26,8 +26,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
                       <h4 class="text-info">Leave Type</h4>
 <!--                       <small class="text-muted">Loremipsum Loremipsum</small> -->
                       <div class="clearfix mt10">
-                          <a href="/pms/addLeaveType" class="btn btn-info btn-sm mr10" title="Add">Add</a>
-                          <a href="/pms/viewLeaveTypes" class="btn btn-primary btn-sm" title="View">View</a>
+                          <a href="${SourceLeadWeb_pmsUrl}/addLeaveType" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+                          <a href="${SourceLeadWeb_pmsUrl}/viewLeaveTypes" class="btn btn-primary btn-sm" title="View">View</a>
                       </div>
                   </div>
                   </div>
@@ -39,8 +39,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
                       <h4 class="text-muted">Holidays</h4>
 <!--                       <small class="text-muted">Loremipsum Loremipsum</small> -->
                       <div class="clearfix mt10">
-                          <a href="/pms/addHoliday" class="btn btn-info btn-sm mr10" title="Add">Add</a>
-                          <a href="/pms/viewHoliday" class="btn btn-primary btn-sm" title="View">View</a>
+                          <a href="${SourceLeadWeb_pmsUrl}/addHoliday" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+                          <a href="${SourceLeadWeb_pmsUrl}/viewHoliday" class="btn btn-primary btn-sm" title="View">View</a>
                       </div>
                   </div>
                   </div>
@@ -52,8 +52,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
                       <h4 class="text-primary">Shifts</h4>
 <!--                       <small class="text-muted">Loremipsum Loremipsum</small> -->
                       <div class="clearfix mt10">
-                          <a href="/pms/addShift" class="btn btn-info btn-sm mr10" title="Add">Add</a>
-                          <a href="/pms/viewShift" class="btn btn-primary btn-sm" title="View">View</a>
+                          <a href="${SourceLeadWeb_pmsUrl}/addShift" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+                          <a href="${SourceLeadWeb_pmsUrl}/viewShift" class="btn btn-primary btn-sm" title="View">View</a>
                       </div>
                   </div>
                   </div>
@@ -66,8 +66,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
                       <h4 class="text-danger">Restricted Day</h4>
 <!--                       <small class="text-muted">Loremipsum Loremipsum</small> -->
                       <div class="clearfix mt10">
-                          <a href="/pms/addRestrictDay" class="btn btn-info btn-sm mr10" title="Add">Add</a>
-                          <a href="/pms/viewRestrictDay" class="btn btn-primary btn-sm" title="View">View</a>
+                          <a href="${SourceLeadWeb_pmsUrl}/addRestrictDay" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+                          <a href="${SourceLeadWeb_pmsUrl}/viewRestrictDay" class="btn btn-primary btn-sm" title="View">View</a>
                       </div>
                   </div>
                       </div>
@@ -79,8 +79,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
                       <h4 class="text-warning">Leave Options</h4>
 <!--                       <small class="text-muted">Loremipsum Loremipsum</small> -->
                       <div class="clearfix mt10">
-                          <a href="/pms/addOptions" class="btn btn-info btn-sm mr10" title="Add">Add</a>
-                          <a href="/pms/viewOptions" class="btn btn-primary btn-sm" title="View">View</a>
+                          <a href="${SourceLeadWeb_pmsUrl}/addOptions" class="btn btn-info btn-sm mr10" title="Add">Add</a>
+                          <a href="${SourceLeadWeb_pmsUrl}/viewOptions" class="btn btn-primary btn-sm" title="View">View</a>
                       </div>
                   </div>
                       </div>

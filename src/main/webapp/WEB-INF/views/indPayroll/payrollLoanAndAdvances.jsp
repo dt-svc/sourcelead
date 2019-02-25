@@ -22,7 +22,7 @@
       <div class="pull-left">
         <h2>Loan & Advances</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a>  &raquo; Loan & Advances</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a>  &raquo; Loan & Advances</div>
     </section>
     
     <div class="content-area content-new clearfix backgroundWhite">
@@ -155,7 +155,7 @@
 				<div class="col-lg-12">
 					<div class="pull-right">
 						<input type="submit" value="Save" id="loan_adv"  class="btn btn-primary"> 
-						<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/payrollLoanAndAdvancesList'/>'" class="btn btn-default ml">
+						<input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_pmsUrl}/payrollLoanAndAdvancesList'" class="btn btn-default ml">
 					</div>
 				</div>
 			</div>

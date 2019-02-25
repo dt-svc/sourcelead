@@ -5,14 +5,14 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<section class="content-wraper contentWraper">
+<section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Bonus Setup</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a>  &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollBonusList">Bonus List</a> &raquo; Bonus Setup</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollBonusList">Bonus List</a> &raquo; Bonus Setup</div>
     </section>
-  <div class="content-area content-new clearfix">
+  <div class="content-area content-new clearfix backgroundWhite">
    <div id="loading"></div> 
     <form:form class="login-form clearfix"  id="createbonus_form"  name="createbonus_form" method="post" > 
       <div class="row minHeightcol5">
@@ -130,8 +130,8 @@
       <div class="form-footer clearfix mt">
 				<div class="col-lg-12">
 					<div class="pull-right">
-						<input type="submit" value="Save" class="btn btn-primary"> 
-						<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/payrollBonusList'/>'" class="btn btn-default ml">
+						<input type="submit" value="Save" class="btn btn-primary">
+						<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_pmsUrl}/payrollBonusList'/>'" class="btn btn-default ml">
 					</div>
 				</div>
 			</div>

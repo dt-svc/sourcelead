@@ -2,7 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<script src="/pms/resources/js/payrollReports.js"></script>
+<script src="${SourceLeadWeb_pmsUrl}/resources/js/payrollReports.js"></script>
 
 <script>
 $(document).ready(function(){
@@ -20,8 +20,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Check Register Report</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="/app/dashboard" title="Home">Home</a>&raquo;<a
-				href="/pms/usPayrollReport"> US Payroll Reports List</a>&raquo;Check Register Report
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard" title="Home">Home</a>&raquo;<a
+				href="${SourceLeadWeb_pmsUrl}/usPayrollReport"> US Payroll Reports List</a>&raquo;Check Register Report
 		</div>
     </section>
     <div class="contentareaInner-styles clearfix">

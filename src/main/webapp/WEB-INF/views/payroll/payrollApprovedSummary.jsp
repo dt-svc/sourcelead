@@ -22,7 +22,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Payroll List Summary</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="/pms/uSPayrollDashboard?&redirect=history">Payroll Dashboard</a> &raquo; Payroll Summary</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/uSPayrollDashboard?&redirect=history">Payroll Dashboard</a> &raquo; Payroll Summary</div>
     </section>
     
     <div class="clearfix"></div>

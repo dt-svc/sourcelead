@@ -212,7 +212,7 @@ public class TaxSubmissionController {
 		return modelAndView;
 	}
 
-	@RequestMapping(value = "/itDeclaration/save")
+	@RequestMapping(value = "/itDeclaration/save", method = RequestMethod.POST)
 	@ResponseBody
 	public Response<Long> saveITDeclarationForm(HttpServletRequest request,
 			SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO) {

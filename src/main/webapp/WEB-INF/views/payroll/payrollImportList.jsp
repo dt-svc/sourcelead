@@ -26,7 +26,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	<section class="content-header clearfix">
 		<div class="pull-left">
 			<h2>
-				Pay Roll <a href="/pms/uploadDocuments"
+				Pay Roll <a href="${SourceLeadWeb_pmsUrl}/uploadDocuments"
 					class="jobHeadBtn" id="uloadDocs" title="Upload Files">Upload
 					Files</a>
 			</h2>
@@ -37,8 +37,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 
 		<div class="pull-right brud-crum">
 			<a
-				href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;
-			<a href="/pms/payrollConfiguration">
+				href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;
+			<a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">
 				Payroll Configuration</a>&raquo; Payroll
 		</div>
 	</section>

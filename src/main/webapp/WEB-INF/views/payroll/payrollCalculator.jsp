@@ -45,7 +45,7 @@ function approvePayrollDiv(){
   <div class="pull-left">
     <h2>Payroll</h2>
   </div>
-<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Payroll</div>
+<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Payroll</div>
 </section>
 
 <div id="initiateLoading"></div>
@@ -156,10 +156,10 @@ function approvePayrollDiv(){
 	<div class="col-md-5">
 	<ul class="pull-right mr list-unstyled list-inline">
 		<li><a href="#" class="btn btn-primary btnSuccess" id="Submit" onClick="sendPayrollForApprover();">Submit for Approve</a></li>
-		 <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
+<%-- 		 <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}"> --%>
 		<li><a href="#" class="btn btn-default ml mr" id="Confirm" onclick="confirmPayroll();">Confirm</a></li>
-		</c:if>
-		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList?&redirect=draft'">Cancel</a></li>
+<%-- 		</c:if> --%>
+		<li><a href="#" class="btn btn-default" onclick="window.location='${SourceLeadWeb_pmsUrl}/payrollList?&redirect=draft'">Cancel</a></li>
 	</ul>
 	</div>
 	
@@ -643,7 +643,7 @@ $('body').on('blur', '#generate_payroll_form', function() {
 <script>
 	$(function() {
 		
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		 var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		  // written common method in slead-common.js for date formats start
 		  var finalDateFormat = getJSDateFormat(locationDate);
 		  //end
@@ -739,7 +739,7 @@ function clearSubmitDiv(){
 
   <script>
   $( function() {
-	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	  // written common method in slead-common.js for date formats start
 	  var finalDateFormat = getJSDateFormat(locationDate);
 	  //end

@@ -603,7 +603,7 @@ function calculateDuration(){
         	  output = output +' <option value="">--Select Leave Type--</option>';
         	  for (var i = 0; i < json.length; i++) {
         		  var leave = json[i];
-        		  if(leave.leaveTypeBalanceLeaveCount <= 0 && leave.overdrawLeaves == 'N'){
+        		  if(leave.leaveTypeBalanceLeaveCount < 0 && leave.overdrawLeaves == 'N'){
         			 
         		  }else{
         			  if(leave.id == leaveId){

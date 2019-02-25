@@ -102,17 +102,17 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		</div>
 		<c:if test="${empty leaveType.id}">
 		<div class="pull-right brud-crum">
-			<a href="/app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="/pms/leaveConfiguration"> Leave Configuration</a>
-			&raquo;<a href="/pms/viewLeaveTypes">Leave type List</a>
+			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;<a
+				href="${SourceLeadWeb_pmsUrl}/leaveConfiguration"> Leave Configuration</a>
+			&raquo;<a href="${SourceLeadWeb_pmsUrl}/viewLeaveTypes">Leave type List</a>
 			&raquo; Add Leave Type
 		</div>
 		</c:if>
 		<c:if test="${!empty leaveType.id}">
 		<div class="pull-right brud-crum">
-			<a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;<a
-				href="/pms/leaveConfiguration"> Leave Configuration</a>
-			&raquo;<a href="/pms/viewLeaveTypes">Leave type List</a>
+			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;<a
+				href="${SourceLeadWeb_pmsUrl}/leaveConfiguration"> Leave Configuration</a>
+			&raquo;<a href="${SourceLeadWeb_pmsUrl}/viewLeaveTypes">Leave type List</a>
 			&raquo; Update Leave Type
 		</div>
 		</c:if>
