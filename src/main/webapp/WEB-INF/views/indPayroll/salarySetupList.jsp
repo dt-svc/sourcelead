@@ -16,7 +16,7 @@
   <div class="pull-left">
     <h2>Salary Setup</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payheadList">Payhead List</a> &raquo; Salary Setup</div>
+  <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payheadList">Payhead List</a> &raquo; Salary Setup</div>
 </section>
  <div class="clearfix"></div>
  
@@ -69,7 +69,7 @@ function closesalarySetup() {
 <script>
  function getPayRollSalarySetupList(){
 	 $("#payrollSalarySetupList").empty();
-	  var sourceleadUrl ='${sourceleadUrl}';
+	  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	  var locationCode = '${SourceLeadWeb_locationCode}';
 	  $("#salarySetupListLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
