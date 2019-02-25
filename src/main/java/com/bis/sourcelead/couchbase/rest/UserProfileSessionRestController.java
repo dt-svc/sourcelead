@@ -2,6 +2,7 @@ package com.bis.sourcelead.couchbase.rest;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,6 +41,9 @@ public class UserProfileSessionRestController {
 	@Autowired
 	UserStatsCacheHelper userStatsCacheHelper;
 	
+	@Autowired
+	SourceLeadSessionManager sourceLeadSessionManager;
+	
 	 @RequestMapping(value = "/ws/storeOrgLocationsInCouch", method = RequestMethod.GET)
 	 public void storeOrgLocationsInCouch() throws Exception {
 		
@@ -55,7 +59,7 @@ public class UserProfileSessionRestController {
 					JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
 					StringBuilder orgLocationKey = new StringBuilder();
 					orgLocationKey.append("OrgLocation_").append(orgLocationDTO.getOrgLocationCode());
-					SourceLeadSessionManager.setOrgLocationsJsonString(orgLocationKey.toString(), "orgLocations", jsonObject);
+					sourceLeadSessionManager.setOrgLocationsJsonString(orgLocationKey.toString(), "orgLocations", jsonObject);
 				} catch (JsonProcessingException e) {
 					e.printStackTrace();
 				}
@@ -74,18 +78,20 @@ public class UserProfileSessionRestController {
 		 if(userRolesList != null && !userRolesList.isEmpty()) {
 			 System.out.println("Uploading userprofile details to Couchbase starts......");
 			 for(UserRole userRole : userRolesList) {
-				 
-				 UserRoleSessionProfileDTO userRoleDTO = userStatsCacheHelper.getUserRoleCacheDetails(userRole);
-				 ObjectMapper sessionObj = new ObjectMapper();
-		         try {
-					String sessionJsonStr = sessionObj.writeValueAsString(userRoleDTO);
-					JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
-					StringBuilder userRoleKey = new StringBuilder();
-					userRoleKey.append(userRole.getUser().getUserName()).append("_AUTH_").append(userRole.getUuid());
-					SourceLeadSessionManager.setUserProfileJsonString(userRoleKey.toString(), "userProfile", jsonObject);
-				} catch (JsonProcessingException e) {
-					e.printStackTrace();
-				}
+				
+				 if(userRole.getUser() != null &&  StringUtils.isNotBlank(userRole.getUser().getUserName())) {
+					 UserRoleSessionProfileDTO userRoleDTO = userStatsCacheHelper.getUserRoleCacheDetails(userRole);
+					 ObjectMapper sessionObj = new ObjectMapper();
+			         try {
+						String sessionJsonStr = sessionObj.writeValueAsString(userRoleDTO);
+						JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
+						StringBuilder userRoleKey = new StringBuilder();
+						userRoleKey.append(userRole.getUser().getUserName().toLowerCase()).append("_AUTH_").append(userRole.getUuid());
+						sourceLeadSessionManager.setUserProfileJsonString(userRoleKey.toString(), "userProfile", jsonObject);
+					} catch (JsonProcessingException e) {
+						e.printStackTrace();
+					}
+				 }
 			 }
 			 System.out.println("Uploading userprofile details to Couchbase ends");
 		 }

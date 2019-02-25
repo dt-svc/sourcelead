@@ -41,10 +41,11 @@ import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
-import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
+import com.bis.sourcelead.dto.ImmigrationPassportDTO;
 import com.bis.sourcelead.dto.ImmigrationResidenceDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
+import com.bis.sourcelead.dto.ImmigrationVisaDTO;
 import com.bis.sourcelead.dto.LcaDTO;
 import com.bis.sourcelead.dto.LcaDetailsDTO;
 import com.bis.sourcelead.dto.LcaDocumentHistoryDTO;
@@ -58,9 +59,11 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateLcaJobDetails;
-import com.bis.sourcelead.entity.CandidatePassportVisa;
+import com.bis.sourcelead.entity.CandidatePassport;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.CandidateVisa;
+import com.bis.sourcelead.entity.CandidateVisaHistory;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -100,6 +103,7 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.ExcelHelperUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.ImmigrationActivityCommonUtil;
+//import com.bis.sourcelead.util.LcaActivityCommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 /**
@@ -156,6 +160,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+/*	@Autowired
+	LcaActivityCommonUtil lcaActivityCommonUtil;*/
 
 	@Override
 	public List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations, Long status) {
@@ -993,100 +1000,193 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return status;
 	}
 
+	
+	//Vias Save
 	@Override
-	public CandidatePassportVisa savePassportDetails(ImmigrationPassportVisaDTO immigrationPassportVisaDTO, User user,
+	public CandidateVisa saveVisaDetails(ImmigrationVisaDTO immigrationVisaDTO, User user,
+			OrgLocations orgLocations, Long immigrationId, Long visaHistoryId) throws Exception {
+
+		CandidateVisa candidateVisa = null;
+		if (immigrationVisaDTO.getCandidateVisaId() != null) {
+			candidateVisa = immigrationCommonDao.getCandidateVisaDetailsById(immigrationVisaDTO.getCandidateVisaId());
+		}
+			
+		if (candidateVisa == null) {
+			candidateVisa = new CandidateVisa();
+			candidateVisa.setCreatedBy(user);
+			candidateVisa.setCreatedDate(commonUtil.currentDate());
+		}
+	    Candidate candidate = candidateDao.getCandidateByCandidateId(immigrationVisaDTO.getCandidateId());
+		candidate.setId(immigrationVisaDTO.getCandidateId());
+		Immigration immigration = new Immigration();
+		immigration.setId(immigrationId);
+		// SimpleDateFormat simpleDateFormat =
+		// orgLocationId.getLocFullFormDateFormatter();
+		if (immigrationVisaDTO.getCandidateId() != null) {
+			if (StringUtils.isNotBlank(immigrationVisaDTO.getVisaType())) {
+			candidateVisa.setVisaType(immigrationVisaDTO.getVisaType());
+			}
+			if (StringUtils.isNotBlank(immigrationVisaDTO.getVisaNumber())) {
+				candidateVisa.setVisaNumber(immigrationVisaDTO.getVisaNumber());
+			}
+			if (StringUtils.isNotBlank(immigrationVisaDTO.getCountry())) {
+
+				candidateVisa.setCountry(immigrationVisaDTO.getCountry());
+			}
+
+		}
+		
+		candidateVisa.setCandidate(candidate);
+		candidateVisa.setStatus(Constants.CANDIDATE_ACTIVE);
+		candidateVisa.setUpdatedDate(commonUtil.currentDate());
+		candidateVisa.setUpdatedBy(user);
+
+		logger.debug("In CandidateCertificationsServiceImpl class save method");
+		candidateVisa = immigrationCommonDao.saveVisaDetails(candidateVisa);
+		if(candidateVisa.getId()!= null) {
+			CandidateVisaHistory visaHistory = null;
+			visaHistory = immigrationCommonDao.getCandidateVisaHistoryByStatus(immigrationVisaDTO.getId(), immigrationVisaDTO.getIsCurrent());
+			if(visaHistory == null )
+				visaHistory = new CandidateVisaHistory();
+			
+			visaHistory.setVisaId(candidateVisa);
+			visaHistory.setIsCurrent(immigrationVisaDTO.getIsCurrent());
+			if(immigrationVisaDTO.getId() != null) {
+				visaHistory.setId(immigrationVisaDTO.getId() );
+			}
+			if (StringUtils.isNotBlank(immigrationVisaDTO.getValidFrom())) {
+				try {
+					visaHistory.setValidFromDate(commonUtil.orgLocationDateFormat(
+							orgLocations.getDateFormat(), immigrationVisaDTO.getValidFrom()));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				visaHistory.setValidFromDate(null);
+			}
+			if (StringUtils.isNotBlank(immigrationVisaDTO.getValidTo())) {
+				try {
+					visaHistory.setValidToDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
+							immigrationVisaDTO.getValidTo()));
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				visaHistory.setValidToDate(null);
+			}
+			visaHistory.setStatus(Constants.CANDIDATE_ACTIVE);
+			visaHistory.setCreatedBy(user);
+			visaHistory.setUpdatedBy(user);
+			visaHistory.setId(immigrationVisaDTO.getId());
+			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+			visaHistory.setUpdatedDate(currentDate);
+			visaHistory.setCreatedDate(currentDate);
+			
+			
+			visaHistory = immigrationCommonDao.saveVisaHistoaryDetails(visaHistory);
+			// below condition is added for upload functionality for multiple visa details. if current visa comes earlier visas will be in inactive mode.
+			// for upload we are passing visa history id as null. 
+			if(immigrationVisaDTO.getId() == null && immigrationVisaDTO.getIsCurrent().equalsIgnoreCase("Y")){
+				int count= immigrationCommonDao.updateCanVisaHistoryDetails(immigrationVisaDTO.getCandidateVisaId(), visaHistory.getId());
+				logger.debug("updated records count in visa history detials for visa id "+visaHistory.getVisaId() +" in visa history table " +count);
+				
+			}
+			
+		}
+		
+		StringBuilder actionDesc = new StringBuilder();
+		if (immigrationVisaDTO.getId() != null) {
+			
+			actionDesc.append("Visa Details Updated ").toString();
+			
+			immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate, immigration,
+					actionDesc.toString());
+
+		} 
+		return candidateVisa;
+		
+	}	
+	
+	/**
+	 * Passport Save
+	 */
+	@Override
+	public CandidatePassport savePassportDetails(ImmigrationPassportDTO immigrationPassportDTO, User user,
 			OrgLocations orgLocations, Long immigrationId) throws Exception {
 
-		CandidatePassportVisa candidatePassportVisa = null;
-		if (immigrationPassportVisaDTO.getCandidatePassportId() != null) {
-			candidatePassportVisa = immigrationCommonDao
-					.getCandidatePassportVisaDetailsById(immigrationPassportVisaDTO.getCandidatePassportId());
+		CandidatePassport candidatePassport = null;
+		if (immigrationPassportDTO.getCandidatePassportId() != null) {
+			candidatePassport = immigrationCommonDao
+					.getCandidatePassportDetailsById(immigrationPassportDTO.getCandidatePassportId());
 		} else {
-			candidatePassportVisa = new CandidatePassportVisa();
-			candidatePassportVisa.setCreatedBy(user);
-			candidatePassportVisa.setCreatedDate(commonUtil.currentDate());
+			candidatePassport = new CandidatePassport();
+			candidatePassport.setCreatedBy(user);
+			candidatePassport.setCreatedDate(commonUtil.currentDate());
 		}
 		Candidate candidate = candidateDao
-				.getCandidateByCandidateId(Long.parseLong(immigrationPassportVisaDTO.getCandidateId()));
+				.getCandidateByCandidateId(Long.parseLong(immigrationPassportDTO.getCandidateId()));
 		Immigration immigration = immigrationCommonDao.getImmigrationById(immigrationId);
 		// SimpleDateFormat simpleDateFormat =
 		// orgLocationId.getLocFullFormDateFormatter();
 		StringBuffer activitySummary = new StringBuffer();
-		if (immigrationPassportVisaDTO.getCandidateId() != null) {
+		if (immigrationPassportDTO.getCandidateId() != null) {
 
-			if (StringUtils.isNotBlank(immigrationPassportVisaDTO.getIdNumber())) {
+			if (StringUtils.isNotBlank(immigrationPassportDTO.getPassportNumber())) {
+			candidatePassport.setPassportNumber(immigrationPassportDTO.getPassportNumber());
+			}
+			if (StringUtils.isNotBlank(immigrationPassportDTO.getCountry())) {
 
-				candidatePassportVisa.setIdNumber(immigrationPassportVisaDTO.getIdNumber());
+				candidatePassport.setCountry(immigrationPassportDTO.getCountry());
 			}
 
-			if (StringUtils.isNotBlank(immigrationPassportVisaDTO.getCountry())) {
-
-				candidatePassportVisa.setCountry(immigrationPassportVisaDTO.getCountry());
-			}
-
-			if (StringUtils.isNotBlank(immigrationPassportVisaDTO.getValidFrom())) {
+			if (StringUtils.isNotBlank(immigrationPassportDTO.getValidFrom())) {
 				try {
 
 					// Date validFrom =
 					// commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationPassportVisaDTO.getValidFrom());
-					candidatePassportVisa.setValidFromDate(commonUtil.orgLocationDateFormat(
-							orgLocations.getDateFormat(), immigrationPassportVisaDTO.getValidFrom()));
+					candidatePassport.setValidFromDate(commonUtil.orgLocationDateFormat(
+							orgLocations.getDateFormat(), immigrationPassportDTO.getValidFrom()));
 
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			} else {
-				candidatePassportVisa.setValidFromDate(null);
+				candidatePassport.setValidFromDate(null);
 			}
-			if (StringUtils.isNotBlank(immigrationPassportVisaDTO.getValidTo())) {
+			if (StringUtils.isNotBlank(immigrationPassportDTO.getValidTo())) {
 				try {
 
-					candidatePassportVisa.setValidToDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
-							immigrationPassportVisaDTO.getValidTo()));
+					candidatePassport.setValidToDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
+							immigrationPassportDTO.getValidTo()));
 
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			} else {
-				candidatePassportVisa.setValidToDate(null);
+				candidatePassport.setValidToDate(null);
 			}
 
 		}
-		if (immigrationPassportVisaDTO.getIdType() == "Visa") {
-			candidatePassportVisa.setVisaType(immigrationPassportVisaDTO.getVisaType());
-			candidatePassportVisa.setIdType(Constants.ID_TYPE_VISA);
-		} else {
-			candidatePassportVisa.setIdType(Constants.ID_TYPE_PASSPORT);
+		
 
-		}
-
-		candidatePassportVisa.setCandidate(candidate);
-		candidatePassportVisa.setStatus(Constants.CANDIDATE_ACTIVE);
-		candidatePassportVisa.setUpdatedDate(commonUtil.currentDate());
-		candidatePassportVisa.setUpdatedBy(user);
+		candidatePassport.setCandidate(candidate);
+		candidatePassport.setStatus(Constants.CANDIDATE_ACTIVE);
+		candidatePassport.setUpdatedDate(commonUtil.currentDate());
+		candidatePassport.setUpdatedBy(user);
 
 		logger.debug("In CandidateCertificationsServiceImpl class save method");
-		candidatePassportVisa = immigrationCommonDao.savePassportDetails(candidatePassportVisa);
+		candidatePassport = immigrationCommonDao.savePassportDetails(candidatePassport);
 		StringBuilder actionDesc = new StringBuilder();
-		if (immigrationPassportVisaDTO.getCandidatePassportId() != null) {
-			if (candidatePassportVisa.getIdType().equalsIgnoreCase(Constants.ID_TYPE_VISA)) {
-				actionDesc.append("Visa Details Updated ").toString();
-			} else {
-				actionDesc.append("Passport Details Updated ").toString();
-			}
+		if (immigrationPassportDTO.getCandidatePassportId() != null) {
+			
+			actionDesc.append("Passport Details Updated ").toString();
+			
 			immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate, immigration,
 					actionDesc.toString());
 
-		} else {
-			if (candidatePassportVisa.getIdType().equalsIgnoreCase(Constants.ID_TYPE_VISA)) {
-				actionDesc.append("New Visa Added").toString();
-			} else {
-				actionDesc.append("New Passport Added").toString();
-			}
-			immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate, immigration,
-					actionDesc.toString());
-		}
-		return candidatePassportVisa;
+		} 
+		return candidatePassport;
 
 	}
 
@@ -1273,11 +1373,17 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return immigrationCommonDao.getCandidatesResidenceListByCandidateIdAndOrgLocationID(candidateId, searchVal);
 	}
 
+	public List<ImmigrationVisaDTO> getCandidateVisaDetails(Long candidateId, String searchValue) {
+		// TODO Auto-generated method stub
+		return immigrationCommonDao.getCandidateVisaDetails(candidateId, searchValue);
+	}
+	
+	//passport
 	@Override
-	public List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId, String idType,
+	public List<CandidatePassport> getCandidatePassportDetails(Long candidateId,
 			String searchValue) {
 		// TODO Auto-generated method stub
-		return immigrationCommonDao.getCandidatePassportVisaDetails(candidateId, idType, searchValue);
+		return immigrationCommonDao.getCandidatePassportDetails(candidateId,searchValue);
 	}
 
 	@Override
@@ -1286,10 +1392,18 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return immigrationCommonDao.getCandidateFamilyDetailsById(id);
 	}
 
+	
+	// visa delete
 	@Override
-	public void removeCandidatePassportVisaDetails(Long candidateId, Long id, User user, OrgLocations orgLocations,
-			String idType) {
-		immigrationCommonDao.removeCandidatePassportVisaDetails(candidateId, id, user, orgLocations, idType);
+	public void removeCandidateVisaDetails(Long visaHistoryId) {
+		immigrationCommonDao.removeCandidateVisaDetails(visaHistoryId);
+
+	}
+	
+	// passport delete
+	@Override
+	public void removeCandidatePassportDetails(Long candidateId, Long id, User user, OrgLocations orgLocations) {
+		immigrationCommonDao.removeCandidatePassportDetails(candidateId, id, user, orgLocations);
 
 	}
 
@@ -1316,9 +1430,16 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 
 	@Override
-	public CandidatePassportVisa getCandidatePassportVisaDetailsById(Long id) {
+	public CandidateVisa getCandidateVisaDetailsById(Long id) {
 		// TODO Auto-generated method stub
-		return immigrationCommonDao.getCandidatePassportVisaDetailsById(id);
+		return immigrationCommonDao.getCandidateVisaDetailsById(id);
+	}
+	
+	//passport 
+	@Override
+	public CandidatePassport getCandidatePassportDetailsById(Long id) {
+		// TODO Auto-generated method stub
+		return immigrationCommonDao.getCandidatePassportDetailsById(id);
 	}
 
 	@Override
@@ -1914,15 +2035,30 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return immigrationCommonDao.getTableRecordCountByImmigrationId(entityName, immigrationId, condition);
 	}
 
+	//visa
 	@Override
-	public Boolean validateCandidatePassportVisa(Long candidateId, String idType, String idNumber) throws Exception {
-		return immigrationCommonDao.validateCandidatePassportVisa(candidateId, idType, idNumber);
+	public Boolean validateCandidateVisa(Long candidateId,String idNumber) throws Exception {
+		return immigrationCommonDao.validateCandidateVisa(candidateId,idNumber);
+	}
+	
+	//passport
+	@Override
+	public Boolean validateCandidatePassport(Long candidateId,String idNumber) throws Exception {
+		return immigrationCommonDao.validateCandidatePassport(candidateId,idNumber);
 	}
 
+	
 	@Override
-	public CandidatePassportVisa getCandidatePassportVisaDetailsByIdNumberAndId(String idNumber, String idType,
+	public CandidateVisa getCandidateVisaDetailsByIdNumberAndId(String idNumber,
 			Long candidateId, Long id) throws Exception {
-		return immigrationCommonDao.getCandidatePassportVisaDetailsByIdNumberAndId(idNumber, idType, candidateId, id);
+		return immigrationCommonDao.getCandidateVisaDetailsByIdNumberAndId(idNumber, candidateId, id);
+	}
+
+	
+	@Override
+	public CandidatePassport getCandidatePassportDetailsByIdNumberAndId(String idNumber,
+			Long candidateId, Long id) throws Exception {
+		return immigrationCommonDao.getCandidatePassportDetailsByIdNumberAndId(idNumber, candidateId, id);
 	}
 
 	@Override
@@ -1958,16 +2094,37 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 
 	@Override
 	public Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, OrgLocations orgLocations) {
-		Row writeRow = null;
-		ImmigrationDashboardView immDashboardView = immigrationCommonDao.getImmigrationDashBoardDetails(orgLocations);
-		createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook, immDashboardView);
-		List<ImmigrationListExportView> immigrationListExportView = immigrationCommonDao.getImmigrationListExportDetails(orgLocations);
-		int column=0;
-        for(ImmigrationListExportView exportView : immigrationListExportView){
-       	 writeRow = createExcelsheet.createRow(column+15);
-       	 createExcelsheet = createImmigrationListXlsSheet(createExcelsheet,writeRow,exportView,orgLocations);
-       	 column++;
-        }
+		try {
+			Row writeRow = null;
+			ImmigrationDashboardView immDashboardView = immigrationCommonDao
+					.getImmigrationDashBoardDetails(orgLocations);
+			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,
+					immDashboardView);
+			List<ImmigrationListExportView> immigrationListExportView = immigrationCommonDao
+					.getImmigrationListExportDetails(orgLocations);
+			int column = 0;
+			Date toDayDate = new Date();
+			for (ImmigrationListExportView exportView : immigrationListExportView) {
+				
+				//Setting visa status based on visaValidTo date.
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String currentDateStr = dateFormat.format(toDayDate);
+				Date newDate = dateFormat.parse(currentDateStr);
+				Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+				if (exportView.getVisaValidToDate() != null &&
+						currentDate.before(exportView.getVisaValidToDate())) {
+					exportView.setVisaStatus("Active");
+				} else {
+					exportView.setVisaStatus("Expired");
+				}
+				
+				writeRow = createExcelsheet.createRow(column + 15);
+				createExcelsheet = createImmigrationListXlsSheet(createExcelsheet, writeRow, exportView, orgLocations);
+				column++;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return createExcelsheet;
 	}
 
@@ -1976,17 +2133,20 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		if(exportView.getGeneratedId() !=null){
 			 writeRow.createCell(0).setCellValue(exportView.getGeneratedId()); 
 		}
+		if(exportView.getCountry() != null) {
+			writeRow.createCell(1).setCellValue(exportView.getCountry());
+		}
 		if(exportView.getFirstName() !=null){
-			 writeRow.createCell(1).setCellValue(exportView.getFirstName()); 
+			 writeRow.createCell(2).setCellValue(exportView.getFirstName()); 
 		}
 		if(exportView.getLastName() !=null){
-			 writeRow.createCell(2).setCellValue(exportView.getLastName()); 
+			 writeRow.createCell(3).setCellValue(exportView.getLastName()); 
 		}
 		if(exportView.getEmail() !=null){
-			 writeRow.createCell(3).setCellValue(exportView.getEmail()); 
+			 writeRow.createCell(4).setCellValue(exportView.getEmail()); 
 		}
 		if(exportView.getPhone() !=null){
-			 writeRow.createCell(4).setCellValue(exportView.getPhone()); 
+			 writeRow.createCell(5).setCellValue(exportView.getPhone()); 
 		}
 		
 		String totalExperience = null;
@@ -2003,109 +2163,115 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			experienceMonths = " 0 months";
 		}
 		totalExperience = experienceYears+experienceMonths;
-		writeRow.createCell(5).setCellValue(totalExperience);
+		writeRow.createCell(6).setCellValue(totalExperience);
 		if(exportView.getSsnNumber() !=null){
-			 writeRow.createCell(6).setCellValue(exportView.getSsnNumber()); 
+			 writeRow.createCell(7).setCellValue(exportView.getSsnNumber()); 
 		}
 		if(exportView.getI94No() !=null){
-			 writeRow.createCell(7).setCellValue(exportView.getI94No()); 
+			 writeRow.createCell(8).setCellValue(exportView.getI94No()); 
 		}
 		if(exportView.getI20SevisNo() !=null){
-			 writeRow.createCell(8).setCellValue(exportView.getI20SevisNo()); 
+			 writeRow.createCell(9).setCellValue(exportView.getI20SevisNo()); 
 		}
 		if(exportView.getEadNo() !=null){
-			 writeRow.createCell(9).setCellValue(exportView.getEadNo()); 
+			 writeRow.createCell(10).setCellValue(exportView.getEadNo()); 
 		}
 		if(exportView.getDateOfBirth() !=null){
-			 writeRow.createCell(10).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(11).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getDateOfBirth())); 
 		}
 		if(exportView.getMaritalStatus() !=null){
-			 writeRow.createCell(11).setCellValue(exportView.getMaritalStatus()); 
+			 writeRow.createCell(12).setCellValue(exportView.getMaritalStatus()); 
 		}
 		if(exportView.getPetitionType() !=null){
-			 writeRow.createCell(12).setCellValue(exportView.getPetitionType()); 
+			 writeRow.createCell(13).setCellValue(exportView.getPetitionType()); 
 		}
 		if(exportView.getTemplateName() !=null){
-			 writeRow.createCell(13).setCellValue(exportView.getTemplateName()); 
+			 writeRow.createCell(14).setCellValue(exportView.getTemplateName()); 
 		}
 		if(exportView.getArrivalDate() !=null){
-			 writeRow.createCell(14).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(15).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getArrivalDate())); 
 		}
 		if(exportView.getOpenDate() !=null){
-			 writeRow.createCell(15).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(16).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getOpenDate())); 
 		}
 		if(exportView.getCurrUscisStatus() !=null){
-			 writeRow.createCell(16).setCellValue(exportView.getCurrUscisStatus()); 
+			 writeRow.createCell(17).setCellValue(exportView.getCurrUscisStatus()); 
 		}
 		if(exportView.getVisaIdNumber() !=null){
-			 writeRow.createCell(17).setCellValue(exportView.getVisaIdNumber()); 
+			 writeRow.createCell(18).setCellValue(exportView.getVisaIdNumber()); 
 		}
 		if(exportView.getVisaValidFromDate() !=null){
-			 writeRow.createCell(18).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(19).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getVisaValidFromDate())); 
 		}
+		
 		if(exportView.getVisaValidToDate() !=null){
-			 writeRow.createCell(19).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(20).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getVisaValidToDate())); 
 		}
+		
+		if(exportView.getVisaValidToDate() != null && exportView.getVisaStatus() != null ) {
+			 writeRow.createCell(21).setCellValue(exportView.getVisaStatus());
+		}
+		
 		 if(exportView.getOrgLocationId().equals(orgLocations.getId())){
-             writeRow.createCell(20).setCellValue(exportView.getVendor()); 
-             writeRow.createCell(21).setCellValue(exportView.getSpocNameVendor()); 
-             writeRow.createCell(22).setCellValue(exportView.getSpocEmailVendor()); 
+             writeRow.createCell(22).setCellValue(exportView.getVendor()); 
+             writeRow.createCell(23).setCellValue(exportView.getSpocNameVendor()); 
+             writeRow.createCell(24).setCellValue(exportView.getSpocEmailVendor()); 
         }else {
-             writeRow.createCell(20).setCellValue(exportView.getClient());
-             writeRow.createCell(21).setCellValue(exportView.getSpocNameClient()); 
-             writeRow.createCell(22).setCellValue(exportView.getSpocEmailClient());
+             writeRow.createCell(22).setCellValue(exportView.getClient());
+             writeRow.createCell(23).setCellValue(exportView.getSpocNameClient()); 
+             writeRow.createCell(24).setCellValue(exportView.getSpocEmailClient());
         }
 		if(exportView.getReceiptNo() !=null){
-			 writeRow.createCell(23).setCellValue(exportView.getReceiptNo()); 
+			 writeRow.createCell(25).setCellValue(exportView.getReceiptNo()); 
 		}
 		if(exportView.getLocation() !=null){
-			 writeRow.createCell(24).setCellValue(exportView.getLocation()); 
+			 writeRow.createCell(26).setCellValue(exportView.getLocation()); 
 		}
 		if(exportView.getLcaStartDate() !=null){
-			 writeRow.createCell(25).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(27).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getLcaStartDate())); 
 		}
 		if(exportView.getLcaEndDate() !=null){
-			 writeRow.createCell(26).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(28).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getLcaEndDate())); 
 		}
 		if(exportView.getLcaNumber() !=null){
-			 writeRow.createCell(27).setCellValue(exportView.getLcaNumber()); 
+			 writeRow.createCell(29).setCellValue(exportView.getLcaNumber()); 
 		}
 		if(exportView.getLcaRate() !=null){
-			 writeRow.createCell(28).setCellValue(exportView.getLcaRate()); 
+			 writeRow.createCell(30).setCellValue(exportView.getLcaRate()); 
 		}
 		if(exportView.getEmployerLocation() !=null){
-			 writeRow.createCell(30).setCellValue(exportView.getEmployerLocation()); 
+			 writeRow.createCell(31).setCellValue(exportView.getEmployerLocation()); 
 		}
 		if(exportView.getJobName() !=null){
-			 writeRow.createCell(31).setCellValue(exportView.getJobName()); 
+			 writeRow.createCell(32).setCellValue(exportView.getJobName()); 
 		}
 		if(exportView.getJobId() !=null){
-			 writeRow.createCell(32).setCellValue(exportView.getJobId()); 
+			 writeRow.createCell(33).setCellValue(exportView.getJobId()); 
 		}
 		// dont remove
 		if(exportView.getPreviousLcaStartDate() !=null){
-			 writeRow.createCell(33).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(34).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getPreviousLcaStartDate())); 
 		}
 		if(exportView.getPreviousLcaEndDate() !=null){
-			 writeRow.createCell(34).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(35).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getPreviousLcaEndDate())); 
 		}
 		if(exportView.getPreviousLcaNumber() !=null){
-			 writeRow.createCell(35).setCellValue(exportView.getPreviousLcaNumber()); 
+			 writeRow.createCell(36).setCellValue(exportView.getPreviousLcaNumber()); 
 		}
 		if(exportView.getPreviousLcaRate() !=null){
-			 writeRow.createCell(36).setCellValue(exportView.getPreviousLcaRate()); 
+			 writeRow.createCell(37).setCellValue(exportView.getPreviousLcaRate()); 
 		}
 		/*if(exportView.getPreviousEmployerLocation() !=null){
-			 writeRow.createCell(37).setCellValue(exportView.getPreviousEmployerLocation()); 
+			 writeRow.createCell(38).setCellValue(exportView.getPreviousEmployerLocation()); 
 		}*/
 		return createExcelsheet;
 	}
@@ -2285,6 +2451,13 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			
 			System.out.println("LCA Saved Successfully");
 			
+			StringBuilder actionDesc = new StringBuilder();
+			if (StringUtils.isNotBlank(lcaDTO.getLcaId())) {
+				actionDesc.append("LCA Details Edited").toString();
+			} else {
+				actionDesc.append("New LCA Added").toString();
+			}
+	      // lcaActivityCommonUtil.saveLcaActivities(user, orgLocations, lcaObj, null, actionDesc.toString());
 
 		} catch (Exception e) {
 			logger.error("Exception caugth in savePetitionDetails service" + e.getMessage());
@@ -2940,10 +3113,63 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		return immigrationCommonDao.getLcaReportList(lcaReportViewDTO, status, lcaStatus, searchValue, orgLocations, filterVal, filterByDays,positionsAvaialble);
 	}
 
-	
+	@Override
+	public ImmigrationVisaDTO getCandidateVisaDetailsByVisaHistoryId(Long visaHistoryId) {
+		return immigrationCommonDao.getCandidateVisaDetailsByVisaHistoryId(visaHistoryId);
+	}
 
-	/*
-	 * LCA Code Ends Here
-	 */
+	@Override
+	public CandidateVisaHistory saveVisaHistoryDetails(ImmigrationVisaDTO immigrationVisaDTO, User user,
+			OrgLocations orgLocations, long immigrationId) {
+		CandidateVisaHistory candVisaHistory = null;
+		try {
+
+			CandidateVisa candidateVisa = new CandidateVisa();
+			candidateVisa.setId(immigrationVisaDTO.getCandidateVisaId());
+			Immigration immigration = new Immigration();
+			candVisaHistory = immigrationCommonDao.getCandidateVisaHistoryByStatus(
+													immigrationVisaDTO.getCandidateVisaId(), ImmigrationConstants.IS_CURRENT_NO);
+			immigration.setId(immigrationId);
+			if (candVisaHistory != null) {
+				candVisaHistory.setVisaId(candidateVisa);
+				candVisaHistory.setIsCurrent(immigrationVisaDTO.getIsCurrent()); // "Y"
+				Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+				candVisaHistory.setUpdatedBy(user);
+				candVisaHistory.setUpdatedDate(currentDate);
+				candVisaHistory.setId(null); // setting null for inserting new record.
+				candVisaHistory.setValidToDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
+														immigrationVisaDTO.getValidTo()));
+				StringBuilder actionDesc = new StringBuilder();
+				candVisaHistory = immigrationCommonDao.saveVisaHistoaryDetails(candVisaHistory);
+				int count = immigrationCommonDao.updateCanVisaHistoryDetails(immigrationVisaDTO.getCandidateVisaId(),
+																						candVisaHistory.getId());
+				if (immigrationVisaDTO.getId() != null) {
+					Candidate candidate = new Candidate();
+					candidate.setId(immigrationVisaDTO.getCandidateId());
+					actionDesc.append("Visa Details Updated ").toString();
+					try {
+						immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate,
+								immigration, actionDesc.toString());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+				}
+				logger.debug(count + "Records are upated in Visa History Table >>>>>>>>>>");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception caught while extending visa details " + e.getMessage());
+		}
+		return candVisaHistory;
+	}
+
+	@Override
+	public ImmigrationVisaDTO getCandidateVisaDetailsByCandidateIdAndVisaNumber(Long candidateId,
+			String visaNumber) {
+		return immigrationCommonDao.getCandidateVisaDetailsByCandidateIdAndVisaNumber(candidateId, visaNumber);
+	}
+
 
 }
