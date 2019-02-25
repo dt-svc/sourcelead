@@ -538,12 +538,13 @@ var Signer = (function() {
     		}
         
     	let contractId = $("#contractId").val();
+    	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
     	 $.ajax({
     	      type : "POST",
     	      data: JSON.stringify(reqParams),
               contentType: "application/json; charset=utf-8",
               dataType: "json",
-    	       url: sourceleadUrl+"/signDocument?&contractId="+contractId,       
+    	       url: vmsUrl+"/signDocument?&contractId="+contractId,       
     	       success: function(data) {
                	var result = "";
                	if(url == 'public'){
@@ -721,10 +722,11 @@ var Signer = (function() {
 })();
 
 function successHidePopuop(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $("#popUp").empty();
   	 $(".project_inn_mask").fadeOut(200);
   	 $("#remove_user_pop").hide();
-  	 location.replace(sourceleadUrl+"/contractListbyStatus");
+  	 location.replace(vmsUrl+"/contractListbyStatus");
 }
 
 function errorHidePopuop(){

@@ -199,7 +199,7 @@
 </script>
 	<script type="text/javascript">
 
-var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var locationDate ='${SourceLeadWeb_dateFormat}'; 
 var finalDateFormatLcaSave = getJSDateFormat(locationDate);
 
 function validDateClass(){
@@ -264,14 +264,14 @@ $('#lcaEndDate').datepicker({
 </script>
 <!-- LcaNumber AutoPopulate Ui script -->
 <script type="text/javascript">
-var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var locationDate ='${SourceLeadWeb_dateFormat}'; 
 var finalDateFormatOrg = getOrgDateFormat(locationDate);
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
  $("#lcaNumberAuto").autocomplete({ 
 	 minLength: 2, 
 	 source : function(request, response) {
 		 $.ajax({
-			 url :sourceleadUrl+immiModulePath+ "/getLcaNumbersList",
+			 url :vmsUrl+immiModulePath+ "/getLcaNumbersList",
 			 type : "GET",
 			 data : {
 				 lcaNum : request.term,
