@@ -89,10 +89,10 @@ $(function(){
 				       <ul>
 						  <li class="actLi">Organization details<i class="fa fa-check-circle"></i></li>
 						  <li class="actLi">Locations<i class="fa fa-check-circle"></i></li>
-						  <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+						  <c:if test="${SourceLeadWeb_country == 'India'}">
 						  <li class="actLi">Information<i class="fa fa-check-circle"></i></li>
 						  </c:if>
-						  <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+						  <c:if test="${SourceLeadWeb_country == 'United States'}">
 						  <li class="actLi">Federal & state taxes<i class="fa fa-check-circle"></i></li>
 						  </c:if>
 						  <li class="actLi">Banking details<i class="fa fa-check-circle"></i></li>
@@ -129,7 +129,7 @@ $(function(){
 						You can add more signatories in Org Settings.
 					</div>
 			     <div class="welBtns welBtnsA">
-						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardDocuments'/>'"><input type="submit" value="Save & Finish" class="Brig" id="save_button">
+						<input type="button" value="Prev" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/companyOnboardDocuments'"><input type="submit" value="Save & Finish" class="Brig" id="save_button">
 						<input type="button" value="Skip & Finish" class="skipBtn" onclick="onboardMessage('Skip');"></a>
 						<div class="clearfix"></div>
 					</div>

@@ -113,10 +113,10 @@ $(function(){
 					   <ul>
 						  <li class="actLi">Organization details<i class="fa fa-check-circle"></i></li>
 						  <li class="hoverLi">Locations</li>
-						  <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+						  <c:if test="${SourceLeadWeb_country == 'India'}">
 						  <li>Information</li>
 						  </c:if>
-						  <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+						  <c:if test="${SourceLeadWeb_country == 'United States'}">
 						  <li>Federal & state taxes</li>
 						  </c:if>
 						  <li>Banking details</li>
@@ -148,16 +148,16 @@ $(function(){
     			
     			<div class="welBtns welBtnsA">
 					<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/dashboard'/>'"><input type="submit" value="Save & Continue" class="Brig" id="register_button"  style="display: none;">
-					<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-					<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardFederalAndStateTaxes'/>'">
+					<c:if test="${SourceLeadWeb_country == 'United States'}">
+					<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/companyOnboardFederalAndStateTaxes'">
 					</c:if>
 					
-					<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-					<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardInformationDetails'/>'"></a>
+					<c:if test="${SourceLeadWeb_country == 'India'}">
+					<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/companyOnboardInformationDetails'"></a>
 					</c:if>
 					
-					<c:if test="${SourceLeadWeb_orgLocations.country != 'India' && SourceLeadWeb_orgLocations.country != 'United States'}">
-					<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardBankingDetails'/>'"></a>
+					<c:if test="${SourceLeadWeb_country != 'India' && SourceLeadWeb_country != 'United States'}">
+					<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/companyOnboardBankingDetails'"></a>
 					</c:if>
 					<div class="clearfix"></div>
 				</div>
@@ -328,7 +328,7 @@ function createOrg(){
 	result = result +'</div>';
 	result = result +'</div>';
 	
-	result = result +'<input type="hidden" name="registeredOrgId" id="registeredOrgId"  value="${SourceLeadWeb_org.id}" />';
+	result = result +'<input type="hidden" name="registeredOrgId" id="registeredOrgId"  value="${SourceLeadWeb_orgId}" />';
 
 	
 	result = result +'<div class="form-group clearfix">';
