@@ -159,7 +159,7 @@ public void sendNotification(String actionLink,User loginUser,User toUser, OrgLo
 	
 	if(loginUser != null) {
 	notification.setNotificationFrom(loginUser);
-	notification.setCreatedBy(loginUser.getCreatedBy());
+	notification.setCreatedBy(loginUser.getUserCode());
 	}
 	notification.setNotificationTo(toUser);
 	notification.setNotificationScenarioId(emailScenario);
