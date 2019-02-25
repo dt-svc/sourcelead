@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <c:set var = "immigrationDTO" scope = "page" value = '<%= session.getAttribute("immigrationDTO")%>'/>
-<script type="text/javascript" src="${SourceLeadWeb_vmsUrl}/resources/js/immigration.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_vmsUrl}/resources/js/immigration.js?staticTime=${staticTime}"></script>
 <section class="addImmiWrap">
 	<div class="addImmiInnWrap">
 		<!-- <div class="immiStepsHead clearfix"> removed steps process.
