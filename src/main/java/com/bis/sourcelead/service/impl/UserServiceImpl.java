@@ -704,6 +704,7 @@ public class UserServiceImpl implements UserService {
 			saveOrUpdateUserElkDocument(userRole,employee,loginuser.getUserCode());
 			
 			if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+				userRole = userRoleService.getUserRoleById(userRole.getId());
 				userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
 			}
 			
@@ -910,6 +911,7 @@ public class UserServiceImpl implements UserService {
 		userRole.setCreatedBy(userCode);
 		userRole.setUpdatedDate(commonUtil.currentDate());
 		userRole.setUpdatedBy(userCode);
+		userRole.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		return userRole;
 	}
 	
