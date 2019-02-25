@@ -14,7 +14,7 @@
       <div class="pull-left">
         <h2>Settings Dashboard</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; Settings</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; Settings</div>
     </section>
 	<div class="reportNewDash clearfix">
 			<!-- <div class="reqListBtn clearfix mb10">
@@ -269,7 +269,7 @@
 						<li><a href="payrollRegister-I.html">Invite Company</a></li>
 						</ul>
 					</div> -->
-					     <a href="${sourceleadUrl}/loadScheduleMaintenance">
+					     <a href="${SourceLeadWeb_sourceleadUrl}/loadScheduleMaintenance">
 						 <div class="clearfix text-center mb10"><i class="leaveConfiguration	"></i></div>
 					     <div class="clearfix text-center">
 						 <h4>Schedule Maintenance</h4>
@@ -290,7 +290,7 @@
 								</ul>
 							</div> -->
 			                 <!-- Dropdown -->
-			                 <a href="/app/orgLicenseSubscriptionList">
+			                 <a href="${SourceLeadWeb_sourceleadUrl}/orgLicenseSubscriptionList">
 			                  <div class="clearfix text-center mb10"><i class="upgradeLicese"></i></div>
 			                  <div class="clearfix text-center">
 			                      <h4>License Upgrade </h4>
@@ -306,7 +306,7 @@
 							<div class="dropdown pull-right report-dropdown">
 								<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu2" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 								<ul class="dropdown-menu minHeight50 maxHeight250" role="menu" aria-labelledby="menu2">
-								<li><a href="/app/bulk-resume-import.html">Bulk Import</a></li>
+								<li><a href="${SourceLeadWeb_sourceleadUrl}/bulk-resume-import.html">Bulk Import</a></li>
 								 <li><a data-toggle="modal" href="javascript:void(0)" id='bulkImportGrid'>Process File</a></li>
 								 
 								</ul>
@@ -331,7 +331,7 @@
 							</ul>
 							</div> -->
 								 <!-- Dropdown -->
-			                <a href="/app/orgChart"> 
+			                <a href="${SourceLeadWeb_sourceleadUrl}/orgChart"> 
 						 <div class="clearfix text-center mb10"><i class="orgChartSVG"></i></div>
 						  <div class="clearfix text-center">
 							  <h4>Org Chart</h4>
@@ -341,7 +341,7 @@
 			              
 			            <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
 				             <div class="col-md-2 reportNewCta">
-				             <a href="/app/orgRolesList">
+				             <a href="${SourceLeadWeb_sourceleadUrl}/orgRolesList">
 				                  <div class="clearfix text-center mb10"><i class="roleconfigSVG"></i></div>
 				                  <div class="clearfix text-center">
 									  <h4>Role Configuration</h4>
@@ -360,7 +360,7 @@
 									</ul>
 								</div> -->
 					                 <!-- Dropdown -->
-					                 <a href="/app/orgSettings">
+					                 <a href="${SourceLeadWeb_sourceleadUrl}/orgSettings">
 									<div class="clearfix text-center mb10"><i class="controlsSVG"></i></div>
 					                  <div class="clearfix text-center">
 										  <h4>Org Settings</h4>
@@ -391,7 +391,7 @@
 								</ul>
 							</div> -->
 							<!-- Dropdown -->
-							<a href="/app/orgTemplates">
+							<a href="${SourceLeadWeb_sourceleadUrl}/orgTemplates">
 									<div class="clearfix text-center mb10"><i class="templateSVG"></i></div>
 							<div class="clearfix text-center">
 								<h4>Templates</h4>
@@ -412,7 +412,7 @@
 								</ul>
 							</div>
 							Dropdown -->
-							<a href="/app/expenseCategory">
+							<a href="${SourceLeadWeb_pmsUrl}/expenseCategory">
 							<div class="clearfix text-center mb10"><i class="expensesSVG"></i></div>
 							<div class="clearfix text-center">
 								<h4>Expense Category</h4>
@@ -432,7 +432,7 @@
 									</ul>
 								</div> -->
 								<!-- Dropdown -->
-								<a href="/app/bankAccountDetails">
+								<a href="${SourceLeadWeb_atsUrl}/bankAccountDetails">
 								<div class="clearfix text-center mb10"><i class="bankacountsSVG"></i></div>
 								<div class="clearfix text-center">
 									<h4>Bank Accounts</h4>
@@ -443,7 +443,7 @@
 				
 				   <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
 							<div class="col-md-2 reportNewCta">
-								<a href="/pms/leaveConfiguration">
+								<a href="${SourceLeadWeb_pmsUrl}/leaveConfiguration">
 										<div class="clearfix text-center mb10"><i class="leaveConfiguration"></i></div>
 								<div class="clearfix text-center">
 									<h4>Leave Configuration</h4>
@@ -464,7 +464,7 @@
 								</ul>
 							</div> -->
 							<!-- Dropdown -->
-							<a href="/app/job-boards">
+							<a href="${SourceLeadWeb_sourceleadUrl}/job-boards">
 									<div class="clearfix text-center mb10"><i class="jobConfigureSVG"></i></div>
 							<div class="clearfix text-center">
 								<h4>Job Board Configuration</h4>
@@ -485,7 +485,7 @@
 								</ul>
 							</div> -->
 							<!-- Dropdown -->
-							<a href="/app/customFields">
+							<a href="${SourceLeadWeb_sourceleadUrl}/customFields">
 									<div class="clearfix text-center mb10"><i class="sortingSVG"></i></div>
 							<div class="clearfix text-center">
 								<h4>Custom Fields</h4>
@@ -503,8 +503,8 @@
 								</span>
 								
 									<ul class="dropdown-menu minHeight50 maxHeight250" role="menu" aria-labelledby="menu12">
-									<li><a href="/ats/campaignSendersList">Senders</a></li>
-									<li><a href="/ats/recipientsList">Recipients</a></li>
+									<li><a href="${SourceLeadWeb_atsUrl}/campaignSendersList">Senders</a></li>
+									<li><a href="${SourceLeadWeb_atsUrl}/recipientsList">Recipients</a></li>
 									</ul>
 								</div>
 								<!-- Dropdown -->
@@ -530,7 +530,7 @@
 										</ul>
 									</div> -->
 									<!-- Dropdown -->
-									<a href="<c:url value='${sourceleadUrl}/tagList'/>"title="Tags" data-toggle="modal" id="tagsPop">
+									<a href="${SourceLeadWeb_sourceleadUrl}/tagList"title="Tags" data-toggle="modal" id="tagsPop">
 											<div class="clearfix text-center mb10"><i class="tagSVG"></i></div>
 									<div class="clearfix text-center">
 										<h4>Tags</h4>
@@ -554,8 +554,8 @@
 								</c:if>
 								</div> --%>
 								
-								<a href="/pms/payrollConfiguration">
-									<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+								<a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">
+									<c:if test="${SourceLeadWeb_country == 'United States'}">
 										<div class="clearfix text-center mb10"><i class="payrollSVG"></i></div>
 										<div class="clearfix text-center">
 											<h4> Us Payroll Configuration</h4>
@@ -563,8 +563,9 @@
 									</c:if>
 								</a>
 								
-								<a href="/pms/indPayrollConfiguration">
-									<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+								<a href="${SourceLeadWeb_pmsUrl}/indPayrollConfiguration">
+									<c:if test="${SourceLeadWeb_country == 'India'}">
+
 										<div class="clearfix text-center mb10"><i class="payrollSVG"></i></div>
 										<div class="clearfix text-center">
 											<h4>Ind Payroll Configuration</h4>
@@ -586,7 +587,7 @@
 						<li><a href="payrollRegister-I.html">Invite Company</a></li>
 						</ul>
 					</div> -->
-				            <a href="/pms/projectAttributes">
+				            <a href="${SourceLeadWeb_pmsUrl}/projectAttributes">
 							<div class="clearfix text-center mb10"><i class="projectAttributesSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4>Project Attributes</h4>
@@ -603,7 +604,7 @@
 						<li><a href="payrollRegister-I.html">Invite Company</a></li>
 						</ul>
 					</div> -->
-				          <a href="/app/emailreminderConfigurationDashboard">
+				          <a href="${SourceLeadWeb_sourceleadUrl}/emailreminderConfigurationDashboard">
 							<div class="clearfix text-center mb10"><i class="reminderconfigSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4>Reminder Configuration</h4>
@@ -621,7 +622,7 @@
 						<li><a href="payrollRegister-I.html">Guest Action Roles</a></li>
 						</ul>
 					</div> -->
-					<a href="${sourceleadUrl}/guestOrgActionRoles">
+					<a href="${SourceLeadWeb_sourceleadUrl}/guestOrgActionRoles">
 							<div class="clearfix text-center mb10"><i class="guestactionroleSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4>Guest Action Roles</h4>
@@ -640,7 +641,7 @@
 						<li><a href="payrollRegister-I.html">Email Templates</a></li>
 						</ul>
 					</div> -->
-					<a href="${sourceleadUrl}/emailTemplates">
+					<a href="${SourceLeadWeb_sourceleadUrl}/emailTemplates">
 							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4>Email Templates</h4>
@@ -666,7 +667,7 @@
 				   <div class="col-md-2">
 					   <h5>Bulk Import</h5>
 					   <ul class="repSearchList list-unstyled">
-					   <li><a href="/app/bulk-resume-import.html" title="Tags">Bulk Import</a></li>
+					   <li><a href="${SourceLeadWeb_sourceleadUrl}/bulk-resume-import.html" title="Tags">Bulk Import</a></li>
 					   </ul>
 					   <div class="noDate noDateSm" style="display: none;"></div>
 			       </div>
@@ -675,7 +676,7 @@
 				    <div class="col-md-2">
 				       <h5>Bank Account</h5>
 				        <ul class="repSearchList list-unstyled">
-					    <li><a href="/app/bankAccountDetails" title="Tags">Bank Account</a></li>
+					    <li><a href="${SourceLeadWeb_atsUrl}/bankAccountDetails" title="Tags">Bank Account</a></li>
 				        </ul>
 				        <div class="noDate noDateSm" style="display: none;"></div>
 			        </div>
@@ -683,7 +684,7 @@
 				    <div class="col-md-2">
 				       <h5>Alerts</h5>
 				       <ul class="repSearchList list-unstyled">
-					   <li><a href="/ats/jobAlertList" title="Tags">Alerts</a></li>
+					   <li><a href="${SourceLeadWeb_atsUrl}/jobAlertList" title="Tags">Alerts</a></li>
 				       </ul>
 				       <div class="noDate noDateSm" style="display: none;"></div>
 			        </div>
@@ -706,7 +707,7 @@
 						<li><a href="payrollRegister-I.html">Invite Company</a></li>
 						</ul>
 					</div> -->
-				<a href="/app/bulk-resume-import.html">
+				<a href="${SourceLeadWeb_sourceleadUrl}/bulk-resume-import.html">
 							<div class="clearfix text-center mb10"><i class="bulkImport"></i></div>
 					<div class="clearfix text-center">
 						<h4>Bulk Import</h4>
@@ -725,7 +726,7 @@
 						<li><a href="payrollRegister-I.html">Invite Company</a></li>
 						</ul>
 					</div> -->	
-					<a href="/app/bankAccountDetails">		
+					<a href="${SourceLeadWeb_atsUrl}/bankAccountDetails">		
 							<div class="clearfix text-center mb10"><i class="bankacountsSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4>Bank Account</h4>
@@ -744,7 +745,7 @@
 						<li><a href="payrollRegister-I.html">Invite Company</a></li>
 						</ul>
 					</div> -->
-					<a href="/app/jobAlertList">
+					<a href="${SourceLeadWeb_atsUrl}/jobAlertList">
 							<div class="clearfix text-center mb10"><i class="reminderconfigSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4> Alerts</h4>

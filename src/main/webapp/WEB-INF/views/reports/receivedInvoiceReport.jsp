@@ -19,14 +19,14 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Received Invoice(s)</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo;  <a href="<c:url value='${appPath}/financialReportsList'/>">Financial Reports</a> &raquo; Received Invoice(s) </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/reportsDashboard'/>">Reports Dashboard</a> &raquo;  <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/financialReportsList'/>">Financial Reports</a> &raquo; Received Invoice(s) </div>
     </section>
     <!-- hiring Process  -->
     <div class="content-dashboard clearfix">
       <div class="ReqRepHead clearfix">
         <div class="col-md-2 pull-left reqListBtn">
-        <a href="${appPath}/receivedInvoiceReportGraph" title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
-        <a href="${appPath}/receivedInvoiceReport" title="List View" class="btn btn-default rAct"><i class="fa fa-list"></i></a>
+        <a href="${SourceLeadWeb_sourceleadUrl}/receivedInvoiceReportGraph" title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
+        <a href="${SourceLeadWeb_sourceleadUrl}/receivedInvoiceReport" title="List View" class="btn btn-default rAct"><i class="fa fa-list"></i></a>
         
         </div>
         
