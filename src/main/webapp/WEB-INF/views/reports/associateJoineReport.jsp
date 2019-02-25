@@ -10,7 +10,7 @@
     	<div class="pull-left">
 				<h2>Associate Joined Report</h2>
 		</div>
-        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Applicants Joined Report  </div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/performanceReportList'/>">Performance Reports</a> &raquo; Applicants Joined Report  </div>
     </section>
        
     <!-- Project -->
@@ -1247,6 +1247,10 @@ $(function() {
 			
 			$("#joinedCustomFields").hide();
 			$("#terminatedCustomFields").show();
+			$("#associateTeminateExportPdf").show();
+			$("#associateTeminateExportExcel").show();
+			$("#associateJoinExportPdf").hide();
+			$("#associateJoinExportExcel").hide();
 			$("#joinedCustomFieldscolPopMid").hide();
 			$("#terminatedCustomFieldscolPopMid").show();
 		}else if(optval === "associateJoined"){
