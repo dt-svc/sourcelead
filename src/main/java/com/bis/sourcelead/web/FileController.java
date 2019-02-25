@@ -99,11 +99,12 @@ public class FileController {
 			if (!type.equalsIgnoreCase("profile") && (orgId == 0 || orgLocationId == 0)) {
 				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Long organizationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgId");
 				if (org != null) {
 					orgId = org.getId();
 				}
 				if (loginOrgLocation != null) {
-					orgId = loginOrgLocation.getOrg().getId();
+					orgId = organizationId;
 					orgLocationId = loginOrgLocation.getId();
 				}
 

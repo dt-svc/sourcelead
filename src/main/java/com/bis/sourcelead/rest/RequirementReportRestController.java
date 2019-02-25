@@ -206,7 +206,7 @@ public class RequirementReportRestController {
         return xstream.toXML(obj);
     }
 
-	private Date getPreviousDate(DateTime zoned, DateTimeFormatter outputFormatter, DateFormat TZ_DF_TS, Timezone timezone, int numberOfDays) throws ParseException
+	private Date getPreviousDate(DateTime zoned, DateTimeFormatter outputFormatter, DateFormat TZ_DF_TS, int numberOfDays) throws ParseException
 	{
 		DateTime yesterDayZoned = zoned.minusDays(numberOfDays);
 		String yesterDayDate = outputFormatter.print(yesterDayZoned);
@@ -489,7 +489,6 @@ public class RequirementReportRestController {
 				jobFilterDTO.setSortColumn(tableColumns[sortColumnIndex]);
 				jobFilterDTO.setSortOrder(sortColumnOrder);
 				
-				Timezone timezone = timeZoneService.getTimezone(loginOrgLocation.getTimezone().getId());
 				DateTime zoned = new DateTime();
 				DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
 				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd");
@@ -506,22 +505,22 @@ public class RequirementReportRestController {
 				if (null != jobFilterDTO.getJobCreatedDateRange() && !"".equals(jobFilterDTO.getJobCreatedDateRange())) {
 					if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(jobFilterDTO.getJobCreatedDateRange())) {
 						String startDate = outputFormatter.print(zoned);
-						filterDate = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
+						filterDate = CommonUtil.convertTimeZones(loginOrgLocation.getTimeZoneName(), Constants.UTC_TIMEZONE, startDate);
 						startDateUTC = TZ_DF_TS.parse(startDate);
 						if (Constants.ONE_MONTH.equals(jobFilterDTO.getJobCreatedDateRange())) {
-							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, 30);
 						}
 						else if (Constants.TWO_MONTHS.equals(jobFilterDTO.getJobCreatedDateRange())) {
-							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 60);
+							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, 60);
 						}
 						else if (Constants.THREE_MONTHS.equals(jobFilterDTO.getJobCreatedDateRange())) {
-							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 90);
+							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, 90);
 						}
 						else if (Constants.SIX_MONTHS.equals(jobFilterDTO.getJobCreatedDateRange())) {
-							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 180);
+							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, 180);
 						}
 						else if (Constants.ONE_YEAR.equals(jobFilterDTO.getJobCreatedDateRange())) {
-							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 365);
+							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, 365);
 						}
 					}
 					else {
@@ -542,7 +541,7 @@ public class RequirementReportRestController {
 							endDateUTC.setSeconds(59);
 						}
 						else {
-							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, 30);
 						}
 					}
 					
@@ -738,7 +737,6 @@ public class RequirementReportRestController {
 				String userCode = user.getUserCode();
 				String userType = null;
 				
-				Timezone timezone = timeZoneService.getTimezone(loginOrgLocation.getTimezone().getId());
 				DateTime zoned = new DateTime();
 				DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
 				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd");
@@ -755,22 +753,22 @@ public class RequirementReportRestController {
 				if (null != jobFilterDTO.getJobCreatedDateRange() && !"".equals(jobFilterDTO.getJobCreatedDateRange())) {
 					if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(jobFilterDTO.getJobCreatedDateRange())) {
 						String startDate = outputFormatter.print(zoned);
-						filterDate = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
+						filterDate = CommonUtil.convertTimeZones(loginOrgLocation.getTimeZoneName(), Constants.UTC_TIMEZONE, startDate);
 						startDateUTC = TZ_DF_TS.parse(startDate);
 						if (Constants.ONE_MONTH.equals(jobFilterDTO.getJobCreatedDateRange())) {
-							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, 30);
 						}
 						else if (Constants.TWO_MONTHS.equals(jobFilterDTO.getJobCreatedDateRange())) {
-							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 60);
+							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, 60);
 						}
 						else if (Constants.THREE_MONTHS.equals(jobFilterDTO.getJobCreatedDateRange())) {
-							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 90);
+							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, 90);
 						}
 						else if (Constants.SIX_MONTHS.equals(jobFilterDTO.getJobCreatedDateRange())) {
-							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 180);
+							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, 180);
 						}
 						else if (Constants.ONE_YEAR.equals(jobFilterDTO.getJobCreatedDateRange())) {
-							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 365);
+							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, 365);
 						}
 					}
 					else {
@@ -791,7 +789,7 @@ public class RequirementReportRestController {
 							endDateUTC.setSeconds(59);
 						}
 						else {
-							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+							startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, 30);
 						}
 					}
 					
