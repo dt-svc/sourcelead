@@ -85,8 +85,8 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
-import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PayrollLopHis;
 import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.rest.TimesheetRestController;
@@ -2763,13 +2763,13 @@ public class LeaveServiceImpl implements LeaveService{
 				   writeRow.createCell(11).setCellValue(leaveReportDTO.getApprover());
 			   }
 			 else{
-				   writeRow.createCell(12).setCellValue("--");   
+				   writeRow.createCell(11).setCellValue("--");   
 			   }
 			 if(leaveReportDTO.getApprovedOnDateStr() != null){
-				   writeRow.createCell(13).setCellValue(leaveReportDTO.getApprovedOnDateStr() );
+				   writeRow.createCell(12).setCellValue(leaveReportDTO.getApprovedOnDateStr() );
 			   }
 			 else{
-				   writeRow.createCell(14).setCellValue("--");   
+				   writeRow.createCell(12).setCellValue("--");   
 			   }
 			
 			

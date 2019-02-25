@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -270,8 +271,19 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 	@Override
-	public List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception {
-		return requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations,requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
+	public List<RequirementSubmissionsDTO> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception {
+		List<RequirementSubmissionsDTO> requirementSubmissionsDTOList = new LinkedList<>();
+		List<Object[]> objList = requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations,requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
+		if(objList != null && !objList.isEmpty()) {
+			for(Object[] obj : objList) {
+				RequirementSubmissionsDTO requirementSubmissionsDTO = new RequirementSubmissionsDTO();
+				requirementSubmissionsDTO.setId(Long.parseLong(String.valueOf(obj[0])));
+				requirementSubmissionsDTO.setCreatedUser(String.valueOf(obj[1]));
+				requirementSubmissionsDTO.setClientSubmissions(String.valueOf(obj[2]));
+				requirementSubmissionsDTOList.add(requirementSubmissionsDTO);
+			}
+		}
+		return requirementSubmissionsDTOList;
 	}
 	
 	@Override

@@ -377,6 +377,22 @@ public class CommonUtil {
 		}
 		return date;
 		}
+	
+	public  Date stringToDateByOrgLocationFormat(String dateString, String orgLocationFormat){
+
+		DateFormat df = new SimpleDateFormat(orgLocationFormat);
+		Date date = null;
+		try {
+
+		date = df.parse(dateString);
+
+		} catch (Exception e) {
+
+		e.printStackTrace();
+
+		}
+		return date;
+		}
 	/**
 	 * Convert String to Capitalized String
 	 * @param name

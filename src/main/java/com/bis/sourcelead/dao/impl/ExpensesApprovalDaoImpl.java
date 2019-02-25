@@ -190,9 +190,11 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 			     /*
 				 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 				 */
+
 			    + "  OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = sah.hierarchyId.projectClientsId.orgLocationsId.id ) and  sah.hierarchyId.level IN(select MAX(pah.level) from ExpenseProjectApproverHierarchy pah where pah.projectClientsId.id = sah.hierarchyId.projectClientsId.id and pah.status != '0' ) and (sah.hierarchyId.projectId.expenseApprovalType = '"+Constants.PARALLEL+"' OR (sah.hierarchyId.projectId.expenseApprovalType = '"+Constants.SEQUENTIAL+"' and ((1 IN(select Max(pah.level) from ProjectApproverHierarchy pah where  pah.projectClientsId.id = sah.hierarchyId.projectClientsId.id)) OR (1 NOT IN(select Max(pah.level) from ProjectApproverHierarchy pah where  pah.projectClientsId.id = sah.hierarchyId.projectClientsId.id) and '1' IN (select subsah.hierarchyId.level from ExpensesApproverHierarchy subsah where subsah.expenseApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and subsah.hierarchyId.projectClientsId.id = sah.hierarchyId.projectClientsId.id and subsah.expenseId.id = sah.expenseId.id)))))) "
 				+"   OR (:userId NOT IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = sah.hierarchyId.projectClientsId.orgLocationsId.id ) and (sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and sah.expenseId.projectMembers.projects.isReportingManagerAsApprover = 'Y'  and sah.expenseId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.expenseId.projectMembers.projectMemberCandidteId.consultantUser.id)) and (sah.hierarchyId.projectId.expenseApprovalType= '"+Constants.PARALLEL+"'  OR (sah.hierarchyId.projectId.expenseApprovalType = '"+Constants.SEQUENTIAL+"' and (sah.hierarchyId.projectClientsId.level IN(select Max(subsah.hierarchyId.projectClientsId.level) from ExpensesApproverHierarchy subsah where subsah.hierarchyId.projectId.id = sah.hierarchyId.projectId.id and subsah.expenseId.projectMembers.masterCandidateId.id = sah.expenseId.projectMembers.masterCandidateId.id and subsah.hierarchyId.projectClientsId.orgLocationsId.org.orgType <> 'GUEST') OR ((sah.hierarchyId.projectClientsId.level+1) IN ( select subsah.hierarchyId.projectClientsId.level from ExpensesApproverHierarchy subsah where subsah.expenseApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and subsah.expenseId.id = sah.expenseId.id ))))))"
 				+ "   ) and ( " + subQuery2 +" )"+startDateSubQuery+" "+endDateSubQuery+" "+query1.toString() + "GROUP BY sah.expenseId.id" ;
+
 		
 			/*String countFrom = "";
 			if(length>0) {
@@ -365,6 +367,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Integer updateApprovalStatusByApproverForExpense(Long expenseId,Long approverUserId,String status,String rejectedReason,OrgLocations location,String isGlobalUser) throws Exception {
+		Integer maxLevel = 0;
 		Session session = this.sessionFactory.getCurrentSession();
 		User loginUser = userDao.getUserById(approverUserId);
 		String actionPerformedBy= loginUser.getFullName();
@@ -394,15 +397,17 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 							 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 							 */
 					          + " OR ( :approverUserId NOT IN( select subsah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subsah where  subsah.expenseApprovalStatus != 'APPROVED' and subsah.hierarchyId.projectClientsId.orgLocationsId.id =:locationId and subsah.expenseId.id = :expenseId ) and  "+Constants.loginUserAsAdminWithMaxHeirarchyLevelForExp+")  "
+
 					          
 					          + "  OR  ("
 							 + "        :approverUserId NOT IN("
-							 + "                select subsah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subsah where subsah.submissionApprovalStatus != 'APPROVED' and subsah.expenseId.id = :expenseId  "
+							 + "                select subsah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subsah where subsah.expenseApprovalStatus != 'APPROVED' and subsah.expenseId.id = :expenseId  "
 							 + "           ) and pm.projectMemberCandidteId.consultantUser IS NOT NULL "
 							 + "       and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = pm.projectMemberCandidteId.consultantUser.id)  "
-							 + "      and sah.hierarchyId.level IN(select MIN(pah.level) from ExpenseProjectApproverHierarchy pah where ((pah.projectId.expenseApprovalType  ='"+Constants.PARALLEL+"'  and pah.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :orgLocationsId)) OR (pah.projectId.expenseApprovalType  ='"+Constants.SEQUENTIAL+"' and "+globalUserQuery+"))  and pah.status != '0')  "
-							 + "            and ((sah.hierarchyId.projectId.expenseApprovalType  ='"+Constants.PARALLEL+"'  and sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :orgLocationsId)) OR (sah.hierarchyId.projectId.expenseApprovalType  ='"+Constants.SEQUENTIAL+"' and "+globalUserQuery+")))"
+							 + "      and sah.hierarchyId.level IN(select MIN(pah.level) from ExpenseProjectApproverHierarchy pah where ((pah.projectId.expenseApprovalType  ='"+Constants.PARALLEL+"'  and pah.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationId)) OR (pah.projectId.expenseApprovalType  ='"+Constants.SEQUENTIAL+"' and "+globalUserQuery+"))  and pah.status != '0')  "
+							 + "            and ((sah.hierarchyId.projectId.expenseApprovalType  ='"+Constants.PARALLEL+"'  and sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationId)) OR (sah.hierarchyId.projectId.expenseApprovalType  ='"+Constants.SEQUENTIAL+"' and "+globalUserQuery+")))"
 							  + ") order by pc.level ASC";
+
 		@SuppressWarnings("unchecked")
 		List<ExpensesApproverHierarchy> sahMainList = session.createQuery(query)
 																	  .setLong("expenseId", expenseId)	
@@ -412,7 +417,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 				                                                      .list();
 		
 		
-		Integer maxLevel = 0;
+		
 		if(sahMainList != null && !sahMainList.isEmpty()){
 	    	for(ExpensesApproverHierarchy sah :sahMainList){
 	    		/*
@@ -626,9 +631,9 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		 String globalUserQuery = "";
          if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
-       	     globalUserQuery =   "(sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId)) ";
+       	     globalUserQuery =   "(eah.hierarchyId.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId)) ";
          }else {
-       	     globalUserQuery = " (sah.hierarchyId.projectClientsId.orgLocationsId.id = :locationsId OR (:locationsId NOT IN (select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = sah.expenseId.projects.id and subpm.masterCandidateId.id = sah.expenseId.masterCandidateId.id) and sah.hierarchyId.projectClientsId.orgLocationsId.id IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = sah.expenseId.projects.id and subpm.masterCandidateId.id = sah.expenseId.masterCandidateId.id and subpm.projectMemberCandidteId.designationType = '"+Constants.OFFSHORE_C2C+"') and sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId)))";
+       	     globalUserQuery = " (eah.hierarchyId.projectClientsId.orgLocationsId.id = :locationsId OR (:locationsId NOT IN (select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = eah.expenseId.projects.id and subpm.masterCandidateId.id = eah.expenseId.masterCandidateId.id) and eah.hierarchyId.projectClientsId.orgLocationsId.id IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = eah.expenseId.projects.id and subpm.masterCandidateId.id = eah.expenseId.masterCandidateId.id and subpm.projectMemberCandidteId.designationType = '"+Constants.OFFSHORE_C2C+"') and eah.hierarchyId.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId)))";
          }
 		
 		Query expensesApproverHierarchyListQuery= session.createQuery("from  ExpensesApproverHierarchy eah left join fetch eah.hierarchyId hierarchy "

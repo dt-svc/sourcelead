@@ -17,7 +17,7 @@
 	});
 </script>
 
-<section class="content-wraper contentWraper">
+<section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Loan & Advances</h2>
@@ -25,7 +25,7 @@
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configure</a>  &raquo; Loan & Advances</div>
     </section>
     
-    <div class="content-area content-new clearfix">
+    <div class="content-area content-new clearfix backgroundWhite">
    <div id="loading"></div> 
     <form:form class="login-form clearfix"  id="createloanAndAdv_form"  name="createloanAndAdv_form" method="post" > 
       <div class="row minHeightcol5">

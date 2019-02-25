@@ -6,6 +6,7 @@ import java.util.Date;
 public class AssociateJoineReportDTO extends SearchDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private Long empId;
+	private String employeeId;
 	private Long userId;
 	private Long orgLocationsId;
 	private Date hireDate;
@@ -379,4 +380,11 @@ public class AssociateJoineReportDTO extends SearchDTO implements Serializable{
 	{
 		this.probationStatus = probationStatus;
 	}
+	public String getEmployeeId() {
+		return employeeId;
+	}
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
+	
 }

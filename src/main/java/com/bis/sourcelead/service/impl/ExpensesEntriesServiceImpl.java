@@ -106,8 +106,13 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 							entries.setReceiptIssuedBy(entryCategory.getReceiptIssuedBy());
 						}
 						
+
+						//Countries country = countriesService.getCountriesByCountryName(orgLocation.getCountry());
+						/*String currencyType = null;
+
 						/*Countries country = countriesService.getCountriesByCountryName(orgLocation.getCountry());
 						String currencyType = null;
+
 						if(country!= null &&  country.getCurrency()!= null && !country.getCurrency().equalsIgnoreCase(entryCategory.getCategoryAmountType())){
 							currencyType = country.getCurrency();
 						}
@@ -116,11 +121,11 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 							entries.setCurrencyType(entryCategory.getCategoryAmountType());
 						}else {
 							entries.setCurrencyType(currencyType);
-						}
-						*/
-						
+						}*/
+
 						entries.setCurrencyType(entryCategory.getCategoryAmountType());
 						
+
 						entries.setSubmittedamount(new BigDecimal(entryCategory.getCategoryAmount()));
 						
 						if(StringUtils.isNotBlank(entryCategory.getCategoryApprovedAmount())){
@@ -218,6 +223,16 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 	@Override
 	public int dumpExpenceCategoryAmountToOldRecords() {
 		return expensesEntriesDao.dumpExpenceCategoryAmountToOldRecords();
+	}
+
+	@Override
+	public int changeDocumentNameWithWhiteSpacesToUnderScore(String staticPath) {
+		try {
+			return expensesEntriesDao.changeDocumentNameWithWhiteSpacesToUnderScore(staticPath);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 
 	

@@ -30,6 +30,7 @@ import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dto.ImmigrationDTO;
+import com.bis.sourcelead.dto.LcaDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
@@ -38,6 +39,9 @@ import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
+import com.bis.sourcelead.entity.Lca;
+import com.bis.sourcelead.entity.LcaDocumentHistory;
+import com.bis.sourcelead.entity.LcaPlaceOfEployment;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -82,7 +86,7 @@ public class ImmigrationServiceTest {
 	         MockitoAnnotations.initMocks(this);
 	    }
 		
-	   @Test
+	 //  @Test
 		public void storeImmigartion() throws Exception{
 			
 			Immigration imm = new Immigration();
@@ -251,22 +255,120 @@ public class ImmigrationServiceTest {
 			Assert.assertEquals( mockImmigrationCommonDao.getCandidatesResidenceListByCandidateIdAndOrgLocationID(canRes.getId(),"").size(),2);
 		}
 
-		//@Test
-	    public void testDelete()       
-	    {
-			CandidateResidence canRes = new CandidateResidence();
-			canRes.setId(48l);
-			Candidate candidate = new Candidate();
-			candidate.setId(175685l);
-	        // set up mocked result on update...
-			when(mockImmigrationCommonDao.deleteCandidateResidenceDetails(48l, 175685l)).thenReturn("success");
-	        // call the method we wish to test...
-	        String result= immigrationCommonService.deleteCandidateResidenceDetails(canRes.getId(), candidate.getId());  
-	        // verify the method was called...
-	        Assert.assertEquals("success",result);
-	    }
+			//@Test
+		    public void testDelete()       
+		    {
+				CandidateResidence canRes = new CandidateResidence();
+				canRes.setId(48l);
+				Candidate candidate = new Candidate();
+				candidate.setId(175685l);
+		        // set up mocked result on update...
+				when(mockImmigrationCommonDao.deleteCandidateResidenceDetails(48l, 175685l)).thenReturn("success");
+		        // call the method we wish to test...
+		        String result= immigrationCommonService.deleteCandidateResidenceDetails(canRes.getId(), candidate.getId());  
+		        // verify the method was called...
+		        Assert.assertEquals("success",result);
+		    }
 		
 		
+		    @Test
+			public void saveLcaDetails() throws Exception {
+				
+				Lca lca = new Lca();
+				LcaDTO lcaDTO = new LcaDTO();
+				
+				List<LcaPlaceOfEployment> lcaPlaceOfEploymentList = new ArrayList<LcaPlaceOfEployment>();
+				List<LcaDocumentHistory> lcaDocumentList = new ArrayList<LcaDocumentHistory>();
+				
+			//	when(mockImmigrationCommonDao.saveLcaDetails(lca,lcaPlaceOfEploymentList,lcaDocumentList)).thenReturn(lca);
+				User user = new User();
+				user.setId(1l);
+				OrgLocations orgLocationId = new OrgLocations();
+				orgLocationId.setId(1822L);
+				lcaDTO.setLcaNo("l-123-12345-123456");
+				lcaDTO.setLcaTitle("Test LCA");
+				lcaDTO.setLcaStatus("Initiated");
+				lcaDTO.setStartDate("2019-01-07");
+				lcaDTO.setEndDate("2019-01-31");
+				lcaDTO.setNoOfPositions("6");
+				lcaDTO.setAvailablePositions("6");
+				lcaDTO.setWagesLevel("Level 1");
+				lcaDTO.setPrevailingWage("1234");
+				lcaDTO.setPrivilingWageCurrency("INR");
+				lcaDTO.setPrivilingWageRateType("Monthly");
+				lcaDTO.setJobTitle("Network and Computer Systems Administrators");
+				lcaDTO.setSocCode("15-1142");
+				lcaDTO.setSocOccupationTitle("Network and Computer Systems Administrators");
+				lcaDTO.setOfferedWage("23456");
+				lcaDTO.setOfferedWageCurrency("INR");
+				lcaDTO.setOfferedWageRateType("Yearly");
+			    lcaDTO.setLcaUuid("PrnplHqt");
+			//    lcaDTO.setUpdatedBy(user.getId().toString());
+			    
+			   /* LcaVisaClarificationDTO lvcDTO = new LcaVisaClarificationDTO();
+			    
+			    lvcDTO.setId(1822l);
+			    lca.setId(1822L);
+			    lvcDTO.setNewEmployment("1");
+			    lvcDTO.setNewEmploymentCount("1");
+			    lvcDTO.setConcurrentEmployment("1");
+			    lvcDTO.setConcurrentEmploymentCount("");
+			    lvcDTO.setChangeInEmployer("1");
+			    lvcDTO.setChangeInEmployerCount("1");
+			    lvcDTO.setExtention("1");
+			    lvcDTO.setExtentionCount("1");
+			    lvcDTO.setChangeInEmployer("1");
+			    lvcDTO.setChangeInEmployerCount("1");
+			    lvcDTO.setChangeInPreApproEmployment("1");
+			    lvcDTO.setChangeInPreApproEmplmtCount("1");
+			    lvcDTO.setAmendment("1");
+			    lvcDTO.setAmendmentCount("1");
+			    lvcDTO.setStatus("1");
+			 //   lvcDTO.setUpdatedBy(user.getId().toString());
+			    
+			    LcaPlaceOfEmploymentDTO lpeDTO = new LcaPlaceOfEmploymentDTO();
+			    lpeDTO.setPlsempmntId("12");
+			    lca.setId(1822L);
+			    lpeDTO.setLocation("Hyderabad, Telangana, India");
+			    lpeDTO.setAddressLine1("Hyderabad, Telangana, India");
+			    lpeDTO.setAddressLine2("");
+			    lpeDTO.setCity("Hyderabad");
+			    lpeDTO.setCountry("India");
+			    lpeDTO.setState("Telangana");
+			    lpeDTO.setZipCode("123456");
+			    lpeDTO.setStatus("1");
+			  //  lpeDTO.setUpdatedBy(user.getId().toString());
+			    
+				LcaDocumentHistoryDTO ldhDTO = new LcaDocumentHistoryDTO();
+				ldhDTO.setDocId("1");
+				 lca.setId(1822L);
+				ldhDTO.setDocumentTitle("abc");
+				ldhDTO.setFileName("Client.pdf");
+				ldhDTO.setFileUrl("/slead-static/944/971/LCADocuments/Client1535355562437.pdf");
+				ldhDTO.setFileContentType("application/pdf");
+				ldhDTO.setDescription("abc description");
+				ldhDTO.setStatus("1");*/
+			//	ldhDTO.setUpdatedBy(user.getId().toString());
+				
+			   when(mockImmigrationCommonDao.saveLcaDetails(any(Lca.class), lcaPlaceOfEploymentList, lcaDocumentList))
+		        .thenAnswer(new Answer<Lca>() {
+
+		            public Lca answer(InvocationOnMock invocation) throws Throwable {
+		            	Lca lca = (Lca) invocation.getArguments()[0];
+		            	lca.setId(1822L);
+		                return lca;
+		            }
+
+		        });
+
+			    assertNull(lca.getId());
+			//lca = new LCA(); lca1= new LCA(); lca1= service.methosd();assertEquals(lca1.getId,lca.getId())
+			   
+	           immigrationCommonService.saveLcaDetails(lcaDTO, user, orgLocationId);
+	            assertNotNull(lca);
+			    assertTrue(lca.getId()>0);
+	            
+			}
 		
 	}
 
