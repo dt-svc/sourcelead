@@ -74,7 +74,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 getParallelApprovers();
 	 }
 	 
-	 if(contractType != null && contractType != 'undefined' && contractType !=''){
+	 if(type != null && type != 'undefined' && type !=''){
 // 	 	 getContractTemplates();
 	 	 contractTypeLabels()
 	 }

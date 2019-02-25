@@ -11,9 +11,10 @@
 <script>
 function getVendorOnboardTasksList(){
 	var vendorOnboardId = '${vendorOnboardId}';
+	 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
 	    	type: "GET",
-	    	 url: sourceleadUrl+"/getVendorOnboardTasksByVendorOnboardId?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId, 
+	    	 url: vmsUrl+"/getVendorOnboardTasksByVendorOnboardId?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId, 
 	        success: function(json) {
 	        	var result = "";
 	        	if(json.length > 0){ 
@@ -71,9 +72,10 @@ function getVendorOnboardTasksList(){
 
 <script>
 function changeTaskStatus(taskId){
+	 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/changeVendorOnboardTaskStatus?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
+	    	 url: vmsUrl+"/changeVendorOnboardTaskStatus?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
 	         success: function(result) {
 	        	 $("#tasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	 $("#tasksLoading").removeAttr("style");
@@ -87,16 +89,16 @@ function saveAndFinishVendorOnbord(){
 	
 	var vendorOnboardId = '${vendorOnboardId}';
 	var notificationUUID = '${notificationUUID}';
-	
+	 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	$("#tasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/validateVendorOnboardRequiredAttachedDocuments?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId+"&notificationUUID="+notificationUUID, 
+	    	 url: vmsUrl+"/validateVendorOnboardRequiredAttachedDocuments?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId+"&notificationUUID="+notificationUUID, 
 	         success: function(result) {
 	        	 if(result == "Success"){
 	        		 $.ajax({
 	     		    	type: "POST",
-	     		    	 url: sourceleadUrl+"/finishVendorOnboardProcess?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId+"&notificationUUID="+notificationUUID, 
+	     		    	 url: vmsUrl+"/finishVendorOnboardProcess?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId+"&notificationUUID="+notificationUUID, 
 	     		         success: function(result) {
 	     		        	 location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");
 	     		        }
