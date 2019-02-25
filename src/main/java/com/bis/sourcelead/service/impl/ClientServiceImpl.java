@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.ExpensesCategoryDao;
 import com.bis.sourcelead.dao.LookUpDataDao;
 import com.bis.sourcelead.dao.ReferContactsDao;
@@ -242,6 +243,12 @@ public class ClientServiceImpl implements ClientService {
 	
 	@Autowired
 	private UserCustomFieldDataService userCustomFieldDataService;
+	
+    @Autowired
+    UserStatsCacheHelper userStatsCacheHelper;
+	 
+    @Value("${isCouchbaseEnabled}")
+    private String isCouchbaseEnabled;
 	
 
 	/**
@@ -785,6 +792,14 @@ public class ClientServiceImpl implements ClientService {
 			}
 		
 		referContactsDao.addReferContacts(referContacts);
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			OrgLocations registeredOrgLocation = orgLocationService.getOrgLocations(clientOrgLocations.getId());
+			userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(registeredOrgLocation);
+			UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(spocUser.getId(), clientOrgLocations.getId());
+			userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+		}
+		
 		return clientOrgLocations;
 	}
 	
