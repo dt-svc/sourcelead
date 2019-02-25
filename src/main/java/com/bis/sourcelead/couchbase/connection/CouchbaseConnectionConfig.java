@@ -23,6 +23,9 @@ public class CouchbaseConnectionConfig {
 	@Value("${couchbase.password}")
 	private String password;
 	
+	@Value("${isCouchbaseEnabled}")
+	private String isCouchbaseEnabled;
+	
 	
 
 	public String getCouchbaseUrl() {
@@ -63,6 +66,14 @@ public class CouchbaseConnectionConfig {
 
 	public void setOrgLocationsBucket(String orgLocationsBucket) {
 		this.orgLocationsBucket = orgLocationsBucket;
+	}
+
+	public String getIsCouchbaseEnabled() {
+		return isCouchbaseEnabled;
+	}
+
+	public void setIsCouchbaseEnabled(String isCouchbaseEnabled) {
+		this.isCouchbaseEnabled = isCouchbaseEnabled;
 	}
 
 	

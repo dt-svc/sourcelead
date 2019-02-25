@@ -63,6 +63,8 @@ public class UserRoleSessionProfileDTO implements Serializable{
 	
 	private String candidateId;
 	
+	private String masterCandidateId;
+	
 	private String candidateUUID;
 	
 	private String email;
@@ -89,6 +91,7 @@ public class UserRoleSessionProfileDTO implements Serializable{
 	
 	private String isPayRollApprover;
 	
+	private String country;
 
 	public String getDocumentType() {
 		return documentType;
@@ -416,6 +419,22 @@ public class UserRoleSessionProfileDTO implements Serializable{
 
 	public void setIsPayRollApprover(String isPayRollApprover) {
 		this.isPayRollApprover = isPayRollApprover;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getMasterCandidateId() {
+		return masterCandidateId;
+	}
+
+	public void setMasterCandidateId(String masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
 	}
 
 }
