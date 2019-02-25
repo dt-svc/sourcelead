@@ -414,16 +414,19 @@ public class UserStatsCacheHelper {
 	 */
 	
 	public void saveOrgLocationDetailsToCouchbase(OrgLocations orgLocations) {
-		OrgLocationCacheDTO orgLocationDTO = getOrgLocationCacheDetails(orgLocations);
-		 ObjectMapper sessionObj = new ObjectMapper();
-         try {
-			String sessionJsonStr = sessionObj.writeValueAsString(orgLocationDTO);
-			JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
-			StringBuilder orgLocationKey = new StringBuilder();
-			orgLocationKey.append("OrgLocation_").append(orgLocationDTO.getOrgLocationCode());
-			sourceLeadSessionManager.setOrgLocationsJsonString(orgLocationKey.toString(), "userProfile", jsonObject);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+		
+		if(orgLocations != null &&  orgLocations.getOrg() != null) {	 
+			OrgLocationCacheDTO orgLocationDTO = getOrgLocationCacheDetails(orgLocations);
+			 ObjectMapper sessionObj = new ObjectMapper();
+	         try {
+				String sessionJsonStr = sessionObj.writeValueAsString(orgLocationDTO);
+				JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
+				StringBuilder orgLocationKey = new StringBuilder();
+				orgLocationKey.append("OrgLocation_").append(orgLocationDTO.getOrgLocationCode());
+				sourceLeadSessionManager.setOrgLocationsJsonString(orgLocationKey.toString(), "userProfile", jsonObject);
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
