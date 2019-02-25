@@ -974,7 +974,7 @@ function calaculateIncDecPer(){
 			                	 var userId = $("#userId").val();
 			                	 associateSalSummary(userId);
 			                } else if (result.indexOf('Sign In') !== -1) {
-								location.replace(sourceleadUrl);
+								location.replace(pmsUrl);
 							} else {
 			                    $("#update_associate_sal_button").removeAttr("disabled");
 			                    $("#update_associate_sal_button").addClass('button').val('Save');

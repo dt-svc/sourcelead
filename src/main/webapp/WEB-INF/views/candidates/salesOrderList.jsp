@@ -14,7 +14,7 @@
     
        <div class="clearfix">
 	<ul class="project-tabs-menu projecttabs-custom clearfix">
-         <li id="" ><a href="/ats/candidatesList">Candidate List</a></li>
+         <li id="" ><a href="${SourceLeadWeb_atsUrl}/candidatesList">Candidate List</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToCartList();">Cart</a></li>
@@ -340,7 +340,7 @@
  	 }
   
   	function goToSalesOrder(salesUuid){
-		  location.href = "/ats/SalesOrder?salesUuid="+salesUuid;
+		  location.href = "${SourceLeadWeb_atsUrl}/SalesOrder?salesUuid="+salesUuid;
   	}
   
   	function exportSalesOrderToPdf(){
@@ -362,36 +362,35 @@
    </script>
    <script>
   	function goToCandidateList(){
-			location.href = "/ats/candidatesList";
+			location.href = "${SourceLeadWeb_atsUrl}/candidatesList";
 	}
 		
 	function goToGlobalMarketPlaceList(){
-		location.href = "/ats/globalMarketplacePage";
+		location.href = "${SourceLeadWeb_atsUrl}/globalMarketplacePage";
 	}
 
 	function goToOrgMarketPlaceList(){
-		location.href = "/ats/OrgMarketplace";
+		location.href = "${SourceLeadWeb_atsUrl}/OrgMarketplace";
 	}
 	function goToCartList(){
-		location.href = "/ats/candidateMarketplaceCart";
+		location.href = "${SourceLeadWeb_atsUrl}/candidateMarketplaceCart";
 	}
 	function goToPurchaseOrderList(){
-		location.href ="/ats/PurchaseOrderList";
+		location.href ="${SourceLeadWeb_atsUrl}/PurchaseOrderList";
 		}
 	function goToSalesOrderList(){
-		location.href = "/ats/SalesOrderList";
+		location.href = "${SourceLeadWeb_atsUrl}/SalesOrderList";
 	}
 	function goToWalletList(){
-	    location.href = "/ats/walletList";
+	    location.href = "${SourceLeadWeb_atsUrl}/walletList";
 	}
 	function refreshPage(){
-		$("#searchByValue").val('');
-		getDynamicSalesOrderList();
+		location.reload();
 	}
   </script>
   <script>
   
-  	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+  	var locationDate ='${SourceLeadWeb_dateFormat}'; 
   	var locationDateFormat = '';
   	if(locationDate.match("yyyy-MM-dd")){
   		locationDateFormat = 'yy-mm-dd';

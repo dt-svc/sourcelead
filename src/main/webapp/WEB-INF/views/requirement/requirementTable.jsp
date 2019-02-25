@@ -472,10 +472,11 @@ function jpagination(url,atsUrl){
 	            "visible": $("input[data-name='clientName']").is(":checked"),
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
+	            		var vmsUrl = '${SourceLeadWeb_vmsUrl}';
            		   if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
            	      		
            			 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
-           	            result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+atsUrl+'/clientDashboard?orgRelationUUID='+opt.orgRelationUUID+'" title="'+opt.clientName+'">'+opt.clientName+'</a></div>';
+           	            result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+vmsUrl+'/clientDashboard?orgRelationUUID='+opt.orgRelationUUID+'" title="'+opt.clientName+'">'+opt.clientName+'</a></div>';
            	         if(opt.clientContactName != null && opt.clientContactName != '' && opt.clientContactName != 'undefined'){
 	     	        	  result = result + '\n<div  class="tbldata-dotdot-sm">'+opt.clientContactName+'</div>';
 	     	           }

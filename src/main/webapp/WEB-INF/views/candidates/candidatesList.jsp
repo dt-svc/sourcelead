@@ -12,9 +12,6 @@
 
   <div id="shareEmptypopUp"></div>
   
-  <script>
-  var atsUrl = '${SourceLeadWeb_atsUrl}';
-  </script>
   
 <script>
   function noAccess(id){ 	
@@ -111,6 +108,9 @@ function closeCandiatesSubmitedList() {
     padding-right: 5px;
 }
 </style>
+<script>
+  var atsUrl = '${SourceLeadWeb_atsUrl}';
+</script>
 <script type="text/javascript" src="${SourceLeadWeb_atsUrl}/resources/js/candidateTable.js"></script>
 
 <input type="hidden" id="noCandidates" name="noCandidates" />
@@ -456,7 +456,7 @@ function candidateSideBar(candidateId){
 			            result = result+'    <i class="fa fa-comments"></i>';
 			            result = result+'        <div class="commentsimg-inner">';
 			            
-			            result = result+'        	<img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"/>';
+			            result = result+'        	<img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_userImgUrl}"/>';
 			            result = result+'        </div>';
 			            result = result+'    </div>';
 			            result = result+'     <div class="comments-content">';
@@ -1438,7 +1438,7 @@ function imageCancel(){
 					<span> 
 						<a href="<c:url value='/candidate'/>">Parse Resume</a>
                         <a href="<c:url value='/addCandidate'/>">Add Manual</a>
-                        <a href="<c:url value='${appPath}/bulk-resume-import.html'/>">Bulk Resume Parsing</a>
+                        <a href="${SourceLeadWeb_sourceleadUrl}/bulk-resume-import.html">Bulk Resume Parsing</a>
                         <a href="uploadCandidateForm">Import XLS</a>
 					</span>
 				</div>
@@ -3162,27 +3162,27 @@ $(".overIcon, .newActPop").click(function(e){
 		}); 
 	}  */
 function goToCandidateList(){
-	location.href = "/ats/candidatesList";
+	location.href = "${SourceLeadWeb_atsUrl}/candidatesList";
 }
 	
 function goToGlobalMarketPlaceList(){
-	location.href = "/ats/globalMarketplacePage";
+	location.href = "${SourceLeadWeb_atsUrl}/globalMarketplacePage";
 }
 
 function goToOrgMarketPlaceList(){
-	location.href = "/ats/OrgMarketplace";
+	location.href = "${SourceLeadWeb_atsUrl}/OrgMarketplace";
 }
 function goToPurchaseOrderList(){
-	location.href ="/ats/PurchaseOrderList";
+	location.href ="${SourceLeadWeb_atsUrl}/PurchaseOrderList";
 	}
 function goToSalesOrderList(){
-	location.href = "/ats/SalesOrderList";
+	location.href = "${SourceLeadWeb_atsUrl}/SalesOrderList";
 }
 function goToCartList(){
-	location.href = "/ats/candidateMarketplaceCart";
+	location.href = "${SourceLeadWeb_atsUrl}/candidateMarketplaceCart";
 }
 function goToWalletList(){
-	location.href = "/ats/walletList";
+	location.href = "${SourceLeadWeb_atsUrl}/walletList";
 }
 
 </script> 
