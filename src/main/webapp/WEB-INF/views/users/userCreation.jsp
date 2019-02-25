@@ -24,7 +24,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			getResourceManagers();
 			maskme();
 			editMe(this);
-			var country = '${SourceLeadWeb_orgLocations.country}';
+			var country = '${SourceLeadWeb_country}';
 			if(country == 'United States'){
 				 $('#ssnNumber').attr("data-validation","required"); 
 			}
@@ -67,7 +67,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
         <ul class="list-unstyled">
           <li class="current"><a href="#tab-1" id="associates">Associates</a></li>
 
-          <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+          <c:if test="${SourceLeadWeb_country == 'India'}">
          		 <li><a href="#tab-2" data-toggle="tab" id="indBankingDetails" onclick="getIndAssociateBankingDetails();">Banking Details</a></li>
        		     <li><a href="#tab-3" data-toggle="tab" id="indInformationDetails" onclick="getIndAssociateInformationDetails();">Information</a></li>
        		     <li><a href="#tab-4" data-toggle="tab" id="indLoanAndAdvancesDetails" onclick="loanAdv.getIndAssociateLoanAndAdvancesDetails();">Loan / Advances</a></li>
@@ -75,7 +75,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
        		     <li><a href="#tab-5" data-toggle="tab" id="indSalaryDetails" onClick="indAssociateSalarySummary();">Salary</a></li>
           </c:if>
 
-          <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+          <c:if test="${SourceLeadWeb_country == 'United States'}">
             <li class=""><a href="#tab-6" data-toggle="tab" id="associateSalary" >Salary</a></li>
 	          <li class=""><a href="#tab-2" data-toggle="tab" id="associateBanking" >Banking</a></li>
 	          <li class=""><a href="#tab-3" data-toggle="tab" id="associateTax" >TAX</a></li>
@@ -210,7 +210,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                   </div>
                   
                   
-                  <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+                  <c:if test="${SourceLeadWeb_country == 'United States'}">
                   <div class="form-group" id="ssnNumberDiv">
                   <label class="col-md-3">SSN<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
@@ -325,7 +325,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                         </div>
                   </div>
                   
-                  <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+                  <c:if test="${SourceLeadWeb_country == 'India'}">
 		         		<div class="form-group">
 		                  <label class="col-md-3">PAN Number<span class="text-danger">&nbsp;*</span></label>
 		                  <div class="col-md-9">
@@ -343,7 +343,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			               <span class="input-group-addon cursorPointer bg-blue" onclick="getDepartmentsList();"><i class="fa fa-refresh "></i></span>
                   </div>
                   <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-			<a href="${sourceleadUrl}/addDepartment" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			<a href="${SourceLeadWeb_sourceleadUrl}/addDepartment" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			</sec:authorize>
                 </div> 
                  </div> 
@@ -377,7 +377,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			               <span class="input-group-addon cursorPointer bg-blue" onclick="refreshRoleList();managerListEmpty();"><i class="fa fa-refresh "></i></span>
                   </div>
                        <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE ')"> 
-			             <a href="${sourceleadUrl}/orgRolesList" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			             <a href="${SourceLeadWeb_sourceleadUrl}/orgRolesList" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			           </sec:authorize>
                 </div>
                 </div> 
@@ -402,7 +402,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			               <span class="input-group-addon cursorPointer bg-blue" onclick="refreshGradesList();"><i class="fa fa-refresh "></i></span>
                   </div>
 		             <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-					<a href="${sourceleadUrl}/addGrade " target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+					<a href="${SourceLeadWeb_sourceleadUrl}/addGrade" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 					</sec:authorize>
                 </div> 
                  </div> 
@@ -427,7 +427,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			
 			<span class="col-md-2 noPad clearfix">
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-			<a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			<a href="${SourceLeadWeb_vmsUrl}/addVendor" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			</sec:authorize>
 			</span>
 		</div>
@@ -539,7 +539,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		                </div>
 		                 </div>
                </div>
-               <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+               <c:if test="${SourceLeadWeb_country == 'United States'}">
                <div class="form-group">
 		             <label class="col-md-3"></label>
 		              <div class="col-md-9">
@@ -564,7 +564,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
             <div class="footerstyelsNew clearfix">
                 <div class="pull-right">
                   <input type="button" value="Save &amp; Continue" id="create_user" onclick="createUser();" class="btn btn-primary">
-                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/usersList'/>'"  class="btn btn-default ml">
+                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/usersList'"  class="btn btn-default ml">
                 </div>
             </div>
             </form:form>
@@ -575,7 +575,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
         </div>
        
       
-        <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+        <c:if test="${SourceLeadWeb_country == 'United States'}">
 	       <jsp:include page="associateSalary.jsp" />
 	       <jsp:include page="associateBankData.jsp" />
 	       <jsp:include page="associateTax.jsp" />
@@ -584,7 +584,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	       <jsp:include page="associateLeaveType.jsp" />
         </c:if>
         
-          <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+          <c:if test="${SourceLeadWeb_country == 'India'}">
               <jsp:include page="associateIndiaBankingDetails.jsp" />
               <jsp:include page="associateIndiaInformationDetails.jsp" />
               <jsp:include page="associateIndiaLoanAndAdvancesDetails.jsp" />
@@ -692,7 +692,7 @@ function calculateSSNLength(length,ssnNumber){
 		        	else{
 		        		 $('input#ssnNumber').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#ssnNumberDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#create_user" ).addClass('us-btn').val('Save');
+		        		 $("#create_user" ).addClass('us-btn').val('Save & Continue');
                          $("#create_user").removeAttr("disabled");
 		        	}
 		        },
@@ -922,7 +922,7 @@ function getEmployeementType(designationType){
 <script type="text/javascript">
  function createUser() {
 	 var country = '${SourceLeadWeb_loginCountryName}'; 
-	 	var RatePer = document.getElementById("RatePer").value; 
+ 	 	var RatePer = document.getElementById("RatePer").value; 
 		if(RatePer != null && RatePer != ""){
 			$('#Rate').removeAttr('data-validation-optional');
 			$('#Rate').attr("data-validation","required validate_Space validate_float validate_length length1-8"); 
@@ -930,7 +930,6 @@ function getEmployeementType(designationType){
 			$('#Rate').removeAttr('data-validation');
 			$('#Rate').attr("data-validation-optional","true"); 
 		}
-		 
 		var Rate = document.getElementById("Rate").value; 
 		if(Rate != null && Rate != ""){
 			$('#RatePer').removeAttr('data-validation-optional');
@@ -981,7 +980,7 @@ function getEmployeementType(designationType){
 		
 	  }else{
 		return false;
-	  }
+	  } 
     }
  
    $('body').on('blur', '#createUser_form', function() {
@@ -1027,7 +1026,7 @@ function getEmployeementType(designationType){
                     else{
                          $('input#EmployeeId').removeAttr( "record-exist record-exist-errormsg");
                          $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
-                         $("#create_user" ).addClass('us-btn').val('Save');
+                         $("#create_user" ).addClass('us-btn').val('Save & Continue');
                          $("#create_user").removeAttr("disabled");
                        
                     }
@@ -1057,7 +1056,7 @@ function getEmployeementType(designationType){
 		        	else{
 		        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#create_user" ).addClass('us-btn').val('Save');
+		        		 $("#create_user" ).addClass('us-btn').val('Save & Continue');
                          $("#create_user").removeAttr("disabled");
 		        	}
 		        },
@@ -1372,7 +1371,7 @@ function getAssociateUserDetails(){
 <!-- start script for datepicker -->
 <script>
   $( function() {
-	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	  // written common method in slead-common.js for date formats start
 	  var finalDateFormat = getJSDateFormat(locationDate);
 	  //end
@@ -1622,7 +1621,7 @@ function refreshGradesList(){
 </script>
 <script>
   $( function() {
-	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	  // written common method in slead-common.js for date formats start
 	  var finalDateFormat = getJSDateFormat(locationDate);
 	  //end
@@ -1653,7 +1652,7 @@ function clearDateofJoin(){
 </script>
 
 <script>
-var loginLocationCountry = '${SourceLeadWeb_orgLocations.country}';
+var loginLocationCountry = '${SourceLeadWeb_country}';
 
               var associateLeaveType = document.getElementById("associateLeaveType");
 				if(associateLeaveType){
