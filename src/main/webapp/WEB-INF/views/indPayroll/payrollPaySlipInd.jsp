@@ -8,11 +8,11 @@
 <script>
 function validatePayslipName(uuid){
 	var payslipName = document.getElementById("paySlipName").value.trim();
-	var sourceleadUrl = '${sourceleadUrl}';
+	var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 	$('#payslipNameDiv').find('p.jquery_form_error_message').remove();
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+ "/validatePayslipName?${_csrf.parameterName}=${_csrf.token}&payslipName="+payslipName+"&payslipUUID="+uuid,
+		url : pmsUrl+ "/validatePayslipName?${_csrf.parameterName}=${_csrf.token}&payslipName="+payslipName+"&payslipUUID="+uuid,
 		success : function(data) {
 			 if (data == true) {
 				$("input#paySlipName").after("<p class='jquery_form_error_message'>"+ payslipName+ " is Already Existed</span>");
@@ -31,10 +31,10 @@ function validatePayslipName(uuid){
     <h2>Configure Payslip</h2>
   </div>
   <c:if test="${empty payslipInd.uuid}">
-    <div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a> &raquo; Payslip</div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a> &raquo; Payslip</div>
   </c:if>
   <c:if test="${!empty payslipInd.uuid}">
-    <div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollPaySlipView">Payroll Configure List</a> &raquo; Payslip Edit</div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollPaySlipView">Payroll Configure List</a> &raquo; Payslip Edit</div>
   </c:if>
 </section>
  <div class="clearfix"></div>

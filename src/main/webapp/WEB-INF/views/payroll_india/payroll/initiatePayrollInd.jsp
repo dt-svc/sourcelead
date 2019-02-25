@@ -8,7 +8,7 @@
 	<div class="row">
 		<div class="col-md-3">
 			<div class="dropdown-select">
-			<select id="groupId" name="groupId" onchange="getGroupFrequency();" data-placeholder="Select User Group" class="chosen-select" data-validation="required" field-name="User Group">
+			<select id="groupId" name="groupId" onchange="getGroupFrequency();" data-placeholder="Select Pay Group" class="chosen-select" data-validation="required" field-name="Pay Group">
                     <option value=""></option>
                     <c:forEach var="ug" items="${userGroupList}">
 					<option value="${ug.groupUUID},${ug.id}">${ug.groupName}</option>
