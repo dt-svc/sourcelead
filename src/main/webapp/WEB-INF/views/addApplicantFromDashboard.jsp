@@ -5,8 +5,8 @@
  </c:if>
  
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
-<script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
-<script src="/resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
+<script src="/ats/resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="/ats/resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
@@ -20,6 +20,7 @@
 
 <!-- For add New Applicant -->
 <script>
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 var atsUrl = '${SourceLeadWeb_atsUrl}';
 function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	$('.action-pop').slideUp();
@@ -35,7 +36,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	  }if(locationDate.match("yyyy-dd-MM")){
 		  finalDateFormatScript = 'yy-dd-mm'; 
 	  }
-	generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript)
+	generateOrgSubmissionForm(atsUrl,requirementId,finalDateFormatScript)
 	var result = "";
 	result = result + '<form id="addApplicant_form" name="addApplicant_form" enctype="multipart/form-data" method="post">';
 	result = result + '<h3>Add Applicant</h3>';
@@ -686,7 +687,6 @@ $('body').on('submit', '#addApplicant_form', function(e){
       var con = JSON.stringify(fields);
       
       con = encodeURIComponent(con);
-     
 		
        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       
@@ -792,7 +792,7 @@ function getCandidateSelectionType(){
 		 $('.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+		        url: atsUrl+"/getCandidateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
 		        success: function(data) {
 		        	var json = data.data;
 		        	if (data.response === "FAILED") {
@@ -891,7 +891,7 @@ function getCandidateSelectionType(){
 		 $('.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+		        url: atsUrl+"/getCandidateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
 		        success: function(data) {
 		        	var json = data.data;
 		        	if (data.response === "FAILED") {
@@ -967,7 +967,7 @@ function getCandidateDetails(){
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId, 
+		        url: atsUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId, 
 		        success: function(data) {
 		        	if (data.response === "FAILED") {
 			    		showError(data.responseMessage);
@@ -1328,6 +1328,7 @@ function setRateTypesByLocation(){
 		var form = $('#addApplicant_form')[0];
   		var formData = new FormData(form); 
 		var sourceleadUrl = '${sourceleadUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 		   $.ajax({
 				    type: "POST",
 			    	data: formData,
@@ -1336,7 +1337,7 @@ function setRateTypesByLocation(){
 			        processData: false,
 			        contentType:false,
 		   	        dataType : 'json',
-					url : sourceleadUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}",
+					url : atsUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}",
 					success : function(response) {
 						if (response.response === "AWKWARD") {
 						    location.href = "/errorPage";
@@ -1425,7 +1426,7 @@ function validate_fileupload(fileName)
 		 $("#save_button").attr("disabled", "disabled");
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateRequirementCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId, 
+		        url: atsUrl+"/validateRequirementCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId, 
 		        success: function(data) {
 		         	if(data == 'true'){
 			        	  $("#save_button" ).addClass('btn btn-sm btn-primary').val('SUBMIT');
@@ -1455,7 +1456,7 @@ function validate_fileupload(fileName)
 	 if(emailId != null && emailId != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getUserByUserEmail?${_csrf.parameterName}=${_csrf.token}&EmailId="+emailId, 
+		        url: atsUrl+"/getUserByUserEmail?${_csrf.parameterName}=${_csrf.token}&EmailId="+emailId, 
 		        success: function(json) {
 		        	
 		        		if(json.firstName != null && json.firstName != ''){
@@ -1668,7 +1669,7 @@ function validate_fileupload(fileName)
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getVendorsByOrgLocation?${_csrf.parameterName}=${_csrf.token}", 
+	        url: atsUrl+"/getVendorsByOrgLocation?${_csrf.parameterName}=${_csrf.token}", 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
@@ -1695,7 +1696,7 @@ function validate_fileupload(fileName)
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 			    type: "POST",
-		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        url: vmsUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(json) {
 		        	//var json = JSON.parse(data);
 		        	$('#vendorContact').empty();

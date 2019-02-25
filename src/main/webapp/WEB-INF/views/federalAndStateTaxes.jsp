@@ -145,7 +145,7 @@
 			         
 	         <div class="clearfix">
 				<div class="pull-right">
-				<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/app/dashboard/${SourceLeadWeb_orgLocationId}'">
+				<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='${SourceLeadWeb_sourceleadUrl}/settings'">
 				</div>
 				<div class="pull-right">
 				<input type="submit" value="Save" id="save_federal_button" class="btn btn-primary mr">

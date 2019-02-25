@@ -51,6 +51,7 @@ function getSearchResults(searchType,searchValue,isAssociate){
 	    url: sourceleadUrl+"/universalSearch?"+tokenParamName+"="+tokenValue+"&searchType="+searchType+"&searchValue="+searchValue+"&isAssociate="+isAssociate,	    	   
 	    success: function(data) {
 	    	var result='';
+	    	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	    	var json = JSON.parse(data);
 	    	var checkSize = json.length;
             if(checkSize>5){
@@ -79,9 +80,9 @@ function getSearchResults(searchType,searchValue,isAssociate){
 	   			    	
 	   			    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 	   			    	if(report.jobTitle !=null && report.jobTitle != '' && report.jobTitle !="undefined" && report.jobType !=null && report.jobType != '' && report.jobType !="undefined"){
-	   			    		result = result+'<p><label><strong><a href="/ats/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
+	   			    		result = result+'<p><label><strong><a href="'+atsUrl+'/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
 	   			    	}else{
-	   			    		result = result+'<p><label><strong><a href="/ats/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label></p>';	
+	   			    		result = result+'<p><label><strong><a href="'+atsUrl+'/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label></p>';	
 	   			    	}
 	   			    	if(report.city !=null && report.city != '' && report.city !="undefined"){
 	   			    		result = result+'          <p><label>'+report.city+' , '+report.state+' , '+report.country+'</label>';
@@ -502,7 +503,7 @@ function getSearchResultsForAll(searchType,searchValue){
 									    	
 									    	if(opt.length>5 && j==4){
 								                result = result+'  <div class="clearfix">';
-										    	result = result+'      <a href="/app/jobs" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+										    	result = result+'      <a href="/ats/jobsList" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
 										    	result = result+'  </div>';
 								             }
 									    	
@@ -810,7 +811,8 @@ function loadCandidate(){
 	
 	var searchResult = "universalCanddateList";
 	var searchValue = "${searchValue}";
-	window.location.href = sourceleadUrl + "/candidatesList?&searchResult="+searchResult+"&searchValue="+searchValue;
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
+	window.location.href = atsUrl + "/candidatesList?&searchResult="+searchResult+"&searchValue="+searchValue;
 }
 </script>
 
@@ -819,7 +821,8 @@ function loadCandidate(){
 function loadRequirement(){
 	var searchResult = "universalRequirementList";
 	var serachValue = "${searchValue}";
-	window.location.href = sourceleadUrl + "/requirementList?&searchResult="+searchResult+"&serachValue="+serachValue;
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
+	window.location.href = atsUrl + "/requirementList?&searchResult="+searchResult+"&serachValue="+serachValue;
 }
 </script>
 
@@ -829,7 +832,8 @@ function loadUsers(){
 	var searchResult = "searchresult";
 	var searchValue = "${searchValue}";
 	var searchType = "Associates";
-	window.location.href = sourceleadUrl + "/usersList?&searchResult="+searchResult+"&searchValue="+searchValue+"&searchType="+searchType;
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
+	window.location.href = atsUrl + "/usersList?&searchResult="+searchResult+"&searchValue="+searchValue+"&searchType="+searchType;
 
 	//usersList
 }
@@ -840,7 +844,8 @@ function loadVendor(){
 	var searchResult = "universalVendorList";
 	var searchValue = "${searchValue}";
 	var searchType = "${searchType}";
-	window.location.href = sourceleadUrl + "/vendorsList?&searchResult="+searchResult+"&searchValue="+searchValue+"&searchType="+searchType;
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	window.location.href = vmsUrl + "/vendorsList?&searchResult="+searchResult+"&searchValue="+searchValue+"&searchType="+searchType;
 
 }
 
@@ -851,7 +856,8 @@ function loadClient(){
 	var searchResult = "clientSearchResult";
 	var searchValue = "${searchValue}";
 	var searchType = "${searchType}";
-	window.location.href = sourceleadUrl + "/clientDashboard?&searchResult="+searchResult+"&searchValue="+searchValue+"&searchType="+searchType;
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	window.location.href = vmsUrl + "/clientDashboard?&searchResult="+searchResult+"&searchValue="+searchValue+"&searchType="+searchType;
 }
 </script>
 
@@ -859,7 +865,8 @@ function loadClient(){
 function loadProjects(){
 	var searchResult = "universalProjectsList";
 	var searchValue = "${searchValue}";
-	window.location.href = sourceleadUrl + "/projectDashboard?&searchResult="+searchResult+"&searchValue="+searchValue;
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	window.location.href = pmsUrl + "/projectDashboard?&searchResult="+searchResult+"&searchValue="+searchValue;
 }
 </script>
 
@@ -867,7 +874,8 @@ function loadProjects(){
 function vendorSearchSideBar(responderLocationId,orgRelationId,orgName){
 	var vendorKeyword = "vendorSearch";
 	var org = encodeURIComponent(orgName);
-	window.location.href = sourceleadUrl + "/vendorsList?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+org+"&vendorKeyword="+vendorKeyword;
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	window.location.href = vmsUrl + "/vendorsList?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+org+"&vendorKeyword="+vendorKeyword;
 
 }
 </script>
@@ -877,32 +885,36 @@ function vendorSearchSideBar(responderLocationId,orgRelationId,orgName){
 function clientSearchSideBar(responderLocationId,orgRelationId,orgName){
 	var clientKeyword = "clientSearch";
 	var org = encodeURIComponent(orgName);
-	window.location.href = sourceleadUrl + "/clientDashboard?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+org+"&clientKeyword="+clientKeyword;
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	window.location.href = vmsUrl + "/clientDashboard?&responderLocationId="+responderLocationId+"&orgRelationId="+orgRelationId+"&orgName="+org+"&clientKeyword="+clientKeyword;
 }
 </script>
 
 <script>
 function candidateSearchSideBar(candidateIdSearchId,isAssociate){
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	var candidateKeyword = "candidateSearch";
 	if(isAssociate == "Y"){
 		//Highlighting associate tab when search for associates through universal search
-		window.location.href = sourceleadUrl + "/associatesList?&candidateIdSearchId="+candidateIdSearchId+"&candidateKeyword="+candidateKeyword;
+		window.location.href = atsUrl + "/associatesList?&candidateIdSearchId="+candidateIdSearchId+"&candidateKeyword="+candidateKeyword;
 	}else{
-		window.location.href = sourceleadUrl + "/candidatesList?&candidateIdSearchId="+candidateIdSearchId+"&candidateKeyword="+candidateKeyword;
+		window.location.href = atsUrl + "/candidatesList?&candidateIdSearchId="+candidateIdSearchId+"&candidateKeyword="+candidateKeyword;
 	}
 }
 </script>
 
 <script>
 function userSummaryRedirect(userCode){
-	window.location.href = sourceleadUrl +"/userSummary/"+userCode;
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
+	window.location.href = atsUrl +"/userSummary/"+userCode;
 }
 </script>
 
 <script>
 function projectSearchSideBar(projectId,projectName,startDate,endDate, status,projectUUID){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var projectKeyword = "projectSearch";
-	window.location.href = sourceleadUrl + "/projectSummary?projectUUID="+projectUUID;
+	window.location.href = pmsUrl + "/projectSummary?projectUUID="+projectUUID;
 // 	window.location.href = sourceleadUrl + "/projectDashboard?&projectId="+projectId+"&projectName="+projectName+"&startDate="+startDate+"&endDate="+endDate+"&status="+status+"&projectKeyword="+projectKeyword;
 }
 </script>

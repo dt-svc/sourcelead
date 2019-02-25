@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +30,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@PropertySource("${propertyLocation:app.properties}")
 public class OpenJobsController {
 	@Autowired
 	private RequirementService requirementService;
@@ -36,8 +38,10 @@ public class OpenJobsController {
 	private CountriesService countriesService;
 	@Autowired
 	private LookUpDataService lookUpDataService;
-	@Value("${sourceleadUrl}")
-	private String sourceleadUrl;
+	
+	@Value("${atsUrl}")
+	private String atsUrl;
+		
 	@Autowired
 	private CommonUtil commonUtil;
 	@Autowired
@@ -49,6 +53,10 @@ public class OpenJobsController {
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
 	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	
+	
 	@RequestMapping(value = "/openJobs")
 	public ModelAndView openJobs() throws Exception
 	{
@@ -58,6 +66,8 @@ public class OpenJobsController {
 		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		model.addObject("skillsList", skillsList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("atsUrl", atsUrl);
+		model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 		model.setViewName("openJobs/search-jobs");
 		return model;
 	}
@@ -96,6 +106,8 @@ public class OpenJobsController {
 		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		model.addObject("skillsList", skillsList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("atsUrl", atsUrl);
+		model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 		model.setViewName("openJobs/guestApplyToJob");
 		return model;
 	}
@@ -112,6 +124,8 @@ public class OpenJobsController {
 		List<String> industryListWithoutId = lookUpDataService.getAllSkillsByIndustryCategory();
 		modelMap.addAttribute("industryList", industryListWithoutId);
 		modelMap.addAttribute("sourceleadUrl", sourceleadUrl);
+		modelMap.addAttribute("atsUrl", atsUrl);
+		modelMap.addAttribute("googleMapsLocationApiKey", googleMapsLocationApiKey);
 		title = (title != null && !title.isEmpty() && !title.equalsIgnoreCase("null")) ? title : "all";
 		location = (location != null && !location.isEmpty() && !location.equalsIgnoreCase("null")) ? location : "all";
 		experience = (experience != null && !experience.isEmpty() && !experience.equalsIgnoreCase("null")) ? experience : "all";
@@ -143,6 +157,8 @@ public class OpenJobsController {
 	public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String companies,@PathVariable String postedOrgName,HttpServletRequest request) throws Exception
 	{
 		modelMap.addAttribute("sourceleadUrl", sourceleadUrl);
+		modelMap.addAttribute("atsUrl", atsUrl);
+		modelMap.addAttribute("googleMapsLocationApiKey", googleMapsLocationApiKey);
 		modelMap.addAttribute("companies", companies);
 		modelMap.addAttribute("postedOrgName", postedOrgName);
 		modelMap.addAttribute("specificCompany", "specificCompany");
@@ -178,6 +194,8 @@ public class OpenJobsController {
 			modelAndView.addObject("requirementReleaseStatus", requirementDeatilsSummary.getIsRequirementRelesedToPublic());
 		}
 		modelAndView.addObject("sourceleadUrl", sourceleadUrl);
+		modelAndView.addObject("atsUrl", atsUrl);
+		modelAndView.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 		modelAndView.setViewName("openJobs/openjobs");
 		return modelAndView;
 	}
@@ -232,6 +250,8 @@ public class OpenJobsController {
 		// Countries countries =
 		// countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		// model.addObject("loginCountryName",countries);
+		model.addObject("atsUrl", atsUrl);
+		model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("requirementUUID", requirementUUID);
 		return model;

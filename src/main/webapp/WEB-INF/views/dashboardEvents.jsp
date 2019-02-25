@@ -97,7 +97,7 @@ width: 75px; padding: 0 !important;
 		var dates = {}
 		$.ajax({
 			type : "POST",
-			url : atsUrl
+			url : sourceleadUrl
 					+ "/getInterviewsTaskDates?${_csrf.parameterName}=${_csrf.token}",
 			success : function(result) {
 				if (result.response === "FAILED") {
@@ -129,8 +129,8 @@ width: 75px; padding: 0 !important;
 		var dates = {}
 		$.ajax({
 			type : "POST",
-			url : atsUrl
-					+ "/getJobFairDatesForCalendar?${_csrf.parameterName}=${_csrf.token}",
+			url : sourceleadUrl
+					+ "/getAllJobFairDatesForCalendar?${_csrf.parameterName}=${_csrf.token}",
 			success : function(result) {
 				if (result.response === "FAILED") {
 					showError(result.responseMessage);
@@ -214,6 +214,7 @@ function getSelectedDateFromCalendar(selectedDate) {
 		    	} else if (data.response === "AWKWARD") {
 		    		location.href = "/errorPage";
 		    	} else if (data.response === "SUCCESS") {
+		    		var atsUrl ='${SourceLeadWeb_atsUrl}';
 		        	 var json = data.object;
 		        	 var result = "";
 		        	 var opt = "";
@@ -249,7 +250,7 @@ function getSelectedDateFromCalendar(selectedDate) {
 						 result = result + ' 									<p><i class="fa fa-phone"></i><label>'+report.candidatePhoneNumber+'</label></p>                 ';
 						 result = result + ' 									</div>                                                                         ';
 						 result = result + ' 								</div>                                                                         ';
-						 result = result + '                          <p><label class="text-muted small col-md-2">Job:</label> <a href="'+sourceleadUrl+"/requirementSummaryView?requirementUUID="+report.requirementUUID+"&interviewId="+report.interviewId.id+'">'+report.requirementTitle+'</a></p>';
+						 result = result + '                          <p><label class="text-muted small col-md-2">Job:</label> <a href="'+atsUrl+"/requirementSummaryView?requirementUUID="+report.requirementUUID+"&interviewId="+report.interviewId.id+'">'+report.requirementTitle+'</a></p>';
 						 result = result + '                          <p><label class="text-muted small col-md-2">Client:</label> '+clientName+'</p>    ';
 						 result = result + '                          <div class="feedBack"> ';
 						
@@ -351,7 +352,7 @@ function getSelectedDateFromCalendar(selectedDate) {
 		$("#fairJobsDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
-	        url: atsUrl+"/getJobFairRequirements?${_csrf.parameterName}=${_csrf.token}&date="+date,
+	        url: sourceleadUrl+"/getAllJobFairRequirements?${_csrf.parameterName}=${_csrf.token}&date="+date,
 	        success: function(result) {
 	        	if (result.response === "FAILED") {
 		    		showError(result.responseMessage);

@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,6 +37,7 @@ import com.bis.sourcelead.SourceleadAuthenticationProvider;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
@@ -58,6 +60,7 @@ import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.RegistrationOptionalService;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Tabs;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
@@ -74,6 +77,7 @@ import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TabsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -152,6 +156,14 @@ public class RegistrationRestController {
 	 @Autowired
      ConversionUtil conversionUtil;
 	 
+	 @Autowired
+	 UserStatsCacheHelper userStatsCacheHelper;
+	 
+	 @Autowired
+	 TimeZoneService timeZoneService;
+	 
+	 @Value("${isCouchbaseEnabled}")
+	 private String isCouchbaseEnabled;
 	 
 	 @RequestMapping(value = "/app/getOrgsList")
 	 		public @ResponseBody String getUsersList(HttpServletRequest request,
@@ -1414,9 +1426,18 @@ public class RegistrationRestController {
 				request.getSession().setAttribute("userLoginSession", userLoginSession);
 			}
 		}
+		
+		StringBuilder generatedToken = new StringBuilder();
+		generatedToken.append(SourceLeadRandomCodeHelper.generateRandomCustomToken());
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(generatedToken.toString(),userRole, request);
+		}
+		
+		StringBuilder userNameString = new StringBuilder();
+		userNameString.append(userName).append("##").append(userRole.getId()).append("##").append(generatedToken.toString());
 		SecurityContextHolder.clearContext();
-		SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, userName
-				+ "##" + userRole.getId(), password, verfDone,userRole.getUuid()));
+		SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, userNameString.toString(), password, verfDone));
 		return "true";
 	}
 	
@@ -1500,6 +1521,15 @@ public class RegistrationRestController {
 		String ipAddress = userLoginHelper.getClientIpAddr(request);
 		boolean alreadyVerifiedBefore = userLoginLogoutSessionService.validatePreviouslyAuthenticatedByUserIdAndIpAddress(ipAddress, userRole.getUser().getId());
 		return alreadyVerifiedBefore;
+	}
+	
+	@RequestMapping(value = "/app/getTimezonesList")
+	public @ResponseBody String getTimezonesList(HttpServletRequest request) throws Exception
+	{
+		String resultJson = null;
+		List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
+		resultJson = commonUtil.toJSON(timezoneList);
+		return resultJson;
 	}
 	
 	
