@@ -269,7 +269,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		}
 		
-        Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+        Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 		if(Constants.NDA.equalsIgnoreCase(contractsDTO.getContractType()) || Constants.NSA.equalsIgnoreCase(contractsDTO.getContractType())){
 			contracts.setContractType("Vendor "+contractsDTO.getContractType());
 		}
@@ -1075,7 +1075,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				}
 				
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-				Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+				Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 				//SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
 				if(null != contracts && null != contracts.getStartDate()){
 					String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());  
@@ -1281,7 +1281,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					contracts.setEndDateStr(Constants.DF_DMY.format(contracts.getEndDate()));	
 				}
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-				Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+				Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 				//SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
 				
 				if(null != contracts && null != contracts.getStartDate()){
@@ -1435,7 +1435,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 				}
 				
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-				Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+				Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 			//	SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
 				
 				if(null != contracts && null != contracts.getJoinDate()){
@@ -1639,8 +1639,8 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 	
 	private void contractRejectEmail(Contracts contracts, User loginUser, Org org, OrgLocations orgLocation) throws Exception {
 		Timezone timezone = null;
-		if(null != orgLocation.getTimezone()){
-	    	 timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		if(null != orgLocation.getTimeZoneId()){
+	    	 timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 		 }
 		User createdUser = userService.getUserByUserCode(contracts.getCreatedBy());
 		EmailMessage emailMessage = new EmailMessage();
@@ -1782,8 +1782,8 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 	private void contractApproveEmail(Contracts contracts, User loginUser, Org org, OrgLocations orgLocation) throws Exception
 	{
 		Timezone timezone = null;
-		if (null != orgLocation.getTimezone()) {
-			timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		if (null != orgLocation.getTimeZoneId()) {
+			timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 		}
 		User createdUser = userService.getUserByUserCode(contracts.getCreatedBy());
 		EmailMessage emailMessage = new EmailMessage();
@@ -1914,8 +1914,8 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 			,Long redirectOrgLocationId) throws Exception
 	{
 		Timezone timezone = null;
-		if(null != orgLocation.getTimezone()){
-	    	 timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		if(null != orgLocation.getTimeZoneId()){
+	    	 timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 		 }
 		
 		 EmailMessage emailMessage = new EmailMessage();
@@ -2117,7 +2117,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 					&& !"".equalsIgnoreCase(contracts.getEndDate().toString())) {
 				String currentTimeStr = Constants.TZ_DF.format(contracts.getEndDate());
 				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				String interviewDateInTimezone = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, orgLocation.getTimezone().getTimeZoneId(), currentTimeStr);
+				String interviewDateInTimezone = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, orgLocation.getTimeZoneName(), currentTimeStr);
 				Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
 				interviewDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), interviewConverteDate);
 				globalVarsMap.put("endDate", interviewDateInTimezone);
@@ -2129,7 +2129,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 					&& !"".equalsIgnoreCase(contracts.getStartDate().toString())) {
 				String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());
 				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				String interviewDateInTimezone = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, orgLocation.getTimezone().getTimeZoneId(), currentTimeStr);
+				String interviewDateInTimezone = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, orgLocation.getTimeZoneName(), currentTimeStr);
 				Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
 				interviewDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), interviewConverteDate);
 				globalVarsMap.put("startDate", interviewDateInTimezone);
@@ -2212,7 +2212,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 		Contracts contracts = new Contracts();
 		Contracts vendorContracts = new Contracts();
         
-        Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+        Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 		
 		if(Constants.NDA.equalsIgnoreCase(contractsDTO.getContractType()) || Constants.NSA.equalsIgnoreCase(contractsDTO.getContractType())){
 			contracts.setContractType("Vendor "+contractsDTO.getContractType());
@@ -2723,7 +2723,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 				}
 				contracts.setVendorContactName(vendorName.toString());
 				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+				Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocations.getTimeZoneId()));
 				  // SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 				if (null != contracts && null != contracts.getStartDate()) {
 					String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());
@@ -2822,7 +2822,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 				 * getEndDate())); }
 				 */
 				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+				Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocations.getTimeZoneId()));
 				//SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 				if (null != contracts && null != contracts.getStartDate()) {
 					String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());
@@ -3128,7 +3128,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 			if (previousEndDate != null) {
 				String previousEndTimeStr = Constants.TZ_DF.format(previousEndDate);
 				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				String contractPreviousEndDate = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, orgLocation.getTimezone().getTimeZoneId(), previousEndTimeStr);
+				String contractPreviousEndDate = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, orgLocation.getTimeZoneName(), previousEndTimeStr);
 				Date contractConvertPreviousEndDate = TZ_DF_TS.parse(contractPreviousEndDate);
 				String contractConvertDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),contractConvertPreviousEndDate);
 				globalVarsMap.put("previousEndDate", contractConvertDateInTimezone);
@@ -3136,7 +3136,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 			if (contracts.getStartDate() != null) {
 				String startDate = Constants.TZ_DF.format(contracts.getStartDate());
 				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				String contractStartDate = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, orgLocation.getTimezone().getTimeZoneId(), startDate);
+				String contractStartDate = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, orgLocation.getTimeZoneName(), startDate);
 				Date contractConvertStartDate = TZ_DF_TS.parse(contractStartDate);
 				String contractConvertDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),contractConvertStartDate);
 				globalVarsMap.put("startDate", contractConvertDateInTimezone);
@@ -3144,7 +3144,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 			if (contracts.getEndDate() != null) {
 				String presentEndDate = Constants.TZ_DF.format(contracts.getEndDate());
 				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				String contractEndDate = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, orgLocation.getTimezone().getTimeZoneId(), presentEndDate);
+				String contractEndDate = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, orgLocation.getTimeZoneName(), presentEndDate);
 				Date contractConvertEndDate = TZ_DF_TS.parse(contractEndDate);
 				String contractConvertDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),contractConvertEndDate);
 				globalVarsMap.put("presentEndDate", contractConvertDateInTimezone);
@@ -3620,7 +3620,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 	{
 		Timezone timezone = null;
 		if(null != orgLocation.getTimezone()){
-	    	 timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+	    	 timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 		 }
 //		User createdUser = userService.getUserByUserCode(contracts.getCreatedBy());
 		for(ContractOwnerHierarchy coh : contracts.getOwnerHierarchyList()){

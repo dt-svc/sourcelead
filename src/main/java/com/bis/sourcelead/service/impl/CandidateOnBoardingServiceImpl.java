@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.CandidateOnBoardingDao;
 import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.dao.OnboardTasksDao;
@@ -135,6 +136,12 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	
 	@Autowired
 	AssociateBalanceLeaveService associateBalanceLeaveService;
+	
+	@Value("${isCouchbaseEnabled}")
+	private String isCouchbaseEnabled;
+	
+	@Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -529,6 +536,11 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 }
 		 
 		 candidateOnBoardingDao.saveCandidateOnBoarding(candidateOnBoarding);
+		 
+		 if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			UserRole userRole = userRoleDao.getUserRoleById(onboardingUserRole.getId());
+			userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+			}
 		
 	}
 	
