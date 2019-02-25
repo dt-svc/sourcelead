@@ -1590,7 +1590,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from UserRole userRole left join fetch userRole.user user where user.id = :userId and userRole.userState = 'ACTIVE' ";
-		List<UserRole> userRoleList = session.createQuery(query.toString()).list();
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).list();
 		return userRoleList;
 
 	
