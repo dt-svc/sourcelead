@@ -873,7 +873,7 @@ public class RequirementController {
 				List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
 				model.addObject("locationsList",locationsList);
 				
-				model.addObject("timezone",orgLocations.getTimezone().getTimeZoneId());
+				model.addObject("timezone",orgLocations.getTimeZoneId());
 				
 				Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
 				model.addObject("isTeamMember",isTeamMember);
