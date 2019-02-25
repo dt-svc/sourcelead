@@ -989,6 +989,7 @@ public class UserLoginHelper {
 		orgLocations.setOrgCode(orgLocationJson.get("orgCode").toString());
 		orgLocations.setCurrencyCode(orgLocationJson.get("currencyCode").toString());
 		orgLocations.setCountryCode(orgLocationJson.get("countryCode").toString());
+		orgLocations.setCountry(orgLocationJson.get("country").toString());
 		
 		if(orgLocationJson.get("orgShortCode") != null) {
 			orgLocations.setGeneratedUserId(orgLocationJson.get("orgShortCode").toString());
