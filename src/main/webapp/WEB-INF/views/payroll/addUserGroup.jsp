@@ -6,6 +6,7 @@
 
 <script>
 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+var adminUrl = '${SourceLeadWeb_sourceleadUrl}';
 </script>
 
     <!--  Popups -->
@@ -130,14 +131,14 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	}
 	function saveDepartment() {
 		if ($('#department_form').validate(false, validationSettings)) {
-			var sourceleadUrl = '${sourceleadUrl}';
+// 			var sourceleadUrl = '${sourceleadUrl}';
 var formData = getFormData1("department_form");
 $.ajax({
 						type : "POST",
 						data : formData,
 						processData : false,
 						contentType : false,
-						url : sourceleadUrl
+						url : adminUrl
 								+ "/storeDepartment?${_csrf.parameterName}=${_csrf.token}",
 						success : function(data) {
 							if (data
@@ -154,7 +155,7 @@ $.ajax({
 								$("department_form").validate().resetForm();
 								getDepartmentList();
 							} else if (data.indexOf('Sign In') !== -1) {
-								location.replace(sourceleadUrl);
+								location.replace(adminUrl);
 							} else {
 								showError("Operation failed, please try again");
 								$("#hierarchyLoading").removeAttr('style');
@@ -178,11 +179,11 @@ $.ajax({
 	function validDepartmentname() {
 		var DepartmentName = document.getElementById("departmentName").value
 				.trim();
-		var sourceleadUrl = '${sourceleadUrl}';
+// 		var sourceleadUrl = '${sourceleadUrl}';
 $('#departmentNameDiv').find('p.jquery_form_error_message').remove();
 $.ajax({
 					type : "GET",
-					url : sourceleadUrl
+					url : adminUrl
 							+ "/validateDepartmentname?${_csrf.parameterName}=${_csrf.token}&departmentName="
 							+ DepartmentName,
 					success : function(data) {
@@ -208,10 +209,10 @@ $.ajax({
 
 	function getDepartmentList() {
 		var status = "1";
-		var sourceleadUrl = '${sourceleadUrl}';
+// 		var sourceleadUrl = '${sourceleadUrl}';
 $.ajax({
 					type : "GET",
-					url : sourceleadUrl
+					url : adminUrl
 							+ "/getDepartmentList?${_csrf.parameterName}=${_csrf.token}&departmentStatus="
 							+ status,
 					success : function(json) {

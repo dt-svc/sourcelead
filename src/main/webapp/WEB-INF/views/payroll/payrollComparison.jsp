@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<script src="/pms/resources/js/payrollReports.js"></script>
+<script src="${SourceLeadWeb_pmsUrl}/resources/js/payrollReports.js"></script>
 
 <script>
 $(document).ready(function(){
@@ -23,8 +23,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Payroll Comparison Report</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;
-       <a href="/pms/usPayrollReport">US Payroll Reports List</a> &raquo; Payroll Comparison Report</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;
+       <a href="${SourceLeadWeb_pmsUrl}/usPayrollReport">US Payroll Reports List</a> &raquo; Payroll Comparison Report</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
@@ -196,7 +196,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 							<td>Item2</td>
                 <td>20 hrs</td>
                 <td>30 hrs</td>
-						</tr> -->/runPayrollComparison
+						</tr> -->
 					</tbody>
 				</table>
 				

@@ -20,8 +20,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 <h2>Pay Item list</h2>
 </div>
         <div class="pull-right brud-crum">
-                <a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="/pms/payrollConfiguration"> Payroll Configuration</a>&raquo; Pay Item list
+                <a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;<a
+				href="${SourceLeadWeb_pmsUrl}/payrollConfiguration"> Payroll Configuration</a>&raquo; Pay Item list
 				</div>
 </section>
 
@@ -40,7 +40,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 </div>  -->             
 </li>
 <li>
-	<a href="/pms/addPayItem" class="addBtn">+ Create</a>
+	<a href="${SourceLeadWeb_pmsUrl}/addPayItem" class="addBtn">+ Create</a>
 </li>
 </ul>
 </div>

@@ -17,7 +17,7 @@
 <div class="pull-left">
 <h2>Bonus List</h2>
 </div>
- <div class="pull-right brud-crum"><a href="${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>  &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a>  &raquo; Bonus List</div>
+ <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>  &raquo; <a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">Payroll Configure</a>  &raquo; Bonus List</div>
 </section>
 
 <div class="clearfix"></div>
@@ -246,6 +246,7 @@ function deletePayrollBonus(uuid){
 	$("#confirm-id").attr("disabled", "disabled");
 	$("#cancel-id").attr("disabled", "disabled");
 	var pmsUrl = '${SourceLeadWeb_pmsUrl}';
+	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
     	type: "POST",
     	url : pmsUrl+"/deletePayrollBonus?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid, 
@@ -253,7 +254,7 @@ function deletePayrollBonus(uuid){
         	if (result.response === "AWKWARD") {
         	    location.href = "/errorPage";
         	} else if (result.response === "SUCCESS") {
-        		 location.replace(sourceleadUrl + "/payrollBonusList");
+        		 location.replace(pmsUrl + "/payrollBonusList");
         	} else if (result.indexOf('Sign In') !== -1) {
         		location.replace(sourceleadUrl);
         	} else {
