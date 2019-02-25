@@ -1429,9 +1429,11 @@ public class RegistrationRestController {
 		
 		StringBuilder generatedToken = new StringBuilder();
 		generatedToken.append(SourceLeadRandomCodeHelper.generateRandomCustomToken());
+		
 		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
 			userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(generatedToken.toString(),userRole, request);
 		}
+		
 		StringBuilder userNameString = new StringBuilder();
 		userNameString.append(userName).append("##").append(userRole.getId()).append("##").append(generatedToken.toString());
 		SecurityContextHolder.clearContext();
