@@ -8,6 +8,11 @@
      1.usage     : used at clientSideBar().
 --%>
 
+	<script>
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
+	</script>
+	
+
 <script>
 	function submissionReferencesDetails(candidateId){
 	
@@ -37,7 +42,7 @@ function submissionReferencesList(candidateId){
 	
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateReferencesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&locationCode="+locationCode,        
+          url: atsUrl+"/getCandidateReferencesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&locationCode="+locationCode,        
           success :function(json) {
            
 	                	 $("#submissionReferencesList").empty();

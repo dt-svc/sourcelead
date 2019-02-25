@@ -1,5 +1,5 @@
-<jsp:include page="masterHeader.jsp" />
-<jsp:include page="masterSideNav.jsp" />
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
@@ -7,6 +7,12 @@
 <link rel="stylesheet" href="/resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
 <link rel="stylesheet" href="/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
 
+<script type="text/javascript" src="${SourceLeadWeb_atsUrl}/resources/js/campaignRecipient.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_atsUrl}/resources/js/campaignSender.js"></script>
+
+<script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
+</script>
 
 <style>
 .modal-backdrop{
@@ -43,7 +49,7 @@ display: none;
       <div class="pull-left">
         <h2>Joblist Mail Box</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="/ats/campaigns/hotcampaigns"> Mailbox</a>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="${SourceLeadWeb_atsUrl}/campaigns/hotcampaigns"> Mailbox</a>
 			&raquo; Joblist Campaign</div>
     </section>
    
@@ -83,11 +89,7 @@ display: none;
 			<div class="input-group  col-md-12 noPad" onclick="manuallyEnterJoblistToEmail();">
   				<select class="form-control"  field-name="To List" multiple data-placeholder="Select Multiple Mails List" id="emailsList" data-validation="required" name="Toemails"></select>
             	
-<!--             	<span class="refreshicon-new input-group-addon cursorPointer bg-blue" onclick="getRecipients();"><i class="fa fa-refresh "></i></span>	 -->
-            	
             	<span class="select-multiple poLeft" data-target="#multiplemail" onclick="getRecipientContactsList();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span>
-               <!-- <span class="input-group-addon cursorPointer bg-blue" onclick="getContractTemplates();"><i class="fa fa-refresh "></i></span> -->    	 
-				<!-- <a class="input-group-addon" onclick="campaignRecipient('','','jobList');"><i class="fa fa-plus cursorPointer"></i></a> -->
 			</div>            
             
             <!-- Modal content Multiple mail -->
@@ -97,19 +99,9 @@ display: none;
                   <div class="modal-header">
                     <button data-dismiss="modal" class="close" type="button">×</button>
                     <h4 class="modal-title">Select Recipients</h4>
-                    <!-- <label class="paddingLeft paddingRight">
-               	    <input  type="radio" id="vendorCheck" name="users" checked onclick="vendorListChange()"><strong class="paddingLeft">Vendors</strong></label>
-               	    <label class="paddingLeft">
-               	    <input type="radio" id="contactsCheck" name="users" onclick="getContactsList();"><strong class="paddingLeft">My Contacts</strong></label> -->
                   </div>
                   
                    <div class="modal-body clearfix">
-                     <!--<div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field paddingLeft mb10" id="vendorsListDiv" style="display: none">
-                          <select class="form-control" id="vendorListType" onchange="vendorListChange();">
-                           <option value="listbyVendor" selected>List By Vendor</option>
-                           <option value="listbyContact">List By Contact</option>
-                          </select>
-                    </div> -->
                     <div class="clearfix"></div>
                     <div class="clearfix">
                      <div id="mailBoxVendorsList" class="datatable_filter"></div>
@@ -166,15 +158,6 @@ display: none;
                	    <label class="paddingLeft">
                	    <input type="radio" id="allJobsRadio" name="users" value="openJobs" onclick="jobListChange('openJobs')"><strong class="paddingLeft">All Jobs</strong></label>
                     
-					<!-- <span class="dropdown ml">
-					  <span class="dropdown-toggle cursorPointer" type="button" data-toggle="dropdown"><strong>Status</strong>
-					  <span class="caret"></span></span>
-					  <ul class="dropdown-menu paddingLeft paddingRight">
-					    <li class="checkBox"><input name="jobStatus" type="checkbox"><label>Priority</label></li>
-					    <li class="checkBox"><input name="jobStatus" type="checkbox"><label>By Job type</label></li>
-					    <li class="checkBox"><input name="jobStatus" type="checkbox"><label>By Client</label></li>
-					  </ul>
-					</span> -->
                     <div id="popupId"></div>
                     </div>
                   <!-- <div id="mailBoxJobsList" class="mailFil datatable_filter"></div> -->
@@ -214,28 +197,13 @@ display: none;
             </div>
           </div>
         </div>
-        <!-- Text Area Ends --> 
-        
-        <!-- Attachment button-->
-      <!--   <div class="col-md-12 clearfix mb10">
-          <div class="col-md-12 attachment">
-            <div class="input-group">
-              <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-paperclip"></i>
-                <input type="file" name="attachfile" style="display: none;"  id="attachfileBtn" class="upload">
-                </b> </label>
-              <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="Files are not selected...">
-              <div class="clearUpload"></div>
-            </div>
-          </div>
-        </div> -->
-        <!-- Attachment button --> 
         
         <!-- Attachment button-->
         <div class="col-md-12 clearfix mt">
             <div class="pull-right"> 
               <!--<input type="button" value="Schedule" class="btn btn-sm btn-primary">-->
               <button type="button" class="btn btn-sm btn-success" id="campaignSend" onclick="sendJobListCampaign();"><i class="fa fa-envelope-o"></i>&nbsp;Send</button>
-              <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '<c:url value='${appPath}/campaigns/hotcampaigns'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
+              <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/campaigns/hotcampaigns'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
             </div>
         </div>
         <!-- Attachment button --> 
@@ -252,6 +220,7 @@ display: none;
 		  $('#emailsList_chosen ul li input').attr('readonly', true);
 	  }
 	function sendJobListCampaign() {
+		 var atsUrl = '${SourceLeadWeb_atsUrl}';
 		
 		if ($('#joblistCampaign_form').validate(false, validationSettings)){ 
 		nicEditors.findEditor('bodytext').saveContent();
@@ -272,9 +241,9 @@ display: none;
 	  	    	    enctype: 'multipart/form-data',
 	  		        processData: false,
 	  		        contentType:false, 
-	  				url : sourceleadUrl+"/sendJobListCampaign?${_csrf.parameterName}=${_csrf.token}",
+	  				url : atsUrl+"/sendJobListCampaign?${_csrf.parameterName}=${_csrf.token}",
 	  				success : function(result) {
-	  						location.replace(sourceleadUrl+"/campaigns/hotcampaigns");
+	  						location.replace(atsUrl+"/campaigns/hotcampaigns");
 	  				},
 	  			});  
 	  	    
@@ -633,65 +602,6 @@ function checkJob(ele) {
 			  '.chosen-select-width'     : {width:"95%"}
 			}
 			
-			  //Adding Customized Emails to the list
-	        /* var select, chosen;
-		    select = $("#otherEmails");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space Or Tab To Add New Email:' });
-		    chosen = select.data('chosen');
-		    chosen.search_field.bind(('keydown keyup'), function(e)
-		    {
-		    	 var otherEmailArray = this.value.split(/[ ,]+/);
-		    	 if(otherEmailArray.length > 1){
-		    		 for (var i=0; i < otherEmailArray.length; i++) {
-	        			 var option = $("<option>").val(otherEmailArray[i].replace(",","")).text(otherEmailArray[i].replace(",",""));
-	        			 select.append(option);
-	 		             select.find(option).prop('selected', true);
-	 	        		 $("#otherEmails").trigger("chosen:updated");
-	                 }
-		    	 }else{
-		    		 var newEmail = this.value.replace(","," ");
-		    		   if (tagItBykeyForEmails(e) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
-				        {
-		    			         preventTabkey(e); 
-			        		     var par = this.parent;
-				        		 var option = $("<option>").val(newEmail.replace(",","")).text(newEmail.replace(",",""));
-				        		 select.append(option);
-					             select.find(option).prop('selected', true);
-				        		 $("#otherEmails").trigger("chosen:updated");
-			        		
-				        } 
-		    	 }
-		    	
-		    }); */
-
-		    /* var selectone, chosenone;
-		    selectone = $("#emailsList");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space Or Tab To Add New Email:' });
-		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.bind(('keydown keyup'), function(e)
-		    {
-		    	 var toEmailArray = this.value.split(/[ ,]+/);
-		    	 if(toEmailArray.length > 1){
-		    		 for (var i=0; i < toEmailArray.length; i++) {
-	        			 var option = $("<option>").val(toEmailArray[i].replace(",","")).text(toEmailArray[i].replace(",",""));
-	        			 selectone.append(option);
-	        			 selectone.find(option).prop('selected', true);
-	 	        		 $("#emailsList").trigger("chosen:updated");
-	                 }
-		    	 }else{
-		    			var newEmail = this.value.replace(","," ");
-		    			if (tagItBykeyForEmails(e) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
-				        {
-		    				preventTabkey(e); 
-				        	var par = this.parent;
-				        		 var option = $("<option>").val(newEmail.replace(",","")).text(newEmail.replace(",",""));
-				        		 selectone.append(option);
-				        		 selectone.find(option).prop('selected', true);
-					        		$("#emailsList").trigger("chosen:updated");
-				        }
-		    	 }
-		    
-		    }); */
 
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
@@ -812,11 +722,11 @@ function vendorsList(){
 
 <script>
 function vendorsDataTableList(){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	 var searchValue = $("#vendorDataTableSearch").val();
 	 var responderType ="JobCampaignVendor";
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/searchClientDetails?searchValue="+searchValue+"&responderType="+responderType;
+	 var url = vmsUrl+"/searchClientDetails?searchValue="+searchValue+"&responderType="+responderType;
 	 vendorsPagination(url);
 	 
 }
@@ -1007,7 +917,6 @@ function getContactsList(){
 
 <script>
 function contactsDataTableList(){
-	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#contactsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
 	 
@@ -1211,11 +1120,12 @@ function getRecipientContactsList(){
 
 <script>
 function vendorContactDataTableList(){
+	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 	 var searchValue = $("#vendorContactsDataTableSearch").val();
 	 var responderType ="JobCampaignVendor";
 	 var typeOfCampaign = "1";
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getRecipientList?searchValue="+searchValue+"&responderType="+responderType+"&typeOfCampaign="+typeOfCampaign;
+	 var url = atsUrl+"/getRecipientList?searchValue="+searchValue+"&responderType="+responderType+"&typeOfCampaign="+typeOfCampaign;
 	 vendorContactpagination(url);
 }
 </script>
@@ -1493,9 +1403,10 @@ function getContactEmails(){
 
 <script>
 function getSenders(){
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 		$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getSenders?"+tokenParamName+"="+tokenValue,
+		url: atsUrl+"/getSenders?"+tokenParamName+"="+tokenValue,
 		success :function(json) {
 		var output = "";
 		output = output + "<option value=''>Select Sender</option>";
@@ -1516,10 +1427,10 @@ function getSenders(){
 
 <script>
 function getRecipients(){
-
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 		$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getRecipients?"+tokenParamName+"="+tokenValue,
+		url: atsUrl+"/getRecipients?"+tokenParamName+"="+tokenValue,
 		success :function(json) {
 		var output = "";
 		output = output + "<option value=''>Select Recipient</option>";
@@ -1567,4 +1478,4 @@ function checkUniqueSubject(){
 </script>
 
 
-<jsp:include page="masterFooter.jsp" />
+<jsp:include page="../masterFooter.jsp" />

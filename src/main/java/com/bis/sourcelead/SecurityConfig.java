@@ -99,6 +99,7 @@ public class SecurityConfig  {
     			.antMatchers("/ats/resources/**").permitAll()
     			.antMatchers("/resources/**").permitAll()
     			.antMatchers("/ats/ws/**").permitAll()
+    			.antMatchers("/wf/click/**").permitAll()
     			.antMatchers("/ws/**").permitAll() 
     			.antMatchers("/submissionRate.jsp").permitAll() 
     			.antMatchers("/jobs/**").permitAll()

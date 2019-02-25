@@ -13,8 +13,8 @@
  </c:if>
  
  <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
-<script src="/ats/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
-<script src="/ats/resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
+<script src="${SourceLeadWeb_atsUrl}/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
+<script src="${SourceLeadWeb_atsUrl}/resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
 <style type="text/css">
 .mt10 {
     margin-top: 10px !important;
@@ -33,7 +33,7 @@ function getAddApplicant(requirementId){
 	$(".side_mask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
 	$('.action-pop').slideUp();
-	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	  var finalDateFormatScript = '';
 	  if(locationDate.match("yyyy-MM-dd")){
 		  finalDateFormatScript = 'yy-mm-dd';
@@ -340,7 +340,7 @@ function getAddApplicant(requirementId){
 <script>
 function submitRecomendedApplicant(requirementId,candidateId,type){
 	$('.action-pop').slideUp();
-	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	  var finalDateFormatScript = '';
 	  if(locationDate.match("yyyy-MM-dd")){
 		  finalDateFormatScript = 'yy-mm-dd';
@@ -462,7 +462,7 @@ function submitRecomendedApplicant(requirementId,candidateId,type){
 <script>
 function editSubmittedApplicant(requirementId,submissionId,candidateId,resumeId){
 	$('.action-pop').slideUp();
-	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	  var finalDateFormatScript = '';
 	  if(locationDate.match("yyyy-MM-dd")){
 		  finalDateFormatScript = 'yy-mm-dd';
@@ -2260,7 +2260,7 @@ function getAllSubmissionCandidateCountries(){
         	$('#submissionCountry').empty();
         	$('#submissionCountry').append('<option value="">---Select Country---</option>');
             for(var i=0;i<json.length;i++){
-            	if(json[i] == '${SourceLeadWeb_orgLocations.country}'){
+            	if(json[i] == '${SourceLeadWeb_country}'){
             		$('#submissionCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
             	else{
@@ -2361,7 +2361,7 @@ function getSubmissionCandidateCities(city){
 <script type="text/javascript">
 function init(){
 	initLocationAuto('submissionLocation','submissionCountry','submissionState','submissionCity','submissionZipCode','','','');
-	var country = '${SourceLeadWeb_orgLocations.country}';
+	var country = '${SourceLeadWeb_country}';
 	$("#submissionCountry").val(country)
 	       $('.chosen-select').each(function() {
 				var $this = $(this);

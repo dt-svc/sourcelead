@@ -1,5 +1,5 @@
-<jsp:include page="masterHeader.jsp" />
-<jsp:include page="masterSideNav.jsp" />
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -1678,12 +1678,13 @@ function forwardEmailToHotMail(uuid){
 	}
 	
 	function deleteConMail1(id){
+		var atsUrl = '${SourceLeadWeb_atsUrl}';
 		if (confirm('Are you sure, you want to delete mail configuration?')) {
 			$.ajax({
 				type : "POST",
 				url : atsUrl+"/deleteEmailAccount?id="+id,
 				success : function(data) {
-						location.replace(sourceleadUrl+"/mailBox/mails");
+						location.replace(atsUrl+"/mailBox/mails");
 				},
 			});
 		}
@@ -1699,4 +1700,4 @@ function forwardEmailToHotMail(uuid){
 </script>	
 
  	
-<jsp:include page="masterFooter.jsp" />
+<jsp:include page="../masterFooter.jsp" />
