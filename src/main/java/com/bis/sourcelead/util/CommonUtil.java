@@ -377,6 +377,21 @@ public class CommonUtil {
 		}
 		return date;
 		}
+	public  Date stringToDateByOrgLocationFormat(String dateString, String orgLocationFormat){
+
+		DateFormat df = new SimpleDateFormat(orgLocationFormat);
+		Date date = null;
+		try {
+
+		date = df.parse(dateString);
+
+		} catch (Exception e) {
+
+		e.printStackTrace();
+
+		}
+		return date;
+		}
 	/**
 	 * Convert String to Capitalized String
 	 * @param name
@@ -434,7 +449,7 @@ public class CommonUtil {
 	
 	public Date orgLocationCommonDate(Date date, OrgLocations loginOrgLocation){
 		DateTime dt = new DateTime(date);
-		DateTimeZone dtZone = DateTimeZone.forID(loginOrgLocation.getTimeZoneId());
+		DateTimeZone dtZone = DateTimeZone.forID(loginOrgLocation.getTimeZoneName());
 		DateTime dtus = dt.withZone(dtZone); 
 		Date dateWithTimezone = dtus.toLocalDateTime().toDate();
 		return dateWithTimezone;

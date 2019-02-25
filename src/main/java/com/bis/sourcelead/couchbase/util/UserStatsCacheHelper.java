@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.couchbase.ConnectionManager;
 import com.bis.sourcelead.couchbase.CouchbaseClient;
 import com.bis.sourcelead.couchbase.LoginUserSessionStoreDTO;
 import com.bis.sourcelead.couchbase.OrgLocationCacheDTO;
@@ -33,6 +32,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TabsService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.couchbase.client.java.document.json.JsonObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -66,10 +66,16 @@ public class UserStatsCacheHelper {
 	@Autowired
 	ConfigurePayrollApproverService configurePayrollApproverService;
 	
-	static CouchbaseClient c = null;
-	static {
-		c = ConnectionManager.instance().getClient();
-	}
+	@Autowired
+	UserRoleService userRoleService;
+	
+	@Autowired
+	CouchbaseClient couchbaseClient;
+	
+	@Autowired
+	SourceLeadSessionManager sourceLeadSessionManager;
+	
+	
 	
 	/**
 	 * @author Venkat
@@ -87,7 +93,7 @@ public class UserStatsCacheHelper {
 		orgLocationCode = "OrgLocation_"+orgLocationCode;
 		JSONObject orgLocationJson = new JSONObject();
 		Object sv = null;
-		sv = c.getOrgLocationsDetails(orgLocationCode);
+		sv = couchbaseClient.getOrgLocationsDetails(orgLocationCode);
 		if (sv != null) {
 
 			JSONParser parser = new JSONParser();
@@ -111,7 +117,7 @@ public class UserStatsCacheHelper {
 	/*@SuppressWarnings("unchecked")
 	public JSONObject getOrgLocationCacheDetails(String orgLocationCode) {
 		orgLocationCode = "OrgLocation_"+orgLocationCode;
-		JSONObject orgLocationJson = c.getOrgLocationDetails(orgLocationCode);
+		JSONObject orgLocationJson = couchbaseClient.getOrgLocationDetails(orgLocationCode);
 		return orgLocationJson;
 		
 	}*/
@@ -133,7 +139,7 @@ public class UserStatsCacheHelper {
 
 		JSONObject userRoleJson = new JSONObject();
 		Object sv = null;
-		sv = c.getUserProfile(userRoleAuthKey);
+		sv = couchbaseClient.getUserProfile(userRoleAuthKey);
 		if (sv != null) {
 			JSONParser parser = new JSONParser();
 			try {
@@ -154,7 +160,7 @@ public class UserStatsCacheHelper {
 	/*public JSONObject getLogInUserRoleStats(String userRoleAuthKey) {
 
 		JSONObject userRoleJson = new JSONObject();
-		JSONObject jsonObject = c.getUserProfileDetails(userRoleAuthKey);
+		JSONObject jsonObject = couchbaseClient.getUserProfileDetails(userRoleAuthKey);
 		return jsonObject;
 	}*/
 	
@@ -172,7 +178,7 @@ public class UserStatsCacheHelper {
 
 		JSONObject userRoleMenusListJson = new JSONObject();
 		Object sv = null;
-		sv = c.getUserProfile(userRoleAuthKey);
+		sv = couchbaseClient.getUserProfile(userRoleAuthKey);
 		if (sv != null) {
 			JSONParser parser = new JSONParser();
 			try {
@@ -200,7 +206,7 @@ public class UserStatsCacheHelper {
 	
 	/*	public JSONObject getLogInUserRoleMenusJson(String userRoleAuthKey) {
 		JSONObject userRoleMenusListJson = new JSONObject();
-		JSONObject jsonObject = c.getUserProfileDetails(userRoleAuthKey);
+		JSONObject jsonObject = couchbaseClient.getUserProfileDetails(userRoleAuthKey);
 		if (jsonObject != null) {
 			try {
 				for (Object okey : jsonObject.keySet()) {
@@ -234,7 +240,7 @@ public class UserStatsCacheHelper {
 
 		JSONObject userSessionListJson = new JSONObject();
 		Object sv = null;
-		sv = c.getUserLoginSession(userSessionAuthKey);
+		sv = couchbaseClient.getUserLoginSession(userSessionAuthKey);
 		if (sv != null) {
 			JSONParser parser = new JSONParser();
 			try {
@@ -260,7 +266,7 @@ public class UserStatsCacheHelper {
 	
 	/*public JSONObject getLogInUserSessionJson(String userSessionAuthKey) {
 		
-		JSONObject sessionStoreJson = c.getUserLoginSessionStoreDetails(userSessionAuthKey);
+		JSONObject sessionStoreJson = couchbaseClient.getUserLoginSessionStoreDetails(userSessionAuthKey);
 		return sessionStoreJson;
 		
 	}*/
@@ -278,7 +284,7 @@ public class UserStatsCacheHelper {
 
 		Object sv = null;
 		List<String> menusList = new ArrayList<>();
-		sv = c.getUserProfile(userRoleAuthKey);
+		sv = couchbaseClient.getUserProfile(userRoleAuthKey);
 		if (sv != null) {
 			JSONParser parser = new JSONParser();
 			try {
@@ -310,7 +316,7 @@ public class UserStatsCacheHelper {
 	/*public List<String> getLogInUserRoleMenusList(String userRoleAuthKey) {
 		
 		List<String> menusList = new ArrayList<>();
-		JSONObject jsonObject = c.getUserProfileDetails(userRoleAuthKey);
+		JSONObject jsonObject = couchbaseClient.getUserProfileDetails(userRoleAuthKey);
 		if (jsonObject != null) {
 			try {
 				for (Object okey : jsonObject.keySet()) {
@@ -345,7 +351,7 @@ public class UserStatsCacheHelper {
 
 		Object sv = null;
 		List<String> rolesList = new ArrayList<>();
-		sv = c.getUserProfile(userRoleAuthKey);
+		sv = couchbaseClient.getUserProfile(userRoleAuthKey);
 		if (sv != null) {
 			JSONParser parser = new JSONParser();
 			try {
@@ -377,7 +383,7 @@ public class UserStatsCacheHelper {
 	/*public List<String> getLogInUserRoleActionsList(String userRoleAuthKey) {
 
 		List<String> rolesList = new ArrayList<>();
-		JSONObject jsonObject = c.getUserProfileDetails(userRoleAuthKey);
+		JSONObject jsonObject = couchbaseClient.getUserProfileDetails(userRoleAuthKey);
 		if (jsonObject != null) {
 			try {
 				for (Object okey : jsonObject.keySet()) {
@@ -415,7 +421,7 @@ public class UserStatsCacheHelper {
 			JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
 			StringBuilder orgLocationKey = new StringBuilder();
 			orgLocationKey.append("OrgLocation_").append(orgLocationDTO.getOrgLocationCode());
-			SourceLeadSessionManager.setOrgLocationsJsonString(orgLocationKey.toString(), "userProfile", jsonObject);
+			sourceLeadSessionManager.setOrgLocationsJsonString(orgLocationKey.toString(), "userProfile", jsonObject);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -427,17 +433,21 @@ public class UserStatsCacheHelper {
 	 * This method is used to store userRole information in couch.
 	 */
 	public void saveUserProfileDetailsToCouchbase(UserRole userRole) {
-		 UserRoleSessionProfileDTO userRoleDTO = getUserRoleCacheDetails(userRole);
-		 ObjectMapper sessionObj = new ObjectMapper();
-         try {
-			String sessionJsonStr = sessionObj.writeValueAsString(userRoleDTO);
-			JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
-			StringBuilder userRoleKey = new StringBuilder();
-			userRoleKey.append(userRole.getUser().getUserName()).append("_AUTH_").append(userRole.getUuid());
-			SourceLeadSessionManager.setUserProfileJsonString(userRoleKey.toString(), "userProfile", jsonObject);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+		
+		if(userRole.getUser() != null && StringUtils.isNotBlank(userRole.getUser().getUserName())) {
+			 UserRoleSessionProfileDTO userRoleDTO = getUserRoleCacheDetails(userRole);
+			 ObjectMapper sessionObj = new ObjectMapper();
+	         try {
+				String sessionJsonStr = sessionObj.writeValueAsString(userRoleDTO);
+				JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
+				StringBuilder userRoleKey = new StringBuilder();
+				userRoleKey.append(userRole.getUser().getUserName().toLowerCase()).append("_AUTH_").append(userRole.getUuid());
+				sourceLeadSessionManager.setUserProfileJsonString(userRoleKey.toString(), "userProfile", jsonObject);
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
 		}
+		
 	}
 	
 	
@@ -466,7 +476,14 @@ public class UserStatsCacheHelper {
 			 orgLocationDTO.setWeekOffDays("Sat,Sun");
 		 }
 		
-		 orgLocationDTO.setWorkingHours(String.valueOf(orgLocations.getWorkingDaysPerWeek()));
+		 if(orgLocations.getWorkingDaysPerWeek() != null) {
+			 orgLocationDTO.setWorkingDaysPerWeek(String.valueOf(orgLocations.getWorkingDaysPerWeek()));
+		 }
+		
+		 if(orgLocations.getAverageWorkingHours() != null) {
+			 orgLocationDTO.setAverageWorkingHours(String.valueOf(orgLocations.getAverageWorkingHours()));
+		 }
+		
 		 orgLocationDTO.setOrgShortCode(orgLocations.getGeneratedUserId());
 		 orgLocationDTO.setOrgLocationCode(orgLocations.getLocationCode());
 		 orgLocationDTO.setOrgCode(orgLocations.getOrg().getOrgCode());
@@ -666,6 +683,23 @@ public class UserStatsCacheHelper {
 	    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 	    LocalDateTime now = LocalDateTime.now();  
 	    sessionDTO.setLastUpdatedDate(dtf.format(now));
+	    StringBuilder accountsList = new StringBuilder();
+	    String userAccounts = null;
+	    try {
+			List<UserRole> userRolesList = userRoleService.getLoginUserAccountsList(userRole.getUser().getId());
+			if(userRolesList != null && userRolesList.size() > 1) {
+				for(UserRole ur : userRolesList) {
+					accountsList.append(ur.getUuid()).append(",").toString();
+				}
+				 userAccounts = accountsList.deleteCharAt(accountsList.length()-1).toString(); 
+				 sessionDTO.setLoginUserAccounts(userAccounts);
+			}else {
+				sessionDTO.setLoginUserAccounts(userAccounts);
+			}
+			
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 		
 	    ObjectMapper sessionObj = new ObjectMapper();
         try {
@@ -673,7 +707,7 @@ public class UserStatsCacheHelper {
 			JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
 			StringBuilder userSessionKey = new StringBuilder();
 			userSessionKey.append(generatedCustomTocken).append("_SESSION");
-			SourceLeadSessionManager.setUserLoginSessionJsonString(userSessionKey.toString(), "userLoginSessionStore", jsonObject);
+			sourceLeadSessionManager.setUserLoginSessionJsonString(userSessionKey.toString(), "userLoginSessionStore", jsonObject);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}

@@ -87,7 +87,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String reportType, String customStartDate, String customEndDate,String status,String searchValue) throws Exception
 	{
 		//SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
-				Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+				Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 				DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
 				DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
 				DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd 23:59:59");
