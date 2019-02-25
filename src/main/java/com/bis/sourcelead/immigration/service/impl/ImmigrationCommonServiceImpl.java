@@ -1005,7 +1005,6 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	@Override
 	public CandidateVisa saveVisaDetails(ImmigrationVisaDTO immigrationVisaDTO, User user,
 			OrgLocations orgLocations, Long immigrationId, Long visaHistoryId) throws Exception {
-           System.out.println(" updated test check test srinivas >>");
 		CandidateVisa candidateVisa = null;
 		ImmigrationVisaDTO visaDetailsDTO = null;
 		if (immigrationVisaDTO.getVisaNumber() != null && immigrationVisaDTO.getCountry() != null) {
@@ -1090,10 +1089,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 
 			if (currentDt.before(visaHistory.getValidToDate())) {
 				visaHistory.setIsCurrent(ImmigrationConstants.IS_CURRENT);
-				System.out.println(" before current >>>>>"+ImmigrationConstants.IS_CURRENT);
 			} else {
 				visaHistory.setIsCurrent(ImmigrationConstants.IS_CURRENT_NO);
-				System.out.println(" before not current >>>>>>"+ImmigrationConstants.IS_CURRENT_NO);
 			}
 			visaHistory.setId(immigrationVisaDTO.getId());
 			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
