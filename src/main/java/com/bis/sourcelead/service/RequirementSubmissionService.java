@@ -121,7 +121,7 @@ public interface RequirementSubmissionService {
 	/*public void applicantReceiveMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,
 			OrgLocations orgLocations) throws Exception; */
 	
-	public void applicantAcceptMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,
+	public void applicantAcceptMailAboutRequirement(Requirement requirement, User loginUser, RequirementSubmission requirementSubmission,
 			OrgLocations orgLocations) throws Exception;
 	
 	public void applicantRejectMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,

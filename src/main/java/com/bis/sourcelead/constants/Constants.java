@@ -1400,8 +1400,6 @@ public class Constants {
 	
 	public static final String APPLICANT_JOINING = "ApplicantJoining";
 	
-	public static final String LCA_DELETED = "Lca deleted";
-	public static final String LCA_RE_ACTIVE = "Lca ReActive";
-	public static final String LCA_IMPORTED = "Lca import";
+	
 	
 }
