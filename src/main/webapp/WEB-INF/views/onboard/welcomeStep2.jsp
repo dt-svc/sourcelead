@@ -655,4 +655,4 @@ function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId)
 </script>
 
 
-<script src="/resources/js/slead-common.js?staticTime=${staticTime}"></script>
+<script src="/ats/resources/js/slead-common.js?staticTime=${staticTime}"></script>

@@ -739,8 +739,7 @@ public class RequirementController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
 		// isAdmin value is set to true as 'SourceLeadSessionManager.getSessionAttribute' method is returning null.
-		Boolean isAdmin = true;
-				//(Boolean) SourceLeadSessionManager.getSessionAttribute(request,"isAdmin");
+		Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request,"isAdmin");
 		
 		ModelAndView model = new ModelAndView();
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -874,7 +873,7 @@ public class RequirementController {
 				List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
 				model.addObject("locationsList",locationsList);
 				
-				model.addObject("timezone",orgLocations.getTimezone().getTimeZoneId());
+				model.addObject("timezone",orgLocations.getTimeZoneId());
 				
 				Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
 				model.addObject("isTeamMember",isTeamMember);

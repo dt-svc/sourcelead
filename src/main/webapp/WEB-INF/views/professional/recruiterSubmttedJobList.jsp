@@ -10,6 +10,10 @@
 top:0 !important;
 }
  </style>
+ 
+ <script>
+ var atsUrl = '${SourceLeadWeb_atsUrl}';
+ </script>
 
 <script>
 $(document).ready(function() {
@@ -48,7 +52,7 @@ $(document).ready(function() {
     <div class="pull-left">
       <h2>Submitted By Me</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home</a> » <span class="applicantStatus"></span>&nbsp; List </div>
+    <div class="pull-right brud-crum"><a href="${appPath}/recruiterDashboard">Home</a> » <span class="applicantStatus"></span>&nbsp; List </div>
   </section>
   <section class="clearfix">
   <div class="timesheet_out timesheet_background crowdDash_btn">
@@ -108,7 +112,7 @@ function portletListFilter(requirementStatus){
   function recruiterDashboardPortletListCounts(startDate,endDate,requirementStatus){
 	  $.ajax({ 
 		   	type: "GET",
-			url: sourceleadUrl+"/getRecruiterSubmttedJobSummaryPortlets?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
+			url: atsUrl+"/getRecruiterSubmttedJobSummaryPortlets?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
 		    success: function(data) {
 	    	 var json = JSON.parse(data);
 	    	 var result ='';
@@ -137,7 +141,7 @@ function portletListFilter(requirementStatus){
 	  var locationCode ='${SourceLeadWeb_locationCode}'; 
 	  $.ajax({ 
 		   	type: "GET",
-		   	url: sourceleadUrl+"/getRecruiterSubmttedJobSummaryPortletList?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&requirementStatus="+requirementStatus+"&locationCode="+locationCode,
+		   	url: atsUrl+"/getRecruiterSubmttedJobSummaryPortletList?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&requirementStatus="+requirementStatus+"&locationCode="+locationCode,
 		    success: function(data) {
 	    	 var json = JSON.parse(data);
 	    	 var result =""; 

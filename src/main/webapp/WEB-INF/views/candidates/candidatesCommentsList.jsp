@@ -9,6 +9,10 @@
 </style>
 
 <script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
+</script>
+
+<script>
 function candidateCommentsList(candidateId,submissionId){
 	$('#tab-7').show();
 	$('.' + "current").removeClass("current");

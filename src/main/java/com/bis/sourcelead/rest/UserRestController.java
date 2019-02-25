@@ -326,10 +326,11 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		 Response<AddUserDTO> resObj = new Response<>();
 		 if(Validator.validate(addUserDTO) || Validator.validate(candidateDTO)){
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		addUserDTO.setDateFormat(orgLocations.getDateFormat());
 		candidateDTO.setDateFormat(orgLocations.getDateFormat());
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 		commonUtil.onboardCreationCandidateGeneratedIdUpdated(candidate,orgLocations);
 		User savedUser = userService.storeUser(addUserDTO, candidateDTO, user, orgLocations, "CREATEUSER", "", new Org());
 		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New associate created");
@@ -1791,7 +1792,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	public ResponseList<AssociateBalanceLeaveDTO> getAssociateBalanceLeavesByUserId(@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		orgLocations.setOrgId(org.getId());
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ResponseList<AssociateBalanceLeaveDTO> response = new ResponseList();
 		try {
 			List<AssociateBalanceLeaveDTO> list = associateBalanceLeaveService.getAssociateBalanceLeavesByUserId(userId,orgLocations,loginUser);

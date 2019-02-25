@@ -8,7 +8,7 @@
 			<h2>Job Fair Summary</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> »<a href="/ats/jobsList?viewTab=jobFair">Job Fairs</a>»Job Fair Details
+			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> »<a href="${SourceLeadWeb_atsUrl}/jobsList?viewTab=jobFair">Job Fairs</a>»Job Fair Details
 		</div>
 	</section>
 	<div class="timesheet_out">
@@ -204,9 +204,9 @@ var atsUrl = '${SourceLeadWeb_atsUrl}';
 			    	         	'<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 			    	            	if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 			    	                	if(opt.isRequirementReleasedByuser == 'Y') {
-			    	                    	result = result +"<div class='pull-left'><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success' title='Release Job'></i></a></div>"; 
+			    	                    	result = result +"<div class='pull-left'><a href='<c:url value='"+atsUrl+"/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success' title='Release Job'></i></a></div>"; 
 			    	                    } else {	
-			    	                    	result = result +"<div class='pull-left'><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn' title='Release Job'></i></a></div>";
+			    	                    	result = result +"<div class='pull-left'><a href='<c:url value='"+atsUrl+"/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn' title='Release Job'></i></a></div>";
 			    	                    }
 			    					} else {
 			    						result = result +"<div class='pull-left'>---</div>";
