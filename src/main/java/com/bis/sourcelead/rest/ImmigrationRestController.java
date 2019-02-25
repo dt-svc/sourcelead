@@ -101,6 +101,7 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.SourceleadNotesService;
 import com.bis.sourcelead.service.TaskService;
@@ -168,6 +169,9 @@ public class ImmigrationRestController {
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
 	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
 	/*@Autowired
 	LcaActivityCommonUtil lcaActivityCommonUtil;*/
 	
@@ -216,7 +220,7 @@ public class ImmigrationRestController {
 	// ====================immigration view startviewImmigration if you don't
 	// required comment below code start here==============================
 	@RequestMapping(value = { "/viewImmigrationList" })
-	public ModelAndView loadImmigrationList(HttpServletRequest request) {
+	public ModelAndView loadImmigrationList(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
 				.getAttribute("sessionData");
@@ -228,8 +232,12 @@ public class ImmigrationRestController {
 
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("/immigration/immigrationList");
+		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		OrgLocations orgLocation =orgLocationService.getOrgLocations(orgLocations.getId());
+		model.addObject("orgLocationInfo", orgLocation);
+		
 		try {
 			ImmigrationDashboardView immDashboardView = immigrationCommonService
 					.getImmigrationDashBoardDetails(orgLocations);
@@ -262,13 +270,15 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/loadNewPetitionPage" })
 	public ModelAndView loagNewPetitionPageView(HttpServletRequest request,
 			@RequestParam(value = "forward", required = false) String forward,
-			@RequestParam(value = "immigrationUUID", required = false) String immigrationUUID) {
+			@RequestParam(value = "immigrationUUID", required = false) String immigrationUUID) throws Exception {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		if (forward.equalsIgnoreCase("petitionDetails")) {
 			model.setViewName("/immigration/petitionDetails");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
+			OrgLocations orgLocation =orgLocationService.getOrgLocations(orgLocations.getId());
+			model.addObject("orgLocationInfo", orgLocation);
 			if (!StringUtils.isEmpty(immigrationUUID)) {
 				Long immigrationId = immigrationCommonService.getImmigrationIdByUUID(immigrationUUID);
 				ImmigrationDTO immigrationDTO = immigrationCommonService.editImmigrationDetails(immigrationId,
