@@ -108,14 +108,14 @@ set SQL_SAFE_UPDATES=1;
 #Mail To Project Manager
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` where UNIQUE_SCENARIO_NAME = 'Mail To Project Manager' and `ENTITY_TYPE` = 'Email' and `IS_TEMPLATE_MODIFIED` = 'N'), 'loginURL', '[Login_URL]');
 set SQL_SAFE_UPDATES=0;
-UPDATE `EMAIL SCENARIO` SET `BODY` = 'Hi [Manager_First_Name] [Manager_Last_Name],\n [Login_User_First_Name] [Login_User_Last_Name] assigned you as a project manager for the [Project_Name].\nTeam Members\n[Team_Members].\n[Login_URL]'  WHERE `UNIQUE_SCENARIO_NAME`='Mail To Project Manager' and `ENTITY_TYPE`='Email';
+UPDATE `EMAIL_SCENARIO` SET `BODY` = 'Hi [Manager_First_Name] [Manager_Last_Name],\n [Login_User_First_Name] [Login_User_Last_Name] assigned you as a project manager for the [Project_Name].\nTeam Members\n[Team_Members].\n[Login_URL]'  WHERE `UNIQUE_SCENARIO_NAME`='Mail To Project Manager' and `ENTITY_TYPE`='Email';
 set SQL_SAFE_UPDATES=1;
 
 
 #Submit To Client
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` where UNIQUE_SCENARIO_NAME = 'Submit To Client' and `ENTITY_TYPE` = 'Email' and `IS_TEMPLATE_MODIFIED` = 'N'), 'loginURL', '[Login_URL]');
 set SQL_SAFE_UPDATES=0;
-UPDATE `EMAIL SCENARIO` SET `BODY` =  'Hi [Client_First_Name] [Client_Last_Name],\n\n [Login_User]( [Login_Org_Name] ) submitted the applicants for the [Requirement_Title].\n Total no.of submitted applicants : [Total_No_Of_Applicants].\n\n [Login_URL]'  WHERE `UNIQUE_SCENARIO_NAME`='Submit To Client' and `ENTITY_TYPE`='Email';
+UPDATE `EMAIL_SCENARIO` SET `BODY` =  'Hi [Client_First_Name] [Client_Last_Name],\n\n [Login_User]( [Login_Org_Name] ) submitted the applicants for the [Requirement_Title].\n Total no.of submitted applicants : [Total_No_Of_Applicants].\n\n [Login_URL]'  WHERE `UNIQUE_SCENARIO_NAME`='Submit To Client' and `ENTITY_TYPE`='Email';
 set SQL_SAFE_UPDATES=1;
 
 
