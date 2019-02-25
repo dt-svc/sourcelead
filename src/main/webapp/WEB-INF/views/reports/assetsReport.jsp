@@ -12,14 +12,14 @@
 	    	<h2>Asset Assigned History</h2>
 	    </div>
 		<div class="pull-right brud-crum">
-         	<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; 
-         	<a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; 
-         	<a href="<c:url value='${appPath}/hrReportsList'/>">HR Reports</a> &raquo;
+         	<a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; 
+         	<a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/reportsDashboard'/>">Reports Dashboard</a> &raquo; 
+         	<a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/hrReportsList'/>">HR Reports</a> &raquo;
          	<span id="breadCrum1">
          		Asset Assigned History
          	</span>
          	<span id="breadCrum2" style="display: none;">
-	         	<a href="<c:url value='${appPath}/assetsReport'/>">Asset Assigned History</a> &raquo;
+	         	<a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/assetsReport'/>">Asset Assigned History</a> &raquo;
     	     	Asset Assigned History List
          	</span>
 		</div>
