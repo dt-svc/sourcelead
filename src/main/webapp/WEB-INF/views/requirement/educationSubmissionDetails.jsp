@@ -3,6 +3,7 @@
 <meta http-equiv="Expires" content="0">
 
 <script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 function educationSubmissionDetails(candidateId){
 	var result = "";
 	result = result	+ '   <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew">';
@@ -26,7 +27,7 @@ function educationSubmissionDetails(candidateId){
 <script>
 function educationSubmissionDetailsList(candidateId){
 	 
-	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	 var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  eduSubListDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -40,7 +41,7 @@ function educationSubmissionDetailsList(candidateId){
 	 
 	 $.ajax({  
           type : "GET",
-          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
         	  	if (response && response.response === "INVALID_DATA") {
         		    showError(response.responseMessage);

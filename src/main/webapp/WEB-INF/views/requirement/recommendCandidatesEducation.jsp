@@ -10,6 +10,7 @@
      1.usage     : used at clientSideBar().
 --%>
 <script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 function candidateEducation(candidateId){
 	
 	var result = "";
@@ -55,7 +56,7 @@ function candidateEducation(candidateId){
 <script>
 function candidateEducationList(candidateId){
 	 
-	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	 var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  candEduListDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -286,7 +287,7 @@ function addEducation(candidateId) {
 	function educationStartDate(){
 	}
 	
-	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	  var finalDateFormatRecoEduSave = '';
 	  if(locationDate.match("yyyy-MM-dd")){
 		  finalDateFormatRecoEduSave = 'yy-mm-dd';
@@ -544,7 +545,7 @@ $("#popUpDiv").append(result);
 function educationStartDate(){
 }
 
-var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var locationDate ='${SourceLeadWeb_dateFormat}'; 
   var finalDateFormatRecoEduEdit = '';
   if(locationDate.match("yyyy-MM-dd")){
 	  finalDateFormatRecoEduEdit = 'yy-mm-dd';

@@ -3,6 +3,7 @@
 <meta http-equiv="Expires" content="0">
 
 <script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 function certificationSubmissionDetails(candidateId){
 	var result = "";
 	result = result	+ '   <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew">';
@@ -27,7 +28,7 @@ function certificationSubmissionDetails(candidateId){
 <script>
 function certificationSubmissionDetailsList(candidateId){
 	 
-	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	 var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  certSubListDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -40,7 +41,7 @@ function certificationSubmissionDetailsList(candidateId){
 	 
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
         	  	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
         		    showError(response.responseMessage);

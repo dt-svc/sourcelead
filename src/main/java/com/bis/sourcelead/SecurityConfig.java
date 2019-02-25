@@ -99,6 +99,7 @@ public class SecurityConfig  {
     			.antMatchers("/ats/resources/**").permitAll()
     			.antMatchers("/resources/**").permitAll()
     			.antMatchers("/ats/ws/**").permitAll()
+    			.antMatchers("/wf/click/**").permitAll()
     			.antMatchers("/ws/**").permitAll() 
     			.antMatchers("/submissionRate.jsp").permitAll() 
     			.antMatchers("/jobs/**").permitAll()
@@ -132,7 +133,7 @@ public class SecurityConfig  {
     			.anyRequest().authenticated()                                                   
     			.and()
     			.formLogin().loginPage("/login")
-    			.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessHandler(sourceleadLogoutSuccessHandler).logoutSuccessUrl("/logout.done").deleteCookies("JSESSIONID")
+    			.and().logout().logoutUrl(sourceleadLogoutUrl)
     			.and().sessionManagement() .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     			.and().securityContext().securityContextRepository(securityContextRepository)
     			.and().csrf().disable();
