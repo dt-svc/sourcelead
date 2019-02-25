@@ -224,7 +224,7 @@ function resetValues(){
 		                	  $("#test").show();
 		                	  $("#finalTest").hide();
 		                } else if (result.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
+							location.replace(pmsUrl);
 						} else {
 		                    $("#save_associate_bank_data_button").removeAttr("disabled");
 		                    $("#save_associate_bank_data_button").addClass('button').val('Save');
