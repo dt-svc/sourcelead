@@ -13,13 +13,13 @@
 	<c:choose>
 		<c:when test="${formTabType == 'createForm' || formTabType == 'viewForm'}">
 			<div class="pull-right brud-crum">
-				<a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
-				<a href="/app/form/list">Forms List</a> &raquo; 
+				<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+				<a href="${SourceLeadWeb_sourceleadUrl}/form/list">Forms List</a> &raquo; 
 				${formTabType == 'createForm' ? 'Create Form' :'View Form'}
 			</div>
 		</c:when>
 		<c:otherwise>
-			<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; ${(activeTaxTab == 'state' || activeTaxTab =='createStateTax') ? 'State Tax' : (activeTaxTab == 'central' || activeTaxTab =='createCentralTax') ? 'Central Tax' : (formTabType == 'createForm' ? 'Create Form' : formTabType == 'viewForm' ? 'View Form' : 'Forms')}</div>
+			<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; ${(activeTaxTab == 'state' || activeTaxTab =='createStateTax') ? 'State Tax' : (activeTaxTab == 'central' || activeTaxTab =='createCentralTax') ? 'Central Tax' : (formTabType == 'createForm' ? 'Create Form' : formTabType == 'viewForm' ? 'View Form' : 'Forms')}</div>
 		</c:otherwise>
 	</c:choose>
 </section>
@@ -27,11 +27,11 @@
 <div class="tabsMenu">
 	<ul class="list-unstyled">
 		<li class="${activeTaxTab == 'state' || activeTaxTab =='createStateTax' ? 'current' : ''}"><a
-			href="${appPath}/stateTax/list" class="${activeTaxTab == 'state' || activeTaxTab =='createStateTax' ? 'active' : ''}">State</a></li>
+			href="${SourceLeadWeb_sourceleadUrl}/stateTax/list" class="${activeTaxTab == 'state' || activeTaxTab =='createStateTax' ? 'active' : ''}">State</a></li>
 		<li class="${activeTaxTab == 'central' || activeTaxTab == 'createCentralTax' ? 'current' : ''}"><a
-			href="${appPath}/centralTax/list" class="${activeTaxTab == 'central' || activeTaxTab =='createCentralTax' ? 'active' : ''}">Central</a></li>
+			href="${SourceLeadWeb_sourceleadUrl}/centralTax/list" class="${activeTaxTab == 'central' || activeTaxTab =='createCentralTax' ? 'active' : ''}">Central</a></li>
 		<li class="${activeTaxTab == 'forms' ? 'current' : ''}"><a
-			href="${appPath}/form/list" class="${activeTaxTab == 'forms' ? 'active' : ''}">Forms</a></li>	
+			href="${SourceLeadWeb_sourceleadUrl}/form/list" class="${activeTaxTab == 'forms' ? 'active' : ''}">Forms</a></li>	
 	</ul>
 </div>
 
