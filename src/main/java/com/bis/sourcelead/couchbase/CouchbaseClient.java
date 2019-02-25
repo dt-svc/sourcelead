@@ -43,9 +43,6 @@ public class CouchbaseClient {
 	public CouchbaseClient() {
 		if(couchConfig.getIsCouchbaseEnabled().equalsIgnoreCase("true")) {
 			cluster = CouchbaseCluster.create(ENV, couchConfig.getCouchbaseUrl());
-			userProfileBucket = cluster.openBucket(couchConfig.getUserProfileBucket(), couchConfig.getPassword());
-			userLoginSessionStoreBucket = cluster.openBucket(couchConfig.getUserLoginSessionStoreBucket(), couchConfig.getPassword());
-			orgLocationsBucket = cluster.openBucket(couchConfig.getOrgLocationsBucket(), couchConfig.getPassword());
 		}
 	}
 
@@ -84,23 +81,26 @@ public class CouchbaseClient {
 
 	public void setUserProfile(String id, String key, JsonObject value) throws Exception {
 
+		userProfileBucket = cluster.openBucket(couchConfig.getUserProfileBucket(), couchConfig.getPassword());
 		JsonObject arthur = JsonObject.create().put(key, value);
-		// Store the Document
 		userProfileBucket.upsert(JsonDocument.create(id, arthur));
 	}
 	
 	public void setOrgLocations(String id, String key, JsonObject value) throws Exception {
-
+		
+		orgLocationsBucket = cluster.openBucket(couchConfig.getOrgLocationsBucket(), couchConfig.getPassword());
 		JsonObject arthur = JsonObject.create().put(key, value);
-		// Store the Document
 		orgLocationsBucket.upsert(JsonDocument.create(id, arthur));
 	}
 	
 	
 	public Object getUserProfile(String key) {
 
+		userProfileBucket = cluster.openBucket(couchConfig.getUserProfileBucket(), couchConfig.getPassword());
 		if (userProfileBucket.get(key) != null) {
-			return userProfileBucket.get(key).content().toString();
+			Object profileObj =  userProfileBucket.get(key).content().toString();
+			return profileObj;
+			
 		} else {
 			return null;
 		}
@@ -110,8 +110,10 @@ public class CouchbaseClient {
 	
 	public Object getOrgLocationsDetails(String key) {
 
+		orgLocationsBucket = cluster.openBucket(couchConfig.getOrgLocationsBucket(), couchConfig.getPassword());
 		if (orgLocationsBucket.get(key) != null) {
-			return orgLocationsBucket.get(key).content().toString();
+			Object orgLocObj =  orgLocationsBucket.get(key).content().toString();
+			return orgLocObj;
 		} else {
 			return null;
 		}
@@ -121,15 +123,17 @@ public class CouchbaseClient {
 	
 	public void setUserLoginSession(String id, String key, JsonObject value) throws Exception {
 
+		userLoginSessionStoreBucket = cluster.openBucket(couchConfig.getUserLoginSessionStoreBucket(), couchConfig.getPassword());
 		JsonObject arthur = JsonObject.create().put(key, value);
-		// Store the Document
 		userLoginSessionStoreBucket.upsert(JsonDocument.create(id, arthur));
 	}
 	
 	public Object getUserLoginSession(String key) {
 
+		userLoginSessionStoreBucket = cluster.openBucket(couchConfig.getUserLoginSessionStoreBucket(), couchConfig.getPassword());
 		if (userLoginSessionStoreBucket.get(key) != null) {
-			return userLoginSessionStoreBucket.get(key).content().toString();
+			Object userSessionObj =  userLoginSessionStoreBucket.get(key).content().toString();
+			return userSessionObj;
 		} else {
 			return null;
 		}
