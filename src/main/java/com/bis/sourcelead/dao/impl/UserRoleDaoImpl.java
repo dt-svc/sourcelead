@@ -1590,7 +1590,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from UserRole userRole left join fetch userRole.user user where user.id = :userId and userRole.userState = 'ACTIVE' ";
-		List<UserRole> userRoleList = session.createQuery(query.toString()).list();
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).list();
 		return userRoleList;
 
 	
@@ -1619,5 +1619,18 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return UUID.get(0);
 
 		
+	}
+
+	@Override
+	@Transactional
+	public List<UserRole> getAllUserRolesByRoleId(Long roleId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole left join fetch userRole.user left join fetch userRole.roles roles "
+				+ " left join fetch roles.roleHierarchy where roles.id = :roleId ";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("roleId", roleId).list();
+		return userRoleList;
+
+	
 	}
 }

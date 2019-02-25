@@ -13,6 +13,8 @@ public class UserRoleSessionProfileDTO implements Serializable{
 	
 	private String lastName;
 	
+	private String middleName;
+	
 	private String userRoleId;
 	
 	private String userId;
@@ -61,11 +63,13 @@ public class UserRoleSessionProfileDTO implements Serializable{
 	
 	private String candidateId;
 	
+	private String masterCandidateId;
+	
 	private String candidateUUID;
 	
 	private String email;
 	
-	private String userName;
+	private String loginUserFullName;
 	
 	private String imgUrl;
 	
@@ -85,6 +89,9 @@ public class UserRoleSessionProfileDTO implements Serializable{
 	
 	private String newlyLoginUser;
 	
+	private String isPayRollApprover;
+	
+	private String country;
 
 	public String getDocumentType() {
 		return documentType;
@@ -302,12 +309,12 @@ public class UserRoleSessionProfileDTO implements Serializable{
 		this.candidateUUID = candidateUUID;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getLoginUserFullName() {
+		return loginUserFullName;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setLoginUserFullName(String loginUserFullName) {
+		this.loginUserFullName = loginUserFullName;
 	}
 
 	public String getImgUrl() {
@@ -396,6 +403,38 @@ public class UserRoleSessionProfileDTO implements Serializable{
 
 	public void setNewlyLoginUser(String newlyLoginUser) {
 		this.newlyLoginUser = newlyLoginUser;
+	}
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
+	}
+
+	public String getIsPayRollApprover() {
+		return isPayRollApprover;
+	}
+
+	public void setIsPayRollApprover(String isPayRollApprover) {
+		this.isPayRollApprover = isPayRollApprover;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getMasterCandidateId() {
+		return masterCandidateId;
+	}
+
+	public void setMasterCandidateId(String masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
 	}
 
 }

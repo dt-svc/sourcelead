@@ -313,6 +313,20 @@ public class OrgLocations implements Serializable{
     @Transient
     @JsonProperty
     private String registeredLocation;
+    
+    @Transient
+    @JsonProperty
+    private String timeZoneId;
+    
+    @Transient
+	private Long primaryUserId;
+    
+    @Transient
+	private String countryCode;
+   
+    @Transient
+	private String currencyCode;
+   
    
    
 	public Timezone getTimezone() {
@@ -1091,6 +1105,38 @@ public class OrgLocations implements Serializable{
 
 	public void setShowCompanyNameInMarkeplace(String showCompanyNameInMarkeplace) {
 		this.showCompanyNameInMarkeplace = showCompanyNameInMarkeplace;
+	}
+
+	public String getTimeZoneId() {
+		return timeZoneId;
+	}
+
+	public void setTimeZoneId(String timeZoneId) {
+		this.timeZoneId = timeZoneId;
+	}
+
+	public Long getPrimaryUserId() {
+		return primaryUserId;
+	}
+
+	public void setPrimaryUserId(Long primaryUserId) {
+		this.primaryUserId = primaryUserId;
+	}
+
+	public String getCountryCode() {
+		return countryCode;
+	}
+
+	public void setCountryCode(String countryCode) {
+		this.countryCode = countryCode;
+	}
+
+	public String getCurrencyCode() {
+		return currencyCode;
+	}
+
+	public void setCurrencyCode(String currencyCode) {
+		this.currencyCode = currencyCode;
 	}
 	
 }
