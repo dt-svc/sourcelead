@@ -171,7 +171,7 @@
 			}
 		</script>
 		<script>
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		 var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		  var finalDateFormatPassSave = getJSDateFormat(locationDate);
 		 $('#validFrom').datepicker({
 		      dateFormat: finalDateFormatPassSave,

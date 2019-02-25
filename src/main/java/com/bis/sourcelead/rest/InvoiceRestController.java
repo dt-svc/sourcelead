@@ -250,6 +250,7 @@ public class InvoiceRestController {
 				if (user != null) {
 				if (Validator.validate(invoiceDTO)) {
 					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					orgLocation = orgLocationService.getOrgLocations(orgLocation.getId());
 					String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 					invoiceDTO.setStaticPath(staticPath);

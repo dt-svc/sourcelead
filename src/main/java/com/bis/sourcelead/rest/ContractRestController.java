@@ -817,7 +817,7 @@ public class ContractRestController {
 			}
 		}
 		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 		// SimpleDateFormat formatter =
 		// orgLocation.getLocFullFormDateFormatter();
 		if (null != contract && null != contract.getStartDate()) {
@@ -1065,7 +1065,7 @@ public class ContractRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Contracts contracts = contractsTemplateService.getContractById(Long.parseLong(contractId));
-		Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 		// SimpleDateFormat
 		// dateFormat=orgLocation.getLocFullFormDateFormatter();
 		if (!"".equalsIgnoreCase(endDate) && endDate != null) {

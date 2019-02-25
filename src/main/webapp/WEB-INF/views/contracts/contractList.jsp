@@ -380,7 +380,7 @@ padding: 2px 300px 2px 0px;
 			var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             $.post( vmsUrl+ "/saveDocContracts?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId, formData, function(data) {
-            		location.replace(sourceleadUrl+"/contractListbyStatus");
+            		location.replace(vmsUrl+"/contractListbyStatus");
                     });
 			
 			
@@ -632,7 +632,7 @@ function preparedContractListVendorDraft(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -695,9 +695,17 @@ function preparedContractVendorListDraftPagination(url,tabType){
         "render": function(data, type, report, meta) {
         	var result = "";
             if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-            	result = result + '<div class="proj_show tblminwidth-150" onclick="PopUp(\''+report.contractUUID+'\',\'DRAFT\');"><div class="pull-left tbldata-dotdot-big inlineBlock text-left" title="'+report.autoGenId+' - '+report.contractTitle+'">'+report.autoGenId+' - '+report.contractTitle+'</div><i class="fa fa-binoculars" style="position: absolute; right: 0; top: 0;"></i></div>';
+            	if(report.autoGenId != null && report.autoGenId != '' && report.autoGenId != 'undefined'){
+            		result = result + '<div class="proj_show tblminwidth-150" onclick="PopUp(\''+report.contractUUID+'\',\'DRAFT\');"><div class="pull-left tbldata-dotdot-big inlineBlock text-left" title="'+report.autoGenId+' - '+report.contractTitle+'">'+report.autoGenId+' - '+report.contractTitle+'</div><i class="fa fa-binoculars" style="position: absolute; right: 0; top: 0;"></i></div>';
+            	}else{
+            		result = result + '<div class="proj_show tblminwidth-150" onclick="PopUp(\''+report.contractUUID+'\',\'DRAFT\');"><div class="pull-left tbldata-dotdot-big inlineBlock text-left" title="'+report.contractTitle+'">'+report.contractTitle+'</div><i class="fa fa-binoculars" style="position: absolute; right: 0; top: 0;"></i></div>';
+            	}
 	        }else{
-	        	result = result + '<div class="proj_show tblminwidth-150"><div class="pull-left tbldata-dotdot-big inlineBlock text-left" title="'+report.autoGenId+' - '+report.contractTitle+'">'+report.autoGenId+' - '+report.contractTitle+'</div></div>';
+	        	if(report.autoGenId != null && report.autoGenId != '' && report.autoGenId != 'undefined'){
+	        		result = result + '<div class="proj_show tblminwidth-150"><div class="pull-left tbldata-dotdot-big inlineBlock text-left" title="'+report.autoGenId+' - '+report.contractTitle+'">'+report.autoGenId+' - '+report.contractTitle+'</div></div>';
+	        	}else{
+	        		result = result + '<div class="proj_show tblminwidth-150"><div class="pull-left tbldata-dotdot-big inlineBlock text-left" title="'+report.contractTitle+'">'+report.contractTitle+'</div></div>';
+	        	}
 	        }
              return result; 
             }
@@ -865,7 +873,7 @@ function preparedContractListClientDraft(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1094,7 +1102,7 @@ function preparedContractListApplicantDraft(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1318,7 +1326,7 @@ function preparedContractListVendorWFA(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#clientContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1539,7 +1547,7 @@ function preparedContractListClientWFA(url,tabType){
 		$("#vendorContractsList").empty();
 	    $("#clientContractsList").empty();
 	    $("#clientContractsList").empty();
-	    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	    var locationList ='${SourceLeadWeb_dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
 			  locationDate = 'YYYY-MM-DD';
 		  }if(locationList.match("dd-MM-yyyy")){
@@ -1754,7 +1762,7 @@ function preparedContractListApplicantWFA(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#clientContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1953,7 +1961,7 @@ function preparedContractListVendorWTS(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -2167,7 +2175,7 @@ function preparedContractListClientWTS(url,tabType){
 		$("#vendorContractsList").empty();
 	    $("#clientContractsList").empty();
 	    $("#applicantsContractsList").empty();
-	    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	    var locationList ='${SourceLeadWeb_dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
 			  locationDate = 'YYYY-MM-DD';
 		  }if(locationList.match("dd-MM-yyyy")){
@@ -2379,7 +2387,7 @@ function preparedContractListApplicantWTS(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -2558,12 +2566,12 @@ function preparedApplicantContractListWTSPagination(url,tabType){
 
 <script>
 function preparedContractListVendorWTV(url,tabType){
-	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
+	 var SourceLeadWeb_loginOrg = '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
     
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -2573,10 +2581,10 @@ function preparedContractListVendorWTV(url,tabType){
 	  }if(locationList.match("yyyy-dd-MM")){
 		  locationDate = 'YYYY-DD-MM'; 
 	  } 
-	  preparedVendorContractListWTV(url,tabType);
+	  preparedVendorContractListWTV(url,tabType); 
 }
 
-function preparedVendorContractListWTV(url,tabType){
+ function preparedVendorContractListWTV(url,tabType){
 // 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableWTV" class="display" cellspacing="0" width="100%" >';
@@ -2598,9 +2606,9 @@ function preparedVendorContractListWTV(url,tabType){
 		$("#vendorContractsList").empty();
 	    $("#vendorContractsList").append(result);
 		preparedVendorContractListWTVPagination(url,tabType);
-}
+} 
 
-function preparedVendorContractListWTVPagination(url,tabType){
+ function preparedVendorContractListWTVPagination(url,tabType){
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var colIndex = 0;
     $('#contractListTableWTV').DataTable( {
@@ -2669,7 +2677,7 @@ function preparedVendorContractListWTVPagination(url,tabType){
 	    	    	    	    	  if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
 	    	    	 		        	 if(report.orgRelationUUID != null && report.orgRelationUUID != '' && report.orgRelationUUID != 'undefined'){
 	    	    	 		        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
-	    	    	 		        	   result = result + '<div><span title="'+report.contractWith+'"><a href="'+Url+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.contractWith+'">'+report.contractWith+'</a></span></div>';
+	    	    	 		        	   result = result + '<div><span title="'+report.contractWith+'"><a href="'+vmsUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.contractWith+'">'+report.contractWith+'</a></span></div>';
 	    	    	 		        	 '</sec:authorize>';
 	    	    	 		        	 }else{
 	    	    	 	        		 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
@@ -2773,14 +2781,14 @@ function preparedVendorContractListWTVPagination(url,tabType){
 	
 	
 	
-}
+} 
 
 function preparedContractListClientWTV(url,tabType){
 	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -2992,7 +3000,7 @@ function preparedContractListApplicantWTV(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -3186,7 +3194,8 @@ function previewContractPDF(fileURL, fileName, fileType) {
 }
 
 function previewNewContractPDF(uuid, templateName) {
- 	window.open(sourceleadUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+ 	window.open(vmsUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
 }
 </script>
 
