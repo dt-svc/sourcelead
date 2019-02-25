@@ -209,7 +209,7 @@ public interface CandidateDao {
 	
 	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocation, String creationStartDate, String creationEndDate, Map<String, Date> dateValue, String searchValue)throws Exception;
 	
-	public void deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid)throws Exception;
+	public Boolean deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid)throws Exception;
 
 	public ResponseList<CandidateMarketPlaceDTO> getGlobalDataRecommendations(
 			CandidateMarketPlaceDTO candidateMarketPlaceDTO, OrgLocations orgLocations, String searchValue);
@@ -242,7 +242,7 @@ public interface CandidateDao {
 
 	public void deleteAllCandidatesFromMarketcart(Long orgLocationId)throws Exception;
 
-	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder( Long id,MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO)throws Exception;
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder( Long id,MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, String purchaseOrderFromDate, String purchaseOrderToDate, Map<String, Date> dateValue)throws Exception;
 
 	public MarketplacePurchaseOrder getPurchaseDetailByPurchaseUuid(String purchaseUuid, Long id)throws Exception;
 	
@@ -261,5 +261,8 @@ public interface CandidateDao {
 	public void updateMarketWalletAmount(Double balanceAmountValue, Long id);
 	
 	public CandidateMarketCart getCandidateFromMarketCartByMarketplaceId(Long marketplaceId)throws Exception;
+	
+	public void deleteCandidateFromMarketplaceByCandidateUuid(String candidateUuid)throws Exception;
+	
 	
 }

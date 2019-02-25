@@ -54,10 +54,10 @@ $(document).ready(function(){
           <form:form id="paidbillgraph_custom_form" name="paidbillgraph_custom_form" method="post">
           <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
             <div class="pull-left">
-              <div class="pull-left mr5" style="width: 140px">
+              <div class="pull-left mr5" style="width: 140px" id="fromDateDiv">
                 <input value="" name="Date" id="fromDate" placeholder="From" class="form-control calendar input-sm" type="text" data-validation="required" field-name="From Date">
               </div>
-              <div class="pull-left mr5" style="width: 140px">
+              <div class="pull-left mr5" style="width: 140px" id="toDateDiv">
                 <input value="" name="Date" id="toDate" placeholder="To" class="form-control calendar input-sm" type="text" data-validation="required" field-name="To Date">
               </div>
               <button type="button" class="btn btn-primary btn-sm" onclick="getPaidBillGraphCustomReport();"><i class="fa fa-search"></i></button>
@@ -379,6 +379,7 @@ function getPaidBillsCustomDates() {
 				var dt = $(this).datepicker('getDate', '+1d');
 				dt.setDate(dt.getDate());
 				$("#toDate").datepicker("option", "minDate", dt);
+				removeErrMsg();
 			}
 		});
 	  
@@ -390,9 +391,16 @@ function getPaidBillsCustomDates() {
 				var dt = $(this).datepicker('getDate', '-1d');
 				dt.setDate(dt.getDate());
 				$("#fromDate").datepicker("option", "maxDate", dt);
+				removeErrMsgTo();
 			}
 		});
   } );
+  function removeErrMsg(){
+	  $("#fromDateDiv").find("p.jquery_form_error_message").remove();
+   }
+	function removeErrMsgTo(){
+		  $("#toDateDiv").find("p.jquery_form_error_message").remove();
+	}
   </script>
 
 <script>

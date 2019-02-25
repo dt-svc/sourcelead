@@ -269,11 +269,13 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 				}
 				count++;
 			}
-			dateList.put("STARTDATE", startDate);
-			if(endDate == null) {
-				endDate = projects.getEndDate();
+			if(projects != null) {
+				dateList.put("STARTDATE", startDate);
+				if(endDate == null) {
+					endDate = projects.getEndDate();
+				}
+				dateList.put("ENDDATE", endDate);
 			}
-			dateList.put("ENDDATE", endDate);
 		}
 		return dateList;
 	}

@@ -1723,59 +1723,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 					OrgSpoc orgSpoc = null;
 					if(candidate != null) {
 						
-						OrgRelations orgRelations = null;
-						OrgLocations vendorOrgLocation = candidate.getOrgLocationId();
-						orgRelations = orgRelationsService.getOrgRelationByResponderLocationIdAndLocationId(vendorOrgLocation.getId(),orgLocations.getId());
-						if(orgRelations == null) {
-
-    						orgRelations = saveOrgRelations(orgLocations,vendorOrgLocation,user);
-			 				orgRelations = orgRelationsService.addOrgRelations(orgRelations);
-			 			
-							String modules = vendorOrgLocation.getModulesId();
-							List<Integer> moduleIds = new ArrayList<Integer>();
-							 for (String s : vendorOrgLocation.getModulesId().split(",")){
-								 moduleIds.add(Integer.parseInt(s));
-							 }
-							 boolean flag = moduleIds.contains(Constants.MODULE_VMS);
-							 if(flag == false){
-							     modules = modules+","+Constants.MODULE_VMS;
-							 }
-							 
-							 boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
-							 if(tsflag == false) {
-				    				modules = modules+","+Constants.MODULE_TIMESHEET;
-				    			}
-							 registrationController.saveUserRoleActions(vendorOrgLocation);
-							
-							 
-							 vendorOrgLocation.setModulesId(modules);
-							 orgLocationService.updateOrgLocations(vendorOrgLocation);
-                              							 
-							 
-							   String clientModules = orgLocations.getModulesId();
-								List<Integer> clientModuleIds = new ArrayList<Integer>();
-								 for (String s : orgLocations.getModulesId().split(",")){
-									 clientModuleIds.add(Integer.parseInt(s));
-								 }
-								 boolean flag1 = moduleIds.contains(Constants.MODULE_ATS);
-								 if(flag1 == false){
-									 clientModules = clientModules+","+Constants.MODULE_ATS;
-								     registrationController.saveVendorUserRoleActions(orgLocations);
-								 }
-								 
-								 orgLocations.setModulesId(clientModules);
-								 orgLocationService.updateOrgLocations(orgLocations);
-							 
-							 Set<OrgSpoc> orgSpocList = orgRelations.getOrgSpocList();
-							 for(OrgSpoc spoc : orgSpocList){
-								 orgSpoc =  spoc;
-							 }
-							 
-							 clientService.saveOrUpdateClientVendorElkDocument(null, vendorOrgLocation, "Vendor", orgSpoc, orgRelations,null, user, orgLocations);
-							 orgSpocService.addClientVendorContactsELK(orgSpoc);
-    					
-						}
-						
 						Candidate vendorCandidate = null;
 						vendorCandidate = candidateDao.findByCandidateEmail(candidate.getEmail(), orgLocations.getId());
 						if(vendorCandidate == null) {
@@ -1786,11 +1733,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							vendorCandidate.setMasterCandidateId(masterCandidate);
 							vendorCandidate.setParentCandidateId(candidate);
 							vendorCandidate.setConsultantUser(candidate.getConsultantUser());
-							vendorCandidate.setOrgRelationId(orgRelations);
-							 Set<OrgSpoc> orgSpocList = orgRelations.getOrgSpocList();
-							 for(OrgSpoc spoc : orgSpocList){
-								 orgSpoc =  spoc;
-							 }
 							vendorCandidate.setSpocId(orgSpoc);
 							vendorCandidate.setCandidateType("Candidate");
 							vendorCandidate.setFirstName(candidate.getFirstName());
@@ -1848,7 +1790,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	    					employee.setCreatedBy(user.getUserCode());
 	    					employee.setHireDate(new Date());
 	    					employee.setUserEmploymentType("Offshore C2C");
-	    					employee.setOrgRelationId(orgRelations);
 	    					employee.setSpocId(orgSpoc);
 	    					
 	    					if(associateDTO.getBillRate() != null){
@@ -1874,46 +1815,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	
-	
-	
-	public OrgRelations saveOrgRelations(OrgLocations orglocations,OrgLocations vendorOrgLocation,User user){
-		
-		OrgRelations orgRelations = new OrgRelations();
-			orgRelations.setLocationId(orglocations);
-			orgRelations.setResponderLocationId(vendorOrgLocation);
-			orgRelations.setInitiatorType("Client");
-			orgRelations.setResponderType("Vendor");
-			orgRelations.setInitiatorLevel("Tier-5");
-			orgRelations.setResponderLevel("Tier-5");
-			orgRelations.setVendorRelationStatus("Sent");
-			orgRelations.setStatus("ACTIVE");
-			orgRelations.setCreatedBy(user.getUserCode());
-			orgRelations.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			orgRelations.setCreatedDate(new Date());
-			orgRelations.setUpdatedBy(user.getUserCode());
-			orgRelations.setUpdatedDate(new Date());
-			
-			Set<OrgSpoc> orgSpocSet = new HashSet<>();
-			OrgSpoc orgSpoc = new OrgSpoc();
-			orgSpoc.setOrgRelations(orgRelations);
-			orgSpoc.setClientUser(user);
-			orgSpoc.setVendorUser(vendorOrgLocation.getUser());
-			orgSpoc.setInvitationStatus(Constants.MAIL_NEW);
-			orgSpoc.setClientLocationId(orglocations);
-			orgSpoc.setVendorLocationId(vendorOrgLocation);
-			orgSpoc.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			orgSpoc.setSpocStatus("Active");
-			orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
-			orgSpoc.setOwnerUser(user);
-			orgSpoc.setCreatedDate(new Date());
-			orgSpoc.setCreatedBy(user.getUserCode());
-			orgSpoc.setUpdatedDate(new Date());
-			orgSpoc.setUpdatedBy(user.getUserCode());
-			orgSpocSet.add(orgSpoc);
-			orgRelations.setOrgSpocList(orgSpocSet);
-			return orgRelations;
-	}
-	
+
 	@Override
 	public Candidate getCandidateByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception {
 		return candidateDao.getCandidateByEmailAndOrgLocationId(email, orgLocationId);
@@ -2771,15 +2673,17 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public void updateMarketPlacePrice(Long id, String priceVal, String priceValType)throws Exception {
-		CandidateMarketPlace marketPlace= candidateDao.getCandidateMarketPlaceById(id);
+	public void updateMarketPlacePrice(Long id, String priceVal, String priceValType) throws Exception {
+		CandidateMarketPlace marketPlace = candidateDao.getCandidateMarketPlaceById(id);
 		CandidateMarketCart marketCart = candidateDao.getCandidateFromMarketCartByMarketplaceId(id);
 		marketPlace.setMarketPrice(priceVal);
 		marketPlace.setMarketRateCurrencey(priceValType);
 		candidateDao.updateMarketPlacePrice(marketPlace);
-		//updating cart price in global marketplace after it is edited and saved in local marketplace.
-		marketCart.setAmount(Double.parseDouble(priceVal));
-		candidateDao.addCandidateToMarketCart(marketCart);
+		// updating cart price in global marketplace after it is edited and saved in local marketplace.
+		if (marketPlace != null && marketCart != null) {
+			marketCart.setAmount(Double.parseDouble(priceVal));
+			candidateDao.addCandidateToMarketCart(marketCart);
+		}
 	}
 	
 	@Override
@@ -2960,8 +2864,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public void deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid) throws Exception {
-		candidateDao.deleteCandidateFromMarketcartByCandidateUuid(candidateUuid);
+	public Boolean deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid) throws Exception {
+		return candidateDao.deleteCandidateFromMarketcartByCandidateUuid(candidateUuid);
 		
 	}
 	
@@ -3194,36 +3098,69 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		candidateDao.deleteAllCandidatesFromMarketcart(orgLocationId);
 		
 	}
-
-	//Changed this method to a new one which returns ResponseList..
-	/*@Override
-	public List<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO)  throws Exception{
-		
-		List<MarketplacePurchaseOrder> purchaseOrder =   candidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO);
-		List<MarketplacePurchaseSalesDTO> list = new ArrayList<>();
-		for (MarketplacePurchaseOrder mps : purchaseOrder) {
-			
-			MarketplacePurchaseSalesDTO mpsDto = new MarketplacePurchaseSalesDTO();
-			 String startTime =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),mps.getOrderDate());
-			
-			mpsDto.setOrderNo(mps.getOrderNo());
-			mpsDto.setOrderDate(startTime);
-			mpsDto.setPurchaseUuid(mps.getPurchaseUuid());
-			mpsDto.setDiscount(mps.getDiscount());
-			mpsDto.setGrandTotal(mps.getGrandTotal());
-			mpsDto.setTotalPrice(mps.getTotalPrice());
-			mpsDto.setPaymentStatus(mps.getPaymentStatus());
-			mpsDto.setTotalresume(mps.getTotalresume());
-			mpsDto.setCompanyName(mps.getCompanyName());
-			mpsDto.setServiceFee(mps.getServiceFee());	
-			list.add(mpsDto);
-		}			
-		return list;
-	}*/
 	
 	@Override
-	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO)  throws Exception{
-		ResponseList<MarketplacePurchaseSalesDTO> responseList =   candidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO);
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations,
+			MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, String purchaseOrderFromDate,
+			String purchaseOrderToDate, String purchaseOrderFilterDate) throws Exception {
+		Date today = new Date();
+		Date formattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), today);
+		Calendar calendar = Calendar.getInstance();
+		Map<String, Date> dateValue = new HashMap<>();
+
+		if (purchaseOrderFilterDate.equalsIgnoreCase("today")) {
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", formattedDate);
+		}
+		if (purchaseOrderFilterDate.equalsIgnoreCase("1_week")) {
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.DAY_OF_YEAR, -7);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if (purchaseOrderFilterDate.equalsIgnoreCase("1_month")) {
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.MONTH, -1);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if (purchaseOrderFilterDate.equalsIgnoreCase("3_months")) {
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.MONTH, -3);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if (purchaseOrderFilterDate.equalsIgnoreCase("6_months")) {
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.MONTH, -6);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if (purchaseOrderFilterDate.equalsIgnoreCase("YTD")) {
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.YEAR, -1);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if (purchaseOrderFilterDate.equalsIgnoreCase("custom")) {
+			Date fromDateVal = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), purchaseOrderFromDate);
+			Date toDateVal = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), purchaseOrderToDate);
+			dateValue.put("fromDate", toDateVal);
+			dateValue.put("toDate", fromDateVal);
+		}
+		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplacePurchaseOrder(
+				orgLocations.getId(), marketplacePurchaseSalesDTO, purchaseOrderFromDate, purchaseOrderToDate,
+				dateValue);
 		return responseList;
 	}
 
@@ -3255,6 +3192,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		Date formattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), today);
 		Calendar calendar = Calendar.getInstance();
 		Map<String, Date> dateValue = new HashMap<>();
+		if(salesOrderFilterDate != null){
 		if(salesOrderFilterDate.equalsIgnoreCase("today")){
 			dateValue.put("fromDate", formattedDate);
 			dateValue.put("toDate", formattedDate);
@@ -3304,6 +3242,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			Date toDateVal = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), salesOrderToDate);
 			dateValue.put("fromDate", toDateVal);
 			dateValue.put("toDate", fromDateVal);
+		}
 		}
 		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue, salesOrderFromDate, salesOrderToDate, dateValue);
 		return responseList;
@@ -3498,6 +3437,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public void updateMarketWalletAmount(Double balanceAmountValue, Long id) {
 		candidateDao.updateMarketWalletAmount(balanceAmountValue, id);
+	}
+
+	@Override
+	public void deleteCandidateFromMarketplaceByCandidateUuid(String candidateUuid) throws Exception {
+		candidateDao.deleteCandidateFromMarketplaceByCandidateUuid(candidateUuid);
 	}
 	
 }

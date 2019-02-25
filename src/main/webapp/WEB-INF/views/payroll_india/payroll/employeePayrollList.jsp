@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
  <!-- Content Area -->
  <div id="popUp" ></div>
@@ -50,13 +51,11 @@
 							</select>
 						</div>
 						
-						<div class="col-md-4">
+						<c:if test="${freqResponse.approverStatus != 'APPROVED'}">
+							<div class="col-md-4">
 								<a class="pull-right" onClick="bulkAdjustment('${freqResponse.paySheetFrequencyUUID}');" title="Payhead Bulk Adjustment"><i class="fa fa-object-group paddingRight"></i>Bulk</a>
-						</div>
-						<!-- <div class="col-md-2">
-							<a class="btn btn-success btnSuccess btn-sm anchorWhite"
-								onclick="runIndPayroll();">Run Payroll</a>
-						</div> -->
+							</div>
+						</c:if>
 					</div>
 				</div>
 				<div class="clearfix"></div>
@@ -68,7 +67,7 @@
 						style="width: 100%">
 						<thead>
 							<tr>
-								<c:if test="${freqResponse.approverStatus != 'SENT' && freqResponse.approverStatus != 'APPROVED'}">
+								<c:if test="${fn:length(employeePayrollList) gt 1 && freqResponse.approverStatus != 'SENT' && freqResponse.approverStatus != 'APPROVED'}">
 									<th>Exclude</th>
 								</c:if>
 								<th>Emp ID</th>
@@ -84,7 +83,7 @@
 						<tbody>
 							<c:forEach var="empPayroll" items="${employeePayrollList}">
 								<tr>
-									<c:if test="${freqResponse.approverStatus != 'SENT' && freqResponse.approverStatus != 'APPROVED'}"> 
+									<c:if test="${fn:length(employeePayrollList) gt 1 && freqResponse.approverStatus != 'SENT' && freqResponse.approverStatus != 'APPROVED'}"> 
 										 <td>
 												<div class="checkbox-new pull-left ml">
 													<input id="${empPayroll.indEmpPayrollUUID}" class="checkbox-custom" name="empPayroll"
@@ -203,23 +202,25 @@ function editNetpay(){
 }
 function saveNetpay(){
 	calculateGrossSalary();
-	$("#tableNetpay").find(".formControl").toggleClass("activeEdit");
-	var x = document.getElementsByClassName("formControl"), i;
-	for (i=0; i<x.length; i++) {
-		if(x[i].readOnly) {
-			x[i].readOnly = false;
-		}else {
-			x[i].readOnly = true;
-		}
-	}
-	$(".editNetpay").show();
-	$(".saveNetpay").hide();
 	
 	saveAdjustedPayheads();
 }
 
 function saveAdjustedPayheads(){
 	if ($('#associatePayheadAdjust_form').validate(false, validationSettings)) {
+		
+		$("#tableNetpay").find(".formControl").toggleClass("activeEdit");
+		var x = document.getElementsByClassName("formControl"), i;
+		for (i=0; i<x.length; i++) {
+			if(x[i].readOnly) {
+				x[i].readOnly = false;
+			}else {
+				x[i].readOnly = true;
+			}
+		}
+		$(".editNetpay").show();
+		$(".saveNetpay").hide();
+		
 		var formData = getFormData1("associatePayheadAdjust_form");
 		var psfUUID = $('#paySheetFrequencyUUID').val();
 		$.ajax({
@@ -238,8 +239,11 @@ function saveAdjustedPayheads(){
 
 function calculateGrossSalary(){
 	var grossTotal = 0.00;
+	var floatRegex = /^((\d+(\.\d *)?)|((\d*\.)?\d+))$/;
 	$('.earningPayheadTbady #earningPayheadAmount').each(function() {
-		grossTotal += parseFloat($(this).val());
+		if($(this).val() != '' && floatRegex.test($(this).val())){
+			grossTotal += parseFloat($(this).val());
+		}
 	});
 	$('#earningPayheadAmountTotal').html(grossTotal.toFixed(2));
 	$('#totalGrossPay').html($('#earningPayheadAmountTotal').html());
@@ -250,8 +254,11 @@ function calculateGrossSalary(){
 
 function calculateNetSalary(){
 	var netTotal = 0.00;
+	var floatRegex = /^((\d+(\.\d *)?)|((\d*\.)?\d+))$/;
 	$('.deductionPayheadTbady #deductionPayheadAmount').each(function() {
-		netTotal += parseFloat($(this).val());
+		if($(this).val() != '' && floatRegex.test($(this).val())){
+			netTotal += parseFloat($(this).val());
+		}
 	});
 	$('#deductionPayheadAmountTotal').html(netTotal.toFixed(2));
 	$('#totalNetPay').html((parseFloat($('#earningPayheadAmountTotal').html()) - parseFloat($('#deductionPayheadAmountTotal').html())).toFixed(2));
@@ -271,7 +278,9 @@ function closeCPR() {
 function sentForApprove(approverStatus){
 	var totalCheckboxes = $('input:checkbox[name=empPayroll]').length;
 	var numberOfChecked  = $('input:checkbox[name=empPayroll]:checked').length;
-	if(totalCheckboxes != numberOfChecked){
+	if(totalCheckboxes > 0 && totalCheckboxes == numberOfChecked){
+		alertPopUp();
+	}else{
 		var feqUUID = $("#paySheetFrequency").val();
 		var excludeEmpArr = [];
 		$("input:checkbox[name=empPayroll]:checked").each(function(){
@@ -284,8 +293,6 @@ function sentForApprove(approverStatus){
 	        	 $(location).attr('href', 'runIndianPayRoll?stab=payroll');
 	         },
 	    });
-	}else{
-		alertPopUp();
 	}
 }
 </script>
@@ -327,7 +334,9 @@ function cancelIndPayroll(){
 $('#approveTab , #cnfmPayrollBtn').click(function(){
 	var totalCheckboxes = $('input:checkbox[name=empPayroll]').length;
 	var numberOfChecked  = $('input:checkbox[name=empPayroll]:checked').length;
-	if(totalCheckboxes != numberOfChecked){
+	if(totalCheckboxes > 0 && totalCheckboxes == numberOfChecked){
+		alertPopUp();
+	}else{
 		var feqUUID = $("#paySheetFrequency").val();
 		var excludeEmpArr = [];
 		$("input:checkbox[name=empPayroll]:checked").each(function(){
@@ -345,8 +354,6 @@ $('#approveTab , #cnfmPayrollBtn').click(function(){
 	        	 
 	         },
 	    });
-	}else{
-		alertPopUp();
 	}
 });
 

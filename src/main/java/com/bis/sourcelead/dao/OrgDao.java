@@ -74,6 +74,8 @@ public interface OrgDao {
 
     public int changeDefaultPaymentAccount(long id, long orgLocationId, boolean defaultAccount);
     
+    public int changeAssociateDefaultPaymentAccount(long id,long candidateId, boolean defaultAccount);
+
     public int changePaymentAccountStatus(long id, long orgLocationId);
 
     public List<PaymentAccountDTO> getPaymentAccountListByUserId(long userId,boolean onlyEnabledAccounts);
