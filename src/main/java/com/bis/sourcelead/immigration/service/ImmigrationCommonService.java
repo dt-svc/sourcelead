@@ -239,5 +239,6 @@ public interface ImmigrationCommonService {
 			long immigrationId);
 	
 	ImmigrationVisaDTO getCandidateVisaDetailsByCandidateIdAndVisaNumber(Long candidateId,String visaNumber);
-    
+	ImmigrationVisaDTO getCandidateActiveVisaDetailsByVisaNumberAndCountry(Long candidateId, String visaNumber, String country);
+
 }

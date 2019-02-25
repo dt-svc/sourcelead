@@ -3218,9 +3218,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	}
 	
 	//getVisanumber
-	/*@Override
+	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ImmigrationVisaDTO getCandidateVisaDetailsByVisaNumber(Long visaNumber) {
+	public ImmigrationVisaDTO getCandidateActiveVisaDetailsByVisaNumberAndCountry(Long candidateId, String visaNumber, String country) {
 		Session session = this.sessionFactory.getCurrentSession();
 		ImmigrationVisaDTO visaDTO= null;
 		try {
@@ -3231,7 +3231,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 						" cv.COUNTRY as country, CAST(cvh.VALID_FROM_DATE AS char) as validFrom," + 
 						" CAST(cvh.VALID_TO_DATE AS char) as validTo " + 
 						"  from CANDIDATE_VISA cv, CANDIDATE_VISA_HISTORY cvh  Where cv.ID= cvh.VISA_ID  "+
-						"  and cvh.status = 1 and cv.VISA_NUMBER=:visaHistoryId ";
+						"  and  cvh.IS_CURRENT  = 'Y' and cvh.status = 1 and cv.CANDIDATE_ID =:candidateId and cv.VISA_NUMBER=:visaNumber and cv.COUNTRY =:country order by cvh.id desc ";
 				visaDTO = (ImmigrationVisaDTO) session.createSQLQuery(sqlQueryString)
 										   .addScalar("id", StandardBasicTypes.LONG)
 										   .addScalar("candidateId", StandardBasicTypes.LONG)
@@ -3242,16 +3242,54 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 										   .addScalar("isCurrent", StandardBasicTypes.STRING)
 										   .addScalar("validFrom", StandardBasicTypes.STRING)
 										   .addScalar("validTo", StandardBasicTypes.STRING)
-										   .setLong("visaNumber", visaNumber)
+										   .setLong("candidateId", candidateId)
+										   .setString("visaNumber", visaNumber)
+										   .setString("country", country)
+										   .setMaxResults(1)
 										   .setResultTransformer(Transformers.aliasToBean(ImmigrationVisaDTO.class)).uniqueResult();
 		  }
 		} catch (Exception exception) {
-			logger.error("Exception caught while  getting Visa History details >>>>>>>>" + exception.getMessage());
+			logger.error("Exception caught while  getting Active visa number and details  >>>>>>>>" + exception.getMessage());
 			exception.printStackTrace();
 		}
 		return visaDTO;
-	}*/
-	
+	}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ImmigrationVisaDTO getCandidateVisaDetailsByVisaNumberAndCountry(Long candidateId, String visaNumber, String country) {
+		Session session = this.sessionFactory.getCurrentSession();
+		ImmigrationVisaDTO visaDTO= null;
+		try {
+			if (visaNumber != null) {
+				logger.debug(" before query execute to get  visa details by visa number  " + visaNumber);
+				String sqlQueryString = "select cvh.ID as id,  cv.CANDIDATE_ID as candidateId, cvh.VISA_ID as candidateVisaId ,"+
+						" cv.VISA_NUMBER as visaNumber, cv.VISA_TYPE as visaType, cvh.IS_CURRENT as isCurrent, " + 
+						" cv.COUNTRY as country, CAST(cvh.VALID_FROM_DATE AS char) as validFrom," + 
+						" CAST(cvh.VALID_TO_DATE AS char) as validTo " + 
+						"  from CANDIDATE_VISA cv, CANDIDATE_VISA_HISTORY cvh  Where cv.ID= cvh.VISA_ID  "+
+						"  and cvh.status = 1 and cv.CANDIDATE_ID =:candidateId and cv.VISA_NUMBER=:visaNumber and cv.COUNTRY =:country order by cvh.id desc ";
+				visaDTO = (ImmigrationVisaDTO) session.createSQLQuery(sqlQueryString)
+										   .addScalar("id", StandardBasicTypes.LONG)
+										   .addScalar("candidateId", StandardBasicTypes.LONG)
+										   .addScalar("candidateVisaId", StandardBasicTypes.LONG)
+										   .addScalar("visaNumber", StandardBasicTypes.STRING)
+										   .addScalar("country", StandardBasicTypes.STRING)
+										   .addScalar("visaType", StandardBasicTypes.STRING)
+										   .addScalar("isCurrent", StandardBasicTypes.STRING)
+										   .addScalar("validFrom", StandardBasicTypes.STRING)
+										   .addScalar("validTo", StandardBasicTypes.STRING)
+										   .setLong("candidateId", candidateId)
+										   .setString("visaNumber", visaNumber)
+										   .setString("country", country)
+										   .setMaxResults(1)
+										   .setResultTransformer(Transformers.aliasToBean(ImmigrationVisaDTO.class)).uniqueResult();
+		  }
+		} catch (Exception exception) {
+			logger.error("Exception caught while  getting Active visa number and details  >>>>>>>>" + exception.getMessage());
+			exception.printStackTrace();
+		}
+		return visaDTO;
+	}
 	@Override
 	@Transactional
 	public int updateCanVisaHistoryDetails(Long visaId, Long visaHistoryId)
