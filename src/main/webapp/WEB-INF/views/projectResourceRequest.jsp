@@ -24,6 +24,7 @@
  
  <script>
 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 var sourceleadUrl = '${sourceleadUrl}';
 </script>
 
@@ -258,7 +259,7 @@ function resourceRequestPagination(url,requestType,pmsUrl){
               "data": "candidateName",
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-            	  result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/userSummary/'+opt.userCode+'" title="'+opt.candidateName+'">'+opt.candidateName+'</a></div></td>';
+            	  result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+atsUrl+'/userSummary/'+opt.userCode+'" title="'+opt.candidateName+'">'+opt.candidateName+'</a></div></td>';
 	              return result;
               		
               }

@@ -1766,8 +1766,9 @@ public class CandidateOnBoardRestController {
 			HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
 		try {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			if (user != null) {
+			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			if (userId != null) {
+				User user = userService.getUserById(userId);
 				if(Validator.validate(onboardingCandidateSetp2DTO)){
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService
@@ -1800,7 +1801,6 @@ public class CandidateOnBoardRestController {
 					candidateOnBoarding.setAddress2(null);
 				}
 				userService.addUser(user);
-				SourceLeadSessionManager.setSessionAttribute(request, "user", user);
 				Employees onboardingEmployee = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(),
 						loginOrgLocation.getId());
 				if (null != onboardingEmployee) {

@@ -21,15 +21,15 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>A/R Aging</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/financialReportsList'/>">Financial Reports
+      <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/financialReportsList'/>">Financial Reports
 </a>&raquo; A/R Aging</div>
     </section>
     <!-- hiring Process  -->
     <div class="clearfix">
       <div class="ReqRepHead clearfix">
     		      <div class="col-md-2 pull-left reqListBtn">
-          <a href='${appPath}/arAgingGraphReport' title="List View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
-          <a href='${appPath}/arAgingReport' title="List View" id="LView" class="btn btn-default"><i class="fa fa-list"></i></a>
+          <a href='${SourceLeadWeb_sourceleadUrl}/arAgingGraphReport' title="List View" id="GView" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
+          <a href='${SourceLeadWeb_sourceleadUrl}/arAgingReport' title="List View" id="LView" class="btn btn-default"><i class="fa fa-list"></i></a>
     		      </div>
      		<!--<a href="jobsPipline-list.html" class="btn btn-primary">List</a>-->
        

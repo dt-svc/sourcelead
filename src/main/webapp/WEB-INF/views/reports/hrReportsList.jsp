@@ -10,14 +10,14 @@
       <div class="pull-left">
         <h2>HR Reports</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-       &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard
+      <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+       &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/reportsDashboard'/>">Reports Dashboard
 </a> &raquo; HR Reports</div>
     </section>
     
 <div class="reportNewDash">
 	
-		<a href="${appPath}/assetsReport">
+		<a href="${SourceLeadWeb_sourceleadUrl}/assetsReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-check-square-o"></i></span>
 		<div class="repDashCtaWrap">
@@ -28,7 +28,7 @@
 	</a>
 
     <sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
-    <a href="${appPath}/daywiseTimeSheetReports">
+    <a href="${SourceLeadWeb_sourceleadUrl}/daywiseTimeSheetReports">
 	<div class="repDashCta">
 		<span><i class="fa fa-calendar"></i></span>
 		<div class="repDashCtaWrap">
@@ -39,7 +39,7 @@
 	</sec:authorize>
 	
 	<sec:authorize access="hasRole('ROLE_TIMESHEET_REPORT')">
-		<a href="${appPath}/timeSheetReports">
+		<a href="${SourceLeadWeb_sourceleadUrl}/timeSheetReports">
 	<div class="repDashCta">
 		<span><i class="fa fa-clock-o"></i></span>
 		<div class="repDashCtaWrap">
@@ -50,7 +50,7 @@
 	</sec:authorize>
 		
 	<sec:authorize access="hasRole('ROLE_EXPENSES_REPORT')">	
-	<a href="${appPath}/expensesReportsList">
+	<a href="${SourceLeadWeb_sourceleadUrl}/expensesReportsList">
 	<div class="repDashCta">
 		<span><i class="fa fa-dollar"></i></span>
 		<div class="repDashCtaWrap">
@@ -61,7 +61,7 @@
 	</sec:authorize>
 	
 	<sec:authorize access="hasRole('ROLE_MISSING_TIMESHEETS')">
-	<a href="${appPath}/missingTimesheetsReport">
+	<a href="${SourceLeadWeb_sourceleadUrl}/missingTimesheetsReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-clock-o"></i></span>
 		<div class="repDashCtaWrap">
@@ -72,7 +72,7 @@
 	</sec:authorize>
 	
 	<sec:authorize access="hasRole('ROLE_PENDING_FOR_APPROVAL')">
-	<a href="${appPath}/pendingForApprovalReport">
+	<a href="${SourceLeadWeb_sourceleadUrl}/pendingForApprovalReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-square-o"></i></span>
 		<div class="repDashCtaWrap">
@@ -83,7 +83,7 @@
 		</sec:authorize>
 	
 	<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
-	<a href="${appPath}/employementVerificationReport">
+	<a href="${SourceLeadWeb_sourceleadUrl}/employementVerificationReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-check-square-o"></i></span>
 		<div class="repDashCtaWrap">
@@ -93,7 +93,7 @@
 	</a>
 	</sec:authorize>
 
-			<a href="${appPath}/daywiseLeaveReport">
+			<a href="${SourceLeadWeb_sourceleadUrl}/daywiseLeaveReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-check-square-o"></i></span>
 		<div class="repDashCtaWrap">
@@ -101,7 +101,7 @@
 		</div>
 	</div>	
 	</a>
-	<a href="${appPath}/leaveReport">
+	<a href="${SourceLeadWeb_sourceleadUrl}/leaveReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-check-square-o"></i></span>
 		<div class="repDashCtaWrap">
@@ -109,7 +109,7 @@
 		</div>
 	</div>	
 	</a>
-	<a href="${appPath}/leaveBalancesReport">
+	<a href="${SourceLeadWeb_sourceleadUrl}/leaveBalancesReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-check-square-o"></i></span>
 		<div class="repDashCtaWrap">
@@ -120,7 +120,7 @@
 	</a>
 	
 	
-	<a href="${appPath}/topLeaveTakenReports">
+	<a href="${SourceLeadWeb_sourceleadUrl}/topLeaveTakenReports">
 	<div class="repDashCta">
 		<span><i class="fa fa-check-square-o"></i></span>
 		<div class="repDashCtaWrap">
