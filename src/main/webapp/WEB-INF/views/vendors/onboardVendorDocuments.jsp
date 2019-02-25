@@ -41,13 +41,14 @@ function saveDocuments(){
 	  
 	   if ($('#vendorOnboardUploadedDocuments_form').validate(false, validationSettings)){ 
 	   $("#save_continue_doc_button").attr("disabled", "disabled");
+	   var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	   var formData = getFormData("vendorOnboardUploadedDocuments_form");
 	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		
 		$.ajax({
 		      type : "POST",
   	      data: formData,
-	    	  url: sourceleadUrl+"/saveVendorOnboardSubmittedDocuments?${_csrf.parameterName}=${_csrf.token}",		
+	    	  url: vmsUrl+"/saveVendorOnboardSubmittedDocuments?${_csrf.parameterName}=${_csrf.token}",		
 		      success :function(result) {
 		    	  
 		    	  var vendorTasks = document.getElementById("vendorTasks");
@@ -82,9 +83,10 @@ function saveDocuments(){
 <script>
 function getOnboardDocuments(){
 	var vendorOnboardId = '${vendorOnboardId}';
+	 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
 	    	type: "GET",
-	    	 url: sourceleadUrl+"/getVendorOnboardDocumentByVendorOnboardId?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId, 
+	    	 url: vmsUrl+"/getVendorOnboardDocumentByVendorOnboardId?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId, 
 	        success: function(json) {
 	        	
      	       var result = "";
@@ -139,9 +141,10 @@ function uploadVendorDocument(id){
 
 <script>
 function deleteVendorUploadedDocument(documentId,id){
+	 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/deleteVendorUploadedOnboardDocument?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId, 
+	    	 url: vmsUrl+"/deleteVendorUploadedOnboardDocument?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId, 
 	         success: function(result) {
 	        	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	 getOnboardDocuments();
