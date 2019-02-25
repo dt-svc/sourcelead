@@ -554,8 +554,8 @@
 								</c:if>
 								</div> --%>
 								
-								<a href="/pms/payrollConfiguration">
-									<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+								<a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">
+									<c:if test="${SourceLeadWeb_country == 'United States'}">
 										<div class="clearfix text-center mb10"><i class="payrollSVG"></i></div>
 										<div class="clearfix text-center">
 											<h4> Us Payroll Configuration</h4>
@@ -563,8 +563,8 @@
 									</c:if>
 								</a>
 								
-								<a href="/pms/indPayrollConfiguration">
-									<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+								<a href="${SourceLeadWeb_pmsUrl}/indPayrollConfiguration">
+									<c:if test="${SourceLeadWeb_country == 'India'}">
 										<div class="clearfix text-center mb10"><i class="payrollSVG"></i></div>
 										<div class="clearfix text-center">
 											<h4>Ind Payroll Configuration</h4>
