@@ -87,10 +87,10 @@ $(function(){
 				       <ul>
 						  <li class="actLi">Organization details<i class="fa fa-check-circle"></i></li>
 						  <li class="actLi">Locations<i class="fa fa-check-circle"></i></li>
-						  <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+						  <c:if test="${SourceLeadWeb_country == 'India'}">
 						  <li class="actLi">Information<i class="fa fa-check-circle"></i></li>
 						  </c:if>
-						  <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+						  <c:if test="${SourceLeadWeb_country == 'United States'}">
 						  <li class="actLi">Federal & state taxes<i class="fa fa-check-circle"></i></li>
 						  </c:if>
 						   <li class="actLi">Banking details<i class="fa fa-check-circle"></i></li>
@@ -271,8 +271,8 @@ $(function(){
 			      </div>
 			    
 			        <div class="welBtns welBtnsA">
-						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardBankingDetails'/>'"><input type="button" onclick="saveDocuments();" value="Save & Continue" class="Brig" id="save_button">
-						<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardSignatory'/>'"></a>
+						<input type="button" value="Prev" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/companyOnboardBankingDetails'"><input type="button" onclick="saveDocuments();" value="Save & Continue" class="Brig" id="save_button">
+						<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/companyOnboardSignatory'"></a>
 						<div class="clearfix"></div>
 					</div>
 			    </div>
