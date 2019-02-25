@@ -261,7 +261,7 @@ public class ContractController {
     		}
 			
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-			Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+			Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 			//SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
 			if(null != contract && null != contract.getStartDate()){
 				String currentTimeStr = Constants.TZ_DF.format(contract.getStartDate());  
@@ -519,7 +519,7 @@ public class ContractController {
 			contract = contractsTemplateService.getContractByContractUUID(contractUUID);
 			
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-			Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+			Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 		        //SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
 
 		 
