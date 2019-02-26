@@ -863,10 +863,11 @@ public class ClientRestController {
 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
 			@RequestParam(value = "responderType", required = false) String responderType) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Org> org =orgService.getOrgs();
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+//		List<Org> org =orgService.getOrgs();
 	    String flag = Constants.CLINT_VENDOR_DOES_NOT_EXIST;
 			List<OrgRelations> relationsList = orgRelationsService.getClientOrVendorListByOrgLocationId(orgLocation.getId(), responderType);
-			List<OrgLocations> orgLocationsList=orgLocationService.userList(orgLocation.getOrg().getId());
+			List<OrgLocations> orgLocationsList=orgLocationService.userList(org.getId());
 			for(OrgRelations orgRelations : relationsList){
 				for(OrgLocations orgRelations123 : orgLocationsList){
 				if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
