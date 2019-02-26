@@ -52,6 +52,7 @@ import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.dto.AvailableAssociatesDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientProjectDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
@@ -103,6 +104,7 @@ import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.reportsDTO.AssetsReportDTO;
 import com.bis.sourcelead.reportsDTO.ProjectReportDTO;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
@@ -3118,6 +3120,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
  				orgRelations.setInitiatorLevel("Tier-5");
  				orgRelations.setResponderLevel("Tier-5");
  				orgRelations.setStatus("ACTIVE");
+ 				orgRelations.setGenerateInvoice("Bulk");
  				orgRelations.setCreatedBy(user.getUserCode());
  				orgRelations.setCreatedDate(new Date());
  				orgRelations.setUpdatedBy(user.getUserCode());
@@ -3993,6 +3996,152 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				}
 			}
 		
+		
+		return createExcelsheet;
+	}
+
+	@Override
+	public List<Projects> getProjectsListByUserIDAndOrgId(String[] associates,Long orgLocations) {
+		// TODO Auto-generated method stub
+		return projectsDao.getProjectsListByUserIDAndOrgId(associates,orgLocations);
+	}
+
+	@Override
+	public List<AvailableAssociatesDTO> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO, OrgLocations orgLocations) {
+		try {
+			List<Object[]> objectList = projectsDao.getAvailableAssociatesReport(availableAssociatesDTO,orgLocations);
+			List<AvailableAssociatesDTO> availableAssociatesDTOList = new ArrayList<>();
+			if(objectList != null && !objectList.isEmpty()) {
+				for(Object[] obj : objectList) {
+					AvailableAssociatesDTO dto = new AvailableAssociatesDTO();
+					SimpleDateFormat dateForm1 = new SimpleDateFormat(orgLocations.getDateFormat());
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					if(obj[1] != null)
+					    dto.setEmpId(String.valueOf(obj[1]));
+					if(obj[2] != null)
+						dto.setEmpName(String.valueOf(obj[2]));
+					if(obj[3] != null)
+						dto.setProjectName(String.valueOf(obj[3]));
+					if(obj[4] != null)
+						dto.setProjectStartDate(dateForm1.format(sdf.parse(String.valueOf(obj[4]))));
+					if(obj[5] != null)
+						dto.setProjectEndDate(dateForm1.format(sdf.parse(String.valueOf(obj[5]))));
+					if(obj[6] != null)
+						dto.setEmpStartDate(dateForm1.format(sdf.parse(String.valueOf(obj[6]))));
+					if(obj[7] != null)	
+						dto.setEmpEndDate(dateForm1.format(sdf.parse(String.valueOf(obj[7]))));
+					if(obj[8] != null)
+						dto.setAvailableHours(String.valueOf(obj[8]));
+					if(obj[9] != null)
+						dto.setHoursperWeek(String.valueOf(obj[9]));
+					availableAssociatesDTOList.add(dto);
+				}
+				return availableAssociatesDTOList;
+			}
+			
+			return availableAssociatesDTOList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public File availableAssociatereportReportListOfExcel(List<AvailableAssociatesDTO> data, User user,OrgLocations orgLocations) throws FileNotFoundException {
+		File file = null;
+		Workbook createExcelworkbook = new XSSFWorkbook();
+		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLocations.getOrgLocationName() + "_" + dateFormat.format(new Date()));
+		Row writeRow = null;
+		createExcelsheet = getExcelSheetofWithHeader(createExcelsheet, writeRow, createExcelworkbook, data);
+		int column = 0;
+		for (AvailableAssociatesDTO   reportList : data) {
+			writeRow = createExcelsheet.createRow(column + 1);
+			String isGlobalAccess = null;
+			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, reportList, orgLocations, user,isGlobalAccess );
+			column++;
+		}
+		try {
+			file = File.createTempFile(orgLocations.getOrgLocationName() + "_Available Associate Report_" + dateFormat.format(new Date()), ".xlsx");
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		file.setReadable(true);
+		FileOutputStream fos = new FileOutputStream(file);
+		try {
+			createExcelworkbook.write(fos);
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return file;
+	}
+
+
+
+	private Sheet getExcelSheetofWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook,List<AvailableAssociatesDTO> data) {
+
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+		String[] headers = Constants.AVAILABLE_ASSOCIATES_REPORT_EXPORT_HEADDERS;
+		;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 0);
+		return createExcelsheet;
+	}
+
+
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, AvailableAssociatesDTO reportList,
+			OrgLocations orgLocations, User user, String isGlobalAccess) {
+		
+			if (null != reportList.getEmpName()) {
+				writeRow.createCell(0).setCellValue(reportList.getEmpName());
+				createExcelsheet.autoSizeColumn(0);
+			} else {
+				writeRow.createCell(0).setCellValue("--");
+				createExcelsheet.autoSizeColumn(0);
+			}
+			
+			if (null != reportList.getProjectName()) {
+				writeRow.createCell(1).setCellValue(reportList.getProjectName());
+				createExcelsheet.autoSizeColumn(1);
+			} else {
+				writeRow.createCell(1).setCellValue("--");
+				createExcelsheet.autoSizeColumn(1);
+			}
+
+			if (null != reportList.getProjectStartDate()) {
+				writeRow.createCell(2).setCellValue(reportList.getProjectStartDate()+ " "+ "to" +" "+(reportList.getProjectEndDate()));
+				createExcelsheet.autoSizeColumn(2);
+			} else {
+				writeRow.createCell(2).setCellValue("--");
+				createExcelsheet.autoSizeColumn(2);
+			}
+
+			if (null != reportList.getEmpStartDate()) {
+				writeRow.createCell(3).setCellValue(reportList.getEmpStartDate()+ " "+ "to" +" "+(reportList.getEmpEndDate()));
+				createExcelsheet.autoSizeColumn(3);
+			} else {
+				writeRow.createCell(3).setCellValue("--");
+				createExcelsheet.autoSizeColumn(3);
+			}
+			
+			if (null != reportList.getAvailableHours()) {
+				writeRow.createCell(4).setCellValue(reportList.getAvailableHours());
+				createExcelsheet.autoSizeColumn(4);
+			} else {
+				writeRow.createCell(4).setCellValue("--");
+				createExcelsheet.autoSizeColumn(4);
+			}
+
+			if (null != reportList.getHoursperWeek()) {
+				writeRow.createCell(5).setCellValue(reportList.getHoursperWeek());
+				createExcelsheet.autoSizeColumn(5);
+			} else {
+				writeRow.createCell(5).setCellValue("--");
+				createExcelsheet.autoSizeColumn(5);
+			}
+			
+			
 		
 		return createExcelsheet;
 	}

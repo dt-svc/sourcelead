@@ -79,9 +79,11 @@ public class SourceleadNotes {
 	private Candidate candidate;
 	
 	@Transient
+	@JsonProperty
 	private Long commentAuthorUserId;
 	
 	@Transient
+	@JsonProperty
 	private String commentAuthorImage;
 	
 	@Column(name = "COMMENT",columnDefinition = "TEXT default NULL")

@@ -304,5 +304,20 @@ public class TeamDaoImpl  implements TeamDao{
 		return session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
 		
 	}
+	
+	@Override
+	@Transactional
+	public List<Team> getTeamListByMultipleIds(String[] teamids,Long locationId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		// convert string array to long array
+				Long[] data = new Long[teamids.length];
+				for (int i = 0; i < teamids.length; i++) {
+				data[i] = Long.valueOf(teamids[i]);
+				}
+		String query = "from Team team where team.id IN (:teamIds) and team.orgLocationsId.id = :locationId";
+		return session.createQuery(query).setParameterList("teamIds", data).setLong("locationId", locationId).list();
+		
+	}
 
 }

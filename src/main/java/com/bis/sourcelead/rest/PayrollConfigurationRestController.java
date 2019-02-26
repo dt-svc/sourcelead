@@ -1150,5 +1150,45 @@ public class PayrollConfigurationRestController {
 			}
 			return response;
 		}
-	 
+		
+		@RequestMapping(value = { "/stopSalaryProcessingForEmployee","/rest/stopSalaryProcessingForEmployee" } , method = RequestMethod.POST)
+	 public Response<String> stopSalaryProcessingForEmployee(AssociateSalaryIndDTO associateSalaryIndDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+	    	Response<String> resObj = new Response<>();
+	    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+		    	try {
+		    		AssociateSalaryHistoryInd associateSalaryHistoryInd = new AssociateSalaryHistoryInd();
+						AssociateSalaryInd associateSalaryInd = payrollPayheadService.getAssociateSalaryIndByUUID(associateSalaryIndDTO.getUuid());
+						associateSalaryHistoryInd =  payrollCommonUtil.setPreviousDataToAssociateSalaryHistoryInd(associateSalaryInd, associateSalaryHistoryInd);
+						if(associateSalaryInd != null) {
+							associateSalaryInd.setStopSalary(associateSalaryIndDTO.getStopSalary());
+							associateSalaryInd.setUpdatedBy(user);
+							associateSalaryInd.setUpdatedDate(new Date());
+							associateSalaryInd = payrollPayheadService.saveAssociateSalaryInd(associateSalaryInd);
+							
+							//save History
+							associateSalaryHistoryInd =  payrollCommonUtil.setNewDataToAssociateSalaryHistoryInd(associateSalaryInd, associateSalaryHistoryInd);
+							payrollPayheadService.saveAssociateSalaryHistoryInd(associateSalaryHistoryInd);
+							
+							resObj.setResponse(Result.SUCCESS.name());
+							resObj.setResponseMessage(Result.SUCCESS.getValue());
+						}else {
+							resObj.setObject("DataMissing");
+							resObj.setResponse(Result.INVALID_DATA.name());
+							resObj.setResponseMessage(Result.INVALID_DATA.getValue());
+						}
+				 }catch (Exception e) {
+					 resObj.setResponse(Result.AWKWARD.name());
+					 resObj.setResponseMessage(Result.AWKWARD.getValue());
+					 logger.error(ExceptionUtils.getFullStackTrace(e));
+				}
+			}else {
+				resObj.setResponse(Result.SESSION_TIMEDOUT.name());
+				resObj.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+			return resObj;
+			
+		}
+	
 }

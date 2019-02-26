@@ -525,7 +525,7 @@ public class ProjectPlanningRestController {
 	    		 rejectReason = rejectReason.append(jsonObj.getString("rejectedReason"));
 	    		 resourceRequest.setRejectedReason(rejectReason.toString());
 	    		 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_ON_HOLD);
-	    		 
+	    		 resourceRequest.setUpdatedBy(user);
 	    		/* ProjectPlanningRequest projectPlanningRequest = projectPlanningRequestService.getProjectPlanningRequestById(resourceRequest.getProjectPlanningRequestId().getId());
 	    		 projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_REJECTED);*/
 	    		 
@@ -1058,7 +1058,7 @@ public class ProjectPlanningRestController {
 									clientCandidate.setParentCandidateId(candidate);
 									clientCandidate.setConsultantUser(candidate.getConsultantUser());
 									clientCandidate.setOrgRelationId(orl);
-									 Set<OrgSpoc> orgSpocList = orgRelations.getOrgSpocList();
+									 Set<OrgSpoc> orgSpocList = orl.getOrgSpocList();
 									 for(OrgSpoc spoc : orgSpocList){
 										 orgSpoc =  spoc;
 									 }
@@ -1224,6 +1224,7 @@ public class ProjectPlanningRestController {
 				orgRelations.setInitiatorLevel("Tier-5");
 				orgRelations.setResponderLevel("Tier-5");
 				orgRelations.setVendorRelationStatus("Sent");
+				orgRelations.setGenerateBill("Bulk");
 				orgRelations.setStatus("ACTIVE");
 				orgRelations.setCreatedBy(user.getUserCode());
 				orgRelations.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());

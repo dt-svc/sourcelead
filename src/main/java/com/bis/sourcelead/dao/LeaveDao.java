@@ -115,6 +115,3 @@ public interface LeaveDao {
 
     List<Leave> getAllLeavesByLocationIdAndStatusAndAppliedDate(Long locationId, String status, Date appliedDate);
 }
-
-
-

@@ -1,7 +1,11 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -16,11 +20,17 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.RequirementLocationsDao;
 import com.bis.sourcelead.dao.RequirementSubmissionHistoryDao;
+import com.bis.sourcelead.dto.OfferAcceptanceRateDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.OfferAcceptanceRateView;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RecruiterJobsReportView;
 import com.bis.sourcelead.entity.RecruiterReportView;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
@@ -36,6 +46,9 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private RequirementLocationsDao requirementLocationsDao;
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -199,6 +212,21 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		return  recuiterReportView;
 		
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<RecruiterJobsReportView> getSubmissionApplicantCountsForRecruiterJobreports(Long orgLocationId, User user,
+			Date[] searchDates,Long requirementId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<RecruiterJobsReportView> recuiterReportViewList = new LinkedList<>();
+		
+		String	query = "from RecruiterJobsReportView rv where rv.userCode = :userCode and rv.createdDate BETWEEN :fromDate AND :toDate and rv.orgLocationId = :orgLocationId  and rv.requirementId =:requirementId";
+		List<RecruiterJobsReportView> rrList = session.createQuery(query).setString("userCode", user.getUserCode()).setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setDate("fromDate", searchDates[0]).setDate("toDate",searchDates[1]).list();
+		return rrList;
+		
+	}
 
 	@Override
 	@Transactional
@@ -292,16 +320,29 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 			history.setEmail(history.getSubmissionId().getCandidate().getEmail());
 			history.setCandidateName(history.getSubmissionId().getCandidate().getFirstName());
 			history.setJobTitle(history.getSubmissionId().getRequirement().getJobTitle());
-			
+			history.setMobilePhone(history.getSubmissionId().getCandidate().getMobilePhone());
+			if (history.getSubmissionId().getFinalizedRate() !=null){
+				history.setFinalizedRate(history.getSubmissionId().getFinalizedRate());	
+			}
+			StringBuilder sb = new StringBuilder();
+			try {
+				List<RequirementLocations> locationsList = requirementLocationsDao.getRequirementLocationsListByRequirementId(history.getSubmissionId().getRequirement().getId());
+			for(RequirementLocations location :locationsList){
+				sb = sb.append(location.getLocation()).append(",");
+			}
+			history.setOrgLocationName(sb.deleteCharAt(sb.length()-1).toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			if(history.getSubmissionId().getRequirement().getClientId() != null) {
 				if (history.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
 					if (history.getSubmissionId().getRequirement().getClientId().getResponderLocationId() != null) {
-						history.setOrgLocationName(history.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
+						history.setClientName(history.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
 					}
 				}
 				if (history.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")) {
 					if (history.getSubmissionId().getRequirement().getClientId().getLocationId() != null) {
-						history.setOrgLocationName(history.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
+						history.setClientName(history.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
 					}
 				}
 			}
@@ -347,6 +388,43 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 			e.printStackTrace();
 		}
 		return count;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<OfferAcceptanceRateView> getOfferAcceptanceRateList(String userCode, long orgLocationId, String selectedClients, int month, int year, boolean compare) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from OfferAcceptanceRateView oarView where oarView.userCode=:userCode and oarView.orgLocationId=:orgLocationId";
+			if(selectedClients != null && !selectedClients.isEmpty()) {
+				query += " and oarView.orgRelationId in (" + selectedClients + ")";
+			}
+			if (month > 0 || year > 0) {
+				Calendar c = Calendar.getInstance();
+				if (month > 0) {
+					c.set(Calendar.MONTH, month - 1);
+					SimpleDateFormat YYYY_MM = new SimpleDateFormat("yyyy-MM");
+					query += " and oarView.createdYearMonth='" + YYYY_MM.format(c.getTime()) + "'";
+				} else if (year > 0) {
+					c.set(Calendar.YEAR, year);
+					SimpleDateFormat YYYY = new SimpleDateFormat("yyyy");
+					query += " and oarView.createdYear='" + YYYY.format(c.getTime()) + "'";
+				}
+			}
+			query += " order by oarView.createdYearMonthDate";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("userCode", userCode);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			
+			List<OfferAcceptanceRateView> offerAcceptanceRateViewList = queryObj.list();
+			if(offerAcceptanceRateViewList != null && !offerAcceptanceRateViewList.isEmpty()) {
+				return offerAcceptanceRateViewList;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

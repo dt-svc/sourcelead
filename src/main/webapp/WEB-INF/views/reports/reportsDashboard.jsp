@@ -32,6 +32,9 @@
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu1" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
 				<sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
+				<li><a href='${appPath}/offerAcceptanceRate'>Offer Acceptance Rate</a></li>
+				</sec:authorize>
+				<sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
 				<li><a href='${appPath}/applicantsjoinedlist'>Applicants Joined Report</a></li>
 				</sec:authorize>
 				 <sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
@@ -255,6 +258,7 @@
 					<sec:authorize access="hasRole('ROLE_ASSOCIATE_JOINED_REPORT')">
 				<li><a href='${appPath}/associateJoineReports'>Associate Joined Report</a></li>
 				</sec:authorize>  
+				<%-- <li><a href='${appPath}/availableAssociatesReport'>Available Associate Report</a></li> --%>
 					<!--<li><a href="#">Bank Report</a></li>
 					 <li><a href="#">Performance</a></li>
 					<li><a href="#">Payrol</a></li>
@@ -368,6 +372,10 @@
             <div class="newRepListCta">
                 <h2><a href="javascript:void(0)">Performance Reports</a></h2>
                 <ul class="repSearchList">
+                
+                <sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
+				<li><a href='${appPath}/offerAcceptanceRate'>Offer Acceptance Rate</a></li>
+				</sec:authorize>
                 
                 <sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
 				<li><a href='${appPath}/applicantsjoinedlist'>Applicants Joined Report</a></li>
@@ -630,10 +638,14 @@
 			<div class="dropdown pull-right report-dropdown">
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown" aria-expanded="false"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
-			     <li><a href="/app/projectReport">Project Report</a></li>
-				<li><a href="/app/employeeTasksReport">Employee Tasks</a></li>
-				<li><a href="/app/overdueTaskReport">Over Due Report</a></li>
-					
+			     <li><a href="${appPath}/indPayrollRegisterReport">Payroll Register</a></li>
+				 <li><a href="${appPath}/indPayrollBankTransferReport">Bank Transfer</a></li>
+				 <li><a href="${appPath}/indPayrollYTDSummaryReport">YTD Summary</a></li>
+				 <li><a href="${appPath}/indPayrollAnnualTaxReport">Annual Tax</a></li>
+<%-- 				 <li><a href="${appPath}/indPayrollLoanReport">Loan</a></li> --%>
+				 <li><a href="${appPath}/indPayrollESISummaryReport">ESI</a></li>
+				 <li><a href="${appPath}/indPayrollPFSummaryReport">PF</a></li>
+				 <li><a href="${appPath}/indPayrollSalaryRegisterReport">Salary Register</a></li>
 				</ul>
 			</div>
                  <!-- Dropdown -->

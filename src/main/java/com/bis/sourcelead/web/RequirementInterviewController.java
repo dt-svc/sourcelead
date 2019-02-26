@@ -76,9 +76,10 @@ public class RequirementInterviewController {
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
 			 HttpServletRequest request) throws Exception {
 		     ModelAndView model = new ModelAndView();
-		     //OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    // SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		     RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(requirementInterviewId);
+		   
 		     if(requirementInterview.getInterviewStatus() != null && requirementInterview.getInterviewStatus().equalsIgnoreCase(interviewStatus)) {
 		    	 model.setViewName("requirement/interviewAcceptOrRejectOrTentative");
 		    	 model.addObject("interviewStatus","Action_Done");
@@ -173,6 +174,8 @@ public class RequirementInterviewController {
 					    	 }
 			    	     }
 					 }
+					
+					  Long redirectOrgLocationId = orgLocation.getId();
 				     //stroe  requirementSubmissionHistoryService 
 				     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				     RequirementSubmission  requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementInterview.getSubmissionId().getId());
@@ -180,11 +183,11 @@ public class RequirementInterviewController {
 					 requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.INTERVIEW.toString());
 					 if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.ATTENDING.toString()) && ((dateDateFormatTimeEnd != null && dateDateFormatTimeEnd.after(dateDateFormatCurTime))||(dateDateFormatTimeStart != null && dateDateFormatTimeStart.after(dateDateFormatCurTime)))){
 						 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_ACCEPT);
-						 requirementInterviewService.applicantInterviewAcceptmailToInterviewInitiator(requirementInterviewId);
+						 requirementInterviewService.applicantInterviewAcceptmailToInterviewInitiator(requirementInterviewId,redirectOrgLocationId);
 					 }
 					 if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.NOT_ATTENDING.toString()) && ((dateDateFormatTimeEnd != null && dateDateFormatTimeEnd.after(dateDateFormatCurTime))||(dateDateFormatTimeStart != null && dateDateFormatTimeStart.after(dateDateFormatCurTime)))){
 						 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_REJECT);
-						 requirementInterviewService.applicantInterviewAcceptmailToInterviewInitiator(requirementInterviewId);
+						 requirementInterviewService.applicantInterviewAcceptmailToInterviewInitiator(requirementInterviewId,redirectOrgLocationId);
 					 }
 					 /*if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.MAYBE.toString())){
 						 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_TENTATIVE);
