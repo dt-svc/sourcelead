@@ -20,7 +20,7 @@ width : 6% !important;
           <div class="pull-left">
             <h2>Onboard Template</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/onboardingTemplatesList'/>">Onboard Templates List</a> &raquo; Add Onboard Template </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/onboardingTemplatesList'/>">Onboard Templates List</a> &raquo; Add Onboard Template </div>
     </section>
     
     <div class="content-area content-new clearfix">
@@ -910,7 +910,7 @@ function getTemplatePolicyDocumentsDetails(templateId){
 	                	 for (var i = 0; i < json.length; i++) { 
 	                		 var opt = json[i]; 
 	                		 result = result +"<strong id='policydocument"+opt.id+"'>";
-	           				 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
+	           				 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\'"+opt.fileURL+\"'></a></i>";
 	           				 result = result +"<input type='button' value='"+opt.fileName+"'>";
 	           				 result = result +"</a>";
 	           				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
