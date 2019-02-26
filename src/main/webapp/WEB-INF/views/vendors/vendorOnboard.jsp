@@ -19,7 +19,7 @@
 			<h2>Onboarding</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Vendor On-board
+			<a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Vendor On-board
 		</div>
 	</section>
 	
@@ -387,13 +387,14 @@
 <script>
 function getVendorOnboardDetails(){
 	var onboardSubmittedStatus = '${onboardSubmittedStatus}';
+	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	if(onboardSubmittedStatus == 'N'){
 		var vendorOnboardId = '${vendorOnboardId}';
 		var notificationUUID = '${notificationUUID}';
 		 $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getVendorOnboardDetailsByVendorOnboardId?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId+"&notificationUUID="+notificationUUID, 
+		    	 url: vmsUrl+"/getVendorOnboardDetailsByVendorOnboardId?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId+"&notificationUUID="+notificationUUID, 
 		        success: function(json) {
 		        	$("#clientName").html("<p title='"+json.clientName+"' class='tbldata-dotdot-me'>"+json.clientName+"</p>");
 		        	if(json.clientWebsite != null && json.clientWebsite != 'undefined' && json.clientWebsite != ''){
@@ -524,9 +525,10 @@ function saveVendorOnboard(){
 	
 	if ($('#vendor_onboard_form').validate(false, validationSettings)) {
 		var vendorOnboardId = '${vendorOnboardId}';
+		var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	  	var formData = $($('#vendor_onboard_form')[0]).serialize();
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/acceptAndSaveVendorOnboard?"+tokenParamName+"="+tokenValue+"&vendorOnboardId="+vendorOnboardId, formData, function(data) {
+		$.post(vmsUrl+"/acceptAndSaveVendorOnboard?"+tokenParamName+"="+tokenValue+"&vendorOnboardId="+vendorOnboardId, formData, function(data) {
 					 $("#loading").removeAttr("style");
 					 var vendorDocuments = document.getElementById("vendorDocuments");
 					 $("#vendorDocuments").removeClass("disabledLink");
