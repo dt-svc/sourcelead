@@ -29,6 +29,10 @@ public class LoginUserSessionStoreDTO implements Serializable {
 	private String state;
 	
 	private String loginUserAccounts;
+	
+	private String actionUUID;
+	
+	private String actionId;
 
 	public String getDocumentType() {
 		return documentType;
@@ -124,6 +128,22 @@ public class LoginUserSessionStoreDTO implements Serializable {
 
 	public void setLoginUserAccounts(String loginUserAccounts) {
 		this.loginUserAccounts = loginUserAccounts;
+	}
+
+	public String getActionUUID() {
+		return actionUUID;
+	}
+
+	public void setActionUUID(String actionUUID) {
+		this.actionUUID = actionUUID;
+	}
+
+	public String getActionId() {
+		return actionId;
+	}
+
+	public void setActionId(String actionId) {
+		this.actionId = actionId;
 	}
 	
 	
