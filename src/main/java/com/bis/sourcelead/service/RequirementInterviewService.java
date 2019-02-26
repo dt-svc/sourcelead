@@ -65,7 +65,7 @@ public interface RequirementInterviewService {
 	List<RequirementInterview> getRequirementInterviewsBySubmissionAndOrgLocId(List<Long> submissionsIds, Long locationId, Date startUTCDate,
 			Date endUTCDate);
 
-	void applicantInterviewAcceptmailToInterviewInitiator(String requirementInterviewId) throws Exception;
+	void applicantInterviewAcceptmailToInterviewInitiator(String requirementInterviewId, Long redirectOrgLocationId) throws Exception;
 	
 	void applicantInterviewProposeTimeEmailToInterviewInitiator(String requirementInterviewId, OrgLocations orgLocations, Org loginOrg, User user) throws Exception;
 

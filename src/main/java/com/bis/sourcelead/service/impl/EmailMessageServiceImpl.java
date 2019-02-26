@@ -150,33 +150,35 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 	@Async
 	public void sendEmail(EmailMessage emailMessage, Long locationsId, InternetAddress[] iAdressArray, List<EmailAttachment> attachmentList) throws Exception
 	{
-		if (emailMessage != null) {
-			String tabDivGroup = "";
-			// the pattern we want to search for
-			Pattern p = Pattern.compile("<tabIdDiv>(\\S+)</tabIdDiv>");
-			Matcher m = p.matcher(emailMessage.getMessageBody());
-			// if we find a match, get the group
-			if (m.find()) {
-				// get the matching group
-				tabDivGroup = m.group(1);
-			}
-			
-			for (InternetAddress toAddressEmail : iAdressArray) {
-				UserMailUnsubscribe unsubscriptionUser = userMailUnsubscribeService.getUserMailUnsubscriptionByUserEmail(toAddressEmail.getAddress());
-				if (unsubscriptionUser != null && StringUtils.isNotEmpty(unsubscriptionUser.getTabIds())) {
-					String[] tabIdsArray = unsubscriptionUser.getTabIds().split(",");
-					if (StringUtils.isNotEmpty(tabDivGroup)) {
-						if(ArrayUtils.contains( tabIdsArray, tabDivGroup)) {
-							iAdressArray = (InternetAddress[]) ArrayUtils.removeElement(iAdressArray, toAddressEmail);
-						}else if(ArrayUtils.contains( tabIdsArray, "0") && !ArrayUtils.contains( Constants.UNSUBSCRIPTION_TABID_LISTED, tabDivGroup)) {
+		if(!environment.equalsIgnoreCase("local")) {
+			if (emailMessage != null) {
+				String tabDivGroup = "";
+				// the pattern we want to search for
+				Pattern p = Pattern.compile("<tabIdDiv>(\\S+)</tabIdDiv>");
+				Matcher m = p.matcher(emailMessage.getMessageBody());
+				// if we find a match, get the group
+				if (m.find()) {
+					// get the matching group
+					tabDivGroup = m.group(1);
+				}
+				
+				for (InternetAddress toAddressEmail : iAdressArray) {
+					UserMailUnsubscribe unsubscriptionUser = userMailUnsubscribeService.getUserMailUnsubscriptionByUserEmail(toAddressEmail.getAddress());
+					if (unsubscriptionUser != null && StringUtils.isNotEmpty(unsubscriptionUser.getTabIds())) {
+						String[] tabIdsArray = unsubscriptionUser.getTabIds().split(",");
+						if (StringUtils.isNotEmpty(tabDivGroup)) {
+							if(ArrayUtils.contains( tabIdsArray, tabDivGroup)) {
+								iAdressArray = (InternetAddress[]) ArrayUtils.removeElement(iAdressArray, toAddressEmail);
+							}else if(ArrayUtils.contains( tabIdsArray, "0") && !ArrayUtils.contains( Constants.UNSUBSCRIPTION_TABID_LISTED, tabDivGroup)) {
+								iAdressArray = (InternetAddress[]) ArrayUtils.removeElement(iAdressArray, toAddressEmail);
+							}
+						}else if(ArrayUtils.contains( tabIdsArray, "0")) {
 							iAdressArray = (InternetAddress[]) ArrayUtils.removeElement(iAdressArray, toAddressEmail);
 						}
-					}else if(ArrayUtils.contains( tabIdsArray, "0")) {
-						iAdressArray = (InternetAddress[]) ArrayUtils.removeElement(iAdressArray, toAddressEmail);
 					}
 				}
+				sendEmailCommon(emailMessage, locationsId, iAdressArray, attachmentList);
 			}
-			sendEmailCommon(emailMessage, locationsId, iAdressArray, attachmentList);
 		}
 	}
 	
@@ -221,9 +223,11 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		Properties props = new Properties();
 		final String username = emailMessage.getUserName();
 		final String password = emailMessage.getPassword();
-
-		props.put("mail.smtp.host", "secure.emailsrvr.com");
-//		props.put("mail.smtp.host", "smtp.sendgrid.net");
+		if (environment.equalsIgnoreCase("prod")) {
+			props.put("mail.smtp.host", "secure.emailsrvr.com");
+		} else {
+			props.put("mail.smtp.host", "smtp.sendgrid.net");
+		}
 		props.put("mail.smtp.localhost", "localhost");
 		props.put("mail.stmp.user", username);
 		props.put("mail.smtp.auth", "true");
@@ -604,8 +608,11 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		Properties props = new Properties();
 		final String username = emailMessage.getUserName();
 		final String password = emailMessage.getPassword();
-
-		props.put("mail.smtp.host", "secure.emailsrvr.com");
+		if (environment.equalsIgnoreCase("prod")) {
+			props.put("mail.smtp.host", "secure.emailsrvr.com");
+		} else {
+			props.put("mail.smtp.host", "smtp.sendgrid.net");
+		}
 		props.put("mail.smtp.localhost", "localhost");
 		props.put("mail.stmp.user", username);
 		props.put("mail.smtp.auth", "true");

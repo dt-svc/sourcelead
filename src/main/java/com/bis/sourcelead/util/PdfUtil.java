@@ -1893,9 +1893,11 @@ private String[] prepareApplicantJoinedListStringArray(RequirementSubmissionHist
 				}
 			if(rsh.getSubmissionId().getRequirement().getClientId() != null){
 				String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
+				if(StringUtils.isNotBlank(payTerm)){
 				payTerm=payTerm.replaceAll("\\D", "");
 				if(!payTerm.isEmpty()){
 					userArray[12] = payTerm.toString();
+				}
 				}
 				else{
 					 userArray[12] = "--";
@@ -2231,9 +2233,10 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 					userArray[cellCount++] =date.split("<<>>").length > 1 ? date.split("<<>>")[1] : date;
 				}
 //			 userArray[cellCount++] = lrv.getFromDate().toString();
-		 }else{
-			 userArray[cellCount++] = "--";
 		 }
+		 /*else{
+			 userArray[cellCount++] = "--";
+		 }*/
 		   if(lrv.getRequirementCount() != null){
 			   userArray[cellCount++] = lrv.getTotalRequirementCount().toString();
 		   }else{

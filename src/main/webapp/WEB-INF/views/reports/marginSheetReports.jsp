@@ -86,15 +86,23 @@
           
         </div>
 	      	  </li>
-		
+					<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="exportOptions();"></a>
+						<div class="newActPop" style="display: none;">
+							<span>
+			           	   		<a href="javascript:void(0)" onclick="exportSheet('Pdf');" title="PDF">Export PDF</a>
+								<a href="javascript:void(0)" onclick="exportSheet('Excel');" title="Excel">Export Excel</a>            
+							</span>
+						</div>
+					</li>
           <li class="">
             <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
             <span class="repSearchIcon" onclick="getMarginSheetList();"></span></li>
         </ul>
+        <div id="emptyPopup"></div>
 	 <div class="clearfix"></div>	  
 		  
 
-		  
+		  <input type="hidden" id="noMarginReportList" name="noMarginReportList"  value="0"/>
       </div>
    <div id="previousOfferDiv" style="display: block"></div>
     </div>
@@ -108,6 +116,14 @@
       
  </script>
  <script>
+ function exportOptions(){
+		$(".newActPop").slideToggle(200);
+		$(".action-pop").slideUp(200);
+	}
+ function candidtaeCancel(){
+		$("#emptyPopup").empty();
+		$(".project_inn_mask").fadeOut(200);
+	}
 	$(function() {
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatRepo = getJSDateFormat(locationDate);
@@ -157,6 +173,56 @@
 		$.datepicker._clearDate('#ReportStartDate');
 		$.datepicker._clearDate('#ReportEndDate'); 
 	}
+</script>
+<script type="text/javascript">
+function exportSheet(exportType){
+	   var sourceleadUrl ='${sourceleadUrl}';
+		var searchValue = $("#dynamicUserDataTableSearch").val();
+		var checkEmptyList = $("#noMarginReportList").val();
+		searchValue = searchValue ? searchValue : "";
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		var timePeriod = $("#reportTypeId").val();
+		var startDate = '';
+		 var endDate = '';
+	    if(timePeriod == 'custom'){
+	    	startDate = $("#ReportStartDate").val();
+			  endDate = $("#ReportEndDate").val();
+			  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
+				  if(startDate == null || startDate == ''){
+					  document.getElementById("reportsStartDate").style.display="block";
+					  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+				  }
+				  
+				  if(endDate == null || endDate == ''){
+					  document.getElementById("reportsEndDate").style.display="block";
+					  $("#reportsEndDate").empty().append("End Date is Required") ; 
+				  }
+				  flag = false;
+			  }
+		 }else{
+			 document.getElementById("reportsStartDate").style.display="none";
+			 document.getElementById("reportsEndDate").style.display="none";
+		 } 
+		var clients = [];
+		$('input:checkbox[name=clientNameById]:checked').each(function() {
+			clients.push($(this).val());
+		});
+		if(checkEmptyList !=0){
+		window.location.href = sourceleadUrl+"/getMarginSheetListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&clientId="+clients+"&exportType="+exportType;
+		}else{
+			var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
+			result = result +"	</div>";
+			$("#emptyPopup").append(result);
+			$("#candidate_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+		}
+		
+}
 </script>
  <script type="text/javascript">
        function getMarginSheetList(){
@@ -265,8 +331,9 @@ function marginpagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 // 	    	  		 $("#noApplicantJoinedList").val(1); 
 	    	  		var result = "";
-	    	  		 if(opt.uid !=null && opt.uid !='' && opt.uid !='undefined'){
-							result = result + ' <div title='+opt.uid+' class="clearfix mt5 mb5">'+opt.uid+'</div>';
+	    	  		$("#noMarginReportList").val(1);
+	    	  		 if(opt.employeeId !=null && opt.employeeId !='' && opt.employeeId !='undefined'){
+							result = result + ' <div title='+opt.employeeId+' class="clearfix mt5 mb5">'+opt.employeeId+'</div>';
 						}else{
 							result = result + ' <td><div>--</div></td>';
 						}
@@ -369,7 +436,7 @@ function marginpagination(url){
     } );
     $("#offerpagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#dataTableSearch").keyup(function(e) {
+    $("#dynamicUserDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
     		   getMarginSheetList();
     	   }
