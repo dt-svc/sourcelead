@@ -101,6 +101,7 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.SourceleadNotesService;
 import com.bis.sourcelead.service.TaskService;
@@ -168,6 +169,9 @@ public class ImmigrationRestController {
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
 	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
 	/*@Autowired
 	LcaActivityCommonUtil lcaActivityCommonUtil;*/
 	
@@ -216,7 +220,7 @@ public class ImmigrationRestController {
 	// ====================immigration view startviewImmigration if you don't
 	// required comment below code start here==============================
 	@RequestMapping(value = { "/viewImmigrationList" })
-	public ModelAndView loadImmigrationList(HttpServletRequest request) {
+	public ModelAndView loadImmigrationList(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
 				.getAttribute("sessionData");
@@ -228,8 +232,12 @@ public class ImmigrationRestController {
 
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("/immigration/immigrationList");
+		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		OrgLocations orgLocation =orgLocationService.getOrgLocations(orgLocations.getId());
+		model.addObject("orgLocationInfo", orgLocation);
+		
 		try {
 			ImmigrationDashboardView immDashboardView = immigrationCommonService
 					.getImmigrationDashBoardDetails(orgLocations);
@@ -262,13 +270,15 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/loadNewPetitionPage" })
 	public ModelAndView loagNewPetitionPageView(HttpServletRequest request,
 			@RequestParam(value = "forward", required = false) String forward,
-			@RequestParam(value = "immigrationUUID", required = false) String immigrationUUID) {
+			@RequestParam(value = "immigrationUUID", required = false) String immigrationUUID) throws Exception {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		if (forward.equalsIgnoreCase("petitionDetails")) {
 			model.setViewName("/immigration/petitionDetails");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
+			OrgLocations orgLocation =orgLocationService.getOrgLocations(orgLocations.getId());
+			model.addObject("orgLocationInfo", orgLocation);
 			if (!StringUtils.isEmpty(immigrationUUID)) {
 				Long immigrationId = immigrationCommonService.getImmigrationIdByUUID(immigrationUUID);
 				ImmigrationDTO immigrationDTO = immigrationCommonService.editImmigrationDetails(immigrationId,
@@ -1315,16 +1325,15 @@ public class ImmigrationRestController {
 				"orgLocations");
 		Response<String> response = new Response<>();
 		logger.debug("Candidate ID ----> :  " + immigrationVisaDTO.getCandidateId());
-		if(immigrationVisaDTO.getIsCurrent()== null || immigrationVisaDTO.getIsCurrent().isEmpty()) {
+/*		if(immigrationVisaDTO.getIsCurrent()== null || immigrationVisaDTO.getIsCurrent().isEmpty()) {
 			immigrationVisaDTO.setIsCurrent(ImmigrationConstants.IS_CURRENT_NO);// setting value as "N"
-		}
+		}*/
 		if(visaHistoryId != null) {
 			immigrationVisaDTO.setId(visaHistoryId);// setting value as "N"
 		}
 		if (user != null) {
 			try {
 				if (Validator.validate(immigrationVisaDTO)) {
-					
 					immigrationCommonService.saveVisaDetails(immigrationVisaDTO, user, orgLocations,
 							  immigrationId, visaHistoryId); // in edit mode we will get visaHistoryId from the UI as a request parameter.
 					response.setResponse(Result.SUCCESS.name());
@@ -2399,14 +2408,20 @@ public class ImmigrationRestController {
 	public Boolean validateCandidateVisa(
 			@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "visaNumber", required = false) String visaNmuber,
+			@RequestParam(value = "country", required = false) String country,
 			@RequestParam(value = "id", required = false) Long id, HttpServletRequest request) throws Exception {
-		CandidateVisa candidateVisa = null;
+		//CandidateVisa candidateVisa = null;
+		ImmigrationVisaDTO visaDto= null;
 		if (null != id) {
-			candidateVisa = immigrationCommonService.getCandidateVisaDetailsByIdNumberAndId(visaNmuber, candidateId, id);
+		//	candidateVisa = immigrationCommonService.getCandidateVisaDetailsByIdNumberAndId(visaNmuber, candidateId, id);
+			visaDto = immigrationCommonService.getCandidateActiveVisaDetailsByVisaNumberAndCountry(candidateId, visaNmuber, country);
 		}
 		Boolean flag = false;
-		if (candidateVisa == null) {
-			flag = immigrationCommonService.validateCandidateVisa(candidateId, visaNmuber);
+		if (visaDto == null) {
+			visaDto = immigrationCommonService.getCandidateActiveVisaDetailsByVisaNumberAndCountry(candidateId,visaNmuber, country);
+			if(visaDto != null) {
+				flag = true;
+			}
 		}
 		return flag;
 	}
