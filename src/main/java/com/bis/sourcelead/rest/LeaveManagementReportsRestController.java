@@ -382,6 +382,8 @@ String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(req
  		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
  		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 
+ 		hrLeaveReportDTO.setSortColumn("name");
+		hrLeaveReportDTO.setSortOrder("desc");
  		hrLeaveReportDTO.setLoginUserId(loginUser.getId());
 
 		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("LeaveReport ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());

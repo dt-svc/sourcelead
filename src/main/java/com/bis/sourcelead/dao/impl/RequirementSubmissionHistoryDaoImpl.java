@@ -1,9 +1,11 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -26,6 +28,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OfferAcceptanceRateView;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RecruiterJobsReportView;
 import com.bis.sourcelead.entity.RecruiterReportView;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -207,6 +210,21 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		}
 		
 		return  recuiterReportView;
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<RecruiterJobsReportView> getSubmissionApplicantCountsForRecruiterJobreports(Long orgLocationId, User user,
+			Date[] searchDates,Long requirementId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<RecruiterJobsReportView> recuiterReportViewList = new LinkedList<>();
+		
+		String	query = "from RecruiterJobsReportView rv where rv.userCode = :userCode and rv.createdDate BETWEEN :fromDate AND :toDate and rv.orgLocationId = :orgLocationId  and rv.requirementId =:requirementId";
+		List<RecruiterJobsReportView> rrList = session.createQuery(query).setString("userCode", user.getUserCode()).setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setDate("fromDate", searchDates[0]).setDate("toDate",searchDates[1]).list();
+		return rrList;
 		
 	}
 

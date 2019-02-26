@@ -168,15 +168,15 @@ right: 15px;
 		
 		
         <div class="col-md-6 clearfix mb">
-            <label class="col-md-3 noPad">DBA<span class="text-danger">&nbsp;*</span></label>
+            <label class="col-md-3 noPad">DBA</label>
             <div class="col-md-9 padding_right clearfix">
                 <div class="col-md-10 noPad">
-                    <input id="dba" name="dba" class="form-control" type="text" value="${SourceLeadWeb_orgLocations.dba}" field-name="DBA" data-validation="required validate_Space validate_length length1-250">
+                    <input id="dba" name="dba" class="form-control" type="text" value="${SourceLeadWeb_orgLocations.dba}" field-name="DBA" data-validation="validate_Space validate_length length1-250" data-validation-optional="true">
                 </div>
                 <div class="col-md-2 dbaCheck dbaCheck-cs">
                      
                    <div class="mrleft8 mr mt5">
-		              			<input id="dbaCheckbox" name="dbaCheckbox"  class="checkbox-custom" onclick="getDBAName();"  type="checkbox">
+		              			<input id="dbaCheckbox" name="dbaCheckbox" ${empty SourceLeadWeb_orgLocations.dba ? 'checked' : SourceLeadWeb_orgLocations.dba == SourceLeadWeb_orgName ? 'checked' : ''} class="checkbox-custom" onclick="getDBAName();"  type="checkbox">
 		              			<label for="dbaCheckbox" class="checkbox-custom-label" title="Make company name as dba"></label>
           			</div>
                 </div>
@@ -306,10 +306,10 @@ right: 15px;
 		</div>
 		
 		<div class="col-md-6 clearfix mb" id="averageWorkingHoursDiv">
-			<label class="col-md-3 noPad">Working Hours<span class="text-danger">&nbsp;*</span></label>
+			<label class="col-md-3 noPad">Max hours per day<span class="text-danger">&nbsp;*</span></label>
 			<div class="col-md-9 padding_right">
 			<div id="averageWorkingHoursDiv">
-			<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required" field-name="Average Working Hours" value="${SourceLeadWeb_orgLocations.averageWorkingHours}"/>
+			<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required" field-name="Max hours per day" value="${SourceLeadWeb_orgLocations.averageWorkingHours}"/>
 			</div>
 			</div>
 		</div>
@@ -358,9 +358,9 @@ right: 15px;
 		</div>
 		
 		<div class="col-md-6 clearfix mb">
-			<label class="col-md-3 noPad">Email regarding Po</label>
+			<label class="col-md-3 noPad">Email for Purchase Order</label>
 			<div class="col-md-9 padding_right">
-			<input type="text"  class="form-control" name="poEmail" field-name="po Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.poEmail}" />
+			<input type="text"  class="form-control" name="poEmail" field-name="Purchase Order Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.poEmail}" />
 			</div>
 		</div>
 		
@@ -372,9 +372,9 @@ right: 15px;
 		</div>
 			
 	  <div class="col-md-12 comp-textarea clearfix mb mt">
-		  <label class="">About</label>
+		  <label class="">Company Description</label>
 			<div class="col-md-12 noPad">
-			   <textarea rows="5" name="aboutCompany" field-name="About" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control">${SourceLeadWeb_orgLocations.orgDescription}</textarea>
+			   <textarea rows="5" name="aboutCompany" field-name="Company Description" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control">${SourceLeadWeb_orgLocations.orgDescription}</textarea>
 			</div>
 		</div>
 			<div class="clearfix"></div>
@@ -513,7 +513,7 @@ $(function(){
         $('#averageWorkingHoursDiv').parent().find('p.jquery_form_error_message').remove(); 
         if(ew > 24){
         	$("#averageWorkingHours").val('');
-        	$("input#averageWorkingHours").parent().after("<p class='jquery_form_error_message'><span>Average Working Hours should be less then or equal to 24</span>");
+        	$("input#averageWorkingHours").parent().after("<p class='jquery_form_error_message'><span>Max hours per day should be less then or equal to 24</span>");
         }
     });
 });
@@ -529,7 +529,13 @@ function getDBAName(){
 			$("#dba").val(companyName); 
 		 }
      }else{
-    	 $("#dba").val('');
+    	 //var dbaName = document.getElementById("dba").value;
+    	 var dbaName = '${SourceLeadWeb_orgLocations.dba}';
+    	 if(dbaName != null && dbaName != '' && dbaName != 'undefined'){
+    		 $("#dba").val(dbaName);
+ 		 }else{
+ 			$("#dba").val('');
+ 		 }
      } 
 }
 </script>
@@ -680,6 +686,7 @@ function validateCompanyName(){
 		   }); 
 		 
 	 }
+	 getDBAName();
 }
 </script>
 

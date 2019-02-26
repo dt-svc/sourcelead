@@ -34,6 +34,7 @@ $(document).ready(function(){
                     <div class="dashNewCount">
                     	 <p id="dial1txt">Draft</p>
                         <p class="NewCount"><span id="expensesDraftCount"></span></p>
+                         <div id ="draftExpenseLoading"></div>
                     </div>
                   </div>
                   
@@ -41,6 +42,7 @@ $(document).ready(function(){
                     <div class="dashNewCount">
                     	<p id="dial2txt"> Submitted</p>
                         <p class="NewCount suColor"><span id="expensesSubmittedForApprovalCount"></span></p>
+                         <div id ="waitingExpenseLoading"></div>
                     </div>
                   </div>
                   
@@ -48,6 +50,7 @@ $(document).ready(function(){
                     <div class="dashNewCount">
                     	<p id="dial3txt">Approved </p>
                         <p class="NewCount apColor"><span id="expensesApprovedCount"></span></p>
+                         <div id ="approvedExpenseloading"></div>
                     </div>
                   </div>
                   
@@ -55,6 +58,7 @@ $(document).ready(function(){
                     <div class="dashNewCount">
                     	<p id="dial4txt">Rejected </p>
                         <p class="NewCount reColor"><span id="expensesRejectCount"></span></p>
+                         <div id =rejectExpenseLoading></div>
                     </div>
                   </div>
                   
@@ -66,23 +70,34 @@ $(document).ready(function(){
     </sec:authorize>
 <script type="text/javascript">
 function expensesCount(expenseType){
+	 $("#rejectExpenseLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
+	  $("#waitingExpenseLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
+	  $("#draftExpenseLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
+	  $("#approvedExpenseloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
     var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getExpensesCount?${_csrf.parameterName}=${_csrf.token}&expenseType="+expenseType, 
 		        success: function(json) {
 		        	//var json = JSON.parse(data);
-		        	 
+		        	
+		             $("#draftExpenseLoading").removeAttr("style");
 		        	 $("#expensesDraftCount").empty();
+		        	 $("#dial1txt").empty();
+		        	 
+		        	 $("#waitingExpenseLoading").removeAttr("style");
 	        		 $("#expensesSubmittedForApprovalCount").empty();
-	        		 $("#expensesApprovedCount").empty();
-	        		 $("#expensesRejectCount").empty();
-	        		 
-	        		 $("#dial1txt").empty();
 	        		 $("#dial2txt").empty();
-	        		 $("#dial3txt").empty();
-	        		 $("#dial4txt").empty();
 	        		 
+	        		 
+	        		 $("#approvedExpenseloading").removeAttr("style");
+	        		 $("#expensesApprovedCount").empty();
+	        		 $("#dial3txt").empty();
+	        		 
+	        		  $("#rejectExpenseLoading").removeAttr("style");
+			       	  $("#expensesRejectCount").empty();
+			     	  $("#dial4txt").empty();
+	        		
 	        		 var  expensesDraftCount = 0;
 	        		 if(json.expensesDraftCount != null && json.expensesDraftCount != "" && json.expensesDraftCount != 'undefined'){
 	        			 expensesDraftCount = json.expensesDraftCount;

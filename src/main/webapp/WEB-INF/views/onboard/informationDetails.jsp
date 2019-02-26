@@ -2,9 +2,9 @@
 					
 					<div class="col-md-5">
 						<div class="clearfix">
-							<label class="clearfix">CIN<span class="text-danger">&nbsp;*</span></label>
+							<label class="clearfix">Company Identification Number<span class="text-danger">&nbsp;*</span></label>
 							<div class="clearfix">
-							 <input  class="form-control" type="text" name="cin" id="cin" field-name="CIN" value="${informationDetails.cin}" data-validation="required validate_Space validate_length length1-21">
+							 <input  class="form-control" type="text" name="cin" id="cin" field-name="Company Identification Number" value="${informationDetails.cin}" data-validation="required validate_Space validate_length length1-21">
 							</div>
 						</div>
 					</div>
@@ -19,9 +19,9 @@
 					
 					<div class="col-md-5">
 						<div class="clearfix">
-							<label class="clearfix">Incorporation Date<span class="text-danger">&nbsp;*</span></label>
+							<label class="clearfix">Date of Incorporation<span class="text-danger">&nbsp;*</span></label>
 							<div class="input-group" id="incorporationDateDiv">
-                              <input type="text" name="incorporationDate" class="form-control calendar" value="${informationDetails.incorporationDateStr}" id="incorporationDate" data-validation="required" field-name="Incorporation Date" readonly="readonly">
+                              <input type="text" name="incorporationDate" class="form-control calendar" value="${informationDetails.incorporationDateStr}" id="incorporationDate" data-validation="required" field-name="Date of Incorporation" readonly="readonly">
                               <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                            </div>
                            
@@ -64,7 +64,7 @@
 			         <div class="row clearfix mb minHeightcol5"> 
 						<div class="col-md-5">
 							<div class="clearfix">
-								<label class="clearfix">PF Number<span class="text-danger">&nbsp;*</span></label>
+								<label class="clearfix">Provident Fund Number<span class="text-danger">&nbsp;*</span></label>
 								<div class="clearfix">
 								 <input  class="form-control" type="text" name="pfNumber" id="pfNumber" value="${informationDetails.pfNumber}" field-name="PF Number" data-validation="required validate_Space validate_length length7-15">
 								</div>
@@ -106,7 +106,7 @@
 			         <div class="row clearfix mb minHeightcol5"> 
 						<div class="col-md-5">
 							<div class="clearfix">
-								<label class="clearfix">PT Number<span class="text-danger">&nbsp;*</span></label>
+								<label class="clearfix">Professional Tax Number<span class="text-danger">&nbsp;*</span></label>
 								<div class="clearfix">
 								 <input  class="form-control" type="text" name="ptNumber" id="ptNumber" field-name="PT Number" value="${informationDetails.ptNumber}" data-validation="required validate_Space validate_length length7-15">
 								</div>

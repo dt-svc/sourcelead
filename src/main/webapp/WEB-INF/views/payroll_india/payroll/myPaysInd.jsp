@@ -70,7 +70,7 @@
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.payPeriod != null && opt.payPeriod != '' && opt.payPeriod !='undefined'){
-												result = result +'<div class="tblminwidth-100" ><a>'+opt.payPeriod+'</a></div>';
+												result = result +'<div class="tblminwidth-100" >'+opt.payPeriod+'</div>';
 											}else{
 						              		  result = result +'<div class="tblminwidth-100">--</div>';
 						              		}
@@ -96,7 +96,7 @@
 											if(opt.noOfDays != null && opt.noOfDays != '' && opt.noOfDays !='undefined'){
 						                		  result = result +'<div class="tblminwidth-100">'+opt.noOfDays+'</div>';
 						              		}else{
-						              		  result = result +'<div class="tblminwidth-100">--</div>';
+						              		  result = result +'<div class="tblminwidth-100">0</div>';
 						              		}
 											return result;
 										}
@@ -109,7 +109,7 @@
 											if(opt.noOfLeaves != null && opt.noOfLeaves != '' && opt.noOfLeaves !='undefined'){
 						                		  result = result +'<div class="tblminwidth-100">'+opt.noOfLeaves+'</div>';
 						              		}else{
-						              		  result = result +'<div class="tblminwidth-100">--</div>';
+						              		  result = result +'<div class="tblminwidth-100">0</div>';
 						              		}
 											return result;
 
@@ -121,9 +121,9 @@
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.grossPay != null && opt.grossPay != '' && opt.grossPay !='undefined'){
-						                		  result = result +'<div class="tblminwidth-100">'+opt.grossPay+'</div>';
+						                		  result = result +'<div class="tblminwidth-100">'+opt.grossPay+' <i class="paddingLeft">&#8377;</i></div>';
 						              		}else{
-						              		  result = result +'<div class="tblminwidth-100">--</div>';
+						              		  result = result +'<div class="tblminwidth-100">0.00 <i class="paddingLeft">&#8377;</i></div>';
 						              		}
 											return result;
 										}
@@ -134,9 +134,9 @@
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.tds != null && opt.tds != '' && opt.tds !='undefined'){
-						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.tds+'</div>';
+						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.tds+' <i class="paddingLeft">&#8377;</i></div>';
 						              		}else{
-						              		  result = result +'<div class="tbldata-dotdot-vsm">0.0</div>';
+						              		  result = result +'<div class="tbldata-dotdot-vsm">0.00 <i class="paddingLeft">&#8377;</i></div>';
 						              		}
 											return result;
 										}
@@ -147,9 +147,9 @@
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.netPay != null && opt.netPay != '' && opt.netPay !='undefined'){
-						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.netPay+'</div>';
+						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.netPay+' <i class="paddingLeft">&#8377;</i></div>';
 						              		}else{
-						              		  result = result +'<div class="tbldata-dotdot-vsm">0.0</div>';
+						              		  result = result +'<div class="tbldata-dotdot-vsm">0.00 <i class="paddingLeft">&#8377;</i></div>';
 						              		}
 											return result;
 										}

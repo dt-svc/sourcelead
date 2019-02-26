@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
  <!-- Content Area -->
  <div id="popUp" ></div>
@@ -50,13 +51,11 @@
 							</select>
 						</div>
 						
-						<div class="col-md-4">
+						<c:if test="${freqResponse.approverStatus != 'APPROVED'}">
+							<div class="col-md-4">
 								<a class="pull-right" onClick="bulkAdjustment('${freqResponse.paySheetFrequencyUUID}');" title="Payhead Bulk Adjustment"><i class="fa fa-object-group paddingRight"></i>Bulk</a>
-						</div>
-						<!-- <div class="col-md-2">
-							<a class="btn btn-success btnSuccess btn-sm anchorWhite"
-								onclick="runIndPayroll();">Run Payroll</a>
-						</div> -->
+							</div>
+						</c:if>
 					</div>
 				</div>
 				<div class="clearfix"></div>
@@ -68,7 +67,7 @@
 						style="width: 100%">
 						<thead>
 							<tr>
-								<c:if test="${freqResponse.approverStatus != 'SENT' && freqResponse.approverStatus != 'APPROVED'}">
+								<c:if test="${fn:length(employeePayrollList) gt 1 && freqResponse.approverStatus != 'SENT' && freqResponse.approverStatus != 'APPROVED'}">
 									<th>Exclude</th>
 								</c:if>
 								<th>Emp ID</th>
@@ -84,7 +83,7 @@
 						<tbody>
 							<c:forEach var="empPayroll" items="${employeePayrollList}">
 								<tr>
-									<c:if test="${freqResponse.approverStatus != 'SENT' && freqResponse.approverStatus != 'APPROVED'}"> 
+									<c:if test="${fn:length(employeePayrollList) gt 1 && freqResponse.approverStatus != 'SENT' && freqResponse.approverStatus != 'APPROVED'}"> 
 										 <td>
 												<div class="checkbox-new pull-left ml">
 													<input id="${empPayroll.indEmpPayrollUUID}" class="checkbox-custom" name="empPayroll"
