@@ -523,7 +523,7 @@ public class UserStatsCacheHelper {
 			  Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			if (countries != null) {
 				orgLocationDTO.setCurrencyCode(countries.getCurrency());
-				orgLocationDTO.setCountryCode(countries.getCode2());
+				orgLocationDTO.setCountryCode(countries.getCode());
 			}
 		 } catch (Exception e2) {
 			e2.printStackTrace();
@@ -672,7 +672,7 @@ public class UserStatsCacheHelper {
 	}
 	
 	
-	public void saveLoginUserSessionStoreToCouchbase(String generatedCustomTocken,UserRole userRole,HttpServletRequest request) {
+	public void saveLoginUserSessionStoreToCouchbase(String generatedCustomTocken,UserRole userRole,String actionUUID,Long actionId,HttpServletRequest request) {
 		LoginUserSessionStoreDTO sessionDTO = new LoginUserSessionStoreDTO();
 		
 		sessionDTO.setDocumentType(Constants.COUCH_DOCUMENT_TYPE_USER_LOGIN_SESSION);
@@ -685,6 +685,8 @@ public class UserStatsCacheHelper {
 		sessionDTO.setCountry(userRole.getOrgLocations().getCountry());
 		sessionDTO.setState(userRole.getOrgLocations().getState());
 		sessionDTO.setCity(userRole.getOrgLocations().getCity());
+		sessionDTO.setActionUUID(actionUUID);
+		sessionDTO.setActionId(String.valueOf(actionId));
 	    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 	    LocalDateTime now = LocalDateTime.now();  
 	    sessionDTO.setLastUpdatedDate(dtf.format(now));

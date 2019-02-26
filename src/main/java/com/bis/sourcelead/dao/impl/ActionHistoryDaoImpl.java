@@ -21,6 +21,7 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.ActionHistory;
 import com.bis.sourcelead.entity.ActionNames;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -99,7 +100,7 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 	@Override
 	@Async
 	@Transactional(rollbackFor = { Exception.class })
-	public void saveActionHistory(String methodName,UserLoginLogoutSession userLoginLogoutSession,OrgLocations loginOrgLocation,String type) throws Exception {
+	public void saveActionHistory(String methodName,UserLoginLogoutSession userLoginLogoutSession,OrgLocations loginOrgLocation,String type,Long userId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<ActionNames> actionNamesList = getActionNameUsingMethodName(methodName);
 		ActionHistory actionHistory = new ActionHistory();
@@ -128,7 +129,7 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 					actionHistory.setActionPerformed("You have performed "+ actionNames.getActionName()+" Action ");
 					//test
 					actionHistory.setOrgLocations(loginOrgLocation);
-					actionHistory.setUserId(userLoginLogoutSession.getUserId().getId());
+					actionHistory.setUserId(userId);
 					actionHistory.setUserLoginLogoutSessionId(userLoginLogoutSession);
 					// saving the Activity Time based on the time zone 
 					Date date = new Date();
@@ -146,7 +147,7 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 				actionHistory.setActionPerformed("You have performed "+ actionNames.getActionName()+" Action ");
 				//test
 				actionHistory.setOrgLocations(loginOrgLocation);
-				actionHistory.setUserId(userLoginLogoutSession.getUserId().getId());
+				actionHistory.setUserId(userId);
 				actionHistory.setUserLoginLogoutSessionId(userLoginLogoutSession);
 				// saving the Activity Time based on the time zone 
 				Date date = new Date();
