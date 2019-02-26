@@ -1462,7 +1462,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	@Override
 	public List<RequirementInterview> getRequirementInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, OrgLocations orgLocation) throws Exception {
 		logger.debug("In RequirementInterviewServiceImpl class getRequirementInterviewsBySubmissionIdAndOrgLocationsId method...");
-		Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 		List<RequirementInterview> interviewslist = null;
 		interviewslist = requirementInterviewDao.getRequirementInterviewsBySubmissionIdAndOrgLocationsId(submissionId,orgLocation.getId());
 		//OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationsId);
