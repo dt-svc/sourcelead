@@ -52,8 +52,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
+import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
+import com.bis.sourcelead.dto.AssociateJoineReportDTO;
+import com.bis.sourcelead.dto.AvailableAssociatesDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.OfferAcceptanceRateDTO;
@@ -61,7 +64,6 @@ import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
-import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
@@ -77,7 +79,13 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.RecruiterJobsReportView;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementLocations;
+import com.bis.sourcelead.entity.RequirementOfferHistory;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Roles;
@@ -102,6 +110,10 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
+import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementLocationsService;
+import com.bis.sourcelead.service.RequirementOfferHistoryService;
+import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementReportService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
@@ -113,7 +125,9 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -183,9 +197,15 @@ public class ReportRestController {
 	
 	@Autowired
 	OrgRelationsService orgRelationService;
+	
+	@Autowired
+    private RequirementInterviewService requirementInterviewService;
 
 	@Autowired
 	RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	private RequirementOfferHistoryService requirementOfferHistoryService;
 	
 	@Autowired
 	RequirementReportService requirementReportService;
@@ -206,6 +226,9 @@ public class ReportRestController {
 	UserRoleDao userRoleDao;
 	
 	@Autowired
+	private RequirementSubmissionDao requirementSubmissionDao;
+	
+	@Autowired
 	UserLoginLogoutSessionService userLoginLogoutSessionService;
 	
 	@Autowired
@@ -213,6 +236,9 @@ public class ReportRestController {
 	
 	@Autowired
 	private LetterHeadService letterHeadService;
+	
+	@Autowired
+	private RequirementLocationsService requirementLocationsService;
 	
 	@Autowired
 	private EmployeeVerificationTemplateService employeeVerificationTemplateService;
@@ -240,6 +266,12 @@ public class ReportRestController {
 	
 	@Autowired
 	private PdfUtil pdfUtil;
+	
+	@Autowired
+	private ConversionUtil conversionUtil;
+	
+	@Autowired
+	private RequirementOffersService requirementOffersService;
 	
 	@RequestMapping(value="/updateSourceUserCodeForSubmissionHistory")
 	public String updateSourceUserCodeForSubmissionHistory() {
@@ -426,11 +458,6 @@ public class ReportRestController {
 			HttpServletRequest request) throws Exception {
 
 	      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	      //Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-	      //User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	      //String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
-	      //String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-	      
 	      User recruiterUser = userService.getUserById(recruiterUserId);
 			
 			Date[] searchDates = null;
@@ -478,15 +505,26 @@ public class ReportRestController {
 			requirementDTO.setOrgLocationId(orgLocations.getId());
 			ResponseList<RequirementDTO> requirementDTOList = requirementService.getJobListOfRecruiter(requirementDTO, recruiterUserId,searchDates,teamsList);
 			for(RequirementDTO reqDTO : requirementDTOList.getData()) {
-				RequirementSubmissionsCountDTO rsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(reqDTO.getId(), recruiterUser, orgLocations, "ALL");
-				reqDTO.setNoOfApplicants(String.valueOf(rsCount.getApplicantsCount()));
-				reqDTO.setNoOfShortlistApplicants(String.valueOf(rsCount.getShortlistCount()));
-				reqDTO.setNoOfSubmittedApplicants(String.valueOf(rsCount.getSubmitToClientCount()));
-				reqDTO.setNoOfInterviewedApplicants(String.valueOf(rsCount.getInterviewCount()));
-				reqDTO.setNoOfOfferedApplicants(String.valueOf(rsCount.getOffersCount()));
-				reqDTO.setNoOfJoinedApplicants(String.valueOf(rsCount.getJoinedCount()));
-				reqDTO.setNoOfRejectedApplicants(String.valueOf(rsCount.getRejectedCount()));
-				reqDTO.setNoOfBackoutApplicants(String.valueOf(rsCount.getBackoutCount()));
+				List<RecruiterJobsReportView> rjrvList = requirementSubmissionHistoryService.getSubmissionApplicantCountsForRecruiterJobreports(orgLocations.getId(), recruiterUser, searchDates, reqDTO.getId());
+				
+				double  applicantSubmittedApplicantCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantSubmissionCount().doubleValue()));
+				double  applicantShortlistCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantShortlistedCount().doubleValue()));
+				double  applicantSubmittedCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantSubmittedClientCount().doubleValue()));
+				double  applicantInterviewCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantInterviewCount().doubleValue()));
+				double  applicantOfferCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantOfferMadeCount().doubleValue()));
+				double  applicantJoinedCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantJoinedCount().doubleValue()));
+				double  applicantRejectedCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantRejectedCount().doubleValue()));
+				double  applicantBackoutCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantBackOutCount().doubleValue()));
+
+				reqDTO.setNoOfApplicants(String.valueOf(applicantSubmittedApplicantCount));
+				reqDTO.setNoOfShortlistApplicants(String.valueOf(applicantShortlistCount));
+				reqDTO.setNoOfSubmittedApplicants(String.valueOf(applicantSubmittedCount));
+				reqDTO.setNoOfInterviewedApplicants(String.valueOf(applicantInterviewCount));
+				reqDTO.setNoOfOfferedApplicants(String.valueOf(applicantOfferCount));
+				reqDTO.setNoOfJoinedApplicants(String.valueOf(applicantJoinedCount));
+				reqDTO.setNoOfRejectedApplicants(String.valueOf(applicantRejectedCount));
+				reqDTO.setNoOfBackoutApplicants(String.valueOf(applicantBackoutCount));
+				
 			}
 			
 			return requirementDTOList;
@@ -2114,7 +2152,7 @@ public class ReportRestController {
 								clientIdsList.add(Long.parseLong(clients[i]));
 							}
 						}*/
-					String[] tableColumns = { "uid", "employeeName", "clientName", "payRate", "billRate", "Margin"};
+					String[] tableColumns = { "employeeId", "employeeName", "clientName", "payRate", "billRate", "Margin"};
 					int sortColumnIndex = 1; // by default sorting using updated date
 					String sortColumnOrder = "desc"; // by default descending order
 					
@@ -2143,6 +2181,441 @@ public class ReportRestController {
 				}
 			
 
+			@RequestMapping(value = "/getMarginSheetListExport")
+			public void getMarginSheetListExport(@RequestParam(value="timePeriod", required=false) String timePeriod,
+					@RequestParam(value="customStartDate", required=false) String customStartDate,
+					@RequestParam(value="customEndDate", required=false) String customEndDate,
+					@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
+					@RequestParam(value="searchValue", required=false) String searchValue,
+					@RequestParam(value="exportType", required=false) String exportType,
+					MarginSheetReportDTO marginSheetReportDTO,
+					HttpServletRequest request,HttpServletResponse response) throws Exception {
+			      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+					Date[] searchDates = null;
+					ResponseList<MarginSheetReportDTO> projectMembersDTOList = new ResponseList<MarginSheetReportDTO>();
+					
+						if(!"custom".equalsIgnoreCase(timePeriod)){
+							searchDates = reportsUtil.getJobFilterDate(timePeriod,orgLocations);
+						}else if("custom".equalsIgnoreCase(timePeriod) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
+				    	    
+				    	    DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+							DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+							DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+							
+							Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
+							Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
+							String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+							String customEndTimeStr = TZ_DF_CED.format(endTime);  
+							Date startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+							Date endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+				    	   
+				    	    searchDates = new Date[2];
+				    	    searchDates[0] = startDateUTC;
+				    	    searchDates[1] = endDateUTC;
+						}
+						
+						String[] tableColumns = { "employeeId", "employeeName", "clientName", "payRate", "billRate", "Margin"};
+						int sortColumnIndex = 1; // by default sorting using updated date
+						String sortColumnOrder = "desc"; // by default descending order
+						if (marginSheetReportDTO.getOrder() != null && !marginSheetReportDTO.getOrder().isEmpty()) {
+							sortColumnIndex = Integer.parseInt(marginSheetReportDTO.getOrder().get(0).get("column"));
+							sortColumnOrder = marginSheetReportDTO.getOrder().get(0).get("dir");
+						}
+						marginSheetReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+						marginSheetReportDTO.setSortOrder(sortColumnOrder);
+						
+					projectMembersDTOList = projectMembersService.getProjectMemeberByClientProjectAndOrglocation(orgLocationId,searchDates,marginSheetReportDTO);
+					
+					File file = null;
+				    if(exportType.equalsIgnoreCase("pdf")) {
+				    	 file=  dynamicReport.marginSheetReportPdfExport(projectMembersDTOList,orgLocations.getDateFormat(),orgLocations.getOrgLocationName());
+				    }else {
+				    	file=  dynamicReport.marginSheetReportExcelExport(projectMembersDTOList,orgLocations.getDateFormat(),orgLocations.getOrgLocationName());
+				    }
+					
+					String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+					if (mimeType == null) {
+						mimeType = "application/octet-stream";
+					}
+					response.setContentType(mimeType);
+					StringBuilder fileNameSB = new StringBuilder();
+					response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+					response.setContentLength((int) file.length());
+					InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+					FileCopyUtils.copy(inputStream, response.getOutputStream());
+					inputStream.close();
+					response.getOutputStream().close();
+					response.getOutputStream().flush();	
+					if(file!= null){
+						file.delete();
+					}
+				}
+			
+			@RequestMapping(value = "/associateJoinedReportExport")
+			public void associateJoinedReportExport(AssociateJoineReportDTO associateJoineReportDTO,
+					@RequestParam(value="exportType", required=false) String exportType,
+					HttpServletRequest request,HttpServletResponse response) throws Exception {
+						OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+						
+						String[] tableColumns = {"employeeId","empName", "gender","empType","deptName", "userRole","rate","hireDate", "reportingManager", "shiftName"};
+
+						   int sortColumnIndex = 1; //by default sorting using updated date
+						   String sortColumnOrder = "desc"; //by default descending order
+						if(associateJoineReportDTO.getOrder() != null && !associateJoineReportDTO.getOrder().isEmpty()) {
+							sortColumnIndex = Integer.parseInt(associateJoineReportDTO.getOrder().get(0).get("column"));
+							sortColumnOrder = associateJoineReportDTO.getOrder().get(0).get("dir");
+						}
+						associateJoineReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+						associateJoineReportDTO.setSortOrder(sortColumnOrder);
+						
+						Date[] freqDates = new Date[2];
+						Date startUTCDate = null;
+						Date endUTCDate = null;
+						DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+						 DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+						 DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+						 if("Custom".equalsIgnoreCase(associateJoineReportDTO.getFrequency())){
+							 Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),associateJoineReportDTO.getFromDate());
+								Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),associateJoineReportDTO.getToDate());
+								String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+								String customEndTimeStr = TZ_DF_CED.format(endTime);  
+								startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+								endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+						 }else {
+							 freqDates = reportsUtil.getJobFilterDate(associateJoineReportDTO.getFrequency(),loginOrgLocations);
+							 String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
+							 String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
+							 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+							 endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+						 }
+						 
+					   ResponseList<AssociateJoineReportDTO> toDayReqApplicantscount =requirementSubmissionDao.getAssociateJoineReport(associateJoineReportDTO, loginOrgLocations.getId(),startUTCDate,endUTCDate);
+					   String isTerminated = Constants.NO;
+					File file = null;
+				    if(exportType.equalsIgnoreCase("pdf")) {
+				    	 file=  dynamicReport.associateJoinedAndTerminatedReportPdfExport(toDayReqApplicantscount,loginOrgLocations.getDateFormat(),loginOrgLocations.getOrgLocationName(),isTerminated);
+				    }else {
+				    	file=  dynamicReport.associateJoinedAndTerminatedReportExcelExport(toDayReqApplicantscount,loginOrgLocations.getDateFormat(),loginOrgLocations.getOrgLocationName(),isTerminated);
+				    }
+					
+					String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+					if (mimeType == null) {
+						mimeType = "application/octet-stream";
+					}
+					response.setContentType(mimeType);
+					StringBuilder fileNameSB = new StringBuilder();
+					response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+					response.setContentLength((int) file.length());
+					InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+					FileCopyUtils.copy(inputStream, response.getOutputStream());
+					inputStream.close();
+					response.getOutputStream().close();
+					response.getOutputStream().flush();	
+					if(file!= null){
+						file.delete();
+					}
+				}
+
+			
+			@RequestMapping(value = "/applicantsJoinedListExport")
+			public void applicantsJoinedListExport(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, HttpServletRequest request,HttpServletResponse response)throws Exception
+		   {
+				OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Timezone timezone = null;
+				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+				if(loginOrgLocations.getTimezone() != null){
+					timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+				}
+				Date[] freqDates = new Date[2];
+				String userType = null;
+				Date startUTCDate = null;
+				Date endUTCDate = null;
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+				DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+				if("Custom".equalsIgnoreCase(requirementSubmissionHistoryDTO.getFrequency())){
+					Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getFromDate());
+					Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getToDate());
+					String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+					String customEndTimeStr = TZ_DF_CED.format(endTime);  
+					startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+					endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+				}else{
+					freqDates = reportsUtil.getJobFilterDate(requirementSubmissionHistoryDTO.getFrequency(),loginOrgLocations);
+					String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
+					String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
+					startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+					endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+				}
+				  
+				
+				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+					userType = Constants.ADMIN;
+				} 
+				
+				ResponseList<RequirementSubmissionHistoryDTO> responseList = new ResponseList<>();
+			   ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist =requirementSubmissionDao.getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(requirementSubmissionHistoryDTO, loginOrgLocations.getId(),requirementSubmissionHistoryDTO.getSubmissionStatus(),requirementSubmissionHistoryDTO.getTabType(),userType,user,startUTCDate,endUTCDate,loginOrgLocations);
+
+			   List<RequirementSubmissionHistoryDTO> rshDTOList = new ArrayList<>();
+			   if(dashboardJobsCountlist.getData() != null)
+				for(RequirementSubmissionHistory rsh: dashboardJobsCountlist.getData()){
+					RequirementSubmissionHistoryDTO rshDTO = new RequirementSubmissionHistoryDTO();
+					StringBuilder sb = new StringBuilder();
+					if(StringUtils.isNotBlank(rsh.getSubmissionId().getCandidate().getLastName())){
+						rshDTO.setCandidateName(sb.append(rsh.getSubmissionId().getCandidate().getFirstName()).append(" ").append(rsh.getSubmissionId().getCandidate().getLastName()).toString());
+					}else{
+						rshDTO.setCandidateName(rsh.getSubmissionId().getCandidate().getFirstName());
+					}
+					
+					rshDTO.setRequirementUUID(rsh.getSubmissionId().getRequirement().getRequirementUUID());
+					rshDTO.setJobTitle(rsh.getSubmissionId().getRequirement().getJobTitle());
+					if(rsh.getSubmissionId().getRequirement().getGeneratedId() != null) {
+						rshDTO.setJobGeneratedId(rsh.getSubmissionId().getRequirement().getGeneratedId());
+					}
+					if(rsh.getSubmissionId().getRequirement().getClientId() != null){
+		                if(StringUtils.isNotBlank(rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm())){
+		                String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
+		                Integer result = 0;
+		                try {
+		                	if(StringUtils.isNotBlank(payTerm)){
+		                    payTerm=payTerm.replaceAll("\\D", "");
+		                    result = Integer.parseInt(payTerm);
+		                	}
+		                } catch (Exception e) {
+		                    result = 0;
+		                }
+		                rshDTO.setPayTerm(result);
+		                }
+
+		            }
+					if(rsh.getSubmissionId().getRequirement().getJobRate() != null){
+						rshDTO.setJobRate(rsh.getSubmissionId().getRequirement().getJobRate().toString());
+					}
+					
+					if (rshDTO.getPayTerm() > 0 && rsh.getSubmissionId().getJoinedDate() != null) {
+//						Integer result = Integer.parseInt(rshDTO.getPayOutPeriod());
+						if(rshDTO.getPayTerm() != 0){
+							Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), rshDTO.getPayTerm());
+							DateTime dtOrg = new DateTime(generatedInvoiceDate);
+							DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
+							rshDTO.setGenerateInvoice(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate()));
+							
+						}
+		}
+					
+					if(rsh.getSubmissionId().getRequirement().getParentRequirement() != null){
+						rshDTO.setOrgLocationName(rsh.getSubmissionId().getRequirement().getParentRequirement().getOrgLocationId().getOrgLocationName());
+					}
+					
+					if(rsh.getSubmissionId().getRequirement().getClientId() != null) {
+						if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
+							if (rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId() != null) {
+								rshDTO.setOrgLocationName(rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
+							}
+						}
+						if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")) {
+							if (rsh.getSubmissionId().getRequirement().getClientId().getLocationId() != null) {
+							rshDTO.setOrgLocationName(rsh.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
+							}
+						}
+					}
+					
+					List<String> requirementLocationsList = new ArrayList<>();
+					List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(rsh.getSubmissionId().getRequirement().getId());
+					if(locationsList != null && !locationsList.isEmpty()) {
+						for(RequirementLocations location : locationsList) {
+							requirementLocationsList.add(location.getLocation());
+						}
+					}
+					rshDTO.setLocationsList(requirementLocationsList);
+					
+					
+					rshDTO.setEmail(rsh.getSubmissionId().getCandidate().getEmail());
+
+					if(rsh.getSubmissionId().getBackOutCategoryType() != null) {
+						rshDTO.setBackoutType(rsh.getSubmissionId().getBackOutCategoryType());
+						rshDTO.setBackoutReason(rsh.getSubmissionId().getBackOutReason());
+					}
+					if(rsh.getSubmissionId().getRejectedCategoryType() != null) {
+						rshDTO.setRejectedType(rsh.getSubmissionId().getRejectedCategoryType());
+						rshDTO.setRejectedReason(rsh.getSubmissionId().getRejectedReason());
+					}
+					if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
+						rshDTO.setJobRating(rsh.getSubmissionId().getRequirement().getJobRate());
+					}
+					if(rsh.getSubmissionId().getRequirement().getIncentivized() != null) {
+						rshDTO.setIncentivize(rsh.getSubmissionId().getRequirement().getIncentivized());
+					}
+					if(rsh.getSubmissionId().getCandidate().getMobilePhone() != null){
+						rshDTO.setMobilePhone(rsh.getSubmissionId().getCandidate().getMobilePhone());
+					}
+					
+					if(rsh.getSubmissionId().getJoinedDate()  != null){
+						rshDTO.setJoinDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getSubmissionId().getJoinedDate()));
+					}
+					
+					if(rsh.getSubmissionId().getCandidateResumes() != null){
+						rshDTO.setResumeUUID(rsh.getSubmissionId().getCandidateResumes().getResumeUUID());
+						rshDTO.setFileUrl(rsh.getSubmissionId().getCandidateResumes().getFileURL());
+						rshDTO.setFileName(rsh.getSubmissionId().getCandidateResumes().getFileName());
+						rshDTO.setContentType(rsh.getSubmissionId().getCandidateResumes().getFileContentType());
+					}
+					rshDTO.setPrimarySkill(rsh.getSubmissionId().getCandidate().getPrimarySkill());
+					rshDTO.setCreatedUser(rsh.getSubmissionId().getCreatedUser());
+					rshDTO.setCandidateScore(rsh.getSubmissionId().getCandidateScore());
+					rshDTO.setSubmissionStatus(rsh.getSubmissionId().getSubmissionStatus().toString());
+					rshDTO.setCandidateUUID(rsh.getSubmissionId().getCandidate().getCandidateUUID());
+					rshDTO.setSubmissionId(rsh.getSubmissionId().getId());
+					rshDTO.setExperienceYears(rsh.getSubmissionId().getCandidate().getExperienceYears());
+					rshDTO.setExperienceMonths(rsh.getSubmissionId().getCandidate().getExperienceMonths());
+					rshDTO.setFinalizedRate(rsh.getSubmissionId().getFinalizedRate());
+					rshDTO.setSubmittedBy(rsh.getSubmissionId().getSubmittedBy());
+					rshDTO.setToStage(rsh.getToStage());
+					//rshDTO.setAppliedOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getSubmissionId().getCreatedDate()));
+					rshDTO.setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getCreatedDate()));
+					rshDTO.setSubmittedBy(rsh.getCreatedUser());
+//							}
+						
+					List<RequirementOfferHistory> offerHistorList = requirementOfferHistoryService.getRequirementInternalAndIsClientOfferssBySubmissionIdAndOrgLocationsId(rsh.getSubmissionId().getId(), loginOrgLocations.getId());
+					if(offerHistorList != null && !offerHistorList.isEmpty()) {
+						float clientOfferRate = 0;
+						float internalOfferRate = 0;
+						for(RequirementOfferHistory roh : offerHistorList) {
+//							System.out.println("OfferID:"+roh.getOfferId().getId() + " SubmissionID:"+roh.getSubmissionId().getId()+ " Amount:" + roh.getOfferId().getAmount() + " Status:" + roh.getOfferId().getOfferStatus());
+							if(roh.getOfferId().getOfferStatus().equalsIgnoreCase("CLIENT_OFFERACCEPTED")) {
+								clientOfferRate = conversionUtil.rateConvertToYear(roh.getOfferId().getAmount(),roh.getOfferId().getPaymentMode(),loginOrgLocations);
+							} else if(roh.getOfferId().getOfferStatus().equalsIgnoreCase("OFFERACCEPTED")) {
+								internalOfferRate = conversionUtil.rateConvertToYear(roh.getOfferId().getAmount(),roh.getOfferId().getPaymentMode(),loginOrgLocations);
+							}
+						}
+						if(clientOfferRate > 0) {
+							float finalRatePerYear = clientOfferRate-internalOfferRate;
+							rshDTO.setMarginRateYearly(String.format("%.3f", Float.valueOf(finalRatePerYear)));
+						}
+					}
+					
+					int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocations.getId(), rsh.getSubmissionId().getRequirement().getId(), "INTERVIEWED");
+					rshDTO.setNumOfInterview(interviewedCount);
+					
+						List<RequirementOffers> offersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(rsh.getSubmissionId().getId(), loginOrgLocations.getId());
+						for (RequirementOffers requirementOffers : offersList) {
+							rshDTO.setOfferId(requirementOffers.getId());
+							float rate = conversionUtil.rateConvertToYear(requirementOffers.getAmount(),requirementOffers.getPaymentMode(),loginOrgLocations);
+							rshDTO.setOfferRateforYearly(String.format("%.3f", Float.valueOf(rate)));
+							rshDTO.setOfferRate(requirementOffers.getAmount());
+							rshDTO.setPaymentType(requirementOffers.getPaymentType());
+							rshDTO.setPaymentMode(requirementOffers.getPaymentMode());
+							rshDTO.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),requirementOffers.getDateOfJoining()));
+							if(null != requirementOffers.getPositionType()){
+								rshDTO.setPositionType(requirementOffers.getPositionType());
+							}
+							if(null != requirementOffers.getFileName()){
+								rshDTO.setAttachment(requirementOffers.getFileName());
+							}
+							if("OFFERMADE".equalsIgnoreCase(rsh.getToStage())){
+								rshDTO.setAppliedOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getCreatedDate()));
+							}
+						}
+							
+						RequirementInterview reqInterview=requirementInterviewService.getinterviewBySubmissionId(rsh.getSubmissionId().getId());
+						rshDTO.setInterviewOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),reqInterview.getDateOfInterview()));
+					
+					rshDTOList.add(rshDTO);
+				}
+				responseList.setData(rshDTOList);
+			   
+				File file = null;
+			    if(requirementSubmissionHistoryDTO.getExportType().equalsIgnoreCase("pdf")) {
+			    	 file=  dynamicReport.applicantsJoinedListExportPdf(responseList,loginOrgLocations.getDateFormat(),loginOrgLocations.getOrgLocationName());
+			    }else {
+			    	file=  dynamicReport.applicantsJoinedListExportExcel(responseList,loginOrgLocations.getDateFormat(),loginOrgLocations.getOrgLocationName());
+			    }
+				
+				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				StringBuilder fileNameSB = new StringBuilder();
+				response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();	
+				if(file!= null){
+					file.delete();
+				}
+			}
+			
+			@RequestMapping(value = "/associateTerminatedReportExport")
+			public void associateTerminatedReportExport(AssociateJoineReportDTO associateJoineReportDTO,
+					@RequestParam(value="exportType", required=false) String exportType,
+					HttpServletRequest request,HttpServletResponse response) throws Exception {
+						OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+						
+						String[] tableColumns = {"employeeId","empName", "empType","hireDate","reportingManager", "terminateDate","terminatedReason","userRole", "gender", "shiftName", "deptName", "rate"};
+
+						   int sortColumnIndex = 1; //by default sorting using updated date
+						   String sortColumnOrder = "desc"; //by default descending order
+						if(associateJoineReportDTO.getOrder() != null && !associateJoineReportDTO.getOrder().isEmpty()) {
+							sortColumnIndex = Integer.parseInt(associateJoineReportDTO.getOrder().get(0).get("column"));
+							sortColumnOrder = associateJoineReportDTO.getOrder().get(0).get("dir");
+						}
+						associateJoineReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+						associateJoineReportDTO.setSortOrder(sortColumnOrder);
+						
+						Date[] freqDates = new Date[2];
+						Date startUTCDate = null;
+						Date endUTCDate = null;
+						DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+						 DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+						 DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+						 if("Custom".equalsIgnoreCase(associateJoineReportDTO.getFrequency())){
+							 Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),associateJoineReportDTO.getFromDate());
+								Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),associateJoineReportDTO.getToDate());
+								String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+								String customEndTimeStr = TZ_DF_CED.format(endTime);  
+								startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+								endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+						 }else {
+							 freqDates = reportsUtil.getJobFilterDate(associateJoineReportDTO.getFrequency(),loginOrgLocations);
+							 String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
+							 String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
+							 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+							 endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+						 }
+						 String isTerminated = Constants.YES;
+						ResponseList<AssociateJoineReportDTO> toDayReqApplicantscount =requirementSubmissionDao.getAssociateTerminateReport(associateJoineReportDTO, loginOrgLocations.getId(),startUTCDate,endUTCDate);
+						
+					File file = null;
+				    if(exportType.equalsIgnoreCase("pdf")) {
+				    	 file=  dynamicReport.associateJoinedAndTerminatedReportPdfExport(toDayReqApplicantscount,loginOrgLocations.getDateFormat(),loginOrgLocations.getOrgLocationName(),isTerminated);
+				    }else {
+				    	file=  dynamicReport.associateJoinedAndTerminatedReportExcelExport(toDayReqApplicantscount,loginOrgLocations.getDateFormat(),loginOrgLocations.getOrgLocationName(),isTerminated);
+				    }
+					
+					String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+					if (mimeType == null) {
+						mimeType = "application/octet-stream";
+					}
+					response.setContentType(mimeType);
+					StringBuilder fileNameSB = new StringBuilder();
+					response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+					response.setContentLength((int) file.length());
+					InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+					FileCopyUtils.copy(inputStream, response.getOutputStream());
+					inputStream.close();
+					response.getOutputStream().close();
+					response.getOutputStream().flush();	
+					if(file!= null){
+						file.delete();
+					}
+				}
+			
 	@RequestMapping(value = "/offerAcceptanceRateList")
 	public ResponseList<OfferAcceptanceRateDTO> getOfferAcceptanceRateList(HttpServletRequest request, 
 			@RequestParam(defaultValue = "") String selectedClients,
@@ -2163,4 +2636,72 @@ public class ReportRestController {
 		return responseList;
 	}
 		 
+			
+			@RequestMapping(value = "/getProjectsList")
+			@ResponseBody
+			public ResponseList<Projects> getProjectList(@RequestParam(value="associatesId", required=false) String associatesId,HttpServletRequest request,HttpServletResponse response)throws Exception{
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String[] associates = associatesId.split(",");
+				ResponseList<Projects> list = new ResponseList<Projects>();
+				List<Projects> projectsList = projectsService.getProjectsListByUserIDAndOrgId(associates,orgLocations.getId());
+				list.setData(projectsList);
+				return list;
+				
+			}
+			
+	@RequestMapping(value = "/prepareReport")
+	public ResponseList<AvailableAssociatesDTO> prepareReport(AvailableAssociatesDTO availableAssociatesDTO,
+			HttpServletRequest request, HttpServletResponse response) {
+		ResponseList<AvailableAssociatesDTO> responseList = new ResponseList<>();
+		try {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			responseList.setData(projectsService.getAvailableAssociatesReport(availableAssociatesDTO, orgLocations));
+			responseList.setResponse(Result.SUCCESS.name());
+			responseList.setResponseMessage(Result.SUCCESS.getValue());
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponse(Result.AWKWARD.getValue());
+			e.printStackTrace();
+		}
+		return responseList;
+	}
+		
+	@ResponseBody
+	@RequestMapping(value = "/availableAssociatereportExport")
+	public File availableAssociatereportForExport(HttpServletRequest request, HttpServletResponse response, AvailableAssociatesDTO availableAssociatesDTO) throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<AvailableAssociatesDTO> reportList = new ResponseList<>();
+		File file = null;
+		reportList.setData(projectsService.getAvailableAssociatesReport(availableAssociatesDTO, orgLocations));
+		if (reportList.getData() != null && !reportList.getData().isEmpty()) {
+
+			if (availableAssociatesDTO.getType().equalsIgnoreCase("pdf")) {
+				file = pdfUtil.availableAssociatereportReportListOfPdf(reportList.getData(), user, orgLocations);
+			} else {
+				file = projectsService.availableAssociatereportReportListOfExcel(reportList.getData(), user, orgLocations);
+			}
+		}
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+		if (file != null) {
+			file.delete();
+		}
+		return file;
+
+	}
+	
+	
+	
 }

@@ -601,19 +601,24 @@ public class CandidateServiceTest {
 			
 		}
 		
-		@Test
-		public void getMarketplacePurchaseOrder() throws Exception{
-			
-				OrgLocations orgLocations = new OrgLocations();
-				MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO = new MarketplacePurchaseSalesDTO();
-				orgLocations.setId(123l);
-				ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
-				ResponseList<MarketplacePurchaseSalesDTO> responseList1 = null;
-				when(mockCandidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO)).thenReturn(responseList);
-				responseList1 = mockCandidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO);
-				assertNotNull(responseList1);
-			
-		}
+	@Test
+	public void getMarketplacePurchaseOrder() throws Exception {
+
+		OrgLocations orgLocations = new OrgLocations();
+		MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO = new MarketplacePurchaseSalesDTO();
+		orgLocations.setId(123l);
+		ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
+		String purchaseOrderFromDate = "";
+		String purchaseOrderToDate = "";
+		Map<String, Date> dateValue = new HashMap<>();
+		ResponseList<MarketplacePurchaseSalesDTO> responseList1 = null;
+		when(mockCandidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO,
+				purchaseOrderFromDate, purchaseOrderToDate, dateValue)).thenReturn(responseList);
+		responseList1 = mockCandidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO,
+				purchaseOrderFromDate, purchaseOrderToDate, dateValue);
+		assertNotNull(responseList1);
+
+	}
 		
 		@Test
 		public void getOrderNo() throws Exception{

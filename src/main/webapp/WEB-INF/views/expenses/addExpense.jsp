@@ -1,7 +1,7 @@
- <jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -344,6 +344,13 @@ $(document).ready(function(){
 	if('${AWKWARD}' == "true"){
 		   window.location.href =  "/errorPage";
 	 }
+	if(${expenses.id !='' && expenses.id != null}) {
+		//document.getElementById("#projectMemberId").disabled = true; 
+		var projectStartDate = "${expenses.projectMemberStartDate}";
+		var projectEndDate = "${expenses.projectMemberEndDate}";
+		expensesDatePickerStartDate(projectStartDate,projectEndDate);
+		
+	}
 });
 </script>
 <script type="text/javascript">
@@ -647,14 +654,5 @@ function flushDetailsExpenses(){
 	} 
 }
 </script>
- <!-- <script>
-function clearProjectStartDate(){
-	$("#projectStartDateExpensesId").val("");
-	};
-function clearProjectEndDate(){
-		$("#projectEndDateExpensesId").val("");
-		};	
-</script>
- -->
 
 <jsp:include page="../masterFooter.jsp" />
