@@ -52,6 +52,8 @@ public class UserProfileSessionRestController {
 		 if(orgLocationsList != null && !orgLocationsList.isEmpty()) {
 			 System.out.println("Uploading orgLocations details to Couchbase starts......");
 			 for(OrgLocations orgLocations : orgLocationsList) {
+				
+			 if(orgLocations != null &&  orgLocations.getOrg() != null) {	 
 				 OrgLocationCacheDTO orgLocationDTO = userStatsCacheHelper.getOrgLocationCacheDetails(orgLocations);
 				 ObjectMapper sessionObj = new ObjectMapper();
 		         try {
@@ -63,6 +65,9 @@ public class UserProfileSessionRestController {
 				} catch (JsonProcessingException e) {
 					e.printStackTrace();
 				}
+		         
+			 }      
+		         
 			 }
 			 System.out.println("Uploading orgLocations details to Couchbase ends");
 		 }

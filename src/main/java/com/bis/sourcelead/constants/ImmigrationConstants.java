@@ -40,7 +40,9 @@ public class ImmigrationConstants {
 	
 	public static final String EMAIL_TO_LCA_MANAGER_EXPIRED = "EmailToLcaManagerExpired";
 	
+	public static final String IS_CURRENT = "Y";
 	
+	public static final String IS_CURRENT_NO = "N";
 	
 	public static final String[] IMPORT_IMMIGRATION_EXCEL_HEADERS = {"Beneficiary First Name","Beneficiary Last Name",
             "Beneficiary Email", "Phone Number", "Experience", "SSN", "I-94 Number",    "I-20 SEVIS Number If Student", "EAD Number If Student", "DOB",    
@@ -141,4 +143,9 @@ public class ImmigrationConstants {
 	
 	public static List<String> LCA_EXCEL_REFLECTION_FILEDS_LIST = Arrays.asList("lcaNo","lcaTitle", "noOfPositions","location","socCode","socOccupationTitle","jobTitle","wagesLevel","privilingWageCurrency","prevailingWage",
 			                                                                    "privilingWageRateType","startDate","endDate","lcaStatus","status");
+	public static final String LCA_DELETED = "Lca deleted";
+	
+	public static final String LCA_RE_ACTIVE = "Lca ReActive";
+	
+	public static final String LCA_IMPORTED = "Lca import";
 }
