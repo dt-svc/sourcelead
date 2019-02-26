@@ -1,59 +1,30 @@
 package com.bis.sourcelead.couchbase;
 
-import java.util.Iterator;
-
-import org.apache.commons.lang3.StringUtils;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.couchbase.connection.CouchbaseConnectionConfig;
 import com.bis.sourcelead.couchbase.connection.CouchbasePropertyPathConfiguration;
+import com.bis.sourcelead.service.CouchbaseClusterService;
 import com.couchbase.client.java.Bucket;
-import com.couchbase.client.java.Cluster;
-import com.couchbase.client.java.CouchbaseCluster;
 import com.couchbase.client.java.document.JsonDocument;
 import com.couchbase.client.java.document.json.JsonObject;
-import com.couchbase.client.java.env.CouchbaseEnvironment;
-import com.couchbase.client.java.env.DefaultCouchbaseEnvironment;
-import com.couchbase.client.java.query.N1qlQuery;
-import com.couchbase.client.java.query.N1qlQueryResult;
-import com.couchbase.client.java.query.N1qlQueryRow;
 
 
 @Component
 public class CouchbaseClient {
-	Bucket userProfileBucket;
-	Bucket userLoginSessionStoreBucket;
-	Bucket orgLocationsBucket;
-    private Cluster cluster;
-    
-    
+	
+	@Autowired
+	CouchbaseClusterService couchbaseClusterService;
+	
      ApplicationContext ctx = new AnnotationConfigApplicationContext(CouchbasePropertyPathConfiguration.class);
-	 CouchbaseConnectionConfig couchConfig = ctx.getBean(CouchbaseConnectionConfig.class);
-		 
-
-	private static final CouchbaseEnvironment ENV = DefaultCouchbaseEnvironment.builder().socketConnectTimeout(536699)
-			.connectTimeout(36678).keepAliveInterval(3600 * 30000).build();
-
-	public CouchbaseClient() {
-		if(couchConfig.getIsCouchbaseEnabled().equalsIgnoreCase("true")) {
-			cluster = CouchbaseCluster.create(ENV, couchConfig.getCouchbaseUrl());
-		}
-	}
-
-	public void shutdown() {
-		cluster.disconnect();
-	}
-	
-	
+     CouchbaseConnectionConfig couchConfig = ctx.getBean(CouchbaseConnectionConfig.class);
+   
 	public void deleteSessionDocumentsFromBucket(String key) {
 			
-		userLoginSessionStoreBucket.bucketManager().createN1qlPrimaryIndex(true, false);
+	/*	userLoginSessionStoreBucket.bucketManager().createN1qlPrimaryIndex(true, false);
 			N1qlQueryResult result = userLoginSessionStoreBucket.query(N1qlQuery.simple("SELECT meta().id FROM `userLoginSessionStore`"));
 			if(result != null) {
 				for (N1qlQueryRow row : result) {
@@ -74,21 +45,21 @@ public class CouchbaseClient {
 						e.printStackTrace();
 					}
 		        }
-			}
+			}*/
 		}
 	
 	
 
 	public void setUserProfile(String id, String key, JsonObject value) throws Exception {
 
-		userProfileBucket = cluster.openBucket(couchConfig.getUserProfileBucket(), couchConfig.getPassword());
+		Bucket userProfileBucket = couchbaseClusterService.openBucket(couchConfig.getUserProfileBucket(), couchConfig.getPassword());
 		JsonObject arthur = JsonObject.create().put(key, value);
 		userProfileBucket.upsert(JsonDocument.create(id, arthur));
 	}
 	
 	public void setOrgLocations(String id, String key, JsonObject value) throws Exception {
 		
-		orgLocationsBucket = cluster.openBucket(couchConfig.getOrgLocationsBucket(), couchConfig.getPassword());
+		Bucket orgLocationsBucket = couchbaseClusterService.openBucket(couchConfig.getOrgLocationsBucket(), couchConfig.getPassword());
 		JsonObject arthur = JsonObject.create().put(key, value);
 		orgLocationsBucket.upsert(JsonDocument.create(id, arthur));
 	}
@@ -96,7 +67,7 @@ public class CouchbaseClient {
 	
 	public Object getUserProfile(String key) {
 
-		userProfileBucket = cluster.openBucket(couchConfig.getUserProfileBucket(), couchConfig.getPassword());
+		Bucket userProfileBucket = couchbaseClusterService.openBucket(couchConfig.getUserProfileBucket(), couchConfig.getPassword());
 		if (userProfileBucket.get(key) != null) {
 			Object profileObj =  userProfileBucket.get(key).content().toString();
 			return profileObj;
@@ -110,7 +81,7 @@ public class CouchbaseClient {
 	
 	public Object getOrgLocationsDetails(String key) {
 
-		orgLocationsBucket = cluster.openBucket(couchConfig.getOrgLocationsBucket(), couchConfig.getPassword());
+		Bucket orgLocationsBucket = couchbaseClusterService.openBucket(couchConfig.getOrgLocationsBucket(), couchConfig.getPassword());
 		if (orgLocationsBucket.get(key) != null) {
 			Object orgLocObj =  orgLocationsBucket.get(key).content().toString();
 			return orgLocObj;
@@ -123,14 +94,14 @@ public class CouchbaseClient {
 	
 	public void setUserLoginSession(String id, String key, JsonObject value) throws Exception {
 
-		userLoginSessionStoreBucket = cluster.openBucket(couchConfig.getUserLoginSessionStoreBucket(), couchConfig.getPassword());
+		Bucket userLoginSessionStoreBucket = couchbaseClusterService.openBucket(couchConfig.getUserLoginSessionStoreBucket(), couchConfig.getPassword());
 		JsonObject arthur = JsonObject.create().put(key, value);
 		userLoginSessionStoreBucket.upsert(JsonDocument.create(id, arthur));
 	}
 	
 	public Object getUserLoginSession(String key) {
 
-		userLoginSessionStoreBucket = cluster.openBucket(couchConfig.getUserLoginSessionStoreBucket(), couchConfig.getPassword());
+		Bucket userLoginSessionStoreBucket = couchbaseClusterService.openBucket(couchConfig.getUserLoginSessionStoreBucket(), couchConfig.getPassword());
 		if (userLoginSessionStoreBucket.get(key) != null) {
 			Object userSessionObj =  userLoginSessionStoreBucket.get(key).content().toString();
 			return userSessionObj;
