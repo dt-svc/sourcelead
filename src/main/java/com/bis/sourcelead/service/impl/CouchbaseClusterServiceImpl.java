@@ -49,11 +49,11 @@ public class CouchbaseClusterServiceImpl implements CouchbaseClusterService{
 		    return buckets.get(bucketName);
 	}
 	
-	/*@PreDestroy
+	@PreDestroy
 	protected void clusterDisconnect() throws Throwable {
 		 System.out.println(">>>>>>>>>>Entered into clusterDisconnect() method>>>>>>>>");
 		 cluster.disconnect();
-	}*/
+	}
 
 	
 }
