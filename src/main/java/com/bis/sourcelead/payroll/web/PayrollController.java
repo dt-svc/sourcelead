@@ -308,7 +308,7 @@ public class PayrollController {
 	@RequestMapping(value = "/payrollConfiguration")
 	public ModelAndView payrollConfiguration(HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		ModelAndView model = new ModelAndView();
 		if (sessionData == null) {
@@ -316,9 +316,9 @@ public class PayrollController {
 		}
 		// sessionData.setNav(Constants.PAYROLL);
 		request.getSession().setAttribute("sessionData", sessionData);
-		if(orgLocations.getCountry().equalsIgnoreCase("India")) {
+		if("India".equalsIgnoreCase(country)) {
 			model.setViewName("indPayroll/payrollConfiguration");
-		}else if(orgLocations.getCountry().equalsIgnoreCase("United States")) {
+		}else if("United States".equalsIgnoreCase(country)) {
 			model.setViewName("payroll/payrollConfiguration");
 		}
 		model.addObject("sourceleadUrl", sourceleadUrl);
