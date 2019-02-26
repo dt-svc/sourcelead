@@ -676,10 +676,12 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 	{
 		String empId = null;
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-		WageTaxSummary  wageTaxSummary  = wageTaxSummaryDao.getEmployeeIdByUserId(candidate.getConsultantUser());
-		if(wageTaxSummary != null){
-			if(wageTaxSummary.getEmployeeId() !=null){
-				empId = wageTaxSummary.getEmployeeId();
+		if(candidate.getConsultantUser() != null) {
+			WageTaxSummary  wageTaxSummary  = wageTaxSummaryDao.getEmployeeIdByUserId(candidate.getConsultantUser());
+			if(wageTaxSummary != null){
+				if(wageTaxSummary.getEmployeeId() !=null){
+					empId = wageTaxSummary.getEmployeeId();
+				}
 			}
 		}
 		return empId;
