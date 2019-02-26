@@ -553,7 +553,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
      result = result + '<th>Email</th>';
      result = result + '<th>Phone</th>';
      result = result + '<th>On Date</th>';
-     if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
+     if('${orgLocationInfo.isLawFirm}' == 'Y'){
      result = result + '<th>Company</th>';
      }else{
      result = result + '<th>Attorney</th>'; 
@@ -906,7 +906,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	
 	function getAttorneysByOrgLocation(){
 		var type = null ;
-		if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
+		if('${orgLocationInfo.isLawFirm}' == 'Y'){
 			type = "Client";
 		}else{
 			type = "Vendor";
