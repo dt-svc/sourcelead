@@ -209,7 +209,7 @@ public class RequirementListController {
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
                 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
-		
+		Long orgId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgId");
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLoc.getId())){
 			String sourceleadShareUrl = StringUtils.removeEnd(sourceleadUrl, sourceleadUrl.substring(sourceleadUrl.lastIndexOf("/")));
@@ -217,8 +217,8 @@ public class RequirementListController {
 			model.addObject("sourceleadShareUrl", sourceleadShareUrl);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.addObject("requirement", requirement);
-			model.addObject("jobBoardList", jobBoardConfigurationService.getOrgJobBoardList(orgLoc.getOrg().getId(), true));
-			model.addObject("jobBoardAccountList", jobBoardConfigurationService.getOrgJobBoardAccountList(orgLoc.getOrg().getId(), 0, null, user.getId(), orgLoc.getId()));
+			model.addObject("jobBoardList", jobBoardConfigurationService.getOrgJobBoardList(orgId, true));
+			model.addObject("jobBoardAccountList", jobBoardConfigurationService.getOrgJobBoardAccountList(orgId, 0, null, user.getId(), orgLoc.getId()));
 			model.setViewName("requirement/releaseRequirement");
 			getReleaseManagementDetails(model, requirement, requirementUUID, orgLoc, request);
 		}else{
@@ -235,7 +235,7 @@ public class RequirementListController {
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
-	
+		Long orgId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgId");
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLoc.getId())){
 			model.addObject("jobRecommendations", "jobRecommendations");
@@ -243,8 +243,8 @@ public class RequirementListController {
 			model.addObject("sourceleadShareUrl", sourceleadShareUrl);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.addObject("requirement", requirement);
-                        model.addObject("jobBoardList", jobBoardConfigurationService.getOrgJobBoardList(orgLoc.getOrg().getId(), true));
-			model.addObject("jobBoardAccountList", jobBoardConfigurationService.getOrgJobBoardAccountList(orgLoc.getOrg().getId(), 0, null, user.getId(), orgLoc.getId()));
+                        model.addObject("jobBoardList", jobBoardConfigurationService.getOrgJobBoardList(orgId, true));
+			model.addObject("jobBoardAccountList", jobBoardConfigurationService.getOrgJobBoardAccountList(orgId, 0, null, user.getId(), orgLoc.getId()));
 			model.setViewName("requirement/requirementRelease");
                         getReleaseManagementDetails(model, requirement, requirementUUID, orgLoc, request);
 		}else{
