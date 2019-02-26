@@ -1303,7 +1303,9 @@ public class RequirementController {
 			    }
 			    
 		    }
-		}
+		}/*else if(offerStatus.equalsIgnoreCase("Rejected") && permission.equalsIgnoreCase("NO")) {
+			requirementOffersService.sendApplicantOfferRejectMail(requirementOffers);
+		}*/
 		return model;
 	}
 	

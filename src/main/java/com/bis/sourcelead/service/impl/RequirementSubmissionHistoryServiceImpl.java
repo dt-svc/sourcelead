@@ -21,6 +21,7 @@ import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OfferAcceptanceRateView;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RecruiterJobsReportView;
 import com.bis.sourcelead.entity.RecruiterReportView;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -294,6 +295,13 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 			e.printStackTrace();
 		}
 		return responseList;
+	}
+
+	@Override
+	public List<RecruiterJobsReportView> getSubmissionApplicantCountsForRecruiterJobreports(Long orgLocationId, User user,
+			Date[] searchDates, Long requirementId) throws Exception {
+		List<RecruiterJobsReportView> rjrvList = requirementSubmissionHistoryDao.getSubmissionApplicantCountsForRecruiterJobreports(orgLocationId,user,searchDates,requirementId);
+		return rjrvList;
 	}
 
 }
