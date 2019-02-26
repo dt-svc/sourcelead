@@ -1005,10 +1005,13 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	@Override
 	public CandidateVisa saveVisaDetails(ImmigrationVisaDTO immigrationVisaDTO, User user,
 			OrgLocations orgLocations, Long immigrationId, Long visaHistoryId) throws Exception {
-
 		CandidateVisa candidateVisa = null;
-		if (immigrationVisaDTO.getCandidateVisaId() != null) {
-			candidateVisa = immigrationCommonDao.getCandidateVisaDetailsById(immigrationVisaDTO.getCandidateVisaId());
+		ImmigrationVisaDTO visaDetailsDTO = null;
+		if (immigrationVisaDTO.getVisaNumber() != null && immigrationVisaDTO.getCountry() != null) {
+			visaDetailsDTO = immigrationCommonDao.getCandidateVisaDetailsByVisaNumberAndCountry
+					                (immigrationVisaDTO.getCandidateId(), immigrationVisaDTO.getVisaNumber() , immigrationVisaDTO.getCountry() );
+			if(visaDetailsDTO != null )
+			candidateVisa = immigrationCommonDao.getCandidateVisaDetailsById(visaDetailsDTO.getCandidateVisaId());
 		}
 			
 		if (candidateVisa == null) {
@@ -1078,6 +1081,17 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			visaHistory.setStatus(Constants.CANDIDATE_ACTIVE);
 			visaHistory.setCreatedBy(user);
 			visaHistory.setUpdatedBy(user);
+			Date toDayDate = new Date();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			String currentDateStr = dateFormat.format(toDayDate);
+			Date newDate = dateFormat.parse(currentDateStr);
+			Date currentDt = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+
+			if (currentDt.before(visaHistory.getValidToDate())) {
+				visaHistory.setIsCurrent(ImmigrationConstants.IS_CURRENT);
+			} else {
+				visaHistory.setIsCurrent(ImmigrationConstants.IS_CURRENT_NO);
+			}
 			visaHistory.setId(immigrationVisaDTO.getId());
 			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 			visaHistory.setUpdatedDate(currentDate);
@@ -1087,8 +1101,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			visaHistory = immigrationCommonDao.saveVisaHistoaryDetails(visaHistory);
 			// below condition is added for upload functionality for multiple visa details. if current visa comes earlier visas will be in inactive mode.
 			// for upload we are passing visa history id as null. 
-			if(immigrationVisaDTO.getId() == null && immigrationVisaDTO.getIsCurrent().equalsIgnoreCase("Y")){
-				int count= immigrationCommonDao.updateCanVisaHistoryDetails(immigrationVisaDTO.getCandidateVisaId(), visaHistory.getId());
+			if(visaHistory.getIsCurrent().equalsIgnoreCase("Y")){
+				int count= immigrationCommonDao.updateCanVisaHistoryDetails(candidateVisa.getId(), visaHistory.getId());
 				logger.debug("updated records count in visa history detials for visa id "+visaHistory.getVisaId() +" in visa history table " +count);
 				
 			}
@@ -3169,6 +3183,11 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 	public ImmigrationVisaDTO getCandidateVisaDetailsByCandidateIdAndVisaNumber(Long candidateId,
 			String visaNumber) {
 		return immigrationCommonDao.getCandidateVisaDetailsByCandidateIdAndVisaNumber(candidateId, visaNumber);
+	}
+
+	@Override
+	public ImmigrationVisaDTO getCandidateActiveVisaDetailsByVisaNumberAndCountry(Long candidateId, String visaNumber, String country) {
+		return immigrationCommonDao.getCandidateActiveVisaDetailsByVisaNumberAndCountry(candidateId, visaNumber, country);
 	}
 
 
