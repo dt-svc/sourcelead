@@ -12,7 +12,6 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		</div>
 		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/myPayrollInd">My Payroll</a> &raquo; IT Declaration</div>
 	</section>
-	<jsp:include page="../org/formHeader.jsp"></jsp:include>
 	<form action="" id="itDeclarationForm">
 		<div class="contentareaInner-styles clearfix">
 			<div class="clearfix form-horizontal minHeight_225 minHeightcol5">
@@ -38,7 +37,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 						<label class="clearfix">Associate Name</label>
 						<div class="clearfix">
 							<input type="text" class="form-control" readonly="readonly"
-								id="associateName" field-name="Associate Name" value="${user.firstName} ${user.lastName}"
+								id="associateName" field-name="Associate Name" value="${user.fullName}"
 								data-validation="required" placeholder="Associate Name">
 						</div>
 					</div>
