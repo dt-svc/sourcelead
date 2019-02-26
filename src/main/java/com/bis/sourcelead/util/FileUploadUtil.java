@@ -214,7 +214,7 @@ public class FileUploadUtil {
 	{
 		File folder = new File(staticPath);
 		folder = folder.getParentFile();
-		File file = new File(folder, type.length == 1 ? fileInfo.getFileURL() : fileInfo.getFileURL().replace(type[0], type[1]));
+		File file = new File(folder, type.length == 1 ? fileInfo.getFileURL().replaceAll(" ", "_") : fileInfo.getFileURL().replace(type[0], type[1]).replaceAll(" ", "_"));
 		File file1 = file.getParentFile();
 		if(!file.exists())
 			file1.mkdirs();
