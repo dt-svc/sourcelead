@@ -4,7 +4,11 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 
+import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.bis.sourcelead.couchbase.UserRoleSessionProfileDTO;
+import com.bis.sourcelead.service.CouchbaseClusterService;
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.CouchbaseCluster;
@@ -16,7 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ConnectCouchbaseDB {
-
+	
 /**
  * @author
  * this method is using for connect couch db externally
@@ -27,15 +31,13 @@ public void ConnectCouchbase() throws IOException, SQLException {
 	
 	try {
  
-	 System.out.println("----Connecting to test bkt statrs-----");
+	 System.out.println("----Connecting to userProfile bkt statrs-----");
 		
 	 CouchbaseEnvironment environment = DefaultCouchbaseEnvironment.builder().socketConnectTimeout(536699)
 				.connectTimeout(36678).keepAliveInterval(3600 * 30000).build();
 	 
-	 Cluster cluster = CouchbaseCluster.create(environment, "50.21.179.125");
-	 System.out.println("----Couchbase Cluster created-----");
+	 Cluster cluster = CouchbaseCluster.create(environment, "127.0.0.1");
 			 Bucket bucket = cluster.openBucket("test","root123",56678L, TimeUnit.MILLISECONDS);
-			 System.out.println("----Bucket test opened-----");
 			 
 			 ObjectMapper sessionObj = new ObjectMapper();
 	         try {
@@ -45,12 +47,19 @@ public void ConnectCouchbase() throws IOException, SQLException {
 				 JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
 				 JsonObject arthur = JsonObject.create().put("textMsg", jsonObject);
 				 bucket.upsert(JsonDocument.create("12345", arthur));
-				 System.out.println("----Record inserted into test bucket-----");
+				 
+				 Bucket bkt = cluster.openBucket("test", "root123");
+				 Object userSessionObj =  bkt.get("12345").content().toString();
+					if(userSessionObj != null) {
+						System.out.println("document retervied from couchbase");
+					}else {
+						System.out.println("document not retervied from couchbase");
+					}
 			} catch (JsonProcessingException e) {
 				e.printStackTrace();
 			}
 			 
-			 System.out.println("----Connecting to test bkt ends-----");
+			 System.out.println("----Connecting to userProfile bkt ends-----");
 		
 	}catch(Exception e){
 		e.printStackTrace();
