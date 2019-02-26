@@ -224,6 +224,10 @@ public class ImmigrationRestController {
 		ModelAndView model = new ModelAndView();
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
 				.getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
 		sessionData.setNav(Constants.Immigrations);
 
 		// CandidatePassportVisa candidatePassportVisa =
@@ -253,6 +257,10 @@ public class ImmigrationRestController {
 		ModelAndView model = new ModelAndView();
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
 				.getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
 		sessionData.setNav(Constants.My_Immigration);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("/immigration/myImmigration");
