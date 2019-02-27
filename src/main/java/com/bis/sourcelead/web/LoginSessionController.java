@@ -775,7 +775,7 @@ public class LoginSessionController {
 		if (user != null)
 			userSpocRolesList = userRoleService.getUserSpocsListByUserId(user.getId());
 
-		String ipAddress = userLoginHelper.getClientIpAddr(request);
+		String ipAddress = commonUtil.getClientIpAddr(request);
 
 		boolean alreadyVerifiedBefore = userLoginLogoutSessionService
 				.validatePreviouslyAuthenticatedByUserIdAndIpAddress(ipAddress, user.getId());
