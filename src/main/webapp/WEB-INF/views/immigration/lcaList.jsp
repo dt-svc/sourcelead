@@ -460,7 +460,7 @@ function deleteLcaListId(lcaUuid){ // only stauts updated with reason. active 1 
 	        success: function (result) {
 	        	$("#remove_lca_pop").fadeOut(200);
 	    		$(".project_inn_mask").fadeOut(200);
-	    		window.location.href = vmsdUrl+"/immigration/viewLCAList";
+	    		window.location.href = vmsUrl+"/immigration/viewLCAList";
 	        }
 		});
      }else if (reason.length >= 251){
