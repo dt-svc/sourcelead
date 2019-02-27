@@ -116,7 +116,7 @@ function prepareTemplateList(url,sourceleadUrl){
 
 <script>
 function contractTemplatePagination(url,sourceleadUrl){
-	
+	var letterHeadFlag = false;
 	var colIndex = 0;
 	/*$.fn.dataTable.moment( 'DD-MM-YYYY' );*/
     $('#contractTemplatePagination').DataTable( { 
@@ -167,10 +167,11 @@ function contractTemplatePagination(url,sourceleadUrl){
 	              "render": function ( data, type, report, meta ) {
 	            	  var result = "";
 	            	  if(report.letterHead != null && report.letterHead != '' && report.letterHead !='undefined'){
-	            	       	       result = result + '<div><span title="'+report.letterHead.letterHeadName+'">'+report.letterHead.letterHeadName+'</span></div>';
-	            	 		} else{
-	            			       result = result + '<div><span>---</span></div>';
-	            			    }
+           	       	       result = result + '<div><span title="'+report.letterHead.letterHeadName+'">'+report.letterHead.letterHeadName+'</span></div>';
+            	       	   letterHeadFlag = true;
+	            	  } else{
+           			       result = result + '<div><span>---</span></div>';
+          			    }
 		              return result;
 	              		
 	              }
@@ -196,7 +197,7 @@ function contractTemplatePagination(url,sourceleadUrl){
              	var result = "";
              	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
              	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CONTRACT_TEMPLATE\')">';
-             	result = result + '<div class="tblicons"><a href="#" title="Preview" class="mr10"><i class="fa fa-eye" onclick="previewPDF(\''+report.templateUUID+'\',\''+report.templateName+'\');" ></i></a> <a href="'+vmsUrl+'/editTemplate?templateId='+report.id+'" title="Edit"><i class="fa fa-pencil"></i></a></div>';
+             	result = result + '<div class="tblicons"><a href="#" title="Preview" class="mr10"><i class="fa fa-eye" onclick="previewPDF(\''+report.templateUUID+'\',\''+report.templateName+'\','+letterHeadFlag+');" ></i></a> <a href="'+vmsUrl+'/editTemplate?templateId='+report.id+'" title="Edit"><i class="fa fa-pencil"></i></a></div>';
              	'</sec:authorize>';
              	return result;
                 }
@@ -240,11 +241,15 @@ $("#filterContractTypePop, .statusFiler-1, .approved_pop").click(function(e) {
 </script>
 
 <script type="text/javascript">
-function previewPDF(id,tempName) {
+function previewPDF(id,tempName,letterHeadFlag) {
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
-// 	window.open(sourceleadUrl+'/testController/'+id+'/'+tempName+'','_newtab');
-	window.open(vmsUrl+'/previewContractTemplate/'+id+'/'+tempName+'','_newtab');
-}</script>
+	if(letterHeadFlag){
+		window.open(vmsUrl+'/previewContractTemplate/'+id+'/'+tempName+'','_newtab');
+	}else{
+		window.open(vmsUrl+'/testController/'+id+'/'+tempName+'','_newtab');
+	}
+}
+</script>
 
  <script>
 function downloadPdfTemplate(templateId){
