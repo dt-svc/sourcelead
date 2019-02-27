@@ -103,17 +103,7 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 		 				 }
 		 			 }
 		 			 
-		 			
-		 		    if(loginUser != null){
-		 		    	UserLoginLogoutSession userLoginSession = new UserLoginLogoutSession();
-		 		    	
-		 		    	userLoginSession.setIpaddress(ipAddress);
-		 			    userLoginSession.setUserId(loginUser);
-		 			    userLoginSession.setLoginTime(new Date());
-		 			    userLoginSession.setActionUUID(RandomStringUtils.randomAlphanumeric(16));
-		 			    userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
-		 			    request.getSession().setAttribute("userLoginSession", userLoginSession);
-		 		    }
+		 	
 		 		} catch (Exception e) {
 		 			e.printStackTrace();
 		 		} 
