@@ -1171,8 +1171,10 @@ public class ImmigrationRestController {
 		ResponseList<String> response = new ResponseList<>();
 		List<String> requiredIds = new LinkedList<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+	
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Org org =(Org) SourceLeadSessionManager.getSessionAttribute(request,"org");	
+		orgLocations.setOrg(org);
 		immigrationDTO.setStaticPath(staticPath);
 		Immigration immigration = null;
 		try {
