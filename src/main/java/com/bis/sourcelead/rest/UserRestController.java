@@ -1792,7 +1792,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	public ResponseList<AssociateBalanceLeaveDTO> getAssociateBalanceLeavesByUserId(@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		orgLocations.setOrgId(org.getId());
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ResponseList<AssociateBalanceLeaveDTO> response = new ResponseList();
 		try {
 			List<AssociateBalanceLeaveDTO> list = associateBalanceLeaveService.getAssociateBalanceLeavesByUserId(userId,orgLocations,loginUser);
