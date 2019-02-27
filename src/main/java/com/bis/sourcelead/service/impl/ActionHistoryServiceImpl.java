@@ -2,7 +2,6 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +10,7 @@ import com.bis.sourcelead.dao.ActionHistoryDao;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.ActionHistory;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.service.ActionHistoryService;
 
@@ -41,9 +41,9 @@ public class ActionHistoryServiceImpl implements ActionHistoryService{
 	}
 	
 	@Override
-	public void saveActionHistory(String methodName, UserLoginLogoutSession userLoginLogoutSession,OrgLocations orgLocations,String type) {
+	public void saveActionHistory(String methodName, UserLoginLogoutSession userLoginLogoutSession,OrgLocations orgLocations,String type,Long userId) {
 		try {
-			actionHistoryDao.saveActionHistory(methodName,userLoginLogoutSession,orgLocations,type);
+			actionHistoryDao.saveActionHistory(methodName,userLoginLogoutSession,orgLocations,type,userId);
 			} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

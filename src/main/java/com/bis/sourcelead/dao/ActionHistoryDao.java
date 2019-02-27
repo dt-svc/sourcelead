@@ -17,7 +17,7 @@ public interface ActionHistoryDao {
 	
 	public List<ActionHistory> getAllActionHistoryListByActionUUID(String actionUUID, Long orgLocation);
 	
-	public void saveActionHistory(String methodName, UserLoginLogoutSession userLoginLogoutSession,OrgLocations loginOrgLocation,String type) throws Exception;
+	public void saveActionHistory(String methodName, UserLoginLogoutSession userLoginLogoutSession,OrgLocations loginOrgLocation,String type,Long userId) throws Exception;
 
 	public List<ActionHistory> getAllOrglocationsActionHistoryList(Long userSessionId);
 	
