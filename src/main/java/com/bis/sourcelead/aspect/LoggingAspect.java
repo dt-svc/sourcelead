@@ -176,7 +176,7 @@ public class LoggingAspect {
 		}
 		System.out.println( StringUtils.isNotEmpty(actionUUID));
 
-		if(StringUtils.isNotEmpty(actionUUID) && loginOrgLocation != null) {
+		if(StringUtils.isNotBlank(actionUUID) && loginOrgLocation != null) {
 			userLoginLogoutSession = new UserLoginLogoutSession();
 		    userLoginLogoutSession.setId(actionId);
 			actionHistoryService.saveActionHistory(methodName,userLoginLogoutSession,loginOrgLocation,type,userId);
