@@ -32,7 +32,6 @@ public class CouchbaseClusterServiceImpl implements CouchbaseClusterService{
     
     @PostConstruct
     private void init() {
-    	System.out.println(">>>>>>>>>>Entered into inint() method>>>>>>>>");
         cluster =  CouchbaseCluster.create(ENV, couchbaseUrl);
     }
     
@@ -40,12 +39,10 @@ public class CouchbaseClusterServiceImpl implements CouchbaseClusterService{
 	synchronized public Bucket openBucket(String bucketName, String bucketPassword) {
 		
 		 if(!buckets.containsKey(bucketName)) {
-			 System.out.println(">>>>>>>>>>Entered into openBucket() method for open new bucket "+bucketName+ ">>>>>>>>");
 		        Bucket bucket = cluster.openBucket(bucketName, bucketPassword);
 		        buckets.put(bucketName, bucket);
 		    }else {
-		    	System.out.println(">>>>>>>>>>Entered into openBucket() method for open existing bucket "+bucketName+">>>>>>>>");
-		    }
+	    }
 		    return buckets.get(bucketName);
 	}
 	
