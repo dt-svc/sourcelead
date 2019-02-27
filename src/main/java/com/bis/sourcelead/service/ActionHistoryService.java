@@ -20,7 +20,7 @@ public interface ActionHistoryService {
 	
 	public  List<ActionHistory> getAllOrglocationsActionHistoryListActionUUID(String actionUUID) ;
 
-	public void saveActionHistory(String methodName,UserLoginLogoutSession userLoginLogoutSession,OrgLocations loginOrgLocation,String type) throws Exception;
+	public void saveActionHistory(String methodName,UserLoginLogoutSession userLoginLogoutSession,OrgLocations loginOrgLocation,String type,Long userId) throws Exception;
 
 	public UserDTO getAllActionHistoryByUserId(Long userId) throws Exception;
 
