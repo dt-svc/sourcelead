@@ -2924,8 +2924,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				submissionStages = " and rsh.submissionStatus = 'SHORTLIST'";
 			}else if(submissionStatus.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
 				submissionStages = " and rsh.submissionStatus = 'SUBMIT_TO_CLIENT'";
-			}else if(submissionStatus.equalsIgnoreCase("INTERVIEW")){
-				submissionStages = " and (rsh.submissionStatus = 'INTERVIEW' or rsh.submissionStatus = 'CLIENT_INTERVIEW')";
+			}else if(submissionStatus.equalsIgnoreCase("INTERVIEW")){  
+				submissionStages = " and (rsh.submissionStatus = 'INTERVIEW' or rsh.submissionStatus = 'CLIENT_INTERVIEW' or rsh.submissionStatus ='SELECTED_ON_INTERVIEW')";
 			}else if(submissionStatus.equalsIgnoreCase("OFFERMADE")){
 				submissionStages = " and (rsh.submissionStatus = 'OFFERMADE' OR rsh.submissionStatus = 'OFFERACCEPTED' OR rsh.submissionStatus = 'OFFERREJECTED' "
 						+ " OR rsh.submissionStatus = 'CLIENT_OFFERMADE' OR rsh.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rsh.submissionStatus = 'CLIENT_OFFERREJECTED') ";

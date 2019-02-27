@@ -18,6 +18,9 @@ public class OfferAcceptanceRateView {
 	@Column(name = "ORG_RELATION_ID")
 	private Long orgRelationId;
 
+	@Column(name = "ORG_SPOC_ID")
+	private Long orgSpocId;
+
 	@Column(name = "OFFERMADE_COUNT")
 	private BigDecimal OFFERMADE_COUNT;
 
@@ -59,6 +62,14 @@ public class OfferAcceptanceRateView {
 
 	public void setOrgRelationId(Long orgRelationId) {
 		this.orgRelationId = orgRelationId;
+	}
+
+	public Long getOrgSpocId() {
+		return orgSpocId;
+	}
+
+	public void setOrgSpocId(Long orgSpocId) {
+		this.orgSpocId = orgSpocId;
 	}
 
 	public BigDecimal getOFFERMADE_COUNT() {

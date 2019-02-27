@@ -22,6 +22,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dto.AssociateJoineReportDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetAssign;
@@ -979,6 +980,136 @@ public class DynamicReport {
 			}else{
 			dataSource.add(empId,associateName, gender, empType,departmentName,role,rate,dateOfJoin,manager,shift,probationStatus);	
 			}
+		}
+		return dataSource;
+	}
+	
+	public File applicantsJoinedListExportPdf(ResponseList<RequirementSubmissionHistoryDTO> historyDTOList, String orgLocationDateFormat,String orglocationName) throws IOException {
+		 File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("margin_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocationDateFormat,new Date())).toString(),".pdf");
+			file.setReadable(true);
+			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orglocationName).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							col.column("Applicant Name", "Applicant Name", type.stringType()),
+							col.column("Email Id", "Email Id", type.stringType()),
+							col.column("Contact Number", "Contact Number", type.stringType()),
+							col.column("Job Title", "Job Title", type.stringType()),
+							col.column("Job Rating", "Job Rating", type.stringType()),
+							col.column("Client", "Client", type.stringType()),
+							col.column("Date Of Interview", "Date Of Interview", type.stringType()),
+							col.column("Source", "Source", type.stringType()),
+							col.column("Submitted On", "Submitted On", type.stringType()),
+							col.column("Date Of Join", "Date Of Join", type.stringType()),
+							col.column("Offer Rate", "Offer Rate", type.stringType()),
+							col.column("Offer Rate Yearly", "Offer Rate Yearly", type.stringType()),
+							col.column("Margin Rate Yearly", "Margin Rate Yearly", type.stringType()),
+							col.column("Payment Term", "Payment Term", type.stringType()),
+							col.column("Generate Invoice", "Generate Invoice", type.stringType()))
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(applicantsJoinedSheetReportDataSource(historyDTOList)).toPdf(pdfExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+	
+
+	
+	public File applicantsJoinedListExportExcel(ResponseList<RequirementSubmissionHistoryDTO> historyDTOList,String orgLocationDateFormat,String orglocationName) throws IOException {
+		 File file = null;
+			try {
+			    StringBuilder fileSB = new StringBuilder();
+				file = File.createTempFile(fileSB.append("margin_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocationDateFormat,new Date())).toString(),".xls");
+				file.setReadable(true);
+				JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
+                      .setIgnorePageMargins(true)
+                      .setWhitePageBackground(false)
+                      .setRemoveEmptySpaceBetweenColumns(true);
+
+				report().setTemplate(Templates.reportTemplate)
+						.setColumnTitleStyle(Templates.columnTitleStyle)
+						.addProperty(JasperProperty.EXPORT_XLS_FREEZE_ROW, "1")
+						.ignorePageWidth()
+						.ignorePagination()
+						.columns(
+								col.column("Applicant Name", "Applicant Name", type.stringType()),
+								col.column("Email Id", "Email Id", type.stringType()),
+								col.column("Contact Number", "Contact Number", type.stringType()),
+								col.column("Job Title", "Job Title", type.stringType()),
+								col.column("Job Rating", "Job Rating", type.stringType()),
+								col.column("Client", "Client", type.stringType()),
+								col.column("Date Of Interview", "Date Of Interview", type.stringType()),
+								col.column("Source", "Source", type.stringType()),
+								col.column("Submitted On", "Submitted On", type.stringType()),
+								col.column("Date Of Join", "Date Of Join", type.stringType()),
+								col.column("Offer Rate", "Offer Rate", type.stringType()),
+								col.column("Offer Rate Yearly", "Offer Rate Yearly", type.stringType()),
+								col.column("Margin Rate Yearly", "Margin Rate Yearly", type.stringType()),
+								col.column("Payment Term", "Payment Term", type.stringType()),
+								col.column("Generate Invoice", "Generate Invoice", type.stringType()))
+						.setDataSource(applicantsJoinedSheetReportDataSource(historyDTOList)).toXls(xlsExporter);
+			} catch (DRException e) {
+				e.printStackTrace();
+			}
+		return file;
+  }
+	
+	private DRDataSource applicantsJoinedSheetReportDataSource(ResponseList<RequirementSubmissionHistoryDTO> responseList) {
+		DRDataSource dataSource = new DRDataSource( "Applicant Name", "Email Id","Contact Number","Job Title", "Job Rating","Client", "Date Of Interview","Source","Submitted On","Date Of Join","Offer Rate","Offer Rate Yearly","Margin Rate Yearly", "Payment Term","Generate Invoice");
+		for(RequirementSubmissionHistoryDTO history:responseList.getData()) {
+			
+			String jobRate = "---";
+			
+			String client = "---";
+			
+			String marginRateYearly = "---";
+			
+			String invoiceDate = "---";
+			
+			String applicantName = history.getCandidateName();
+			
+			String emailId = history.getEmail();
+		
+			String contactNumber = history.getMobilePhone();
+			
+			String jobTitle = history.getJobTitle();
+			
+			if(history.getJobRate() !=null){
+			jobRate = history.getJobRate();
+			}
+			
+			if(history.getOrgLocationName() !=null){
+		    client = history.getOrgLocationName();
+			}
+			
+			String dateOfInterview = history.getInterviewOn();
+			
+			String source = history.getCreatedUser();
+			
+			String submittedOn = history.getSubmittedOn();
+			
+			String joinedDate = history.getJoinDate();
+			
+			String offerRate = history.getOfferRate();
+			
+			String offerRateYearly = history.getOfferRateforYearly();
+			
+			if(history.getMarginRateYearly() !=null){
+			
+			marginRateYearly = history.getMarginRateYearly();
+			}
+			
+			String paymentTerm = String.valueOf(history.getPayTerm());
+			
+			if(history.getGenerateInvoice() !=null){
+			invoiceDate = history.getGenerateInvoice();
+			}
+			
+			dataSource.add(applicantName,emailId,contactNumber,jobTitle,jobRate,client,dateOfInterview,source,submittedOn,joinedDate,offerRate,offerRateYearly,marginRateYearly,paymentTerm,invoiceDate);
 		}
 		return dataSource;
 	}

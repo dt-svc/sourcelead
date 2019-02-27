@@ -43,6 +43,8 @@ public class CandidateVisa implements Serializable {
 
 	@Column(name = "COUNTRY")
 	private String country;
+	
+
 
 	@Column(name = "STATUS")
 	private Integer status;

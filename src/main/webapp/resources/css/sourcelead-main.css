@@ -9786,6 +9786,24 @@ ul.actTicketUL li.actTicketList a{
 .assigNeeImg img {
 	max-height: 100%; border-radius: 50%; position: relative; top: -5px;
 }
+.clientInterviews .ui-datepicker {
+	width: 100%;
+}
+.clientInterviews .ui-widget-header {
+	color: #a21d24 !important; background: transparent !important; font-weight: normal;
+}
+.clientInterviews .ui-state-default, .clientInterviews .ui-widget-content .ui-state-default, .clientInterviews .ui-widget-header .ui-state-default {
+	border: 1px solid #e6e6e6; color: #666; font-weight: normal; background: transparent;
+}
+.clientInterviews .ui-datepicker .ui-datepicker-header {
+	z-index: 100 !important;
+}
+input.visaCalendarInput {
+border:none; width: 20px; height: 20px; float: left; margin-right: 10px; cursor: pointer; color: transparent;
+}
+.visaCalendarInput.calendar {
+background-size: 15px !important;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
@@ -10228,3 +10246,6 @@ display: block;
  .progressCount {
  font-size: 12px; font-weight: 500; color: #368ee0; display: block; padding: 2px 0px 0px 0px;
  }
+ .chartDashboard .amcharts-main-div a {
+    display: block !important;
+}

@@ -38,6 +38,10 @@ public class ImmigrationConstants {
 	
 	public static final String SOC_TYPE = "SocDetails";
 	
+	public static final String IS_CURRENT = "Y";
+	
+	public static final String IS_CURRENT_NO = "N";
+	
 	public static final String EMAIL_TO_LCA_MANAGER_EXPIRED = "EmailToLcaManagerExpired";
 	
 	
@@ -141,4 +145,11 @@ public class ImmigrationConstants {
 	
 	public static List<String> LCA_EXCEL_REFLECTION_FILEDS_LIST = Arrays.asList("lcaNo","lcaTitle", "noOfPositions","location","socCode","socOccupationTitle","jobTitle","wagesLevel","privilingWageCurrency","prevailingWage",
 			                                                                    "privilingWageRateType","startDate","endDate","lcaStatus","status");
+	
+	public static final String LCA_DELETED = "Lca deleted";
+	
+	public static final String LCA_RE_ACTIVE = "Lca ReActive";
+
+	public static final String LCA_IMPORTED = "Lca import";
+
 }
