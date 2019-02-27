@@ -1,0 +1,439 @@
+package com.bis.sourcelead.ticketManagement.dao.impl;
+
+import java.util.Date;
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Ticket;
+import com.bis.sourcelead.entity.TicketPriority;
+import com.bis.sourcelead.entity.TicketStatus;
+import com.bis.sourcelead.entity.TicketType;
+import com.bis.sourcelead.entity.TicketCategory;
+import com.bis.sourcelead.enums.Ticket_Priority;
+import com.bis.sourcelead.enums.Ticket_Status;
+import com.bis.sourcelead.enums.Ticket_Type;
+import com.bis.sourcelead.ticketManagement.dao.TicketManagementDao;
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+
+@Repository
+@Transactional
+public class TicketManagementDaoImpl implements TicketManagementDao {
+
+	@SuppressWarnings("unused")
+	private static final Logger logger = LoggerFactory.getLogger(TicketManagementDaoImpl.class);
+
+	@Autowired
+	SessionFactory sessionFactory;
+
+	@Autowired
+	private CommonUtil commonUtil;
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations() {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from OrgLocations";
+			List<OrgLocations> orgLocationsList = session.createQuery(query).list();
+			if (orgLocationsList != null && !orgLocationsList.isEmpty()) {
+//				for (OrgLocations orgLocations : orgLocationsList) {
+				OrgLocations orgLocations = orgLocationsList.get(2083);
+				// code for adding TicketType records to OrgLocations
+				for (Ticket_Type t : Ticket_Type.values()) {
+					TicketType ticketType = new TicketType();
+					ticketType.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
+					ticketType.setName(t.name());
+					ticketType.setDescription(t.getValue());
+					ticketType.setStatus(1);
+					ticketType.setOrgLocations(orgLocations);
+					ticketType.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
+					session.saveOrUpdate(ticketType);
+				}
+
+				// code for adding TicketPriority records to OrgLocations
+				for (Ticket_Priority p : Ticket_Priority.values()) {
+					TicketPriority ticketPriority = new TicketPriority();
+					ticketPriority.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
+					ticketPriority.setName(p.name());
+					ticketPriority.setDescription(p.getValue());
+					ticketPriority.setStatus(1);
+					ticketPriority.setOrgLocations(orgLocations);
+					ticketPriority.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
+					session.saveOrUpdate(ticketPriority);
+				}
+
+				// code for adding TicketStatus records to OrgLocations
+				for (Ticket_Status s : Ticket_Status.values()) {
+					TicketStatus ticketStatus = new TicketStatus();
+					ticketStatus.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
+					ticketStatus.setName(s.name());
+					ticketStatus.setDescription(s.getValue());
+					ticketStatus.setStatus(1);
+					ticketStatus.setOrgLocations(orgLocations);
+					ticketStatus.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
+					session.saveOrUpdate(ticketStatus);
+				}
+
+//				}
+				return orgLocationsList.size();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<TicketType> getTicketTypeListByOrgLocationId(Long orgLocationId, int status) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from TicketType t where t.orgLocations.id=" + orgLocationId;
+			if(status >= 0) {
+				query += " and t.status=" + status;
+			}
+			List<TicketType> ticketTypeList = session.createQuery(query).list();
+			return ticketTypeList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public TicketType getTicketTypeById(long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(TicketType.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean saveTicketType(TicketType ticketType) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(ticketType);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	@Transactional
+	public boolean deleteTicketTypeDataById(long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			TicketType tickettype = session.get(TicketType.class, id);
+			if (tickettype != null) {
+				session.delete(tickettype);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+
+	}
+
+	@Override
+	public List<TicketCategory> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from TicketCategory t where t.orgLocations.id=" + orgLocationId;
+			
+			if(status >= 0) {
+				query += " and t.status=" + status;
+			}
+			@SuppressWarnings("unchecked")
+			List<TicketCategory> ticketCategoryList = session.createQuery(query).list();
+			return ticketCategoryList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+
+}
+
+	@Override
+	public TicketCategory getTicketCategoryById(long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(TicketCategory.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public Boolean saveTicketCategory(TicketCategory ticketCategory) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(ticketCategory);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+}
+
+	@Override
+	public Boolean deleteTicketCategoryDataById(long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			TicketCategory ticketcategory = session.get(TicketCategory.class, id);
+			if (ticketcategory != null) {
+				session.delete(ticketcategory);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public List<TicketPriority> getTicketPriorityListByOrgLocationId(Long orgLocationId,int status) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from TicketPriority t where t.orgLocations.id=" + orgLocationId;
+			if(status >= 0) {
+				query += " and t.status=" + status;
+			}
+			@SuppressWarnings("unchecked")
+			List<TicketPriority> ticketPriorityList = session.createQuery(query).list();
+			return ticketPriorityList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public TicketPriority getTicketPriorityById(long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(TicketPriority.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public Boolean saveTicketPriority(TicketPriority ticketpriority) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(ticketpriority);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public Boolean deleteTicketPriorityDataById(long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			TicketPriority ticketpriority = session.get(TicketPriority.class, id);
+			if (ticketpriority != null) {
+				session.delete(ticketpriority);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public List<TicketStatus> getTicketStatusListByOrgLocationId(Long orgLocationId, int status) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from TicketStatus t where t.orgLocations.id=" + orgLocationId;
+			if(status >= 0) {
+				query += " and t.status=" + status;
+			}
+			@SuppressWarnings("unchecked")
+			List<TicketStatus> ticketStatusList = session.createQuery(query).list();
+			return ticketStatusList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public TicketStatus getTicketStatusById(long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(TicketStatus.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public Boolean saveTicketStatus(TicketStatus ticketStatus) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(ticketStatus);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public Boolean deleteTicketStatusDataById(long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			TicketStatus ticketstatus = session.get(TicketStatus.class, id);
+			if (ticketstatus != null) {
+				session.delete(ticketstatus);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public List<Ticket> getTicketListByOrgLocationId(Long orgLocationId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Ticket t where t.orgLocations.id=" + orgLocationId;
+			@SuppressWarnings("unchecked")
+			List<Ticket> ticketList = session.createQuery(query).list();
+			return ticketList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public Ticket getTicketById(long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(Ticket.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public Boolean saveTicket(Ticket ticketManagement) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(ticketManagement);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public Boolean changeStatusTicketTypeDataById(long id,int status, OrgLocations orgLocation) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			TicketType ticketType = session.get(TicketType.class, id);
+			if (ticketType != null) {
+				ticketType.setStatus(status);
+				session.saveOrUpdate(ticketType);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public Boolean changeTicketCategoryStatusDataById(long id, int status, OrgLocations orgLocation) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			TicketCategory ticketCategory = session.get(TicketCategory.class, id);
+			if (ticketCategory != null) {
+				ticketCategory.setStatus(status);
+				session.saveOrUpdate(ticketCategory);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	@Override
+	public Boolean changeTicketPriorityStatusDataById(long id, int status, OrgLocations orgLocation) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			TicketPriority ticketPriority = session.get(TicketPriority.class, id);
+			if (ticketPriority != null) {
+				ticketPriority.setStatus(status);
+				session.saveOrUpdate(ticketPriority);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public Boolean changeTicketStatusDataById(long id, int status, OrgLocations orgLocation) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			TicketStatus ticketStatus = session.get(TicketStatus.class, id);
+			if (ticketStatus != null) {
+				ticketStatus.setStatus(status);
+				session.saveOrUpdate(ticketStatus);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Ticket t where t.orgLocations.id=" + orgLocationId;
+			/*
+			 * if(status >= 0) { query += " and t.status=" + status; }
+			 */
+			@SuppressWarnings("unchecked")
+			List<Ticket> ticketManagementList = session.createQuery(query).list();
+			return ticketManagementList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+
+	}
+

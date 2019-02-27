@@ -539,6 +539,8 @@ function preventTabkey(e){
 	          </li>
 	          </c:if>	
 		
+		<li><a href="<c:url value='${appPath}/ticketManagementList'/>" title="Ticket Management" ><i class="ticketMgIC"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
+		
         <c:if test="${SourceLeadWeb_reportsTabConfigured == 'Y'}"> 
         	 <li><a title="Reports" href="<c:url value='${appPath}/reportsDashboard'/>"><i class="headNavIcon reporIcon"></i></a></li>
          </c:if>
