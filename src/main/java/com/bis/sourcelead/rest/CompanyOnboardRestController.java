@@ -112,7 +112,10 @@ public class CompanyOnboardRestController {
 	{
 		Response<String> response = new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
+		
+		
 		try {
 			if (user != null) {
 				if (Validator.validate(federalAndStateTaxDTO)) {
