@@ -377,7 +377,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
         </div>
            
            
-           <c:if test="${SourceLeadWeb_loginCountryName == 'India'}">
+           <c:if test="${SourceLeadWeb_country == 'India'}">
            <div class="col-md-4 reportNewCta">
                   <!-- DropDown -->
 			<div class="dropdown pull-right report-dropdown">
@@ -396,7 +396,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 			</div>
                  <!-- Dropdown -->
                   <a href="${SourceLeadWeb_sourceleadUrl}/indPayrollReportList" class="block">
-                  <div class="clearfix text-center mb10"><i class="proReport"></i></div>
+                  <div class="clearfix text-center mb10"><i class="payReport"></i></div>
                   <div class="clearfix text-center"><h4>India Payroll Reports</h4></div> </a>
            </div>
         </c:if>
