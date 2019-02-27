@@ -16,6 +16,7 @@ import com.bis.sourcelead.dto.AssociateSalaryIndDTO;
 import com.bis.sourcelead.dto.AssociateSalaryPayheadIndDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssociateSalaryHistoryInd;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.Candidate;
@@ -25,9 +26,9 @@ import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
 import com.bis.sourcelead.entity.PayrollPaytype;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
+import com.bis.sourcelead.indPayroll.utill.INDPayrollCommonUtil;
 import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.INDPayrollCommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
@@ -241,8 +242,10 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 	@Override
 	public AssociateSalaryInd saveAssociateSalaryInd(AssociateSalaryIndDTO associateSalaryIndDTO, User user, OrgLocations orgLocations) throws Exception {
 		AssociateSalaryInd associateSalaryInd = null;
+		AssociateSalaryHistoryInd associateSalaryHistoryInd = new AssociateSalaryHistoryInd();
 		if(StringUtils.isNotBlank(associateSalaryIndDTO.getUuid())) {
 			associateSalaryInd = getAssociateSalaryIndByUUID(associateSalaryIndDTO.getUuid());
+			associateSalaryHistoryInd =  payrollCommonUtil.setPreviousDataToAssociateSalaryHistoryInd(associateSalaryInd, associateSalaryHistoryInd);
 			associateSalaryInd.setUpdatedDate(new Date());
 			associateSalaryInd.setUpdatedBy(user);
 		}else {
@@ -284,24 +287,6 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 			associateSalaryInd.setCandidate(null);
 		}
 		
-		/*if(associateSalaryIndDTO.getCtc() != null) {
-			associateSalaryInd.setCtc(associateSalaryIndDTO.getCtc());
-		}else {
-			associateSalaryInd.setCtc(null);
-		}
-		
-		if(associateSalaryIndDTO.getFbp() != null) {
-			associateSalaryInd.setFbp(associateSalaryIndDTO.getFbp());
-		}else {
-			associateSalaryInd.setFbp(null);
-		}
-		
-		if(associateSalaryIndDTO.getVariablePay() != null) {
-			associateSalaryInd.setVariablePay(associateSalaryIndDTO.getVariablePay());
-		}else {
-			associateSalaryInd.setVariablePay(null);
-		}*/
-		
 		associateSalaryInd.setStatus(Constants.RECORD_ACTIVE);
 		
 		
@@ -319,6 +304,7 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 						if (associateSalaryPayheadIndDTO.getPayrollPayheadId() != null) {
 							PayrollPayhead payrollPayhead = new PayrollPayhead();
 							payrollPayhead.setId(associateSalaryPayheadIndDTO.getPayrollPayheadId());
+							payrollPayhead.setShortCode(associateSalaryPayheadIndDTO.getPayrollPayheadShortCode());
 							associateSalaryPayheadInd.setPayrollPayhead(payrollPayhead);
 						}
 						if (associateSalaryPayheadIndDTO.getMonthly() != null) {
@@ -344,8 +330,13 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 		}
 		associateSalaryInd.setAssociateSalaryPayheadIndList(associateSalaryPayheadIndList);
 		
+		associateSalaryInd = payrollPayheadDao.saveAssociateSalaryInd(associateSalaryInd);
 		
-		return payrollPayheadDao.saveAssociateSalaryInd(associateSalaryInd);
+		//save History
+		associateSalaryHistoryInd =  payrollCommonUtil.setNewDataToAssociateSalaryHistoryInd(associateSalaryInd, associateSalaryHistoryInd);
+		payrollPayheadDao.saveAssociateSalaryHistoryInd(associateSalaryHistoryInd);
+		
+		return associateSalaryInd;
 	}
 	
 	@Override
@@ -363,6 +354,16 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 			throws Exception {
 		
 		return payrollPayheadDao.getPayrollPayheadByShortCodeAndOrglocation(shortCode, orgLocationId);
+	}
+
+	@Override
+	public AssociateSalaryInd saveAssociateSalaryInd(AssociateSalaryInd associateSalaryInd) throws Exception {
+		return payrollPayheadDao.saveAssociateSalaryInd(associateSalaryInd);
+	}
+	
+	@Override
+	public AssociateSalaryHistoryInd saveAssociateSalaryHistoryInd(AssociateSalaryHistoryInd associateSalaryHistoryInd) throws Exception{
+		return payrollPayheadDao.saveAssociateSalaryHistoryInd(associateSalaryHistoryInd);
 	}
 	
 }

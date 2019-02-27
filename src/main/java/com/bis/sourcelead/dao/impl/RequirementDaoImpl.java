@@ -3675,7 +3675,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			String query = "from Requirement requirement  where (requirement.orgLocationId.id =:orglocationId and (date(requirement.createdDate) BETWEEN :fromDate AND :toDate) "+subQueryTeam.toString()+") "
 					+ "and (requirement.requirementSubmissionStatus = 'OPEN' or requirement.requirementSubmissionStatus = 'NEW') and "
 					+ "( requirement.primaryRecruiterUserId.id =:recruiterUserId or requirement.managerUserId.id =:recruiterUserId "
-					+ "or :recruiterUserId IN (select ra.assignUserId.id from RequirementAssignTo ra where ra.requirementId=requirement and ra.status='1') )";
+					+ "or :recruiterUserId IN (select ra.assignUserId.id from RequirementAssignTo ra where ra.requirementId=requirement and ra.status='1' and (date(ra.createdDate) BETWEEN :fromDate AND :toDate)) )";
 			if (query1.toString() != null && !query1.toString().isEmpty()) {
 				queryObj = session.createQuery(query + "and " + "(" + query1.toString() + ")");
 			} else {

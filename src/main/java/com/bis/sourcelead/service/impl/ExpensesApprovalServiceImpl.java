@@ -625,7 +625,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 		if(expensesList.getExpenseId() !=null){
 			Expenses expenseId =expensesService.getExpenseById(expensesList.getExpId());
 			if(null != expenseId.getProjectMembers()){
-				if(null != expenseId.getProjectMembers().getEmployee()){
 					if(null != expenseId.getProjectMembers().getProjectMemberCandidteId()){
 						
 						if(null != expenseId.getExpenseId()){
@@ -673,7 +672,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 							}
 						}
 					}
-				}
+				
 				if(null != expenseId.getProjectMembers().getProjects()){
 					if(null != expenseId.getProjectMembers().getProjects().getProjectName()){
 						writeRow.createCell(6).setCellValue(expenseId.getProjectMembers().getProjects().getProjectName());

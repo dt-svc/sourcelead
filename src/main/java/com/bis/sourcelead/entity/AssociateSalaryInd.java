@@ -73,14 +73,8 @@ public class AssociateSalaryInd {
 	@Column( name ="SALARY_TYPE")
 	private String salaryType;
 	
-	/*@Column(name = "CTC")
-	private BigDecimal ctc;
-	
-	@Column(name = "FBP")
-	private BigDecimal fbp;
-	
-	@Column(name = "VARIABLE_PAY")
-	private BigDecimal variablePay;*/
+	@Column( name ="STOP_SALARY")
+	private String stopSalary;
 	
 	@Column(name = "STATUS")
 	private Integer status;
@@ -220,6 +214,14 @@ public class AssociateSalaryInd {
 
 	public void setSalaryType(String salaryType) {
 		this.salaryType = salaryType;
+	}
+
+	public String getStopSalary() {
+		return stopSalary;
+	}
+
+	public void setStopSalary(String stopSalary) {
+		this.stopSalary = stopSalary;
 	}
 
 	public Integer getStatus() {

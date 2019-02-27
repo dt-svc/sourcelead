@@ -245,7 +245,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		            StringBuilder purposeStringBuilder =new StringBuilder();
 		            StringBuilder totalStringBuilder =new StringBuilder();
 		            StringBuilder statusStringBuilder = new StringBuilder();
-		            ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId(),isGlobalUser);
+		            ProjectMembers pm= projectMembersService.getAllProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId(),isGlobalUser);
 		            
 			        orderedList.add(new ListItem(expenseId.append("Expense Id :").append(expenses.getExpenseId()).toString()));
 			        orderedList.add(new ListItem(locBuilder.append("Project :").append(pm.getProjects().getProjectName()).toString()));
@@ -596,7 +596,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		 StringBuilder projectName = new StringBuilder();	
 		 StringBuilder clientName = new StringBuilder();
 		 if(exp.getProjects() != null && exp.getMasterCandidateId() != null){
-	      ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(exp.getMasterCandidateId().getId(),exp.getProjects().getId(),orgLocations.getId(),isGlobalUser);
+	      ProjectMembers pm= projectMembersService.getAllProjectMembersByMasterCandidateIdAndProjectIdLocationId(exp.getMasterCandidateId().getId(),exp.getProjects().getId(),orgLocations.getId(),isGlobalUser);
 	      	  if(pm.getProjects().getProjectName()!= null){    
 	      		  projectName.append(pm.getProjects().getProjectName());
 	      	  }else{

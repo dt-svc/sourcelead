@@ -590,14 +590,14 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	     }
 	     
 	     if(StringUtils.isEmpty(timesheetFor) || (StringUtils.isNotEmpty(timesheetFor) && !timesheetFor.equalsIgnoreCase("reports"))) {
-	    	 fillingOptionQuery = " and ((pclient.id IN(select pc.id from ProjectClients pc where pc.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = projects.id and subPm.masterCandidateId.id = mc.id and subPm.projectClientsId.orgLocationsId.org.orgType <> 'GUEST') and pc.projectId.id = projects.id )) "
+	    	 fillingOptionQuery = " and ((pclient.id IN(select pc.id from ProjectClients pc where pc.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = projects.id and subPm.masterCandidateId.id = mc.id and subPm.projectClientsId.orgLocationsId.org.orgType <> 'GUEST' and subPm.projectClientsId.status != 0) and pc.projectId.id = projects.id )) "
 	 	     		+ "                   OR ( pm.masterCandidateId.id IN(select sah.submissionId.masterCandidateId.id from SubmissionApproverHierarchy sah where sah.submissionId.projects.id = projects.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate "
 	 	     		+ "                         and (sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REJECTED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REOPENED+"'))))";
 	 	     
 	    	 
 	 	     fillingOptionCountQuery =        "	and ("
 	 								+	 "           (pm.projectClientsId.id IN"
-	 								+	 "               (select pc.id from ProjectClients pc where pc.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = pm.projects.id and subPm.masterCandidateId.id = pm.masterCandidateId.id and subPm.projectClientsId.orgLocationsId.org.orgType <> 'GUEST') and pc.projectId.id = pm.projects.id)"
+	 								+	 "               (select pc.id from ProjectClients pc where pc.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = pm.projects.id and subPm.masterCandidateId.id = pm.masterCandidateId.id and subPm.projectClientsId.orgLocationsId.org.orgType <> 'GUEST' and subPm.projectClientsId.status != 0) and pc.projectId.id = pm.projects.id)"
 	 								+	 "           ) "
 	 								+    "        OR ( pm.masterCandidateId.id IN(select sah.submissionId.masterCandidateId.id from SubmissionApproverHierarchy sah where sah.submissionId.projects.id = pm.projects.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate "
 	 								+    "                and (sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REJECTED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REOPENED+"'))"
@@ -609,9 +609,9 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					+ "               ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId  " +globalUserQueryForApMechnism+" and "
 					+ "                  (pah.projectId.projectApprovalType ='"+Constants.PARALLEL+"' OR "
 					+ "                     (pah.projectId.projectApprovalType = '"+Constants.SEQUENTIAL+"' and   "
-					+ "                                (pah.level = '1' and pah.projectClientsId.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = pm.projects.id and subPm.masterCandidateId.id = pm.masterCandidateId.id and subPm.projectClientsId.orgLocationsId.org.orgType <> 'GUEST'))"
-					+ "                             OR  (pah.level= '1' and(((pah.projectClientsId.level)IN(select Max(subpc.level) from ProjectClients subpc where  subpc.projectId.id = pm.projects.id and subpc.status != 0)) OR (pah.projectClientsId.level+1) IN ( select sah.hierarchyId.projectClientsId.level from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and sah.hierarchyId.projectId.id = pah.projectId.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate)))"
-					+ "                             OR  (pah.level= '2' and '1' IN (select sah.hierarchyId.level from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and sah.hierarchyId.projectClientsId.id = pah.projectClientsId.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate)) "
+					+ "                                (pah.level = '1' and pah.projectClientsId.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = pm.projects.id and subPm.masterCandidateId.id = pm.masterCandidateId.id and subPm.projectClientsId.orgLocationsId.org.orgType <> 'GUEST' and subPm.projectClientsId.status != 0))"
+			    	+ "                             OR  (pah.level= '1' and (pah.projectClientsId.level+1) IN ( select sah.hierarchyId.projectClientsId.level from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and sah.submissionId.masterCandidateId.id = pm.masterCandidateId.id  and sah.hierarchyId.projectId.id = pah.projectId.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate))"
+					+ "                             OR  (pah.level= '2' and '1' IN (select sah.hierarchyId.level from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and sah.hierarchyId.projectClientsId.id = pah.projectClientsId.id and sah.submissionId.masterCandidateId.id = pm.masterCandidateId.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate)) "
 					+ "                     )          "
 					+ "                  ) "
 					+ "       )"
@@ -625,9 +625,9 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					+ "               ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId " +globalUserQueryForApMechnism+" and "
 					+ "                  (pah.projectId.projectApprovalType ='"+Constants.PARALLEL+"' OR "
 					+ "                     (pah.projectId.projectApprovalType ='"+Constants.SEQUENTIAL+"' and  "
-					+ "                               (pah.level = '1' and pah.projectClientsId.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = pm.projects.id and subPm.masterCandidateId.id = pm.masterCandidateId.id and subPm.projectClientsId.orgLocationsId.org.orgType <> 'GUEST'))"
-					+ "                             OR  (pah.level= '1' and(((pah.projectClientsId.level)IN(select Max(subpc.level) from ProjectClients subpc where  subpc.projectId.id = pm.projects.id and subpc.status != 0)) OR (pah.projectClientsId.level+1) IN ( select sah.hierarchyId.projectClientsId.level from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and sah.hierarchyId.projectId.id = pah.projectId.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate)))"
-					+ "                             OR  (pah.level= '2' and '1' IN (select sah.hierarchyId.level from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and sah.hierarchyId.projectClientsId.id = pah.projectClientsId.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate)) "
+					+ "                               (pah.level = '1' and pah.projectClientsId.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = pm.projects.id and subPm.masterCandidateId.id = pm.masterCandidateId.id and subPm.projectClientsId.orgLocationsId.org.orgType <> 'GUEST' and subPm.projectClientsId.status != 0))"
+					+ "                             OR  (pah.level= '1' and(pah.projectClientsId.level+1) IN (select sah.hierarchyId.projectClientsId.level from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and sah.submissionId.masterCandidateId.id = pm.masterCandidateId.id and sah.hierarchyId.projectId.id = pah.projectId.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate))"
+					+ "                             OR  (pah.level= '2' and '1' IN (select sah.hierarchyId.level from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and sah.hierarchyId.projectClientsId.id = pah.projectClientsId.id and sah.submissionId.masterCandidateId.id = pm.masterCandidateId.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate)) "
 					+ "                     )          "
 					+ "                  ) "
 					+ "       )"
@@ -644,7 +644,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	     }
 	    String projectForQuery = " (pm.projects.isProjectForTimeSheets = 'Y' OR pm.id IN(select sah.submissionId.projectMembers.id from SubmissionApproverHierarchy sah where sah.status != '0' and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate))";
 		String queryStr = " from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId candidate left join fetch pm.projectClientsId pclient left join fetch pclient.orgRelationId pcOrgRelation "
-				+ " where "
+				+ " where pm.status !=0 and  "
 				    +projectForQuery
 				    +globalUserQuery
 				    +frequencyQuery
@@ -661,7 +661,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Query query = session.createQuery(queryStr.toString());
 		
 		
-		String countQuery = " Select count(*) from ProjectMembers pm where  "
+		String countQuery = " Select count(*) from ProjectMembers pm where pm.status !=0 and  "
 				+projectForQuery
 				+globalUserQuery
 				+frequencyQuery
@@ -1519,7 +1519,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		return pm;  
 	}
 	
-	
+	// This method is for fetching active project members
 	@Override
 	@Transactional
 	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,Long locationId,String isGlobalUser)
@@ -1542,6 +1542,31 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		return pm;  
 	}
+	
+	// This method is for fetching all project members irrespective of their status
+	@Override
+	@Transactional
+	public ProjectMembers getAllProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,Long locationId,String isGlobalUser)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String globalUserQuery = "";
+		 if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
+		    	globalUserQuery = " pc.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :locationId)";
+		    }else {
+		    	globalUserQuery = " pc.orgLocationsId.id = :locationId";
+		    }
+		 
+		String query = " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects where  "
+				+ "pm.projects.id = :projectId and pm.masterCandidateId.id = :masterCandidateId and "+globalUserQuery+" " ;
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectId", projectId).setLong("locationId", locationId).setLong("masterCandidateId", masterCandidateId).list(); 
+		ProjectMembers pm = null;
+		if(pmList != null && !pmList.isEmpty())  {
+			pm  = pmList.iterator().next();
+		}
+		return pm;  
+	}
+	
 	
 	@Override
 	@Transactional
@@ -1922,7 +1947,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 				.append("OR user.FIRST_NAME like '%" + marginSheetReport.getSearchValue() + "%' ")
 				.append("OR user.LAST_NAME like '%" + marginSheetReport.getSearchValue() + "%' ")
 				.append("OR ol.ORG_NAME like '%" + marginSheetReport.getSearchValue() + "%' ")
-				.append("OR user.ID like '%" + marginSheetReport.getSearchValue() + "%' )");
+				.append("OR emp.EMPLOYEE_ID like '%" + marginSheetReport.getSearchValue() + "%' )");
 /*			    if(sqlDate != null) {
 			    	query1.append("OR userRole.updatedDate like '%" + sqlDate + "%' ");
 			    	query1.append("OR userRole.user.id IN(select employee.user.id from Employees employee where employee.hireDate like '%" + sqlDate + "%')");
@@ -1953,7 +1978,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
     		}
 	     
 //		String 	query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orglocationId) and ps.isClientProject = 'Y' ";
-		String 	query ="SELECT projects.ID as projectId, projects.PROJECT_NAME as projectName, user.ID as uid,(SELECT  CONCAT(user.FIRST_NAME,user.LAST_NAME)) as employeeName, pm.PAY_RATE as payRate,"
+		String 	query ="SELECT projects.ID as projectId, projects.PROJECT_NAME as projectName, emp.EMPLOYEE_ID as employeeId,(SELECT  CONCAT(user.FIRST_NAME,user.LAST_NAME)) as employeeName, pm.PAY_RATE as payRate,"
 				+" pm.PAY_RATE_TYPE as payRateType, pm.PAY_RATE_CURRENCY as payRateCurrency, pm.CURRENT_BILL_RATE as billRate, pm.RATE_TYPE as billRateType,"
 				+" pm.BILL_RATE_CURRENCY as billRateTypeCurrency, "
 				+" ol.ORG_NAME as clientName, ol.ID as orglocationId, orl.ID as orgRelationId"
@@ -1986,7 +2011,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			  mts.setEmployeeName(mm[3].toString());
 			  mts.setProjectName(mm[1].toString());
 			  mts.setPayRate((double)mm[4]);
-			  mts.setUid((BigInteger)mm[2]);
+			  mts.setEmployeeId(mm[2].toString());
 			  mts.setPayRateType(mm[5].toString());
 			  mts.setPayRateCurrency(mm[6].toString());
 			  mts.setBillRate((double)mm[7]);
