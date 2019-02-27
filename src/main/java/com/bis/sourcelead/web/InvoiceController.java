@@ -186,7 +186,7 @@ public class InvoiceController {
 			model.addObject("creditDebitNote", creditDebitNoteListDTO);
 		}
 		model.addObject("clientsList", orgClientList);
-		model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
+		model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrgId(), orgLocations.getId(),true));
 		model.addObject("approversList",approversList);
 		return model;
 		
@@ -215,7 +215,7 @@ public class InvoiceController {
 			model.addObject("creditDebitNote", creditDebitNoteListDTO);
 		}
 		model.addObject("vendorsList", orgVendorsList);
-		model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
+		model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrgId(), orgLocations.getId(),true));
 		model.addObject("approversList",approversList);
 		return model;
 		
@@ -566,7 +566,7 @@ public class InvoiceController {
 		model.setViewName("billing/createExpensesReceivableInvoice");
 		model.addObject("currentDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 		model.addObject("sourceleadUrl", sourceleadUrl);
-                model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
+                model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrgId(), orgLocations.getId(),true));
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
 	return model;
