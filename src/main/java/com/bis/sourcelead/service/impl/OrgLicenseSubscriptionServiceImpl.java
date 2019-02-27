@@ -681,7 +681,7 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 		 }else{
 			 professionalName = sb.append(user.getFirstName()).toString();
 		 }
-		 
+		 emailMessage.setFirstName(professionalName);
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromName("Sourcelead Admin");
 		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
@@ -693,7 +693,7 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 		 globalVarsMap.put("registerName", professionalName);
 		 StringBuilder verifylink = new StringBuilder();
 		 
-		 globalVarsMap.put("verifyLink",verifylink.append("<a href='").append("/app/ws/activateEmail?&token=").append(user.getVerificationUUID()).append("'>").append(sourceleadUrl).append("/activateEmail?&token=").append(user.getVerificationUUID()).append("</a>").toString()); 
+		 globalVarsMap.put("verifyLink",verifylink.append("<a href='").append(sourceleadUrl).append("/ws/activateEmail?&token=").append(user.getVerificationUUID()).append("'>").append(sourceleadUrl).append("/activateEmail?&token=").append(user.getVerificationUUID()).append("</a>").toString()); 
 
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
