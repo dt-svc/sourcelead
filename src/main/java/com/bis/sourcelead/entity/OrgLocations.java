@@ -326,6 +326,9 @@ public class OrgLocations implements Serializable{
    
     @Transient
 	private String currencyCode;
+    
+    @Transient
+   	private Long orgId;
    
    
    
@@ -1137,6 +1140,14 @@ public class OrgLocations implements Serializable{
 
 	public void setCurrencyCode(String currencyCode) {
 		this.currencyCode = currencyCode;
+	}
+
+	public Long getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
 	}
 	
 }

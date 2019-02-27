@@ -414,16 +414,19 @@ public class UserStatsCacheHelper {
 	 */
 	
 	public void saveOrgLocationDetailsToCouchbase(OrgLocations orgLocations) {
-		OrgLocationCacheDTO orgLocationDTO = getOrgLocationCacheDetails(orgLocations);
-		 ObjectMapper sessionObj = new ObjectMapper();
-         try {
-			String sessionJsonStr = sessionObj.writeValueAsString(orgLocationDTO);
-			JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
-			StringBuilder orgLocationKey = new StringBuilder();
-			orgLocationKey.append("OrgLocation_").append(orgLocationDTO.getOrgLocationCode());
-			sourceLeadSessionManager.setOrgLocationsJsonString(orgLocationKey.toString(), "userProfile", jsonObject);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+		
+		if(orgLocations != null &&  orgLocations.getOrg() != null) {	 
+			OrgLocationCacheDTO orgLocationDTO = getOrgLocationCacheDetails(orgLocations);
+			 ObjectMapper sessionObj = new ObjectMapper();
+	         try {
+				String sessionJsonStr = sessionObj.writeValueAsString(orgLocationDTO);
+				JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
+				StringBuilder orgLocationKey = new StringBuilder();
+				orgLocationKey.append("OrgLocation_").append(orgLocationDTO.getOrgLocationCode());
+				sourceLeadSessionManager.setOrgLocationsJsonString(orgLocationKey.toString(), "userProfile", jsonObject);
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -520,7 +523,7 @@ public class UserStatsCacheHelper {
 			  Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			if (countries != null) {
 				orgLocationDTO.setCurrencyCode(countries.getCurrency());
-				orgLocationDTO.setCountryCode(countries.getCode2());
+				orgLocationDTO.setCountryCode(countries.getCode());
 			}
 		 } catch (Exception e2) {
 			e2.printStackTrace();
@@ -586,7 +589,9 @@ public class UserStatsCacheHelper {
 			 if(candidate != null) {
 				 userRoleDTO.setCandidateId(String.valueOf(candidate.getId()));
 				 userRoleDTO.setCandidateUUID(candidate.getCandidateUUID());
-				 userRoleDTO.setMasterCandidateId(String.valueOf(candidate.getMasterCandidateId().getId()));
+				 if(candidate.getMasterCandidateId() != null) {
+					 userRoleDTO.setMasterCandidateId(String.valueOf(candidate.getMasterCandidateId().getId()));
+				 }
 			 }
 			
 			 StringBuilder userNameSB = new StringBuilder();
@@ -667,7 +672,7 @@ public class UserStatsCacheHelper {
 	}
 	
 	
-	public void saveLoginUserSessionStoreToCouchbase(String generatedCustomTocken,UserRole userRole,HttpServletRequest request) {
+	public void saveLoginUserSessionStoreToCouchbase(String generatedCustomTocken,UserRole userRole,String actionUUID,Long actionId,HttpServletRequest request) {
 		LoginUserSessionStoreDTO sessionDTO = new LoginUserSessionStoreDTO();
 		
 		sessionDTO.setDocumentType(Constants.COUCH_DOCUMENT_TYPE_USER_LOGIN_SESSION);
@@ -680,6 +685,8 @@ public class UserStatsCacheHelper {
 		sessionDTO.setCountry(userRole.getOrgLocations().getCountry());
 		sessionDTO.setState(userRole.getOrgLocations().getState());
 		sessionDTO.setCity(userRole.getOrgLocations().getCity());
+		sessionDTO.setActionUUID(actionUUID);
+		sessionDTO.setActionId(String.valueOf(actionId));
 	    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 	    LocalDateTime now = LocalDateTime.now();  
 	    sessionDTO.setLastUpdatedDate(dtf.format(now));
