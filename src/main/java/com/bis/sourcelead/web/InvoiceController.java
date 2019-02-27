@@ -257,7 +257,9 @@ public class InvoiceController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		ModelAndView model = new ModelAndView();
-		model.addObject("paymentAccountList", orgService.getPaymentAccountList(org.getId(), orgLocations.getId(),true));
+
+		model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrgId(), orgLocations.getId(),true));
+
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		if(null != countries){
         model.addObject("loginCountryName", countries.getName());
@@ -621,7 +623,7 @@ public class InvoiceController {
 		
 		Date currentDate = new Date();
 		String convertedDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentDate);
-        model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
+        model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrgId(), orgLocations.getId(),true));
 		model.addObject("currentDate", convertedDate);
 		model.setViewName("billing/createInvoiceForJobClosure");
 		model.addObject("sourceleadUrl", sourceleadUrl);
