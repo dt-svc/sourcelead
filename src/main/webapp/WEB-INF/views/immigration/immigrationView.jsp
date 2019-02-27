@@ -348,7 +348,7 @@ $("#packageZipfile").click(function() {
 		return;
 	$.post("downloadAllImmigrationDocsZip",{immigrationId: immigrationId}, function(data) { //  used for download all immigration doc files 
 		if(data !== "" && data.indexOf("Documents Found") === -1)
-			location.href = '${SourceLeadWeb_vmsUrl}/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
+			location.href = '${SourceLeadWeb_sourceleadUrl}/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
 		else if(data !== "" && data.indexOf("immigrationId Found") !== -1)
 			alert(data);
 		else

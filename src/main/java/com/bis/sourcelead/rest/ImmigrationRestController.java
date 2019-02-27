@@ -222,8 +222,7 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/viewImmigrationList" })
 	public ModelAndView loadImmigrationList(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
-		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
-				.getAttribute("sessionData");
+		SessionMaintainanceData sessionData = new SessionMaintainanceData();
 		sessionData.setNav(Constants.Immigrations);
 
 		// CandidatePassportVisa candidatePassportVisa =
@@ -251,8 +250,7 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/myImmigration" })
 	public ModelAndView loadMyImmigration(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
-		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
-				.getAttribute("sessionData");
+		SessionMaintainanceData sessionData = new SessionMaintainanceData();
 		sessionData.setNav(Constants.My_Immigration);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("/immigration/myImmigration");
