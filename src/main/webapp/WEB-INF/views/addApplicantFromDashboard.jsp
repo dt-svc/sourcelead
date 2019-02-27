@@ -5,8 +5,8 @@
  </c:if>
  
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
-<script src="/ats/resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-<script src="/ats/resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+<script src="/resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="/resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
