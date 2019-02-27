@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.beust.jcommander.Strings;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -173,11 +174,14 @@ public class LoggingAspect {
 		if("initMarketplacePayment".equalsIgnoreCase(methodName)){
 			type="initMarketplacePayment";
 		}
+		System.out.println( StringUtils.isNotEmpty(actionUUID));
 
-		if(actionUUID != null && loginOrgLocation != null)
-		    userLoginLogoutSession = new UserLoginLogoutSession();
+		if(StringUtils.isNotBlank(actionUUID) && loginOrgLocation != null) {
+			userLoginLogoutSession = new UserLoginLogoutSession();
 		    userLoginLogoutSession.setId(actionId);
 			actionHistoryService.saveActionHistory(methodName,userLoginLogoutSession,loginOrgLocation,type,userId);
+		}
+		    
 	}
 
 	/*@AfterThrowing(pointcut = "execution(* com.bis.sourcelead.rest.*.*(..))", throwing = "error")
