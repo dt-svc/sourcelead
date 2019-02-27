@@ -264,6 +264,7 @@ public class InvoiceController {
 		OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLocId);
 		ModelAndView model = new ModelAndView();
 		model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
+
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		if(null != countries){
         model.addObject("loginCountryName", countries.getName());
