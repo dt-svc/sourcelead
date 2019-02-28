@@ -338,7 +338,9 @@ public class TimesheetApprovalRestController {
 		
 		private TimesheetApprovalDTO getClientList(HttpServletRequest request, TimesheetApprovalDTO timesheetApprovalDTO) throws Exception
 		{
-			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			Long locationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
+			// OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			 List<ProjectClients> projectClientList = projectClientService.getProjectClientsListByLoginUserAndOrgLocationId(orgLocations.getId(), user.getId());
 	 		 Map<Long,String> clientMap = new HashMap<>();

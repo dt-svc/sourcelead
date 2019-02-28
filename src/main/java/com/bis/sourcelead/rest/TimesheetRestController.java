@@ -586,13 +586,14 @@ public class TimesheetRestController {
 		if (loginUser == null && eedDTO.getUserId() != null) {
 			loginUser = userService.getUserById(eedDTO.getUserId());
 		}
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		Long locationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
 		if (orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())) {
 			orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
 		}
-
-		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		Long candidateId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"candidateId");
+		
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 		if (candidate == null && loginUser != null && orgLocations != null) {
 			candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), orgLocations.getId());
 		}
@@ -2893,8 +2894,9 @@ public class TimesheetRestController {
 
 	private TimesheetEntryDetailsDTO getWeekDaysMapForDisplayMobile(TimesheetEntryDetailsDTO tedDTO,
 			TimeSheetSubmissionDTO tsDTO, HttpServletRequest request) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		//OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Long locationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		Map<String, List<WeekDaysDTO>> entriesMap = new LinkedHashMap<>();
@@ -4008,13 +4010,18 @@ public class TimesheetRestController {
 		if (loginUser == null && eedDTO.getUserId() != null) {
 			loginUser = userService.getUserById(eedDTO.getUserId());
 		}
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		//OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Long locationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
 		if (orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())) {
 			orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
 		}
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
-		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		//Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+       Long candidateId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"candidateId");
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		
+		
 		if (candidate == null && loginUser != null && orgLocations != null) {
 			candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), orgLocations.getId());
 		}
