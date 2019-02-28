@@ -279,8 +279,23 @@ $('#method').on('change', function() {
 		  $('#formulaOperator').val('').trigger("chosen:updated");
 		}
 	
-	function validateFormula(){
-		var formula = $("#formulaTextareaId").text();
+	function validateFormula1(){
+		var formula = $("#formulaTextareaId").val();
+		
+		for (var i = 0; i < formula.length; i++) {
+			  
+			alert(formula.charAt(i));
+			  
+			  if(/^[a-zA-Z]$/.test(formula.charAt(i))){
+				  
+					
+					alert(i);
+					
+					
+				}
+			  
+			}
+		
 		
 	}
 	

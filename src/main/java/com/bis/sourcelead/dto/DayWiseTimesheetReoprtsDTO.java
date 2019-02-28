@@ -33,6 +33,17 @@ public class DayWiseTimesheetReoprtsDTO extends SearchDTO {
 	
 	private int pageSize;
 	
+	private String associateStatus;
+	
+	
+	public String getAssociateStatus() {
+		return associateStatus;
+	}
+
+	public void setAssociateStatus(String associateStatus) {
+		this.associateStatus = associateStatus;
+	}
+
 	public String getStartDate() {
 		return startDate;
 	}

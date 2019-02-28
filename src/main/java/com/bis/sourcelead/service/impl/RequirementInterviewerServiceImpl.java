@@ -173,7 +173,7 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()+"&submissionId="+requirementSubmission.getId()+"&candidateUUID="+requirementSubmission.getCandidate().getCandidateUUID()).toString();		 
 
 		if(interviewerUser != null) {
-			emailScenerioUtil.sendNotification(actionLink, interviewerUser, requirement.getCreatedBy(), OrgLoc, notificationScenario,new HashMap<String,String>());
+			emailScenerioUtil.sendNotification(actionLink, InterviewScheduler, requirement.getCreatedBy(), OrgLoc, notificationScenario,new HashMap<String,String>());
 		}
 		 
 		}

@@ -424,4 +424,18 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 		 List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectClientId", projectClientId).list();
 	     return projectHirachyList;
 	}
+	
+	@Override
+	@Transactional
+	public String getApprovalMechanismTypeByProjectClientId(Long projectClientId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		logger.debug("In ProjectApproverHierarchy getApprovalMechanismTypeByProjectClientId method");
+		String query = "from ProjectApproverHierarchy projectHirachy where projectHirachy.projectClientsId.id = :projectClientId ";
+		List<ProjectApproverHierarchy>  projectHirachyList = session.createQuery(query.toString()).setLong("projectClientId", projectClientId).list();
+		ProjectApproverHierarchy ph = null;
+		if (projectHirachyList != null && projectHirachyList.size() > 0) {
+			ph = (ProjectApproverHierarchy) projectHirachyList.iterator().next();
+		}
+		return ph.getApprovalMechanismType();
+	}
 }

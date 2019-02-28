@@ -27,4 +27,9 @@
 				</p>
  			</div>  --%>
  			</c:forEach> 
+ 			 <c:if test="${empty immigrationActivitiesList}">
+				<tr>
+				  <td colspan="5" valign="top" class="dataTables_empty"></td>
+				</tr>
+			 </c:if>			
 		</div>

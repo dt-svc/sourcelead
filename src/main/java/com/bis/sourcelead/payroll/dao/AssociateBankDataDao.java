@@ -11,4 +11,8 @@ public interface AssociateBankDataDao {
 	AssociateBankData findAssociateBankDataByCandidateId(Long userId, OrgLocations orgLocation);
 
 	AssociateBankData findAssociateBankDataById(long id);
+
+	boolean getisActivePaymentAccountExistedByCandidateId(Long candidateId);
+	
+	AssociateBankData getAssociateBankDataByOrgLocationId(Long locationId);
 }

@@ -199,35 +199,27 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			PaysheetFrequency pf = uSPaysheetService.getPayFrequencyByUUID(payrollApproverDTO.getPayrollFrequencyUUID());
 			paySum.setPfUUID(pf.getPaySheetFrequencyUUID());
 			
-//			CopyOnWriteArraySet<EmployeePayroll> payrollList = new CopyOnWriteArraySet<EmployeePayroll>(pf.getEmployeepayroll());
+			Set<EmployeePayroll> empPayroll = pf.getEmployeepayroll();
+			/*if(!"All".equalsIgnoreCase(payrollApproverDTO.getPayType())) {
+				 empPayroll = pf.getEmployeepayroll().stream().filter(p->payrollApproverDTO.getPayType().equalsIgnoreCase(p.getPayType())).collect(Collectors.toSet());	
+			}else {
+				 empPayroll = pf.getEmployeepayroll();
+			}*/
+			
 			List<EmployeePayroll> payrollListt = null;
 			if(Constants.DRAFT.equalsIgnoreCase(payrollApproverDTO.getConfirmType())) {
-				 payrollListt = pf.getEmployeepayroll()
+				 payrollListt = empPayroll
 						.stream()
 						.filter(payy-> !Constants.APPROVED.equalsIgnoreCase(payy.getSubmitForAproverStatus()) && payy.getSubmitForAproverStatus().equalsIgnoreCase(payrollApproverDTO.getConfirmType()))
 						.collect(Collectors.toList());
 			}else {
-				 payrollListt = pf.getEmployeepayroll()
+				 payrollListt = empPayroll
 						.stream()
 						.filter(payy-> !Constants.APPROVED.equalsIgnoreCase(payy.getSubmitForAproverStatus()) && payy.getSubmitForAproverStatus().equalsIgnoreCase(payrollApproverDTO.getConfirmType()) && Integer.parseInt(payy.getPayPeriodNum()) == Integer.parseInt(payrollApproverDTO.getPayPeriodNum()))
 						.collect(Collectors.toList());
 			}
 			CopyOnWriteArraySet<EmployeePayroll> payrollList = new CopyOnWriteArraySet<>(payrollListt);
 			List<Long> payrollIds = null;
-		/*	if(!PayrollConstant.SENT.equalsIgnoreCase(payrollApproverDTO.getConfirmType())) {
-			for (EmployeePayroll payroll : payrollList) {
-				for (USPayrollDTO payrollDTO : payrollApproverDTO.getUspayroll()) {
-					if ((payrollDTO.getIsExcept() != null && "YES".equalsIgnoreCase(payrollDTO.getIsExcept())) && payrollDTO.getEmpPayrollId().longValue() == payroll.getId().longValue()) {
-						boolean s = payrollList.removeIf(x -> x.getId().longValue() == payroll.getId());
-					}
-				}
-			}
-			payrollIds = payrollList.stream().map(p -> p.getId()).collect(Collectors.toList());
-			}else {
-				List<EmployeePayroll> pidList = payrollList.stream().filter(ep->PayrollConstant.SENT.equalsIgnoreCase(ep.getSubmitForAproverStatus())).collect(Collectors.toList());
-				payrollIds = pidList.stream().map(p -> p.getId()).collect(Collectors.toList());
-			}*/
-			
 			for (EmployeePayroll payroll : payrollList) {
 				for (USPayrollDTO payrollDTO : payrollApproverDTO.getUspayroll()) {
 					if ((payrollDTO.getIsExcept() != null && "YES".equalsIgnoreCase(payrollDTO.getIsExcept())) && payrollDTO.getEmpPayrollId().longValue() == payroll.getId().longValue()) {
@@ -236,12 +228,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 				}
 			}
 			
-//			if(!PayrollConstant.SENT.equalsIgnoreCase(payrollApproverDTO.getConfirmType())) {
 				payrollIds = payrollList.stream().map(p -> p.getId()).collect(Collectors.toList());
-//				}else {
-//					List<EmployeePayroll> pidList = payrollList.stream().filter(ep->PayrollConstant.SENT.equalsIgnoreCase(ep.getSubmitForAproverStatus())).collect(Collectors.toList());
-//					payrollIds = pidList.stream().map(p -> p.getId()).collect(Collectors.toList());
-//				}
 			
 			paySum.setPid(payrollIds);
 			double regularHours = payrollList.stream().filter(p->p.getRegularHours() != null).mapToDouble(p->Double.parseDouble(p.getRegularHours())).sum();
@@ -256,16 +243,6 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			List<ContributionDTO> contriList = new ArrayList<>();
 			
 			for(EmployeePayroll payroll : payrollList) {
-				/*
-				ResponseList<DeductionDTO> dedRes = associateDeductionService.findAllDeductionSummaryByCandidateId(payroll.getCandidate().getId(), orgLocation);
-				if(dedRes.getData() != null) {
-					dedList.addAll(dedRes.getData());
-				}
-				
-				ResponseList<ContributionDTO> contributionRes = associateContributionService.findAllContributionSummaryByCandidateId(payroll.getCandidate().getId(), orgLocation);
-				if(contributionRes.getData() != null) {
-					contriList.addAll(contributionRes.getData());
-				}*/
 				// Deductions
 				List<DeductionDTO> dlist = payrollUtil.getDeductionData(payroll);
 				dedList.addAll(dlist);
@@ -336,38 +313,13 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			paySum.setEmployerOregonWcTax(emplrOregonWC);
 			paySum.setEmployerTotalPay(emplrTotalTax);
 			paySum.setConfirmType(payrollApproverDTO.getConfirmType());
-			paySum.setPpn(payrollApproverDTO.getPayPeriodNum());
-			/*Map<String, Double> dedMap = dedLis1t.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getDedAmount)));
-		     for (Map.Entry<String,Double> entry : dedMap.entrySet()) {
-		    	 DeductionDTO dedDTO = new DeductionDTO();
-		    	 dedDTO.setDeductionType(entry.getKey());
-		    	 dedDTO.setAmount(BigDecimal.valueOf(entry.getValue()));
-		    	 deduction.add(dedDTO);
-		    }
-		     if(deduction.size()>0) {
-		    	 paySum.setDeduction(deduction);
-		     }*/
+			if(StringUtils.isNotBlank(payrollApproverDTO.getPayPeriodNum())) {
+				paySum.setPpn(payrollApproverDTO.getPayPeriodNum());
+			}
 			if(dedList.size() >0) {
-//				List<DeductionDTO> preDedList = dedList.stream().filter(ded->"pretax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
-//			    List<DeductionDTO> postDedList = dedList.stream().filter(ded->"posttax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
 			    Map<String, Double> list = dedList.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getDedAmount)));
 			    paySum.setDeduction(list);
-//			    Map<String, Double> postDList = postDedList.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getPostDeductionAmt)));
-//			    response.setPostDed(postDList);
 			}
-			
-		    /* List<ContributionDTO> contribution = new ArrayList<>();
-				Map<String, Double> contriMmap = contriLis1t.stream().collect(Collectors.groupingBy(ContributionDTO::getContributionType,Collectors.summingDouble(ContributionDTO::getAmount)));
-				 for (Map.Entry<String,Double> entry : contriMmap.entrySet()) {
-					 ContributionDTO contDTO = new ContributionDTO();
-					 contDTO.setContributionType(entry.getKey());
-					 contDTO.setContributionAmount(BigDecimal.valueOf(entry.getValue()));
-					 contribution.add(contDTO);
-			    }
-				 if(contribution.size()>0) {
-			    	 paySum.setContribution(contribution);
-			     }*/
-				 
 				 if(contriList.size() >0) {
 						Map<String, Double> contribution = contriList.stream().collect(Collectors.groupingBy(ContributionDTO::getContributionType,Collectors.summingDouble(ContributionDTO::getContributionAmt)));
 						paySum.setContribution(contribution);
@@ -506,7 +458,8 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			globalVarsMap.put("frequency", dateFormat.format(savedPF.getFrequencyStartDate()).toString());	
 		}
 		
-		double amount = savedPF.getEmployeepayroll().stream().mapToDouble(p->p.getNetPay().doubleValue()).sum();
+		Set<EmployeePayroll> filteredEmpPayroll = savedPF.getEmployeepayroll().stream().filter(p->!"MISSED".equalsIgnoreCase(p.getSubmitForAproverStatus())).collect(Collectors.toSet());
+		double amount = filteredEmpPayroll.stream().mapToDouble(p->p.getNetPay().doubleValue()).sum();
 		globalVarsMap.put("amount", String.valueOf(amount));
 		
 		StringBuilder stringBuilderLoginname = new StringBuilder();

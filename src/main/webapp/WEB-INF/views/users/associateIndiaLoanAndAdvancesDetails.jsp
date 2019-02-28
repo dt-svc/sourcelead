@@ -136,7 +136,7 @@
 	                 <div class="col-md-6">
 	                   <div class="pull-right">
 	                    <button type="button" class="btn btn-success btnSuccess" id="saveLoan&AdvButton" onclick="loanAdv.saveLoanAndAdvanceDetails();" >Save & Continue</button>
-                        <button type="button" class="btn btn-default ml10" onclick="skipToSalaryTab();" >Skip</button>
+                        <button type="button" class="btn btn-default ml10" onclick="skipToLeaveTypeTab();" >Skip</button>
 	                    </div>
 	                 </div>
                 </div>
@@ -144,13 +144,22 @@
      </form:form>
   
 </div>
+<script>
+function shiftToInformationTab(){
+	 var indInformationDetails = document.getElementById("indInformationDetails");
+	 document.getElementById("indInformationDetails").removeAttribute("class");
+	 indInformationDetails.href="#tab-3";
+	 $("#indInformationDetails").click();
+}
+</script>
+
 
 <script>
-function skipToSalaryTab(){
-	var indSalaryDetails = document.getElementById("indSalaryDetails");
-	 document.getElementById("indSalaryDetails").removeAttribute("class");
-	 indSalaryDetails.href="#tab-5";
-	 $("#indSalaryDetails").click();
+function skipToLeaveTypeTab(){
+	var indSalaryDetails = document.getElementById("indLeaveTypeDetails");
+	 document.getElementById("indLeaveTypeDetails").removeAttribute("class");
+	 indSalaryDetails.href="#tab-6";
+	 $("#indLeaveTypeDetails").click();
 }
 </script>
 

@@ -14,11 +14,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.OrgLocations;
 
 @Entity
 @Table(name = "US_PAYROLL_SCHEDULE")
 public class UsPayrollSchedule {
+	
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -48,6 +50,9 @@ public class UsPayrollSchedule {
 	@Column(name = "STATUS")
 	private Integer status;
 	
+	@Column(name = "NOTIFY_BEFORE")
+	private String notifyMember;
+	
 	@Column(name = "PAYROLL_SCHEDULE_UUID")
 	private String payrollScheduleUUID;
 	
@@ -63,10 +68,10 @@ public class UsPayrollSchedule {
 	@Column(name = "UPDATED_BY")
 	private Long updatedBy;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "payrollScheduleId")
-	private Set<USPayScheduleNotifyMember> payScheduleNotifyMember;
 	
-
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "scheduleId")
+	private Set<USPayScheduleDate> scheduleDates;
+	
 	public Long getId() {
 		return id;
 	}
@@ -138,6 +143,14 @@ public class UsPayrollSchedule {
 		return status;
 	}
 
+	public String getNotifyMember() {
+		return notifyMember;
+	}
+
+	public void setNotifyMember(String notifyMember) {
+		this.notifyMember = notifyMember;
+	}
+
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
@@ -173,18 +186,6 @@ public class UsPayrollSchedule {
 	public void setUpdatedBy(Long updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-
-
-	public Set<USPayScheduleNotifyMember> getPayScheduleNotifyMember()
-	{
-		return payScheduleNotifyMember;
-	}
-
-	public void setPayScheduleNotifyMember(Set<USPayScheduleNotifyMember> payScheduleNotifyMember)
-	{
-		this.payScheduleNotifyMember = payScheduleNotifyMember;
-	}
-
 	public String getPayrollScheduleUUID()
 	{
 		return payrollScheduleUUID;
@@ -193,6 +194,16 @@ public class UsPayrollSchedule {
 	public void setPayrollScheduleUUID(String payrollScheduleUUID)
 	{
 		this.payrollScheduleUUID = payrollScheduleUUID;
+	}
+
+	public Set<USPayScheduleDate> getScheduleDates()
+	{
+		return scheduleDates;
+	}
+
+	public void setScheduleDates(Set<USPayScheduleDate> scheduleDates)
+	{
+		this.scheduleDates = scheduleDates;
 	}
 
 	

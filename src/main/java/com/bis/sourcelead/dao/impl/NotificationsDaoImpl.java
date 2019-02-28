@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -21,6 +22,7 @@ import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.NotificationDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Notifications;
+import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -281,7 +283,27 @@ public class NotificationsDaoImpl implements NotificationsDao{
 			return notificationList;
 	}
 
-	 
-	 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String getNotificationUUIDByOrgSpocId(Long orgSpocId) throws Exception {
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		String uuid = null;
+			 query ="SELECT "
+						+" UUID "
+						+" FROM"
+						+" NOTIFICATIONS NT "
+						+" WHERE"
+						+" NT.SPOC_UUID IN (SELECT OS.UUID FROM ORG_SPOC OS WHERE OS.ID = :orgSpocId)";
+			        
+			
+			   Query queryObj = session.createSQLQuery(query);
+				queryObj.setLong("orgSpocId", orgSpocId);
+				uuid = (String) queryObj.uniqueResult();
+				return uuid;
 	
+	}
+		
 }

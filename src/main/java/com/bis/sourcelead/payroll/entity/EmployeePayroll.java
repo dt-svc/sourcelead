@@ -140,6 +140,9 @@ public class EmployeePayroll {
 	
 	@Column(name = "EXPENSES_AMOUNT")
 	private BigDecimal expensesAmount;
+	
+	@Column(name = "LOP_AMOUNT")
+	private BigDecimal lopAmount;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "employeePayroll")
 	private Set<EmployeePayrollTax> usPayrollTax;
@@ -162,6 +165,10 @@ public class EmployeePayroll {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "payroll")
 	private Set<AssociateLoanAndAdvanceHistory> loanHistory;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "payroll")
+	private Set<PayrollLopHis> payrollLopHis;
+	
 	
 	
 	public Set<AssociateLoanAndAdvanceHistory> getLoanHistory() {
@@ -609,4 +616,25 @@ public class EmployeePayroll {
 	public void setAssociateTaxHistory(Set<AssociateTaxHistory> associateTaxHistory) {
 		this.associateTaxHistory = associateTaxHistory;
 	}
+
+	public Set<PayrollLopHis> getPayrollLopHis()
+	{
+		return payrollLopHis;
+	}
+
+	public void setPayrollLopHis(Set<PayrollLopHis> payrollLopHis)
+	{
+		this.payrollLopHis = payrollLopHis;
+	}
+
+	public BigDecimal getLopAmount()
+	{
+		return lopAmount;
+	}
+
+	public void setLopAmount(BigDecimal lopAmount)
+	{
+		this.lopAmount = lopAmount;
+	}
+	
 }

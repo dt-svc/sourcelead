@@ -28,4 +28,6 @@ public interface AppliedLeaveDateDao {
 
 	List<AppliedLeaveDateView> getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserIdAndStatus(Long orgLocationId, Long leaveTypeId, Date sDate, Date eDate, Long userId, String leaveStatus, Long orgId);
 
+	List<AppliedLeaveDateView> getAppliedLeaveByUserId(Long orgLocationId, Long leaveTypeId, Date startDate, Date endDate, Long userId, Long orgId);
+
 }

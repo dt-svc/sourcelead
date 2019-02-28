@@ -17,7 +17,7 @@ $(document).ready(function(){
         <h2>Direct Deposit</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/usPayrollReport'/>"> USPayroll Reports List</a>&raquo;Direct Deposit
+				href="<c:url value='${appPath}/usPayrollReport'/>"> US Payroll Reports List</a>&raquo;Direct Deposit
 		</div>
     </section>
     
@@ -64,7 +64,7 @@ $(document).ready(function(){
      <div class="clearfix"></div>
       <div class="timesheet_out" id="payrollRegister" style="display: none;">
        
-       <div class="clearfix">
+<!--        <div class="clearfix">
                   	<div class="col-md-12">
                   		<div class="row">
                   			<label class="col-md-2">No.of Check:</label>
@@ -91,7 +91,7 @@ $(document).ready(function(){
                   	</div>
 
                   	<div class="clearfix mb mt"></div>
-       </div>
+       </div> -->
        
            <div class="styleTables clearfix mt">
         <div class='reportHead'>
@@ -331,7 +331,7 @@ function directDepositData(url) {
 									"render" : function(data, type, opt,meta) {
 										
 										var result = "";
-										if(opt.employeeId != null && opt.EmployeeId != '' && opt.employeeId != 'undefined'){
+										if(opt.employeeId != null && opt.employeeId != '' && opt.employeeId != 'undefined'){
 											result = result+ ' <td><div class="tblminwidth-75">'+opt.employeeId+'</div></td>';
 										}else{
 											result = result+ ' <td><div class="tblminwidth-75">--</div></td>';
@@ -420,7 +420,7 @@ function directDepositData(url) {
 	 $("#payrollRegister").hide();
 	 $("#payGroup").val('');
 	 $("#payGroup").trigger("chosen:updated"); 
-	 $("#payPeriod").val('');
+	 $("#payPeriod").empty();
 	 $("#payPeriod").trigger("chosen:updated"); 
  }
  </script>

@@ -4,11 +4,28 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
-
+<div class="success_pop" id="selectoruser" style="display: none;">
+	<i class="fa fa-check-circle"></i><span id="userMsgDiv"></span>
+</div>
+			<c:if test="${!empty associateSalaryInd}">
+				<div class="clearfix" id="stopSalaryDiv" style="position: absolute; right: 100px; z-index: 1px">
+					<div class="pull-right mr mt">
+						<label class="textBold">Stop Salary</label>
+						<span class="toggle-button pull-right ml">
+						  <label class="switch switchSalary">
+						  	<input type="checkbox"  value="${associateSalaryInd.stopSalary == 'YES' ? 'YES' : 'NO'}" id="stopsalary" ${associateSalaryInd.stopSalary == 'YES' ? 'checked': ''}>
+						  	<div class="slider round"></div>
+						  </label>
+						</span>
+					</div>
+				</div>
+			</c:if>
 			<form:form id="associateSalary_form" name="associateSalary_form">
                 <div class="clearfix minHeightcol5 mt">
                 <div class="clearfix mb">
-                	<a class="pull-right mr anchorBlack" id="editAssociateBtn" style="display:none" onclick=""><i class="glyphicon glyphicon-pencil paddingRight"></i>Edit</a>
+                <ul class="list-unstyled list-inline pull-right">
+                	<li><a class="pull-right mr anchorBlack" id="editAssociateBtn" style="display:none" onclick=""><i class="glyphicon glyphicon-pencil paddingRight"></i>Edit</a></li>
+                </ul>
                 </div>
                 
                 <div class="col-md-5">
@@ -27,10 +44,10 @@
                     <div>
                       <select class="sel" id="payFrequency" name="payFrequency" onchange="getPayGroups();" data-validation="required" field-name="Pay Frequency">
                         <option value="">--Select--</option>
-                        <option ${associateSalaryInd.payFrequency == "Annual" ? "selected" : ""} value="Annual">Annually</option>
+<%--                         <option ${associateSalaryInd.payFrequency == "Annual" ? "selected" : ""} value="Annual">Annually</option> --%>
                         <option ${associateSalaryInd.payFrequency == "Monthly" ? "selected" : ""} value="Monthly">Monthly</option>
-                        <option ${associateSalaryInd.payFrequency == "Bi-Weekly" ? "selected" : ""} value="Bi-Weekly">Bi-Weekly</option>
-                        <option ${associateSalaryInd.payFrequency == "Weekly" ? "selected" : ""} value="Weekly">Weekly</option>
+<%--                         <option ${associateSalaryInd.payFrequency == "Bi-Weekly" ? "selected" : ""} value="Bi-Weekly">Bi-Weekly</option> --%>
+<%--                         <option ${associateSalaryInd.payFrequency == "Weekly" ? "selected" : ""} value="Weekly">Weekly</option> --%>
                       </select>
                     </div>
                   </div>
@@ -95,8 +112,9 @@
                  <div class="clearfix"></div>
                  </div>
          <div class="clearfix clients_wrap_table">
-              <div class="clearfix mb mt">
-              </div>
+         <div class="clearfix mb5">
+         	<a href="<c:url value='${appPath}/payrollPayhead'/>" class="btn btn-primary  pull-right mr"><i class="fa fa-plus paddingRight"></i>Add Payhead</a>
+         </div>
                <table>
                		<thead>
                		<tr>
@@ -127,10 +145,10 @@
 									<td><input type="checkbox"  ${checked} id="${payHead.shortCode}" name="associateSalaryPayheadIndList[${loop.index}].checked" onclick="payHeadCalculation(${payHead.id}, '${payHead.shortCode}', '${payHead.method}', '${payHead.formula}')"></td>
 									<td title="${payHead.name} (${payHead.shortCode})">${payHead.name} (${payHead.shortCode})<input type="text" style="display:none" name="associateSalaryPayheadIndList[${loop.index}].payrollPayheadId" value="${payHead.id}"></td>
 									<td>${payHead.type} <input type="text" style="display:none" id="payheadSC[${payHead.shortCode}]" value="${payHead.type}"> <input type="text" style="display:none" name="associateSalaryPayheadIndList[${loop.index}].id" value="${assoSalPayHeadId}"></td>
-									<td>${payHead.method}</td>
+									<td>${payHead.method} <input type="text" style="display:none" name="associateSalaryPayheadIndList[${loop.index}].payrollPayheadShortCode" value="${payHead.shortCode}"></td>
 									<td>${payHead.formula}</td>
-									<td><input type="text" id="payHeadMonthly[${payHead.shortCode}]" name="associateSalaryPayheadIndList[${loop.index}].monthly" value="${monthlyValue}" onblur="calculateToPerYear('${payHead.shortCode}');" value="" class="form-control input-sm" field-name="${payHead.name}" data-validation="validate_Space validate_length length1-20 validate_float" data-validation-optional="true"></td>
-									<td><input type="text" id="payHeadYearly[${payHead.shortCode}]" name="associateSalaryPayheadIndList[${loop.index}].annualy" value="${yearlyValue}" onblur="calculateToPerMonth('${payHead.shortCode}');" value="" class="form-control input-sm" field-name="${payHead.name}" data-validation="validate_Space validate_length length1-20 validate_float" data-validation-optional="true"></td>
+									<td><input type="text" id="payHeadMonthly[${payHead.shortCode}]" name="associateSalaryPayheadIndList[${loop.index}].monthly" value="${monthlyValue}" onblur="calculateToPerYear('${payHead.shortCode}');" value="" class="form-control input-sm" field-name="${payHead.name}" data-validation="validate_Space validate_length length1-20 validate_number" data-validation-optional="true"></td>
+									<td><input type="text" id="payHeadYearly[${payHead.shortCode}]" name="associateSalaryPayheadIndList[${loop.index}].annualy" value="${yearlyValue}" onblur="calculateToPerMonth('${payHead.shortCode}');" value="" class="form-control input-sm" field-name="${payHead.name}" data-validation="validate_Space validate_length length1-20 validate_number" data-validation-optional="true"></td>
 								</tr>
 							</c:forEach>
 	               		</tbody>
@@ -140,16 +158,20 @@
                 <input type="text" style="display:none" name="uuid" value="${uuid}">
                 <input type="text" style="display:none" id="status" value="${status}">
                 <input type="text" style="display:none" id="userId" name="userId" value="${candidate.consultantUser.id}">
-                  
+                  	             <div class="clearfix"></div>
                 <div class="clearfix footerstyelsNew">
                  <div class="col-md-6">
+                 <c:if test="${status == 'NEW'}">
+                 <input type="button" value="Previous" onclick="shiftToLeaveTypeDetails();" class="btn btn-default">
+			     </c:if>
 			     </div>
                   <div class="col-md-6">
                    <div class="pull-right" id="saveAssociateBtnDiv">
-                    <input value="Save" class="btn btn-success btnSuccess" type="button" onclick="saveAssociateSalaryInd();">
-                    <c:if test="${status == 'NEW' || status == 'NODATA'}">
-						<input value="Cancel" class="btn btn-default ml10" type="button" id="cancelAssociateSalaryIndBtn">                    
-                    </c:if>
+                    <input value="Save & Finish" class="btn btn-success btnSuccess" type="button" onclick="saveAssociateSalaryInd();">
+                    <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '/app/usersList'" type="button">
+<%--                    <c:if test="${status == 'NEW' || status == 'NODATA'}">						     --%>
+<!-- 						<input value="Cancel" class="btn btn-default ml10" type="button" id="cancelAssociateSalaryIndBtn">                     -->
+<%--                     </c:if>  --%>
                     </div>
                   </div>
                 </div>
@@ -165,14 +187,33 @@
             };
 </script>
 
+<script type="text/javascript">
+function shiftToLeaveTypeDetails(){
+	var indLoanAndAdvancesDetails = document.getElementById("indLeaveTypeDetails");
+	 document.getElementById("indLeaveTypeDetails").removeAttribute("class");
+	 indLoanAndAdvancesDetails.href="#tab-6";
+	 $("#indLeaveTypeDetails").click();
+}
+</script>
+
 <script>
 function calculateToPerYear(shortCode){
 	var monthly = document.getElementById("payHeadMonthly["+shortCode+"]").value;
-	document.getElementById("payHeadYearly["+shortCode+"]").value = (monthly*12).toFixed(2);
+	var floatRegex = /^((\d+(\.\d *)?)|((\d*\.)?\d+))$/;
+	if(monthly != '' && floatRegex.test(monthly)){
+		document.getElementById("payHeadYearly["+shortCode+"]").value = (monthly*12).toFixed(2);
+	}else{
+		document.getElementById("payHeadYearly["+shortCode+"]").value = "";
+	}
 }
 function calculateToPerMonth(shortCode){
 	var yearly = document.getElementById("payHeadYearly["+shortCode+"]").value;
-	document.getElementById("payHeadMonthly["+shortCode+"]").value = (yearly/12).toFixed(2);
+	var floatRegex = /^((\d+(\.\d *)?)|((\d*\.)?\d+))$/;
+	if(yearly != '' && floatRegex.test(yearly)){
+		document.getElementById("payHeadMonthly["+shortCode+"]").value = (yearly/12).toFixed(2);
+	}else{
+		document.getElementById("payHeadMonthly["+shortCode+"]").value = "";
+	}
 }
 
 function payHeadCalculation(id, shortCode, method, formula){
@@ -218,8 +259,8 @@ function payHeadCalculation(id, shortCode, method, formula){
 			    			document.getElementById("payHeadMonthly["+shortCode+"]").value = (result).toFixed(2);
 							document.getElementById("payHeadYearly["+shortCode+"]").value = (result*12).toFixed(2);
 			    		}else{
-			    			document.getElementById("payHeadMonthly["+shortCode+"]").value = ("");
-							document.getElementById("payHeadYearly["+shortCode+"]").value = ("");
+			    			document.getElementById("payHeadMonthly["+shortCode+"]").value = ("0.00");
+							document.getElementById("payHeadYearly["+shortCode+"]").value = ("0.00");
 			    		}
 			}
 		}catch(err){
@@ -245,9 +286,9 @@ function saveAssociateSalaryInd(){
 		var annualSalary = document.getElementById("annualSal").value;
 		var annualPayheadTotal = 0.00;
 		$("#phTblBody input:checked").each(function(){
-			if(document.getElementById("payheadSC["+$(this).attr('id')+"]").value == 'Earnings'){
+			/* if(document.getElementById("payheadSC["+$(this).attr('id')+"]").value == 'Earnings'){ */
 				annualPayheadTotal += parseFloat(document.getElementById("payHeadYearly["+$(this).attr('id')+"]").value);
-			}
+			/* } */
 		});
 		if(parseFloat(annualSalary) != parseFloat(annualPayheadTotal)){
 			payheadsNotMatchedAlert('mismatch');
@@ -304,13 +345,14 @@ function cnfToSaveAssociateSalaryInd(){
 			 url : sourceleadUrl+"/saveAssociateSalaryInd?"+tokenParamName+"="+tokenValue,
 			 success : function(result) {
 			  		if(status == "NEW" || status == "NODATA"){
-			  			location.replace(sourceleadUrl+"/usersList");
+			  			location.reload();
 			  		}else{
 			  			$('#editAssociateBtn').css('display','block');
 				  		$('#associateSalary_form input').attr('disabled','true');
 				  		$('#associateSalary_form select').prop('disabled', true);
 				  		$('#saveAssociateBtnDiv').css('display','none');
 				  		$('#editSectionDiv').css('display','none');
+				  		$('#stopSalaryDiv').show();
 			  		}
 			 }
 		});
@@ -329,6 +371,7 @@ $('#editAssociateBtn').click(function() {
 	$('#associateSalary_form input').removeAttr('disabled');
 	$('#associateSalary_form select').removeAttr('disabled');
 	$('#editSectionDiv').css('display','block');
+	$('#stopSalaryDiv').hide();
 });
 </script>
 
@@ -336,15 +379,8 @@ $('#editAssociateBtn').click(function() {
 $('#cancelAssociateSalaryIndBtn').click(function() {
 	var status = $("#status").val();
 	if(status == "NEW" || status == "NODATA"){
-		location.replace(sourceleadUrl+"/usersList");
-	}/* else{
-		var userId = $("#userId").val();
-		$("#tab-30").empty();  
-	    $("#tab-19").empty();
-	    $("#tab-17").empty();
-	    $("#candidateSideDiv").empty();
-		userDetails(userId);
-	} */
+		location.reload();
+	}
 });
 </script>
 
@@ -536,6 +572,7 @@ function calculatePercentSal(){
 	      dateFormat: jsDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true,
+	  	  minDate:0,
 	  	  onSelect : function(selected) {
 	  	  }
 	  });
@@ -543,4 +580,45 @@ function calculatePercentSal(){
 	  function clearEffectiveDate(){
 			$("#effectiveDate").val("");
 	  }
+	  
+	  /* $(document).ready(function(){
+		  if ($('#stopsalary').is(':checked')) {
+	        	$('.switchSalary').find('.slider').css({"background":"red"});
+	        }
+	  }); */  
+		  
+	  	$('#stopsalary').on('click',function () {
+	    	var stopsalary = 'NO';
+	    	var uuid = "${uuid}";
+	        if ($('#stopsalary').is(':checked')) {
+	        	//$('.switchSalary').find('.slider').css({"background":"red"});
+	        	stopsalary = 'YES';
+	        } else {
+	        	stopsalary = 'NO';
+	        	//$('.switchSalary').find('.slider').css({"background":"#ccc"});
+	        }
+	        $.ajax({
+	        	type : "POST",
+				url : sourceleadUrl+"/stopSalaryProcessingForEmployee?"+tokenParamName+"="+tokenValue+"&stopSalary="+stopsalary+"&uuid="+uuid,
+				success : function(result) {
+					if(result != null && result.object === "DataMissing") {
+						if($('#stopsalary').is(':checked')){
+							$('#stopsalary').prop('checked', false);
+						}else{
+							$('#stopsalary').prop('checked', true);
+						}
+   						showError("Oops! Something went wrong");
+   						$("#locationAlert").fadeIn(200);
+   				        $('#locationAlert').delay(2000).fadeOut('slow');
+   					}else{
+                    	$("#selectoruser").removeAttr("style");
+                   		$("#selectoruser").css({ display: "block" });
+                   		$("#userMsgDiv").html("Success!! Stop Salary is updated");
+                   		$("#selectoruser").fadeIn(200);
+                        $('#selectoruser').delay(2000).fadeOut('slow');
+   					}
+				}
+		 	});
+	  	});
+	  
 </script>

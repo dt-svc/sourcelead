@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -35,6 +35,7 @@ import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesListUtilDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
 import com.bis.sourcelead.dto.helper.ExpenseCategoryDTOConverter;
@@ -51,10 +52,12 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.CurrencyCodes;
 import com.bis.sourcelead.enums.PaymentModes;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.CandidateService;
@@ -70,9 +73,6 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
-
-import gherkin.lexer.Is;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
@@ -172,7 +172,7 @@ public class ExpensesRestController {
         ResponseList<Expenses> expensesList = expensesService.getAllExpenses(orgLoc, loginUser,expenseStatus, elDTO.getStartDate(), elDTO.getEndDate(),elDTO.getSearchValue(),elDTO.getStart(),elDTO.getLength());
         List<ExpensesDTO> expensesDTOList = new ArrayList<>();
         for(Expenses expenses :expensesList.getData()){
-            Set<ExpensesApproverHierarchy> hierarchyList = expenses.getApproverHierarchyList();
+            List<ExpensesApproverHierarchy> hierarchyList = expenses.getApproverHierarchyList();
             for(ExpensesApproverHierarchy eah :hierarchyList){
                 if(eah.getHierarchyId() != null && eah.getHierarchyId().getProjectClientsId() != null){
                     ProjectClients pc = eah.getHierarchyId().getProjectClientsId();
@@ -191,8 +191,8 @@ public class ExpensesRestController {
                         }
                     }
                 }
-        		Submission_Status submissionStatus = eah.getExpenseStatus();
-        		expenses.setExpenseStatus(submissionStatus);
+        		//Submission_Status submissionStatus = eah.getExpenseStatus();
+        		//expenses.setExpenseStatus(submissionStatus);
             }
             /*if(expenses.getOrgRelationId() != null && !expenses.getOrgRelationId().isEmpty()){
     			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(Long.parseLong(expenses.getOrgRelationId()));
@@ -236,20 +236,24 @@ public class ExpensesRestController {
 				continue;
 				List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projects.getId(),orgLocations.getId(),eedDTO.getIsGlobalUser());
 				Long orgLocationId = null;
+				String isGlobalAccess = eedDTO.getIsGlobalUser();
 				if(StringUtils.isNotEmpty(eedDTO.getExpenseId())){
 					OrgLocations expLoc = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getExpenseLocationCode());
 					if(expLoc != null) {
 						orgLocationId = expLoc.getId();
 					}
+					isGlobalAccess = "N";
 				}else {
 					if(projects.getOrgLocationsId() != null && projects.getOrgLocationsId().getOrg() != null && StringUtils.isNotEmpty(projects.getOrgLocationsId().getOrg().getOrgType()) && !projects.getOrgLocationsId().getOrg().getOrgType().equalsIgnoreCase(Constants.GUEST)) {
 						orgLocationId = projects.getOrgLocationsId().getId();
+						isGlobalAccess = "N";
 					}else {
 						orgLocationId = orgLocations.getId();
+						isGlobalAccess = "N";
 					}
 				}
 				
-				List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLocationId, Constants.MEMBER_ACTIVE,eedDTO.getIsGlobalUser());
+				List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLocationId, Constants.MEMBER_ACTIVE,isGlobalAccess);
 				ProjectsDTO projectDTO =ProjectDTOConverter.getProjectsDTOFromProjects(projects);
 				if (expensesCategoryList != null && !expensesCategoryList.isEmpty()) {
 					ArrayList<ExpensesCategoryListDTO> ecDTOList = new ArrayList<>();
@@ -269,7 +273,24 @@ public class ExpensesRestController {
 				ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
 				for (ProjectMembers pm : projectMembersList) {
 					ProjectMembersDTO pmDTO =ProjectMemberDTOConverter.getProjectMembersDTOFromProjectMembers(pm);
-					 HashMap<String, Date> dateMap = projectMembersHistoryService.getProjectMembersStartDateAndEndDateByProjectMemberId(pm.getId(),"");
+					
+					 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
+					 if(pmh != null) {
+						 Date pmStartDate = pmh.getProjectAssignedDate();
+						 Date pmEndDate =  null;
+						 if(pmh.getProjectTerminationDate() != null) {
+							 pmEndDate = pmh.getProjectTerminationDate();
+						 }else if(pmh.getProjectMemberId().getProjects().getEndDate() != null)	{
+							 pmEndDate = pmh.getProjectMemberId().getProjects().getEndDate();
+						 }
+						   pmDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmStartDate));
+						 if(null != pmEndDate){
+							 pmDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmEndDate));
+						  }
+					 }
+					
+				/*	
+					HashMap<String, Date> dateMap = projectMembersHistoryService.getProjectMembersStartDateAndEndDateByProjectMemberId(pm.getId(),"");
 					 if(dateMap != null && !dateMap.isEmpty()) {
 						 Date pmStartDate = dateMap.get("STARTDATE");
 						 Date pmEndDate =  dateMap.get("ENDDATE");
@@ -277,7 +298,7 @@ public class ExpensesRestController {
 						 if(null != pmEndDate){
 							 pmDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmEndDate));
 						  }
-					 }
+					 }*/
 					pmDTOList.add(pmDTO);
 					
 				}
@@ -298,7 +319,7 @@ public class ExpensesRestController {
 		}
 		else{
 			Candidate candidate = candidateService.getCandidateByConsultantUserId(eedDTO.getUserId(), orgLocations.getId());
-			List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(), candidate.getId());
+			List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(),orgLocations.getOrg().getId(),candidate.getId());
 			if (projectMembersList != null && !projectMembersList.isEmpty()) {
 				
 				ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
@@ -317,19 +338,23 @@ public class ExpensesRestController {
 						}
 					}
 					Long orgLocationId = null;
+					String isGlobalAccess = eedDTO.getIsGlobalUser();
 					if(StringUtils.isNotEmpty(eedDTO.getExpenseId())){
 						OrgLocations expLoc = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getExpenseLocationCode());
 						if(expLoc != null) {
 							orgLocationId = expLoc.getId();
 						}
+						isGlobalAccess = "N";
 					}else {
 						if(pm.getProjects().getOrgLocationsId() != null && pm.getProjects().getOrgLocationsId().getOrg() != null && StringUtils.isNotEmpty(pm.getProjects().getOrgLocationsId().getOrg().getOrgType()) && !pm.getProjects().getOrgLocationsId().getOrg().getOrgType().equalsIgnoreCase(Constants.GUEST)) {
 							orgLocationId = pm.getProjects().getOrgLocationsId().getId();
+							isGlobalAccess = "N";
 						}else {
 							orgLocationId = orgLocations.getId();
+							isGlobalAccess = "N";
 						}
 					}
-					List<ExpensesCategory> expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLocationId, "1",eedDTO.getIsGlobalUser());
+					List<ExpensesCategory> expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLocationId, "1",isGlobalAccess);
 					if (expensesCategoryList != null && !expensesCategoryList.isEmpty()) {
 						ArrayList<ExpensesCategoryListDTO> ecDTOList = new ArrayList<>();
 						for (ExpensesCategory ec : expensesCategoryList) {
@@ -342,8 +367,8 @@ public class ExpensesRestController {
 						pmDTO.setExpenseId(eedDTO.getExpenseId());
 					}
 					else{
-						//String expenseId = addExpensesService.getExpenseId(pm.getProjects().getOrgLocationsId());
-						String expenseId = addExpensesService.getExpenseId(orgLocations);
+						OrgLocations projLoc = orgLocationService.getOrgLocations(orgLocationId);
+						String expenseId = addExpensesService.getExpenseId(projLoc);
 						pmDTO.setExpenseId(expenseId);
 					}
 					 if(pm.getProjectClientsId() != null &&  pm.getProjectClientsId().getOrgRelationId() != null){
@@ -356,10 +381,15 @@ public class ExpensesRestController {
 				    	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(pm.getProjectClientsId().getOrgRelationId().getId());
 				    	 pmDTO.setOrgRelationUUID(orgRelations.getUUID());
 				    }
-					 HashMap<String, Date> dateMap = projectMembersHistoryService.getProjectMembersStartDateAndEndDateByProjectMemberId(pm.getId(),"");
-					 if(dateMap != null && !dateMap.isEmpty()) {
-						 Date pmStartDate = dateMap.get("STARTDATE");
-						 Date pmEndDate =  dateMap.get("ENDDATE");
+					 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
+					 if(pmh != null) {
+						 Date pmStartDate = pmh.getProjectAssignedDate();
+						 Date pmEndDate =  null;
+						 if(pmh.getProjectTerminationDate() != null) {
+							 pmEndDate = pmh.getProjectTerminationDate();
+						 }else if(pmh.getProjectMemberId().getProjects().getEndDate() != null)	{
+							 pmEndDate = pmh.getProjectMemberId().getProjects().getEndDate();
+						 }
 						   pmDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmStartDate));
 						 if(null != pmEndDate){
 							 pmDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmEndDate));
@@ -662,4 +692,31 @@ public class ExpensesRestController {
 		}
 		return expApperoverHierarchy;
 	}
+	
+	
+
+	@RequestMapping(value = "/updateBillingStatus")
+	@ResponseBody
+	public Response<Boolean> changeExpenseBillingStatus(HttpServletRequest request,@RequestParam(value = "expenseId", required = false) long expenseId, @RequestParam(value = "billingStatus", required = false) String billingStatus)
+		{
+		Response<Boolean> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				response.setObject((Boolean) expensesService.changeExpenseBillingStatus(expenseId,billingStatus));
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+	
+	
+	
 }

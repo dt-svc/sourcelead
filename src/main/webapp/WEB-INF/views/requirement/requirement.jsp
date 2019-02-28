@@ -1986,7 +1986,7 @@ $(document).ready(function () {
 								<div id="timesheetDocumentsId"
 									class="timesheetDocs timesheetDocs-custom jobdocsCustom">
 									<div
-										class="col-md-8 commentFile timesheet_week_comm onboardDocs">
+										class="col-md-8 timesheet_week_comm onboardDocs width100percnt">
 										<span class="uploadAttachments">
 											<div id="jobLocationsList"></div>
 										</span>
@@ -2408,16 +2408,16 @@ $(document).ready(function () {
 
 <div id="divLocTd1" style="display: none; float: left;">
 	<div class='positionRelative' id="locationErrMsgREPLACEROWID">
-		<input type="text" placeholder="Location"
+		 <input type="text" placeholder="Location"
 			onclick="addLocationAuto('REPLACEROWIDaddlocation','REPLACEROWID','REPLACEROWIDlongitude','REPLACEROWIDlatitude')"
 			class="form-control joblocinput" id="REPLACEROWIDaddlocation"
 			name="locationInfo[REPLACEROWID].locationName"
-			data-validation="required" field-name="Location">
+			data-validation="required" field-name="Location"> 
 		<div class="fa fa-refresh btn btn-primary refresh-icon" title="Clear"
 			onClick="refreshLocation('REPLACEROWID');"></div>
-		<input type="hidden" name="locationInfo[REPLACEROWID].country"
+		 <input type="hidden" name="locationInfo[REPLACEROWID].country"
 			id="REPLACEROWIDcountry"> <input type="hidden"
-			name="locationInfo[REPLACEROWID].state" id="REPLACEROWIDstate">
+			name="locationInfo[REPLACEROWID].state" id="REPLACEROWIDstate"> 
 		<input type="hidden" name="locationInfo[REPLACEROWID].city"
 			id="REPLACEROWIDcity"> <input type="hidden"
 			name="locationInfo[REPLACEROWID].zipcode" id="REPLACEROWIDzipcode">
@@ -4174,7 +4174,7 @@ function getJobLocations(){
 		         	 result = result +"<input type='hidden' name='savedlocationsMaxRowNumber'  id='savedlocationsMaxRowNumber' value='"+locCount+"' />";
 		        	 result = result +"<input type='hidden' name='locationsMaxRowNumber'  id='locationsMaxRowNumber' value='1' />";
 		             result = result +"<input type='hidden' id='locationsRowCount' value='1' />";
-		        	 result = result +"<table class='timesheetAttachment'  id='locationTable' cellpadding='0' cellspacing='0'>";
+		        	 result = result +"<table class='timesheetAttachment'  id='locationTable' cellpadding='0' cellspacing='0' style='width:108% !important;'>";
 		        	 result = result +"<tr id='divAttachmentTsRow0'>";
 		        	 result = result +"<td>";
 		        	 result = result +"<div class='positionRelative mt5'>";
@@ -4422,8 +4422,12 @@ function getJoinersAmountType(e){
 		 var x = document.getElementById("nofJoinersDiv["+rId+"].rowId");
 		 $(x).find("p.jquery_form_error_message").remove();
 		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").value = "";
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").removeAttribute('field-name');
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").setAttribute("field-name", "Amount");
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").removeAttribute('placeholder');
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").setAttribute("placeholder", "Amount");
 		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").removeAttribute('data-validation');
-		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").setAttribute("data-validation", "validate_Space validate_length length1-10 validate_int");
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").setAttribute("data-validation", "required validate_Space validate_length length1-10 validate_int");
 		 
 	 } 
 	 
@@ -4440,8 +4444,12 @@ function getJoinersAmountType(e){
 		 var x = document.getElementById("nofJoinersDiv["+rId+"].rowId");
 		 $(x).find("p.jquery_form_error_message").remove();
 		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").value= "";
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").removeAttribute('field-name');
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").setAttribute("field-name", "Percentage");
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").removeAttribute('placeholder');
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").setAttribute("placeholder", "Percentage");
 		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").removeAttribute('data-validation');
-		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").setAttribute("data-validation", "validate_Space validate_length length1-2 validate_int");
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").setAttribute("data-validation", "required validate_Space validate_between between0-100 validate_int");
 	 }
 }
 

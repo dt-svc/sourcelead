@@ -137,9 +137,8 @@ public interface TaxDao {
 
 	public void saveTaxSubmissionMaster(SourceleadTaxSubmissionMaster sourceleadTaxSubmissionMaster);
 
+	public List<Tds> getTDSListByFinancialYear(String financialYear);
 	
-
-
-
+	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmissionByUserIdOrgLocationAndFinancialYear(Long userId, Long orgLocationId, String financialYear);
 
 }

@@ -127,5 +127,20 @@ public class ExpenseProjectApproverHierarchyDaoImpl implements ExpenseProjectApp
 		}
 		return ph;
 	}
+
+	@Override
+	@Transactional
+	public String getExpenseApprovalMechanismTypeByProjectClientId(Long projectClientId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		logger.debug("In ExpenseProjectApproverHierarchy getProjectApproverByProjectIdAndLevel method");
+		String query = "from ExpenseProjectApproverHierarchy projectHirachy where projectHirachy.projectClientsId.id = :projectClientId ";
+		Collection<ExpenseProjectApproverHierarchy> projectApproverHierarchies = session.createQuery(query.toString()).setLong("projectClientId", projectClientId).list();
+
+		ExpenseProjectApproverHierarchy ph = null;
+		if (projectApproverHierarchies != null && projectApproverHierarchies.size() > 0) {
+			ph = (		ExpenseProjectApproverHierarchy) projectApproverHierarchies.iterator().next();
+		}
+		return ph.getApprovalMechanismType();
+	}
 	
 }

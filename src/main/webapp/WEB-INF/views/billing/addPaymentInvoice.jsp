@@ -23,10 +23,10 @@
     	 			<div class="col-md-6 mb">
     	 					<label class="col-md-3">Client<span class="text-danger paddingLeft">*</span></label>
     	 					<div class="col-md-9">
-    	 						<select class="form-control chosen-select" id="client" name="client" field-name="Client" onchange="getInvoiceList()" data-validation="required" >
+    	 						<select class="form-control chosen-select" id="client" name="client" field-name="Client" onchange="getInvoiceList();getInvoiceTemplateList();" data-validation="required" >
 		                        <option value="">-Select Client-</option>
 		                        <c:forEach var="clients" items="${clientsList}">
-									<option value="${clients.id}">${clients.orgName}</option>
+									<option value="${clients.id}" data-responder_location_id="${clients.responderId}">${clients.orgName}</option>
 								</c:forEach>
 			              </select>
     	 				</div>
@@ -80,16 +80,25 @@
 					</div>
 				</div>
 				
- 	 		<div class="col-md-6 minHeight50 mb errorInptgroup">
-		<label class="col-md-3">Attachment</label>
-			<div class="col-md-9 zindex positionRelative">
-					<div class="input-group col-md-12" id="uploadFileGroup"	style="margin: 0 auto">
-						<label class="input-group-btn"> <span class="btn btn-primary" onchange="getFleInformation();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBtn"	class="upload"> </span>
-						</label> 
-					<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File" field-name="Upload File" data-validation="validatedoc" data-validation-optional="true">
+	 	 		<div class="col-md-6 minHeight50 mb errorInptgroup">
+					<label class="col-md-3">Attachment</label>
+					<div class="col-md-9 zindex positionRelative">
+							<div class="input-group col-md-12" id="uploadFileGroup"	style="margin: 0 auto">
+								<label class="input-group-btn"> <span class="btn btn-primary" onchange="getFleInformation();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBtn"	class="upload"> </span>
+								</label> 
+							<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File" field-name="Upload File" data-validation="validatedoc" data-validation-optional="true">
+							</div>
 					</div>
-			</div>
-			</div>
+				</div>
+				
+				<div class="col-md-6 minHeight50 mb">
+    	 			<label class="col-md-3 paddingRight">Invoice Template</label>
+    	 			<div class="col-md-9" id="invoiceTemplateIdDiv">
+						<select class="form-control sel" id="invoiceTemplateId" field-name="invoiceTemplateId Name" name="invoiceTemplateId"> 
+						   <option value="0">--Select Invoice Template--</option>
+						</select> 
+    	 			</div>
+    	 		</div>
     	 		</div>
     	 		<div class="clearfix"></div>
     	 		
@@ -266,7 +275,7 @@ function addInvoice(){
 		 var grandDueTotal = $("#grandTotalAmount").text();
 		 var grandTotalReceived = $("#totalAmount").val();
 		 var finalAmountReceived =parseFloat(grandTotalReceived);
-		 if(grandDueTotal == finalAmountReceived.toFixed(2)){
+		 if(grandDueTotal == finalAmountReceived.toFixed(3)){
 		 var invoiceIds= []
 		 var amount = "";
 		 $('input:checkbox[name=invoices]:checked').each(function() {
@@ -312,6 +321,25 @@ $('body').on('blur', '#paymentForm', function() {
 </script>
 
 <script type="text/javascript">
+function getInvoiceTemplateList() {
+	var orgRelationId = $("#client").val();
+	var responderLocationId = $("#client :selected").data("responder_location_id");
+	$("#invoiceTemplateId").empty("");
+	$.ajax({
+		type : "POST",
+		url: sourceleadUrl+"/invoiceTemplateList?orgRelationId=" + orgRelationId + "&orgLocationId=" + responderLocationId,
+		success : function(data) {
+			$("#invoiceTemplateId").append("<option value='0'>-- Select Invoice Template --</option>");
+			$("#invoiceTemplateId").append("<option value='-1' selected>Default Template</option>");
+			if(data && data.data != null && data.data.length > 0) {
+				for(var e in data.data) {
+					$("#invoiceTemplateId").append("<option value=" + data.data[e].id + ">" + data.data[e].name + "</option>");
+				}
+			}
+		}
+	});
+}
+
 function showAmountWarningPopup(){ // multiWarnMsg populated when validated form and docs required upload docs info.
 	$("#validateErrorMsgDivId").val('');
 	$(".project_inn_mask").remove();
@@ -360,9 +388,9 @@ function showCheckBoxDivPopup(){
 	       totalValue= totalValue+parseFloat(value);
 	  	} 
 	  });
-	  $("#grandTotalAmount").text(totalValue.toFixed(2));
+	  $("#grandTotalAmount").text(totalValue.toFixed(3));
 	// For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
-	  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(totalValue.toFixed(2));
+	  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(totalValue.toFixed(3));
   }
   
   
@@ -382,7 +410,7 @@ function showCheckBoxDivPopup(){
    <script>
 	function toggleInvoices(source) {
 	    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-	    var total = 0.00;
+	    var total = 0.000;
 	    for (var i = 0; i < checkboxes.length; i++) {
 	        if (checkboxes[i] != source){
 	            checkboxes[i].checked = source.checked;
@@ -392,12 +420,12 @@ function showCheckBoxDivPopup(){
 	        		total += parseFloat(checkboxes[i].value);
 	            }else{
 	            	$("#totalAmountRow"+checkboxes[i].id).val('');
-	            	total = 0.00;
+	            	total = 0.000;
 	            }
 	    	}
-	        $("#grandTotalAmount").text(total.toFixed(2));
+	        $("#grandTotalAmount").text(total.toFixed(3));
 	     // For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
-			  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(total.toFixed(2));
+			  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(total.toFixed(3));
 	    }
 
 	$('input:checkbox:not(#checkAllRecords)').click(function() {
@@ -412,9 +440,9 @@ function showCheckBoxDivPopup(){
 	function checkSingleInvoice(id, amount){
 		var totalAmount = $("#grandTotalAmount").text();
 		if(totalAmount == ''){
-			totalAmount = 0.00;
+			totalAmount = 0.000;
 		}
-		var grandTotalAmount = 0.00;
+		var grandTotalAmount = 0.000;
 		  if($("#"+id).is(':checked')){
 			  $("#totalAmountRow"+id).val(amount);
 			 grandTotalAmount =  parseFloat(totalAmount)+parseFloat(amount);
@@ -423,9 +451,9 @@ function showCheckBoxDivPopup(){
 			  $("#totalAmountRow"+id).val('');
 			  grandTotalAmount =  parseFloat(totalAmount)-parseFloat(inputAmount);
 		  }
-		  $("#grandTotalAmount").text(grandTotalAmount.toFixed(2));
+		  $("#grandTotalAmount").text(grandTotalAmount.toFixed(3));
 		// For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
-		  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(grandTotalAmount.toFixed(2));
+		  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(grandTotalAmount.toFixed(3));
 	  }
 	</script>
 <script>

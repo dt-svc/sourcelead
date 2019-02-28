@@ -7,9 +7,9 @@
 <section class="content-wraper contentWraper">
   <section class="content-header clearfix">
 	<div class="pull-left">
-	<h2>Run Payroll</h2>
+	<h2>Org Payroll</h2>
 	</div>
-	   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;Run Payroll</div>
+	   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Run Payroll</div>
   </section>
 		<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
@@ -23,10 +23,11 @@
 		<li id="formsLi"  class=""><a onclick="formsDiv(); highlight('formsLi');" title="Forms">Forms</a></li>
 	</ul>
    </div>
-   </div>
+   
    <div class="clearfix"></div>
    <div class='data_loading' id="loadTime"></div>
    <div id="runPayRollTabsContent" class="require_wrap_table datatable_filter"></div>
+   </div>
 </section>
 
 <script>
@@ -61,7 +62,7 @@ function employeePayrollList(uuid){
 </script>
 
  <script>
-	function initiatePayrollDiv(){ 
+	function initiatePayrollDiv(){
 	               var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	               $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	        	   $.ajax({
@@ -224,9 +225,9 @@ function payrollDiv(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.total != null && opt.total != '' && opt.total !='undefined'){
-						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.total.toFixed(2)+'</div>';
+						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.total.toFixed(2)+' <i class="paddingLeft">&#8377;</i></div>';
 						              		}else{
-						              		  result = result +'<div class="tbldata-dotdot-vsm">0.0</div>';
+						              		  result = result +'<div class="tbldata-dotdot-vsm">0.0 <i class="paddingLeft">&#8377;</i></div>';
 						              		}
 											return result;
 										}

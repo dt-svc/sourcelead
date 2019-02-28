@@ -1,7 +1,11 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.io.File;
+import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ExpensesEntriesDao;
 import com.bis.sourcelead.dao.ExpensesEntryDocumentsDao;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -109,6 +114,63 @@ public class ExpensesEntriesDaoImpl implements ExpensesEntriesDao {
 		}
 	}
 
-	
-	
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public int dumpExpenceCategoryAmountToOldRecords() {
+		int count = 0;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Expenses";
+			List<Expenses> expensesList = session.createQuery(query).list();
+			if(expensesList != null && !expensesList.isEmpty()) {
+				for(Expenses expenses: expensesList) {
+					double totalSubmittedAmount = 0;
+					Set<ExpensesEntries> expensesEntriesSet = expenses.getExpensesEntries();
+					if(expensesEntriesSet != null && !expensesEntriesSet.isEmpty()) {
+						for(ExpensesEntries expensesEntries : expensesEntriesSet) {
+							totalSubmittedAmount += expensesEntries.getSubmittedamount().doubleValue();
+						}
+					}
+					System.out.println(totalSubmittedAmount);
+					expenses.setTotalsubmittedAmount(new BigDecimal(totalSubmittedAmount));
+					session.saveOrUpdate(expenses);
+					count++;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return count;
+	}
+
+	@Override
+	@Transactional
+	public int changeDocumentNameWithWhiteSpacesToUnderScore(String staticPath) {
+		int count = 0;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<ExpensesEntryDocuments> expensesEntryDocumentList = session.createQuery("from ExpensesEntryDocuments").list();
+			if (expensesEntryDocumentList != null && !expensesEntryDocumentList.isEmpty()) {
+				for (ExpensesEntryDocuments expensesEntryDocuments : expensesEntryDocumentList) {
+					String fileName = expensesEntryDocuments.getFileURL().replace("/slead-static", "");
+					if(fileName != null && !fileName.isEmpty() && fileName.contains(" ")) {
+						String folder = fileName.substring(0, fileName.lastIndexOf("/"));
+						String name = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.length());
+						File file = new File(staticPath + fileName.substring(0, fileName.lastIndexOf("/")), name);
+						if(file.exists()) {
+							File newFile = new File(staticPath + fileName.substring(0, fileName.lastIndexOf("/")), name.replaceAll(" ", "_"));
+							Files.move(file.toPath(), newFile.toPath());
+							expensesEntryDocuments.setFileURL("/slead-static" + fileName.substring(0, fileName.lastIndexOf("/")) + "/" + name.replaceAll(" ", "_"));
+							System.out.println("id : " + expensesEntryDocuments.getId() + " folder : " + folder + " oldName : " + name + " newName : " + expensesEntryDocuments.getFileURL());
+							count++;
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return count;
+	}
 }

@@ -108,12 +108,24 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 				if(StringUtils.isNoneBlank(referContactsDTO.getContactType())){
 					if(referContactsDTO.getContactType().equalsIgnoreCase("vendor")){
 						referContacts.setVendorType(1);
+						referContacts.setClientType(null);
+						referContacts.setCandidateType(null);
+						referContacts.setOtherType(null);
 					}else if(referContactsDTO.getContactType().equalsIgnoreCase("client")){
 						referContacts.setClientType(1);
+						referContacts.setVendorType(null);
+						referContacts.setCandidateType(null);
+						referContacts.setOtherType(null);
 					}else if(referContactsDTO.getContactType().equalsIgnoreCase("candidate")){
 						referContacts.setCandidateType(1);
+						referContacts.setVendorType(null);
+						referContacts.setClientType(null);
+						referContacts.setOtherType(null);
 					}else{
 						referContacts.setOtherType(1);
+						referContacts.setVendorType(null);
+						referContacts.setClientType(null);
+						referContacts.setCandidateType(null);
 					}
 					
 				}

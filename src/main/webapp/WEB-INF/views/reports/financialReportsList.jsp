@@ -117,7 +117,19 @@
 					    <h2>Asset Growth</h2><b>View</b>
 			</div>
 		</div>	
-	</a>	
+	</a>
+	<sec:authorize access="hasRole('ROLE_MARGIN_SHEET_REPORT')">
+<c:if test="${SourceLeadWeb_vms == 'Y'}">
+<a href='${appPath}/marginSheetReports'>						
+	<div class="repDashCta">
+		<span><i class="fa fa-calendar-check-o"></i></span>
+		<div class="repDashCtaWrap">
+				    <h2>MarginSheetReport(s)</h2><b>View</b>
+		</div>
+	</div>	
+</a>				    
+ </c:if>
+</sec:authorize>	
 				
 	<div class="clearfix"></div>	
 </div>

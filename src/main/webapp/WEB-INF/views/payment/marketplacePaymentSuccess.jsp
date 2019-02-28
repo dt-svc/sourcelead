@@ -10,7 +10,7 @@
         </div>
         <div class="pull-right brud-crum">
 				<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-					href="<c:url value='/app/orgLicenseSubscriptionList'/>"> Marketplace List</a> &raquo; Payment Success
+					href="<c:url value='${appPath}/globalMarketplacePage'/>"> Marketplace List</a> &raquo; Payment Success
 			</div>
     </section>
     <div class="scontent-new clearfix">
@@ -35,7 +35,7 @@
                             <th>Type</th><th>Description</th><th>Amount</th>
                             </thead>
                             <tbody>
-                            <td class="text-left">marketplace</td><td class="text-left">candidate(s) are added to you Organization.</td><td class="text-left">$ ${amount}</td>
+                            <td class="text-left">marketplace</td><td class="text-left">candidate(s) are added to your Organization.</td><td class="text-left">$ ${amount}</td>
                             </tbody>
                             <tfoot>
                             <td>&nbsp;</td>

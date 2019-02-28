@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dto;
 
+import java.math.BigDecimal;
+
 import com.bis.sourcelead.annotations.Required;
 
 public class ResourcesDTO {

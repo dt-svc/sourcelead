@@ -716,6 +716,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		    employees.setUpdatedBy(loginUser.getUserCode());
 		    employees.setUpdatedDate(commonUtil.currentDate());
 		    
+		    if(candidateOnBoarding.getProbationNotice() != null)
+		    employees.setProbationPeriod(candidateOnBoarding.getProbationNotice());
+		    
 		    Candidate candidate = candidateService.getCandidateByCandidateId(candidateOnBoarding.getCandidateId().getId());
 		    if(candidate.getOrgRelationId() != null) {
 		    	employees.setOrgRelationId(candidate.getOrgRelationId());

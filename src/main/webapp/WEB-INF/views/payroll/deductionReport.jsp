@@ -19,7 +19,7 @@ $(document).ready(function(){
         <h2>Deduction</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/usPayrollReport'/>"> USPayroll Reports List</a>&raquo;Deduction
+				href="<c:url value='${appPath}/usPayrollReport'/>"> US Payroll Reports List</a>&raquo;Deduction
 		</div>
     </section>
     
@@ -33,7 +33,6 @@ $(document).ready(function(){
               <label class="col-md-12 paddingRight">Pay Group<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-12">
 					<select class="form-control chosen-select" id="payGroup" name="payGroup" onchange="getPayPeriod();" field-name="Pay Group" data-validation="required">
-				    <input type="hidden" id="emptyDeductionId" name="emptyDeductionId"/>
 				<!-- 	<option>Select Group</option>
 						<option>Monthly</option>
 						<option>Weekly</option> -->
@@ -128,7 +127,7 @@ $(document).ready(function(){
 	 $("#payrollRegister").hide();
 	 $("#payGroup").val('');
 	 $("#payGroup").trigger("chosen:updated"); 
-	 $("#payPeriod").val('');
+	 $("#payPeriod").empty();
 	 $("#payPeriod").trigger("chosen:updated"); 
 	 $("#deductionId").val('');
 	 $("#deductionId").trigger("chosen:updated"); 
@@ -307,9 +306,8 @@ function getDeductionReports(){
 									"data" : "type",
 									"sortable": true,
 									"render" : function(data, type, opt,meta) {
-										$("#emptyDeductionId").val(1);
 										     var result = "";
-											result = result+ ' <td><div class="tblminwidth-75">'+opt.deductionType+'</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75" id="deductionTypeDiv">'+opt.deductionType+'</div></td>';
 										
 										return result;
 									}
@@ -441,15 +439,14 @@ function deductionReportExportToPdf(){
 	var searchValue = $("#dataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	var deductionId = $("#deductionId").val();
-	var emptyExport = $('#emptyDeductionId').val();
-	
-	if(emptyExport > 0){
+	var deduction = $('#deductionTypeDiv').html();
+	if(deduction != null && deduction !='' && deduction !='undefined'){
 		window.location.href = sourceleadUrl+"/exportToPdfDeductionReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&deductionId="+deductionId;
 	}else{
-		var result = "";
+		var result = " ";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='empty_receivable_pop' class='remove_user_pop remove_user_pop_a'>";
-		result = result +"		<p>Contribution Report List is Empty</p>";
+		result = result +"		<p>Deduction Report List is Empty</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
 		result = result +"	</div>";

@@ -22,5 +22,7 @@ public interface PayrollScheduleService {
 	UsPayrollSchedule getPayScheduleByUUID(String payrollScheduleUUID, Long orgLocationId);
 
 	UsPayrollSchedule findScheduleByFrequency(String payFrequency, Long orgLocationId, String scheduleUUID);
+	
+	List<UsPayrollSchedule> getAllPayrollScheduleByOrgLocationId(Long orgLocationId);
 
 }

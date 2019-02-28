@@ -54,6 +54,9 @@ public class ProjectApproverHierarchy implements Serializable{
  	
     @Column(name = "LEVEL")
     private Integer level;
+    
+    @Column(name = "APPROVAL_MECHANISM_TYPE")
+    private String approvalMechanismType;
  
     @Column(name = "STATUS")
     private String status;
@@ -191,6 +194,13 @@ public class ProjectApproverHierarchy implements Serializable{
 	public void setProjectApproverUserId(Long projectApproverUserId) {
 		this.projectApproverUserId = projectApproverUserId;
 	}
-	
+
+	public String getApprovalMechanismType() {
+		return approvalMechanismType;
+	}
+
+	public void setApprovalMechanismType(String approvalMechanismType) {
+		this.approvalMechanismType = approvalMechanismType;
+	}
 	
 }

@@ -1634,64 +1634,66 @@ function getCandidateDetails(){
    						if (response.response === "AWKWARD") {
    						    location.href = "/errorPage";
    						} else if (response.response === "SUCCESS") {
-   							var json = response.object;
-   	   						var name = json.name;
-   	  						var firstName = '';
-   	  						var lastName = '';
-   	  						if(name != null && name != 'undefined' && name != ''){
-   	  							 firstName = name.split(".")[0]; 
-   	  							 lastName = name.split(".")[1]; 
-   	  							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-   	  									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-   	  								 firstName = name;
-   	  							 }
-   	  						}
-   	  						
-   	  						
-   	  						 $("input[name=firstName]").val(firstName);
-   	  			        	 $("input[name=lastName]").val(lastName);
-   	  			        	 $("input[name=email]").val(json.email);
-   	   						 var mobilePhone = $("#mobilePhone").val();
-   	   						 if(mobilePhone == null || mobilePhone == '' || mobilePhone == 'undefined'){
-   	   							$("#mobilePhone").val(json.phoneNumbers); 
-   	   						}
-   	   						
-   	   						
-   	   						validateCandidateEmail();
-   	   						$("#candidateSkills").empty();
-   	   						 var internalOutput = "";
-   	   						 <c:forEach var="skill" items="${skillsList}">
-   	   						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
-   	   	                     </c:forEach>
-   	   						var skills = json.skills;
-   	   						if(skills != null && skills != 'undefined' && skills != ''){
-   	   							var str_array = skills.split(',');
-   	   							for(var i = 0; i < str_array.length; i++) {
-   	   							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-   	   							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-   	   							}
-   	   						}
-   	   						$("#candidateSkills").append(internalOutput);
-   	   		        		$("#candidateSkills").trigger("chosen:updated");
-   	   		        		
-   	   		        		
-   	   		        		$("#candidateEducation").empty();
-   	   						 var internalOutput = "";
-   	   						 <c:forEach var="edu" items="${educationsList}">
-   	   						    internalOutput = internalOutput+"<option value='${edu.name}'>${edu.name}</option>";
-   	   	                     </c:forEach>
-   	   						var edu = json.edu;
-   	   						if(edu != null && edu != 'undefined' && edu != ''){
-   	   							var str_array = edu.split(',');
-   	   							for(var i = 0; i < str_array.length; i++) {
-   	   							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-   	   							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-   	   							}
-   	   						}
-   	   						$("#candidateEducation").append(internalOutput);
-   	   		        		$("#candidateEducation").trigger("chosen:updated");
-   	   		        		
-   	   		        		
+   							if(response.object !== null) {
+   								var json = response.object;
+   	   	   						var name = json.name;
+   	   	  						var firstName = '';
+   	   	  						var lastName = '';
+   	   	  						if(name != null && name != 'undefined' && name != ''){
+   	   	  							 firstName = name.split(".")[0]; 
+   	   	  							 lastName = name.split(".")[1]; 
+   	   	  							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
+   	   	  									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
+   	   	  								 firstName = name;
+   	   	  							 }
+   	   	  						}
+   	   	  						
+   	   	  						
+   	   	  						 $("input[name=firstName]").val(firstName);
+   	   	  			        	 $("input[name=lastName]").val(lastName);
+   	   	  			        	 $("input[name=email]").val(json.email);
+   	   	   						 var mobilePhone = $("#mobilePhone").val();
+   	   	   						 if(mobilePhone == null || mobilePhone == '' || mobilePhone == 'undefined'){
+   	   	   							$("#mobilePhone").val(json.phoneNumbers); 
+   	   	   						}
+   	   	   						
+   	   	   						
+   	   	   						validateCandidateEmail();
+   	   	   						$("#candidateSkills").empty();
+   	   	   						 var internalOutput = "";
+   	   	   						 <c:forEach var="skill" items="${skillsList}">
+   	   	   						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
+   	   	   	                     </c:forEach>
+   	   	   						var skills = json.skills;
+   	   	   						if(skills != null && skills != 'undefined' && skills != ''){
+   	   	   							var str_array = skills.split(',');
+   	   	   							for(var i = 0; i < str_array.length; i++) {
+   	   	   							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+   	   	   							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+   	   	   							}
+   	   	   						}
+   	   	   						$("#candidateSkills").append(internalOutput);
+   	   	   		        		$("#candidateSkills").trigger("chosen:updated");
+   	   	   		        		
+   	   	   		        		
+   	   	   		        		$("#candidateEducation").empty();
+   	   	   						 var internalOutput = "";
+   	   	   						 <c:forEach var="edu" items="${educationsList}">
+   	   	   						    internalOutput = internalOutput+"<option value='${edu.name}'>${edu.name}</option>";
+   	   	   	                     </c:forEach>
+   	   	   						var edu = json.edu;
+   	   	   						if(edu != null && edu != 'undefined' && edu != ''){
+   	   	   							var str_array = edu.split(',');
+   	   	   							for(var i = 0; i < str_array.length; i++) {
+   	   	   							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+   	   	   							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+   	   	   							}
+   	   	   						}
+   	   	   						$("#candidateEducation").append(internalOutput);
+   	   	   		        		$("#candidateEducation").trigger("chosen:updated");
+   							} else {
+   								showError("Resume Parsing Failed");
+   							}
    	   						$("#loading").removeAttr("style");
    						} else if (response.indexOf('Sign In') !== -1) {
    							location.replace(sourceleadUrl);

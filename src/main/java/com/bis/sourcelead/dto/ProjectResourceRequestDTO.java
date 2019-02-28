@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.bis.sourcelead.annotations.Required;
@@ -30,6 +31,8 @@ public class ProjectResourceRequestDTO {
 	private String estimatedHrs;
 	
 	private String estimatedBudget;
+	
+	private BigDecimal percentageOfWork;
 	
 	private String estimatedBudgetCurrencyType;
 	
@@ -165,4 +168,13 @@ public class ProjectResourceRequestDTO {
 		this.loginOrglocationId = loginOrglocationId;
 	}
 
+	public BigDecimal getPercentageOfWork() {
+		return percentageOfWork;
+	}
+
+	public void setPercentageOfWork(BigDecimal percentageOfWork) {
+		this.percentageOfWork = percentageOfWork;
+	}
+
+	
 }

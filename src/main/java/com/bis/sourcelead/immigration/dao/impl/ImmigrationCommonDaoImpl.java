@@ -21,6 +21,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.transform.Transformers;
+import org.hibernate.type.StandardBasicTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -32,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
+import com.bis.sourcelead.dto.ImmigrationVisaDTO;
 import com.bis.sourcelead.dto.LcaDTO;
 import com.bis.sourcelead.dto.LcaDetailsDTO;
 import com.bis.sourcelead.dto.LcaListViewDTO;
@@ -42,9 +44,11 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateLcaJobDetails;
-import com.bis.sourcelead.entity.CandidatePassportVisa;
+import com.bis.sourcelead.entity.CandidatePassport;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.CandidateVisa;
+import com.bis.sourcelead.entity.CandidateVisaHistory;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationActivityHistory;
 import com.bis.sourcelead.entity.ImmigrationAttorneyReportView;
@@ -310,15 +314,16 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return "success";
 	}
 
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public CandidatePassportVisa savePassportDetails(CandidatePassportVisa candidatePassportVisa) throws Exception {
+	public CandidateVisa saveVisaDetails(CandidateVisa candidateVisa) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 
-		logger.debug("Storing ImmigrationPassportVisa");
+		logger.debug("Storing ImmigrationVisa");
 		try {
-			if (candidatePassportVisa != null) {
-				session.saveOrUpdate(candidatePassportVisa);
+			if (candidateVisa != null) {
+				session.saveOrUpdate(candidateVisa);
 			}
 			logger.debug("candidateCertifications Stored Successfully");
 		} catch (Exception exception) {
@@ -329,7 +334,30 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 				e.printStackTrace();
 			}
 		}
-		return candidatePassportVisa;
+		return candidateVisa;
+
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidatePassport savePassportDetails(CandidatePassport candidatePassport) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+
+		logger.debug("Storing ImmigrationPassportVisa");
+		try {
+			if (candidatePassport != null) {
+				session.saveOrUpdate(candidatePassport);
+			}
+			logger.debug("candidateCertifications Stored Successfully");
+		} catch (Exception exception) {
+			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "CandidatePassport"));
+			try {
+				throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
+			} catch (SourceLeadConstraintViolationException e) {
+				e.printStackTrace();
+			}
+		}
+		return candidatePassport;
 
 	}
 
@@ -470,24 +498,112 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return candidatesMasterResidenceList;
 	}
 
+	
+	// visa List
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId, String idType,
+	public List<ImmigrationVisaDTO> getCandidateVisaDetails(Long candidateId,String searchValue) {
+		List<ImmigrationVisaDTO> visaList = new ArrayList<ImmigrationVisaDTO>();
+		logger.debug("Getting  getCandidateVisaDetails --->  "+candidateId);
+		Session session = this.sessionFactory.getCurrentSession();
+		if (!"undefined".equalsIgnoreCase(searchValue) && StringUtils.isNotBlank(searchValue) && searchValue != "") {
+			//String queryString = "from CandidateVisa cv where cv.candidate.id=:candidateId and (cv.visaNumber like :searchValue or cv.country like :searchValue or cv.visaType like :searchValue)  order by cv.updatedDate desc";
+			String sqlQueryString = "select cvh.ID as id,  cv.CANDIDATE_ID as candidateId, cvh.VISA_ID as candidateVisaId , "+
+											"cv.VISA_NUMBER as visaNumber, cv.VISA_TYPE as visaType, cvh.status as status," + 
+											" cv.COUNTRY as country, CAST(cvh.VALID_FROM_DATE AS char) as validFrom," + 
+											" CAST(cvh.VALID_TO_DATE AS char) as validTo " + 
+											"  from CANDIDATE_VISA cv, CANDIDATE_VISA_HISTORY cvh  Where cv.ID= cvh.VISA_ID  "+
+											" and (cv.VISA_NUMBER like :searchValue or cv.COUNTRY like :searchValue or cv.VISA_TYPE like :searchValue) "+
+											" and cv.CANDIDATE_ID=:candidateId  order by cvh.UPDATED_DATE desc";
+			visaList = session.createSQLQuery(sqlQueryString)
+					   .addScalar("id", StandardBasicTypes.LONG)
+					   .addScalar("candidateId", StandardBasicTypes.LONG)
+					   .addScalar("candidateVisaId", StandardBasicTypes.LONG)
+					   .addScalar("visaNumber", StandardBasicTypes.STRING)
+					   .addScalar("country", StandardBasicTypes.STRING)
+					   .addScalar("visaType", StandardBasicTypes.STRING)
+					   .addScalar("status", StandardBasicTypes.INTEGER)
+					   .addScalar("validFrom", StandardBasicTypes.STRING)
+					   .addScalar("validTo", StandardBasicTypes.STRING)
+					  .setLong("candidateId", candidateId)
+					  .setString("searchValue", "%" + searchValue + "%").setResultTransformer(Transformers.aliasToBean(ImmigrationVisaDTO.class)).list();;
+		} else {
+			//String queryString = "from CandidateVisa cv where cv.candidate.id=:candidateId  order by cv.updatedDate desc";
+			String sqlQueryString = "select cvh.ID as id,  cv.CANDIDATE_ID as candidateId, cvh.VISA_ID as candidateVisaId ,"+
+											" cv.VISA_NUMBER as visaNumber, cv.VISA_TYPE as visaType, cvh.status as status ," + 
+											" cv.COUNTRY as country, CAST(cvh.VALID_FROM_DATE AS char) as validFrom," + 
+											" CAST(cvh.VALID_TO_DATE AS char) as validTo " + 
+											"  from CANDIDATE_VISA cv, CANDIDATE_VISA_HISTORY cvh  Where cv.ID= cvh.VISA_ID  and cv.CANDIDATE_ID=:candidateId order by cvh.UPDATED_DATE desc";
+			visaList = session.createSQLQuery(sqlQueryString)
+					   .addScalar("id", StandardBasicTypes.LONG)
+					   .addScalar("candidateId", StandardBasicTypes.LONG)
+					   .addScalar("candidateVisaId", StandardBasicTypes.LONG)
+					   .addScalar("visaNumber", StandardBasicTypes.STRING)
+					   .addScalar("country", StandardBasicTypes.STRING)
+					   .addScalar("visaType", StandardBasicTypes.STRING)
+					   .addScalar("status", StandardBasicTypes.INTEGER)
+					   .addScalar("validFrom", StandardBasicTypes.STRING)
+					   .addScalar("validTo", StandardBasicTypes.STRING)
+					   .setLong("candidateId", candidateId).setResultTransformer(Transformers.aliasToBean(ImmigrationVisaDTO.class)).list();
+		}
+		return visaList;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ImmigrationVisaDTO getCandidateVisaDetailsByCandidateIdAndVisaNumber(Long candidateId,
+			String visaNumber) {
+		ImmigrationVisaDTO candRecentVisaDetails =null;
+		logger.debug("Getting  getCandidateVisaDetailsByCandidateIdAndVisaNumber --->  "+visaNumber);
+		Session session = this.sessionFactory.getCurrentSession();
+		if (StringUtils.isNotBlank(visaNumber)) {
+
+			String sqlQueryString = "select cvh.ID as id,  cv.CANDIDATE_ID as candidateId, cvh.VISA_ID as candidateVisaId , "+
+											"cv.VISA_NUMBER as visaNumber, cv.VISA_TYPE as visaType, cvh.status as status," + 
+											" cv.COUNTRY as country, CAST(cvh.VALID_FROM_DATE AS char) as validFrom," + 
+											" CAST(cvh.VALID_TO_DATE AS char) as validTo " + 
+											"  from CANDIDATE_VISA cv, CANDIDATE_VISA_HISTORY cvh  Where cv.ID= cvh.VISA_ID  "+
+											" and cv.CANDIDATE_ID=:candidateId and cv.VISA_NUMBER=:visaNumber order by cvh.ID desc LIMIT 1";
+			candRecentVisaDetails = (ImmigrationVisaDTO) session.createSQLQuery(sqlQueryString)
+					   .addScalar("id", StandardBasicTypes.LONG)
+					   .addScalar("candidateId", StandardBasicTypes.LONG)
+					   .addScalar("candidateVisaId", StandardBasicTypes.LONG)
+					   .addScalar("visaNumber", StandardBasicTypes.STRING)
+					   .addScalar("country", StandardBasicTypes.STRING)
+					   .addScalar("visaType", StandardBasicTypes.STRING)
+					   .addScalar("status", StandardBasicTypes.INTEGER)
+					   .addScalar("validFrom", StandardBasicTypes.STRING)
+					   .addScalar("validTo", StandardBasicTypes.STRING)
+					   .setLong("candidateId", candidateId)
+					   .setString("visaNumber", visaNumber)
+					   .setResultTransformer(Transformers.aliasToBean(ImmigrationVisaDTO.class)).uniqueResult();
+		} 
+		return candRecentVisaDetails;
+	}
+	
+	//Passport List
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidatePassport> getCandidatePassportDetails(Long candidateId,
 			String searchValue) {
-		List<CandidatePassportVisa> passportvisaList = new ArrayList<CandidatePassportVisa>();
+		List<CandidatePassport> passportList = new ArrayList<CandidatePassport>();
 		logger.debug("Getting  CandidatepassportDetails --->  ");
 		Session session = this.sessionFactory.getCurrentSession();
 		if (!"undefined".equalsIgnoreCase(searchValue) && StringUtils.isNotBlank(searchValue) && searchValue != "") {
-			String queryString = "from CandidatePassportVisa cp where cp.candidate.id=:candidateId and cp.idType=:idType and (cp.idNumber like :searchValue or cp.country like :searchValue or cp.visaType like :searchValue)  order by cp.updatedDate desc";
-			passportvisaList = session.createQuery(queryString).setLong("candidateId", candidateId)
-					.setString("idType", idType).setString("searchValue", "%" + searchValue + "%").list();
+			String queryString = "from Candidat"
+					+ "ePassport cp where cp.candidate.id=:candidateId  and (cp.passportNumber like :searchValue or cp.country like :searchValue)  order by cp.updatedDate desc";
+			passportList = session.createQuery(queryString).setLong("candidateId", candidateId)
+					.setString("searchValue", "%" + searchValue + "%").list();
 		} else {
-			String queryString = "from CandidatePassportVisa cp where cp.candidate.id=:candidateId and cp.idType=:idType  order by cp.updatedDate desc";
-			passportvisaList = session.createQuery(queryString).setLong("candidateId", candidateId)
-					.setString("idType", idType).list();
+			String queryString = "from CandidatePassport cp where cp.candidate.id=:candidateId   order by cp.updatedDate desc";
+			passportList = session.createQuery(queryString).setLong("candidateId", candidateId)
+					.list();
 		}
-		return passportvisaList;
+		return passportList;
 	}
 
 	@Override
@@ -506,15 +622,46 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return familyObj;
 	}
 
+	
+	//visa delete
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public void removeCandidateVisaDetails(Long visaHistoryId){
+			try {
+				Session session = this.sessionFactory.getCurrentSession();
+				CandidateVisaHistory visaHistory = (CandidateVisaHistory) session.load(CandidateVisaHistory.class, visaHistoryId);
+				//CandidateVisa CandidateVisa= visaHistory.getVisaId();
+				Long visaId = visaHistory.getVisaId().getId();
+				session.delete(visaHistory);
+				session.flush();
+				// below query used to check find all child records are using parent visa id.
+				Long recordsCount = (Long)session.
+						            createSQLQuery("SELECT COUNT(*) as recordsCount FROM CANDIDATE_VISA_HISTORY WHERE VISA_ID=:visaId")
+						            .addScalar("recordsCount", StandardBasicTypes.LONG)
+						            .setLong("visaId",visaId).uniqueResult();
+				// if recordsCount ==1 means child records are exist in visa history table if returns 0 then no child records in history table.
+				if(recordsCount == 0) {
+					CandidateVisa visa= (CandidateVisa) session.load(CandidateVisa.class, visaId);
+					session.delete(visa);
+					session.flush();
+				}
+				
+			} catch (HibernateException e) {
+				logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
+				e.printStackTrace();
+			}
+			logger.debug("Deleted record id -->" + visaHistoryId);
+
+		}
+	//passport delete
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public void removeCandidatePassportVisaDetails(Long candidateId, Long id, User user, OrgLocations orgLocations,
-			String idType) {
+	public void removeCandidatePassportDetails(Long candidateId, Long id, User user, OrgLocations orgLocations){
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			CandidatePassportVisa PassportVisaEntity = (CandidatePassportVisa) session.load(CandidatePassportVisa.class,
+			CandidatePassport passportEntity = (CandidatePassport) session.load(CandidatePassport.class,
 					id);
-			session.delete(PassportVisaEntity);
+			session.delete(passportEntity);
 			session.flush();
 		} catch (HibernateException e) {
 			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
@@ -524,6 +671,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 	}
 
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public String deleteCandidateResidenceDetails(Long id, Long candidateId) {
@@ -561,20 +709,40 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return residenceObj;
 	}
 
+	
+	
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public CandidatePassportVisa getCandidatePassportVisaDetailsById(Long id) {
-		logger.debug("get CandidateFamilyDetails id ---> " + id);
-		CandidatePassportVisa passportVisaObj = null;
+	public CandidateVisa getCandidateVisaDetailsById(Long id) {
+		logger.debug("get CandidateVisa id ---> " + id);
+		CandidateVisa visaObj = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			passportVisaObj = (CandidatePassportVisa) session.get(CandidatePassportVisa.class, id);
+			visaObj = (CandidateVisa) session.get(CandidateVisa.class, id);
 		} catch (HibernateException e) {
 			logger.error("SQL Exception occured while doing getting record -->" + e.getMessage());
 			e.printStackTrace();
 		}
 		logger.debug("got the record id -->" + id);
-		return passportVisaObj;
+		return visaObj;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidatePassport getCandidatePassportDetailsById(Long id) {
+		logger.debug("get CandidatePassport id ---> " + id);
+		CandidatePassport passportObj = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			passportObj = (CandidatePassport) session.get(CandidatePassport.class, id);
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing getting record -->" + e.getMessage());
+			e.printStackTrace();
+		}
+		logger.debug("got the record id -->" + id);
+		return passportObj;
 	}
 
 	@Override
@@ -715,7 +883,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		if (StringUtils.isNotEmpty(searchVal) && searchVal != null) {
 			query.setParameter("searchVal", "%" + searchVal + "%");
 		}
-		
+		// if beneficiary logged in show only beneficiary Documents(Document Type)
 		if(myImmigration.equalsIgnoreCase("Y")) {
 			query.setParameter("docCategory", "Document Type");
 		}
@@ -770,8 +938,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			if (StringUtils.isNotEmpty(searchVal) && searchVal != null) {
 				query.setParameter("searchVal", "%" + searchVal + "%");
 			}
+			// if beneficiary logged in show only beneficiary forms(Document Type)
 			if(myImmigration.equalsIgnoreCase("Y")) {
-				query.setParameter("formCategory", "PetitionerCategory");
+				query.setParameter("formCategory", "Document Type");
 			}
 			candidateFormLst = query.list();
 			logger.debug("candidateFormLst size is ---> " + candidateFormLst.size());
@@ -1352,7 +1521,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return null;
 	}
 
-	@Override
+	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Boolean validateCandidatePassportVisa(Long candidateId, String idType,String idNumVal) throws Exception {
 		
@@ -1367,22 +1536,77 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		else {
 			return flag;
 		}
-	}
-
+	}*/
+	
+	//Visa
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public CandidatePassportVisa getCandidatePassportVisaDetailsByIdNumberAndId(String idNumber, String idType,
+	public Boolean validateCandidateVisa(Long candidateId,String idNumVal) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query = "from CandidateVisa canVisa where canVisa.candidate.id = :candidateId  and canVisa.visaNumber =:idNumVal";
+		List<CandidateVisa> visaList = session.createQuery(query).setLong("candidateId", candidateId).setString("idNumVal", idNumVal).list();
+		if (visaList != null && visaList.size() > 0) {
+			flag = true;
+			return flag;
+		}
+		else {
+			return flag;
+		}
+	}
+		
+	//passport
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateCandidatePassport(Long candidateId,String idNumVal) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query = "from CandidatePassport cPassport where cPassport.candidate.id = :candidateId  and cPassport.passportNumber = :idNumVal";
+		List<CandidatePassport> passportList = session.createQuery(query).setLong("candidateId", candidateId).setString("idNumVal", idNumVal).list();
+		if (passportList != null && passportList.size() > 0) {
+			flag = true;
+			return flag;
+		}
+		else {
+			return flag;
+		}
+	}
+
+	
+	//Visa
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateVisa getCandidateVisaDetailsByIdNumberAndId(String idNumber,
 			Long candidateId,Long id) throws Exception {
 		
 		Session session =  this.sessionFactory.getCurrentSession();
-		String query = "from CandidatePassportVisa cPassportVisa where cPassportVisa.idNumber = :idNumber and cPassportVisa.candidate.id = :candidateId and cPassportVisa.idType = :idType and cPassportVisa.id = :id and cPassportVisa.status = 1";
-		List<CandidatePassportVisa> passportVisaList =  session.createQuery(query) .setString("idNumber", idNumber).setString("idType", idType).setLong("candidateId", candidateId).setLong("id", id).list();
-		CandidatePassportVisa candidatePassportVisa = null;
-		if(passportVisaList != null && !passportVisaList.isEmpty())
+		String query = "from CandidateVisa canVisa where canVisa.visaNumber = :idNumber and canVisa.candidate.id = :candidateId and  canVisa.id = :id and canVisa.status = 1";
+		List<CandidateVisa> visaList =  session.createQuery(query) .setString("idNumber", idNumber).setLong("candidateId", candidateId).setLong("id", id).list();
+		CandidateVisa candidateVisa = null;
+		if(visaList != null && !visaList.isEmpty())
 		{
-			candidatePassportVisa = (CandidatePassportVisa) passportVisaList.iterator().next();
+			candidateVisa = (CandidateVisa) visaList.iterator().next();
 		}
-		return candidatePassportVisa;
+		return candidateVisa;
+	}
+	
+	//passport
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidatePassport getCandidatePassportDetailsByIdNumberAndId(String idNumber,
+			Long candidateId,Long id) throws Exception {
+		
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from CandidatePassport cPassport where cPassport.passportNumber = :idNumber and cPassport.candidate.id = :candidateId and  cPassport.id = :id and cPassport.status = 1";
+		List<CandidatePassport> passportList =  session.createQuery(query) .setString("idNumber", idNumber).setLong("candidateId", candidateId).setLong("id", id).list();
+		CandidatePassport candidatePassport = null;
+		if(passportList != null && !passportList.isEmpty())
+		{
+			candidatePassport = (CandidatePassport) passportList.iterator().next();
+		}
+		return candidatePassport;
 	}
 
 	@Override
@@ -2516,7 +2740,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         	
         	ImmigrationReportViewDTO target = new ImmigrationReportViewDTO();
         	target.setId(source.getGeneratedId());
-        	
+        	target.setImmigrationUUID(source.getImmigrationUUID());
+        	target.setImmiTemplateUUID(source.getImmiTemplateUUID());
+        	target.setCandidateUUID(source.getCandidateUUID());
         	target.setPetitionType(Arrays.asList(source.getPetitionType()));
         	if(source.getCurrUscisStatus() != null) {
         	target.setCurrUscisStatus(source.getCurrUscisStatus());
@@ -2724,6 +2950,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         	LcaReportViewDTO target = new LcaReportViewDTO();
         	
         	target.setLcaNo(source.getLcaNo());
+        	target.setLcaUuid(source.getLcaUuid());
         	target.setLcaTitle(source.getLcaTitle());
         	target.setNoOfPositions(source.getNoOfPositions());
         	target.setSocCode(source.getSocCode());
@@ -2734,7 +2961,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         	target.setLcaStatus(source.getLcaStatus());
         	target.setPrivilingWageCurrency(source.getPrivilingWageCurrency());
         	target.setPrivilingWageRateType(source.getPrivilingWageRateType());
-        	
+        	target.setExpired(String.valueOf(source.getExpired()));
         	target.setLocationsList(Arrays.asList(source.getLocation().split("\n")));
         	target.setLocation(source.getLocation().replaceAll("", ""));
         	
@@ -2805,41 +3032,42 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		
 		String query = null;
-		if(statusList.size() >0 && attorneyList.size()>0 && !attorneyList.contains("0")) {
+		if(petitionTypeList.size()>0 && !petitionTypeList.contains("null") && statusList.size() >0) {
 			query = "from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.currUscisStatus IN (:statusList) and immRepView.petitionType IN (:petitionTypeList) and immRepView.client IN (:attorneyList) and immRepView.openDate between :startDate and :endDate"+query1+"";
 			
 			hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setParameterList("statusList", statusList).setParameterList("petitionTypeList", petitionTypeList).setParameterList("attorneyList", attorneyList).setDate("startDate", startDate).setDate("endDate",endDate);
-		}else if (statusList !=null && statusList.size()>0) {
-			query = "from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.currUscisStatus IN (:statusList) and immRepView.petitionType IN (:petitionTypeList) and immRepView.openDate between :startDate and :endDate"+query1+"";
+		}else if (!petitionTypeList.contains("null") && petitionTypeList.size()>0) {
+			query = "from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.client IN (:attorneyList) and immRepView.petitionType IN (:petitionTypeList) and immRepView.openDate between :startDate and :endDate"+query1+"";
 			
-			hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setParameterList("statusList", statusList).setParameterList("petitionTypeList", petitionTypeList).setDate("startDate", startDate).setDate("endDate",endDate);
-		}else if (attorneyList.size()>0 && !attorneyList.contains("0")) {
-			query = "from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.petitionType IN (:petitionTypeList) and immRepView.client IN (:attorneyList) and immRepView.openDate between :startDate and :endDate"+query1+"";
+			hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setParameterList("attorneyList", attorneyList).setParameterList("petitionTypeList", petitionTypeList).setDate("startDate", startDate).setDate("endDate",endDate);
+		}else if (statusList.size()>0 && !statusList.contains("null")) {
+			query = "from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.client IN (:attorneyList) and immRepView.currUscisStatus IN (:statusList) and immRepView.openDate between :startDate and :endDate"+query1+"";
 
-			hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setParameterList("petitionTypeList", petitionTypeList).setParameterList("attorneyList", attorneyList).setDate("startDate", startDate).setDate("endDate",endDate);
+			hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setParameterList("attorneyList", attorneyList).setParameterList("statusList", statusList).setDate("startDate", startDate).setDate("endDate",endDate);
 		}else {
-			query = "from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.petitionType IN (:petitionTypeList) and immRepView.openDate between :startDate and :endDate"+query1;
+			query = "from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.client IN (:attorneyList) and immRepView.openDate between :startDate and :endDate"+query1;
 
-			hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setParameterList("petitionTypeList", petitionTypeList).setDate("startDate", startDate).setDate("endDate",endDate);
+			hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setParameterList("attorneyList", attorneyList).setDate("startDate", startDate).setDate("endDate",endDate);
 		}
 		String petitionQueryCount = null;
 		
-		if(statusList.size() >0 && attorneyList.size()>0 && !attorneyList.contains("0")) {
+		if(petitionTypeList.size()>0 && !petitionTypeList.contains("null") && statusList.size() >0) {
 			petitionQueryCount = "select count(*) from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.currUscisStatus IN (:statusList) and immRepView.petitionType IN (:petitionTypeList) and immRepView.client IN (:attorneyList) and immRepView.openDate between :startDate and :endDate"+query1+"";
 			
 		    hqlCountQuery=session.createQuery(petitionQueryCount).setLong("orgLocationId", orgLocations.getId()).setParameterList("statusList", statusList).setParameterList("petitionTypeList", petitionTypeList).setParameterList("attorneyList", attorneyList).setDate("startDate", startDate).setDate("endDate",endDate);
-		}else if(statusList.size()>0){
-			petitionQueryCount = "select count(*) from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.currUscisStatus IN (:statusList) and immRepView.petitionType IN (:petitionTypeList) and immRepView.openDate between :startDate and :endDate"+query1+"";
+		}else if (!petitionTypeList.contains("null") && petitionTypeList.size()>0) {
 			
-			hqlCountQuery=session.createQuery(petitionQueryCount).setLong("orgLocationId", orgLocations.getId()).setParameterList("statusList", statusList).setParameterList("petitionTypeList", petitionTypeList).setDate("startDate", startDate).setDate("endDate",endDate);
-		}else if(attorneyList.size()>0 && !attorneyList.contains("0")){
-			petitionQueryCount = "select count(*) from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.petitionType IN (:petitionTypeList) and immRepView.client IN (:attorneyList) and immRepView.openDate between :startDate and :endDate"+query1+"";	
+			petitionQueryCount = "select count(*) from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.client IN (:attorneyList) and immRepView.petitionType IN (:petitionTypeList) and immRepView.openDate between :startDate and :endDate"+query1+"";
 			
-		   hqlCountQuery=session.createQuery(petitionQueryCount).setLong("orgLocationId", orgLocations.getId()).setParameterList("petitionTypeList", petitionTypeList).setParameterList("attorneyList", attorneyList).setDate("startDate", startDate).setDate("endDate",endDate);
+			hqlCountQuery=session.createQuery(petitionQueryCount).setLong("orgLocationId", orgLocations.getId()).setParameterList("attorneyList", attorneyList).setParameterList("petitionTypeList", petitionTypeList).setDate("startDate", startDate).setDate("endDate",endDate);
+		}else if (statusList.size()>0 && !statusList.contains("null")) {
+			petitionQueryCount = "select count(*) from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.client IN (:attorneyList) and immRepView.currUscisStatus IN (:statusList) and immRepView.openDate between :startDate and :endDate"+query1+"";	
+			
+		   hqlCountQuery=session.createQuery(petitionQueryCount).setLong("orgLocationId", orgLocations.getId()).setParameterList("attorneyList", attorneyList).setParameterList("statusList", statusList).setDate("startDate", startDate).setDate("endDate",endDate);
 		}else {
-			petitionQueryCount = "select count(*) from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.petitionType IN (:petitionTypeList) and immRepView.openDate between :startDate and :endDate"+query1+"";
+			petitionQueryCount = "select count(*) from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.client IN (:attorneyList) and immRepView.openDate between :startDate and :endDate"+query1+"";
 			
-		    hqlCountQuery=session.createQuery(petitionQueryCount).setLong("orgLocationId", orgLocations.getId()).setParameterList("petitionTypeList", petitionTypeList).setDate("startDate", startDate).setDate("endDate",endDate);
+		    hqlCountQuery=session.createQuery(petitionQueryCount).setLong("orgLocationId", orgLocations.getId()).setParameterList("attorneyList", attorneyList).setDate("startDate", startDate).setDate("endDate",endDate);
 		}
 		immReportViewList = hqlQuery.setFirstResult(immigrationReportDTO.getStart()).setMaxResults(immigrationReportDTO.getLength()).list();
         int count =0;
@@ -2855,7 +3083,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         	
         	ImmigrationReportViewDTO target = new ImmigrationReportViewDTO();
         	target.setId(source.getGeneratedId());
-        	
+        	target.setImmigrationUUID(source.getImmigrationUUID());
+        	target.setCandidateUUID(source.getCandidateUUID());
+        	target.setImmiTemplateUUID(source.getImmiTemplateUUID());
         	target.setPetitionType(Arrays.asList(source.getPetitionType()));
         	if(source.getCurrUscisStatus() != null) {
         	target.setCurrUscisStatus(source.getCurrUscisStatus());
@@ -2872,7 +3102,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			
 		//	target.setOrgName(source.getVendor());
 			
-			if (orgLocations.getId().equals(source.getOrgLocationId())) {
+			if (orgLocations.getId().equals(source.getAttorneyOrgLocationId())) {
 				target.setOrgName(source.getClient());
 				target.setOrgNameSel(ImmigrationConstants.ORG_NAME_SELECTED_ORG1);
 			}
@@ -2885,5 +3115,190 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 	}
 
+/*	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public LcaActivityHistory storeLcaActivities(LcaActivityHistory lcaActivityHistory) throws Exception {
+		logger.debug("Storing LcaActivityHistory");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (lcaActivityHistory != null) {
+				session.saveOrUpdate(lcaActivityHistory);
+			}
+			logger.debug("LcaActivityHistory Stored Successfully");
+		} catch (Exception exception) {
+			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"LcaActivityHistory"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return lcaActivityHistory;
+	}*/
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateVisaHistory saveVisaHistoaryDetails(CandidateVisaHistory visaHistory) {
+		logger.debug("Storing LcaActivityHistory");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if(visaHistory != null) {
+				session.saveOrUpdate(visaHistory);
+				session.flush();
+			}
+		}catch(Exception e) {
+			logger.error("Exception caught while saving candidate visa history details in Databse "+e.getMessage());
+		}
+		return visaHistory;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateVisa getCandidateVisaDetailsByVisaNumber(String visaNumber) {
+		logger.debug("Storing LcaActivityHistory");
+		Session session = this.sessionFactory.getCurrentSession();
+		CandidateVisa  canVisa = null;
+		try {
+			String hqlQuery = "from CandidateVisa cv where cv.visaNumebr=:visaNumber";
+			canVisa =(CandidateVisa) session.createQuery(hqlQuery).setParameter("visaNumber", visaNumber).uniqueResult();
+			
+		}catch(Exception e) {
+			logger.error("Exception caught while saving getting canidate visa details by visaNumber "+e.getMessage());
+		}
+		return canVisa;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateVisaHistory getCandidateVisaHistoryByStatus(Long visaId, String isCurrent) {
+		Session session = this.sessionFactory.getCurrentSession();
+		CandidateVisaHistory canVisaHistory = null;
+		try {
+			if (visaId != null) {
+				logger.debug(" before query execute to get lcaHistory " + visaId);
+				String queryString = "from CandidateVisaHistory cvh  where cvh.status=1 and cvh.isCurrent =:isCurrent and  cvh.visaId = :visaId order by cvh.id desc ";
+				canVisaHistory = (CandidateVisaHistory) session.createQuery(queryString).setLong("visaId", visaId)
+																		  .setString("isCurrent", isCurrent).setMaxResults(1).uniqueResult();
+			}
+		} catch (Exception exception) {
+			logger.error("Exception caught while  lcaHistory information " + exception.getMessage());
+			exception.printStackTrace();
+		}
+		return canVisaHistory;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ImmigrationVisaDTO getCandidateVisaDetailsByVisaHistoryId(Long visaHistoryId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		ImmigrationVisaDTO visaDTO= null;
+		try {
+			if (visaHistoryId != null) {
+				logger.debug(" before query execute to get  visa details by visa number  " + visaHistoryId);
+				String sqlQueryString = "select cvh.ID as id,  cv.CANDIDATE_ID as candidateId, cvh.VISA_ID as candidateVisaId ,"+
+						" cv.VISA_NUMBER as visaNumber, cv.VISA_TYPE as visaType, cvh.IS_CURRENT as isCurrent, " + 
+						" cv.COUNTRY as country, CAST(cvh.VALID_FROM_DATE AS char) as validFrom," + 
+						" CAST(cvh.VALID_TO_DATE AS char) as validTo " + 
+						"  from CANDIDATE_VISA cv, CANDIDATE_VISA_HISTORY cvh  Where cv.ID= cvh.VISA_ID  "+
+						"  and cvh.status = 1 and cvh.ID=:visaHistoryId ";
+				visaDTO = (ImmigrationVisaDTO) session.createSQLQuery(sqlQueryString)
+										   .addScalar("id", StandardBasicTypes.LONG)
+										   .addScalar("candidateId", StandardBasicTypes.LONG)
+										   .addScalar("candidateVisaId", StandardBasicTypes.LONG)
+										   .addScalar("visaNumber", StandardBasicTypes.STRING)
+										   .addScalar("country", StandardBasicTypes.STRING)
+										   .addScalar("visaType", StandardBasicTypes.STRING)
+										   .addScalar("isCurrent", StandardBasicTypes.STRING)
+										   .addScalar("validFrom", StandardBasicTypes.STRING)
+										   .addScalar("validTo", StandardBasicTypes.STRING)
+										   .setLong("visaHistoryId", visaHistoryId)
+										   .setResultTransformer(Transformers.aliasToBean(ImmigrationVisaDTO.class)).uniqueResult();
+		  }
+		} catch (Exception exception) {
+			logger.error("Exception caught while  getting Visa History details >>>>>>>>" + exception.getMessage());
+			exception.printStackTrace();
+		}
+		return visaDTO;
+	}
 	
-}
+	//getVisanumber
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ImmigrationVisaDTO getCandidateActiveVisaDetailsByVisaNumberAndCountry(Long candidateId, String visaNumber, String country) {
+		Session session = this.sessionFactory.getCurrentSession();
+		ImmigrationVisaDTO visaDTO= null;
+		try {
+			if (visaNumber != null) {
+				logger.debug(" before query execute to get  visa details by visa number  " + visaNumber);
+				String sqlQueryString = "select cvh.ID as id,  cv.CANDIDATE_ID as candidateId, cvh.VISA_ID as candidateVisaId ,"+
+						" cv.VISA_NUMBER as visaNumber, cv.VISA_TYPE as visaType, cvh.IS_CURRENT as isCurrent, " + 
+						" cv.COUNTRY as country, CAST(cvh.VALID_FROM_DATE AS char) as validFrom," + 
+						" CAST(cvh.VALID_TO_DATE AS char) as validTo " + 
+						"  from CANDIDATE_VISA cv, CANDIDATE_VISA_HISTORY cvh  Where cv.ID= cvh.VISA_ID  "+
+						"  and  cvh.IS_CURRENT  = 'Y' and cvh.status = 1 and cv.CANDIDATE_ID =:candidateId and cv.VISA_NUMBER=:visaNumber and cv.COUNTRY =:country order by cvh.id desc ";
+				visaDTO = (ImmigrationVisaDTO) session.createSQLQuery(sqlQueryString)
+										   .addScalar("id", StandardBasicTypes.LONG)
+										   .addScalar("candidateId", StandardBasicTypes.LONG)
+										   .addScalar("candidateVisaId", StandardBasicTypes.LONG)
+										   .addScalar("visaNumber", StandardBasicTypes.STRING)
+										   .addScalar("country", StandardBasicTypes.STRING)
+										   .addScalar("visaType", StandardBasicTypes.STRING)
+										   .addScalar("isCurrent", StandardBasicTypes.STRING)
+										   .addScalar("validFrom", StandardBasicTypes.STRING)
+										   .addScalar("validTo", StandardBasicTypes.STRING)
+										   .setLong("candidateId", candidateId)
+										   .setString("visaNumber", visaNumber)
+										   .setString("country", country)
+										   .setMaxResults(1)
+										   .setResultTransformer(Transformers.aliasToBean(ImmigrationVisaDTO.class)).uniqueResult();
+		  }
+		} catch (Exception exception) {
+			logger.error("Exception caught while  getting Active visa number and details  >>>>>>>>" + exception.getMessage());
+			exception.printStackTrace();
+		}
+		return visaDTO;
+	}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ImmigrationVisaDTO getCandidateVisaDetailsByVisaNumberAndCountry(Long candidateId, String visaNumber, String country) {
+		Session session = this.sessionFactory.getCurrentSession();
+		ImmigrationVisaDTO visaDTO= null;
+		try {
+			if (visaNumber != null) {
+				logger.debug(" before query execute to get  visa details by visa number  " + visaNumber);
+				String sqlQueryString = "select cvh.ID as id,  cv.CANDIDATE_ID as candidateId, cvh.VISA_ID as candidateVisaId ,"+
+						" cv.VISA_NUMBER as visaNumber, cv.VISA_TYPE as visaType, cvh.IS_CURRENT as isCurrent, " + 
+						" cv.COUNTRY as country, CAST(cvh.VALID_FROM_DATE AS char) as validFrom," + 
+						" CAST(cvh.VALID_TO_DATE AS char) as validTo " + 
+						"  from CANDIDATE_VISA cv, CANDIDATE_VISA_HISTORY cvh  Where cv.ID= cvh.VISA_ID  "+
+						"  and cvh.status = 1 and cv.CANDIDATE_ID =:candidateId and cv.VISA_NUMBER=:visaNumber and cv.COUNTRY =:country order by cvh.id desc ";
+				visaDTO = (ImmigrationVisaDTO) session.createSQLQuery(sqlQueryString)
+										   .addScalar("id", StandardBasicTypes.LONG)
+										   .addScalar("candidateId", StandardBasicTypes.LONG)
+										   .addScalar("candidateVisaId", StandardBasicTypes.LONG)
+										   .addScalar("visaNumber", StandardBasicTypes.STRING)
+										   .addScalar("country", StandardBasicTypes.STRING)
+										   .addScalar("visaType", StandardBasicTypes.STRING)
+										   .addScalar("isCurrent", StandardBasicTypes.STRING)
+										   .addScalar("validFrom", StandardBasicTypes.STRING)
+										   .addScalar("validTo", StandardBasicTypes.STRING)
+										   .setLong("candidateId", candidateId)
+										   .setString("visaNumber", visaNumber)
+										   .setString("country", country)
+										   .setMaxResults(1)
+										   .setResultTransformer(Transformers.aliasToBean(ImmigrationVisaDTO.class)).uniqueResult();
+		  }
+		} catch (Exception exception) {
+			logger.error("Exception caught while  getting Active visa number and details  >>>>>>>>" + exception.getMessage());
+			exception.printStackTrace();
+		}
+		return visaDTO;
+	}
+	@Override
+	@Transactional
+	public int updateCanVisaHistoryDetails(Long visaId, Long visaHistoryId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Query query = session.createQuery("update CandidateVisaHistory cvh set cvh.isCurrent='N', cvh.status=0 where cvh.id !=:visaHistoryId and cvh.visaId =:visaId");
+	    query.setLong("visaHistoryId", visaHistoryId);  
+	    query.setLong("visaId", visaId);  
+	    int result = query.executeUpdate();
+	    return result;
+	}
+}	

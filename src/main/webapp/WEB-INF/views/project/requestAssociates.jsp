@@ -257,7 +257,19 @@
 	</div>
 </div>
 
-<div id="divTaskTd9" style="display: none; float: left;">
+  <div id="divTaskTd9" style="display: none; float: left;">
+	<div class="changeRate_div estRate_div">
+         <div class="pull-left inputRate">
+         	<input class="form-control input-sm" type="number"  id="REPLACEROWIDpercentageOfWork" name="associateResources[REPLACEROWID].percentageOfWork" 
+         	data-validation-optional="true"   data-validation="validate_int validate_Space validate_length length1-10" 
+         	field-name="%Of Work" onblur="calculatePercentageOfWork();" onkeyup = "checkValue(this);">
+         </div>
+	</div>
+</div>
+
+
+
+<div id="divTaskTd10" style="display: none; float: left;">
 	<a class="text-danger tblminwidth-50" title="Remove row"
 		id="REPLACEROWIDremoveLineItem" onclick="removeRow(REPLACEROWID)"><i
 		class="fa fa-remove"></i></a>
@@ -301,6 +313,7 @@ function getRequestedAssociateListDiv(){
 	 result = result +'<th>Consulting</th>';
 	 result = result +'<th>Est Hours</th>';
 	 result = result +'<th>Est Budget</th>';
+	 result = result +'<th>%Of Work</th>';
 	 result = result +'<th>Action</th>';
 	 result = result +'</tr>';
 	 result = result +'</thead>';
@@ -316,7 +329,7 @@ function getRequestedAssociateListDiv(){
 	 
 	 result = result +'<td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span><input type="text" value = "0" id="estimatedBudget" name="estimatedBudget" class="ReadTextFli" readonly></div>';
 	 result = result +'</td>';
-	 result = result +'<td>&nbsp;</td>';
+	 result = result +'<td><div class="tblminwidth-175"><span class="pull-left paddingRight">%OfWork</span><input type="text" value = "0" id="totalPercentageOfWork" name="percentageOfWork" class="ReadTextFli" readonly></div></td>';
 	 result = result +'</tr>';
 	 result = result +'</tfoot>';
 	 
@@ -468,6 +481,11 @@ function loadApprovedResourceRequestsList(resourceRequestList,requestStatus){
 								 estimatedBudget = '-----';
 							 }
 							 
+							 if(opt.percentageOfWork != null && opt.percentageOfWork != '' && opt.percentageOfWork != 'undefined'){
+								 percentageOfWork = opt.percentageOfWork;
+							 }else{
+								 percentageOfWork = '-----';
+							 }
 							 
 							    result = result +'<tr>';
 							    
@@ -501,6 +519,10 @@ function loadApprovedResourceRequestsList(resourceRequestList,requestStatus){
 								
 								result = result +'<td>';
 							 	result = result +'<div class="tbldata-dotdot_80" title="'+estimatedBudget+'">'+estimatedBudget+'</div>';
+								result = result +'</td>';
+								
+								result = result +'<td>';
+							 	result = result +'<div class="tbldata-dotdot_80" title="'+percentageOfWork+'">'+percentageOfWork+'</div>';
 								result = result +'</td>';
 								
 							    result = result +'</tr>';
@@ -704,6 +726,7 @@ function loadResourceRequestsList(resourceRequestList,estimatedHours,estimatedBu
 			r.deleteCell(0);
 			calculateTotalEstimateHours();
 			calculateTotalEstimateBudget();
+			calculatePercentageOfWork();
 		}
 		
 		
@@ -746,6 +769,24 @@ function calculateTotalEstimateBudget(){
 		  }
 		  
 		  $("#estimatedBudget").val(totalBudget);
+	  }
+}
+</script>
+<script>
+function calculatePercentageOfWork(){
+	 var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+	  if(maxTsRowNum > 1){
+		  var totalWork = 0;
+		  for(var i=1; i<maxTsRowNum; i++){
+			  if(document.getElementById(i+"percentageOfWork")){
+				 var perWork = document.getElementById(i+"percentageOfWork").value;
+				  if(perWork != null && perWork != '' && perWork != 'undefined'){
+					  totalWork = totalWork+parseInt(document.getElementById(i+"percentageOfWork").value);
+				  }
+			  }
+		  }
+		  
+		  $("#totalPercentageOfWork").val(totalWork);
 	  }
 }
 </script>
@@ -1253,9 +1294,7 @@ function pagination(){
 
 <script>
 function requestAssociate(saveType){
-	
 	 if ($('#requestAssociates_form').validate(false, validationSettings)){ 
-		 
  		var associatesRowsCount = document.getElementById("associatesRowsCount").value;
  		if(associatesRowsCount == 0){
  			alertMessage();
@@ -1551,11 +1590,19 @@ function cancel(){
 			divTaskTd8Str = divTaskTd8Str.replace(/PRICECALCULATION/g,("")); 
 			cell7.innerHTML = divTaskTd8Str;
 			
+			
 			var cell8 = row.insertCell(8);
 			var divTaskTd9Str = document.getElementById("divTaskTd9").innerHTML;
 			divTaskTd9Str = divTaskTd9Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divTaskTd9Str = divTaskTd9Str.replace(/PRICECALCULATION/g,("")); 
 			cell8.innerHTML = divTaskTd9Str;
+			
+			
+			var cell9 = row.insertCell(9);
+			var divTaskTd10Str = document.getElementById("divTaskTd10").innerHTML;
+			divTaskTd10Str = divTaskTd10Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divTaskTd10Str = divTaskTd10Str.replace(/PRICECALCULATION/g,("")); 
+			cell9.innerHTML = divTaskTd10Str;
 			
 			 $("#norecordsfound").empty();
 			
@@ -1678,3 +1725,15 @@ $(document).ready(function() {
 			$("div.cand-advsrch-popup").toggle();
 		}
 	</script>
+	
+<script>
+function checkValue(ele){
+	var work = $(ele).val();
+	if(work >= 100){
+		if($(ele).next('p.jquery_form_error_message').length === 0) 
+			$(ele).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'>% of work should not be more than 100");
+	}else{
+		$(ele).next('p.jquery_form_error_message').remove();
+	}
+}
+</script>

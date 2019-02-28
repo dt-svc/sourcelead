@@ -86,6 +86,10 @@ public class UserDTO extends SearchDTO implements Serializable {
     
     private BigDecimal userApplicantsJoinedCount = new BigDecimal(0);
     
+    private BigDecimal userOnHoldApplicantsCount = new BigDecimal(0);
+    
+    private BigDecimal userNoResponseApplicantsCount = new BigDecimal(0);
+    
     private String isGlobalUser;
     
     private String isPayRollApprover;
@@ -99,6 +103,8 @@ public class UserDTO extends SearchDTO implements Serializable {
     private List<String> empTypes;
     
     private List<Long> roles;
+    
+    private Integer assignedJobsCount;
 	
 	public String getUnSubscribeTabIds()
 	{
@@ -667,6 +673,34 @@ public class UserDTO extends SearchDTO implements Serializable {
 
 	public void setRoles(List<Long> roles) {
 		this.roles = roles;
+	}
+
+	public Integer getAssignedJobsCount() {
+		return assignedJobsCount;
+	}
+
+	public void setAssignedJobsCount(Integer assignedJobsCount) {
+		this.assignedJobsCount = assignedJobsCount;
+	}
+
+	public BigDecimal getUserOnHoldApplicantsCount()
+	{
+		return userOnHoldApplicantsCount;
+	}
+
+	public void setUserOnHoldApplicantsCount(BigDecimal userOnHoldApplicantsCount)
+	{
+		this.userOnHoldApplicantsCount = userOnHoldApplicantsCount;
+	}
+
+	public BigDecimal getUserNoResponseApplicantsCount()
+	{
+		return userNoResponseApplicantsCount;
+	}
+
+	public void setUserNoResponseApplicantsCount(BigDecimal userNoResponseApplicantsCount)
+	{
+		this.userNoResponseApplicantsCount = userNoResponseApplicantsCount;
 	}
 	
 }

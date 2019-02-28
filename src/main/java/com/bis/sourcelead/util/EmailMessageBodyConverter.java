@@ -90,6 +90,7 @@ public String convertBodyOfEmailScenerioTemplate(String body,Map<String, String>
 		Matcher matcher = Pattern.compile("(\\[)(.*?)(\\])").matcher(body);
 		List<String> delimitStr = new ArrayList<String>();
 		StringBuilder tempStr = new StringBuilder(body);
+		System.out.println("");
 		while (matcher.find())
 		{
 			String delimeter = matcher.group();

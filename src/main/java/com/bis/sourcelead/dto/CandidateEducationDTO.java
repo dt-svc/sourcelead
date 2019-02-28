@@ -64,6 +64,14 @@ public class CandidateEducationDTO extends CommonDTO {
 	
 	private long candidateEducationId;
 	
+	private String startMonth;
+	
+	private String startYear;
+	
+	private String endMonth;
+	
+	private String endYear;
+	
 	public String getName() {
 		return name;
 	}
@@ -306,7 +314,36 @@ public class CandidateEducationDTO extends CommonDTO {
 		this.fileInfo = fileInfo;
 	}
 
-	
+	public String getStartMonth() {
+		return startMonth;
+	}
 
+	public void setStartMonth(String startMonth) {
+		this.startMonth = startMonth;
+	}
+
+	public String getStartYear() {
+		return startYear;
+	}
+
+	public void setStartYear(String startYear) {
+		this.startYear = startYear;
+	}
+
+	public String getEndMonth() {
+		return endMonth;
+	}
+
+	public void setEndMonth(String endMonth) {
+		this.endMonth = endMonth;
+	}
+
+	public String getEndYear() {
+		return endYear;
+	}
+
+	public void setEndYear(String endYear) {
+		this.endYear = endYear;
+	}
 
 }

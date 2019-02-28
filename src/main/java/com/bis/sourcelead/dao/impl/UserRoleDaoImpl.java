@@ -669,6 +669,32 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	public UserRole getProjectmemberUserDetailsByUserIdAndLocationId(Long userId, Long locationId,String designationType) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userRole = new ArrayList<UserRole>();
+		logger.debug("getUserDetailsByEmailAndLocationId method  start");
+		String globalUserQuery = "";
+		if(StringUtils.isNotEmpty(designationType) && designationType.equalsIgnoreCase(Constants.OFFSHORE_C2C)) {
+			globalUserQuery = " and (userRole.orgLocations.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationId) and userRole.isPrimary = '1')";
+		}else {
+			globalUserQuery = " and userRole.orgLocations.id = :locationId ";
+		}
+		userRole = session
+				.createQuery("from UserRole userRole left join fetch userRole.orgLocations orgLoc left join fetch orgLoc.org left join fetch userRole.roles  "
+						+ " left join fetch userRole.resourceManager left join fetch userRole.user left join fetch userRole.reportingManager left join fetch userRole.user.linkUserId  "
+						+ " where userRole.user.id = :userId "+globalUserQuery)
+
+				.setLong("userId", userId).setLong("locationId", locationId).list();
+		logger.debug("getUserDetailsByEmailAndLocationId method ends");
+		if (userRole.size() > 0) {
+			return userRole.get(0);
+		} else {
+			return getLoginUserPrimaryRole(userId);
+		}
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String invoiceFrequency,String dateFormat) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
@@ -862,12 +888,12 @@ public class UserRoleDaoImpl implements UserRoleDao {
 				"where ur.USER_ID = u.ID and ur.ORG_LOCATIONS_ID = ol.ID " + 
 				"and u.ID not in (select c.FROM_UID from CONNECTIONS c where c.TO_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
 				"and u.ID not in (select c.TO_UID from CONNECTIONS c where c.FROM_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
-				"and u.ID != :loginUserId and ur.IS_PRIMARY = 1";
+				"and u.ID != :loginUserId and ur.IS_PRIMARY = 1 ";
 		if(searchByValue != null && !"".equalsIgnoreCase(searchByValue)) {
 			subQuery.append(" and (ur.USER_TYPE = :searchByUserType or u.FIRST_NAME like :searchByValue or u.LAST_NAME like :searchByValue or ol.ORG_NAME like :searchByValue or u.EMAIL like :searchByValue or concat(u.FIRST_NAME,' ',IFNULL(u.LAST_NAME, '')) like :searchByValue)");
 			sqlQuery = sqlQuery.concat(subQuery.toString());
 		}
-		sqlQuery = sqlQuery.concat(" order by count DESC, userName");
+		sqlQuery = sqlQuery.concat(" order by count DESC");
 		
 		Query queryString = session.createSQLQuery(sqlQuery);
 		queryString.setParameter("loginUserId", userId); //setting same parameters multiple times in query
@@ -1282,11 +1308,11 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			userRoleList = query.setLong("locationId", locationId).setParameterList("roleIds", userRolesList).setLong("varZero", 0).setParameterList("orgRelationsList", orgRelationsList).setString("varString", "").setParameterList("tagsList", tagsList).setParameterList("managerUserIds", managerUserIds).setParameterList("teamsList", teamsList).setParameterList("departmentsList", departmentsList).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
 			
 			
-			String queryCount = "Select count (*) from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1' "+subQuery2+""
+			String queryCount = "Select count (*) from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> '1' "+subQuery2+""
 					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+" "+subQuery3+" "+subQuery4+" "+subQuery5+" "+subQuery6+" "+tagsQuery+" "+employmentTypeQuery+" " ;
 			Query query2 = session.createQuery(queryCount+query1);
 			
-			countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setParameterList("roleIds", userRolesList).setString("varString", "").setParameterList("tagsList", tagsList).setParameterList("orgRelationsList", orgRelationsList).setParameterList("managerUserIds", managerUserIds).setParameterList("teamsList", teamsList).setParameterList("departmentsList", departmentsList).setLong("varZero", 0).list();
+			countlist =query2.setLong("locationId", locationId).setParameterList("roleIds", userRolesList).setString("varString", "").setParameterList("tagsList", tagsList).setParameterList("orgRelationsList", orgRelationsList).setParameterList("managerUserIds", managerUserIds).setParameterList("teamsList", teamsList).setParameterList("departmentsList", departmentsList).setLong("varZero", 0).list();
 			
 			
 
@@ -1375,7 +1401,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from User user where user.id IN (select distinct approver.approverUserId.id from ProjectApproverHierarchy approver where approver.status = '1' and "
-				+ " approver.projectClientsId.id IN (select pc.id from ProjectClients pc where pc.orgLocationsId = :orgLocationId))";
+				+ " approver.projectClientsId.id IN (select pc.id from ProjectClients pc where pc.orgLocationsId = :orgLocationId)) ORDER BY user.firstName ASC";
 		List<User> userList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		return userList;
 	

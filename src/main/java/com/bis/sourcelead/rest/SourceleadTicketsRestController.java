@@ -3,7 +3,9 @@ package com.bis.sourcelead.rest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,6 +25,9 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadTicketDTO;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadTickets;
 import com.bis.sourcelead.entity.SourceleadTicketsComments;
@@ -55,6 +60,7 @@ public class SourceleadTicketsRestController {
 	
 	@Value("${static.path}")
     private String staticPath;
+	
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -176,7 +182,8 @@ public class SourceleadTicketsRestController {
 					response.setResponseMessage(Result.FAILED.getValue());
 				}
 				 
-			 }else if (user == null) {
+			 }
+			 else if (user == null) {
 					response.setResponse(Result.SESSION_TIMEDOUT.name());
 					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 				} else {
@@ -206,14 +213,22 @@ public class SourceleadTicketsRestController {
 		 Response<String> response = new Response<>();
 		 try{
 			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+//			 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 OrgLocations orgloc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 
 			 if(user != null){
 				 SourceleadTickets sourceleadTicket = sourceleadTicketService.getSourceleadTicketsByTicketUUID(ticketUUID);
+				 String existingticketStatus = sourceleadTicket.getTicketStatus();
 				 if(ticketStatus != null && ticketStatus != "" && ticketStatus != "undefined") {
 					 sourceleadTicket.setTicketStatus(ticketStatus);
 					 sourceleadTicket.setUpdatedBy(user);
 					 sourceleadTicket.setUpdatedDate(new Date());
 				 }
 				 SourceleadTickets tickets= sourceleadTicketService.saveSourceleadTickets(sourceleadTicket);
+				 
+				 if(!existingticketStatus.equals(ticketStatus))
+					 sourceleadTicketService.pmsTicketStatusUpdatedEmail(user, orgloc.getOrg(), orgloc, sourceleadTicket, existingticketStatus, ticketStatus);
+				 
 				if(tickets != null){
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());

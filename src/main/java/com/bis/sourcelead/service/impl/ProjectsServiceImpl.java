@@ -52,6 +52,7 @@ import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.dto.AvailableAssociatesDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientProjectDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
@@ -103,6 +104,7 @@ import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.reportsDTO.AssetsReportDTO;
 import com.bis.sourcelead.reportsDTO.ProjectReportDTO;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
@@ -586,6 +588,17 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projects.setAllowBidding(null);
 		}
 		
+		if(!isNullOrEmpty(projectsDTO.getProjectApprovalTypeValue())){
+			projects.setProjectApprovalType(projectsDTO.getProjectApprovalTypeValue());
+		}else {
+			projects.setProjectApprovalType(Constants.PARALLEL);
+		}
+		
+		if(!isNullOrEmpty(projectsDTO.getExpenseApprovalTypeValue())){
+			projects.setExpenseApprovalType(projectsDTO.getExpenseApprovalTypeValue());
+		}else {
+			projects.setExpenseApprovalType(Constants.PARALLEL);
+		}
 		
 		Set<ProjectDocuments> projDocDBList = new HashSet<>();
 		if(projectsDTO .getUploadedFileInfo() != null &&  !projectsDTO.getUploadedFileInfo().isEmpty()) {
@@ -910,8 +923,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 			if(projects.getProjectShortCode() != null && !projects.getProjectShortCode().isEmpty()) {
 				projectTasks.setGeneratedId(commonUtil.getProjectTaskGenaratedId(projects, generatedId));
 			}
+			projectTasks.setCreatedBy(projects.getCreatedBy());
 			projectTasks.setCreatedDate(new Date());
-			projectTasks.setUpdatedDate(new Date());
 			projectTasks.setPercentage(0);
 			projectTasks.setProjectId(projects);
 			set.add(projectTasks);
@@ -1009,6 +1022,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		projectApproverHierarchy.setLevel(1);
 		projectApproverHierarchy.setStatus("1");
 		projectApproverHierarchyList.add(projectApproverHierarchy);
+		//projectApproverHierarchy.setApprovalMechanismType(projectsDTO.getProjectApprovalTypeValue());
 		projectClients.setSharedClientProjectApproverHierarchyList(projectApproverHierarchyList);
 		
 		
@@ -1019,6 +1033,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		expenseApproverHierarchy.setApproverUserId(orgSpoc.getClientUser());
 		expenseApproverHierarchy.setLevel(1);
 		expenseApproverHierarchy.setStatus("1");
+		//expenseApproverHierarchy.setApprovalMechanismType(projectsDTO.getExpenseApprovalTypeValue());
 		expenseApproverHierarchyList.add(expenseApproverHierarchy);
 		projectClients.setSharedClientProjectExpenseApproverHierarchyList(expenseApproverHierarchyList);
 		
@@ -1422,6 +1437,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 	   
 	    if(projects.getProjectShortCode() != null){
 	    	projectsDTO.setProjectShortCode(projects.getProjectShortCode());
+	    }
+	    
+	    if(projects.getProjectApprovalType() != null){
+	    	projectsDTO.setProjectApprovalType(projects.getProjectApprovalType());
+	    }
+	    
+	    if(projects.getExpenseApprovalType() != null){
+	    	projectsDTO.setExpenseApprovalType(projects.getExpenseApprovalType());
 	    }
 	  
 	    projectsDTO.setIsProjectForTimeSheets(projects.getIsProjectForTimeSheets());
@@ -1863,6 +1886,19 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    		projects.setIsTaskCommentsRequired(Constants.NO);
 		    	}
 		    	
+		    	
+		    	if(StringUtils.isNotBlank(projectDTO.getProjectApprovalTypeValue())){
+		    		projects.setProjectApprovalType(projectDTO.getProjectApprovalTypeValue());
+		    	}else {
+		    		projects.setProjectApprovalType(Constants.PARALLEL);
+		    	}
+		    	
+		    	if(StringUtils.isNotBlank(projectDTO.getExpenseApprovalTypeValue())){
+		    		projects.setExpenseApprovalType(projectDTO.getExpenseApprovalTypeValue());
+		    	}else {
+		    		projects.setExpenseApprovalType(Constants.PARALLEL);
+		    	}
+		    	
 		    	if(StringUtils.isNotBlank(projectDTO.getDescription())){
 		    		projects.setDescription(projectDTO.getDescription());
 		    	}
@@ -1986,6 +2022,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 								      if(prHierarchy.getLevel() == 2 && (StringUtils.isEmpty(projectDTO.getLevel2Manager()))){
 								    	 oldlist.add(pah.getApproverUserId().getId());
 								    	 pah.setStatus("0");
+								    	// pah.setApprovalMechanismType(projectDTO.getProjectApprovalTypeValue());
 								    	 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
 								     }
 								     
@@ -1995,6 +2032,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 										 freshlist.add(usr.getId());
 										 pah.setApproverUserId(usr);
 										 pah.setStatus("1");
+										// pah.setApprovalMechanismType(projectDTO.getProjectApprovalTypeValue());
 										 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
 								     }
 								    
@@ -2012,6 +2050,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 								pah2.setLevel(2);
 								pah2.setProjectClientsId(pc);
 								pah2.setStatus("1");
+								//pah2.setApprovalMechanismType(projectDTO.getProjectApprovalTypeValue());
 								ids[1] = approverUserId2.getId();
 								projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
 								freshlist.add(Long.parseLong(projectDTO.getLevel2Manager()));
@@ -2049,6 +2088,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    				  User approverUser = new User();
 			    				  approverUser.setId(Long.valueOf(level1ApproverUserDetails[0]));
 			    				  expenseHierarchy.setApproverUserId(approverUser);
+			    				//  expenseHierarchy.setApprovalMechanismType(projectDTO.getExpenseApprovalTypeValue());
 			    				  expenseProjectApproverHierarchyService.saveProjectExpenseProjectApproverHierarchy(expenseHierarchy);
 			    			}
 			    			
@@ -2056,12 +2096,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    				  
 			    				  if((projectDTO.getLevel2ExpenseApprover() == null || projectDTO.getLevel2ExpenseApprover().isEmpty())) {
 			    					  expenseHierarchy.setStatus("0");
+			    					 // expenseHierarchy.setApprovalMechanismType(projectDTO.getExpenseApprovalTypeValue());
 				    				  expenseProjectApproverHierarchyService.saveProjectExpenseProjectApproverHierarchy(expenseHierarchy);
 			    				  }else {
 				    				  User approverUser2 = new User();
 				    				  approverUser2.setId(Long.parseLong(projectDTO.getLevel2ExpenseApprover()));
 				    				  expenseHierarchy.setApproverUserId(approverUser2);
 				    				  expenseHierarchy.setStatus("1");
+				    				//  expenseHierarchy.setApprovalMechanismType(projectDTO.getExpenseApprovalTypeValue());
 				    				  expenseProjectApproverHierarchyService.saveProjectExpenseProjectApproverHierarchy(expenseHierarchy);
 				    			  }
 			    				 
@@ -2076,6 +2118,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    				  eah2.setProjectId(projects);
 		    				  ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), loginOrgLocation.getId());
 		    				  eah2.setProjectClientsId(projectClients);
+		    				  //eah2.setApprovalMechanismType(projectDTO.getExpenseApprovalTypeValue());
 		    				  eah2.setStatus("1");
 		    				  eah2.setLevel(2);
 		    				  expenseProjectApproverHierarchyService.saveProjectExpenseProjectApproverHierarchy(eah2);
@@ -2665,6 +2708,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    	  pm.setTerminateReason(pm.getTerminateReason());
 		      }
 	       	 
+		      if(pm.getPercentageOfWork() != null) {
+		    	  pm.setPercentageOfWork(pm.getPercentageOfWork());
+		      }
+		      
 	       	 if(pm.getCandidateId() != null){
 	
 	                Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByMasterCandidateIdAndProjectIdForEmployee(pm.getMasterCandidateId().getId(), projectId, "DRAFT");
@@ -3073,6 +3120,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
  				orgRelations.setInitiatorLevel("Tier-5");
  				orgRelations.setResponderLevel("Tier-5");
  				orgRelations.setStatus("ACTIVE");
+ 				orgRelations.setGenerateInvoice("Bulk");
  				orgRelations.setCreatedBy(user.getUserCode());
  				orgRelations.setCreatedDate(new Date());
  				orgRelations.setUpdatedBy(user.getUserCode());
@@ -3375,6 +3423,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 							      if(prHierarchy.getLevel() == 2 && (StringUtils.isEmpty(projectDTO.getLevel2Manager()))){
 							    	 oldlist.add(pah.getApproverUserId().getId());
 							    	 pah.setStatus("0");
+							    	// pah.setApprovalMechanismType(projectDTO.getProjectApprovalType());
 							    	 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
 							     }
 							     
@@ -3384,6 +3433,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 									 freshlist.add(usr.getId());
 									 pah.setApproverUserId(usr);
 									 pah.setStatus("1");
+									 //pah.setApprovalMechanismType(projectDTO.getProjectApprovalType());
 									 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
 							     }
 							    
@@ -3401,6 +3451,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 							pah2.setLevel(2);
 							pah2.setProjectClientsId(pc);
 							pah2.setStatus("1");
+							//pah2.setApprovalMechanismType(projectDTO.getProjectApprovalType());
 							ids[1] = approverUserId2.getId();
 							projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
 							freshlist.add(Long.parseLong(projectDTO.getLevel2Manager()));
@@ -3452,6 +3503,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			    				  User approverUser = new User();
 			    				  approverUser.setId(Long.valueOf(level1ApproverUserDetails[0]));
 			    				  expenseHierarchy.setApproverUserId(approverUser);
+			    				  //expenseHierarchy.setApprovalMechanismType(projectDTO.getExpenseApprovalType());
 			    				  expenseProjectApproverHierarchyService.saveProjectExpenseProjectApproverHierarchy(expenseHierarchy);
 			    			}
 			    			
@@ -3459,12 +3511,14 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			    				  
 			    				  if((projectDTO.getLevel2ExpenseApprover() == null || projectDTO.getLevel2ExpenseApprover().isEmpty())) {
 			    					  expenseHierarchy.setStatus("0");
+			    					 // expenseHierarchy.setApprovalMechanismType(projectDTO.getExpenseApprovalType());
 				    				  expenseProjectApproverHierarchyService.saveProjectExpenseProjectApproverHierarchy(expenseHierarchy);
 			    				  }else {
 				    				  User approverUser2 = new User();
 				    				  approverUser2.setId(Long.parseLong(projectDTO.getLevel2ExpenseApprover()));
 				    				  expenseHierarchy.setApproverUserId(approverUser2);
 				    				  expenseHierarchy.setStatus("1");
+				    				 // expenseHierarchy.setApprovalMechanismType(projectDTO.getExpenseApprovalType());
 				    				  expenseProjectApproverHierarchyService.saveProjectExpenseProjectApproverHierarchy(expenseHierarchy);
 				    			  }
 			    				 
@@ -3479,6 +3533,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 		    				  eah2.setProjectId(projects);
 		    				  eah2.setProjectClientsId(projectClients);
 		    				  eah2.setStatus("1");
+		    				 // eah2.setApprovalMechanismType(projectDTO.getExpenseApprovalType());
 		    				  eah2.setLevel(2);
 		    				  expenseProjectApproverHierarchyService.saveProjectExpenseProjectApproverHierarchy(eah2);
 		    		}
@@ -3706,37 +3761,69 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 		List<ProjectReportDTO> projectReportDTOList = new LinkedList<>();
 		List<Projects> projectList = projectsDao.getProjectReportList(projectReportDTO,orgLocationId);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		if(projectList!=null && !projectList.isEmpty()) {
+		if(projectList!=null && !projectList.isEmpty()) { 
+			int projectMemberStatus = 1;
+			boolean activeFlag = false, inactiveFlag = false;
+			
+			if(projectReportDTO.isRefreshFlag()) {
+				projectMemberStatus = 1;
+			} else if(projectReportDTO.getAssociateStatus() != null && projectReportDTO.getAssociateStatus().length > 0) {
+				for(String status : projectReportDTO.getAssociateStatus()) {
+					if(status.equalsIgnoreCase("ACTIVE")) {
+						activeFlag = true;
+					}
+					if(status.equalsIgnoreCase("INACTIVE")) {
+						inactiveFlag = true;
+					}
+				}
+				
+				if(activeFlag && inactiveFlag) {
+					projectMemberStatus = -1;
+				} else if(activeFlag) {
+					projectMemberStatus = 1;
+				} else if(inactiveFlag) {
+					projectMemberStatus = 0;
+				}
+			}
+			
 			for(Projects p : projectList) {
 				Set<ProjectMembers> projectMemebersList = p.getProjectMembers();
 				if(projectMemebersList != null && !projectMemebersList.isEmpty()) {
 					for(ProjectMembers projectMember : projectMemebersList) {
-						if(projectMember.getProjectMemberCandidteId() != null && projectMember.getProjectMemberCandidteId().getOrgLocationId().getId().compareTo(orgLocationId) == 0) {
-							ProjectReportDTO reportDTO = getProjectReport(p);
-							//Project Members
-							reportDTO.setProjectMembers(projectMember.getProjectMemberCandidteId().getFullName());
-							ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMember.getId());
-							if (pmh == null) {
-								pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMember.getId());
+						boolean flag = false;
+						if(projectMemberStatus == -1) {
+							flag = true;
+						} else if(Integer.parseInt(projectMember.getStatus()) == projectMemberStatus) {
+							flag = true;
+						}
+						if(flag) {
+							if(projectMember.getProjectMemberCandidteId() != null && projectMember.getProjectMemberCandidteId().getOrgLocationId().getId().compareTo(orgLocationId) == 0) {
+								ProjectReportDTO reportDTO = getProjectReport(p);
+								//Project Members
+								reportDTO.setProjectMembers(projectMember.getProjectMemberCandidteId().getFullName());
+								ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMember.getId());
+								if (pmh == null) {
+									pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMember.getId());
+								}
+	/*							if(projectMember.getProjectAssignedDate() != null) {
+									reportDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(projectMember.getProjects().getOrgLocationsId().getDateFormat(), projectMember.getProjectAssignedDate()));
+								}
+								if(projectMember.getProjectEndDate() != null) {
+									reportDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(projectMember.getProjects().getOrgLocationsId().getDateFormat(), projectMember.getProjectEndDate())) ;
+								}*/
+								if (pmh != null && pmh.getProjectAssignedDate() != null) {
+									reportDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(
+											projectMember.getProjects().getOrgLocationsId().getDateFormat(),
+											pmh.getProjectAssignedDate()));
+								}
+								if (pmh != null && pmh.getProjectTerminationDate() != null) {
+									reportDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(
+											projectMember.getProjects().getOrgLocationsId().getDateFormat(),
+											pmh.getProjectTerminationDate()));
+								}
+								reportDTO.setMemberStatus(projectMember.getStatus());
+								projectReportDTOList.add(reportDTO);
 							}
-/*							if(projectMember.getProjectAssignedDate() != null) {
-								reportDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(projectMember.getProjects().getOrgLocationsId().getDateFormat(), projectMember.getProjectAssignedDate()));
-							}
-							if(projectMember.getProjectEndDate() != null) {
-								reportDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(projectMember.getProjects().getOrgLocationsId().getDateFormat(), projectMember.getProjectEndDate())) ;
-							}*/
-							if (pmh != null && pmh.getProjectAssignedDate() != null) {
-								reportDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(
-										projectMember.getProjects().getOrgLocationsId().getDateFormat(),
-										pmh.getProjectAssignedDate()));
-							}
-							if (pmh != null && pmh.getProjectTerminationDate() != null) {
-								reportDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(
-										projectMember.getProjects().getOrgLocationsId().getDateFormat(),
-										pmh.getProjectTerminationDate()));
-							}
-							reportDTO.setMemberStatus(projectMember.getStatus());
-							projectReportDTOList.add(reportDTO);
 						}
 					}
 				}
@@ -3851,7 +3938,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				createExcelsheet.autoSizeColumn(2);
 			}
 
-			if (null != reportList.getProjectManagers()) {
+			if (null != reportList.getProjectManagerNames()) {
 				 writeRow.createCell(3).setCellValue(reportList.getProjectManagerNames());
 				createExcelsheet.autoSizeColumn(3);
 			} else {
@@ -3909,6 +3996,152 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				}
 			}
 		
+		
+		return createExcelsheet;
+	}
+
+	@Override
+	public List<Projects> getProjectsListByUserIDAndOrgId(String[] associates,Long orgLocations) {
+		// TODO Auto-generated method stub
+		return projectsDao.getProjectsListByUserIDAndOrgId(associates,orgLocations);
+	}
+
+	@Override
+	public List<AvailableAssociatesDTO> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO, OrgLocations orgLocations) {
+		try {
+			List<Object[]> objectList = projectsDao.getAvailableAssociatesReport(availableAssociatesDTO,orgLocations);
+			List<AvailableAssociatesDTO> availableAssociatesDTOList = new ArrayList<>();
+			if(objectList != null && !objectList.isEmpty()) {
+				for(Object[] obj : objectList) {
+					AvailableAssociatesDTO dto = new AvailableAssociatesDTO();
+					SimpleDateFormat dateForm1 = new SimpleDateFormat(orgLocations.getDateFormat());
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					if(obj[1] != null)
+					    dto.setEmpId(String.valueOf(obj[1]));
+					if(obj[2] != null)
+						dto.setEmpName(String.valueOf(obj[2]));
+					if(obj[3] != null)
+						dto.setProjectName(String.valueOf(obj[3]));
+					if(obj[4] != null)
+						dto.setProjectStartDate(dateForm1.format(sdf.parse(String.valueOf(obj[4]))));
+					if(obj[5] != null)
+						dto.setProjectEndDate(dateForm1.format(sdf.parse(String.valueOf(obj[5]))));
+					if(obj[6] != null)
+						dto.setEmpStartDate(dateForm1.format(sdf.parse(String.valueOf(obj[6]))));
+					if(obj[7] != null)	
+						dto.setEmpEndDate(dateForm1.format(sdf.parse(String.valueOf(obj[7]))));
+					if(obj[8] != null)
+						dto.setAvailableHours(String.valueOf(obj[8]));
+					if(obj[9] != null)
+						dto.setHoursperWeek(String.valueOf(obj[9]));
+					availableAssociatesDTOList.add(dto);
+				}
+				return availableAssociatesDTOList;
+			}
+			
+			return availableAssociatesDTOList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public File availableAssociatereportReportListOfExcel(List<AvailableAssociatesDTO> data, User user,OrgLocations orgLocations) throws FileNotFoundException {
+		File file = null;
+		Workbook createExcelworkbook = new XSSFWorkbook();
+		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLocations.getOrgLocationName() + "_" + dateFormat.format(new Date()));
+		Row writeRow = null;
+		createExcelsheet = getExcelSheetofWithHeader(createExcelsheet, writeRow, createExcelworkbook, data);
+		int column = 0;
+		for (AvailableAssociatesDTO   reportList : data) {
+			writeRow = createExcelsheet.createRow(column + 1);
+			String isGlobalAccess = null;
+			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, reportList, orgLocations, user,isGlobalAccess );
+			column++;
+		}
+		try {
+			file = File.createTempFile(orgLocations.getOrgLocationName() + "_Available Associate Report_" + dateFormat.format(new Date()), ".xlsx");
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		file.setReadable(true);
+		FileOutputStream fos = new FileOutputStream(file);
+		try {
+			createExcelworkbook.write(fos);
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return file;
+	}
+
+
+
+	private Sheet getExcelSheetofWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook,List<AvailableAssociatesDTO> data) {
+
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+		String[] headers = Constants.AVAILABLE_ASSOCIATES_REPORT_EXPORT_HEADDERS;
+		;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 0);
+		return createExcelsheet;
+	}
+
+
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, AvailableAssociatesDTO reportList,
+			OrgLocations orgLocations, User user, String isGlobalAccess) {
+		
+			if (null != reportList.getEmpName()) {
+				writeRow.createCell(0).setCellValue(reportList.getEmpName());
+				createExcelsheet.autoSizeColumn(0);
+			} else {
+				writeRow.createCell(0).setCellValue("--");
+				createExcelsheet.autoSizeColumn(0);
+			}
+			
+			if (null != reportList.getProjectName()) {
+				writeRow.createCell(1).setCellValue(reportList.getProjectName());
+				createExcelsheet.autoSizeColumn(1);
+			} else {
+				writeRow.createCell(1).setCellValue("--");
+				createExcelsheet.autoSizeColumn(1);
+			}
+
+			if (null != reportList.getProjectStartDate()) {
+				writeRow.createCell(2).setCellValue(reportList.getProjectStartDate()+ " "+ "to" +" "+(reportList.getProjectEndDate()));
+				createExcelsheet.autoSizeColumn(2);
+			} else {
+				writeRow.createCell(2).setCellValue("--");
+				createExcelsheet.autoSizeColumn(2);
+			}
+
+			if (null != reportList.getEmpStartDate()) {
+				writeRow.createCell(3).setCellValue(reportList.getEmpStartDate()+ " "+ "to" +" "+(reportList.getEmpEndDate()));
+				createExcelsheet.autoSizeColumn(3);
+			} else {
+				writeRow.createCell(3).setCellValue("--");
+				createExcelsheet.autoSizeColumn(3);
+			}
+			
+			if (null != reportList.getAvailableHours()) {
+				writeRow.createCell(4).setCellValue(reportList.getAvailableHours());
+				createExcelsheet.autoSizeColumn(4);
+			} else {
+				writeRow.createCell(4).setCellValue("--");
+				createExcelsheet.autoSizeColumn(4);
+			}
+
+			if (null != reportList.getHoursperWeek()) {
+				writeRow.createCell(5).setCellValue(reportList.getHoursperWeek());
+				createExcelsheet.autoSizeColumn(5);
+			} else {
+				writeRow.createCell(5).setCellValue("--");
+				createExcelsheet.autoSizeColumn(5);
+			}
+			
+			
 		
 		return createExcelsheet;
 	}

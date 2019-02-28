@@ -238,7 +238,7 @@ public class RequirementServiceTest {
 			Org org= new Org();
 			org.setOrgCode("12456");
 			loginOrgLocation.setOrg(org);
-			requirementService.approverEmailScenario(user, approverUser, requirement, location, loginOrgLocation);
+			//requirementService.approverEmailScenario(user, approverUser, requirement, location, loginOrgLocation);
 		}
 		@Test
 		public void approverTwoEmailScenario() throws Exception{
@@ -321,7 +321,7 @@ public class RequirementServiceTest {
 			Org org= new Org();
 			org.setOrgCode("12456");
 			loginOrgLocation.setOrg(org);
-			requirementService.mailRequirementtoManager(loginUser, intiatorUser, requirement, location, loginOrgLocation);
+			//requirementService.mailRequirementtoManager(loginUser, intiatorUser, requirement, location, loginOrgLocation);
 		}
 		
 		@Test
@@ -349,7 +349,7 @@ public class RequirementServiceTest {
 			Org org= new Org();
 			org.setOrgCode("12456");
 			orgLocations.setOrg(org);
-			requirementService.AssignToTeamMembersEmail(loginUser, managerUser, requirement, location, orgLocations);
+			//requirementService.AssignToTeamMembersEmail(loginUser, managerUser, requirement, location, orgLocations);
 		}
 		
 		@Test
@@ -423,13 +423,13 @@ public class RequirementServiceTest {
 			orgSpoc.setId(1l);
 			
 			String releasetype="VENDORS";
-			requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation, releasetype);
+			//requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation, releasetype);
 		}	
 		
 		@Test
 		public void getRequirementByParentRequirementId() throws Exception{
 			Long requirementId=1l;
-			requirementService.getRequirementByParentRequirementId(requirementId);
+			//requirementService.getRequirementByParentRequirementId(requirementId);
 		}
 		
 		@Test

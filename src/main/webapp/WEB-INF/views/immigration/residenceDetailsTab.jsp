@@ -100,7 +100,12 @@
 			  </tr>  			  			  
 			   
  
-			  </c:forEach>  						
+			  </c:forEach> 
+			 <c:if test="${empty candidatesResidenceList}">
+				<tr>
+				 <td colspan="5" valign="top" class="dataTables_empty"></td>
+				</tr>
+		     </c:if>						
 			</tbody>
 		  </table>
 		</div>

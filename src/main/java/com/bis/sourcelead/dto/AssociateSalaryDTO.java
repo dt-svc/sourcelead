@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import com.bis.sourcelead.annotations.Required;
+import com.bis.sourcelead.payroll.dto.PayItemDTO;
 
 public class AssociateSalaryDTO {
 	
@@ -34,6 +35,8 @@ public class AssociateSalaryDTO {
 	private String associateSalUUID;
 	
 	List<AssociatePayItemDTO> associatePayItemDto;
+	
+	List<PayItemDTO> orgPayItems;
 	
 	private String previousPayType;
 	
@@ -256,6 +259,12 @@ public class AssociateSalaryDTO {
 	}
 	public void setPayGroupUUID(String payGroupUUID) {
 		this.payGroupUUID = payGroupUUID;
+	}
+	public List<PayItemDTO> getOrgPayItems() {
+		return orgPayItems;
+	}
+	public void setOrgPayItems(List<PayItemDTO> orgPayItems) {
+		this.orgPayItems = orgPayItems;
 	}
 	
 }

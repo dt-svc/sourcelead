@@ -21,6 +21,8 @@ public class EmployeeTimesheetSubmissionDTO implements Serializable{
 	
 	private String ticketNumber;
 	
+	private String hourlyType;
+	
 	private String projectTaskType;
 	
 	private List<ProjectTasks> projectTaskList;
@@ -99,6 +101,14 @@ public class EmployeeTimesheetSubmissionDTO implements Serializable{
 
 	public void setProjectTaskType(String projectTaskType) {
 		this.projectTaskType = projectTaskType;
+	}
+
+	public String getHourlyType() {
+		return hourlyType;
+	}
+
+	public void setHourlyType(String hourlyType) {
+		this.hourlyType = hourlyType;
 	}
 
 	

@@ -1902,7 +1902,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					if(length < 101 && length > 1 ) {
 						dataMigrationDTOJsonCopy.put("antiVirus", dataMigrationDTOJsonCopy.getString("antiVirus").trim());
 					}else {
-						errorSet.put("antiVirus", dataMigrationDTOJsonCopy.getString("antiVirus").trim()+"  should be between 1-100 characters");
+						errorSet.put("antiVirus", "Anti-Virus  " + dataMigrationDTOJsonCopy.getString("antiVirus").trim()+"  should be between 1-100 characters");
 					}
 				}
 				
@@ -1910,9 +1910,9 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				if(!dataMigrationDTOJsonCopy.getString("osKey").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("osKey"))) {
 					int length = dataMigrationDTOJsonCopy.getString("osKey").trim().length();	
 					if(length < 51 && length > 5 ) {
-						dataMigrationDTOJsonCopy.put("osKey", dataMigrationDTOJsonCopy.getString("osKey").trim());
+						dataMigrationDTOJsonCopy.put("osKey  ", dataMigrationDTOJsonCopy.getString("osKey").trim());
 					}else {
-						errorSet.put("osKey", dataMigrationDTOJsonCopy.getString("osKey").trim()+"  should be between 1-100 characters");
+						errorSet.put("osKey", "OS Key"+dataMigrationDTOJsonCopy.getString("osKey").trim()+"  should be between 5-100 characters");
 					}
 				}
 				
@@ -1921,7 +1921,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					if(length < 101 && length > 1 ) {
 						dataMigrationDTOJsonCopy.put("operatingSystem", dataMigrationDTOJsonCopy.getString("operatingSystem").trim());
 					}else {
-						errorSet.put("operatingSystem", dataMigrationDTOJsonCopy.getString("operatingSystem").trim()+"  should be between 1-100 characters");
+						errorSet.put("operatingSystem", "Operating System "+ dataMigrationDTOJsonCopy.getString("operatingSystem").trim()+"  should be between 1-100 characters");
 					}
 				}
 				
@@ -1930,7 +1930,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					if(length < 51 && length > 8 ) {
 						dataMigrationDTOJsonCopy.put("macAddress", dataMigrationDTOJsonCopy.getString("macAddress").trim());
 					}else {
-						errorSet.put("macAddress", dataMigrationDTOJsonCopy.getString("macAddress").trim()+"  should be between 8-50 characters");
+						errorSet.put("macAddress", "MAC Address  "+dataMigrationDTOJsonCopy.getString("macAddress").trim()+"  should be between 8-50 characters");
 					}
 				}
 				
@@ -2248,9 +2248,19 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				// INSIDE---->>>>>"+dataMigrationDTOJsonCopy.getString("candidateId"));
 				}
 				} else {
-				errorSet.put("beneficiaryEmail", "Beneficiary Email is is not a valid email address");
+				errorSet.put("beneficiaryEmail", "Beneficiary Email is not a valid email address");
 				}
 				}
+				
+				if (!dataMigrationDTOJsonCopy.getString("beneficiaryPhone").equals("null")) {
+					String mobileNumber = dataMigrationDTOJsonCopy.getString("beneficiaryPhone");
+					if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
+					boolean isValidated = isMobileNumberValid(mobileNumber);
+					if (isValidated == false) {
+					errorSet.put("beneficiaryPhone", "Phone Number is not valid");
+					}
+					}
+					}
 
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateOfBirth")) || dataMigrationDTOJsonCopy.getString("dateOfBirth").equals("null")) {
 				errorSet.put("dateOfBirth", "DOB is missing");
@@ -2266,45 +2276,16 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				errorSet.put("maritalStatus", "Marital status is invalid input");/// dropdown value.
 				}
 				}*/
-				
-				
-				
-				/*if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("experience"))) {
-					if (dataMigrationDTOJsonCopy.getString("experience").matches("[-a-zA-Z]+")) {
-						dataMigrationDTOJsonCopy.put("experience", "0");
-					//	candidateDTO.setExperienceYears("0");
-					//	candidateDTO.setExperienceMonths("0");
-					}else{
-						 String exp[] = getExperienceYearsAndMonths(dataMigrationDTOJsonCopy.getString("experience"));
-						 if(exp.length >1){
-							 
-							 dataMigrationDTOJsonCopy.put("experience", exp[0]);
-							// candidateDTO.setExperienceYears(exp[0]);
-								if(!exp[1].matches("[a-zA-Z]+")){
-									if(!"years".equalsIgnoreCase(exp[1])){
-									int months = ((Number)NumberFormat.getInstance().parse(exp[1])).intValue();
-									candidateDTO.setExperienceMonths(String.valueOf(months));
-									}
-										
-								} 
-						 }else{
-							 if(exp[0].contains("years") || exp[0].contains("Years") ){
-								 int years = ((Number)NumberFormat.getInstance().parse(exp[0])).intValue();
-								 
-								 dataMigrationDTOJsonCopy.put("experience", String.valueOf(years));
-								// candidateDTO.setExperienceYears(String.valueOf(years));
-								// candidateDTO.setExperienceMonths("0");
-							 }else{
-								// candidateDTO.setExperienceYears("");
-								// candidateDTO.setExperienceMonths("");
-								 dataMigrationDTOJsonCopy.put("experience", "");
-							 }
-							 
-						 }
-							
-							
+				if (!dataMigrationDTOJsonCopy.getString("experience").equals("null")) {
+					String exp = dataMigrationDTOJsonCopy.getString("experience");//.matches("/(^[0-9]+\\.[0-9]+?)+/g");
+					
+					Pattern p = Pattern.compile("^(\\d*\\.)?\\d([ a-zA-Z0-9]?)+$");//. represents single character  
+					Matcher m = p.matcher(exp);  
+					boolean isMatched = m.matches();  
+						if(!isMatched){
+						errorSet.put("experience", "experience data should be like 3.0 years or 3 years or 1.2 only Allowed");
+						}
 					}
-				}*/
 				
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("petitionType")) || dataMigrationDTOJsonCopy.getString("petitionType").equals("null")) {
 				  errorSet.put("petitionType", "Petition Type is missing"); /// dropdown value.
@@ -2345,10 +2326,11 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 
 				}
+				
 				if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("passportNo"))
 				&& !dataMigrationDTOJsonCopy.getString("passportNo").equals("null") && !dataMigrationDTOJsonCopy.getString("candidateId").equals("null")) {
-				boolean flag = immigrationCommonService.validateCandidatePassportVisa(Long.parseLong(dataMigrationDTOJsonCopy.getString("candidateId")),
-				Constants.ID_TYPE_PASSPORT,dataMigrationDTOJsonCopy.getString("passportNo") );
+				boolean flag = immigrationCommonService.validateCandidatePassport(Long.parseLong(dataMigrationDTOJsonCopy.getString("candidateId")),
+				dataMigrationDTOJsonCopy.getString("passportNo") );
 				if(!flag) {
 
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("passportCountry")) || dataMigrationDTOJsonCopy.getString("passportCountry").equals("null")) {
@@ -2374,9 +2356,9 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 
 				if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaNo"))
 				&& !dataMigrationDTOJsonCopy.getString("visaNo").equals("null") && !dataMigrationDTOJsonCopy.getString("candidateId").equals("null")) {
-				boolean flag = immigrationCommonService.validateCandidatePassportVisa(Long.parseLong(dataMigrationDTOJsonCopy.getString("candidateId")),
-				Constants.ID_TYPE_VISA,dataMigrationDTOJsonCopy.getString("visaNo") );
-				if(!flag) {
+				//boolean flag = immigrationCommonService.validateCandidatePassportVisa(Long.parseLong(dataMigrationDTOJsonCopy.getString("candidateId")),
+				//.ID_TYPE_VISA,dataMigrationDTOJsonCopy.getString("visaNo") );
+				//if(!flag) {
 
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaCountry")) || dataMigrationDTOJsonCopy.getString("visaCountry").equals("null")) {
 				errorSet.put("visaCountry", "visaCountry is mandatory if you have entered visano");/// dropdown value.
@@ -2399,18 +2381,17 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				} else {
 				LookUpData data = lookUpDataService.getLookUpdataByCategoryAndName(Constants.VISA,
 				dataMigrationDTOJsonCopy.getString("visaType"));
-				System.out.println(" Visa Type--->"+dataMigrationDTOJsonCopy.getString("visaType"));
 				if (data == null) {
 				errorSet.put("visaType", "Visa Type is not found"); /// dropdown value.
 				} else {
 				// dataMigrationDTOJsonCopy.setString("petitionType", data.getId().toString());
-				dataMigrationDTOJsonCopy.put("visaType", data.getId());
+				dataMigrationDTOJsonCopy.put("visaType",data.getName());
 				}
 
 				}
-				}else {
-				errorSet.put("visaNo", "visaNo is already exist.");
-				}
+				//}else {
+			//	errorSet.put("visaNo", "visaNo is already exist.");
+			//	}
 
 				}
 
@@ -3093,5 +3074,19 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 		return experience.split("[\\p{Punct}\\s]+");
 		
 	}	
+	
+	private boolean isMobileNumberValid(String mobileNmber)
+	{
+		String regex = "([\\.\\-\\s+\\/()]*[0-9]*\\.?[\\.\\-\\s+\\/()]*){8,15}";
+		boolean flag;
+		String mobNum = mobileNmber.trim();
+		if (mobNum.length() > 9 && mobNum.length() <= 20) {
+			flag = mobNum.matches(regex);
+		}
+		else {
+			flag = false;
+		}
+		return flag;
+	}
 		
 	}

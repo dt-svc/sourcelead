@@ -529,10 +529,9 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
              d.setFullYear(year);
              $(".DatePicker").datepicker({
             	 dateFormat: finalDateFormatScript,
-            	 yearRange: "-70Y:-10Y" ,
-            	 defaultDate: d,
             	 changeMonth: true,
                  changeYear: true,
+                 maxDate:0,
                  showOn: 'focus',
                  showButtonPanel: true,
                  closeText: 'Clear',

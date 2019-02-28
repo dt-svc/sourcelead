@@ -29,6 +29,7 @@ import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
 import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
+import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -37,7 +38,9 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -601,8 +604,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 
 	@Override
-	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndCandidateId(Long locationsId, Long candidateId) {
-		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndCandidateId(locationsId, candidateId);
+	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndCandidateId(Long locationsId,Long orgId, Long candidateId) {
+		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndCandidateId(locationsId,orgId,candidateId);
 	}
 	
 	@Override
@@ -1033,6 +1036,29 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 									projectApproverHierarchyList.add(pah);
 									projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
 									
+									
+									
+									
+									//prepare ExpenseApproverHierarchy
+									Set<ExpenseProjectApproverHierarchy> expenseApproverHierarchyList = new HashSet<ExpenseProjectApproverHierarchy>();
+									ExpenseProjectApproverHierarchy eah = new ExpenseProjectApproverHierarchy();
+									eah.setProjectId(projects);
+									eah.setProjectClientsId(projectClients);
+									
+									if(cand.getOrgLocationId().getUser() != null) {
+										eah.setApproverUserId(cand.getOrgLocationId().getUser());
+									}else {
+										OrgSpoc orgSpoc = orgSpocService.getSpocByOrgRelationIdForNewVendor(clildCandidate.getOrgRelationId().getId());
+										eah.setApproverUserId(orgSpoc.getVendorUser());
+									}
+									
+									
+									eah.setLevel(1);
+									eah.setStatus("1");
+									expenseApproverHierarchyList.add(eah);
+									projectClients.setExpenseProjectApproverHierarchyList(expenseApproverHierarchyList);
+									
+									
 									projectClientService.storeProjectClients(projectClients);
 								}
 								if(cand.getConsultantUser() != null){
@@ -1192,6 +1218,12 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			projectMembers.setEstimatedBudget(projectMembersDTO.getEstBudget());
 		}else{
 			projectMembers.setEstimatedBudget(null);
+		}
+		
+		if(projectMembersDTO.getPercentageOfWork() != null){
+			projectMembers.setPercentageOfWork(projectMembersDTO.getPercentageOfWork());
+		}else{
+			projectMembers.setPercentageOfWork(null);
 		}
 		projectMembers.setProjects(projects);
 		projectMembers.setStatus("1");
@@ -1537,6 +1569,7 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 			orgRelations.setInitiatorLevel("Tier-5");
 			orgRelations.setResponderLevel("Tier-5");
 			orgRelations.setStatus("ACTIVE");
+			orgRelations.setGenerateInvoice("Bulk");
 			orgRelations.setCreatedBy(user.getUserCode());
 			orgRelations.setCreatedDate(new Date());
 			orgRelations.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -1676,6 +1709,12 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 		return projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId,isGlobalUser);
 	}
 
+
+	public ProjectMembers getAllProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,
+			Long locationId,String isGlobalUser) throws Exception {
+		return projectMembersDao.getAllProjectMembersByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId,isGlobalUser);
+	}
+	
 	@Override
 	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndActiveStatusRecords(Long projectClientsId) throws Exception {
 		return projectMembersDao.getAllProjectMembersByProjectClientIdAndActiveStatusRecords(projectClientsId);
@@ -1850,13 +1889,13 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 		return projectMembersDao.getProjectMemberByUserIdAndLoginOrglocationId(userId, orgLocationId);
 	}
 	@Override
-	public List<String> getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndCandidateId(Long locationsId, Long candidateId){
-		return projectMembersDao.getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndCandidateId(locationsId, candidateId);
+	public List<String> getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndMasterCandidateId(Long locationsId,Long orgId, Long masterCandidateId){
+		return projectMembersDao.getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndMasterCandidateId(locationsId,orgId, masterCandidateId);
 		
 	}
 	@Override
-	public List<ProjectMembers> getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(Long locationsId, Long candidateId,String timesheetFrequency){
-		return projectMembersDao.getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(locationsId, candidateId, timesheetFrequency);
+	public List<ProjectMembers> getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(Long locationsId,Long orgId, Long candidateId,String timesheetFrequency){
+		return projectMembersDao.getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(locationsId,orgId, candidateId, timesheetFrequency);
 	}
 
 	@Override
@@ -2008,7 +2047,7 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 						
 					}
 					
-					if(candidate.getParentCandidateId() != null && (candidate.getDesignationType().equalsIgnoreCase("C2C") || candidate.getDesignationType().equalsIgnoreCase("C2C-1099"))){
+					if(candidate.getParentCandidateId() != null && (candidate.getDesignationType() != null && candidate.getDesignationType().equalsIgnoreCase("C2C") || candidate.getDesignationType().equalsIgnoreCase("C2C-1099"))){
 						Long parentCandidatId = candidate.getParentCandidateId().getId();
 						Long orgLocationId = candidate.getOrgLocationId().getId();
 						int level = 1;
@@ -2066,8 +2105,30 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 									
 									pah.setLevel(1);
 									pah.setStatus("1");
+									//pah.setApprovalMechanismType(Constants.PARALLEL);
 									projectApproverHierarchyList.add(pah);
 									projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+									
+									
+									//prepare ExpenseApproverHierarchy
+									Set<ExpenseProjectApproverHierarchy> expenseApproverHierarchyList = new HashSet<ExpenseProjectApproverHierarchy>();
+									ExpenseProjectApproverHierarchy eah = new ExpenseProjectApproverHierarchy();
+									eah.setProjectId(projects);
+									eah.setProjectClientsId(projectClients);
+									
+									if(cand.getOrgLocationId().getUser() != null) {
+										eah.setApproverUserId(cand.getOrgLocationId().getUser());
+									}else {
+										OrgSpoc orgSpoc = orgSpocService.getSpocByOrgRelationIdForNewVendor(clildCandidate.getOrgRelationId().getId());
+										eah.setApproverUserId(orgSpoc.getVendorUser());
+									}
+									
+									
+									eah.setLevel(1);
+									eah.setStatus("1");
+									//eah.setApprovalMechanismType(Constants.PARALLEL);
+									expenseApproverHierarchyList.add(eah);
+									projectClients.setExpenseProjectApproverHierarchyList(expenseApproverHierarchyList);
 									
 									projectClientService.storeProjectClients(projectClients);
 								}
@@ -2142,6 +2203,19 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 	public List<Long> getAllProjectMembersIdsByProjectIdAndOrgLocationId(Long projectId, Long orglocationId)
 			throws Exception {
 		return projectMembersDao.getAllProjectMembersIdsByProjectIdAndOrgLocationId(projectId, orglocationId);
+	}
+
+	@Override
+	public ResponseList<MarginSheetReportDTO> getProjectMemeberByClientProjectAndOrglocation(Long orglocationId,Date[] searchDates,MarginSheetReportDTO marginSheetReportDTO)
+	{
+		return projectMembersDao.getProjectMemeberByClientProjectAndOrglocation(orglocationId,searchDates,marginSheetReportDTO);
+
+	}
+
+	@Override
+	public ProjectMembers getProjectMembersByMasterCandiateIdAndProjectClientId(Long masterCandidateId,
+			Long projectClientsId) throws Exception {
+		return projectMembersDao.getProjectMembersByMasterCandiateIdAndProjectClientId(masterCandidateId, projectClientsId);
 	}
 
 }

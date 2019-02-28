@@ -339,7 +339,7 @@ function lcaReportPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 		    	  	 	 if(opt.lcaNo !=null && opt.lcaNo != '' && opt.lcaNo !='undefined'){
-		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.lcaNo+'" >'+opt.lcaNo+'</div>';
+		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.lcaNo+'" ><a href=/app/immigration/viewLca?lcaUuid='+opt.lcaUuid+'>'+opt.lcaNo+'</a></div>';
 		        		}else{
 		        			result = result + '     <div class="tblminwidth-75">---</div>';
 		        		}  
@@ -553,8 +553,8 @@ function lcaReportPagination(url){
                         "sortable": false,
                         "render": function ( data, type, opt, meta ) {
                      		var result = "";
-                     		if(opt.expiredOn !=null && opt.expiredOn != '' && opt.expiredOn !='undefined'){
-    		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.expiredOn+'" >'+opt.expiredOn+'</div>';
+                     		if(opt.expired !=null && opt.expired != '' && opt.expired !='undefined'){
+    		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.expired+'" >'+opt.expired+'</div>';
     		        		}else{
     		        			result = result + '     <div class="tblminwidth-75">---</div>';
     		        		} 
@@ -585,10 +585,12 @@ function lcaReportPagination(url){
 function resetLcaForm(){
 	 $("#lcaStatus").val('');
 	 $("#lcaStatus").trigger("chosen:updated"); 
-	 $("#daysFilter").val('');
+	 $("#daysFilter").val('All');
 	 $("#daysFilter").trigger("chosen:updated"); 
-	 $("#availability").val('');
-	 $("#status").val('');
+	 // By default All should Shows when we Reset Form
+	 $("#daysFilter").val('All');
+	 $("#availability").val('All');
+	 $("#status").val('All');
 }
 </script>
 

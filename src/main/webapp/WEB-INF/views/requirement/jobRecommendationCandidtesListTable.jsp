@@ -8,6 +8,7 @@
 <script type="text/javascript" src="/resources/js/submissionFailedCandidatesList.js"></script>
 
 <div id="popUp" ></div>
+<div id="customizePopUp"></div>
 <script type="text/javascript">
 		window.onload = function () {
 			var requirementId = '${requirementId}';

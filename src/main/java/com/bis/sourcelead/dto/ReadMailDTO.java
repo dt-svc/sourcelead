@@ -18,6 +18,7 @@ public class ReadMailDTO {
 
 	private long emailAccountId;
 	private String sendType; // compose, reply, forward
+	private boolean seen;
 
 	public List<AttachmentDTO> getFilesList() {
 		return filesList;
@@ -129,6 +130,14 @@ public class ReadMailDTO {
 
 	public void setUnreadCount(int unreadCount) {
 		this.unreadCount = unreadCount;
+	}
+
+	public boolean isSeen() {
+		return seen;
+	}
+
+	public void setSeen(boolean seen) {
+		this.seen = seen;
 	}
 
 }

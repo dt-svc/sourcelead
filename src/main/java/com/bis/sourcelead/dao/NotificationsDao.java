@@ -32,5 +32,7 @@ public interface NotificationsDao {
 	Notifications getNotificationBySpocUUID(String spocUUID) throws Exception;
 	
 	ResponseList<Notifications> getDynamicAllNotificationsListByUserId(NotificationDTO notificationDTO, Long userId, String orgCode, String locationCode, Timezone timezone);
+	
+	String getNotificationUUIDByOrgSpocId(Long orgSpocId) throws Exception;
 
 }

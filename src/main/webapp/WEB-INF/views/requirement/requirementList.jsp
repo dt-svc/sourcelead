@@ -775,7 +775,9 @@ function closeFilter(){
 			  }
 	    });
 		$(".colPop").hide();
-	   
+		
+		reqTable.column(0).visible(false);
+
 	}
 	function checkAllColumns(obj){
 		var id = obj.id;
@@ -823,12 +825,15 @@ function changeStatusAuthorisation(requirementId){
 function changeStatus(requirementId, requirementStatus){
 	var status = document.getElementById('changeStatusId' + requirementId).value;
 	$("tr").find("td.sorting_1").removeClass("sorting_1");
-	if(status == "FILLEDCLOSED" || status == "OPEN"){
+	if(status == "FILLEDCLOSED" ||  status == "UNFILLEDCLOSED" || status == "ONHOLD" || status == "OPEN" ){
 		$("#job_"+requirementId).addClass("row-success");
+		location.reload();
 	}else if(status == "CANCEL"){
 		$("#job_"+requirementId).addClass("row-danger");
+		location.reload();
 	}else{
 		$("#job_"+requirementId).addClass("row-warning");
+		location.reload();
 	}
 
 	 var userId ='${SourceLeadWeb_userId}';
@@ -921,7 +926,7 @@ function exportToPdf(type) {
 	    });
 	 	var clients = [];
 		$('input:checkbox[name=clientNameById]:checked').each(function() {
-			clients.push($(this).val());
+			clients.push($(this).attr("data-val"));
 	    });
 		if(requirementEmptyMessage > 0) {
 			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=pdf";
@@ -940,7 +945,7 @@ function exportToPdf(type) {
 	} else {
 		/* alert("Export JobFair to PDF"); */
 		$(".buttons-pdf").click();
-		window.location.href = sourceleadUrl +"/pdfExportForJobfair";
+		window.location.href = sourceleadUrl +"/pdfExportForJobfair?includeInactive=true";
 	}
 }
 </script>
@@ -956,7 +961,7 @@ function exportToExcel(type) {
 	    });
 	 	var clients = [];
 		$('input:checkbox[name=clientNameById]:checked').each(function() {
-			clients.push($(this).val());
+			clients.push($(this).attr("data-val"));
 	    });
 		if(requirementEmptyMessage > 0) {
 			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=xls";	
@@ -974,7 +979,7 @@ function exportToExcel(type) {
 		}
 	} else {
 		/* alert("Export JobFair to Excel"); */
-		window.location.href = sourceleadUrl +"/excelExportForJobfair"
+		window.location.href = sourceleadUrl +"/excelExportForJobfair?includeInactive=true"
 		$(".buttons-excel").click();
 	}
 }
@@ -1282,19 +1287,17 @@ function refreshGoogleApiCity(cityId){
 									<c:forEach var="team" items="${add_clientList}">
 									
 									<c:if test="${team.locationId.id == loginOrgLocId}">
-									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${team.responderLocationId.org.orgName}" ><label>${team.responderLocationId.org.orgName}</label></li>
+									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" data-val = "${team.id}" value ="${team.responderLocationId.org.orgName}" ><label>${team.responderLocationId.org.orgName}</label></li>
 									</c:if>
 									
 									<c:if test="${team.responderLocationId.id == loginOrgLocId}">
-									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${team.locationId.org.orgName}" ><label>${team.locationId.org.orgName}</label></li>
+									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" data-val = "${team.id}"  value ="${team.locationId.org.orgName}" ><label>${team.locationId.org.orgName}</label></li>
 									</c:if>
 									
 									</c:forEach>
 								</ul>
 							 </div> 
 						</div>
-						
-						
 						
 							<div class="col-md-3 mb positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
@@ -1319,7 +1322,7 @@ function refreshGoogleApiCity(cityId){
 						</div>
 						
 			<!-- //projectList -->
-			
+			<div class="clearfix"></div>
 			
 			<div class="col-md-3 mb positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
@@ -1396,6 +1399,23 @@ function myProjectFunction() {
     }
 }
 
+function myCityFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myCityInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myCitytUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
 
 $(document).keyup(function(e) {
 	  if (e.keyCode === 27) {
@@ -1406,6 +1426,7 @@ $(document).keyup(function(e) {
 <script>
 function resetJobFilter(){
 	$("ul#myprojectUL > li input:checkbox").prop("checked",false);
+	$("ul#myCitytUL > li input:checkbox").prop("checked",false);
 	$("ul#myClientUL > li input:checkbox").prop("checked",false);
 	$("ul#jobs > li input:checkbox").prop("checked",false);
 	$("ul#status > li input:checkbox").prop("checked",false);

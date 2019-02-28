@@ -18,6 +18,8 @@ public class SalaryDTO {
 	
 	private Date joiningDate;
 	
+	private String payFrequency;
+	
 	
 	private int noOfDays;
 
@@ -89,6 +91,14 @@ public class SalaryDTO {
 	public void setJoiningDate(Date joiningDate)
 	{
 		this.joiningDate = joiningDate;
+	}
+
+	public String getPayFrequency() {
+		return payFrequency;
+	}
+
+	public void setPayFrequency(String payFrequency) {
+		this.payFrequency = payFrequency;
 	}
 	
 	

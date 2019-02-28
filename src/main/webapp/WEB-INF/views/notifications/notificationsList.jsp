@@ -110,7 +110,7 @@ function dynamicNotificationtPaginations(url){
 		    	  		result = result +'	  <td>';
 		    	  		result = result +'			<div class="noti-checkbox tblminwidth-50">';
 		    	  		result = result +'			<label>';
-						result = result +'			   <input type="checkbox"  id="selectid" onclick="totalCheck1();checkCheckBox();" class="checkbox1 left" name="check[]" value="'+report.id+'" />';
+						result = result +'			   <input type="checkbox"  id="selectid" onclick="totalCheck1();" class="checkbox1 left" name="check[]" value="'+report.id+'" />';
 						result = result +'			  <span></span>';
 						result = result +'			</label>';
 						result = result +'			</div>';
@@ -311,7 +311,6 @@ $("#selectall").change(function () {
 
 <script>
 function totalCheck1() {
-	alert("totalCheck1 .... START");
 	if($("input[name='check[]']").is(':checked')){
 		
 		var checked = $("input[name='check[]']:checked"); 
@@ -324,7 +323,6 @@ function totalCheck1() {
 		
 	}
 }
-	alert("totalCheck1 .... END");
 }
 </script>
 

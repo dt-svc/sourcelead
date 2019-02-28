@@ -1077,4 +1077,10 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		
 	}
 
+
+	@Override
+	public String getVendorOnboardingUUIDByOrgRelationId(Long orgRelationId) {
+		return vendorOnboardDao.getVendorOnboardingUUIDByOrgRelationId(orgRelationId);
+	}
+
 }

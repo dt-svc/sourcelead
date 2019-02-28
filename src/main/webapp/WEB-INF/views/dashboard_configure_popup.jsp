@@ -77,6 +77,12 @@
 								<li class="positionRelative" style="width: 98%; height: 30px;"><input class="checkbox-custom" id="cb${index}" type="checkbox" checked="checked" data-order="${index + 1}" data-size="4:1"><label for="cb${index}">Candidates for Onboarding</label><span class="movIcon"></span></li>
 								<c:set var="index" value="${index +1}"></c:set>
 							</sec:authorize>
+							
+							<!-- Candidates for Invoice -->
+							<sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE','ROLE_VIEW_REQUIREMENT')">
+								<li class="positionRelative" style="width: 98%; height: 30px;"><input class="checkbox-custom" id="cb${index}" type="checkbox" checked="checked" data-order="${index + 1}" data-size="4:1"><label for="cb${index}">Candidates for Invoice</label><span class="movIcon"></span></li>
+								<c:set var="index" value="${index +1}"></c:set>
+							</sec:authorize>
 
 							<!-- Associate Requests, New Resource Requests -->
 							<sec:authorize

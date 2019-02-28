@@ -71,5 +71,7 @@ public interface ProjectApproverHierarchyService {
 	public ProjectApproverHierarchy getProjectApproverByUserIdAndProjectIdOrgLocationId(Long userId,Long projectId,Long orgLocationId) throws Exception;
 	
 	List<ProjectApproverHierarchy> getProjectsHierarchyListByProjectClientId(Long projectClientId) throws Exception;
+	
+	String getApprovalMechanismTypeByProjectClientId(Long projectClientId) throws Exception;
 
 }

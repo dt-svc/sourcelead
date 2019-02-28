@@ -461,6 +461,7 @@ function resetFilter(){
 	$("ul#myRolesUL > li input:checkbox").prop("checked",false);
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
+	$("ul#leaveTypeUL > li input:checkbox").prop("checked",false);
 	$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
 	$("#dynamicUserDataTableSearch").val('');
 	

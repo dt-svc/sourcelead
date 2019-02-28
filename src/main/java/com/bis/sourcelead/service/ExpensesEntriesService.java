@@ -15,4 +15,8 @@ public interface ExpensesEntriesService {
 
 	public List<ExpensesEntries> getExpensesEntriesByExpenseId(long parseLong);
 
+	public int dumpExpenceCategoryAmountToOldRecords();
+
+	public int changeDocumentNameWithWhiteSpacesToUnderScore(String staticPath);
+
 }

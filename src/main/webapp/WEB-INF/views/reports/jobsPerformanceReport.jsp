@@ -330,9 +330,9 @@ function offerpagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
 	    	  		 if(opt.jobId !=null && opt.jobId !="" && opt.jobId !='undefined'){
-						result = result + ' <td><div>'+opt.jobId+'</div></td>';
+						result = result + ' <td><div class="tblminwidth-100">'+opt.jobId+'</div></td>';
 	    	  		 }else{
-	            		  result = result + '<td><div><span>---</span></div></td>'; 
+	            		  result = result + '<td><div class="tblminwidth-100">---</div></td>'; 
 	            	  }
 		             return result;
 	    	  	}
@@ -341,7 +341,7 @@ function offerpagination(url){
               "data": "jobTitle",
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-						result = result + ' <td><div>'+opt.generatedId+'-'+opt.jobTitle+'</div></td>';
+						result = result + ' <td><div class="tblminwidth-175">'+opt.generatedId+'-'+opt.jobTitle+'</div></td>';
             	  return result;
               		
               }
@@ -354,9 +354,9 @@ function offerpagination(url){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.clientName !=null && opt.clientName !="" && opt.clientName !='undefined'){
-						result = result + ' <td><div>'+opt.clientName+'</div></td>';
+						result = result + ' <td><div class="tbldata-dotdot">'+opt.clientName+'</div></td>';
             	  }else{
-            		  result = result + '<td><div><span>---</span></div></td>'; 
+            		  result = result + '<td><div class="tblminwidth-100">---</div></td>'; 
             	  }
             	  return result;
               		
@@ -395,7 +395,7 @@ function offerpagination(url){
               "data": "priority",
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-	    	  		result = result + ' <td><div>'+opt.priority+'</div></td>';
+	    	  		result = result + ' <td><div class="tblminwidth-100">'+opt.priority+'</div></td>';
 	    	  		return result;
               }
             },
@@ -406,9 +406,9 @@ function offerpagination(url){
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
                 		if(opt.assignedMembersCount >0){
-						result = result + ' <td><div><a onClick="loadJobAllApplicants('+opt.id+')">'+opt.assignedMembersCount+'</a></div></td>';
+						result = result + ' <td><div class="tblminwidth-100"><a onClick="loadJobAllApplicants('+opt.id+')">'+opt.assignedMembersCount+'</a></div></td>';
                 		}else{
-    					result = result + ' <td><div><span>'+opt.assignedMembersCount+'</span></div></td>';
+    					result = result + ' <td><div class="tblminwidth-100">'+opt.assignedMembersCount+'</div></td>';
                 		}
     	              return result;
                 }
@@ -419,9 +419,9 @@ function offerpagination(url){
                       "render": function ( data, type, opt, meta ) {
                     	  var result = "";
                     	  if(opt.shortlistCount >0){
-      	    	  			result = result + ' <td><div><a onClick="loadJobShortlistCandidates('+opt.id+');">'+opt.shortlistCount+'</a></div></td>';
+      	    	  			result = result + ' <td><div class="tblminwidth-100"><a onClick="loadJobShortlistCandidates('+opt.id+');">'+opt.shortlistCount+'</a></div></td>';
                     	  }else{
-          					result = result + ' <td><div><span>'+opt.shortlistCount+'</span></div></td>';
+          					result = result + ' <td><div class="tblminwidth-100">'+opt.shortlistCount+'</div></td>';
                     	  }
       	    	  			return result;
                       }
@@ -432,9 +432,9 @@ function offerpagination(url){
                      "render": function ( data, type, opt, meta ) {
                    	  var result = "";
                    	  if(opt.interviewCount>0){
-     	    	  		result = result + ' <td><div><a onClick="loadJobInterviewCandidates('+opt.id+')">'+opt.interviewCount+'</a></div></td>';
+     	    	  		result = result + ' <td><div class="tblminwidth-100"><a onClick="loadJobInterviewCandidates('+opt.id+')">'+opt.interviewCount+'</a></div></td>';
                    	  }else{
-                   		result = result + ' <td><div><span>'+opt.interviewCount+'</span></div></td>';  
+                   		result = result + ' <td><div class="tblminwidth-100">'+opt.interviewCount+'</div></td>';  
                    	  }
      	    	  		return result;
                      }
@@ -445,9 +445,9 @@ function offerpagination(url){
                        "render": function ( data, type, opt, meta ) {
                      	  var result = "";
                      	 if(opt.offersCount>0){
-       	    	  			result = result + ' <td><div><a onClick="loadJobOfferedCandidates('+opt.id+')">'+opt.offersCount+'</a></div></td>';
+       	    	  			result = result + ' <td><div class="tblminwidth-100"><a onClick="loadJobOfferedCandidates('+opt.id+')">'+opt.offersCount+'</a></div></td>';
                      	 }else{
-                     		result = result + ' <td><div><span>'+opt.offersCount+'</span></div></td>';  	 
+                     		result = result + ' <td><div class="tblminwidth-100">'+opt.offersCount+'</div></td>';  	 
                      	 }
        	    	  			return result;
                        }
@@ -458,9 +458,9 @@ function offerpagination(url){
                     "render": function ( data, type, opt, meta ) {
                   	  var result = "";
                   	if(opt.submitToClientCount>0){
-    	    	  			result = result + ' <td><div><a onClick="loadJobSubmitToClientCandidates('+opt.id+')">'+opt.submitToClientCount+'</a></div></td>';
+    	    	  			result = result + ' <td><div class="tblminwidth-100"><a onClick="loadJobSubmitToClientCandidates('+opt.id+')">'+opt.submitToClientCount+'</a></div></td>';
                   	}else{
-                 		result = result + ' <td><div><span>'+opt.submitToClientCount+'</span></div></td>';  	 
+                 		result = result + ' <td><div class="tblminwidth-100">'+opt.submitToClientCount+'</div></td>';  	 
                   	}
     	    	  		return result;
                     }
@@ -471,9 +471,9 @@ function offerpagination(url){
                  "render": function ( data, type, opt, meta ) {
                	  var result = "";
                	if(opt.backoutCount>0){
- 	    	  			result = result + ' <td><div><a onClick="loadJobBackOutCandidates('+opt.id+')">'+opt.backoutCount+'</a></div></td>';
+ 	    	  			result = result + ' <td><div class="tblminwidth-100"><a onClick="loadJobBackOutCandidates('+opt.id+')">'+opt.backoutCount+'</a></div></td>';
                	}else{
-             		result = result + ' <td><div><span>'+opt.backoutCount+'</span></div></td>';  	 
+             		result = result + ' <td><div class="tblminwidth-100">'+opt.backoutCount+'</div></td>';  	 
                	}
  	    	  		return result;
                  }
@@ -484,9 +484,9 @@ function offerpagination(url){
                  "render": function ( data, type, opt, meta ) {
                	  var result = "";
                	  if(opt.joinedCount>0){
- 	    	  			result = result + ' <td><div><a onClick="loadJobJoinedCandidates('+opt.id+')">'+opt.joinedCount+'</a></div></td>';
+ 	    	  			result = result + ' <td><div class="tblminwidth-100"><a onClick="loadJobJoinedCandidates('+opt.id+')">'+opt.joinedCount+'</a></div></td>';
                	  }else{
-               		result = result + ' <td><div><span>'+opt.joinedCount+'</span></div></td>';  	 
+               		result = result + ' <td><div class="tblminwidth-100">'+opt.joinedCount+'</div></td>';  	 
                	  }
  	    	  		return result;
                  }
@@ -497,9 +497,9 @@ function offerpagination(url){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.rejectedCount>0){
-	    	  			result = result + ' <td><div><a onClick="loadJobRejectedCandidates('+opt.id+')">'+opt.rejectedCount+'</a></div></td>';
+	    	  			result = result + ' <td><div class="tblminwidth-100"><a onClick="loadJobRejectedCandidates('+opt.id+')">'+opt.rejectedCount+'</a></div></td>';
             	  }else{
-                 		result = result + ' <td><div><span>'+opt.rejectedCount+'</span></div></td>';  	 
+                 		result = result + ' <td><div class="tblminwidth-100">'+opt.rejectedCount+'</div></td>';  	 
             	  }
 	    	  			return result;
               }

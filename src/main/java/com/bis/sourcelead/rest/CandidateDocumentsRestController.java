@@ -524,4 +524,15 @@ public class CandidateDocumentsRestController {
 		responseList.setData(documentsList);
 		return responseList;
 	}
+	
+	@RequestMapping(value = "/getUserDocumentList", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseList<LookUpData> getUserDocumentList(HttpServletRequest request) throws Exception
+	{
+		ResponseList<LookUpData> respList = new ResponseList<LookUpData>();
+		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+		respList.setData(documentsList);
+		return respList;
+	}
+	
 }

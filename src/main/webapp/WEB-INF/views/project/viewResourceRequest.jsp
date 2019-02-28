@@ -98,6 +98,7 @@ function getRequestedAssociatesList(){
 				result = result +'                     <th>Consulting</th>';
 				result = result +'                     <th>Est Hours</th>';
 				result = result +'                     <th>Est Budget</th>';
+				result = result +'                     <th>%Of Work</th>';
 				result = result +'                     <th>Status</th>';
 				result = result +'                 </tr>';
 				result = result +'             </thead>';
@@ -156,6 +157,10 @@ function getRequestedAssociatesList(){
 						
 						result = result +'<td>';
 					 	result = result +'<div class="tbldata-dotdot_80" title="'+opt.estimatedBudget+'">'+opt.estimatedBudget+'</div>';
+						result = result +'</td>';
+						
+						result = result +'<td>';
+					 	result = result +'<div class="tbldata-dotdot_80" title="'+(opt.percentageOfWork != null ? opt.percentageOfWork :'--') +'">'+(opt.percentageOfWork != null ? opt.percentageOfWork :'--')+'</div>';
 						result = result +'</td>';
 						
 						

@@ -15,15 +15,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 @Table(name = "LEAVE_REPORT_VIEW")
 public class LeaveReportView {
+	
 	@Id
 	@Column(name = "ID", nullable = false)
 	private Long id;
+	
 	@Column(name = "USER_ID", nullable = false)
 	private Long userId;
+	
 	@Column(name = "ORG_ID", nullable = false)
 	private Long orgId;
+	
 	@Column(name = "EMPLOYEE_NAME")
 	private String name;
+	
 	@Column(name = "ORGLOCATION_ID", nullable = false)
 	private Long orglocationId;
 	
@@ -38,23 +43,31 @@ public class LeaveReportView {
 	
 	@Column(name = "REASON",columnDefinition = "TEXT default NULL")
 	private String reason;
+	
 	@Column(name = "FROM_DATE")
 	private Date fromDate;
+	
 	@Column(name = "TO_DATE")
 	private Date toDate;
+	
 	@Column(name = "LEAVE_STATUS")
 	private String status;
+	
 	@Column(name = "LEAVE_TYPE_ID")
 	private Long leaveTypeId;
+	
 	@Column(name = "LEAVE_TYPE_NAME")
 	private String leaveTypeName;
 
 	@Column(name = "APPROVER_NAME" , columnDefinition = "TEXT default NULL")
     private String approver;
+	
 	@Column(name = "LEAVE_TYPE_BILLABLE", columnDefinition = "TEXT default NULL")
 	private String leaveTypeBillable;
+	
 	@Column(name = "DURATION", columnDefinition = "TEXT default NULL")
 	private String duration;
+	
 	@Column(name = "EMP_TYPE", columnDefinition = "TEXT default NULL")
 	private String employmentType;
 	

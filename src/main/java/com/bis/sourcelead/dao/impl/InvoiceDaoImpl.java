@@ -33,12 +33,15 @@ import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SearchDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.CreditDebitLineItems;
 import com.bis.sourcelead.entity.CreditDebitNote;
+import com.bis.sourcelead.entity.CustomInvoiceTemplate;
+import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.InvoiceTimelineHistory;
@@ -1035,5 +1038,134 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 
 	}
+
+	@Override
+	@Transactional
+	public CustomInvoiceTemplate getCustomInvoiceTemplateById(long customInvoiceTemplateId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(CustomInvoiceTemplate.class, customInvoiceTemplateId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public long saveCustomInvoiceTemplate(CustomInvoiceTemplate customInvoiceTemplate) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(customInvoiceTemplate);
+			return customInvoiceTemplate.getId();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
+	@Override
+	@Transactional
+	public ResponseList<CustomInvoiceTemplate> getCustomInvoiceTemplateByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId, SearchDTO searchDTO) {
+		ResponseList<CustomInvoiceTemplate> responseList = new ResponseList<>();
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from CustomInvoiceTemplate invoiceTemplate where invoiceTemplate.orgRelations.id= :orgRelationId and invoiceTemplate.orgLocations.id=:orgLocationId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("orgRelationId", orgRelationId);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			List<CustomInvoiceTemplate> customInvoiceTemplateList = queryObj.list();
+			
+			
+			StringBuilder query1 = new StringBuilder("");
+			if(searchDTO != null) {
+				if(searchDTO.getSearchValue() != null && !"".equalsIgnoreCase(searchDTO.getSearchValue())) {
+				 query1.append("and (invoiceTemplate.name like '%" + searchDTO.getSearchValue() + "%' ")
+					   .append("OR invoiceTemplate.venue like '%" + searchDTO.getSearchValue() + "%' )");
+				}
+				query1.append(" order by " + (searchDTO.getSortColumn() != null && !searchDTO.getSortColumn().isEmpty() ? searchDTO.getSortColumn() : "id") + " " + (searchDTO.getSortOrder() != null && !searchDTO.getSortOrder().isEmpty() ? searchDTO.getSortOrder() : "desc"));
+			}
+			
+			
+			List<Long> countlist = null;
+			String countQuery = "select count(*) from CustomInvoiceTemplate invoiceTemplate where invoiceTemplate.orgRelations.id= :orgRelationId and invoiceTemplate.orgLocations.id=:orgLocationId";
+			
+			Query countQueryObj = session.createQuery(countQuery + query1);
+			countQueryObj.setLong("orgRelationId", orgRelationId);
+			countQueryObj.setLong("orgLocationId", orgLocationId);
+			countlist = countQueryObj.list();
+			
+			int totalCount = 0;
+//			if (jobFairDTO != null) {
+				if(countlist != null && !countlist.isEmpty()) {
+					totalCount = countlist.iterator().next().intValue();
+				}
+//			}
+			responseList.setRecordsFiltered(totalCount);
+			responseList.setRecordsTotal(totalCount);
+			
+			if (customInvoiceTemplateList != null && !customInvoiceTemplateList.isEmpty())
+				responseList.setData(customInvoiceTemplateList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return responseList;
+	}
+
+	@Override
+	@Transactional
+	public CustomInvoiceTemplate getCustomInvoiceTemplateListByUUIDAndOrgRelationIdAndOrgLocationId(String uuid, Long orgRelationId, Long orgLocationId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from CustomInvoiceTemplate invoiceTemplate where invoiceTemplate.uuid=:uuid and invoiceTemplate.orgRelations.id=:orgRelationId and invoiceTemplate.orgLocations.id=:orgLocationId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("uuid", uuid);
+			queryObj.setLong("orgRelationId", orgRelationId);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			List<CustomInvoiceTemplate> customInvoiceTemplateList = queryObj.list();
+			if (customInvoiceTemplateList != null && !customInvoiceTemplateList.isEmpty()) {
+				return customInvoiceTemplateList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public CustomInvoiceTemplate getCustomInvoiceTemplateByNameAndOrgRelationIdAndOrgLocationId(String name,
+			Long orgRelationId, Long orgLocationId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from CustomInvoiceTemplate invoiceTemplate where invoiceTemplate.name=:name and invoiceTemplate.orgRelations.id=:orgRelationId and invoiceTemplate.orgLocations.id=:orgLocationId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("name", name);
+			queryObj.setLong("orgRelationId", orgRelationId);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			List<CustomInvoiceTemplate> customInvoiceTemplateList = queryObj.list();
+			if (customInvoiceTemplateList != null && !customInvoiceTemplateList.isEmpty()) {
+				return customInvoiceTemplateList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public boolean deleteCustomInvoiceTemplate(CustomInvoiceTemplate customInvoiceTemplate) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.delete(customInvoiceTemplate);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	
 	
 }

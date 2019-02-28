@@ -1,6 +1,5 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -20,9 +19,9 @@ import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.entity.UserIdView;
+import com.bis.sourcelead.indPayroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.TotalHoursDTO;
 
@@ -261,6 +260,7 @@ public class UserGroupDaoImpl implements UserGroupDao{
 		return payPeriodDTOList;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public List<UserGroup> getAllUserGroupsByLocationIdAndDepartmentId(OrgLocations orgLocation, String userId)
@@ -276,6 +276,37 @@ public class UserGroupDaoImpl implements UserGroupDao{
 		
 		return userGroupList;
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<UserGroup> getAllUserGroupsByLocationIdAndPayrollFrequency(OrgLocations orgLocation, String autoPayrollFrequency)
+	{
+		List<UserGroup> userGroupList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from UserGroup userGroup where userGroup.orgLocationId.id = :orgLocationId and userGroup.status = 1 and userGroup.payFrequency = :payFrequency";
+			userGroupList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocation.getId()).setString("payFrequency", autoPayrollFrequency).list();
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		
+		return userGroupList;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<IndPaysheetFrequency> getIndPayPeriodsByGroupId(Long groupId, OrgLocations orgLocation) {
+		List<IndPaysheetFrequency> payPeriodDTOList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from IndPaysheetFrequency ipsf where ipsf.orgLocation.id =:orgLocationId and ipsf.status = 1 and ipsf.userGroup.id =:groupId and ipsf.approverStatus ='APPROVED'";
+			payPeriodDTOList =session.createQuery(query).setLong("groupId", groupId).setLong("orgLocationId", orgLocation.getId()).list();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return payPeriodDTOList;
+	}
 	
 }

@@ -2081,4 +2081,16 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		}
 		
 	}
+
+	@Override
+	public void changeDocumentNamesWithWhiteSpacesToUnderScore(String staticPath) {
+		try {
+			masterCandidateDao.changeDocumentNamesWithWhiteSpacesToUnderScore(staticPath);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
 }

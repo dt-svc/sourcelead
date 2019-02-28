@@ -8,11 +8,11 @@
 <jsp:include page="../masterSideNav.jsp" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<script type="text/javascript" src="/resources/js/immigration.js"></script>
+<script type="text/javascript" src="/resources/js/immigration.js?staticTime=${staticTime}"></script>
 <script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
 <!-- <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script> -->
 <!-- <script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script> -->
-<%-- <c:set var ="myImmigrationPage" value = "Y" scope="session"/> --%>
+ <c:set var ="myImmigrationPage" value = "Y" scope="session"/> 
 <title>Insert title here</title>
     <section class="content-wraper">
    
@@ -22,6 +22,7 @@
 	<div class="clearfix"></div>
     </section>    
     
+    <div class="project_wrap">
     <div class="immigrationWrap noPad">
 		<div class="immigraInnWrap">
 		
@@ -117,6 +118,7 @@
 			 
     </div>
   </div>
+   </div>
   </section>
   <!-- Content Area -->
 

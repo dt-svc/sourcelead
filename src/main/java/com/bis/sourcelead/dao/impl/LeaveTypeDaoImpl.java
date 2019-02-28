@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.entity.LeaveType;
+import com.bis.sourcelead.entity.LeaveTypeHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -147,6 +148,27 @@ public class LeaveTypeDaoImpl implements LeaveTypeDao {
 		String query = "select leaveType.name from LeaveType leaveType where leaveType.orgLocations.id = :orgLocationId"; 
 		List<String> leaveTypesNamesList =  session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		return leaveTypesNamesList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void storeLeaveTypeHistory(LeaveTypeHistory lt) {
+		// TODO Auto-generated method stub
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (lt != null) {
+				session.saveOrUpdate(lt);
+			}
+			logger.debug("LeaveType Added Successfully");
+		} catch (ConstraintViolationException exception) {
+			StringBuffer message= new StringBuffer(MessageFormat.format(duplicateValue,"LEAVETYPEHISTORY"));
+			try {
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+			} catch (SourceLeadConstraintViolationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

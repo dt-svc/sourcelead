@@ -400,7 +400,8 @@ function listTypePagination(count) {
 		}
 	});
 	$("#topLeaveTakenReportsListView").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
-
+	 
+	$("#topLeaveTakenReportsListView").DataTable().columns(-1).order('desc').draw();
 }
 $("#leaveReportDataTableSearch").keydown(function(e) {
 	   if(e.which === 13) {
@@ -594,6 +595,7 @@ function resetFilter(){
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
 	$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
+	$("ul#leaveTypeUL > li input:checkbox").prop("checked",false);
 	$("#dynamicUserDataTableSearch").val('');
 	
 	document.getElementById("activeStatus").checked = true;

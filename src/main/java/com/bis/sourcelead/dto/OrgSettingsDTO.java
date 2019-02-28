@@ -59,7 +59,6 @@ public class OrgSettingsDTO extends CommonDTO{
 	
 	private String dateFormat1;
 	
-	@Required(desc = "dba")
 	private String dba;
 	
 	private String workingDaysPerWeek;

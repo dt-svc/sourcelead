@@ -163,6 +163,14 @@ public class Html2PdfUtil {
 	                    			}
 	                    		}
 	                    	}
+	                    }else {
+	                    	StringBuilder ownersb = new StringBuilder();
+                			if(StringUtils.isNotBlank(contracts.getContactUser().getLastName())){
+                				ownersb.append(contracts.getContactUser().getFirstName()).append(" ").append(contracts.getContactUser().getLastName());
+                			}else{
+                				ownersb.append(contracts.getContactUser().getFirstName());
+                			}
+                			matchPattern.appendReplacement(sb, ownersb.toString());
 	                    }
 	                	
 	                	
@@ -232,9 +240,11 @@ public class Html2PdfUtil {
 			                    matchPattern.appendReplacement(sb, req.getJobTitle());
 		            	}
 		            	else{
-		            		Contracts con = contractsTemplateService.getContractById(contracts.getParentContractId().getId());
-		            		Requirement req = requirementService.getRequirementByRequirementId(con.getRequirementSubmission().getRequirement().getId());
-		                    matchPattern.appendReplacement(sb, req.getJobTitle());
+		            		if(contracts.getParentContractId() != null) {
+		            			Contracts con = contractsTemplateService.getContractById(contracts.getParentContractId().getId());
+			            		Requirement req = requirementService.getRequirementByRequirementId(con.getRequirementSubmission().getRequirement().getId());
+			                    matchPattern.appendReplacement(sb, req.getJobTitle());
+		            		}
 		            	}
 	                }
 	                // need to know about offer rate

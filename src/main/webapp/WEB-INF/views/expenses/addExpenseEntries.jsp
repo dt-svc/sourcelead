@@ -395,7 +395,7 @@ function addAttachment(entityRowId,from){
 <div id="divAddRowTr1Td8" style="display: none; float: left;">
        <div id="hideAndShowDetailsDivREPLACEROWID" class="tbldata-dotdot_50">
 			<span id="hideAndShowDetailsButtonREPLACEROWID" style="display:none;"> <i class="fa fa-pencil-square-o AddRow" onclick="hideAndShowDetailsRow(REPLACEDOWNROWID,'Edit');"></i></span>
-			<i class="glyphicon glyphicon-trash Cred" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);"></i>
+			<span id="hideAndShowDeleteButtonREPLACEROWID"  style="display:none;" ><i class="glyphicon glyphicon-trash Cred" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);"></i></span>
 		</div>
 </div>
 
@@ -451,9 +451,9 @@ function addAttachment(entityRowId,from){
 	                 <div class="col-md-4 minHeight">
 							<label>Paid by<span class="text-danger">&nbsp;*</span></label>
 							<select id="paidByREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].paidBy" class="form-control" placeholder="Paid By" field-name="Paid By" data-validation="required">
-							         <option value="" disabled>Select paid By</option>
+							         <option value="">Select paid By</option>
 							         <c:forEach var="paidByType" items="${expEntry.paidByType}">
-							         			<option ${paidByType == 'Company' ? 'selected' : ''} value="${paidByType}">${paidByType}</option>
+							         			<option value="${paidByType}">${paidByType}</option>
 									 </c:forEach>
 							</select> 
 					</div>
@@ -605,7 +605,6 @@ function addExpenseRow(from){
 			divRowTd2_0Str = divRowTd2_0Str.replace(/REPLACENAMEROWID/g, ((maxRowNum+1)/2-1));
 			cell2_0.innerHTML = divRowTd2_0Str;
 			cell2_0.colSpan = 8;
-			
 			
 			$("#categoryDate"+maxRowNum).datepicker("destroy");
 			var projectStartDate = $('#projectStartDateExpensesId').val();
@@ -780,6 +779,14 @@ function addExpenseRow(from){
 			var hideAndShowDetailsHtml =  $("#hideAndShowDetailsButton"+entityId).html();
 			$("#hideAndShowDetailsButton"+entityId).remove();
 			$("#hideAndShowDetailsDiv"+entityId).prepend(hideAndShowDetailsHtml);
+			
+			
+			$("#hideAndShowDeleteButton"+entityId).removeAttr('style');
+			var hideAndShowDeleteHtml =  $("#hideAndShowDeleteButton"+entityId).html();
+			$("#hideAndShowDeleteButton"+entityId).remove();
+			$("#hideAndShowDetailsDiv"+entityId).prepend(hideAndShowDeleteHtml);
+			
+			
 			
 			$("#addExpenseCategoryButton"+entityId).removeAttr('value');
 			$("#addExpenseCategoryButton"+entityId).attr('value','Update');

@@ -19,9 +19,16 @@ private Long expId;
 private Long projectMemberId;
 private String orgRelationUUID;
 private String reopenReason;
+private String billingStatus;
 
 
 
+public String getBillingStatus() {
+	return billingStatus;
+}
+public void setBillingStatus(String billingStatus) {
+	this.billingStatus = billingStatus;
+}
 public String getReopenReason() {
 	return reopenReason;
 }

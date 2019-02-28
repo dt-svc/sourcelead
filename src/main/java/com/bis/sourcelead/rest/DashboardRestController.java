@@ -40,14 +40,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
+import com.bis.sourcelead.dto.AssociateJoineReportDTO;
 import com.bis.sourcelead.dto.DashboardCountsDTO;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.EventsDTO;
 import com.bis.sourcelead.dto.ExpensesAndTimesheetDashBordCountDTO;
+import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
@@ -58,12 +61,15 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.DashboardCounts;
 import com.bis.sourcelead.entity.ExpensesCount;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementLocations;
+import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
+import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Tasks;
@@ -78,6 +84,7 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExpensesApproverHierarchyService;
+import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
@@ -86,7 +93,9 @@ import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementLocationsService;
+import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
+import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TaskService;
@@ -97,6 +106,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.DashboardController;
@@ -175,6 +185,9 @@ public class DashboardRestController {
 	 RequirementOffersService requirementOffersService;
 	 
 	 @Autowired
+	 RequirementOfferHistoryService requirementOfferHistoryService;
+	 
+	 @Autowired
 	 private ExpensesApproverHierarchyService expensesApproverHierarchyService;
 	 
 	 @Autowired
@@ -192,6 +205,15 @@ public class DashboardRestController {
 	 @Autowired
 	 TeamService teamService;
 	 
+	 @Autowired
+	 private InvoiceService invoiceService;
+	 
+	 @Autowired
+	 private ConversionUtil conversionUtil;
+	 
+	 @Autowired
+	 private RequirementRateSubmissionNegotiationService requirementRateSubmissionNegotiationService;
+	 
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 		}
@@ -203,13 +225,16 @@ public class DashboardRestController {
 	
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/getTimeSheetSubmissionStatus")
-	public TimeSheetSubmissionCount getTimeSheetSubmissionStatus(@RequestParam(value="timesheetType", required=false) String timesheetType,@RequestParam(value="timesheetCountType") String timesheetCountType,HttpServletRequest request) throws Exception {
+	public TimeSheetSubmissionCount getTimeSheetSubmissionStatus(@RequestParam(value="timesheetType", required=false) String timesheetType,@RequestParam(value="timesheetCountType", required=false) String timesheetCountType,HttpServletRequest request) throws Exception {
 
 	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Candidate candidate =(Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
+		if(StringUtils.isEmpty(timesheetCountType)) {
+			timesheetCountType = "All";
+		}
 		if("employes".equalsIgnoreCase(timesheetType)){
 			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId(),timesheetCountType,isGlobalAccess);
 		}else if("myTimesheets".equalsIgnoreCase(timesheetType)){
@@ -964,14 +989,16 @@ public class DashboardRestController {
 								} else if (status.equalsIgnoreCase("REJECTED")) {
 									requirementService.rejectedEmailScenario(loginUser, requirement.getCreatedBy(), requirement, location, reason,orgLocation);
 								}
-								
+								// for URL redirections from mail
+								String redirectURL = "/requirementSummary-params-requirementUUID="+requirement.getRequirementUUID();
+								Long redirectOrgLocationId = orgLocation.getId();
 								 /*This logic is to send mail to assigned team members after approver accepted the requirement request(parallel approver)*/
 								RequirementApproverHierarchy hierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirementId);
 						    	 List<RequirementAssignTo> reqAssignTo = requirementAssignToService.getAssignedToMembersByRequirementIdAndOrgLocationId(requirementId,orgLocation.getId());
 					    			if(null != hierarchy && "APPROVED".equals(hierarchy.getRequirementApproverStatus().toString())){
 					    				for(RequirementAssignTo reqAssign:reqAssignTo ){
 												if(null != reqAssign.getAssignUserId() && !loginUser.getId().equals(reqAssign.getAssignUserId().getId())){
-													requirementService.AssignToTeamMembersEmail(loginUser, reqAssign.getAssignUserId(), requirement,new StringBuilder(),orgLocation);
+													requirementService.AssignToTeamMembersEmail(loginUser, reqAssign.getAssignUserId(), requirement,new StringBuilder(),orgLocation,redirectURL,redirectOrgLocationId);
 												}
 					    				}
 					    		}
@@ -1579,7 +1606,7 @@ public class DashboardRestController {
 	@RequestMapping(value = "/applicantList")
 	public @ResponseBody ResponseList<RequirementSubmissionHistoryDTO> applicantList(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, HttpServletRequest request)throws Exception
    {
-		ResponseList<RequirementSubmissionHistoryDTO> responseList = new ResponseList<>();
+	ResponseList<RequirementSubmissionHistoryDTO> responseList = new ResponseList<>();
 		try {
 				OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
@@ -1630,17 +1657,36 @@ public class DashboardRestController {
 					if(rsh.getSubmissionId().getRequirement().getGeneratedId() != null) {
 						rshDTO.setJobGeneratedId(rsh.getSubmissionId().getRequirement().getGeneratedId());
 					}
-					if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null){
-						rshDTO.setPayOutPeriod(rsh.getSubmissionId().getRequirement().getPayOutPeriod());
+					if(rsh.getSubmissionId().getRequirement().getClientId() != null){
+                        if(StringUtils.isNotBlank(rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm())){
+                        String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
+                        Integer result = 0;
+                        try {
+                        	if(StringUtils.isNotBlank(payTerm)){
+                            payTerm=payTerm.replaceAll("\\D", "");
+                            result = Integer.parseInt(payTerm);
+                        	}
+                        } catch (Exception e) {
+                            result = 0;
+                        }
+                        rshDTO.setPayTerm(result);
+                        }
+
+                    }
+					if(rsh.getSubmissionId().getRequirement().getJobRate() != null){
+						rshDTO.setJobRate(rsh.getSubmissionId().getRequirement().getJobRate().toString());
 					}
 					
-					if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null &&  rsh.getSubmissionId().getJoinedDate()  != null){
-						int result = Integer.parseInt(rsh.getSubmissionId().getRequirement().getPayOutPeriod());
-						Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), result);
-						DateTime dtOrg = new DateTime(generatedInvoiceDate);
-//						DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
-						rshDTO.setGenerateInvoice(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),dtOrg.toDate()));
-					}
+					if (rshDTO.getPayTerm() > 0 && rsh.getSubmissionId().getJoinedDate() != null) {
+//						Integer result = Integer.parseInt(rshDTO.getPayOutPeriod());
+						if(rshDTO.getPayTerm() != 0){
+							Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), rshDTO.getPayTerm());
+							DateTime dtOrg = new DateTime(generatedInvoiceDate);
+							DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
+							rshDTO.setGenerateInvoice(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate()));
+							
+						}
+}
 					
 					if(rsh.getSubmissionId().getRequirement().getParentRequirement() != null){
 						rshDTO.setOrgLocationName(rsh.getSubmissionId().getRequirement().getParentRequirement().getOrgLocationId().getOrgLocationName());
@@ -1717,7 +1763,32 @@ public class DashboardRestController {
 					rshDTO.setSubmittedBy(rsh.getCreatedUser());
 		//					}
 						
+					/*RequirementRateSubmissionNegotiation rateNegotiation = requirementRateSubmissionNegotiationService.getRequirementRateSubmissionByMaxId(rsh.getSubmissionId().getId());
+					if(rateNegotiation !=null && rateNegotiation.getCurrentRate()!=null){
+						float currentRate = conversionUtil.rateConvertToYear(rateNegotiation.getCurrentRate(),rateNegotiation.getCurrentRateType(),loginOrgLocations);
+						float expectedRate = conversionUtil.rateConvertToYear(rateNegotiation.getExpectedRate(),rateNegotiation.getExpectedRateType(),loginOrgLocations);
+						float finalRatePerYear = expectedRate-currentRate;
+						rshDTO.setMarginRateYearly(String.format("%.3f", Float.valueOf(finalRatePerYear)));
+					}*/
 					
+					
+					List<RequirementOfferHistory> offerHistorList = requirementOfferHistoryService.getRequirementInternalAndIsClientOfferssBySubmissionIdAndOrgLocationsId(rsh.getSubmissionId().getId(), loginOrgLocations.getId());
+					if(offerHistorList != null && !offerHistorList.isEmpty()) {
+						float clientOfferRate = 0;
+						float internalOfferRate = 0;
+						for(RequirementOfferHistory roh : offerHistorList) {
+//							System.out.println("OfferID:"+roh.getOfferId().getId() + " SubmissionID:"+roh.getSubmissionId().getId()+ " Amount:" + roh.getOfferId().getAmount() + " Status:" + roh.getOfferId().getOfferStatus());
+							if(roh.getOfferId().getOfferStatus().equalsIgnoreCase("CLIENT_OFFERACCEPTED")) {
+								clientOfferRate = conversionUtil.rateConvertToYear(roh.getOfferId().getAmount(),roh.getOfferId().getPaymentMode(),loginOrgLocations);
+							} else if(roh.getOfferId().getOfferStatus().equalsIgnoreCase("OFFERACCEPTED")) {
+								internalOfferRate = conversionUtil.rateConvertToYear(roh.getOfferId().getAmount(),roh.getOfferId().getPaymentMode(),loginOrgLocations);
+							}
+						}
+						if(clientOfferRate > 0) {
+							float finalRatePerYear = clientOfferRate-internalOfferRate;
+							rshDTO.setMarginRateYearly(String.format("%.3f", Float.valueOf(finalRatePerYear)));
+						}
+					}
 					
 					int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocations.getId(), rsh.getSubmissionId().getRequirement().getId(), "INTERVIEWED");
 					rshDTO.setNumOfInterview(interviewedCount);
@@ -1725,6 +1796,8 @@ public class DashboardRestController {
 						List<RequirementOffers> offersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(rsh.getSubmissionId().getId(), loginOrgLocations.getId());
 						for (RequirementOffers requirementOffers : offersList) {
 							rshDTO.setOfferId(requirementOffers.getId());
+							float rate = conversionUtil.rateConvertToYear(requirementOffers.getAmount(),requirementOffers.getPaymentMode(),loginOrgLocations);
+							rshDTO.setOfferRateforYearly(String.format("%.3f", Float.valueOf(rate)));
 							rshDTO.setOfferRate(requirementOffers.getAmount());
 							rshDTO.setPaymentType(requirementOffers.getPaymentType());
 							rshDTO.setPaymentMode(requirementOffers.getPaymentMode());
@@ -1937,86 +2010,464 @@ public class DashboardRestController {
 			file.delete();
 		}
    }
-	@RequestMapping(value = "/applicantsJoinedListExport")
-	public void applicantsJoinedListExport(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, HttpServletRequest request,HttpServletResponse response)throws Exception
-   {
-		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Timezone timezone = null;
-		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if(loginOrgLocations.getTimezone() != null){
-			timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
-		}
-		Date[] freqDates = new Date[2];
-		String userType = null;
-		Date startUTCDate = null;
-		Date endUTCDate = null;
-		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-		DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
-		DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
-		if("Custom".equalsIgnoreCase(requirementSubmissionHistoryDTO.getFrequency())){
-			Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getFromDate());
-			Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getToDate());
-			String customStartTimeStr = TZ_DF_CSD.format(startTime);  
-			String customEndTimeStr = TZ_DF_CED.format(endTime);  
-			startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
-			endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
-		}else{
-			freqDates = reportsUtil.getJobFilterDate(requirementSubmissionHistoryDTO.getFrequency(),loginOrgLocations);
-			String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
-			String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
-			startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
-			endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
-		}
-		  
-		
-		if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
-			userType = Constants.ADMIN;
-		} 
-		
-		
-	   ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist =requirementSubmissionDao.getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(requirementSubmissionHistoryDTO, loginOrgLocations.getId(),requirementSubmissionHistoryDTO.getSubmissionStatus(),requirementSubmissionHistoryDTO.getTabType(),userType,user,startUTCDate,endUTCDate,loginOrgLocations);
-
-	   
-		 Workbook createExcelworkbook =  new XSSFWorkbook();
-		 StringBuilder excelSB = new StringBuilder();
-		 Sheet createExcelsheet = null;
-	 	createExcelsheet = createExcelworkbook.createSheet(excelSB.append("joined").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),new Date())).toString());
-
- 		File file = null;
- 		if(!"pdf".equalsIgnoreCase(requirementSubmissionHistoryDTO.getExportType())){
- 			createExcelsheet = requirementSubmissionService.getApplicaantJoinedListExcelFile(createExcelsheet,createExcelworkbook,dashboardJobsCountlist,loginOrgLocations,requirementSubmissionHistoryDTO.getSubmissionStatus());
- 			 StringBuilder templateSB = new StringBuilder();
-		 		  file = File.createTempFile(templateSB.append("joind_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),new Date())).toString(),".xls");
-	 		  file.setReadable(true);
-	 		  
-			 FileOutputStream fos = new FileOutputStream(file);
-			 try {
-				createExcelworkbook.write(fos);
-				fos.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}	 	
- 		}else {
- 			file = requirementSubmissionService.getApplicantsJoinedListPdfFile(dashboardJobsCountlist,loginOrgLocations);
- 			
- 		}
- 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-		if (mimeType == null) {
-			mimeType = "application/octet-stream";
-		}
-		response.setContentType(mimeType);
-		StringBuilder fileNameSB = new StringBuilder();
-		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
-		response.setContentLength((int) file.length());
-		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-		FileCopyUtils.copy(inputStream, response.getOutputStream());
-		inputStream.close();
-		response.getOutputStream().close();
-		response.getOutputStream().flush();	
-		if(file!= null){
-			file.delete();
-		}
-   }
 	
+
+	@RequestMapping(value = "/associateJoinedReport")
+	public @ResponseBody ResponseList<AssociateJoineReportDTO> associateJoineReport(AssociateJoineReportDTO associateJoineReportDTO, HttpServletRequest request)throws Exception
+   {
+		ResponseList<AssociateJoineReportDTO> responseList = new ResponseList<>();
+		try {
+				OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+				
+				String[] tableColumns = {"employeeId","empName", "gender","empType","deptName", "userRole","rate","hireDate", "reportingManager", "shiftName"};
+
+				   int sortColumnIndex = 1; //by default sorting using updated date
+				   String sortColumnOrder = "desc"; //by default descending order
+				if(associateJoineReportDTO.getOrder() != null && !associateJoineReportDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(associateJoineReportDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = associateJoineReportDTO.getOrder().get(0).get("dir");
+				}
+				associateJoineReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				associateJoineReportDTO.setSortOrder(sortColumnOrder);
+				
+				Date[] freqDates = new Date[2];
+				String userType = null;
+				Date startUTCDate = null;
+				Date endUTCDate = null;
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				 DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+				 DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+				 if("Custom".equalsIgnoreCase(associateJoineReportDTO.getFrequency())){
+					 Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),associateJoineReportDTO.getFromDate());
+						Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),associateJoineReportDTO.getToDate());
+						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+						String customEndTimeStr = TZ_DF_CED.format(endTime);  
+						startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+						endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+				 }else {
+					 freqDates = reportsUtil.getJobFilterDate(associateJoineReportDTO.getFrequency(),loginOrgLocations);
+					 String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
+					 String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
+					 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+					 endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+				 }
+				 
+				
+				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+					userType = Constants.ADMIN;
+				} 
+				
+			   ResponseList<AssociateJoineReportDTO> toDayReqApplicantscount =requirementSubmissionDao.getAssociateJoineReport(associateJoineReportDTO, loginOrgLocations.getId(),startUTCDate,endUTCDate);
+				
+			   List<AssociateJoineReportDTO> rshDTOList = new ArrayList<>();
+			   if(toDayReqApplicantscount.getData() != null)
+				for(AssociateJoineReportDTO rsh: toDayReqApplicantscount.getData()){
+					AssociateJoineReportDTO rshDTO = new AssociateJoineReportDTO();
+					StringBuilder sb = new StringBuilder();
+					if(rsh.getEmployeeId() !=null){
+						rshDTO.setEmployeeId(rsh.getEmployeeId());
+					}else{
+						rshDTO.setEmployeeId("---");
+					}
+					if(rsh.getEmpName() !=null){
+						rshDTO.setEmpName(rsh.getEmpName());
+					}
+					if(rsh.getEmpType() !=null){
+						rshDTO.setEmpType(rsh.getEmpType());
+					}
+					if(rsh.getDeptName() !=null){
+						rshDTO.setDeptName(rsh.getDeptName());
+					}
+					if(rsh.getUserRole() !=null){
+						rshDTO.setUserRole(rsh.getUserRole());
+					}
+					if(rsh.getHireDate() !=null){
+						String date=commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getHireDate());
+//						rshDTO.setHireDate(date);
+						rshDTO.setFromDate(date);
+					}
+					
+					if(rsh.getGender() !=null){
+						rshDTO.setGender(rsh.getGender());
+					}
+					if(rsh.getReportingManager() !=null){
+						rshDTO.setReportingManager(rsh.getReportingManager());
+					}
+					if(rsh.getRate() !=null){
+						rshDTO.setRate(rsh.getRate());
+					}
+					if(rsh.getRatePer() !=null){
+						rshDTO.setRatePer(rsh.getRatePer());
+					}
+					if(rsh.getCurrency() !=null){
+						rshDTO.setCurrency(rsh.getCurrency());
+					}
+					if(rsh.getShiftName() !=null){
+						rshDTO.setShiftName(rsh.getShiftName());
+					}
+					
+					if(rsh.getProbationStatus() !=null){
+						rshDTO.setProbationStatus(rsh.getProbationStatus());
+					}
+					
+					rshDTOList.add(rshDTO);
+				}
+				responseList.setRecordsFiltered(toDayReqApplicantscount.getRecordsFiltered());
+				responseList.setRecordsTotal(toDayReqApplicantscount.getRecordsTotal());
+				responseList.setData(rshDTOList);
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return responseList;
+		
+    }
+	
+	
+	@RequestMapping(value = "/associateTerminatedReport")
+	public @ResponseBody ResponseList<AssociateJoineReportDTO> associateTerminateReport(AssociateJoineReportDTO associateJoineReportDTO, HttpServletRequest request)throws Exception
+   {
+		ResponseList<AssociateJoineReportDTO> responseList = new ResponseList<>();
+		try {
+				OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+				
+				String[] tableColumns = {"employeeId","empName", "empType","hireDate","reportingManager", "terminateDate","terminatedReason","userRole", "gender", "shiftName", "deptName", "rate"};
+
+				   int sortColumnIndex = 1; //by default sorting using updated date
+				   String sortColumnOrder = "desc"; //by default descending order
+				if(associateJoineReportDTO.getOrder() != null && !associateJoineReportDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(associateJoineReportDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = associateJoineReportDTO.getOrder().get(0).get("dir");
+				}
+				associateJoineReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				associateJoineReportDTO.setSortOrder(sortColumnOrder);
+				
+				Date[] freqDates = new Date[2];
+				String userType = null;
+				Date startUTCDate = null;
+				Date endUTCDate = null;
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				 DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+				 DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+				 if("Custom".equalsIgnoreCase(associateJoineReportDTO.getFrequency())){
+					 Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),associateJoineReportDTO.getFromDate());
+						Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),associateJoineReportDTO.getToDate());
+						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+						String customEndTimeStr = TZ_DF_CED.format(endTime);  
+						startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+						endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+				 }else {
+					 freqDates = reportsUtil.getJobFilterDate(associateJoineReportDTO.getFrequency(),loginOrgLocations);
+					 String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
+					 String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
+					 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+					 endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+				 }
+				 
+				
+				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+					userType = Constants.ADMIN;
+				} 
+				
+			   ResponseList<AssociateJoineReportDTO> toDayReqApplicantscount =requirementSubmissionDao.getAssociateTerminateReport(associateJoineReportDTO, loginOrgLocations.getId(),startUTCDate,endUTCDate);
+				
+			   List<AssociateJoineReportDTO> rshDTOList = new ArrayList<>();
+			   if(toDayReqApplicantscount.getData() != null)
+				for(AssociateJoineReportDTO rsh: toDayReqApplicantscount.getData()){
+					AssociateJoineReportDTO rshDTO = new AssociateJoineReportDTO();
+					StringBuilder sb = new StringBuilder();
+					if(rsh.getEmployeeId() !=null){
+						rshDTO.setEmployeeId(rsh.getEmployeeId());
+					}
+					if(rsh.getEmpName() !=null){
+						rshDTO.setEmpName(rsh.getEmpName());
+					}
+					if(rsh.getEmpType() !=null){
+						rshDTO.setEmpType(rsh.getEmpType());
+					}
+					if(rsh.getDeptName() !=null){
+						rshDTO.setDeptName(rsh.getDeptName());
+					}
+					if(rsh.getUserRole() !=null){
+						rshDTO.setUserRole(rsh.getUserRole());
+					}
+					if(rsh.getHireDate() !=null){
+						String date=commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getHireDate());
+//						rshDTO.setHireDate(date);
+						rshDTO.setFromDate(date);
+					}
+					
+					if(rsh.getTerminateDate() !=null){
+						String date=commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getTerminateDate());
+//						rshDTO.setHireDate(date);
+						rshDTO.setTerminateStringDate(date);
+					}
+					
+					
+					if(rsh.getTerminatedReason() !=null){
+						rshDTO.setTerminatedReason(rsh.getTerminatedReason());
+					}
+					
+					if(rsh.getGender() !=null){
+						rshDTO.setGender(rsh.getGender());
+					}
+					if(rsh.getReportingManager() !=null){
+						rshDTO.setReportingManager(rsh.getReportingManager());
+					}
+					if(rsh.getRate() !=null){
+						rshDTO.setRate(rsh.getRate());
+					}
+					if(rsh.getRatePer() !=null){
+						rshDTO.setRatePer(rsh.getRatePer());
+					}
+					if(rsh.getCurrency() !=null){
+						rshDTO.setCurrency(rsh.getCurrency());
+					}
+					if(rsh.getShiftName() !=null){
+						rshDTO.setShiftName(rsh.getShiftName());
+					}
+					if(rsh.getProbationStatus() !=null){
+						rshDTO.setProbationStatus(rsh.getProbationStatus());
+					}
+					rshDTOList.add(rshDTO);
+				}
+				responseList.setRecordsFiltered(toDayReqApplicantscount.getRecordsFiltered());
+				responseList.setRecordsTotal(toDayReqApplicantscount.getRecordsTotal());
+				responseList.setData(rshDTOList);
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return responseList;
+		
+    }
+	
+	
+	@RequestMapping(value = "/getAssociatesJoinedGraph")
+	public @ResponseBody List<AssociateJoineReportDTO> getAssociatesJoinedGraph(AssociateJoineReportDTO associateJoineReportDTO, HttpServletRequest request)throws Exception
+   {
+		List<AssociateJoineReportDTO> responseList = new ArrayList<>();
+		try {
+				OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+				
+				String[] tableColumns = {"employeeId","empName", "gender","empType","deptName", "userRole","rate","hireDate", "reportingManager", "shiftName"};
+
+				   int sortColumnIndex = 1; //by default sorting using updated date
+				   String sortColumnOrder = "desc"; //by default descending order
+				if(associateJoineReportDTO.getOrder() != null && !associateJoineReportDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(associateJoineReportDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = associateJoineReportDTO.getOrder().get(0).get("dir");
+				}
+				associateJoineReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				associateJoineReportDTO.setSortOrder(sortColumnOrder);
+				  ResponseList<AssociateJoineReportDTO> toDayReqApplicantscount=null;
+				Date[] freqDates = new Date[2];
+				String userType = null;
+				Date startUTCDate = null;
+				Date endUTCDate = null;
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				 DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+				 DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+				 if("Custom".equalsIgnoreCase(associateJoineReportDTO.getFrequency())){
+					 Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),associateJoineReportDTO.getFromDate());
+						Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),associateJoineReportDTO.getToDate());
+						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+						String customEndTimeStr = TZ_DF_CED.format(endTime);  
+						startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+						endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+				 }else {
+					 if(associateJoineReportDTO.getFrequency() != null && !associateJoineReportDTO.getFrequency().equalsIgnoreCase("null")){
+						 freqDates = reportsUtil.getJobFilterDate(associateJoineReportDTO.getFrequency(),loginOrgLocations);
+					 }else{
+//						 freqDates = reportsUtil.getJobFilterDate(associateJoineReportDTO.getGraphFrequency(),loginOrgLocations);
+						 int year = 0;
+							if(StringUtils.isNotBlank(associateJoineReportDTO.getGraphFrequency())) {
+								 year = Integer.parseInt(associateJoineReportDTO.getGraphFrequency());
+							}else {
+								 year = Calendar.getInstance().get(Calendar.YEAR);
+							}
+							
+							
+							
+							for(int i=0; i<12; i++) {
+								
+								  Calendar Q1StartDate=Calendar.getInstance();
+								  Q1StartDate.set(Calendar.YEAR,year);
+							      Q1StartDate.set(Calendar.MONTH,i);
+							      Q1StartDate.set(Calendar.DATE,1);
+								   
+								  Calendar Q1EndDate =Calendar.getInstance();
+								  Q1EndDate.set(Calendar.YEAR,year);
+								  Q1EndDate.set(Calendar.MONTH, i);
+								  Q1EndDate.set(Calendar.DATE, Q1EndDate.getActualMaximum(Calendar.DAY_OF_MONTH));
+								  java.sql.Date fromDate = new java.sql.Date(Q1StartDate.getTime().getTime());
+								  java.sql.Date toDate = new java.sql.Date(Q1EndDate.getTime().getTime());
+								  Date[] searchDates = new Date[2];
+					    	      searchDates[0] = fromDate;
+					    	      searchDates[1] = toDate;
+									 String customStartTimeStr = TZ_DF_CSD.format(searchDates[0]);  
+									 String customEndTimeStr = TZ_DF_CED.format(searchDates[1]);  
+									 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+									 endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+									 AssociateJoineReportDTO timeToFillDTO = new AssociateJoineReportDTO();
+									 String month = Constants.Y_M.format(Q1EndDate.getTime());
+						    	      String monthStr = Constants.M.format(Q1EndDate.getTime());
+					 			 toDayReqApplicantscount =requirementSubmissionDao.getAssociateJoinedGraph(associateJoineReportDTO, loginOrgLocations.getId(),startUTCDate,endUTCDate);
+					 			 
+					 			 for(AssociateJoineReportDTO test:toDayReqApplicantscount.getData()){
+					        	      timeToFillDTO.setMonthStr(monthStr);
+					        	      timeToFillDTO.setTerminatedCount(test.getTerminatedCount());
+					        	      timeToFillDTO.setHiredCount(test.getHiredCount());
+					        	      timeToFillDTO.setMonth(month);
+					        	      timeToFillDTO.setEmpTypeFullTimeCount(test.getEmpTypeFullTimeCount());
+					        	      timeToFillDTO.setEmpTypePartTimeCount(test.getEmpTypePartTimeCount());
+					        	      timeToFillDTO.setFtMaleCnt(test.getFtMaleCnt());
+					        	      timeToFillDTO.setFtFemaleCnt(test.getFtFemaleCnt());
+					        	      timeToFillDTO.setPtMaleCnt(test.getPtMaleCnt());
+					        	      timeToFillDTO.setPtFemaleCnt(test.getPtFemaleCnt());
+					        	      responseList.add(timeToFillDTO);	 
+					 			 }
+			
+
+	}
+				 			 
+					long empFullTimeCount = responseList.stream().mapToLong(p -> p.getEmpTypeFullTimeCount()).sum();
+					long empPartTimeCount = responseList.stream().mapToLong(p -> p.getEmpTypePartTimeCount()).sum();
+					long empFtMaleCount = responseList.stream().mapToLong(p -> p.getFtMaleCnt()).sum();
+					long empFtFeMaleCount = responseList.stream().mapToLong(p -> p.getFtFemaleCnt()).sum();
+					long empPtMaleCount = responseList.stream().mapToLong(p -> p.getPtMaleCnt()).sum();
+					long empPtFeMaleCount = responseList.stream().mapToLong(p -> p.getPtFemaleCnt()).sum();
+					long totalJoinedCount = responseList.stream().mapToLong(p -> p.getHiredCount()).sum();
+					long totalTerminatedCount = responseList.stream().mapToLong(p -> p.getTerminatedCount()).sum();
+					
+					responseList.get(0).setEmpFullTimeCountTotal(empFullTimeCount);
+					responseList.get(0).setEmpPartTimeCountTotal(empPartTimeCount);
+					responseList.get(0).setEmpFtMaleCountTotal(empFtMaleCount);
+					responseList.get(0).setEmpFtFeMaleCountTotal(empFtFeMaleCount);
+					responseList.get(0).setEmpPtMaleCountTotal(empPtMaleCount);
+					responseList.get(0).setEmpPtFeMaleCountTotal(empPtFeMaleCount);
+					responseList.get(0).setTotalJoinedCount(totalJoinedCount);
+					responseList.get(0).setTotalTerminatedCount(totalTerminatedCount);
+				 			
+
+						}if(freqDates[0] != null && freqDates[1] != null){
+							 String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
+							 String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
+							 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+							 endUTCDate = TZ_DF_TS.parse(customEndTimeStr);	
+						}
+				 }
+				 
+				
+				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+					userType = Constants.ADMIN;
+				} 
+				
+		/*	 toDayReqApplicantscount =requirementSubmissionDao.getAssociateJoineReport(associateJoineReportDTO, loginOrgLocations.getId(),startUTCDate,endUTCDate);
+				
+			   List<AssociateJoineReportDTO> rshDTOList = new ArrayList<>();
+			   if(toDayReqApplicantscount.getData() != null)
+				for(AssociateJoineReportDTO rsh: toDayReqApplicantscount.getData()){
+					AssociateJoineReportDTO rshDTO = new AssociateJoineReportDTO();
+					StringBuilder sb = new StringBuilder();
+					if(rsh.getEmpId() !=null){
+						rshDTO.setEmpId(rsh.getEmpId());
+					}
+					if(rsh.getEmpName() !=null){
+						rshDTO.setEmpName(rsh.getEmpName());
+					}
+					if(rsh.getEmpType() !=null){
+						rshDTO.setEmpType(rsh.getEmpType());
+					}
+					if(rsh.getDeptName() !=null){
+						rshDTO.setDeptName(rsh.getDeptName());
+					}
+					if(rsh.getUserRole() !=null){
+						rshDTO.setUserRole(rsh.getUserRole());
+					}
+					if(rsh.getHireDate() !=null){
+						String date=commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getHireDate());
+//						rshDTO.setHireDate(date);
+						rshDTO.setFromDate(date);
+					}
+					
+					if(rsh.getGender() !=null){
+						rshDTO.setGender(rsh.getGender());
+					}
+					if(rsh.getReportingManager() !=null){
+						rshDTO.setReportingManager(rsh.getReportingManager());
+					}
+					if(rsh.getRate() !=null){
+						rshDTO.setRate(rsh.getRate());
+					}
+					if(rsh.getRatePer() !=null){
+						rshDTO.setRatePer(rsh.getRatePer());
+					}
+					if(rsh.getCurrency() !=null){
+						rshDTO.setCurrency(rsh.getCurrency());
+					}
+					if(rsh.getShiftName() !=null){
+						rshDTO.setShiftName(rsh.getShiftName());
+					}
+					
+					rshDTOList.add(rshDTO);
+				}*/
+
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+		return responseList;
+		
+    }
+	
+
+	/**
+	 * @author ajith
+	 * @param request
+	 * @return RequirementSubmissionsDTO list
+	 * @throws Exception
+	 * This method is used to retrieve candidate for Invoice list in Dashboard 
+	 */
+	@RequestMapping(value = "/getCandidateInvoiceForDashboard", method = RequestMethod.POST)
+	public List<RequirementSubmissionsDTO> getCandidateInvoiceForDashboard(HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 List<RequirementSubmissionsDTO > dtoList = requirementSubmissionService.getCandidateForInvoiceDashBoard(orgLocations,user);
+		return dtoList; 
+	}
+	
+	@RequestMapping(value = "/generateInvoiceForJobClosureDashboard", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<InvoiceDTO> generateInvoiceForJobClosureDashboard(@RequestParam(value = "invoiceType", required = false) String invoiceType, 
+			@RequestParam(value = "contractType", required = false) String contractType,
+			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
+			@RequestParam(value = "submissionId", required = false) Long submissionId,
+			@RequestParam(value = "candidateId", required = false) Long candidateId,
+			HttpServletRequest request) throws Exception
+	{
+		Response<InvoiceDTO> response = new Response<>();
+		InvoiceDTO invoiceDTO = new InvoiceDTO();
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Integer savedInvoiceCount = invoiceService.generateInvoiceJobClosureFromDashboard(orgLocation, loginOrgCurrencyCode, invoiceType, user,contractType,orgRelationId,submissionId,candidateId);
+		invoiceDTO.setCount(String.valueOf(savedInvoiceCount));
+		response.setObject(invoiceDTO);
+		return response;
+	}
+
 }

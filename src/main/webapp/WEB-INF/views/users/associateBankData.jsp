@@ -12,6 +12,7 @@
   <div id="tab-2" class="tabsMenu_tabs_inn clearfix">
             <div class="clearfix row minHeightcol5">
                  <form:form id="associate_bank_data_form"  name="associate_bank_data_form" method="post">
+                 <div class="positionRelative infomaskHeight">
                  <div class="col-md-5">
                   <label>Account Type<span class="text-danger">&nbsp;*</span></label>
                   <div>
@@ -46,6 +47,12 @@
 	                  </div>
 	                </div>
                </div>
+               
+               <div class="infoMask" style="display:none">
+               		<i class="fa fa-info-circle"></i>Associate will update Information..
+               </div>
+               
+               </div>
                 
                  <div class="clearfix"></div>
                  <div class="clearfix footerstyelsNew">
@@ -60,6 +67,7 @@
                     </div>
                   </div>
                 </div>
+                
               </form:form>
             </div>
           </div>
@@ -68,47 +76,60 @@
 <script type="text/javascript">
  function saveAssociateBankData() {
 	 var userId = $("#associateId").val();
-		 if ($('#associate_bank_data_form').validate(false, validationSettings)){ 
-			   var formData = getFormData("associate_bank_data_form");
-				$("#save_associate_bank_data_button").attr("disabled", "disabled");
-				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	            $( "#save_associate_bank_data_button" ).addClass('button').val('Processing..');
-	            $.ajax({
-					type : "POST",
-	        	    data: formData,
-					url : sourceleadUrl+"/saveAssociateBankData?"+tokenParamName+"="+tokenValue+"&userId="+userId,
-					success : function(result) {
-						if (result && result.response === "INVALID_DATA") {
-		                    $("#save_associate_bank_data_button").removeAttr("disabled");
-		                    $("#save_associate_bank_data_button").removeAttr('button').val('Save');
-		                    showError(result.responseMessage);
-		                } else if (result.response === "AWKWARD") {
-		                    location.href = "/errorPage";
-		                } else if (result.response === "SUCCESS") {
-		                	$("#associateId").val(result.object.userId); 
-							var associateBanking = document.getElementById("associateTax");
-							document.getElementById("associateTax").removeAttribute("class"); 
-							associateTax.href="#tab-3"; 
-							$("#associateTax").click();
-							$("#save_associate_bank_data_button").removeAttr("disabled");
-							$("#save_associate_bank_data_button").addClass('button').val('Save & Continue');
-							getResidenceLocation();
-		                } else if (result.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
-						} else {
-		                    $("#save_associate_bank_data_button").removeAttr("disabled");
-		                    $("#save_associate_bank_data_button").addClass('button').val('Save');
-		                    showError("Operation failed, please try again");
-		                }
-							/*  location.replace(sourceleadUrl+"/usersList");  */
-					},
-				});
-	            
-		        return true;
-			
-		  }else{
-			return false;
-		  }  
+	    var assBankData = $("#save_associate_bank_data_button").val();
+	    if(assBankData == "Proceed To Next Step"){
+			var associateBanking = document.getElementById("associateTax");
+			document.getElementById("associateTax").removeAttribute("class"); 
+			associateTax.href="#tab-3"; 
+			$("#associateTax").click();
+			$("#save_associate_bank_data_button").removeAttr("disabled");
+			$("#associate_tax_button").val('Proceed To Next Step');
+// 			$("#save_associate_bank_data_button").addClass('button').val('Save & Continue');
+			getResidenceLocation();
+	    }else{
+	    	$("#associate_tax_button").val('Save & Continue');
+	    	 if ($('#associate_bank_data_form').validate(false, validationSettings)){ 
+				   var formData = getFormData("associate_bank_data_form");
+					$("#save_associate_bank_data_button").attr("disabled", "disabled");
+					$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		            $( "#save_associate_bank_data_button" ).addClass('button').val('Processing..');
+		            $.ajax({
+						type : "POST",
+		        	    data: formData,
+						url : sourceleadUrl+"/saveAssociateBankData?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+						success : function(result) {
+							if (result && result.response === "INVALID_DATA") {
+			                    $("#save_associate_bank_data_button").removeAttr("disabled");
+			                    $("#save_associate_bank_data_button").removeAttr('button').val('Save');
+			                    showError(result.responseMessage);
+			                } else if (result.response === "AWKWARD") {
+			                    location.href = "/errorPage";
+			                } else if (result.response === "SUCCESS") {
+			                	$("#associateId").val(result.object.userId); 
+								var associateBanking = document.getElementById("associateTax");
+								document.getElementById("associateTax").removeAttribute("class"); 
+								associateTax.href="#tab-3"; 
+								$("#associateTax").click();
+								$("#save_associate_bank_data_button").removeAttr("disabled");
+								$("#save_associate_bank_data_button").addClass('button').val('Save & Continue');
+								getResidenceLocation();
+			                } else if (result.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+			                    $("#save_associate_bank_data_button").removeAttr("disabled");
+			                    $("#save_associate_bank_data_button").addClass('button').val('Save');
+			                    showError("Operation failed, please try again");
+			                }
+								/*  location.replace(sourceleadUrl+"/usersList");  */
+						},
+					});
+		            
+			        return true;
+				
+			  }else{
+				return false;
+			  }
+	    }
 	
     }
  
@@ -170,6 +191,13 @@ function showHideAccountTypes(){
 </script> 
 <script>
 function skipAssociateBankDataJsp(){
+	if($("#allowEmployeeToFill").is(':checked')){
+		$("#associate_tax_button").val('Proceed To Next Step');
+		$(".infoMask").show();
+	}else{
+		$(".infoMask").hide();
+		$("#associate_tax_button").val('Save & Continue');
+	}
 	var associateTax = document.getElementById("associateTax");
 	document.getElementById("associateTax").removeAttribute("class"); 
 	associateTax.href="#tab-3"; 

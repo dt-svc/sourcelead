@@ -50,10 +50,11 @@ $(document).ready(function(){
             </ul>
             <div class="clearfix"></div>
           </div>
-        </div>
+        
         
           <div class="candidate_wrap_table datatable_filter">
 	           <div id="employeeList"></div>
+          </div>
           </div>
         <!-- Content Area Ends--> 
       </div>

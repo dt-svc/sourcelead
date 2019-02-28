@@ -1,16 +1,12 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-
-
-	
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
   	 
   	 <div class="immigraDetailsOut">
 	 <div class="immigraDetailsWrap">
   	 <div class="immigraDetailsCta">
-  	        <h2>LCA Details &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%-- <a href="<c:url value='../immigration/getEmployeeByLcaId?lcaId=${lcaId}'/>">Employee</a> --%></h2>
+  	        <h2>LCA Details &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h2>
 		  	<ul>
 				<li class="clearfix"><span>LCA No</span><p>: ${lcaDTO.lcaNo}</p></li>
 				<li class="clearfix"><span>LCA Title</span><p>: ${lcaDTO.lcaTitle}</p></li>
@@ -74,7 +70,7 @@
     <c:forEach var="loc" items="${locList}">
 	   <div class="immigraDetailsWrap"> 
 	   <div class="immigraDetailsCta">
-	           <h2>LCA Place Of Employment (OR) Location : <c:set var="secCount" value="${secCount+1}" scope="page"/><c:out value="${secCount}" /></h2>
+	           <h2>LCA Place Of Employment (OR) Location : <c:set var="secCount" value="${secCount+1}" scope="page"/><c:out value="${secCount}"/></h2>
 	           
 			  	<ul>
 					<li class="clearfix"><span>Location</span><p>: ${loc.location}</p></li>
@@ -106,7 +102,3 @@
    </c:forEach>
   
    </div>
-    
-	
-
- 

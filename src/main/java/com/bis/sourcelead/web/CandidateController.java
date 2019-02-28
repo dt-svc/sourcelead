@@ -3,6 +3,7 @@ package com.bis.sourcelead.web;
 import java.io.FileNotFoundException;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -28,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
+import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 
 import com.bis.sourcelead.dto.ResponseList;
@@ -66,6 +68,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -91,6 +94,9 @@ public class CandidateController {
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
+	@Autowired
+	ReportsUtil reportsUtil;
+		
 	
 	@Autowired
 	private RolesService roleService;
@@ -139,7 +145,6 @@ public class CandidateController {
 			@RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request) {
 		ResponseList<CandidateMarketPlaceDTO> candidateMarketPlaceDTOList = null;
 		logger.debug("inisde getGlobalMarketplaceCandList  conroller =========> --> ");
-		System.out.println("inisde getGlobalMarketplaceCandList  conroller =========>");
 		try {
 			String[] tableColumns = { "fullName", "location", "skillsName", "currentRate", "expectedRate", "profilePercentage" };// should
 																														// be
@@ -163,8 +168,6 @@ public class CandidateController {
 		}
 		logger.debug(
 				"after controller  getGlobalMarketplaceCandList  --> " + candidateMarketPlaceDTOList.getRecordsTotal());
-		System.out.println("inisde getGlobalMarketplaceCandList  conroller =========>"
-				+ candidateMarketPlaceDTOList.getRecordsTotal());
 		return candidateMarketPlaceDTOList;
 	}
 	
@@ -191,11 +194,10 @@ public class CandidateController {
 			HttpServletRequest request) {
 		ResponseList<CandidateMarketPlaceDTO> candidateMarketPlaceDTOList = null;
 		logger.debug("inisde getOrgMarketplaceList  conroller =========> --> ");
-		System.out.println("inisde getOrgMarketplaceList  conroller =========>");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		candidateMarketPlaceDTO.setOrgLocationId(orgLocations.getId().toString());
 		try {
-			String[] tableColumns = { "fullName", "location", "skillsName", "currentRate", "expectedRate", "profilePercentage", "price" };// should
+			String[] tableColumns = { "", "firstName", "location", "skillsName", "currentRate", "expectedRate", "candidateProfilePercentage", "marketPrice" };// should
 																														// be
 			// entity names
 			int sortColumnIndex = -1; // by default sorting using updated date
@@ -217,8 +219,6 @@ public class CandidateController {
 		}
 		logger.debug(
 				"after controller  getOrgMarketplaceList  --> " + candidateMarketPlaceDTOList.getRecordsTotal());
-		System.out.println("inisde getOrgMarketplaceList  conroller =========>"
-				+ candidateMarketPlaceDTOList.getRecordsTotal());
 		return candidateMarketPlaceDTOList;
 	}
 	//Note this method is ResumeParsing Candidate method
@@ -521,12 +521,12 @@ public class CandidateController {
 		
 	 }	 
 	 
-	 @RequestMapping(value = "/candidateMarketplaceCheckout")
-	 public ModelAndView candidateMarketplaceCheckout()throws Exception
+	 @RequestMapping(value = "/candidateMarketplaceCart")
+	 public ModelAndView candidateMarketplaceCart()throws Exception
 	 { 
 		 ModelAndView model = new ModelAndView();
 		 model.addObject("sourceleadUrl", sourceleadUrl);
-		 model.setViewName("candidates/candidateMarketplaceCheckout");
+		 model.setViewName("candidates/candidateMarketplaceCart");
 		 return model;
 	 }
 	 
@@ -739,7 +739,6 @@ public class CandidateController {
 		@RequestMapping(value = "/globalMarketplacePage", method = RequestMethod.GET)
 		public ModelAndView goToGlobalMarketplace(HttpServletRequest request) throws Exception {
 			logger.debug("inisde goToGlobalMarketplace  conroller =========>");
-			System.out.println("inisde goToGlobalMarketplace  conroller =========>");
 			ModelAndView model = new ModelAndView();
 			List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 			model.addObject("educationsList", educationsList);
@@ -767,15 +766,56 @@ public class CandidateController {
 		}
 		
 		@RequestMapping(value = "/getCandidateDetailsFromMarketcart", method = RequestMethod.POST)
-		public @ResponseBody List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(HttpServletRequest request) throws Exception{
+		public @ResponseBody List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(
+				@RequestParam(value = "searchValue", required = true)String searchValue,
+				@RequestParam(value = "creationStartDate", required = false)String creationStartDate,
+				@RequestParam(value = "creationEndDate", required = false)String creationEndDate,
+				@RequestParam(value = "checkedDate", required = false)String checkedDate,
+				HttpServletRequest request) throws Exception{
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			List<CandidateMarketPlaceCartView> candidatesFromMarketplace = null;
 			if(user != null){
 				if(StringUtils.isNotBlank(userRoleName)) {
-					candidatesFromMarketplace = candidateService.getCandidateDetailsFromMarketcart(user, userRoleName, orgLocation);
+					
+					candidatesFromMarketplace = candidateService.getCandidateDetailsFromMarketcart(user, userRoleName, orgLocation, creationStartDate, creationEndDate, checkedDate, searchValue);
 			}}
 			return candidatesFromMarketplace;
 		}
+		
+		@RequestMapping(value = "/globalCandidateSummary")
+		public ModelAndView globalCandidateSummary(@RequestParam(value = "marketplaceUUID", required = false) String marketplaceUUID, HttpServletRequest request) throws Exception {
+			ModelAndView model = new ModelAndView();
+	        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	        CandidateMarketPlaceDTO marketPlaceDTO = candidateService.getCandidateMarketPlaceDTODetailsByUUId(marketplaceUUID,orgLocations);
+	        model.addObject("marketplaceDTO", marketPlaceDTO);
+	        model.setViewName("candidates/globalCandidateProfileSummary");
+	        model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+		}
+		
+		// Sales Order Controller.
+	    @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
+     	@RequestMapping(value = "/SalesOrder")
+	    public ModelAndView goToSalesOrder(
+	    		MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,
+	    		@RequestParam(value = "salesUuid", required = true) String salesUuid,
+	    		HttpServletRequest request) {
+	    	try{
+	    		ModelAndView model = new ModelAndView();
+	    		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	    		MarketplacePurchaseSalesDTO salesOrder = candidateService.getMarketplaceSalesOrderBySalesUuid(orgLocations, salesUuid);
+	    		model.addObject("marketplaceSalesOrder", salesOrder);
+	    		model.setViewName("candidates/salesOrder");
+	    		model.addObject("sourceleadUrl", sourceleadUrl);
+	    		return model;
+	    	}catch(Exception e){
+	    		e.printStackTrace();
+	    		return null;
+	    	}
+		  
+	}
+	
 }

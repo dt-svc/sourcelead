@@ -87,5 +87,7 @@ function getFormSubmissionMasterList() {
 	});
 }
 function exportFormToPDF(formId) {
-	alert("Form Id " + formId);
+	/*alert("Form Id " + formId);*/
+	var exportType = "pdf";
+	window.location.href = sourceleadUrl+"/itDeclartionSubmissionExport?formId="+formId+"&exportType="+exportType;
 }

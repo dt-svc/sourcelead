@@ -30,10 +30,7 @@
           <div class="clearfix mb5">
             <label class="col-md-2"><strong>Deposit Type:</strong></label>
             <div class="col-md-5">
-              <select class="sel" title="Select Type" id="depositType" name="depositType">
-                <option value="Direct Deposit">Direct Deposit</option>
-                <option value = "By Check">By Check</option>
-              </select>
+              <input type="text" id="depositType" name="depositType" value="" readOnly>
               <input type="hidden" id="payRate" name="payRate"/>
                <input type="hidden" id="payrollId" name="payrollId"/>
                 <input type="hidden" id="payrollUUID" name="payrollUUID"/>
@@ -70,12 +67,12 @@
                         </tr>
                         <tr>
                           <td>Regular</td>
-                           <td><i class="fa fa-clock-o paddingRight"></i><input type="text" id="regularHours" name="regularHours"  onblur = "editRegularHours();" class="formControl" readOnly></td>
+                           <td><i class="fa fa-clock-o paddingRight"></i><input type="text" id="regularHoursView" name="regularHours"  onblur = "editRegularHours();" class="formControl" readOnly></td>
                           <td><i class="fa fa-dollar mr5"></i><input type="text" id="regularHoursAmt" name="regularHoursAmt"  class="formControl" readOnly></td>
                         </tr>
                         <tr>
                           <td>Overtime</td>
-                          <td><i class="fa fa-clock-o paddingRight"></i><input type="text" id="overTimeHours" name="overTimeHours"   onblur = "editOverTimeHours();" class="formControl" readOnly></td>
+                          <td><i class="fa fa-clock-o paddingRight"></i><input type="text" id="overTimeHoursView" name="overTimeHours"   onblur = "editOverTimeHours();" class="formControl" readOnly></td>
                           <td><i class="fa fa-dollar mr5"></i><input type="text" id="overTimeHoursAmt" name="overTimeHoursAmt"  class="formControl" readOnly></td>
                         </tr>
                       </tbody>
@@ -232,6 +229,7 @@
 		            }
 		            $("#empName").text(json.empName);
 		            $("#empAddress").text(json.employeeAddress);
+		            $("#depositType").val(json.depositType);
 		            if(json.assSalType == "Salary" || json.assSalType == "LcaWage"){
 		            	$("#hoursAndEarningsTable").hide();
 		            	$("#assSalaryTable").show();
@@ -239,9 +237,9 @@
 		            }else{
 		            	$("#hoursAndEarningsTable").show();
 		            	$("#assSalaryTable").hide();
-		            	$("#regularHours").val(json.regularHours.toFixed(2));
+		            	$("#regularHoursView").val(json.regularHours.toFixed(2));
 			            $("#regularHoursAmt").val(json.regularHrsTotalAmt.toFixed(2));
-			            $("#overTimeHours").val(json.overtimeHours.toFixed(2));
+			            $("#overTimeHoursView").val(json.overtimeHours.toFixed(2));
 			            $("#overTimeHoursAmt").val(json.otHoursTotalAmt.toFixed(2));
 			            $("#totalHours").text(json.totalHours.toFixed(2));
 			            $("#totalEarnings").text(json.totalEarnings.toFixed(2));

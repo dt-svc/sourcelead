@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,10 +14,14 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AssociatePayItemDTO;
+import com.bis.sourcelead.dto.AssociateSalaryDTO;
 import com.bis.sourcelead.dto.OptionsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserGroupDTO;
+import com.bis.sourcelead.entity.AssociatePayItem;
+import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
@@ -25,6 +30,8 @@ import com.bis.sourcelead.payroll.dao.PayItemDao;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
 import com.bis.sourcelead.payroll.entity.PayItem;
 import com.bis.sourcelead.payroll.service.PayItemService;
+import com.bis.sourcelead.service.AssociateSalaryService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -35,6 +42,12 @@ public class PayItemServiceImpl implements PayItemService{
 	
 	@Autowired
 	PayItemDao payItemDao;
+	
+	@Autowired
+	private CommonUtil commonUtil;
+	
+	@Autowired
+	private AssociateSalaryService associateSalaryService;
 
 	@Override
 	public Response<PayItemDTO> addPayItem(OrgLocations orgLocation, PayItemDTO payItemDTO, User loginUser)
@@ -201,5 +214,57 @@ public class PayItemServiceImpl implements PayItemService{
 		}
 		response.setData(list);
 		return response;
+	}
+
+	@Override
+	public AssociatePayItem savePayItemsFromSummary(AssociateSalaryDTO associateSalaryDTO, OrgLocations orgLocation,User user) {
+		
+		AssociatePayItem ap = null;
+		
+		try {
+			
+			for (AssociatePayItemDTO api : associateSalaryDTO.getAssociatePayItemDto()) {
+				
+				if(api.getPayItemCheck() != null && api.getPayItemCheck().equalsIgnoreCase(Constants.BOOLEAN_TRUE)) {
+					
+					BigDecimal amount = BigDecimal.ZERO;
+					AssociatePayItem associatePayItem = new AssociatePayItem();
+					
+					associatePayItem.setPayItemName(api.getPayItemName());
+					associatePayItem.setPayItemSchedule(api.getPayItemSchedule());
+					if (api.getOverRide() != null) {
+						associatePayItem.setOverRide(api.getOverRide());
+					}
+					if (api.getEffectiveDate() != null && !"".equalsIgnoreCase(api.getEffectiveDate())) {
+						associatePayItem.setEffectiveDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), api.getEffectiveDate()));
+					}
+					if (api.getEndDate() != null && !"".equalsIgnoreCase(api.getEndDate())) {
+						associatePayItem.setEndDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), api.getEndDate()));
+					}
+					if (api.getPayItemAmount() != null && !"".equalsIgnoreCase(api.getPayItemAmount())) {
+						amount = new BigDecimal(api.getPayItemAmount());
+					}
+					associatePayItem.setOrgPayItemId(api.getPayItemId());
+					
+					AssociateSalary associateSalary = associateSalaryService.getAssociateSalaryBySalaryId(Long.parseLong(associateSalaryDTO.getId()));
+					associatePayItem.setAssociateSalary(associateSalary);
+					associatePayItem.setPayItemAmount(amount);
+					associatePayItem.setCreatedDate(new Date());
+					associatePayItem.setUpdatedDate(new Date());
+					associatePayItem.setCreatedBy(user.getUserCode());
+					associatePayItem.setUpdatedBy(user.getUserCode());
+					associatePayItem.setStatus(1);
+					ap = associateSalaryService.saveUpdatedPayItem(associatePayItem);
+					
+				}
+				
+			}
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		
+		return ap;
+		
 	}
 }

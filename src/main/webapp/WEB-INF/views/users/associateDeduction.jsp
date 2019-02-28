@@ -81,7 +81,7 @@ getDeductionType();
                <div class="minHeightcol5">
                <div class="col-md-5">
                <label class="clearfix">Type</label>
-                      <select class="sel" id="dedType" name="dedType" data-validation="required" field-name="Deduction Type" onchange="getDeductionAmount();">
+                      <select class="sel" id="dedType" name="dedType" data-validation="required" field-name="Deduction Type" onchange="getDeductionAmount();resetValues();">
                       </select>
                   </div>
                   
@@ -166,8 +166,9 @@ $('body').on('blur', '#associate_deduction_form', function() {
  function saveAssociateDeduction(){
 	 var userId = $("#associateId").val();  
 	 var saveType = "New";
+	 var dedType = $("#dedType").val();
 	 var deductionType = $("#deductionType").val();
-	 if(deductionType != null && deductionType != '' && deductionType != "undefined"){
+	 if(deductionType != null && deductionType != '' && deductionType != "undefined" && dedType != null && dedType != '' && dedType != "undefined"){
 		var formData = getFormData("associate_deduction_form");
 		$("#associate_deduction_save_button").attr("disabled", "disabled");
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -219,6 +220,12 @@ $('body').on('blur', '#associate_deduction_form', function() {
  }
  </script>
  
+ <script>
+function resetValues(){
+	$('#amt').val('');
+	$('#mthd').val('');
+}
+</script>
  
  <script>
 function shiftToTaxTab(){
@@ -226,7 +233,10 @@ function shiftToTaxTab(){
 	document.getElementById("associateTax").removeAttribute("class"); 
 	associates.href="#tab-3"; 
 	$("#loading").removeAttr('style');
-	$("#associate_tax_button" ).addClass('button').val('Save & Continue');
+	if($("#allowEmployeeToFill").is(':checked')){
+	    $("#associate_tax_button" ).addClass('button').val('Proceed To Next Step');
+	}
+	
     $("#associate_tax_button").removeAttr("disabled");
     $("#associateTax").click();
 }

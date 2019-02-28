@@ -81,14 +81,14 @@ public class BillingPayableRestController {
 	
 	 @RequestMapping(value = "/getVendorInvoiceAssociatesList", method = RequestMethod.GET)
 	 	public @ResponseBody  String getVendorInvoiceAssociatesList(@RequestParam(value = "selectedAssociates", required = false) String selectedAssociates,
-	 			@RequestParam(value = "vendorOrgRelationId", required = false) Long vendorOrgRelationId,HttpServletRequest request, HttpServletResponse response) throws Exception
+	 			@RequestParam(value = "vendorOrgRelationId", required = false) Long vendorOrgRelationId,
+	 			@RequestParam(value = "contractType", required = false) String contractType,
+	 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	 	{
 	     	String resultJson;
-	     	
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	     	List<Long> associateIds = new ArrayList<Long>();
 	     	List<Candidate> associateList = null;
-	     	
-	     	
 	     	if(!isNullOrEmpty(selectedAssociates)){
 	     		String[] selectedAssoicatesIds =  selectedAssociates.split(",");
 	         	for(int i=0; i < selectedAssoicatesIds.length; i++){
@@ -98,6 +98,13 @@ public class BillingPayableRestController {
 	     	}else{
 	     		associateList = candidateService.getAllActiveVendorAssociatesByOrgLocation(vendorOrgRelationId);
 	     	}
+	     	
+	     	for (Candidate candidate : associateList) {
+				List<Contracts> contractsList = getSowContract(candidate.getId(), loginOrgLocation, vendorOrgRelationId, contractType);
+				if (null != contractsList && contractsList.size() > 0) {
+					candidate.setContractsList(contractsList);
+				}
+			}
 	     	
 	 	    resultJson = commonUtil.toJSON(associateList);
 	 	    return resultJson;
@@ -157,6 +164,10 @@ public class BillingPayableRestController {
 			    			sb.append(candidate.getFirstName());
 		    			 }
 		    			lineItems.setCandidateId(lineItems.getCandidate().getId());
+		    			
+		    			if(lineItems.getRequirementSubmissionId() !=null){
+		    				lineItems.setSubmissionId(lineItems.getRequirementSubmissionId().getId());	
+		    			}
 		    			
 		    			if(null != lineItems.getContract()){
 			    			lineItems.setContractId(lineItems.getContract().getId());
@@ -247,6 +258,12 @@ public class BillingPayableRestController {
 				
 		    	invoice.setClientCurrency(currency);
 		    	invoice.setVendorCurrency(currency);
+		    	
+		    	if(invoice.getCustomInvoiceTemplate() != null) {
+		    		invoice.setCustomInvoiceId(invoice.getCustomInvoiceTemplate().getId());
+		    		invoice.setCustomInvoiceName(invoice.getCustomInvoiceTemplate().getName());
+		    	}
+		    	
 		    }
 		    resultJson = commonUtil.toJSON(invoice);
 			

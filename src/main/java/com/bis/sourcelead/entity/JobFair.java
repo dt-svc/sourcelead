@@ -56,7 +56,7 @@ public class JobFair implements Serializable {
 	@Column(name = "POSTED_FROM")
 	private String postedFrom;
 	
-	@Column(name = "SELECTED_CLIENT")
+	@Column(name = "SELECTED_CLIENT", columnDefinition = "LONGTEXT default NULL")
 	private String selectedClient;
 
 	@Column(name = "VENUE")

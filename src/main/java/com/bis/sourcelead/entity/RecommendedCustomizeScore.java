@@ -73,13 +73,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "CUSTOMIZE_KEYWORDS_SCORE")
 	private String customizeKeywordsScore;
 	
-	@Column(name = "CUSTOMIZE_COUNTRY")
+	@Column(name = "CUSTOMIZE_COUNTRY", columnDefinition = "LONGTEXT default NULL")
 	private String customizeCountry;
 	
-	@Column(name = "CUSTOMIZE_STATE")
+	@Column(name = "CUSTOMIZE_STATE", columnDefinition = "LONGTEXT default NULL")
 	private String customizeState;
 	
-	@Column(name = "CUSTOMIZE_CITY")
+	@Column(name = "CUSTOMIZE_CITY", columnDefinition = "LONGTEXT default NULL")
 	private String customizeCity;
 	
 	@Column(name = "CUSTOMIZE_LOCATION_SCORE")

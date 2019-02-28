@@ -28,6 +28,16 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	@Required(desc="status")
 	private String status;
 	
+	@Required(desc="projectApprovalTypeValue")
+	private String projectApprovalTypeValue;
+	
+	@Required(desc="expenseApprovalTypeValue")
+	private String expenseApprovalTypeValue;
+	
+	private String projectApprovalType;
+	
+	private String expenseApprovalType;
+	
 	private String timeSheetFrequency;
 	
 	private String isAllowFreelanceDevelopers;
@@ -1175,6 +1185,38 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setTags(String tags) {
 		this.tags = tags;
+	}
+
+	public String getProjectApprovalTypeValue() {
+		return projectApprovalTypeValue;
+	}
+
+	public void setProjectApprovalTypeValue(String projectApprovalTypeValue) {
+		this.projectApprovalTypeValue = projectApprovalTypeValue;
+	}
+
+	public String getExpenseApprovalTypeValue() {
+		return expenseApprovalTypeValue;
+	}
+
+	public void setExpenseApprovalTypeValue(String expenseApprovalTypeValue) {
+		this.expenseApprovalTypeValue = expenseApprovalTypeValue;
+	}
+
+	public String getProjectApprovalType() {
+		return projectApprovalType;
+	}
+
+	public void setProjectApprovalType(String projectApprovalType) {
+		this.projectApprovalType = projectApprovalType;
+	}
+
+	public String getExpenseApprovalType() {
+		return expenseApprovalType;
+	}
+
+	public void setExpenseApprovalType(String expenseApprovalType) {
+		this.expenseApprovalType = expenseApprovalType;
 	}
 	
 

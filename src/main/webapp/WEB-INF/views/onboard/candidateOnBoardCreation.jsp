@@ -899,6 +899,11 @@ function validateUploadFile(id)
 			    		$("#firstName").val(json['firstName']);
 				    	 $("#lastName").val(json['lastName']);
 				    	 
+				    	 if(json.defaultOrgProbationPeriod != "" && json.defaultOrgProbationPeriod != null && json.defaultOrgProbationPeriod !="undefined"){
+					    	 $("#probationNotice").val(json.defaultOrgProbationPeriod);
+					    	 $('#probationNotice').trigger("chosen:updated");
+				    	 }
+				    	 
 				    	 if(json['mobilePhone'] != "" && json['mobilePhone'] != null && json['mobilePhone'] !="undefined"){
 				        		$("#mobileNumber").val(json['mobilePhone']);
 				        		$("#mobileNumber").attr("readonly","readonly");

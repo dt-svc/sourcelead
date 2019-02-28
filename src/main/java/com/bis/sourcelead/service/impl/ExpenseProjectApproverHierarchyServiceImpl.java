@@ -45,6 +45,11 @@ public class ExpenseProjectApproverHierarchyServiceImpl implements ExpenseProjec
 			throws Exception{
 		return expenseProjectApproverHierarchyDao.getApproverUsersByProjectIdAndProjectClientId(projectId, projectClientId);
 	}
+
+	@Override
+	public String getExpenseApprovalMechanismTypeByProjectClientId(Long projectClientId) throws Exception {
+		return expenseProjectApproverHierarchyDao.getExpenseApprovalMechanismTypeByProjectClientId(projectClientId);
+	}
 	
 	
 }

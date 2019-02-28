@@ -31,4 +31,6 @@ public interface VendorOnboardService {
 	
 	void saveVendorOnboardForVendorBulkImports(Long vendorOnboardingId,User user,User spocUser,OrgLocations orgLocations) throws Exception;
 	
+	String getVendorOnboardingUUIDByOrgRelationId(Long orgRelationId);
+	
 }

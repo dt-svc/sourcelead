@@ -253,7 +253,6 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "        IF(CANLOC.STATE IS NOT NULL, CONCAT(CANLOC.STATE,','),''),"
 				+ "        IF(CANLOC.CITY IS NOT NULL, CONCAT(CANLOC.CITY),'')))"
 				+ "        ELSE  '' "
-              //  + "        ELSE  CONCAT(IF(LOC.COUNTRY IS NOT NULL, CONCAT(LOC.COUNTRY,','),'') ,IF(LOC.STATE IS NOT NULL, CONCAT(LOC.STATE,','),''),IF(LOC.CITY IS NOT NULL, CONCAT(LOC.CITY),''))"
 				+ "      END "
 				+ "     ) AS  candidateLocation "
 				+ "   FROM PROJECT_MEMBERS PM "
@@ -268,7 +267,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 			    + "   LEFT JOIN EMPLOYEE EMP ON EMP.USER_ID = U.ID AND EMP.ORG_LOCATIONS_ID = CAN.WORK_LOCATION "
 			    + "   LEFT JOIN DEPARTMENT DEP ON DEP.ID = EMP.DEPARTMENT_ID "
 				+ "   WHERE "+subQuery
-				+ "    AND HRD.DAY IS NOT NULL AND HRD.DAY BETWEEN '"+startDateSql+"' AND '"+endDateSql+"' AND HD.ID NOT IN(SELECT UDH.HOLIDAY_ID FROM USER_DROPPED_HOLIDAYS UDH WHERE UDH.USER_ID = U.ID AND UDH.LOCATION_ID = LOC.ID) group by CONCAT(UR.ID,HRD.DAY)"
+				+ "    AND HRD.DAY IS NOT NULL AND HRD.DAY BETWEEN '"+startDateSql+"' AND '"+endDateSql+"' AND HD.ID NOT IN(SELECT UDH.HOLIDAY_ID FROM USER_DROPPED_HOLIDAYS UDH WHERE UDH.USER_ID = U.ID AND UDH.STATUS = '1') group by CONCAT(UR.ID,HRD.DAY)"
 				+ ") "
 				+ " )Q1 ORDER BY Q1.timesheetDate ASC  "; 
 		

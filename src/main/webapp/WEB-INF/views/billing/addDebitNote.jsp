@@ -73,15 +73,15 @@
 		</div>
 		<div class="col-xs-12 col-sm-6 col-md-6">
 		<div class="form-group row">
-		<label class="col-md-3 paddingRight">Credit Note Date</label>
+		<label class="col-md-3 paddingRight">Debit Note Date</label>
 		<div class="col-md-9" id= "creditDebitNotedateDiv">
-    	<input class="form-control calendar" placeholder="Credit Note Date" type="text" value = "${creditDebitNote.creditDebitNotedate}" id="creditDebitNotedate" name="creditDebitNotedate" field-name="Credit Note Date" readonly>
+    	<input class="form-control calendar" placeholder="Debit Note Date" type="text" value = "${creditDebitNote.creditDebitNotedate}" id="creditDebitNotedate" name="creditDebitNotedate" field-name="Credit Note Date" readonly>
     	</div>
 		</div>
 		</div>
 		<div class="col-xs-12 col-sm-6 col-md-6">
 		<div class="form-group row">
-		<label class="col-md-3 paddingRight">Invoice<span class="text-danger">&nbsp;*</span></label>
+		<label class="col-md-3 paddingRight">Bill<span class="text-danger">&nbsp;*</span></label>
 		<div class="col-md-9">
 		<select multiple="multiple" class="chosen-select form-control" id="invoceId" name="invoceId" data-validation="required" field-name="Invoice"></select>
 		</div>
@@ -720,10 +720,18 @@ function datePickerFunction(id){
 	  var taxAmountVal = parseFloat(taxAmount);
 	  var totlalValue = "0.00";
 	  if(taxType=="Flat"){
-	  totlalValue = (rowTotalVal + taxAmountVal);
+	  if(!isNaN(taxAmountVal)){
+		  totlalValue = (rowTotalVal + taxAmountVal);
+		}else{
+			  totlalValue = rowTotalVal;  
+		 }
 	  }else{
+		  if(!isNaN(taxAmountVal)){
 		  var perCentValue = (rowTotalVal * taxAmountVal)/100;
-			totlalValue = (rowTotalVal + perCentValue);  
+			totlalValue = (rowTotalVal + perCentValue); 
+		  }else{
+			  totlalValue = rowTotalVal;  
+		  }
 	  }
 	   $('#rowTotalAmount'+rowId).empty().val(totlalValue.toFixed(2));
 	   calculateSumSubTotal(rowId);

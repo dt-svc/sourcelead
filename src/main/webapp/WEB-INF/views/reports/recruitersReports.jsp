@@ -80,7 +80,16 @@ function getDayWiseReports(){
           
         </div>    		
     		</li>
+    		<c:if test="${loginUserRole eq 'ROLE_ADMIN'}">
     		<li><a href="javascript:void(0)" class="btn btn-default btn-sm repFilIcon" title="Filters" onclick="openFilterPop();"><i class="fa fa-filter faFilter"></i></a></li>
+    	</c:if>
+    	<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="moreActions();"></a>
+					<div class="newActPop">
+						<span>
+							<a href="javascript:void(0)" onclick="recruiterReportExport();" title="PDF">Export PDF</a>
+						</span>
+					</div>
+				</li>
     		<li class="positionRelative"><input type="text" class="repSearchBar" placeholder='Search' id='usersDataTableSearch'/><span class="repSearchIcon" onClick="userDataTableList();"></span></li>
     	</ul>
     </div>
@@ -146,6 +155,11 @@ function getDayWiseReports(){
  
  </div>
  <script type="text/javascript"> 
+ 
+ function moreActions(){
+		$(".newActPop").slideToggle(200);
+		$(".action-pop").slideUp(200);
+	}
  
  function resetFilter() {
 	 $("ul#myTeamsUL > li input:checkbox").prop("checked",false);
@@ -299,6 +313,9 @@ function custDates(){
         result = result +"<th><i class='fa fa-ban fa-2x'></i><div class='small'>Rejected</div></th>";
         result = result +"<th><i class='fa fa-id-badge'></i><div class='small'>Joined</div></th>";
         result = result +"<th><i class='fa fa-arrow-circle-left fa-2x'></i> <div class='small'>Back-Out</div></th>";
+        result = result +"<th><i class='fa fa-id-badge'></i><div class='small'>OnHold</div></th>";
+        result = result +"<th><i class='fa fa-id-badge'></i><div class='small'>NoResponse</div></th>";
+
 		result = result + '</tr>';
 		result = result + '</thead>	';
 	    result = result +"</table>";
@@ -362,6 +379,55 @@ function userDataTableList(){
 
 
 <script>
+
+function recruiterReportExport(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var searchValue = $("#usersDataTableSearch").val();
+	 var timePeriod = $('#reportTypeId').val();
+	 var flag = true;
+	 var startDate = '';
+	 var endDate = '';
+	 var searchValueregx = searchValue.replace('^', '');
+	 if(timePeriod == 'custom'){
+		  startDate = $("#ReportStartDate").val();
+		  endDate = $("#ReportEndDate").val();
+		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
+			  if(startDate == null || startDate == ''){
+				  document.getElementById("reportsStartDate").style.display="block";
+				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+			  }
+			  
+			  if(endDate == null || endDate == ''){
+				  document.getElementById("reportsEndDate").style.display="block";
+				  $("#reportsEndDate").empty().append("End Date is Required") ; 
+			  }
+			  flag = false;
+		  }
+	 }else{
+		 document.getElementById("reportsStartDate").style.display="none";
+		 document.getElementById("reportsEndDate").style.display="none";
+	 }
+	 var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
+		var userRoleName = [];
+		$('input:checkbox[name=orgRoles]:checked').each(function() 
+			    {
+			userRoleName.push($(this).val());
+	     });
+	 if(flag){
+		 searchValue = searchValue ? searchValue : "";
+		 var url = sourceleadUrl+"/getAllRecruiterReportsExport?timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&userRoleName="+userRoleName+"&searchValue="+searchValueregx;
+		 window.location.href = url;
+	 }
+	
+}
+</script>
+
+
+<script>
 function usersListPagination(url,sourceleadUrl){
 	
 	var colIndex = 0;
@@ -384,7 +450,9 @@ function usersListPagination(url,sourceleadUrl){
             { "data": "offered"},
             { "data": "rejected"},
             { "data": "joined"},
-            { "data": "backout"}
+            { "data": "backout"},
+            { "data": "onHold"},
+            { "data": "noResponse"}
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
@@ -533,6 +601,34 @@ function usersListPagination(url,sourceleadUrl){
 	            	    var result = "";
 	            	    if(opt.userApplicantsBackOutCount !=null && opt.userApplicantsBackOutCount !='' && opt.userApplicantsBackOutCount !='undefined'){
 	            	    	 result = result +"<td><div> <a onClick='getRecruiterApplicantBackoutList(\""+opt.userCode+"\")'><span title='"+opt.userApplicantsBackOutCount+"'>"+opt.userApplicantsBackOutCount+"</span></a></div></td>";
+	            	    }else{
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
+	            	    }
+	            	   
+	            	    return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "onHold",
+	              "sortable": false,   
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            	    if(opt.userOnHoldApplicantsCount !=null && opt.userOnHoldApplicantsCount !='' && opt.userOnHoldApplicantsCount !='undefined'){
+	            	    	result = result +"<td><div> <a onClick='getRecruiterApplicantOnHoldList(\""+opt.userCode+"\")'><span title='"+opt.userOnHoldApplicantsCount+"'>"+opt.userOnHoldApplicantsCount+"</span></a></div></td>";
+	            	    }else{
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
+	            	    }
+	            	   
+	            	    return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "noResponse",
+	              "sortable": false,   
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            	    if(opt.userNoResponseApplicantsCount !=null && opt.userNoResponseApplicantsCount !='' && opt.userNoResponseApplicantsCount !='undefined'){
+	            	    	result = result +"<td><div> <a onClick='getRecruiterApplicantNoResponseList(\""+opt.userCode+"\")'><span title='"+opt.userNoResponseApplicantsCount+"'>"+opt.userNoResponseApplicantsCount+"</span></a></div></td>";
 	            	    }else{
 	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
@@ -997,6 +1093,90 @@ function getRecruiterApplicantBackoutList(userCode){
 	$.ajax({
         type : "POST",
    	 	url: sourceleadUrl+"/recruiterApplicantsReportList?"+tokenParamName+"="+tokenValue+"&userCode="+userCode+"&searchValue="+searchValue+"&toStage=BACKOUT&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams,
+       	success :function(result) {
+       		$('#reportsResultDiv').empty();
+       		$('#reportsResultDiv').append(result);
+       		applicantsAllStageList();
+        }
+   	});
+}
+
+function getRecruiterApplicantOnHoldList(userCode){
+	var searchValue = $("#usersDataTableSearch").val();
+	 var timePeriod = $('#reportTypeId').val();
+	 var flag = true;
+	 var startDate = '';
+	 var endDate = '';
+	 var toStage = '';
+	 if(timePeriod == 'custom'){
+		  startDate = $("#ReportStartDate").val();
+		  endDate = $("#ReportEndDate").val();
+		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
+			  if(startDate == null || startDate == ''){
+				  document.getElementById("reportsStartDate").style.display="block";
+				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+			  }
+			  
+			  if(endDate == null || endDate == ''){
+				  document.getElementById("reportsEndDate").style.display="block";
+				  $("#reportsEndDate").empty().append("End Date is Required") ; 
+			  }
+			  flag = false;
+		  }
+	 }else{
+		 document.getElementById("reportsStartDate").style.display="none";
+		 document.getElementById("reportsEndDate").style.display="none";
+	 }
+	 var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
+	$.ajax({
+        type : "POST",
+   	 	url: sourceleadUrl+"/recruiterApplicantsReportList?"+tokenParamName+"="+tokenValue+"&userCode="+userCode+"&searchValue="+searchValue+"&toStage=ONHOLD&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams,
+       	success :function(result) {
+       		$('#reportsResultDiv').empty();
+       		$('#reportsResultDiv').append(result);
+       		applicantsAllStageList();
+        }
+   	});
+}
+
+function getRecruiterApplicantNoResponseList(userCode){
+	var searchValue = $("#usersDataTableSearch").val();
+	 var timePeriod = $('#reportTypeId').val();
+	 var flag = true;
+	 var startDate = '';
+	 var endDate = '';
+	 var toStage = '';
+	 if(timePeriod == 'custom'){
+		  startDate = $("#ReportStartDate").val();
+		  endDate = $("#ReportEndDate").val();
+		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
+			  if(startDate == null || startDate == ''){
+				  document.getElementById("reportsStartDate").style.display="block";
+				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+			  }
+			  
+			  if(endDate == null || endDate == ''){
+				  document.getElementById("reportsEndDate").style.display="block";
+				  $("#reportsEndDate").empty().append("End Date is Required") ; 
+			  }
+			  flag = false;
+		  }
+	 }else{
+		 document.getElementById("reportsStartDate").style.display="none";
+		 document.getElementById("reportsEndDate").style.display="none";
+	 }
+	 var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
+	$.ajax({
+        type : "POST",
+   	 	url: sourceleadUrl+"/recruiterApplicantsReportList?"+tokenParamName+"="+tokenValue+"&userCode="+userCode+"&searchValue="+searchValue+"&toStage=NORESPONSE&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams,
        	success :function(result) {
        		$('#reportsResultDiv').empty();
        		$('#reportsResultDiv').append(result);

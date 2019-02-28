@@ -908,7 +908,7 @@ private static final Logger logger = LoggerFactory.getLogger(SourceLeadTagsRestC
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 User user = userService.getUserById(associateId);
 		 
-	    System.out.println("associateId : "+associateId);
+//	    System.out.println("associateId : "+associateId);
 		Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(loginOrgLocation.getId());
 	    request.getSession().setAttribute("tagsList", tagsList);
 	    user.setTagsList(tagsList);

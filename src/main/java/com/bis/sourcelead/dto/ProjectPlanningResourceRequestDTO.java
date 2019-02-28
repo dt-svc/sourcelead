@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -75,7 +76,17 @@ public class ProjectPlanningResourceRequestDTO implements Serializable{
 	 private String approvedUser;
 	 
 	 private Long requestedOrgLocationId;
-	
+	 
+	 private BigDecimal percentageOfWork;
+	 
+
+	public BigDecimal getPercentageOfWork() {
+		return percentageOfWork;
+	}
+
+	public void setPercentageOfWork(BigDecimal percentageOfWork) {
+		this.percentageOfWork = percentageOfWork;
+	}
 
 	public String getProjectPlanningRequestId() {
 		return projectPlanningRequestId;

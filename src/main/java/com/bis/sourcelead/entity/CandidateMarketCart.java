@@ -29,7 +29,9 @@ public class CandidateMarketCart implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	private Candidate candidateId;
-
+	
+	@Column(name = "EMAIL")
+	private String Email;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MARKETPLACE_ID", nullable = false)
@@ -100,6 +102,14 @@ public class CandidateMarketCart implements Serializable {
 
 	public void setCandidateId(Candidate candidateId) {
 		this.candidateId = candidateId;
+	}
+	
+	public String getEmail() {
+		return Email;
+	}
+
+	public void setEmail(String Email) {
+		this.Email = Email;
 	}
 
 	public CandidateMarketPlace getMarketplaceId() {

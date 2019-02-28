@@ -452,7 +452,23 @@ function assetDetails(assetUUID) {
 		});
 }
 </script>	
-
+<script>
+function uploadFile(){
+	fileUpload("attachment", "assetDocuments", "addAsset_form","attachmentUpload");
+	$('#uploadFileAttachment').val($('#attachment').val().replace(/C:\\fakepath\\/i, ''))
+}
+</script>
+<script>
+function deleteDocument(assetId,url){
+	document.getElementById("normalUploadFile").style.display="inline-table";
+	document.getElementById("dbUploadFile").style.display="none";
+	 $.ajax({
+   	  type: "POST",
+      url: sourceleadUrl+"/deleteAssetDocument?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&url="+url, 	   
+ 	  success: function(data) {  },
+	   });	
+	}
+</script>
 <div class="comMask"></div>
   		<div class="modal assetManagementPopup" id="assetManagementPopup" style="display: none;">
  		<jsp:include page="addAssetPopup.jsp"></jsp:include> 

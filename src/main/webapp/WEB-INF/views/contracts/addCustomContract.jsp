@@ -218,10 +218,10 @@ $(document).ready(function(){
           
           <c:if test="${!empty contract.templateSubmissionStatus && contract.templateSubmissionStatus == 'PENDING'}">
        			<c:if test="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'}">
-       				<input type="hidden" value="${contract.orgRelations.id}" id="orgRelationId" name="orgRelationId"/>
+       				<input type="hidden" value="${contract.orgRelations.id}" id="orgRelationId" name="hiddenOrgRelationId"/>
        			</c:if>
        			<c:if test="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW'}">
-       				<input type="hidden" value="${contract.orgRelations.id}" id="clientOrgRelationId" name="clientOrgRelationId"/>
+       				<input type="hidden" value="${contract.orgRelations.id}" id="clientOrgRelationId" name="clientOrgRelationIdHidden"/>
        			</c:if>
            	</c:if>
           
@@ -2294,6 +2294,7 @@ function refreshVendorList(){
 function refreshClientList(autoPopClientId){
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 var selectedOrgId = '${contract.orgRelations.id}';
+	     /* alert(selectedOrgId)  */
 		 if(selectedOrgId == null || selectedOrgId == '' || selectedOrgId == 'undefined'){
 			 selectedOrgId = autoPopClientId;
 		 }

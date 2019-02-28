@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
 public class RoleDTO implements Serializable {
 	private Long id;
@@ -10,6 +11,7 @@ public class RoleDTO implements Serializable {
 	private String hierarchyName;
 	private Long roleId;
 	private String uuid;
+	private BigInteger rolesId;
 
 	public Long getId() {
 		return id;
@@ -65,6 +67,14 @@ public class RoleDTO implements Serializable {
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+	}
+
+	public BigInteger getRolesId() {
+		return rolesId;
+	}
+
+	public void setRolesId(BigInteger rolesId) {
+		this.rolesId = rolesId;
 	}
 
 }

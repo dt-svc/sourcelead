@@ -50,21 +50,22 @@ public interface RequirementService {
 
     public List<RequirementAssignTo> getUserAssignJobCount(Long userId, Long orgLocationId) throws Exception;
 
-    public void approverEmailScenario(User user, User approverUser, Requirement requirement, StringBuilder location, OrgLocations loginOrgLocation) throws Exception;
+    public void approverEmailScenario(User user, User approverUser, Requirement requirement, StringBuilder location, OrgLocations loginOrgLocation,String redirectURL1,Long redirectOrgLocationId) throws Exception;
 
     public void approverTwoEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location, OrgLocations orgLocations) throws Exception;
 
     public void acceptEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location, OrgLocations orgLocations) throws Exception;
 
-    public void mailRequirementtoManager(User loginUser, User intiatorUser, Requirement requirement, StringBuilder location, OrgLocations loginOrgLocation) throws Exception;
+    public void mailRequirementtoManager(User loginUser, User managerUser, Requirement requirement,
+			StringBuilder location, OrgLocations loginOrgLocation,String redirectURL,Long redirectOrgLocationId) throws Exception;
 
-    public void AssignToTeamMembersEmail(User loginUser, User managerUser, Requirement requirement, StringBuilder location, OrgLocations orgLocations) throws Exception;
+    public void AssignToTeamMembersEmail(User loginUser, User managerUser, Requirement requirement, StringBuilder location, OrgLocations orgLocations,String redirectURL,Long redirectOrgLocationId) throws Exception;
 
     void rejectedEmailScenario(User loginUser, User initiatorUser, Requirement requirement, StringBuilder location, String rejectedReason, OrgLocations loginOrgLocation) throws Exception;
 
     void rejectedInitiatorUserEmailScenario(User loginUser, User initiatorUser, Requirement requirement, StringBuilder location, String rejectedReason, OrgLocations loginOrgLocation) throws Exception;
 
-    void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc, OrgLocations loginOrgLocation, String releasetype) throws Exception;
+    void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc, OrgLocations loginOrgLocation, String releasetype,String redirectURL,Long redirectOrgLocationId) throws Exception;
 
     public Requirement getRequirementByParentRequirementId(Long requirementId) throws Exception;
 
@@ -252,4 +253,8 @@ public interface RequirementService {
 	public void deleteRequirementIncentiveByRequirementIdOrIds(long requirementId, String ids) throws Exception;
 
 	public File getJobFairListOfExcel(List<JobFairDTO> jobFairDTOList, User user, OrgLocations orgLocation);
+
+	public void sendMailToPrimaryRecruiter(Requirement requirement,User loginUser,User toUser) throws Exception;
+	
+	
 }

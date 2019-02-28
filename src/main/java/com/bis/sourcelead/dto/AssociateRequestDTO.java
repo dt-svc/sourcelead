@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dto;
 
+import java.math.BigDecimal;
+
 import com.bis.sourcelead.annotations.Required;
 
 public class AssociateRequestDTO {
@@ -39,6 +41,8 @@ public class AssociateRequestDTO {
 	private String estBudget;
 
 	private String validateRow;
+	
+	private BigDecimal percentageOfWork;
 	
 	public String getCandidateId() {
 		return candidateId;
@@ -175,5 +179,14 @@ public class AssociateRequestDTO {
 	public void setEstimatedBudgetCurrencyType(String estimatedBudgetCurrencyType) {
 		this.estimatedBudgetCurrencyType = estimatedBudgetCurrencyType;
 	}
+
+	public BigDecimal getPercentageOfWork() {
+		return percentageOfWork;
+	}
+
+	public void setPercentageOfWork(BigDecimal percentageOfWork) {
+		this.percentageOfWork = percentageOfWork;
+	}
+	
 	
 }

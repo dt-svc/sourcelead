@@ -41,7 +41,7 @@ public class JobBoardData implements Serializable {
     private String slFieldLabel;
     
     @Column(name = "SL_FIELD_VALUE")
-    private String slFiledValue;
+    private String slFieldValue;
     
     @Column(name = "SL_FIELD_ALIAS")
     private String slFieldAlias;
@@ -134,14 +134,14 @@ public class JobBoardData implements Serializable {
      * @return the slFiledValue
      */
     public String getSlFiledValue() {
-        return slFiledValue;
+        return slFieldValue;
     }
 
     /**
      * @param slFiledValue the slFiledValue to set
      */
     public void setSlFiledValue(String slFiledValue) {
-        this.slFiledValue = slFiledValue;
+        this.slFieldValue = slFiledValue;
     }
 
     /**

@@ -81,7 +81,7 @@ function editAssociateBankDataFun(userId){
                result += '<div class="col-md-5">';
                result += ' <label>Account Type<span class="text-danger">&nbsp;*</span></label>';
                result += ' <div class="clearfix">';
-               result += '   <select class="form-control sel" id="accountType" name ="accountType" data-validation="required" onchange="showHideAccountTypes();" field-name="Account Type">';
+               result += '   <select class="form-control sel" id="accountType" name ="accountType" data-validation="required" onchange="showHideAccountTypes(); resetValues();" field-name="Account Type">';
               /*  <option ${payrollDeduction.payrollDeductionMethod == 'Fixed' ? 'selected' : ''} value = "Fixed">Fixed</option> */
 //                result += '     <option '+ (json.accountType == "Bank Transfer" ? "selected" : '') +' value="Bank Transfer">Bank Transfer</option>';
                result += '     <option '+ (json.accountType == "Direct Deposit" ? "selected" : '') +' value="Direct Deposit">Direct Deposit</option>';
@@ -138,7 +138,7 @@ function editAssociateBankDataFun(userId){
                 result += '  <div class="pull-right">';
                result += '   <input value="Save" class="btn btn-success btnSuccess" id="save_associate_bank_data_button" onclick="saveAssociateBankData('+userId+');" type="button">';
 
-                 result += '   <input value="Cancel" onclick="cancelButton();" class="btn btn-default ml10" type="button">';
+                 result += '   <input value="Cancel" onclick="cancelButtonBank('+userId+');" class="btn btn-default ml10" type="button">';
 
                  result += '   </div>';
                result += ' </div>';
@@ -191,6 +191,14 @@ function showHideAccountTypes(){
 }
 </script> 
 
+<script>
+function resetValues(){
+	$("#bankName").val('');
+	$("#accountNumber").val('');
+	$("#routingNumber").val('');
+}
+</script>
+
  <script type="text/javascript">
  function saveAssociateBankData(userId) {
 		 if ($('#associate_bank_data_form').validate(false, validationSettings)){ 
@@ -241,7 +249,8 @@ function showHideAccountTypes(){
 </script> 
 
 <script>
-function cancelButton(){
-	location.replace(sourceleadUrl+ "/usersList");
+function cancelButtonBank(userId){
+	 $("#finalTest").hide();
+	associateBankData(userId);
 }
 </script>

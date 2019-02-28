@@ -100,7 +100,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 				if (StringUtils.isNotBlank(invoicePaymentDTO.getTotalAmount())) {
 					invoicePayment.setPaymentAmount(invoicePaymentDTO.getTotalAmount());
 					invoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
-					invoice.setDueAmount("00.00");
+					invoice.setDueAmount("00.000");
 				}
 			}
 			if (invoicePaymentDTO.getPaymentAmount().equalsIgnoreCase("custom")) {
@@ -144,7 +144,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 						if (StringUtils.isNotBlank(invoicePaymentDTO.getTotalAmount())) {
 							invoicePayment.setPaymentAmount(invoicePaymentDTO.getTotalAmount());
 							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
-							parentInvoice.setDueAmount("00.00");
+							parentInvoice.setDueAmount("00.000");
 							parentInvoice.setUpdatedBy(user.getUserCode());
 							parentInvoice.setUpdatedDate(commonUtil.currentDate());
 						}
@@ -190,7 +190,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 								parentInvoice.setDueAmount(
 										String.valueOf(receivedAmount.setScale(3, BigDecimal.ROUND_HALF_EVEN)));
 							} else {
-								parentInvoice.setDueAmount("0.0");
+								parentInvoice.setDueAmount("00.000");
 							}
 						}
 					}
@@ -272,15 +272,19 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 					if(invoice.getDueAmount().equals(invoiceIdsMap.get(invoice.getId()))){
 					invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
 					invoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
-					invoice.setDueAmount("00.00");
+					invoice.setDueAmount("00.000");
 					}else{
 						String due = invoice.getDueAmount();
 						BigDecimal dueDecimal = (new BigDecimal(due));
 						String received = invoiceIdsMap.get(invoice.getId());
 						BigDecimal receivedDecimal = (new BigDecimal(received));
 						remainAmount = dueDecimal.subtract(receivedDecimal);
+						if(commonUtil.currentDate().after(invoice.getDueDate())) {
+							invoice.setPaymentStatus(Constants.OVER_DUE);
+						}else{
+							invoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);	
+						}
 						remainAmount = remainAmount.setScale(3, BigDecimal.ROUND_UP);
-						invoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
 						invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
 						invoice.setDueAmount(remainAmount.toString());
 					}
@@ -310,7 +314,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 								// total amount paid
 							invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
 							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
-							parentInvoice.setDueAmount("00.00");
+							parentInvoice.setDueAmount("00.000");
 							}else{
 								// partial amount paid
 								String due = parentInvoice.getDueAmount();
@@ -319,7 +323,11 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 								BigDecimal receivedDecimal = (new BigDecimal(received));
 								remainAmount = dueDecimal.subtract(receivedDecimal);
 								remainAmount = remainAmount.setScale(3, BigDecimal.ROUND_UP);
-								parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
+								if(commonUtil.currentDate().after(parentInvoice.getDueDate())) {
+									parentInvoice.setPaymentStatus(Constants.OVER_DUE);
+								}else{
+									parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);	
+								}
 								invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
 								parentInvoice.setDueAmount(remainAmount.toString());
 							}
@@ -334,7 +342,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 							// total amount paid
 							invoicePayment.setPaymentAmount(String.valueOf(amountPaid));
 							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
-							parentInvoice.setDueAmount("00.00");
+							parentInvoice.setDueAmount("00.000");
 						}else{
 							// partial amount paid
 							String due = parentInvoice.getDueAmount();

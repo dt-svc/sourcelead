@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadTicketDTO;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadTickets;
 import com.bis.sourcelead.entity.SourceleadTicketsAttachments;
@@ -39,4 +40,6 @@ public interface SourceleadTicketService {
 	List<SourceleadTicketsComments> getSourceleadTicketsCommentsListByTicketId(Long ticketId)throws Exception;
 
 	void saveSourceleadTicketComment(SourceleadTicketDTO sourceleadTicketDTO, User user)throws Exception;
+	
+	public void pmsTicketStatusUpdatedEmail(User user,Org org,OrgLocations orgloc, SourceleadTickets sourceleadTicket, String existingticketStatus, String ticketStatus)throws Exception;
 }

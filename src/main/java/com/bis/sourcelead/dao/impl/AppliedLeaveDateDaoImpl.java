@@ -252,4 +252,20 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 		}
 	    	return null;
 	}
+
+	@Override
+	public List<AppliedLeaveDateView> getAppliedLeaveByUserId(Long orgLocationId, Long leaveTypeId, Date startDate, Date endDate, Long userId,Long orgId)
+	{
+		try {
+	    		java.sql.Date sDate = new java.sql.Date(startDate.getTime());
+	    		java.sql.Date eDate = new java.sql.Date(endDate.getTime());
+	    	   Session session = this.sessionFactory.getCurrentSession();
+	           String query = "from AppliedLeaveDateView alView where alView.leaveTypeId =:leaveTypeId and (alView.orglocationId = :orgLocationid or alView.orgId =:orgId) and alView.userId = :userId and (alView.applyLeaveDate >= :startDate and alView.applyLeaveDate <= :endDate) ";
+	           List<AppliedLeaveDateView> appliedLeaveList = session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setLong("orgLocationid", orgLocationId).setLong("userId", userId).setParameter("startDate", sDate).setParameter("endDate", eDate).setLong("orgId", orgId).list();
+	           return appliedLeaveList;
+	       }catch (Exception e) {
+	    	   e.printStackTrace();
+		}
+		return null;
+	}
 }

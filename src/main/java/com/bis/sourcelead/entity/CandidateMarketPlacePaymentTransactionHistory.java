@@ -13,8 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 
-//@Entity
-//@Table(name = "CANDIDATE_MARKET_PLACE_PAYMENT_TRANSACTION_HISTORY")
+@Entity
+@Table(name = "CANDIDATE_MARKET_PLACE_PAYMENT_TRANSACTION_HISTORY")
 public class CandidateMarketPlacePaymentTransactionHistory implements Serializable {
 
 	private static final long serialVersionUID = 1L;

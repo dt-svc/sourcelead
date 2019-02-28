@@ -52,5 +52,11 @@ public class AppliedLeaveDateServiceImpl implements AppliedLeaveDateService{
 		return appliedLeaveDateDao.getAppliedLeaveDateAndHolidayHoursByUserId(userId, sDate, eDate);
 	}
 
+	@Override
+	public List<AppliedLeaveDateView> getAppliedLeaveByUserId(Long orgLocationId, Long leaveTypeId, Date startDate, Date endDate, Long userId,Long orgId)
+	{
+		return appliedLeaveDateDao.getAppliedLeaveByUserId(orgLocationId, leaveTypeId, startDate, endDate, userId,orgId);
+	}
+
 	
 }

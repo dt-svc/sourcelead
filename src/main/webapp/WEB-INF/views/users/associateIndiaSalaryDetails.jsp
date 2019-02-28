@@ -12,9 +12,10 @@ function indAssociateSalarySummary(newAssociate){
 	var candidateId =  $("#associateCandidateId").val();
 	
 	if(candidateId != null && candidateId != '' && candidateId != 'undefined'){
+		var status = "NEW";
 		$.ajax({
 			  type: "GET",
-			    url: sourceleadUrl+"/getAssociateSalaryDataByOrgLocation?candidateId="+candidateId+"&orgLocationId="+locationCode,
+			    url: sourceleadUrl+"/getAssociateSalaryDataByOrgLocation?candidateId="+candidateId+"&orgLocationId="+locationCode+"&status="+status,
 			     success :function(response) {
 			    	    $("#indSalaryDetailsLoading").empty();  
 			    	    $("#indSalaryDetailsLoading").append(response);

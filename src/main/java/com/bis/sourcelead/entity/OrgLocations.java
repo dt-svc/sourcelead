@@ -246,7 +246,16 @@ public class OrgLocations implements Serializable{
 	
 	@Column(name = "PROFILE_PERCENTAGE")
 	private Integer profilePercentage;
+	
+	@Column(name = "PROBATION_PERIOD")
+    private String probationPeriod;
+	
+	@Column(name = "PROBATION_NO_OF_DAYS")
+	private Integer noOfDays;
     
+	@Column(name = "SHOW_COMPANY_NAME_IN_MARKETPLACE")
+	private String showCompanyNameInMarkeplace;
+	
     @Transient
     private String orgName;
     
@@ -1060,5 +1069,28 @@ public class OrgLocations implements Serializable{
 		this.profilePercentage = profilePercentage;
 	}
 
+	public String getProbationPeriod() {
+		return probationPeriod;
+	}
+
+	public void setProbationPeriod(String probationPeriod) {
+		this.probationPeriod = probationPeriod;
+	}
+
+	public Integer getNoOfDays() {
+		return noOfDays;
+	}
+
+	public void setNoOfDays(Integer noOfDays) {
+		this.noOfDays = noOfDays;
+	}
+
+	public String getShowCompanyNameInMarkeplace() {
+		return showCompanyNameInMarkeplace;
+	}
+
+	public void setShowCompanyNameInMarkeplace(String showCompanyNameInMarkeplace) {
+		this.showCompanyNameInMarkeplace = showCompanyNameInMarkeplace;
+	}
 	
 }

@@ -141,7 +141,7 @@ public class InterviewFeedbackRestController {
 		       requirementSubmissionHistory.setInterviewerId(rqr);
 		       requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.INTERVIEW.toString());
 			   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.FEEDBACK);
-			   requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+			   requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 			   
 			   return "publicInterviewFeedBackTemplate";
 	    
@@ -238,7 +238,7 @@ public class InterviewFeedbackRestController {
 			  requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.FEEDBACK);
 			  requirementSubmissionHistory.setInterviewerId(rqr);
 
-			  requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+			  requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 			  requirementInterviewerService.updatedFeedbackMailFromInterviewerToRequirementOwner(rqr,requirementSubmission,jsonObj,templateId);
 			   return "publicInterviewFeedBackTemplate";
 	    

@@ -250,7 +250,7 @@
 						result = result + ' <div class="user_summary_edit_cta">';
                         result = result + ' <label>Payment Terms</label>';
                         result = result + ' <select id="paymentTermsId" name="paymentTerms" >';
-                        result = result + ' <option '+paymentTerms0+'>SelectPaymentTerms</option>';
+                        result = result + ' <option value="">SelectPaymentTerms</option>';
                         result = result + ' <option '+paymentTerms1+'>10 days</option>';
                         result = result + ' <option '+paymentTerms2+'>15 days</option>';
                         result = result + ' <option '+paymentTerms3+'>30 days</option>';

@@ -1,83 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 	
-	<!-- <div class="tablelist-wrap">
-        <div class="timesheet_head minHeight">
-          <div class="clearfix"></div>
-          <div class="remove_search">
-            <input placeholder="Search" type="text">
-          </div>
-        </div>
-          <div class="styleTables clearfix mt">
-            <table>
-              <thead>
-                <tr>
-                  <th>Pay Period</th>
-                  <th>Pay Date</th>
-                  <th>No. of Days</th>
-                  <th>No. of Leaves</th>
-                  <th>Gross Pay</th>
-                  <th>TDS</th>
-                  <th>Net Pay</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                  	<div class="tblminwidth-150"><span class="mr">01/02/2018</span><span>02/02/2019</span></div>
-                  </td>
-                  <td>
-					  <span class="tblminwidth-100">
-							25/02/2018                 	
-					  </span>
-                  </td>
-                   <td>
-                  	<div class="tblminwidth-50 clearfix">200</div>
-                  </td>
-                  <td><div class="tblminwidth-50 clearfix">100</div></td>
-                  <td><div class="tblminwidth-50 clearfix">100</div></td>
-                  <td><div class="tblminwidth-50 clearfix">100</div></td>
-                  <td><div class="tblminwidth-50 clearfix">100</div></td>
-					<td><div class="tblminwidth-30 clearfix"><i class="fa fa-eye cursorPointer payView" title="Show Payslip"></i></div></td>
-                </tr>
-                 <tr>
-                  <td>
-                  	<div class="tblminwidth-150"><span class="mr">01/02/2018</span><span>02/02/2019</span></div>
-                  </td>
-                  <td>
-					  <span class="tblminwidth-100">
-							25/02/2018                 	
-					  </span>
-                  </td>
-                   <td>
-                  	<div class="tblminwidth-50 clearfix">200</div>
-                  </td>
-                  <td><div class="tblminwidth-50 clearfix">100</div></td>
-                  <td><div class="tblminwidth-50 clearfix">100</div></td>
-                  <td><div class="tblminwidth-50 clearfix">100</div></td>
-                  <td><div class="tblminwidth-50 clearfix">100</div></td>
-					<td><div class="tblminwidth-30 clearfix"><i class="fa fa-eye cursorPointer payView" title="Show Payslip"></i></div></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        <div class="clearfix"></div>
-        <nav>
-          <ul id="paging" class="pagination pull-right mr">
-            <li><a href="#">Previous</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li class="disabled"><a href="#">6</a></li>
-            <li data-page="last"><a href="#">Next</a></li>
-          </ul>
-          <div class="clearfix"></div>
-        </nav>
-      </div> -->
-	
-
 <script>
 	function prepareMyPaysListInd() {
 		var result = "";
@@ -147,7 +70,7 @@
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.payPeriod != null && opt.payPeriod != '' && opt.payPeriod !='undefined'){
-												result = result +'<div class="tblminwidth-100" ><a>'+opt.payPeriod+'</a></div>';
+												result = result +'<div class="tblminwidth-100" >'+opt.payPeriod+'</div>';
 											}else{
 						              		  result = result +'<div class="tblminwidth-100">--</div>';
 						              		}
@@ -173,7 +96,7 @@
 											if(opt.noOfDays != null && opt.noOfDays != '' && opt.noOfDays !='undefined'){
 						                		  result = result +'<div class="tblminwidth-100">'+opt.noOfDays+'</div>';
 						              		}else{
-						              		  result = result +'<div class="tblminwidth-100">--</div>';
+						              		  result = result +'<div class="tblminwidth-100">0</div>';
 						              		}
 											return result;
 										}
@@ -186,7 +109,7 @@
 											if(opt.noOfLeaves != null && opt.noOfLeaves != '' && opt.noOfLeaves !='undefined'){
 						                		  result = result +'<div class="tblminwidth-100">'+opt.noOfLeaves+'</div>';
 						              		}else{
-						              		  result = result +'<div class="tblminwidth-100">--</div>';
+						              		  result = result +'<div class="tblminwidth-100">0</div>';
 						              		}
 											return result;
 
@@ -198,9 +121,9 @@
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.grossPay != null && opt.grossPay != '' && opt.grossPay !='undefined'){
-						                		  result = result +'<div class="tblminwidth-100">'+opt.grossPay+'</div>';
+						                		  result = result +'<div class="tblminwidth-100">'+opt.grossPay+' <i class="paddingLeft">&#8377;</i></div>';
 						              		}else{
-						              		  result = result +'<div class="tblminwidth-100">--</div>';
+						              		  result = result +'<div class="tblminwidth-100">0.00 <i class="paddingLeft">&#8377;</i></div>';
 						              		}
 											return result;
 										}
@@ -211,9 +134,9 @@
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.tds != null && opt.tds != '' && opt.tds !='undefined'){
-						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.tds+'</div>';
+						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.tds+' <i class="paddingLeft">&#8377;</i></div>';
 						              		}else{
-						              		  result = result +'<div class="tbldata-dotdot-vsm">0.0</div>';
+						              		  result = result +'<div class="tbldata-dotdot-vsm">0.00 <i class="paddingLeft">&#8377;</i></div>';
 						              		}
 											return result;
 										}
@@ -224,9 +147,9 @@
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.netPay != null && opt.netPay != '' && opt.netPay !='undefined'){
-						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.netPay+'</div>';
+						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.netPay+' <i class="paddingLeft">&#8377;</i></div>';
 						              		}else{
-						              		  result = result +'<div class="tbldata-dotdot-vsm">0.0</div>';
+						              		  result = result +'<div class="tbldata-dotdot-vsm">0.00 <i class="paddingLeft">&#8377;</i></div>';
 						              		}
 											return result;
 										}
@@ -235,9 +158,12 @@
 										"targets" : colIndex++,
 										"data" : "Action",
 										"render" : function(data, type, opt,meta) {
-											var result = "";
-											if(opt.submitForAproverStatus != null && opt.submitForAproverStatus != '' && opt.submitForAproverStatus !='undefined' && opt.submitForAproverStatus == 'APPROVED'){
-						                		  result = result +'<div class="tblminwidth-30 clearfix"><i class="fa fa-eye cursorPointer payView" title="Show Payslip"></i></div>';
+											var result = "";           
+											if(opt.submitForApproverStatus != null && opt.submitForApproverStatus != '' && opt.submitForApproverStatus !='undefined' && opt.submitForApproverStatus == 'APPROVED'){
+						                		  result = result +'<div class="tblminwidth-30 clearfix">';
+						                		  result = result +'<a href="<c:url value="${appPath}/indPayrollPaySlipView?empPayrollUUID='+opt.indEmpPayrollUUID+'"/>"  class="fa fa-eye mr" title="Edit"></a>';
+						                		  result = result +'<a class="glyphicon glyphicon-download-alt" title="Download Payslip" onclick="downloadPayslip(\''+opt.indEmpPayrollUUID+'\')"></a>';
+						                		  result = result +'</div>';
 						              		}else{
 						              		  result = result +'<div class="tblminwidth-100">--</div>';
 						              		}
@@ -272,3 +198,4 @@
 		prepareMyPaysListInd();
 	});
 </script>
+

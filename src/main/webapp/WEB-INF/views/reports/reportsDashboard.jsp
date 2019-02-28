@@ -31,7 +31,10 @@
 			<div class="dropdown pull-right report-dropdown">
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu1" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-				<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
+				<sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
+				<li><a href='${appPath}/offerAcceptanceRate'>Offer Acceptance Rate</a></li>
+				</sec:authorize>
+				<sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
 				<li><a href='${appPath}/applicantsjoinedlist'>Applicants Joined Report</a></li>
 				</sec:authorize>
 				 <sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
@@ -141,6 +144,12 @@
 				    </c:if>
 				</sec:authorize>
 				
+				<sec:authorize access="hasRole('ROLE_MARGIN_SHEET_REPORT')">
+				<c:if test="${SourceLeadWeb_vms == 'Y'}">
+				<li><a href='${appPath}/marginSheetReports'>MarginSheetReport</a></li>
+				</c:if>
+				</sec:authorize>
+				
 			   <li><a href='${appPath}/assetmanagementGrowth'>Asset Growth</a></li>
 				
 				
@@ -178,8 +187,6 @@
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
 
                 <li><a href="${appPath}/assetsReport">Assigned Assets History</a></li>
-
-				<li><a href="${appPath}/projectReport">Project Report</a></li>
 
 				<sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
 				<li><a href="${appPath}/daywiseTimeSheetReports">Daywise Timesheet Report</a></li>
@@ -248,6 +255,10 @@
 					<sec:authorize access="hasRole('ROLE_CAMPAIGN_REPORTS')">
 					<li><a href='${appPath}/campaignStats'>Campaign(s) Report</a></li>
 					</sec:authorize>
+					<sec:authorize access="hasRole('ROLE_ASSOCIATE_JOINED_REPORT')">
+				<li><a href='${appPath}/associateJoineReports'>Associate Joined Report</a></li>
+				</sec:authorize>  
+				<%-- <li><a href='${appPath}/availableAssociatesReport'>Available Associate Report</a></li> --%>
 					<!--<li><a href="#">Bank Report</a></li>
 					 <li><a href="#">Performance</a></li>
 					<li><a href="#">Payrol</a></li>
@@ -310,8 +321,8 @@
 				<li><a href="${appPath}/deductionReport">Deduction Reports</a></li>
 				<li><a href="${appPath}/contributionReport">Contribution Reports</a></li>
 
-				<li><a href="${appPath}/usDeductionSummaryReport" ><!-- Us -->DeductionSummaryReport</a></li>
-				<li><a href="${appPath}/usContributionSummaryReport" ><!-- Us -->ContributionSummaryReport</a></li>
+				<li><a href="${appPath}/usDeductionSummaryReport" ><!-- Us -->Deduction Summary Report</a></li>
+				<li><a href="${appPath}/usContributionSummaryReport" ><!-- Us -->Contribution Summary Reports</a></li>
 
 				<!-- <li><a href="companysnapshot.html">Tax Liability Report</a></li>
 				<li><a href="companysnapshot.html">Payroll Timesheet Report</a></li> -->
@@ -362,7 +373,11 @@
                 <h2><a href="javascript:void(0)">Performance Reports</a></h2>
                 <ul class="repSearchList">
                 
-                <sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
+                <sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
+				<li><a href='${appPath}/offerAcceptanceRate'>Offer Acceptance Rate</a></li>
+				</sec:authorize>
+                
+                <sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
 				<li><a href='${appPath}/applicantsjoinedlist'>Applicants Joined Report</a></li>
 				</sec:authorize>
 				
@@ -459,6 +474,12 @@
 				    </c:if>
 				</sec:authorize>
 				
+				<sec:authorize access="hasRole('ROLE_MARGIN_SHEET_REPORT')">
+				<c:if test="${SourceLeadWeb_vms == 'Y'}">
+				<li><a href='${appPath}/marginSheetReports'>MarginSheetReport</a></li>
+				</c:if>
+				</sec:authorize>
+				
 				<li><a href='${appPath}/assetmanagementGrowth'>Asset Growth</a></li>
 				
                 </ul>
@@ -519,7 +540,10 @@
 					</sec:authorize>
 					<sec:authorize access="hasRole('ROLE_CAMPAIGN_REPORTS')">
 					<li><a href='${appPath}/campaignStats'>Campaign(s) Report</a></li>
-					</sec:authorize>               
+					</sec:authorize>  
+					<sec:authorize access="hasRole('ROLE_ASSOCIATE_JOINED_REPORT')">
+				<li><a href='${appPath}/associateJoineReports'>Associate Joined Report</a></li>
+				</sec:authorize>             
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div> 
@@ -566,8 +590,8 @@
 							<li><a href="${appPath}/contributionReport">Contribution Reports</a></li>
 						</sec:authorize>
 
-						<li><a href="${appPath}/usDeductionSummaryReport" ><!-- Us -->DeductionSummaryReport</a></li>
-				        <li><a href="${appPath}/usContributionSummaryReport" ><!-- Us -->ContributionSummaryReport</a></li>
+						<li><a href="${appPath}/usDeductionSummaryReport" ><!-- Us -->Deduction Summary Report</a></li>
+				        <li><a href="${appPath}/usContributionSummaryReport" ><!-- Us -->Contribution Summary Reports</a></li>
 
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
 							<li><a href="${appPath}/directDepositReport">Direct Deposit</a></li>
@@ -588,6 +612,48 @@
             <div class="clearfix mt mb"></div>
                                    
         </div>
+        
+        
+        <div class="col-md-4 reportNewCta">
+                  <!-- DropDown -->
+			<div class="dropdown pull-right report-dropdown">
+				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown" aria-expanded="false"><span class="caret cursorPointer"></span></span>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
+			     <li><a href="/app/projectReport">Project Report</a></li>
+				<li><a href="/app/employeeTasksReport">Employee Tasks</a></li>
+				<li><a href="/app/overdueTaskReport">Over Due Report</a></li>
+					
+				</ul>
+			</div>
+                 <!-- Dropdown -->
+                  <a href="/app/projectReportList" class="block">
+                  <div class="clearfix text-center mb10"><i class="proReport"></i></div>
+                  <div class="clearfix text-center"><h4>Project Reports</h4></div> </a>
+           </div>
+           
+           
+           <c:if test="${SourceLeadWeb_loginCountryName == 'India'}">
+           <div class="col-md-4 reportNewCta">
+                  <!-- DropDown -->
+			<div class="dropdown pull-right report-dropdown">
+				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown" aria-expanded="false"><span class="caret cursorPointer"></span></span>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
+			     <li><a href="${appPath}/indPayrollRegisterReport">Payroll Register</a></li>
+				 <li><a href="${appPath}/indPayrollBankTransferReport">Bank Transfer</a></li>
+				 <li><a href="${appPath}/indPayrollYTDSummaryReport">YTD Summary</a></li>
+				 <li><a href="${appPath}/indPayrollAnnualTaxReport">Annual Tax</a></li>
+<%-- 				 <li><a href="${appPath}/indPayrollLoanReport">Loan</a></li> --%>
+				 <li><a href="${appPath}/indPayrollESISummaryReport">ESI</a></li>
+				 <li><a href="${appPath}/indPayrollPFSummaryReport">PF</a></li>
+				 <li><a href="${appPath}/indPayrollSalaryRegisterReport">Salary Register</a></li>
+				</ul>
+			</div>
+                 <!-- Dropdown -->
+                  <a href="/app/indPayrollReportList" class="block">
+                  <div class="clearfix text-center mb10"><i class="proReport"></i></div>
+                  <div class="clearfix text-center"><h4>India Payroll Reports</h4></div> </a>
+           </div>
+        </c:if>
         </div>
         <!--  List View End  --> 
     

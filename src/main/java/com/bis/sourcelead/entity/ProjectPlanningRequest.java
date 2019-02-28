@@ -1,10 +1,9 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -21,12 +20,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -81,6 +76,7 @@ public class ProjectPlanningRequest implements Serializable{
     @Column(name="ESTIMATED_BUDGET")
     private Double estimatedBudget;
     
+    
     @Column(name = "ESTIMATED_BUDGET_CURRENCY")
    	private String estimatedBudgetCurrency;
     
@@ -113,7 +109,10 @@ public class ProjectPlanningRequest implements Serializable{
 	
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
-    
+	
+	
+	@Column(name = "PERCENTAGE_OF_WORK")
+	private BigDecimal percentageOfWork;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonBackReference
@@ -478,7 +477,12 @@ public class ProjectPlanningRequest implements Serializable{
 		this.projectName = projectName;
 	}
 
-	
-	
-	
+	public BigDecimal getPercentageOfWork() {
+		return percentageOfWork;
+	}
+
+	public void setPercentageOfWork(BigDecimal percentageOfWork) {
+		this.percentageOfWork = percentageOfWork;
+	}
+
 }

@@ -61,7 +61,7 @@ $(document).ready(function(){
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
 					<c:if test="${submissionStatus ne 'SUBMITTED' and submissionStatus ne 'REJECTED'and submissionStatus ne 'REOPENED'}">
-						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject();" id="projectId" name="projectId" field-name="Project" data-validation="required">
+						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject();flushDetailsExpenses();" id="projectId" name="projectId" field-name="Project" data-validation="required">
 
 							 <c:if test="${fn:length(expEntry.projectsList) gt 0}">
 								<option value="">Select Project</option>
@@ -198,10 +198,18 @@ $(document).ready(function(){
 			               <input type='hidden' id="submittedAmountDivInput${(2*(entryCount.count))-1}" value="${entry.submittedamount}"/>
 			               <div id="submittedAmountDiv${(2*(entryCount.count))-1}">${entry.submittedamount}</div>
 			          </td>
+			          
 			           <td>
-			               <input type='hidden' id="expenseAmountDivInput${(2*(entryCount.count))-1}" value="${entry.amountRoundOff}"/>
-			               <div id="expenseAmountDiv${(2*(entryCount.count))-1}">${entry.amountRoundOff}</div>
+			           <c:choose>
+		               	<c:when test="${submissionStatus == 'APPROVED'}">
+		           			 <input type='hidden' id="expenseAmountDivInput${(2*(entryCount.count))-1}" value="${entry.amountRoundOff}"/>
+		               	</c:when>
+		               	<c:otherwise>
+		                    	<div id="expenseAmountDivInput${(2*(entryCount.count))-1}">---</div>
+		               	</c:otherwise>
+		               </c:choose>
 			          </td>
+			          
 			          <td>
 			              <input type='hidden' id="expenseRateTypeDivInput${(2*(entryCount.count))-1}" value="${entry.categoryAmountType}"/>
 			              <div id="expenseRateTypeDiv${(2*(entryCount.count))-1}">${entry.categoryAmountType}</div>
@@ -239,7 +247,7 @@ $(document).ready(function(){
 						<c:forEach var="project" items="${expEntry.projectsList}">
 						   <c:if test="${project.id == expenses.projectId}">
 					 	    	 <c:forEach var="expCat" items="${project.expenseCategoryList}">
-					 	    	      <c:set var="isAttachmentRequired" value="${!empty expCat.isAttachemtRequired && expCat.isAttachemtRequired == \"Y\" ? 'Y' :'N'}"/>
+					 	    	      <c:set var="isAttachmentRequired" value="${!empty expCat.isAttachemtRequired && expCat.isAttachemtRequired == 'Y' ? 'Y' :'N'}"/>
 					 	    	      <option ${entry.categoryTypeId == expCat.id ? 'selected' : ''} value="${expCat.id},${expCat.allowedAmount}">${expCat.categoryName}</option>
 					 	    	 </c:forEach>
 						  </c:if>
@@ -326,7 +334,7 @@ $(document).ready(function(){
 			                         </c:if>
 			                       </c:forEach>
 			                 </div> 
-			                 <i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB '></i>
+			                 <i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps  Allowed Size : 2MB '></i>
 			                 <span> 
 			                     <table class='timesheetAttachment' id='attachmentTable${(2*(entryCount.count))-1}' cellpadding='0' cellspacing='0' width="100%">
 			                       <tr id='${(2*(entryCount.count))-1}divAttachmentTsRow0'>
@@ -793,12 +801,20 @@ if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
 
 </script>
 
- <!-- <script>
-function clearProjectStartDate(){
-	$("#projectStartDateExpensesId").val("");
-	};
-function clearProjectEndDate(){
-	$("#projectEndDateExpensesId").val("");
-	};	
-</script> -->
+<script>
+function flushDetailsExpenses(){
+	$('#projectStartDateExpensesId').val('');
+	$('#projectEndDateExpensesId').val('');
+	 var maxRowNum = parseInt($("input[name = 'maxRecCount']").val());
+	maxRowNum = maxRowNum - 1;
+	if(maxRowNum != null && maxRowNum != '' && maxRowNum != 'undefined' && maxRowNum != 0){
+		for(var i = 1; i < maxRowNum; i=i+2){
+			var rowId = i;
+			var detailsRowId = rowId+1;
+			removeExpenseRow(rowId,detailsRowId);
+		}
+	} 
+}
+</script>
+
 <jsp:include page="../masterFooter.jsp" />

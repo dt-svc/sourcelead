@@ -884,7 +884,7 @@ function activeEmail(id, ele){
 					 var report = response.data[e];
 					 var margin = report.split("<<>>")[1].split(".").length > 1 ? (report.split("<<>>")[1].split(".").length - (report.split("<<>>")[0] === "INBOX" ? 1 : 2)) : 0;
 					 result = result + "<ul class='nav nav-pills nav-stacked dynMailList' style='margin-left : " + (margin * 20) + "px;'>";
-					 result = result + "<li name='mailFolder' data-index='" + e + "' onClick='readFolder(\"" + report.split("<<>>")[0] + "\",\"" + report.split("<<>>")[1] + "\"," + id + ", 0, 10, " + e + ");'>" + report.split("<<>>")[0] + "</li>";
+					 result = result + "<li name='mailFolder' data-index='" + e + "' " + (report.split("<<>>")[2] > 0 ? "class='unseen-text'" : "") + " onClick='readFolder(\"" + report.split("<<>>")[0] + "\",\"" + report.split("<<>>")[1] + "\"," + id + ", 0, 10, " + e + ");'>" + report.split("<<>>")[0] + (report.split("<<>>")[2] > 0 ? " (" + report.split("<<>>")[2] + ")" : "") + "</li>";
 					 /* result = result + "<li onClick='readFolder(\"" + report + "\"," + id + ");'>" + report + "</li>"; */
 					 result = result + "</ul>";
 				 }
@@ -936,7 +936,7 @@ function readFolder(name, fullName, id, pageNo, pageSize, index){
 			    		var emailList = data.data;
 			    		if(emailList.length > 0) {
 				    		for(var e in emailList) {
-							 	result = result +' <tr id="checkbox' + emailList[e].messageId + '" data-id=' + emailList[e].messageId + ' >';
+							 	result = result +' <tr id="checkbox' + emailList[e].messageId + '" data-id=' + emailList[e].messageId + ' ' + (emailList[e].seen ? "" : "class='unseen'") + '>';
 							 	
 				       			result = result +'<td style="width : 20px;">';
 				       			result = result +'<div class="mrleft8">';
@@ -1015,6 +1015,8 @@ function prepareDynamicPagination(name, fullName, id, paginator, index) {
 	text += "	entries</label>"; */
 	text += "</div>";
 
+	var unreadCount = paginator.filterType;
+	$("li[data-index='"+ index +"']").html(name + " (" + unreadCount + ")");
 	var resultsFrom = (paginator.pageNo * paginator.pageSize) + 1;
 	var resultsTo = (paginator.pageNo + 1) * paginator.pageSize > paginator.totalRows ? paginator.totalRows : (paginator.pageNo + 1) * paginator.pageSize;	
 	text += "<div class='dataTables_info pull-left' id='emailMailDetailsPagination_info' role='status' aria-live='polite'>Showing " + resultsFrom + " to " + resultsTo + " of " + paginator.totalRows + " entries</div>";

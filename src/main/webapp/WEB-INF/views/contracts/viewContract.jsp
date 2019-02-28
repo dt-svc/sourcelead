@@ -35,15 +35,7 @@ $(document).ready(function(){
      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/contractListbyStatus'/>">Contracts</a> &raquo; View Contract</div>
     </section>
     
-      <div class="cearfix">
-		  <div class="newTagsWrap">
-			    <ul class="clearfix tagsWrap tagsWrapBor">
-				<select multiple class="chosen-select form-control" name="tagName" id="contractTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">
-				</select>
-				</ul>
-				<div class="clearfix"></div>
-		  </div>
-		 </div>
+
 		   <div class="success_pop tagStyles" id="addContractTagAlert">
 				<i class="fa fa-check-circle"></i>
 		   		<span></span>
@@ -55,10 +47,10 @@ $(document).ready(function(){
 		   
 		   
     
-    <div class="content-area content-new clearfix">
+    <div class="project_wrap clearfix">
     
      <div class="quickviewTabs viewontracts">
-		<ul class="nav nav-tabs">
+		<ul class="nav nav-tabs mb10">
 		   <li class="active" id="candQuickView"><a data-toggle="tab" href="#contractDetails">Contract Details</a></li>
 		   <li id="candDetailView" onclick="addContractNotes();"><a data-toggle="tab" href="#notes" >Notes</a></li>
 		 </ul>
@@ -103,11 +95,13 @@ $(document).ready(function(){
 		
 		</div>
 		</div>
-		</div>
 		</form>
+		</div>
+		
+	</ul>
 	</div>
 <div class="clearfix"></div>
-</ul>
+
 				</div>
 				<div class="clearfix">
 					<div id="viewNotesDiv"></div>	
@@ -117,7 +111,18 @@ $(document).ready(function(){
 		    </div>
 		</div>			     
 		  </div>
-     </div>
+    
+    
+      <div class="cearfix">
+		  <div class="newTagsWrap">
+			    <ul class="clearfix tagsWrap tagsWrapBor">
+				<select multiple class="chosen-select form-control" name="tagName" id="contractTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">
+				</select>
+				</ul>
+				<div class="clearfix"></div>
+		  </div>
+		 </div>    
+    
      <!-- Content Area Ends--> 
 </section>
 

@@ -4,10 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,7 +31,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.PayrollTaxDao;
 import com.bis.sourcelead.dao.TaxDao;
 import com.bis.sourcelead.dto.CentralTaxDTO;
-import com.bis.sourcelead.dto.PayrollTaxDTO;
 import com.bis.sourcelead.dto.ProfessionalTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.SourceleadTaxChallanDTO;
@@ -50,10 +47,9 @@ import com.bis.sourcelead.dto.SourceleadTaxSubmissionMasterDTO;
 import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.dto.TdsDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CentralTax;
-import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.PayrollTax;
 import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxChallan;
 import com.bis.sourcelead.entity.SourceleadTaxChallanItem;
@@ -70,22 +66,18 @@ import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TaxService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.itextpdf.layout.element.Tab;
-import com.itextpdf.layout.element.TabStop;
-import com.itextpdf.layout.property.TabAlignment;
-import com.itextpdf.layout.property.Underline;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.Font.FontFamily;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
@@ -113,6 +105,9 @@ public class TaxServiceImpl implements TaxService {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private CandidateService candidateService;
 
 	@Override
 	public List<SourceleadTaxType> getAllTaxesByType(long type, boolean includeInactive) {
@@ -1316,7 +1311,7 @@ public class TaxServiceImpl implements TaxService {
 		String FONTB = "/fonts/OpenSans-Bold.ttf";
 		String FONT = "/fonts/OpenSans-Regular.ttf";
 		BaseFont bf = null, bfb = null;
-		StringBuilder fileSB = new StringBuilder();
+//		StringBuilder fileSB = new StringBuilder();
 		File file = null;
 		try {
 			bf = BaseFont.createFont(FONT, BaseFont.WINANSI, BaseFont.EMBEDDED);
@@ -1337,16 +1332,20 @@ public class TaxServiceImpl implements TaxService {
 		float marginBottom = 10f;
 		float headerCellHeight = 15f;
         try {
+        	Candidate can = candidateService.getCandidateByConsultantUserId(user.getId(), orgLoc.getId());
+        	if(can != null && can.getDateOfBirth() != null) {
+        		can.setDateofBirthString(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(), can.getDateOfBirth()));
+        	}
         	String[] headers = Constants.IT_DECLARATION_SUBMISSION_FORM;
         	String paragraphData = Constants.IT_DECLARATION_FORM_PARAGRAPHDATA;
         	Document document = new Document(PageSize.A4);
-        	String home = System.getProperty("user.home");
-//        	File file = new File(home+"/Downloads/" + fileName + ".txt"); 
-        	file = new File(home+"/Downloads/" + fileSB.append(Constants.IT_DECLARATION_FORM).toString()+".pdf");
+//        	String home = System.getProperty("user.home");
+//        	file = new File(home+"/Downloads/" + fileSB.append(Constants.IT_DECLARATION_FORM).toString()+".pdf");
+        	file = File.createTempFile("IT_Declaration_" + user.getFullName().replaceAll(" ", "_") + "_" + sourceleadTaxITDeclarationSubmissionDetails.getFinancialYear() + "_", ".pdf");
     		file.setReadable(true);
     		PdfWriter.getInstance(document, new FileOutputStream(file));
 			document.open();
-			BaseColor myBordColor = WebColors.getRGBColor("#000000");
+//			BaseColor myBordColor = WebColors.getRGBColor("#000000");
 			PdfPTable table = new PdfPTable(5);
 			table.setWidthPercentage(90);
 			table.setSpacingBefore(5);
@@ -1355,17 +1354,17 @@ public class TaxServiceImpl implements TaxService {
 	          
 			table.addCell(getCell("INVESTMENT DECLARATION FORM FOR THE YEAR OF" + " " + (sourceleadTaxITDeclarationSubmissionDetails.getFinancialYear().toString()), font8_U,Element.ALIGN_CENTER, 5, 18f));
 			table.addCell(getCell("Employee Code", font8,Element.ALIGN_LEFT, 1, 18f));
-			table.addCell(getCell("M123M", font8,Element.ALIGN_LEFT, 4, 18f));
+			table.addCell(getCell("", font8,Element.ALIGN_LEFT, 4, 18f));
 			table.addCell(getCell("Employee Name", font8,Element.ALIGN_LEFT, 1, 18f));
 			table.addCell(getCell(user.getFullName(), font8,Element.ALIGN_LEFT, 4, 18f));
 			table.addCell(getCell("Employee Designation ", font8,Element.ALIGN_LEFT, 1, 18f));
-			table.addCell(getCell(user.getDateOfJoin(), font8,Element.ALIGN_LEFT, 4, 18f));
+			table.addCell(getCell(can != null && can.getDesignation() != null ? can.getDesignation() : "", font8,Element.ALIGN_LEFT, 4, 18f));
 			table.addCell(getCell("Employee PAN ", font8,Element.ALIGN_LEFT, 1, 18f));
-			table.addCell(getCell("CQDP6563M ", font8,Element.ALIGN_LEFT, 4, 18f));
+			table.addCell(getCell(can != null && can.getPanNumber() != null ? can.getPanNumber() : "", font8,Element.ALIGN_LEFT, 4, 18f));
 			table.addCell(getCell("Employee DOB ", font8,Element.ALIGN_LEFT, 1, 18f));
-			table.addCell(getCell("08/08/2018", font8,Element.ALIGN_LEFT, 2, 18f));
+			table.addCell(getCell(can != null && can.getDateOfBirth() != null ? can.getDateofBirthString() : "", font8,Element.ALIGN_LEFT, 2, 18f));
 			table.addCell(getCell("Gender ", font8,Element.ALIGN_LEFT, 1, 18f));
-			table.addCell(getCell("Male", font8,Element.ALIGN_LEFT, 1, 18f));
+			table.addCell(getCell(can != null && can.getGender() != null ? can.getGender() : "", font8,Element.ALIGN_LEFT, 1, 18f));
 			document.add(table);
 	          
 	        document.add(addParagraph(paragraphData+" "+(sourceleadTaxITDeclarationSubmissionDetails.getFinancialYear().toString())+" "+"starting from", font8_B, marginLeft, marginRight,marginTop,0));
@@ -1599,8 +1598,13 @@ public class TaxServiceImpl implements TaxService {
 	private Sheet getItDeclarationSubmissionExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow,
 			Workbook createExcelworkbook,
 			SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails, OrgLocations orgLoc,
-			User user) {
-
+			User user) throws Exception {
+		
+		Candidate can = candidateService.getCandidateByConsultantUserId(user.getId(), orgLoc.getId());
+    	if(can != null && can.getDateOfBirth() != null) {
+    		can.setDateofBirthString(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(), can.getDateOfBirth()));
+    	}
+    	
 		CellStyle style = createExcelworkbook.createCellStyle();
 		style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
 		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
@@ -1615,7 +1619,7 @@ public class TaxServiceImpl implements TaxService {
 		cell1.setCellValue("Employee Code :");
 		cell1.setCellStyle(style);
 		Cell cell2 = writeRow.createCell(1);
-		cell2.setCellValue("this is pending task");
+		cell2.setCellValue("-NA-");
 		cell2.setCellStyle(style);
 
 		writeRow = createExcelsheet.createRow(1);
@@ -1635,7 +1639,7 @@ public class TaxServiceImpl implements TaxService {
 		cell5.setCellValue("Employee Designation : ");
 		cell5.setCellStyle(style);
 		Cell cell6 = writeRow.createCell(1);
-		cell6.setCellValue(("this task is pending "));
+		cell6.setCellValue((can != null && can.getDesignation() != null ? can.getDesignation() : "-NA-"));
 		cell6.setCellStyle(style);
 
 		writeRow = createExcelsheet.createRow(3);
@@ -1645,7 +1649,7 @@ public class TaxServiceImpl implements TaxService {
 		cell7.setCellValue("Employee PAN : ");
 		cell7.setCellStyle(style);
 		Cell cell8 = writeRow.createCell(1);
-		cell8.setCellValue("this is pending task");
+		cell8.setCellValue(can != null && can.getPanNumber() != null ? can.getPanNumber() : "-NA-");
 		cell8.setCellStyle(style);
 
 		writeRow = createExcelsheet.createRow(4);
@@ -1707,6 +1711,15 @@ public class TaxServiceImpl implements TaxService {
 		return taxSubmissionMasterDTOList;
 	}
 
-	
+	@Override
+	public List<Tds> getTDSListByFinancialYear(String financialYear) {
+		return taxDao.getTDSListByFinancialYear(financialYear);
+	}
+
+	@Override
+	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmissionByUserIdOrgLocationAndFinancialYear(Long userId, Long orgLocationId, String financialYear) {
+		
+		return taxDao.getITDeclarationSubmissionByUserIdOrgLocationAndFinancialYear(userId, orgLocationId, financialYear);
+	}
 }
 

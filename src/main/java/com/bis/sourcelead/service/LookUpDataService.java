@@ -29,6 +29,8 @@ public interface LookUpDataService {
 	
 	List<LookUpData> getLookUpdataByCategoryAndOrgLocationId(String category,Long orgLocation) throws Exception;
 	
+	List<String> getListOfStringLookUpdataByCategoryAndOrgLocationId(String category,Long orgLocation) throws Exception;
+	
 	LookUpData getTasksTypeByUniqueKey(String uniqueKey) throws Exception;
 	
 	LookUpData getRequirementExperienceLevelyUniqueKey(String uniqueKey) throws Exception;
@@ -42,4 +44,6 @@ public interface LookUpDataService {
 	public Boolean validateTaskTypeName(String taskTypeName, String category,Long orgLocationId);
 
 	public LookUpData validateTaskTypeNameByTaskNameAndLookupId(String taskTypeName, Long lookupId, String category, Long orgLocationId);
+	
+	List<String> getCategoriesListByCategoryType(String category) throws Exception;
 }

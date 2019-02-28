@@ -24,15 +24,6 @@ $(document).ready(function() {
 	  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/assetManagement'/>">Assets List</a> &raquo; Asset Summary</div>
 	</section>
 
-	<div class="cearfix">
-	  <div class="newTagsWrap">
-	    <ul class="clearfix tagsWrap tagsWrapBor">
-			<select multiple class="chosen-select form-control" name="tagName" id="assetTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">
-			</select>
-		</ul>
-			<div class="clearfix"></div>
-	  </div>
-	 </div>
 	   <div class="success_pop tagStyles" id="addTaskTagAlert">
 			<i class="fa fa-check-circle"></i>
 	   		<span></span>
@@ -44,7 +35,7 @@ $(document).ready(function() {
 	   
 
 	<!-- Asset Management Summary tabs starts here  -->
-	<div class="clearfix"></div>
+	<div class="clearfix Project_wrap">
 	<div class="project_side_wrap_inn_tabs">
 		<ul class="project-tabs-menu">
 			<li class="current"><a href="#tab-1" onclick="assetDetails('${asset.assetUUID}');">Details</a></li>
@@ -64,6 +55,18 @@ $(document).ready(function() {
 				<div id="tab-4" class="project_tabs_inn_table dataFilterNew datatable_filter mt10"></div>
 			</div>
 	</div>
+	</div>
+	
+	<div class="cearfix">
+	  <div class="newTagsWrap">
+	    <ul class="clearfix tagsWrap tagsWrapBor">
+			<select multiple class="chosen-select form-control" name="tagName" id="assetTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">
+			</select>
+		</ul>
+			<div class="clearfix"></div>
+	  </div>
+	 </div>	
+	
 	<!-- Asset Management Summary tabs starts here  -->
 
 </section>

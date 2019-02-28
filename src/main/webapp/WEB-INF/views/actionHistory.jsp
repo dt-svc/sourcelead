@@ -104,7 +104,6 @@ function actionHistoryList(actionUUID){
             	     else{
             	    	 var outPut = ""; 
             	    	 var orgLocation = "";
-            	    	 outPut = outPut + '<div class="project_wrap">';
             	    	 outPut = outPut + '<div class="timesheet_head">';
             	    	 outPut = outPut + '	<div class="ContrBut">';
             	    	 

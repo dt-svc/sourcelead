@@ -35,7 +35,7 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
       <div class="pull-left">
         <h2>Release Job</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Release Job</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href='${appPath}/jobs'> Jobs List  </a> &raquo; Release Job</div>
       <div class="success_pop" id="selector" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
      </div>

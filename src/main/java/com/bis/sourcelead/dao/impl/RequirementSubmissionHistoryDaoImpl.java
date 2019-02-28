@@ -1,7 +1,11 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -16,11 +20,17 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.RequirementLocationsDao;
 import com.bis.sourcelead.dao.RequirementSubmissionHistoryDao;
+import com.bis.sourcelead.dto.OfferAcceptanceRateDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.OfferAcceptanceRateView;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RecruiterJobsReportView;
 import com.bis.sourcelead.entity.RecruiterReportView;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
@@ -36,6 +46,9 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private RequirementLocationsDao requirementLocationsDao;
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -199,6 +212,21 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		return  recuiterReportView;
 		
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<RecruiterJobsReportView> getSubmissionApplicantCountsForRecruiterJobreports(Long orgLocationId, User user,
+			Date[] searchDates,Long requirementId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<RecruiterJobsReportView> recuiterReportViewList = new LinkedList<>();
+		
+		String	query = "from RecruiterJobsReportView rv where rv.userCode = :userCode and rv.createdDate BETWEEN :fromDate AND :toDate and rv.orgLocationId = :orgLocationId  and rv.requirementId =:requirementId";
+		List<RecruiterJobsReportView> rrList = session.createQuery(query).setString("userCode", user.getUserCode()).setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setDate("fromDate", searchDates[0]).setDate("toDate",searchDates[1]).list();
+		return rrList;
+		
+	}
 
 	@Override
 	@Transactional
@@ -228,33 +256,37 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public ResponseList<RequirementSubmissionHistory> getAllSubmissionHistoryApplicantsByOwner(RequirementSubmissionHistoryDTO sumissionHistoryDTO,	String userCode, String stage,Date[] searchDates) throws Exception {
+	public ResponseList<RequirementSubmissionHistory> getAllSubmissionHistoryApplicantsByOwner(RequirementSubmissionHistoryDTO sumissionHistoryDTO,	String userCode, String stage,Date[] searchDates,Long locationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<RequirementSubmissionHistory> submissionHistoryList = null;
 		ResponseList<RequirementSubmissionHistory> response = new ResponseList<>();
 		Query queryObj = null;
 		List<Long> countlist = null;
 		String stageQuery = null;
 		if(stage.equals("SUBMISSION")){
-			stageQuery = " rsh.toStage ='SUBMISSION'";	
+			stageQuery = " rsh.toStage ='SUBMISSION' and ((rsh.fromStage = 'NEW') OR (rsh.fromStage ='request_sent'))";	
 		}else if(stage.equalsIgnoreCase("SHORTLIST")){
 			stageQuery = " rsh.toStage = 'SHORTLIST'";
 		}else if(stage.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
 			stageQuery = " rsh.toStage = 'SUBMIT_TO_CLIENT'";
 		}else if(stage.equalsIgnoreCase("INTERVIEW")){
-			stageQuery = " (rsh.toStage = 'INTERVIEW' or rsh.toStage = 'CLIENT_INTERVIEW')";
+			stageQuery = " (rsh.toStage = 'INTERVIEW')";
 		}else if(stage.equalsIgnoreCase("OFFERMADE")){
-			stageQuery = " (rsh.toStage = 'OFFERMADE' OR rsh.toStage = 'OFFERACCEPTED' OR rsh.toStage = 'OFFERREJECTED' "
-					+ " OR rsh.toStage = 'CLIENT_OFFERMADE' OR rsh.toStage = 'CLIENT_OFFERACCEPTED' OR rsh.toStage = 'CLIENT_OFFERREJECTED') ";
+			stageQuery = " (rsh.toStage = 'OFFERMADE') ";
 		}else if(stage.equalsIgnoreCase("REJECTED")) {
 			stageQuery = " rsh.toStage = 'REJECTED'";
 		}else if(stage.equalsIgnoreCase("JOINED")) {
 			stageQuery = " rsh.toStage = 'JOINED'";
 		}else if(stage.equalsIgnoreCase("BACKOUT")) {
 			stageQuery = " rsh.toStage = 'BACKOUT'";
+		}else if(stage.equalsIgnoreCase("ONHOLD")) {
+			stageQuery = " rsh.toStage = 'ONHOLD'";
+		}else if(stage.equalsIgnoreCase("NORESPONSE")) {
+			stageQuery = " rsh.toStage = 'NORESPONSE'";
 		}
+		
 		
 		StringBuilder query1 = new StringBuilder("");
 		if(sumissionHistoryDTO.getSearchValue() != null && !"".equalsIgnoreCase(sumissionHistoryDTO.getSearchValue())) {
@@ -266,38 +298,51 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 			 
 		}
 		
-		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.masterUserCode =:userCode and "+stageQuery+" "+query1+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate)";  
-		queryObj = session.createQuery(query);
+		List<RequirementSubmissionHistory> submissionHistoryList = null;
+		List<RequirementSubmissionHistory> submissionHistoryCountList = null;
+		int totalCount = 0;
 		
-		String countQuery = "from RequirementSubmissionHistory rsh where rsh.masterUserCode =:userCode and "+stageQuery+" "+query1+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate)";
+		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.masterUserCode =:userCode and "+stageQuery+" "+query1+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate) and rs.orgLocations.id =:locationId";  
+	    queryObj = session.createQuery(query);
+	    queryObj.setParameter("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).setParameter("locationId", locationId);
 		
+	    submissionHistoryCountList = queryObj.list();
+	    if(submissionHistoryCountList != null && !submissionHistoryCountList.isEmpty()) {
+	    	totalCount = submissionHistoryCountList.size();
+	    }
+	    
 		queryObj.setFirstResult(sumissionHistoryDTO.getStart());
 		queryObj.setMaxResults(sumissionHistoryDTO.getLength());
 
-		submissionHistoryList = queryObj.setParameter("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).list();
+		submissionHistoryList = queryObj.list();
 		
-		countlist = session.createQuery("select count(*) "+ countQuery).setParameter("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).list();
-		
-		int totalCount = 0;
-		if (sumissionHistoryDTO != null) {
-			if (countlist != null && !countlist.isEmpty()) {
-				totalCount = countlist.iterator().next().intValue();
-			}
-		}
 		submissionHistoryList.forEach(history->{
 			history.setEmail(history.getSubmissionId().getCandidate().getEmail());
 			history.setCandidateName(history.getSubmissionId().getCandidate().getFirstName());
 			history.setJobTitle(history.getSubmissionId().getRequirement().getJobTitle());
-			
+			history.setMobilePhone(history.getSubmissionId().getCandidate().getMobilePhone());
+			if (history.getSubmissionId().getFinalizedRate() !=null){
+				history.setFinalizedRate(history.getSubmissionId().getFinalizedRate());	
+			}
+			StringBuilder sb = new StringBuilder();
+			try {
+				List<RequirementLocations> locationsList = requirementLocationsDao.getRequirementLocationsListByRequirementId(history.getSubmissionId().getRequirement().getId());
+			for(RequirementLocations location :locationsList){
+				sb = sb.append(location.getLocation()).append(",");
+			}
+			history.setOrgLocationName(sb.deleteCharAt(sb.length()-1).toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			if(history.getSubmissionId().getRequirement().getClientId() != null) {
 				if (history.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
 					if (history.getSubmissionId().getRequirement().getClientId().getResponderLocationId() != null) {
-						history.setOrgLocationName(history.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
+						history.setClientName(history.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
 					}
 				}
 				if (history.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")) {
 					if (history.getSubmissionId().getRequirement().getClientId().getLocationId() != null) {
-						history.setOrgLocationName(history.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
+						history.setClientName(history.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
 					}
 				}
 			}
@@ -343,6 +388,43 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 			e.printStackTrace();
 		}
 		return count;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<OfferAcceptanceRateView> getOfferAcceptanceRateList(String userCode, long orgLocationId, String selectedClients, int month, int year, boolean compare) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from OfferAcceptanceRateView oarView where oarView.userCode=:userCode and oarView.orgLocationId=:orgLocationId";
+			if(selectedClients != null && !selectedClients.isEmpty()) {
+				query += " and oarView.orgRelationId in (" + selectedClients + ")";
+			}
+			if (month > 0 || year > 0) {
+				Calendar c = Calendar.getInstance();
+				if (month > 0) {
+					c.set(Calendar.MONTH, month - 1);
+					SimpleDateFormat YYYY_MM = new SimpleDateFormat("yyyy-MM");
+					query += " and oarView.createdYearMonth='" + YYYY_MM.format(c.getTime()) + "'";
+				} else if (year > 0) {
+					c.set(Calendar.YEAR, year);
+					SimpleDateFormat YYYY = new SimpleDateFormat("yyyy");
+					query += " and oarView.createdYear='" + YYYY.format(c.getTime()) + "'";
+				}
+			}
+			query += " order by oarView.createdYearMonthDate";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("userCode", userCode);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			
+			List<OfferAcceptanceRateView> offerAcceptanceRateViewList = queryObj.list();
+			if(offerAcceptanceRateViewList != null && !offerAcceptanceRateViewList.isEmpty()) {
+				return offerAcceptanceRateViewList;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

@@ -31,16 +31,17 @@ $(document).ready(function(){
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Credit Note List</div>
     </section>
     
+    
+    <div class="project_wrap clearfix">
+    
     <div class="project_side_wrap_inn_tabs clearfix">
 	    <ul class="project-tabs-menu">
 		    <li class=""><a href="${appPath}/invoiceList">Invoice List</a></li>
 		    <li class="current"><a href="${appPath}/creditNoteList">Credit Note List</a></li>
 		    
 	    </ul>
-    </div>
+    </div>    
     
-    
-    <div class="content-area content-new clearfix">
       <div class="billing_dashboard noPad">
           <div class="tab-content"> 
             <div id="invoiceLoading"></div>

@@ -879,5 +879,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.getLoginUserAccountsList(userId);
 	}
 
+	@Override
+	public UserRole getProjectmemberUserDetailsByUserIdAndLocationId(Long userId, Long locationId, String designationType)
+			throws Exception {
+		return userRoleDao.getProjectmemberUserDetailsByUserIdAndLocationId(userId,locationId,designationType);
+	}
+
 
 }

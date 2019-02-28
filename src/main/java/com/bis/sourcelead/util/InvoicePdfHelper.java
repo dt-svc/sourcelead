@@ -1,12 +1,11 @@
 package com.bis.sourcelead.util;
 
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,7 +39,6 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -105,6 +103,7 @@ public class InvoicePdfHelper {
 	private UserDao userDao;
 
 	OrgLocationService orgLocationService;
+	
 	public File createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org,
 			String invoiceType, String vendorCurrencyCode, String loginOrgCurrencyCode) throws IOException, Exception {
 		Countries countries = countriesService.getCountriesByCountryName(orgLocation.getCountry());
@@ -120,7 +119,7 @@ public class InvoicePdfHelper {
 				PdfWriter writer = PdfWriter.getInstance(document, os);
 				document.open();
 				// save image file in pdf
-				document = addLogoToPdfFile(document, org, orgLocation);
+				document = addLogoToPdfFile(document, org, orgLocation, null);
 
 				Chunk glue = new Chunk(new VerticalPositionMark());
 				Paragraph p = new Paragraph(orgLocation.getOrgLocationName(), font14);
@@ -526,7 +525,7 @@ public class InvoicePdfHelper {
 				PdfWriter writer = PdfWriter.getInstance(document, os);
 				document.open();
 				// save image file in pdf
-				document = addLogoToPdfFile(document, org, orgLocation);
+				document = addLogoToPdfFile(document, org, orgLocation, null);
 
 				Chunk glue = new Chunk(new VerticalPositionMark());
 				Paragraph p = new Paragraph(orgLocation.getOrgLocationName(), font14);
@@ -935,23 +934,27 @@ public class InvoicePdfHelper {
 		return cell;
 	}
 
-	private Document addLogoToPdfFile(Document document, Org org, OrgLocations orgLocations)
+	private Document addLogoToPdfFile(Document document, Org org, OrgLocations orgLocations, String imageUrl)
 			throws MalformedURLException, IOException, DocumentException {
-		if (null != org.getDocFile()) {
-			Image image = Image.getInstance(org.getDocFile());
-			image.scalePercent(300f);
-			image.setAbsolutePosition(0, (float) (PageSize.A4.getHeight() - 25.0));
-			image.setAbsolutePosition(100, 500);
-			// Fixed Positioning
-			image.setAbsolutePosition(40f, 780f);
-			// Scale to new height and new width of image
-			image.scaleAbsolute(100, 50);
-			document.add(image);
+		if(imageUrl != null && !imageUrl.isEmpty()) {
+			
 		} else {
-			Paragraph p;
-			p = new Paragraph(" " + orgLocations.getOrgLocationName(), font12b);
-			p.setAlignment(Element.ALIGN_TOP);
-			document.add(p);
+			if (null != org.getDocFile()) {
+				Image image = Image.getInstance(org.getDocFile());
+				image.scalePercent(300f);
+				image.setAbsolutePosition(0, (float) (PageSize.A4.getHeight() - 25.0));
+				image.setAbsolutePosition(100, 500);
+				// Fixed Positioning
+				image.setAbsolutePosition(40f, 780f);
+				// Scale to new height and new width of image
+				image.scaleAbsolute(100, 50);
+				document.add(image);
+			} else {
+				Paragraph p;
+				p = new Paragraph(" " + orgLocations.getOrgLocationName(), font12b);
+				p.setAlignment(Element.ALIGN_TOP);
+				document.add(p);
+			}
 		}
 		return document;
 	}
@@ -1299,5 +1302,13 @@ public class InvoicePdfHelper {
 		cell.setHorizontalAlignment(alignment);
 		cell.setBorder(PdfPCell.NO_BORDER);
 		return cell;
+	}
+	
+	public static void main(String[] args) {
+		System.out.println("Available Fonts");
+		GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		for(String font : g.getAvailableFontFamilyNames()) {
+			System.out.println(font);
+		}
 	}
 }

@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.joda.time.LocalDate;
@@ -29,7 +28,6 @@ import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
-import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -471,6 +469,8 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 //				   Map<Integer,Integer> map = appliedLeaves.stream().collect(Collectors.groupingBy(apl->AppliedLeaveDateView::getUserId,counting(),Map::size));
 			 Map<Long, Long> map = appliedLeavesView.stream().collect(Collectors.groupingBy(AppliedLeaveDateView::getUserId,Collectors.counting()));
 			 List<AssociateBalanceLeaveDTO> assBalList = new ArrayList<>();
+			 Calendar cal = Calendar.getInstance();
+			 String currentMonthName = new SimpleDateFormat("MMMM").format(cal.getTime());
 			 for(User user : userList){
 				 if(map.keySet().contains(user.getId())){
 					 
@@ -479,7 +479,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 						 associateBalanceLeaves = getTotalLeavesCountByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocations.getId(),orgLocations.getOrg().getId());
 					 }
 					float totalBal = 0f;
-					
+					boolean flag = true;
 					AssociateBalanceLeaveView ablv = new AssociateBalanceLeaveView();
 					ablv.setIncludeWeekoff(leaveType.getIncludeWeekoff());
 					ablv.setIncludeHolidays(leaveType.getIncludeHolidays());
@@ -491,6 +491,10 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 						Date[] monthDates = getMonthStartDateEndDate();
 						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), startDate, endDate, user.getId(),orgLocations.getOrg().getId());
 						appliedNoofLeaves = (float) getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,startDate,endDate,leaveType);
+						if("January".equalsIgnoreCase(currentMonthName)) {
+							totalBal = calculateMonthlyLeaves(appliedNoofLeaves,leaveType,associateBalanceLeaves,orgLocations,user);
+							flag = false;
+						}
 					}
 					else if (Constants.QUARTERLY.equalsIgnoreCase(leaveType.getPeriod()) && Constants.YES.equalsIgnoreCase(leaveType.getVisibleInBalanceLeaves())) {
 						LocalDate[] currentMonthQuarter = conversionUtil.getThisMonthQuarterDates(todayDate.minusDays(1));
@@ -506,84 +510,86 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 						Date[] thisYearDates = ConversionUtil.getPreviousYearStartAndEndDate();
 						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), thisYearDates[0], thisYearDates[1], user.getId(),orgLocations.getOrg().getId());
 						appliedNoofLeaves = (float) getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,thisYearDates[0],thisYearDates[1],leaveType);
+						totalBal = calculateAnnualLeaves(appliedNoofLeaves,leaveType,associateBalanceLeaves,orgLocations,user);
 					}
 					
-					if(Constants.YES.equalsIgnoreCase(leaveType.getAccuralPolicy())){
-						if(Constants.NO.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
-							totalBal = 0;
-						}else if(Constants.YES.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
-							if (appliedNoofLeaves > 0) {
-								totalBal = associateBalanceLeaves - appliedNoofLeaves;
-								if(Constants.YES.equalsIgnoreCase(leaveType.getIncludeInPayroll())){
-									if(totalBal < 0){
-										totalBal = 0;
-									}
-								}else if(Constants.NO.equalsIgnoreCase(leaveType.getIncludeInPayroll())){
+					if (!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && flag) {
+						if(Constants.YES.equalsIgnoreCase(leaveType.getAccuralPolicy())){
+							if(Constants.NO.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
+								totalBal = 0;
+							}else if(Constants.YES.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
+								if (appliedNoofLeaves > 0) {
 									totalBal = associateBalanceLeaves - appliedNoofLeaves;
-								} 
+									if(Constants.YES.equalsIgnoreCase(leaveType.getIncludeInPayroll())){
+										if(totalBal < 0){
+											totalBal = 0;
+										}
+									}else if(Constants.NO.equalsIgnoreCase(leaveType.getIncludeInPayroll())){
+										totalBal = associateBalanceLeaves - appliedNoofLeaves;
+									} 
+								}
 							}
-						}
-						
-						if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
-							totalBal += leaveType.getNoOfDaysPerPeriod();
-						}else {
-							Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
-							String expType = leaveManagementUtil.test(leaveType, emp, user);
-							if("EXP".equalsIgnoreCase(expType)){
-								totalBal += leaveType.getExperiencedPerPeriod();
-							}else if("FRESHER".equalsIgnoreCase(expType)){
-								totalBal += leaveType.getNewJoinPerPeriod();
-							}
-						}
-						
-					}else if(Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())){
-						if(Constants.NO.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
 							
 							if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
-								totalBal = associateBalanceLeaves - leaveType.getNoOfDaysPerPeriod();
+								totalBal += leaveType.getNoOfDaysPerPeriod();
 							}else {
 								Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
-								String expType = leaveManagementUtil.test(leaveType, emp, user);
+								String expType = leaveManagementUtil.getExperienceType(leaveType, emp, user);
 								if("EXP".equalsIgnoreCase(expType)){
-									totalBal = associateBalanceLeaves - leaveType.getExperiencedPerPeriod();
+									totalBal += leaveType.getExperiencedPerPeriod();
 								}else if("FRESHER".equalsIgnoreCase(expType)){
-									totalBal = associateBalanceLeaves - leaveType.getNewJoinPerPeriod();
+									totalBal += leaveType.getNewJoinPerPeriod();
 								}
 							}
 							
-//							totalBal = associateBalanceLeaves - leaveType.getNoOfDaysPerPeriod();
-						}else if(Constants.YES.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
-							float remainingBal = 0f;
-							if (appliedNoofLeaves > 0) {
-								remainingBal = leaveType.getNoOfDaysPerPeriod() - appliedNoofLeaves;
-								if(Constants.YES.equalsIgnoreCase(leaveType.getIncludeInPayroll())){
-									if(remainingBal < 0){
-										
-										if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
-											totalBal = associateBalanceLeaves - leaveType.getNoOfDaysPerPeriod();
-										}else {
-											Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
-											String expType = leaveManagementUtil.test(leaveType, emp, user);
-											if("EXP".equalsIgnoreCase(expType)){
-												totalBal = associateBalanceLeaves - leaveType.getExperiencedPerPeriod();
-											}else if("FRESHER".equalsIgnoreCase(expType)){
-												totalBal = associateBalanceLeaves - leaveType.getNewJoinPerPeriod();
+						}else if(Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())){
+							if(Constants.NO.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
+								
+								if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+									totalBal = associateBalanceLeaves - leaveType.getNoOfDaysPerPeriod();
+								}else {
+									Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
+									String expType = leaveManagementUtil.getExperienceType(leaveType, emp, user);
+									if("EXP".equalsIgnoreCase(expType)){
+										totalBal = associateBalanceLeaves - leaveType.getExperiencedPerPeriod();
+									}else if("FRESHER".equalsIgnoreCase(expType)){
+										totalBal = associateBalanceLeaves - leaveType.getNewJoinPerPeriod();
+									}
+								}
+								
+//								totalBal = associateBalanceLeaves - leaveType.getNoOfDaysPerPeriod();
+							}else if(Constants.YES.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
+								float remainingBal = 0f;
+								if (appliedNoofLeaves > 0) {
+									remainingBal = leaveType.getNoOfDaysPerPeriod() - appliedNoofLeaves;
+									if(Constants.YES.equalsIgnoreCase(leaveType.getIncludeInPayroll())){
+										if(remainingBal < 0){
+											
+											if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+												totalBal = associateBalanceLeaves - leaveType.getNoOfDaysPerPeriod();
+											}else {
+												Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
+												String expType = leaveManagementUtil.getExperienceType(leaveType, emp, user);
+												if("EXP".equalsIgnoreCase(expType)){
+													totalBal = associateBalanceLeaves - leaveType.getExperiencedPerPeriod();
+												}else if("FRESHER".equalsIgnoreCase(expType)){
+													totalBal = associateBalanceLeaves - leaveType.getNewJoinPerPeriod();
+												}
 											}
+											
+//											totalBal = associateBalanceLeaves - leaveType.getNoOfDaysPerPeriod();
+										}else{
+											totalBal = associateBalanceLeaves - appliedNoofLeaves;
 										}
-										
-//										totalBal = associateBalanceLeaves - leaveType.getNoOfDaysPerPeriod();
-									}else{
+									}else if(Constants.NO.equalsIgnoreCase(leaveType.getIncludeInPayroll())){
 										totalBal = associateBalanceLeaves - appliedNoofLeaves;
 									}
-								}else if(Constants.NO.equalsIgnoreCase(leaveType.getIncludeInPayroll())){
-									totalBal = associateBalanceLeaves - appliedNoofLeaves;
+								}else{
+									totalBal = associateBalanceLeaves;
 								}
-							}else{
-								totalBal = associateBalanceLeaves;
 							}
 						}
 					}
-					 
 					
 //					totalBal =  associateBalanceLeaves - map.get(user.getId()) ;
 				    
@@ -599,10 +605,15 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 					 float totalBal = 0;
 					 float periodDays = 0;
 					 if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
-						 periodDays += leaveType.getNoOfDaysPerPeriod();
+						 if(Constants.YES.equalsIgnoreCase(leaveType.getAccuralPolicy())){
+						 	periodDays += leaveType.getNoOfDaysPerPeriod();
+						 }else {
+							periodDays += leaveType.getNoOfDays();
+						 }
+//						 periodDays += leaveType.getNoOfDaysPerPeriod();
 						}else {
 							Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
-							String expType = leaveManagementUtil.test(leaveType, emp, user);
+							String expType = leaveManagementUtil.getExperienceType(leaveType, emp, user);
 							if("EXP".equalsIgnoreCase(expType)){
 								periodDays += leaveType.getExperiencedPerPeriod();
 							}else if("FRESHER".equalsIgnoreCase(expType)){
@@ -614,15 +625,44 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 							totalBal += periodDays;
 						}
 						else if (Constants.YES.equalsIgnoreCase(leaveType.getLeavesCarryforward())) {
-							totalBal = associateBalanceLeaves + periodDays;
+							if("January".equalsIgnoreCase(currentMonthName)) {
+								if(leaveType.getMaxDaysToCarryforward() != null && leaveType.getMaxDaysToCarryforward() >0) {
+									if(associateBalanceLeaves > leaveType.getMaxDaysToCarryforward()) {
+										totalBal = leaveType.getMaxDaysToCarryforward() + periodDays;
+									}else {
+										totalBal = associateBalanceLeaves + periodDays;
+									}
+								}else {
+									totalBal = associateBalanceLeaves + periodDays;
+								}
+							}else {
+								totalBal = associateBalanceLeaves + periodDays;
+							}
 						}
 					}
 					else if (Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())) {
 						if (Constants.NO.equalsIgnoreCase(leaveType.getLeavesCarryforward())) {
-							totalBal = associateBalanceLeaves - periodDays;
+							if("January".equalsIgnoreCase(currentMonthName)) {
+								totalBal = periodDays;
+							}else {
+								totalBal = associateBalanceLeaves - periodDays;
+							}
 						}
 						else if (Constants.YES.equalsIgnoreCase(leaveType.getLeavesCarryforward())) {
-							totalBal = associateBalanceLeaves;
+							if("January".equalsIgnoreCase(currentMonthName)) {
+								if(leaveType.getMaxDaysToCarryforward() != null && leaveType.getMaxDaysToCarryforward() >0) {
+									if(associateBalanceLeaves > leaveType.getMaxDaysToCarryforward()) {
+										totalBal = leaveType.getMaxDaysToCarryforward() + periodDays;
+									}else {
+										totalBal = associateBalanceLeaves + periodDays;
+									}
+								}else {
+									totalBal = associateBalanceLeaves + periodDays;
+								}
+								
+							}else {
+								totalBal = associateBalanceLeaves;
+							}
 						}
 					}
 					 AssociateBalanceLeaveDTO assBal = new AssociateBalanceLeaveDTO();
@@ -639,6 +679,141 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 			   e.printStackTrace();
 		   }
 		return stat;
+	}
+
+	private float calculateMonthlyLeaves(float appliedNoofLeaves, LeaveType leaveType, float associateBalanceLeaves, OrgLocations orgLocations, User user)
+	{
+		float totalBal = 0f, noOfCFDays = 0f, totalBalanceLeaves = 0f;
+		float perMnthDays = 0f;
+		try {
+			if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+				if(Constants.YES.equalsIgnoreCase(leaveType.getAccuralPolicy())){
+					perMnthDays += leaveType.getNoOfDaysPerPeriod();
+				}else {
+					perMnthDays += leaveType.getNoOfDays();
+				}
+			}else {
+				Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
+				String expType = leaveManagementUtil.getExperienceType(leaveType, emp, user);
+				if("EXP".equalsIgnoreCase(expType)){
+					perMnthDays = leaveType.getExperiencedPerPeriod();
+				}else if("FRESHER".equalsIgnoreCase(expType)){
+					perMnthDays = leaveType.getNewJoinPerPeriod();
+				}
+			}
+//			if(Constants.YES.equalsIgnoreCase(leaveType.getAccuralPolicy())){
+			if(leaveType.getMaxDaysToCarryforward() != null && leaveType.getMaxDaysToCarryforward() > 0) {
+				if(Constants.NO.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
+					if(associateBalanceLeaves > leaveType.getMaxDaysToCarryforward()) {
+						noOfCFDays = leaveType.getMaxDaysToCarryforward();
+					}else {
+						noOfCFDays = associateBalanceLeaves;
+					}
+					totalBalanceLeaves = perMnthDays + noOfCFDays;
+				}else {
+					totalBal = associateBalanceLeaves - appliedNoofLeaves;
+					if(totalBal > leaveType.getMaxDaysToCarryforward()) {
+						noOfCFDays = leaveType.getMaxDaysToCarryforward();
+					}else {
+						noOfCFDays = totalBal;
+					}
+					totalBalanceLeaves = perMnthDays + noOfCFDays;
+				}
+			}else {
+				if(Constants.NO.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
+					noOfCFDays = associateBalanceLeaves;
+					totalBalanceLeaves = perMnthDays + noOfCFDays;
+				}else {
+					totalBal = associateBalanceLeaves - appliedNoofLeaves;
+					noOfCFDays = totalBal;
+					totalBalanceLeaves = perMnthDays + noOfCFDays;
+				}
+			}
+//			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return totalBalanceLeaves;
+	}
+
+	private float calculateAnnualLeaves(float appliedNoofLeaves, LeaveType leaveType, float associateBalanceLeaves, OrgLocations orgLocations, User user) throws Exception
+	{
+		float totalBal = 0f, actualTotalBal = 0f;
+		/*if(Constants.YES.equalsIgnoreCase(leaveType.getAccuralPolicy())){
+			if(Constants.NO.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
+				totalBal = 0;
+			}else if(Constants.YES.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
+				totalBal = associateBalanceLeaves - appliedNoofLeaves;
+				actualTotalBal = 
+			}
+			
+			if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+				totalBal += leaveType.getNoOfDaysPerPeriod();
+			}else {
+				Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
+				String expType = leaveManagementUtil.getExperienceType(leaveType, emp, user);
+				if("EXP".equalsIgnoreCase(expType)){
+					totalBal += leaveType.getExperiencedPerPeriod();
+				}else if("FRESHER".equalsIgnoreCase(expType)){
+					totalBal += leaveType.getNewJoinPerPeriod();
+				}
+			}
+			
+		}else if(Constants.NO.equalsIgnoreCase(leaveType.getAccuralPolicy())){*/
+			if(Constants.NO.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
+				if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+					totalBal = leaveType.getNoOfDaysPerPeriod();
+				}else {
+					Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
+					String expType = leaveManagementUtil.getExperienceType(leaveType, emp, user);
+					if("EXP".equalsIgnoreCase(expType)){
+						totalBal = leaveType.getExperiencedPerPeriod();
+					}else if("FRESHER".equalsIgnoreCase(expType)){
+						totalBal = leaveType.getNewJoinPerPeriod();
+					}
+				}
+				
+//				totalBal = associateBalanceLeaves - leaveType.getNoOfDaysPerPeriod();
+			}else if(Constants.YES.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
+				float remainingBal = 0f, actualBal = 0f, noOfDaysToCarryForward = 0f;
+				if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
+					actualBal = leaveType.getNoOfDaysPerPeriod();
+				}else {
+					Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
+					String expType = leaveManagementUtil.getExperienceType(leaveType, emp, user);
+					if("EXP".equalsIgnoreCase(expType)){
+						actualBal = leaveType.getExperiencedPerPeriod();
+					}else if("FRESHER".equalsIgnoreCase(expType)){
+						actualBal = leaveType.getNewJoinPerPeriod();
+					}
+				}
+				
+				if (appliedNoofLeaves > 0) {
+					remainingBal = associateBalanceLeaves - appliedNoofLeaves;
+					if(leaveType.getMaxDaysToCarryforward() != null && leaveType.getMaxDaysToCarryforward() > 0){
+						if(remainingBal > leaveType.getMaxDaysToCarryforward()) {
+							noOfDaysToCarryForward = leaveType.getMaxDaysToCarryforward();
+						}else {
+							noOfDaysToCarryForward = remainingBal;
+						}
+					}else {
+						noOfDaysToCarryForward = remainingBal;
+					}
+				}else {
+					if(leaveType.getMaxDaysToCarryforward() != null && leaveType.getMaxDaysToCarryforward() > 0){
+						if(associateBalanceLeaves > leaveType.getMaxDaysToCarryforward()) {
+							noOfDaysToCarryForward = leaveType.getMaxDaysToCarryforward();
+						}else {
+							noOfDaysToCarryForward = associateBalanceLeaves;
+						}
+					}else {
+						noOfDaysToCarryForward = associateBalanceLeaves;
+					}
+				}
+				totalBal = actualBal + noOfDaysToCarryForward;
+			}
+//		}
+		return totalBal;
 	}
 
 	@Override
@@ -789,7 +964,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				try {
 					if(!"All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
 						if(emp != null){
-							userType = leaveManagementUtil.test(leaveType, emp, user);
+							userType = leaveManagementUtil.getExperienceType(leaveType, emp, user);
 						}else{
 							userType = "EXP";
 						}

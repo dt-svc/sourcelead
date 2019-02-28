@@ -206,6 +206,8 @@ public class CandidateIndex implements Serializable {
 	
 	private String dateofBirth;
 	
+	private String panNumber;
+	
 	private String tags;
 	
 	private Integer submittedJobsCount;
@@ -1027,6 +1029,14 @@ public class CandidateIndex implements Serializable {
 		this.dateofBirth = dateofBirth;
 	}
 	
+	public String getPanNumber() {
+		return panNumber;
+	}
+
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
+	}
+
 	public String getCreatedByUserCode() {
 		return createdByUserCode;
 	}

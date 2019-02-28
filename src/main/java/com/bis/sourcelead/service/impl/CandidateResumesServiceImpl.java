@@ -106,7 +106,7 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 					activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(fileInfo.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
 				// candidateResume.setDocFile(multiFile.getBytes());
-				candidateResume.setFileURL(fileInfo.getFileURL());
+				candidateResume.setFileURL(fileInfo.getFileURL().replaceAll(" ", "_"));
 				candidateResume.setFileName(fileInfo.getFileName());
 				candidateResume.setFileContentType(fileInfo.getContentType());
 				try {
@@ -150,7 +150,7 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 				}
 				// candidateResume.setDocFile(multiFile.getBytes());
 				if(StringUtils.isNotBlank(fileInfo.getFileURL())) {
-					candidateResume.setFileURL(fileInfo.getFileURL());
+					candidateResume.setFileURL(fileInfo.getFileURL().replaceAll(" ", "_"));
 				}
 				if(StringUtils.isNotBlank(fileInfo.getFileName())) {
 					candidateResume.setFileName(fileInfo.getFileName());
@@ -214,7 +214,7 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 			//candidateResumes.setDocFile(multiFile.getBytes());
 			candidateResumes.setFileName(fileInfo.getFileName());
 			candidateResumes.setFileContentType(fileInfo.getContentType());
-			candidateResumes.setFileURL(fileInfo.getFileURL());
+			candidateResumes.setFileURL(fileInfo.getFileURL().replaceAll(" ", "_"));
 			candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
 			candidateResumes.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			candidateResumes.setCreatedDate(new Date());
@@ -338,7 +338,7 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 				candidateIndex.setCurrentResumeId(candidateResumes.getId());
 				candidateIndex.setCurrentResumeName(candidateResumes.getFileName());
 				candidateIndex.setResumeContent("");
-				candidateIndex.setFileUrl(candidateResumes.getFileURL());
+				candidateIndex.setFileUrl(candidateResumes.getFileURL().replaceAll(" ", "_"));
 				candidateIndex.setFileContentType(candidateResumes.getFileContentType());
 				candidateIndex.setResumeName(candidateResumes.getFileName());
 				 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");

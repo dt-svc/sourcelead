@@ -53,7 +53,7 @@ display: inline-block;
 }
 </style>
 <script
-	src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE"
+	src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${SourceLeadWeb_googleMapsLocationApiKey}"
 	type="text/javascript"></script>
 <script
 	src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
@@ -1215,7 +1215,7 @@ function getOpenJobsELKList(orgLocationId,type){
 // 		$("#openJobsOffset").val(offset)
 // 	}
 	
-	var url =sourceleadUrl + "/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset;
+	var url =sourceleadUrl + "/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&minOffset=0&offset="+offset;
 	if(openJobsRequirementTitle)
 		url+="&openJobsRequirementTitle="+openJobsRequirementTitle;
 	if(openJobsLocation)
@@ -1335,7 +1335,7 @@ function prepareOpenJobsElkList(response,offset){
 				result = result +'<input type="hidden" id="maxJobCount" value="'+json.length+'"/>';
 				result = result +'<input type="hidden" id="searchType" value="mainsearch"/>';
 // 				result = result +'	<h3 style="color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
-				result = result +'	<a target="_blank" href="'+sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'  '+requirements.requirementUUID+'</h3></a>';
+				result = result +'	<a target="_blank" href="'+sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
 				description =  description+'Job Title:'+requirements.jobTitle+";";
 				
 				
@@ -1428,7 +1428,7 @@ function prepareOpenJobsElkList(response,offset){
 				result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>--</div>';	
 				}
 				result = result +'	<div class="share">';			  
-				result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
+				result = result +' <div class="addthis_inline_share_toolbox" data-url="http://qa.sourcelead.com/job/9th-date-job-5-for-social-networks-10918" addthis:url="http://qa.sourcelead.com/job/9th-date-job-5-for-social-networks-10918" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'" data-media="https://www.sourcelead.com/resources/images/SourceLead-logo.png" addthis:media="https://www.sourcelead.com/resources/images/SourceLead-logo.png"></div>';
 				result = result +'	</div>';
 				result = result +'	<div class="clear"></div>';
 				result = result +'	</div>';
@@ -1498,7 +1498,7 @@ function getOrgsList(alphabet,type){
 	   	type: "POST",
 	   	url: sourceleadUrl + "/ws/getOrgsListforOpenJobs?${_csrf.parameterName}=${_csrf.token}&alphabet="+alphabet+"&country="+country+"&type="+type,
 	    success: function(data) {
-	    	var json = JSON.parse(data);
+	    	var json = data.data;
 	    	var result = "";
 	    	
 	    	if(type != 'main'){
@@ -1543,6 +1543,7 @@ function getOrgsList(alphabet,type){
 		    	}
 // 	    		if(json.length > 5){
 // 	    			var orgCount = json.length - 5 ;
+
 				if(opt.noOfDays != '' && opt.noOfDays != 'undfined' && opt.noOfDays != null){
 			    	result = result +'<a onclick="openPopup(); getOrgsList(\'none\',\'sub\');" class="popOpen">+'+opt.noOfDays+' More</a>';
 
@@ -1821,7 +1822,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 						jobTitle = jobTitle.substring(0, jobTitle.length() - 1);
 				    } 
 					
-				result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadShareUrl+'/job/'+jobTitle+'-'+json.id)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+jobTitle+'-'+json.id)+'" addthis:title="'+json.jobTitle+'" data-title="'+json.jobTitle+'" addthis:description="'+json.jobTitle+'" data-description="'+json.jobTitle+'"></div>';
+				result = result +' <div class="addthis_inline_share_toolbox" data-url="'+(sourceleadShareUrl+'/job/'+jobTitle+'-'+json.id)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+jobTitle+'-'+json.id)+'" addthis:title="'+json.jobTitle+'" data-title="'+json.jobTitle+'" addthis:description="'+json.jobTitle+'" data-description="'+json.jobTitle+'"></div>';
 				result = result +'	</div>';
 				result = result +'	<div style="clear:both;"></div>';
 				result = result +'	</div>';  	
@@ -1984,7 +1985,7 @@ function openJobSearchRequirement(){
 // 										result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
 
 										result = result +'	<div class="share">';
-										result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
+										result = result +' <div class="addthis_inline_share_toolbox" data-url="'+(sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId)+'" addthis:url="'+(sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
 										result = result +'  </div>';
 										result = result +'	<div class="clear"></div>';
 										result = result +'	</div>';
@@ -2754,6 +2755,8 @@ function createAlert(requirementUUID){
         		    	   var skillsArray = this.value.split(",");
         			    	 if(skillsArray.length > 1){
         		        		 for (var i=0; i < skillsArray.length; i++) {
+        		        			 if(skillsArray[i] == '' || skillsArray[i] == 'undefined' || skillsArray[i] == null)
+        		        		     continue;
         		        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
         		        			 select.append(option);
         		 		             select.find(option).prop('selected', true);
@@ -3112,6 +3115,8 @@ function forgotPassword(){
 		window.location.href = "/guestApplyToJob?&requirementUUID="+requirementUUID;
  }
  </script>                                                                                     
-   <script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5a60382a93e935c2"></script>
+   <!-- <script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5a60382a93e935c2"></script> -->
+	<script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5a6034e610465d87"></script>
+	   
    <script src="/resources/js/formvalidator.js"></script>
 <jsp:include page="../socialinviterscripts.jsp" />

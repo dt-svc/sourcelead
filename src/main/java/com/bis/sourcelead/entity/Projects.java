@@ -196,6 +196,12 @@ public class Projects implements Serializable{
     
     @Column(name="IS_PROJECT_FOR_EXPENSES")
     private String isProjectForExpenses;
+    
+    @Column(name="PROJECT_APPROVAL_TYPE")
+	private String projectApprovalType;
+    
+    @Column(name="EXPENSE_APPROVAL_TYPE")
+	private String expenseApprovalType;
 	
      
     
@@ -1191,6 +1197,22 @@ public class Projects implements Serializable{
 
 	public void setTagsList(Set<String> tagsList) {
 		this.tagsList = tagsList;
+	}
+
+	public String getProjectApprovalType() {
+		return projectApprovalType;
+	}
+
+	public void setProjectApprovalType(String projectApprovalType) {
+		this.projectApprovalType = projectApprovalType;
+	}
+
+	public String getExpenseApprovalType() {
+		return expenseApprovalType;
+	}
+
+	public void setExpenseApprovalType(String expenseApprovalType) {
+		this.expenseApprovalType = expenseApprovalType;
 	}
 
 }

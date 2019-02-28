@@ -29,6 +29,9 @@ public interface UserLoginLogoutSessionService  {
 	List<UserLoginLogoutSession>  getAll();
 	
 	UserDTO getUsersListByIpAddress(String str, List<Long> list,Long orgLocationId);
+	
+	List<String> getUsersByUserId(UsersUsageReportDTO usersUsageReportDTO);
+
 }	
 		
 	

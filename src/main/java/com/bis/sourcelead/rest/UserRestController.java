@@ -1,9 +1,11 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -71,6 +73,7 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.ProbationHistory;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
@@ -94,6 +97,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.ProbationHistoryService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -217,6 +221,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	
 	@Autowired
 	RegistrationService registrationService;
+	
+	@Autowired
+	private ProbationHistoryService probationHistoryService;
 	
 	
 	/**
@@ -1841,5 +1848,87 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	{
 		boolean isUpdated = associateBalanceLeaveService.getAssociateBalanceByUUID(assoBalLeaveUUID,totalLeaves);
 		return isUpdated;
+	}
+	
+	@RequestMapping(value = "/getConfirmationDateBasedOnJoiningDate", method = RequestMethod.GET)
+	public @ResponseBody String getConfirmationDateBasedOnJoiningDate(@RequestParam(value = "joiningDate", required = false) String joiningDate, @RequestParam(value = "probationperiod", required = false) String probationperiod, HttpServletRequest request) throws Exception
+	{
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
+		String[] frequency = probationperiod.split(" ");
+		String confirmationDate = null;
+		try {
+			
+			Date date = formatter.parse(joiningDate);
+			Calendar c = Calendar.getInstance();
+			c.setTime(date);
+			c.add(Calendar.DATE, Integer.parseInt(frequency[0]));
+			confirmationDate = formatter.format(c.getTime());
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return confirmationDate;
+	}
+	
+	
+	
+	@RequestMapping(value = "/confirmProbation", method = RequestMethod.POST)
+	public void confirmProbation(@RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request) throws Exception
+	{
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Employees emp = employeesService.getEmployeeByUserAndOrgLocationId(userId, orgLocations.getId());
+		
+		if(emp != null) {
+			String previousStatus = emp.getProbationStatus();
+			emp.setProbationStatus(Constants.CONFIRMED);
+			emp.setUpdatedDate(new Date());
+			emp.setUpdatedBy(loginUser.getUserCode());
+			employeesService.updateEmployee(emp);
+			
+			ProbationHistory probationHistory = new ProbationHistory();
+			probationHistory.setEmployeeId(emp);
+			probationHistory.setDateOfJoin(emp.getHireDate());
+			probationHistory.setProbationPeriod(emp.getProbationPeriod());
+			probationHistory.setFromStatus(previousStatus);
+			probationHistory.setToStatus(Constants.CONFIRMED);
+			probationHistory.setActualConfirmationDate(emp.getConfirmationDate());
+			probationHistory.setConfirmedDate(new Date());
+			probationHistory.setStatus(1);
+			probationHistory.setUuid(SourceLeadRandomCodeHelper.generateUUID());
+			probationHistory.setCreatedDate(new Date());
+			probationHistory.setCreatedBy(loginUser.getId());
+			probationHistory.setUpdatedDate(new Date());
+			probationHistory.setUpdatedBy(loginUser.getId());
+			probationHistoryService.saveProbationHistory(probationHistory);
+			
+		}
+	}
+	
+	@RequestMapping(value = "/sendMailConfirmationToAssociate", method = RequestMethod.POST)
+	public void sendMailConfirmationToAssociate(@RequestParam(value = "userId", required = false) Long userId,
+			@RequestParam(value = "confirmationDate", required = false) String confirmationDate,
+			@RequestParam(value = "designation", required = false) String designation,HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User fromUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		User toUser = userService.getUserByIdAndOrgLocationsId(userId, orgLocations.getId());
+		userService.sendEmployemntConfirmationMailToAssocaite(fromUser,toUser,orgLocations,confirmationDate,designation);
+	}
+	
+
+	@RequestMapping(value = "/validateSSNDuplicate", method = RequestMethod.POST)
+	public boolean validateSSNDuplicate(@RequestParam(value = "ssnNumber", required = false) String ssnNumber,@RequestParam(value = "userId",required = false) String userId, HttpServletRequest request) throws Exception
+	{
+		boolean isFound = false;
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = userService.validateSSNDuplicate(ssnNumber,orgLocations.getId(),userId);
+		if(user != null) {
+			isFound = true;
+		}
+		return isFound;
+		
 	}
 }

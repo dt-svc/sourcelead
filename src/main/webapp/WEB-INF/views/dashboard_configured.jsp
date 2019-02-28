@@ -122,6 +122,13 @@ var loaded = false;
 						<jsp:include page="leaveManagement.jsp"></jsp:include>
 					</sec:authorize>
 				</c:if>
+				
+				<!-- Candidates for Invoice -->
+				<c:if test='${itemName eq "Candidates for Invoice" && itemChecked == true}'>
+			<sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE','ROLE_VIEW_REQUIREMENT')">
+				<jsp:include page="candidatesForInvoiceDashboard.jsp"></jsp:include>
+			</sec:authorize> 
+			</c:if>
 	    
 		    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
 		    		<%-- <c:forEach items="${dashboardItems.itemsList}" var="item"> --%>

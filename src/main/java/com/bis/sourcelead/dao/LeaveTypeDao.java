@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import java.util.List;
 
 import com.bis.sourcelead.entity.LeaveType;
+import com.bis.sourcelead.entity.LeaveTypeHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
 
@@ -25,4 +26,6 @@ public interface LeaveTypeDao {
 	LeaveType getLeaveTypeByLeaveTypeName(String leaveTypeName, OrgLocations orgLocation);
 	
 	List<String> getLeaveTypeNameListByLocationId(Long orgLocationId);
+
+	void storeLeaveTypeHistory(LeaveTypeHistory lt);
 }

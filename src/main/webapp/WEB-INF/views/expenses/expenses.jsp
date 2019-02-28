@@ -455,11 +455,17 @@ function getEditExpense(eId){
 function exportToPdf(type){    
 	var temp = $("#temp").val();
 	if(temp != null && temp != ''){
-		var expenseStatus = [];
-		$('input:checkbox[name=expenseStatus]:checked').each(function() 
-		{
-			expenseStatus.push($(this).val());
-		});
+		
+		 var expenseStatus = $('#expenseStatusDivId').val();
+		 if(expenseStatus != null && expenseStatus != '' && expenseStatus !='undefined'){
+				expenseStatus = expenseStatus
+			}else{
+				var expenseStatus = [];
+				$('input:checkbox[name=expenseStatus]:checked').each(function() 
+				{
+					expenseStatus.push($(this).val());
+				});	
+			}
 		var startDate = $("#filterStartDate").val();
 		var endDate = $("#filterEndDate").val();
 		window.location.href = sourceleadUrl + "/exportAllMyExpensesList?&type="+type+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate;
@@ -519,6 +525,23 @@ $(".overIcon, .newActPop").click(function(e){
 $("#appro-pop").click(function(){
 	$(".newActPop").hide();
 	$(".approved_pop").toggle();
+});
+
+$(document).ready(function(){
+	$("#SearchExpensesData").keyup(function(event) {
+		$('#SearchExpensesData').parent().find('p.jquery_form_error_message').remove();
+	    if (event.keyCode === 13) {
+	    	$('#SearchExpensesData').parent().find('p.jquery_form_error_message').remove();
+	    	var searchData = $('#SearchExpensesData').val();
+	    	var regex =  new RegExp(/[\\]/g);
+	    	if(regex.test(searchData) == false){
+	    		getExpensesList();
+	    	}else{
+	    		$("#SearchExpensesData").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
+	    	}
+	    	$('#SearchExpensesData').val(searchData);
+	    }
+	});
 });
 
 </script>

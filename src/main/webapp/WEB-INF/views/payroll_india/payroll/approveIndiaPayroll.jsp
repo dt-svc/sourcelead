@@ -7,11 +7,11 @@
 					  <div class="row">
 					  <label class="col-md-2 text-muted">Total Earnings</label>
 					  <div class="col-md-4 clearfix">
-					  <input type="text" class="form-control input-sm" placeholder="Earnings" value="${earningTotal}" readonly>
+					  	<span class="paddingRight">&#8377;</span><fmt:formatNumber value="${earningTotal}" pattern="0.00"/>
 					  </div>
 				  </div>
 		  		</div>
-		  </div><fmt:formatNumber value="${earningTotal}" pattern="0.00"/>
+		  </div>
           <div class="clearfix approveTabelesStyles inlineBlock">
 				<div class="col-md-4 mb">
 					<h5>Earnings</h5>

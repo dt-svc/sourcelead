@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -67,6 +68,17 @@ public class ProjectMembersDTO implements Serializable {
     private String isProjectForTimeSheets;
 	    
 	private String isProjectForExpenses;
+	
+	private BigDecimal percentageOfWork;
+	
+
+	public BigDecimal getPercentageOfWork() {
+		return percentageOfWork;
+	}
+
+	public void setPercentageOfWork(BigDecimal percentageOfWork) {
+		this.percentageOfWork = percentageOfWork;
+	}
 
 	public String getExpenseId() {
 		return expenseId;

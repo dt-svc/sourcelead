@@ -269,12 +269,13 @@ public class FinanceDaoImpl implements FinanceDao{
 					startDate = new java.sql.Date(dates[0].getTime());
 					endDate = new java.sql.Date(dates[1].getTime());
 				}else if("custom".equalsIgnoreCase(apAgingDTO.getFilterType())){
-					Date[] dates = reportsUtil.getCustomDates(apAgingDTO.getFromDate(),apAgingDTO.getToDate());
+					Date[] dates = reportsUtil.getCustomDates(apAgingDTO.getFromDate(),apAgingDTO.getToDate(),orgLocation);
+					
 					startDate = new java.sql.Date(dates[0].getTime());
 					endDate = new java.sql.Date(dates[1].getTime());
 				}
-				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked' and invoice.dueDate >= :startDate and invoice.dueDate <= :endDate";
-				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked' and invoice.dueDate >= :startDate and invoice.dueDate <= :endDate ";
+				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked' and (invoice.dueDate >= :startDate and invoice.dueDate <= :endDate)";
+				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked' and (invoice.dueDate >= :startDate and invoice.dueDate <= :endDate) ";
 			}else {
 				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked'";
 				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked'";
@@ -398,7 +399,7 @@ public class FinanceDaoImpl implements FinanceDao{
 						startDate = new java.sql.Date(dates[0].getTime());
 						endDate = new java.sql.Date(dates[1].getTime());
 					}else if("custom".equalsIgnoreCase(missingInvoiceDto.getFilterType())){
-						Date[] dates = reportsUtil.getCustomDates(missingInvoiceDto.getFromDate(),missingInvoiceDto.getToDate());
+						Date[] dates = reportsUtil.getCustomDates(missingInvoiceDto.getFromDate(),missingInvoiceDto.getToDate(),orgLocations);
 						startDate = new java.sql.Date(dates[0].getTime());
 						endDate = new java.sql.Date(dates[1].getTime());
 					}
@@ -679,7 +680,7 @@ public class FinanceDaoImpl implements FinanceDao{
 				return reportsUtil.lastYearDates();
 			}
 			else if ("custom".equalsIgnoreCase(paidBillDTO.getFilterType())) {
-				return reportsUtil.getCustomDates(paidBillDTO.getFromDate(), paidBillDTO.getToDate());
+				return reportsUtil.getCustomDates(paidBillDTO.getFromDate(), paidBillDTO.getToDate(),orgLocations);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

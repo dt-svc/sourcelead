@@ -106,19 +106,26 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 							entries.setReceiptIssuedBy(entryCategory.getReceiptIssuedBy());
 						}
 						
-						Countries country = countriesService.getCountriesByCountryName(orgLocation.getCountry());
+
+						//Countries country = countriesService.getCountriesByCountryName(orgLocation.getCountry());
+						/*String currencyType = null;
+
+						/*Countries country = countriesService.getCountriesByCountryName(orgLocation.getCountry());
 						String currencyType = null;
+
 						if(country!= null &&  country.getCurrency()!= null && !country.getCurrency().equalsIgnoreCase(entryCategory.getCategoryAmountType())){
 							currencyType = country.getCurrency();
 						}
 						
 						if(StringUtils.isEmpty(entryCategory.getCategoryAmountType()) || (StringUtils.isNotEmpty(currencyType) && !currencyType.equalsIgnoreCase(entryCategory.getCategoryAmountType()))){
-							entries.setCurrencyType(currencyType);
-						}else {
 							entries.setCurrencyType(entryCategory.getCategoryAmountType());
-						}
+						}else {
+							entries.setCurrencyType(currencyType);
+						}*/
+
+						entries.setCurrencyType(entryCategory.getCategoryAmountType());
 						
-						
+
 						entries.setSubmittedamount(new BigDecimal(entryCategory.getCategoryAmount()));
 						
 						if(StringUtils.isNotBlank(entryCategory.getCategoryApprovedAmount())){
@@ -212,5 +219,21 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 	public List<ExpensesEntries> getExpensesEntriesByExpenseId(long expenseId) {
 		return expensesEntriesDao.getExpensesEntriesByExpenseId(expenseId);
 	}
+
+	@Override
+	public int dumpExpenceCategoryAmountToOldRecords() {
+		return expensesEntriesDao.dumpExpenceCategoryAmountToOldRecords();
+	}
+
+	@Override
+	public int changeDocumentNameWithWhiteSpacesToUnderScore(String staticPath) {
+		try {
+			return expensesEntriesDao.changeDocumentNameWithWhiteSpacesToUnderScore(staticPath);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
 	
 }

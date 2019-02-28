@@ -14,6 +14,8 @@ public class TimesheetEntriesDTO implements Serializable{
 	
 	private String ticketNumber;
 	
+	private String hourlyType;
+	
 	private Long projectMemberId;
 	
 	//@Required(desc="timesheetTaskDTO")
@@ -119,6 +121,14 @@ public class TimesheetEntriesDTO implements Serializable{
 
 	public void setTimesheetStatus(String timesheetStatus) {
 		this.timesheetStatus = timesheetStatus;
+	}
+
+	public String getHourlyType() {
+		return hourlyType;
+	}
+
+	public void setHourlyType(String hourlyType) {
+		this.hourlyType = hourlyType;
 	}
 
 }

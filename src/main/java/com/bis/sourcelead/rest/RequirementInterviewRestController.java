@@ -26,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.RequirementInterviewDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Org;
@@ -134,22 +135,22 @@ public class RequirementInterviewRestController {
 	}
 	
 	@RequestMapping(value = "/app/getAllShortListCandidates")
-	public @ResponseBody ResponseList<RequirementSubmission> getAllShortListCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,
+	public @ResponseBody ResponseList<RequirementSubmissionsDTO> getAllShortListCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,
 			                                              @RequestParam(value="existingApplicantsIds", required=false) List<Long> existingApplicantsIds,
 			                                              @RequestParam(value="isClientInterview", required=false) String isClientInterview,
 			                                              HttpServletRequest request) throws Exception {
-		ResponseList<RequirementSubmission> response = new ResponseList<>();
+		ResponseList<RequirementSubmissionsDTO> response = new ResponseList<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-		if (requirement != null && requirement.getPrimaryRecruiterUserId() != null) {
+		if (requirement != null && requirement.getPrimaryRecruiterUserId() != null && user.getId() == requirement.getPrimaryRecruiterUserId().getId()) {
 			user = requirement.getManagerUserId();
 		}
 		if(user != null) {
 			try {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-				List<RequirementSubmission> shortListCandidatesList = requirementSubmissionService.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations, requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
-				for (RequirementSubmission sub : shortListCandidatesList) {
+				List<RequirementSubmissionsDTO> shortListCandidatesList = requirementSubmissionService.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations, requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
+				for (RequirementSubmissionsDTO sub : shortListCandidatesList) {
 					 StringBuilder nameBuilder = new StringBuilder();
 					RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(sub.getId());
 					if(StringUtils.isNotBlank(requirementSubmissionTemplateFields.getLastName())){
@@ -157,9 +158,10 @@ public class RequirementInterviewRestController {
 					}else{
 						sub.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
 					}
-					sub.setIsClientSubmission(sub.getRequirement().getIsClientJob());
+//					sub.setIsClientSubmission(sub.getRequirement().getIsClientJob());
 				}
 				response.setData(shortListCandidatesList);
+				System.out.println("Result Size : " + shortListCandidatesList.size());
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			}catch(Exception e) {
@@ -360,7 +362,7 @@ public class RequirementInterviewRestController {
 			   requirementInterviewService.applicantInterviewProposeTimeEmailToInterviewInitiator(jsonObj.getString("requirementInterviewId"),requirementSubmission.getOrgLocations(),loginOrg,user);	 
 			 }
 			 if(user != null){
-			 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+			 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 			 }
 			return "success";
 
@@ -790,7 +792,7 @@ public class RequirementInterviewRestController {
 		if(!orgLocations.getId().equals(submission.getCandidate().getOrgLocationId().getId()) && submission.getSourceSubmission() != null &&  !submission.getCandidate().getCandidateType().equalsIgnoreCase("Professional")) {
 			requirementSubmissionService.sendRejectionMailToVendorContact(user, submission.getRejectedReason(), submission.getId(), orgLocations);
 		}
-		requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory);
+		requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory, submission.getCreatedBy());
 	}
 	
 	public void saveSubmissionStatusForSelectedInterview(Long interviewId, RequirementSubmission submission, User user, OrgLocations orgLocations) throws Exception {
@@ -808,7 +810,7 @@ public class RequirementInterviewRestController {
 			submission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 			submission.setUpdatedDate(new Date());
 			requirementSubmissionService.storeRequirementSubmission(submission);
-			requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory);
+			requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory, submission.getCreatedBy());
 		}
 	}
 	 

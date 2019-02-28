@@ -333,20 +333,22 @@ function getUserList(teamType){
 			         				 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox '+isBlockedBySelected+'" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" '+isSelected+' name="team" onchange="handleChange(this);"></td>';
 			                    	 result = result +'             <td><span class="tbldata-dotdot-custom" title="'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'">'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'</span></td>';
 			                    	 result = result +'             <td><span class="tbldata-dotdot-100" title="'+opt.email+'">'+opt.email+'</span></td>';
-			                    	 result = result +'             <td><span class="tbldata-dotdot_80">'+opt.userType+'</span></td>';
-			                    	 result = result +'             <td><span class="tbldata-dotdot_30">'+opt.assignJobCount+'</span></td>';
+			                    	 result = result +'             <td><span class="tbldata-dotdot_80"><div id="'+opt.id+'assignedUserType"><i class="fa fa-spinner fa-pulse"></i></div></span></td>';
+			                    	 result = result +'             <td><span class="tbldata-dotdot_30 requirementAssignedCount"  id="'+opt.id+'"><div id="'+opt.id+'requirementAssignedCount"><i class="fa fa-spinner fa-pulse"></i></div></span></td>';
 			                    	 result = result +'           </tr>';
 		                       }
 			                    
 		                 	   //result = result +'	<span class="jquery_form_error_message" style="display:none;">Assign at least to a new member</span>'; */
 		                 	   $("#usersGrid-loader").removeAttr("style");
 		                       $("#usersGrid").append(result);
+		                       getUserAssingedJobCounts();
 		                       $("#checkAll").prop('checked', false);
 		                       if(isTeamExists && isRoleExists){
 		                    	   $("#checkAll").prop('disabled', true);
 		                       }else{
 		                    	   $("#checkAll").prop('disabled', false);
 		                       }
+		                      
 		                       //paginations(); 
 	                 	}
 	                } else if (data.indexOf('Sign In') !== -1) {
@@ -354,11 +356,35 @@ function getUserList(teamType){
 					} else {
 	                    showError("Operation failed, please try again");
 	                }
-          		},complete: function (data) {
-                	selectAssignUsers();
-                }
+          		}
        		});
   	} 
+</script>
+
+
+<script>
+function getUserAssingedJobCounts(){
+	 $('.requirementAssignedCount').each(function() {
+		 var userId = this.id;
+		 if(userId != null &&  userId !='undefined' && userId != ''){
+			 $.ajax({
+		           type : "GET",
+		           url: sourceleadUrl+"/getUserAssingedJobsListCountForRequirementAssignedTo?userId="+userId,    
+		            success :function(data) {
+		            	  $("#"+userId+"assignedUserType").empty();
+		             	  $("#"+userId+"assignedUserType").html(data.userType);
+		             	  		             	  
+		             	  $("#"+userId+"requirementAssignedCount").empty();
+		             	  $("#"+userId+"requirementAssignedCount").html(data.assignedJobsCount);
+		            },complete: function (data) {
+		            	selectAssignUsers();
+	                }
+			    });
+		 }
+			
+   });  
+}
+
 </script>
 
 <script>
