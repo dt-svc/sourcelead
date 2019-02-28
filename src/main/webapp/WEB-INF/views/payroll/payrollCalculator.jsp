@@ -156,9 +156,9 @@ function approvePayrollDiv(){
 	<div class="col-md-5">
 	<ul class="pull-right mr list-unstyled list-inline">
 		<li><a href="#" class="btn btn-primary btnSuccess" id="Submit" onClick="sendPayrollForApprover();">Submit for Approve</a></li>
-<%-- 		 <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}"> --%>
+		 <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
 		<li><a href="#" class="btn btn-default ml mr" id="Confirm" onclick="confirmPayroll();">Confirm</a></li>
-<%-- 		</c:if> --%>
+		</c:if>
 		<li><a href="#" class="btn btn-default" onclick="window.location='${SourceLeadWeb_pmsUrl}/payrollList?&redirect=draft'">Cancel</a></li>
 	</ul>
 	</div>
