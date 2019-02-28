@@ -271,9 +271,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			/*if(dataMigrationDTO.getUploadType().equalsIgnoreCase("candidatesUpload")) {
 				candidateEmailsList = candidateService.getCandidateEmailsByOrgLocationId(orgLocation.getId());
 			}*/
-			
+			int rw = 0;
 			if (nextRow.getRowNum() + 1 > Integer.parseInt(dataMigrationDTO.getHeaderPosition())) {
-				
+				System.out.println(++rw + "Row Processing Entry" + Calendar.getInstance().getTime());
 				isEmptyExcel = false;
 				HashMap<String, String> errorSet = new HashMap<String, String>();
 				Gson gson = new Gson();
@@ -396,9 +396,11 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					break;
 					
 				case "candidatesUpload":
+					System.out.println(++rw + "Row Validation Entry Starts" + Calendar.getInstance().getTime());
 					dataMigrationDTOJsonCopy.put("inviteEmail", dataMigrationDTO.getInviteEmail());
 					dataMigrationCommonUtil.dataValidationForCandidates(errorSet, dataMigrationDTOJsonCopy, user,
 							orgLocation,candidateEmailsList);
+					System.out.println(++rw + "Row Validation Entry Ends" + Calendar.getInstance().getTime());
 					break;
 					
 				case "timesheetUpload":
@@ -439,7 +441,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				}
 
 				if (errorSet.isEmpty()) {
+					System.out.println(++rw + "Row Saving Entry Starts" + Calendar.getInstance().getTime());
 					mapToEntities(dataMigrationDTOJsonCopy, user, orgLocation, dataMigrationDTO.getUploadType(),jsonString,dataMigrationDTO.getUploadid());
+					System.out.println(++rw + "Row Saving Entry Ends" + Calendar.getInstance().getTime());
 					importStatus = "success";
 					FileOutputStream outputStream = new FileOutputStream(
 							new File(ac + dataMigrationDTO.getExportFilePath()));

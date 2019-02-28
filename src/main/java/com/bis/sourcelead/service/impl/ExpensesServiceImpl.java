@@ -109,7 +109,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	public ResponseList<Expenses> getAllExpenses(OrgLocations orgLoc,User loginUser, String expenseStatus, String startDate, String endDate,String searchValue,int start,int length) throws Exception {
 			Date endDateUTC = null;
 			Date startDateUTC = null;
-			Timezone timezone = timeZoneService.getTimezone(orgLoc.getTimezone().getId());
+			Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLoc.getTimeZoneId()));
 			DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			
 			DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
