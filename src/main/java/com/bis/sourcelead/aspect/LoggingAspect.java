@@ -174,7 +174,6 @@ public class LoggingAspect {
 		if("initMarketplacePayment".equalsIgnoreCase(methodName)){
 			type="initMarketplacePayment";
 		}
-		System.out.println( StringUtils.isNotEmpty(actionUUID));
 
 		if(StringUtils.isNotBlank(actionUUID) && loginOrgLocation != null) {
 			userLoginLogoutSession = new UserLoginLogoutSession();
