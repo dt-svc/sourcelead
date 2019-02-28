@@ -103,7 +103,7 @@ public class DepartmentDaoImpl implements DepartmentDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		 boolean flag = false;
-			 String query = "from Department department  where department.orgLocationId.id =:orgLocationId and department.departmentName =:departmentName ";
+			 String query = "from Department department  where department.orgLocationId.id =:orgLocationId and department.departmentName =:departmentName and department.status='1'";
 				Collection<Department> departmentList = session.createQuery(query) .setString("departmentName", departmentName).setLong("orgLocationId", orgLocationId).list();
 				if (departmentList != null && departmentList.size() > 0) {
 					flag = true;
