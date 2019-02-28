@@ -37,7 +37,7 @@
 		 <div class="tbldata-dotdot-100"><span title="${expApproverHierarchy.expensesProjectName}">${expApproverHierarchy.expensesProjectName}</span><br>
 			 <sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">
 				 <c:if test="${not empty expApproverHierarchy.orgRelationUUID}">
-				 	<span title="${expApproverHierarchy.clientName}"> <a href="/app/clientDashboard?orgRelationUUID=${expApproverHierarchy.orgRelationUUID}" title="${expApproverHierarchy.clientName}" class="aLink"> ${expApproverHierarchy.clientName}</a></span>
+				 	<span title="${expApproverHierarchy.clientName}"> <a href="${SourceLeadWeb_atsUrl}/clientDashboard?orgRelationUUID=${expApproverHierarchy.orgRelationUUID}" title="${expApproverHierarchy.clientName}" class="aLink"> ${expApproverHierarchy.clientName}</a></span>
 				 </c:if>
 			 </sec:authorize>
 				 <c:if test="${not empty expApproverHierarchy.clientName}">
