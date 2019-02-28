@@ -1282,6 +1282,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		   Session session = this.sessionFactory.getCurrentSession();
 			
            deleteLcaHistoryDetailsByImmigrationId(immigrationId);
+           deleteImmigrationNotesByImmigrationId(immigrationId);
 		   CandidateLcaJobDetails candLcaJobDetails = getCandidateLcaJobDetails(immigrationId);
 		   
 			 if(candLcaJobDetails != null) {
@@ -2642,7 +2643,23 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		return count;
 	}
-
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int deleteImmigrationNotesByImmigrationId(Long immigrationId) {
+		int count =0;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "delete from SourceleadNotes sn  where sn.immigration.id =:immigrationId";
+			 count= session.createQuery(query.toString()).setLong("immigrationId", immigrationId).executeUpdate();
+			return count;
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
+			e.printStackTrace();
+		}
+		return count;
+	}
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<ImmigrationReportViewDTO> getImmigrationReports(ImmigrationReportViewDTO immigrationReportDTO, OrgLocations orgLocations) {
