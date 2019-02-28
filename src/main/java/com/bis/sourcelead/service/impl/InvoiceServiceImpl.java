@@ -2520,7 +2520,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			String paymentStatus, String invoiceType, OrgLocations orgLocations, String dayWisetype,
 			String customStartDate, String customEndDate) throws Exception {
 
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocations.getTimeZoneId()));
 		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
 		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
