@@ -373,7 +373,9 @@ public class DashboardRestController {
 		      Authentication auth = SecurityContextHolder.getContext().getAuthentication();	
 		      String authToken[] = auth.getName().split("##");
 		      String uname = user.getUserName()+"##"+userRole.getId()+"##"+authToken[2];
-		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole, request);
+		      String actionUUID = (String) SourceLeadSessionManager.getSessionAttribute(request, "actionUUID");
+		      Long actionId = (Long) request.getSession().getAttribute("actionId");
+		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole,actionUUID,actionId,request);
 				 
 		     SecurityContextHolder.clearContext();
 			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null));
@@ -392,8 +394,9 @@ public class DashboardRestController {
 		      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		      String authToken[] = auth.getName().split("##");
 		      String uname = user.getUserName()+"##"+userRole.getId()+"##"+authToken[2];
-		      
-			 userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole, request);
+		      String actionUUID = (String) SourceLeadSessionManager.getSessionAttribute(request, "actionUUID");
+		      Long actionId = (Long) request.getSession().getAttribute("actionId");
+		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole,actionUUID,actionId,request);
 				
 		     SecurityContextHolder.clearContext();
 			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null));
@@ -421,7 +424,9 @@ public class DashboardRestController {
 		      Authentication auth = SecurityContextHolder.getContext().getAuthentication();	
 		      String authToken[] = auth.getName().split("##");
 		      String uname = user.getUserName()+"##"+userRole.getId()+"##"+authToken[2];
-		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole, request);
+		      String actionUUID = (String) SourceLeadSessionManager.getSessionAttribute(request, "actionUUID");
+		      Long actionId = (Long) request.getSession().getAttribute("actionId");
+		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole,actionUUID,actionId,request);
 				
 		     SourceLeadSessionManager.setSessionAttribute(request, "productionLoginUserId", productionLoginUserId);
 		     SecurityContextHolder.clearContext();
@@ -458,7 +463,9 @@ public class DashboardRestController {
 		      Authentication auth = SecurityContextHolder.getContext().getAuthentication();	
 		      String authToken[] = auth.getName().split("##");
 		      String uname = user.getUserName()+"##"+userRole.getId()+"##"+authToken[2];
-		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole, request);
+		      String actionUUID = (String) SourceLeadSessionManager.getSessionAttribute(request, "actionUUID");
+		      Long actionId = (Long) request.getSession().getAttribute("actionId");
+		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole,actionUUID,actionId,request);
 		     
 		     SecurityContextHolder.clearContext();
 			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null));
@@ -501,7 +508,9 @@ public class DashboardRestController {
 		      Authentication auth = SecurityContextHolder.getContext().getAuthentication();	
 		      String authToken[] = auth.getName().split("##");
 		      String uname = user.getUserName()+"##"+userRole.getId()+"##"+authToken[2];
-		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole, request);
+		      String actionUUID = (String) SourceLeadSessionManager.getSessionAttribute(request, "actionUUID");
+		      Long actionId = (Long) request.getSession().getAttribute("actionId");
+		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole,actionUUID,actionId,request);
 		     
 		     SecurityContextHolder.clearContext();
 			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null));
@@ -542,7 +551,9 @@ public class DashboardRestController {
 		      Authentication auth = SecurityContextHolder.getContext().getAuthentication();	
 		      String authToken[] = auth.getName().split("##");
 		      String uname = user.getUserName()+"##"+userRole.getId()+"##"+authToken[2];
-		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole, request);
+		      String actionUUID = (String) SourceLeadSessionManager.getSessionAttribute(request, "actionUUID");
+		      Long actionId = (Long) request.getSession().getAttribute("actionId");
+		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole,actionUUID,actionId,request);
 		     
 		     SecurityContextHolder.clearContext();
 			 SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, uname, null, null));

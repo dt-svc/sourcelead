@@ -77,7 +77,7 @@ public class TaskRestController {
 		 try{
 			if(user != null){
 				if(Validator.validate(addTaskDTO)){
-					 String tasks =  taskService.saveTasksDTO(addTaskDTO);
+					 taskService.saveTasksDTO(addTaskDTO);
 					 response.setResponse(Result.SUCCESS.name());
 						response.setResponseMessage(Result.SUCCESS.getValue());
 					
@@ -114,20 +114,8 @@ public class TaskRestController {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-/*		String taskCurrentTimeStr = "";
-		String taskCurrentDateInTimezone ="";
-		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-*/		Date converteDate=null;
-		/*if(!"".equalsIgnoreCase(date)){
-			Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(date);
-			taskCurrentTimeStr = Constants.TZ_DF.format(date1);
-			taskCurrentDateInTimezone= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", taskCurrentTimeStr);
-			converteDate = TZ_DF_TS.parse(taskCurrentDateInTimezone);
-			taskCurrentDateInTimezone = Constants.DMY.format(converteDate);
-		}*/
-		
+		Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocations.getTimeZoneId()));
+		Date converteDate=null;
 		List<Tasks> taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(orgLocations.getId(),user.getId(),status,date,converteDate,timezone);
 		return commonUtil.toJSON(taklist);
 	} 
