@@ -95,5 +95,15 @@ public class DepartmentServiceImpl implements DepartmentService{
 			throws Exception {
 		return departmentDao.getDepartmentByOrgLocationIdAndDepartmentName(orgLocationId, departmentName);
 	}
+
+	@Override
+	public List<DepartmentDTO> getDepartmentsListByIds(List<Long> id) throws Exception {
+		return departmentDao.getDepartmentsListByIds(id);
+	}
+
+	@Override
+	public List<DepartmentDTO> getDepartmentsListByOrgLocationId(Long orgLocationId) throws Exception {
+		return departmentDao.getDepartmentsListByOrgLocationId(orgLocationId);
+	}
 	
 }

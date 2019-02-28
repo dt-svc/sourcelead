@@ -3,6 +3,7 @@ package com.bis.sourcelead.service;
 import com.bis.sourcelead.dto.AssociateSalaryIndDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssociateSalaryHistoryInd;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPayhead;
@@ -31,7 +32,11 @@ public interface PayrollPayheadService {
 	
 	AssociateSalaryInd saveAssociateSalaryInd(AssociateSalaryIndDTO associateSalaryIndDTO, User user, OrgLocations orgLocations) throws Exception;
 	
+	AssociateSalaryInd saveAssociateSalaryInd(AssociateSalaryInd associateSalaryInd) throws Exception;
+	
 	AssociateSalaryInd getAssociateSalaryIndByUUID(String uuid) throws Exception;
 	
 	AssociateSalaryInd getAssociateSalaryIndByCandidateId(Long id) throws Exception;
+	
+	AssociateSalaryHistoryInd saveAssociateSalaryHistoryInd(AssociateSalaryHistoryInd associateSalaryHistoryInd) throws Exception;
 }

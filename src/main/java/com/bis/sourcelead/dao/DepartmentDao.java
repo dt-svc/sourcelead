@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.DepartmentDTO;
 import com.bis.sourcelead.entity.Department;
 
 public interface DepartmentDao {
@@ -27,5 +28,9 @@ public interface DepartmentDao {
 	 List<String> getDepartmentList(Long orgLocationId) throws Exception;
 	 
 	 Department getDepartmentByOrgLocationIdAndDepartmentName(Long orgLocationId,String departmentName) throws Exception;
+	 
+	 List<DepartmentDTO> getDepartmentsListByIds(List<Long> id) throws Exception;
+	 
+	 List<DepartmentDTO> getDepartmentsListByOrgLocationId(Long orgLocationId) throws Exception;
 	
 }

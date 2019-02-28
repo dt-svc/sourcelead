@@ -248,7 +248,7 @@ window.onload = function() {
 			    <div class="form-group clearfix" id="notifyOtherDiv" style="display:none;">
               <label class="col-md-3">&nbsp;&nbsp;</label>
               <div class="col-md-9">
-              	<select  multiple data-placeholder="Select Approver" class="chosen-select form-control" id="approverId" name="otherApproverUser" field-name="Approver" data-validation-optional = "true">
+              	<select  multiple data-placeholder="Select Notifiers" class="chosen-select form-control" id="approverId" name="otherApproverUser" field-name="Approver" data-validation-optional = "true">
 	                  </select>
               </div>
              </div>
@@ -598,7 +598,9 @@ function calculateDuration(){
         	  output = output +' <option value="">--Select Leave Type--</option>';
         	  for (var i = 0; i < json.length; i++) {
         		  var leave = json[i];
-        		  if(leave.leaveTypeBalanceLeaveCount <= 0 && leave.overdrawLeaves == 'N'){
+        		  //TODO
+        		  //To be done (Rakshith)
+        		  if(leave.leaveTypeBalanceLeaveCount <= 0 && leave.overdrawLeaves == 'N' && leave.visibleInBalanceLeaves == 'Y'){
         			 
         		  }else{
         			  if(leave.id == leaveId){
@@ -1088,7 +1090,7 @@ function validateOverDrawLeaves(totalNumberOfDays){
 	
 	var typeName = leaveTypeName.replace(/ /g,"_");
 	var typeIdBalCount = parseFloat($("#"+typeName+"Span").text());
-	if(totalNumberOfDays > typeIdBalCount){
+	if(totalNumberOfDays > typeIdBalCount && overDrawLeaveType == 'N'){
 		errorMessage += "You Have Not Enough Leaves To Apply.";
 		$("#ApplyLeave").attr('disabled','disabled');
 	}
@@ -1292,10 +1294,18 @@ function getApproversList(){
 
 <script>
 function clearFromDate(){
+	$('#toDate').attr('value', '');
+	$('#toDate').datepicker( "option" , {
+        minDate: null,
+        maxDate: null} );
 	$("#fromDate").val("");
 	};
 	
 function clearToDate(){
+	$('#fromDate').attr('value', '');
+	$('#fromDate').datepicker( "option" , {
+        minDate: null,
+        maxDate: null} );
 	$("#toDate").val("");
 	};
 </script>

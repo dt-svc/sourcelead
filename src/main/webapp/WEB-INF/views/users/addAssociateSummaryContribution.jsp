@@ -73,7 +73,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Contribution</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Contribution</a> &raquo; Contribution List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Contribution List</a> &raquo; Contribution </div>
     </section>
     
      <div class="content-area content-new clearfix">
@@ -299,6 +299,7 @@ function resValues(){
 			url: sourceleadUrl+"/validateContribution?"+tokenParamName+"="+tokenValue+"&contriType="+contriType+"&userId="+userId,
 			success :function(data) {
 				if(data == true){
+					$('#contriType').find('p.jquery_form_error_message').remove();
 					$("#contriType").after("<p class='jquery_form_error_message'>This type is Already Existed</span>");
 					document.getElementById("contribution_save_button").disabled = true;
 					document.getElementById("contributionAddButtonId").disabled = true;

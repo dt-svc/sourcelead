@@ -24,4 +24,8 @@ public interface DepartmentService {
 	List<String> getDepartmentList(Long orgLocationId) throws Exception;
 	
 	Department getDepartmentByOrgLocationIdAndDepartmentName(Long orgLocationId,String departmentName) throws Exception;
+	
+	List<DepartmentDTO> getDepartmentsListByIds(List<Long> id) throws Exception;
+	
+	List<DepartmentDTO> getDepartmentsListByOrgLocationId(Long orgLocationId) throws Exception;
 }

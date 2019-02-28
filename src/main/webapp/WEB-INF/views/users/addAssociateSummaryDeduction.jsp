@@ -75,7 +75,8 @@ getDeductionType();
       <div class="pull-left">
         <h2>Deduction</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Deduction List</div>
+<%--       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home >>Deduction List</a> &raquo; Deduction </div> --%>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Deduction List</a> &raquo; Deduction </div>
     </section>
     <div class="content-area content-new clearfix">
 
@@ -295,6 +296,7 @@ function resetValues(){
 				url: sourceleadUrl+"/validateDeduction?"+tokenParamName+"="+tokenValue+"&dedType="+dedType+"&userId="+userId,
 				success :function(data) {
 					if(data == true){
+						$('#dedType').find('p.jquery_form_error_message').remove();
 						$("#dedType").after("<p class='jquery_form_error_message'>This type is Already Existed</span>");
 						document.getElementById("associate_deduction_save_button").disabled = true;
 						document.getElementById("deductionAddButtonId").disabled = true;

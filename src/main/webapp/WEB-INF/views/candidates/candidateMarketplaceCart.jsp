@@ -12,10 +12,10 @@
     <section class="content-wraper">
     <section class="content-header clearfix">
     <div class="pull-left">
-      <h2 id="headerLbl">Marketplace List</h2>
+      <h2 id="headerLbl">Cart</h2>
     </div>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl"><a href="${appPath}/globalMarketplacePage">Global Marketplace List</a></label> &raquo; <label id="brudCrumLbl">Cart View</label> </div>
+	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl"><a href="${appPath}/globalMarketplacePage">Global Marketplace List</a></label> &raquo; <label id="brudCrumLbl">Cart</label> </div>
 	  </c:if>
 	  </section>
 	  <div id="popUp"></div>
@@ -24,14 +24,18 @@
 			<ul class="project-tabs-menu projecttabs-custom clearfix">
 		         <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
 		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
-		         <li id="" class="current"><a href="javascript:void(0)">Global Marketplace</a></li>
+		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
+		         <li id="" class="current"><a href="javascript:void(0)">Cart</a></li>
+		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
+            	 <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
+                 <li id=""><a href="javascript:void(0)" onclick="javascript:goToWalletList();">Wallet</a></li> 
 		     </ul>
      
   <div class="clerfix row">
     <div class="col-md-12">
       <div class="profileDetails">
         <div class="row reportHead">
-          <div class="col-md-12"> <span class="pull-left refreIcon noPad mt5"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="refreshPage();"></a><h4 style="display:inline-block">Cart View</h4></span>
+          <div class="col-md-12"> <span class="pull-left refreIcon noPad mt5"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="refreshPage();"></a><!-- <h4 style="display:inline-block">Cart View</h4> --></span>
             <ul class="pull-right mb0 list-unstyled list-inline ulliBorder">
               <li>
 				  <i class="inlineBlock pull-left mr10 trashIcon" title="Cart"></i>
@@ -54,7 +58,7 @@
                 <span class="repSearchIcon" onclick="getCandidateDetailsFromMarketcart()"></span></li>
                  <sec:authorize access="hasRole('PURCHASE_PROFILE')">
               <li class="noMar">
-                <button type="button" onclick="initMarketplacePayment()" class="btn btn-primary"><i class="fa fa-send paddingRight"></i>Check Out</button>
+                <button type="button" onclick="initMarketplacePayment()" class="btn btn-primary" id="checkOutButton1"><i class="fa fa-send paddingRight"></i>Check Out</button>
                 </li>
                 </sec:authorize>
             </ul>
@@ -119,7 +123,7 @@
                 <sec:authorize access="hasRole('PURCHASE_PROFILE')">
               <div class="cartInvoiceBodyFooter">
                 <div class="clearfix">
-                  <div class="pull-right"> <a onclick="initMarketplacePayment()" href="javascript:void(0)" class="btn btn-primary mr"><i class="fa fa-send paddingRight"></i>Check Out</a> <a class="btn btn-default" href="${appPath}/globalMarketplacePage">Cancel</a> </div>
+                  <div class="pull-right"> <a onclick="initMarketplacePayment()" href="javascript:void(0)" class="btn btn-primary mr" id = "checkOutButton2"><i class="fa fa-send paddingRight"></i>Check Out</a> <a class="btn btn-default" href="${appPath}/globalMarketplacePage">Cancel</a> </div>
                 </div>
               </div>
               </sec:authorize>
@@ -279,9 +283,22 @@ $('.chosen-select').each(function() {
 function goToOrgMarketPlaceList(){
 	location.href = "${appPath}/OrgMarketplace";
 }
-/* 
-var checkedDate = "";
-var customDate = ""; */
+
+function goToGlobalMarketPlaceList(){
+	location.href = "${appPath}/globalMarketplacePage";
+}
+
+function goToPurchaseOrderList(){
+	location.href ="${appPath}/PurchaseOrderList";
+	}
+function goToSalesOrderList(){
+	location.href = "${appPath}/SalesOrderList";
+}
+
+function goToWalletList(){
+    location.href = "${appPath}/walletList";
+}
+
 function getCandidateDetailsFromMarketcart(){
 	var candidateLength = 0;
 	var checkedDate = $('input[name=MarketCartDate]:checked').val();
@@ -294,8 +311,8 @@ function getCandidateDetailsFromMarketcart(){
 		url : sourceleadUrl +"/getCandidateDetailsFromMarketcart?searchValue="+searchValue+"&creationStartDate="+creationStartDate+"&creationEndDate="+creationEndDate+"&checkedDate="+checkedDate,
 		async : false,
 		success : function(object) {
-			if(object != null){
 			var result ="";
+			if(object != null && object.length != 0){
 				for(var i=0;i<object.length;i++){
 				result = result + "<div class='mt'></div>";
 				result = result + "<div class='media profileDetails-Widget positionRelative'><a class='removeSelected mt' title='Remove Selected' onclick = 'deleteCandidateFromMarketcart(\""+(object[i].fullName == null ? '---' : object[i].fullName)+"\" , \""+object[i].candidateUuid+"\");'><i class='fa fa-trash-o mt5'></i></a>";
@@ -347,9 +364,15 @@ function getCandidateDetailsFromMarketcart(){
 				result = result + "<label class='mr text-muted'>Added on :</label><span>"+object[i].createdDatestr+"</span>";
 				result = result + "</div></div></div></div></div>";
          		}
-			$("#gridView").empty().append(result);
 			candidateLength =  object.length;
 			}
+			else{
+				$(".ulliBorder > li").first().hide();
+				result = result + "<div class='dataTables_empty'></div>";	
+				$("#checkOutButton1").attr("disabled", true);
+				$("#checkOutButton2").attr("disabled", true);
+			}
+			$("#gridView").empty().append(result);
 		}
 		});
 	return candidateLength;
@@ -362,6 +385,8 @@ function updateInvoiceDetails(){
 	        type: 'GET',
 	        success: function (object) {
 	        	if(object != null){
+	        		$("#checkOutButton1").attr("disabled", false);
+	        		$("#checkOutButton2").attr("disabled", false);
 		        	$("#invoiceCartCount").html(object[0]);
 		        	totalPriceInCurrency = new Intl.NumberFormat('en-US', { minimumFractionDigits : 2 }).format(object[1]);
 	        		$("#invoiceCartTotal").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
@@ -397,10 +422,7 @@ function deleteCandidateFromMarketcartByCandidateUuid(candidateUuid){
 			if (result.response === "AWKWARD") {
                 location.href = "/errorPage";
             }else if(result.response === "SUCCESS") {
-            	cLength = getCandidateDetailsFromMarketcart();
-            	if(cLength === 0){
-    				window.location.replace("${appPath}/globalMarketplacePage");
-    			}
+            	getCandidateDetailsFromMarketcart();
             	updateInvoiceDetails();
 				updateMarketplaceCartCountAndPrice();
             	$("#remove_marketCart_pop").fadeOut(200);
@@ -486,8 +508,6 @@ var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 	$("#customDateCheckBox").click(function() {
 		if($(this).is(":checked")){
 			$("#customDates").show();
-		//	$("#customDateCheckBox").val("custom");
-		//	checkedDate = '';
 		}else {
 			$("#customDates").hide();
 		}

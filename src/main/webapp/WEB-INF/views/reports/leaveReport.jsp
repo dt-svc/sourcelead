@@ -776,7 +776,18 @@ function resetReportCollapse() {
 // 	var fromDate = $("#fromDate").val();
 //     var toDate = $("#toDate").val();
 // 	leaveReport(fromDate,toDate);
+
+	
+	$('#fromDate').attr('value', '');
+	$('#fromDate').datepicker( "option" , {
+        minDate: null,
+        maxDate: null} );
+	$('#toDate').attr('value', '');
+	$('#toDate').datepicker( "option" , {
+        minDate: null,
+        maxDate: null} );
 	$("#leaveReportDataTableSearch").val('');
+	$("#leaveReportForm").val('');
 	$("#fromDate").val('');
 	$("#toDate").val('');
 	$("#departmentList").val('');

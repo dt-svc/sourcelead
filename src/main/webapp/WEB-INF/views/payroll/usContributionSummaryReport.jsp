@@ -316,6 +316,10 @@ function contributionSummaryReportData(url) {
 function resetDiv(){
 	$("#payrollRegister").hide();
 	$("#fromDate").val('');
+	$('#toDate').attr('value', '');
+	$('#toDate').datepicker( "option" , {
+        minDate: null,
+        maxDate: null} );
 	$("#toDate").val('');
 }
 
