@@ -602,7 +602,7 @@ public class LeaveManagementRestController {
 	@RequestMapping(value = "/addShift")
 	public ModelAndView addShiftJsp(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		  Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		  Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocations.getTimeZoneId()));
 		   ModelAndView model = new ModelAndView();
 		   model.addObject("timezone", timezone.getTimeZoneId());
 		   model.addObject("sourceleadUrl", sourceleadUrl);
@@ -909,7 +909,7 @@ public class LeaveManagementRestController {
 	@RequestMapping(value = "/editleaveshift")
 	public ModelAndView editShift(@RequestParam (value = "shiftUUID", required = false )String shiftUUID,HttpServletRequest request,HttpServletResponse response) throws Exception{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocations.getTimeZoneId()));
 		ModelAndView model = new ModelAndView();
 		
 	    Shift shift = shiftService.getShiftById(shiftUUID);
@@ -1061,6 +1061,8 @@ public class LeaveManagementRestController {
 			throws Exception {
  		Response<String> response = new Response<>();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
+		orgLocation.setOrg(org);
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
@@ -1405,6 +1407,8 @@ public class LeaveManagementRestController {
 		Response<String> response = new Response<>();
 		try {
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			orgLocations.setOrg(org);
 			boolean isSuperUser = false;
 			if(StringUtils.isNotBlank(leaveDTO.getUser())){
 				isSuperUser = orgLocationService.isLoginUserIsSuperUser(Long.parseLong(leaveDTO.getUser()),orgLocations.getId());
@@ -1447,6 +1451,8 @@ public class LeaveManagementRestController {
 		Response<String> response = new Response<>();
 		try {
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			orgLocations.setOrg(org);
 			boolean isSuperUser = false;
 			if(StringUtils.isNotBlank(leaveDTO.getUser())){
 				isSuperUser = orgLocationService.isLoginUserIsSuperUser(Long.parseLong(leaveDTO.getUser()),orgLocations.getId());
@@ -3095,6 +3101,8 @@ public class LeaveManagementRestController {
 		Response<Float> response = new Response<>();
 	    float noOfDays = 0f; 
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		orgLocations.setOrg(org);
 		LeaveType leaveType =  leaveTypeService.getLeaveTypeByUUID(leaveDTO.getLeaveType());
 		Leave leave = new Leave();
 		leave.setFromDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), leaveDTO.getFromDate()));
