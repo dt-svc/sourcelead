@@ -2047,7 +2047,11 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			  mts.setEmployeeName(mm[3].toString());
 			  mts.setProjectName(mm[1].toString());
 			  mts.setPayRate((double)mm[4]);
+			  if(mm[2] !=null){
 			  mts.setEmployeeId(mm[2].toString());
+			  }else{
+			  mts.setEmployeeId("--");  
+			  }
 			  mts.setPayRateType(mm[5].toString());
 			  mts.setPayRateCurrency(mm[6].toString());
 			  mts.setBillRate((double)mm[7]);
