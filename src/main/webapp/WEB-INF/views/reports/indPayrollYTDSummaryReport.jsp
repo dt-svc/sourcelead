@@ -35,13 +35,13 @@ $(document).ready(function(){
             <div class="form-group">
               <label class="col-md-12">From Date <span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
-                <input type="text" class="form-control calendar" id="startDate" name="startDate" readonly>
+                <input type="text" class="form-control calendar" id="startDate" name="startDate" readonly placeholder="From Date">
               </div>
             </div>
 			</div>
             <div class="col-md-5">
              <div class="form-group">
-              <label class="col-md-12">Select Employee <span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-12">Select Associate<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
                 <select class="form-control chosen-select" multiple id="employeeId" name="employeeIds">
 					</select>
@@ -50,7 +50,7 @@ $(document).ready(function(){
              <div class="form-group">
               <label class="col-md-12">To Date</label>
               <div class="col-md-12">
-                <input type="text" class="form-control calendar" id="endDate" name="endDate" readonly>
+                <input type="text" class="form-control calendar" id="endDate" name="endDate" readonly placeholder="To Date">
               </div>
             </div>
         </div>

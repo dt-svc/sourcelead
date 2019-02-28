@@ -1486,6 +1486,7 @@ public class CandidateListRestController {
 				Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),
 						loginOrgLocation.getId());
 				StringBuffer activitySummary = new StringBuffer();
+				Boolean flag;
 				if (candidate != null) {
 					if (Constants.Associates.equalsIgnoreCase(candidateType)) {
 						candidate.setIsAssociate(Constants.NO);
@@ -1513,6 +1514,12 @@ public class CandidateListRestController {
 					candidateService.saveOrUpdateCandidate(candidate);
 					candidateService.saveOrUpdateCandidateElkDocument(candidate);
 
+					// deleting candidate from marketplace and cart.
+					flag = candidateService.deleteCandidateFromMarketcartByCandidateUuid(candidate.getCandidateUUID());
+					if (flag == true) {
+						candidateService.deleteCandidateFromMarketplaceByCandidateUuid(candidate.getCandidateUUID());
+					}
+	
 					candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
 					candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "", Constants.CANDIDATE_DELETED,
 							activitySummary.toString(), "CANDIDATE");

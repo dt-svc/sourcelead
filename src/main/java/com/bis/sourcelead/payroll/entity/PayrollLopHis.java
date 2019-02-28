@@ -12,8 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveType;
+import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
 
 @Entity
 @Table(name = "PAYROLL_LOP_HIS")

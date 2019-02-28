@@ -53,104 +53,52 @@
             </div>
           </div> 
           
-          
-        <%--  <div class="col-md-3">
-            <div class="pull-left mr10"> <i class="fa fa-file-text-o fa-2x text-muted"></i> </div>
+          <%-- <div class="col-md-3">
+            <div class="pull-left mr10"> <i class="fa fa-inr fa-2x text-muted"></i> </div>
             <div class="pull-left">
-              <h4 class="text-muted">Payroll Summary</h4>
-              <small class="text-muted">Payroll Summary Report</small>
-              <div class="clearfix mt10"><a href="${appPath}/payrollListSummaryReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <h4 class="text-muted">Loan</h4>
+              <small class="text-muted">Payroll Loan Reports</small>
+              <div class="clearfix mt10"><a href="${appPath}/indPayrollLoanReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
-          </div>
+          </div>  --%>
+          
           <div class="col-md-3">
-            <div class="pull-left mr10"> <i class="fa fa-check fa-2x text-muted"></i> </div>
+            <div class="pull-left mr10"> <i class="fa fa-inr fa-2x text-muted"></i> </div>
             <div class="pull-left">
-              <h4 class="text-muted">Check Register</h4>
-              <small class="text-muted">Check Register Report</small>
-              <div class="clearfix mt10"><a href="${appPath}/checkRegisterReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
-            </div>
-          </div>
-          
-           <div class="col-md-3">
-            <div class="pull-left mr10"> <i class="fa fa-check fa-2x text-muted"></i> </div>
-            <div class="pull-left">
-              <h4 class="text-muted">Associate Withholding</h4>
-              <small class="text-muted">Associate Withholding Report</small>
-              <div class="clearfix mt10"><a href="${appPath}/associateWithholding" class="btn btn-primary btn-sm" title="View">View</a> </div>
-            </div>
-          </div>
-          
-           
-          <div class="col-md-3">
-            <div class="pull-left mr10"> <i class="fa fa-usd fa-2x text-muted"></i> </div>
-            <div class="pull-left">
-              <h4 class="text-muted">Taxable Wages Report</h4>
-              <small class="text-muted">Payroll Taxable Wages Reports</small>
-              <div class="clearfix mt10"><a href="${appPath}/payrollTaxesAndWagesReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <h4 class="text-muted">Salary Statement</h4>
+              <small class="text-muted">Payroll Salary Statement Reports</small>
+              <div class="clearfix mt10"><a href="${appPath}/indPayrollSalaryStatementReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div> 
+          
           <div class="col-md-3">
-            <div class="pull-left mr10"> <i class="fa fa-scissors fa-2x text-muted"></i> </div>
+            <div class="pull-left mr10"> <i class="fa fa-medkit fa-2x text-muted"></i> </div>
             <div class="pull-left">
-              <h4 class="text-muted">Deduction Reports</h4>
-              <small class="text-muted">Payroll Deduction Reports</small>
-              <div class="clearfix mt10"><a href="${appPath}/deductionReport"  class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <h4 class="text-muted">ESI Summary</h4>
+              <small class="text-muted">Payroll ESI Summary Reports</small>
+              <div class="clearfix mt10"><a href="${appPath}/indPayrollESISummaryReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
-          </div>
-          <div class="col-md-3">
-            <div class="pull-left mr10"> <i class="fa fa-puzzle-piece fa-2x text-muted"></i> </div>
-            <div class="pull-left">
-              <h4 class="text-muted">Contribution Reports</h4> 
-              <small class="text-muted">Payroll Contribution Reports</small>
-              <div class="clearfix mt10"> <a href="${appPath}/contributionReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
-            </div>
-          </div>
-          
-           <div class="col-md-3">
-            <div class="pull-left mr10"> <i class="fa fa-arrow-circle-right fa-2x text-muted"></i> </div>
-            <div class="pull-left">
-              <h4 class="text-muted">Direct Deposit</h4>
-              <small class="text-muted">Direct Deposit Report</small>
-              <div class="clearfix mt10"><a href="${appPath}/directDepositReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
-            </div>
-          </div>
-          
-          
-            <div class="col-md-3">
-            <div class="pull-left mr10"> <i class="fa fa-calendar fa-2x text-muted"></i> </div>
-            <div class="pull-left">
-              <h4 class="text-muted">Employee Payroll</h4>
-              <small class="text-muted">Employee Payroll Report</small>
-              <div class="clearfix mt10"><a href="${appPath}/usEmployeePayrollReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
-            </div>
-          </div>
-          
-         <div class="col-md-3">
-            <div class="pull-left mr10"> <i class="fa fa-calendar fa-2x text-muted"></i> </div>
-            <div class="pull-left">
-              <h4 class="text-muted">Contract Employee Payroll</h4>
-              <small class="text-muted">Contract Employee Payroll Report</small>
-              <div class="clearfix mt10"><a href="${appPath}/contractEmployeePayreport" class="btn btn-primary btn-sm" title="View">View</a> </div>
-              </div>
           </div> 
           
-           <div class="col-md-3">
-            <div class="pull-left mr10"> <i class="fa fa-calendar fa-2x text-muted"></i> </div>
-            <div class="pull-left">
-              <h4 class="text-muted">Deduction Summary</h4>
-              <small class="text-muted">Deduction Summary Report</small>
-              <div class="clearfix mt10"><a href="${appPath}/usDeductionSummaryReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
-            </div>
-          </div>
           
-           <div class="col-md-3">
-            <div class="pull-left mr10"> <i class="fa fa-calendar fa-2x text-muted"></i> </div>
+          <div class="col-md-3">
+            <div class="pull-left mr10"> <i class="fa fa-suitcase fa-2x text-muted"></i> </div>
             <div class="pull-left">
-              <h4 class="text-muted">Contribution Summary</h4>
-              <small class="text-muted">Contribution Summary Report</small>
-              <div class="clearfix mt10"><a href="${appPath}/usContributionSummaryReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+              <h4 class="text-muted">PF Summary</h4>
+              <small class="text-muted">Payroll PF Summary Reports</small>
+              <div class="clearfix mt10"><a href="${appPath}/indPayrollPFSummaryReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
-          </div> --%>
+          </div> 
+          
+          
+          <div class="col-md-3">
+            <div class="pull-left mr10"> <i class="fa fa-money fa-2x text-muted"></i> </div>
+            <div class="pull-left">
+              <h4 class="text-muted">Salary Register</h4>
+              <small class="text-muted">Payroll Salary Register Reports</small>
+              <div class="clearfix mt10"><a href="${appPath}/indPayrollSalaryRegisterReport" class="btn btn-primary btn-sm" title="View">View</a> </div>
+            </div>
+          </div> 
           
         </div>
       </div>

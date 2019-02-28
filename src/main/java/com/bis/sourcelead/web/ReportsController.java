@@ -1,15 +1,13 @@
 package com.bis.sourcelead.web;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.lang3.StringUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.OfferAcceptanceRateDTO;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
@@ -30,6 +27,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.indPayroll.utill.INDPayrollCommonUtil;
 import com.bis.sourcelead.reportsDTO.TimeToFillDTO;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -70,6 +68,9 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	
 	@Autowired
 	ProjectsService projectsService;
+	
+	@Autowired
+	INDPayrollCommonUtil iNDPayrollCommonUtil;
 	
 	@Autowired
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
@@ -667,81 +668,19 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		}
 		return model;
 	}
-	 
+	
+	
+	@RequestMapping(value = "/availableAssociatesReport")
+	public ModelAndView availableAassociatesReport(HttpServletRequest request,HttpServletResponse response) throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.addObject("userList", userList);
+		 model.setViewName("reports/availableAssociates");
+
+		return model;
 		
-		 @RequestMapping(value = "/indPayrollReportList")
-			public ModelAndView indPayrollReportList(HttpServletRequest request,HttpServletResponse response) throws Exception {
-			 ModelAndView model = new ModelAndView();
-			 model.addObject("sourceleadUrl", sourceleadUrl);
-			 model.setViewName("reports/indPayrollReportList");
-			 return model;
-		 }
-		 
-		 
-		 @RequestMapping(value = "/indPayrollRegisterReport")
-			public ModelAndView indPayrollRegisterReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
-			 ModelAndView model = new ModelAndView();
-			 model.addObject("sourceleadUrl", sourceleadUrl);
-			 model.setViewName("reports/indPayrollRegisterReport");
-			 return model;
-		 }
-		 
-		 @RequestMapping(value = "/indPayrollBankTransferReport")
-			public ModelAndView indPayrollBankTransferReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
-			 ModelAndView model = new ModelAndView();
-			 model.addObject("sourceleadUrl", sourceleadUrl);
-			 model.setViewName("reports/indPayrollBankTransferReport");
-			 return model;
-		 }
-		 @RequestMapping(value = "/indPayrollYTDSummaryReport")
-			public ModelAndView indPayrollYTDSummaryReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
-			 ModelAndView model = new ModelAndView();
-			 model.addObject("sourceleadUrl", sourceleadUrl);
-			 model.setViewName("reports/indPayrollYTDSummaryReport");
-			 return model;
-		 }
-		 
-		 @RequestMapping(value = "/indPayrollAnnualTaxReport")
-			public ModelAndView indPayrollAnnualTaxReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
-			 ModelAndView model = new ModelAndView();
-             OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			 
-             Calendar orgCal = Calendar.getInstance();
-             orgCal.setTime(orgLocation.getCreatedDate());
- 			 int orgRegisteredYear = orgCal.get(Calendar.YEAR);
-              
-			 String fromYear = null;
-			 String toYear = null;
-			 Calendar c = Calendar.getInstance();
-			 int fYear = c.get(Calendar.YEAR);
-			 int fMonth = c.get(Calendar.MONTH);
-			 if (StringUtils.isNotBlank(orgLocation.getStartMonth())) {
-			 Calendar cal = Calendar.getInstance();
-			 Date date = new SimpleDateFormat("MMMM").parse(orgLocation.getStartMonth());
-			 cal.setTime(date);
-			 int startFinMonth = cal.get(Calendar.MONTH);
-			 if (fMonth >= startFinMonth && fMonth < 12) {
-			 fromYear = Integer.toString(fYear);
-			 toYear = Integer.toString(fYear + 1);
-			 } else {
-			 fromYear = Integer.toString(fYear - 1);
-			 toYear = Integer.toString(fYear);
-			 }
-			 } else {
-			 fromYear = Integer.toString(fYear);
-			 toYear = Integer.toString(fYear);
-			 }
-			 
-			 List<String> finYearList = new ArrayList<>();
-			 while(orgRegisteredYear < Integer.parseInt(toYear)) {
-				 String finYear = String.valueOf(orgRegisteredYear) + " - " + String.valueOf(orgRegisteredYear+1);
-				 finYearList.add(finYear);
-				 orgRegisteredYear++;
-			 }
-			 model.addObject("finYearList", finYearList);
-			 model.addObject("sourceleadUrl", sourceleadUrl);
-			 model.setViewName("reports/indPayrollAnnualTaxReport");
-			 return model;
-		 }
-		 
+	}
+	 
 }

@@ -86,7 +86,7 @@ public class FileController {
 			if (name == null)
 				name = multiFile.getOriginalFilename();
 			File file = new File(staticPath,
-					"temp" + System.getProperty("file.separator") + (uploadid != null ? uploadid + "-" : "") + name);
+					"temp" + System.getProperty("file.separator") + (uploadid != null ? uploadid + "-" : "") + name.replaceAll(" ", "_"));
 			try (FileOutputStream fis = new FileOutputStream(file, true);) {
 				fis.write(multiFile.getBytes());
 				chunkDataFlag = true;
@@ -111,11 +111,11 @@ public class FileController {
 			FileUploadUtil fileUploadUtil = new FileUploadUtil();
 			if (type.equals("profile")) {
 				fileInfo.setFileURL(fileUploadUtil.cropImage(staticPath, file, x, y, w, h));
-				fileInfo.setFileName(multiFile.getOriginalFilename());
+				fileInfo.setFileName(multiFile.getOriginalFilename().replaceAll(" ", "_"));
 				fileInfo.setContentType(multiFile.getContentType());
 				fileInfoList.add(fileInfo);
 			} else {
-				String fileName = chunkDataFlag ? name : multiFile.getOriginalFilename();
+				String fileName = chunkDataFlag ? name.replaceAll(" ", "_") : multiFile.getOriginalFilename().replaceAll(" ", "_");
 				String extenstion = fileName.substring(fileName.lastIndexOf("."));
 				if (extenstion.equalsIgnoreCase(".rar"))
 					continue;
