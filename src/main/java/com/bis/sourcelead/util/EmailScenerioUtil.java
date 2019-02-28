@@ -193,7 +193,11 @@ public void sendNotificationToClientOrVendor(String actionLink,String rejectActi
 	notification.setCreatedBy(loginUser.getUserCode());
 	notification.setCreatedDate(new Date());
 	notification.setLocationCode(loginOrgLocation.getLocationCode());
-	notification.setOrgCode(loginOrgLocation.getOrgCode());
+	if(StringUtils.isNoneBlank(loginOrgLocation.getOrgCode())) {
+		notification.setOrgCode(loginOrgLocation.getOrgCode());
+	}else {
+		notification.setOrgCode(loginOrgLocation.getOrg().getOrgCode());
+	}
 	notification.setUserNotificationStatus("Sent");
 	notification.setNotificationStatus(Constants.NOTIFICATION_NOT_DELETED);
 	if(null != emailScenario.getUUID()  && !emailScenario.getUUID().isEmpty()){
