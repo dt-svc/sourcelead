@@ -94,8 +94,6 @@ margin-top: 3px;
 			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Expenses Approval</div>
 		</section>
 		
-		
-		
 		<!-- Project -->
 		<div class="timesheet_out">
 			<div class="vendor_wrap">
