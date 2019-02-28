@@ -36,7 +36,7 @@
         <div class="repDashCtaWrap ml">
           <h2>Contracts</h2>
           <div class="clearfix mt5"></div>
-          <a href="contractsConfigure_Emails.html" class="fontSmall">Configure</a> </div>
+          <a href="<c:url value='${appPath}/contractConfigureEmails'/>" class="fontSmall">Configure</a> </div>
       </div> 
       <%-- <div class="repDashCta"> <span class="navIcons finIcon svgReport margin-top0"></span>
         <div class="repDashCtaWrap ml">

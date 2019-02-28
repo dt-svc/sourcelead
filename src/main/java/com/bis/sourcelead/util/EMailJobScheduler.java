@@ -4589,8 +4589,8 @@ public class EMailJobScheduler {
 	
 	
 	@SuppressWarnings({ "deprecation", "unused" })
-	//@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
-	@Scheduled(cron = "0 * * * * *") // Scheduled for every minute
+	@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
+	//@Scheduled(cron = "0 * * * * *") // Scheduled for every minute
 	@Async
 	public void runApprovedAndPendingLeaveSchedulerEmailReminderAtOrgLevel() {
 		try {
@@ -4776,6 +4776,54 @@ public class EMailJobScheduler {
 
 		}
 
+	}
+	
+	
+	@SuppressWarnings("deprecation")
+	//@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
+	@Scheduled(cron = "0 * * * * *") // Scheduled for every minute
+	@Async
+	public void runContractExpireEmailReminderAtOrgLevel() {
+		try {
+			List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByEmailScenarioName(Constants.CONTRACT_EXPIRY_REMAINDER);
+			for(EmailReminder emailReminder : emailReminderList) {
+				if(emailReminder.getEmailReminderHierarchyList().size() > 0) {
+					for(EmailReminderHierarchy emailReminderHierarchy : emailReminder.getEmailReminderHierarchyList()) {
+						Date convertedOrgDate = commonUtil.orgLocationCommonDate(new Date(), emailReminder.getOrgLocationsId());
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(convertedOrgDate);
+						int hrs = calendar.get(Calendar.HOUR_OF_DAY);
+						int ampm = calendar.get(Calendar.AM_PM);
+						if( (ampm == 0 && emailReminderHierarchy.getRemindertime().contains("AM") && hrs == Integer.parseInt(emailReminderHierarchy.getRemindertime().split(":")[0])) || (ampm == 1 && emailReminderHierarchy.getRemindertime().contains("PM") && hrs == Integer.parseInt(emailReminderHierarchy.getRemindertime().split(":")[0])+12) ) {
+							calendar.add(Calendar.DATE, emailReminderHierarchy.getReminderdays().intValue()); // Adding remainderDays days
+							SimpleDateFormat dateFormat = new SimpleDateFormat(emailReminder.getOrgLocationsId().getDateFormat());
+					        String updatedDateStr     = dateFormat.format(calendar.getTime());
+					        Date updatedDate = dateFormat.parse(updatedDateStr);
+					        
+					        
+					        //method for the contractexpired cron
+							String twoDaysStartDate = outputFormatter1.print(twodays);
+							String twoDaysStartDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, twoDaysStartDate);
+							Date twoDaysStartDateUTC = ts.parse(twoDaysStartDateString);
+							String twoDaysEndDate = outputFormatter.print(twodays);
+							String twoDaysEndDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, twoDaysEndDate);
+							Date twoDaysEndDateUTC = ts.parse(twoDaysEndDateString);
+							
+							List<Contracts> twoDaysContractsList = contractsTemplateService.getAllContractsBasedOnTimeFrequency(twoDaysStartDateUTC,twoDaysEndDateUTC);
+							for(Contracts contracts : twoDaysContractsList){
+								contractExpiryRemainderMail(contracts,2);
+							}
+						}
+					}
+				}
+			}
+			
+		}catch (Exception e) {
+			logger.error(
+					"*****************Exception caught while EmailReminder shceduler *************" + e.getMessage());
+			e.printStackTrace();
+
+		}
 	}
 	
 }
