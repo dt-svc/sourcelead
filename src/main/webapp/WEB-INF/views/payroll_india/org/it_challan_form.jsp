@@ -8,6 +8,5 @@
 		</div>
 		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; IT Challan</div>
 	</section>
-	<jsp:include page="../org/formHeader.jsp"></jsp:include>
 	IT Challan Under Construction
 </section>

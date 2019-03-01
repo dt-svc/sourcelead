@@ -10,7 +10,6 @@
 		</div>
 		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> <%-- &raquo; <a href="<c:url value='${appPath}/myPayrollInd'/>">My Payroll</a>  --%>&raquo; IT Declaration</div>
 	</section>
-	<jsp:include page="../org/formHeader.jsp"></jsp:include>
 	<form action="" id="itDeclarationForm">
 		<div class="contentareaInner-styles clearfix">
 			<div class="clearfix form-horizontal minHeight_225 minHeightcol5">

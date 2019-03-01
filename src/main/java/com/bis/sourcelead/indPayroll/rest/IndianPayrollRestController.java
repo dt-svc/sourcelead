@@ -645,7 +645,7 @@ public class IndianPayrollRestController {
 		List<AssociatePayrollPayheadHistoryDTO> dupAssociatePayrollPayheadDTOList = allAssociatesPayrollPayheadList;
 		allAssociatesPayrollPayheadList = allAssociatesPayrollPayheadList.stream().filter(ml -> (dupAssociatePayrollPayheadDTOList.stream().filter(sl -> {
 			try {
-				return sl.getPayrollPayhead().equals(ml.getPayrollPayhead()) && df.parse(sl.getUpdatedDate()).after(df.parse(ml.getUpdatedDate()));
+				return sl.getIndEmpPayrollUUID().equalsIgnoreCase(ml.getIndEmpPayrollUUID()) && sl.getPayrollPayhead().equals(ml.getPayrollPayhead()) && df.parse(sl.getUpdatedDate()).after(df.parse(ml.getUpdatedDate()));
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
