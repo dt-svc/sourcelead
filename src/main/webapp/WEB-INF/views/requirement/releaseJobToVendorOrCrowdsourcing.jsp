@@ -302,8 +302,7 @@ $(document).ready(function(){
 	var referLink = "${sourceleadShareUrl}/job/${requirement.url}-${requirement.id}"
 	//alert(sourceleadShareUrl);		
 	$("#referralLink").val(referLink);
-	
-	if('${SourceLeadWeb_vms}'  == 'Y'){
+	if('${SourceLeadWeb_isVendorsTabAccessable}'  == 'Y'){
 		openVendors();
 	}else{
 		opennetwork();
