@@ -67,7 +67,7 @@
  $(document).ready(function () {
 	 getLoginUserTabsList();
 	 getLoginUserRolesActionsList();
-	 $('body').load("/resources/requirementListTemplate.html");
+	 $('body').load("/resources/staticHtmls/requirementListTemplate.html");
      $('label.toggle-vis').on('click', function (e) {
          e.preventDefault();
          // Get the column API object

@@ -57,6 +57,6 @@ ALWAYS CACHE VARIABLES LIKE YOU DO IN JAVA
 	   getLoginUserTabsList();
 	   getLoginUserRolesActionsList();
 	   // USE head.js for loading resources
-		$('body').load("/resources/dashboardHtml.html");
+		$('body').load("/resources/staticHtmls/dashboardHtml.html");
 	});
 </script>

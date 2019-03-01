@@ -58,7 +58,7 @@ name2Flag = true;
 	   getLoginUserTabsList();
 	   getLoginUserRolesActionsList();
 	   // USE head.js for loading resources
-		$('body').load("/resources/candidateTemplate.html");
+		$('body').load("/resources/staticHtmls/candidateTemplate.html");
 		  candidateListCheck("${serachValue}","${universalCanddateList}","${candidateKeyword}","${candidateIdSearchId}");
 		    if('${candidateUUID}' != null && '${candidateUUID}' != '' && '${candidateUUID}' != 'undefined'){
 				candidateQuickViewProfile('${candidateId}');
