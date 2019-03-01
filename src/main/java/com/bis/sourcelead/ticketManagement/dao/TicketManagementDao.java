@@ -6,6 +6,7 @@ import com.bis.sourcelead.entity.TicketType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketCategory;
+import com.bis.sourcelead.entity.TicketComment;
 import com.bis.sourcelead.entity.TicketPriority;
 import com.bis.sourcelead.entity.TicketStatus;
 
@@ -62,6 +63,12 @@ public interface TicketManagementDao {
 	public Boolean changeTicketStatusDataById(long id, int status, OrgLocations orgLocation);
 
 	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId);
+
+	public Ticket getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId);
+
+//	public TicketComment getTicketSummaryByTicketId(Long ticketId, long userId, Long orgLocationId);
+
+	public List<TicketComment> getTicketCommentListByTicketId(Long ticketId, long userId, Long orgLocationId);
 
 	
 

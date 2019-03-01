@@ -2,14 +2,14 @@ package com.bis.sourcelead.ticketManagement.service;
 
 import java.util.List;
 
-
-
 import com.bis.sourcelead.dto.TicketCategoryDTO;
+import com.bis.sourcelead.dto.TicketCommentDTO;
 import com.bis.sourcelead.dto.TicketDTO;
 import com.bis.sourcelead.dto.TicketPriorityDTO;
 import com.bis.sourcelead.dto.TicketStatusDTO;
 import com.bis.sourcelead.dto.TicketTypeDTO;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 
 public interface TicketManagementService {
 
@@ -33,9 +33,9 @@ public interface TicketManagementService {
 
 	public List<TicketPriorityDTO> getTicketPriorityListByOrgLocationId(Long orgLocationId, int status);
 
-	public Boolean saveTicketPriority(TicketPriorityDTO ticketPriorityDTO,long userId, OrgLocations loginOrgLocation);
+	public Boolean saveTicketPriority(TicketPriorityDTO ticketPriorityDTO, long userId, OrgLocations loginOrgLocation);
 
-	public TicketPriorityDTO getTicketPriorityDataById(long ticketPriorityId,OrgLocations loginOrgLocation);
+	public TicketPriorityDTO getTicketPriorityDataById(long ticketPriorityId, OrgLocations loginOrgLocation);
 
 	public Boolean deleteTicketPriorityDataById(long ticketPriorityId);
 
@@ -47,13 +47,11 @@ public interface TicketManagementService {
 
 	public Boolean deleteTicketStatusDataById(long ticketStatusId);
 
-	
+	// public List<TicketDTO> getTicketManagementList(long ticketTypeId);
 
-	//public List<TicketDTO> getTicketManagementList(long ticketTypeId);
+	public Boolean saveTicket(TicketDTO ticketDTO, User user, OrgLocations orgLocations);
 
-	public Boolean saveTicket(TicketDTO ticketDTO, long userId, OrgLocations orgLocations);
-
-	public Boolean changeStatusTicketTypeDataById(long id,int status, OrgLocations orgLocation);
+	public Boolean changeStatusTicketTypeDataById(long id, int status, OrgLocations orgLocation);
 
 	public Boolean changeTicketCategoryStatusDataById(long id, int status, OrgLocations orgLocation);
 
@@ -61,19 +59,11 @@ public interface TicketManagementService {
 
 	public Boolean changeTicketStatusDataById(long id, int status, OrgLocations orgLocation);
 
-	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId, long userId);
+	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId, long userId, String dateFormat);
 
-	
+	public TicketDTO getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId, String dateFormat);
 
-	
-
-	
-
-	
-	
-	
-
-	
+	public List<TicketCommentDTO> getTicketCommentListByTicketId(Long ticketId, long userId, Long orgLocationId);
 
 	
 

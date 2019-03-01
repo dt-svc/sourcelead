@@ -3,6 +3,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script type="text/javascript" src="/resources/js/ticketManagement/ticket.js"></script>
 
 <section class="content-wraper">
     <section class="content-header clearfix">
@@ -16,40 +17,38 @@
         <div class="project_side_wrap_inn_tabs">
           <ul class="project-tabs-menu project-tabs-menu-custom">
             <li class="current"><a href="#tab-1">Details</a></li>
-            <li class=""><a href="#tab-2">Comment</a></li>
+            <li class=""><a href="#tab-2" onclick="getTicketCommetList('${ticketSummary.id}');">Comment</a></li>
             <div class="clearfix"></div>
           </ul>
           <div class="project_tabs project_wrap">
             <div id="tab-1" class="project_tabs_inn" style="display: block">
               <div class="project_tabs_inn_table">
                 <div class="project_details col2Custom">
-                  <div class="useredit"> <a href="javascript:editUserRole();" class="textSuccess"><i class="fa fa-check"></i>Status</a> <a href="javascript:editUserRole();"><i class="fa fa-pencil"></i>Edit</a>
+                  <div class="useredit"> <a href="javascript:void(0);" class="textSuccess"><i class="fa fa-check"></i>${ticketSummary.ticketStatus}</a> <a href="/app/editTicket?uuid=${ticketSummary.uuid}"><i class="fa fa-pencil"></i>Edit</a>
                     <div class="clearfix"></div>
                   </div>
                   <div class="form-group clearfix">
                     <label class="col-md-2 paddingRight">Ticket Id<span class="pull-right paddingLeft">:</span></label>
-                    <div class="col-md-5">TKD00456</div>
+                    <div class="col-md-5">${ticketSummary.generatedId}</div>
                   </div>
                   <div class="form-group clearfix">
                     <label class="col-md-2 paddingRight">Category<span class="pull-right paddingLeft">:</span></label>
-                    <div class="col-md-5">Category</div>
+                    <div class="col-md-5">${ticketSummary.ticketCategory}</div>
                   </div>
                   <div class="form-group clearfix">
                     <label class="col-md-2 paddingRight">Type<span class="pull-right paddingLeft">:</span></label>
-                    <div class="col-md-5">Type</div>
+                    <div class="col-md-5">${ticketSummary.ticketType}</div>
                   </div>
                   <div class="form-group clearfix">
                     <label class="col-md-2 paddingRight">Assign To<span class="pull-right paddingLeft">:</span></label>
                     <div class="col-md-10">
                       <div class="row">
-                        <div class="col-md-4">
-                          <div class="assigNeeImg mr10"> <img src="../images/23.jpg" alt="Assignee Image" title="Assignee"> </div>
-                          <label> Employee Name </label>
-                        </div>
-                        <div class="col-md-4">
-                          <div class="assigNeeImg mr10"> <img src="../images/23.jpg" alt="Assignee Image" title="Assignee"> </div>
-                          <label> Employee Name </label>
-                        </div>
+                        <c:forEach items="${ticketSummary.ticketAssignToList}" var="assignTo">
+	                        <div class="col-md-4">
+	                          <div class="assigNeeImg mr10"> <img src="../images/23.jpg" alt="Assignee Image" title="Assignee"> </div>
+	                          <label>${assignTo.userName}</label>
+	                        </div>
+                        </c:forEach>
                       </div>
                     </div>
                   </div>
@@ -57,34 +56,40 @@
                     <label class="col-md-2 paddingRight">Notify To<span class="pull-right paddingLeft">:</span></label>
                     <div class="col-md-10 professinal-details">
                       <ul class="list-unstyled list-inline mb0">
-                        <li>rajkumar23456@yopmail.com</li>
-                        <li>johnsanhotis@gmail.com</li>
-                        <li>rajkumar23456@yopmail.com</li>
-                        <li>rajkumar23456@yopmail.com</li>
-                        <li>rajkumar23456@yopmail.com</li>
+                      	<c:forEach items="${ticketSummary.notifyTo.split(',')}" var="notifyTo">
+	                        <li>${notifyTo}</li>
+                      	</c:forEach>
                       </ul>
                     </div>
                   </div>
                   <div class="form-group clearfix">
                     <label class="col-md-2 paddingRight">Priority<span class="pull-right paddingLeft">:</span></label>
-                    <div class="col-md-10"> <i class="fa fa-exclamation-triangle colorRed mr10" title="High Priority:P1"></i>P1 </div>
+                    <div class="col-md-10">
+                    	<c:if test="${ticketSummary.ticketPriorityImage != null}">
+	                     	<img src="${ticketSummary.ticketPriorityImage}" style="height: 50px;width: 50px;" class="mr10">
+                    	</c:if>
+                     	${ticketSummary.ticketPriority}
+                     </div>
                   </div>
                   <div class="form-group clearfix">
                     <label class="col-md-2 paddingRight">Description<span class="pull-right paddingLeft">:</span></label>
-                    <div class="col-md-10"> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. </div>
+                    <div class="col-md-10">${ticketSummary.description}</div>
                   </div>
                   <div class="form-group clearfix">
                     <label class="col-md-2 paddingRight">Generated by<span class="pull-right paddingLeft">:</span></label>
-                    <div class="col-md-10"> Kumar Santhoshi </div>
+                    <div class="col-md-10">${ticketSummary.createdBy}</div>
                   </div>
                   <div class="form-group clearfix">
                     <label class="col-md-2 paddingRight">Generated on<span class="pull-right paddingLeft">:</span></label>
-                    <div class="col-md-10"> 29/02/2019 </div>
+                    <div class="col-md-10">${ticketSummary.createdDate}</div>
                   </div>
                 </div>
               </div>
             </div>
-            <div id="tab-2" class="project_tabs_inn">
+            					<!-- Comments Section -->
+            					
+            					
+             <div id="tab-2" class="project_tabs_inn">
               <div class="project_tabs_inn_table">
                 <div class="clearfix col-md-12">
                   <div class="clearfix mt">
@@ -101,35 +106,7 @@
                   </div>
 					
 					<!-- Comments Section -->
-					<div class="clearfix" id="">
-                    <div class="comments-div comments-inner clearfix">
-                        <div class="commentsimg"> <i class="fa fa-comments"></i>
-                        <div class="commentsimg-inner">
-							<img onerror="predefineProfileImage(this);" src="../images/userprofile-img.png"></div>
-                      </div>
-                        <div class="customCommentarea">
-                        <div class="row">
-                            <div class="col-md-12">
-                            <p class="comment-by"> By <span class="text-danger">SourceLead Admin</span> <span class="small mr">04-02-2019 05:39:36 AM</span> <span class="small">(5seconds ago)</span> </p>
-                            <div class="commentText commentText-styles">guhjguj</div>
-                          </div>
-                          </div>
-                      </div>
-                      </div>
-                    <div class="comments-div comments-inner clearfix">
-                        <div class="commentsimg"> <i class="fa fa-comments"></i>
-                        <div class="commentsimg-inner"> <img onerror="predefineProfileImage(this);" src="../images/userprofile-img.png"></div>
-                      </div>
-                        <div class="customCommentarea">
-                        <div class="row">
-                            <div class="col-md-12">
-                            <p class="comment-by"> By <span class="text-danger">SourceLead Admin</span> <span class="small mr">04-02-2019 05:39:41 AM</span> <span class="small">(0seconds ago)</span> </p>
-                            <div class="commentText commentText-styles">hgutyu</div>
-                          </div>
-                          </div>
-                      </div>
-                      </div>
-                  </div>
+					<div id="ticketCommentListDivId"></div>
 					
 					<!-- Comments Section Ends -->
 					
@@ -141,5 +118,15 @@
       </div>
     </div>
   </section>
-  
+  <script> 
+      $("#tab-1").show();
+      $(".project-tabs-menu a").click(function(event) {
+          event.preventDefault();
+          $(this).parent().addClass("current");
+          $(this).parent().siblings().removeClass("current");
+          var tab = $(this).attr("href");
+          $(".project_tabs_inn").not(tab).css("display", "none");
+          $(tab).fadeIn();
+      });
+</script>
    <jsp:include page="../masterFooter.jsp" />

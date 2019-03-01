@@ -9,7 +9,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 public class TicketPriorityDTO implements Serializable {
 
 	/**
-	 * VeeraRaghava
+	 *  @author VeeraRaghava
 	 */
 	private static final long serialVersionUID = 1L;
 

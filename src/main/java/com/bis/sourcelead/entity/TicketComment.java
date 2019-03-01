@@ -5,9 +5,12 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -15,31 +18,34 @@ import javax.persistence.Table;
 public class TicketComment implements Serializable {
 
 	/**
-	 * VeeraRaghava
+	 * @author VeeraRaghava
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	@Column(name = "TICKET_ID")
-	private Long ticketId;
-	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "TICKET_ID", referencedColumnName = "ID")
+	private Ticket ticket;
+
 	@Column(name = "COMMENT", columnDefinition = "TEXT default NULL")
 	private String comment;
-	
+
 	@Column(name = "STATUS ")
 	private Integer status;
-	
-	@Column(name = "CREATED_BY")
-	private Long createdBy;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CREATED_BY", referencedColumnName = "ID")
+	private User createdBy;
 
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 
-	@Column(name = "UPDATED_BY")
-	private Long updatedBy;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "UPDATED_BY", referencedColumnName = "ID")
+	private User updatedBy;
 
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
@@ -52,13 +58,12 @@ public class TicketComment implements Serializable {
 		this.id = id;
 	}
 
-	
-	public Long getTicketId() {
-		return ticketId;
+	public Ticket getTicket() {
+		return ticket;
 	}
 
-	public void setTicketId(Long ticketId) {
-		this.ticketId = ticketId;
+	public void setTicket(Ticket ticket) {
+		this.ticket = ticket;
 	}
 
 	public String getComment() {
@@ -77,11 +82,11 @@ public class TicketComment implements Serializable {
 		this.status = status;
 	}
 
-	public Long getCreatedBy() {
+	public User getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(Long createdBy) {
+	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -93,11 +98,11 @@ public class TicketComment implements Serializable {
 		this.createdDate = createdDate;
 	}
 
-	public Long getUpdatedBy() {
+	public User getUpdatedBy() {
 		return updatedBy;
 	}
 
-	public void setUpdatedBy(Long updatedBy) {
+	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 

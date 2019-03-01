@@ -1,28 +1,24 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class TicketCommentDTO implements Serializable {
 
 	/**
-	 * VeeraRaghava
+	 * @author VeeraRaghava
 	 */
 	private static final long serialVersionUID = 1L;
 
 	private long id;
-
-	private Long ticketId;
-
+	private long ticketId;
 	private String comment;
-
 	private Integer status;
-
-	private Long createdBy;
-
-	private Date createdDate;
-
-	private Long updatedBy;
+	private long createdById;
+	private String createdByName;
+	private String createdDate;
+	private long updatedById;
+	private String updatedByName;
+	private String updatedDate;
 
 	public long getId() {
 		return id;
@@ -32,12 +28,11 @@ public class TicketCommentDTO implements Serializable {
 		this.id = id;
 	}
 
-	
-	public Long getTicketId() {
+	public long getTicketId() {
 		return ticketId;
 	}
 
-	public void setTicketId(Long ticketId) {
+	public void setTicketId(long ticketId) {
 		this.ticketId = ticketId;
 	}
 
@@ -57,42 +52,56 @@ public class TicketCommentDTO implements Serializable {
 		this.status = status;
 	}
 
-	public Long getCreatedBy() {
-		return createdBy;
+	public long getCreatedById() {
+		return createdById;
 	}
 
-	public void setCreatedBy(Long createdBy) {
-		this.createdBy = createdBy;
+	public void setCreatedById(long createdById) {
+		this.createdById = createdById;
 	}
 
-	public Date getCreatedDate() {
+	public String getCreatedByName() {
+		return createdByName;
+	}
+
+	public void setCreatedByName(String createdByName) {
+		this.createdByName = createdByName;
+	}
+
+	public String getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(String createdDate) {
 		this.createdDate = createdDate;
 	}
 
-	public Long getUpdatedBy() {
-		return updatedBy;
+	public long getUpdatedById() {
+		return updatedById;
 	}
 
-	public void setUpdatedBy(Long updatedBy) {
-		this.updatedBy = updatedBy;
+	public void setUpdatedById(long updatedById) {
+		this.updatedById = updatedById;
 	}
 
-	public Date getUpdatedDate() {
+	public String getUpdatedByName() {
+		return updatedByName;
+	}
+
+	public void setUpdatedByName(String updatedByName) {
+		this.updatedByName = updatedByName;
+	}
+
+	public String getUpdatedDate() {
 		return updatedDate;
 	}
 
-	public void setUpdatedDate(Date updatedDate) {
+	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
 	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-
-	private Date updatedDate;
 
 }

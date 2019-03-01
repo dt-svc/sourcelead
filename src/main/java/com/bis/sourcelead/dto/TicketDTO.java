@@ -1,7 +1,6 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 public class TicketDTO implements Serializable {
@@ -19,17 +18,19 @@ public class TicketDTO implements Serializable {
 	private String ticketCategory;
 	private long ticketPriorityId;
 	private String ticketPriority;
+	private String ticketPriorityImage;
 	private long ticketStatusId;
 	private String ticketStatus;
 	private String description;
 	private List<String> assignedTo;
+	private List<TicketAssignToDTO> ticketAssignToList;
 	private String notifyTo;
-	private int status;
 	private Long orgLocationsId;
 	private Long createdById;
-	private Date createdDate;
+	private String createdBy;
+	private String createdDate;
 	private Long updatedById;
-	private Date updatedDate;
+	private String updatedDate;
 
 	public long getId() {
 		return id;
@@ -103,6 +104,14 @@ public class TicketDTO implements Serializable {
 		this.ticketPriority = ticketPriority;
 	}
 
+	public String getTicketPriorityImage() {
+		return ticketPriorityImage;
+	}
+
+	public void setTicketPriorityImage(String ticketPriorityImage) {
+		this.ticketPriorityImage = ticketPriorityImage;
+	}
+
 	public long getTicketStatusId() {
 		return ticketStatusId;
 	}
@@ -135,20 +144,20 @@ public class TicketDTO implements Serializable {
 		this.assignedTo = assignedTo;
 	}
 
+	public List<TicketAssignToDTO> getTicketAssignToList() {
+		return ticketAssignToList;
+	}
+
+	public void setTicketAssignToList(List<TicketAssignToDTO> ticketAssignToList) {
+		this.ticketAssignToList = ticketAssignToList;
+	}
+
 	public String getNotifyTo() {
 		return notifyTo;
 	}
 
 	public void setNotifyTo(String notifyTo) {
 		this.notifyTo = notifyTo;
-	}
-
-	public int getStatus() {
-		return status;
-	}
-
-	public void setStatus(int status) {
-		this.status = status;
 	}
 
 	public Long getOrgLocationsId() {
@@ -167,12 +176,20 @@ public class TicketDTO implements Serializable {
 		this.createdById = createdById;
 	}
 
-	public Date getCreatedDate() {
+	public String getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(String createdDate) {
 		this.createdDate = createdDate;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 
 	public Long getUpdatedById() {
@@ -183,11 +200,11 @@ public class TicketDTO implements Serializable {
 		this.updatedById = updatedById;
 	}
 
-	public Date getUpdatedDate() {
+	public String getUpdatedDate() {
 		return updatedDate;
 	}
 
-	public void setUpdatedDate(Date updatedDate) {
+	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
 	}
 

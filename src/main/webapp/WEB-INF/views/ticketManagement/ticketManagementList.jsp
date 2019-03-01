@@ -3,7 +3,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script type="text/javascript" src="/resources/js/ticketManagement/ticket_configuration.js"></script>
+<script type="text/javascript" src="/resources/js/ticketManagement/ticket.js"></script>
 
  <section class="content-wraper">
     <section class="content-header clearfix">
@@ -17,7 +17,7 @@
     <div class="content-area clearfix timesheet_out">
           <div class="positionRelative reportHead clearfix">
             <ul class="pull-right list-unstyled list-inline">
-              <li><a href="/app/addTicketManagement" class="newAdBtn mr5" title="Add" id="addPop">+ Add</a></li>
+              <li><a href="/app/addTicket" class="newAdBtn mr5" title="Add" id="addPop">+ Add</a></li>
               <li class="">
                 <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
                 <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>

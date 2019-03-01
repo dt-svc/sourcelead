@@ -55,37 +55,28 @@ public class Ticket implements Serializable {
 	@JoinColumn(name = "ORG_LOCATION_ID", referencedColumnName = "ID")
 	private OrgLocations orgLocations;
 
-	@Column(name = "DESCRIPTION")
+	@Column(name = "DESCRIPTION",columnDefinition = "LONGTEXT default NULL")
 	private String description;
 
 	@Column(name = "NOTIFY_TO", columnDefinition = "LONGTEXT default NULL")
 	private String notifyTo;
 
-	@Column(name = "STATUS")
-	private int status;
-
-	@Column(name = "CREATED_BY")
-	private Long createdBy;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CREATED_BY", referencedColumnName = "ID")
+	private User createdBy;
 
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 
-	@Column(name = "UPDATED_BY")
-	private Long updatedBy;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "UPDATED_BY", referencedColumnName = "ID")
+	private User updatedBy;
 
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 
 	@OneToMany(mappedBy = "ticket", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<TicketAssignTo> ticketAssignToList;
-
-	public String getGeneratedId() {
-		return generatedId;
-	}
-
-	public void setGeneratedId(String generatedId) {
-		this.generatedId = generatedId;
-	}
 
 	public long getId() {
 		return id;
@@ -103,12 +94,12 @@ public class Ticket implements Serializable {
 		this.uuid = uuid;
 	}
 
-	public String getNotifyTo() {
-		return notifyTo;
+	public String getGeneratedId() {
+		return generatedId;
 	}
 
-	public void setNotifyTo(String notifyTo) {
-		this.notifyTo = notifyTo;
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
 	}
 
 	public TicketType getTicketType() {
@@ -159,19 +150,19 @@ public class Ticket implements Serializable {
 		this.description = description;
 	}
 
-	public int getStatus() {
-		return status;
+	public String getNotifyTo() {
+		return notifyTo;
 	}
 
-	public void setStatus(int status) {
-		this.status = status;
+	public void setNotifyTo(String notifyTo) {
+		this.notifyTo = notifyTo;
 	}
 
-	public Long getCreatedBy() {
+	public User getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(Long createdBy) {
+	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -183,11 +174,11 @@ public class Ticket implements Serializable {
 		this.createdDate = createdDate;
 	}
 
-	public Long getUpdatedBy() {
+	public User getUpdatedBy() {
 		return updatedBy;
 	}
 
-	public void setUpdatedBy(Long updatedBy) {
+	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 

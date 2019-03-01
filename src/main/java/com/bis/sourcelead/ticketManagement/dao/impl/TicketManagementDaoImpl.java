@@ -3,6 +3,7 @@ package com.bis.sourcelead.ticketManagement.dao.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -10,14 +11,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketPriority;
 import com.bis.sourcelead.entity.TicketStatus;
 import com.bis.sourcelead.entity.TicketType;
 import com.bis.sourcelead.entity.TicketCategory;
+import com.bis.sourcelead.entity.TicketComment;
 import com.bis.sourcelead.enums.Ticket_Priority;
 import com.bis.sourcelead.enums.Ticket_Status;
 import com.bis.sourcelead.enums.Ticket_Type;
@@ -433,7 +433,39 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 		}
 		return null;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Ticket getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Ticket t where t.uuid=:uuid and t.orgLocations.id=:orgLocationId and t.createdBy.id=:userId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("uuid", uuid);
+			queryObj.setLong("userId", userId);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			List<Ticket> ticketList = queryObj.list();
+			if(ticketList != null && !ticketList.isEmpty())
+				return ticketList.get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<TicketComment> getTicketCommentListByTicketId(Long ticketId, long userId, Long orgLocationId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from TicketComment tc where tc.ticket.id =:ticketId and tc.status = 1";
+			return session.createQuery(query).setLong("ticketId", ticketId).list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
+	
 
+}

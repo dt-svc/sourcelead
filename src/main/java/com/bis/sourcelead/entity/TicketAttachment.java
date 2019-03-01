@@ -5,11 +5,13 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
 
 @Entity
 @Table(name = "TICKET_ATTACHMENT")
@@ -19,30 +21,31 @@ public class TicketAttachment implements Serializable {
 	 * VeeraRaghava
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
 	@Column(name = "UUID")
 	private String uuid;
-	
-	@Column(name = "TICKET_ID")
-	private Long ticketId;
-	
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "TICKET_ID", referencedColumnName = "ID")
+	private Ticket ticket;
+
 	@Column(name = "FILE_TYPE")
 	private String fileType;
-	
+
 	@Column(name = "FILE_NAME")
 	private String fileName;
-	
+
 	@Column(name = "FILE_URL")
-	//@Type(type="text")
+	// @Type(type="text")
 	private String fileUrl;
-	
+
 	@Column(name = "STATUS")
 	private int status;
-	
+
 	@Column(name = "CREATED_BY")
 	private Long createdBy;
 
@@ -71,12 +74,12 @@ public class TicketAttachment implements Serializable {
 		this.uuid = uuid;
 	}
 
-	public Long getTicketId() {
-		return ticketId;
+	public Ticket getTicket() {
+		return ticket;
 	}
 
-	public void setTicketId(Long ticketId) {
-		this.ticketId = ticketId;
+	public void setTicket(Ticket ticket) {
+		this.ticket = ticket;
 	}
 
 	public String getFileType() {
@@ -146,4 +149,5 @@ public class TicketAttachment implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+
 }
