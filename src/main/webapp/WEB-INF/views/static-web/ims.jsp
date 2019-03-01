@@ -1,24 +1,19 @@
 <jsp:include page="../staticHeader.jsp" /> 
-<div class="innerpagesBanner clearfix">
-    
-  <div class="container text-center">
-  <div class="row">
-  		<div class="col-md-12">
-  	<h2 class="text-center">Invoice Management</h2>
-  	<div class="clearfix mt mb"><img src="/resources/static-web/images/imsicons.png" alt="img"></div>
-  	<p>
-  		A comprehensive solution with streamlined and automated end-to-end invoice management process. <br> This provides a quick and easy access to information for bill generation and payments.
-  	</p>
-  		</div>
-  </div>
-  </div>
-		<div class="thim-click-to-bottom">
-		<a href="#features" class="scroll">
-		<i class="fa fa-chevron-down"></i>
-		</a>
-		</div>
-  </div>
+<div class="featuresbanner invoice-banner clearfix">
+		<div class="container">
+				<div class="row">
+				<div class="col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-6 col-md-6 col-md-offset-6 col-lg-6 col-lg-offset-6 bannerStyles paddingTop125px animated bounceIn">
+			<h2>Invoice Management</h2>
+			<p>
+				A comprehensive solution with streamlined and automated end-to-end invoice management process.  This provides a quick and easy access to information for bill generation and payments.
+			</p>
+						</div>
+				</div>
+				</div>
+</div>
 <div class="clearfix"></div>
+
+
 <section class="container-fluid container-area-white">
  		
  		<div class="clearfix">
@@ -53,65 +48,99 @@
 	<div class="clearfix text-center col-md-12 headerintro mt"></div>
 <div id="features" class="clearfix"></div>
 </section>
- 
+ <!-- Benefits of sourcelead  -->
  <section class="container-fluid container-area-grey">
 <div class="clearfix container productfeatures">
-<h2 class="text-center colorlogo">Features</h2>
-	<div class="col-md-4">
+	
+	<div class="col-md-6">
+		<div class="row">
+			<div class="col-md-3">
 	<div class="featuresImages">
-		<img src="/resources/static-web/images/ims-billgeneration.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/automatedInvoice.png" alt="Image" class="animated bounceIn">
 	</div>
+	</div>
+	<div class="col-md-9">
 		<h4>Manual &amp; automated invoice/bill generation</h4>
 		<ul class="list-styles">
 			<li>Provides both manual and automated bill generation options</li>
 			<li>Suitable for any organization irrespective of the size</li>
 		</ul>
 	</div>
-	<div class="col-md-4">
-		<div class="featuresImages">
-		<img src="/resources/static-web/images/ims-payment.png" alt="Image" class="animated bounceIn">
 	</div>
+</div>
+
+	<div class="col-md-6">
+		<div class="row">
+			<div class="col-md-3">
+		<div class="featuresImages">
+		<img src="/resources/static-web/images/automatedNotification.png" alt="Image" class="animated bounceIn">
+	</div>
+	</div>
+	<div class="col-md-9">
 		<h4>Payment updates &amp; automated reminders</h4>
 		<ul class="list-styles">
 			<li>The function integration triggers automatic reminders for end-to-end invoice process</li>
 			<li>Helps you avoid delays and disruptions</li>
 		</ul>
 	</div>
-	<div class="col-md-4">
-	<div class="featuresImages">
-		<img src="/resources/static-web/images/ims-emailinvoice.png" alt="Image" class="animated bounceIn">
 	</div>
+	</div>
+<div class="clearfix"></div>
+	
+	<div class="col-md-6">
+		<div class="row">
+		<div class="col-md-3">
+	<div class="featuresImages">
+		<img src="/resources/static-web/images/billiNvoice.png" alt="Image" class="animated bounceIn">
+	</div>
+	</div>
+	<div class="col-md-9">
 		<h4>Invoice / bill emailing </h4>
 		<ul class="list-styles">
 			<li>Facilitates invoice/bill mailing directly from the application</li>
 			<li>Reduces flipping over multiple web pages</li>
 		</ul>
 	</div>
-	<div class="clearfix"></div>
-	<div class="col-md-4">
-		<div class="featuresImages">
-		<img src="/resources/static-web/images/ims-onlinepayment.png" alt="Image" class="animated bounceIn">
 	</div>
+	</div>
+	<div class="col-md-6">
+		<div class="row">
+			<div class="col-md-3">
+		<div class="featuresImages">
+		<img src="/resources/static-web/images/payPal.png" alt="Image" class="animated bounceIn">
+	</div>
+	</div>
+	<div class="col-md-9">
 		<h4>Online Payment (Paypal)</h4>
 		<ul class="list-styles">
 			<li>Easy online payment in association with Paypal</li>
 			<li>Provides quick access to the payments</li>
 		</ul>
 	</div>
-	<div class="col-md-4">
-	<div class="featuresImages">
-		<img src="/resources/static-web/images/crms-integrate.png" alt="Image" class="animated bounceIn">
 	</div>
+	</div>
+	<div class="clearfix"></div>
+	<div class="col-md-6">
+		<div class="row">
+		<div class="col-md-3">
+	<div class="featuresImages">
+		<img src="/resources/static-web/images/integrated.png" alt="Image" class="animated bounceIn">
+	</div>
+	</div>
+	<div class="col-md-9">
 		<h4>Integrated with SourceLead modules</h4>
 		<ul class="list-styles">
 			<li>Customized data integration options</li>
 			<li>Automated tracking and status updates for the PMO requests</li>
 		</ul>
 	</div>
+	</div>
+	</div>
 </div>
 </section>
 <!-- Benefits of sourcelead  -->
-<section class="homewidget-benefitsdiv text-center">
+
+<section class="homewidget-benefitsdiv text-center container-area-white">
   <div class="container-fluid">
  		<div class="col-md-12">
  			<h2>Benefits of SourceLead</h2>
