@@ -168,7 +168,7 @@ public class UserLoginHelper {
 		 
 		 
 		  try {
-			  if(userRole != null && userRole.get("userState").toString() != null && userRole.get("userState").toString().equals(Status.NOT_LOGGEDIN)){
+			  if(userRole != null && userRole.get("userState").toString() != null && userRole.get("userState").toString().equals("NOT_LOGGEDIN")){
 	  			   UserRole uRole = userRoleService.getUserRoleById(Long.valueOf(userRole.get("userRoleId").toString()));
 	  					 uRole.setUserState(Status.ACTIVE);
 	  			         uRole.setNewlyLoginUser(Constants.NO);
