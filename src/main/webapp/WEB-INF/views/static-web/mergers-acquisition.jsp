@@ -1,9 +1,21 @@
   
   <!--   HTML   -->	  
   <jsp:include page="../staticHeader.jsp" />
-<div class="mergers-acquisition clearfix">
-  </div>
+<div class="featuresbanner merger-banner clearfix">
+		<div class="container">
+				<div class="row">
+				<div class="col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-6 col-md-6 col-md-offset-6 col-lg-6 col-lg-offset-6 bannerStyles paddingTop125px animated bounceIn">
+			<h2>Mergers &amp; Acquisition</h2>
+			<p>
+					(M &amp; A)  content covers multiple client deals, including US-target and non-US-target companies.
+			</p>
+						</div>
+				</div>
+				</div>
+</div>
 <div class="clearfix"></div>
+
+
 <section class="container-fluid container-area-white">
  		
  		<div class="clearfix">

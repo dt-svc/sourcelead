@@ -412,6 +412,26 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 return model;
 	 }	
 	 
+	/**
+	 * @author Mahaveer Manoj
+	 */
+	@RequestMapping(value = "/vendorPerformanceReport")
+	public ModelAndView vendorPeformanceReport(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		try {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+			boolean vendorTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_VENDOR));
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("vendorTabAccess", vendorTabAccess);
+			model.setViewName("reports/vendorPerformanceReport");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return model;
+	}
+	 
 	 @RequestMapping(value = "/userUsageReport")
 		public ModelAndView userUsageReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		 

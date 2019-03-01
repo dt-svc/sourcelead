@@ -299,6 +299,7 @@ function resValues(){
 			url: sourceleadUrl+"/validateContribution?"+tokenParamName+"="+tokenValue+"&contriType="+contriType+"&userId="+userId,
 			success :function(data) {
 				if(data == true){
+					$('#contriType').find('p.jquery_form_error_message').remove();
 					$("#contriType").after("<p class='jquery_form_error_message'>This type is Already Existed</span>");
 					document.getElementById("contribution_save_button").disabled = true;
 					document.getElementById("contributionAddButtonId").disabled = true;
