@@ -34,6 +34,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.ContactsGroup;
 import com.bis.sourcelead.entity.EmailAccountSettings;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -308,7 +309,7 @@ public class MailBoxController {
 			@RequestParam(value = "mailType", required = false) String mailType,
 			HttpServletRequest request) throws Exception {
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+	    Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocations.getTimeZoneId()));
 	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	    String resultJson;
 	    List<CampaignIndex> mailBoxList = new ArrayList<CampaignIndex>();
