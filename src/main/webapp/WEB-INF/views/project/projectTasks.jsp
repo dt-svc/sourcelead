@@ -69,7 +69,7 @@ function projectTask(projectId, status) {
 	result = result + '<input type="hidden" value='+status+' id="projectStatus">';
 	result = result	+ '<ul>';
 	 
-	result = result +'<li title="Import"><a href="<c:url value="${appPath}/uploadProjectTasks?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'"/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>';
+	result = result +'<li title="Import"><a href="<c:url value="${SourceLeadWeb_sourceleadUrl}/uploadProjectTasks?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'"/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>';
 
 	
 	result = result +'<li class="dropdown">';
