@@ -670,7 +670,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 	public List<ImmigrationTemplateTasks> getImmigratonTemplateTasksByTemplateId(Long templateId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<ImmigrationTemplateTasks> ImmigrationTemplateTasksList = new ArrayList<ImmigrationTemplateTasks>();
-			String queryString = "from ImmigrationTemplateTasks td where td.immigrationTempId.id=:templateId";
+			String queryString = "from ImmigrationTemplateTasks td where td.immigrationTempId.id=:templateId and td.status=1";
 			ImmigrationTemplateTasksList = session.createQuery(queryString).setLong("templateId", templateId).list();
 		return ImmigrationTemplateTasksList;
 	}
