@@ -139,6 +139,10 @@ public interface RequirementDao {
 	public List<Requirement> getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(List<Long> parentreqIds,
 			Long relationId)throws Exception;
 	
+//	public List<Requirement> getAllReleasedJobsBasedOnOrgRelationIdAndOrgLocationIdAndUserId(long orgLocationId, long orgRelationId, long userId);
+	
+	public List<Requirement> getAllReleasedJobsBasedOnSpocId(long spocId);
+	
 	public List<Requirement> getAllClientJobsBasedonRelationId(Long locationId,Long relationId,String userRoleName,User user,String status)throws Exception;
 
 	public Requirement checkRequirementIdNumberInDatebase(Long orgLocationId);

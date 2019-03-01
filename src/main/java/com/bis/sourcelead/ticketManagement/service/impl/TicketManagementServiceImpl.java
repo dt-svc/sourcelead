@@ -129,7 +129,6 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 
 	@Override
 	public boolean deleteTicketTypeDataById(long id) {
-		
 		return ticketManagementDao.deleteTicketTypeDataById(id);
 	}
 
@@ -164,7 +163,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 			e.printStackTrace();
 		}
 		return ticketCategoryDTOList;
-}
+	}
 
 	@Override
 	public Boolean saveTicketCategory(TicketCategoryDTO ticketCategoryDTO, long userId,OrgLocations loginOrgLocation) {
@@ -417,7 +416,6 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 
 	@Override
 	public Boolean deleteTicketStatusDataById(long id) {
-		
 		return  ticketManagementDao.deleteTicketStatusDataById(id);
 	}
 
@@ -444,15 +442,21 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 			ticketManagement.setDescription(ticketDTO.getDescription());
 			ticketManagement.setGeneratedId(ticketDTO.getGeneratedId());
 			ticketManagement.setNotifyTo(ticketDTO.getNotifyTo());
+			if(ticketDTO.getNotifyTo() != null && !ticketDTO.getNotifyTo().isEmpty() && ticketDTO.getId() == 0) {
+				// send Nofitify email & notification
+			}
+			
 			List<TicketAssignTo> assignToList = new LinkedList<>();
 			if(ticketDTO.getAssignedTo() != null) {
 				for(String assignUserId : ticketDTO.getAssignedTo()) {
 					TicketAssignTo assignTo = new TicketAssignTo();
-					assignTo.setUser(userDao.getUserById(Long.parseLong(assignUserId)));
+					User assignedUser = userDao.getUserById(Long.parseLong(assignUserId));
+					assignTo.setUser(assignedUser);
 					assignTo.setTicket(ticketManagement);
 					assignTo.setCreatedBy(user.getId());
 					assignTo.setCreatedDate(new Date());
 					assignToList.add(assignTo);
+					//send Assign email & notification
 				}
 			}
 			

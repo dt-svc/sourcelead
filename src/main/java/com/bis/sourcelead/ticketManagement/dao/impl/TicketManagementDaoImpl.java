@@ -11,11 +11,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketPriority;
 import com.bis.sourcelead.entity.TicketStatus;
 import com.bis.sourcelead.entity.TicketType;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.TicketCategory;
 import com.bis.sourcelead.entity.TicketComment;
 import com.bis.sourcelead.enums.Ticket_Priority;
@@ -37,6 +40,9 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private UserDao userDao;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -45,46 +51,60 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from OrgLocations";
 			List<OrgLocations> orgLocationsList = session.createQuery(query).list();
-			if (orgLocationsList != null && !orgLocationsList.isEmpty()) {
-//				for (OrgLocations orgLocations : orgLocationsList) {
-				OrgLocations orgLocations = orgLocationsList.get(2083);
-				// code for adding TicketType records to OrgLocations
-				for (Ticket_Type t : Ticket_Type.values()) {
-					TicketType ticketType = new TicketType();
-					ticketType.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
-					ticketType.setName(t.name());
-					ticketType.setDescription(t.getValue());
-					ticketType.setStatus(1);
-					ticketType.setOrgLocations(orgLocations);
-					ticketType.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
-					session.saveOrUpdate(ticketType);
-				}
+			User adminUser = userDao.getUserByEmail("info@sourcelead.com");
+			if (adminUser != null && orgLocationsList != null && !orgLocationsList.isEmpty()) {
+				for (OrgLocations orgLocations : orgLocationsList) {
+					// code for adding TicketType records to OrgLocations
+					List<Long> ticketTypeCount = session.createQuery("select count(*) from TicketType t where t.orgLocations.id="+orgLocations.getId()).list();
+					if(ticketTypeCount == null || (!ticketTypeCount.isEmpty() && ticketTypeCount.get(0) == 0)) {
+						for (Ticket_Type t : Ticket_Type.values()) {
+							TicketType ticketType = new TicketType();
+							ticketType.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
+							ticketType.setName(t.name());
+							ticketType.setDescription(t.getValue());
+							ticketType.setStatus(1);
+							ticketType.setOrgLocations(orgLocations);
+							ticketType.setCreatedBy(adminUser.getId());
+							ticketType.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
+							session.saveOrUpdate(ticketType);
+							System.out.println("Added TicketType '" + t.name() + "' for OrgLocation : " + orgLocations.getId());
+						}
+					}
 
-				// code for adding TicketPriority records to OrgLocations
-				for (Ticket_Priority p : Ticket_Priority.values()) {
-					TicketPriority ticketPriority = new TicketPriority();
-					ticketPriority.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
-					ticketPriority.setName(p.name());
-					ticketPriority.setDescription(p.getValue());
-					ticketPriority.setStatus(1);
-					ticketPriority.setOrgLocations(orgLocations);
-					ticketPriority.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
-					session.saveOrUpdate(ticketPriority);
-				}
+					List<Long> TicketPriorityCount = session.createQuery("select count(*) from TicketPriority p where p.orgLocations.id="+orgLocations.getId()).list();
+					if(TicketPriorityCount == null || (!TicketPriorityCount.isEmpty() && TicketPriorityCount.get(0) == 0)) {
+						// code for adding TicketPriority records to OrgLocations
+						for (Ticket_Priority p : Ticket_Priority.values()) {
+							TicketPriority ticketPriority = new TicketPriority();
+							ticketPriority.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
+							ticketPriority.setName(p.name());
+							ticketPriority.setDescription(p.getValue());
+							ticketPriority.setStatus(1);
+							ticketPriority.setOrgLocations(orgLocations);
+							ticketPriority.setCreatedBy(adminUser.getId());
+							ticketPriority.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
+							session.saveOrUpdate(ticketPriority);
+							System.out.println("Added TicketPriority '" + p.name() + "' for OrgLocation : " + orgLocations.getId());
+						}
+					}
 
-				// code for adding TicketStatus records to OrgLocations
-				for (Ticket_Status s : Ticket_Status.values()) {
-					TicketStatus ticketStatus = new TicketStatus();
-					ticketStatus.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
-					ticketStatus.setName(s.name());
-					ticketStatus.setDescription(s.getValue());
-					ticketStatus.setStatus(1);
-					ticketStatus.setOrgLocations(orgLocations);
-					ticketStatus.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
-					session.saveOrUpdate(ticketStatus);
+					List<Long> TicketStatusCount = session.createQuery("select count(*) from TicketStatus s where s.orgLocations.id="+orgLocations.getId()).list();
+					if(TicketStatusCount == null || (!TicketStatusCount.isEmpty() && TicketStatusCount.get(0) == 0)) {
+						// code for adding TicketStatus records to OrgLocations
+						for (Ticket_Status s : Ticket_Status.values()) {
+							TicketStatus ticketStatus = new TicketStatus();
+							ticketStatus.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
+							ticketStatus.setName(s.name());
+							ticketStatus.setDescription(s.getValue());
+							ticketStatus.setStatus(1);
+							ticketStatus.setOrgLocations(orgLocations);
+							ticketStatus.setCreatedBy(adminUser.getId());
+							ticketStatus.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
+							session.saveOrUpdate(ticketStatus);
+							System.out.println("Added TicketStatus '" + s.name() + "' for OrgLocation : " + orgLocations.getId());
+						}
+					}
 				}
-
-//				}
 				return orgLocationsList.size();
 			}
 		} catch (Exception e) {
