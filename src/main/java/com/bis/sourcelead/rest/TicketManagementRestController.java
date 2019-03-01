@@ -45,7 +45,9 @@ public class TicketManagementRestController {
 	public String dumpTicketManagementPreDefinedValuesToAllOrgLocations(HttpServletRequest request) {
 		int count = 0;
 		try {
+			System.out.println("-------- Stated Dump of pre-defined Ticket Management values to all OrgLocations --------");
 			count = ticketManagementService.dumpTicketManagementPreDefinedValuesToAllOrgLocations();
+			System.out.println("-------- Completed Dump of pre-defined Ticket Management values to all OrgLocations --------");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

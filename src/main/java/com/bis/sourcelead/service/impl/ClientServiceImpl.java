@@ -2387,7 +2387,7 @@ public class ClientServiceImpl implements ClientService {
 					vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendor(orgRelation.getLocationId().getId(), orgRelation.getId(), null, null);
 				}
 			} else if(spocId > 0) {
-				vendorReleasedJobsList = requirementService.getAllReleasedJobsBasedOnSpocId(spocId);
+//				vendorReleasedJobsList = requirementService.getAllReleasedJobsBasedOnSpocId(spocId);
 			}
 			return vendorReleasedJobsList;
 		} catch (Exception e) {
