@@ -341,6 +341,9 @@ public class UserLoginHelper {
 		boolean isReportTabAccessable = false;
 		SourceLeadSessionManager.setSessionAttribute(req, "reportsTabConfigured", "N");
 		
+		boolean isVendorsTabAccessable = false;
+		SourceLeadSessionManager.setSessionAttribute(req, "isVendorsTabAccessable", "N");
+		
 		try {
 				tabsList =  userStatsCacheHelper.getLogInUserRoleMenusList(uname.toLowerCase()+"_AUTH_"+userSession.get("userRoleUUID").toString());
 				actionsList = userStatsCacheHelper.getLogInUserRoleActionsList(uname.toLowerCase()+"_AUTH_"+userSession.get("userRoleUUID").toString());
@@ -378,6 +381,13 @@ public class UserLoginHelper {
 						if(tab.equalsIgnoreCase("Jobs")) {
 							isJobsTabAccessable = true;
 							SourceLeadSessionManager.setSessionAttribute(req, "isJobsTabAccessable", "Y");
+						}
+					}
+					
+					if (isVendorsTabAccessable == false) {
+						if (tab.equalsIgnoreCase("Vendors")) {
+							isVendorsTabAccessable = true;
+							SourceLeadSessionManager.setSessionAttribute(req, "isVendorsTabAccessable", "Y");
 						}
 					}
 					
@@ -694,6 +704,8 @@ public class UserLoginHelper {
 			SourceLeadSessionManager.setSessionAttribute(req, "isJobsTabAccessable", "N");
 			boolean isReportTabAccessable = false;
 			SourceLeadSessionManager.setSessionAttribute(req, "reportsTabConfigured", "N");
+			boolean isVendorsTabAccessable = false;
+			SourceLeadSessionManager.setSessionAttribute(req, "isVendorsTabAccessable", "N");
 			
 			if(!userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_PROFESSIONAL) && !userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_INDEPENDENT_RECRUITER)){
 				orgLocations = userRole.getOrgLocations();
@@ -737,6 +749,14 @@ public class UserLoginHelper {
 								SourceLeadSessionManager.setSessionAttribute(req, "isJobsTabAccessable", "Y");
 							}
 						}
+						
+						if (isVendorsTabAccessable == false) {
+							if (tabs.getTabName().equalsIgnoreCase("Vendors")) {
+								isVendorsTabAccessable = true;
+								SourceLeadSessionManager.setSessionAttribute(req, "isVendorsTabAccessable", "Y");
+							}
+						}
+						
 						tabNamesList.add(tabs.getTabName());
 					}
 				
