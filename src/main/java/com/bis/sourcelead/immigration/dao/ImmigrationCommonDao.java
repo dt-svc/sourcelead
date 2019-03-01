@@ -304,5 +304,8 @@ public interface ImmigrationCommonDao {
 	
 	int updateCanVisaHistoryDetails(Long visaHistoryId,  Long visaId);
 
-	
+	ImmigrationVisaDTO getCandidateActiveVisaDetailsByVisaNumberAndCountry(Long candidateId, String visaNumber,String country);
+	ImmigrationVisaDTO getCandidateVisaDetailsByVisaNumberAndCountry(Long candidateId, String visaNumber, String country);
+
+	int deleteImmigrationNotesByImmigrationId(Long immigrationId);
 }

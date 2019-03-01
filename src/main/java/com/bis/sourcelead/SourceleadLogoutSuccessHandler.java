@@ -62,7 +62,7 @@ public class SourceleadLogoutSuccessHandler implements LogoutSuccessHandler{
 				OrgLocations orgLocations;
 				try {
 					orgLocations = orgLocationService.getOrgLocations(Long.parseLong(orgLocationId));
-					actionHistoryDao.saveActionHistory("getActionHistoryList",userLoginLogoutSession,orgLocations,"");
+					actionHistoryDao.saveActionHistory("getActionHistoryList",userLoginLogoutSession,orgLocations,"",userLoginLogoutSession.getUserId().getId());
 				}  catch (Exception e) {}
 			}
 			response.setStatus(HttpServletResponse.SC_OK);

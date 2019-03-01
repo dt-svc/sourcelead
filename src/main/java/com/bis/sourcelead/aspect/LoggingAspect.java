@@ -2,6 +2,7 @@ package com.bis.sourcelead.aspect;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -12,8 +13,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.beust.jcommander.Strings;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -122,8 +125,11 @@ public class LoggingAspect {
 		request = ((ServletRequestAttributes) RequestContextHolder
 				.getRequestAttributes()).getRequest();
 
-		UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
+		Long actionId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"actionId");
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"userId");
+		String actionUUID = (String) SourceLeadSessionManager.getSessionAttribute(request,"actionUUID");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		UserLoginLogoutSession userLoginLogoutSession = null;
 		String methodName = joinPoint.getSignature().getName();
 		String type = "";
 		if("searchClientContactDetails".equalsIgnoreCase(methodName) || "saveVenodrContact".equalsIgnoreCase(methodName) || "searchClientDetails".equalsIgnoreCase(methodName)){
@@ -168,10 +174,13 @@ public class LoggingAspect {
 		if("initMarketplacePayment".equalsIgnoreCase(methodName)){
 			type="initMarketplacePayment";
 		}
-		
 
-		if(userLoginSession != null)
-			actionHistoryService.saveActionHistory(methodName,userLoginSession,loginOrgLocation,type);
+		if(StringUtils.isNotBlank(actionUUID) && loginOrgLocation != null) {
+			userLoginLogoutSession = new UserLoginLogoutSession();
+		    userLoginLogoutSession.setId(actionId);
+			actionHistoryService.saveActionHistory(methodName,userLoginLogoutSession,loginOrgLocation,type,userId);
+		}
+		    
 	}
 
 	/*@AfterThrowing(pointcut = "execution(* com.bis.sourcelead.rest.*.*(..))", throwing = "error")
