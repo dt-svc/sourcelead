@@ -71,6 +71,8 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	
 	private String jobRate;
 	
+	private String interviewOn;
+	
 	@Enumerated(EnumType.STRING)
 	private ApplicantSubmissionStatus finalsSubmissionStatus;
 	
@@ -530,6 +532,12 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	}
 	public void setMarginRateYearly(String marginRateYearly) {
 		this.marginRateYearly = marginRateYearly;
+	}
+	public String getInterviewOn() {
+		return interviewOn;
+	}
+	public void setInterviewOn(String interviewOn) {
+		this.interviewOn = interviewOn;
 	}
 	
 	

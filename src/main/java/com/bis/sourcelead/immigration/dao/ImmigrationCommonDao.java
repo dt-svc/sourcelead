@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
+import com.bis.sourcelead.dto.ImmigrationVisaDTO;
 import com.bis.sourcelead.dto.LcaDTO;
 import com.bis.sourcelead.dto.LcaDetailsDTO;
 import com.bis.sourcelead.dto.LcaListViewDTO;
@@ -15,9 +16,11 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateLcaJobDetails;
-import com.bis.sourcelead.entity.CandidatePassportVisa;
+import com.bis.sourcelead.entity.CandidatePassport;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.CandidateVisa;
+import com.bis.sourcelead.entity.CandidateVisaHistory;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationActivityHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
@@ -65,7 +68,13 @@ public interface ImmigrationCommonDao {
 
 	String saveCandidateFamilyMemberDetails(CandidateFamilyDetails familyDetails) throws Exception;
 
-	CandidatePassportVisa savePassportDetails(CandidatePassportVisa candidatePassportVisa)throws Exception;
+	//CandidatePassportVisa savePassportDetails(CandidatePassportVisa candidatePassportVisa)throws Exception;
+	
+	//visa saving
+	 CandidateVisa saveVisaDetails(CandidateVisa candidateVisa)throws Exception;
+		
+	//passport saving
+	CandidatePassport savePassportDetails(CandidatePassport candidatePassport)throws Exception;
 
 	CandidateResidence saveResidenceDetails(CandidateResidence candidateResidence)	throws Exception;
 
@@ -77,19 +86,39 @@ public interface ImmigrationCommonDao {
 	
  	List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId,String searchValue);
 
-	List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType,String searchValue);
+	//List<CandidatePassportVisa> getCandidatePassportVisaDetails(Long candidateId,String idType,String searchValue);
+	
+ 	// visa List
+ 	List<ImmigrationVisaDTO> getCandidateVisaDetails(Long candidateId,String searchValue);
+ 	
+ 	ImmigrationVisaDTO getCandidateVisaDetailsByCandidateIdAndVisaNumber(Long candidateId,String visaNumber);
+ 	
+ 	//passport list
+	List<CandidatePassport> getCandidatePassportDetails(Long candidateId,String searchValue);
 	
 	List<LcaDTO> getLcaHistoryDetailsInfo(Long immigrationId);
 	
 	CandidateFamilyDetails getCandidateFamilyDetailsById(Long id);
 
-	void removeCandidatePassportVisaDetails(Long candidateId, Long id, User user, OrgLocations orgLocations, String idType);
+	//void removeCandidatePassportVisaDetails(Long candidateId, Long id, User user, OrgLocations orgLocations, String idType);
+	
+	//visa delete
+	void removeCandidateVisaDetails(Long visaHistoryId);
+		
+	//passport delete
+	void removeCandidatePassportDetails(Long candidateId, Long id, User user, OrgLocations orgLocations);
 	
 	 String deleteCandidateResidenceDetails(Long id,Long candidateId);
 	 
 	 CandidateResidence getCandidateResidenceDetailsById(Long id);
 	 
-	 CandidatePassportVisa getCandidatePassportVisaDetailsById(Long id);
+   //CandidatePassportVisa getCandidatePassportVisaDetailsById(Long id);
+	 
+	 // for Visa Saving
+	 CandidateVisa getCandidateVisaDetailsById(Long id);
+	 
+	 //for passport saving
+	 CandidatePassport getCandidatePassportDetailsById(Long id);
 	 
 	 Immigration  getImmigrationById(Long id);
 	 
@@ -153,9 +182,19 @@ public interface ImmigrationCommonDao {
 	
 	Integer getTableRecordCountByImmigrationId(String entityName,Long immigrationId, String condition);
 
-	public Boolean validateCandidatePassportVisa(Long candidateId,String idType,String idNumber) throws Exception;
+//	public Boolean validateCandidatePassportVisa(Long candidateId,String idType,String idNumber) throws Exception;
 	
-	public CandidatePassportVisa getCandidatePassportVisaDetailsByIdNumberAndId(String idNumber, String idType, Long candidateId,Long id) throws Exception;
+//	visa
+	public Boolean validateCandidateVisa(Long candidateId,String idNumber) throws Exception;
+	
+//	passport
+	public Boolean validateCandidatePassport(Long candidateId,String idNumber) throws Exception;
+	
+	//public CandidatePassportVisa getCandidatePassportVisaDetailsByIdNumberAndId(String idNumber, String idType, Long candidateId,Long id) throws Exception;
+	
+	public CandidateVisa getCandidateVisaDetailsByIdNumberAndId(String idNumber,Long candidateId,Long id) throws Exception;
+	
+	public CandidatePassport getCandidatePassportDetailsByIdNumberAndId(String idNumber,Long candidateId,Long id) throws Exception;
 
 	Immigration getImmigrationByUUID(String immigrationUUID);
 
@@ -253,4 +292,18 @@ public interface ImmigrationCommonDao {
 	
 	public Lca updateAvailablePositionCountByLcaId(Long lcaId) throws Exception;
 	
+//	public LcaActivityHistory storeLcaActivities(LcaActivityHistory lcaActivityHistory) throws Exception;
+
+	CandidateVisaHistory saveVisaHistoaryDetails(CandidateVisaHistory visaHistory);
+
+	CandidateVisa getCandidateVisaDetailsByVisaNumber(String visaNumber);
+	
+	CandidateVisaHistory getCandidateVisaHistoryByStatus(Long visaId,  String isCurrent);
+
+	ImmigrationVisaDTO getCandidateVisaDetailsByVisaHistoryId(Long visaHistoryId);
+	
+	int updateCanVisaHistoryDetails(Long visaHistoryId,  Long visaId);
+
+	ImmigrationVisaDTO getCandidateActiveVisaDetailsByVisaNumberAndCountry(Long candidateId, String visaNumber,String country);
+	ImmigrationVisaDTO getCandidateVisaDetailsByVisaNumberAndCountry(Long candidateId, String visaNumber, String country);
 }

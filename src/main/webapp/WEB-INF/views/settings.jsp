@@ -377,7 +377,7 @@
 						<!-- DropDown -->
 						<a href="/app/bankAccountDetails">
 							<div class="clearfix text-center mb10">
-								<i class="bankacountsSVG"></i>
+								<i class="ind_bankacountSVG"></i>
 							</div>
 							<div class="clearfix text-center">
 								<h4>Bank Accounts</h4>
@@ -487,7 +487,7 @@
 							<a href="${appPath}/indPayrollConfiguration">
 								 <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
 									<div class="clearfix text-center mb10">
-										<i class="payrollSVG"></i>
+										<i class="ind_payrollSVG"></i>
 									</div>
 									<div class="clearfix text-center">
 										<h4>Ind Payroll Configuration</h4>
