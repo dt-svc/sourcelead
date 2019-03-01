@@ -30,6 +30,7 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequestedDocuments;
 import com.bis.sourcelead.entity.User;
@@ -371,16 +372,22 @@ public class CandidateDocumentsRestController {
 			HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
 		try {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Long userId=(Long)SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			Long orgLocationId =(Long)SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			User user = userService.getUserById(userId);
 			if (user != null) {
-				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				requestedDocumentsService.storeRequestedDocumentsDetails(candidateDocumentsDTO, user, loginOrgLocation);
+//				OrgLocations orgLocation=(OrgLocations)SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+//				Org org=(Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+				OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
+//				loginOrgLocation.setOrg(org);
+				requestedDocumentsService.storeRequestedDocumentsDetails(candidateDocumentsDTO, user, orgLocation);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 			}
+			
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
