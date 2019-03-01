@@ -554,6 +554,89 @@ public class DataMigrationCommonController {
 			
 		}
 	 
+	 @RequestMapping(value = "/downloadTemplateForAssociateBankingDetails", method = RequestMethod.GET)
+		public void downloadTemplateForAssociateBankingDetails(HttpServletRequest request,HttpServletResponse response) throws Exception{
+	        @SuppressWarnings("resource")
+	        OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	        HSSFWorkbook workbook = new HSSFWorkbook();
+	        HSSFSheet sheet = workbook.createSheet("AssociateBankingTemplate");
+	        String[] tableColumns = Constants.DATA_MIGRATION_ASSOCIATE_BANKING_EXCEL_HEADERS;
+	 
+	        Row row = sheet.createRow(0);
+	        int cellnum = 0;
+	        for (String key : tableColumns) {
+	            Cell cell = row.createCell(cellnum++);
+	            cell.setCellValue((String)key);
+	            if(key.equalsIgnoreCase("Employment Type*")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.EMPLOYMENT_TYPES, cellnum-1, "xls"));
+	            }else if(key.equalsIgnoreCase("Gender*")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.GENDER, cellnum-1, "xls"));
+	            }else if(key.equalsIgnoreCase("Marital Status")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.MARITAL_STATUS, cellnum-1, "xls"));
+	            }else if(key.startsWith("Role")) {
+	            	List<String> rolesList = rolesService.getRolesListByOrgLocationId(orgLocation.getId());
+	            	String [] associatesRoles = rolesList.toArray(new String[rolesList.size()]);
+	            	sheet.addValidationData(getDropDownListForCell(associatesRoles, cellnum-1, "xls"));
+	            }else if(key.startsWith("Shift")) {
+	            	List<String> shiftList = shiftService.getAssociatesShiftListByOrgLocationId(orgLocation.getId());
+	            	if(shiftList != null && !shiftList.isEmpty()) {
+	            		String [] associateshiftS = shiftList.toArray(new String[shiftList.size()]);
+		            	sheet.addValidationData(getDropDownListForCell(associateshiftS, cellnum-1, "xls"));
+	            	}
+	            }else if(key.startsWith("Grade")) {
+	            	List<String> gradesList = associateGradesService.getGradesListByOrgLocationId(orgLocation.getId());
+	            	if(gradesList != null && !gradesList.isEmpty()) {
+	            		String [] associateGrades = gradesList.toArray(new String[gradesList.size()]);
+		            	sheet.addValidationData(getDropDownListForCell(associateGrades, cellnum-1, "xls"));
+	            	}
+	            }else if(key.equalsIgnoreCase("Department*")) {
+	            	List<String> deptList = departmentService.getDepartmentList(orgLocation.getId());
+	            	if(deptList != null && !deptList.isEmpty()) {
+	            		String [] departments = deptList.toArray(new String[deptList.size()]);
+		            	sheet.addValidationData(getDropDownListForCell(departments, cellnum-1, "xls"));
+	            	}
+	            }else if(key.equalsIgnoreCase("Rate Per")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST, cellnum-1, "xls"));
+	            }else if(key.equalsIgnoreCase("Send Mail to User")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.YES_NO, cellnum-1, "xls"));
+	            }else if(key.equalsIgnoreCase("Is Global Manager")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.YES_NO, cellnum-1, "xls"));
+	            }else if(key.equalsIgnoreCase("Rate Currency")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.RATE_CURRENCY, cellnum-1, "xls"));
+	            }
+	            
+	        }
+	        try {
+	            File file = new File("Associate_Import_Template.xls");
+	    		FileOutputStream out = new FileOutputStream(file);
+	    		workbook.write(out);
+	            
+	            out.close();
+	            out.flush();
+	            
+	            String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				StringBuilder fileNameSB = new StringBuilder();
+				response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();
+	            
+	        }
+	        catch (Exception e) {
+	            e.printStackTrace();
+	        }
+			
+		}
+	 
+	 
+	 
 		private DataValidation getDropDownListForCell(String[] ratePerList, int column, String fileName)
 		{
 			@SuppressWarnings("deprecation")
