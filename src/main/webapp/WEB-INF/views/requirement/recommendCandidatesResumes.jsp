@@ -101,13 +101,13 @@ function refreshResumeList(candidateId){
 --%>
 <script type="text/javascript">
 function uploadCanResume(){
-	fileUpload("uploadBtn", "resumes", "candidateResume_form");
+	fileUpload("uploadBtn1", "resumes", "recomCandidateResume_form");
 }
 </script>
 <script>
 function addResume(candidateId) {	
 	var result = "";
-	result = result+'	           <form id="candidateResume_form" name="candidateResume_form" action="upload" method="post">';
+	result = result+'	           <form id="recomCandidateResume_form" name="recomCandidateResume_form" action="upload" method="post">';
 	result = result+'	           <i class="fa fa-close close-div" onClick="closeResumePopup();"></i>';
 	result = result+'	                <div class="form-horizontal clearfix" id="newResumeDiv">';
 	result = result+'	                  <div class="clearfix mb10">';
@@ -124,7 +124,7 @@ function addResume(candidateId) {
 	result = result+'	                    <div class="col-md-12">';
 	result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
 	result = result+'	                          <label class="input-group-btn" onChange="uploadCanResume();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-	result = result+'	                            <input type="file" id="uploadBtn" style="display: none;" class="upload">';
+	result = result+'	                            <input type="file" id="uploadBtn1" style="display: none;" class="upload">';
 	result = result+'	                            </span> </label>';
 	result = result+'	                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="File not selected..." field-name="Resume" data-validation="required validate_Space validatedoc">';
 	result = result+'	                        </div>';
@@ -170,7 +170,7 @@ function addResume(candidateId) {
 	   });	
 	 
 	 	/* upload file script to show selected file name*/
-	    document.getElementById("uploadBtn").onchange = function () {
+	    document.getElementById("uploadBtn1").onchange = function () {
 	    document.getElementById("uploadFile").value = this.value;
 	    };
 	    
@@ -194,8 +194,8 @@ function addResume(candidateId) {
 					scrollToTopOnError : true,
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
-			 if ($('#candidateResume_form').validate(false, validationSettings)){
-				var form = $('#candidateResume_form')[0];
+			 if ($('#recomCandidateResume_form').validate(false, validationSettings)){
+				var form = $('#recomCandidateResume_form')[0];
 	      		var formData = new FormData(form); 
 				$("#add_resume").attr("disabled", "disabled");
          		$("#add_resume" ).addClass('button').val('Processing..');
@@ -260,9 +260,9 @@ function addResume(candidateId) {
 					return false;
 			 } 
 		}
-		$('body').on('blur', '#candidateResume_form', function() {
-		$("#candidateResume_form").showHelpOnFocus();
-		$("#candidateResume_form").validateOnBlur(false, validationSettings);
+		$('body').on('blur', '#recomCandidateResume_form', function() {
+		$("#recomCandidateResume_form").showHelpOnFocus();
+		$("#recomCandidateResume_form").validateOnBlur(false, validationSettings);
 	});
 </script>
 <script>
