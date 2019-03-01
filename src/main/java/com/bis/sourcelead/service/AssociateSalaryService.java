@@ -1,5 +1,4 @@
 package com.bis.sourcelead.service;
-
 import java.util.Date;
 import java.util.List;
 
@@ -44,4 +43,5 @@ public interface AssociateSalaryService {
 	SalaryDTO getSalaryByGroupId(OrgLocations orgLocation, Long candidateId, Date freqStartDate, Date freqEndDate);
 
 	AssociateSalary getAssociateSalaryBySalaryId(Long salaryId);
+	
 }
