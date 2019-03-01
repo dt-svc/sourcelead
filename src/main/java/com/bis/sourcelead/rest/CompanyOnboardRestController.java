@@ -105,7 +105,8 @@ public class CompanyOnboardRestController {
 	{
 		Response<String> response = new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		try {
 			if (user != null) {
 				if (Validator.validate(federalAndStateTaxDTO)) {
@@ -651,7 +652,8 @@ public class CompanyOnboardRestController {
 	@RequestMapping(value = "/skipAndSaveOrglocationSignatory", method = RequestMethod.POST)
 	public @ResponseBody String skipAndSaveOrglocationSignatory(HttpServletRequest request) throws Exception
 	{
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		loginOrgLocation.setIsCompanyOnboarded(Constants.YES);
 		orgLocationService.updateOrgLocations(loginOrgLocation);
