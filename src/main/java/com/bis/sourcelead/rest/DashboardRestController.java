@@ -1194,7 +1194,8 @@ public class DashboardRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if(user != null) {
 				try {
-					OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations loginOrgLocations = orgLocationService.getOrgLocationById(orgLocId);
 					List<Date> datesList = new ArrayList<>();
 					List<String> interviewDatesList = new ArrayList<>();
 					datesList = requirementInterviewService.getInterviewDatesForCalendarEvent(user.getId(), loginOrgLocations.getId());
@@ -1357,7 +1358,8 @@ public class DashboardRestController {
 			if(user != null) {
 				try {
 					String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-				    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations loginOrgLocations = orgLocationService.getOrgLocationById(orgLocId);
 					List<RequirementInterviewHistory> requirementInterviewList = null;
 					//SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
 					String currentTime = null;
