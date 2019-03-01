@@ -25,6 +25,7 @@
 			</div>
 			
    <script type="text/javascript">
+   var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	function loadRequirementList(){
 		var tab = $('#tabList').val();
 		var reqList = $('#reqList').val();

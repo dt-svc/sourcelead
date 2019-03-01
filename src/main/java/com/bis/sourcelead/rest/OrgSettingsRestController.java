@@ -692,7 +692,8 @@ public class OrgSettingsRestController {
 	{
 		String jsonc = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		if (jsonObj.has("coolingOff")) {
 			orgLocation.setCoolingOffPeriod(jsonObj.getString("coolingOff"));
 		}
@@ -814,7 +815,8 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/updateLoginSecurity", method = RequestMethod.GET)
 	public String updateLoginSecurity(@RequestParam(value = "security") String security, @RequestParam(value = "locationId") Long locationId, HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		if (Constants.YES.equalsIgnoreCase(security)) {
 			orgLocations.setLoginSecurity(Constants.YES);
 			orgLocationService.updateOrgLocations(orgLocations);
@@ -911,7 +913,8 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/saveFinanacialYear", method = RequestMethod.GET)
 	public String saveFinanacialYear(@RequestParam(value = "locationId", required = false) Long locationId, @RequestParam(value = "startMonth", required = false) String startMonth, @RequestParam(value = "endMonth", required = false) String endMonth, HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		if (startMonth != null && endMonth != null) {
 			orgLocations.setStartMonth(startMonth);
 			orgLocations.setEndMonth(endMonth);
@@ -925,7 +928,8 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/saveCustomRecommendation", method = RequestMethod.POST)
 	public String saveCustomRecommendation(OrgLocationDTO locationDto, HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		orgLocations.setRecommendedSkillPercent(locationDto.getRecommSkill());
 		orgLocations.setRecommendedEducationPercent(locationDto.getRecommEducation());
 		orgLocations.setRecommendedLocationPercent(locationDto.getRecommLocation());
@@ -1172,7 +1176,8 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/saveProfilePercentage")
 	public Response<String> saveProfilePercentage(@RequestParam(value = "profilePercentage", required = true) Integer profilePercentage,HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Response<String> response = new Response<>();
 		try {
@@ -1198,7 +1203,8 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/configShowCompanyNameInMarkeplace")
 	public Response<String> configShowCompanyNameInMarkeplace(@RequestParam(value = "showCompnayName", required = true) String showCompnayName,HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Response<String> response = new Response<>();
 		try {
@@ -1572,7 +1578,8 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/saveProbationData", method = RequestMethod.POST)
 	public Response<String> saveProbationData(ProbationDTO probationDTO,HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Response<String> response = new Response<>();
 		if(user != null) {

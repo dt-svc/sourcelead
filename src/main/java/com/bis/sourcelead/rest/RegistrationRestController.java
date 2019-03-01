@@ -1412,26 +1412,35 @@ public class RegistrationRestController {
 	public String verificationDone(@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password, @RequestParam(value = "userRoleId", required = false) long userRoleId, @RequestParam(value = "verfDone", required = false) String verfDone, HttpServletRequest request) throws Exception
 	{
 		UserRole userRole = null;
+		User user = null;
+		String actionUUID = null;
 		if (userRoleId > 0)
 			userRole = userRoleService.getUserRoleById(userRoleId);
 		else {
-			User user = userService.findByUserName(userName);
+			 user = userService.findByUserName(userName);
 			userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 		}
-		if ("".equalsIgnoreCase(userName) || userName == null) {
-			UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
-			if (userLoginSession != null) {
-				if (Constants.YES.equalsIgnoreCase(verfDone))
-					userLoginSession.setAuthenticated(Constants.YES);
-				request.getSession().setAttribute("userLoginSession", userLoginSession);
-			}
-		}
+		
 		
 		StringBuilder generatedToken = new StringBuilder();
 		generatedToken.append(SourceLeadRandomCodeHelper.generateRandomCustomToken());
+		UserLoginLogoutSession userLoginSession = null;
+	    if(userRole != null){
+		    	userLoginSession = new UserLoginLogoutSession();
+		    	String ipAddress = commonUtil.getClientIpAddr(request);
+		    	userLoginSession.setIpaddress(ipAddress);
+			    userLoginSession.setUserId(userRole.getUser());
+				if (Constants.YES.equalsIgnoreCase(verfDone))
+					userLoginSession.setAuthenticated(Constants.YES);
+			    userLoginSession.setLoginTime(new Date());
+			    actionUUID = RandomStringUtils.randomAlphanumeric(16);
+			    userLoginSession.setActionUUID(actionUUID);
+			    userLoginSession =  userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
+			    request.getSession().setAttribute("userLoginSession", userLoginSession);
+		    }
 		
 		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
-			userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(generatedToken.toString(),userRole, request);
+			userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(generatedToken.toString(),userRole,actionUUID,userLoginSession.getId(),request);
 		}
 		
 		StringBuilder userNameString = new StringBuilder();
@@ -1502,7 +1511,7 @@ public class RegistrationRestController {
 			userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 		}
 		if ("".equalsIgnoreCase(ipAddress) || ipAddress == null) {
-			ipAddress = userLoginHelper.getClientIpAddr(request);
+			ipAddress = commonUtil.getClientIpAddr(request);
 		}
 		
 		return whiteListIpAddressService.validateIPAddress(ipAddress, userRole,whiteListId,accessingType);
@@ -1518,7 +1527,7 @@ public class RegistrationRestController {
 			User user = userService.findByUserName(userName);
 			userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 		}
-		String ipAddress = userLoginHelper.getClientIpAddr(request);
+		String ipAddress = commonUtil.getClientIpAddr(request);
 		boolean alreadyVerifiedBefore = userLoginLogoutSessionService.validatePreviouslyAuthenticatedByUserIdAndIpAddress(ipAddress, userRole.getUser().getId());
 		return alreadyVerifiedBefore;
 	}
