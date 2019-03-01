@@ -85,8 +85,8 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
-import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PayrollLopHis;
 import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.rest.TimesheetRestController;
@@ -1562,9 +1562,11 @@ public class LeaveServiceImpl implements LeaveService{
 		if (null != leaveDTO.getToDate()) {
 			globalVarsMap.put("toDate", leaveDTO.getToDate());
 		}
+		
 		StringBuilder stringBuildforLink = new StringBuilder();
-		globalVarsMap.put("loginLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("loginURL", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		// setting the Recipient information
+		
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		EmailScenario notificationScenario = null;
 		StringBuilder actionLinkBuilder = new StringBuilder();
@@ -1617,7 +1619,7 @@ public class LeaveServiceImpl implements LeaveService{
 			leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
 			
 			// for URL redirections from mail
-			 String redirectURL = null;											
+			 String redirectURL = "/withdrawLeaves-params-notifyLink=notifyLink-and-leaveUUID="+leaveManagementHistory.getLeaveid().getLeaveUUID()+"-and-orgLocationId="+orgLocations.getId();											
 			Long redirectOrgLocationId = orgLocations.getId(); 	 
 			sendWithdrawLeaveMailToAdmin(orgLocations,leave.getId(), user, leaveManagementHistory,redirectOrgLocationId,redirectURL);
 			/*if(leave != null && leave.getLeaveType() != null && leave.getOrgLocations() != null) {
@@ -1679,7 +1681,11 @@ public class LeaveServiceImpl implements LeaveService{
 				else {
 					globalVarsMap.put("loginOrg", "--");
 				}
-		 
+		       
+				StringBuilder linkBuild = new StringBuilder();
+				globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+						"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Withdraw Leave</div></a>")
+						.toString());
 				InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 				EmailScenario emailScenario = null;
 				
@@ -1694,7 +1700,10 @@ public class LeaveServiceImpl implements LeaveService{
 			    notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_WITHDRAW_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
 				String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
 				notificationScenario.setBody(notificationbody);
-				emailScenerioUtil.sendNotification(null, loginUser, lmh.getApproverUserId(), orgLocations, notificationScenario,new HashMap<String,String>());
+				
+				StringBuilder actionLinkBuilder = new StringBuilder();
+				String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("withdrawLeaves?notifyLink=notifyLink&leaveUUID="+leaveManagementHistory.getLeaveid().getLeaveUUID()+"&orgLocationId="+orgLocations.getId()).toString();
+				emailScenerioUtil.sendNotification(actionLink, loginUser, lmh.getApproverUserId(), orgLocations, notificationScenario,new HashMap<String,String>());
 
 				
 				
@@ -2754,13 +2763,13 @@ public class LeaveServiceImpl implements LeaveService{
 				   writeRow.createCell(11).setCellValue(leaveReportDTO.getApprover());
 			   }
 			 else{
-				   writeRow.createCell(12).setCellValue("--");   
+				   writeRow.createCell(11).setCellValue("--");   
 			   }
 			 if(leaveReportDTO.getApprovedOnDateStr() != null){
-				   writeRow.createCell(13).setCellValue(leaveReportDTO.getApprovedOnDateStr() );
+				   writeRow.createCell(12).setCellValue(leaveReportDTO.getApprovedOnDateStr() );
 			   }
 			 else{
-				   writeRow.createCell(14).setCellValue("--");   
+				   writeRow.createCell(12).setCellValue("--");   
 			   }
 			
 			

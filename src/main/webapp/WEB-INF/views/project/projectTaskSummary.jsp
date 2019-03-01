@@ -2139,7 +2139,11 @@ function getTaskActivities(){
 					var report = json[i];
 					result = result + '	<div class="media activities-projecttask clearfix col-md-12">';
 					result = result + '   <div class="media-left">';
-					result = result  +'	   <img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.loginUserId+'" class="media-object" style="width:60px"/>';
+					if(report.fileUrl != null){
+						result = result  +'	   <img onerror="predefineProfileImage(this);" src="'+report.fileUrl+'" class="media-object img-circle" style="width:60px"/>';
+					}else{
+						result = result  +'	   <img onerror="predefineProfileImage(this);" src="" class="media-object" style="width:60px"/>';
+					}
 					result = result + '   </div>';
 					result = result + '   <div class="media-body">';
 					result = result + '     <h5 class="media-heading text-primary mt10 clearfix"><div class="pull-left tbldata-dotdot-big">'+report.createdUserName+'</div>';
@@ -2301,7 +2305,11 @@ function commentTableList(){
 					var report = json[i];
 					result = result + '	<div class="media clearfix col-md-12">';
 					result = result + '   <div class="media-left">';
-					result = result  +'	   <img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.loginUserId+'" class="media-object" style="width:60px"/>';
+					if(report.fileUrl != null){
+						result = result  +'	   <img onerror="predefineProfileImage(this);" src="'+report.fileUrl+'" class="media-object img-circle" style="width:60px"/>';
+					}else{
+						result = result  +'	   <img onerror="predefineProfileImage(this);" src="" class="media-object" style="width:60px"/>';
+					}
 					result = result + '   </div>';
 					result = result + '   <div class="media-body">';
 					result = result + '     <h5 class="media-heading text-primary mt10">'+report.createdUserName+'';

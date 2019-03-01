@@ -1272,7 +1272,7 @@ public class RequirementController {
 							requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
 							requirementSubmissionHistory.setFromStage("OFFERMADE");
 							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
-							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 					  }
 			    	
 					
@@ -1303,7 +1303,9 @@ public class RequirementController {
 			    }
 			    
 		    }
-		}
+		}/*else if(offerStatus.equalsIgnoreCase("Rejected") && permission.equalsIgnoreCase("NO")) {
+			requirementOffersService.sendApplicantOfferRejectMail(requirementOffers);
+		}*/
 		return model;
 	}
 	

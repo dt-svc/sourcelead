@@ -76,8 +76,8 @@ $(document).ready(function(){
             <div class="form-group clearfix">
               <label class="clearfix">Payroll Frequency</label>
 				<div class="clearfix">
-					<select class="chosen-select" id="payrollFrequency" name="payrollFrequency" field-name="Payroll Frequency" data-validation="required">
-							<option selected value="Weekly">Weekly</option>
+					<select class="sel" id="payrollFrequency" name="payrollFrequency" field-name="Payroll Frequency" data-validation="required">
+							<option value="Weekly">Weekly</option>
 							<option value="Bi-Weekly">Bi-Weekly</option>
 							<option value="Monthly">Monthly</option>
 							<option value="Annually">Annually</option>
@@ -124,7 +124,6 @@ $(document).ready(function(){
 							}else{
 								output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"  ("+opt.role+")</option>";
 							}
-					
 				}
 				$("#approver").empty();
 				$("#approver").append(output);
@@ -143,7 +142,6 @@ $(document).ready(function(){
 				if(data.automaticFrequency != null && data.automaticFrequency != ''){
 					$("#payrollFrequency").val(data.automaticFrequency);
 				}
-				
 		        },
 		    });
   }

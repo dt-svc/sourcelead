@@ -486,6 +486,7 @@
 														result = result + "<option value='Interview'>INTERVIEW</option>";
 													}
 													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'SELECTED_ON_INTERVIEW' && opt.submissionStatus != 'SELECTED_ON_INTERVIEW'){
+													
 														result = result + "<option value='Selected on Interview'>Selected on Interview</option>";
 													}
 													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'OFFERMADE' && opt.submissionStatus != 'JOINED'){
@@ -510,6 +511,12 @@
 														result = result + "<option value='On Hold'>On Hold</option>";
 														result = result + "<option value='NoResponse'>NoResponse</option>";
 													}
+													
+													if(opt.submissionStatus == 'SELECTED_ON_INTERVIEW'){
+														result = result + "<option value='On Hold'>On Hold</option>";
+														result = result + "<option value='NoResponse'>NoResponse</option>";
+													}
+													
 													if (opt.previousSubmissionStatus == 'CLIENT_INTERVIEW' && opt.submissionStatus != 'SUBMIT_TO_CLIENT' && opt.submissionStatus != 'ONHOLD' && opt.submissionStatus != 'JOINED' && opt.submissionStatus != 'NORESPONSE'){	
 														result = result + "<option value='On Hold'>On Hold</option>";
 														}

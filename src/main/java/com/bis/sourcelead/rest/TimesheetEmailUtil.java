@@ -40,6 +40,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Component
 public class TimesheetEmailUtil {
@@ -336,7 +337,9 @@ public class TimesheetEmailUtil {
 		if(approverHierarchyList != null && !approverHierarchyList.isEmpty() && projMembers != null && projMembers.getProjects() != null && StringUtils.isNotEmpty( projMembers.getProjects().getIsReportingManagerAsApprover())
 				   &&  projMembers.getProjects().getIsReportingManagerAsApprover().equalsIgnoreCase("Y") && projMembers.getProjectMemberCandidteId() != null &&  projMembers.getProjectMemberCandidteId().getConsultantUser() != null
 				   &&  projMembers.getProjectMemberCandidteId().getConsultantUser()!= null && projMembers.getProjectMemberCandidteId().getOrgLocationId() != null) {
-		   UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(projMembers.getProjectMemberCandidteId().getConsultantUser().getId(), projMembers.getProjectMemberCandidteId().getOrgLocationId().getId());
+			
+			
+			UserRole userRole = userRoleService.getProjectmemberUserDetailsByUserIdAndLocationId(projMembers.getProjectMemberCandidteId().getConsultantUser().getId(), projMembers.getProjectMemberCandidteId().getOrgLocationId().getId(),projMembers.getProjectMemberCandidteId().getDesignationType());
 		   ProjectApproverHierarchy approver =  approverHierarchyList.iterator().next();
 		   
 		   if(userRole.getReportingManager() != null) {

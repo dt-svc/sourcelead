@@ -32,7 +32,12 @@
 	 var spocUserCode = '${spocUserCode}';
 	 var type = '${contract.contractType}';
 	 var contractType = '${contractType}';
+	 var conStatus = '${contract.templateSubmissionStatus}';
 
+	 if(conStatus != null && conStatus != '' && conStatus != 'undefined' && conStatus != "DRAFT"){
+		 $("#draft_template").hide();
+		 $("#draft_template").attr("disabled");
+	 }
 	 if(contractType != '' && contractType != 'undefined' && contractType != null)
 	 $("#contractType").val(contractType);
 
@@ -2579,9 +2584,17 @@ function addCustomEmptyVendorContact(){
 }
 
  function clearStartDt(){
+	 $('#startDate').attr('value', '');
+	 $('#startDate').datepicker( "option" , {
+	        minDate: null,
+	        maxDate: null} );
 	$("#startDate").val("");
 }; 
 function clearEndDt(){
+	$('#endDate').attr('value', '');
+	$('#endDate').datepicker( "option" , {
+        minDate: null,
+        maxDate: null} );
 	$("#endDate").val("");
 	};
 

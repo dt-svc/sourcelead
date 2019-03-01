@@ -341,7 +341,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		if(null != startDateUTC && null != endDateUTC){
 			params.put("startDateUTC", startDateUTC);
 			params.put("endDateUTC", endDateUTC);
-			subQuery = "and rsh.createdDate >= :startDateUTC and rsh.createdDate <= :endDateUTC";
+			subQuery = " and (date(rsh.createdDate) BETWEEN :startDateUTC and :endDateUTC)";
 		}
 		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId rs left join fetch rsh.submissionId.requirement requirement where rsh.submissionId.id = :submissionId "+subQuery;
 		

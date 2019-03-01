@@ -70,8 +70,11 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 		ResponseList<RequirementAssignTo> response = new ResponseList<>();
 		String query = "from RequirementAssignTo rat    where  rat.requirementId.id =:requirementId and rat.status <> '0'";
 		Query queryObj = session.createQuery(query);
+		if(requirementAssignToDTO.getStart() > 0) {
+			queryObj.setFirstResult(requirementAssignToDTO.getStart());
+		}
 		if (requirementAssignToDTO != null && requirementAssignToDTO.getLength() > 0) {
-			queryObj.setLong("requirementId", requirementAssignToDTO.getRequirementId()).list();
+			queryObj.setLong("requirementId", requirementAssignToDTO.getRequirementId()).setMaxResults(requirementAssignToDTO.getLength()).list();
 		}
 		assignedToList = queryObj.list();
 		int count = 0;

@@ -313,6 +313,7 @@ public class ProjectsRestController {
 			   @RequestParam(value="saveType", required=true) String saveType,HttpServletRequest request) throws Exception {
 		       User user = userService.getUserById(userId);
 		       Response<String> response = new Response<>();
+		       
 				try {
 					if(user != null) {
 						if(Validator.validate(projectAdditionalDetailsDTO)) {
@@ -1014,7 +1015,8 @@ public class ProjectsRestController {
 	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-		
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		projectsDTO.setOrgId(org.getId());
 		 Workbook createExcelworkbook =  new XSSFWorkbook();
 		 StringBuilder excelSB = new StringBuilder();
  		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("projects ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());

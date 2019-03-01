@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -154,5 +155,19 @@ public class RequirementOffersDaoImpl implements RequirementOffersDao{
 			requirementOffers = (RequirementOffers) requirementOffersList.iterator().next();
 		}
 		return requirementOffers;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementOffers> getOfferAcceptedCandidatesByOrgLocationIdAndDateOfJoin(Long orgLocationId, Date joiningDate) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlJoiningDate = new java.sql.Date(joiningDate.getTime());
+		String query = "from RequirementOffers requirementOffer left join fetch requirementOffer.submissionId submission left join fetch submission.orgLocations left join fetch submission.requirement "
+				+ " left join fetch submission.candidate candidate where requirementOffer.submissionId.orgLocations.id = :orgLocationId "
+				+ " and requirementOffer.submissionId.submissionStatus = 'OFFERACCEPTED' and date(requirementOffer.dateOfJoining) =:joiningDate and requirementOffer.status = '1' ";
+		List<RequirementOffers> requirementOffersList =  session.createQuery(query).setLong("orgLocationId", orgLocationId).setDate("joiningDate", sqlJoiningDate).list();
+		
+		return requirementOffersList;
 	}
 }

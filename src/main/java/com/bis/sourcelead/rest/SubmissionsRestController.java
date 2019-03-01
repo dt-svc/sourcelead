@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -309,7 +310,7 @@ public class SubmissionsRestController {
 	   }
 
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_SUBMISSION_TEMPLATE','ROLE_ADD_APPLICANT','ROLE_CROWDSOURCING_REQUIREMENTS')")
-	@RequestMapping(value = {"/app/getRequirmentOrgSubmissionTemplate", "/rest/getRequirmentOrgSubmissionTemplate" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/app/getRequirmentOrgSubmissionTemplate"}, method = RequestMethod.GET)
 	public String getRequirmentOrgSubmissionTemplate(
 			@RequestParam(value = "requirementId", required = false) Long requirementId) throws Exception {
 
@@ -317,6 +318,16 @@ public class SubmissionsRestController {
 
 		return requirement.getSubmissionTemplateJsonString();
 
+	}
+	
+	@RequestMapping(value = {"/app/rest/getRequirmentOrgSubmissionTemplate"}, method = RequestMethod.POST)
+	@ResponseBody
+	public org.json.simple.JSONArray getRequirmentOrgSubmissionTemplateForMobile(
+			@RequestParam(value = "requirementId", required = false) Long requirementId) throws Exception {
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		JSONParser par = new JSONParser();
+		org.json.simple.JSONArray template = (org.json.simple.JSONArray)par.parse(requirement.getSubmissionTemplateJsonString());
+		return template;
 	}
 	
 	@RequestMapping(value = "/getGuestUserRequirmentOrgSubmissionTemplate", method = RequestMethod.GET)
@@ -360,7 +371,7 @@ public class SubmissionsRestController {
 				RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 				requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
 				requirementSubmissionHistory.setFromStage("NEW");
-				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				Requirement requirement = requirementSubmission.getRequirement();
 				
 				if(null != requirement){
@@ -420,7 +431,7 @@ public class SubmissionsRestController {
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
 		requirementSubmissionHistory.setFromStage("NEW");
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 		Requirement requirement = requirementSubmission.getRequirement();
 		
 		if(null != requirement){
@@ -717,7 +728,7 @@ public class SubmissionsRestController {
 					}
 					submission.setUpdatedDate(new Date());
 					RequirementSubmission requirementSubmission = requirementSubmissionService.storeRequirementSubmission(submission);
-					requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+					requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				}
 				int shotListCount = submissionId.length;
 				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
@@ -861,7 +872,7 @@ public class SubmissionsRestController {
 				if(!orgLocations.getId().equals(requirementSubmission.getCandidate().getOrgLocationId().getId()) && requirementSubmission.getSourceSubmission() != null &&  !requirementSubmission.getCandidate().getCandidateType().equalsIgnoreCase("Professional")) {
 					requirementSubmissionService.sendRejectionMailToVendorContact(user, requirementSubmission.getRejectedReason(), submissionId, orgLocations);
 				}
-				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				response.setObject("success");
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
@@ -1198,8 +1209,7 @@ public class SubmissionsRestController {
 		requirementSubmission.setUpdatedBy(user.getUserCode());
 		requirementSubmission.setUpdatedDate(new Date());
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
-				requirementSubmissionHistory);
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 		
 		return "success";
 	}
@@ -1246,7 +1256,7 @@ public class SubmissionsRestController {
 		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		requirementSubmission.setUpdatedDate(new Date());
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 
 		return "success";
 	}
@@ -1300,7 +1310,7 @@ public class SubmissionsRestController {
 				requirementSubmission.setUpdatedDate(new Date());
 				
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
@@ -1339,7 +1349,7 @@ public class SubmissionsRestController {
 				requirementSubmission.setUpdatedDate(new Date());
 				
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
@@ -1444,7 +1454,7 @@ public class SubmissionsRestController {
 				requirementSubmission.setUpdatedDate(new Date());
 				
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());

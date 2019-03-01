@@ -7,7 +7,7 @@
    
    
 	<c:if test="${not empty type and type ne 'summary' and type ne 'SourceleadSummary'}">
-	 <div class="popupWrap popupWrapFixed" id="popUpDataCustom">
+	 <div class="popupWrap popupWrapFixed newCustomFieldPopup" id="popUpDataCustom">
 	 <form id="saveAddForm_form" name="saveAddForm_form">
 	    <input name="id" id="customFieldId" value="${customFormPopDetails.id}" type="hidden"/>
 	    <input type="hidden" value="${customFormPopDetails.customDependentField}" id="customDependndentFieldId">

@@ -1459,7 +1459,7 @@ jQueryFormUtils.LANG =  {
 	badzipcode: 'Zip code is invalid for the Selected Country',
 	badCphone: 'Phone Number is invalid for the Selected Country',
     badTelephone : 'you entered is in improper format',
-    badNumber : 'you entered invalid number',
+    badNumber : 'Invalid number',
     badExtno : 'Only numbers allowed',
     badSecurityAnswer : 'You have not given a correct answer to the security question',
     badDate : 'You have not given a correct date',

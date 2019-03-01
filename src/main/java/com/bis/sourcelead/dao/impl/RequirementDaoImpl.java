@@ -46,6 +46,7 @@ import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.JobFairDTO;
+import com.bis.sourcelead.dto.OfferAcceptanceRateDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
@@ -3181,7 +3182,12 @@ public class RequirementDaoImpl implements RequirementDao {
 			if(!jobFairDTO.isAdminUser()) {
 				queryObj.setLong("userId", jobFairDTO.getUserId());
 			}
-			jobFairList = queryObj.setLong("orgLocationId", jobFairDTO.getOrgLocationId()).setFirstResult(jobFairDTO.getStart()).setMaxResults(jobFairDTO.getLength()).list();
+			queryObj.setLong("orgLocationId", jobFairDTO.getOrgLocationId());
+			if(!jobFairDTO.isToExport()) {
+				queryObj.setFirstResult(jobFairDTO.getStart());
+				queryObj.setMaxResults(jobFairDTO.getLength());
+			}
+			jobFairList = queryObj.list();
 			
 			String  countQuery = "select count(*) from JobFair jobFair where jobFair.orgLocations.id=:orgLocationId";
 			if(!jobFairDTO.isAdminUser()) {
@@ -3669,7 +3675,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			String query = "from Requirement requirement  where (requirement.orgLocationId.id =:orglocationId and (date(requirement.createdDate) BETWEEN :fromDate AND :toDate) "+subQueryTeam.toString()+") "
 					+ "and (requirement.requirementSubmissionStatus = 'OPEN' or requirement.requirementSubmissionStatus = 'NEW') and "
 					+ "( requirement.primaryRecruiterUserId.id =:recruiterUserId or requirement.managerUserId.id =:recruiterUserId "
-					+ "or :recruiterUserId IN (select ra.assignUserId.id from RequirementAssignTo ra where ra.requirementId=requirement and ra.status='1') )";
+					+ "or :recruiterUserId IN (select ra.assignUserId.id from RequirementAssignTo ra where ra.requirementId=requirement and ra.status='1' and (date(ra.createdDate) BETWEEN :fromDate AND :toDate)) )";
 			if (query1.toString() != null && !query1.toString().isEmpty()) {
 				queryObj = session.createQuery(query + "and " + "(" + query1.toString() + ")");
 			} else {

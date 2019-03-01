@@ -229,4 +229,10 @@ public class ConfigurePayrollApproverServiceImpl implements ConfigurePayrollAppr
 	public boolean isLoginUserIsPayRollApprover(Long userId, Long orgLocationsId) {
 		return configurePayrollApproverDao.isLoginUserIsPayRollApprover(userId, orgLocationsId);
 	}
+
+	@Override
+	public ConfigurePayrollApprover getConfigurePayrollApproverByLocAndStatus(OrgLocations orgLocation)
+	{
+		return configurePayrollApproverDao.getConfigurePayrollApproverByLocAndStatus(orgLocation);
+	}
 }

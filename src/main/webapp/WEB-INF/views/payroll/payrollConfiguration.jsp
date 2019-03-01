@@ -9,7 +9,7 @@
       <div class="pull-left">
         <h2>Payroll Configure</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a> &raquo; Payroll Configure</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; Payroll Configure</div>
     </section>
     <div class="clearfix"></div>
     <div class="leaveConfigure clerfix">
@@ -90,7 +90,7 @@
         <div class="clearfix"></div>
       </div>
       
-      <%--  <c:if test="${SourceLeadWeb_displayName == 'Admin'}">
+       <c:if test="${SourceLeadWeb_displayName == 'Admin'}">
       <div class="col-md-3 mb">
         <div class="pull-left mr10"> <i class="fa fa-code-fork fa-2x text-muted"></i> </div>
         <div class="pull-left">
@@ -124,7 +124,7 @@
         <div class="clearfix"></div>
       </div>
       
-      </c:if> --%>
+      </c:if>
       
        <div class="col-md-3 mb">
         <div class="pull-left mr10"> <i class="fa fa-suitcase fa-2x text-muted"></i> </div>

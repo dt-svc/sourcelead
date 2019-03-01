@@ -367,7 +367,7 @@ $('#paymentDate').datepicker({
   
   function amountInputVal2(obj){
 	  // this is for total value updation based our input
-	  var totalValue=00.000;
+	  var totalValue=0.000;
 	  $("input[id^=totalAmountRow]").each(function() {
 	       var value = $(this).val();
 	    if($.isNumeric(value)){
@@ -382,7 +382,7 @@ $('#paymentDate').datepicker({
    <script>
 	function toggleInvoices(source) {
 	    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-	    var total = 00.000;
+	    var total = 0.000;
 	    for (var i = 0; i < checkboxes.length; i++) {
 	        if (checkboxes[i] != source){
 	            checkboxes[i].checked = source.checked;
@@ -392,7 +392,7 @@ $('#paymentDate').datepicker({
 	        		total += parseFloat(checkboxes[i].value);
 	            }else{
 	            	$("#totalAmountRow"+checkboxes[i].id).val('');
-	            	total = 0.00;
+	            	total = 0.000;
 	            }
 	    	}
 	        $("#grandTotalAmount").text(total.toFixed(3));
@@ -412,9 +412,9 @@ $('#paymentDate').datepicker({
 	function checkSingleInvoice(id, amount){
 		var totalAmount = $("#grandTotalAmount").text();
 		if(totalAmount == ''){
-			totalAmount = 00.000;
+			totalAmount = 0.000;
 		}
-		var grandTotalAmount = 00.000;
+		var grandTotalAmount = 0.000;
 		  if($("#"+id).is(':checked')){
 			  $("#totalAmountRow"+id).val(amount);
 			 grandTotalAmount =  parseFloat(totalAmount)+parseFloat(amount);

@@ -89,11 +89,11 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<EmployeePayroll> employeePayrollYTD(Candidate candidate, OrgLocations orgLocation,String approverStatus)
+	public List<EmployeePayroll> employeePayrollYTD(Candidate candidate, OrgLocations orgLocation,String approverStatus,int periodYear)
 	{
 		List<EmployeePayroll> payrollList = null;
 		try {
-			Date[] ytdDates = payrollUtil.getYTDDates(orgLocation);
+			Date[] ytdDates = payrollUtil.getYTDDatesPerYear(orgLocation,periodYear);
 			java.sql.Date startDate = new java.sql.Date(ytdDates[0].getTime());
 			java.sql.Date endDate = new java.sql.Date(ytdDates[1].getTime());
 			Session session = this.sessionFactory.getCurrentSession();
@@ -268,6 +268,13 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	@Transactional
 	public YTDPayrollDTO getContributionYTD(EmployeePayroll payroll,Long contributionId,OrgLocations orgLocation, String reportType)
 	{
+		
+		//passing frequency year to calculate ytd
+		Date date = payroll.getPaysheetFrequency().getFrequencyStartDate();
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		int year = c.get(Calendar.YEAR);
+		
 		YTDPayrollDTO yTDPayrollDTO = new YTDPayrollDTO();
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -275,7 +282,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			BigDecimal contributionMTD = BigDecimal.ZERO;
 			BigDecimal contributionQTD = BigDecimal.ZERO;
 			// YTD Dates
-			Date[] ytdDates = payrollUtil.getYTDDates(orgLocation);
+			Date[] ytdDates = payrollUtil.getYTDDatesPerYear(orgLocation,year);
 			java.sql.Date startDate = new java.sql.Date(ytdDates[0].getTime());
 			java.sql.Date endDate = new java.sql.Date(ytdDates[1].getTime());
 			String qry = "from DeductionHistory dedHis where dedHis.payroll.candidate.id= :candidateId and dedHis.contributionId.id = :contributionId and dedHis.deductionDate >= :startDate and dedHis.deductionDate <= :endDate ";
@@ -373,10 +380,17 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	@Transactional
 	public YTDPayrollDTO getDeductionYTD(EmployeePayroll payroll, Long deductionId, OrgLocations orgLocation,String reportType) {
 		
+		
+		//passing frequency year to calculate ytd
+		Date date = payroll.getPaysheetFrequency().getFrequencyStartDate();
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		int year = c.get(Calendar.YEAR);
+		
 		YTDPayrollDTO yTDPayrollDTO = new YTDPayrollDTO();
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			Date[] ytdDates = payrollUtil.getYTDDates(orgLocation);
+			Date[] ytdDates = payrollUtil.getYTDDatesPerYear(orgLocation,year);
 			java.sql.Date startDate = new java.sql.Date(ytdDates[0].getTime());
 			java.sql.Date endDate = new java.sql.Date(ytdDates[1].getTime());
 			String qry = "from DeductionHistory dedHis where dedHis.payroll.candidate.id= :candidateId and dedHis.deductionId.id = :deductionId and dedHis.deductionDate >= :startDate and dedHis.deductionDate <= :endDate";
@@ -435,8 +449,16 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	@Transactional
 	public List<EmployeePayroll> getPayrollTaxesYTD(EmployeePayroll payroll, OrgLocations orgLocation)
 	{
+		
+		
+		//passing frequency year to calculate ytd
+		Date date = payroll.getPaysheetFrequency().getFrequencyStartDate();
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		int year = c.get(Calendar.YEAR);
+		
 		Session session = this.sessionFactory.getCurrentSession();
-		Date[] ytdDates = payrollUtil.getYTDDates(orgLocation);
+		Date[] ytdDates = payrollUtil.getYTDDatesPerYear(orgLocation,year);
 		java.sql.Date startDate = new java.sql.Date(ytdDates[0].getTime());
 		java.sql.Date endDate = new java.sql.Date(ytdDates[1].getTime());
 		String qry = "from EmployeePayroll payroll where payroll.id = :payrollId and payroll.payCheckDate >= :startDate and payroll.payCheckDate <= :endDate";

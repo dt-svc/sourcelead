@@ -142,7 +142,7 @@ var config = {
 $(document).ready(function(){
 	$(".cliHead").click(function(){
 /*		$(this).next().find("tableStyles").slideToggle(100);*/
-		$(".tableStyles").toggle();``
+		$(".tableStyles").toggle();
 	});
 });
 
@@ -153,7 +153,7 @@ $(document).ready(function(){
 	function getReceivedInvoiceCustomReport() {
 		if ($('#rinvoice_custom_form').validate(false, validationSettings)) {
 		  	var formData = $($('#rinvoice_custom_form')[0]).serialize();
-		  	 var billType = 'Payables';
+		  	 var billType = 'Receivable';
 				var sourceleadUrl ='${sourceleadUrl}';
 				var orgId = $("#orgId").val();
 				var filterType = ""; 

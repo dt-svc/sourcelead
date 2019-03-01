@@ -1,5 +1,6 @@
 <jsp:include page="../../masterHeader.jsp" />
 <jsp:include page="../../masterSideNav.jsp" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <script src="/resources/js/tax/my_payroll.js" type="text/javascript"></script>
 
 <section class="content-wraper contentWraper">
@@ -7,7 +8,7 @@
 	<div class="pull-left">
 	<h2>My Payroll</h2>
 	</div>
-	   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;My Payroll</div>
+	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; My Payroll</div>
   </section>
   <div class="project_wrap">
 	   <div id="tabs-menu" class="clearfix project-tabs-menu">
@@ -26,7 +27,11 @@
 
 <script>
 	$(document).ready(function() {
-		getMyPays();
+		var redirectionTab = '${redirectionTab}';
+		if(redirectionTab === "forms")
+			getMyForms();
+		else 
+			getMyPays();
 	});
 </script>
  

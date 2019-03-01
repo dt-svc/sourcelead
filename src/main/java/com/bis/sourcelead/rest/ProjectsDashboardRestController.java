@@ -274,7 +274,7 @@ public class ProjectsDashboardRestController {
 				String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 				projectsDTO.setIsGlobalAccess(isGlobalAccess);
 				projectsDTO.setOrgId(org.getId());
-				String[] tableColumns = {"projectSequeneNumber", "projectName", "projectManagers", "invoiceFrequency", "budget", "startDate", "client","status"};
+				String[] tableColumns = {"id","projectSequeneNumber", "projectName", "projectManagers", "invoiceFrequency", "budget", "startDate", "client","status"};
 			    int sortColumnIndex = 1; //by default sorting using updated date
 				String sortColumnOrder = "desc"; //by default descending order
 				if(projectsDTO.getOrder() != null && !projectsDTO.getOrder().isEmpty()) {

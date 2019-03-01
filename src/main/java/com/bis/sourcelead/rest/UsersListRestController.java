@@ -2111,7 +2111,8 @@ public class UsersListRestController {
 			Long existingReportingManager=null;
 			if (StringUtils.isNotBlank(addUserDTO.getReportingManager())) {
 				User reportingManager = new User();
-				existingReportingManager = userRole.getReportingManager().getId(); 
+				if(userRole.getReportingManager() != null)
+					existingReportingManager = userRole.getReportingManager().getId(); 
 				reportingManager.setId(Long.parseLong(addUserDTO.getReportingManager()));
 				userRole.setReportingManager(reportingManager);
 			} else {

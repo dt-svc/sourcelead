@@ -75,7 +75,8 @@ getDeductionType();
       <div class="pull-left">
         <h2>Deduction</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Deduction List</div>
+<%--       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home >>Deduction List</a> &raquo; Deduction </div> --%>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Deduction List</a> &raquo; Deduction </div>
     </section>
     <div class="content-area content-new clearfix">
 
@@ -176,8 +177,9 @@ $('body').on('blur', '#associate_deduction_form', function() {
 	 var userCode = '${userCode}';
 	 var userId = '${userId}';
 	 var saveType = '${saveType}';  
+	 var dedType = $("#dedType").val();
 	 var deductionType = $("#deductionType").val();
-	 if(deductionType != null && deductionType != '' && deductionType != "undefined"){
+	 if(deductionType != null && deductionType != '' && deductionType != "undefined" && dedType != null && dedType != '' && dedType != "undefined"){
 		var formData = getFormData("associate_deduction_form");
 		$("#associate_deduction_save_button").attr("disabled", "disabled");
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -294,6 +296,7 @@ function resetValues(){
 				url: sourceleadUrl+"/validateDeduction?"+tokenParamName+"="+tokenValue+"&dedType="+dedType+"&userId="+userId,
 				success :function(data) {
 					if(data == true){
+						$('#dedType').find('p.jquery_form_error_message').remove();
 						$("#dedType").after("<p class='jquery_form_error_message'>This type is Already Existed</span>");
 						document.getElementById("associate_deduction_save_button").disabled = true;
 						document.getElementById("deductionAddButtonId").disabled = true;

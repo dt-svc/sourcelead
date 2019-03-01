@@ -2,8 +2,10 @@ package com.bis.sourcelead.payroll.service.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -586,9 +588,9 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 	}
 
 	@Override
-	public List<EmployeePayroll> employeePayrollYTD(Candidate candidate, OrgLocations orgLocation,String approverStatus)
+	public List<EmployeePayroll> employeePayrollYTD(Candidate candidate, OrgLocations orgLocation,String approverStatus,int periodYear)
 	{
-		return paysheetFrequencyDao.employeePayrollYTD(candidate,orgLocation,approverStatus);
+		return paysheetFrequencyDao.employeePayrollYTD(candidate,orgLocation,approverStatus,periodYear);
 	}
 
 	@Override
@@ -625,7 +627,22 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			dto.setRegularHours(emp.getRegularHours());
 			dto.setGrossPay(emp.getGrossPay());
 			dto.setTaxes(emp.getTaxes());
-			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(emp.getCandidate(), orgLocations, Constants.APPROVED);
+			
+			String dateStr = payPeriodDTO.getFreqStartDate();
+			Date date = null;
+			SimpleDateFormat format = orgLocations.getLocFullFormDateFormatter();
+			try {
+				 date = format.parse(dateStr);
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+			}
+			
+			
+			Calendar c = Calendar.getInstance();
+			c.setTime(date);
+			int year = c.get(Calendar.YEAR);
+			
+			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(emp.getCandidate(), orgLocations, Constants.APPROVED,year);
 			dto.setYtdTaxes(ytdDTO.getYtdTaxes());
 			dto.setDeductions(emp.getPreTaxDeduction().add(emp.getPostTaxDeduction()));
 			dto.setYtdDeductions(ytdDTO.getYtdDeduction());
@@ -834,7 +851,15 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			dto.setSsnNumber(ssn);
 			dto.setDepartmentName(emp.getEmployee().getDepartmentId().getDepartmentName());
 			dto.setGrossPay(grossPay.add(emp.getGrossPay()));
-			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(emp.getCandidate(), orgLocations, Constants.APPROVED);
+			
+			
+			//passing frequency year to calculate ytd
+			Date date = emp.getPaysheetFrequency().getFrequencyStartDate();
+			Calendar c = Calendar.getInstance();
+			c.setTime(date);
+			int year = c.get(Calendar.YEAR);
+			
+			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(emp.getCandidate(), orgLocations, Constants.APPROVED,year);
 			dto.setYtdTaxes(ytdTaxes.add(ytdDTO.getYtdTaxes()));
 			dto.setType(emp.getType());
 			dto.setEmpPayRate(emp.getEmpPayRate());

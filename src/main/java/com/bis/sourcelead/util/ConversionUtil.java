@@ -662,4 +662,51 @@ public class ConversionUtil {
 		return dates;
 	}
 	
+	/*public float rateConvertToYear(String rate,String ratePer,OrgLocations orglocations){
+		float finalRate=0f;
+		float localVal =0f;
+		if(ratePer.equals("Hourly")){
+			localVal = Float.valueOf(rate)*orglocations.getAverageWorkingHours();
+			finalRate = localVal*365;
+		}else if(ratePer.equals("Weekly")){
+			localVal = Float.valueOf(rate)/7;
+			finalRate = localVal*365;
+		}else if(ratePer.equals("Bi-Weekly")){
+			localVal = Float.valueOf(rate)/14;
+			finalRate = localVal*365;
+		}else if(ratePer.equals("Semi-Monthly")){
+			localVal = Float.valueOf(rate)/15;
+			finalRate = localVal*365;
+		}else if(ratePer.equals("Monthly")){
+			localVal = Float.valueOf(rate)/30;
+			finalRate = localVal*365;
+		}else if(ratePer.equals("Bi-Monthly")){
+			localVal = Float.valueOf(rate)/60;
+			finalRate = localVal*365;
+		}else{
+			finalRate = Float.valueOf(rate);
+		}
+		return finalRate;
+	}*/
+	
+	public float rateConvertToYear(String rate,String ratePer,OrgLocations orglocations){
+		float finalRate=0f;
+		if(ratePer.equalsIgnoreCase("Hourly")){
+			finalRate = Float.valueOf(rate)*orglocations.getAverageWorkingHours() * 5 * 52;
+		}else if(ratePer.equalsIgnoreCase("Weekly")){
+			finalRate = Float.valueOf(rate) * 52;
+		}else if(ratePer.equalsIgnoreCase("Bi-Weekly")){
+			finalRate = Float.valueOf(rate) * 26;
+		}else if(ratePer.equalsIgnoreCase("Semi-Monthly")){
+			finalRate = Float.valueOf(rate) * 24;
+		}else if(ratePer.equalsIgnoreCase("Monthly")){
+			finalRate = Float.valueOf(rate) * 12;
+		}else if(ratePer.equalsIgnoreCase("Bi-Monthly")){
+			finalRate = Float.valueOf(rate) * 6;
+		}else {
+			finalRate = Float.valueOf(rate);
+		}
+		return finalRate;
+	}
+	
 }

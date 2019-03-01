@@ -64,6 +64,10 @@ private static final long serialVersionUID = 1L;
     @JsonProperty
     @Transient
    	private String activityTimezoneStr;
+    
+    @JsonProperty
+    @Transient
+   	private String fileUrl;
 
 	public Long getId() {
 		return id;
@@ -147,5 +151,13 @@ private static final long serialVersionUID = 1L;
 
 	public void setActivityTimezoneStr(String activityTimezoneStr) {
 		this.activityTimezoneStr = activityTimezoneStr;
+	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
 	}
 }

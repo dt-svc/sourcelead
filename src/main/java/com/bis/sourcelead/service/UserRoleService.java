@@ -47,6 +47,8 @@ public interface UserRoleService {
 	
 	public UserRole getUserDetailsByUserIdAndLocationId(Long userId,Long locationId) throws Exception;
 	
+	public UserRole getProjectmemberUserDetailsByUserIdAndLocationId(Long userId, Long locationId,String designationType) throws Exception;
+	
 	public UserRole getUserByUserId(Long userId) throws Exception;
 	
 	public Long getUsersCountByOrgLocationID(Long orgLocationId) throws Exception;

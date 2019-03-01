@@ -245,7 +245,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		            StringBuilder purposeStringBuilder =new StringBuilder();
 		            StringBuilder totalStringBuilder =new StringBuilder();
 		            StringBuilder statusStringBuilder = new StringBuilder();
-		            ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId(),isGlobalUser);
+		            ProjectMembers pm= projectMembersService.getAllProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId(),isGlobalUser);
 		            
 			        orderedList.add(new ListItem(expenseId.append("Expense Id :").append(expenses.getExpenseId()).toString()));
 			        orderedList.add(new ListItem(locBuilder.append("Project :").append(pm.getProjects().getProjectName()).toString()));
@@ -596,7 +596,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		 StringBuilder projectName = new StringBuilder();	
 		 StringBuilder clientName = new StringBuilder();
 		 if(exp.getProjects() != null && exp.getMasterCandidateId() != null){
-	      ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(exp.getMasterCandidateId().getId(),exp.getProjects().getId(),orgLocations.getId(),isGlobalUser);
+	      ProjectMembers pm= projectMembersService.getAllProjectMembersByMasterCandidateIdAndProjectIdLocationId(exp.getMasterCandidateId().getId(),exp.getProjects().getId(),orgLocations.getId(),isGlobalUser);
 	      	  if(pm.getProjects().getProjectName()!= null){    
 	      		  projectName.append(pm.getProjects().getProjectName());
 	      	  }else{
@@ -700,6 +700,19 @@ public class ExpensesServiceImpl implements ExpensesService{
     	//bd = bd.setScale(2,BigDecimal.ROUND_UP);
 		cell14.setCellValue(str.append(bd).toString());
 		cell14.setCellStyle(style);
+		
+		Cell cell15 = writeRow.createCell(0);
+		cell15.setCellValue("Status :");
+		cell15.setCellStyle(style);
+
+		Cell cell16 = writeRow.createCell(1);
+		cell16.setCellValue(exp.getExpenseStatus().toString());
+		cell16.setCellStyle(style);
+
+		writeRow = createExcelsheet.createRow(7);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+		
 		}
 		String[] headers = null;
 		
@@ -1308,6 +1321,12 @@ public class ExpensesServiceImpl implements ExpensesService{
 	public boolean changeExpenseBillingStatus(long expenseId, String billingStatus) {
 		// TODO Auto-generated method stub
 		return expensesDao.changeExpenseBillingStatus(expenseId,billingStatus);
+	}
+
+	@Override
+	public List<Expenses> getAllExpenses() {
+		// TODO Auto-generated method stub
+		return  expensesDao.getAllExpenses();
 	}
 	
 }

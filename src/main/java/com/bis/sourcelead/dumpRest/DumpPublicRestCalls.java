@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,12 +17,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dao.AppliedLeaveDateDao;
 import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.dao.PayrollPaySlipIndDao;
@@ -36,13 +41,11 @@ import com.bis.sourcelead.entity.AppliedLeaveDate;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Expenses;
-import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.PayrollPaySlipInd;
-import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -65,11 +68,15 @@ import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
 import com.bis.sourcelead.payroll.service.HrDeductionsService;
 import com.bis.sourcelead.payroll.service.UserPayrollService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
+import com.bis.sourcelead.service.AssetService;
+import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
+import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UploadFileService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -103,6 +110,9 @@ public class DumpPublicRestCalls {
 	
 	@Autowired
 	CandidateService candidateService;
+	
+	@Autowired
+	UploadFileService uploadFileService;
 	
 	@Autowired
 	ProjectMembersHistoryDao projectMembersHistoryDao;
@@ -147,7 +157,20 @@ public class DumpPublicRestCalls {
 	ExpensesEntriesService expensesEntriesService;
 	
 	@Autowired
+	ExpensesService expensesService;
+	
+	@Autowired
+	AddExpensesDao addExpensesDao;
+	
+	@Autowired
 	PayrollPaySlipIndDao payrollPaySlipIndDao;
+	
+	
+	@Autowired
+	AssetService assetService;
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	@RequestMapping(value = "/ws/dumpAllAppliedLeaveDatesData", method = RequestMethod.GET)
 	@ResponseBody
@@ -166,6 +189,44 @@ public class DumpPublicRestCalls {
 		return list;
 		
 	}
+	@RequestMapping(value = "/ws/updateAllExpensesStatus", method = RequestMethod.GET)
+	@ResponseBody
+	public String updateAllExpensesStatus() throws Exception {
+		List<Expenses> expensesList = expensesService.getAllExpenses();
+		int count =0;
+		if(expensesList != null && !expensesList.isEmpty()) {
+			for(Expenses expenses :expensesList) {
+				List<String> expenseStatus = new ArrayList<>();
+				expenseStatus =   expenses.getApproverHierarchyList().stream().map(hierarchy -> hierarchy.getExpenseApprovalStatus().getValue()).collect(Collectors.toList());
+				if(expenseStatus.contains(Submission_ApprovalStatus.REJECTED.getValue())){
+					expenses.setExpenseStatus(Submission_Status.REJECTED);
+					addExpensesDao.storeAddExpensesData(expenses);
+					count++;
+				}else if(expenseStatus.contains(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL.getValue())){
+					expenses.setExpenseStatus(Submission_Status.SUBMITTED);
+					addExpensesDao.storeAddExpensesData(expenses);
+					count++;
+				}else if(expenseStatus.contains(Submission_ApprovalStatus.REOPENED.getValue())){
+					expenses.setExpenseStatus(Submission_Status.REOPENED);
+					addExpensesDao.storeAddExpensesData(expenses);
+					count++;
+				}
+			}
+		}
+		return  count+" Records updated SuccessFully";
+	}
+	
+	/*Expenses expenses = expensesDao.getExpenseById(expenseId);
+	List<String> expenseStatus = new ArrayList<>();
+	expenseStatus =   expenses.getApproverHierarchyList().stream().map(hierarchy -> hierarchy.getExpenseApprovalStatus().getValue()).collect(Collectors.toList());
+	if(expenseStatus.contains(Submission_Status.REJECTED.getValue())){
+		expenses.setExpenseStatus(Submission_Status.REJECTED);
+	}else if(expenseStatus.contains(Submission_Status.SUBMITTED.getValue())){
+		expenses.setExpenseStatus(Submission_Status.SUBMITTED);
+	}else{
+		expenses.setExpenseStatus(Submission_Status.APPROVED);
+	}
+	addExpensesDao.storeAddExpensesData(expenses);*/
 	
 	@RequestMapping(value = "/ws/dumpExpenseCategorySubmittedAmount", method = RequestMethod.GET)
 	@ResponseBody
@@ -600,5 +661,47 @@ public class DumpPublicRestCalls {
 		System.out.println("End the method");
 
     }
+	
+	
+	@RequestMapping(value = "/ws/deleteAssetManagement/{orgLocationId}", method = RequestMethod.GET)
+    public void deleteAssetManagement(@PathVariable Long orgLocationId,
+    		HttpServletRequest request, HttpServletResponse response) throws Exception {
+		    System.out.println("Start the method");
+        	List<Asset> assetList = assetService.getAssetListByLocationId(orgLocationId);
+        	for(Asset asset:assetList) {
+        		assetService.deleteAsset(asset);
+        	}
+		System.out.println("End the method");
+
+    }
+	
+	@RequestMapping(value = "/ws/changeExpenseDocumentFileNames")
+	@ResponseBody
+	public String changeExpensesDocumentNames(HttpServletRequest request) {
+		int count = 0;
+		try {
+			System.out.println("Initiated file name change(s) in Expense Documents Folder");
+			count = expensesEntriesService.changeDocumentNameWithWhiteSpacesToUnderScore(staticPath);
+			System.out.println("Changed " + count + " file(s)");
+			System.out.println("Completed file name change(s) in Expense Documents Folder");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "Name successfully changed for " + count + " file(s)";
+	}
+	
+	@RequestMapping(value = "/ws/changeDocumentFileNames")
+	@ResponseBody
+	public String changeDocumentNames(HttpServletRequest request) {
+		try {
+			System.out.println("Initiated file name change(s) in slead-static Folder");
+			uploadFileService.changeDocumentNamesWithWhiteSpacesToUnderScore(staticPath);
+			System.out.println("Completed file name change(s) in slead-static Folder");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "Exception occured while changing document name(s), please check error log";
+		}
+		return "Successfully changed document names in 'slead-static' folder";
+	}
 	
 }

@@ -17,4 +17,6 @@ public interface ExpensesEntriesService {
 
 	public int dumpExpenceCategoryAmountToOldRecords();
 
+	public int changeDocumentNameWithWhiteSpacesToUnderScore(String staticPath);
+
 }

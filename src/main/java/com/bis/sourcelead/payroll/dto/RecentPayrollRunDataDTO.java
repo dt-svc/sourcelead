@@ -25,6 +25,12 @@ public class RecentPayrollRunDataDTO {
 	
 	private Date endDate;
 	
+	private BigDecimal grossPay;
+	
+	private String paysheetFreqUUID;
+	
+	private String payPeriodNum;
+	
 
 	public String getPayFrequency()
 	{
@@ -125,5 +131,30 @@ public class RecentPayrollRunDataDTO {
 	{
 		this.endDate = endDate;
 	}
+
+	public BigDecimal getGrossPay() {
+		return grossPay;
+	}
+
+	public void setGrossPay(BigDecimal grossPay) {
+		this.grossPay = grossPay;
+	}
+
+	public String getPaysheetFreqUUID() {
+		return paysheetFreqUUID;
+	}
+
+	public void setPaysheetFreqUUID(String paysheetFreqUUID) {
+		this.paysheetFreqUUID = paysheetFreqUUID;
+	}
+
+	public String getPayPeriodNum() {
+		return payPeriodNum;
+	}
+
+	public void setPayPeriodNum(String payPeriodNum) {
+		this.payPeriodNum = payPeriodNum;
+	}
+	
 
 }

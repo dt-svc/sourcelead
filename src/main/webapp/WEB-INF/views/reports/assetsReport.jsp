@@ -157,7 +157,7 @@
 
 <script>
 
-function assetReportDataTableList(refreshFlag){
+function assetReportDataTableList(refreshFlag){         
 	  if ($('#assetForm').validate(false, validationSettings)){
 // 		  $("#loadingId").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 		  var formData = getFormData1("assetForm");
@@ -311,17 +311,7 @@ function dynamicAssetReportPagination(){
 <script>
 
 function aseetsDataExport(type){
-	 /* var formData = getFormData1("assetForm");
-	  $.ajax({
-           url: sourceleadUrl+"/getAssetsReportExport?&type="+type,
-           type: "POST",
-           data: formData,
-	        processData: false,
-	        contentType:false, 
-           success: function (data) {
-        	   alert(data)
-           }
-       }); */
+	
        var locationValue = sourceleadUrl+"/getAssetsReportExport?type="+type+"&fromDate=" + $("#fromDate").val() + "&toDate=" + $("#toDate").val() + "&dateType=" + $("[name='dateType']:checked").val();
        if($("#categoryId").val() !== null) {
        	locationValue += "&categories=" + $("#categoryId").val();

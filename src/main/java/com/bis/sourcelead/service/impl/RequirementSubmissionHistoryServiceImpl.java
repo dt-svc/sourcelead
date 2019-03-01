@@ -4,7 +4,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,14 +16,18 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementSubmissionHistoryDao;
 import com.bis.sourcelead.dao.TimeZoneDao;
+import com.bis.sourcelead.dto.OfferAcceptanceRateDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.OfferAcceptanceRateView;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RecruiterJobsReportView;
 import com.bis.sourcelead.entity.RecruiterReportView;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -49,7 +57,7 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	}
 	
 	@Override
-	public RequirementSubmissionHistory updateRequirementHistory(RequirementSubmission requirementSubmission,User user,RequirementSubmissionHistory requirementSubmissionHistory)
+	public RequirementSubmissionHistory updateRequirementHistory(RequirementSubmission requirementSubmission,User user,RequirementSubmissionHistory requirementSubmissionHistory, String masterUserCode)
 			throws Exception {
 		StringBuilder userName = new StringBuilder();
 		requirementSubmissionHistory.setSubmissionId(requirementSubmission);
@@ -66,7 +74,7 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 		requirementSubmissionHistory.setCreatedDate(new Date());
 		requirementSubmissionHistory.setUpdatedDate(new Date());
 		requirementSubmissionHistory.setCreatedUser(userName.toString());
-		requirementSubmissionHistory.setMasterUserCode(requirementSubmission.getCreatedBy());
+		requirementSubmissionHistory.setMasterUserCode(masterUserCode);
 		
 		return requirementSubmissionHistoryDao.updateRequirementHistory(requirementSubmissionHistory);
 	}
@@ -199,6 +207,101 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	@Override
 	public int updateSourceUserCodeForSubmissionHistory() {
 		return requirementSubmissionHistoryDao.updateSourceUserCodeForSubmissionHistory();
+	}
+	
+	@Override
+	public ResponseList<OfferAcceptanceRateDTO> getOfferAcceptanceRateList(String userCode, long orgLocationId, String selectedClients, String filterType, String filteredDate) {
+		ResponseList<OfferAcceptanceRateDTO> responseList = new ResponseList<>();
+		List<OfferAcceptanceRateDTO> offerAcceptanceRateDTOList = new LinkedList<>();
+		try {
+			int month = 0, year = 0;
+			boolean compare = false;
+			if(filterType != null && !filterType.isEmpty() && filteredDate != null && !filteredDate.isEmpty()) {
+				switch (filterType) {
+				case "month":
+					month = Integer.parseInt(filteredDate);
+					break;
+				case "year":
+					year = Integer.parseInt(filteredDate);
+					break;
+				case "compare":
+					compare = true;
+					break;
+				default:
+					break;
+				}
+			}
+			List<OfferAcceptanceRateView> offerAcceptanceRateViewList = requirementSubmissionHistoryDao.getOfferAcceptanceRateList(userCode, orgLocationId, selectedClients, month, year, compare);
+			if(offerAcceptanceRateViewList != null && !offerAcceptanceRateViewList.isEmpty()) {
+				//Grouping & Sorting OfferAcceptanceRateViewList by CreatedYearMonthDate if month > 0 otherwise by CreatedYearMonth
+				Map<String, List<OfferAcceptanceRateView>> oarMap = offerAcceptanceRateViewList.stream()
+						.collect(Collectors.groupingBy(compare ? OfferAcceptanceRateView::getCreatedYear : month > 0 ? OfferAcceptanceRateView::getCreatedYearMonthDate : OfferAcceptanceRateView::getCreatedYearMonth))
+						.entrySet().stream().sorted(Map.Entry.comparingByKey())
+						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+								(oldValue, newValue) -> oldValue, LinkedHashMap::new));
+				if(oarMap != null && oarMap.keySet().size() > 1 || compare) {
+					for(String date : oarMap.keySet()) {
+						List<OfferAcceptanceRateView> oarList = oarMap.get(date);
+						int offerCount = 0;
+						int offerAcceptedCount = 0;
+						int offerRejectedCount = 0;
+						for(OfferAcceptanceRateView oarView : oarList) {
+							offerCount += oarView.getOFFERMADE_COUNT().intValue();
+							offerAcceptedCount += oarView.getOFFERACCEPTED_COUNT().intValue();
+							offerRejectedCount += oarView.getOFFERREJECTED_COUNT().intValue();
+						}
+						OfferAcceptanceRateDTO offerAcceptanceRateDTO = new OfferAcceptanceRateDTO();
+						offerAcceptanceRateDTO.setOfferDate(date);
+						offerAcceptanceRateDTO.setOfferCount(offerCount);
+						offerAcceptanceRateDTO.setAcceptedCount(offerAcceptedCount);
+						offerAcceptanceRateDTO.setRejectedCount(offerRejectedCount);
+//						if(offerCount > 0 || offerAcceptedCount > 0 || offerRejectedCount > 0)
+							offerAcceptanceRateDTOList.add(offerAcceptanceRateDTO);
+					}
+					responseList.setResponseMessage(compare ? "compare" : month > 0 ? "month" : "year");
+				} else if(oarMap != null && oarMap.keySet().size() == 1) {
+					Map<String, List<OfferAcceptanceRateView>> oarMap2 = oarMap.get(oarMap.keySet().iterator().next())
+							.stream().collect(Collectors.groupingBy(OfferAcceptanceRateView::getCreatedYearMonthDate))
+							.entrySet().stream().sorted(Map.Entry.comparingByKey())
+							.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+									(oldValue, newValue) -> oldValue, LinkedHashMap::new));
+					if (oarMap2 != null) {
+						for (String date : oarMap2.keySet()) {
+							List<OfferAcceptanceRateView> oarList = oarMap2.get(date);
+							int offerCount = 0;
+							int offerAcceptedCount = 0;
+							int offerRejectedCount = 0;
+							for(OfferAcceptanceRateView oarView : oarList) {
+								offerCount += oarView.getOFFERMADE_COUNT().intValue();
+								offerAcceptedCount += oarView.getOFFERACCEPTED_COUNT().intValue();
+								offerRejectedCount += oarView.getOFFERREJECTED_COUNT().intValue();
+							}
+							OfferAcceptanceRateDTO offerAcceptanceRateDTO = new OfferAcceptanceRateDTO();
+							offerAcceptanceRateDTO.setOfferDate(date);
+							offerAcceptanceRateDTO.setOfferCount(offerCount);
+							offerAcceptanceRateDTO.setAcceptedCount(offerAcceptedCount);
+							offerAcceptanceRateDTO.setRejectedCount(offerRejectedCount);
+							offerAcceptanceRateDTOList.add(offerAcceptanceRateDTO);
+						}
+						responseList.setResponseMessage("month");
+					}
+				}
+			}
+			responseList.setData(offerAcceptanceRateDTOList);
+			responseList.setResponse(Result.SUCCESS.name());
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
+		}
+		return responseList;
+	}
+
+	@Override
+	public List<RecruiterJobsReportView> getSubmissionApplicantCountsForRecruiterJobreports(Long orgLocationId, User user,
+			Date[] searchDates, Long requirementId) throws Exception {
+		List<RecruiterJobsReportView> rjrvList = requirementSubmissionHistoryDao.getSubmissionApplicantCountsForRecruiterJobreports(orgLocationId,user,searchDates,requirementId);
+		return rjrvList;
 	}
 
 }

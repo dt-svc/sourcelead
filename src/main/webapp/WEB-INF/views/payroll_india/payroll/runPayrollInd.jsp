@@ -7,9 +7,9 @@
 <section class="content-wraper contentWraper">
   <section class="content-header clearfix">
 	<div class="pull-left">
-	<h2>Run Payroll</h2>
+	<h2>Org Payroll</h2>
 	</div>
-	   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;Run Payroll</div>
+	   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Run Payroll</div>
   </section>
 		<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
@@ -225,9 +225,9 @@ function payrollDiv(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.total != null && opt.total != '' && opt.total !='undefined'){
-						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.total.toFixed(2)+'</div>';
+						                		  result = result +'<div class="tbldata-dotdot-vsm">'+opt.total.toFixed(2)+' <i class="paddingLeft">&#8377;</i></div>';
 						              		}else{
-						              		  result = result +'<div class="tbldata-dotdot-vsm">0.0</div>';
+						              		  result = result +'<div class="tbldata-dotdot-vsm">0.0 <i class="paddingLeft">&#8377;</i></div>';
 						              		}
 											return result;
 										}

@@ -224,7 +224,7 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 	public List<LookUpData> getLookUpdataByCategoryAndOrgLocationId(String category, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = null;
-		query = "from LookUpData lookupdata where (lookupdata.category = :category and lookupdata.orgLocationId IS NULL ) or (lookupdata.category = :category and lookupdata.orgLocationId =:orgLocationId) ";
+		query = "from LookUpData lookupdata where (lookupdata.category = :category and lookupdata.orgLocationId IS NULL ) or (lookupdata.category = :category and lookupdata.orgLocationId =:orgLocationId)";
 	    List<LookUpData> taskTypeList = session.createQuery(query.toString()).setString("category", category).setLong("orgLocationId", orgLocationId).list();
 	    return taskTypeList;
 	}
@@ -289,6 +289,20 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 				+" ( LD.CATEGORY = :category AND LD.ORG_LOCATIONID IS NULL ) OR (LD.CATEGORY = :category AND LD.ORG_LOCATIONID =:orgLocationId )";
 		Query queryObj = session.createSQLQuery(query);
 		queryObj.setLong("orgLocationId", orgLocationId).setString("category", category);	
+		List<String> taskTypeList = (List<String>)queryObj.list();
+	    return taskTypeList;
+	}
+
+	@Override
+	public List<String> getCategoriesListByCategoryType(String category) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="SELECT "
+				+" LD.NAME "
+				+" FROM LOOKUP_DATA LD "
+				+" WHERE "
+				+" LD.CATEGORY = :category ";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setString("category", category);	
 		List<String> taskTypeList = (List<String>)queryObj.list();
 	    return taskTypeList;
 	}

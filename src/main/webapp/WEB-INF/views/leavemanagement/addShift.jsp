@@ -3,6 +3,18 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+
+<script>
+$(document).ready(function(){
+	var startingTime = '${shift.timeIn}';
+	
+	if(startingTime != null && startingTime != "" && startingTime != "undefined"){
+		$("#shiftTimeOut").timepicker('option', 'minTime',startingTime);
+	}
+	
+});
+</script>
+
 <!-- Content Area -->
    <section class="content-wraper">
     <section class="content-header clearfix">
@@ -37,12 +49,12 @@
         <div class="row">
         	<div class="col-md-6 clearField" id="startTimeDiv">
         	<input type="text" class="timepicker form-control" id="shiftTimeIn"
-               name="timeIn" placeholder="In-Time" value="${shift.timeIn}" field-name="Time in" onblur="validateShiftEndTime()" data-validation = "required">
+               name="timeIn" placeholder="In-Time" value="${shift.timeIn}" field-name="Time in" onblur="validateShiftEndTime();" data-validation = "required">
         	<i class="fa fa-times text-muted small"></i>
         	</div>
         	<div class="col-md-6 clearField" id="endTimeDiv">
         	<input type="text" class="timepicker form-control" id="shiftTimeOut"
-               name="timeOut" placeholder="Out-Time" value="${shift.timeOut}" field-name="Time Out" onblur="validateShiftEndTime()" data-validation = "required">
+               name="timeOut" placeholder="Out-Time" value="${shift.timeOut}" field-name="Time Out" onblur="validateShiftEndTime();" data-validation = "required">
         	<i class="fa fa-times text-muted small"></i>
         	</div>
         	<div id="timeDiv"></div>
@@ -61,7 +73,7 @@
         	<input type="text" class="timepicker form-control" id="totalHours"
                name="totalHours" placeholder="Total Hours" value="${shift.totalHours}" field-name="Total Hours" readonly>
         	</div>
-        	<div class="col-md-6">
+        	<div class="col-md-6" id="emptyID">
         	<select title="Minimum Hours" class="selectpicker form-control sel" id="minimumHours" name="minimumHours" data-live-search="true">
         	<option ${shift.minmumHours == '0 mins' ? 'selected' : ''}>0 mins</option>
         	<option ${shift.minmumHours == '15 mins' ? 'selected' : ''}>15 mins</option>
@@ -308,6 +320,7 @@
 <script type="text/javascript">
 	function validateShiftEndTime() {
 		 	$("#timeDiv").find('p.jquery_form_error_message').remove();
+// 		 	refreshTime();
 			var startTime = $("#shiftTimeIn").val();
 			var endTime = $("#shiftTimeOut").val();
 			if(endTime != null && endTime != '' && endTime != 'undefined'){
@@ -489,10 +502,13 @@ function cancelShift(){
 			 'step': 15
 		}).on('changeTime', function() {
 			$('#totalHours').val('');
-			$("#shiftTimeOut").val('')
+			$("#shiftTimeOut").val('');
+			$("#minimumHours").val('');
+			$("#minimumHours").selectpicker('refresh');
 			flushShowDeatils();
 	        $("#shiftTimeOut").timepicker('option', 'minTime', $(this).val());
 	  });
+	  
 		
 	 $("#shiftTimeOut").timepicker({
 			'showDuration': true,

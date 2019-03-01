@@ -17,4 +17,6 @@ public interface ConfigurePayrollApproverDao {
 	List<PayrollApprover> getPayrollApproversByCPAID(Long configurePayrollApproverId);
 	
 	boolean isLoginUserIsPayRollApprover(Long userId,Long orgLocationsId);
+
+	ConfigurePayrollApprover getConfigurePayrollApproverByLocAndStatus(OrgLocations orgLocation);
 }

@@ -839,9 +839,8 @@ function getEmployeementType(designationType){
 })(jQuery);
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
  function createUser() {
-	 
 	 var loginCurrencyCode = '${SourceLeadWeb_currencyCode}'; 
 	 var loginLocationCountry = '${SourceLeadWeb_orgLocations.country}';
 	 var country = '${SourceLeadWeb_loginCountryName}'; 
@@ -914,7 +913,7 @@ function getEmployeementType(designationType){
    });
   
  
-</script>  
+</script>   -->
 
 
 
