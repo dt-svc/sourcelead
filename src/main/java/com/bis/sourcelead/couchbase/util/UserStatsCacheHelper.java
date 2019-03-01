@@ -693,7 +693,7 @@ public class UserStatsCacheHelper {
 	    StringBuilder accountsList = new StringBuilder();
 	    String userAccounts = null;
 	    try {
-			List<UserRole> userRolesList = userRoleService.getLoginUserAccountsList(userRole.getUser().getId());
+			List<UserRole> userRolesList = userRoleService.getLoginUserLoginAccountsList(userRole.getUser().getId());
 			if(userRolesList != null && userRolesList.size() > 1) {
 				for(UserRole ur : userRolesList) {
 					accountsList.append(ur.getUuid()).append(",").toString();
