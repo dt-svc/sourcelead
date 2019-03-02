@@ -11,8 +11,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
 @Table(name = "USER_GROUP")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userGroup")
 public class UserGroup {
 	
 	

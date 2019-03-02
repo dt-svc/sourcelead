@@ -16,11 +16,10 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "CANDIDATE_HOT_LIST")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateHistory")
 public class CandidateHotList implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

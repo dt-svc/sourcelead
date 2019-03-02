@@ -12,9 +12,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 
 @Entity
 @Table(name = "CANDIDATE_MARKET_PLACE_PAYMENT_TRANSACTION_HISTORY")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateMarketPlacePaymentTransactionHistory")
 public class CandidateMarketPlacePaymentTransactionHistory implements Serializable {
 
 	private static final long serialVersionUID = 1L;

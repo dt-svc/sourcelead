@@ -33,6 +33,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "LEAVE_TYPE_HISTORY")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leaveTypeHistory")
 public class LeaveTypeHistory {
 
 	@Id

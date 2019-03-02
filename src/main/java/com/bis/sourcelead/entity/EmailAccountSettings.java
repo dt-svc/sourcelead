@@ -13,8 +13,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
 @Table(name = "EMAIL_ACCOUNT_SETTINGS")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "emailAccountSettings")
 public class EmailAccountSettings implements Serializable {
 
 	/**

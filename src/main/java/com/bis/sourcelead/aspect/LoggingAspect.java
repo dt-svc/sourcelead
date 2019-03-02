@@ -13,12 +13,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.beust.jcommander.Strings;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.service.ActionHistoryService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
  *
@@ -34,7 +33,9 @@ public class LoggingAspect {
 	@Autowired(required=true)
 	private HttpServletRequest request;
 	
-
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 
@@ -128,7 +129,8 @@ public class LoggingAspect {
 		Long actionId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"actionId");
 		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"userId");
 		String actionUUID = (String) SourceLeadSessionManager.getSessionAttribute(request,"actionUUID");
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocationById(orgLocId);
 		UserLoginLogoutSession userLoginLogoutSession = null;
 		String methodName = joinPoint.getSignature().getName();
 		String type = "";

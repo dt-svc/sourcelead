@@ -7,8 +7,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
 @Table(name = "CANDIDATE_IMPORT_LOG")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateImportLog")
 public class CandidateImportLog {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

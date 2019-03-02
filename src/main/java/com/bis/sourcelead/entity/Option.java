@@ -15,12 +15,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "LEAVE_OPTION")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leaveOption")
 public class Option {
 
 	@Id

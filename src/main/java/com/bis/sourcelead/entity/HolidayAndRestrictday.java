@@ -22,6 +22,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "HOLIDAY_RESTRICT_DAYS")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "holidayRestrictDays")
 public class HolidayAndRestrictday implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id

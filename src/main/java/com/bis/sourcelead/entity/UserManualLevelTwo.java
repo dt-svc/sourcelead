@@ -17,6 +17,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -26,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "USER_MANUAL_LEVEL_TWO")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userManualLevelTwo")
 public class UserManualLevelTwo implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

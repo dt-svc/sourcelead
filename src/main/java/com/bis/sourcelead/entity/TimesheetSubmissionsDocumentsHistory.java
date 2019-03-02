@@ -16,10 +16,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "TIMESHEET_SUBMISSIONS_DOCUMENTS_HISTORY")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "timesheetSubmissionsDocumentsHistory")
 public class TimesheetSubmissionsDocumentsHistory implements Serializable{
 	
 	 

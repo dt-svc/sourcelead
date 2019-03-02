@@ -13,12 +13,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "VENDOR_ON_BOARDING_TEMPLATE_DOCUMENTS")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "vendorOnboardingTemplateDocuments")
 public class VendorOnboardingTemplateDocuments implements Serializable{
 
 	 private static final long serialVersionUID = 1L;

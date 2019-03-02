@@ -29,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "TIMESHEET_ENTRIES")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "timesheetEntries")
 public class TimesheetEntries implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

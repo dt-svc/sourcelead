@@ -13,6 +13,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 /**
  * @author Ajith Matta
  * @create date 25 Aug 2016
@@ -21,6 +24,7 @@ import javax.persistence.Transient;
 
 @Entity
 @Table(name = "CANDIDATE_SKILLS")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateSkills")
 public class CandidateSkills {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

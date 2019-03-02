@@ -16,10 +16,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "CENTRAL_TAX")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "centralTax")
 public class CentralTax implements Serializable {
 
 	private static final long serialVersionUID = 1L;

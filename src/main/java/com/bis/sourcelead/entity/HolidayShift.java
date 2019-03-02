@@ -13,8 +13,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
 @Table(name = "HOLIDAY_SHIFT")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "holidayShift")
 public class HolidayShift implements Serializable{
 	
 private static final long serialVersionUID = 1L;

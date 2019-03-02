@@ -12,6 +12,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 /**
  * Entity for CONTRACT_REQUEST_DOCUMENTS
  * @author root
@@ -20,6 +23,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "CONTRACT_REQUEST_DOCUMENTS")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "contractOwnerHierarchy")
 public class ContractRequestDocuments {
 	
 	private static final long serialVersionUID = 1L;

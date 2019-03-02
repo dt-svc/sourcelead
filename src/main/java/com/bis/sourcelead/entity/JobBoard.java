@@ -8,12 +8,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 /**
  *
  * @author Raja Gopal Reddy P
  */
 @Entity
 @Table(name = "JOB_BOARD")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "jobBoard")
 public class JobBoard extends Record implements Serializable {
     
     @Id

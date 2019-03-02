@@ -20,6 +20,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -28,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "REFER_CONTACTS")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "referContacts")
 public class ReferContacts implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
