@@ -374,7 +374,7 @@ public class DashboardRestController {
 		      String authToken[] = auth.getName().split("##");
 		      String uname = user.getUserName()+"##"+userRole.getId()+"##"+authToken[2];
 		      String actionUUID = (String) SourceLeadSessionManager.getSessionAttribute(request, "actionUUID");
-		      Long actionId = (Long) request.getSession().getAttribute("actionId");
+		  	  Long actionId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"actionId");
 		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole,actionUUID,actionId,request);
 				 
 		     SecurityContextHolder.clearContext();
@@ -395,7 +395,7 @@ public class DashboardRestController {
 		      String authToken[] = auth.getName().split("##");
 		      String uname = user.getUserName()+"##"+userRole.getId()+"##"+authToken[2];
 		      String actionUUID = (String) SourceLeadSessionManager.getSessionAttribute(request, "actionUUID");
-		      Long actionId = (Long) request.getSession().getAttribute("actionId");
+		  	  Long actionId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"actionId");
 		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole,actionUUID,actionId,request);
 				
 		     SecurityContextHolder.clearContext();
@@ -425,7 +425,7 @@ public class DashboardRestController {
 		      String authToken[] = auth.getName().split("##");
 		      String uname = user.getUserName()+"##"+userRole.getId()+"##"+authToken[2];
 		      String actionUUID = (String) SourceLeadSessionManager.getSessionAttribute(request, "actionUUID");
-		      Long actionId = (Long) request.getSession().getAttribute("actionId");
+		  	  Long actionId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"actionId");
 		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole,actionUUID,actionId,request);
 				
 		     SourceLeadSessionManager.setSessionAttribute(request, "productionLoginUserId", productionLoginUserId);
@@ -464,7 +464,7 @@ public class DashboardRestController {
 		      String authToken[] = auth.getName().split("##");
 		      String uname = user.getUserName()+"##"+userRole.getId()+"##"+authToken[2];
 		      String actionUUID = (String) SourceLeadSessionManager.getSessionAttribute(request, "actionUUID");
-		      Long actionId = (Long) request.getSession().getAttribute("actionId");
+		      Long actionId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"actionId");
 		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole,actionUUID,actionId,request);
 		     
 		     SecurityContextHolder.clearContext();
@@ -509,7 +509,7 @@ public class DashboardRestController {
 		      String authToken[] = auth.getName().split("##");
 		      String uname = user.getUserName()+"##"+userRole.getId()+"##"+authToken[2];
 		      String actionUUID = (String) SourceLeadSessionManager.getSessionAttribute(request, "actionUUID");
-		      Long actionId = (Long) request.getSession().getAttribute("actionId");
+		      Long actionId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"actionId");
 		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole,actionUUID,actionId,request);
 		     
 		     SecurityContextHolder.clearContext();
@@ -552,7 +552,7 @@ public class DashboardRestController {
 		      String authToken[] = auth.getName().split("##");
 		      String uname = user.getUserName()+"##"+userRole.getId()+"##"+authToken[2];
 		      String actionUUID = (String) SourceLeadSessionManager.getSessionAttribute(request, "actionUUID");
-		      Long actionId = (Long) request.getSession().getAttribute("actionId");
+		      Long actionId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"actionId");
 		      userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(authToken[2],userRole,actionUUID,actionId,request);
 		     
 		     SecurityContextHolder.clearContext();

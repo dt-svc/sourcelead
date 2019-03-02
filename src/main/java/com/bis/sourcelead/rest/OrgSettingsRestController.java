@@ -1435,7 +1435,8 @@ public class OrgSettingsRestController {
 	public ProbationDTO getProbationData(HttpServletRequest request) throws Exception
 	{
 		ProbationDTO probation = new ProbationDTO();
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		if(orgLocations != null) {
 			probation.setProbationPeriod(orgLocations.getProbationPeriod());
 			probation.setNoOfDays(orgLocations.getNoOfDays());
