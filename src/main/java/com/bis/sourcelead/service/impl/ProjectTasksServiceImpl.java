@@ -501,7 +501,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		notificationScenario.setOrgCode(loginOrgCode);
 		StringBuilder notificationLink = new StringBuilder();
 		String actionLink = "";
-		actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectTaskSummary?"
+		actionLink = notificationLink.append(pmsUrl).append("/").append("projectTaskSummary?"
 				+ "taskUUID=" + tasks.getProjectTasksUUID() + "&projectClientUUID="
 				+ projectTasksDTO.getProjectClientUUID()).toString();
 		if(user != null) {
@@ -1182,7 +1182,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		notificationScenario.setOrgCode(loginOrgCode);
 		StringBuilder notificationLink = new StringBuilder();
 		String actionLink = "";
-		actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectTaskSummary?"
+		actionLink = notificationLink.append(pmsUrl).append("/").append("projectTaskSummary?"
 				+ "taskUUID=" + tasks.getProjectTasksUUID() + "&projectClientUUID="+ projectClientUUID).toString();
 		if(user != null) {
 			emailScenerioUtil.sendNotification(actionLink, loginUser, user, loginOrgLocation, notificationScenario, new HashMap<String, String>());
