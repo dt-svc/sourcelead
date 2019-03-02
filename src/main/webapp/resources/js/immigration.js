@@ -10,6 +10,8 @@ var formNames = [];
 function Immigration() {
     this.gotoTemplatePreviousPage = function (temp) {
         $("#addNewPetitionTemplateDiv").empty();
+        var cc=$("#countryName").val();
+        var pp= $("#petitionTypeTemplate").val();
         if (temp == 'templateDetails') {
             $("#addNewPetitionTemplateDiv").load(vmsUrl + immiModulePath + "/gotoTemplatePreviousPage?status=templateDetails");
         } else if (temp == 'templateDocs') {
@@ -52,7 +54,7 @@ function Immigration() {
     }
 
     this.resetFormData = function (formId) {
-        $("#" + formId).closest('form').find("input[type=text], textarea, .selectpicker, .chosen-select").val("").trigger('chosen:updated');
+        $("#" + formId).closest('form').find("input[type=text], textarea, .form-control,.selectpicker, .chosen-select").val("").trigger('chosen:updated');
         $("#" + formId).closest('form').find(".selectpicker, .chosen-select option[value='']").attr('selected', true).trigger('change');
     }
     
@@ -384,102 +386,180 @@ function Immigration() {
         });
     }
     
-    this.savePassportVisaDetails= function(idType) {
-    	var formId= "";
-    	if(idType =="Passport"){
-			formId ="CandidatePassportform";
-		}
-	 	else if(idType =="Visa"){
-	  		formId ="CandidateVisaform";
-  		}
-	if ($('#'+formId).validate(false, validationSettings)) {
-		$("#passport_save_id").attr("disabled",true);
-		$("#visa_save_id").attr("disabled",true);
-			var formData = getFormData(formId);
-		 	var candidateId = $('#candidateID').val();
-            var immigrationId = $('#immigrationId').val();
-            $.ajax({
-            url: vmsUrl + immiModulePath + "/savePassportVisaDetailsPage?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId+"&idType="+idType,
-            type : "POST",
-			data : formData,
-			success : function(result) {
-							if (result && result.response === "INVALID_DATA") {
-		                    	 showError(result.responseMessage);
-		                    }else if (result.response === "AWKWARD") {
-		                        location.href = "/errorPage";
-		                    }else if(result.response === 'SUCCESS') {
-		                    	if (idType == 'Passport') {
-									$('#popPassView').hide();
-									$('.popMask').fadeOut();
-									if($('#candidatePassportId').val().trim() != ''){
-										showSuccessMsg("Successfully Updated Passport Details.");
-			                    	}else{
-			                    		showSuccessMsg("Successfully New Passport Details Added.");
-			                    	}
-										
-									immigration.displayPassportDetails(candidateId, 'Passport');
-								} else if (idType == 'Visa') {
-									$("#popUpVisa").hide();
-									$(".popMask").fadeOut(200); // close the popup code															// popup code
-									if($('#candidateVisaId').val().trim() != ''){
-										showSuccessMsg("Successfully Updated Visa Details.");
-			                    	}else{
-			                    		showSuccessMsg("Successfully New Visa Details Added.");
-			                    	}
-									immigration.displayVisaDetails(candidateId,'Visa');
-								}
-		                    }else{
-		                    	 showError("Operation failed, please try again");
-		                    }
-							$("#passport_save_id").removeAttr("disabled");
-							$("#visa_save_id").removeAttr("disabled");
-			}
-		});
-		return true;
-	} else {
-		return false;
-	}
-}
 
-    this.editPassportVisaDetailsByRowId=function(id,idType){
-    	$("idNum").val(id);
+    this.saveVisaDetails= function() {
+    	
+    	if ($("#CandidateVisaform").validate(false, validationSettings)) {
+    		$("#visa_save_id").attr("disabled",true);
+    			var formData = getFormData("CandidateVisaform");
+    		 	var candidateId = $('#candidateID').val();
+                var immigrationId = $('#immigrationId').val();
+                 var visaHistoryId = $('#visaHistoryId').val();
+                $.ajax({
+                url: vmsUrl + immiModulePath + "/saveVisaDetailsPage?candidateId="+candidateId+"&immigrationId="+immigrationId+"&visaHistoryId="+visaHistoryId,
+                type : "POST",
+    			data : formData,
+    			success : function(result) {
+    							if (result && result.response === "INVALID_DATA") {
+    		                    	 showError(result.responseMessage);
+    		                    }else if (result.response === "AWKWARD") {
+    		                        location.href = "/errorPage";
+    		                    }else if(result.response === 'SUCCESS') {
+    		                    	
+    									$("#popUpVisa").hide();
+    									$(".popMask").fadeOut(200); // close the popup code															// popup code
+    									if($('#candidateVisaId').val().trim() != ''){
+    										showSuccessMsg("Successfully Updated Visa Details.");
+    			                    	}else{
+    			                    		showSuccessMsg("Successfully New Visa Details Added.");
+    			                    	}
+    									immigration.displayVisaDetails(candidateId);
+    								
+    		                    }else{
+    		                    	 showError("Operation failed, please try again");
+    		                    }
+    							$("#passport_save_id").removeAttr("disabled");
+    							$("#visa_save_id").removeAttr("disabled");
+    			}
+    		});
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
+    
+    this.savePassportVisaDetails= function() {
+    	
+    	if ($("#CandidatePassportform").validate(false, validationSettings)) {
+    		$("#passport_save_id").attr("disabled",true);
+    			var formData = getFormData("CandidatePassportform");
+    		 	var candidateId = $('#candidateID').val();
+                var immigrationId = $('#immigrationId').val();
+               
+                $.ajax({
+                url: vmsUrl + immiModulePath + "/savePassportDetailsPage?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
+                type : "POST",
+    			data : formData,
+    			success : function(result) {
+    				
+    							if (result && result.response === "INVALID_DATA") {
+    		                    	 showError(result.responseMessage);
+    		                    }else if (result.response === "AWKWARD") {
+    		                        location.href = "/errorPage";
+    		                    }else if(result.response === 'SUCCESS') {
+    		                    	
+    									$('#popPassView').hide();
+    									$('.popMask').fadeOut();
+    									if($('#candidatePassportId').val().trim() != ''){
+    										showSuccessMsg("Successfully Updated Passport Details.");
+    			                    	}else{
+    			                    		showSuccessMsg("Successfully New Passport Details Added.");
+    			                    	}
+    										
+    									immigration.displayPassportDetails(candidateId);
+    								
+    		                    }else{
+    		                    	 showError("Operation failed, please try again");
+    		                    }
+    							$("#passport_save_id").removeAttr("disabled");
+    			}
+    		});
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
+
+
+    this.editVisaDetailsByRowId=function(id){
 		$.ajax({
-	        url: vmsUrl + immiModulePath + "/getCandidatePassportVisaDetailsById?id="+id,
+	        url: vmsUrl + immiModulePath + "/getCandidateVisaDetailsByVisaHistoryId?id="+id,
 	        type: "GET",
 	        success : function(data) {
 	        	if(data != null){
-	        		if(idType=='Passport'){
+                    formObj = $('#CandidateVisaform')[0]; // load the child form
+        	    	var childPopNames=["visaNumber", "validFrom","validTo"];
+        			$("#addVisa").trigger('click');
+        			immigration.udpatePopupFormdata(formObj,childPopNames,data);
+        		    $('#visaType').val(data.visaType);
+        			$('#visaType').selectpicker('refresh');
+        			$('#visaType').prop("disabled",true);
+        			$('#visaCountry').val(data.country);
+        			$('#visaCountry').selectpicker('refresh');
+        			$('#visaCountry').prop("disabled",true);
+        			$('#visaNumber').prop("disabled",true);
+        			$('#candidateVisaId').val(data.candidateVisaId);
+        			$('#visaHistoryId').val(data.id);
+	        	}
+	        }
+	    });
+	}
+
+    this.editPassportDetailsByRowId=function(id){
+    	$("passNum").val(id);
+		$.ajax({
+	        url: vmsUrl + immiModulePath + "/getCandidatePassportDetailsById?id="+id,
+	        type: "GET",
+	        success : function(data) {
+	        	if(data != null){
 	        		formObj = $('#CandidatePassportform')[0]; // load the child form
-        			var childPopNames=["idNumber","country", "validFrom","validTo"];
+        			var childPopNames=["passportNumber","country", "validFrom","validTo"];
         			$("#addPass").trigger('click');
         			immigration.udpatePopupFormdata(formObj,childPopNames,data);
         			$('#validFrom').val(data.validFromDateStr);
-        			$('#idNum').val(data.id);
+        			$('#passNum').val(data.id);
         			$('#validTo').val(data.validToDateStr);
         			
         			$('#countryName').val(data.country);
         			$('#countryName').selectpicker('refresh');
         			$('#candidatePassportId').val(data.id);	
-	        		}
-                    else if(idType=='Visa'){
-                    formObj = $('#CandidateVisaform')[0]; // load the child form
-        			var childPopNames=["visaType","idNumber","country", "validFrom","validTo"];
-        			$("#addVisa").trigger('click');
-        			immigration.udpatePopupFormdata(formObj,childPopNames,data);
-        			$('#visaType').val(data.visaType);
-        			$('#visaType').selectpicker('refresh');
-        			$('#visaCountry').val(data.country);
-        			$('#visaCountry').selectpicker('refresh');
-        			$('#visaValidFrom').val(data.validFromDateStr);
-        			$('#visaValidTo').val(data.validToDateStr);
-        			$('#candidateVisaId').val(data.id);	
-                                }
+	        		
 	        		
 	        	}
 	        }
 	    });
 	}
- 
+
+    this.displayPassportDetails=function(candidateId,searchValue){
+   		$.ajax({
+           url: vmsUrl + immiModulePath + "/getCandidatePassportDetails?candidateId="+candidateId+ "&searchValue=" + searchValue,
+           type: "GET",
+           success: function (result) {
+               $("#passportsTab").html(result);
+               $("#searchValuePassport").val(searchValue);
+           }
+       });
+   }
+    
+    this.displayVisaDetails=function(candidateId,searchValue){
+   		$.ajax({
+           url: vmsUrl + immiModulePath + "/getCandidateVisaDetails?candidateId="+candidateId+ "&searchValue=" + searchValue,
+           type: "GET",
+           success: function (result) {
+               $("#visasTab").html(result);
+               $("#searchValueVisa").val(searchValue);
+              
+           }
+       });
+   }	
+    
+    this.udpatePopupFormdata = function(formObj, idsArray, dataObj) {
+		  var formId = formObj.id;
+		   $.each(formObj, function(key, value) {
+			var formElemName = value.name;
+			if (typeof formElemName!= 'undefined' && idsArray.indexOf(formElemName) > -1) {
+				// below code added for date fields in forms based on name paroperty of the field. date should contain date string in filed name.
+				if(formElemName.toLowerCase().indexOf("date")>-1 && dataObj[formElemName] != null && typeof  dataObj[formElemName] != 'undefined' && dataObj[formElemName]!=''){
+					$("#"+formId+" input[name='"+formElemName+"']").val(dataObj[formElemName]); // sets date values to the form.
+				}// above code checks the date field names and set the formatted date value to the popup.
+				else{
+				 $("#"+formId+" input[name='"+formElemName+"']").val(dataObj[formElemName]); // setting non date values to the from
+				}
+			}
+
+		});
+	}   
+
     
     this.editImmigrationCandidateForm=function(id){
 		$.ajax({
@@ -531,32 +611,7 @@ function Immigration() {
 			}
 		});
 	}
-    this.displayPassportDetails=function(candidateId,Passport,searchValue){
-   		
-    	$.ajax({
-           url: vmsUrl + immiModulePath + "/getCandidatePassportVisaDetails?candidateId="+candidateId+ "&idType=" + Passport+ "&searchValue=" + searchValue,
-           type: "GET",
-           success: function (result) {
-               $("#passportsTab").html(result);
-               $("#searchValuePassport").val(searchValue);
-           }
-       });
-   }	
     
-    
-   this.displayVisaDetails=function(candidateId,Visa,searchValue){
-   		$.ajax({
-           url: vmsUrl + immiModulePath + "/getCandidatePassportVisaDetails?candidateId="+candidateId+ "&idType=" + Visa+ "&searchValue=" + searchValue,
-           type: "GET",
-           success: function (result) {
-               $("#visasTab").html(result);
-               $("#searchValueVisa").val(searchValue);
-              
-           }
-       });
-   }	
-
-   
    this.getLcaDetailsInfo=function(immigrationId){
   		$.ajax({
           url: vmsUrl + immiModulePath +"/getLcaDetails?immigrationId="+immigrationId,
@@ -756,23 +811,6 @@ function Immigration() {
 	    });
 	}
 	
-	this.udpatePopupFormdata = function(formObj, idsArray, dataObj) {
-		  var formId = formObj.id;
-		   $.each(formObj, function(key, value) {
-			var formElemName = value.name;
-			if (typeof formElemName!= 'undefined' && idsArray.indexOf(formElemName) > -1) {
-				// below code added for date fields in forms based on name paroperty of the field. date should contain date string in filed name.
-				if(formElemName.toLowerCase().indexOf("date")>-1 && dataObj[formElemName] != null && typeof  dataObj[formElemName] != 'undefined' && dataObj[formElemName]!=''){
-					var dateVal =  moment(dataObj[formElemName]).format("DD-MM-YYYY");
-					$("#"+formId+" input[name='"+formElemName+"']").val(dateVal); // sets date values to the form.
-				}// above code checks the date field names and set the formatted date value to the popup.
-				else{
-				 $("#"+formId+" input[name='"+formElemName+"']").val(dataObj[formElemName]); // setting non date values to the from
-				}
-			}
-
-		});
-	}
 	
 	this.deleteImmigrationDetailsByRowId = function(immigrationUUID){
 		$.ajax({
@@ -1206,111 +1244,152 @@ function Immigration() {
 	 });
 	}
 
-	
 
+	 this.deleteVisaDetails = function(visaHistoryId){
+			$.ajax({
+		        url: vmsUrl + immiModulePath + "/deleteCandidateVisaDetails?visaHistoryId="+visaHistoryId,
+		        type: "GET",
+		        success: function (result) {
+		        	if(result=='success'){
+		        			showSuccessMsg("Successfully Record Deleted.");
+		        			immigration.displayVisaDetails(candidateId);
+		            	    deleteImmigrationPopupDiv(); // removes the existing added delete popup div in html code.
+		        	}
+		        	
+		        }
+		    });
+		}
+	 
+	 this.deletePassportDetails = function(id){
+			var candidateId = $("#candidateID").val();
+			$.ajax({
+		        url: vmsUrl + immiModulePath + "/deleteCandidatePassportDetails?id="+id+"&candidateId="+candidateId,
+		        type: "GET",
+		        success: function (result) {
+		        	if(result=='success'){
+		        		
+		        			showSuccessMsg("Successfully Record Deleted.");
+		        			immigration.displayPassportDetails(candidateId);
+		        		
+		            	    deleteImmigrationPopupDiv(); // removes the existing added delete popup div in html code.
+		        	}
+		        	
+		        }
+		    });
+		}
+
+		this.searchPassportValue = function(){
+			var validationSettings = {
+		            errorMessagePosition: 'element',
+		            borderColorOnError: '',
+		            scrollToTopOnError: true,
+		            dateFormat: 'yyyy/mm/dd'
+		        };
+			var searchValue =document.getElementById("searchValuePassport").value; 
+			var candidateId = $('#candidateID').val();
+			immigration.displayPassportDetails(candidateId,searchValue);
+		}
+
+		this.searchVisaValue = function(){
+			var validationSettings = {
+		            errorMessagePosition: 'element',
+		            borderColorOnError: '',
+		            scrollToTopOnError: true,
+		            dateFormat: 'yyyy/mm/dd'
+		        };
+			var searchValue =document.getElementById("searchValueVisa").value; 
+			var candidateId = $('#candidateID').val();
+			immigration.displayVisaDetails(candidateId,searchValue);
+			
+		}
+	 
+		this.validateCandidateVisaAndSave = function() {
+			if ($("#CandidateVisaform").validate(false, validationSettings)) {
+			 var  country =   $('#visaCountry').val();
+			 if(country == '') return;
+			 var candidateId = $("#candidateID").val();
+			 
+			  var idNumberVal = null;
+			  var id = null;
+
+			  
+			id = $("#candidateVisaId").val();
+		    visaNumber =$('#CandidateVisaform input[name="visaNumber"]').val().trim();  
+			  
+			  $('#idNumberDiv').find('p.jquery_form_error_message').remove();
+				 $.ajax({
+				    	type: "GET",
+				    	 url:sourceleadUrl + immiModulePath + "/validateCandidateVisa?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&visaNumber="+visaNumber+"&country="+country+"&id="+id, 
+				        success: function(data) {
+				        	if(data == true){
+				        		   $("input#visaNumber").after("<p class='jquery_form_error_message'>"+visaNumber+" is Already Existed With Active Details.</span>");
+								   $("#visa_save_id").attr('disabled','disabled');
+				        	}
+				        	else{
+				        		  $('input#visaNumber').removeAttr( "record-exist record-exist-errormsg");
+				        		  $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove(); 
+		                          $("#visa_save_id").removeAttr("disabled");
+		                            immigration.saveVisaDetails(); // saving the visa details once validation is 
+				        	}
+				        
+				        },
+				    });
+				
+			} else {
+				return false;
+			}
+		}
 	
-	this.deletePassportVisaDetails = function(id,idType){
-		var candidateId = $("#candidateID").val();
+	this.addvisaExtensionDate = function(visaId, extensionDate){
+		 var candidateId = $("#candidateID").val();
 		$.ajax({
-	        url: vmsUrl + immiModulePath + "/deleteCandidatePassportVisaDetails?id="+id+"&candidateId="+candidateId+ "&idType=" + idType,
-	        type: "GET",
-	        success: function (result) {
-	        	if(result=='success'){
-	        		if(idType=='Passport'){
-	        			showSuccessMsg("Successfully Record Deleted.");
-	        			immigration.displayPassportDetails(candidateId,idType);
-	        		}
-	        		else if (idType == 'Visa') {
-	        			showSuccessMsg("Successfully Record Deleted.");
-	        			immigration.displayVisaDetails(candidateId,idType);
-	        		}
-	            	deleteImmigrationPopupDiv(); // removes the existing added delete popup div in html code.
-	        	}
-	        	
+	    	type: "GET",
+	    	 url:vmsUrl + immiModulePath + "/addVisaExtensionDate?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId
+	    	                       +"&immigrationId="+immigrationId+"&extensionDate="+extensionDate+"&visaId="+visaId, 
+	        success: function(visaDetails) {
+	        	showSuccessMsg("Successfully Visa Date updated.");
+	        	immigration.displayVisaDetails(candidateId);
 	        }
-	    });
-	}
-
-
-	
-	
-	this.searchPassportValue = function(){
-		var validationSettings = {
-	            errorMessagePosition: 'element',
-	            borderColorOnError: '',
-	            scrollToTopOnError: true,
-	            dateFormat: 'yyyy/mm/dd'
-	        };
-		var searchValue =document.getElementById("searchValuePassport").value; 
-		var candidateId = $('#candidateID').val();
-		immigration.displayPassportDetails(candidateId,'Passport',searchValue);
-	}
-
-	this.searchVisaValue = function(){
-		var validationSettings = {
-	            errorMessagePosition: 'element',
-	            borderColorOnError: '',
-	            scrollToTopOnError: true,
-	            dateFormat: 'yyyy/mm/dd'
-	        };
-		var searchValue =document.getElementById("searchValueVisa").value; 
-		var candidateId = $('#candidateID').val();
-		immigration.displayVisaDetails(candidateId,'Visa',searchValue);
+		});
+		
 		
 	}
 
-	this.validateCandidatePassportVisa = function(idType) {
-		 var validationSettings = {
-	            errorMessagePosition: 'element',
-	            borderColorOnError: '',
-	            scrollToTopOnError: true,
-	            dateFormat: 'yyyy/mm/dd'
-	        };
-		  var candidateId = $("#candidateID").val();
+	this.validateCandidatePassport = function() {
+			 var validationSettings = {
+		            errorMessagePosition: 'element',
+		            borderColorOnError: '',
+		            scrollToTopOnError: true,
+		            dateFormat: 'yyyy/mm/dd'
+		        };
+			  var candidateId = $("#candidateID").val();
+			 
+			  var idNumberVal = null;
+			  var id = null;
+			  id = $("#candidatePassportId").val();
+			  idNumberVal =$('#CandidatePassportform input[name="passportNumber"]').val().trim();
 		 
-		  var idNumberVal = null;
-		  var id = null;
-
-		  if(idType == "Passport"){
-			   id = $("#candidatePassportId").val();
-			   idNumberVal =$('#CandidatePassportform input[name="idNumber"]').val().trim();
-		  }else{
-			   id = $("#candidateVisaId").val();
-			   idNumberVal =$('#CandidateVisaform input[name="idNumber"]').val().trim();  
-		  }
-		  $('#idNumberDiv').find('p.jquery_form_error_message').remove();
+		      $('#idNumberDiv').find('p.jquery_form_error_message').remove();
 			 $.ajax({
 			    	type: "GET",
-			    	 url:vmsUrl + immiModulePath + "/validateCandidatePassportVisa?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&idNumberVal="+idNumberVal+"&idType="+idType+"&id="+id, 
+			    	 url:vmsUrl + immiModulePath + "/validateCandidatePassport?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&idNumberVal="+idNumberVal+"&id="+id, 
 			        success: function(data) {
-			        	if(idType == "Passport"){
+			        	
 			        	if(data == true){
 			        		  $('#idNumberPassportDiv').find('p.jquery_form_error_message').remove();
-			        		  $("input#idNumber").after("<p class='jquery_form_error_message'>"+idNumberVal+" is Already Existed</span>");
+			        		  $("input#passportNumber").after("<p class='jquery_form_error_message'>"+idNumberVal+" is Already Existed</span>");
 							  $("#passport_save_id").attr('disabled','disabled');
 			        	}
 			        	else{
-			        		 $('input#idNumber').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('input#passportNumber').removeAttr( "record-exist record-exist-errormsg");
 			        		 $('#idNumberPassportDiv').find('p.jquery_form_error_message').remove(); 
 	                        $("#passport_save_id").removeAttr("disabled");
 			        	}
-			        }else{
-			        	if(data == true){
-			        		  $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove();
-			        		  $("input#idNumber").after("<p class='jquery_form_error_message'>"+idNumberVal+" is Already Existed</span>");
-							  $("#visa_save_id").attr('disabled','disabled');
-			        	}
-			        	else{
-			        		   $('input#idNumber').removeAttr( "record-exist record-exist-errormsg");
-			        		 $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove(); 
-	                      $("#visa_save_id").removeAttr("disabled");
-			        	}
-			        }
+			       
 			        },
 			    });
 	}
 
-	
 	
 	this.editDocumentDetailsByRowId = function(id){
 		 // update the variable with residence member id in edit mode.

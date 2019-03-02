@@ -186,6 +186,7 @@ function viewFile(fileURL, title, contentType){
 
 function getFormData(formId) {
 	var $form = $("#"+formId);
+	var disabled = $form.find(':input:disabled').removeAttr('disabled'); // Added by Srinivas Sabbu on 25-Feb-2019 for pushing disabled element values to form.
 	var unindexed_array = $($form).serializeArray();
 	var indexed_array = {};
 	$.map(unindexed_array, function (n, i) {

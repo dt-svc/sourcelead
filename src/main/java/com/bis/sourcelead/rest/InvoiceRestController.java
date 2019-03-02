@@ -246,10 +246,12 @@ public class InvoiceRestController {
 	{
 		Response<String> response = new Response<>();
 			try {
-				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+				User user = userService.getUserById(userId);
 				if (user != null) {
 				if (Validator.validate(invoiceDTO)) {
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
 					orgLocation = orgLocationService.getOrgLocations(orgLocation.getId());
 					String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -290,10 +292,13 @@ public class InvoiceRestController {
 	{
 		Response<String> response = new Response<>();
 			try {
-				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+				User user = userService.getUserById(userId);
 				if (user != null) {
 				if (Validator.validate(invoiceDTO)) {
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
+					orgLocation = orgLocationService.getOrgLocations(orgLocation.getId());
 					String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 					invoiceDTO.setStaticPath(staticPath);
