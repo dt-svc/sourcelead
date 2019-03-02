@@ -847,7 +847,8 @@ public class PayrollConfigurationRestController {
 		Response<Long> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 			if (user != null) {
 				if(payrollTaxDTO.getId() == 0) {
 					Calendar c = Calendar.getInstance();
