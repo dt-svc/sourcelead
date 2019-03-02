@@ -154,7 +154,7 @@ var uploadflag= true;
 	</div>
 	
 	
-	<!--        Dropdown div for Associate banking details       -->
+	<!--         Dropdown div for Associate banking details        -->
 	
 	
 		<div id="associateBnkdet" style="display:none;">
