@@ -18,6 +18,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 /**
  * @author Ajith Matta
  * @create date 25 Aug 2016
@@ -26,6 +29,7 @@ import javax.persistence.Transient;
 
 @Entity
 @Table(name = "CANDIDATE_EMPLOYERS")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateEmployers")
 public class CandidateEmployers implements Serializable{
 	
 	

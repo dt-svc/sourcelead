@@ -17,12 +17,11 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 
 @Entity
 @Table(name = "ORGLOCATION_INDIA_BANKING_DETAILS")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orglocationIndiaBankingDetails")
 public class OrglocationIndiaBankingDetails implements Serializable{
 
 	private static final long serialVersionUID = 1L;

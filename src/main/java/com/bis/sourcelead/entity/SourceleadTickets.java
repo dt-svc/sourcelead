@@ -30,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "SOURCELEAD_TICKETS")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadTickets")
 public class SourceleadTickets implements Serializable{
 	
 private static final long serialVersionUID = 1L;

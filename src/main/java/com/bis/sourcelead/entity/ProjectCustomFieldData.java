@@ -24,6 +24,7 @@ import org.hibernate.annotations.NotFoundAction;
  */
 @Entity
 @Table(name = "PROJECT_CUSTOM_FIELD_DATA")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "projectCustomFieldData")
 public class ProjectCustomFieldData implements Serializable{
 	private static final long serialVersionUID = 1L;
 	

@@ -31,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "INVOICE")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "invoice")
 public class Invoice {
 	
 	private static final long serialVersionUID = 1L;

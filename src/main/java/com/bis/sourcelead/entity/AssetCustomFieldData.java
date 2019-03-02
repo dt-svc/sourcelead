@@ -12,9 +12,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 	
 	@Entity
 	@Table(name = "ASSET_CUSTOM_FIELD_DATA")
+	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "assetCustomFieldData")
 	public class AssetCustomFieldData implements Serializable{
 		private static final long serialVersionUID = 1L;
 		

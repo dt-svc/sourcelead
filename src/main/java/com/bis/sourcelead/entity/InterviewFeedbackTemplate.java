@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "INTERVIEW_FEEDBACK_TEMPLATE")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "interviewFeedbackTemplate")
 public class InterviewFeedbackTemplate implements Serializable{
 
 	private static final long serialVersionUID = 1L;

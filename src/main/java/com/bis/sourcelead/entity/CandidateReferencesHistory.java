@@ -24,6 +24,7 @@ import org.hibernate.annotations.NotFoundAction;
  */
 @Entity
 @Table(name = "CANDIDATE_REFERENCES_HISTORY")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateReferencesHistory")
 public class CandidateReferencesHistory implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id

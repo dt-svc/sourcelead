@@ -21,6 +21,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "VENDOR_ON_BOARDING")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "vendorOnboarding")
 public class VendorOnboarding implements Serializable{
 
 private static final long serialVersionUID = 1L;

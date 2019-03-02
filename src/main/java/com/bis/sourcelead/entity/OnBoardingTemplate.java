@@ -22,6 +22,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "ON_BOARDING_TEMPLATE")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "onBoardingTemplate")
 public class OnBoardingTemplate implements Serializable{
 
 

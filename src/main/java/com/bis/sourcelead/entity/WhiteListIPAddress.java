@@ -37,6 +37,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "WhiteList_IP_ADDRESS")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "whiteListIPAddress")
 public class WhiteListIPAddress implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id

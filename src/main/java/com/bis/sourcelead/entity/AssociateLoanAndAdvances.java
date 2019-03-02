@@ -16,11 +16,14 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.bis.sourcelead.constants.Constants;
 
 @Entity
 @Table(name = "ASSOCIATE_LOAN_ADVANCES")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "associateLoanAndAdvances")
 public class AssociateLoanAndAdvances implements Serializable{
 
 	private static final long serialVersionUID = 1L;

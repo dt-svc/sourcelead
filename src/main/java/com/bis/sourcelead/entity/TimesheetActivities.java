@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.dto.FileInfo;
@@ -21,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 @Table(name = "TIMESHEET_ACTIVITIES")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "timesheetActivities")
 public class TimesheetActivities {
 	
 	@SuppressWarnings("unused")

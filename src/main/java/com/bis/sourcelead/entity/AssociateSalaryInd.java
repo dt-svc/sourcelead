@@ -18,6 +18,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
@@ -25,6 +27,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "ASSOCIATE_SALARY_IND")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "associateSalaryInd")
 public class AssociateSalaryInd {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

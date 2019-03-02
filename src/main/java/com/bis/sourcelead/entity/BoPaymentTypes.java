@@ -16,6 +16,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "BO_PAYMENT_TYPES")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "boPaymentTypes")
 public class BoPaymentTypes implements Serializable{
 
 	private static final long serialVersionUID = 1L;

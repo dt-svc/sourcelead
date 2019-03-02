@@ -34,6 +34,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
  */
 @Entity
 @Table(name = "HOLIDAY")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "holiday")
 public class Holiday implements Serializable {
 private static final long serialVersionUID = 1L;
 

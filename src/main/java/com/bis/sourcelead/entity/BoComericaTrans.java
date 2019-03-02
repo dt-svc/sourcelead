@@ -16,12 +16,11 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "BO_COMERICA_TRANS")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "boComericaTrans")
 public class BoComericaTrans  implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

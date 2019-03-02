@@ -47,6 +47,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "EXPENSES_APPROVER_HIERARCHY")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "expensesApproverHierarchy")
 public class ExpensesApproverHierarchy implements Serializable {
 private static final long serialVersionUID = 1L;
 

@@ -23,6 +23,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.bis.sourcelead.enums.Submission_Status;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -30,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "EXPENSES")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "expenses")
 public class Expenses implements Serializable {
 private static final long serialVersionUID = 1L;
 

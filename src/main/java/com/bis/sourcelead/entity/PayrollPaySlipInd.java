@@ -12,11 +12,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "IND_PAYSLIP")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "payrollPaySlipInd")
 public class PayrollPaySlipInd {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
