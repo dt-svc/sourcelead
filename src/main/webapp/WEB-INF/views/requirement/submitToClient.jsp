@@ -691,15 +691,10 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate,sel
 	          	     dataType : 'json',
 					url : atsUrl+"/submitToClient?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&selectedIds="+selectedIds+"&requirementId="+requirementId+"&selectedShortlistsRate="+selectedShortlistsRate+"&selectedShortlistsRatePer="+selectedShortlistsRatePer,
 					success : function(result) {
-						alert("1");
 						cancelSubmit();
-						alert("2");
 						var allApplicants = 'all';
-						alert("3");
 			    		requirementPipeline(requirementId,allApplicants); 
-			    		alert("4");
 			    		pipelineList(requirementId);
-			    		alert("5");
 					},
 				}); 
 	 }
