@@ -13,10 +13,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "REQUESTED_DOCUMENTS_HISTORY")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requestedDocumentsHistory")
 public class RequestedDocumentsHistory implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

@@ -22,6 +22,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "SUBMISSION_XLS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "submissionXls")
 public class SubmissionXls implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

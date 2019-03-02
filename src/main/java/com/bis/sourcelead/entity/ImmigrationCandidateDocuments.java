@@ -16,12 +16,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.JSONArray;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "IMMIGRATION_CANDIDATE_DOCS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "immigrationCandidateDocs")
 public class ImmigrationCandidateDocuments implements Serializable {
 
 	private static final long serialVersionUID = 1L;

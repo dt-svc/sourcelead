@@ -13,10 +13,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "ASSOCIATE_BALANCE_LEAVES")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "associateBalanceLeaves")
 public class AssociateBalanceLeave implements Serializable{
 	
 	

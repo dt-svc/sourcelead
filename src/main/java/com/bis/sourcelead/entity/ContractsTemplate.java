@@ -12,6 +12,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 /**
  * Entity for CONTRACTS_TEMPLATE
  * @author root
@@ -20,6 +23,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "CONTRACTS_TEMPLATE")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "contractsTemplate")
 public class ContractsTemplate {
 	
 	private static final long serialVersionUID = 1L;

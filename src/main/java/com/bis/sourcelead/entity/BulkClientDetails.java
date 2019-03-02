@@ -33,6 +33,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	@Entity
 	@Table(name = "BULK_CLIENT_DETAILS")
+	//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "bulkClientDetails")
 	public class BulkClientDetails implements Serializable{
 
 	

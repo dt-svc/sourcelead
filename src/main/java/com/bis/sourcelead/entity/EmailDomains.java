@@ -14,6 +14,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "EMAIL_DOMAINS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "emailDomains")
 public class EmailDomains implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

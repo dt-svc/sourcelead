@@ -18,12 +18,11 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "TIMESHEET_SUBMISSIONS_DOCUMENTS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "timesheetSubmissionsDocuments")
 public class TimesheetSubmissionsDocuments implements Serializable{
 	
 	 

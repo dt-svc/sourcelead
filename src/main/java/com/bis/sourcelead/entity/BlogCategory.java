@@ -16,10 +16,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "BLOG_CATEGORY")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "blogCategory")
 public class BlogCategory {
 
 	@Id

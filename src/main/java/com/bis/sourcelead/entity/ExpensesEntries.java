@@ -33,6 +33,7 @@ import com.bis.sourcelead.enums.PaymentModes;
 
 @Entity
 @Table(name = "EXPENSES_ENTRIES")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "expensesEntries")
 public class ExpensesEntries implements Serializable {
 	private static final long serialVersionUID = 1L;
 
