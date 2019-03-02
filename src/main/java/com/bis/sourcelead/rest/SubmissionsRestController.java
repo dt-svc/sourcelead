@@ -151,6 +151,9 @@ public class SubmissionsRestController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${atsUrl}")
+	private String atsUrl;
+	
 
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
@@ -983,7 +986,7 @@ public class SubmissionsRestController {
 		// calling the sendEmail method of emailScenerioUtil
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocations.getOrg(),loginOrgLocations,Constants.SHORTLIST_APPLICANTS,new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();	 
+		String actionLink =actionLinkBuilder.append("").append(atsUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();	 
 		emailScenerioUtil.sendNotification(actionLink, user,requirement.getManagerUserId(), loginOrgLocations, notificationScenario,new HashMap<String,String>());
 
 	}
