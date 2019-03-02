@@ -273,7 +273,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.id != null && opt.id != '' && opt.id != 'undefined') {
-                            result = result + '<td><div><i id="edit' + opt.id + '" onclick="editImmiTaskList(' + opt.id + ');" class="glyphicon glyphicon-pencil"></i><i id="delete' + opt.id + '" onclick="deleteImmiTaskList(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                        	result = result + "<td><div><i id='edit" + opt.id + "' onclick='editImmiTaskList(" + opt.id + ");' class='glyphicon glyphicon-pencil'></i><i id='delete" + opt.id + "' onclick='deleteImmiTaskList(\""+ opt.id +"\",\""+ opt.taskName +"\");' class='glyphicon glyphicon-trash ml10'></i></div></td>";
                         }
                         return result;
                     }
@@ -421,14 +421,14 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
     }
 
 
-	function deleteImmiTaskList(id){
+	function deleteImmiTaskList(id, taskName){
     	$(".project_inn_mask").remove();
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='remove_template_popup' class='remove_user_pop remove_user_pop_a'>";
 		result = result +" <b>Do you want to remove record permanently?</b>";
 		result = result + ' <div id="reasonForTemplateDiv"/>';
-		result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteImmigrationTask("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTemplateDelete();'></b>";
+		result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteImmigrationTask("+id+",  \""+taskName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTemplateDelete();'></b>";
 		result = result +"	</div>";
 		$("#deletetemplate").append(result);
 		$("#remove_template_popup").slideDown(200);
@@ -436,10 +436,10 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
    
 		}
     
-    function deleteImmigrationTask(id) {
+    function deleteImmigrationTask(id, taskName) {
         $.ajax({
             type: "GET",
-            url:vmsUrl + immiModulePath + "/deleteImmigrationTaskList?${_csrf.parameterName}=${_csrf.token}&id=" + id,
+            url:vmsUrl + immiModulePath + "/deleteImmigrationTaskList?${_csrf.parameterName}=${_csrf.token}&id=" + id+"&taskName="+taskName,
             success: function (json) {
             	showTemplateMsg("Successfully Task Deleted");
                 immigrationDataTableList();
