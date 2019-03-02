@@ -22,6 +22,7 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
+import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -277,6 +278,12 @@ public void sendEmailForNewReportingManager(User user, User loginUser, String pa
 void sendEmployemntConfirmationMailToAssocaite(User fromUser, User toUser, OrgLocations orgLocations, String confirmationDate, String designation) throws Exception;
 
 User validateSSNDuplicate(String ssnNumber, Long id, String userId);
+
+/**
+ * @author Mahaveer Manoj
+ * @purpose - to add new portlet to dashboard
+ **/
+public int addItemToDashboard(String itemName, String itemSize, List<String> rolesList);
 
 }	
 

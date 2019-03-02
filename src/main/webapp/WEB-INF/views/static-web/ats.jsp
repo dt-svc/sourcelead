@@ -1,26 +1,17 @@
   
   <!--   HTML   -->	  
   <jsp:include page="../staticHeader.jsp" />
-<div class="innerpagesBanner clearfix">
-<div class="clearfix"></div>	
-  <div class="clearfix">
-  <div class="container text-center">
-  <div class="row">
-  		<div class="col-md-12">
-  	<h2 class="text-center">Applicant Tracking System</h2>
-  	<div class="clearfix mt mb"><img src="/resources/static-web/images/atsicons.png" alt="img"></div>
-<p>In the realm of passion for innovation in recruitment process, Sourcelead provides an automated process for the talent search.<br>Be it a niche profile or a generic role, you have access to marketplace using ATS.
- 		</p>
-  		</div>
-  </div>
-  </div>
-		<div class="thim-click-to-bottom">
-		<a href="#features" class="scroll">
-		<i class="fa  fa-chevron-down"></i>
-		</a>
+<div class="featuresbanner ats-banner clearfix">
+	<div class="container">
+		<div class="row">
+		<div class="col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-6 col-md-6 col-md-offset-6 col-lg-6 col-lg-offset-6 bannerStyles paddingTop125px animated bounceIn">
+	<h2>Application Tracking System</h2>
+	<p>
+		In the realm of passion for innovation in recruitment process, Sourcelead provides an automated process for the talent search.<br>Be it a niche profile or a generic role, you have access to marketplace using ATS.
+	</p>
+				</div>
 		</div>
-  </div>
-<div class="clearfix"></div>
+		</div>
 </div>
 
 <section class="container-fluid container-area-white">
@@ -55,30 +46,39 @@
 	  </div>
 	</div>
 	</section>
- <section class="container-area-grey">
-<div id="features"></div>  
-  <div class="container productfeatures">
-  <h2 class="text-center colorlogo">Features</h2>
-<div class="col-md-4">
-	<div class="featuresImages">
-		<img src="/resources/static-web/images/ats-intelligent.png" alt="Image" class="animated bounceIn">
-	</div>
-	<div class="clearfix"></div>
+ 
+ 
+ <section class="clearfix container-area-grey">
+<div class="container productfeatures">
+<div class="col-md-6">
+	<div class="row">
+		<div class="col-md-3">
+			<div class="featuresImages">
+				<img src="/resources/static-web/images/ats-intelligent.png" alt="Image" class="animated bounceIn">
+			</div>
+			<div class="clearfix"></div>
+		</div>
+		<div class="col-md-9">
 		<h4>Quick &amp; Easy Access to RDA</h4>
 		<ul class="list-styles">
 			<li>Create and get a quick view into the candidates multiple profiles</li>
 			<li>Effortlessly import and export the resume database</li>
 			<li>Intuitive outreach through Hotlist Campaigns</li>
-			<li>Access the large candidate database </li>
-			<li>and Bulk Uploads, Email Parsing, Multiple File Formats, Advanced Duplicate Detection </li>
+			<li>Access the large candidate database and Bulk Uploads, Email Parsing, Multiple File Formats, Advanced Duplicate Detection </li>
 		</ul>
+		</div>
+</div>
 </div>
 	 
-<div class="col-md-4">
+<div class="col-md-6">
+	<div class="row">
+		<div class="col-md-3">
 	<div class="featuresImages">
 		<img src="/resources/static-web/images/ats-jobposting.png" alt="Image" class="animated bounceIn">
 	</div>
 	<div class="clearfix"></div>
+	</div>
+	<div class="col-md-9">
 		<h4>Job Advertising</h4>
 		<ul class="list-styles">
 			<li>Effective strategy for job posting on free and premium job boards</li>
@@ -87,14 +87,20 @@
 			<li>Spearhead the job postings among social communities</li>
 		</ul>
 	</div>
+	</div>
+</div>
 	
+<div class="clearfix"></div>
 
-
-	<div class="col-md-4">
+	<div class="col-md-6">
+	<div class="row">
+		<div class="col-md-3">
 		<div class="featuresImages">
 			<img src="/resources/static-web/images/ats-hiringprocess.png" alt="Image" class="animated bounceIn">
 		</div>
 		<div class="clearfix"></div>
+		</div>
+		<div class="col-md-9">
 		<h4>Refined by Integration</h4>
 		<ul class="list-styles">
 			<li>VMS, HRMS, and PMO integration</li>
@@ -103,13 +109,18 @@
 			<li>Project management integration helps strategic resource planning and contract creation for candidate and vendor, track  offer letter acceptance and rejections</li>
 		</ul>
 	</div>
+	</div>
+	</div>
 
-<div class="col-md-4">
+	<div class="col-md-6">
+	<div class="row">
+		<div class="col-md-3">
 	<div class="featuresImages">
 		<img src="/resources/static-web/images/ats-versatility.png" alt="Image" class="animated bounceIn">
 	</div>
-	
 		<div class="clearfix"></div>
+		</div>
+	<div class="col-md-9">	
 		<h4>Perfected with the Versatility</h4>
 		<ul class="list-styles">
 			<li>Data recommendation gives the best suitable profiles in marketplace</li>
@@ -120,11 +131,19 @@
 			<li>Smart Email alerts and Avoids duplicate applications, Online Salary Negotiation, Online Offer acceptance, Interview Notes</li>
 		</ul>
 	</div>
-	<div class="col-md-4">
+	</div>
+	</div>
+	<div class="clearfix"></div>
+	
+	<div class="col-md-6">
+	<div class="row">
+		<div class="col-md-3">
 	<div class="featuresImages">
 		<img src="/resources/static-web/images/ats-community.png" alt="Image" class="animated bounceIn">
 	</div>
 	<div class="clearfix"></div>
+	</div>
+	<div class="col-md-9">
 		<h4>Building Corporate Community </h4>
 		<ul class="list-styles">
 			<li>Automated alerts for employee referrals</li>
@@ -132,12 +151,18 @@
 			<li>Efficient hiring through refer and earn program</li>
 		</ul>
 	</div>
+	</div>
+	</div>
 
-	<div class="col-md-4">
+	<div class="col-md-6">
+	<div class="row">
+		<div class="col-md-3">
 		<div class="featuresImages">
 		<img src="/resources/static-web/images/ats-morefeatures.png" alt="Image" class="animated bounceIn">
 	</div>
 		<div class="clearfix"></div>
+		</div>
+	<div class="col-md-9">	
 		<h4>Additional Features</h4>
 		<ul class="list-styles">
 			<li>Task assignment to teams</li>
@@ -145,11 +170,13 @@
 			<li>Customizable Dashboards and Reports</li>
 		</ul>
 	</div>
-
+	</div>
+	</div>
+	<div class="clearfix"></div>
 </div>
 </section>
 <!-- Benefits of sourcelead  -->
-<section class="homewidget-benefitsdiv text-center">
+<section class="homewidget-benefitsdiv container-area-white  text-center">
   <div class="container-fluid">
  		<div class="col-md-12">
  			<h2>Benefits of SourceLead</h2>
