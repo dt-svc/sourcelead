@@ -3790,4 +3790,9 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 		return individualCounts;
 	}
 	
+	@Override
+	public List<Contracts> getAllContractsBasedOnConfigureDate(Date endDateUTC) throws Exception
+	{
+		return contractsTemplateDao.getAllContractsBasedOnConfigureDate(endDateUTC);
+	}
 }

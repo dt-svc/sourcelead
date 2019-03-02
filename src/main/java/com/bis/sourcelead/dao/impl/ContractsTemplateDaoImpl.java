@@ -883,4 +883,14 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		status = q.executeUpdate();
 		return status;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Contracts> getAllContractsBasedOnConfigureDate(Date endDateUTC)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		@SuppressWarnings("unchecked")
+		List<Contracts>  contractsList = session.createQuery("from Contracts ct left join fetch ct.contactUser where ( ct.endDate = :endDateUTC )").setParameter("endDateUTC", endDateUTC).list();
+		return contractsList;
+	}
 }
