@@ -21,7 +21,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "VENDOR_ON_BOARDING_TEMPLATE_DOCUMENTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "vendorOnboardingTemplateDocuments")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "vendorOnboardingTemplateDocuments")
 public class VendorOnboardingTemplateDocuments implements Serializable{
 
 	 private static final long serialVersionUID = 1L;

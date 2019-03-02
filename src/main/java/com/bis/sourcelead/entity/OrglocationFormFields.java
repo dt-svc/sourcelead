@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "ORGLOCATION_FORM_FIELDS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orglocationFormFields")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orglocationFormFields")
 public class OrglocationFormFields implements Serializable{
 	private static final long serialVersionUID = 1L;
 

@@ -26,7 +26,7 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name = "CANDIDATE_DOCUMENTS_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateDocumentsHistory")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateDocumentsHistory")
 public class CandidateDocumentsHistory implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id

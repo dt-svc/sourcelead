@@ -20,7 +20,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "CAMPAIGN_LIST")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "campaignList")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "campaignList")
 public class CampaignList {
 	
 	@Id

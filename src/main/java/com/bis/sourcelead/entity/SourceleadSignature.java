@@ -22,7 +22,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "SOURCELEAD_SIGNATURE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadSignature")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadSignature")
 public class SourceleadSignature implements Serializable{
 	
 	

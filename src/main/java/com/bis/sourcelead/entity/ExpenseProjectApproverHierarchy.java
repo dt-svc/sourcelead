@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "EXPENSE_PROJECT_APPROVER_HIERARCHY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "expenseProjectApproverHierarchy")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "expenseProjectApproverHierarchy")
 public class ExpenseProjectApproverHierarchy implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

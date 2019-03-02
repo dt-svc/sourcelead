@@ -20,7 +20,7 @@ import com.bis.sourcelead.dto.SourceleadTaxChallanDTO;
 
 @Entity
 @Table(name = "SOURCELEAD_TAX_FORM")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadTaxForm")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadTaxForm")
 public class SourceleadTaxForm implements Serializable {
 
 	/**

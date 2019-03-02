@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name="NOTIFICATIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "notifications")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "notifications")
 public class Notifications implements Serializable{
 	
 	/**

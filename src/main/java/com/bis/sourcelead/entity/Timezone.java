@@ -14,7 +14,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "TIMEZONE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "timezone")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "timezone")
 public class Timezone implements Serializable {
 	
 	

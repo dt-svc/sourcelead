@@ -24,7 +24,7 @@ import com.bis.sourcelead.enums.Status;
 
 @Entity
 @Table(name = "ACTION_ROLES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "actionRole")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "actionRole")
 public class ActionRoles implements Serializable {
 	
 	

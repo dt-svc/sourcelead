@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "TIMESHEET_DAY_ENTRIES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "timeSheetDayEntries")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "timeSheetDayEntries")
 public class TimeSheetDayEntries implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

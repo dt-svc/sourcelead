@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "SOURCELEAD_TICKETS_COMMENTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadTicketsComments")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadTicketsComments")
 public class SourceleadTicketsComments implements Serializable{
 	
 private static final long serialVersionUID = 1L;

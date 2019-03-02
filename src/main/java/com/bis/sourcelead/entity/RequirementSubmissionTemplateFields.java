@@ -28,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION_TEMPLATE_FIELDS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementSubmissionTemplateFields")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementSubmissionTemplateFields")
 public class RequirementSubmissionTemplateFields implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

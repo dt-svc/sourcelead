@@ -12,7 +12,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name="REGISTER_OPTIONAL_SERVICES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "registrationOptionalService")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "registrationOptionalService")
 public class RegistrationOptionalService {
 	
 	@Id

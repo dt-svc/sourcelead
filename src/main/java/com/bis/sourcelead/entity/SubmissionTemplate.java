@@ -19,7 +19,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "SUBMISSION_TEMPLATE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "submissionTemplate")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "submissionTemplate")
 public class SubmissionTemplate implements Serializable{
 
 	private static final long serialVersionUID = 1L;

@@ -23,7 +23,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "EMPLOYEE_VERIFICATION_TEMPLATE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "employeeVerificationTemplate")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "employeeVerificationTemplate")
 public class EmployeeVerificationTemplate {
 	
 	private static final long serialVersionUID = 1L;

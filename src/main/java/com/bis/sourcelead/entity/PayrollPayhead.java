@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PAYROLL_PAYHEAD")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "payrollPayhead")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "payrollPayhead")
 public class PayrollPayhead {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

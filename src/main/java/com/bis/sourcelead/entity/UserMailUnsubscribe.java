@@ -22,7 +22,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "USER_MAIL_UNSUBSCRIBE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userMailUnsubscribe")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userMailUnsubscribe")
 public class UserMailUnsubscribe implements Serializable{
 	private static final long serialVersionUID = 1L;
 

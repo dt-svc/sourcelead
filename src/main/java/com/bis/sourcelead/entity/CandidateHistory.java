@@ -27,7 +27,7 @@ import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "CANDIDATE_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateHistory")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateHistory")
 public class CandidateHistory implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id

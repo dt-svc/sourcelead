@@ -21,7 +21,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "LETTER_HEAD")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "letterHead")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "letterHead")
 public class LetterHead {
 	
 	private static final long serialVersionUID = 1L;

@@ -28,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "LEAVE_APPROVER_HIERARCHY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leaveApproverHierarchy")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leaveApproverHierarchy")
 public class LeaveApproveHierarchy {
 
 	@Id

@@ -22,7 +22,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "ORGLOCATION_ONBAORD_DOCUMENTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orglocationOnboardDocuments")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orglocationOnboardDocuments")
 public class OrglocationOnboardDocuments implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

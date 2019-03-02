@@ -21,7 +21,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "USER_LOGIN_LOGOUT_SESSION")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userLoginLogoutSession")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userLoginLogoutSession")
 public class UserLoginLogoutSession  implements Serializable{
 
 	private static final long serialVersionUID = 1L;

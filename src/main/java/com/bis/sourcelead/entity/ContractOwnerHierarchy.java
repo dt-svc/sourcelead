@@ -24,7 +24,7 @@ import com.bis.sourcelead.enums.HIERARCHY_TYPE;
 
 @Entity
 @Table(name = "CONTRACT_OWNER_HIERARCHY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "contractOwnerHierarchy")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "contractOwnerHierarchy")
 public class ContractOwnerHierarchy implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id

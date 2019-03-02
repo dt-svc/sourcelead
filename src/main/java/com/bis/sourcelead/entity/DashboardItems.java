@@ -17,7 +17,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "DASHBOARD_ITEMS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "dashboardItems")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "dashboardItems")
 public class DashboardItems implements Serializable {
 
 	/**

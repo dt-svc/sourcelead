@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "SOURCELEAD_TAX_IT_DECLARATION_ITEM")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadTaxITDeclarationItem")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadTaxITDeclarationItem")
 public class SourceleadTaxITDeclarationItem implements Serializable {
 
 	/**

@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "USER_ROLE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userRole")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userRole")
 public class UserRole implements Serializable {
 
 	private static final long serialVersionUID = 1L;

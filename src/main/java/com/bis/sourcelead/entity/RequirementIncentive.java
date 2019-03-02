@@ -19,7 +19,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "REQUIREMENT_INCENTIVE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementIncentive")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementIncentive")
 public class RequirementIncentive implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

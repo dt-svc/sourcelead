@@ -21,7 +21,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "SOURCELEAD_TICKETS_ATTACHMENTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadTicketsAttachments")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadTicketsAttachments")
 public class SourceleadTicketsAttachments implements Serializable{
 	
 private static final long serialVersionUID = 1L;

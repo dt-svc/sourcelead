@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "ORG_LICENSE_SUBSCRIPTION")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orgLicenseSubscription")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orgLicenseSubscription")
 public class OrgLicenseSubscription implements Serializable{
 
 

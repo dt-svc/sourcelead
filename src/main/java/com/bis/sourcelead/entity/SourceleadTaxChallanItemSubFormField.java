@@ -17,7 +17,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "SOURCELEAD_TAX_CHALLAN_ITEM_SUB_FORMFIELD")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadTaxChallanItemSubFormField")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadTaxChallanItemSubFormField")
 public class SourceleadTaxChallanItemSubFormField implements Serializable {
 	private static final long serialVersionUID = 1L;
 

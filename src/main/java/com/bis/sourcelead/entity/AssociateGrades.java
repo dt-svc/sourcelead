@@ -19,7 +19,7 @@ import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "ASSOCIATE_GRADES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "associateGrades")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "associateGrades")
 public class AssociateGrades {
 
 	@Id

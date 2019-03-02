@@ -19,7 +19,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "ORG_BANK_DETAILS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orgBankDetails")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orgBankDetails")
 public class OrgBankDetails implements Serializable{
 
 	private static final long serialVersionUID = 1L;

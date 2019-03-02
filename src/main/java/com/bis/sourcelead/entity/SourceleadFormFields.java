@@ -20,7 +20,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "SOURCELEAD_FORM_FIELDS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadFormFields")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadFormFields")
 public class SourceleadFormFields implements Serializable{
 	private static final long serialVersionUID = 1L;
 

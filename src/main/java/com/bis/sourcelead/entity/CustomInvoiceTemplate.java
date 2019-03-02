@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "CUSTOM_INVOICE_TEMPLATE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "customInvoiceTemplate")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "customInvoiceTemplate")
 public class CustomInvoiceTemplate implements Serializable {
 
 	/**

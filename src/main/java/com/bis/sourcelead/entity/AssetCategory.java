@@ -22,7 +22,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "ASSET_CATEGORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "assetCategory")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "assetCategory")
 public class AssetCategory implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "CONTRACT_EDIT_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "contractsEditHistory")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "contractsEditHistory")
 public class ContractEditHistory {
 	private static final long serialVersionUID = 1L;
 	@Id

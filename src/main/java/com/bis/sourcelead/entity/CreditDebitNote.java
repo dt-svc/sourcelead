@@ -30,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "CREDIT_DEBIT_NOTE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "creditDebitNote")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "creditDebitNote")
 public class CreditDebitNote implements Serializable {
 
 	private static final long serialVersionUID = 1L;

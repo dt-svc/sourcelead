@@ -20,7 +20,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  */
 @Entity
 @Table(name = "REQUIREMENT_JOB_BOARD_INFO")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementJobBoardInfo")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementJobBoardInfo")
 public class RequirementJobBoardInfo extends Record implements Serializable {
     
     @Id

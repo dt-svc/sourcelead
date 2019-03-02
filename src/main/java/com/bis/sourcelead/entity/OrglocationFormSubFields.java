@@ -17,7 +17,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "ORGLOCATION_FORM_SUB_FIELDS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orglocationFormSubFields")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orglocationFormSubFields")
 public class OrglocationFormSubFields implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
