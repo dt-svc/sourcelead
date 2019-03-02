@@ -637,10 +637,14 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	  public @ResponseBody  String resendInvitationEmail(@RequestParam(value="userId", required=false) String userId,
 			  @RequestParam(value="orgId", required=false) Long orgId, @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception {
 		    
-		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		    //get user by userId
+		   
 		    User user = userService.getUserById(Long.parseLong(userId));
+		   
+		    Long loginUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		    User loginUser = userService.getUserById(loginUserId);
+		    
+		    Long loginOrgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		    OrgLocations orgLocations = orgLocationService.getOrgLocations(loginOrgLocationId);
 		    
 		    //generate random password
 		    String password = SourceLeadRandomCodeHelper.generateRandomPassword();
@@ -1655,7 +1659,10 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 
 	 @RequestMapping(value = "/linkUser" , method = RequestMethod.POST)
 	 public Response<String> linkUser(UserDTO userDTO, HttpServletRequest request) throws Exception{
-	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	
+	 Long loginUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+     User user = userService.getUserById(loginUserId);
+	    
 	 Response<String> response = new Response<>();
 		try {
 			if(user != null) {
@@ -1711,8 +1718,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 
 	 @RequestMapping(value = "/removeLinkedUser" , method = RequestMethod.POST)
 	 public Response<String> removeLinkedUser(@RequestParam(value="userCode", required=true) String userCode, HttpServletRequest request) throws Exception{
-	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	 Response<String> response = new Response<>();
+		 Long loginUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+	     User user = userService.getUserById(loginUserId);
+	  Response<String> response = new Response<>();
 		try {
 			if(user != null) {
 				
