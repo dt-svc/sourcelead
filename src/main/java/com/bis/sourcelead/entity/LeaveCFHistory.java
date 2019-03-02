@@ -14,7 +14,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "LEAVE_CF_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leaveCFHistory")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leaveCFHistory")
 public class LeaveCFHistory {
 	
 	@Id

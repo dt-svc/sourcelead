@@ -130,7 +130,10 @@ public class LoggingAspect {
 		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"userId");
 		String actionUUID = (String) SourceLeadSessionManager.getSessionAttribute(request,"actionUUID");
 		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
-		OrgLocations loginOrgLocation = orgLocationService.getOrgLocationById(orgLocId);
+		OrgLocations loginOrgLocation = null;
+		if(orgLocId != null) {
+			loginOrgLocation = orgLocationService.getOrgLocationById(orgLocId);
+		}
 		UserLoginLogoutSession userLoginLogoutSession = null;
 		String methodName = joinPoint.getSignature().getName();
 		String type = "";

@@ -21,7 +21,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  */
 @Entity
 @Table(name = "PROBATION_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "probationHistory")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "probationHistory")
 public class ProbationHistory {
 	
 	@Id

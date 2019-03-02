@@ -18,7 +18,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "USER_DROPPED_HOLIDAYS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userDroppedHolidays")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userDroppedHolidays")
 public class UserDroppedHolidays implements Serializable {
 private static final long serialVersionUID = 1L;
 

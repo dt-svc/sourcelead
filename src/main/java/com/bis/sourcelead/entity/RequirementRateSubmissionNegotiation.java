@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION_RATE_NEGOTIATION")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementRateSubmissionNegotiation")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementRateSubmissionNegotiation")
 public class RequirementRateSubmissionNegotiation {
 
 	@Id

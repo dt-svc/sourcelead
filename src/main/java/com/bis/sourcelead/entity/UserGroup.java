@@ -16,7 +16,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "USER_GROUP")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userGroup")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userGroup")
 public class UserGroup {
 	
 	

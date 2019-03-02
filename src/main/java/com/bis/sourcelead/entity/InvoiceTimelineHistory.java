@@ -16,7 +16,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "INVOICE_TIMELINE_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "invoiceTimelineHistory")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "invoiceTimelineHistory")
 public class InvoiceTimelineHistory {
 
 	private static final long serialVersionUID = 1L;

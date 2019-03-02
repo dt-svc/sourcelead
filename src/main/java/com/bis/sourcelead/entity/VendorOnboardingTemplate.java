@@ -31,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "VENDOR_ON_BOARDING_TEMPLATE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "vendorOnboardingTemplate")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "vendorOnboardingTemplate")
 public class VendorOnboardingTemplate implements Serializable{
 	
     private static final long serialVersionUID = 1L;

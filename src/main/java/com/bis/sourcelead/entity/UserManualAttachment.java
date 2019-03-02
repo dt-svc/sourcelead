@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "USER_MANUAL_ATTACHMENTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userManualAttachment")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userManualAttachment")
 public class UserManualAttachment implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

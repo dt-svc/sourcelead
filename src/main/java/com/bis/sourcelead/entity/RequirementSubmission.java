@@ -35,7 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementSubmission")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementSubmission")
 public class RequirementSubmission implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

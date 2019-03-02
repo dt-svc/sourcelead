@@ -29,7 +29,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "CANDIDATE_EMPLOYERS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateEmployers")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateEmployers")
 public class CandidateEmployers implements Serializable{
 	
 	

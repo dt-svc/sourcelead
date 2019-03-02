@@ -19,7 +19,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "CAMPAIGN_SENDER")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "campaignSender")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "campaignSender")
 public class CreateSender  {
 	
 private static final long serialVersionUID = 1L;

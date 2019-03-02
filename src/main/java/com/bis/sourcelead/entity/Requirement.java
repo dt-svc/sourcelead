@@ -42,7 +42,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 */
 	@Entity
 	@Table(name = "REQUIREMENT")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirement")
+	//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirement")
 	public class Requirement implements Serializable{
 
 	

@@ -31,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_PLANNING_REQUREST")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "projectPlanningRequest")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "projectPlanningRequest")
 public class ProjectPlanningRequest implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

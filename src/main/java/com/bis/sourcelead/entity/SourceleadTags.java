@@ -25,7 +25,7 @@ import com.sun.star.ucb.InteractiveNetworkGeneralException;
 
 @Entity
 @Table(name = "SOURCELEAD_TAGS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadTags")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadTags")
 public class SourceleadTags implements Serializable{
 
 	private static final long serialVersionUID = 1L;

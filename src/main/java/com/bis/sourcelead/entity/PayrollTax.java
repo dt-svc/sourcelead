@@ -19,7 +19,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "PAYROLL_TAXES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "payrollTax")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "payrollTax")
 public class PayrollTax implements Serializable {
 
 	/**

@@ -18,7 +18,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "PAYROLL_PAYHEAD_SALARY_SETUP_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "payrollPayheadSalarySetup")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "payrollPayheadSalarySetup")
 public class PayrollPayheadSalarySetup {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

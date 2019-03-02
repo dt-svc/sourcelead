@@ -21,7 +21,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "ORG_REQUEST")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orgRequest")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orgRequest")
 public class OrgRequest implements Serializable{
 	
 private static final long serialVersionUID = 1L;

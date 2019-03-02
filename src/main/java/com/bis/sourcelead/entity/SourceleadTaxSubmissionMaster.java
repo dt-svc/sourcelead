@@ -17,7 +17,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "SOURCELEAD_TAX_SUBMISSION_MASTER")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadTaxSubmissionMaster")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadTaxSubmissionMaster")
 public class SourceleadTaxSubmissionMaster implements Serializable {
 
 	/**

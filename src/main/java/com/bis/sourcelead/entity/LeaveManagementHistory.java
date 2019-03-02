@@ -20,7 +20,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "LEAVE_MANAGEMENT_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leaveManagementHistory")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leaveManagementHistory")
 public class LeaveManagementHistory {
 	
 	@Id

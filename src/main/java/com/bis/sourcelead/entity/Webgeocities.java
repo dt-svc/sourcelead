@@ -14,7 +14,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "webgeocities")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "webgeocities")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "webgeocities")
 public class Webgeocities implements Serializable{
 	
 	

@@ -22,7 +22,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "TIMESHEET_SUBMISSIONS_DOCUMENTS_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "timesheetSubmissionsDocumentsHistory")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "timesheetSubmissionsDocumentsHistory")
 public class TimesheetSubmissionsDocumentsHistory implements Serializable{
 	
 	 

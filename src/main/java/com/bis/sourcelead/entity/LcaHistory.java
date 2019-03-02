@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "LCA_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "lcaHistory")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "lcaHistory")
 public class LcaHistory implements Serializable{
 	
 private static final long serialVersionUID = 1L;

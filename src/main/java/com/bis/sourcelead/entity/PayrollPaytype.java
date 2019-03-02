@@ -19,7 +19,7 @@ import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "PAYROLL_PAYTYPE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "payrollPaytype")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "payrollPaytype")
 public class PayrollPaytype {
 	
 	@Id

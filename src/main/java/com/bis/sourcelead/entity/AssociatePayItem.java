@@ -17,7 +17,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "ASSOCIATE_PAY_ITEM")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "associatePayItem")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "associatePayItem")
 public class AssociatePayItem {
 	
 private static final long serialVersionUID = 1L;

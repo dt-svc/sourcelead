@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "PROJECT_MEMBERS_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "projectMembersHistory")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "projectMembersHistory")
 public class ProjectMembersHistory implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

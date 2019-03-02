@@ -21,7 +21,7 @@ import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "PAYROLL_LOAN_AND_ADVANCES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "payrollLoanAndAdvances")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "payrollLoanAndAdvances")
 public class PayrollLoanAndAdvances implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

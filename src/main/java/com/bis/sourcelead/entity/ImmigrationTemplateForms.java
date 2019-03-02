@@ -18,7 +18,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "IMMIGRATION_TEMPLATE_FORMS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "immigrationTemplateForms")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "immigrationTemplateForms")
 public class ImmigrationTemplateForms implements Serializable {
 
 	private static final long serialVersionUID = 1L;

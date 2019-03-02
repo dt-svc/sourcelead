@@ -14,7 +14,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "countries")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "countries")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "countries")
 public class Countries implements Serializable{
 	
 	

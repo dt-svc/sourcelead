@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "ASSET_SERVICE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "assetService")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "assetService")
 public class AssetServices {
 	
 	@Id

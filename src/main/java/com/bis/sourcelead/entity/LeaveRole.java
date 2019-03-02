@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "LEAVES_ROLE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leaveRole")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leaveRole")
 public class LeaveRole {
 
 	@Id

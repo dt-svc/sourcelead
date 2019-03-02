@@ -23,7 +23,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "OFFBOARD_TASKS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "offboardTasks")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "offboardTasks")
 public class OffboardTasks implements Serializable{
 	
 private static final long serialVersionUID = 1L;

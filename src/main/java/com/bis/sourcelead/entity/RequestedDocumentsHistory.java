@@ -19,7 +19,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "REQUESTED_DOCUMENTS_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requestedDocumentsHistory")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requestedDocumentsHistory")
 public class RequestedDocumentsHistory implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

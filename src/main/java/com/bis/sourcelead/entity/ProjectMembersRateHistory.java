@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "PROJECT_MEMBERS_RATE_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "projectMembersRateHistory")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "projectMembersRateHistory")
 public class ProjectMembersRateHistory {
 
 	@Id

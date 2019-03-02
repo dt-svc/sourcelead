@@ -30,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "CANDIDATE_RESUMES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateResumes")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateResumes")
 public class CandidateResumes implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

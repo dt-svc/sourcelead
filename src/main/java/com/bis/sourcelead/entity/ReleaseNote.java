@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "RELEASE_NOTE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "releaseNote")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "releaseNote")
 public class ReleaseNote {
 
 	@Id

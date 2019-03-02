@@ -19,7 +19,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "ASSOCIATE_BALANCE_LEAVES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "associateBalanceLeaves")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "associateBalanceLeaves")
 public class AssociateBalanceLeave implements Serializable{
 	
 	
