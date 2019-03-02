@@ -594,7 +594,7 @@ public class TicketManagementRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				responseList.setData(ticketManagementService.getTicketCommentListByTicketId(ticketId, user.getId(), loginOrgLocation.getId()));
+				responseList.setData(ticketManagementService.getTicketCommentListByTicketId(ticketId, user.getId(), loginOrgLocation.getId(), loginOrgLocation.getDateFormat()));
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -608,4 +608,27 @@ public class TicketManagementRestController {
 		}
 		return responseList;
 	}
+	
+	@RequestMapping(value = "/saveTicketComment", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Boolean> saveTicketComment(HttpServletRequest request, TicketCommentDTO ticketCommentDTO) {
+		Response<Boolean> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				response.setObject(ticketManagementService.saveTicketComment(ticketCommentDTO, user));
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+
 }

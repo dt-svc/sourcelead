@@ -102,8 +102,8 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 			if(status >= 0) {
 				query += " and t.status=" + status;
 			}
-			List<TicketType> ticketTypeList = session.createQuery(query).list();
-			return ticketTypeList;
+			query += " order by t.id desc";
+			return session.createQuery(query).list();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -150,18 +150,17 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<TicketCategory> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from TicketCategory t where t.orgLocations.id=" + orgLocationId;
-			
 			if(status >= 0) {
 				query += " and t.status=" + status;
 			}
-			@SuppressWarnings("unchecked")
-			List<TicketCategory> ticketCategoryList = session.createQuery(query).list();
-			return ticketCategoryList;
+			query += " order by t.id desc";
+			return session.createQuery(query).list();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -208,6 +207,7 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<TicketPriority> getTicketPriorityListByOrgLocationId(Long orgLocationId,int status) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -215,9 +215,8 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 			if(status >= 0) {
 				query += " and t.status=" + status;
 			}
-			@SuppressWarnings("unchecked")
-			List<TicketPriority> ticketPriorityList = session.createQuery(query).list();
-			return ticketPriorityList;
+			query += " order by t.id desc";
+			return session.createQuery(query).list();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -263,6 +262,7 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<TicketStatus> getTicketStatusListByOrgLocationId(Long orgLocationId, int status) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -270,9 +270,8 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 			if(status >= 0) {
 				query += " and t.status=" + status;
 			}
-			@SuppressWarnings("unchecked")
-			List<TicketStatus> ticketStatusList = session.createQuery(query).list();
-			return ticketStatusList;
+			query += " order by t.id desc";
+			return session.createQuery(query).list();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -318,13 +317,12 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<Ticket> getTicketListByOrgLocationId(Long orgLocationId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from Ticket t where t.orgLocations.id=" + orgLocationId;
-			@SuppressWarnings("unchecked")
-			List<Ticket> ticketList = session.createQuery(query).list();
-			return ticketList;
+			String query = "from Ticket t where t.orgLocations.id=" + orgLocationId + " order by t.id desc";
+			return session.createQuery(query).list();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -418,16 +416,12 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from Ticket t where t.orgLocations.id=" + orgLocationId;
-			/*
-			 * if(status >= 0) { query += " and t.status=" + status; }
-			 */
-			@SuppressWarnings("unchecked")
-			List<Ticket> ticketManagementList = session.createQuery(query).list();
-			return ticketManagementList;
+			String query = "from Ticket t where t.orgLocations.id=" + orgLocationId + " order by t.id desc";
+			return session.createQuery(query).list();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -459,13 +453,42 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 	public List<TicketComment> getTicketCommentListByTicketId(Long ticketId, long userId, Long orgLocationId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from TicketComment tc where tc.ticket.id =:ticketId and tc.status = 1";
+			String query = "from TicketComment tc where tc.ticket.id =:ticketId and tc.status = 1 order by tc.id asc";
 			return session.createQuery(query).setLong("ticketId", ticketId).list();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public TicketComment getTicketCommentByTicketId(long ticketId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from TicketComment tc where tc.ticket.id=:ticketId";
+			List<TicketComment> ticketCommentList = session.createQuery(query).setLong("ticketId", ticketId).list();
+			if(ticketCommentList != null && !ticketCommentList.isEmpty())
+				return ticketCommentList.get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public Boolean saveTicketComment(TicketComment ticketComment) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(ticketComment);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	
 	
 
 }

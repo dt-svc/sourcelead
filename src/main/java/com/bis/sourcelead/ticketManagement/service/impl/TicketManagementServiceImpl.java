@@ -30,8 +30,10 @@ import com.bis.sourcelead.entity.TicketComment;
 import com.bis.sourcelead.ticketManagement.dao.TicketManagementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.ticketManagement.service.TicketManagementService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.ibm.icu.text.DateFormat;
 
 @Service
 public class TicketManagementServiceImpl implements TicketManagementService {
@@ -576,7 +578,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketCommentDTO> getTicketCommentListByTicketId(Long ticketId, long userId, Long orgLocationId) {
+	public List<TicketCommentDTO> getTicketCommentListByTicketId(Long ticketId, long userId, Long orgLocationId, String dateFormat) {
 		List<TicketCommentDTO> ticketCommentDTOList = new LinkedList<>();
 		try {
 			List<TicketComment> ticketCommentList = ticketManagementDao.getTicketCommentListByTicketId(ticketId, userId, orgLocationId);
@@ -587,10 +589,27 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 					ticketCommentDTO.setTicketId(ticketComment.getTicket().getId());
 					ticketCommentDTO.setComment(ticketComment.getComment());
 					ticketCommentDTO.setStatus(ticketComment.getStatus());
+					
+					long diff = CommonUtil.currentDate().getTime() - ticketComment.getCreatedDate().getTime();
+					long diffSeconds = diff / 1000 % 60;
+					long diffMinutes = diff / (60 * 1000) % 60;
+					long diffHours = diff / (60 * 60 * 1000) % 24;
+					long diffDays = diff / (24 * 60 * 60 * 1000);
+					StringBuilder timeBuilder = new StringBuilder();
+					if (diffDays == 0 && diffHours == 0 && diffMinutes == 0) {
+						ticketCommentDTO.setCreatedDateString(timeBuilder.append(diffSeconds).append("seconds ago").toString());
+					} else if (diffDays == 0 && diffHours == 0) {
+						ticketCommentDTO.setCreatedDateString(timeBuilder.append(diffMinutes).append(" minutes ago").toString());
+					} else if (diffDays == 0) {
+						ticketCommentDTO.setCreatedDateString(timeBuilder.append(diffHours).append(" hours ").append(diffMinutes).append(" minutes ago").toString());
+					} else {
+						ticketCommentDTO.setCreatedDateString(timeBuilder.append(diffDays).append(" days ").append(diffHours).append(" hours ago").toString());
+					}
+					
+					SimpleDateFormat sdf = new SimpleDateFormat(dateFormat + " hh:mm:ss aa");
+					ticketCommentDTO.setCreatedDate(sdf.format(ticketComment.getCreatedDate()));
 					ticketCommentDTO.setCreatedById(ticketComment.getCreatedBy().getId());
 					ticketCommentDTO.setCreatedByName(ticketComment.getCreatedBy().getFullName());
-					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-					ticketCommentDTO.setCreatedDate(sdf.format(ticketComment.getCreatedDate()));
 					if(ticketComment.getUpdatedBy() != null) {
 						ticketCommentDTO.setUpdatedById(ticketComment.getUpdatedBy().getId());
 						ticketCommentDTO.setUpdatedByName(ticketComment.getUpdatedBy().getFullName());
@@ -605,9 +624,27 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		return ticketCommentDTOList;
 	}
 
-	
-	 
-	 
+	@Override
+	public Boolean saveTicketComment(TicketCommentDTO ticketCommentDTO, User user) {
+		try {
+			TicketComment ticketComment = null;
+			if (ticketCommentDTO.getId() > 0) {
+				ticketComment = ticketManagementDao.getTicketCommentByTicketId(ticketCommentDTO.getTicketId());
+				ticketComment.setUpdatedBy(user);
+				ticketComment.setUpdatedDate(new Date());
+			} else {
+				ticketComment = new TicketComment();
+				ticketComment.setStatus(1);
+				ticketComment.setCreatedBy(user);
+				ticketComment.setCreatedDate(new Date());
+			}
+			ticketComment.setTicket(ticketManagementDao.getTicketById(ticketCommentDTO.getTicketId()));
+			ticketComment.setComment(ticketCommentDTO.getComment());
+			return ticketManagementDao.saveTicketComment(ticketComment);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 }
 
-	

@@ -68,10 +68,9 @@ function getTicketCommetList(ticketId) {
 		} else if (response.response === "AWKWARD") {
 			location.href = "/errorPage";
 		} else if (response.response === "SUCCESS") {
-			var text = "";
         	if(response.data.length > 0 ){
         		 for (var e in response.data) {
-					text += "<div class='clearfix' id=''>";
+        			var text = "";
                     text += "<div class='comments-div comments-inner clearfix'>";
                     text += "    <div class='commentsimg'> <i class='fa fa-comments'></i>";
                     text += "   <div class='commentsimg-inner'>";
@@ -80,13 +79,12 @@ function getTicketCommetList(ticketId) {
                     text += "    <div class='customCommentarea'>";
                     text += "    <div class='row'>";
                     text += "        <div class='col-md-12'>";
-                    text += "        <p class='comment-by'> By <span class='text-danger'>" + response.data[e].id + "</span><span class='small mr'>" + response.data[e].createdByName + "</span> <span class='small'>" + response.data[e].createdDate + "</span> </p>";
+                    text += "        <p class='comment-by'> By <span class='text-danger'>" + response.data[e].createdByName + "</span><span class='small mr'>" + response.data[e].createdDate + "</span> <span class='small'>" + response.data[e].createdDateString + "</span> </p>";
                     text += "        <div class='commentText commentText-styles'>" + response.data[e].comment + "</div>";
                     text += "      </div>";
                     text += "      </div>";
                     text += "  </div>";
                     text += "  </div>";
-					text += "	</div>";
 		    		$("#ticketCommentListDivId").append(text);
 				}
 			} else {
@@ -99,4 +97,32 @@ function getTicketCommetList(ticketId) {
 			showError("Operation failed, please try again");
 		}
 	});
+}
+
+function saveTicketComment(ticketId){
+	if ($("#ticketComment_form").validate(false, validationSettings)){
+		var formData = getFormData("ticketComment_form");
+		$.post(sourceleadUrl + "/saveTicketComment?ticketId="+ticketId, formData, function(response) {
+			if (response && response.response === "INVALID_DATA") {
+				showError(response.responseMessage);
+			} else if (response.response === "AWKWARD") {
+				location.href = "/errorPage";
+			} else if (response.response === "SUCCESS") {
+				if(response.object === true) {
+					alert(response.responseMessage);
+					getTicketCommetList(ticketId);
+					closeTicketComment();
+				}
+			} else if (response.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+				showError("Operation failed, please try again");
+			}
+		});
+	}
+}
+function closeTicketComment() {
+	$("#add-comment").fadeOut();
+	 document.getElementById("ticketComment_form").reset();
+	 $("ticketComment_form").validate().resetForm();
 }
