@@ -835,8 +835,12 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/saveWhiteListIps", method = RequestMethod.GET)
 	public Response<String> saveWhiteListIps(WhiteListIPAddressDTO whiteListIPAddressDTO, HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user =  userService.getUserById(userId);
+		
 		Response<String> response = new Response<>();
 		if (user != null) {
 			try {
@@ -868,7 +872,6 @@ public class OrgSettingsRestController {
 	public List<WhiteListIPAddressDTO> getWhiteListIps(HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		List<WhiteListIPAddressDTO> ipList = whiteListIpAddressService.getWhiteListIpsByLocationId(orgLocations.getId(), null);
 		return ipList;
 	}
