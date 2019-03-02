@@ -10,6 +10,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 /**
  * Entity for LETTER_HEAD
  * @author Rakshith
@@ -18,6 +21,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "LETTER_HEAD")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "letterHead")
 public class LetterHead {
 	
 	private static final long serialVersionUID = 1L;

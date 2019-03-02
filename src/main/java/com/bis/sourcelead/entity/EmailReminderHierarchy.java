@@ -12,10 +12,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 
 @Entity
 @Table(name = "EMAIL_REMINDER_HIERARCHY")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "emailReminderHistory")
 public class EmailReminderHierarchy {
 
 	@Id

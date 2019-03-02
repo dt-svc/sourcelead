@@ -17,6 +17,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -24,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "EXPENSE_PROJECT_APPROVER_HIERARCHY")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "expenseProjectApproverHierarchy")
 public class ExpenseProjectApproverHierarchy implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

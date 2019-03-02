@@ -15,10 +15,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "SOURCELEAD_TAX_IT_DECLARATION")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadTaxITDeclaration")
 public class SourceleadTaxITDeclaration implements Serializable {
 	/**
 	 * @author Mahaveer Manoj

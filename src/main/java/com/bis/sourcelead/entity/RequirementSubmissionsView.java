@@ -11,7 +11,7 @@ import javax.persistence.Transient;
 
 //Dashboard realated properties added on 13/08/2018
 @Entity
-@Table(name = "CANDIDATE_ONBAORDING_VIEW", schema = "SOURCELEAD")
+@Table(name = "CANDIDATE_ONBAORDING_VIEW")
 public class RequirementSubmissionsView implements Serializable {
 	private static final long serialVersionUID = 1L;
 

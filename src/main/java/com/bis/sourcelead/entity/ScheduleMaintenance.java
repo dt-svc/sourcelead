@@ -11,8 +11,12 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
 @Table(name = "APP_MAINTENANCE")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "scheduleMaintenance")
 public class ScheduleMaintenance {
 
 	@Id

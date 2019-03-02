@@ -24,6 +24,7 @@ import com.bis.sourcelead.enums.ConnectionStatus;
 
 @Entity
 @Table(name = "CONNECTIONS")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "connections")
 public class Connections {
 
 	private static final long serialVersionUID = 1L;

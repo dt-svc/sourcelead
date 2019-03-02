@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "ASSET_ASSIGN")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "assetAssign")
 public class AssetAssign {
 	
 	@Id

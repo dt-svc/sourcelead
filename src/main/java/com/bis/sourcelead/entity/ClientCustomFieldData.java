@@ -20,6 +20,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "CLIENT_CUSTOM_FIELD_DATA")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "clientCustomFieldData")
 public class ClientCustomFieldData implements Serializable{
 	private static final long serialVersionUID = 1L;
 	

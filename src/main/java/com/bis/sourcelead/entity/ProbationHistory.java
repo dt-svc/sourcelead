@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 /**
  * 
  * @author rakshith
@@ -18,6 +21,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "PROBATION_HISTORY")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "probationHistory")
 public class ProbationHistory {
 	
 	@Id

@@ -30,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	@Entity
 	@Table(name = "REQUIREMENT_INTERVIEW")
+	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementInterview")
 	public class RequirementInterview implements Serializable{
 
 	

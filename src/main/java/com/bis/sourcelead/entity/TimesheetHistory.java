@@ -27,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "TIMESHEET_HISTORY")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "timesheetHistory")
 public class TimesheetHistory implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

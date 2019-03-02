@@ -13,8 +13,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
 @Table(name = "ASSOCIATE_SALARY_PAYHEAD_IND")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "associateSalaryPayheadInd")
 public class AssociateSalaryPayheadInd {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

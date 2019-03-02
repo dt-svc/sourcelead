@@ -21,6 +21,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "OFFBOARD_CHECKLIST")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "offboardCheckList")
 public class OffboardCheckList implements Serializable{
 	
 private static final long serialVersionUID = 1L;

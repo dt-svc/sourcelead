@@ -24,6 +24,7 @@ import com.bis.sourcelead.enums.Status;
 
 @Entity
 @Table(name = "MODULES")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "modules")
 public class Modules implements Serializable{
 
 	private static final long serialVersionUID = 1L;

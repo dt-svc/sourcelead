@@ -7,8 +7,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
 @Table(name = "ORG_LICENSE_SUBSCRIPTION_TYPES")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orgLicenseSubscriptionTypes")
 public class OrgLicenseSubscriptionTypes {
 
 	private static final long serialVersionUID = 1L;

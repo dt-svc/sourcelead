@@ -16,11 +16,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "TIMESHEET_SUMMARY")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "timesheetSummary")
 public class TimesheetSummary implements Serializable {
 
 	@Id

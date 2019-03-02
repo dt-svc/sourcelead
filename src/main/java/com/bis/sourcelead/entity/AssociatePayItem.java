@@ -1,7 +1,6 @@
 package com.bis.sourcelead.entity;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -13,8 +12,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
 @Table(name = "ASSOCIATE_PAY_ITEM")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "associatePayItem")
 public class AssociatePayItem {
 	
 private static final long serialVersionUID = 1L;

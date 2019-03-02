@@ -16,10 +16,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "LCA")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "lca")
 public class Lca implements Serializable {
 
 	private static final long serialVersionUID = 1L;

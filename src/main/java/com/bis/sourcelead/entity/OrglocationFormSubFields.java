@@ -14,11 +14,10 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "ORGLOCATION_FORM_SUB_FIELDS")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orglocationFormSubFields")
 public class OrglocationFormSubFields implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
