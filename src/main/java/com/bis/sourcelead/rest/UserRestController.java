@@ -1597,8 +1597,6 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 
 	 @RequestMapping(value = "/getUserGroupByGroupUUID" , method = RequestMethod.GET)
 	 public Response<UserGroupDTO> getUserGroupByGroupUUID(UserGroupDTO userGroupDTO,HttpServletRequest request)throws Exception {
-		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		  User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		  Response<UserGroupDTO> userGroupDto =  userGroupService.findUserGroupById(userGroupDTO.getGroupUUID());
 		  return userGroupDto;
 	 }
@@ -1606,7 +1604,6 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 
 	 @RequestMapping(value = "/deleteUserGroupByUUID" , method = RequestMethod.GET)
 	 public Response<UserGroupDTO> deleteUserGroupByUUID(UserGroupDTO userGroupDTO,HttpServletRequest request)throws Exception {
-		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		  User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		  Response<UserGroupDTO> userGroupDto =  userGroupService.deleteUserGroupByUUID(userGroupDTO.getGroupUUID(),loginUser);
 		  return userGroupDto;
@@ -1615,7 +1612,8 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 @RequestMapping(value = "/getLinkedUserDetailsByUserName" , method = RequestMethod.POST)
 	 public String getLinkedUserDetailsByUserName(UserDTO userDTO, HttpServletRequest request)
 			throws Exception {
-           User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Long loginUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+	     User loginUser = userService.getUserById(loginUserId);
 	       String result = "";
            if(userDTO.getLinkedUserName().equalsIgnoreCase(loginUser.getUserName())) {
         	   result = "invalid";
