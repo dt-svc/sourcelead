@@ -642,7 +642,7 @@ return responseList;
 		invoiceDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		invoiceDTO.setSortOrder(sortColumnOrder);
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		DateTime zoned = new DateTime();
+		DateTime zoned = new DateTime(commonUtil.orgLocationCommonDate(new Date(), orgLocations)); //get date and time based on orglocation
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
 		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd");
 		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd");
