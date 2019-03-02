@@ -326,7 +326,8 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/deleteOrgImage", method = RequestMethod.GET)
 	public String deleteOrgImage(HttpServletRequest request) throws Exception
 	{
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		Long orgId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgId");
+		Org org = orgService.findOrgByID(orgId);
 		org.setDocFile(null);
 		org.setFileName(null);
 		org.setFileUrl(null);
@@ -339,7 +340,6 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/changeHierarchyLevels", method = RequestMethod.POST)
 	public String changeHierarchyLevels(@RequestParam(value = "hierarchyOrder", required = false) String hierarchyOrder, HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String[] hierarchyids = hierarchyOrder.split(",");
 		int val = 1;
 		for (int i = 0; i < hierarchyids.length; i++) {

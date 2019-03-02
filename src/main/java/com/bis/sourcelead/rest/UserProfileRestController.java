@@ -121,16 +121,15 @@ public class UserProfileRestController {
 	@RequestMapping(value =  {"/saveUserProfile","/rest/saveUserProfile"}, method = RequestMethod.POST)
 	public Response<AddUserProfileDTO> saveUserProfile(AddUserProfileDTO addUserProfileDTO, HttpServletRequest request)
 			throws Exception {
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user = userService.getUserById(userId);
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		
 		Response<AddUserProfileDTO> response=new Response<>();
 		addUserProfileDTO.setStaticPath(staticPath);
-		if(user == null){
-			user = userService.getUserById(addUserProfileDTO.getUserId());
-		}
-		if(orgLocations == null){
-			 orgLocations = orgLocationService.getOrgLocations(Long.parseLong(addUserProfileDTO.getOrgLocationId()));
-		}
+	
 		UserRole userRoleElk = null;
 		AddUserProfileDTO profileDTO = null;
 		
