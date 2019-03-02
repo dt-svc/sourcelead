@@ -395,7 +395,6 @@ public class CandidateServiceImpl implements CandidateService {
 	@Override
 	public Candidate storeCandidate(CandidateDTO candidateDto,OrgLocations orgLocations,User user) throws Exception {
 		
-		
 		StringBuffer activitySummary = new StringBuffer();
         Candidate candidate = null;
         Date date = new Date();
