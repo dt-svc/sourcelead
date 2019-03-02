@@ -33,7 +33,7 @@ import com.bis.sourcelead.ticketManagement.service.TicketManagementService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.ibm.icu.text.DateFormat;
+
 
 @Service
 public class TicketManagementServiceImpl implements TicketManagementService {
@@ -442,6 +442,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 			ticketManagement.setTicketPriority(ticketManagementDao.getTicketPriorityById(ticketDTO.getTicketPriorityId()));
 			ticketManagement.setTicketStatus(ticketManagementDao.getTicketStatusById(ticketDTO.getTicketStatusId()));
 			ticketManagement.setDescription(ticketDTO.getDescription());
+			ticketManagement.setTitle(ticketDTO.getTitle());
 			ticketManagement.setGeneratedId(ticketDTO.getGeneratedId());
 			ticketManagement.setNotifyTo(ticketDTO.getNotifyTo());
 			if(ticketDTO.getNotifyTo() != null && !ticketDTO.getNotifyTo().isEmpty() && ticketDTO.getId() == 0) {
@@ -502,6 +503,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 					TicketDTO ticketDTO = new TicketDTO();
 					ticketDTO.setId(ticketManagement.getId());
 					ticketDTO.setGeneratedId(ticketManagement.getGeneratedId());
+					ticketDTO.setTitle(ticketManagement.getTitle());
 					ticketDTO.setUuid(ticketManagement.getUuid());
 					ticketDTO.setTicketType(ticketManagement.getTicketType().getName());
 					ticketDTO.setTicketCategory(ticketManagement.getTicketCategory().getName());
@@ -538,6 +540,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 				ticketDTO.setId(ticketManagement.getId());
 				ticketDTO.setUuid(ticketManagement.getUuid());
 				ticketDTO.setGeneratedId(ticketManagement.getGeneratedId());
+				ticketDTO.setTitle(ticketManagement.getTitle());
 				ticketDTO.setDescription(ticketManagement.getDescription());
 				if(ticketManagement.getTicketType() != null) {
 					ticketDTO.setTicketTypeId(ticketManagement.getTicketType().getId());

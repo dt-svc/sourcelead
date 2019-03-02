@@ -38,6 +38,20 @@ $(document).ready(function() {
 		<div class="content-area content-new clearfix">
 			<div class="row minHeightcol6 mt mb">
 				<div class="col-md-6">
+					<label class="col-md-3">Ticket Title</label>
+					<div class="col-md-9">
+						<input type="text" class="form-control" name="title" value="${ticketSummary.title}" field-name="Ticket Title" data-validation="required validate_length length1-100">
+					</div>
+					<div class="clearfix"></div>
+				</div>
+				<div class="col-md-6">
+					<label class="col-md-3">Ticket Id</label>
+					<div class="col-md-9">
+						<input type="text" class="form-control" name="generatedId" value="${ticketSummary.generatedId}" field-name="Ticket Id" data-validation="required validate_length length1-100">
+					</div>
+					<div class="clearfix"></div>
+				</div>
+				<div class="col-md-6">
 					<label class="col-md-3">Type</label>
 					<div class="col-md-9">
 						<select class="chosen-select" name="ticketTypeId" field-name="Type" id="ticketType" data-validation="required">
@@ -100,13 +114,6 @@ $(document).ready(function() {
 					<div class="clearfix"></div>
 				</div>
 				<div class="col-md-6">
-					<label class="col-md-3">Ticket Id</label>
-					<div class="col-md-9">
-						<input type="text" class="form-control" name="generatedId" value="${ticketSummary.generatedId}" field-name="Ticket Id" data-validation="required validate_length length1-100">
-					</div>
-					<div class="clearfix"></div>
-				</div>
-				<div class="col-md-6">
 					<label class="col-md-3">Notify To</label>
 					<div class="col-md-9">
 						<textarea class="form-control" rows="4" id="notifyTo" name="notifyTo" placeholder="Enter multiple Email Id's separated by commas(,)" data-validation="validate_length length0-500">${ticketSummary.notifyTo}</textarea>
@@ -123,19 +130,50 @@ $(document).ready(function() {
 					</div>
 				</div>
 	
-				<div class="row mb">
-						<div class="input-group col-md-11 pull-left">
-							<label class="input-group-btn"> <span
-								class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse
-									File <input type="file" style="display: none;" multiple
-									id="uploadBtn" class="upload"> </span>
-							</label> <input type="text" class="form-control" readonly id="uploadFile"
-								placeholder="Upload Resume ...">
-						</div>
-						<div class="input-group col-md-1 colorRed text-center">
-							<i class="fa fa-times cursorPointer mt10"></i>
-						</div>
-					</div>
+				<div class="col-md-6">
+        <label class="col-md-3">Attachment<span class="text-danger paddingLeft">&nbsp;*</span></label>
+        <div class="col-md-9">
+          <div class="row mb">
+            <div class="input-group col-md-11 pull-left">
+              <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+              <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">
+              </span> </label>
+              <input type="text" class="form-control" readonly id="uploadFile" placeholder="Upload Resume ...">
+            </div>
+            <div class="input-group col-md-1 text-primary text-center">
+              <i class="fa fa-plus cursorPointer mt10"></i>
+            </div>
+          </div>
+
+          <div class="row mb">
+              <div class="input-group col-md-11 pull-left">
+                <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">
+                </span> </label>
+                <input type="text" class="form-control" readonly id="uploadFile" placeholder="Upload Resume ...">
+              </div>
+              <div class="input-group col-md-1 colorRed text-center">
+                <i class="fa fa-times cursorPointer mt10"></i>
+              </div>
+            </div>
+
+            
+          <div class="row mb">
+              <div class="input-group col-md-11 pull-left">
+                <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">
+                </span> </label>
+                <input type="text" class="form-control" readonly id="uploadFile" placeholder="Upload Resume ...">
+              </div>
+              <div class="input-group col-md-1 colorRed text-center">
+                <i class="fa fa-times cursorPointer mt10"></i>
+              </div>
+            </div>
+            
+      </div>
+      </div>
+
+</div>
 			</div>
 		</div>
 		<div class="form-footer clearfix mt">

@@ -15,7 +15,7 @@ $.post(sourceleadUrl + "/getTicketList", {}, function(response) {
 			for(var e in response.data) {
 				var text = "<tr>";
 	            text+= "      <td><div class='tblminwidth-150'><a href='/app/ticketSummary?uuid=" + response.data[e].uuid + "' title='Ticket Management Summary'>" + response.data[e].generatedId + "</a></div></td>";
-	            text+= "      <td><div class='tbldata-dotdot-vsm'>" + response.data[e].ticketType + "</div></td>";
+	            text+= "      <td><div class='tbldata-dotdot-vsm'>" + response.data[e].title + "</div></td>";
 	            text+= "     <td><div class='tbldata-dotdot-vsm'>" + response.data[e].ticketCategory + "</div></td>";
 	            text+= "     <td><div class='tbldata-dotdot-vsm'>" + response.data[e].ticketStatus + "</div></td>";
 	            text+= "   	<td><div class='tblminwidth-75'>" + response.data[e].ticketPriority + "</div></td>";
