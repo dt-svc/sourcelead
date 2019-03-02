@@ -670,6 +670,10 @@ public class OrgLocations implements Serializable{
 
 	public String getTimeZoneName()
 	{
+		if(timezone != null) {
+			timeZoneName =  timezone.getTimeZoneId();
+		}
+		
 		return timeZoneName;
 	}
 
