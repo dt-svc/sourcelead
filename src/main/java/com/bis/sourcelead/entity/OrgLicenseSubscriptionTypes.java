@@ -12,7 +12,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "ORG_LICENSE_SUBSCRIPTION_TYPES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orgLicenseSubscriptionTypes")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orgLicenseSubscriptionTypes")
 public class OrgLicenseSubscriptionTypes {
 
 	private static final long serialVersionUID = 1L;

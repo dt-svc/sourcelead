@@ -25,7 +25,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "CRON_TRACKER")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "cronTracker")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "cronTracker")
 public class CronTracker implements Serializable{
 	
 	

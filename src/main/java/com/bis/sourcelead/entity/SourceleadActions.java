@@ -19,7 +19,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "SOURCELEAD_ACTIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadActions")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadActions")
 public class SourceleadActions implements Serializable{
 
 	

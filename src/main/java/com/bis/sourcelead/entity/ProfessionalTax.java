@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "PROFESSIONAL_TAX")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "professionalTax")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "professionalTax")
 public class ProfessionalTax implements Serializable {
 
 	private static final long serialVersionUID = 1L;

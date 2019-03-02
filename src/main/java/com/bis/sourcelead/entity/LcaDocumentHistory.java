@@ -18,7 +18,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "LCA_DOCUMENT_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "lcaDocumentHistory")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "lcaDocumentHistory")
 public class LcaDocumentHistory implements Serializable {
 
 	private static final long serialVersionUID = 1L;

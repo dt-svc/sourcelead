@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "CANDIDATE_PASSPORT_VISA")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidatePassportVisa")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidatePassportVisa")
 public class CandidatePassportVisa implements Serializable {
 
 	private static final long serialVersionUID = 1L;

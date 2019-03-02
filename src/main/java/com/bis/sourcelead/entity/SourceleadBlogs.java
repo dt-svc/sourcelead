@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "SOURCELEAD_BLOGS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadBlogs")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadBlogs")
 public class SourceleadBlogs {
 
 	@Id

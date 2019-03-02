@@ -29,7 +29,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_DOCUMENT_FOLDER")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "projectDocumentFolder")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "projectDocumentFolder")
 public class ProjectDocumentFolder implements Serializable{
 	
 private static final long serialVersionUID = 1L;

@@ -19,7 +19,7 @@ import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 
 @Entity
 @Table(name = "EMAIL_REMINDER_HIERARCHY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "emailReminderHistory")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "emailReminderHistory")
 public class EmailReminderHierarchy {
 
 	@Id

@@ -22,7 +22,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "CANDIDATE_OFF_BOARDING")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateOffBoarding")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateOffBoarding")
 public class CandidateOffBoarding implements Serializable{
 	
 private static final long serialVersionUID = 1L;

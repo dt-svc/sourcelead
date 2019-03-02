@@ -18,7 +18,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "UPLOAD_XLS_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "uploadXlsHistory")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "uploadXlsHistory")
 public class UploadXlsHistory implements Serializable{
 
 	private static final long serialVersionUID = 1L;

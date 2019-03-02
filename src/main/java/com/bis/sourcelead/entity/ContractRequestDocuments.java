@@ -23,7 +23,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "CONTRACT_REQUEST_DOCUMENTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "contractOwnerHierarchy")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "contractOwnerHierarchy")
 public class ContractRequestDocuments {
 	
 	private static final long serialVersionUID = 1L;

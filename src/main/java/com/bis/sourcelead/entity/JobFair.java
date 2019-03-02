@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "JOB_FAIR")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "jobFair")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "jobFair")
 public class JobFair implements Serializable {
 
 	/**

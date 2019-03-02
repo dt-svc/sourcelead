@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "SOURCELEAD_NOTES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadNotes")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadNotes")
 public class SourceleadNotes {
 	
 	private static final long serialVersionUID = 1L;

@@ -27,7 +27,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 
 @Entity
 @Table(name = "REQUIREMENT_APPROVER_HIERARCHY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementApproverHierarchy")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementApproverHierarchy")
 public class RequirementApproverHierarchy implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

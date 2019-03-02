@@ -19,7 +19,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "CANDIDATE_MARKET_PLACE_PURCHASE_ORDER")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "marketplacePurchaseOrder")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "marketplacePurchaseOrder")
 public class MarketplacePurchaseOrder implements Serializable {
 
 	private static final long serialVersionUID = 1L;

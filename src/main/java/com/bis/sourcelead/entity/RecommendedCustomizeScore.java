@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	@Entity
 	@Table(name = "RECOMMENDED_CUSTOMIZE_SCORE")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "recommendedCustomizeScore")
+	//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "recommendedCustomizeScore")
 	public class RecommendedCustomizeScore implements Serializable{
 
 	private static final long serialVersionUID = 1L;

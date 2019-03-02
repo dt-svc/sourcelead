@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "CANDIDATE_COMMENTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateComments")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateComments")
 public class CandidateComments implements Serializable{
 	
 	

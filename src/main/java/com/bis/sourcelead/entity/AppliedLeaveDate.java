@@ -19,7 +19,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "APPLIED_LEAVE_DATE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "appliedLeaveDate")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "appliedLeaveDate")
 public class AppliedLeaveDate {
 	
 	

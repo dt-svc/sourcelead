@@ -20,7 +20,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  */
 @Entity
 @Table(name = "PAYMENT_ACCOUNT")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "paymentAccount")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "paymentAccount")
 public class PaymentAccount extends Record implements Serializable {
 
     @Id

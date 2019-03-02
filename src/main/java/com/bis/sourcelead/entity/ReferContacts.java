@@ -30,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "REFER_CONTACTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "referContacts")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "referContacts")
 public class ReferContacts implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

@@ -16,7 +16,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "APP_MAINTENANCE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "scheduleMaintenance")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "scheduleMaintenance")
 public class ScheduleMaintenance {
 
 	@Id

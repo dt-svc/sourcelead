@@ -23,7 +23,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "CONTACTS_GROUP")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "contactsGroup")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "contactsGroup")
 public class ContactsGroup implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

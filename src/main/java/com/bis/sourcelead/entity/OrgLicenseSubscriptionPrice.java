@@ -17,7 +17,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "ORG_LICENSE_SUBSCRIPTION_PRICE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orgLicenseSubscriptionPrice")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orgLicenseSubscriptionPrice")
 public class OrgLicenseSubscriptionPrice implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "TDS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "tds")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "tds")
 public class Tds implements Serializable{
 	private static final long serialVersionUID = 1L;
 	

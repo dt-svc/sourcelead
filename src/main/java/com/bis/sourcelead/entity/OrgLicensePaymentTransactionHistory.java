@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "ORG_LICENSE_PAYMENT_TRANSACTION_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orgLicenseSubscription")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orgLicenseSubscription")
 public class OrgLicensePaymentTransactionHistory implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

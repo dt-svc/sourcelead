@@ -19,7 +19,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "CANDIDATE_HOT_LIST")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateHistory")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateHistory")
 public class CandidateHotList implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

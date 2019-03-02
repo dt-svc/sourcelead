@@ -18,7 +18,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name="EMAIL_SCENARIO_CONFIGURATION")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "emailscenarioconfiguration")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "emailscenarioconfiguration")
 public class EmailScenarioConfiguration implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

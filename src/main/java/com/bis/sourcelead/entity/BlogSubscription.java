@@ -15,7 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "BLOG_SUBSCRIPTION")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "blogSubscription")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "blogSubscription")
 public class BlogSubscription {
 
 	@Id

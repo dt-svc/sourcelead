@@ -27,7 +27,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "ASSOCIATE_SALARY_IND")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "associateSalaryInd")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "associateSalaryInd")
 public class AssociateSalaryInd {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

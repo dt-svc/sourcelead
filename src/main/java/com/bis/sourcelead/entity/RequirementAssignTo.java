@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	@Entity
 	@Table(name = "REQUIREMENT_ASSIGN_TO")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementAssignTo")
+	//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementAssignTo")
 	public class RequirementAssignTo implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

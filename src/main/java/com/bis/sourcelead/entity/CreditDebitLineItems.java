@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "CREDIT_DEBIT_LINE_ITEMS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "creditDebitLineItems")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "creditDebitLineItems")
 public class CreditDebitLineItems {
 	
 	private static final long serialVersionUID = 1L;

@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "BLOG_CATEGORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "blogCategory")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "blogCategory")
 public class BlogCategory {
 
 	@Id

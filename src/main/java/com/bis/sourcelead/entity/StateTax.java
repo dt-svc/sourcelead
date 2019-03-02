@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "STATE_TAX")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "stateTax")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "stateTax")
 public class StateTax implements Serializable {
 
 	private static final long serialVersionUID = 1L;

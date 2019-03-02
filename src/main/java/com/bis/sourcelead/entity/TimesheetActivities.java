@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 @Table(name = "TIMESHEET_ACTIVITIES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "timesheetActivities")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "timesheetActivities")
 public class TimesheetActivities {
 	
 	@SuppressWarnings("unused")

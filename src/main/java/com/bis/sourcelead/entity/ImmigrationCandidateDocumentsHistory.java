@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "IMMIGRATION_CANDIDATE_DOCS_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "immigrationCandidateDocsHistory")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "immigrationCandidateDocsHistory")
 public class ImmigrationCandidateDocumentsHistory implements Serializable {
 
 	private static final long serialVersionUID = 1L;

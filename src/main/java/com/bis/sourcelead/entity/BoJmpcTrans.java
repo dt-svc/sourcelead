@@ -23,7 +23,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "BO_JMPC_TRANS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "boJmpcTrans")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "boJmpcTrans")
 public class BoJmpcTrans implements Serializable{
 
 	private static final long serialVersionUID = 1L;

@@ -23,7 +23,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "IMMIGRATION_TASKS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "immigrationTasks")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "immigrationTasks")
 public class ImmigrationTasks implements Serializable{
 	
 private static final long serialVersionUID = 1L;

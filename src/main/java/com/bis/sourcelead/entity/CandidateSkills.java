@@ -24,7 +24,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "CANDIDATE_SKILLS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateSkills")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateSkills")
 public class CandidateSkills {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

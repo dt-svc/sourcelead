@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "ASSOCIATE_SALARY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "associateSalary")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "associateSalary")
 public class AssociateSalary {
 	
    private static final long serialVersionUID = 1L;

@@ -23,7 +23,7 @@ import com.bis.sourcelead.constants.Constants;
 
 @Entity
 @Table(name = "ASSOCIATE_LOAN_ADVANCES")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "associateLoanAndAdvances")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "associateLoanAndAdvances")
 public class AssociateLoanAndAdvances implements Serializable{
 
 	private static final long serialVersionUID = 1L;

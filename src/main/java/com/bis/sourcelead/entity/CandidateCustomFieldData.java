@@ -18,7 +18,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "CANDIDATE_CUSTOM_FIELD_DATA")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateCustomFieldData")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateCustomFieldData")
 public class CandidateCustomFieldData implements Serializable{
 	private static final long serialVersionUID = 1L;
 	

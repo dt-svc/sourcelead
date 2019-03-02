@@ -25,7 +25,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "USER_MAIL_BOX")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userMailBox")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userMailBox")
 public class UserMailBox implements Serializable{
 
 	private static final long serialVersionUID = 1L;

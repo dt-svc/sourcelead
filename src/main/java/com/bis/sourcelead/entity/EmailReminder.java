@@ -21,7 +21,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "EMAIL_REMINDER")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "emailReminder")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "emailReminder")
 public class EmailReminder {
 
 	@Id

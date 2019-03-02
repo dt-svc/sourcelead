@@ -24,7 +24,7 @@ import com.bis.sourcelead.enums.Submission_Status;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "TIMESHEET_SUMMARY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "timesheetSummary")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "timesheetSummary")
 public class TimesheetSummary implements Serializable {
 
 	@Id

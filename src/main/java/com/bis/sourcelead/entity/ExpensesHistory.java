@@ -25,7 +25,7 @@ import org.hibernate.annotations.NotFoundAction;
  */
 @Entity
 @Table(name = "EXPENSES_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "expensesHistory")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "expensesHistory")
 public class ExpensesHistory implements Serializable {
 
 private static final long serialVersionUID = 1L;
