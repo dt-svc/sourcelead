@@ -1389,7 +1389,7 @@ function saveWhiteListIps(){
 
 <script>
     function savePaymentAccount() {
-    	var countryName = '${SourceLeadWeb_orgLocations.country}';
+    	var countryName = '${SourceLeadWeb_country}';
         var data =  {};
         var val = $("#paymentAccountType").val();
         var flag = false;
@@ -2285,7 +2285,7 @@ var validationSettings = {
          $('body').on('submit', '#signature_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		    e.preventDefault(); 
-        		    var sourceleadUrl = '${sourceleadUrl}';
+        		    var atsUrl = '${SourceLeadWeb_atsUrl}';
         			var frm = $('#signature_form').serializeFormJSON();
         			var con = JSON.stringify(frm);
         			con = con.replace(/[{}]/g, ""); 
@@ -2294,7 +2294,7 @@ var validationSettings = {
 	           		
         		     $.ajax({
         				type : "POST",
-        				url : sourceleadUrl+"/saveOrgSignature?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+        				url : atsUrl+"/saveOrgSignature?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
         				success : function(result) {
         					loadSignature();
         				},
@@ -2316,11 +2316,11 @@ var validationSettings = {
 function getSignaturePreview(){
 	
 	$("#campaignSignatrue").empty(); 
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	
 	   $.ajax({
 			type : "POST",
-			url : sourceleadUrl+"/getSignaturePreview?${_csrf.parameterName}=${_csrf.token}",
+			url : atsUrl+"/getSignaturePreview?${_csrf.parameterName}=${_csrf.token}",
 			success : function(result) {
 				
 				$("#campaignSignatrue").html(result);
