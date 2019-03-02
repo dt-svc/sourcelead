@@ -46,7 +46,6 @@
 				 <sec:authorize access="hasRole('ROLE_VENDORS_REPORT')">
 				 <li><a href="${appPath}/vendorsReports">Vendor(s) Report</a></li>
 				 </sec:authorize>
-				
 				<sec:authorize access="hasRole('ROLE_CLIENT_REPORT')">
 				<li><a href="${appPath}/perfomanceClientReports">Client(s) Report</a></li>
 				</sec:authorize>
