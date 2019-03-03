@@ -130,16 +130,15 @@ public class UserProfileRestController {
 	@RequestMapping(value =  {"/saveUserProfile","/rest/saveUserProfile"}, method = RequestMethod.POST)
 	public Response<AddUserProfileDTO> saveUserProfile(AddUserProfileDTO addUserProfileDTO, HttpServletRequest request)
 			throws Exception {
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user = userService.getUserById(userId);
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		
 		Response<AddUserProfileDTO> response=new Response<>();
 		addUserProfileDTO.setStaticPath(staticPath);
-		if(user == null){
-			user = userService.getUserById(addUserProfileDTO.getUserId());
-		}
-		if(orgLocations == null){
-			 orgLocations = orgLocationService.getOrgLocations(Long.parseLong(addUserProfileDTO.getOrgLocationId()));
-		}
+	
 		UserRole userRoleElk = null;
 		AddUserProfileDTO profileDTO = null;
 		
@@ -219,8 +218,10 @@ public class UserProfileRestController {
 		 User user = null;
 		 OrgLocations orgLocations = null;
 		 Response<String> response=new Response<>();
-		 user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		 user = userService.getUserById(userId);
+		 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		 orgLocations = orgLocationService.getOrgLocationById(orgLocationId);
 		
 		if(user == null) {
 			user = userService.getUserById(passwordSettingsDTO.getUserId());
@@ -269,7 +270,8 @@ public class UserProfileRestController {
 			@RequestParam(value = "currentPassword", required = false) String currentPassword,
 			HttpServletRequest request) throws Exception {
 
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user = userService.getUserById(userId);
 		if (sourceleadPasswordEncoder.matches(currentPassword, user.getPassword())) {
 			return "valid";
 		} else {
@@ -283,7 +285,8 @@ public class UserProfileRestController {
 		if(userId>0){
 			user = userService.getUserById(userId);
 		}else{
-	    user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			user = userService.getUserById(userId);
 		}
 		user.setFileUrl(null);
 		user.setFileContentType(null);
@@ -361,8 +364,8 @@ public class UserProfileRestController {
 	@RequestMapping(value = { "/updateUserLoginSecurity","/rest/updateUserLoginSecurity" }, method = RequestMethod.GET)
 	public String passwordSettings(AddUserProfileDTO addUserProfileDTO, HttpServletRequest request) throws Exception
 	{
-		User user = null;
-		user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user = userService.getUserById(userId);
 		if (Constants.YES.equalsIgnoreCase(addUserProfileDTO.getLoginSecurity())) {
 			user.setLoginSecurity(Constants.YES);
 			userService.addUser(user);

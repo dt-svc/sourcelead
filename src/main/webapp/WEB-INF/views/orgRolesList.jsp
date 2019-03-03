@@ -367,7 +367,7 @@ function getRolesList(){
    		    		result = result +'<td>';
    		    		result = result +'<div>';
    		    		result = result +'<label class="label label-success">';
-   		    		result = result +'<a class="anchorWhite" href="${SourceLeadWeb_sourceleadUrl}/roleActions/'+report.uuid+'"/>""><i class="fa fa-key"></i>&nbsp;&nbsp;Configure</a>';
+   		    		result = result +'<a class="anchorWhite" href="${SourceLeadWeb_sourceleadUrl}/roleActions/'+report.uuid+'"><i class="fa fa-key"></i>&nbsp;&nbsp;Configure</a>';
    		    		result = result +'</label>';
    		    		result = result +'</div>';
    		    		result = result +'</td>';
