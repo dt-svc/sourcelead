@@ -57,6 +57,7 @@ import com.bis.sourcelead.service.EmailAccountSettingsService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmailService;
 import com.bis.sourcelead.service.HotListEmailCampaignService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RequirementAssignToService;
@@ -139,6 +140,9 @@ public class MailBoxRestController {
 
 	@Autowired
 	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -653,8 +657,14 @@ public class MailBoxRestController {
 	@RequestMapping(value = "/getSignaturePreview", method = RequestMethod.POST)
 	public String getSignaturePreview(HttpServletRequest request) throws Exception {
 
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
+		
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user = userService.getUserById(userId);
+		
+		
 		String signature = sourceleadSignatureService.buildSignature(user, orgLocation);
 
 		return signature;
@@ -664,8 +674,12 @@ public class MailBoxRestController {
 	@RequestMapping(value = "/restoreSignature", method = RequestMethod.POST)
 	public String restoreSignature(HttpServletRequest request) throws Exception {
 
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
+		
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user = userService.getUserById(userId);
+		
 		sourceleadSignatureService.restoreSignature(user, orgLocation);
 
 		return "success";
