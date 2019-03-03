@@ -6,7 +6,15 @@
 
 <link href="/resources/css/summernote-new.css" rel="stylesheet" type="text/css">
 
-
+ <script>
+$(window).load(function() {
+	$('#publishedDate').datepicker({
+		changeMonth: true,
+		changeYear: true, 
+		minDate: 0
+	});
+})
+</script>
 <div class="wraper">
 <!-- Content Area -->
 <section class="content-wraper">
@@ -106,9 +114,9 @@
         </div>
        
         <div class="form-group">
-          <label class="col-md-3">Published On</label>
+          <label class="col-md-3">Published On </label>
           <div class="col-md-9">
-				<input type="text" name="publishOn"   class="form-control calendar" id="publishOn" value="${publishon}">
+				<input type="text" name="publishOn"   class="form-control calendar" id="publishedDate" value="${publishon}">
           </div>
         </div>
         
@@ -226,10 +234,10 @@ function uploadFileDoc(){
       });
    $("#blogKeywords").trigger("chosen:updated");
    // current Date And Time Script.
-	$('#publishOn').datetimepicker({
+/* 	$('#publishedDate').datetimepicker({
 		//useCurrent: false,
 		minDate: new Date()
-	}).val('');
+	}).val(''); */
 
 </script>
 	
@@ -306,7 +314,7 @@ function validateBlogTitle(blogUUID){
 <script src="/resources/js/summernote.min.js"></script>
 <script>
 $(function() { 
-  $('#publishOn').empty().val('${publishon}');
+  $('#publishedDate').empty().val('${publishon}');
   setTimeout(function () {
     var description = '${sourceleadBlog.description}';
 	 $("textarea[name=description]").html(description);

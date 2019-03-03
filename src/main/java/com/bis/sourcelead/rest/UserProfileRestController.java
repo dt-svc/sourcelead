@@ -89,7 +89,8 @@ public class UserProfileRestController {
 		if(userId > 0){
 			user = userService.getUserById(userId);		
 		} else {
-			user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			user = userService.getUserById(userId);
 		}
 		
 		if(user == null){
@@ -98,6 +99,14 @@ public class UserProfileRestController {
 		
 		if(user != null){
 			user = userService.saveUserProfileImage(addUserProfileDTO, user);
+			if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+				List<UserRole> userRolesList = userRoleService.getUsersListByUserId(userId);
+				for(UserRole userRole : userRolesList) {
+					 userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+				}
+			}
+			
+			
 			return "success";
 		}
 		else

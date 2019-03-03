@@ -176,9 +176,19 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/saveOrgImage", method = RequestMethod.POST)
 	public String saveOrgImage(CompanyRegistrationDTO companyRegistrationDTO, HttpServletRequest request) throws Exception
 	{
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		Long orgId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgId");
 		companyRegistrationDTO.setStaticPath(staticPath);
+		Org org = orgService.findOrgByID(orgId);
 		org = orgService.saveOrgSettings(companyRegistrationDTO, org);
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocationsByOrgId(orgId);
+			for(OrgLocations orgLocations : orgLocationsList) {
+					userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(orgLocations);
+			}
+		}
+		
+		
 		return "success";
 	}
 	
