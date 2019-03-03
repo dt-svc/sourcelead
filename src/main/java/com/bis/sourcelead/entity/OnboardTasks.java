@@ -23,6 +23,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "ONBOARD_TASKS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "onboardTasks")
 public class OnboardTasks implements Serializable{
 	
 private static final long serialVersionUID = 1L;

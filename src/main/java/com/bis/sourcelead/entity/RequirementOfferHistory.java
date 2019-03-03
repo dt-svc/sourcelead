@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	@Entity
 	@Table(name = "REQUIREMENT_OFFER_HISTORY")
+	//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementOfferHistory")
 	public class RequirementOfferHistory implements Serializable{
 
 	

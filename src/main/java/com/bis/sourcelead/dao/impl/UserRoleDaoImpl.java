@@ -1634,4 +1634,17 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 	
 	}
+
+	@Override
+	@Transactional
+	public List<UserRole> getLoginUserLoginAccountsList(Long userId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole left join fetch userRole.user user where user.id = :userId and (userRole.userState = 'ACTIVE' OR userRole.userState = 'NOT_LOGGEDIN') ";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).list();
+		return userRoleList;
+
+	
+	
+	}
 }

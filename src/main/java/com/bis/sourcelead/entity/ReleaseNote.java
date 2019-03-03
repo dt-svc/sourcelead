@@ -13,11 +13,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "RELEASE_NOTE")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "releaseNote")
 public class ReleaseNote {
 
 	@Id

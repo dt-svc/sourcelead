@@ -16,12 +16,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "USER_MANUAL_LEVEL_THREE")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userManualLevelThree")
 public class UserManualLevelThree implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

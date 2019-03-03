@@ -20,6 +20,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name="USER_LOGIN_ATTEMPTS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userLoginAttempts")
 public class UserLoginAttempts implements Serializable{
 	
 	

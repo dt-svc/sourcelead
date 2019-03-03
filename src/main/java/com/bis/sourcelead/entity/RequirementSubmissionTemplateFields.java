@@ -15,6 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -26,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION_TEMPLATE_FIELDS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementSubmissionTemplateFields")
 public class RequirementSubmissionTemplateFields implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
