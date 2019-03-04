@@ -77,6 +77,7 @@ import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionTypesService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
@@ -183,6 +184,9 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 	
 	@Autowired
 	UserStatsCacheHelper userStatsCacheHelper;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -870,6 +874,18 @@ public void updateOrgBasedRoles(OrgLicenseSubscriptionDTO orgLicenseSubscription
 					}
 					
 					rolesDao.storeRoles(roles);
+				}
+			}
+		}
+		
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true") && orgLocationsIdsList != null && !orgLocationsIdsList.isEmpty()) {
+			for(Long orgLocationId : orgLocationsIdsList) {
+				List<UserRole> usersRolesList =  userRoleService.getAllUsersBasedOrgLocationId(orgLocationId);
+				if(usersRolesList != null && !usersRolesList.isEmpty()) {
+					for(UserRole userRole : usersRolesList) {
+							userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+					}
 				}
 			}
 		}
