@@ -135,6 +135,7 @@ public class SecurityConfig  {
     			.antMatchers("/parseResume/**").permitAll()
     			.antMatchers("/app/getDemoTimezonesList/**").permitAll()
     			.antMatchers("/app/getDemoModulesList/**").permitAll()
+    			.antMatchers("/app/getAdminDemoModulesList").permitAll()
     			.antMatchers("/app/getActionHistoryList/**").permitAll()
     			.antMatchers("/app/jobCampaignSummary/**").permitAll()
     			.antMatchers("/app/getRequirementProfessionalProfileDetails/**").permitAll()

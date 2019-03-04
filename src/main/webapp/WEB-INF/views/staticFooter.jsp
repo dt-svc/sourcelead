@@ -355,9 +355,9 @@ function getTimezonesList(){
 
 function getDemoModules(){
 	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-	$.ajax({
-    	type: "POST",
-    	url : sourceleadUrl+"/getDemoModulesList?${_csrf.parameterName}=${_csrf.token}", 
+ 	$.ajax({
+    	type: "GET",
+    	url : sourceleadUrl+"/getAdminDemoModulesList", 
         success: function(json) {
         	var result = "";
         	for (var i=0; i<json.length; i++){
@@ -368,7 +368,7 @@ function getDemoModules(){
 			$("#moduleList").append(result); 
 			$("#moduleList").find(".checkbox-area").css({"minWidth":"86px"})
         }
-	});
+	}); 
 }
 </script>
  <script type="text/javascript">
