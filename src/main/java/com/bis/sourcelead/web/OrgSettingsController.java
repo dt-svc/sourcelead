@@ -36,6 +36,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLocationInformationDetails;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrglocationDepositTaxes;
 import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
@@ -56,6 +57,7 @@ import com.bis.sourcelead.service.OrgLocationIndiaBankingDetailsService;
 import com.bis.sourcelead.service.OrgLocationInformationDetailsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
+import com.bis.sourcelead.service.OrglocationDepositTaxesService;
 import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
 import com.bis.sourcelead.service.OrglocationSignatoryService;
 import com.bis.sourcelead.service.RoleHierarchyService;
@@ -138,6 +140,9 @@ public class OrgSettingsController {
 	
 	@Autowired
 	EmailReminderService emailReminderService;
+	
+	@Autowired
+	OrglocationDepositTaxesService orglocationDepositTaxesService;
 
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
@@ -145,7 +150,8 @@ public class OrgSettingsController {
 	public ModelAndView orgSettings(HttpServletRequest request,@RequestParam(value = "tabType", required = false) String tabType) throws Exception
 	{
 		logger.debug("Org settings");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
@@ -280,8 +286,32 @@ public class OrgSettingsController {
 		 }
 		 
 		 model.addObject("modulesList", modulesList);*/
-		 modulesNamesList =  (Collection<String>) SourceLeadSessionManager.getSessionAttribute(request, "tabsList");
-		 model.addObject("modulesNamesList", modulesNamesList);
+		SourceLeadSessionManager.setSessionAttribute(request, "profilePercentage", orgLocations.getProfilePercentage());
+		SourceLeadSessionManager.setSessionAttribute(request, "showCompanyNameInMarkeplace", orgLocations.getShowCompanyNameInMarkeplace());
+		SourceLeadSessionManager.setSessionAttribute(request, "careerPageKey", orgLocations.getOrg().getCareerPageKey());
+		SourceLeadSessionManager.setSessionAttribute(request, "careerPageKeyActive", orgLocations.getOrg().getCareerPageKeyActive());
+		SourceLeadSessionManager.setSessionAttribute(request, "startMonth", orgLocations.getStartMonth());
+		SourceLeadSessionManager.setSessionAttribute(request, "endMonth", orgLocations.getEndMonth());
+		SourceLeadSessionManager.setSessionAttribute(request, "recommendedSkillPercent", orgLocations.getRecommendedSkillPercent());
+		SourceLeadSessionManager.setSessionAttribute(request, "recommendedLocationPercent", orgLocations.getRecommendedLocationPercent());
+		SourceLeadSessionManager.setSessionAttribute(request, "recommendedNoticePercent", orgLocations.getRecommendedNoticePercent());
+		SourceLeadSessionManager.setSessionAttribute(request, "recommendedExpPercent", orgLocations.getRecommendedExpPercent());
+		SourceLeadSessionManager.setSessionAttribute(request, "recommendedEducationPercent", orgLocations.getRecommendedEducationPercent());
+		SourceLeadSessionManager.setSessionAttribute(request, "recommendedVisatypePercent", orgLocations.getRecommendedVisatypePercent());
+		SourceLeadSessionManager.setSessionAttribute(request, "recommendedRatePercent", orgLocations.getRecommendedRatePercent());
+		SourceLeadSessionManager.setSessionAttribute(request, "recommendedKeywordsPercent", orgLocations.getRecommendedKeywordsPercent());
+		SourceLeadSessionManager.setSessionAttribute(request, "depositSchedule", orgLocations.getDepositSchedule());
+		SourceLeadSessionManager.setSessionAttribute(request, "fillingForm", orgLocations.getFillingForm());
+		SourceLeadSessionManager.setSessionAttribute(request, "unemploymentTax", orgLocations.getUnemploymentTax());
+		SourceLeadSessionManager.setSessionAttribute(request, "federalEin", orgLocations.getFederalEin());
+		
+		OrglocationDepositTaxes orgLocDepTaxes = orglocationDepositTaxesService
+				.getOrglocationDepositTaxesByOrgLocationId(orgLocations.getId());
+		SourceLeadSessionManager.setSessionAttribute(request, "orglocationDepositTaxes", orgLocDepTaxes);
+		
+		
+		modulesNamesList =  (Collection<String>) SourceLeadSessionManager.getSessionAttribute(request, "tabsList");
+		model.addObject("modulesNamesList", modulesNamesList);
 		model.addObject("emailSceconf", emailSceconf);
 		model.addObject("orgSubscribedCountriesList", orgSubscribedCountriesList);
 		model.addObject("subscribedCountries", subscribedCountries);
