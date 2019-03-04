@@ -1007,7 +1007,7 @@ public class RequirementController {
 		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocations.getTimeZoneId()));
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		
 		Boolean isInterviewer = requirementInterviewerService.isInterviwerForByRequirementIdInterviewIdAndUserId(requirementUUID, interviewId, loginUser.getId());
