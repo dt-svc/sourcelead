@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.annotations.CleanHtml;
@@ -24,7 +25,7 @@ public class SourceleadBlogDTO extends SearchDTO implements Serializable{
 	
 	private List<String> keywords;
 	
-	private String publishOn;
+	private Date publishOn;
 	
 	private String fileContentType;
 
@@ -63,6 +64,10 @@ public class SourceleadBlogDTO extends SearchDTO implements Serializable{
 	private String href;
 	
 	private String bodytext;
+	
+	private String publishOnStr;
+	
+	private String orgLocationDateFormate;
 
 	public long getId() {
 		return id;
@@ -96,11 +101,11 @@ public class SourceleadBlogDTO extends SearchDTO implements Serializable{
 		this.keywords = keywords;
 	}
 
-	public String getPublishOn() {
+	public Date getPublishOn() {
 		return publishOn;
 	}
 
-	public void setPublishOn(String publishOn) {
+	public void setPublishOn(Date publishOn) {
 		this.publishOn = publishOn;
 	}
 
@@ -247,7 +252,22 @@ public class SourceleadBlogDTO extends SearchDTO implements Serializable{
 	public void setBodytext(String bodytext) {
 		this.bodytext = bodytext;
 	}
-	
+
+	public String getPublishOnStr() {
+		return publishOnStr;
+	}
+
+	public void setPublishOnStr(String publishOnStr) {
+		this.publishOnStr = publishOnStr;
+	}
+
+	public String getOrgLocationDateFormate() {
+		return orgLocationDateFormate;
+	}
+
+	public void setOrgLocationDateFormate(String orgLocationDateFormate) {
+		this.orgLocationDateFormate = orgLocationDateFormate;
+	}
 }
 
 
