@@ -15,12 +15,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION_RATE_NEGOTIATION")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementRateSubmissionNegotiation")
 public class RequirementRateSubmissionNegotiation {
 
 	@Id

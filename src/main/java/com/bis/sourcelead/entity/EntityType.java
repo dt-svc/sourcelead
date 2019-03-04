@@ -14,6 +14,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name="ENTITY_TYPE")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "entityType")
 public class EntityType implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

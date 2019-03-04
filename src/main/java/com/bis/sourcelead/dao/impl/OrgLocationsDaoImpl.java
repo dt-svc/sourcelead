@@ -422,7 +422,12 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public OrgLocations getOrgLocationById(Long id) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-        OrgLocations locations =  (OrgLocations) session.get(OrgLocations.class, id);
+	    String query = "from OrgLocations orgLocations where orgLocations.id = :id";
+		
+		List<OrgLocations> locationsList = session.createQuery(query).setLong("id", id).list();
+		OrgLocations locations = null;
+		if(locationsList != null && !locationsList.isEmpty())
+			locations = locationsList.iterator().next();
 		return locations;
 	}
 	 
