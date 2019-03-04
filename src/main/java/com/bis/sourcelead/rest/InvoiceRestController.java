@@ -2045,7 +2045,8 @@ return responseList;
 	public void getBillingExportList(InvoiceDTO invoiceDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLocId);
 		invoiceDTO.setSearchValue("");
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		DateTime zoned = new DateTime();
