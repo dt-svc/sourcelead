@@ -11,7 +11,7 @@
           <div class="pull-left">
             <h2>Upgrade License Subscription</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="${appPath}/dashboard">Home</a> &raquo; <a href="${appPath}/orgLicenseSubscriptionList">License Subscription List</a> &raquo;  Upgrade License Subscription </div>
+          <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/orgLicenseSubscriptionList">License Subscription List</a> &raquo;  Upgrade License Subscription </div>
         </section>
         
         <div class="content-area clearfix">
@@ -180,7 +180,7 @@ var validationSettings = {
         			 $.ajax({
                 	      type: "POST",
                 	    	data: formData,
-                      	   url: "/app/init-payment?${_csrf.parameterName}=${_csrf.token}&type=upgrade&subscriptionUUID="+subscriptionUUID+"&registeredModules="+registeredModules,
+                      	   url: sourceleadUrl+"/init-payment?${_csrf.parameterName}=${_csrf.token}&type=upgrade&subscriptionUUID="+subscriptionUUID+"&registeredModules="+registeredModules,
                         	success: function(data) {
                         		 if (data) {
                 	                location.href = data;
