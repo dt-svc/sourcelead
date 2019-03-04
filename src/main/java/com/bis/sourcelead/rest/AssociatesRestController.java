@@ -37,6 +37,7 @@ import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
@@ -85,14 +86,9 @@ public class AssociatesRestController {
 	private UserService userService;
 	
 	@Autowired
-	private UserRoleService userRoleService;
+	private OrgLocationService orgLocationService;
 	
-	@Autowired
-	private CommonUtil commonUtil;
-	
-	@Autowired
-	private TeamService teamService;
-	
+		
 	@Autowired
 	RequirementSubmissionService requirementSubmissionService;
 	
@@ -143,16 +139,13 @@ public class AssociatesRestController {
 	@RequestMapping(value = "/storeAssociate", method = RequestMethod.POST)
 	public @ResponseBody String storeAssociate(CandidateDTO candidateDto, HttpServletRequest request) throws Exception {
 		
-		/*MultipartFile multiFile = null;
-		Iterator<String> itrator = request.getFileNames();
-		if(itrator.hasNext()){
-	        multiFile = request.getFile(itrator.next());
-		}
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);
-		*/
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user = userService.getUserById(userId);
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
+		
+		
 		Candidate candidate = candidateService.storeCandidate(candidateDto,orgLocation,user);
 		
 		if(candidate.getCandidateType().equalsIgnoreCase("Candidate")){

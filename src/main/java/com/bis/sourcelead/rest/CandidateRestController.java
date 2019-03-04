@@ -211,7 +211,9 @@ public class CandidateRestController {
 	@ResponseBody
 	public Response<String> storeCandidate(CandidateDTO candidateDto, HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user = userService.getUserById(userId);
+		
 		if (user != null) {
 			try {
 
@@ -219,8 +221,8 @@ public class CandidateRestController {
 					candidateDto.setStaticPath(staticPath);
 					// FileUploadUtil.fillUploadedFileInfo(candidateDto,
 					// candidateDto.getFileInfo());
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-							"orgLocations");
+					Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 					Candidate candidate = candidateService.storeCandidate(candidateDto, orgLocation, user);
 					SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg",
 							"Success new candidate is created");

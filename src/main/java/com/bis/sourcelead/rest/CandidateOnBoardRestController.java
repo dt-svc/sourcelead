@@ -269,7 +269,7 @@ public class CandidateOnBoardRestController {
 		return response;
 	}
 
-	@RequestMapping(value = { "/getOnboardTemplateDocumentByTemplateId",
+/*	@RequestMapping(value = { "/getOnboardTemplateDocumentByTemplateId",
 			"/rest/getOnboardTemplateDocumentByTemplateId" }, method = RequestMethod.POST)
 	public @ResponseBody ResponseList<OnBoardingTemplateDocumentsDTO> getOnboardTemplateDocumentByTemplateId(
 			@RequestParam(value = "templateId", required = false) Long templateId,
@@ -298,7 +298,7 @@ public class CandidateOnBoardRestController {
 			e.printStackTrace();
 		}
 		return responseList;
-	}
+	}*/
 
 	@RequestMapping(value = "/saveOnboardingTemplateDocuments", method = RequestMethod.POST)
 	public @ResponseBody Response<String> saveOnboardingTemplateDocuments(OnBoardingTemplateDTO onBoardingTemplateDTO,
@@ -1765,7 +1765,8 @@ public class CandidateOnBoardRestController {
 			HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
 		try {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			User user = userService.getUserById(userId);
 			if (user != null) {
 				if(Validator.validate(onboardingCandidateSetp2DTO)){
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1799,7 +1800,6 @@ public class CandidateOnBoardRestController {
 					candidateOnBoarding.setAddress2(null);
 				}
 				userService.addUser(user);
-				SourceLeadSessionManager.setSessionAttribute(request, "user", user);
 				Employees onboardingEmployee = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(),
 						loginOrgLocation.getId());
 				if (null != onboardingEmployee) {
