@@ -3077,7 +3077,6 @@ public class LeaveManagementRestController {
 	@RequestMapping(value = "/ws/dumpAllGeneralShiftsWithActiveUsers", method = RequestMethod.GET)
     public void dumpAllGeneralShiftsWithActiveUsers(HttpServletRequest request, HttpServletResponse response) throws Exception
     {
-        System.out.println("Start Time"+java.time.LocalDateTime.now());
 		List<BigInteger> userRoleList =  userRoleService.getAllUsersRoleList();
 		for(BigInteger roleId:userRoleList) {
 			UserRole userRole = userRoleService.getUserRoleById(roleId.longValue());	
@@ -3087,7 +3086,6 @@ public class LeaveManagementRestController {
 					userRoleService.addUserRole(userRole);
 				}
 		}
-		 System.out.println("End Time"+java.time.LocalDateTime.now());
     }
 
 	@RequestMapping(value = { "/leavepolicyDescription"}, method = RequestMethod.POST)
