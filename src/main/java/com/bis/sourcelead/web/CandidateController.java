@@ -177,10 +177,11 @@ public class CandidateController {
 					@RequestParam(value = "searchValue", required = true)String searchValue,
 					@RequestParam(value = "candidateLocation", required = true)String candidateLocation,
 					@RequestParam(value = "searchCandidateIds", required = true)String[] searchCandidateIds,
+					CandidateMarketPlaceDTO candidateMarketPlaceDTO,
 					HttpServletRequest request) {
 				List<CandidateMarketPlaceDTO> candidateMarketPlaceDTOs = null;
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				candidateMarketPlaceDTOs = candidateService.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations, candidateLocation, searchValue);
+				candidateMarketPlaceDTOs = candidateService.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations, candidateLocation, searchValue, candidateMarketPlaceDTO);
 				return candidateMarketPlaceDTOs;
 			}
 	

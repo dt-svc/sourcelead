@@ -2743,10 +2743,74 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, OrgLocations orgLocations, String candidateLocation, String searchValue) {
+	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, OrgLocations orgLocations, String candidateLocation, String searchValue, CandidateMarketPlaceDTO candidateMarketPlaceDTO) {
 		List<CandidateMarketPlace> candidateMarketPlaces = null;
 		List<CandidateMarketPlaceDTO> marketPlaceDTOs = new ArrayList<>();
-		candidateMarketPlaces = candidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations.getId(), candidateLocation, searchValue);
+		Date today = new Date();
+		
+		Calendar calendar = Calendar.getInstance();
+		Map<String, Date> dateValue = new HashMap<>();
+		String updatedDate = candidateMarketPlaceDTO.getUpdatedDate();
+		try {
+			Date formattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), today);
+		if(updatedDate != null){
+			if(updatedDate.equalsIgnoreCase("today")){
+				dateValue.put("fromDate", formattedDate);
+				dateValue.put("toDate", formattedDate);
+			}
+			if(updatedDate.equalsIgnoreCase("1_day_ago")){
+				calendar.setTime(formattedDate);
+				calendar.add(Calendar.DAY_OF_YEAR, -1);
+				Date newDate = calendar.getTime();
+				Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+				dateValue.put("fromDate", formattedDate);
+				dateValue.put("toDate", newFormattedDate);
+			}
+			if(updatedDate.equalsIgnoreCase("3_days_ago")){
+				calendar.setTime(formattedDate);
+				calendar.add(Calendar.DAY_OF_YEAR, -3);
+				Date newDate = calendar.getTime();
+				Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+				dateValue.put("fromDate", formattedDate);
+				dateValue.put("toDate", newFormattedDate);
+			}
+			if(updatedDate.equalsIgnoreCase("1_week_ago")){
+				calendar.setTime(formattedDate);
+				calendar.add(Calendar.DAY_OF_YEAR, -7);
+				Date newDate = calendar.getTime();
+				Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+				dateValue.put("fromDate", formattedDate);
+				dateValue.put("toDate", newFormattedDate);
+			}
+			if(updatedDate.equalsIgnoreCase("2_weeks_ago")){
+				calendar.setTime(formattedDate);
+				calendar.add(Calendar.DAY_OF_YEAR, -14);
+				Date newDate = calendar.getTime();
+				Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+				dateValue.put("fromDate", formattedDate);
+				dateValue.put("toDate", newFormattedDate);
+			}
+			if(updatedDate.equalsIgnoreCase("1_month_ago")){
+				calendar.setTime(formattedDate);
+				calendar.add(Calendar.MONTH, -1);
+				Date newDate = calendar.getTime();
+				Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+				dateValue.put("fromDate", formattedDate);
+				dateValue.put("toDate", newFormattedDate);
+			}
+			if(updatedDate.equalsIgnoreCase("3_months_ago")){
+				calendar.setTime(formattedDate);
+				calendar.add(Calendar.MONTH, -3);
+				Date newDate = calendar.getTime();
+				Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+				dateValue.put("fromDate", formattedDate);
+				dateValue.put("toDate", newFormattedDate);
+			}
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		candidateMarketPlaces = candidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations.getId(), candidateLocation, searchValue, candidateMarketPlaceDTO, dateValue);
 		if(candidateMarketPlaces != null){
 			for(CandidateMarketPlace marketPlace : candidateMarketPlaces){
 				CandidateMarketPlaceDTO marketPlaceDTO = new CandidateMarketPlaceDTO();
