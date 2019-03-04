@@ -12,9 +12,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 
 @Entity
 @Table(name = "JOB_CUSTOM_FIELD_DATA")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "jobCustomFieldData")
 public class JobCustomFieldData implements Serializable{
 	private static final long serialVersionUID = 1L;
 	

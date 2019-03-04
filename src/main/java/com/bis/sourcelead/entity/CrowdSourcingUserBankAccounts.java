@@ -20,6 +20,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "CROWDSOURCING_USER_BANK_ACCOUNTS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "crowdSourcingUserBankAccounts")
 public class CrowdSourcingUserBankAccounts implements Serializable{
 
 	private static final long serialVersionUID = 1L;

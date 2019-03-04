@@ -13,8 +13,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
 @Table(name = "PAYROLL_PAYHEAD_SALARY_SETUP_HISTORY")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "payrollPayheadSalarySetup")
 public class PayrollPayheadSalarySetup {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

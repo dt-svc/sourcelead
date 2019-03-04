@@ -14,6 +14,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -23,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "CANDIDATE_COMMENTS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateComments")
 public class CandidateComments implements Serializable{
 	
 	

@@ -33,6 +33,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "EXPENSES_ENTRIES_DOCUMENTS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "expensesEntryDocuments")
 public class ExpensesEntryDocuments implements Serializable {
 private static final long serialVersionUID = 1L;
 
