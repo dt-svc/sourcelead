@@ -407,7 +407,8 @@ public class UserLoginHelper {
 				List<UserAccountsDTO> accountsList = new ArrayList<>();
 				String[] userAccountsList = userSession.get("loginUserAccounts").toString().split(",");
 				for(int i=0; i<userAccountsList.length; i++) {
-					JSONObject accountsJson = userStatsCacheHelper.getLogInUserRoleStats(uname.toLowerCase()+"_AUTH_"+userAccountsList[i]);
+					String[] userAccount = userAccountsList[i].toString().split("\\^");
+					JSONObject accountsJson = userStatsCacheHelper.getLogInUserRoleStats(userAccount[0].toLowerCase()+"_AUTH_"+userAccount[1]);
 					UserAccountsDTO accountsDTO = new UserAccountsDTO();
 					accountsDTO.setRoleName(accountsJson.get("roleName").toString());
 					accountsDTO.setDisplayName(accountsJson.get("roleDisplayName").toString());
