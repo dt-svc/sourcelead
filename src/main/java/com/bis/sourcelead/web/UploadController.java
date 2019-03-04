@@ -16,6 +16,8 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -24,12 +26,16 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.DataMigrationCommonDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UploadedFile;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.UploadFileService;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.validation.FileValidator;
 /**
@@ -46,6 +52,10 @@ public class UploadController {
 
 	@Autowired
 	UploadFileService uploadFileService;
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	
 /**
  * Handles upload csv,xls and xlsx
  * @param uploadedFile
@@ -147,6 +157,59 @@ public class UploadController {
 		inputStream.close();
 		response.getOutputStream().close();
 		response.getOutputStream().flush();
+	}
+	
+	
+	
+	@RequestMapping(value = "/downloadAssociateBankDetailsTemplate", method = RequestMethod.GET)
+	public void downloadAssociateBankDetailsTemplate(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		File file = uploadFileService.getAssociateBankDetailsTemplate();
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+	}
+	
+	
+	/**
+	 * Returns File upload jsp
+	 * 
+	 * @param request
+	 * @return ModelAndView
+	 */
+	@PreAuthorize("hasRole('ROLE_USER_BULK_IMPORTS')")
+	@RequestMapping(value = "/uploadAssociateBankForm")
+	public ModelAndView fileUploadForm(HttpServletRequest request) {
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
+				.getAttribute("sessionData");
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Users);
+
+		request.getSession().setAttribute("sessionData", sessionData);
+		ModelAndView model = new ModelAndView();
+		model.setViewName("upload/uploadAssociateBankForm");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+
+	}
+	
+	@RequestMapping(value = {"/saveAssociateBankDetailTemplate","/rest/saveAssociateBankDetailTemplate"}, method = RequestMethod.POST)
+	public ModelAndView dataMigrationCommon(DataMigrationCommonDTO dataMigrationCommonDTO , HttpServletRequest request) throws Exception
+	{
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		return null;
 	}
 	
 }
