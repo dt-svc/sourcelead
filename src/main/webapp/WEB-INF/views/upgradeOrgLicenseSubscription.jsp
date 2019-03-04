@@ -136,7 +136,7 @@
 				<div class="col-lg-12">
 					<div class="pull-right">
 						<input type="submit" value="Upgrade" class="btn btn-primary ml10">
-						<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/orgLicenseSubscriptionList'/>'"   class="btn btn-default ml">
+						<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_sourceleadUrl}/orgLicenseSubscriptionList'/>'"   class="btn btn-default ml">
 					</div>
 				</div>
 			</div>  
