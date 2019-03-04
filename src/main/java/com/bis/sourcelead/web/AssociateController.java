@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,16 +15,24 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.States;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
+import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -67,6 +76,8 @@ public class AssociateController {
 	
 	@Autowired
 	OrgRelationsService orgRelationsService;
+	
+
 	
 	
 /**
@@ -143,7 +154,7 @@ public class AssociateController {
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		
-		//this block is for success messages --@Yashoda
+//		this block is for success messages --@Yashoda
 				String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "candidateCreateMsg");
 				if(null != msg && !"".equals(msg)){
 					model.addObject("msg", msg);
@@ -216,12 +227,10 @@ public class AssociateController {
 		 
 	return model;
 	}
-	
-	
+		
 	private boolean isNullOrEmpty(String msg) {
 		// TODO Auto-generated method stub
 		return false;
-	}
-	
+	}	
 
 }
