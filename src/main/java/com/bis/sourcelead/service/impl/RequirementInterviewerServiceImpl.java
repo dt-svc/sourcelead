@@ -43,6 +43,10 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 	@Autowired
 	private UserService userService;
 	
+	@Value("${atsUrl}")
+    private String atsUrl;
+	
+	
 	@Autowired
 	private RequirementService requirementservice;
 	
