@@ -22,6 +22,7 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadBlogDTO;
 import com.bis.sourcelead.entity.BlogCategory;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadBlogs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
@@ -100,8 +101,9 @@ public class ResourcesRestController {
 	 */
 
 	@RequestMapping(value = { "/blogsList", "rest/blogsList" }, method = RequestMethod.POST)
-	public ResponseList<SourceleadBlogDTO> blogsList(SourceleadBlogDTO sourceleadBlogDTO) throws Exception {
+	public ResponseList<SourceleadBlogDTO> blogsList(SourceleadBlogDTO sourceleadBlogDTO,HttpServletRequest request) throws Exception {
 		ResponseList<SourceleadBlogDTO> responseList = new ResponseList<>();
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		try {
 			String[] tableColumns = {"blogTitle", "categoryId", "createdBy"};
 				int sortColumnIndex = 5; //by default sorting using updated date
@@ -113,6 +115,7 @@ public class ResourcesRestController {
 				}
 				sourceleadBlogDTO.setSortColumn(tableColumns[sortColumnIndex]);
 				sourceleadBlogDTO.setSortOrder(sortColumnOrder);
+				sourceleadBlogDTO.setOrgLocationDateFormate(orgLocations.getDateFormat());
 			
 			responseList = sourceleadBlogService.getAllSourceleadBlogsByStatus(sourceleadBlogDTO);
 			responseList.setResponse(Result.SUCCESS.name());

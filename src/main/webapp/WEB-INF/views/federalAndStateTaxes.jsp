@@ -18,7 +18,7 @@
 					   		<div class="form-group clearfix">
 								<label class="col-md-4 noPad">Federal EIN<span class="text-danger">&nbsp;*</span></label>
 								<div class="col-md-8 padding_right">
-								 <input class=" form-control" type="text" name="fedralEIN" id="fedralEIN" value="${SourceLeadWeb_orgLocations.federalEin}" field-name="fedralEIN"  data-validation="required validate_space validate_length length9-9" maxlength="9">
+								 <input class=" form-control" type="text" name="fedralEIN" id="fedralEIN" value="${SourceLeadWeb_federalEin}" field-name="fedralEIN"  data-validation="required validate_space validate_length length9-9" maxlength="9">
 								</div>
 							</div>
 							
@@ -28,8 +28,8 @@
 								<div class="col-md-8 padding_right">
 								<select  class="chosen-select form-control" name="depositeSchedule" id="depositeSchedule"  field-name="Deposit Schedule"  data-validation="required ">
 											<option value="">--Select Deposit Schedule--</option>
-											<option value="Monthly"  ${SourceLeadWeb_orgLocations.depositSchedule  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-											<option value="Semi Monthly" ${SourceLeadWeb_orgLocations.depositSchedule  == 'Semi Monthly' ? 'selected' : ''}>Semi Monthly</option>
+											<option value="Monthly"  ${SourceLeadWeb_depositSchedule  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+											<option value="Semi Monthly" ${SourceLeadWeb_depositSchedule  == 'Semi Monthly' ? 'selected' : ''}>Semi Monthly</option>
 					                 </select>
 								</div>
 							</div>
@@ -39,9 +39,9 @@
 								<div class="col-md-8 padding_right">
 								<select  class="chosen-select form-control" name="fillingForm" id="fillingForm" field-name="Filling Form"  data-validation="required ">
 									<option value="">--Select Filling form --</option>
-									<option value="Quarterly[940]"  ${SourceLeadWeb_orgLocations.fillingForm  == 'Quarterly[940]' ? 'selected' : ''}>Quarterly[940]</option>
-									<option value="Annuallu[944]"  ${SourceLeadWeb_orgLocations.fillingForm  == 'Annuallu[944]' ? 'selected' : ''}>Annually[944]</option>
-									<option value="House hold[H]"  ${SourceLeadWeb_orgLocations.fillingForm  == 'House hold[H]' ? 'selected' : ''}>House hold[H]</option>
+									<option value="Quarterly[940]"  ${SourceLeadWeb_fillingForm  == 'Quarterly[940]' ? 'selected' : ''}>Quarterly[940]</option>
+									<option value="Annuallu[944]"  ${SourceLeadWeb_fillingForm  == 'Annuallu[944]' ? 'selected' : ''}>Annually[944]</option>
+									<option value="House hold[H]"  ${SourceLeadWeb_fillingForm  == 'House hold[H]' ? 'selected' : ''}>House hold[H]</option>
 								  </select>
 								</div>
 							</div>
@@ -50,7 +50,7 @@
 								<label class="col-md-4 noPad">Unemployment Tax?</label>
 								<div class="col-md-8 padding_right">
 					              
-					              <c:if test="${empty SourceLeadWeb_orgLocations.unemploymentTax}">
+					              <c:if test="${empty SourceLeadWeb_unemploymentTax}">
 					                <label class="col-md-5 noPad">
 					                <input name="unemploymentTax" type="radio" value="Exempt"  >
 					                <strong class="paddingLeft">Exempt</strong></label>
@@ -59,12 +59,12 @@
 					                <strong class="paddingLeft">Unexempt</strong></label>
 					              </c:if>
 					              
-					              <c:if test="${!empty SourceLeadWeb_orgLocations.unemploymentTax}">
+					              <c:if test="${!empty SourceLeadWeb_unemploymentTax}">
 					                <label class="col-md-5 noPad">
-					                <input name="unemploymentTax" type="radio" value="Exempt" ${SourceLeadWeb_orgLocations.unemploymentTax  == 'Exempt' ? 'checked' : ''} >
+					                <input name="unemploymentTax" type="radio" value="Exempt" ${SourceLeadWeb_unemploymentTax  == 'Exempt' ? 'checked' : ''} >
 					                <strong class="paddingLeft">Exempt</strong></label>
 					                <label class="col-md-5 noPad">
-					                <input name="unemploymentTax" type="radio" value="Unexempt" ${SourceLeadWeb_orgLocations.unemploymentTax  == 'Unexempt' ? 'checked' : ''} >
+					                <input name="unemploymentTax" type="radio" value="Unexempt" ${SourceLeadWeb_unemploymentTax  == 'Unexempt' ? 'checked' : ''} >
 					                <strong class="paddingLeft">Unexempt</strong></label>
 					              </c:if>
 					            
