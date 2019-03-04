@@ -38,7 +38,6 @@ import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.rest.CrowdSourcingRequirementsRestController;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.ContactsGroupService;
 import com.bis.sourcelead.service.CountriesService;
@@ -101,8 +100,6 @@ public class ProfessionalRequirementsController {
 	@Autowired
 	CandidateResumesService candidateResumesService;
 	
-	@Autowired
-	CrowdSourcingRequirementsRestController crowdSourcingRequirementsRestController;
 	
 	
 	@Autowired

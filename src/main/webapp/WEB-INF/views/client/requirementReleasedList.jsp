@@ -76,6 +76,7 @@ function clientRequirementList(orgRelationId){
 		
 		var orgRelationId =$("#orgRelationId").val();
 		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 		var sourceleadUrl = '${sourceleadUrl}';
 		 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
@@ -135,7 +136,7 @@ function clientRequirementList(orgRelationId){
 	        		
 	        		
 	        		result = result + '<tr>';
-               		result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
+               		result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+atsUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 	                
                		
                		result = result +'<td>';

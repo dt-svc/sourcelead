@@ -1121,8 +1121,9 @@ public class ImmigrationRestController {
 
 	@RequestMapping(value = { "/deleteImmigrationTaskList" })
 	public void deleteImmigrationTaskList(HttpServletRequest request,
-			@RequestParam(value = "id", required = false) String id) {
-		immigrationTemplateService.deleteImmigrationTaskList(id);
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "taskName", required = false) String taskName) {
+		immigrationTemplateService.deleteImmigrationTaskList(id, taskName);
 	}
 
 	@RequestMapping(value = { "/savePetitionTemplateDetailsValues" })
