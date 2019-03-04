@@ -281,7 +281,7 @@ public class LeaveManagementReportsRestController {
 				dayWiseLeaveReportDTO.setSortOrder(sortColumnOrder);
 				dayWiseLeaveReportDTO.setLoginUserId(loginUser.getId());
 				
-				leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgLocation.getOrg().getId(),orgLocation.getId(),loginUserRole);
+				leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgLocation.getOrgId(),orgLocation.getId(),loginUserRole);
 		List<LeaveReportView> list = leaveReportsList.getData();
         for(LeaveReportView lrv : list){
         	 commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), lrv.getFromDate());
@@ -586,7 +586,7 @@ public class LeaveManagementReportsRestController {
 		}else {
 			for(LeaveBalanceReportDTO ltDto : users) {
 				for(LeaveBalanceReportDTO lt : leaveTypeList) {
-					float leaveTypeBalance = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(lt.getId().longValue(),ltDto.getUserId().longValue(),orgLocation.getId(),orgLocation.getOrg().getId());
+					float leaveTypeBalance = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(lt.getId().longValue(),ltDto.getUserId().longValue(),orgLocation.getId(),orgLocation.getOrgId());
 					StringBuilder sb = new StringBuilder();
 					sb.append(lt.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
 					map.put(sb.toString(), leaveTypeBalance);
