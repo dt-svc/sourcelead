@@ -65,11 +65,6 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 	@Autowired
 	private CandidateDao candidateDao;
 	
-	@Autowired
-	private AssociateSalaryDao associateSalaryDao;
-
-	@Autowired
-	private AssociateBankDataService associateBankDataService;
 	
 	@Override
 	public Response<AssociateBankDataDTO> saveAssociateBankData(AssociateBankDataDTO associateBankDataDTO, OrgLocations orgLocation, User loginUser)
@@ -224,7 +219,7 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 							}
 						}
 					
-					associateBankDataService.saveAssociateBankData(importDTO,orgLocation,user);
+					this.saveAssociateBankData(importDTO,orgLocation,user);
 					}				
 			}
 			fis.close();
