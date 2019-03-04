@@ -360,6 +360,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				tasks.setTaskRepeat(templateTasks.getTaskRepeat());
 				tasks.setDescription(templateTasks.getDescription());
 				tasks.setTaskStatus(Constants.TASK_STATUS_OPEN);
+				tasks.setStatus(Constants.RECORD_ACTIVE);
 				Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 				tasks.setCreatedDate(currentDate);
 				tasks.setCreatedBy(user.getUserUUID());
@@ -386,6 +387,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 					tasks.setTaskRepeat(templateTasks.getTaskRepeat());
 					tasks.setDescription(templateTasks.getDescription());
 					tasks.setTaskStatus(Constants.TASK_STATUS_OPEN);
+					tasks.setStatus(Constants.RECORD_ACTIVE);
 					Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 					tasks.setCreatedDate(currentDate);
 					tasks.setCreatedBy(user.getUserUUID());
