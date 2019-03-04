@@ -13,12 +13,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "USER_LOGIN_LOGOUT_SESSION")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userLoginLogoutSession")
 public class UserLoginLogoutSession  implements Serializable{
 
 	private static final long serialVersionUID = 1L;

@@ -18,6 +18,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 @Entity
 @Table(name = "SOURCELEAD_FORM_SUB_FIELDS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadFormSubFields")
 public class SourceleadFormSubFields implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

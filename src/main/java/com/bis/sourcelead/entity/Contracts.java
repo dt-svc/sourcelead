@@ -18,6 +18,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -32,6 +34,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "CONTRACTS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "contracts")
 public class Contracts {
 	
 	private static final long serialVersionUID = 1L;

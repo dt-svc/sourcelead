@@ -19,6 +19,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "CAMPAIGN_STATS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "campaignStats")
 public class CampaignStats {
 	
 	@Id

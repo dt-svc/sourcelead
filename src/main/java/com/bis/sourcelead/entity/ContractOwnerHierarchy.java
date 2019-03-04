@@ -17,10 +17,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.bis.sourcelead.enums.HIERARCHY_TYPE;
 
 @Entity
 @Table(name = "CONTRACT_OWNER_HIERARCHY")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "contractOwnerHierarchy")
 public class ContractOwnerHierarchy implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
