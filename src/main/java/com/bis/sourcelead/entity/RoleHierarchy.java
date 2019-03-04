@@ -22,6 +22,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "ROLE_HIERARCHY")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "roleHierarchy")
 public class RoleHierarchy implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

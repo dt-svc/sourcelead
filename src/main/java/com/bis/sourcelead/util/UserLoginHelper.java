@@ -168,7 +168,7 @@ public class UserLoginHelper {
 		 
 		 
 		  try {
-			  if(userRole != null && userRole.get("userState").toString() != null && userRole.get("userState").toString().equals(Status.NOT_LOGGEDIN)){
+			  if(userRole != null && userRole.get("userState").toString() != null && userRole.get("userState").toString().equals("NOT_LOGGEDIN")){
 	  			   UserRole uRole = userRoleService.getUserRoleById(Long.valueOf(userRole.get("userRoleId").toString()));
 	  					 uRole.setUserState(Status.ACTIVE);
 	  			         uRole.setNewlyLoginUser(Constants.NO);
@@ -341,6 +341,9 @@ public class UserLoginHelper {
 		boolean isReportTabAccessable = false;
 		SourceLeadSessionManager.setSessionAttribute(req, "reportsTabConfigured", "N");
 		
+		boolean isVendorsTabAccessable = false;
+		SourceLeadSessionManager.setSessionAttribute(req, "isVendorsTabAccessable", "N");
+		
 		try {
 				tabsList =  userStatsCacheHelper.getLogInUserRoleMenusList(uname.toLowerCase()+"_AUTH_"+userSession.get("userRoleUUID").toString());
 				actionsList = userStatsCacheHelper.getLogInUserRoleActionsList(uname.toLowerCase()+"_AUTH_"+userSession.get("userRoleUUID").toString());
@@ -381,6 +384,13 @@ public class UserLoginHelper {
 						}
 					}
 					
+					if (isVendorsTabAccessable == false) {
+						if (tab.equalsIgnoreCase("Vendors")) {
+							isVendorsTabAccessable = true;
+							SourceLeadSessionManager.setSessionAttribute(req, "isVendorsTabAccessable", "Y");
+						}
+					}
+					
 				}
 			
 			
@@ -397,7 +407,8 @@ public class UserLoginHelper {
 				List<UserAccountsDTO> accountsList = new ArrayList<>();
 				String[] userAccountsList = userSession.get("loginUserAccounts").toString().split(",");
 				for(int i=0; i<userAccountsList.length; i++) {
-					JSONObject accountsJson = userStatsCacheHelper.getLogInUserRoleStats(uname.toLowerCase()+"_AUTH_"+userAccountsList[i]);
+					String[] userAccount = userAccountsList[i].toString().split("\\^");
+					JSONObject accountsJson = userStatsCacheHelper.getLogInUserRoleStats(userAccount[0].toLowerCase()+"_AUTH_"+userAccount[1]);
 					UserAccountsDTO accountsDTO = new UserAccountsDTO();
 					accountsDTO.setRoleName(accountsJson.get("roleName").toString());
 					accountsDTO.setDisplayName(accountsJson.get("roleDisplayName").toString());
@@ -694,6 +705,8 @@ public class UserLoginHelper {
 			SourceLeadSessionManager.setSessionAttribute(req, "isJobsTabAccessable", "N");
 			boolean isReportTabAccessable = false;
 			SourceLeadSessionManager.setSessionAttribute(req, "reportsTabConfigured", "N");
+			boolean isVendorsTabAccessable = false;
+			SourceLeadSessionManager.setSessionAttribute(req, "isVendorsTabAccessable", "N");
 			
 			if(!userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_PROFESSIONAL) && !userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_INDEPENDENT_RECRUITER)){
 				orgLocations = userRole.getOrgLocations();
@@ -737,6 +750,14 @@ public class UserLoginHelper {
 								SourceLeadSessionManager.setSessionAttribute(req, "isJobsTabAccessable", "Y");
 							}
 						}
+						
+						if (isVendorsTabAccessable == false) {
+							if (tabs.getTabName().equalsIgnoreCase("Vendors")) {
+								isVendorsTabAccessable = true;
+								SourceLeadSessionManager.setSessionAttribute(req, "isVendorsTabAccessable", "Y");
+							}
+						}
+						
 						tabNamesList.add(tabs.getTabName());
 					}
 				

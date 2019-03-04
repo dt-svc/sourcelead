@@ -20,6 +20,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "SAVED_JOBS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "savedJobs")
 public class SavedJobs implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

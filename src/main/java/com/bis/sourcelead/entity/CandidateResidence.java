@@ -14,12 +14,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "CANDIDATE_RESIDENCE")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateResidence")
 public class CandidateResidence implements Serializable {
 
 	private static final long serialVersionUID = 1L;

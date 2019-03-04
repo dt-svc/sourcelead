@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name="EMPLOYEE")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "employees")
 public class Employees implements Serializable{
 
 	private static final long serialVersionUID = 1L;
