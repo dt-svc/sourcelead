@@ -52,6 +52,7 @@ import com.bis.sourcelead.dto.RegistrationDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TabsDTO;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLicenseSubscriptionPrice;
@@ -67,6 +68,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.form.RestResponsetUtil;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionPriceService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -164,6 +166,9 @@ public class RegistrationRestController {
 	 
 	 @Value("${isCouchbaseEnabled}")
 	 private String isCouchbaseEnabled;
+	 
+	 @Autowired
+     LookUpDataService lookUpDataService;
 	 
 	 @RequestMapping(value = "/app/getOrgsList")
 	 		public @ResponseBody String getUsersList(HttpServletRequest request,
@@ -778,6 +783,20 @@ public class RegistrationRestController {
 		  registrationService.saveIndividualEmployer(employerRegistrationDTO);
 		 return "success";
 	   }
+	 @RequestMapping(value = "/app/getAdminDemoModulesList", method = RequestMethod.GET)
+		public @ResponseBody List<LookUpData> getAdminDemoModulesList(HttpServletRequest request) throws Exception
+		{
+			List<LookUpData> requestOrgList = lookUpDataService.getLookUpDataByCategory(Constants.REQUEST_ORG);
+			return requestOrgList;
+		}
+	 @RequestMapping(value = "/app/getDemoTimezonesList", method = RequestMethod.POST)
+		public @ResponseBody String getDemoTimezonesList(HttpServletRequest request) throws Exception
+		{
+			String resultJson = null;
+			List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
+			resultJson = commonUtil.toJSON(timezoneList);
+			return resultJson;
+		}
 	 
 	 @RequestMapping(value = "/app/ws/validateOrgRequestCompanyNameByName" , method = RequestMethod.POST)
 	 public  String validateOrgRequestCompanyNameByName(@RequestParam(value="companyNames", required=false) String companyNames) throws Exception {
