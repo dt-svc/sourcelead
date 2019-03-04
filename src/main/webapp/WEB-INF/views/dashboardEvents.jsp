@@ -930,7 +930,7 @@ function myFunction(){
 function getTimezonesListForInterview(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var atsUrl = '${SourceLeadWeb_atsUrl}';
-	var timezone = '${timezone}';
+	var timezone = '${SourceLeadWeb_timeZone}';
 	 $.ajax({
 	    	type: "POST",
 	    	url : atsUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
