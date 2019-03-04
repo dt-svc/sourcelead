@@ -2447,24 +2447,6 @@ public class RequirementListRestController {
 		return resultJson;
 	}
 	
-	@RequestMapping(value = "/getDemoTimezonesList", method = RequestMethod.POST)
-	public @ResponseBody String getDemoTimezonesList(HttpServletRequest request) throws Exception
-	{
-		String resultJson = null;
-		List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
-		resultJson = commonUtil.toJSON(timezoneList);
-		return resultJson;
-	}
-	
-	@RequestMapping(value = "/getDemoModulesList", method = RequestMethod.POST)
-	public @ResponseBody List<LookUpData> getDemoModulesList(HttpServletRequest request) throws Exception
-	{
-		List<LookUpData> requestOrgList = lookUpDataService.getLookUpDataByCategory(Constants.REQUEST_ORG);
-		return requestOrgList;
-	}
-	
-	
-	
 	@RequestMapping(value = "/getRequirementLocations")
 	public @ResponseBody List<RequirementLocationsDTO> getRequirementLocations(@RequestParam(value = "requirementUUID", required = true) String requirementUUID) throws Exception
 	{
