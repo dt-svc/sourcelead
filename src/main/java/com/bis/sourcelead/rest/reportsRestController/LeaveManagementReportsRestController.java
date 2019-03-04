@@ -260,7 +260,7 @@ public class LeaveManagementReportsRestController {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		LeaveReportView leaveReportView = new LeaveReportView();
-String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+        String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 	    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
 		ResponseList<LeaveReportView> leaveReportsList=null;
@@ -277,7 +277,7 @@ String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(req
 				dayWiseLeaveReportDTO.setSortOrder(sortColumnOrder);
 				dayWiseLeaveReportDTO.setLoginUserId(loginUser.getId());
 				
-				leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgLocation.getOrg().getId(),orgLocation.getId(),loginUserRole);
+				leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgLocation.getOrgId(),orgLocation.getId(),loginUserRole);
 		List<LeaveReportView> list = leaveReportsList.getData();
         for(LeaveReportView lrv : list){
         	 commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), lrv.getFromDate());
@@ -581,7 +581,7 @@ String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(req
 		}else {
 			for(LeaveBalanceReportDTO ltDto : users) {
 				for(LeaveBalanceReportDTO lt : leaveTypeList) {
-					float leaveTypeBalance = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(lt.getId().longValue(),ltDto.getUserId().longValue(),orgLocation.getId(),orgLocation.getOrg().getId());
+					float leaveTypeBalance = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(lt.getId().longValue(),ltDto.getUserId().longValue(),orgLocation.getId(),orgLocation.getOrgId());
 					StringBuilder sb = new StringBuilder();
 					sb.append(lt.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
 					map.put(sb.toString(), leaveTypeBalance);
