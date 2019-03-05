@@ -1133,7 +1133,7 @@ function interviewTemplate(){
 
 <script>
 function getTimezonesList(rowId){
-	var timezone = '${timezone}';
+	var timezone = '${SourceLeadWeb_timeZone}';
 	 $.ajax({
 	    	type: "POST",
 	    	url : atsUrl+"/getTimezonesList?"+tokenParamName+"="+tokenValue+"", 
@@ -1182,7 +1182,7 @@ function showCal(id){
 	$("#selectApp").empty();
 	var checkMaxTsRowNum1 = $("#maxTsRowNum").val();
 	$("#selectedTimeZoneId").empty();
-	var timezone = '${timezone}';
+	var timezone = '${SourceLeadWeb_timeZone}';
 	$("#selectedTimeZoneId").append(timezone);
 	
 	if(document.getElementById("button_id").value == id){
@@ -1314,7 +1314,7 @@ function checkAvailability(){
 	$("#selectApp").empty();
 	 $('.fullCount').hide();
 		$('.particalCount').hide();
-	var timezone = '${timezone}';
+	var timezone = '${SourceLeadWeb_timeZone}';
 	
 	
 	
