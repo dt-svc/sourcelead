@@ -642,7 +642,7 @@ return responseList;
 		invoiceDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		invoiceDTO.setSortOrder(sortColumnOrder);
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		DateTime zoned = new DateTime();
+		DateTime zoned = new DateTime(commonUtil.orgLocationCommonDate(new Date(), orgLocations)); //get date and time based on orglocation
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
 		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd");
 		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd");
@@ -2045,7 +2045,8 @@ return responseList;
 	public void getBillingExportList(InvoiceDTO invoiceDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLocId);
 		invoiceDTO.setSearchValue("");
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		DateTime zoned = new DateTime();

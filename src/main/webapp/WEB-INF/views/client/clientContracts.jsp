@@ -474,7 +474,7 @@ function CountClick(contractUUID,parentId){
 				   if(parentId != "--"){ */
 						  if(opt.fileURL != null && opt.fileURL !=""){
 							  result = result +'	       <div class="col-md-8 text-center" id="removeDiv'+opt.id+'">                                                                                                             ';
-							  result = result+'	                      &nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv('+opt.id+');"><i class="fa fa-trash text-danger removeIcon"></i></span>';
+							  result = result+'	                      &nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeName('+opt.id+');"><i class="fa fa-trash text-danger removeIcon"></i></span>';
 							  result = result+' <a download class="glyphicon glyphicon-download-alt" href="'+opt.fileURL+'" title="Download"></a>';
 			         		  result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+opt.fileURL+'\', \''+opt.docFileName+'\', \''+opt.fileType+'\')"title="preview"></a>';
 							  result = result +'	       </div>			                                                                                                                  ';
@@ -517,7 +517,7 @@ function CountClick(contractUUID,parentId){
 	  }); 
 }
 
-function removeResumeNameDiv(id){
+function removeResumeName(id){
 	$("#removeDiv"+id).hide();
 	
 		 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
