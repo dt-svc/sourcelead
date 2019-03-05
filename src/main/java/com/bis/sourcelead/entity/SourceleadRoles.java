@@ -21,6 +21,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "SOURCELEAD_ROLES")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadRoles")
 public class SourceleadRoles implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

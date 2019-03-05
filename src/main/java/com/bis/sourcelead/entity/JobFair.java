@@ -17,10 +17,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "JOB_FAIR")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "jobFair")
 public class JobFair implements Serializable {
 
 	/**

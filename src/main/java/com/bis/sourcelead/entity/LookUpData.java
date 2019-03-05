@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name="LOOKUP_DATA")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "lookUpData")
 public class LookUpData implements Serializable{
 
 	private static final long serialVersionUID = 1L;

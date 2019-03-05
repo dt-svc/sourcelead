@@ -623,7 +623,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 								
 								for (RequirementInterviewer requirementIntervierId : requirementExternalInterviewer) {
 										if (requirementIntervierId.getRequirementInterview().getId().equals(interviersArray.getId()) && i == 0) {
-											tempHTML.append("<td>").append("<a href='").append(atsUrl).append("/ws/publicInterviewFeedBackTemplate?templateId=").append(templateId).append("&requirementInterviewid=").append(requirementIntervierId.getUuid()).append("'style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Feedback</div></a>").append("</td>");
+											tempHTML.append("<td>").append("<a href='").append(sourceleadUrl).append("/ws/publicInterviewFeedBackTemplate?templateId=").append(templateId).append("&requirementInterviewid=").append(requirementIntervierId.getUuid()).append("'style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Feedback</div></a>").append("</td>");
 											i++;
 										}
 								}
@@ -817,7 +817,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 								
 								for (RequirementInterviewer requirementIntervierId : requirementIntervier) {
 										if (requirementIntervierId.getRequirementInterview().getId().equals(interviersArray.getId()) && requirementIntervierId.getInterviewerUser().getId().equals(interviewerUser.getId()) && i == 0) {
-											tempHTML.append("<td>").append("<a href='").append(atsUrl).append("/ws/publicInterviewFeedBackTemplate?templateId=").append(templateId).append("&requirementInterviewid=").append(requirementIntervierId.getUuid()).append("'style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Feedback</div></a>").append("</td>");
+											tempHTML.append("<td>").append("<a href='").append(sourceleadUrl).append("/ws/publicInterviewFeedBackTemplate?templateId=").append(templateId).append("&requirementInterviewid=").append(requirementIntervierId.getUuid()).append("'style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Feedback</div></a>").append("</td>");
 											i++;
 										}
 								}
@@ -1806,7 +1806,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("ApplicantName",candidateName);
 			 StringBuilder feedbackBuilder = new StringBuilder();
 			 
-			 globalVarsMap.put("FeedbackLink",feedbackBuilder.append("<a href='").append(atsUrl).append("/publicInterviewFeedBackTemplate?templateId=").append(templateId).append("&requirementInterviewid=").append(requirementInterviewerid).append("&interviewerUser=").append(interviewerUser.getId()).append("'style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Feedback</div></a>").toString());
+			 globalVarsMap.put("FeedbackLink",feedbackBuilder.append("<a href='").append(sourceleadUrl).append("/publicInterviewFeedBackTemplate?templateId=").append(templateId).append("&requirementInterviewid=").append(requirementInterviewerid).append("&interviewerUser=").append(interviewerUser.getId()).append("'style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Feedback</div></a>").toString());
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.INTERVIEWER_TEMPLATE,new ArrayList<EmailAttachment>());

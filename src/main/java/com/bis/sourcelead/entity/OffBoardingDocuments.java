@@ -28,6 +28,7 @@ import com.bis.sourcelead.enums.OnboardStatus;
 
 @Entity
 @Table(name = "OFF_BOARDING_DOCUMENTS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "offBoardingDocuments")
 public class OffBoardingDocuments implements Serializable{
 
 private static final long serialVersionUID = 1L;

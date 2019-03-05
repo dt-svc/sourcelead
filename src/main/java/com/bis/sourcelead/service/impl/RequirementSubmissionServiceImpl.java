@@ -1448,7 +1448,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		     writeRow = createExcelsheet.createRow(i+8);
     		     for (int j=0; j<jsonRules.length();j++){
     		         JSONObject obj = (JSONObject) jsonRules.get(j);
-    		         createXlsSheet(createExcelsheet,writeRow,j,obj.getString("value"));
+    		         if(obj.getString("value") != null) {
+    		        	 createXlsSheet(createExcelsheet,writeRow,j,obj.getString("value"));
+    		         }
     		     }
     		     
     		 } catch (JSONException e){
