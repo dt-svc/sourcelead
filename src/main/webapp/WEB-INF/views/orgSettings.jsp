@@ -643,7 +643,7 @@ function cancelOrgImg(){
                                                     <div id="careerPageKeyLoading"></div>
                                                 </div>
                                                 <div class="pull-right">
-                                                    <span title="Click to copy key to clipboard"><i id="copyCareerKey" class="fa fa-clipboard copy-icon hidden {SourceLeadWeb_org.careerPageKey == null ? 'hidden' : ''}" aria-hidden="true"></i></span>
+                                                    <span title="Click to copy key to clipboard"><i id="copyCareerKey" class="fa fa-clipboard copy-icon hidden {SourceLeadWeb_careerPageKey == null ? 'hidden' : ''}" aria-hidden="true"></i></span>
                                                     <input type="button" value="${SourceLeadWeb_careerPageKey == null ? 'Generate Key' : 'Regenerate Key'}" id="generateCareerPageKey" class="btn btn-primary"/>
                                                 </div>
                                             </div>
@@ -1244,7 +1244,7 @@ $(function() {
         });
     });
     
-    applyCareerPageCode('${SourceLeadWeb_org.careerPageKey}')
+    applyCareerPageCode('${SourceLeadWeb_careerPageKey}')
     applyCareerPageStatusEvent();
 });
 function applyCareerPageStatusEvent() {
@@ -1389,7 +1389,7 @@ function saveWhiteListIps(){
 
 <script>
     function savePaymentAccount() {
-    	var countryName = '${SourceLeadWeb_orgLocations.country}';
+    	var countryName = '${SourceLeadWeb_country}';
         var data =  {};
         var val = $("#paymentAccountType").val();
         var flag = false;
@@ -2132,7 +2132,7 @@ function loadSignature(){
 						result = result + '</div>';
 						
 						}else{
-							result = result + '<div class="col-md-3" title="Text Box"><img id="orgImage" onerror="predefineOrgImage(this);" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" alt="Org Image" style="height:60px; width: 100px;"></div>';
+							result = result + '<div class="col-md-3" title="Text Box"><img id="orgImage" onerror="predefineOrgImage(this);" data-id="orgLogoImage" src="${SourceLeadWeb_fileUrl}" alt="Org Image" style="height:60px; width: 100px;"></div>';
 							result = result + '<div class="col-md-8 select-field">';
 							result = result + '</div>';
 						}
@@ -2285,7 +2285,7 @@ var validationSettings = {
          $('body').on('submit', '#signature_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		    e.preventDefault(); 
-        		    var sourceleadUrl = '${sourceleadUrl}';
+        		    var atsUrl = '${SourceLeadWeb_atsUrl}';
         			var frm = $('#signature_form').serializeFormJSON();
         			var con = JSON.stringify(frm);
         			con = con.replace(/[{}]/g, ""); 
@@ -2294,7 +2294,7 @@ var validationSettings = {
 	           		
         		     $.ajax({
         				type : "POST",
-        				url : sourceleadUrl+"/saveOrgSignature?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+        				url : atsUrl+"/saveOrgSignature?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
         				success : function(result) {
         					loadSignature();
         				},
@@ -2316,11 +2316,11 @@ var validationSettings = {
 function getSignaturePreview(){
 	
 	$("#campaignSignatrue").empty(); 
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	
 	   $.ajax({
 			type : "POST",
-			url : sourceleadUrl+"/getSignaturePreview?${_csrf.parameterName}=${_csrf.token}",
+			url : atsUrl+"/getSignaturePreview?${_csrf.parameterName}=${_csrf.token}",
 			success : function(result) {
 				
 				$("#campaignSignatrue").html(result);
@@ -2709,7 +2709,7 @@ function createOrg(){
 	            result = result +'</div>';
 	            result = result +'</div>';
 	            
-	            result = result +'<input type="hidden" name="registeredOrgId" id="registeredOrgId"  value="${SourceLeadWeb_org.id}" />';
+	            result = result +'<input type="hidden" name="registeredOrgId" id="registeredOrgId"  value="${SourceLeadWeb_orgId}" />';
            
 	            result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>';
