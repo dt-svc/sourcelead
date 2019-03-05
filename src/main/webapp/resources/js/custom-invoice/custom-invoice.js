@@ -1001,7 +1001,7 @@ function saveTemplate(previewFlag) {
 			$.ajax({
 		    	type: "POST",
 		    	data: data,
-		        url: sourceleadUrl+"/saveCustomInvoiceTemplate?orgLocationId=" + orgLocationId + "&orgRelationId=" + orgRelationId,
+		        url: vmsUrl+"/saveCustomInvoiceTemplate?orgLocationId=" + orgLocationId + "&orgRelationId=" + orgRelationId,
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -1012,7 +1012,7 @@ function saveTemplate(previewFlag) {
 		        		closePreviewPopup();
 		        		$(".success_pop").show();
 		        		setTimeout(function() {
-		        			location.href = sourceleadUrl + "/customizeInvoice?orgLocationId=" + orgLocationId + "&orgRelationId=" + orgRelationId;				 			
+		        			location.href = vmsUrl + "/customizeInvoice?orgLocationId=" + orgLocationId + "&orgRelationId=" + orgRelationId;				 			
 		    	 		},1000);
 		        	} else if (response.indexOf('Sign In') !== -1) {
 		        		location.replace(sourceleadUrl);
