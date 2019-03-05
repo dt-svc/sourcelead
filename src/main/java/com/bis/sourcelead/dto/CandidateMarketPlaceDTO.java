@@ -96,6 +96,10 @@ public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  
 	
 	private String[] skills;
 	
+	private String isFavourite;
+	
+	private String isAssociate;
+	
 	private List<CandidateEmployerDTO> candidateEmployers;
 	
 	private List<CandidateEducationDTO> candidateEducation;
@@ -440,6 +444,22 @@ public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  
 		this.skills = skills;
 	}
 
+	public String getIsFavourite() {
+		return isFavourite;
+	}
+
+	public void setIsFavourite(String isFavourite) {
+		this.isFavourite = isFavourite;
+	}
+
+	public String getIsAssociate() {
+		return isAssociate;
+	}
+
+	public void setIsAssociate(String isAssociate) {
+		this.isAssociate = isAssociate;
+	}
+	
 	public List<CandidateEmployerDTO> getCandidateEmployers() {
 		return candidateEmployers;
 	}

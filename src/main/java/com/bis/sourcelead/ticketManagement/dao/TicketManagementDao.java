@@ -6,10 +6,12 @@ import com.bis.sourcelead.entity.TicketType;
 import com.bis.sourcelead.dto.TicketAttachmentDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
+import com.bis.sourcelead.entity.TicketAssignTo;
 import com.bis.sourcelead.entity.TicketCategory;
 import com.bis.sourcelead.entity.TicketComment;
 import com.bis.sourcelead.entity.TicketPriority;
 import com.bis.sourcelead.entity.TicketStatus;
+import com.bis.sourcelead.entity.TicketStatusHistory;
 
 public interface TicketManagementDao {
 
@@ -82,6 +84,14 @@ public interface TicketManagementDao {
 	public Ticket getTicketDataById(long ticketId);
 
 	public Boolean changeTicketManagementStatusDataById(long id, int status, OrgLocations orgLocation);
+
+	public boolean saveTicketStatusHistory(TicketStatusHistory ticketStatusHistory);
+
+	public List<Long> getTicketAssignToIdList(long ticketId);
+
+	public TicketAssignTo getTicketAssignToByUserIdAndTick(long userId, long ticketId);
+
+	public void deleteTicketAssignTo(TicketAssignTo ticketAssignTo);
 
 	
 	

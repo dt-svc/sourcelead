@@ -8,6 +8,7 @@ import com.bis.sourcelead.dto.TicketCommentDTO;
 import com.bis.sourcelead.dto.TicketDTO;
 import com.bis.sourcelead.dto.TicketPriorityDTO;
 import com.bis.sourcelead.dto.TicketStatusDTO;
+import com.bis.sourcelead.dto.TicketStatusHistoryDTO;
 import com.bis.sourcelead.dto.TicketTypeDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -76,7 +77,7 @@ public interface TicketManagementService {
 
 	public Boolean changeTicketManagementStatusDataById(long id, int status, OrgLocations orgLocation);
 
-	public Response<Boolean> changeTicketStatus(long ticketId, long statusId, User user, OrgLocations orgLocation);
+	public Response<Boolean> changeTicketStatus(TicketStatusHistoryDTO ticketStatusHistoryDTO, User user, OrgLocations orgLocation);
 
 	
 

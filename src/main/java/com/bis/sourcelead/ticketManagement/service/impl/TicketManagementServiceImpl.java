@@ -17,11 +17,13 @@ import com.bis.sourcelead.dto.TicketCommentDTO;
 import com.bis.sourcelead.dto.TicketDTO;
 import com.bis.sourcelead.dto.TicketPriorityDTO;
 import com.bis.sourcelead.dto.TicketStatusDTO;
+import com.bis.sourcelead.dto.TicketStatusHistoryDTO;
 import com.bis.sourcelead.dto.TicketTypeDTO;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.entity.TicketType;
 import com.bis.sourcelead.entity.TicketStatus;
+import com.bis.sourcelead.entity.TicketStatusHistory;
 import com.bis.sourcelead.entity.TicketPriority;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
@@ -426,6 +428,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 
 
 	@Override
+	@SuppressWarnings("unused")
 	public Boolean saveTicket(TicketDTO ticketDTO, User user, OrgLocations orgLocations) {
 		try {
 			Ticket ticketManagement = null;
@@ -439,6 +442,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 				ticketManagement.setCreatedDate(new Date());
 				ticketManagement.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
 				ticketManagement.setOrgLocations(orgLocations);
+				ticketManagement.setStatus(1);
 			}
 			ticketManagement.setTicketType(ticketManagementDao.getTicketTypeById(ticketDTO.getTicketTypeId()));
 			ticketManagement.setTicketCategory(ticketManagementDao.getTicketCategoryById(ticketDTO.getTicketCategoryId()));
@@ -451,21 +455,32 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 			if(ticketDTO.getNotifyTo() != null && !ticketDTO.getNotifyTo().isEmpty() && ticketDTO.getId() == 0) {
 				// send Nofitify email & notification
 			}
-			
+			List<Long> deleteAssignToIdList = ticketManagementDao.getTicketAssignToIdList(ticketManagement.getId());
 			List<TicketAssignTo> assignToList = new LinkedList<>();
 			if(ticketDTO.getAssignedTo() != null) {
 				for(String assignUserId : ticketDTO.getAssignedTo()) {
-					TicketAssignTo assignTo = new TicketAssignTo();
 					User assignedUser = userDao.getUserById(Long.parseLong(assignUserId));
+					TicketAssignTo assignTo = ticketManagementDao.getTicketAssignToByUserIdAndTick(assignedUser.getId(), ticketManagement.getId());
+					if (assignTo == null) {
+						assignTo = new TicketAssignTo();
+						assignTo.setCreatedBy(user.getId());
+						assignTo.setCreatedDate(new Date());
+					} else {
+						assignTo.setUpdatedBy(user.getId());
+						assignTo.setUpdatedDate(new Date());
+					}
 					assignTo.setUser(assignedUser);
 					assignTo.setTicket(ticketManagement);
-					assignTo.setCreatedBy(user.getId());
-					assignTo.setCreatedDate(new Date());
 					assignToList.add(assignTo);
 					//send Assign email & notification
+					deleteAssignToIdList.remove(assignTo.getUser().getId());
 				}
 			}
 			
+			for(Long assignUserId : deleteAssignToIdList) {
+				TicketAssignTo assignTo = ticketManagementDao.getTicketAssignToByUserIdAndTick(assignUserId, ticketManagement.getId());
+				ticketManagementDao.deleteTicketAssignTo(assignTo);
+			}
 			ticketManagement.setTicketAssignToList(assignToList);
 			return ticketManagementDao.saveTicket(ticketManagement);
 			
@@ -541,7 +556,10 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 					ticketDTO.setTicketCategory(ticketManagement.getTicketCategory().getName());
 					ticketDTO.setTicketStatus(ticketManagement.getTicketStatus().getName());
 					ticketDTO.setTicketPriority(ticketManagement.getTicketPriority().getName());
+					ticketDTO.setTicketPriorityTextColor(ticketManagement.getTicketPriority().getColorCode());
+					ticketDTO.setTicketPriorityImage(ticketManagement.getTicketPriority().getFileURL());
 					ticketDTO.setCreatedById(ticketManagement.getCreatedBy().getId());
+					ticketDTO.setCreatedBy(ticketManagement.getCreatedBy().getFullName());
 					ticketDTO.setCreatedDate(sdf.format(ticketManagement.getCreatedDate()));
 					if(ticketManagement.getUpdatedBy() != null) {
 						ticketDTO.setUpdatedById(ticketManagement.getUpdatedBy().getId());
@@ -737,18 +755,32 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public Response<Boolean> changeTicketStatus(long ticketId, long statusId, User user, OrgLocations orgLocation) {
+	public Response<Boolean> changeTicketStatus(TicketStatusHistoryDTO ticketStatusHistoryDTO, User user, OrgLocations orgLocation) {
 		Response<Boolean> response = new Response<>();
 		try {
-			Ticket ticket = ticketManagementDao.getTicketById(ticketId);
-			TicketStatus ticketStatus = ticketManagementDao.getTicketStatusById(statusId);
+			Ticket ticket = ticketManagementDao.getTicketById(ticketStatusHistoryDTO.getTicketId());
+			TicketStatus ticketStatus = ticketManagementDao.getTicketStatusById(ticketStatusHistoryDTO.getStatusId());
 			if(ticket != null && ticketStatus != null) {
+				String previousStatus = ticket.getTicketStatus().getName();
 				ticket.setTicketStatus(ticketStatus);
 				ticket.setUpdatedBy(user);
 				ticket.setUpdatedDate(new Date());
-				response.setObject(ticketManagementDao.saveTicket(ticket));
+				boolean result = ticketManagementDao.saveTicket(ticket);
+				response.setObject(result);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
+				if(result) {
+					TicketStatusHistory ticketStatusHistory = new TicketStatusHistory();
+					ticketStatusHistory.setTicket(ticket);
+					ticketStatusHistory.setComment(ticketStatusHistoryDTO.getComment());
+					ticketStatusHistory.setPreviousStatus(previousStatus);
+					ticketStatusHistory.setNewStatus(ticket.getTicketStatus().getName());
+					ticketStatusHistory.setCreatedBy(user.getId());
+					ticketStatusHistory.setCreatedDate(new Date());
+					ticketManagementDao.saveTicketStatusHistory(ticketStatusHistory);
+					
+					//Send Ticket Status got changed Email & Notification
+				}
 			} else {
 				response.setResponse(Result.INVALID_DATA.name());
 				response.setResponseMessage(Result.INVALID_DATA.getValue());

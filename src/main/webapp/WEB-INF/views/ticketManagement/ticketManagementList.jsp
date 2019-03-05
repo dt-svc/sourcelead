@@ -44,6 +44,7 @@
             </table>
           </div>
     </div>
+    </div>
   </section>
    <div id='changeStatusPopup' class='remove_user_pop remove_user_pop_a'>
 		<p>Comment Required</p>
