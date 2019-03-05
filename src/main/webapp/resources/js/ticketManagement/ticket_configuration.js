@@ -98,7 +98,7 @@ function saveTicketType() {
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
 				if(response.object === true) {
-					alert(response.responseMessage);
+					//alert(response.responseMessage);
 					cancelTicketType();
 					getTicketTypeList();
 				}
@@ -145,7 +145,7 @@ function editTicketType(id){
 function changeTicketTypeStatus() {
 	var id = $("#confirmId").data("id");
 	var status = $("#confirmId").data("status");
-	alert("ajax call " + id)
+	//alert("ajax call " + id)
 	$.post(sourceleadUrl + "/changeTicketTypeStatusDataById?id="+ id + "&status=" + status, function(response) {
 		if (response && response.response === "INVALID_DATA") {
 			showError(response.responseMessage);
@@ -153,7 +153,7 @@ function changeTicketTypeStatus() {
 			location.href = "/errorPage";
 		} else if (response.response === "SUCCESS") {
 			if(response.object === true) {
-				alert(response.responseMessage);
+				//alert(response.responseMessage);
 				closeDeletePopup();
 				getTicketTypeList();
 			}

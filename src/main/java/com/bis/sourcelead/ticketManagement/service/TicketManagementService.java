@@ -2,6 +2,7 @@ package com.bis.sourcelead.ticketManagement.service;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.TicketAttachmentDTO;
 import com.bis.sourcelead.dto.TicketCategoryDTO;
 import com.bis.sourcelead.dto.TicketCommentDTO;
 import com.bis.sourcelead.dto.TicketDTO;
@@ -63,13 +64,13 @@ public interface TicketManagementService {
 
 	public TicketDTO getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId, String dateFormat);
 
-	public List<TicketCommentDTO> getTicketCommentListByTicketId(Long ticketId, long userId, Long orgLocationId);
-
+	public List<TicketCommentDTO> getTicketCommentListByTicketId(Long ticketId, long userId, Long orgLocationId, String dateFormat);
 	
+	public Boolean saveTicketComment(TicketCommentDTO ticketCommentDTO, User user);
 
-	
+	public List<TicketAttachmentDTO> getTicketAttachmentStatusByTicketId(Long ticketId);
 
-	
+	public TicketDTO getTicketDataById(long ticketId, String dateFormat);
 
 	
 
