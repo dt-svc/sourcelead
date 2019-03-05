@@ -11,6 +11,8 @@ import com.bis.sourcelead.dto.TicketStatusDTO;
 import com.bis.sourcelead.dto.TicketTypeDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.dto.Response;
+
 
 public interface TicketManagementService {
 
@@ -60,7 +62,7 @@ public interface TicketManagementService {
 
 	public Boolean changeTicketStatusDataById(long id, int status, OrgLocations orgLocation);
 
-	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId, long userId, String dateFormat);
+	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId, long userId, int status, String dateFormat);
 
 	public TicketDTO getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId, String dateFormat);
 
@@ -71,6 +73,12 @@ public interface TicketManagementService {
 	public List<TicketAttachmentDTO> getTicketAttachmentStatusByTicketId(Long ticketId);
 
 	public TicketDTO getTicketDataById(long ticketId, String dateFormat);
+
+	public Boolean changeTicketManagementStatusDataById(long id, int status, OrgLocations orgLocation);
+
+	public Response<Boolean> changeTicketStatus(long ticketId, long statusId, User user, OrgLocations orgLocation);
+
+	
 
 	
 

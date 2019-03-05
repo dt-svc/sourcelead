@@ -30,6 +30,15 @@ public class TicketDTO implements Serializable {
 	private String ticketPriorityImage;
 	private long ticketStatusId;
 	private String ticketStatus;
+	private int status;
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
 	private String description;
 	private List<String> assignedTo;
 	private List<TicketAssignToDTO> ticketAssignToList;

@@ -19,6 +19,7 @@ import com.bis.sourcelead.dto.TicketPriorityDTO;
 import com.bis.sourcelead.dto.TicketStatusDTO;
 import com.bis.sourcelead.dto.TicketTypeDTO;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.entity.TicketType;
 import com.bis.sourcelead.entity.TicketStatus;
 import com.bis.sourcelead.entity.TicketPriority;
@@ -34,6 +35,7 @@ import com.bis.sourcelead.ticketManagement.service.TicketManagementService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.dto.Response;
 
 
 @Service
@@ -523,11 +525,11 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId, String dateFormat) {
+	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId,int status, String dateFormat) {
 		List<TicketDTO> ticketDTOList = new LinkedList<>();
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-			List<Ticket> ticketManagementList = ticketManagementDao.getTicketManagementListByOrgLocationId(orgLocationId,userId);
+			List<Ticket> ticketManagementList = ticketManagementDao.getTicketManagementListByOrgLocationId(orgLocationId,userId,status);
 			if (ticketManagementList != null && !ticketManagementList.isEmpty()) {
 				for (Ticket ticketManagement : ticketManagementList) {
 					TicketDTO ticketDTO = new TicketDTO();
@@ -728,6 +730,37 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		}
 		return ticketDTO;
 	}
+
+	@Override
+	public Boolean changeTicketManagementStatusDataById(long id, int status, OrgLocations orgLocation) {
+		return  ticketManagementDao.changeTicketManagementStatusDataById(id, status, orgLocation);
+	}
+
+	@Override
+	public Response<Boolean> changeTicketStatus(long ticketId, long statusId, User user, OrgLocations orgLocation) {
+		Response<Boolean> response = new Response<>();
+		try {
+			Ticket ticket = ticketManagementDao.getTicketById(ticketId);
+			TicketStatus ticketStatus = ticketManagementDao.getTicketStatusById(statusId);
+			if(ticket != null && ticketStatus != null) {
+				ticket.setTicketStatus(ticketStatus);
+				ticket.setUpdatedBy(user);
+				ticket.setUpdatedDate(new Date());
+				response.setObject(ticketManagementDao.saveTicket(ticket));
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+	
 
 	
 

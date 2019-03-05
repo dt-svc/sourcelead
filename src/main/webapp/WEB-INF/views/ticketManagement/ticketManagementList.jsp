@@ -30,7 +30,7 @@
                 <tr>
                   <th>Ticket Id</th>
                   <th>Ticket Title</th>
-                  <th>Category</th>
+                  <!-- <th>Category</th> -->
                   <th>Status</th>
                   <th>Priority</th>
                   <th>Requested By</th>
@@ -45,20 +45,22 @@
           </div>
     </div>
   </section>
+   <div id='changeStatusPopup' class='remove_user_pop remove_user_pop_a'>
+		<p>Comment Required</p>
+		<div>
+			<form id="ticketStatusForm">
+				<textarea class="form-control" rows="4" id="statusComment" data-validation="validate_length length1-500" placeholder="Enter Comment"></textarea>
+			</form>
+		</div>
+		<b>
+			<input id='confirmStatusId' type='button' value='Ok' onclick='changeTicketStatusFinal(true)' class="pull-left">
+			<input id="cancelStatusPopup" class='u_can_color' type='button' value='Cancel' onClick='closeChangeStatusPopup()'>
+		</b>
+	</div>
   <script type="text/javascript">
 	$(document).ready(function() {
+		getTicketStatusList();
 		getTicketManagementList();
 	});
-	$(function() {
-		/* $("#addPop").click(function() {
-			$(".mask, #modalTasktype").fadeIn();
-		});
-		$(".popClose").click(function() {
-			$(".mask, #modalTasktype").fadeOut();
-		}); */
-	});
 </script>
-  
- <jsp:include page="../masterFooter.jsp" />	
-
- 
+<jsp:include page="../masterFooter.jsp" />	 
