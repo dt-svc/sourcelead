@@ -25,7 +25,7 @@
     <div class="pull-left">
       <h2>Import Associate</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/associatesList'/>"> Associate List</a> &raquo; Import Associate</div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;<a href="${SourceLeadWeb_atsUrl}/associatesList"> Associate List</a> &raquo; Import Associate</div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
