@@ -12,6 +12,15 @@ public class TicketDTO implements Serializable {
 	private long id;
 	private String uuid;
 	private String generatedId;
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	private String title;
 	private long ticketTypeId;
 	private String ticketType;
 	private long ticketCategoryId;
