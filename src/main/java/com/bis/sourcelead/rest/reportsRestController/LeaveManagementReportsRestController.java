@@ -170,6 +170,8 @@ public class LeaveManagementReportsRestController {
 	@ResponseBody
 	public ResponseList<LeaveReportView> getDayEntriesList(HrLeaveReportDTO hrLeaveReportDTO,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		orgLocation.setOrg(org);
 		LeaveReportView leaveReportView = new LeaveReportView();
 		ResponseList<LeaveReportView> leaveReportsList=null;
 
@@ -259,8 +261,10 @@ public class LeaveManagementReportsRestController {
 	{
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		orgLocation.setOrg(org);
 		LeaveReportView leaveReportView = new LeaveReportView();
-        String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 	    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
 		ResponseList<LeaveReportView> leaveReportsList=null;
@@ -381,6 +385,7 @@ public class LeaveManagementReportsRestController {
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
  		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
  		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		orgLocations.setOrg(org);
 
  		hrLeaveReportDTO.setLoginUserId(loginUser.getId());
 
