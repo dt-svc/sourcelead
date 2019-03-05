@@ -264,5 +264,8 @@ public interface CandidateDao {
 	
 	public void deleteCandidateFromMarketplaceByCandidateUuid(String candidateUuid)throws Exception;
 	
+	boolean getCandidateIsanAssociate(Long id) throws Exception;
+	
+	
 	
 }

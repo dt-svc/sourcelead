@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -39,6 +40,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
@@ -56,6 +59,7 @@ import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
@@ -74,6 +78,7 @@ import com.bis.sourcelead.indPayroll.service.AssociatePayrollPayheadHistoryServi
 import com.bis.sourcelead.indPayroll.service.GenerateINDPayrollService;
 import com.bis.sourcelead.indPayroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.indPayroll.utill.INDPayrollCommonUtil;
+import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
 import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
 import com.bis.sourcelead.payroll.dto.GenerateINDPayrollDTO;
@@ -1569,5 +1574,31 @@ public class IndianPayrollRestController {
 			logger.error(e.getMessage());
 		}
 		return modelAndView;
+	}
+	
+	
+	/**
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/app/uploadbankdetails", method = RequestMethod.POST)
+	@ResponseBody
+	public IndAssociatePaymentAccountDTO uploadbankdetails(MultipartHttpServletRequest request) throws Exception
+	{
+		//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		//Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		MultipartFile multipartFile = null;
+		Iterator<String> itrator = request.getFileNames();
+		if (itrator.hasNext()) {
+			multipartFile = request.getFile(itrator.next());
+		}
+		IndAssociatePaymentAccountDTO response = new IndAssociatePaymentAccountDTO();
+		if (multipartFile != null) {
+			response = paymentAccountService.saveImportBankDetails(multipartFile, orgLocation);
+			return response;
+		}
+		return response;
 	}
 }
