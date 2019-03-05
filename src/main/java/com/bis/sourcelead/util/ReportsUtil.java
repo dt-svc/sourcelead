@@ -738,7 +738,12 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 		return dates;
 	}
 
-	
+	public Date[] getOrgDateFormatCustomDates(String fromDate, String toDate,String dateFormat) throws ParseException {
+		   Date[]  dates = new Date[2];
+		   dates[0] =new SimpleDateFormat(dateFormat).parse(fromDate);  
+		   dates[1] =new SimpleDateFormat(dateFormat).parse(toDate);  
+		return dates;
+	}
 	
 	public Date[] getProjectFilterDate(String dateSelection,OrgLocations orgLocations) throws Exception {
 		Date[] dates = new Date[2];
