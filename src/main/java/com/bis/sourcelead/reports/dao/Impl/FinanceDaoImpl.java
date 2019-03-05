@@ -679,7 +679,7 @@ public class FinanceDaoImpl implements FinanceDao{
 				return reportsUtil.lastYearDates();
 			}
 			else if ("custom".equalsIgnoreCase(paidBillDTO.getFilterType())) {
-				return reportsUtil.getCustomDates(paidBillDTO.getFromDate(), paidBillDTO.getToDate());
+				return reportsUtil.getOrgDateFormatCustomDates(paidBillDTO.getFromDate(), paidBillDTO.getToDate(),orgLocations.getDateFormat());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
