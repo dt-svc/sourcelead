@@ -163,11 +163,7 @@ function changeTicketTypeStatus() {
 			showError("Operation failed, please try again");
 		}
 	});
-	
 }
-
-
-
 
 //================================== Ticket Management Category  =================== 
 

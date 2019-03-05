@@ -63,7 +63,7 @@ public interface TicketManagementDao {
 
 	public Boolean changeTicketStatusDataById(long id, int status, OrgLocations orgLocation);
 
-	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId);
+	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId, int status);
 
 	public Ticket getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId);
 
@@ -80,6 +80,8 @@ public interface TicketManagementDao {
 	public List<TicketAttachmentDTO> getExpenseAttachmentStatusByCategoryId(Long ticketId);
 
 	public Ticket getTicketDataById(long ticketId);
+
+	public Boolean changeTicketManagementStatusDataById(long id, int status, OrgLocations orgLocation);
 
 	
 	
