@@ -34,6 +34,17 @@ public class Ticket implements Serializable {
 
 	@Column(name = "GENERATED_ID")
 	private String generatedId;
+	
+	@Column(name = "TICKET_TITLE")
+	private String title;
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TICKET_TYPE_ID", referencedColumnName = "ID")

@@ -15,7 +15,7 @@ $.post(sourceleadUrl + "/getTicketList", {}, function(response) {
 			for(var e in response.data) {
 				var text = "<tr>";
 	            text+= "      <td><div class='tblminwidth-150'><a href='/app/ticketSummary?uuid=" + response.data[e].uuid + "' title='Ticket Management Summary'>" + response.data[e].generatedId + "</a></div></td>";
-	            text+= "      <td><div class='tbldata-dotdot-vsm'>" + response.data[e].ticketType + "</div></td>";
+	            text+= "      <td><div class='tbldata-dotdot-vsm'>" + response.data[e].title + "</div></td>";
 	            text+= "     <td><div class='tbldata-dotdot-vsm'>" + response.data[e].ticketCategory + "</div></td>";
 	            text+= "     <td><div class='tbldata-dotdot-vsm'>" + response.data[e].ticketStatus + "</div></td>";
 	            text+= "   	<td><div class='tblminwidth-75'>" + response.data[e].ticketPriority + "</div></td>";
@@ -27,7 +27,7 @@ $.post(sourceleadUrl + "/getTicketList", {}, function(response) {
 				text += "    <td><div class='tbldata-dotdot'>" + (assignTo === "" ? "--" : assignTo) + "</div></td>";
 	            text+= "      <td>";
 				text+= "		  <ul class=list-inline list-unstyled'>";
-				text+= "			  <li><i class='fa fa-pencil cursorPointer'></i></li>";
+				text+= "			  <li><i class='fa fa-pencil cursorPointer' onClick='editTicketManagement(\"" + response.data[e].uuid + "\");'></i></li>";
 				text+= "			  <li><i class='fa fa-trash cursorPointer'></i></li>";
 				text+= "		  </ul>";
 				text+= "		</td>";
@@ -59,6 +59,44 @@ function ticketManagementListPagination(){
 	    } );
 }
 
+
+function editTicketManagement(uuid) {
+	location.href = sourceleadUrl + "/editTicket?uuid=" + uuid;
+	/*$.ajax({
+		type : "POST",
+ 		url : sourceleadUrl+ "/getTicketDataById?ticketId="+id,
+		success : function(response) {
+			if (response && response.response === "INVALID_DATA") {
+				showError(response.responseMessage);
+			} else if (response.response === "AWKWARD") {
+				location.href = "/errorPage";
+			} else if (response.response === "SUCCESS") {
+				var data = response.object;
+				$("#addTicketManagementForm").html("Edit Type");
+				$("#ticketTitleId").val(data.title);
+				$("#ticketId").val(data.generatedId);
+				$("#ticketType").val(data.ticketType);
+				$("#ticketCategory").val(data.ticketCategory);
+				$("#ticketPriority").val(data.ticketPriority);
+				$("#ticketStatus").val(data.ticketStatus);
+				for(var e in data.assignedTo) {
+					$("#assignedTo option[value='" + data.assignedTo[e] + "']").attr("selected", true);
+				}
+				$("#assignedTo").chosen();
+	     	    $("#assignedTo").trigger("chosen:updated");
+	     	    
+				$("#notifyTo").html(data.notifyTo);
+				$("#txtEditor").val(data.description);
+				$(".mask, #modalTasktype").fadeIn();
+			} else if (response.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+				showError("Operation failed, please try again");
+			}
+		}
+	});*/
+}
+
 //	================================	TicketComment		==============================================
 function getTicketCommetList(ticketId) {
 	$("#ticketCommentListDivId").empty();
@@ -68,10 +106,9 @@ function getTicketCommetList(ticketId) {
 		} else if (response.response === "AWKWARD") {
 			location.href = "/errorPage";
 		} else if (response.response === "SUCCESS") {
-			var text = "";
         	if(response.data.length > 0 ){
         		 for (var e in response.data) {
-					text += "<div class='clearfix' id=''>";
+        			var text = "";
                     text += "<div class='comments-div comments-inner clearfix'>";
                     text += "    <div class='commentsimg'> <i class='fa fa-comments'></i>";
                     text += "   <div class='commentsimg-inner'>";
@@ -80,13 +117,12 @@ function getTicketCommetList(ticketId) {
                     text += "    <div class='customCommentarea'>";
                     text += "    <div class='row'>";
                     text += "        <div class='col-md-12'>";
-                    text += "        <p class='comment-by'> By <span class='text-danger'>" + response.data[e].id + "</span><span class='small mr'>" + response.data[e].createdByName + "</span> <span class='small'>" + response.data[e].createdDate + "</span> </p>";
+                    text += "        <p class='comment-by'> By <span class='text-danger'>" + response.data[e].createdByName + "</span><span class='small mr'>" + response.data[e].createdDate + "</span> <span class='small'>" + response.data[e].createdDateString + "</span> </p>";
                     text += "        <div class='commentText commentText-styles'>" + response.data[e].comment + "</div>";
                     text += "      </div>";
                     text += "      </div>";
                     text += "  </div>";
                     text += "  </div>";
-					text += "	</div>";
 		    		$("#ticketCommentListDivId").append(text);
 				}
 			} else {
@@ -99,4 +135,32 @@ function getTicketCommetList(ticketId) {
 			showError("Operation failed, please try again");
 		}
 	});
+}
+
+function saveTicketComment(ticketId){
+	if ($("#ticketComment_form").validate(false, validationSettings)){
+		var formData = getFormData("ticketComment_form");
+		$.post(sourceleadUrl + "/saveTicketComment?ticketId="+ticketId, formData, function(response) {
+			if (response && response.response === "INVALID_DATA") {
+				showError(response.responseMessage);
+			} else if (response.response === "AWKWARD") {
+				location.href = "/errorPage";
+			} else if (response.response === "SUCCESS") {
+				if(response.object === true) {
+					alert(response.responseMessage);
+					getTicketCommetList(ticketId);
+					closeTicketComment();
+				}
+			} else if (response.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+				showError("Operation failed, please try again");
+			}
+		});
+	}
+}
+function closeTicketComment() {
+	$("#add-comment").fadeOut();
+	 document.getElementById("ticketComment_form").reset();
+	 $("ticketComment_form").validate().resetForm();
 }
