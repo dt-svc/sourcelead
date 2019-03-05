@@ -656,7 +656,7 @@ function statusvalidating(id){
 									<span> 
 									<a href="<c:url value='/requirement'/>" >Job</a>
 									<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
-										<a href="/app/uploadJobs">Import</a>
+										<a href="${SourceLeadWeb_sourceleadUrl}/uploadJobs">Import</a>
 									</sec:authorize>									
 									</span>
 								</div>
