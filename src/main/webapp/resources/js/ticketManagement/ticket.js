@@ -44,8 +44,8 @@ function getTicketManagementList() {
 		            }
 		            text += "</select></td>";
 		            /*text+= "     <td><div class='tbldata-dotdot-vsm'>" + response.data[e].ticketStatus + "</div></td>";*/
-		            text+= "   	<td><div class='tblminwidth-75'>" + response.data[e].ticketPriority + "</div></td>";
-		            text+= "    <td><div class='tbldata-dotdot-vsm'>" + response.data[e].createdById + "</div></td>";
+		            text+= "   	<td><div class='tblminwidth-75' style='color:" + (response.data[e].ticketPriorityTextColor != null && response.data[e].ticketPriorityTextColor !== "" ? response.data[e].ticketPriorityTextColor : "") + "'>" + (response.data[e].ticketPriorityImage !== null && response.data[e].ticketPriorityImage !== "" ? "<img src=\"" + response.data[e].ticketPriorityImage + "\" style='height:30px;'/>" : "") + response.data[e].ticketPriority + "</div></td>";
+		            text+= "    <td><div class='tbldata-dotdot-vsm'>" + response.data[e].createdBy + "</div></td>";
 		            var assignTo = "";
 					for(var a in response.data[e].assignedTo) {
 						assignTo += (assignTo === "" ? "" : ",") + response.data[e].assignedTo[a];

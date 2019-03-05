@@ -20,6 +20,7 @@ import com.bis.sourcelead.dto.TicketAttachmentDTO;
 import com.bis.sourcelead.dto.TicketDTO;
 import com.bis.sourcelead.dto.TicketPriorityDTO;
 import com.bis.sourcelead.dto.TicketStatusDTO;
+import com.bis.sourcelead.dto.TicketStatusHistoryDTO;
 import com.bis.sourcelead.dto.TicketTypeDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 
@@ -491,14 +492,13 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = "/changeTicketStatusType", method = RequestMethod.POST)
 	@ResponseBody
-	public Response<Boolean> changeTicketStatusType(HttpServletRequest request, @RequestParam(defaultValue = "0") long ticketId,
-			@RequestParam(defaultValue = "0") long statusId, @RequestParam(defaultValue = "") String comment) {
+	public Response<Boolean> changeTicketStatusType(HttpServletRequest request, TicketStatusHistoryDTO ticketStatusHistoryDTO) {
 		Response<Boolean> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
-				response = ticketManagementService.changeTicketStatus(ticketId, statusId, user, orgLocation);
+				response = ticketManagementService.changeTicketStatus(ticketStatusHistoryDTO, user, orgLocation);
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
