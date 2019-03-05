@@ -176,9 +176,19 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/saveOrgImage", method = RequestMethod.POST)
 	public String saveOrgImage(CompanyRegistrationDTO companyRegistrationDTO, HttpServletRequest request) throws Exception
 	{
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		Long orgId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgId");
 		companyRegistrationDTO.setStaticPath(staticPath);
+		Org org = orgService.findOrgByID(orgId);
 		org = orgService.saveOrgSettings(companyRegistrationDTO, org);
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocationsByOrgId(orgId);
+			for(OrgLocations orgLocations : orgLocationsList) {
+					userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(orgLocations);
+			}
+		}
+		
+		
 		return "success";
 	}
 	
@@ -326,20 +336,19 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/deleteOrgImage", method = RequestMethod.GET)
 	public String deleteOrgImage(HttpServletRequest request) throws Exception
 	{
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		Long orgId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgId");
+		Org org = orgService.findOrgByID(orgId);
 		org.setDocFile(null);
 		org.setFileName(null);
 		org.setFileUrl(null);
 		org.setFileContentType(null);
 		orgService.updateOrg(org);
-		SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 		return "success";
 	}
 	
 	@RequestMapping(value = "/app/changeHierarchyLevels", method = RequestMethod.POST)
 	public String changeHierarchyLevels(@RequestParam(value = "hierarchyOrder", required = false) String hierarchyOrder, HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String[] hierarchyids = hierarchyOrder.split(",");
 		int val = 1;
 		for (int i = 0; i < hierarchyids.length; i++) {
@@ -835,8 +844,12 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/saveWhiteListIps", method = RequestMethod.GET)
 	public Response<String> saveWhiteListIps(WhiteListIPAddressDTO whiteListIPAddressDTO, HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user =  userService.getUserById(userId);
+		
 		Response<String> response = new Response<>();
 		if (user != null) {
 			try {
@@ -868,7 +881,6 @@ public class OrgSettingsRestController {
 	public List<WhiteListIPAddressDTO> getWhiteListIps(HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		List<WhiteListIPAddressDTO> ipList = whiteListIpAddressService.getWhiteListIpsByLocationId(orgLocations.getId(), null);
 		return ipList;
 	}
@@ -999,14 +1011,15 @@ public class OrgSettingsRestController {
 	public String generateCareerPageKey(HttpServletRequest request) throws Exception
 	{
 		try {
-			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			Long orgId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgId");
+			Org org = orgService.findOrgByID(orgId);
 			if (org == null) {
 				return "logout";
 			}
 			String key = orgService.generateCareerPageKey(org.getId(), org.getOrgName());
-			org.setCareerPageKey(key);
-			org.setCareerPageKeyActive(true);
-			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
+			SourceLeadSessionManager.setSessionAttribute(request, "careerPageKey", key);
+			SourceLeadSessionManager.setSessionAttribute(request, "careerPageKeyActive", true);
+			
 			return "key;" + key;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -1018,13 +1031,14 @@ public class OrgSettingsRestController {
 	public String careerPageKeyStatus(HttpServletRequest request) throws Exception
 	{
 		try {
-			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			Long orgId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgId");
+			Org org = orgService.findOrgByID(orgId);
 			if (org == null) {
 				return "logout";
 			}
 			int status = orgService.changeCareerPageKeyStatus(org.getId());
 			org.setCareerPageKeyActive(status == 1);
-			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
+			SourceLeadSessionManager.setSessionAttribute(request, "careerPageKeyActive", org.getCareerPageKeyActive());
 			return "status;" + status;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -1435,7 +1449,8 @@ public class OrgSettingsRestController {
 	public ProbationDTO getProbationData(HttpServletRequest request) throws Exception
 	{
 		ProbationDTO probation = new ProbationDTO();
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		if(orgLocations != null) {
 			probation.setProbationPeriod(orgLocations.getProbationPeriod());
 			probation.setNoOfDays(orgLocations.getNoOfDays());

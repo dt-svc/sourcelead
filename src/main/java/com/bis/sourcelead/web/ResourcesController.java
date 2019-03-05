@@ -100,18 +100,14 @@ public class ResourcesController {
 	 @PreAuthorize("hasRole('ROLE_ADD_BLOG')")
 	 @RequestMapping(value = {"/addBlog", "/rest/addBlog"}, method = RequestMethod.GET)
 		public ModelAndView addBlog(HttpServletRequest request,@RequestParam(value="blogUUID", required=false)String blogUUID) throws Exception {
-		 
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    commonUtil.highLightMenu(Constants.Blogs, request);
 			ModelAndView model = new ModelAndView();
 			SourceleadBlogs sourceleadBlog;
 			if(null != blogUUID && !blogUUID.isEmpty()){
-			
 				sourceleadBlog = sourceleadBlogService.getSourceleadBlogsByBlogUUID(blogUUID);
-				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-				DateFormat dateFormatResult = new SimpleDateFormat ("MM/dd/yyyy hh:mm a");
-				
 				if(sourceleadBlog.getPublishOn() != null) {
-				String publishon = dateFormatResult.format(dateFormat.parse(sourceleadBlog.getPublishOn().toString()));
+				String publishon =    commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sourceleadBlog.getPublishOn());
 				model.addObject("publishon", publishon);
 				}
 				

@@ -106,8 +106,8 @@ public class DatabaseConfig {
 		hibernateProperties.setProperty("hibernate.jdbc.batch_size", "1000");
 				
 		/*hibernateProperties.setProperty("hibernate.cache.provider_class", "net.sf.ehcache.hibernate.SingletonEhCacheProvider");
-		hibernateProperties.setProperty("hibernate.cache.use_query_cache", "true"); */
-		/*hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "true");
+		hibernateProperties.setProperty("hibernate.cache.use_query_cache", "true"); 
+		hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "true");
 		hibernateProperties.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory");
 		hibernateProperties.setProperty("net.sf.ehcache.configurationResourceName", "hibernateCache.xml");*/
 		
