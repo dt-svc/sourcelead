@@ -646,11 +646,29 @@ public class RegistrationRestController {
 	 public  String changePrimaryAdmin(@RequestParam(value="userId", required=false) Long userId,
 			 @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception {
 		 	
+		 UserRole userRole = null;
+		 Long existingUserId = null;
 		 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		 if(orgLocations.getUser() != null) {
+			 existingUserId = orgLocations.getUser().getId();
+		 }
+		 
 		 User user = new User();
 		 user.setId(userId);
 		 orgLocations.setUser(user);
 		 orgLocationService.updateOrgLocations(orgLocations);
+		 
+		 if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			 userRole = userRoleService.getUserDetailsByUserIdAndLocationId(userId, orgLocationId);
+			 userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+			 
+			 if(existingUserId != null) {
+				 userRole = userRoleService.getUserDetailsByUserIdAndLocationId(existingUserId, orgLocationId);
+				 userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+			 }
+		 }
+		
+		 
 		 return "success";
 	   }
 	 
@@ -660,12 +678,28 @@ public class RegistrationRestController {
 	 public  String changeSuperAdmin(@RequestParam(value="userId", required=false) Long userId,
 			 @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception {
 		 	
+		 UserRole userRole = null;
+		 Long existingUserId = null;
 		 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		 if(orgLocations.getUser() != null) {
+			 existingUserId = orgLocations.getUser().getId();
+		 }
 		 User user = new User();
 		 user.setId(userId);
 		 Org org = orgLocations.getOrg();
 		 org.setUser(user);
 		 orgService.addOrganization(org);
+		 
+		 if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			 userRole = userRoleService.getUserDetailsByUserIdAndLocationId(userId, orgLocationId);
+			 userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+			 
+			 if(existingUserId != null) {
+				 userRole = userRoleService.getUserDetailsByUserIdAndLocationId(existingUserId, orgLocationId);
+				 userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+			 }
+		 }
+		 
 		 return "success";
 	   }
 	 
