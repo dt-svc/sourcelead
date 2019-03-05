@@ -13,7 +13,7 @@
     <div class="pull-left">
       <h2>Finance</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Finance</div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Finance</div>
   </section>
   <form:form id="financeConfigueEmail_form" name="financeConfigueEmail_form" method="post">
   <div class="content-area content-new clearfix" style="min-height: 50px;">
