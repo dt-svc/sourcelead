@@ -9,7 +9,9 @@
 			<h2>Invoice Templates</h2>
 		</div>
 		<div class="pull-right brud-crum">
+
 			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_vmsUrl}/clientDashboard"> Clients List </a>&raquo; Invoice Templates
+
 		</div>
 	</section>
 
