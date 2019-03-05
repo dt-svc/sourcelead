@@ -1453,7 +1453,12 @@ public class OrgSettingsRestController {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		if(orgLocations != null) {
 			probation.setProbationPeriod(orgLocations.getProbationPeriod());
-			probation.setNoOfDays(orgLocations.getNoOfDays());
+			if(orgLocations.getNoOfDays() != null) {
+				probation.setNoOfDays(orgLocations.getNoOfDays());
+			}else {
+				probation.setNoOfDays(0);
+			}
+			
 		}
 		return probation;
 	}
