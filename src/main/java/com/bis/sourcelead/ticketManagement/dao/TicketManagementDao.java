@@ -3,7 +3,7 @@ package com.bis.sourcelead.ticketManagement.dao;
 import java.util.List;
 
 import com.bis.sourcelead.entity.TicketType;
-import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.dto.TicketAttachmentDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketCategory;
@@ -76,6 +76,10 @@ public interface TicketManagementDao {
 	public TicketComment getTicketCommentByTicketId(long ticketId);
 
 	public Boolean saveTicketComment(TicketComment ticketComment);
+
+	public List<TicketAttachmentDTO> getExpenseAttachmentStatusByCategoryId(Long ticketId);
+
+	public Ticket getTicketDataById(long ticketId);
 
 	
 	

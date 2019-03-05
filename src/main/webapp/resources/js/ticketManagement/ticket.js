@@ -27,7 +27,7 @@ $.post(sourceleadUrl + "/getTicketList", {}, function(response) {
 				text += "    <td><div class='tbldata-dotdot'>" + (assignTo === "" ? "--" : assignTo) + "</div></td>";
 	            text+= "      <td>";
 				text+= "		  <ul class=list-inline list-unstyled'>";
-				text+= "			  <li><i class='fa fa-pencil cursorPointer'></i></li>";
+				text+= "			  <li><i class='fa fa-pencil cursorPointer' onClick='editTicketManagement(\"" + response.data[e].uuid + "\");'></i></li>";
 				text+= "			  <li><i class='fa fa-trash cursorPointer'></i></li>";
 				text+= "		  </ul>";
 				text+= "		</td>";
@@ -57,6 +57,44 @@ function ticketManagementListPagination(){
 	     		"sZeroRecords": "", "sEmptyTable": ""
 	     	}
 	    } );
+}
+
+
+function editTicketManagement(uuid) {
+	location.href = sourceleadUrl + "/editTicket?uuid=" + uuid;
+	/*$.ajax({
+		type : "POST",
+ 		url : sourceleadUrl+ "/getTicketDataById?ticketId="+id,
+		success : function(response) {
+			if (response && response.response === "INVALID_DATA") {
+				showError(response.responseMessage);
+			} else if (response.response === "AWKWARD") {
+				location.href = "/errorPage";
+			} else if (response.response === "SUCCESS") {
+				var data = response.object;
+				$("#addTicketManagementForm").html("Edit Type");
+				$("#ticketTitleId").val(data.title);
+				$("#ticketId").val(data.generatedId);
+				$("#ticketType").val(data.ticketType);
+				$("#ticketCategory").val(data.ticketCategory);
+				$("#ticketPriority").val(data.ticketPriority);
+				$("#ticketStatus").val(data.ticketStatus);
+				for(var e in data.assignedTo) {
+					$("#assignedTo option[value='" + data.assignedTo[e] + "']").attr("selected", true);
+				}
+				$("#assignedTo").chosen();
+	     	    $("#assignedTo").trigger("chosen:updated");
+	     	    
+				$("#notifyTo").html(data.notifyTo);
+				$("#txtEditor").val(data.description);
+				$(".mask, #modalTasktype").fadeIn();
+			} else if (response.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+				showError("Operation failed, please try again");
+			}
+		}
+	});*/
 }
 
 //	================================	TicketComment		==============================================

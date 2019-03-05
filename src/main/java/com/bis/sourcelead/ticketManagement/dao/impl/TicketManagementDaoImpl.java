@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dto.TicketAttachmentDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketPriority;
@@ -507,8 +508,34 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 		}
 		return false;
 	}
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<TicketAttachmentDTO> getExpenseAttachmentStatusByCategoryId(Long ticketId) {
+		
+			String attachment = null;
+			Session session = this.sessionFactory.getCurrentSession();
+			String query ="select ta.isAttachemtRequired from TicketAttachment ta where ta.id = :ticketId";
+			
+			List<String> ticketAttachmentList = session.createQuery(query).setLong("ticketId", ticketId).list();
+			if(ticketAttachmentList != null && !ticketAttachmentList.isEmpty()) {
+				attachment = ticketAttachmentList.get(0);
+			}
+			return null;
+		}
 
-	
-	
-
+	@Override
+	public Ticket getTicketDataById(long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(Ticket.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
 }
+
+	
+	
+

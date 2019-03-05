@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.TicketAssignToDTO;
+import com.bis.sourcelead.dto.TicketAttachmentDTO;
 import com.bis.sourcelead.dto.TicketCategoryDTO;
 import com.bis.sourcelead.dto.TicketCommentDTO;
 import com.bis.sourcelead.dto.TicketDTO;
@@ -471,6 +472,35 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		}
 		return false;
 	}
+	
+	
+	/*
+	 * @Override public TicketDTO getTicketDataById(long ticketId, OrgLocations
+	 * loginOrgLocation, String dateFormat) { TicketDTO ticketDTO = new TicketDTO();
+	 * try { SimpleDateFormat sdf = new SimpleDateFormat(dateFormat); Ticket ticket
+	 * = ticketManagementDao.getTicketById(ticketId); if (ticket != null) {
+	 * ticketDTO.setId(ticket.getId()); ticketDTO.setUuid(ticket.getUuid());
+	 * ticketDTO.setTitle(ticket.getTitle());
+	 * ticketDTO.setTicketTypeId(ticket.getTicketType().getId());
+	 * ticketDTO.setTicketStatusId(ticket.getTicketStatus().getId());
+	 * ticketDTO.setTicketPriorityId(ticket.getTicketPriority().getId());
+	 * ticketDTO.setTicketCategoryId(ticket.getTicketCategory().getId());
+	 * ticketDTO.setDescription(ticket.getDescription());
+	 * ticketDTO.setGeneratedId(ticket.getGeneratedId()); List<String>
+	 * assignedToList = new LinkedList<>(); for (TicketAssignTo ticketAssignTo :
+	 * ticket.getTicketAssignToList()) {
+	 * assignedToList.add(ticketAssignTo.getUser().getFullName()); }
+	 * ticketDTO.setAssignedTo(assignedToList);
+	 * 
+	 * ticketDTO.setOrgLocationsId(ticket.getOrgLocations().getId());
+	 * ticketDTO.setCreatedById(ticket.getCreatedBy().getId());
+	 * ticketDTO.setCreatedDate(sdf.format(ticket.getCreatedDate())); if
+	 * (ticket.getUpdatedBy() != null) {
+	 * ticketDTO.setUpdatedById(ticket.getUpdatedBy().getId());
+	 * ticketDTO.setUpdatedDate(sdf.format(ticket.getUpdatedDate())); }
+	 * 
+	 * } } catch (Exception e) { e.printStackTrace(); } return ticketDTO; }
+	 */
 
 	@Override
 	public Boolean changeStatusTicketTypeDataById(long id, int status, OrgLocations orgLocation) {
@@ -653,5 +683,54 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		}
 		return false;
 	}
+
+	@Override
+	public List<TicketAttachmentDTO> getTicketAttachmentStatusByTicketId(Long ticketId) {
+		
+		 return ticketManagementDao.getExpenseAttachmentStatusByCategoryId(ticketId);
+	}
+
+	@Override
+	public TicketDTO getTicketDataById(long ticketId, String dateFormat) {
+		TicketDTO ticketDTO = new TicketDTO();
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+			Ticket ticket = ticketManagementDao.getTicketDataById(ticketId);
+			if (ticket != null) {
+				ticketDTO.setId(ticket.getId());
+				ticketDTO.setUuid(ticket.getUuid());
+				ticketDTO.setTitle(ticket.getTitle());
+				ticketDTO.setTicketTypeId(ticket.getTicketType().getId());
+				ticketDTO.setTicketStatusId(ticket.getTicketStatus().getId());
+				ticketDTO.setTicketPriorityId(ticket.getTicketPriority().getId());
+				ticketDTO.setTicketCategoryId(ticket.getTicketCategory().getId());
+				ticketDTO.setDescription(ticket.getDescription());
+				ticketDTO.setGeneratedId(ticket.getGeneratedId());
+				ticketDTO.setCreatedById(ticket.getCreatedBy().getUserId());
+				ticketDTO.setNotifyTo(ticket.getNotifyTo());
+				List<String> assignedToList = new LinkedList<>();
+				for (TicketAssignTo ticketAssignTo : ticket.getTicketAssignToList()) {
+					assignedToList.add(ticketAssignTo.getUser().getFullName());
+				}
+				ticketDTO.setAssignedTo(assignedToList);
+
+				ticketDTO.setOrgLocationsId(ticket.getOrgLocations().getId());
+				ticketDTO.setCreatedById(ticket.getCreatedBy().getId());
+				ticketDTO.setCreatedDate(sdf.format(ticket.getCreatedDate()));
+				if (ticket.getUpdatedBy() != null) {
+					ticketDTO.setUpdatedById(ticket.getUpdatedBy().getId());
+					ticketDTO.setUpdatedDate(sdf.format(ticket.getUpdatedDate()));
+				}
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ticketDTO;
+	}
+
+	
+
+	
 }
 
