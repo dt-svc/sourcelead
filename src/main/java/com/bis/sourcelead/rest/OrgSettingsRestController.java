@@ -343,7 +343,6 @@ public class OrgSettingsRestController {
 		org.setFileUrl(null);
 		org.setFileContentType(null);
 		orgService.updateOrg(org);
-		SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 		return "success";
 	}
 	
@@ -1012,14 +1011,15 @@ public class OrgSettingsRestController {
 	public String generateCareerPageKey(HttpServletRequest request) throws Exception
 	{
 		try {
-			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			Long orgId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgId");
+			Org org = orgService.findOrgByID(orgId);
 			if (org == null) {
 				return "logout";
 			}
 			String key = orgService.generateCareerPageKey(org.getId(), org.getOrgName());
-			org.setCareerPageKey(key);
-			org.setCareerPageKeyActive(true);
-			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
+			SourceLeadSessionManager.setSessionAttribute(request, "careerPageKey", key);
+			SourceLeadSessionManager.setSessionAttribute(request, "careerPageKeyActive", true);
+			
 			return "key;" + key;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -1031,13 +1031,14 @@ public class OrgSettingsRestController {
 	public String careerPageKeyStatus(HttpServletRequest request) throws Exception
 	{
 		try {
-			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			Long orgId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgId");
+			Org org = orgService.findOrgByID(orgId);
 			if (org == null) {
 				return "logout";
 			}
 			int status = orgService.changeCareerPageKeyStatus(org.getId());
 			org.setCareerPageKeyActive(status == 1);
-			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
+			SourceLeadSessionManager.setSessionAttribute(request, "careerPageKeyActive", org.getCareerPageKeyActive());
 			return "status;" + status;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -1452,7 +1453,12 @@ public class OrgSettingsRestController {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		if(orgLocations != null) {
 			probation.setProbationPeriod(orgLocations.getProbationPeriod());
-			probation.setNoOfDays(orgLocations.getNoOfDays());
+			if(orgLocations.getNoOfDays() != null) {
+				probation.setNoOfDays(orgLocations.getNoOfDays());
+			}else {
+				probation.setNoOfDays(0);
+			}
+			
 		}
 		return probation;
 	}
