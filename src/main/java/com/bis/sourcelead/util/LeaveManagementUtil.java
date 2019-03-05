@@ -554,6 +554,10 @@ public class LeaveManagementUtil {
 			al.setIncludeWeekoff(l.getIncludeWeekoff());
 		}
 		
+		if(orgLocations.getOrgId() == null) {
+			orgLocations.setOrgId(orgLocations.getOrg().getId());
+		}
+		
 		LocalDate todayDate = LocalDate.now();
 		List<AppliedLeaveDateView> appliedLeaves = null;
 		if (Constants.CUSTOM.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
