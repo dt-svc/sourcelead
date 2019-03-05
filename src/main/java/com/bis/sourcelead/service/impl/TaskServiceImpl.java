@@ -498,4 +498,19 @@ public class TaskServiceImpl implements TaskService {
 		return taskDTOs;
 		
 	}
+
+	@Override
+	public Tasks getTaskByTaskName(String taskName) throws Exception {
+		return taskDao.getTaskByTaskName(taskName);
+	}
+
+	@Override
+	public void updateTaskStatus(Tasks task) throws Exception {
+		if(task != null) {
+			task.setStatus(Constants.RECORD_INACTIVE);
+		}
+		taskDao.updateTaskStatus(task);
+	}
+	
+	
 }
