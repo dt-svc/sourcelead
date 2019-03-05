@@ -1601,7 +1601,7 @@ function refreshGradesList(){
 	 <script>
 	 function selectedVendor(){
 		 var vid = $('#vendors').val();
-		 window.open(atsUrl+"/addVendorContact?vid="+vid,'_blank');
+		 window.open(vmsUrl+"/addVendorContact?vid="+vid,'_blank');
 	 }
 	 </script>
 	
