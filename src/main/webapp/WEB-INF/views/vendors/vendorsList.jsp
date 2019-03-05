@@ -1718,11 +1718,11 @@ function releasedJobsCountByOrgRelationId(orgRelationId){
 			 document.getElementById("enableVendorContactAdvancedSearch").style.display="none";
 		}
 		
-	    $('#country').val('${loginCountryName}'); 
-	    $('#state').val(''); 
+	     $('#country').val('${loginCountryName}'); 
+	     $('#state').val(''); 
 	    $('#city').val(''); 
 	    
-	    $("#ownerAdvanced").empty();
+	    /* $("#ownerAdvanced").empty();
 		 $("#ownerAdvanced").val('').trigger("chosen:updated");
 	    
 	    $("#orgAdvanced").val('').trigger("chosen:updated");
@@ -1733,7 +1733,7 @@ function releasedJobsCountByOrgRelationId(orgRelationId){
 
 	    $("#anyOfKeyword").empty();
 	    $("#allKeywords").empty();
-	    $("#excludeKeyWord").empty();
+	    $("#excludeKeyWord").empty(); */
 	}
 </script>      
 
