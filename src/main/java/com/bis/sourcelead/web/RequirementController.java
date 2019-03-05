@@ -235,10 +235,13 @@ public class RequirementController {
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLocId);
+				
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User loginUser = userService.getUserById(userId);
 		
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		model.addObject("loginUser",loginUser);
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		model.addObject("orgLocationDateFormat", orgLocations.getDateFormat());
 		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_REQUIREMENT);
 	     model.addObject("actionId",action.getId());
