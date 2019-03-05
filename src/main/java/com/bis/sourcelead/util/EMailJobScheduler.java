@@ -204,6 +204,15 @@ public class EMailJobScheduler {
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
 	
+	@Value("${vmsUrl}")
+	private String vmsUrl;
+	
+	@Value("${atsUrl}")
+	private String atsUrl;
+	
+	@Value("$pmsUrl}")
+	private String pmsUrl;
+	
 	@Value("${defaultFromEmailAddressForProd}")
 	private String defaultFromEmailAddressForProd;	
 	
@@ -703,7 +712,7 @@ public class EMailJobScheduler {
 			 if(StringUtils.isNotBlank(emailScenario.getSignature())){
 				 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
 			 }
-			 String url = sourceleadUrl;
+			 String url = vmsUrl;
 		 
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, ol.getOrg(), ol);
@@ -721,7 +730,7 @@ public class EMailJobScheduler {
 		notificationScenario.setBody(notificationBody);
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = actionLinkBuilder.append("")
-				.append(sourceleadUrl).append("/immigration").append("/viewLCAList").toString();
+				.append(vmsUrl).append("/immigration").append("/viewLCAList").toString();
 		emailScenerioUtil.sendNotification(actionLink, fromUser , toUserObj, ol, notificationScenario,new HashMap<String,String>());
 		}
 	
