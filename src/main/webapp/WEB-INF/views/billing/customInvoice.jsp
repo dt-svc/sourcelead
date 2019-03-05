@@ -2,8 +2,11 @@
 <jsp:include page="../masterSideNav.jsp" />
 
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script type="text/javascript" src="/resources/js/custom-invoice/custom-invoice.js"></script>
-
+<script src="/resources/js/custom-invoice/custom-invoice.js?staticTime=${staticTime}"></script>
+<script type="text/javascript">
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+</script>
 <div class="success_pop" style="display: none;">
 	<i class="fa fa-check-circle"></i><span>Invoice Template Saved</span>
 </div>
