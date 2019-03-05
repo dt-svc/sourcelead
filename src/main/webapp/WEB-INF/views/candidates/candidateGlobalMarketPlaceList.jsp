@@ -577,6 +577,9 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 	//fetching filter values..
 	var status = $('input[name=candidateStatus]:checked').val();
 	var updatedDate = $('input[name=upcandidateStatus]:checked').val();
+	var isAssociate = $('input[name=candidateTypeFilter]:checked').val();
+	var isFavourite = $('input[name=candidateType]:checked').val();
+	var createdBy = $('input[name=createdByFilter]:checked').val();
 	var employmentType = [];
 		$('input:checkbox[name=employmentType]:checked').each(function() 
 		     {
@@ -601,7 +604,8 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 	$.ajax({
 			type : "POST",
 			url : sourceleadUrl +"/getGlobalMarketplaceListGridCard?searchValue="+searchValue+"&candidateLocation="+candidateLocation+"&searchCandidateIds="+globalCandidateIds+
-					"&status="+status+"&updatedDate="+updatedDate+"&employmentType="+employmentType+"&noticePeriod="+noticePeriod+"&skillsName="+candidateSkills,
+					"&status="+status+"&updatedDate="+updatedDate+"&employmentType="+employmentType+"&noticePeriod="+noticePeriod+"&skillsName="+candidateSkills+
+					"&isFavourite="+isFavourite+"&isAssociate="+isAssociate+"&createdBy="+createdBy,
 			success : function(object) {
 				if(object != null){
 					var result = "";

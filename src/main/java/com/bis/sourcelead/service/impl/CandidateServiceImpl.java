@@ -2743,7 +2743,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, OrgLocations orgLocations, String candidateLocation, String searchValue, CandidateMarketPlaceDTO candidateMarketPlaceDTO) {
+	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, OrgLocations orgLocations, String candidateLocation, String searchValue, CandidateMarketPlaceDTO candidateMarketPlaceDTO, Long userId) {
 		List<CandidateMarketPlace> candidateMarketPlaces = null;
 		List<CandidateMarketPlaceDTO> marketPlaceDTOs = new ArrayList<>();
 		Date today = new Date();
@@ -2810,7 +2810,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		candidateMarketPlaces = candidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations.getId(), candidateLocation, searchValue, candidateMarketPlaceDTO, dateValue);
+		candidateMarketPlaces = candidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations.getId(), candidateLocation, searchValue, candidateMarketPlaceDTO, dateValue, userId);
 		if(candidateMarketPlaces != null){
 			for(CandidateMarketPlace marketPlace : candidateMarketPlaces){
 				CandidateMarketPlaceDTO marketPlaceDTO = new CandidateMarketPlaceDTO();
