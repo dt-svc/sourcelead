@@ -2,11 +2,9 @@
 <%-- <jsp:include page="masterSideNav.jsp" /> --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%
-// INIT USER/SESSION CONTEXT
-// INIT AGGREGATE QUERY
-//
-%>
+ <sec:authorize access="hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')" var="bothTimesheets"/>
+ <sec:authorize access="!hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')" var="onlyTimesheets"/>
+ <sec:authorize access="hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && !hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')" var="onlyApprovalTimesheets"/>
 <html>
 <head>
 <meta charset="utf-8">
@@ -48,11 +46,20 @@ ALWAYS CACHE VARIABLES LIKE YOU DO IN JAVA
 <script>
 var  tabAccessArray = '${SourceLeadWeb_tabsList}';
 var  roleActionsArray= '${SourceLeadWeb_actionsList}';
+var sourceleadUrl ='${sourceleadUrl}';
 var atsUrl = '${SourceLeadWeb_atsUrl}';
 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-
+var userId =  '${SourceLeadWeb_userId}';
+var orgLocationId  = '${SourceLeadWeb_orgLocationId}';
+// below are related variable used in showing tabs in dashboard.
+var bothTimesheets ='${bothTimesheets}';
+var onlyTimesheets ='${onlyTimesheets}';
+var onlyApprovalTimesheets ='${onlyApprovalTimesheets}';
+console.log("bothTimesheets "+bothTimesheets);
+console.log("onlyTimesheets "+onlyTimesheets);
+console.log("onlyApprovalTimesheets "+onlyApprovalTimesheets);
 </script>
 <script>
   $(document).ready(function() {

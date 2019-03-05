@@ -41,12 +41,29 @@ $( document ).ready(function() {
 	 // below funtons are the dashboard related functions. need to modify sourcelead url according to the module. 
 	
 	 
-	 // need to check role for the below timesheet function call
-     /* timeSheetSubmissionStatusCount("myTimesheets");// timesheet counts 
-	 requirementSubmissionsCount("today"); // jobs counts
-	 expensesCount("myExpenses"); // expenses count self need to check authorizarion
-	 getSelfTotalCounts(); // leaves counts self count need to check authorizarion
-	 requirementList(false, -1);//jobs section need to check authorization.
+	 // need to check role for the below timesheet function call // // jobs counts counts 
+	  if(bothTimesheets == 'true' || onlyTimesheets == 'true'){
+		  timeSheetSubmissionStatusCount("myTimesheets");
+	  }
+	  else{
+		  timeSheetSubmissionStatusCount("employes");
+	  }
+	 
+	 // jobs counts
+	   var jsondata = sessionStorage.getItem('jobsCount');
+	     if(jsondata!= null){
+			 jsondata =jsondata.split(","); 
+			 $("#submissionsCount").text(jsondata[0]);
+			 $("#applicantsCount").text(jsondata[1]);
+			 $("#interviewsCount").text(jsondata[2]);
+			 $("#offersCount").text(jsondata[3]);
+			 sessionStorage.clear(); 
+		 }else{
+			 	requirementSubmissionsCount("today");
+	  }
+	  expensesCount("myExpenses"); // expenses count self
+	  getSelfTotalCounts(); // leaves counts self count need to check authorizarion
+	 /*requirementList(false, -1);//jobs section need to check authorization.
 	 onboardingCandidatesList();// onboarding candidate list , need to check authorizarion
 	 getProjectResourceReqestsListCount();// Project Requests Resource Associate  need to check authorizarion
 	 resourceRequestList("Waiting For Approval");// Project Requests Resource Associate  need to check authorizarion

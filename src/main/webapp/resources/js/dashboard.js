@@ -1,11 +1,11 @@
 // below details need to be dynamic as of now used the user details of  snigitha paruchuri.
 //narasimha.seeral@businessintelli.com for india location 
-var sourceleadUrl ="http://localhost:8080/app";//'${sourceleadUrl}'; // setting common user settings 
+//var sourceleadUrl ="http://localhost:8080/app";//'${sourceleadUrl}'; // setting common user settings 
 //var locationId = "5";//'${SourceLeadWeb_orgLocationId}'; //narasimha
-var locationId = "3";//'${SourceLeadWeb_orgLocationId}'; snigitha
+//var locationId = "3";//'${SourceLeadWeb_orgLocationId}'; snigitha
 var locationList ="dd-MM-yyyy";//'${SourceLeadWeb_orgLocations.dateFormat}';	
 //var userId ="31";// '${SourceLeadWeb_user.id}'; Narasimha
-var userId ="4";// '${SourceLeadWeb_user.id}'; snigitha
+//var userId ="4";// '${SourceLeadWeb_user.id}'; snigitha
 //var orgLocationCode = "txhlIN"; //'${SourceLeadWeb_locationCode}'; Narasimha
 var orgLocationCode = "775BUS";// snigitha
 var orgCode = '775B'
@@ -49,84 +49,75 @@ var finalDateFormatEDashboardeventCalendar = '';
 //var orgLocationCode = '${SourceLeadWeb_locationCode}';
 //var candiadteId = '${SourceLeadWeb_candidateId}';
 var timesheetType;
-//var sourceleadUrl ='${sourceleadUrl}';
-var sourceleadWebSocketUrl = sourceleadUrl.replace("http","ws");
 //var isGlobalAccess = '${SourceLeadWeb_isGlobalAccess}';
 
-function timeSheetSubmissionStatusCount(type) { 
-  $("#rejectLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
-  $("#waitingLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
-  $("#draftLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
-  $("#approvedloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
-  
-  timesheetType = type;
-  wsocket = new WebSocket(sourceleadWebSocketUrl.trim()+"/ws/dashBoardDynamicCount?userId="+userId+"&orgLocationCode="+orgLocationCode+"&candiadteId="+candiadteId+"&timesheetType="+timesheetType+"&isGlobalAccess="+isGlobalAccess+"&countFor=timesheet");       
-  wsocket.onmessage = onMessage; 
-}
-
-window.onbeforeunload = function() {
-	 var myWebSocket = new WebSocket(sourceleadWebSocketUrl.trim()+"/ws/dashBoardDynamicCount?userId="+userId+"&orgLocationCode="+orgLocationCode+"&candiadteId="+candiadteId+"&timesheetType="+timesheetType+"&isGlobalAccess="+isGlobalAccess+"&countFor=timesheet"); 
-	 myWebSocket.close();
-};
-
-function onMessage(evt) {
-
-  var json = JSON.parse(evt.data);
-  var  approvalTimesheetsSubmissionsCount =json.approvedTimesheetSubmissionCount;
-  var  savedTimesheetsSubmissionsCount = json.savedTimesheetSubmissionCount;
-  var  rejectedTimesheetsSubmissionsCount = json.rejectedTimesheetSubmissionCount;
-  var  waitingTimesheetsSubmissionsCount = json.waitingForApprovalTimesheetSubmissionCount;
-  $("#draftLoading").removeAttr("style");
-  $("#savedTimesheetsSubmissionsCount").empty();
-  $("#savedCountAnchor").empty();
-  $("#approvedloading").removeAttr("style");
-  $("#approvalTimesheetsSubmissionsCount").empty();
-  $("#approvedCountAnchor").empty();
- 
-  $("#rejectLoading").removeAttr("style");
-  $("#rejectTimesheetsSubmissionsCount").empty();
-  $("#rejectedCountAnchor").empty();
-  $("#waitingLoading").removeAttr("style");
-  $("#waitingTimesheetsSubmissionsCount").empty();
-  $("#waitingCountAnchor").empty();
- 
-  if(rejectedTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
-	  $("#rejectTimesheetsSubmissionsCount").html(rejectedTimesheetsSubmissionsCount);
-     $("#rejectedCountAnchor").html("Rejected");
-}else{
-	  $("#rejectTimesheetsSubmissionsCount").html(rejectedTimesheetsSubmissionsCount);
-      $("#rejectedCountAnchor").html('<a  href="/app/totalTimesheetList/REJECTED">Rejected</a>'); 
-}
-  if(savedTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
-	  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
-     $("#savedCountAnchor").html("Draft");
- }else{
-	  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
-     $("#savedCountAnchor").html("<a href='/app/totalTimesheetList/DRAFT'>Draft</a>"); 
-    
- }
- 
- if(waitingTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
-	  $("#waitingTimesheetsSubmissionsCount").html(waitingTimesheetsSubmissionsCount);
-    $("#waitingCountAnchor").html("Submitted");
-}else{
-	  $("#waitingTimesheetsSubmissionsCount").html(waitingTimesheetsSubmissionsCount);
-     $("#waitingCountAnchor").html('<a  href="/app/totalTimesheetList/SUBMITTED">Waiting</a>'); 
-}
- 
-  if(approvalTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
-	  $("#approvalTimesheetsSubmissionsCount").html(approvalTimesheetsSubmissionsCount);
-     $("#approvedCountAnchor").html("Approved");
-}else{
-	  $("#approvalTimesheetsSubmissionsCount").html(approvalTimesheetsSubmissionsCount);
-     $("#approvedCountAnchor").html('<a  href="/app/totalTimesheetList/APPROVED">Approved</a>'); 
- }
- if(timesheetType == "myTimesheets"){
-	 $("#timeSheetLink").attr("href", "/app/timesheet");
- }else{
-	 $("#timeSheetLink").attr("href", "/app/timesheetApproval");
- }
-} 
+function timeSheetSubmissionStatusCount(timesheetType) { 
+	  $("#rejectLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
+	  $("#waitingLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
+	  $("#draftLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
+	  $("#approvedloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getTimeSheetSubmissionStatus?timesheetType="+timesheetType, 
+		        success: function(json) {
+      		  var  savedTimesheetsSubmissionsCount = json.savedTimesheetSubmissionCount;
+	        	  var  waitingTimesheetsSubmissionsCount =json.waitingForApprovalTimesheetSubmissionCount;
+	        	  var  approvalTimesheetsSubmissionsCount =json.approvedTimesheetSubmissionCount;
+	        	  var  rejectedTimesheetsSubmissionsCount = json.rejectedTimesheetSubmissionCount; 
+		       	  
+		       	  $("#draftLoading").removeAttr("style");
+		       	  $("#savedTimesheetsSubmissionsCount").empty();
+		       	  $("#savedCountAnchor").empty();
+		       	  $("#approvedloading").removeAttr("style");
+		       	  $("#approvalTimesheetsSubmissionsCount").empty();
+		       	  $("#approvedCountAnchor").empty();
+		       	 
+		       	  $("#rejectLoading").removeAttr("style");
+		       	  $("#rejectTimesheetsSubmissionsCount").empty();
+		       	  $("#rejectedCountAnchor").empty();
+		       	  $("#waitingLoading").removeAttr("style");
+		       	  $("#waitingTimesheetsSubmissionsCount").empty();
+		       	  $("#waitingCountAnchor").empty();
+		       	 
+		       	  if(rejectedTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
+		       		  $("#rejectTimesheetsSubmissionsCount").html(rejectedTimesheetsSubmissionsCount);
+		                $("#rejectedCountAnchor").html("Rejected");
+		           }else{
+		         	    $("#rejectTimesheetsSubmissionsCount").html(rejectedTimesheetsSubmissionsCount);
+		                 $("#rejectedCountAnchor").html('<a  href="/app/totalTimesheetList/REJECTED">Rejected</a>'); 
+		           }
+		       	  if(savedTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
+		       		  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
+		                $("#savedCountAnchor").html("Draft");
+		            }else{
+		          	  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
+		                $("#savedCountAnchor").html("<a href='/app/totalTimesheetList/DRAFT'>Draft</a>"); 
+		               
+		            }
+		       	 
+		       	 if(waitingTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
+		       		  $("#waitingTimesheetsSubmissionsCount").html(waitingTimesheetsSubmissionsCount);
+		               $("#waitingCountAnchor").html("Submitted");
+		           }else{
+		         	  $("#waitingTimesheetsSubmissionsCount").html(waitingTimesheetsSubmissionsCount);
+		                $("#waitingCountAnchor").html('<a  href="/app/totalTimesheetList/SUBMITTED">Waiting</a>'); 
+		           }
+		       	 
+		       	  if(approvalTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
+		       		  $("#approvalTimesheetsSubmissionsCount").html(approvalTimesheetsSubmissionsCount);
+		                $("#approvedCountAnchor").html("Approved");
+		           }else{
+		          	  $("#approvalTimesheetsSubmissionsCount").html(approvalTimesheetsSubmissionsCount);
+		                $("#approvedCountAnchor").html('<a  href="/app/totalTimesheetList/APPROVED">Approved</a>'); 
+		            }
+		       	 if(timesheetType == "myTimesheets"){
+		       		 $("#timeSheetLink").attr("href", ""+pmsUrl+"/timesheet");
+		       	 }else{
+		       		 $("#timeSheetLink").attr("href", ""+pmsUrl+"/timesheetApproval");
+		       	 }
+		 		}
+		  }); 
+	} 
 
 //2.Jobs section counts start here 
 function loadRequirementApplicants(){
@@ -154,298 +145,227 @@ function loadRequirementOffers(){
 	window.location.href = sourceleadUrl + "/requirementOffersList?&tab="+tab+"&orgLocationId="+orgLocId;;
 }
 
-function requirementSubmissionsCount(daterange) {
+function requirementSubmissionsCount(daterange){
 	$("#dateActiveTab").val(daterange);
-	$(
-			"#applicantsCountLoading, #submissionsCountLoading, #interviewsCountLoading, #offersCountLoading")
-			.attr(
-					'style',
-					'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
-	  // var sourceleadUrl ='${sourceleadUrl}';
-	  // var userId = '${SourceLeadWeb_user.id}';
-	   var orgLocationId = locationId;//''${SourceLeadWeb_orgLocationId}';
-	$.ajax({
-				type : "GET",
-				url : sourceleadUrl
-						+ "/getRequirementSubmissionsCount?daterange="	+ daterange + "&userId=" + userId + "&orgLocationId="+ orgLocationId,
-				success : function(data) {
-					if (data.response === "FAILED") {
-						showError(data.responseMessage);
-					} else if (data.response === "AWKWARD") {
-						location.href = "/errorPage";
-					} else if (data.response === "SUCCESS") {
-						var json = data.object;
-						$(
-								"#applicantsCountLoading, #submissionsCountLoading, #interviewsCountLoading, #offersCountLoading")
-								.removeAttr("style");
-						var submissionsCount = json.submissionCount;
-						var applicantsCount = json.applicantsCount;
-						var interviewsCount = json.interviewsCount;
-						var offersCount = json.offersCount;
-						if (submissionsCount > 0) {
-							$("#submissionsCount").text(submissionsCount);
-							$('#submissionsCount')
-									.attr("onClick",
-											"loadRequirementSubmissions(); return false;");
-							$('#subDiv').attr("style", "cursor:pointer");
-						} else {
-							$("#submissionsCount").html("0");
-							$("#submissionsCount").removeAttr("onclick");
-							$("#subDiv").removeAttr("style");
-						}
-						if (applicantsCount > 0) {
-							$("#applicantsCount").text(applicantsCount);
-							$('#applicantsCount')
-									.attr("onClick",
-											"loadRequirementApplicants(); return false;");
-							$('#appDiv').attr("style", "cursor:pointer");
-						} else {
-							$("#applicantsCount").html("0");
-							$("#applicantsCount").removeAttr("onclick");
-							$("#appDiv").removeAttr("style");
-						}
-						if (interviewsCount > 0) {
-							$("#interviewsCount").text(interviewsCount);
-							$('#interviewsCount')
-									.attr("onClick",
-											"loadRequirementInterviews(); return false;");
-							$('#intDiv').attr("style", "cursor:pointer");
-						} else {
-							$("#interviewsCount").html("0");
-							$("#interviewsCount").removeAttr("onclick");
-							$("#intDiv").removeAttr("style");
-						}
-						if (offersCount > 0) {
-							$("#offersCount").text(offersCount);
-							$('#offersCount').attr("onClick",
-									"loadRequirementOffers(); return false;");
-							$('#offDiv').attr("style", "cursor:pointer");
-						} else {
-							$("#offersCount").html("0");
-							$("#offersCount").removeAttr("onclick");
-							$("#offDiv").removeAttr("style");
-						}
-					} else if (data.indexOf('Sign In') !== -1) {
-						location.replace(sourceleadUrl);
-					} else {
-						showError("Operation failed, please try again");
-					}
-				}
-			});
-
-	if (daterange == "today") {
-		$("#jobsLink").attr("href", "/app/jobs");
-	} else {
-		$("#jobsLink").attr("href", "/app/jobs");
-	}
-
-}// Jobs End
+	//var orgLocationId = locationId;
+	$("#applicantsCountLoading, #submissionsCountLoading, #interviewsCountLoading, #offersCountLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getRequirementSubmissionsCount?daterange="+daterange+"&userId="+userId+"&orgLocationId="+orgLocationId, 
+		        success: function(data) {
+		        	if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+			        	var json = data.object;
+			        	$("#applicantsCountLoading, #submissionsCountLoading, #interviewsCountLoading, #offersCountLoading").removeAttr("style");
+			        	 var  submissionsCount = json.submissionCount;
+			        	 var  applicantsCount =json.applicantsCount;
+			        	 var  interviewsCount =json.interviewsCount;
+			        	 var  offersCount = json.offersCount; 
+			        	 if(submissionsCount>0){
+		                      $("#submissionsCount").text(submissionsCount);
+		                      $('#submissionsCount').attr("onClick", "loadRequirementSubmissions(); return false;"); 
+		                      $('#subDiv').attr("style", "cursor:pointer"); 
+		                  }else{
+		                      $("#submissionsCount").html("0");
+		                      $("#submissionsCount").removeAttr("onclick");
+		                      $("#subDiv").removeAttr("style");
+		                  } 
+			        	 if(applicantsCount>0){
+		                      $("#applicantsCount").text(applicantsCount);
+		                      $('#applicantsCount').attr("onClick", "loadRequirementApplicants(); return false;"); 
+		                      $('#appDiv').attr("style", "cursor:pointer"); 
+		                  }else{
+		                      $("#applicantsCount").html("0");
+		                      $("#applicantsCount").removeAttr("onclick");
+		                      $("#appDiv").removeAttr("style");
+		                  }
+			        	if(interviewsCount>0){
+		                      $("#interviewsCount").text(interviewsCount);
+		                      $('#interviewsCount').attr("onClick", "loadRequirementInterviews(); return false;"); 
+		                      $('#intDiv').attr("style", "cursor:pointer"); 
+		                  }else{
+		                      $("#interviewsCount").html("0");
+		                      $("#interviewsCount").removeAttr("onclick");
+		                      $("#intDiv").removeAttr("style");
+		                  }
+			        	if(offersCount>0){
+		                      $("#offersCount").text(offersCount);
+		                      $('#offersCount').attr("onClick", "loadRequirementOffers(); return false;"); 
+		                      $('#offDiv').attr("style", "cursor:pointer"); 
+		                  }else{
+		                      $("#offersCount").html("0");
+		                      $("#offersCount").removeAttr("onclick");
+		                      $("#offDiv").removeAttr("style");
+		                  } 
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
+		 		}
+		  });
+		 
+		 if(daterange == "today"){
+			 $("#jobsLink").attr("href", "/ats/jobsList");
+		 }else{
+			 $("#jobsLink").attr("href", "/ats/jobsList");
+		 }
+		 
+	}// Jobs End
 //Expensive count start.
-function expensesCount(expenseType) {
-	// var sourceleadUrl ='${sourceleadUrl}';
-	$.ajax({
-				type : "GET",
-				url : sourceleadUrl + "/getExpensesCount?expenseType="
-						+ expenseType,
-				success : function(json) {
-					// var json = JSON.parse(data);
-
-					$("#expensesDraftCount").empty();
-					$("#expensesSubmittedForApprovalCount").empty();
-					$("#expensesApprovedCount").empty();
-					$("#expensesRejectCount").empty();
-
-					$("#dial1txt").empty();
-					$("#dial2txt").empty();
-					$("#dial3txt").empty();
-					$("#dial4txt").empty();
-
-					var expensesDraftCount = 0;
-					if (json.expensesDraftCount != null
-							&& json.expensesDraftCount != ""
-							&& json.expensesDraftCount != 'undefined') {
-						expensesDraftCount = json.expensesDraftCount;
-					}
-
-					var expensesSubmittedForApprovalCount = 0;
-					if (json.expensesSubmittedForApprovalCount != null
-							&& json.expensesSubmittedForApprovalCount != ""
-							&& json.expensesSubmittedForApprovalCount != 'undefined') {
-						expensesSubmittedForApprovalCount = json.expensesSubmittedForApprovalCount;
-					}
-
-					var expensesApprovedCount = 0;
-					if (json.expensesApprovedCount != null
-							&& json.expensesApprovedCount != ""
-							&& json.expensesApprovedCount != 'undefined') {
-						expensesApprovedCount = json.expensesApprovedCount;
-					}
-
-					var expensesRejectCount = 0;
-					if (json.expensesRejectCount != null
-							&& json.expensesRejectCount != ""
-							&& json.expensesRejectCount != 'undefined') {
-						expensesRejectCount = json.expensesRejectCount;
-					}
-
-					var empExpensesSubmittedForApprovalCount = 0;
-					if (json.empExpensesSubmittedForApprovalCount != null
-							&& json.empExpensesSubmittedForApprovalCount != ""
-							&& json.empExpensesSubmittedForApprovalCount != 'undefined') {
-						empExpensesSubmittedForApprovalCount = json.empExpensesSubmittedForApprovalCount;
-					}
-
-					var empExpensesApprovedCount = 0;
-					if (json.empExpensesApprovedCount != null
-							&& json.empExpensesApprovedCount != ""
-							&& json.empExpensesApprovedCount != 'undefined') {
-						empExpensesApprovedCount = json.empExpensesApprovedCount;
-					}
-
-					var empExpensesRejectedCount = 0;
-					if (json.empExpensesRejectedCount != null
-							&& json.empExpensesRejectedCount != ""
-							&& json.empExpensesRejectedCount != 'undefined') {
-						empExpensesRejectedCount = json.empExpensesRejectedCount;
-					}
-
-					// var empExpensesReopenCount = json.empExpensesReopenCount;
-
-					if (expenseType == "myExpenses") {
-						if (expensesDraftCount > 0) {
-							$("#dial1txt")
-									.html(
-											"<a onclick='myExpensesListByStage(\"draft\");'>Draft</a>");
-							$("#expensesDraftCount").html(
-									"<a onclick='myExpensesListByStage(\"draft\");'>"
-											+ expensesDraftCount + "</a>");
-						} else {
-							$("#dial1txt").html("Draft");
-							$("#expensesDraftCount").html(expensesDraftCount);
-						}
-
-					} else {
-						if (empExpensesSubmittedForApprovalCount > 0) {
-							$("#dial1txt")
-									.html(
-											"<a onclick='employeeExpensesListByStage(\"submitted\");'>Waiting</a>");
-							$("#expensesDraftCount")
-									.html(
-											"<a onclick='employeeExpensesListByStage(\"submitted\");'>"
-													+ empExpensesSubmittedForApprovalCount
-													+ "</a>");
-						} else {
-							$("#dial1txt").html("Waiting");
-							$("#expensesDraftCount").html(
-									empExpensesSubmittedForApprovalCount);
-						}
-
-					}
-
-					if (expenseType == "myExpenses") {
-						$("#submittedId").show();
-						if (expensesSubmittedForApprovalCount > 0) {
-							$("#dial2txt")
-									.html(
-											"<a onclick='myExpensesListByStage(\"submitted\");'>Submitted</a>");
-							$("#expensesSubmittedForApprovalCount").html(
-									"<a onclick='myExpensesListByStage(\"submitted\");'>"
-											+ expensesSubmittedForApprovalCount
-											+ "</a>");
-						} else {
-							$("#dial2txt").html("Submitted");
-							$("#expensesSubmittedForApprovalCount").html(
-									expensesSubmittedForApprovalCount);
-						}
-
-					} else {
-						$("#submittedId").hide();
-					}
-
-					if (expenseType == "myExpenses") {
-						if (expensesApprovedCount > 0) {
-							$("#dial3txt")
-									.html(
-											"<a onclick='myExpensesListByStage(\"approved\");'>Approved</a>");
-							$("#expensesApprovedCount").html(
-									"<a onclick='myExpensesListByStage(\"approved\");'>"
-											+ expensesApprovedCount + "</a>");
-						} else {
-							$("#dial3txt").html("Approved");
-							$("#expensesApprovedCount").html(
-									expensesApprovedCount);
-						}
-
-					} else {
-						if (empExpensesApprovedCount > 0) {
-							$("#dial3txt")
-									.html(
-											"<a onclick='employeeExpensesListByStage(\"approved\");'>Approved</a>");
-							$("#expensesApprovedCount")
-									.html(
-											"<a onclick='employeeExpensesListByStage(\"approved\");'>"
-													+ empExpensesApprovedCount
-													+ "</a>");
-						} else {
-							$("#dial3txt").html("Approved");
-							$("#expensesApprovedCount").html(
-									empExpensesApprovedCount);
-						}
-					}
-
-					if (expenseType == "myExpenses") {
-						$("#dial4txtDial").show();
-						if (expensesRejectCount > 0) {
-							$("#dial4txt")
-									.html(
-											"<a onclick='myExpensesListByStage(\"rejected\");'>Rejected</a>");
-							$("#expensesRejectCount").html(
-									"<a onclick='myExpensesListByStage(\"rejected\");'>"
-											+ expensesRejectCount + "</a>");
-						} else {
-							$("#dial4txt").html("Rejected");
-							$("#expensesRejectCount").html(expensesRejectCount);
-						}
-					} else {
-						if (empExpensesRejectedCount > 0) {
-							$("#dial4txt")
-									.html(
-											"<a onclick='employeeExpensesListByStage(\"rejected\");'>Rejected</a>");
-							$("#expensesRejectCount")
-									.html(
-											"<a onclick='employeeExpensesListByStage(\"rejected\");'>"
-													+ empExpensesRejectedCount
-													+ "</a>");
-						} else {
-							$("#dial4txt").html("Rejected");
-							$("#expensesRejectCount").html(
-									empExpensesRejectedCount);
-						}
-					}
-
-				}
-			});
-
-	if (expenseType == "myExpenses") {
-		$("#expensesLink").attr("href", "/app/expenses");
-	} else {
-		$("#expensesLink").attr("href",	"/app/expensesApprovalList");
-	}
-}// expensive count end.
+function expensesCount(expenseType){
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getExpensesCount?expenseType="+expenseType, 
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
+		        	 
+		        	 $("#expensesDraftCount").empty();
+	        		 $("#expensesSubmittedForApprovalCount").empty();
+	        		 $("#expensesApprovedCount").empty();
+	        		 $("#expensesRejectCount").empty();
+	        		 
+	        		 $("#dial1txt").empty();
+	        		 $("#dial2txt").empty();
+	        		 $("#dial3txt").empty();
+	        		 $("#dial4txt").empty();
+	        		 
+	        		 var  expensesDraftCount = 0;
+	        		 if(json.expensesDraftCount != null && json.expensesDraftCount != "" && json.expensesDraftCount != 'undefined'){
+	        			 expensesDraftCount = json.expensesDraftCount;
+	        		 }
+	        		 
+		        	 var  expensesSubmittedForApprovalCount = 0;
+		        	 if(json.expensesSubmittedForApprovalCount != null && json.expensesSubmittedForApprovalCount != "" && json.expensesSubmittedForApprovalCount != 'undefined'){
+		        		 expensesSubmittedForApprovalCount =json.expensesSubmittedForApprovalCount;
+	        		 }
+		        	 
+		        	 var  expensesApprovedCount = 0;
+		        	 if(json.expensesApprovedCount != null && json.expensesApprovedCount != "" && json.expensesApprovedCount != 'undefined'){
+		        		 expensesApprovedCount =json.expensesApprovedCount;
+	        		 }
+		        	 
+		        	 var  expensesRejectCount = 0;
+		        	 if(json.expensesRejectCount != null && json.expensesRejectCount != "" && json.expensesRejectCount != 'undefined'){
+		        		 expensesRejectCount = json.expensesRejectCount;
+	        		 }
+		        	 
+		        	 var  empExpensesSubmittedForApprovalCount = 0;
+		        	 if(json.empExpensesSubmittedForApprovalCount != null && json.empExpensesSubmittedForApprovalCount != "" && json.empExpensesSubmittedForApprovalCount != 'undefined'){
+		        		 empExpensesSubmittedForApprovalCount = json.empExpensesSubmittedForApprovalCount;
+	        		 }
+		        	 
+		        	 var  empExpensesApprovedCount = 0;
+		        	 if(json.empExpensesApprovedCount != null && json.empExpensesApprovedCount != "" && json.empExpensesApprovedCount != 'undefined'){
+		        		 empExpensesApprovedCount =json.empExpensesApprovedCount;
+	        		 }
+		        	 
+		        	 var  empExpensesRejectedCount = 0;
+		        	 if(json.empExpensesRejectedCount != null && json.empExpensesRejectedCount != "" && json.empExpensesRejectedCount != 'undefined'){
+		        		 empExpensesRejectedCount =json.empExpensesRejectedCount;
+	        		 }
+		        	 
+		        	// var  empExpensesReopenCount = json.empExpensesReopenCount;
+		        	 
+		        	 if(expenseType == "myExpenses"){
+		        		 if(expensesDraftCount >0){
+		        			 $("#dial1txt").html("<a onclick='myExpensesListByStage(\"draft\");'>Draft</a>");
+		        			 $("#expensesDraftCount").html("<a onclick='myExpensesListByStage(\"draft\");'>"+expensesDraftCount+"</a>");
+		        		   }else{
+		        			   $("#dial1txt").html("Draft");
+		        			   $("#expensesDraftCount").html(expensesDraftCount);
+		        		   }
+		        		 
+	                  }else{
+	                	  if(empExpensesSubmittedForApprovalCount >0){
+		                	  $("#dial1txt").html("<a onclick='employeeExpensesListByStage(\"submitted\");'>Waiting</a>");
+		                	  $("#expensesDraftCount").html("<a onclick='employeeExpensesListByStage(\"submitted\");'>"+empExpensesSubmittedForApprovalCount+"</a>");
+	                	  }else{
+	                		  $("#dial1txt").html("Waiting");
+		                	  $("#expensesDraftCount").html(empExpensesSubmittedForApprovalCount); 
+	                	  }
+	                	  
+	                  }
+		        	 
+		        	if(expenseType == "myExpenses"){
+		        		$("#submittedId").show(); 
+		        		if(expensesSubmittedForApprovalCount > 0){
+		        			$("#dial2txt").html("<a onclick='myExpensesListByStage(\"submitted\");'>Submitted</a>");
+			        		  $("#expensesSubmittedForApprovalCount").html("<a onclick='myExpensesListByStage(\"submitted\");'>"+expensesSubmittedForApprovalCount+"</a>");
+		        		}else{
+		        			 $("#dial2txt").html("Submitted");
+			        		 $("#expensesSubmittedForApprovalCount").html(expensesSubmittedForApprovalCount);
+		        		}
+		        		
+	                  }else{
+	                	  $("#submittedId").hide();
+	                  }
+		        	
+		        	if(expenseType == "myExpenses"){
+		        		  if(expensesApprovedCount > 0){
+			        		  $("#dial3txt").html("<a onclick='myExpensesListByStage(\"approved\");'>Approved</a>");
+			        		  $("#expensesApprovedCount").html("<a onclick='myExpensesListByStage(\"approved\");'>"+expensesApprovedCount+"</a>");
+		        		  }else{
+		        			  $("#dial3txt").html("Approved");
+			        		  $("#expensesApprovedCount").html(expensesApprovedCount);
+		        		  }
+		        		  
+	                }else{
+	                	  if(empExpensesApprovedCount > 0){
+		                	  $("#dial3txt").html("<a onclick='employeeExpensesListByStage(\"approved\");'>Approved</a>");
+		                	  $("#expensesApprovedCount").html("<a onclick='employeeExpensesListByStage(\"approved\");'>"+empExpensesApprovedCount+"</a>");
+	                	  }else{
+	                		  $("#dial3txt").html("Approved");
+		                	  $("#expensesApprovedCount").html(empExpensesApprovedCount);
+	                	  }
+	                  }
+		        	
+		        	if(expenseType == "myExpenses"){
+		        		  $("#dial4txtDial").show();
+		        		  if(expensesRejectCount > 0){
+		        		          $("#dial4txt").html("<a onclick='myExpensesListByStage(\"rejected\");'>Rejected</a>");
+		        		          $("#expensesRejectCount").html("<a onclick='myExpensesListByStage(\"rejected\");'>"+expensesRejectCount+"</a>");
+		        		  }else{
+		        			  $("#dial4txt").html("Rejected");
+	        		          $("#expensesRejectCount").html(expensesRejectCount);
+		        		  }
+	                 }else{
+		                	if(empExpensesRejectedCount > 0){
+			                	   $("#dial4txt").html("<a onclick='employeeExpensesListByStage(\"rejected\");'>Rejected</a>");
+			                	   $("#expensesRejectCount").html("<a onclick='employeeExpensesListByStage(\"rejected\");'>"+empExpensesRejectedCount+"</a>");
+			                	}else{
+			                		$("#dial4txt").html("Rejected");
+				                	$("#expensesRejectCount").html(empExpensesRejectedCount);
+			               }
+			           }
+		        	
+		        	  
+		 		}
+		  });
+		 
+		 if(expenseType == "myExpenses"){
+			 $("#expensesLink").attr("href", ""+pmsUrl+"/expenses");
+		 }else{
+			 $("#expensesLink").attr("href", ""+pmsUrl+"/expensesApprovalList");
+		 }
+	}// expensive count end.
 // get self leaves count 
 function getSelfTotalCounts(){
-	var orgLocationId =  locationId; // replcaced with dashboard variable.
+	//var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	//var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
 	      type : "GET",
-	      url: sourceleadUrl+"/totalCountsForSelfLeaves?orgLocationId="+orgLocationId+"&userId="+userId,  
+	      url: sourceleadUrl+"/getCountsForSelfLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
 	       success :function(report) { 
 	   	   if(report.selfPendingCounts != null && report.selfPendingCounts != '' && report.selfPendingCounts != 'undefined'){
 	   		if(report.selfPendingCounts == 0){
 //    				$('#selfapp').removeAttr("href");
    				$("#selfpend").html("Pending"); 
    			   }else{
-   				$("#selfpend").html("<a href='/app/pendingLeaves'>Pending</a>"); 
+   				$("#selfpend").html("<a href='/pms/pendingLeaves'>Pending</a>"); 
    			   }
    			   $("#selfPendingCounts").html(report.selfPendingCounts); 
    		   }
@@ -454,7 +374,7 @@ function getSelfTotalCounts(){
 //    				$('#selfrej').removeAttr("href");
    				$("#selfapp").html("Approved"); 
    			   }else{
-   				$("#selfapp").html("<a href='/app/approvedLeaves'>Approved</a>");
+   				$("#selfapp").html("<a href='/pms/approvedLeaves'>Approved</a>");
    			   }
    			   $("#selfApprovedCounts").html(report.selfApprovedCounts); 
    		   }
@@ -463,7 +383,7 @@ function getSelfTotalCounts(){
 //    				$('#selfrej').removeAttr("href");
    				$("#selfrej").html("Rejected"); 
    			   }else{
-   				$("#selfrej").html("<a href='/app/rejectedLeaves'>Rejected</a>");
+   				$("#selfrej").html("<a href='/pms/rejectedLeaves'>Rejected</a>");
    			   }
    			   $("#selfRejectedCounts").html(report.selfRejectedCounts); 
    		   }
@@ -473,7 +393,7 @@ function getSelfTotalCounts(){
 //    				$('#selfrej').removeAttr("href");
    				$('#selfcanc').html("Cancelled");
    			   }else{
-   				$("#selfcanc").html("<a href='/app/cancelLeaves'>Cancelled</a>");
+   				$("#selfcanc").html("<a href='/pms/cancelLeaves'>Cancelled</a>");
    			   }
    			   $("#selfCancelledCounts").html(report.selfCancelledCounts); 
    		   }
@@ -481,24 +401,80 @@ function getSelfTotalCounts(){
    			   $("#selfBalancedCounts").html(report.totalBalLeaves); 
    		   }
    		   
-   		   },
+   		/*  AmCharts.makeChart("empselfLeaves",
+ 				{
+ 					"type": "pie",
+ 					"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
+ 					"innerRadius": "50%",
+ 					"labelRadius": 0,
+ 					"minRadius": 0,
+ 					"pieX": "50%",
+ 					"pieY": "50%",
+ 					"pullOutRadius": 0,
+ 					"radius": "49%",
+ 					"startAngle": 0,
+ 					"colors": [
+ 						"#337ab7",
+						"#66bb6a",
+						"#ef5350",
+						"#f0ad4e",
+						"#5bc0de"
+ 					],
+ 					"labelsEnabled": false,
+ 					"marginBottom": 0,
+ 					"marginTop": 0,
+ 					"outlineThickness": 0,
+ 					"titleField": "category",
+ 					"valueField": "column-1",
+ 					"fontSize": 12,
+ 					"allLabels": [],
+ 					"balloon": {
+ 						"fixedPosition": false
+ 					},
+ 					"titles": [],
+ 					"dataProvider": [
+ 						{
+ 							"category": "Pending",
+ 							"column-1": report.selfPendingCounts
+ 						},
+ 						{
+ 							"category": "Approved",
+ 							"column-1": report.selfApprovedCounts
+ 						},
+ 						{
+ 							"category": "Rejected",
+ 							"column-1": report.selfRejectedCounts
+ 						},
+ 						{
+ 							"category": "Cancelled",
+ 							"column-1": report.selfCancelledCounts
+ 						},
+ 						{
+ 							"category": "Balance",
+ 							"column-1": report.selfBalancedCounts
+ 						} 
+ 					]
+ 				}
+ 			); */ 
+   		 
+	       },
 		  });
-	}
+}
 
 // employee leave count leave management  
 function getEmployeeTotalCounts(){
-	var orgLocationId =  locationId; // replcaced with dashboard variable.
+//	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 //	var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
 	      type : "GET",
-	      url: sourceleadUrl+"/totalCountsForEmployeeLeaves?orgLocationId="+orgLocationId+"&userId="+userId,  
+	      url: pmsUrl+"/totalCountsForEmployeeLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
 	       success :function(report) { 
 	    	   if(report.employeeRequestedCounts != null && report.employeeRequestedCounts != '' && report.employeeRequestedCounts != 'undefined'){
 	    		   if(report.employeeRequestedCounts == 0){
 // 	      				$('#empReq').removeAttr("href");
 	      				$('#empReq').html("Requested");
 	      			   }else{
-	      				 $('#empReq').html("<a href='/app/employeeRequestedLeaves'>Requested</a>"); 
+	      				 $('#empReq').html("<a href='/pms/employeeRequestedLeaves'>Requested</a>"); 
 	      			   }
     			   $("#employeeRequestedCounts").html(report.employeeRequestedCounts); 
     		   }
@@ -507,7 +483,7 @@ function getEmployeeTotalCounts(){
 //     	   				$('#empApp').removeAttr("href");
     	   				$('#empApp').html("Approved");
     	   			   }else{
-    	   				$('#empApp').html("<a href='/app/employeeApprovedLeaves'>Approved</a>"); 
+    	   				$('#empApp').html("<a href='/pms/employeeApprovedLeaves'>Approved</a>"); 
     	   			   }
     			   $("#employeeApprovedCounts").html(report.employeeApprovedCounts); 
     		   }
@@ -516,7 +492,7 @@ function getEmployeeTotalCounts(){
 //     	   				$('#empRej').removeAttr("href");
     	   				$('#empRej').html("Rejected");
     	   			   }else{
-    	   				$('#empRej').html("<a href='/app/employeeRejectedLeaves'>Rejected</a>");
+    	   				$('#empRej').html("<a href='/pms/employeeRejectedLeaves'>Rejected</a>");
     	   			   }
     			   $("#employeeRejectedCounts").html(report.employeeRejectedCounts); 
     		   }
@@ -525,10 +501,63 @@ function getEmployeeTotalCounts(){
 //     	   				$('#empCanc').removeAttr("href");
     				    $('#empCanc').html("Cancelled");
     	   			   }else{
-    	   				$('#empCanc').html("<a href='/app/employeeCancelLeaves'>Cancelled</a>");
+    	   				$('#empCanc').html("<a href='/pms/employeeCancelLeaves'>Cancelled</a>");
     	   			   }
     			   $("#employeeCancelledCounts").html(report.employeeCancelledCounts); 
     		   }
+    		   
+    		   //pie chart count
+    		/*    AmCharts.makeChart("employeeLeaves",
+    					{
+    						"type": "pie",
+    						"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
+    						"innerRadius": "50%",
+    						"labelRadius": 0,
+    						"minRadius": 0,
+    						"pieX": "50%",
+    						"pieY": "50%",
+    						"pullOutRadius": 0,
+    						"radius": "49%",
+    						"startAngle": 0,
+    						"colors": [
+    							"#337ab7",
+    							"#66bb6a",
+    							"#ef5350",
+    							"#f0ad4e"
+    						],
+    						"labelsEnabled": false,
+    						"marginBottom": 0,
+    						"marginTop": 0,
+    						"outlineThickness": 0,
+    						"titleField": "category",
+    						"valueField": "column-1",
+    						"fontSize": 12,
+    						"allLabels": [],
+    						"balloon": {
+    							"fixedPosition": false
+    						},
+    						"titles": [],
+    						"dataProvider": [
+    							{
+    								"category": "Requested",
+    								"column-1": report.employeeRequestedCounts
+    							},
+    							{
+    								"category": "Approved",
+    								"column-1": report.employeeApprovedCounts
+    							},
+    							{
+    								"category": "Rejected",
+    								"column-1": report.employeeRejectedCounts
+    							},
+    							{
+    								"category": "Cancelled",
+    								"column-1": report.employeeCancelledCounts
+    							} 
+    						]
+    					} 
+    				);*/
+    		   
 	       },
 		  });
 }
