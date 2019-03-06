@@ -304,6 +304,7 @@ public class OrgSettingsController {
 		SourceLeadSessionManager.setSessionAttribute(request, "fillingForm", orgLocations.getFillingForm());
 		SourceLeadSessionManager.setSessionAttribute(request, "unemploymentTax", orgLocations.getUnemploymentTax());
 		SourceLeadSessionManager.setSessionAttribute(request, "federalEin", orgLocations.getFederalEin());
+		SourceLeadSessionManager.setSessionAttribute(request, "coolingOffPeriod", orgLocations.getCoolingOffPeriod());
 		
 		OrglocationDepositTaxes orgLocDepTaxes = orglocationDepositTaxesService
 				.getOrglocationDepositTaxesByOrgLocationId(orgLocations.getId());

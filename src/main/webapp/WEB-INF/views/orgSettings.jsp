@@ -1858,12 +1858,12 @@ function configCoolingOff(){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getCoolingOffPeriod?${_csrf.parameterName}=${_csrf.token}", 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(coolingOffPeriod) {
 					var result = "";
-					var coolingOffPeriod = 0;
-					if(null != json.coolingOffPeriod && '' != json.coolingOffPeriod && 'undefined' != json.coolingOffPeriod){
-						coolingOffPeriod = json.coolingOffPeriod;
+					if(null != coolingOffPeriod && '' != coolingOffPeriod && 'undefined' != coolingOffPeriod){
+						coolingOffPeriod = coolingOffPeriod;
+					}else{
+						coolingOffPeriod = '0 Days';
 					}
 					result = result + '<form id="coolingOff_form"  name="coolingOff_form" method="post">'; 
 					
