@@ -193,19 +193,19 @@ function requirementReportPagination(SourceLeadWeb_loginOrg){
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Submitted Applicants</a>
 			<div class="RePop">
 				<ul>
-					<li><a href="<c:url value='${appPath}/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Posted</a></li>
-					<li><a href="<c:url value='${appPath}/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Stages</a></li>
+					<li><a href="${SourceLeadWeb_sourceleadUrl}/requirementListForReports"><span><i class="fa fa-briefcase"></i></span>Jobs Posted</a></li>
+					<li><a href="${SourceLeadWeb_sourceleadUrl}/requirementStagesListForReports"><span><i class="fa fa-briefcase"></i></span>Jobs Stages</a></li>
 <%-- 					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li> --%>
 <%-- 				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li> --%>
-				    <li><a href="<c:url value='${appPath}/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Submitted Applicants</a></li>
+				    <li><a href="${SourceLeadWeb_sourceleadUrl}/applicantsSubmittedListForReports"><span><i class="fa fa-briefcase"></i></span>Submitted Applicants</a></li>
 <%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Job Assign To</a></li> --%>
-				    <li><a href="<c:url value='${appPath}/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
-				    <li><a href="<c:url value='${appPath}/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
+				    <li><a href="${SourceLeadWeb_sourceleadUrl}/candidateListForReports"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
+				    <li><a href="${SourceLeadWeb_sourceleadUrl}/timeSheetReports"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
 				</ul>
 			</div>
 		</div>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='${appPath}/recruitersReports'/>">Reports</a>&nbsp;&raquo; Submitted Applicants</div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&nbsp;&raquo;&nbsp;<a href="${SourceLeadWeb_sourceleadUrl}/recruitersReports">Reports</a>&nbsp;&raquo; Submitted Applicants</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
