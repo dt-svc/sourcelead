@@ -15,14 +15,14 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Employment Verfication List</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo;  Employment Verfication List</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/orgTemplates"> Templates</a> &raquo;  Employment Verfication List</div>
     </section>
 
 <div class="project_wrap">
              
 	 <div class="reportHead clearfix">
 	    <ul class="pull-right list-unstyled list-inline">
-         	<li><a href="<c:url value="/app/addEmploymentVerificationTemplate"/>" title="Add Template" class="newAdBtn mr5">Add</a></li>
+         	<li><a href="${SourceLeadWeb_sourceleadUrl}/addEmploymentVerificationTemplate" title="Add Template" class="newAdBtn mr5">Add</a></li>
          	<li><input type="text" class="repSearchBar" placeholder='Search' id='employmentTemplateTableSearch'/><span class="repSearchIcon" onClick=""></span></li>
 		</ul>
 	</div>	
