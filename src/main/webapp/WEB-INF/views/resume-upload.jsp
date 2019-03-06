@@ -206,21 +206,21 @@ padding: 2px
 	
 		<div class="logo">
 		<c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER' && SourceLeadWeb_prodSupportLoginUserRole == null}">
-  <a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead"></a>
+  <a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead"></a>
   </c:if>
   
    <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == 'ROLE_PRODUCTION_SUPPORT'}">
-   <a href="${appPath}/productionSupportdashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_prodSupportOrgLocationId}" title="Source Lead"></a>
+   <a href="${SourceLeadWeb_sourceleadUrl}/productionSupportdashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_prodSupportOrgLocationId}" title="Source Lead"></a>
    </c:if>
   
   
   
   <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-  <a href="${appPath}/professionalDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}" title="Source Lead"></a>
+  <a href="${SourceLeadWeb_sourceleadUrl}/professionalDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}" title="Source Lead"></a>
   </c:if>
   
   <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-  <a href="${appPath}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}" title="Source Lead"></a>
+  <a href="${SourceLeadWeb_sourceleadUrl}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}" title="Source Lead"></a>
   </c:if>
 		 <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
  	 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">

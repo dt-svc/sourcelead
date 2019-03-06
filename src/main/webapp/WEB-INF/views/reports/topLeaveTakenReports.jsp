@@ -17,7 +17,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Top Leave Taken</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/hrReportsList'/>">HR Reports</a> &raquo; Top Leave Taken Report</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard">Reports Dashboard</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/hrReportsList">HR Reports</a> &raquo; Top Leave Taken Report</div>
     </section>
     <div class="timesheet_out">
       <div class="vendor_wrap">
@@ -46,15 +46,15 @@ $(document).ready(function(){
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
 									<span> 
-									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
-									<a href="<c:url value='${appPath}/addAssociateFromLocations'/>">Add From Loc</a>
+									<a href="${SourceLeadWeb_sourceleadUrl}/userCreation">Add Associate</a>
+									<a href="${SourceLeadWeb_sourceleadUrl}/addAssociateFromLocations">Add From Loc</a>
 									</span>
 								</div>
 							</li>
 				</c:if>
 				
 				<c:if test="${orgLocationsCount == 1}">
-				<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userCreation'/>">+  Associate</a></li>
+				<li><a class="newAdBtn mr5" href="${SourceLeadWeb_sourceleadUrl}/userCreation">+  Associate</a></li>
 				</c:if>		
 	           
 						
