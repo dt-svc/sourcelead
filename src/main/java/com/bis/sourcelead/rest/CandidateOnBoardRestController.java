@@ -49,6 +49,7 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionsView;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
@@ -72,6 +73,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -146,6 +148,9 @@ public class CandidateOnBoardRestController {
 	
 	@Autowired
 	AssociateNomineeDao associateNomineeDao;
+	
+	@Autowired
+	ShiftService shiftService;
 
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -2252,5 +2257,12 @@ public class CandidateOnBoardRestController {
 		associateNominee.setDob(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), associateNominee.getDateOfBirth()));
 		return associateNomineeDao.saveAssociateNomineeDetails(associateNominee);
 	}
+	
+	 @RequestMapping(value = "/getOrgLocationsShiftList", method = RequestMethod.POST)
+		public @ResponseBody List<Shift> getOrgLocationsShiftList(HttpServletRequest request, Long roleHierarchyId) throws Exception {
+	    	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    	List<Shift> shiftList = shiftService.getShiftList(orgLocations.getId());
+        return shiftList;	   
+		} 
 	
 }
