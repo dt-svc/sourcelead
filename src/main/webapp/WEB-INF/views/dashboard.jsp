@@ -32,10 +32,7 @@
 <script src="/resources/js/jquery.dataTables.min.js"></script>
 <script src="/resources/js/sourcelead-app.js"></script>
 <script src="/resources/js/jquery.timepicker.js"></script>
-<script src="/resources/js/dashboard.js"></script>
 <script src="/resources/js/masterHeaderAction.js"></script>
-<script src="/resources/js/masterSideNav.js"></script>
-<script src="/resources/js/masterHeader.js"></script>
 </head>
 
 <!-- 
@@ -45,7 +42,7 @@ ALWAYS CACHE VARIABLES LIKE YOU DO IN JAVA
 -->
 <script>
 var  tabAccessArray = '${SourceLeadWeb_tabsList}';
-var  roleActionsArray= '${SourceLeadWeb_actionsList}';
+var roleActionsArray = '${SourceLeadWeb_actionsList}';
 var sourceleadUrl ='${sourceleadUrl}';
 var atsUrl = '${SourceLeadWeb_atsUrl}';
 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
@@ -53,14 +50,28 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 var userId =  '${SourceLeadWeb_userId}';
 var orgLocationId  = '${SourceLeadWeb_orgLocationId}';
+
 var isAuthenticated = '${SourceLeadWeb_isAuthenticated}'
+
+var locationCode ='${SourceLeadWeb_locationCode}';
+var loginUser = '${SourceLeadWeb_userName}';
+var locationList = '${SourceLeadWeb_dateFormat}';	
+var country = '${SourceLeadWeb_country}';
+var timezone = '${SourceLeadWeb_timezone}';
+var timezoneId ='${SourceLeadWeb_timeZoneId}'; 
+var candidateId = '${SourceLeadWeb_candidateId}';
+var isGlobalAccess = '${SourceLeadWeb_isGlobalAccess}';
+
 // below are related variable used in showing tabs in dashboard.
 var bothTimesheets ='${bothTimesheets}';
 var onlyTimesheets ='${onlyTimesheets}';
 var onlyApprovalTimesheets ='${onlyApprovalTimesheets}';
-console.log("bothTimesheets "+bothTimesheets);
-console.log("onlyTimesheets "+onlyTimesheets);
-console.log("onlyApprovalTimesheets "+onlyApprovalTimesheets);
+// reruirement list variables.
+var orgATS = '${SourceLeadWeb_ats}';
+var orgVMS = '${SourceLeadWeb_vms}';
+var requirementId = '${requirementId}'; 
+var locationDate = '${SourceLeadWeb_dateFormat}';	
+
 </script>
 <script>
   $(document).ready(function() {
