@@ -17,7 +17,6 @@
 <title>Welcome to Source Lead</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<link rel="stylesheet" href="/resources/css/dashboard_3118.css" type="text/css" media="all"/>
 <link rel="stylesheet" href="/resources/css/chosen.min.css">
 <link href="/resources/css/sourcelead-main.css" rel="stylesheet">
 <link href="/resources/css/sourcelead-bundle.css" rel="stylesheet">
