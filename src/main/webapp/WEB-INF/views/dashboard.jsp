@@ -17,7 +17,6 @@
 <title>Welcome to Source Lead</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<link rel="stylesheet" href="/resources/css/dashboard_3118.css" type="text/css" media="all"/>
 <link rel="stylesheet" href="/resources/css/chosen.min.css">
 <link href="/resources/css/sourcelead-main.css" rel="stylesheet">
 <link href="/resources/css/sourcelead-bundle.css" rel="stylesheet">
@@ -50,6 +49,9 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 var userId =  '${SourceLeadWeb_userId}';
 var orgLocationId  = '${SourceLeadWeb_orgLocationId}';
+
+var isAuthenticated = '${SourceLeadWeb_isAuthenticated}'
+
 var locationCode ='${SourceLeadWeb_locationCode}';
 var loginUser = '${SourceLeadWeb_userName}';
 var locationList = '${SourceLeadWeb_dateFormat}';	
@@ -58,6 +60,7 @@ var timezone = '${SourceLeadWeb_timezone}';
 var timezoneId ='${SourceLeadWeb_timeZoneId}'; 
 var candidateId = '${SourceLeadWeb_candidateId}';
 var isGlobalAccess = '${SourceLeadWeb_isGlobalAccess}';
+
 // below are related variable used in showing tabs in dashboard.
 var bothTimesheets ='${bothTimesheets}';
 var onlyTimesheets ='${onlyTimesheets}';

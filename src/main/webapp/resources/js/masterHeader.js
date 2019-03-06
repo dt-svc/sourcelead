@@ -215,7 +215,7 @@ var masterHeader = new buildMasterHeaderPanel();
 	 
 	 this.getUserLinkedOrgsByuserId = function(){
 		
-		 $.get(sourceleadUrl+"/getLoginUserMultiAccountsList?&userId="+userId, function(data) {
+		 $.get(sourceleadUrl+"/getLoginUserMultiAccountsList?", function(data) {
 				var result = "";
 				result = result + '<div class="headPopInn">';
 				result = result+'<div class="headPopSear"><input type="text" class="" id="orgsSearch" placeholder="Search"></div>';
@@ -244,9 +244,9 @@ var masterHeader = new buildMasterHeaderPanel();
 						
 						result = result + '<li>';
 						if(opt.displayName != "Professional" && opt.displayName != "Independent Recruiter"){
-							result = result + '<a onclick="masterHeader.checkLocationAccess('+opt.orgLocationId+','+opt.id+',\''+opt.loginSecurity+'\','+opt.userId+');" class="sopcSwith noPad">';
+							result = result + '<a onclick="masterHeader.checkLocationAccess('+opt.orgLocationId+','+opt.userRoleId+',\''+opt.orgLocationLoginSecurity+'\','+opt.userId+');" class="sopcSwith noPad">';
 							result = result + '<div class="clearfix '+orgAct+'">';
-							result = result + '<div class="orgProfile"><img onerror="masterHeader.predefineOrgImage(this);" data-id="orgLogoImage" src="'+opt.fileUrl+'"></div>';
+							result = result + '<div class="orgProfile"><img onerror="masterHeader.predefineOrgImage(this);" data-id="orgLogoImage" src="'+opt.orgImgUrl+'"></div>';
 							result = result + '<div class="orgDetails">';
 							result = result + '<h3>'+opt.orgLocationName+'</h3>';
 							result = result + '<h4><i	class="fa fa fa-map-marker"></i>'+opt.country+'</h4>';
@@ -259,7 +259,7 @@ var masterHeader = new buildMasterHeaderPanel();
 						if(opt.displayName == "Professional" || opt.displayName == "Independent Recruiter"){
 							result = result + '<a onclick="masterHeader.crowdSourceLocationAccess('+opt.orgLocationId+',\''+opt.userType+'\','+opt.userId+');"  class="sopcSwith noPad">';
 							result = result + '<div class="clearfix '+orgAct+'">';
-							result = result + '<div class="orgProfile"><img onerror="masterHeader.predefineOrgImage(this);" data-id="orgLogoImage" src="'+opt.fileUrl+'"></div>';
+							result = result + '<div class="orgProfile"><img onerror="masterHeader.predefineOrgImage(this);" data-id="orgLogoImage" src="'+opt.orgImgUrl+'"></div>';
 							result = result + '<div class="orgDetails">';
 							result = result + '<h3>'+opt.orgLocationName+'</h3>';
 							result = result + '<h4><i	class="fa fa-user"></i>'+designation+'</h4>';
@@ -311,35 +311,49 @@ var masterHeader = new buildMasterHeaderPanel();
 		}
 	 
 	this.crowdSourceLocationAccess = function(locationId,userType,userId){
-		 location.replace(sourceleadUrl+"/dashboard/"+userType+"/"+userId);  
+		 location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userType+"/"+userId);  
 	}
 	 
    this.checkLocationAccess = function(locationId,roleId,orgSecurity,userId){
-		 $.ajax({
+	   $.ajax({
 		      type : "GET",
 		       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+roleId,        
 		       success :function(result) {
-		    	   location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userId);  
-		    	   /*if(result == true){
-		    			 if(orgSecurity == 'Y'){
-		    				 location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userId);   
-		    			 }else if('${SourceLeadWeb_isAuthenticated}' == 'N' && orgSecurity == 'Y'){
+		    	   if(result == true){
+		    			 if((isAuthenticated == 'Y' && orgSecurity == 'N') || (isAuthenticated == 'Y' && orgSecurity == 'Y')){
+		    				 location.replace(sourceleadUrl+"/switchLocation?userRoleId="+roleId);    
+		    			 }else if(isAuthenticated == 'N' && orgSecurity == 'Y'){
 		    				 $(".authenticationMask").fadeIn();
 		    				 getUserDetailsbyroleId(roleId);
 		    			 }else{
-		    				 location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userId);    
+		    				 location.replace(sourceleadUrl+"/switchLocation?userRoleId="+roleId);    
 		    			 }
 		    		 }else{
 		    			 $(".location-alert").fadeIn();
 		    			 $(".location-alert").fadeOut(5000);
-		    		 }*/
+		    		 }
 		    	   
 		      },
 		  });
 	 }
-	  
-	  
-	  
+   
+   this.getUserDetailsbyroleId = function(roleId){
+	   $.ajax({
+			 type : "POST",
+		       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+roleId,        
+		       success :function(data) {
+		    	   if(data != null){
+		    		   $("#directtwoStepAuthDiv").empty();
+		    		   $("#directtwoStepAuthDiv").append(data);
+		    		   $("#gobackBtn").hide();
+		    		   $(".otpBackNew").show();
+		    		   $("#otpBackNewId").val("switchOtp");
+		    		   $("#resendOTP").attr("style","display:none");
+		    		   $("#sendOTP").attr("style","display:block");
+		    	   }
+		       },						     
+		}); 
+   }
 	  
 	   this.universalSearch = function(){
 	  	 var searchType = document.getElementById('searchType').value;
