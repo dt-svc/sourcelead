@@ -2208,11 +2208,14 @@ return responseList;
 		InvoiceDTO invoiceDTO = new InvoiceDTO();
 		
 //		String resultJson = "";
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
+				
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user = userService.getUserById(userId);
 		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Integer savedInvoiceCount = invoiceService.getAutomaticInvoice(orgLocation, loginOrgCurrencyCode, invoiceType, user, contractType,isGlobalAccess);
 //		resultJson = commonUtil.toJSON(savedInvoiceCount);
 		invoiceDTO.setCount(String.valueOf(savedInvoiceCount));
@@ -2230,11 +2233,15 @@ return responseList;
 		InvoiceDTO invoiceDTO = new InvoiceDTO();
 		
 //		String resultJson = "";
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
+				
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user = userService.getUserById(userId);
 		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Integer savedInvoiceCount = invoiceService.getAutomaticInvoiceForJobClosure(orgLocation, loginOrgCurrencyCode, invoiceType, user,contractType,isGlobalAccess);
 //		resultJson = commonUtil.toJSON(savedInvoiceCount);
 		invoiceDTO.setCount(String.valueOf(savedInvoiceCount));
