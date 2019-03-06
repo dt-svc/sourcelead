@@ -1315,7 +1315,7 @@ function getAssociateUserDetails(){
  function getDepartmentsList(){
 	 $.ajax({
 	    	type: "POST",
-	    	url: atsUrl+"/getDepartmentsList?"+tokenParamName+"="+tokenValue+"",
+	    	url: sourceleadUrl+"/getDepartmentsList?"+tokenParamName+"="+tokenValue+"",
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
@@ -1569,7 +1569,7 @@ function refreshRoleList(){
 function refreshGradesList(){
 	 $.ajax({
 	      type : "POST",
-	       url: atsUrl+"/refreshGradesList",       
+	       url: sourceleadUrl+"/refreshGradesList",       
 	       success: function(json) {
 	        	var output = "";
 	        	output = output + "<option value=''>-Select Grade-</option>"; 
@@ -1601,7 +1601,7 @@ function refreshGradesList(){
 	 <script>
 	 function selectedVendor(){
 		 var vid = $('#vendors').val();
-		 window.open(atsUrl+"/addVendorContact?vid="+vid,'_blank');
+		 window.open(vmsUrl+"/addVendorContact?vid="+vid,'_blank');
 	 }
 	 </script>
 	
