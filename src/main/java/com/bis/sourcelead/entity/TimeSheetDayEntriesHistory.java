@@ -15,10 +15,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "TIMESHEET_DAY_ENTRIES_HISTORY")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "timeSheetDayEntriesHistory")
 public class TimeSheetDayEntriesHistory implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

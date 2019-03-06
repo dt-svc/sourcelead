@@ -19,6 +19,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "MODULE_ACTIONS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "moduleActions")
 public class ModuleActions implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

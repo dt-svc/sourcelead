@@ -14,8 +14,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
 @Table(name = "PAYROLL_TAXES")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "payrollTax")
 public class PayrollTax implements Serializable {
 
 	/**

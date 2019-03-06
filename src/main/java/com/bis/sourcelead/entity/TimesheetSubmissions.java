@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "TIMESHEET_SUBMISSIONS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "timesheetSubmissions")
 public class TimesheetSubmissions implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

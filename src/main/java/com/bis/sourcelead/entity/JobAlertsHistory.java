@@ -21,6 +21,7 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "JOB_ALERTS_HISTORY")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "jobAlertsHistory")
 public class JobAlertsHistory implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

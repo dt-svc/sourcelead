@@ -22,6 +22,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "ORGLOCATION_SIGNATORY")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orglocationSignatory")
 public class OrglocationSignatory implements Serializable{
 	
 	

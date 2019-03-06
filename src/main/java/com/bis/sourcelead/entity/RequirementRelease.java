@@ -24,6 +24,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_RELEASE_Status;
 
 @Entity
 @Table(name = "REQUIREMENT_RELEASE")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementRelease")
 public class RequirementRelease implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

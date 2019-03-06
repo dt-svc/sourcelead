@@ -20,6 +20,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 	@Entity
 	@Table(name = "INTERVIEW_REMAINDER")
+	//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "interviewRemainder")
 	public class InterviewRemainder implements Serializable{
 
 	private static final long serialVersionUID = 1L;
