@@ -41,18 +41,23 @@ $( document ).ready(function() {
 	  // below fucntion is used to build MasterHeader panel.
 	  $("#masterHeaderNav").html(masterHeader.masterHeaderPanel());
 	
-	 // below funtons are the dashboard related functions. need to modify sourcelead url according to the module. 
-	
-	 updateMarketplaceCartCountAndPrice(); // used to update the cart count in header.
-	 // need to check role for the below timesheet function call // // jobs counts counts 
-	  if(bothTimesheets == 'true' || onlyTimesheets == 'true'){
-		  timeSheetSubmissionStatusCount("myTimesheets");
-	  }
-	  else{
-		  timeSheetSubmissionStatusCount("employes");
-	  }
-	 
+	 // if user has role of viewcart
+		if(roleActionsArray.indexOf("ROLE_VIEW_CART") > -1){
+	           updateMarketplaceCartCountAndPrice(); // used to update the cart count in header.
+		}
+	 // if user has below timehseet related roles.
+	 if(roleActionsArray.indexOf("ROLE_FILL_MY_TIMESHEETS") > -1 || roleActionsArray.indexOf("ROLE_EXPORT_MY_TIMESHEETS")  > -1 
+			 || roleActionsArray.indexOf("ROLE_MODIFY_MY_TIMESHEETS") > -1  || roleActionsArray.indexOf("ROLE_FILL_MEMBER_TIMESHEETS") > -1 
+			   || roleActionsArray.indexOf("ROLE_VIEW_MEMBER_TIMESHEETS")  > -1 || roleActionsArray.indexOf("ROLE_EXPORT_MEMBER_TIMESHEETS") > -1 ){
+		  if(bothTimesheets == 'true' || onlyTimesheets == 'true'){
+			  timeSheetSubmissionStatusCount("myTimesheets");
+		  }
+		  else{
+			  timeSheetSubmissionStatusCount("employes");
+		  }
+	 }
 	 // jobs counts
+	 if(roleActionsArray.indexOf("ROLE_VIEW_REQUIREMENT") > -1){
 	   var jsondata = sessionStorage.getItem('jobsCount');
 	     if(jsondata!= null){
 			 jsondata =jsondata.split(","); 
@@ -61,22 +66,52 @@ $( document ).ready(function() {
 			 $("#interviewsCount").text(jsondata[2]);
 			 $("#offersCount").text(jsondata[3]);
 			 sessionStorage.clear(); 
-		 }else{
+		  }else{
 			 	requirementSubmissionsCount("today");
+	  	 }
 	  }
-	  expensesCount("myExpenses"); // expenses count self
-	  getSelfTotalCounts(); // leaves counts self count 
+        //expensed roles for an user.
+	 if(roleActionsArray.indexOf("ROLE_ADD_MY_EXPENSES") > -1 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_MY_EXPENSES")  > -1 
+			 || roleActionsArray.indexOf("ROLE_EXPORT_MY_EXPENSES")  > -1 || roleActionsArray.indexOf("ROLE_ADD_EMPLOYEE_EXPENSES") > -1 
+			   || roleActionsArray.indexOf("ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES")  > -1 || roleActionsArray.indexOf("ROLE_EXPORT_EMPLOYEE_EXPENSES") > -1 ){
+			 expensesCount("myExpenses"); // expenses count self
+	  } 
+	 
+     // check the leave role for an user.
+	 if(roleActionsArray.indexOf("ROLE_APPLY_LEAVE") > -1 || roleActionsArray.indexOf("ROLE_APPLY_BEHALF_LEAVE")  > -1 
+			                          || roleActionsArray.indexOf("ROLE_APPROVE_LEAVE") > -1 ){
+	           getSelfTotalCounts(); // leaves counts self count 
+	 }
+	 // check the user has below role or not.
+	 if(roleActionsArray.indexOf("ROLE_VIEW_REQUIREMENT") > -1){
 	  requirementList(false, -1);//jobs section requirements.
+	 } 
+
+	 // checking user has role on boarding role or not.
+	 if(roleActionsArray.indexOf("ROLE_CREATE_ON_BOARD_USER") > -1 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_ON_BOARD_USER") > -1){
 	  onboardingCandidatesList();// onboarding candidate list , need to check authorizarion
-	  getProjectResourceReqestsListCount();// Project Requests Resource Associate  need to check authorizarion
-	  resourceRequestList("Waiting For Approval");// Project Requests Resource Associate  need to check authorizarion
+	 }
+	 <!-- Candidates for Invoice -->  // canidate invoice is pending in template.
+	 /* <sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE','ROLE_VIEW_REQUIREMENT')">
+		<jsp:include page="candidatesForInvoiceDashboard.jsp"></jsp:include>
+	</sec:authorize>  */
+	  if(roleActionsArray.indexOf("ROLE_RESOURCE_REQUEST_APPROVER") > -1){
+			  getProjectResourceReqestsListCount();// Project Requests Resource Associate  need to check authorizarion
+			  resourceRequestList("Waiting For Approval");// Project Requests Resource Associate  need to check authorizarion
+			
+	  }
+	if(roleActionsArray.indexOf("ROLE_VIEW_REQUIREMENT") > -1){
 	  requirementApproverList('SUBMITTED'); 
 	  ApplicantAuthorization('requestSent');
-	 // getInterviewsandTasks();//need to check functionaity is commented dashboardEvents.jsp ====>
+	}
 	 // getInterviewsDates();;//need to check functionaity is commented dashboardEvents.jsp ====>
 	  getJobFairDates();
 	  getJobFairs();
-	  contractList();//need to check authorizarion
+	  // check the contrats roles
+	  if(roleActionsArray.indexOf("ROLE_VIEW_CONTRACT") > -1){
+		  contractList();
+		}
+	
 	
 	//alert("ok")
 });
