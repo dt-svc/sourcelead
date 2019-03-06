@@ -356,7 +356,7 @@
 									</div>
 									<span class="col-md-2 noPad clearfix"> <sec:authorize
 											access="hasAnyRole('ROLE_CREATE_VENDOR')">
-											<a href="<c:url value="/app/addVendor" />" target="_blank"><i
+											<a href="${SourceLeadWeb_sourceleadUrl}/addVendor" target="_blank"><i
 												class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 										</sec:authorize>
 									</span>
