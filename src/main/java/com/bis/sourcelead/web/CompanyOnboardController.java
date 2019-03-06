@@ -37,6 +37,7 @@ import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLocationIndiaBankingDetailsService;
 import com.bis.sourcelead.service.OrgLocationInformationDetailsService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
 import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
@@ -96,6 +97,9 @@ public class CompanyOnboardController {
 	
 	@Value("${GoogleMaps_Location_API_KEY}")
 	private String googleMapsLocationApiKey;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 
 	
 		@RequestMapping(value = "/companyOnboard")
@@ -164,11 +168,18 @@ public class CompanyOnboardController {
 		public ModelAndView companyOnboardFederalAndStateTaxes(HttpServletRequest request) throws Exception  {
 			
 			ModelAndView model = new ModelAndView();  
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLocationId);
 			if(StringUtils.isNotBlank(orgLocations.getIsCompanyOnboarded()) && orgLocations.getIsCompanyOnboarded().equalsIgnoreCase("N")) {
 				List<States> states = statesService.getAllStatesByCountry(orgLocations.getCountry());
 				model.addObject("statesList", states);
 				model.addObject("sourceleadUrl", sourceleadUrl);
+				SourceLeadSessionManager.setSessionAttribute(request, "depositSchedule", orgLocations.getDepositSchedule());
+				SourceLeadSessionManager.setSessionAttribute(request, "fillingForm", orgLocations.getFillingForm());
+				SourceLeadSessionManager.setSessionAttribute(request, "unemploymentTax", orgLocations.getUnemploymentTax());
+				SourceLeadSessionManager.setSessionAttribute(request, "federalEin", orgLocations.getFederalEin());
+				
+				
 				model.setViewName("onboard/companyOnboardFederalAndStateTaxes");
 			}else {
 				model.setViewName("registration/persmissionDenied");
