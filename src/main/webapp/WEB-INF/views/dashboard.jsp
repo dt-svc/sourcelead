@@ -53,6 +53,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 var userId =  '${SourceLeadWeb_userId}';
 var orgLocationId  = '${SourceLeadWeb_orgLocationId}';
+var isAuthenticated = '${SourceLeadWeb_isAuthenticated}'
 // below are related variable used in showing tabs in dashboard.
 var bothTimesheets ='${bothTimesheets}';
 var onlyTimesheets ='${onlyTimesheets}';
