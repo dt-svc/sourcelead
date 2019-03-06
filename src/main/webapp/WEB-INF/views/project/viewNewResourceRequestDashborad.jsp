@@ -24,7 +24,7 @@
       <div class="pull-left">
         <h2>View New Request Resources</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/projectDashboard'/>">Home</a>  <a href="<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>"></a> &raquo; View New Request Resources</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/projectDashboard'/>">Home</a>  <a href="${SourceLeadWeb_pmsUrl}/projectSummary?projectUUID=${projectUUID}&tabType=resources"></a> &raquo; View New Request Resources</div>
 </section>
 
  <div class="content-area content-new clearfix">
@@ -34,7 +34,7 @@
    <div id="rejectedReasonDiv"></div>
     <div id="newRequestOnHoldReasonDiv"></div>
    <div class="modal-footer">
-   <button class="btn btn-primary" type="button" value="Back to list" onClick="javascript:window.location.href = '<c:url value='${appPath}/dashboard'/>'" >Back to list</button>
+   <button class="btn btn-primary" type="button" value="Back to list" onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard'/>'" >Back to list</button>
    </div>
 					
  </div>
