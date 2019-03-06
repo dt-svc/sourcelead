@@ -68,7 +68,7 @@ line-height: 30px;
 			  <button class="btn btn-sm btn-primary" id="upload_button" type="submit" onclick = "check();uploadSave();checkFile();">
 				<i aria-hidden="true" class="fa fa-upload"></i>&nbsp;&nbsp;&nbsp;Import
 			  </button>
-			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:window.location.href = '<c:url value='${appPath}/finance'/>'">
+			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/finance'">
 				<i aria-hidden="true" class="fa fa-times"></i>&nbsp;&nbsp;&nbsp;Cancel
 			  </button>
 			  </div>
