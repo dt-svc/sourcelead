@@ -1,7 +1,4 @@
- var orgLocationCode = "775BUS";// snigitha copied from the dashboard.js
-var orgCode = '775B';// snigitha copied from the dashboard.js
-var locationId = "3";//'${SourceLeadWeb_orgLocationId}'; snigitha copied from the  dashboard.js
-var userId ="4";// '${SourceLeadWeb_user.id}'; snigitha copied from the  dashboard.js
+
 var masterHeader = new buildMasterHeaderPanel();
  function buildMasterHeaderPanel (){
 	
@@ -26,23 +23,23 @@ var masterHeader = new buildMasterHeaderPanel();
 	    	masterNavHtml = masterNavHtml+'<div class="uasrch-selectpicker">';	
 	    	masterNavHtml = masterNavHtml+'<select id="searchType" name="searchType" class="selectpicker uasrch pull-left show-menu-arrow" >';	
 	    	masterNavHtml = masterNavHtml+'<option ${searchType == "All" ?"selected":""} value="All">All</option>';	
-	    	 if(tabAccessArray.indexOf("Associates")){
+	    	 if(tabAccessArray.indexOf("Associates")  > -1){
 	    		 masterNavHtml = masterNavHtml+'<option  ${searchType == "Users" ?"selected":""} value="Users">Associates</option>';	
 	    	 }
 	    	 
-	    	 if(tabAccessArray.indexOf("Jobs")){
+	    	 if(tabAccessArray.indexOf("Jobs")  > -1){
 	    		 masterNavHtml = masterNavHtml+'<option  ${searchType == "Requirement" ?"selected":""} value="Users">Requirement</option>';
 	    	 }
 	    	 
-	    	 if(tabAccessArray.indexOf("Candidates")){
+	    	 if(tabAccessArray.indexOf("Candidates")  > -1){
 	    		 masterNavHtml = masterNavHtml+'<option  ${searchType == "Candidate" ?"selected":""} value="Candidate">Candidates</option>';
 	    	 }
 	    	 
-	    	 if(tabAccessArray.indexOf("Clients")){
+	    	 if(tabAccessArray.indexOf("Clients")  > -1){
 	    		 masterNavHtml = masterNavHtml+'<option  ${searchType == "Client" ?"selected":""} value="Client">Clients</option>';
 	    	 }
 	    	 
-	    	 if(tabAccessArray.indexOf("Vendors")){
+	    	 if(tabAccessArray.indexOf("Vendors")  > -1){
 	    		 masterNavHtml = masterNavHtml+'<option  ${searchType == "Vendor" ?"selected":""} value="Vendor">Vendors</option>';
 	    	 }
 	    	
@@ -59,12 +56,12 @@ var masterHeader = new buildMasterHeaderPanel();
 	    
 			
 	    masterNavHtml = masterNavHtml+'<div class="headProfile">';	
-	    masterNavHtml = masterNavHtml+'<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="'+userType+'" title="'+loginUser+'" onerror="predefineProfileImage(this);"  src="'+fileUrl+'"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="'+loginUser+'"> '+loginUser+' </div>';
+	    masterNavHtml = masterNavHtml+'<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="'+userType+'" title="'+loginUser+'" onerror="predefineProfileImage(this);"  src="'+userImgUrl+'"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="'+loginUser+'"> '+loginUser+' </div>';
 	    masterNavHtml = masterNavHtml+'<div class="headPop" id="profilePop">';
 	    masterNavHtml = masterNavHtml+'<div class="headPopInn">';
 	    masterNavHtml = masterNavHtml+'<a href="/app/userProfile" title="Profile">';
 	    masterNavHtml = masterNavHtml+'<div class="headPopUser clearfix">';
-	    masterNavHtml = masterNavHtml+'<div class="pull-left"><img class="img-circle" data-id="userProfileImage" title="'+loginUser+'" alt="'+userType+'" onerror="predefineProfileImage(this);" src="'+fileUrl+'"></div>';
+	    masterNavHtml = masterNavHtml+'<div class="pull-left"><img class="img-circle" data-id="userProfileImage" title="'+loginUser+'" alt="'+userType+'" onerror="predefineProfileImage(this);" src="'+userImgUrl+'"></div>';
 	    masterNavHtml = masterNavHtml+'<div class="pull-right">';
 	    masterNavHtml = masterNavHtml+'<p>'+loginUser+'</p>';
 	   
@@ -82,9 +79,9 @@ var masterHeader = new buildMasterHeaderPanel();
 	    masterNavHtml = masterNavHtml+'</a>';
 	    masterNavHtml = masterNavHtml+'<ul>';
 	    masterNavHtml = masterNavHtml+'<li>';
-	    masterNavHtml = masterNavHtml+'<a title="Connections"  href="/app/loadConnectedList?status=connected" id="connections"><i class="connectionIC"></i>Connections <span class="label label-warning pull-right">0</span></a>';
+	    masterNavHtml = masterNavHtml+'<a title="Connections"  href="'+sourceleadUrl+'/loadConnectedList?status=connected" id="connections"><i class="connectionIC"></i>Connections <span class="label label-warning pull-right">0</span></a>';
 	    masterNavHtml = masterNavHtml+'</li>';
-	    masterNavHtml = masterNavHtml+'<li><a title="Contacts" href="/app/referRequirementList"><i class="contactsIC"></i>Contacts</a></li>';
+	    masterNavHtml = masterNavHtml+'<li><a title="Contacts" href="'+sourceleadUrl+'/referRequirementList"><i class="contactsIC"></i>Contacts</a></li>';
 					
 	    masterNavHtml = masterNavHtml+'<li><a title="Invite Company" data-toggle="modal" id="invitePop"><i class="invitecompanyIC"></i>Invite Company</a></li>';
 					
@@ -93,11 +90,11 @@ var masterHeader = new buildMasterHeaderPanel();
 	    }
 		
 	    if(roleActionsArray.indexOf("ROLE_SUPPORT") > -1){
-	    	 masterNavHtml = masterNavHtml+'<li><a href="/app/sourceleadTicketList" title="Report Issue"><i class="reporttaskIC"></i>Report Issue</a></li>';
+	    	 masterNavHtml = masterNavHtml+'<li><a href="'+sourceleadUrl+'/sourceleadTicketList" title="Report Issue"><i class="reporttaskIC"></i>Report Issue</a></li>';
 	    }
 	   
 		      			
-	    masterNavHtml = masterNavHtml+'<li><a class="logColor" href="/logout" title="Log Out"><i class="logOutIC"></i>Log Out</a></li>';
+	    masterNavHtml = masterNavHtml+'<li><a class="logColor" onclick="masterHeader.logoutFormSubmit();" title="Log Out"><i class="logOutIC"></i>Log Out</a></li>';
 	    masterNavHtml = masterNavHtml+'</ul>';
 	    masterNavHtml = masterNavHtml+'</div>';
 	    masterNavHtml = masterNavHtml+'</div>';
@@ -116,13 +113,13 @@ var masterHeader = new buildMasterHeaderPanel();
 	    masterNavHtml = masterNavHtml+'</li>';
 	    
 	    
-	    if(tabAccessArray.indexOf("Reports")){
-	    	masterNavHtml = masterNavHtml+'<li><a title="Reports" href="/app/reportsDashboard"><i class="headNavIcon reporIcon"></i></a></li>';
+	    if(tabAccessArray.indexOf("Reports")  > -1){
+	    	masterNavHtml = masterNavHtml+'<li><a title="Reports" href="'+sourceleadUrl+'/reportsDashboard"><i class="headNavIcon reporIcon"></i></a></li>';
 	    }
 	    
-	    if(roleActionsArray.indexOf("ROLE_VIEW_CART")){
+	    if(roleActionsArray.indexOf("ROLE_VIEW_CART")  > -1){
 	    	masterNavHtml = masterNavHtml+'<li>';
-	    	masterNavHtml = masterNavHtml+'<a href="/app/candidateMarketplaceCheckout" class="" href="javascript:void(0)">';
+	    	masterNavHtml = masterNavHtml+'<a href="'+atsUrl+'/candidateMarketplaceCart" class="" href="javascript:void(0)">';
 	    	masterNavHtml = masterNavHtml+'<b id="headerCartCount" class="headerCartCountShow mt2"></b><i class="shopping-cart" title="Cart"></i>';
 	    	masterNavHtml = masterNavHtml+'</a>';
 	    	masterNavHtml = masterNavHtml+'</li>';
@@ -130,7 +127,7 @@ var masterHeader = new buildMasterHeaderPanel();
 	  
 	    //dynamically need to get unread mails count
 	    if(roleActionsArray.indexOf("ROLE_MAIL_BOX") > -1 || roleActionsArray.indexOf("ROLE_HOTLIST_CAMPAIGN") > -1){
-	    	masterNavHtml = masterNavHtml+'<li><a href="/app/mailBox/mails" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i></a></li>';
+	    	masterNavHtml = masterNavHtml+'<li><a href="'+atsUrl+'/mailBox/mails" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i></a></li>';
 	    }
 	    
 	    //dynamically need to get unread notifications count
@@ -138,6 +135,11 @@ var masterHeader = new buildMasterHeaderPanel();
 	    masterNavHtml = masterNavHtml+'<a id="notiPopId" href="#" title="Alerts" onclick="masterHeader.getTopNotificationsByuserId();"><i class="headNavIcon notiIcon"></i></a>';
 	    masterNavHtml = masterNavHtml+'<div class="headPop headPopnoti" id="notificationPopup"></div>';
 	    masterNavHtml = masterNavHtml+'</li>';	
+	    
+	    masterNavHtml = masterNavHtml+'<li>';
+	    masterNavHtml = masterNavHtml+'<li><a href="'+sourceleadUrl+'/settings" title="Settings"><i class="headNavIcon setiIcon"></i></a></li>';
+	    masterNavHtml = masterNavHtml+'</li>';
+	    
      
 	    
 	    masterNavHtml = masterNavHtml+'</ul>';
@@ -153,7 +155,7 @@ var masterHeader = new buildMasterHeaderPanel();
 	 }
 	 
 	 this.getTopNotificationsByuserId = function(){
-			$.get(sourceleadUrl+"/getNotificationsByuserId?&userId="+userId+"&locationCode="+orgLocationCode+"&orgCode="+orgCode+"&orgLocationId="+locationId, function(json) {
+			$.get(sourceleadUrl+"/getNotificationsByuserId?&userId="+userId+"&locationCode="+orgLocationCode+"&orgCode="+orgCode+"&orgLocationId="+orgLocationId, function(json) {
 				var data = json.data
 				var result = "";
 				result = result + '<div class="headPopInn">';
@@ -225,6 +227,7 @@ var masterHeader = new buildMasterHeaderPanel();
 						var opt = data[i];
 						var designation = '';
 						var orgAct = '';
+						var city = '';
 						
 						if(opt.designation != null && opt.designation != '' && opt.designation != 'undefined'){
 							designation = opt.designation;
@@ -238,7 +241,11 @@ var masterHeader = new buildMasterHeaderPanel();
 							}
 						}
 						
-						if(opt.orgLocationId == locationId && opt.userId == userId){
+						if(opt.city != null && opt.city != '' && opt.city != 'undefined'){
+							city = opt.city;
+						}
+						
+						if(opt.orgLocationId == orgLocationId && opt.userId == userId){
 							orgAct = 'orgAct';
 						}
 						
@@ -249,7 +256,7 @@ var masterHeader = new buildMasterHeaderPanel();
 							result = result + '<div class="orgProfile"><img onerror="masterHeader.predefineOrgImage(this);" data-id="orgLogoImage" src="'+opt.orgImgUrl+'"></div>';
 							result = result + '<div class="orgDetails">';
 							result = result + '<h3>'+opt.orgLocationName+'</h3>';
-							result = result + '<h4><i	class="fa fa fa-map-marker"></i>'+opt.country+'</h4>';
+							result = result + '<h4><i	class="fa fa fa-map-marker"></i>'+city+' '+opt.country+'</h4>';
 							result = result + '<h4><i	class="fa fa-user"></i>'+designation+'</h4>';
 							result = result + '</div>';						                   
 							result = result + '</div>';
@@ -310,11 +317,11 @@ var masterHeader = new buildMasterHeaderPanel();
 			$(imageId).attr('src','/resources/images/office-image.jpg');
 		}
 	 
-	this.crowdSourceLocationAccess = function(locationId,userType,userId){
-		 location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userType+"/"+userId);  
+	this.crowdSourceLocationAccess = function(orgLocationId,userType,userId){
+		 location.replace(sourceleadUrl+"/dashboard/"+orgLocationId+"/"+userType+"/"+userId);  
 	}
 	 
-   this.checkLocationAccess = function(locationId,roleId,orgSecurity,userId){
+   this.checkLocationAccess = function(orgLocationId,roleId,orgSecurity,userId){
 	   $.ajax({
 		      type : "GET",
 		       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+roleId,        
@@ -370,6 +377,16 @@ var masterHeader = new buildMasterHeaderPanel();
 	  		window.location.href = sourceleadUrl + "/universalSearchForm?&searchType="+searchType+"&searchValue="+searchValue;
 	  	 }
 	  }
+	   
+	   
+	   this.logoutFormSubmit = function(){
+			window.location.href = sourceleadUrl+"/getActionHistoryList?userSessionId="+userSessionId; 
+			document.getElementById("logoutForm").submit();
+	   }
+	   
+	   this.predefineProfileImage = function(imageId){
+			$(imageId).attr('src','/resources/images/userprofile-img.png');
+		}
 		
 }
  /*function linkReadAndUnread(uuId){
@@ -402,12 +419,7 @@ var masterHeader = new buildMasterHeaderPanel();
  function predefineProfileImage(imageId){
 		$(imageId).attr('src','/resources/images/userprofile-img.png');
 	}
- function logoutFormSubmit() {
-		 	var sourceleadUrl = 'http://localhost:8080/app';
-			var userSessionId = '49080';
-			window.location.href = sourceleadUrl+"/getActionHistoryList?&userSessionId="+userSessionId; 
-			document.getElementById("logoutForm").submit();
-		}
+
  function linkFormSubmit(orgLocationId) {
 		document.getElementById("logoutForm").action="http://localhost:8080/app/dashboard/"+orgLocationId // need to be dynamic
 		document.getElementById("logoutForm").submit();
