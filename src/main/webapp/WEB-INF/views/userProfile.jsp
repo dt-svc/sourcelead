@@ -162,15 +162,15 @@ function getBankDetails(){
       </div>
     
      <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-       <div class="pull-right brud-crum"><a href="<c:url value='/app/professionalProfile'/>">Home</a> &raquo; Account Settings</div>
+       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/professionalProfile">Home</a> &raquo; Account Settings</div>
      </c:if>
    
       <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalDashboard'/>">Home </a> &raquo; Account Settings  </div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/professionalDashboard">Home </a> &raquo; Account Settings  </div>
       </c:if>
       
       <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home </a> &raquo; Account Settings  </div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/recruiterDashboard">Home </a> &raquo; Account Settings  </div>
       </c:if>
     
     </section>

@@ -63,7 +63,7 @@ function hideandshowHoliday(){
     <div class="pull-left">
       <h2>Leave Configuration</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/emailreminderConfigurationDashboard'/>"> Email Reminder Configuration</a> &raquo; leave Configuration</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/emailreminderConfigurationDashboard'/>"> Email Reminder Configuration</a> &raquo; leave Configuration</div>
   </section>
    
   <div class="content-area content-new clearfix" style="min-height: 50px;">
@@ -223,7 +223,7 @@ function hideandshowHoliday(){
 										<input type="button" value="Save" id="Leave_Configuration_form_btn"
 											class="btn btn-primary"
 											onclick="stroeLeaveReminderConfiguration('Leave_Configuration_form');"> 
-											<input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='${appPath}/emailreminderConfigurationDashboard'/>'">
+											<input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_sourceleadUrl}/emailreminderConfigurationDashboard'/>'">
 									</div>
 								</div>
 							</div>
@@ -387,7 +387,7 @@ function hideandshowHoliday(){
 										<input type="button" value="Save" id="approve_Pending_Leaves_form_btn"
 											class="btn btn-primary"
 											onclick="stroeLeaveReminderConfiguration('approve_Pending_Leaves_form');"> 
-											<input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='${appPath}/emailreminderConfigurationDashboard'/>'">
+											<input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_sourceleadUrl}/emailreminderConfigurationDashboard'/>'">
 									</div>
 								</div>
 							</div>
@@ -551,7 +551,7 @@ function hideandshowHoliday(){
 										<input type="button" value="Save" id="Holiday_form_btn"
 											class="btn btn-primary"
 											onclick="stroeLeaveReminderConfiguration('Holiday_form');"> 
-											<input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='${appPath}/emailreminderConfigurationDashboard'/>'">
+											<input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_sourceleadUrl}/emailreminderConfigurationDashboard'/>'">
 									</div>
 								</div>
 							</div>
