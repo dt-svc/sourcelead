@@ -73,8 +73,13 @@ public class TicketManagementController {
 	@RequestMapping(value = "/ticketManagementList")
 	public ModelAndView ticketManagementList(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(user != null) {
+			model.addObject("statusList",ticketManagementService.getTicketStatusListByOrgLocationId(orgLocations.getId(), 1));
+			model.addObject("sourceleadUrl", sourceleadUrl);
+		}
 		model.setViewName("ticketManagement/ticketManagementList");
-		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
 

@@ -16,8 +16,10 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.TicketAttachmentDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
+import com.bis.sourcelead.entity.TicketAssignTo;
 import com.bis.sourcelead.entity.TicketPriority;
 import com.bis.sourcelead.entity.TicketStatus;
+import com.bis.sourcelead.entity.TicketStatusHistory;
 import com.bis.sourcelead.entity.TicketType;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.TicketCategory;
@@ -438,10 +440,14 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId) {
+	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId, int status) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from Ticket t where t.orgLocations.id=" + orgLocationId + " order by t.id desc";
+			String query = "from Ticket t where t.orgLocations.id=" + orgLocationId;
+			if(status >= 0) {
+				query += " and t.status=" + status;
+			}
+			query += " order by t.id desc";
 			return session.createQuery(query).list();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -534,6 +540,75 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 		return null;
 		
 	}
+
+	@Override
+	public Boolean changeTicketManagementStatusDataById(long id, int status, OrgLocations orgLocation) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			Ticket ticket = session.get(Ticket.class, id);
+			if (ticket != null) {
+				ticket.setStatus(status);
+				session.saveOrUpdate(ticket);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean saveTicketStatusHistory(TicketStatusHistory ticketStatusHistory) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(ticketStatusHistory);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Long> getTicketAssignToIdList(long ticketId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select tat.user.id from TicketAssignTo tat where tat.ticket.id=:ticketId";
+			return session.createQuery(query).setLong("ticketId", ticketId).list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public TicketAssignTo getTicketAssignToByUserIdAndTick(long userId, long ticketId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from TicketAssignTo tat where tat.ticket.id=:ticketId and tat.user.id=:userId";
+			List<TicketAssignTo> ticketAssignToList = session.createQuery(query).setLong("ticketId", ticketId).setLong("userId", userId).list();
+			if(ticketAssignToList != null && !ticketAssignToList.isEmpty())
+				return ticketAssignToList.get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public void deleteTicketAssignTo(TicketAssignTo ticketAssignTo) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.delete(ticketAssignTo);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
 }
 
 	

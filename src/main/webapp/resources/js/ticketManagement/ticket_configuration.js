@@ -163,11 +163,7 @@ function changeTicketTypeStatus() {
 			showError("Operation failed, please try again");
 		}
 	});
-	
 }
-
-
-
 
 //================================== Ticket Management Category  =================== 
 
@@ -485,7 +481,7 @@ function getTicketStatusList() {
 					var text = "<tr>";
 			           text+= " <td><div class='tblminwidth-150'>" + response.data[e].name + "</div></td>";
 			           text+= " <td><div class='tbldata-dotdot-big'>" + response.data[e].description + "</div></td>";
-			           text+= " <td><div class='tbldata-dotdot-big'>" + response.data[e].description + "</div></td>";
+			           text+= " <td><div class='tbldata-dotdot-big'>" + (response.data[e].commentRequired ? "YES" : "NO") + "</div></td>";
 			           text+= " <td>";
 						text+= "<ul class='list-inline list-unstyled'>";
 						text+= "			  <li><i class='fa fa-pencil cursorPointer' onclick='editTicketStatus("+response.data[e].id+");'></i></li>";

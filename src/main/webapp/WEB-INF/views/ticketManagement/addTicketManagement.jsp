@@ -221,6 +221,15 @@ $(document).ready(function() {
 		</div>
 	</form>
 </section>
+<div id='changeStatusPopup' class='remove_user_pop remove_user_pop_a'>
+	<p id='changeStatusHeading' data-name="Ticket"></p>
+	<div>&nbsp;&nbsp;&nbsp;</div>
+	<b>
+		<input id='confirmId' type='button' value='Ok' onclick='changeTicketManagementStatus()' class="pull-left">
+		<input id="cancelStatusPopup" class='u_can_color' type='button' value='Cancel' onClick='closeDeletePopup()'>
+	</b>
+</div>
+
 
 <script>
 function getTicketManagementDescription(ticketUUID){

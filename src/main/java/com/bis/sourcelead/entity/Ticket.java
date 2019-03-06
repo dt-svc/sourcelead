@@ -72,6 +72,17 @@ public class Ticket implements Serializable {
 	@Column(name = "NOTIFY_TO", columnDefinition = "LONGTEXT default NULL")
 	private String notifyTo;
 
+	@Column(name = "STATUS")
+	private int status;
+	
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_BY", referencedColumnName = "ID")
 	private User createdBy;

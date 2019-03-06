@@ -2507,12 +2507,12 @@ public class CandidateDaoImpl implements CandidateDao {
 				candidateTypeQuery.append(" and marketplace.candidateId.isAssociate = 'Y' ");
 			}
 			if (candidateMarketPlaceDTO != null
-					&& candidateMarketPlaceDTO.getIsAssociate().equals("myCandidates")) {
-				createdByQuery.append(" and marketplace.orgLocationId = :candidateOrgLocId ");
+					&& candidateMarketPlaceDTO.getCreatedBy().equals("myCandidates")) {
+				createdByQuery.append(" and marketplace.createdBy.id = :userId ");
 			}
 			if (candidateMarketPlaceDTO != null
-					&& candidateMarketPlaceDTO.getIsAssociate().equals("allCandidates")) {
-				createdByQuery.append(" and marketplace.createdBy = :userId ");
+					&& candidateMarketPlaceDTO.getCreatedBy().equals("allCandidates")) {
+				createdByQuery.append(" and marketplace.orgLocationId.id = :candidateOrgLocId ");
 			}
 		}
 		if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
@@ -2542,7 +2542,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = 'Active' and marketplace.orgLocationId.id <> :candidateOrgLocId and marketplace.candidateId.isSharedInMarketplace = 'Y' and marketplace.candidateId.email not in (select Email from CandidateMarketCart cart where cart.targetOrgLocationId = :candidateOrgLocId and cart.cartStatus = 'Purchased')";
 			Query queryObject = session.createQuery(listQuery + query1 + query2+
 					statusQuery + dateQuery + employmentTypeQuery + noticePeriodQuery +
-					skillsQuery + typeQuery + candidateTypeQuery).setParameter("candidateOrgLocId", orgId);
+					skillsQuery + typeQuery + candidateTypeQuery + createdByQuery).setParameter("candidateOrgLocId", orgId);
 					
 			if (searchCandidateIds.length != 0 && !searchCandidateIds[0].equals("undefined")) {
 				queryObject.setParameterList("searchCandidateIds", searchCandiIdsLong);
@@ -2558,12 +2558,12 @@ public class CandidateDaoImpl implements CandidateDao {
 					queryObject.setParameterList("skillsList", skillsList);
 				}
 				if (candidateMarketPlaceDTO != null
-						&& candidateMarketPlaceDTO.getIsAssociate().equals("myCandidates")) {
-					queryObject.setParameter("candidateOrgLocId", orgId);
+						&& candidateMarketPlaceDTO.getCreatedBy().equals("myCandidates")) {
+					queryObject.setParameter("userId", userId);
 				}
 				if (candidateMarketPlaceDTO != null
-						&& candidateMarketPlaceDTO.getIsAssociate().equals("allCandidates")) {
-					queryObject.setParameter("userId", userId);
+						&& candidateMarketPlaceDTO.getCreatedBy().equals("allCandidates")) {
+					queryObject.setParameter("candidateOrgLocId", orgId);
 				}
 			if(!dateValue.isEmpty()){
 				Iterator it = dateValue.entrySet().iterator();
