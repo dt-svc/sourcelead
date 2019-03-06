@@ -604,9 +604,9 @@ public class CandidateMarketServiceTest {
 			int count = 0;
 			List<CandidateMarketPlace> candidateMarketPlaces = new ArrayList<>();
 			candidateMarketPlaces.add(marketPlace);
-			when(mockCandidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations.getId(), candidateLocation, searchValue)).thenReturn(candidateMarketPlaces);
+//			when(mockCandidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations.getId(), candidateLocation, searchValue)).thenReturn(candidateMarketPlaces);
 		    when(mockCandidateDao.getMarketCartStatusByMarketIdOrgId(marketPlace.getId(), orgLocations.getId())).thenReturn(count);
-			dtoList = candidateService.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations, candidateLocation, searchValue);
+//			dtoList = candidateService.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations, candidateLocation, searchValue);
 			verify(mockCandidateDao).getMarketCartStatusByMarketIdOrgId(marketPlace.getId(), orgLocations.getId());
 		    assertEquals(dtoList.size(),1);
 	}
