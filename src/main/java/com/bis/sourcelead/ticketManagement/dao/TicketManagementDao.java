@@ -3,12 +3,15 @@ package com.bis.sourcelead.ticketManagement.dao;
 import java.util.List;
 
 import com.bis.sourcelead.entity.TicketType;
+import com.bis.sourcelead.dto.TicketAttachmentDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
+import com.bis.sourcelead.entity.TicketAssignTo;
 import com.bis.sourcelead.entity.TicketCategory;
 import com.bis.sourcelead.entity.TicketComment;
 import com.bis.sourcelead.entity.TicketPriority;
 import com.bis.sourcelead.entity.TicketStatus;
+import com.bis.sourcelead.entity.TicketStatusHistory;
 
 public interface TicketManagementDao {
 
@@ -62,13 +65,39 @@ public interface TicketManagementDao {
 
 	public Boolean changeTicketStatusDataById(long id, int status, OrgLocations orgLocation);
 
-	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId);
+	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId, int status);
 
 	public Ticket getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId);
 
 //	public TicketComment getTicketSummaryByTicketId(Long ticketId, long userId, Long orgLocationId);
 
 	public List<TicketComment> getTicketCommentListByTicketId(Long ticketId, long userId, Long orgLocationId);
+
+	//public Boolean saveTicketCommentListByTicketId(TicketComment ticketComment);
+
+	public TicketComment getTicketCommentByTicketId(long ticketId);
+
+	public Boolean saveTicketComment(TicketComment ticketComment);
+
+	public List<TicketAttachmentDTO> getExpenseAttachmentStatusByCategoryId(Long ticketId);
+
+	public Ticket getTicketDataById(long ticketId);
+
+	public Boolean changeTicketManagementStatusDataById(long id, int status, OrgLocations orgLocation);
+
+	public boolean saveTicketStatusHistory(TicketStatusHistory ticketStatusHistory);
+
+	public List<Long> getTicketAssignToIdList(long ticketId);
+
+	public TicketAssignTo getTicketAssignToByUserIdAndTick(long userId, long ticketId);
+
+	public void deleteTicketAssignTo(TicketAssignTo ticketAssignTo);
+
+	
+	
+	
+
+	
 
 	
 
