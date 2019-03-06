@@ -74,7 +74,7 @@ public class InterViewFeedBackController {
 		model.addObject("templateId", templateId);
 		model.addObject("requirementInterviewid", requirementInterviewerId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.addObject("atsUrl", atsUrl);
+		model.addObject("SourceLeadWeb_atsUrl", atsUrl);
 		RequirementInterviewer interviewer = requirementInterviewerService.getRequirementInterviewerByUUID(requirementInterviewerId);
 		InterviewFeedbackTemplate ift = interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(interviewer.getId());
 		if(ift !=null){
