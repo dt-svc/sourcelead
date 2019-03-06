@@ -774,7 +774,7 @@ function clearSearch(){
 		}
 	    
 	    
-	    $("#citySearch").empty();
+/* 	    $("#citySearch").empty();
 		 $("#citySearch").val('').trigger("chosen:updated");
 		 
 		 $("#ownerAdvanced").empty();
@@ -788,7 +788,7 @@ function clearSearch(){
 
 	    $("#anyOfKeyword").empty();
 	    $("#allKeywords").empty();
-	    $("#excludeKeyWord").empty();
+	    $("#excludeKeyWord").empty(); */
 // 	    $("#orgNameAdvanced").empty();
 	}
 </script>   
