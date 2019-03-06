@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.dto.CandidateBulkUploadDTO;
 import com.bis.sourcelead.dto.DataMigrationDTO;
+import com.bis.sourcelead.dto.UploadEntriesDTO;
 import com.bis.sourcelead.entity.SourceleadFormFields;
 
 public interface DataMigrationService {
@@ -27,4 +29,8 @@ public interface DataMigrationService {
 	List<SourceleadFormFields> getfieldsByActionIdAndImportStatus(Long actionId, int importStatus) throws Exception;
 	
 	List<SourceleadFormFields> getSubmissionTemplateFormFields(Long requirementId) throws Exception;
+	
+	Map<String, String> getCandidateMappingFileData(String filePath, String headerPosition) throws Exception;
+	
+	String storeCandidateBulkUploads(CandidateBulkUploadDTO candidateBulkUploadDTO,UploadEntriesDTO uploadEntriesDTO, HttpServletRequest request) throws Exception;
 }

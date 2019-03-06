@@ -985,4 +985,66 @@ public class UserLoginHelper {
 		}
 		return candidate;
 	}
+	
+	
+	public List<UserAccountsDTO> getUserAccountsList(){
+		  Authentication auth = SecurityContextHolder.getContext().getAuthentication();	
+	      String authToken[] = auth.getName().split("##");
+	      JSONObject userSession =  userStatsCacheHelper.getLogInUserSessionJson(authToken[2]+"_SESSION");
+		
+	      List<UserAccountsDTO> accountsList = new ArrayList<>();
+	      
+	      String[] userAccountsList = userSession.get("loginUserAccounts").toString().split(",");
+			for(int i=0; i<userAccountsList.length; i++) {
+				String[] userAccount = userAccountsList[i].toString().split("\\^");
+				JSONObject accountsJson = userStatsCacheHelper.getLogInUserRoleStats(userAccount[0].toLowerCase()+"_AUTH_"+userAccount[1]);
+				UserAccountsDTO accountsDTO = new UserAccountsDTO();
+				accountsDTO.setRoleName(accountsJson.get("roleName").toString());
+				accountsDTO.setDisplayName(accountsJson.get("roleDisplayName").toString());
+				accountsDTO.setOrgLocationId(accountsJson.get("orgLocationId").toString());
+				accountsDTO.setUserRoleId(accountsJson.get("userRoleId").toString());
+				
+				if(accountsJson.get("userLoginSecurity") != null) {
+					accountsDTO.setLoginSecurity(accountsJson.get("userLoginSecurity").toString());
+				}
+				
+				accountsDTO.setUserId(accountsJson.get("userId").toString());
+				
+				if(accountsJson.get("designation") != null) {
+					accountsDTO.setDesignation(accountsJson.get("designation").toString());
+				}
+				
+				if(userSession.get("userType") != null) {
+					accountsDTO.setUserType(accountsJson.get("userType").toString());
+				}
+			
+				JSONObject accountOrgLocations = userStatsCacheHelper.getOrgLocationCacheDetails(accountsJson.get("orgLocationCode").toString());
+				
+				if(accountOrgLocations.get("imgUrl") != null) {
+					accountsDTO.setOrgImgUrl(accountOrgLocations.get("imgUrl").toString());
+				}
+				
+				accountsDTO.setOrgLocationLoginSecurity(accountOrgLocations.get("orgLocationLoginSecurity").toString());
+				accountsDTO.setOrgLocationName(accountOrgLocations.get("orgLocationName").toString());
+				accountsDTO.setOrgName(accountOrgLocations.get("orgName").toString());
+				
+				if(accountOrgLocations.get("country") != null) {
+					accountsDTO.setCountry(accountOrgLocations.get("country").toString());
+				}
+				
+				if(accountOrgLocations.get("state") != null) {
+					accountsDTO.setState(accountOrgLocations.get("state").toString());
+				}
+				
+				if(accountOrgLocations.get("city") != null) {
+					accountsDTO.setCity(accountOrgLocations.get("city").toString());
+				}
+				
+				accountsList.add(accountsDTO);
+			}
+		
+		return accountsList;
+	}
+	
+	
 }
