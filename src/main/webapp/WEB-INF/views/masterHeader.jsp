@@ -980,6 +980,18 @@ $(".collpase-div").click(function(){
 	$(this).next().slideToggle();
 });
 
+$('.headProfileIcon').click(function(){
+	$("#profilePop").slideToggle(0);
+	 $('#settingPopup, #notificationPopup, #orgPopView').hide();
+});
+$('#settingPopId').click(function(){
+	$("#settingPopup").slideToggle(0);
+	 $('#profilePop, #notificationPopup, #orgPopView').hide();
+});	
+$('#notiPopId').click(function(){
+	$("#notificationPopup").slideToggle(0);
+	 $('#profilePop, #settingPopup, #orgPopView').hide();
+});	
 
 $('#orgPopId').click(function(){
 	$("#orgPopView").slideToggle(0);
