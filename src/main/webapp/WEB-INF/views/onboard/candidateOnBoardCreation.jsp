@@ -2407,7 +2407,7 @@ function cancel(){
 
 <script>
 function addCandidateDetailsForOnboarding(){
-	var loginCountry = "${SourceLeadWeb_orgLocations.country}";
+	var loginCountry = "${SourceLeadWeb_country}";
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 var result = "";
 	 result = result +'<div class="form-group">';
@@ -2933,7 +2933,7 @@ function changeCitizenShip(){
 function shiftList(shiftId){
 		 $.ajax({
 	      type : "POST",
-	       url: atsUrl+"/shiftList",       
+	       url: atsUrl+"/getOrgLocationsShiftList",       
 	       success: function(json) {
 	        	var output = "";
 	        	output = output + "<option value=''>Select Shift</option>"; 
