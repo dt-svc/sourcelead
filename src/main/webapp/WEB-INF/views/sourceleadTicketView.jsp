@@ -9,7 +9,7 @@
       <div class="pull-left">
         <h2>${sourceleadTicket.ticketTitle}</h2>
       </div>
-         <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/app/sourceleadTicketList'/>"> Ticket List</a> &raquo; View Ticket</div>
+         <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;<a href="${SourceLeadWeb_sourceleadUrl}/sourceleadTicketList"> Ticket List</a> &raquo; View Ticket</div>
     </section>
    <div class="clearfix">
 		<div class="clearfix form-horizontal">
@@ -27,7 +27,7 @@
 			    <div class="require_one">
 			    <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_ADMIN' || SourceLeadWeb_user.id == sourceleadTicket.userId.id || SourceLeadWeb_user.id == sourceleadTicket.createdBy.id}">
 	               <div class="clearfix">
-	               	<a href="${appPath}/addSourceleadTicket?ticketUUID=${sourceleadTicket.ticketUUID}" class="pull-right anchor-black"><i class="fa fa-pencil paddingRight" title="Edit"></i>Edit</a>
+	               	<a href="${SourceLeadWeb_sourceleadUrl}/addSourceleadTicket?ticketUUID=${sourceleadTicket.ticketUUID}" class="pull-right anchor-black"><i class="fa fa-pencil paddingRight" title="Edit"></i>Edit</a>
 	               </div>
 	              </c:if> 
                 <div class="clearfix"></div>
