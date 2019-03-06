@@ -979,6 +979,19 @@ $(document).ready(function() {
 $(".collpase-div").click(function(){
 	$(this).next().slideToggle();
 });
+
+
+$('#orgPopId').click(function(){
+	$("#orgPopView").slideToggle(0);
+	 $('#profilePop, #settingPopup, #notificationPopup').hide();
+});			
+$('html').click(function(){
+	  $('#profilePop, #settingPopup, #notificationPopup, #orgPopView').hide();
+    });
+$('.headProfile, #settingPopId, #settingPopup, #notiPopId, #notificationPopup, #orgPopId, #orgPopView').click(function(e){
+	e.stopPropagation();
+});		
+
 });
 
 //Add Task Div
