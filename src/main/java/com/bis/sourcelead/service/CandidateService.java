@@ -336,5 +336,7 @@ public interface CandidateService {
 	public void updateMarketWalletAmount(Double balanceAmountValue, Long id);
 	
 	public void deleteCandidateFromMarketplaceByCandidateUuid(String candidateUuid)throws Exception;
+	
+	public Candidate getCandidateEmailById(Long id) throws Exception;
 
 }

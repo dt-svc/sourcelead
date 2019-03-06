@@ -1575,30 +1575,4 @@ public class IndianPayrollRestController {
 		}
 		return modelAndView;
 	}
-	
-	
-	/**
-	 * @param request
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/app/uploadbankdetails", method = RequestMethod.POST)
-	@ResponseBody
-	public IndAssociatePaymentAccountDTO uploadbankdetails(MultipartHttpServletRequest request) throws Exception
-	{
-		//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		//Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		MultipartFile multipartFile = null;
-		Iterator<String> itrator = request.getFileNames();
-		if (itrator.hasNext()) {
-			multipartFile = request.getFile(itrator.next());
-		}
-		IndAssociatePaymentAccountDTO response = new IndAssociatePaymentAccountDTO();
-		if (multipartFile != null) {
-			response = paymentAccountService.saveImportBankDetails(multipartFile, orgLocation);
-			return response;
-		}
-		return response;
-	}
 }

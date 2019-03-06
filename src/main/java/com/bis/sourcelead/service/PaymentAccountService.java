@@ -16,7 +16,7 @@ public interface PaymentAccountService {
 	
 	PaymentAccount getPaymentAccountDetailsByCandidateId(Long candidateId) throws Exception;
 	
-	IndAssociatePaymentAccountDTO saveImportBankDetails(MultipartFile multipartFile, OrgLocations orgLocation);
+	IndAssociatePaymentAccountDTO saveImportBankDetails(MultipartFile multipartFile, OrgLocations orgLocation) throws Exception;
 	
 	PaymentAccount saveBankingAccountDetails(IndAssociatePaymentAccountDTO paymentAccountDTO,OrgLocations orgLocations) throws Exception;
 	

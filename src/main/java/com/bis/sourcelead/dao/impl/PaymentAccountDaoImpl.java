@@ -1,11 +1,17 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.sql.CallableStatement;
+import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.jdbc.Work;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +20,12 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.PaymentAccountDao;
+import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
+import com.bis.sourcelead.dto.IndAssociatePaymentAccountDTO;
+import com.bis.sourcelead.dto.TotalLeaveDTO;
 import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Repository
 public class PaymentAccountDaoImpl implements PaymentAccountDao{
@@ -101,5 +111,50 @@ public class PaymentAccountDaoImpl implements PaymentAccountDao{
 		} 
 		return flag;
    	}
+
+	@Override
+	@Transactional
+	public int saveBankingDetailInPaymentAccount(Long orgLocationId, List<IndAssociatePaymentAccountDTO> list, Map<String, Long> map) throws Exception {
+		
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.doWork(new Work() {
+				@Override
+				public void execute(java.sql.Connection connection) throws SQLException {
+					boolean initialAutocommitSetting = connection.getAutoCommit();
+					connection.setAutoCommit(false);
+					CallableStatement stmt = connection.prepareCall("{call associateBankingDetails(?,?,?,?,?,?,?,?,?,?)}");
+					
+					
+					for (IndAssociatePaymentAccountDTO paymentlist : list) {
+						Long  candidateId = map.get(paymentlist.getEmail());
+						if(candidateId !=null) {
+							stmt.setLong(1, candidateId);
+							stmt.setString(2, paymentlist.getEmail());
+							stmt.setString(3, paymentlist.getAccountType());
+							stmt.setString(4, paymentlist.getBankName());
+							stmt.setString(5, paymentlist.getAccountNumber());
+							stmt.setString(6, paymentlist.getBsrNumber());
+							stmt.setString(7, paymentlist.getMicrCode());
+							stmt.setString(8, paymentlist.getRoutingNumber());
+							stmt.setString(9, paymentlist.getFirstName());
+							stmt.setString(10, paymentlist.getLastName());					
+							stmt.addBatch();
+						}
+						
+					
+					}
+					
+					int[] updateCount = stmt.executeBatch();
+					connection.commit();
+					connection.setAutoCommit(initialAutocommitSetting);
+				}
+			});
+			return 1;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
 
 }

@@ -3,8 +3,14 @@ package com.bis.sourcelead.service.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -32,6 +38,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 import com.bis.sourcelead.payroll.service.impl.AssociateBankDataServiceImpl;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.PaymentAccountService;
 
 @Service
@@ -45,6 +52,8 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 	@Autowired
 	CandidateDao candidateDao;
 	
+	@Autowired
+	private CandidateService candidateService;
 	@Override
 	public PaymentAccount savePaymentAccount(PaymentAccount paymentAccount) throws Exception {
 		return paymentAccountDao.savePaymentAccount(paymentAccount);
@@ -91,59 +100,74 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 		return paymentAccountDao.getPaymentAccountDetailsByCandidateId(candidateId);
 	}
 
+/*	     reading data from excel sheet      */
 	@Override
-	public IndAssociatePaymentAccountDTO saveImportBankDetails(MultipartFile multipartFile, OrgLocations orgLocation) {
+	public IndAssociatePaymentAccountDTO saveImportBankDetails(MultipartFile multipartFile, OrgLocations orgLocation) throws Exception{
+		
+		long startTime = System.nanoTime();
+	
+	
 		String fileName = multipartFile.getOriginalFilename();
 		/*LeaveTypeDTO leaveTypeDTO = new LeaveTypeDTO();*/
 		//List<AssociateBankDataDTO> list = new ArrayList<>();
-		
 		try {
 			File file = new File(multipartFile.getOriginalFilename());
 			multipartFile.transferTo(file);
 			FileInputStream fis = new FileInputStream(file);
 			Workbook workbook;
 			logger.debug("FIle Extension is: " + multipartFile.getOriginalFilename());
+			List<IndAssociatePaymentAccountDTO> list = new ArrayList<>();
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
+				
+				int count =0;
 				while (rowIterator.hasNext()) {
 					IndAssociatePaymentAccountDTO importDTO = new IndAssociatePaymentAccountDTO();
 					Row row = rowIterator.next();
-				/*	if (row.getRowNum() > 0) {
-						isValidated = validateExeclData(row, importDTO, fileName, orgLocation);*/
 					
-				/*	if (isValidated) {*/
-						if (row.getRowNum() > 0) { // Excluding column names
+						if (row.getRowNum() > 0 && (row.getCell(1) != null && row.getCell(2) != null)) { // Excluding column names
+							String assoId = getCellValueAsString(row.getCell(0), fileName);
 							if (row.getCell(0) != null) {
-								String assoId = getCellValueAsString(row.getCell(0), fileName);
 								importDTO.setCandidateId(Long.parseLong(assoId));
 							}
-							importDTO.setEmail(getCellValueAsString(row.getCell(1), fileName));
-							importDTO.setAccountType(getCellValueAsString(row.getCell(2), fileName));							
-							importDTO.setBankName(getCellValueAsString(row.getCell(3), fileName));
-							importDTO.setAccountNumber(getCellValueAsString(row.getCell(4), fileName));
-							importDTO.setBsrNumber(getCellValueAsString(row.getCell(5), fileName));
-							importDTO.setMicrCode(getCellValueAsString(row.getCell(6), fileName));
-							importDTO.setIfscCode(getCellValueAsString(row.getCell(7), fileName));
-							importDTO.setFirstName(getCellValueAsString(row.getCell(8), fileName));
-							importDTO.setLastName(getCellValueAsString(row.getCell(9), fileName));
-							
-							try {
+//							Candidate candidates= candidateService.getCandidateEmailById(Long.parseLong(assoId));
+//							String email1 = candidates.getEmail();
+							String email2 = getCellValueAsString(row.getCell(1), fileName);
+			                    importDTO.setEmail(email2);
+								importDTO.setAccountType(getCellValueAsString(row.getCell(2), fileName));							
+								importDTO.setBankName(getCellValueAsString(row.getCell(3), fileName));
+								importDTO.setAccountNumber(getCellValueAsString(row.getCell(4), fileName));
+								importDTO.setBsrNumber(getCellValueAsString(row.getCell(5), fileName));
+								importDTO.setMicrCode(getCellValueAsString(row.getCell(6), fileName));
+								importDTO.setRoutingNumber(getCellValueAsString(row.getCell(7), fileName));
+								importDTO.setFirstName(getCellValueAsString(row.getCell(8), fileName));
+								importDTO.setLastName(getCellValueAsString(row.getCell(9), fileName));
+								list.add(importDTO);
+							/*try {
 								this.saveBankingAccountDetails(importDTO,orgLocation);
 							} catch (Exception e) {
 								e.printStackTrace();
+							}*/
 							}
-							}
-					
+						else
+						{
+							count =count+1;
+							if(count == 5)	
+							 break;
 						}
-					
-					
-					}				
+				          }
+				
+						}				
+			this.saveBanking(list,orgLocation);
 			fis.close();
+			long endTime   = System.nanoTime();
+			long totalTime = endTime - startTime;
+			System.out.println(totalTime);
 		} catch (IOException e) {
-			logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
 		} catch (EncryptedDocumentException e) {
 			e.printStackTrace();
 		} catch (InvalidFormatException e) {
@@ -152,6 +176,25 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 		return null;
 	}
 	
+	private void saveBanking(List<IndAssociatePaymentAccountDTO> list, OrgLocations orgLocation) throws Exception {
+		
+		// Get the List<Candidate> based on orgLocationId
+           try {
+			List<Candidate> candidateList =  candidateService.getAllCandidatesByLocation(orgLocation.getId());
+//			 Map<String, Candidate> result3 = candidateList.stream().collect(Collectors.toMap(x -> x.get, x -> x.getName()));
+			Map<String, Long> map = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getId));
+			  int a = paymentAccountDao.saveBankingDetailInPaymentAccount(orgLocation.getId(),list,map);
+			  System.out.println(a);
+			
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+           
+	}
+
 	/**
 	 * Read cell value as String
 	 * @param cell
@@ -191,12 +234,11 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 			throws Exception {
 	
 		PaymentAccount pay= new PaymentAccount();
-		boolean flag= candidateDao.getCandidateIsanAssociate(account.getCandidateId());
-		try {
-		if(flag) {
-			Candidate can = new Candidate();
-			can.setId(account.getCandidateId());
+	try {
+		Candidate can = new Candidate();
+		can.setId(account.getCandidateId());
         pay.setCandidateId(can);
+       // pay.setCandidateId(account.getCandidateId());
         pay.setEmail(account.getEmail());
         pay.setAccountType(account.getAccountType());
         pay.setFirstName(account.getFirstName());
@@ -204,17 +246,15 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
         pay.setBankName(account.getBankName());
         pay.setBsrNumber(account.getBsrNumber());
         pay.setMicrCode(account.getMicrCode());
-        pay.setAccountNumber(account.getAccountNumber());
         pay.setRoutingNumber(account.getRoutingNumber());
+        pay.setAccountNumber(account.getAccountNumber());
            this.savePaymentAccount(pay);
-			}
-		else
-		 {
-			System.out.println("Invalid data");}
-		
-	   }catch (Exception e) {		
+		}	
+	   catch (Exception e) {	
+		  System.out.println("Invalid data");
 		logger.error(ExceptionUtils.getFullStackTrace(e));
 	}
+	
 		return pay;
 	}	
 }
