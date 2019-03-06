@@ -1485,7 +1485,7 @@ $(document).ready(function () {
 													<c:if test="${requirement.isClientJob != 'Y'}">
 														<sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')">
 															<span class="col-md-3 noPad clearfix"><a
-																href="/vms/client" target="_blank"><i
+																href="${SourceLeadWeb_vmsUrl}/client" target="_blank"><i
 																	class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 																<span
 																class="input-group-addon cursorPointer bg-blue refreshBtn"
