@@ -627,7 +627,7 @@ function preventTabkey(e){
           <div class="user-details">
             <div class="user-media">
               <div class="logn-image">
-              <a href="<c:url value='${appPath}/userProfile'/>"><img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"></a> </div>
+              <a href="${SourceLeadWeb_sourceleadUrl}/userProfile"><img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"></a> </div>
               <div class="user-media-body">
                 <p><span>${SourceLeadWeb_userName}</span></p>
                  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
@@ -645,11 +645,11 @@ function preventTabkey(e){
             </div>
             <ul class="list-unstyled">
               <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-              <li><a href="<c:url value='${appPath}/professionalProfile'/>"><span><i class="fa fa fa-user"></i></span>&nbsp;Profile</a></li>
+              <li><a href="${SourceLeadWeb_sourceleadUrl}/professionalProfile"><span><i class="fa fa fa-user"></i></span>&nbsp;Profile</a></li>
               </c:if>
               
               <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-              <li><a href="<c:url value='${appPath}/userProfile'/>"><span><i class="fa fa fa-user"></i></span>&nbsp;Profile</a></li>
+              <li><a href="${SourceLeadWeb_sourceleadUrl}/userProfile"><span><i class="fa fa fa-user"></i></span>&nbsp;Profile</a></li>
               </c:if>
               
               <li><a href="javascript:logoutFormSubmit()"><span><i class="fa fa-sign-out"></i></span>&nbsp;Log Out</a></li>
@@ -858,8 +858,8 @@ function preventTabkey(e){
 							 <li><a id="campSubMenu" href="javascript:void(0)"><i class="fa fa-bullhorn"></i>Campaigns <i class="fa fa-caret-down arrRight"></i></a>
 							 	<div class="campsubMenuView">
 				
-				                    <a href="<c:url value='${appPath}/campaignSendersList'/>"><i class="fa fa-circle-o" title="Senders"></i>Senders</a>
-									<a href="<c:url value='${appPath}/recipientsList'/>"><i class="fa fa-circle-o" title="Recipients"></i>Recipients</a>
+				                    <a href="${SourceLeadWeb_sourceleadUrl}/campaignSendersList"><i class="fa fa-circle-o" title="Senders"></i>Senders</a>
+									<a href="${SourceLeadWeb_sourceleadUrl}/recipientsList"><i class="fa fa-circle-o" title="Recipients"></i>Recipients</a>
 									
 								</div>
 							 </li> 	
