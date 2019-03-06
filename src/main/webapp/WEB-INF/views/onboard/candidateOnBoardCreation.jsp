@@ -2559,7 +2559,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<span class="input-group-addon cursorPointer bg-blue" onclick=" refreshRoleList(); "><i class="fa fa-refresh "></i></span>';
 	 result = result +' </div>';
 	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ENROLL_NEW_ROLE\')">';
-	 result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/orgRolesList" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'<span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_sourceleadUrl}/orgRolesList" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
 	 result = result +'</sec:authorize>';
 	 result = result +' </div>';
 	 result = result +'</div>';
