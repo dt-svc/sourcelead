@@ -331,11 +331,21 @@ function getUsersSearchResult(searchValue){
 		                    <li>
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
-									<span> 
+									<span class="ovrShow"> 
 									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
 									<a href="<c:url value='${appPath}/addAssociateFromLocations'/>">Add From Loc</a>
 									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
-										<a href="<c:url value='${appPath}/uploadForm'/>">Import</a>
+										<%-- <a href="<c:url value='${appPath}/uploadForm'/>">Import</a> --%>
+										<div class="immSub">
+											<a href="#">Import</a>
+											<div class="immSubMenu">
+												<a href="<c:url value='${sourceleadUrl}/uploadForm'/>">Associate Import</a>
+												<a href="<c:url value='${sourceleadUrl}/uploadAssociateBankForm'/>">Associate Bank Deatils Import</a>
+												<a href="javascript:void(0)">Option 1</a>
+												<a href="javascript:void(0)">Option 1</a>
+											</div>
+										</div>
+										
 									</sec:authorize>									
 									</span>
 								</div>
