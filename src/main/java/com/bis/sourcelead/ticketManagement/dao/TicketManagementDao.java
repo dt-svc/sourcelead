@@ -92,7 +92,7 @@ public interface TicketManagementDao {
 
 	public TicketAssignTo getTicketAssignToByUserIdAndTicket(long userId, long ticketId);
 	
-	public TicketCategoryAssignTo getTicketCategoryAssignToByUserIdAndTicket(long userId, long id);
+	public TicketCategoryAssignTo getTicketCategoryAssignToByUserIdAndTicket(long userId, long ticketCategoryId);
 
 	public void deleteTicketAssignTo(TicketAssignTo ticketAssignTo);
 
