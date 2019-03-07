@@ -1448,7 +1448,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		     writeRow = createExcelsheet.createRow(i+8);
     		     for (int j=0; j<jsonRules.length();j++){
     		         JSONObject obj = (JSONObject) jsonRules.get(j);
-    		         if(obj.getString("value") != null) {
+    		         if(obj.has("value") && obj.getString("value") !=null) {
     		        	 createXlsSheet(createExcelsheet,writeRow,j,obj.getString("value"));
     		         }
     		     }
@@ -2458,7 +2458,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		     writeRow = createExcelsheet.createRow(i+8);
    		     for (int j=0; j<jsonRules.length();j++){
    		         JSONObject obj = (JSONObject) jsonRules.get(j);
+   		         if(obj.has("value") && obj.getString("value") !=null){
    		         createXlsSheet(createExcelsheet,writeRow,j,obj.getString("value"));
+   		         }
    		     }
    		     
    		 } catch (JSONException e){
@@ -2527,8 +2529,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			for(String subIds :submissionIsd){
 			 reqSub = getRequirementSubmissionById(Long.parseLong(subIds));			 
 			 //URL for page redirection
-				String redirectURL = "requirementSummary-params-type=all-and-requirementUUID="+reqSub.getRequirement().getParentRequirement().getRequirementUUID()+"-and-submissionId="+reqSub.getId();
-				//Long redirectOrgLocationId = loginOrgLocation.getId();
+			 String redirectURL ="";
+			 if(reqSub.getRequirement().getParentRequirement() !=null){
+				 redirectURL = "requirementSummary-params-type=all-and-requirementUUID="+reqSub.getRequirement().getParentRequirement().getRequirementUUID()+"-and-submissionId="+reqSub.getId();
+			 }else{
+				 redirectURL = "requirementSummary-params-type=all-and-requirementUUID="+reqSub.getRequirement().getRequirementUUID()+"-and-submissionId="+reqSub.getId();
+			 }
+			 //Long redirectOrgLocationId = loginOrgLocation.getId();
 				
 				StringBuilder linkBuild = new StringBuilder();
 				globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +atsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
@@ -2615,7 +2622,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			StringBuilder actionLinkBuilder = new StringBuilder();   
 			String actionLink = null;
 			if(reqSub.getRequirement() != null && reqSub.getRequirement().getParentRequirement() != null) {
-				 actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=all&requirementUUID="+reqSub.getRequirement().getParentRequirement().getRequirementUUID()+"&submissionId="+reqSub.getId()).toString();
+				 actionLink =actionLinkBuilder.append("").append(atsUrl).append("/").append("requirementSummary?type=all&requirementUUID="+reqSub.getRequirement().getParentRequirement().getRequirementUUID()+"&submissionId="+reqSub.getId()).toString();
 				 emailScenerioUtil.sendNotification(actionLink, user, toUser,reqSub.getRequirement().getSpocId().getClientLocationId(), notificationScenario,new HashMap<String,String>());
 			}
 				 
