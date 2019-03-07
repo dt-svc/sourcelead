@@ -324,7 +324,7 @@ function addEducation(candidateId) {
 	/* $(".addUser-org").click(function(){
 		 $(".edit-details").toggleClass("edit-details-active");
 	 }); */
-	$(".edit-details").toggleClass("edit-details-active");
+	$(".edit-details").addClass("edit-details-active");
 	 $(".close-div").click(function(){ 
 		 $(this).parent("div.edit-details").removeClass("edit-details-active");
 		 });
@@ -579,7 +579,7 @@ $('#startDateEdit').datepicker({
           }
   });
 
-$(".edit-details").toggleClass("edit-details-active");
+$(".edit-details").addClass("edit-details-active");
  $(".close-div").click(function(){ 
 	 $(this).parent("div.edit-details").removeClass("edit-details-active");
 	 });
