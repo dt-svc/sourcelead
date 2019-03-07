@@ -178,6 +178,7 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 		
            try {
 			List<Candidate> candidateList =  candidateService.getAllCandidatesByLocation(orgLocation.getId());
+		//	List<PaymentAccount> PaymentList = paymentAccountService.getPaymentAccountDetailsByOrglocationId(orgLocation.getId());
 			Map<String, Long> map = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getId));
 			  int a = paymentAccountDao.saveBankingDetailInPaymentAccount(orgLocation.getId(),list,map);
 			  System.out.println(a +"Details Added");			
