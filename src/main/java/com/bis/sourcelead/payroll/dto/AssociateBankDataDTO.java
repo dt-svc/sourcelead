@@ -18,87 +18,8 @@ public class AssociateBankDataDTO {
 	private String associateBankDataUUID;
 	
 	private String userId;
-	
-	//new fields added for associate banking details
-	
-	private String assoicateId;
-	private String associateEmail;
-	private String paymentMode;
-	private String bsrNumber;
-	private String MicrCode;
-	private String ifscCode;
-	private String firstName;
-	private String lastName;
-	
-	
-	public String getAssoicateId() {
-		return assoicateId;
-	}
 
-	public void setAssoicateId(String assoicateId) {
-		this.assoicateId = assoicateId;
-	}
 
-	public String getAssociateEmail() {
-		return associateEmail;
-	}
-
-	public void setAssociateEmail(String associateEmail) {
-		this.associateEmail = associateEmail;
-	}
-
-	public String getPaymentMode() {
-		return paymentMode;
-	}
-
-	public void setPaymentMode(String paymentMode) {
-		this.paymentMode = paymentMode;
-	}
-
-	public String getBsrNumber() {
-		return bsrNumber;
-	}
-
-	public void setBsrNumber(String bsrNumber) {
-		this.bsrNumber = bsrNumber;
-	}
-
-	public String getMicrCode() {
-		return MicrCode;
-	}
-
-	public void setMicrCode(String micrCode) {
-		MicrCode = micrCode;
-	}
-
-	public String getIfscCode() {
-		return ifscCode;
-	}
-
-	public void setIfscCode(String ifscCode) {
-		this.ifscCode = ifscCode;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	
-	//-----------------end ----------
-	
-	
 	public Long getId()
 	{
 		return id;

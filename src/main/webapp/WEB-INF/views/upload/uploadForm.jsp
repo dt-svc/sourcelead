@@ -475,15 +475,15 @@ function importAssoBankingdeatils(){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
             };
-if ($('#upload_leave_excel_form').validate(false, validationSettings)){
-	var frm = $('#upload_leave_excel_form').serializeFormJSON();
+if ($('#upload_banking_form').validate(false, validationSettings)){
+	var frm = $('#upload_banking_form').serializeFormJSON();
 	var con = JSON.stringify(frm);
 	con = con.replace(/[{}]/g, "");
 	
 	
 	//It will escape all the special characters
 	var jsonData = encodeURIComponent(con);
-	var form = $('#upload_leave_excel_form')[0];
+	var form = $('#upload_banking_form')[0];
 	var formData = new FormData(form); 
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
@@ -500,7 +500,7 @@ if ($('#upload_leave_excel_form').validate(false, validationSettings)){
  		    	    if(json.updateCount != null && json.updateCount != '')
  		    	    $("#msgDiv").removeAttr("style");
  		 			$("#msgDiv").css({ display: "block" });
- 		 			$("#msgDiv").html(json.updateCount+ " Associates are updated ..!");
+ 		 			$("#msgDiv").html(json.updateCount+ " Associates Bank details updated ..!");
  			    	msgFadein();
  		    	    closeImportFile();
  		    	   resetUpload();
