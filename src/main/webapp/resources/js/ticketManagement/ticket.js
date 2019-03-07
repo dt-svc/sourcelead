@@ -44,7 +44,7 @@ function getTicketManagementList() {
 		            }
 		            text += "</select></td>";
 		            /*text+= "     <td><div class='tbldata-dotdot-vsm'>" + response.data[e].ticketStatus + "</div></td>";*/
-		            text+= "   	<td><div class='tblminwidth-75' style='color:" + (response.data[e].ticketPriorityTextColor != null && response.data[e].ticketPriorityTextColor !== "" ? response.data[e].ticketPriorityTextColor : "") + "'>" + (response.data[e].ticketPriorityImage !== null && response.data[e].ticketPriorityImage !== "" ? "<img src=\"" + response.data[e].ticketPriorityImage + "\" style='height:30px;'/>" : "") + response.data[e].ticketPriority + "</div></td>";
+		            text+= "   	<td><div class='tblminwidth-75' style='color:" + (response.data[e].ticketPriorityTextColor != null && response.data[e].ticketPriorityTextColor !== "" ? response.data[e].ticketPriorityTextColor : "") + "'>" + (response.data[e].ticketPriorityImage !== null && response.data[e].ticketPriorityImage !== "" ? "<img src=\"" + response.data[e].ticketPriorityImage + "\" style='height:20px;' class='mr10'/>" : "") + response.data[e].ticketPriority + "</div></td>";
 		            text+= "    <td><div class='tbldata-dotdot-vsm'>" + response.data[e].createdBy + "</div></td>";
 		            var assignTo = "";
 					for(var a in response.data[e].assignedTo) {
@@ -71,6 +71,30 @@ function getTicketManagementList() {
 		}
 	});
 }
+
+/*function validateTicketId(ticketId) {
+	$.ajax({
+		type : "POST",
+	url : sourceleadUrl+ "/validateTicketId?ticketId="+id,
+		success : function(response) {
+		if (response && response.response === "INVALID_DATA") {
+			showError(response.responseMessage);
+		} else if (response.response === "AWKWARD") {
+			location.href = "/errorPage";
+		} else if (response.response === "SUCCESS") {
+			if(response.data.length > 0) {
+				statusList = response.data;
+			}
+		} else if (response.indexOf('Sign In') !== -1) {
+			location.replace(sourceleadUrl);
+		} else {
+			showError("Operation failed, please try again");
+		}
+	  }
+  });
+}*/
+
+
 function ticketManagementListPagination(){
 	 $('#ticketManagementListTable').DataTable( { 
 	    	"scrollCollapse": false,

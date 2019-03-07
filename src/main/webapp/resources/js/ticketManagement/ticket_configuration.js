@@ -98,9 +98,13 @@ function saveTicketType() {
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
 				if(response.object === true) {
-					//alert(response.responseMessage);
+					$(".success_pop span").html("TicketType saved successfully...");
+					$(".success_pop").show();
 					cancelTicketType();
-					getTicketTypeList();
+					setTimeout(function() {
+						getTicketTypeList();
+						$(".success_pop").hide();
+			 		}, 1000);
 				}
 			} else if (response.indexOf('Sign In') !== -1) {
 				location.replace(sourceleadUrl);
@@ -254,9 +258,13 @@ function saveTicketCategory() {
 					location.href = "/errorPage";
 				} else if (response.response === "SUCCESS") {
 					if(response.object === true) {
-						alert(response.responseMessage);
+						$(".success_pop span").html("TicketCategory saved successfully...");
+						$(".success_pop").show();
 						cancelTicketCategory();
+						setTimeout(function() {
 						getTicketCategoryList();
+						$(".success_pop").hide();
+				 		}, 1000);
 					}
 				} else if (response.indexOf('Sign In') !== -1) {
 					location.replace(sourceleadUrl);
@@ -396,9 +404,13 @@ function saveTicketPriority() {
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
 				if(response.object === true) {
-					//alert(response.responseMessage);
+					$(".success_pop span").html("TicketPriority saved successfully...");
+					$(".success_pop").show();
 					cancelTicketPriority();
+					setTimeout(function() {
 					getTicketPriorityList();
+					$(".success_pop").hide();
+			 		}, 1000);
 				}
 			} else if (response.indexOf('Sign In') !== -1) {
 				location.replace(sourceleadUrl);
@@ -531,9 +543,13 @@ function saveTicketStatus() {
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
 				if(response.object === true) {
-					alert(response.responseMessage);
+					$(".success_pop span").html("TicketStatus saved successfully...");
+					$(".success_pop").show();
 					cancelTicketStatus();
+					setTimeout(function() {
 					getTicketStatusList();
+					$(".success_pop").hide();
+			 		}, 1000);
 				}
 			} else if (response.indexOf('Sign In') !== -1) {
 				location.replace(sourceleadUrl);

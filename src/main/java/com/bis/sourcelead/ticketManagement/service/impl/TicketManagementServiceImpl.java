@@ -1,5 +1,6 @@
 package com.bis.sourcelead.ticketManagement.service.impl;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
@@ -32,6 +33,7 @@ import com.bis.sourcelead.entity.TicketCategory;
 import com.bis.sourcelead.entity.TicketCategoryAssignTo;
 import com.bis.sourcelead.entity.TicketComment;
 import com.bis.sourcelead.ticketManagement.dao.TicketManagementDao;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.ticketManagement.service.TicketManagementService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -172,8 +174,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		return ticketCategoryDTOList;
 	}
 
-	@Override
-	public Boolean saveTicketCategory(TicketCategoryDTO ticketCategoryDTO, long userId,OrgLocations loginOrgLocation) {
+	public Boolean saveTicketCategory(TicketCategoryDTO ticketCategoryDTO, User user, long userId, OrgLocations loginOrgLocation) {
 		try {
 			TicketCategory ticketCategory = null;
 			if (ticketCategoryDTO.getId() > 0) {
@@ -203,9 +204,36 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 					assignToList.add(assignTo);
 				}
 			}
+			List<Long> deleteAssignToIdList = ticketManagementDao.getTicketAssignToIdList(ticketCategory.getId());
+			List<TicketCategoryAssignTo> categoryAssignToList = new LinkedList<>();
+			if(ticketCategoryDTO.getAssignedTo() != null) {
+				for(String assignUserId : ticketCategoryDTO.getAssignedTo()) {
+					User assignedUser = userDao.getUserById(Long.parseLong(assignUserId));
+					TicketCategoryAssignTo assignTo = ticketManagementDao.getTicketCategoryAssignToByUserIdAndTicket(assignedUser.getId(), ticketCategory.getId());
+					if (assignTo == null) {
+						assignTo = new TicketCategoryAssignTo();
+						assignTo.setCreatedBy(user.getId());
+						assignTo.setCreatedDate(new Date());
+					} else {
+						assignTo.setUpdatedBy(user.getId());
+						assignTo.setUpdatedDate(new Date());
+					}
+					assignTo.setUser(assignedUser);
+					assignTo.setTicketCategory(ticketCategory);
+					categoryAssignToList.add(assignTo);
+					//send Assign email & notification
+					deleteAssignToIdList.remove(assignTo.getUser().getId());
+				}
+			}
+			
+			for(Long assignUserId : deleteAssignToIdList) {
+				TicketAssignTo assignTo = ticketManagementDao.getTicketAssignToByUserIdAndTicket(assignUserId, ticketCategory.getId());
+				ticketManagementDao.deleteTicketAssignTo(assignTo);
+			}
 			
 			ticketCategory.setTicketCategoryAssignToList(assignToList);
 			return ticketManagementDao.saveTicketCategory(ticketCategory);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -460,7 +488,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 			if(ticketDTO.getAssignedTo() != null) {
 				for(String assignUserId : ticketDTO.getAssignedTo()) {
 					User assignedUser = userDao.getUserById(Long.parseLong(assignUserId));
-					TicketAssignTo assignTo = ticketManagementDao.getTicketAssignToByUserIdAndTick(assignedUser.getId(), ticketManagement.getId());
+					TicketAssignTo assignTo = ticketManagementDao.getTicketAssignToByUserIdAndTicket(assignedUser.getId(), ticketManagement.getId());
 					if (assignTo == null) {
 						assignTo = new TicketAssignTo();
 						assignTo.setCreatedBy(user.getId());
@@ -478,7 +506,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 			}
 			
 			for(Long assignUserId : deleteAssignToIdList) {
-				TicketAssignTo assignTo = ticketManagementDao.getTicketAssignToByUserIdAndTick(assignUserId, ticketManagement.getId());
+				TicketAssignTo assignTo = ticketManagementDao.getTicketAssignToByUserIdAndTicket(assignUserId, ticketManagement.getId());
 				ticketManagementDao.deleteTicketAssignTo(assignTo);
 			}
 			ticketManagement.setTicketAssignToList(assignToList);
@@ -792,6 +820,19 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		}
 		return response;
 	}
+
+	@Override
+	public Ticket getTicketSnoAndTicketId(String generatedId, Long ticketId, Long orgLocationsId) {
+		return ticketManagementDao.getTicketSnoAndTicketId(generatedId,ticketId,orgLocationsId);
+	}
+	
+
+	@Override
+	public Boolean validateTicketId(String generatedId, Long orgLocationsId) {
+		
+		return ticketManagementDao.validateTicketId(generatedId,orgLocationsId);
+	}
+	
 	
 
 	

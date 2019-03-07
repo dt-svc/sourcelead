@@ -55,6 +55,9 @@ $(document).ready(function() {
 });
 </script>
 <section class="content-wraper">
+<div class="success_pop" >
+		<i class="fa fa-check-circle"></i><span></span>
+	</div>
 	<section class="content-header clearfix">
 		<div class="pull-left">
 			<h2>Add Ticket Management</h2>
@@ -77,10 +80,10 @@ $(document).ready(function() {
 					</div>
 					<div class="clearfix"></div>
 				</div>
-				<div class="col-md-6">
+				<div class="col-md-6" id = "ticketDivId">
 					<label class="col-md-3">Ticket Id</label>
 					<div class="col-md-9">
-						<input type="text" class="form-control" name="generatedId" value="${ticketSummary.generatedId}" id="ticketId" field-name="Ticket Id" data-validation="required validate_length length1-100">
+						<input type="text" class="form-control" name="generatedId" value="${ticketSummary.generatedId}" id="ticketId" field-name="Ticket Id"  onblur="validateTicketId('${ticketSummary.id}');" data-validation="required validate_length length1-100">
 					</div>
 					<div class="clearfix"></div>
 				</div>
@@ -149,7 +152,7 @@ $(document).ready(function() {
 				<div class="col-md-6">
 					<label class="col-md-3">Notify To</label>
 					<div class="col-md-9">
-						<textarea class="form-control" rows="4" id="notifyTo" name="notifyTo" placeholder="Enter multiple Email Id's separated by commas(,)" data-validation="validate_length length0-500">${ticketSummary.notifyTo}</textarea>
+						<textarea class="form-control" rows="4" id="notifyTo" name="notifyTo" field-name="NotifyTo"  placeholder="Enter multiple Email Id's separated by commas(,)" data-validation="required">${ticketSummary.notifyTo}</textarea>
 					</div>
 					<div class="clearfix"></div>
 				</div>
@@ -157,9 +160,7 @@ $(document).ready(function() {
 				<div class="clearfix mb col-md-12">
 					<label class="col-md-3">Description</label>
 					<div class="col-md-12 txtEditor_p">
-						<textarea id="txtEditor" name="description"
-						value=""
-						class="form-control newContrtextarea">${ticketSummary.description}</textarea>
+						<textarea id="txtEditor" name="description"  field-name="Description" value="" class="form-control newContrtextarea" data-validation="required">${ticketSummary.description}</textarea>
 					</div>
 				</div>
 	
@@ -192,8 +193,8 @@ $(document).ready(function() {
 			                             <a class='downicon' href='${entryDoc.fileURL}' download>
 			                                 <i class='glyphicon glyphicon-save'></i>
 								            <input type='button' value='${entryDoc.fileName}'/>
-							        </a>
-						        <input class='dele' type='button' onclick="removeDbAttachment(${entryDocCount.index},${(2*(entryCount.count))-1});deleteAttchment(${entryDoc.fileDbId})" />
+					      </a>
+						<input class='dele' type='button' onclick="removeDbAttachment(${entryDocCount.index},${(2*(entryCount.count))-1});deleteAttchment(${entryDoc.fileDbId})"/>
 			                         </strong>
 			                         </c:if>
 			                       </c:forEach>
@@ -248,6 +249,33 @@ function getTicketManagementDescription(ticketUUID){
 					<!-- =================== saving the addTicketManagement ================================ -->
 <script>
 	
+function validateTicketId(ticketId) {
+	 var generatedId = $("#ticketId").val(); 
+	 if(ticketId !=null && ticketId !='' && ticketId !='undefined'){
+		 generatedId = ticketId;
+	 }
+	 if(generatedId != null && generatedId != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateTicketId?generatedId="+generatedId, 
+		        success: function(data) {
+		        	if(data == true){
+		        		     $('#ticketDivId').find('p.jquery_form_error_message').remove();
+		        			  $("input#ticketId").after ("<p class='jquery_form_error_message'>"+generatedId+" is Already Existed</span>");
+							  document.getElementById("ticketId").setAttribute('record-exist','yes');
+							  document.getElementById("ticketId").setAttribute('record-exist-errorMsg',generatedId+' is Already Existed'); 
+		        		  
+		        	}else{
+	        			 $('input#ticketId').removeAttr( "record-exist record-exist-errormsg"); 
+		        		 $('#ticketDivId').find('p.jquery_form_error_message').remove(); 
+                       $("#ticketId").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 } 
+}
+	
+	
 	function saveTicket() {
 		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		if ($('#addTicketManagementForm').validate(false, validationSettings)) {
@@ -274,9 +302,13 @@ function getTicketManagementDescription(ticketUUID){
 						location.href = "/errorPage";
 					} else if (response.response === "SUCCESS") {
 						if(response.object === true) {
-							alert(response.responseMessage);
+							$(".success_pop span").html("TicketList saved successfully...");
+							$(".success_pop").show();
 							cancelTicketCategory();
+							setTimeout(function() {
 							getTicketCategoryList();
+							$(".success_pop").hide();
+					 		}, 1000);
 						}
 					} else if (response.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
