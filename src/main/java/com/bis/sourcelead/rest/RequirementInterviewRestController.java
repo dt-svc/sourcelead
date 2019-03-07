@@ -484,7 +484,8 @@ public class RequirementInterviewRestController {
 				@RequestParam(value = "interviewerIds", required = false) String interviewerIds, HttpServletRequest request) throws Exception {
 		 	ResponseList<String> response = new ResponseList<>();
 		 	try {
-					OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		 		OrgLocations loginOrgLocations = orgLocationService.getOrgLocationById(orgLocId);
 					List<String> interviewDatesList = new ArrayList<>();
 					List<Long> interviewUserIdList = new ArrayList<>();
 					List<Long> submissionsList = new ArrayList<>();
@@ -547,8 +548,11 @@ public class RequirementInterviewRestController {
 				@RequestParam(value = "date", required = false) String date,
 				HttpServletRequest request) throws Exception {
 		 	Response<RequirementInterviewer> response = new Response<>();
-			OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 	Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		 	OrgLocations loginOrgLocations = orgLocationService.getOrgLocationById(orgLocId);
+		 			
+		 	Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		 	User user = userService.getUserById(userId);
 			if(user != null) {
 				try {
 					Timezone timezone = null;
