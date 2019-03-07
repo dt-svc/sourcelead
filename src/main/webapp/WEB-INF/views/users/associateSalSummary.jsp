@@ -287,7 +287,7 @@ function associateSalSummary(userId){
                 
                 
         		if(json !=null && json !=''){
-    				var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+    				var locationDate ='${SourceLeadWeb_dateFormat}'; 
     				var finalDateFormat = getJSDateFormat(locationDate);
     				 for (var i=0; i<json.orgPayItems.length; i++)
     					{
@@ -760,7 +760,7 @@ function editSalaryDetails(userId){
 	$("#userId").val(userId);
 	
 	 $(".updateSalaryDetails, .sideMask").fadeIn();
-		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		var finalDateFormat = getJSDateFormat(locationDate);
 		 $("#effectiveDate").datepicker({
 			 dateFormat: finalDateFormat,
@@ -1041,7 +1041,7 @@ function editPayItem(payItemId){
 
 <script>
 
-var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var locationDate ='${SourceLeadWeb_dateFormat}'; 
 var finalDateFormatEndDate = '';
 if(locationDate.match("yyyy-MM-dd")){
 	  finalDateFormatEndDate = 'yy-mm-dd';

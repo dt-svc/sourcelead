@@ -33,9 +33,9 @@
 <script type="text/javascript">
 		window.onload = function () {
 			initLocationAuto('onBoardLocatin','onBoardCountry','onBoardState','onBoardCity','onBoardZipCode')
-			getOnBoardCandidateCountry('${SourceLeadWeb_candidateOnBoarding.country}');
-			getOnBoardCandidateStates('${SourceLeadWeb_candidateOnBoarding.country}','${SourceLeadWeb_candidateOnBoarding.state}');
-			getOnBoardCandidateCities('${SourceLeadWeb_candidateOnBoarding.country}','${SourceLeadWeb_candidateOnBoarding.state}','${SourceLeadWeb_candidateOnBoarding.city}');
+			getOnBoardCandidateCountry('${SourceLeadWeb_country}');
+			getOnBoardCandidateStates('${SourceLeadWeb_country}','${SourceLeadWeb_state}');
+			getOnBoardCandidateCities('${SourceLeadWeb_country}','${SourceLeadWeb_state}','${SourceLeadWeb_city}');
 		 };
 </script>
 
@@ -255,12 +255,12 @@
 					<select class="sel" id="localTax" name="localTax" data-validation="required" field-name="State Tax" onchange="isLocalTaxYes();"> 
                         <option value="">--Select--</option>
                         <option selected value="NO_TAX">No Tax</option>
-                        <option value='${location }'>${location }</option>
+<%--                         <option value='${location}'>${location}</option> --%>
                       </select>    
                   </div>
             </div>
  		</div>
- 	</div>
+ 	</div> 
  </div>
 
 <h5>Additional</h5>
