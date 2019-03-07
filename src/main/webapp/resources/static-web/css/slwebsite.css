@@ -1824,6 +1824,12 @@ ul.dropdownmenucustom_defualt li a:hover {
   .text-xs-center {
     text-align: center;
   } 
+  .productfeatures .col-md-6 {
+	  max-height: initial; height: auto;
+  }
+  .productfeatures .media-left {
+    display: block; margin: 0 auto; width: 100%; text-align: center;
+}
 }
 @media only screen and (max-width:767px) {
 	.paddingTop_125px {

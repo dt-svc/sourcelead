@@ -1010,7 +1010,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				StringBuilder ownerName = new StringBuilder();
 				StringBuilder vendorName = new StringBuilder();
 				List<Long> ownerUserIds = new ArrayList<>();
-				if(null != contracts.getOwnerHierarchyList()){
+				if(null != contracts.getOwnerHierarchyList() && contracts.getOwnerHierarchyList().size() > 0){
 					for(ContractOwnerHierarchy coh : contracts.getOwnerHierarchyList()){
 						ownerUserIds.add(coh.getOwnerUserId().getId());
 						if(null != coh.getOwnerUserId().getFirstName() && null != coh.getOwnerUserId().getLastName()){
@@ -1208,7 +1208,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				StringBuilder ownerName = new StringBuilder();
 				StringBuilder vendorName = new StringBuilder();
 				List<Long> ownerUserIds = new ArrayList<>();
-				if(null != contracts.getOwnerHierarchyList()){
+				if(null != contracts.getOwnerHierarchyList() && contracts.getOwnerHierarchyList().size() > 0){
 					for(ContractOwnerHierarchy coh : contracts.getOwnerHierarchyList()){
 						ownerUserIds.add(coh.getOwnerUserId().getId());
 						if(null != coh.getOwnerUserId().getFirstName() && null != coh.getOwnerUserId().getLastName()){
