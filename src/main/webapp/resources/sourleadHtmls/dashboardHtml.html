@@ -91,10 +91,10 @@ $( document ).ready(function() {
 	 if(roleActionsArray.indexOf("ROLE_CREATE_ON_BOARD_USER") > -1 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_ON_BOARD_USER") > -1){
 	  onboardingCandidatesList();// onboarding candidate list , need to check authorizarion
 	 }
-	 <!-- Candidates for Invoice -->  // canidate invoice is pending in template.
-	 /* <sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE','ROLE_VIEW_REQUIREMENT')">
-		<jsp:include page="candidatesForInvoiceDashboard.jsp"></jsp:include>
-	</sec:authorize>  */
+	  <!-- Candidates for Invoice -->  // canidate invoice is pending in template.
+	 if(roleActionsArray.indexOf("ROLE_ADD_INVOICE") > -1 || roleActionsArray.indexOf("ROLE_VIEW_REQUIREMENT") > -1){
+		 candidateInvoiceList();// canidate Invoice List.
+	 }
 	  if(roleActionsArray.indexOf("ROLE_RESOURCE_REQUEST_APPROVER") > -1){
 			  getProjectResourceReqestsListCount();// Project Requests Resource Associate  need to check authorizarion
 			  resourceRequestList("Waiting For Approval");// Project Requests Resource Associate  need to check authorizarion
@@ -474,8 +474,22 @@ $('#dasboardTaskDatpicker').datepicker({
       </div>
     </div>
   </div>
-  </sec:authorize>
-  <div class="mb clearfix col-md-12">
+  
+ <div class="clearfix"></div>
+ <div class="mb clearfix col-md-12"> 
+      <div class=" dashNewWrap hdrPosition minHeight_225 mb10">
+      
+        	<div class="dashNewWrapHead noBor clearfix">
+				<h4 class="pull-left">Candidates for Invoice</h4>
+        	</div>
+        
+        <div class="clearfix project_tabs_inn_table dashboard-data newDashPad dataSeaNew"> 
+                 <div id="candidateInvoiceId"></div>
+        		 <div id="candidateInvoiceLoadingId"></div>
+        </div>
+      </div>
+    </div>
+ <div class="mb clearfix col-md-12">
   <div class="mb clearfix col-md-12">
   <div class="dashNewWrap mb10">
  <div class="dashNewWrap mb10">
