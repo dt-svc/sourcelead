@@ -133,19 +133,19 @@ $(document).ready(function(){
                 <ul class="list-unstyled list-group clearfix mb5">
                     <li class="clearfix">
                         <label class="pull-left">Requested Leaves</label>
-                        <a href="<c:url value='${appPath}/employeeRequestedLeaves'/>" class="color_white" id="empReq" title="Requested Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>></a>
+                        <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/employeeRequestedLeaves'/>" class="color_white" id="empReq" title="Requested Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>></a>
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Approved Leaves</label>
-                        <a href="<c:url value='${appPath}/employeeApprovedLeaves'/>" class="color_white" id="empApp" title="Approved Leaves"><span class="label label-success pull-right" id="employeeApprovedCounts"></span></a>
+                        <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/employeeApprovedLeaves'/>" class="color_white" id="empApp" title="Approved Leaves"><span class="label label-success pull-right" id="employeeApprovedCounts"></span></a>
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Rejected Leaves</label>
-                        <a href="<c:url value='${appPath}/employeeRejectedLeaves'/>" class="color_white" id="empRej" title="Rejected Leaves"><span class="label label-danger pull-right" id="employeeRejectedCounts"></span></a>
+                        <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/employeeRejectedLeaves'/>" class="color_white" id="empRej" title="Rejected Leaves"><span class="label label-danger pull-right" id="employeeRejectedCounts"></span></a>
                     </li>
                     <li class="clearfix">
                         <label class="pull-left">Cancelled Leaves</label>
-                        <a href="<c:url value='${appPath}/employeeCancelLeaves'/>" class="color_white" id="empCanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a>
+                        <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/employeeCancelLeaves'/>" class="color_white" id="empCanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a>
                     </li>
                 </ul>
                       
