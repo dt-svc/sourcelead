@@ -151,7 +151,7 @@ public class UserLoginHelper {
 			Org logInOrg = getLoginOrgDetails(orgLocations);
 			SourceLeadSessionManager.setSessionAttribute(req, "org", logInOrg);
 			
-			User loginUser = getLoginUserDetails(userRole);
+			User loginUser = getLoginUserDetails(userRole,userSession);
 			SourceLeadSessionManager.setSessionAttribute(req, "user", loginUser);
 			
 			UserRole loginUserRole = getLoginUserRoleDetails(userRole);
@@ -400,6 +400,7 @@ public class UserLoginHelper {
 			SourceLeadSessionManager.setSessionAttribute(req, "expensesTabCount", expensesTabCount);
 			SourceLeadSessionManager.setSessionAttribute(req, "resourcesTabCount", resourcesTabCount);
 			SourceLeadSessionManager.setSessionAttribute(req, "paryrollTabCount", paryrollTabCount);
+			SourceLeadSessionManager.setSessionAttribute(req, "actionsList", actionsList);
 			
 			
 			
@@ -940,13 +941,14 @@ public class UserLoginHelper {
 	}
 	
 	
-	public User getLoginUserDetails(JSONObject userRoleJson) {
+	public User getLoginUserDetails(JSONObject userRoleJson, JSONObject userSession) {
 		
 		User user = new User();
 		user.setId(Long.valueOf(userRoleJson.get("userId").toString()));
 		user.setUserCode(userRoleJson.get("userCode").toString());
 		user.setFullName(userRoleJson.get("loginUserFullName").toString());
 		user.setEmail(userRoleJson.get("email").toString());
+		user.setUserName(userSession.get("loginUserName").toString());
 		
 		if(userRoleJson.get("firstName") != null) {
 			user.setFirstName(userRoleJson.get("firstName").toString());
