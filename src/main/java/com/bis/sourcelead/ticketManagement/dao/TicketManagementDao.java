@@ -80,8 +80,6 @@ public interface TicketManagementDao {
 
 	public Boolean saveTicketComment(TicketComment ticketComment);
 
-	public List<TicketAttachmentDTO> getExpenseAttachmentStatusByCategoryId(Long ticketId);
-
 	public Ticket getTicketDataById(long ticketId);
 
 	public Boolean changeTicketManagementStatusDataById(long id, int status, OrgLocations orgLocation);

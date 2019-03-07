@@ -72,8 +72,6 @@ public interface TicketManagementService {
 	
 	public Boolean saveTicketComment(TicketCommentDTO ticketCommentDTO, User user);
 
-	public List<TicketAttachmentDTO> getTicketAttachmentStatusByTicketId(Long ticketId);
-
 	public TicketDTO getTicketDataById(long ticketId, String dateFormat);
 
 	public Boolean changeTicketManagementStatusDataById(long id, int status, OrgLocations orgLocation);

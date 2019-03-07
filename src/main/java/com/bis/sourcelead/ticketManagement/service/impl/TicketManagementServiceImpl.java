@@ -1,16 +1,16 @@
 package com.bis.sourcelead.ticketManagement.service.impl;
 
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.TicketAssignToDTO;
 import com.bis.sourcelead.dto.TicketAttachmentDTO;
 import com.bis.sourcelead.dto.TicketCategoryDTO;
@@ -20,26 +20,23 @@ import com.bis.sourcelead.dto.TicketPriorityDTO;
 import com.bis.sourcelead.dto.TicketStatusDTO;
 import com.bis.sourcelead.dto.TicketStatusHistoryDTO;
 import com.bis.sourcelead.dto.TicketTypeDTO;
-import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.Result;
-import com.bis.sourcelead.entity.TicketType;
-import com.bis.sourcelead.entity.TicketStatus;
-import com.bis.sourcelead.entity.TicketStatusHistory;
-import com.bis.sourcelead.entity.TicketPriority;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketAssignTo;
 import com.bis.sourcelead.entity.TicketCategory;
 import com.bis.sourcelead.entity.TicketCategoryAssignTo;
 import com.bis.sourcelead.entity.TicketComment;
+import com.bis.sourcelead.entity.TicketPriority;
+import com.bis.sourcelead.entity.TicketStatus;
+import com.bis.sourcelead.entity.TicketStatusHistory;
+import com.bis.sourcelead.entity.TicketType;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.ticketManagement.dao.TicketManagementDao;
-
-import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.ticketManagement.service.TicketManagementService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.bis.sourcelead.dto.Response;
 
 
 @Service
@@ -730,12 +727,6 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 			e.printStackTrace();
 		}
 		return false;
-	}
-
-	@Override
-	public List<TicketAttachmentDTO> getTicketAttachmentStatusByTicketId(Long ticketId) {
-		
-		 return ticketManagementDao.getExpenseAttachmentStatusByCategoryId(ticketId);
 	}
 
 	@Override

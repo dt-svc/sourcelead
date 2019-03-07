@@ -1404,5 +1404,8 @@ public class Constants {
 	public static final String ASSOCIATE_BANK_DETAIL_HEADERS [] = {"Assoicate Id",	"Associate Email*",	"Account Type",	"Bank Name","Account Number","Routing Number"};
 	
 	public static final String[] BANK_TYPE_DROPDOWN = {"Cheque","Direct Deposit"};
+
+	public static final String TICKET_MANAGEMENT_EMAIL = "AddTicketEmail";
+	public static final String TICKET_MANAGEMENT_NOTIFICATION ="TicketManagementNotification";
 	
 }

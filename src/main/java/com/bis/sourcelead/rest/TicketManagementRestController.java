@@ -22,7 +22,6 @@ import com.bis.sourcelead.dto.TicketPriorityDTO;
 import com.bis.sourcelead.dto.TicketStatusDTO;
 import com.bis.sourcelead.dto.TicketStatusHistoryDTO;
 import com.bis.sourcelead.dto.TicketTypeDTO;
-import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.User;
@@ -681,30 +680,6 @@ public class TicketManagementRestController {
 			response.setResponseMessage(Result.AWKWARD.getValue());
 		}
 		return response;
-	}
-	
-	@RequestMapping(value="/getTicketAttachmentStatus")
-	@ResponseBody
-	public ResponseList<TicketAttachmentDTO> getTicketAttachmentStatus(HttpServletRequest request,@RequestParam(value="ticketId" ,required=true)long ticketId) {
-		ResponseList<TicketAttachmentDTO> responseList = new ResponseList<>();
-		try {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			if (user != null) {
-				//boolean forMobile = request.getRequestURI().contains("rest");
-				//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				responseList.setData(ticketManagementService.getTicketAttachmentStatusByTicketId(ticketId));
-				responseList.setResponse(Result.SUCCESS.name());
-				responseList.setResponseMessage(Result.SUCCESS.getValue());
-			} else {
-				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
-				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			responseList.setResponse(Result.AWKWARD.name());
-			responseList.setResponseMessage(Result.AWKWARD.getValue());
-		}
-		return responseList;
 	}
 	
 	@RequestMapping(value = "/validateTicketId",  method = RequestMethod.POST)
