@@ -802,6 +802,11 @@ public class OrgSettingsRestController {
 		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		OrgLocations orgLocationsSession = orgLocationService.saveOrgLocationsOrgShortCode(orgLocations, jsonObj);
 		SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocationsSession);
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(orgLocationsSession);
+		}
+		
 		return "success";
 	}
 	
