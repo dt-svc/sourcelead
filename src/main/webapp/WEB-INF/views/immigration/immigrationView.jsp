@@ -258,10 +258,10 @@ $(document).ready(function() {
         immigration.getCandidateResidenceList(candidateId);
         }else if(tab=='#passportsTab'){
         showLoading("immigrationLoadingPassportsTab");
-        immigration.displayPassportDetails(candidateId,'Passport');
+        immigration.displayPassportDetails(candidateId);
         }else if(tab=='#visasTab'){
         showLoading("immigrationLoadingVisasTab");
-        immigration.displayVisaDetails(candidateId,'Visa');
+        immigration.displayVisaDetails(candidateId);
         }else if(tab=='#lcaTab'){
         	showLoading("immigrationLcaLoadingTab");
         	immigration.getLcaDetailsInfo(immigrationId);
