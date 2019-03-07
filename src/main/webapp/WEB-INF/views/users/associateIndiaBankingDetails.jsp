@@ -91,7 +91,6 @@
   
   <script type="text/javascript">
  function savePaymentAccount() {
-	 alert(pmsUrl)
 	 var userId = $("#associateId").val();
 	 var empType = $("#empType").val(); 
 	 if ($('#associate_bankingDetails_form').validate(false, validationSettings)){ 
