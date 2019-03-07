@@ -298,7 +298,7 @@ function hideandshow_WaitingTobeSigned(){
 										</c:forEach>
 									</c:if>
 									<c:if test="${empty waitingTobeSigned}">
-											<div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb waitingTobeSigned_rem" id="waitingTobeSigned_form_rem0">
+											<div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb waitingTobeSigned_form_rem" id="waitingTobeSigned_form_rem0">
 											<label class="col-md-3 paddingRight">Reminder <span class="remIndex_waitingTobeSigned_form">1</span><span class="text-danger paddingLeft">*</span></label>
 											<div class="col-md-9">
 		
@@ -479,7 +479,7 @@ function cloneRow(form) {
 	var h = $("."+form+"_rem").length + 1;
 	var clone = "";
 	clone += '<div class="col-xs-12 col-sm-12 col-md-12 mb minHeight50 '+form+'_rem" id="'+form+'_rem'+m+'">';
-	clone += '<label class="col-md-3 paddingRight">Reminder <span class="remIndex">'+h+'</span><span class="text-danger paddingLeft">*</span></label>';
+	clone += '<label class="col-md-3 paddingRight">Reminder <span class="remIndex_'+form+'">'+h+'</span><span class="text-danger paddingLeft">*</span></label>';
 	clone += '<div class="col-md-9">';
 	clone += '<div class="row">';
 	clone += '<div class="col-md-6">';
@@ -517,19 +517,19 @@ function cloneRow(form) {
 	clone += '</div>';
 	//clone += '<input type="text" style="display: none;" class="form-control" name="emailReminderHierarchyList['+m+'].reminderhierarchy" value="'+m+'">';
 	clone += '<div title="Remove Reminder" class="col-md-2">';
-	clone += '<div class="mt5" onclick="removeCloneDiv(\''+form+'_rem'+m+'\')">';
+	clone += '<div class="mt5" onclick="removeCloneDiv(\''+form+'_rem'+m+'\', \''+form+'\')">';
 	clone += '<i class="fa fa-times cursorPointer colorRed btn btn-default" title="Remove"></i>';
 	clone += '</div>';
 	clone += '</div>';
 	clone += '</div>';
 	clone += '</div>';
 	clone += '</div>';
-	$("#reminderParent").append(clone);
+	$("#reminderParent_"+form).append(clone);
 }
 
-function removeCloneDiv(remDiv){
+function removeCloneDiv(remDiv, form){
 	$("#"+remDiv).remove();
-	$('.remIndex').each(function(i, obj) {
+	$('.remIndex_'+form).each(function(i, obj) {
 		$(this).text(i+1);
 	});
 }

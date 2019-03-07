@@ -4,19 +4,19 @@ import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.transform.Transformers;
-import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
@@ -25,10 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
-import com.bis.sourcelead.dto.AccountDeductionsDTO;
-import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.ContractTemplateDTO;
 import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -37,11 +36,8 @@ import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
-import com.bis.sourcelead.payroll.entity.AccountDeductions;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 
@@ -886,11 +882,17 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Contracts> getAllContractsBasedOnConfigureDate(Date endDateUTC)
+	public List<Contracts> getAllContractsBasedOnConfigureDate(Date updatedDate) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
+		
+		Calendar c = Calendar.getInstance(); 
+		c.setTime(updatedDate); 
+		c.add(Calendar.DATE, 1);
+		Date nextUpdatedDate = c.getTime();
+		
 		@SuppressWarnings("unchecked")
-		List<Contracts>  contractsList = session.createQuery("from Contracts ct left join fetch ct.contactUser where ( ct.endDate = :endDateUTC )").setParameter("endDateUTC", endDateUTC).list();
+		List<Contracts>  contractsList = session.createQuery("from Contracts ct left join fetch ct.contactUser where ct.endDate BETWEEN :updatedDate and :nextUpdatedDate ").setParameter("updatedDate", updatedDate).setParameter("nextUpdatedDate", nextUpdatedDate).list();
 		return contractsList;
 	}
 }

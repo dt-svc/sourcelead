@@ -4797,26 +4797,20 @@ public class EMailJobScheduler {
 						if( (ampm == 0 && emailReminderHierarchy.getRemindertime().contains("AM") && hrs == Integer.parseInt(emailReminderHierarchy.getRemindertime().split(":")[0])) || (ampm == 1 && emailReminderHierarchy.getRemindertime().contains("PM") && hrs == Integer.parseInt(emailReminderHierarchy.getRemindertime().split(":")[0])+12) ) {
 							calendar.add(Calendar.DATE, emailReminderHierarchy.getReminderdays().intValue()); // Adding remainderDays days
 							SimpleDateFormat dateFormat = new SimpleDateFormat(emailReminder.getOrgLocationsId().getDateFormat());
-					        String updatedDateStr     = dateFormat.format(calendar.getTime());
+					        String updatedDateStr = dateFormat.format(calendar.getTime());
 					        Date updatedDate = dateFormat.parse(updatedDateStr);
 					         
 					        //method for the contractexpired cron 
 					        
 							List<Contracts> expiredContractsList = contractsTemplateService.getAllContractsBasedOnConfigureDate(updatedDate);
 							if(expiredContractsList != null) {
-							for(Contracts contracts : expiredContractsList){
+								for(Contracts contracts : expiredContractsList){
 								
 								// loop for notify to emails
 								
-								for (String email : emailReminder.getNotifyTo().split(",")) {
 									
-									User toUser = new User();
-									toUser.setEmail(email.trim());
-									toUser.setFirstName("");
-									toUser.setLastName("");
-								contractExpiryRemainderMail(contracts,updatedDateStr, toUser);
+									contractExpiryRemainderMail(contracts,updatedDateStr, emailReminder);
 								}
-							}
 							}
 						}
 					}
@@ -4832,24 +4826,13 @@ public class EMailJobScheduler {
 	}
 	
 	@SuppressWarnings("unused")
-	private void contractExpiryRemainderMail(Contracts contracts, String days, User toUser) throws Exception
+	private void contractExpiryRemainderMail(Contracts contracts, String days, EmailReminder emailReminder) throws Exception
 	{
 			User owner = userService.getUserByUserCode(contracts.getOwnerUserId().getUserCode());
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(contracts.getOrgLocationId().getId());
 			
 			EmailMessage emailMessage = new EmailMessage();
 			emailMessage.setFirstName(owner.getFirstName());
-			 
-			String notify = "";
-			if (StringUtils.isNotBlank(toUser.getFirstName())) {
-				emailMessage.setFirstName(toUser.getFirstName());
-				notify = toUser.getFullName();
-			}
-			if (StringUtils.isNotBlank(toUser.getLastName())) {
-				emailMessage.setLastName(toUser.getLastName());
-			}
-			emailMessage.setToEmail(toUser.getEmail());
-			
 			 
 			//Url for redirection 			 
 		     String redirectURL = "/contractListbyStatus-params-"+"contractType="+contracts.getContractType()+"-and-status=waiting";
@@ -4995,6 +4978,25 @@ public class EMailJobScheduler {
 			 String actionLink="";
 			 actionLink = notificationLink.append(sourceleadUrl).append("/").append("contractListbyStatus?"+"contractType="+contracts.getContractType()+"&status=waiting").toString();
 			 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 
+			 for (String email : emailReminder.getNotifyTo().split(",")) {
+					User toUser = new User();
+					toUser.setEmail(email.trim());
+					toUser.setFirstName("");
+					toUser.setLastName("");
+					String notify = "";
+					if (StringUtils.isNotBlank(toUser.getFirstName())) {
+						emailMessage.setFirstName(toUser.getFirstName());
+						notify = toUser.getFullName();
+					}
+					if (StringUtils.isNotBlank(toUser.getLastName())) {
+						emailMessage.setLastName(toUser.getLastName());
+					}
+					emailMessage.setToEmail(toUser.getEmail());
+					emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+				}
+			 
+			 
 //			 emailScenerioUtil.sendNotification(actionLink, null,owner, contracts.getOrgLocationId(), notificationScenario);
 		
 	}

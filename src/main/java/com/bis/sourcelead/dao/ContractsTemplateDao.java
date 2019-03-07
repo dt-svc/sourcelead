@@ -73,5 +73,5 @@ public interface ContractsTemplateDao {
 
 	Integer deleteContractOwnerHierarchyListByContractId(Long id);
 	
-	List<Contracts> getAllContractsBasedOnConfigureDate(Date endDateUTC);
+	List<Contracts> getAllContractsBasedOnConfigureDate(Date updatedDate) throws Exception;
 }

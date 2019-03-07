@@ -3791,8 +3791,8 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 	}
 	
 	@Override
-	public List<Contracts> getAllContractsBasedOnConfigureDate(Date endDateUTC) throws Exception
+	public List<Contracts> getAllContractsBasedOnConfigureDate(Date updatedDate) throws Exception
 	{
-		return contractsTemplateDao.getAllContractsBasedOnConfigureDate(endDateUTC);
+		return contractsTemplateDao.getAllContractsBasedOnConfigureDate(updatedDate);
 	}
 }
