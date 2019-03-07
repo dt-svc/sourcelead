@@ -50,10 +50,14 @@ var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 var userId =  '${SourceLeadWeb_userId}';
 var orgLocationId  = '${SourceLeadWeb_orgLocationId}';
 
-var isAuthenticated = '${SourceLeadWeb_isAuthenticated}'
+var orgLocationCode = '${SourceLeadWeb_locationCode}';// snigitha copied from the dashboard.js
+var orgCode = '${SourceLeadWeb_orgCode}';// snigitha copied from the dashboard.js
 
+var isAuthenticated = '${SourceLeadWeb_isAuthenticated}'
+var userSessionId = '${SourceLeadWeb_actionUUID}';
+var userImgUrl =  '${SourceLeadWeb_userImgUrl}'; 
 var locationCode ='${SourceLeadWeb_locationCode}';
-var loginUser = '${SourceLeadWeb_userName}';
+var loginUser = '${SourceLeadWeb_loginUserFullName}';
 var locationList = '${SourceLeadWeb_dateFormat}';	
 var country = '${SourceLeadWeb_country}';
 var timezone = '${SourceLeadWeb_timezone}';
@@ -74,6 +78,6 @@ var locationDate = '${SourceLeadWeb_dateFormat}';
 </script>
 <script>
   $(document).ready(function() {
-	  $('body').load("/resources/staticHtmls/dashboardHtml.html");
+	  $('body').load("/resources/sourleadHtmls/dashboardHtml.html");
 	});
 </script>
