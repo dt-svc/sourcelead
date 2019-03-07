@@ -926,7 +926,7 @@ function filterPop() {
     function initMarketplacePayment() {
          $.ajax({
 	      type: "POST",
-    	   url: "/app/init-marketplace-payment?cartId=1234",
+    	   url: "${SourceLeadWeb_sourceleadUrl}/init-marketplace-payment?cartId=1234",
       	success: function(data) {
       		 if (data) {
 	                location.href = data;
