@@ -160,6 +160,7 @@ var uploadflag= true;
 		<div id="associateBnkdet" style="display:none;">
 			<div class="clearfix"></div>
 		<div class="clearfix" id="dataFileImportDiv">
+		 <div class="success_pop" id="msgDiv" style="display: none;"></div>
 		<form:form id="upload_banking_form" name="upload_banking_form" method="post" enctype="multipart/form-data">
 			<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
 			<div class="row minHyewtriuwe rwrghek	fghjqwehjgfwej tkjreight">
@@ -235,6 +236,11 @@ var uploadflag= true;
 							<p>
 							  <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Associate Email</label>
 							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Payment Mode</label>
+							   <label><i class="fa fa-check"></i>&nbsp;&nbsp;Bank Name</label>
+							    <label><i class="fa fa-check"></i>&nbsp;&nbsp;Account number</label>
+							     <label><i class="fa fa-check"></i>&nbsp;&nbsp;IFSC Code</label>
+							      <label><i class="fa fa-check"></i>&nbsp;&nbsp;First Name</label>
+							       <label><i class="fa fa-check"></i>&nbsp;&nbsp;Last Name</label>
 							  </p>
 						</span>
 					</div>
@@ -466,6 +472,13 @@ function cancelFileImport(){
 
 	}
 	</script>
+	
+	<script>
+	function msgFadein() {
+		$("#msgDiv").fadeIn(200);
+        $('#msgDiv').delay(2000).fadeOut('slow');
+	}
+    </script> 
 	
 	<script type="text/javascript">
 function importAssoBankingdeatils(){
