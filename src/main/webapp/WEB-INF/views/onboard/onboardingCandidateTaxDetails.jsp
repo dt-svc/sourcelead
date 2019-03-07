@@ -247,7 +247,7 @@
 	    </div>
 	</div>
  
-<%--      <div class="clearfix">
+     <div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
  		    <div class="form-group">
                 <label class="col-md-4 control-label">Local tax</label>
@@ -255,12 +255,12 @@
 					<select class="sel" id="localTax" name="localTax" data-validation="required" field-name="State Tax" onchange="isLocalTaxYes();"> 
                         <option value="">--Select--</option>
                         <option selected value="NO_TAX">No Tax</option>
-                        <option value='${location}'>${location}</option>
+<%--                         <option value='${location}'>${location}</option> --%>
                       </select>    
                   </div>
             </div>
  		</div>
- 	</div> --%>
+ 	</div> 
  </div>
 
 <h5>Additional</h5>
