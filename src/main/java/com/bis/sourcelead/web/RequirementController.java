@@ -417,9 +417,10 @@ public class RequirementController {
 			requirement = new Requirement();
 		}
 		
+		SourceLeadSessionManager.setSessionAttribute(request, "profilePercentage", orgLocations.getProfilePercentage());
+		SourceLeadSessionManager.setSessionAttribute(request, "coolingOffPeriod", orgLocations.getCoolingOffPeriod());
 		List<LookUpData> experienceLevelList = lookUpDataService.getLookUpDataByCategory(Constants.EXPERIENCELEVEL);
-		 model.addObject("experienceLevelList", experienceLevelList);
-		 
+		model.addObject("experienceLevelList", experienceLevelList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirement");
 		
