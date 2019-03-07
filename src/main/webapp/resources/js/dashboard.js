@@ -1,6 +1,16 @@
 
 var date = $("#eventCalendar").val();
 
+$("a.updateHrefUrl").mouseover(function(){
+	  $("#jobsLink").attr("href", atsUrl + "/jobsList");
+	  $("#viewmoresDiv").attr("href", sourceleadUrl + "/requirementApplicantsList?&tab=previous&orgLocationId="+orgLocationId);
+	  $("#timeSheetLink").attr("href", pmsUrl+"/timesheet");
+	  $("#expensesLink").attr("href", pmsUrl+"/expenses");
+	  $("#leaveLink").attr("href", pmsUrl+"/leaveManagementReports");
+	  $("#viewMoreId").attr("href", atsUrl+"/jobsList");
+	  
+});
+
 var finalDateFormatEDashboardeventCalendar = '';
 $(document).ready(function() {
 	if (locationDate.match("yyyy-MM-dd")) {
@@ -714,8 +724,8 @@ function requirementList(isWalkIn, walkInDay){
 		                   
 		                    if(checkSize>=10 && i==9 ){
 		                    	/* $("#viewmoresDiv").css("display", "block"); */
-		                    	var text = "<div class='pull-right' id='viewmoresDiv'>";
-		                    	text += "<a href='/ats/jobsList' class='btn btn-sm btn-primary pull-right' title='View more'> View More</a>";
+		                    	var text = "<div class='pull-right' id='viewmoresDiv1'>";
+		                    	text += "<a href='"+atsUrl+"/jobsList' id = 'viewMoreId' class='btn btn-sm btn-primary pull-right updateHrefUrl' title='View more'> View More</a>";
 		                    	text += "</div>";
 		                    	$("#requirementListActions").append(text);
 			 	   	   	    } 
