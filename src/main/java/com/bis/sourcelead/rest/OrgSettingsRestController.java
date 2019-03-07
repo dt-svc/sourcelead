@@ -689,10 +689,8 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/getCoolingOffPeriod")
 	public String getCoolingOffPeriod(HttpServletRequest request) throws Exception
 	{
-		String resultJson = null;
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		resultJson = toJSON(orgLocations);
-		return resultJson;
+		String coolingOffPeriod = (String) SourceLeadSessionManager.getSessionAttribute(request, "coolingOffPeriod");
+		return coolingOffPeriod;
 	}
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
@@ -707,6 +705,7 @@ public class OrgSettingsRestController {
 			orgLocation.setCoolingOffPeriod(jsonObj.getString("coolingOff"));
 		}
 		orgLocationService.updateOrgLocations(orgLocation);
+		SourceLeadSessionManager.setSessionAttribute(request, "coolingOffPeriod", orgLocation.getCoolingOffPeriod());
 		return "success";
 	}
 	
