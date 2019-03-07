@@ -19,7 +19,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 			</div>
 	     </c:if>
     <div class="pull-left"><h2>Job Templates</h2></div>
-	<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="/app/orgTemplates"> Templates</a> &raquo; Job Templates</div>
+	<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/orgTemplates"> Templates</a> &raquo; Job Templates</div>
   </section>
   
   <div class="overflow_Auto vendor_wrap">
