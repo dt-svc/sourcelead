@@ -152,7 +152,7 @@ $(document).ready(function() {
 				<div class="col-md-6">
 					<label class="col-md-3">Notify To</label>
 					<div class="col-md-9">
-						<textarea class="form-control" rows="4" id="notifyTo" name="notifyTo" field-name="NotifyTo"  placeholder="Enter multiple Email Id's separated by commas(,)" data-validation="required">${ticketSummary.notifyTo}</textarea>
+						<textarea class="form-control" rows="4" id="notifyTo" name="notifyTo" field-name="NotifyTo"  placeholder="Enter multiple Email Id's separated by commas(,)">${ticketSummary.notifyTo}</textarea>
 					</div>
 					<div class="clearfix"></div>
 				</div>
