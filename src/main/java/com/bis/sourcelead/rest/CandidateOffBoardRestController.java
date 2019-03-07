@@ -1547,8 +1547,11 @@ public class CandidateOffBoardRestController {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Response<String> result = new Response<>();
 		try {
-			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
+			
+			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			User user = userService.getUserById(userId);
 			CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(user.getId(),
 					loginOrgLocation.getId());
 			offboarding.setOffboardSubmitted(Constants.YES);
