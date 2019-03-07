@@ -108,8 +108,6 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 	
 	
 		String fileName = multipartFile.getOriginalFilename();
-		/*LeaveTypeDTO leaveTypeDTO = new LeaveTypeDTO();*/
-		//List<AssociateBankDataDTO> list = new ArrayList<>();
 		try {
 			File file = new File(multipartFile.getOriginalFilename());
 			multipartFile.transferTo(file);
@@ -133,24 +131,25 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 							if (row.getCell(0) != null) {
 								importDTO.setCandidateId(Long.parseLong(assoId));
 							}
-//							Candidate candidates= candidateService.getCandidateEmailById(Long.parseLong(assoId));
-//							String email1 = candidates.getEmail();
 							String email2 = getCellValueAsString(row.getCell(1), fileName);
-			                    importDTO.setEmail(email2);
-								importDTO.setAccountType(getCellValueAsString(row.getCell(2), fileName));							
+			                    importDTO.setEmail(email2);			                    			                    
+								importDTO.setAccountType(getCellValueAsString(row.getCell(2), fileName));																	
 								importDTO.setBankName(getCellValueAsString(row.getCell(3), fileName));
 								importDTO.setAccountNumber(getCellValueAsString(row.getCell(4), fileName));
+								
+								String Accnum = getCellValueAsString(row.getCell(4), fileName);
+							//	if() {
+							      importDTO.setAccountNumber(Accnum);
+								
+								
+								
+								
 								importDTO.setBsrNumber(getCellValueAsString(row.getCell(5), fileName));
 								importDTO.setMicrCode(getCellValueAsString(row.getCell(6), fileName));
 								importDTO.setRoutingNumber(getCellValueAsString(row.getCell(7), fileName));
 								importDTO.setFirstName(getCellValueAsString(row.getCell(8), fileName));
 								importDTO.setLastName(getCellValueAsString(row.getCell(9), fileName));
 								list.add(importDTO);
-							/*try {
-								this.saveBankingAccountDetails(importDTO,orgLocation);
-							} catch (Exception e) {
-								e.printStackTrace();
-							}*/
 							}
 						else
 						{
@@ -257,4 +256,16 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 	
 		return pay;
 	}	
+	
+	public boolean isStringInt(String Accnum)
+	{
+	    	
+	    	if (!Accnum.matches("[a-zA-Z_]+") && (Accnum.length() == 12))	{    	
+	    			return true;	
+	    	}    	
+	    	else {
+	    		System.out.println("Invalid account no");
+	    		return false;
+	    	}
+	}
 }
