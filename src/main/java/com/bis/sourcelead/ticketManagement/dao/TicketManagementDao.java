@@ -8,6 +8,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketAssignTo;
 import com.bis.sourcelead.entity.TicketCategory;
+import com.bis.sourcelead.entity.TicketCategoryAssignTo;
 import com.bis.sourcelead.entity.TicketComment;
 import com.bis.sourcelead.entity.TicketPriority;
 import com.bis.sourcelead.entity.TicketStatus;
@@ -89,9 +90,21 @@ public interface TicketManagementDao {
 
 	public List<Long> getTicketAssignToIdList(long ticketId);
 
-	public TicketAssignTo getTicketAssignToByUserIdAndTick(long userId, long ticketId);
+	public TicketAssignTo getTicketAssignToByUserIdAndTicket(long userId, long ticketId);
+	
+	public TicketCategoryAssignTo getTicketCategoryAssignToByUserIdAndTicket(long userId, long id);
 
 	public void deleteTicketAssignTo(TicketAssignTo ticketAssignTo);
+
+	public Ticket getTicketSnoAndTicketId(String generatedId, Long ticketId, Long orgLocationsId);
+
+	public Boolean validateTicketId(String generatedId, Long orgLocationsId);
+
+	
+
+	
+
+	
 
 	
 	
