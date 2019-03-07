@@ -291,8 +291,17 @@ public class UserProfileRestController {
 		user.setFileUrl(null);
 		user.setFileContentType(null);
 		userService.addUser(user);
-		SourceLeadSessionManager.setSessionAttribute(request, "user", user);
-
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			List<UserRole> userRolesList = userRoleService.getUsersListByUserId(user.getId());
+			if(userRolesList != null && !userRolesList.isEmpty()) {
+				 for(UserRole userRole : userRolesList) {
+					 userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+				 }
+			}
+			
+		}
+		
 		return "success";
 
 	}
