@@ -5,6 +5,9 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script type="text/javascript" src="/resources/js/ticketManagement/ticket_configuration.js"></script>
 <section class="content-wraper">
+	<div class="success_pop" >
+		<i class="fa fa-check-circle"></i><span></span>
+	</div>
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Ticket Type</h2>
@@ -24,34 +27,31 @@
         <div class="col-md-10 padding_left">
 			<div class="project_tabs projectTabsborder">
 				<div id="tab-1">
-          <div class="positionRelative timesheet_head clearfix">
-            <ul class="pull-right list-unstyled list-inline">
-              <li><a class="newAdBtn mr5" title="Add" id="addPop">+ Add</a></li>
-	            </ul>
-          </div>
-          <div class="candidate_wrap_table datatable_filter">
-            <table style="width: 100%;" id="ticketManagementTypeTable">
-              <thead>
-                <tr>
-                  <th>Type</th>
-                  <th>Description</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="ticketTypeList">
-                
-              </tbody>
-            </table>
-          </div>
+		          <div class="positionRelative timesheet_head clearfix">
+		            <ul class="pull-right list-unstyled list-inline">
+		              <li><a class="newAdBtn mr5" title="Add" id="addPop">+ Add</a></li>
+			            </ul>
+		          </div>
+		          <div class="candidate_wrap_table datatable_filter">
+		            <table style="width: 100%;" id="ticketManagementTypeTable">
+		              <thead>
+		                <tr>
+		                  <th>Type</th>
+		                  <th>Description</th>
+		                  <th>Action</th>
+		                </tr>
+		              </thead>
+		              <tbody id="ticketTypeList">
+		                
+		              </tbody>
+		            </table>
+		          </div>
 			</div>
-				
 		  </div>
-		  
         </div>
       </div>
     </div>
   </section>
-
 
 <div class="mask"></div>
 

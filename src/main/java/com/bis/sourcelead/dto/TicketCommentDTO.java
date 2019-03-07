@@ -16,6 +16,7 @@ public class TicketCommentDTO implements Serializable {
 	private long createdById;
 	private String createdByName;
 	private String createdDate;
+	private String createdDateString;
 	private long updatedById;
 	private String updatedByName;
 	private String updatedDate;
@@ -74,6 +75,14 @@ public class TicketCommentDTO implements Serializable {
 
 	public void setCreatedDate(String createdDate) {
 		this.createdDate = createdDate;
+	}
+
+	public String getCreatedDateString() {
+		return createdDateString;
+	}
+
+	public void setCreatedDateString(String createdDateString) {
+		this.createdDateString = createdDateString;
 	}
 
 	public long getUpdatedById() {

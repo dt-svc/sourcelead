@@ -16,11 +16,15 @@ import com.bis.sourcelead.dto.ResponseList;
 
 import com.bis.sourcelead.dto.TicketCategoryDTO;
 import com.bis.sourcelead.dto.TicketCommentDTO;
+import com.bis.sourcelead.dto.TicketAttachmentDTO;
 import com.bis.sourcelead.dto.TicketDTO;
 import com.bis.sourcelead.dto.TicketPriorityDTO;
 import com.bis.sourcelead.dto.TicketStatusDTO;
+import com.bis.sourcelead.dto.TicketStatusHistoryDTO;
 import com.bis.sourcelead.dto.TicketTypeDTO;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.ticketManagement.service.TicketManagementService;
@@ -199,7 +203,7 @@ public class TicketManagementRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
-				response.setObject(ticketManagementService.saveTicketCategory(ticketCategoryDTO, user.getId(), loginOrgLocation));
+				response.setObject(ticketManagementService.saveTicketCategory(ticketCategoryDTO, user, user.getId(), loginOrgLocation));
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -487,6 +491,27 @@ public class TicketManagementRestController {
 	 * response.setResponseMessage(Result.AWKWARD.getValue()); } return response; }
 	 */
 
+	@RequestMapping(value = "/changeTicketStatusType", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Boolean> changeTicketStatusType(HttpServletRequest request, TicketStatusHistoryDTO ticketStatusHistoryDTO) {
+		Response<Boolean> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (user != null) {
+				response = ticketManagementService.changeTicketStatus(ticketStatusHistoryDTO, user, orgLocation);
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+	
 	@RequestMapping(value = "/changeTicketStatusDataById", method = RequestMethod.POST)
 	@ResponseBody
 	public Response<Boolean> changeTicketStatusDataById(HttpServletRequest request,
@@ -519,7 +544,7 @@ public class TicketManagementRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				responseList.setData(ticketManagementService.getTicketManagementListByOrgLocationId(loginOrgLocation.getId(), user.getId(), loginOrgLocation.getDateFormat()));
+				responseList.setData(ticketManagementService.getTicketManagementListByOrgLocationId(loginOrgLocation.getId(), user.getId(), 1, loginOrgLocation.getDateFormat()));
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -556,6 +581,31 @@ public class TicketManagementRestController {
 		}
 		return response;
 	}
+	
+	@RequestMapping(value = "/getTicketDataById", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<TicketDTO> getTicketDataById(HttpServletRequest request, long ticketId)
+			throws Exception {
+		Response<TicketDTO> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (user != null) {
+				response.setObject(ticketManagementService.getTicketDataById(ticketId, loginOrgLocation.getDateFormat()));
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+
 
 	@RequestMapping(value = "/rest/ticketSummary")
 	public Response<TicketDTO> getTicketSummary(HttpServletRequest request, @RequestParam(defaultValue = "") String uuid) {
@@ -596,7 +646,7 @@ public class TicketManagementRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				responseList.setData(ticketManagementService.getTicketCommentListByTicketId(ticketId, user.getId(), loginOrgLocation.getId()));
+				responseList.setData(ticketManagementService.getTicketCommentListByTicketId(ticketId, user.getId(), loginOrgLocation.getId(), loginOrgLocation.getDateFormat()));
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -610,4 +660,91 @@ public class TicketManagementRestController {
 		}
 		return responseList;
 	}
+	
+	@RequestMapping(value = "/saveTicketComment", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Boolean> saveTicketComment(HttpServletRequest request, TicketCommentDTO ticketCommentDTO) {
+		Response<Boolean> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				response.setObject(ticketManagementService.saveTicketComment(ticketCommentDTO, user));
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+	
+	@RequestMapping(value="/getTicketAttachmentStatus")
+	@ResponseBody
+	public ResponseList<TicketAttachmentDTO> getTicketAttachmentStatus(HttpServletRequest request,@RequestParam(value="ticketId" ,required=true)long ticketId) {
+		ResponseList<TicketAttachmentDTO> responseList = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				//boolean forMobile = request.getRequestURI().contains("rest");
+				//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				responseList.setData(ticketManagementService.getTicketAttachmentStatusByTicketId(ticketId));
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return responseList;
+	}
+	
+	@RequestMapping(value = "/validateTicketId",  method = RequestMethod.POST)
+    public @ResponseBody Boolean validateTicketId(@RequestParam(value="generatedId", required=false) String generatedId, @RequestParam(value="ticketId", required=false) Long ticketId,
+    		HttpServletRequest request) throws Exception {
+	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	       Ticket ticket=null;
+	       if(null != ticketId){
+	    	   ticket = ticketManagementService.getTicketSnoAndTicketId(generatedId, ticketId, orgLocation.getId());
+	       }
+	       Boolean flag = false;
+		    if(ticket == null){
+		    	flag =  ticketManagementService.validateTicketId(generatedId, orgLocation.getId());
+		    	
+		    }
+			return flag;
+		 
+	    }
+	
+	/*
+	 * @RequestMapping(value = "/changeTicketManagementStatusDataById", method =
+	 * RequestMethod.POST)
+	 * 
+	 * @ResponseBody public Response<Boolean>
+	 * changeTicketManagementStatusDataById(HttpServletRequest request,
+	 * 
+	 * @RequestParam(defaultValue = "0") long id, int status) throws Exception {
+	 * Response<Boolean> response = new Response<>(); try { User user = (User)
+	 * SourceLeadSessionManager.getSessionAttribute(request, "user"); OrgLocations
+	 * orgLocation = (OrgLocations)
+	 * SourceLeadSessionManager.getSessionAttribute(request, "orgLocations"); if
+	 * (user != null) { response.setObject(ticketManagementService.
+	 * changeTicketManagementStatusDataById(id, status, orgLocation));
+	 * response.setResponse(Result.SUCCESS.name());
+	 * response.setResponseMessage(Result.SUCCESS.getValue()); } else {
+	 * response.setResponse(Result.SESSION_TIMEDOUT.name());
+	 * response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue()); } } catch
+	 * (Exception e) { e.printStackTrace();
+	 * response.setResponse(Result.AWKWARD.name());
+	 * response.setResponseMessage(Result.AWKWARD.getValue()); } return response; }
+	 */
+
 }

@@ -12,15 +12,36 @@ public class TicketDTO implements Serializable {
 	private long id;
 	private String uuid;
 	private String generatedId;
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	private String title;
 	private long ticketTypeId;
 	private String ticketType;
 	private long ticketCategoryId;
 	private String ticketCategory;
 	private long ticketPriorityId;
 	private String ticketPriority;
+	private String ticketPriorityTextColor;
 	private String ticketPriorityImage;
 	private long ticketStatusId;
 	private String ticketStatus;
+	private int status;
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
 	private String description;
 	private List<String> assignedTo;
 	private List<TicketAssignToDTO> ticketAssignToList;
@@ -102,6 +123,14 @@ public class TicketDTO implements Serializable {
 
 	public void setTicketPriority(String ticketPriority) {
 		this.ticketPriority = ticketPriority;
+	}
+
+	public String getTicketPriorityTextColor() {
+		return ticketPriorityTextColor;
+	}
+
+	public void setTicketPriorityTextColor(String ticketPriorityTextColor) {
+		this.ticketPriorityTextColor = ticketPriorityTextColor;
 	}
 
 	public String getTicketPriorityImage() {
