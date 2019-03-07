@@ -78,6 +78,6 @@ var locationDate = '${SourceLeadWeb_dateFormat}';
 </script>
 <script>
   $(document).ready(function() {
-	  $('body').load("/resources/sourleadHtmls/dashboardHtml.html");
+	  $('body').load("/resources/sourceleadHtmls/dashboardHtml.html");
 	});
 </script>
