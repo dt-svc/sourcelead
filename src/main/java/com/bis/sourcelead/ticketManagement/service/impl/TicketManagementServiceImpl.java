@@ -1,16 +1,22 @@
 package com.bis.sourcelead.ticketManagement.service.impl;
 
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.TicketAssignToDTO;
 import com.bis.sourcelead.dto.TicketAttachmentDTO;
 import com.bis.sourcelead.dto.TicketCategoryDTO;
@@ -20,26 +26,28 @@ import com.bis.sourcelead.dto.TicketPriorityDTO;
 import com.bis.sourcelead.dto.TicketStatusDTO;
 import com.bis.sourcelead.dto.TicketStatusHistoryDTO;
 import com.bis.sourcelead.dto.TicketTypeDTO;
-import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.Result;
-import com.bis.sourcelead.entity.TicketType;
-import com.bis.sourcelead.entity.TicketStatus;
-import com.bis.sourcelead.entity.TicketStatusHistory;
-import com.bis.sourcelead.entity.TicketPriority;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketAssignTo;
 import com.bis.sourcelead.entity.TicketCategory;
 import com.bis.sourcelead.entity.TicketCategoryAssignTo;
 import com.bis.sourcelead.entity.TicketComment;
+import com.bis.sourcelead.entity.TicketPriority;
+import com.bis.sourcelead.entity.TicketStatus;
+import com.bis.sourcelead.entity.TicketStatusHistory;
+import com.bis.sourcelead.entity.TicketType;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.ticketManagement.dao.TicketManagementDao;
-import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.ticketManagement.service.TicketManagementService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.bis.sourcelead.dto.Response;
 
 
 @Service
@@ -50,6 +58,18 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private CommonUtil commonUtil;
+	
+	@Autowired
+	private EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	private EmailScenerioUtil emailScenerioUtil;
+
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 
 	@Override
 	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations() {
@@ -480,9 +500,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 			ticketManagement.setTitle(ticketDTO.getTitle());
 			ticketManagement.setGeneratedId(ticketDTO.getGeneratedId());
 			ticketManagement.setNotifyTo(ticketDTO.getNotifyTo());
-			if(ticketDTO.getNotifyTo() != null && !ticketDTO.getNotifyTo().isEmpty() && ticketDTO.getId() == 0) {
-				// send Nofitify email & notification
-			}
+			
 			List<Long> deleteAssignToIdList = ticketManagementDao.getTicketAssignToIdList(ticketManagement.getId());
 			List<TicketAssignTo> assignToList = new LinkedList<>();
 			if(ticketDTO.getAssignedTo() != null) {
@@ -500,7 +518,6 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 					assignTo.setUser(assignedUser);
 					assignTo.setTicket(ticketManagement);
 					assignToList.add(assignTo);
-					//send Assign email & notification
 					deleteAssignToIdList.remove(assignTo.getUser().getId());
 				}
 			}
@@ -510,8 +527,26 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 				ticketManagementDao.deleteTicketAssignTo(assignTo);
 			}
 			ticketManagement.setTicketAssignToList(assignToList);
-			return ticketManagementDao.saveTicket(ticketManagement);
+			Boolean issaved = ticketManagementDao.saveTicket(ticketManagement);
 			
+			
+			if(issaved && ticketDTO.getId() == 0) {
+				//send Assign email & notification
+				if(ticketDTO.getAssignedTo() != null) {
+					for(String assignUserId : ticketDTO.getAssignedTo()) {
+						User toUser = userDao.getUserById(Long.parseLong(assignUserId));
+						sendTicketManagementEmailToAssignedUsers(user,orgLocations,ticketManagement,toUser);
+					}
+				}
+				
+				//send notifyTo email & Notification
+				if(ticketDTO.getNotifyTo() != null && !ticketDTO.getNotifyTo().isEmpty()) {
+					for(String notifyToEmail : ticketDTO.getNotifyTo().split(",")) {
+//						sendTicketManagementEmailToNotifyUsers(user,orgLocations,ticketManagement,notifyToEmail);
+					}
+				}
+			}
+				
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -546,6 +581,82 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	 * 
 	 * } } catch (Exception e) { e.printStackTrace(); } return ticketDTO; }
 	 */
+
+	private void sendTicketManagementEmailToAssignedUsers(User loginUser, OrgLocations orgLocations, Ticket ticketManagement, User toUser) throws Exception {
+
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(loginUser.getFirstName());
+		emailMessage.setLastName(loginUser.getLastName());
+		emailMessage.setToEmail(toUser.getEmail());
+		emailMessage.setFromEmail(loginUser.getEmail());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		StringBuilder msgBuild = new StringBuilder();
+		emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		
+		
+			// setting the class filed values
+			Map<String, String> globalVarsMap = new HashMap<String, String>();
+		
+			if(toUser.getLastName() != null && toUser.getLastName() !=""){
+			StringBuilder fNameBulid= new StringBuilder();
+				globalVarsMap.put("AssignTo", fNameBulid.append(toUser.getFirstName()).append(" ").append(toUser.getLastName()).toString());
+			}else{
+				globalVarsMap.put("AssignTo", toUser.getFirstName());
+			}
+			
+			
+		
+			globalVarsMap.put("TicketTitle", ticketManagement.getTitle());
+			
+			
+			globalVarsMap.put("TicketId", ticketManagement.getGeneratedId());
+			
+			globalVarsMap.put("CategoryName", ticketManagement.getTicketCategory().getName());
+			
+			globalVarsMap.put("Type", ticketManagement.getTicketType().getName());
+			
+			globalVarsMap.put("Priority", ticketManagement.getTicketPriority().getName());
+			
+			StringBuilder loginBuilder = new StringBuilder();
+			globalVarsMap.put("Login",loginBuilder.append("<a href='").append(sourceleadUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
+			
+			
+			if(StringUtils.isNotBlank(loginUser.getFirstName())){
+				StringBuilder loginUserBuild= new StringBuilder();
+					globalVarsMap.put("LoginUser", loginUserBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+				}else{
+					globalVarsMap.put("LoginUser", loginUser.getFirstName());
+				}
+			
+			if(StringUtils.isNotBlank(orgLocations.getOrgLocationName())){
+					globalVarsMap.put("LoginOrg", orgLocations.getOrgLocationName());
+				}
+			
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.TICKET_MANAGEMENT_EMAIL,new ArrayList<EmailAttachment>());
+		
+			/*send notification*/
+			
+			//find required notification scenarios
+			EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
+					Constants.TICKET_MANAGEMENT_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+			
+			//set notification body
+			String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,
+					notificationScenario);
+			notificationScenario.setBody(notificationbody);
+						
+			// calling the sendEmail method of emailScenerioUtil
+			StringBuilder notificationLink = new StringBuilder();
+			String actionLink = "";
+			
+		/*	actionLink = notificationLink.append(sourceleadUrl).append("/")
+					.append("requirementSummary?requirementUUID=" + requirement.getRequirementUUID()).toString();*/
+
+			emailScenerioUtil.sendNotification(actionLink, loginUser, toUser,orgLocations,
+					notificationScenario, new HashMap<String, String>());
+			
+	}
 
 	@Override
 	public Boolean changeStatusTicketTypeDataById(long id, int status, OrgLocations orgLocation) {
