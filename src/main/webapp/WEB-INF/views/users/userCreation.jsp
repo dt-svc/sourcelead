@@ -1315,7 +1315,7 @@ function getAssociateUserDetails(){
  function getDepartmentsList(){
 	 $.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getDepartmentsList?"+tokenParamName+"="+tokenValue+"",
+	    	url: atsUrl+"/getDepartmentsList?"+tokenParamName+"="+tokenValue+"",
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
