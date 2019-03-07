@@ -1400,6 +1400,9 @@ public class Constants {
 	
 	public static final String APPLICANT_JOINING = "ApplicantJoining";
 	
+	public static final String TICKET_MANAGEMENT_EMAIL = "AddTicketEmail";
+	public static final String TICKET_MANAGEMENT_NOTIFICATION ="TicketManagementNotification";
+	
 	
 	
 }
