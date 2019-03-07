@@ -1,17 +1,22 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
+import java.sql.CallableStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.jdbc.Work;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.payroll.dao.AssociateBankDataDao;
@@ -102,5 +107,47 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 			flag = true;
 		} 
 		return flag;
+	}
+
+	@Override
+	@Transactional
+	public void saveAssociateBankingDetailInAssociateBankData(Long id, List<AssociateBankDataDTO> list,
+			Map<String, Long> map) throws Exception {
+		
+		try {
+
+			Session session = this.sessionFactory.getCurrentSession();
+			session.doWork(new Work() {
+				@Override
+				public void execute(java.sql.Connection connection) throws SQLException {
+					boolean initialAutocommitSetting = connection.getAutoCommit();
+					connection.setAutoCommit(false);
+					CallableStatement stmt = connection.prepareCall("{call associateBankingDetails(?,?,?,?,?,?)}");
+					
+					
+					for (AssociateBankDataDTO dataList : list) {
+						Long  candidateId = map.get(""+dataList.getId());
+						if(candidateId !=null) {
+							stmt.setLong(1, candidateId);
+							stmt.setString(2, dataList.getEmailId());
+							stmt.setString(3, dataList.getAccountType());
+							stmt.setString(4, dataList.getBankName());
+							stmt.setString(5, dataList.getAccountNumber());
+							stmt.setString(6, dataList.getRoutingNumber());
+							stmt.addBatch();
+						}
+						
+					
+					}
+					
+					int[] updateCount = stmt.executeBatch();
+					connection.commit();
+					connection.setAutoCommit(initialAutocommitSetting);
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

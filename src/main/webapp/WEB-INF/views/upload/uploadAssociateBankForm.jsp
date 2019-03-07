@@ -65,7 +65,7 @@ var uploadflag= true;
 							<div class="btn-group btn-group-justified">
 								<div class="btn-group">
 									<input type="button" class="btn btn-primary" id="upload_button"
-										name="upload_button" onclick="saveAssociateBankDetailTemplate();"
+										name="upload_button" onclick="importAssociateBankDetail();"
 										value="Import">
 								</div>
 								<div class="btn-group">
@@ -86,7 +86,7 @@ var uploadflag= true;
 									class="fa fa-paperclip" title="Attach file"></i> <br /> <input
 									type="file" name="file" field-name="File Upload"
 									style="display: none;" id="uploadBtn"
-									data-validation="required validate_importFile">
+									data-validation="required validate_importFile" multiple>
 								</label>
 								<div class="clearfix"></div>
 								<label id="newUploadFile"></label> 
@@ -178,6 +178,51 @@ $('body').on('blur', '#upload_job_form', function() {
 	
 });
 </script>
+
+<script type="text/javascript">
+function importAssociateBankDetail(){
+	var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+	var fileUrl = $("#dataFilePath").val();
+	var uploadType = "associateUpload";
+	var headerPosition = $("#headerPosition").val();
+
+	var frm = $('#upload_job_form').serializeFormJSON();
+	var con = JSON.stringify(frm);
+	con = con.replace(/[{}]/g, "");
+	
+	
+	//It will escape all the special characters
+	var jsonData = encodeURIComponent(con);
+	var form = $('#upload_job_form')[0];
+	var formData = new FormData(form); 
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $.ajax({
+		   	type: "POST",
+		   	data: formData,
+    	    contentType : 'application/json; charset=utf-8',
+    	    enctype: 'multipart/form-data',
+	        processData: false,
+	        contentType:false,
+    	    dataType : 'json',
+    	    url: sourceleadUrl+"/saveAssociateBankDetailTemplate?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition, 	   
+ 		    success : function(json) {
+ 		    		$("#loading").removeAttr("style");
+ 		    	    if(json.updateCount != null && json.updateCount != '')
+ 		    	    $("#msgDiv").removeAttr("style");
+ 		 			$("#msgDiv").css({ display: "block" });
+ 		 			$("#msgDiv").html(json.updateCount+ " Associates are updated ..!");
+ 			    	},
+		 		   error: function(e){
+			        }
+			 });
+}
+</script>
+
 
 <script type="text/javascript">
 function cancelFileImport(){

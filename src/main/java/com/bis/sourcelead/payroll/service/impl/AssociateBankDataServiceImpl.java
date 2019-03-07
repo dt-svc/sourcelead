@@ -1,19 +1,39 @@
 package com.bis.sourcelead.payroll.service.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dao.CandidateDao;
+import com.bis.sourcelead.dto.IndAssociatePaymentAccountDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dao.AssociateBankDataDao;
@@ -142,5 +162,106 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 	@Override
 	public AssociateBankData getAssociateBankDataByOrgLocationId(Long locationId) {
 		return associateBankDataDao.getAssociateBankDataByOrgLocationId(locationId);
+	}
+	
+	@Override
+	public AssociateBankData saveAssociateBankData(MultipartFile multipartFile, OrgLocations orgLocation) throws Exception{
+					
+		long startTime = System.nanoTime();
+		String fileName = multipartFile.getOriginalFilename();
+		try {
+			File file = new File(multipartFile.getOriginalFilename());
+			multipartFile.transferTo(file);
+			FileInputStream fis = new FileInputStream(file);
+			Workbook workbook;
+			logger.debug("FIle Extension is: " + multipartFile.getOriginalFilename());
+			List<AssociateBankDataDTO> list = new ArrayList<>();
+			workbook = WorkbookFactory.create(fis);
+			int numberOfSheets = workbook.getNumberOfSheets();
+			for (int i = 0; i < numberOfSheets; i++) {
+				Sheet sheet = workbook.getSheetAt(i);
+				Iterator<Row> rowIterator = sheet.iterator();
+				
+				int count =0;
+				while (rowIterator.hasNext()) {
+					AssociateBankDataDTO importDTO = new AssociateBankDataDTO();
+					Row row = rowIterator.next();
+					if (row.getRowNum() > 0 && (row.getCell(1) != null && row.getCell(2) != null)) { // Excluding column names
+						if (row.getCell(0) != null)
+							importDTO.setId(Long.parseLong(getCellValueAsString(row.getCell(0), fileName)));
+						importDTO.setEmailId(getCellValueAsString(row.getCell(1), fileName));
+	                    importDTO.setAccountType(getCellValueAsString(row.getCell(2), fileName));																	
+						importDTO.setBankName(getCellValueAsString(row.getCell(3), fileName));
+						importDTO.setAccountNumber(getCellValueAsString(row.getCell(4), fileName));
+						importDTO.setRoutingNumber(getCellValueAsString(row.getCell(5), fileName));
+						list.add(importDTO);
+					}
+					else{
+						count++;
+						if(count == 5)	
+							break;
+					}
+				}
+			}				
+			this.saveBanking(list,orgLocation);
+			fis.close();
+			long endTime   = System.nanoTime();
+			long totalTime = endTime - startTime;
+			System.out.println(totalTime);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (EncryptedDocumentException e) {
+			e.printStackTrace();
+		} catch (InvalidFormatException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * Read cell value as String
+	 * @param cell
+	 * @param fileName
+	 * @return String
+	 */
+	private String getCellValueAsString(Cell cell, String fileName) {
+		String cellValue = "";
+		if(fileName.toLowerCase().endsWith("xls")){
+				HSSFCell hssfCell = (HSSFCell) cell;
+				if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+					hssfCell.setCellType(Cell.CELL_TYPE_STRING);
+					String hssfCellValue = hssfCell.getStringCellValue();
+					if (hssfCellValue != null || !"".equalsIgnoreCase(hssfCellValue)) {
+						cellValue = hssfCellValue;
+					} 
+				}else{
+					cellValue = cell.getStringCellValue();
+				}
+			}else{
+				XSSFCell xssfCell = (XSSFCell) cell;
+				if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+					xssfCell.setCellType(Cell.CELL_TYPE_STRING);
+					String xssfCellValue = xssfCell.getStringCellValue();
+					if (xssfCellValue != null || !"".equalsIgnoreCase(xssfCellValue)) {
+						cellValue = xssfCellValue;
+					} 
+				}else{
+					cellValue = cell.getStringCellValue();
+				}
+			}
+			return cellValue;
+		}
+	
+private void saveBanking(List<AssociateBankDataDTO> list, OrgLocations orgLocation) throws Exception {
+		// Get the List<Candidate> based on orgLocationId
+           try {
+			List<Candidate> candidateList =  candidateService.getAllCandidatesByLocation(orgLocation.getId());
+			Map<String, Long> map = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getId));
+			associateBankDataDao.saveAssociateBankingDetailInAssociateBankData(orgLocation.getId(),list,map);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+           
 	}
 }
