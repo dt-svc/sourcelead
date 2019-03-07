@@ -3443,11 +3443,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public void deleteCandidateFromMarketplaceByCandidateUuid(String candidateUuid) throws Exception {
 		candidateDao.deleteCandidateFromMarketplaceByCandidateUuid(candidateUuid);
 	}
-
-	@Override
-	public Candidate getCandidateEmailById(Long id) throws Exception {	
-		   return candidateDao.getCandidateEmailById( id);
-	}
 	
 }
 

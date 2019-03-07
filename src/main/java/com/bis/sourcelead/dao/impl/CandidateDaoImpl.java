@@ -3294,40 +3294,4 @@ public class CandidateDaoImpl implements CandidateDao {
 			e.printStackTrace();
 		}
 	}
-
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public boolean getCandidateIsanAssociate(Long id) throws Exception {
-		logger.debug("Fetching associate");
-		boolean flag = false;
-		try {
-		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from Candidate candidate where candidate.id = :id and candidate.isAssociate ='Y'";
-	    Candidate can = (Candidate) session.createQuery(query).setParameter("id", id).uniqueResult();
-
-		if(can.equals(null)) {
-		}
-		else {flag = true;}
-		}		
-		catch (Exception e) {
-			e.printStackTrace();
-			}
-		return flag;
-	}
-
-	@Override
-	public Candidate getCandidateEmailById(Long id) throws Exception {
-		/*logger.debug("Fetching all candidates who are associate");
-		try {
-			Session session = this.sessionFactory.getCurrentSession();
-		    String query ="from Candidate candidate where candidate.id = :id and candidate.isAssociate ='Y'"; 		
-			Query queryObj = session.createQuery(query);
-			List<Candidate> candidateList = queryObj.list();
-				return candidateList;
-		}
-		catch (Exception e) {
-			e.printStackTrace();	
-		}*/
-		return null;
-	}
 }

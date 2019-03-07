@@ -18,6 +18,6 @@ public interface PaymentAccountService {
 	
 	IndAssociatePaymentAccountDTO saveImportBankDetails(MultipartFile multipartFile, OrgLocations orgLocation) throws Exception;
 	
-	PaymentAccount saveBankingAccountDetails(IndAssociatePaymentAccountDTO paymentAccountDTO,OrgLocations orgLocations) throws Exception;
+	//PaymentAccount saveBankingAccountDetails(IndAssociatePaymentAccountDTO paymentAccountDTO,OrgLocations orgLocations) throws Exception;
 	
 }

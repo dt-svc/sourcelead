@@ -104,16 +104,14 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 	@Override
 	public IndAssociatePaymentAccountDTO saveImportBankDetails(MultipartFile multipartFile, OrgLocations orgLocation) throws Exception{
 		
-		long startTime = System.nanoTime();
-	
-	
 		String fileName = multipartFile.getOriginalFilename();
 		try {
 			File file = new File(multipartFile.getOriginalFilename());
 			multipartFile.transferTo(file);
 			FileInputStream fis = new FileInputStream(file);
 			Workbook workbook;
-			logger.debug("FIle Extension is: " + multipartFile.getOriginalFilename());
+			logger.debug("File Extension is: " + multipartFile.getOriginalFilename());
+			//list of dto
 			List<IndAssociatePaymentAccountDTO> list = new ArrayList<>();
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
@@ -130,41 +128,42 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 							String assoId = getCellValueAsString(row.getCell(0), fileName);
 							if (row.getCell(0) != null) {
 								importDTO.setCandidateId(Long.parseLong(assoId));
+								}
+				                    importDTO.setEmail(getCellValueAsString(row.getCell(1), fileName));			                    			                    
+									importDTO.setAccountType(getCellValueAsString(row.getCell(2), fileName));																	
+									importDTO.setBankName(getCellValueAsString(row.getCell(3), fileName));								
+									String accnum = getCellValueAsString(row.getCell(4), fileName);								
+								    if(accnum != null && isStringInt(accnum)) 
+									    {
+									    importDTO.setAccountNumber(accnum);	
+									    String bsrcode = getCellValueAsString(row.getCell(5), fileName);			
+										    if(validateBsrMicr(bsrcode))
+										    {
+											importDTO.setBsrNumber(bsrcode);	
+											String micrcode = getCellValueAsString(row.getCell(6), fileName);			
+											if(validateBsrMicr(micrcode)) {
+												importDTO.setMicrCode(micrcode);
+												String routcode = getCellValueAsString(row.getCell(7), fileName);		
+												if(routcode !=null && routingNum(routcode) ) {
+													importDTO.setRoutingNumber(routcode);
+													importDTO.setFirstName(getCellValueAsString(row.getCell(8), fileName));
+													importDTO.setLastName(getCellValueAsString(row.getCell(9), fileName));
+													list.add(importDTO);
+												}
+											}
+									    }
+								    }
 							}
-							String email2 = getCellValueAsString(row.getCell(1), fileName);
-			                    importDTO.setEmail(email2);			                    			                    
-								importDTO.setAccountType(getCellValueAsString(row.getCell(2), fileName));																	
-								importDTO.setBankName(getCellValueAsString(row.getCell(3), fileName));
-								importDTO.setAccountNumber(getCellValueAsString(row.getCell(4), fileName));
-								
-								String Accnum = getCellValueAsString(row.getCell(4), fileName);
-							//	if() {
-							      importDTO.setAccountNumber(Accnum);
-								
-								
-								
-								
-								importDTO.setBsrNumber(getCellValueAsString(row.getCell(5), fileName));
-								importDTO.setMicrCode(getCellValueAsString(row.getCell(6), fileName));
-								importDTO.setRoutingNumber(getCellValueAsString(row.getCell(7), fileName));
-								importDTO.setFirstName(getCellValueAsString(row.getCell(8), fileName));
-								importDTO.setLastName(getCellValueAsString(row.getCell(9), fileName));
-								list.add(importDTO);
-							}
-						else
-						{
-							count =count+1;
+						else{
+							count = count++;
 							if(count == 5)	
 							 break;
 						}
-				          }
-				
-						}				
+				       }				
+					}	
+			int size =list.size();
 			this.saveBanking(list,orgLocation);
 			fis.close();
-			long endTime   = System.nanoTime();
-			long totalTime = endTime - startTime;
-			System.out.println(totalTime);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (EncryptedDocumentException e) {
@@ -177,15 +176,11 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 	
 	private void saveBanking(List<IndAssociatePaymentAccountDTO> list, OrgLocations orgLocation) throws Exception {
 		
-		// Get the List<Candidate> based on orgLocationId
            try {
 			List<Candidate> candidateList =  candidateService.getAllCandidatesByLocation(orgLocation.getId());
-//			 Map<String, Candidate> result3 = candidateList.stream().collect(Collectors.toMap(x -> x.get, x -> x.getName()));
 			Map<String, Long> map = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getId));
 			  int a = paymentAccountDao.saveBankingDetailInPaymentAccount(orgLocation.getId(),list,map);
-			  System.out.println(a);
-			
-			
+			  System.out.println(a +"Details Added");			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -194,7 +189,7 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
            
 	}
 
-	/**
+	/**method for reading data from excel
 	 * Read cell value as String
 	 * @param cell
 	 * @param fileName
@@ -227,45 +222,39 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 			}
 			return cellValue;
 		}
-
-	@Override
-	public PaymentAccount saveBankingAccountDetails(IndAssociatePaymentAccountDTO account, OrgLocations orgLocations)
-			throws Exception {
 	
-		PaymentAccount pay= new PaymentAccount();
-	try {
-		Candidate can = new Candidate();
-		can.setId(account.getCandidateId());
-        pay.setCandidateId(can);
-       // pay.setCandidateId(account.getCandidateId());
-        pay.setEmail(account.getEmail());
-        pay.setAccountType(account.getAccountType());
-        pay.setFirstName(account.getFirstName());
-        pay.setLastName(account.getLastName());
-        pay.setBankName(account.getBankName());
-        pay.setBsrNumber(account.getBsrNumber());
-        pay.setMicrCode(account.getMicrCode());
-        pay.setRoutingNumber(account.getRoutingNumber());
-        pay.setAccountNumber(account.getAccountNumber());
-           this.savePaymentAccount(pay);
-		}	
-	   catch (Exception e) {	
-		  System.out.println("Invalid data");
-		logger.error(ExceptionUtils.getFullStackTrace(e));
-	}
-	
-		return pay;
-	}	
-	
-	public boolean isStringInt(String Accnum)
-	{
-	    	
-	    	if (!Accnum.matches("[a-zA-Z_]+") && (Accnum.length() == 12))	{    	
-	    			return true;	
-	    	}    	
+	//method for validating bank account number
+	public boolean isStringInt(String accnum)
+	{    	
+	    	if (accnum.matches("[0-9]{9,12}")){    	
+	    			return true;}    	
 	    	else {
 	    		System.out.println("Invalid account no");
 	    		return false;
-	    	}
-	}
+	    	}}
+	
+	// method for validating Bsrcode and MicrCode 
+	
+	public boolean validateBsrMicr(String num) //not the mandatory fields
+	{
+		if (StringUtils.isBlank(num) || num.matches("^[a-zA-Z0-9]{9,15}$"))
+		{
+			return true;
+		}
+		else {
+    		System.out.println("Invalid entry");
+    		return false;
+    	}}
+	
+	//Method for validating Routing num/ifsc code
+	public boolean routingNum(String routcode)
+	{
+		if (routcode.matches("^[a-zA-Z0-9]{11}$"))
+		{
+			return true;
+		}
+		else {
+    		System.out.println("Invalid entry");
+    		return false;
+    	}}
 }
