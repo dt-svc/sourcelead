@@ -8,14 +8,33 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.CellReference;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -24,12 +43,16 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.DataMigrationCommonDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UploadedFile;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.UploadFileService;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.validation.FileValidator;
 /**
@@ -46,6 +69,10 @@ public class UploadController {
 
 	@Autowired
 	UploadFileService uploadFileService;
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	
 /**
  * Handles upload csv,xls and xlsx
  * @param uploadedFile
@@ -147,6 +174,95 @@ public class UploadController {
 		inputStream.close();
 		response.getOutputStream().close();
 		response.getOutputStream().flush();
+	}
+	
+	
+	
+	@RequestMapping(value = "/downloadAssociateBankDetailsTemplate", method = RequestMethod.GET)
+	public void downloadAssociateBankDetailsTemplate(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		File file = uploadFileService.getAssociateBankDetailsTemplate();
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+	}
+	
+	
+	/**
+	 * Returns File upload jsp
+	 * 
+	 * @param request
+	 * @return ModelAndView
+	 */
+	@PreAuthorize("hasRole('ROLE_USER_BULK_IMPORTS')")
+	@RequestMapping(value = "/uploadAssociateBankForm")
+	public ModelAndView fileUploadForm(HttpServletRequest request) {
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
+				.getAttribute("sessionData");
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Users);
+
+		request.getSession().setAttribute("sessionData", sessionData);
+		ModelAndView model = new ModelAndView();
+		model.setViewName("upload/uploadAssociateBankForm");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+
+	}
+	
+	@RequestMapping(value = {"/saveAssociateBankDetailTemplate","/rest/saveAssociateBankDetailTemplate"}, method = RequestMethod.POST)
+	public ModelAndView saveAssociateBankDetailTemplate(DataMigrationCommonDTO dataMigrationCommonDTO , HttpServletRequest request) throws Exception
+	{
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    String filePath = dataMigrationCommonDTO.getFilePath();
+			FileInputStream inputStream = new FileInputStream(new File(filePath, "/temp/")));
+			Workbook workbook = null;
+			DataFormatter objDefaultFormat = new DataFormatter();
+			FormulaEvaluator objFormulaEvaluator = null;
+			if (filePath.endsWith(".xls")) {
+				workbook = new HSSFWorkbook(inputStream);
+				objFormulaEvaluator = new HSSFFormulaEvaluator((HSSFWorkbook) workbook);
+			} else {
+				workbook = new XSSFWorkbook(inputStream);
+				objFormulaEvaluator = new XSSFFormulaEvaluator((XSSFWorkbook) workbook);
+			}
+			Sheet firstSheet = workbook.getSheetAt(0);
+			Iterator<Row> rowIterator = firstSheet.iterator();
+			while (rowIterator.hasNext()) {
+				Row row = rowIterator.next();
+				if (row.getRowNum() > 0) { 
+					System.out.println("********************"+row.getCell(1));
+				}
+				/*if (nextRow.getRowNum() + 1 == Integer.parseInt(headerPosition)) {
+					Iterator<Cell> cellIterator = nextRow.cellIterator();
+					while (cellIterator.hasNext()) {
+						Cell cell = cellIterator.next();
+						String cellValueStr = objDefaultFormat.formatCellValue(cell, objFormulaEvaluator);
+						if (!fieldList.contains(CellReference.convertNumToColString(cell.getColumnIndex()))
+								&& StringUtils.isNotEmpty(cellValueStr))
+							dataWithCellId.put(
+									CellReference.convertNumToColString(cell.getColumnIndex()) + cell.getRowIndex(),
+									cellValueStr);
+						fieldList.add(CellReference.convertNumToColString(cell.getColumnIndex()));
+					}
+				}*/
+			}
+			workbook.close();
+			inputStream.close();
+		
+		 return null;
 	}
 	
 }
