@@ -6,7 +6,7 @@
  */
 
 //generates the form HTML
- var atsUrl = '${SourceLeadWeb_atsUrl}';
+// var atsUrl = '${SourceLeadWeb_atsUrl}';// we can not use JSTL variable in JS files.
 function generateForm(sourceleadUrl,templateId) {
     //empty out the preview area
     $("#sjfb-fields").empty();
