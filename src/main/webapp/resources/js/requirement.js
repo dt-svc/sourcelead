@@ -1232,7 +1232,7 @@ function changeStatus(requirementId, requirementStatus){ // updated.
 			         "render": function ( data, type, opt, meta ) {
 			         		var result = "";
 			         		if(opt.totalApplicants!=null && opt.totalApplicants!='' && opt.totalApplicants!='undefined' && opt.totalApplicants > 0){
-			         			result = result +"<td><a href='<c:url value='/requirementSummary?type=applicants&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.totalApplicants+"</div></a></td>";
+			         			result = result +"<td><a href='/requirementSummary?type=applicants&requirementUUID="+opt.requirementUUID+"'><div>"+opt.totalApplicants+"</div></a></td>";
 			         		}
 			         		else{
 			         			result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
@@ -1248,7 +1248,7 @@ function changeStatus(requirementId, requirementStatus){ // updated.
 			         "render": function ( data, type, opt, meta ) {
 			         		var result = "";
 			         		if(opt.shortlistCount!=null && opt.shortlistCount!='' && opt.shortlistCount!='undefined' && opt.shortlistCount > 0){
-			                     result = result +"<td><a href='<c:url value='/requirementSummary?type=SHORTLIST&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.totalApplicants+"</div></a></td>";
+			                     result = result +"<td><a href='requirementSummary?type=SHORTLIST&requirementUUID="+opt.requirementUUID+"'><div>"+opt.totalApplicants+"</div></a></td>";
 //	 		         			result = result +"<td><div>"+opt.shortlistCount+"</div></td>";
 			         		}
 			         		else{
@@ -1266,7 +1266,7 @@ function changeStatus(requirementId, requirementStatus){ // updated.
 			         		var result = "";
 			         		if(opt.submitToClientCount!=null && opt.submitToClientCount!='' && opt.submitToClientCount!='undefined' && opt.submitToClientCount > 0){
 			              
-			         			result = result +"<td><a href='<c:url value='/requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.submitToClientCount+"</div></a></td>";
+			         			result = result +"<td><a href='requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+opt.requirementUUID+"'><div>"+opt.submitToClientCount+"</div></a></td>";
 
 			         			// 		         			result = result +"<td><div>"+opt.submitToClientCount+"</div></td>";
 			         		}
@@ -1285,7 +1285,7 @@ function changeStatus(requirementId, requirementStatus){ // updated.
 			         		var result = "";
 			         		if(opt.interviewCount!=null && opt.interviewCount!='' && opt.interviewCount!='undefined' && opt.interviewCount > 0){
 			         			
-			         			result = result +"<td><a href='<c:url value='/requirementSummary?type=INTERVIEW&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.interviewCount+"</div></a></td>";
+			         			result = result +"<td><a href='/requirementSummary?type=INTERVIEW&requirementUUID="+opt.requirementUUID+"'><div>"+opt.interviewCount+"</div></a></td>";
 
 //	 		         			result = result +"<td><div>"+opt.interviewCount+"</div></td>";
 			         		}
@@ -1304,7 +1304,7 @@ function changeStatus(requirementId, requirementStatus){ // updated.
 			         		var result = "";
 			         		if(opt.offersCount!=null && opt.offersCount!='' && opt.offersCount!='undefined' && opt.offersCount > 0){
 			         			
-			         			result = result +"<td><a href='<c:url value='/requirementSummary?type=OFFERMADE&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.offersCount+"</div></a></td>";
+			         			result = result +"<td><a href='/requirementSummary?type=OFFERMADE&requirementUUID="+opt.requirementUUID+"'><div>"+opt.offersCount+"</div></a></td>";
 
 //	 		         			result = result +"<td><div>"+opt.offersCount+"</div></td>";
 			         		}
@@ -1358,7 +1358,7 @@ function changeStatus(requirementId, requirementStatus){ // updated.
 			         		var result = "";
 			         		if(opt.joinedCount!=null && opt.joinedCount!='' && opt.joinedCount!='undefined' && opt.joinedCount > 0){
 			         			
-			         			result = result +"<td><a href='<c:url value='/requirementSummary?type=JOINED&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.joinedCount+"</div></a></td>";
+			         			result = result +"<td><a href='/requirementSummary?type=JOINED&requirementUUID="+opt.requirementUUID+"'><div>"+opt.joinedCount+"</div></a></td>";
 
 //	 		         			result = result +"<td><div>"+opt.joinedCount+"</div></td>";
 			         		}
@@ -1378,7 +1378,7 @@ function changeStatus(requirementId, requirementStatus){ // updated.
 			         		var result = "";
 			         		if(opt.backoutCount!=null && opt.backoutCount!='' && opt.backoutCount!='undefined' && opt.backoutCount > 0){
 			         			
-			         			result = result +"<td><a href='<c:url value='/requirementSummary?type=BACKOUT&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.backoutCount+"</div></a></td>";
+			         			result = result +"<td><a href='/requirementSummary?type=BACKOUT&requirementUUID="+opt.requirementUUID+"'><div>"+opt.backoutCount+"</div></a></td>";
 
 //	 		         			result = result +"<td><div>"+opt.backoutCount+"</div></td>";
 			         		}
@@ -1397,7 +1397,7 @@ function changeStatus(requirementId, requirementStatus){ // updated.
 			         		var result = "";
 			         		if(opt.rejectedCount!=null && opt.rejectedCount!='' && opt.rejectedCount!='undefined' && opt.joinedCount > 0){
 			         			
-			         			result = result +"<td><a href='<c:url value='/requirementSummary?type=REJECTED&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.rejectedCount+"</div></a></td>";
+			         			result = result +"<td><a href='/requirementSummary?type=REJECTED&requirementUUID="+opt.requirementUUID+"'><div>"+opt.rejectedCount+"</div></a></td>";
 
 //	 		         			result = result +"<td><div>"+opt.rejectedCount+"</div></td>";
 			         		}
