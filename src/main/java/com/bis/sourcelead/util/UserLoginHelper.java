@@ -101,6 +101,9 @@ public class UserLoginHelper {
 	@Value("${vmsUrl}")
 	private String vmsUrl;
 	
+	@Value("${sourceleadDomainUrl}")
+	private String sourceleadDomainUrl;
+	
 	@Value("${isCouchbaseEnabled}")
 	private String isCouchbaseEnabled;
 	
@@ -312,6 +315,7 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "pmsUrl", pmsUrl);
 		  SourceLeadSessionManager.setSessionAttribute(req, "atsUrl", atsUrl);
 		  SourceLeadSessionManager.setSessionAttribute(req, "vmsUrl", vmsUrl);
+		  SourceLeadSessionManager.setSessionAttribute(req, "sourceleadDomainUrl", sourceleadDomainUrl);
 		  SourceLeadSessionManager.setSessionAttribute(req, "googleMapsLocationApiKey", googleMapsLocationApiKey);
 	
 		  
