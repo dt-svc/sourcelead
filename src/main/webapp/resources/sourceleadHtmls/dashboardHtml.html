@@ -162,7 +162,7 @@ $('#dasboardTaskDatpicker').datepicker({
 
 <div class="col-md-6 mb10">
     <div class="dashboardWidget-new dashNewWrap mb">
-      <div class="dashNewWrapHead clearfix"> <a id="timeSheetLink" href="/pms/timesheet" class="pull-left updateHrefUrl"> Timesheets &nbsp;&nbsp;</a>
+      <div class="dashNewWrapHead clearfix"> <a id="timeSheetLink" href="${SourceLeadWeb_pmsUrl}/timesheet" class="pull-left updateHrefUrl"> Timesheets &nbsp;&nbsp;</a>
         <input type="hidden" value="" id="timesheetSocketsFor">
         <ul class="nav nav-tabs pull-right">
           <li class="active"><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('myTimesheets');">Self</a></li>
@@ -204,7 +204,7 @@ $('#dasboardTaskDatpicker').datepicker({
 
   <div class="col-md-6 mb10">
     <div class="dashboardWidget-new dashNewWrap mb">
-      <div class="dashNewWrapHead clearfix"> <a class="pull-left updateHrefUrl" id="jobsLink" href="/ats/jobsList">Jobs </a>
+      <div class="dashNewWrapHead clearfix"> <a class="pull-left updateHrefUrl" id="jobsLink" href="${SourceLeadWeb_atsUrl}/jobsList">Jobs </a>
          			<a class="moreLink updateHrefUrl" href="${sourceleadUrl}/requirementApplicantsList?&tab=previous&orgLocationId=${SourceLeadWeb_orgLocationId}" title="View more"  id="viewmoresDiv"> View More..</a>
         </a>
         <ul class="nav nav-tabs pull-right">
@@ -247,7 +247,7 @@ $('#dasboardTaskDatpicker').datepicker({
   </div>
   <div class="col-md-6 mb10">
     <div class="dashboardWidget-new dashNewWrap mb">
-      <div class="dashNewWrapHead clearfix"> <a class="pull-left updateHrefUrl" id="expensesLink" href="/pms/expenses">Expenses &nbsp;&nbsp;</a>
+      <div class="dashNewWrapHead clearfix"> <a class="pull-left updateHrefUrl" id="expensesLink" href="${SourceLeadWeb_pmsUrl}/expenses">Expenses &nbsp;&nbsp;</a>
         <ul class="nav nav-tabs pull-right">
           <li class="active"><a data-toggle="tab" onclick="expensesCount('myExpenses');">Self</a></li>
 	              <li><a data-toggle="tab" onclick="expensesCount('employeeExpenses');" >Employees</a></li>
@@ -285,7 +285,7 @@ $('#dasboardTaskDatpicker').datepicker({
   </div>
   <div class="col-md-6 mb10">
     <div class="dashboardWidget-new dashNewWrap mb">
-      <div class="dashNewWrapHead clearfix"> <a class="pull-left updateHrefUrl" id = "leaveLink" href="/pms/leaveManagementReports" title="Leave Management">Leaves</a>
+      <div class="dashNewWrapHead clearfix"> <a class="pull-left updateHrefUrl" id = "leaveLink" href="${SourceLeadWeb_pmsUrl}/leaveManagementReports" title="Leave Management">Leaves</a>
         <div class="pull-left balLeaves">Balance Leaves<span class="label label-info" id="selfBalancedCounts" title="Balance Leaves">0</span></div>
         <ul class="nav nav-tabs pull-right">
           <li class="active"><a data-toggle="tab" href="#self">Self</a></li>
@@ -366,16 +366,16 @@ $('#dasboardTaskDatpicker').datepicker({
                   <ul class="list-unstyled list-group clearfix mb5">
                     <li class="clearfix">
                       <label class="pull-left">Requested Leaves</label>
-                      <a href="/app/employeeRequestedLeaves" class="color_white" id="empReq" title="Requested Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>&gt;</a> </li>
+                      <a href="${SourceLeadWeb_sourceleadUrl}/employeeRequestedLeaves" class="color_white" id="empReq" title="Requested Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>&gt;</a> </li>
                     <li class="clearfix">
                       <label class="pull-left">Approved Leaves</label>
-                      <a href="/app/employeeApprovedLeaves" class="color_white" id="empApp" title="Approved Leaves"><span class="label label-success pull-right" id="employeeApprovedCounts"></span></a> </li>
+                      <a href="${SourceLeadWeb_sourceleadUrl}/employeeApprovedLeaves" class="color_white" id="empApp" title="Approved Leaves"><span class="label label-success pull-right" id="employeeApprovedCounts"></span></a> </li>
                     <li class="clearfix">
                       <label class="pull-left">Rejected Leaves</label>
-                      <a href="/app/employeeRejectedLeaves" class="color_white" id="empRej" title="Rejected Leaves"><span class="label label-danger pull-right" id="employeeRejectedCounts"></span></a> </li>
+                      <a href="${SourceLeadWeb_sourceleadUrl}/employeeRejectedLeaves" class="color_white" id="empRej" title="Rejected Leaves"><span class="label label-danger pull-right" id="employeeRejectedCounts"></span></a> </li>
                     <li class="clearfix">
                       <label class="pull-left">Cancelled Leaves</label>
-                      <a href="/app/employeeCancelLeaves" class="color_white" id="empCanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a> </li>
+                      <a href="${SourceLeadWeb_sourceleadUrl}/employeeCancelLeaves" class="color_white" id="empCanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a> </li>
                   </ul>
                 </div>
               </div>
@@ -409,7 +409,7 @@ $('#dasboardTaskDatpicker').datepicker({
           <div id="resourceRequestsDivLoading"></div>
           <div id="requirementListTabHead">
             <div id="requirementListActions">
-             <div class="pull-right" id="viewmoresDiv1"><a href="/app/jobs" id = "viewMoreId" class="btn btn-sm btn-primary pull-right updateHrefUrl" title="View more"> View More</a></div>
+             <div class="pull-right" id="viewmoresDiv1"><a href="${SourceLeadWeb_sourceleadUrl}/jobs" id = "viewMoreId" class="btn btn-sm btn-primary pull-right updateHrefUrl" title="View more"> View More</a></div>
             </div>
             <div class="clearfix require_wrap_table dashboard-data filter_position positionRelative" style="min-height: 200px;">
               <div id="requirementLoading" style="position: absolute; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.8); top: 0px; left: 0px; z-index: 100; background-image: url(&quot;/resources/images/loading.gif&quot;); background-position: center center; background-repeat: no-repeat; background-size: 75px auto; display: none;"></div>
