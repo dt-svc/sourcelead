@@ -1,6 +1,9 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
   
+  <script>
+  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+  </script>
   
   <div id="tab-2" class="tabsMenu_tabs_inn clearfix">
   <div id="accountDetailsLoading"></div>
@@ -87,7 +90,6 @@
   
   
   <script type="text/javascript">
-  var atsUrl ='${SourceLeadWeb_atsUrl}';
  function savePaymentAccount() {
 	 var userId = $("#associateId").val();
 	 var empType = $("#empType").val(); 
@@ -97,7 +99,7 @@
 	            $.ajax({
 					type : "POST",
 					data: formData,
-	  		        url : atsUrl+"/save-ind-associate-payment-account?userId="+userId,
+	  		        url : pmsUrl+"/save-ind-associate-payment-account?userId="+userId,
 					success : function(result) {
 						
 						if (result && result.response === "INVALID_DATA") {
@@ -116,7 +118,7 @@
 								 $("#indInformationDetails").click();
 								 
 			                } else if (result.indexOf('Sign In') !== -1) {
-								location.replace(atsUrl);
+								location.replace(pmsUrl);
 							} else {
 			                    showError("Operation failed, please try again");
 			                }
@@ -167,7 +169,7 @@ function skipToInfomationTab(){
 		     $("#associateUserId").val(userId);
 			 $.ajax({
 			    	type: "POST",
-			    	url: atsUrl+"/getIndAssociatePaymentAccountDetails?userId="+userId,
+			    	url: pmsUrl+"/getIndAssociatePaymentAccountDetails?userId="+userId,
 			        success: function(json) {
 			        	
 			        	if(json != null){

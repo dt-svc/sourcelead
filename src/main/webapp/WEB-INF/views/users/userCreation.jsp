@@ -921,7 +921,7 @@ function getEmployeementType(designationType){
 
 <script type="text/javascript">
  function createUser() {
-	 var country = '${SourceLeadWeb_loginCountryName}'; 
+	 var country = '${SourceLeadWeb_country}'; 
  	 	var RatePer = document.getElementById("RatePer").value; 
 		if(RatePer != null && RatePer != ""){
 			$('#Rate').removeAttr('data-validation-optional');
