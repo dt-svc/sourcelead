@@ -36,6 +36,14 @@
     </repositories>
 
     <dependencies>
+    
+          <!-- https://mvnrepository.com/artifact/com.monitorjbl/xlsx-streamer --> 
+	  	<dependency>
+		    <groupId>com.monitorjbl</groupId>
+		    <artifactId>xlsx-streamer</artifactId>
+		    <version>1.0.1</version>
+		</dependency>
+		
         <!-- https://mvnrepository.com/artifact/com.itextpdf.tool/xmlworker -->
         <dependency>
             <groupId>com.itextpdf.tool</groupId>
