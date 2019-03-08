@@ -8,9 +8,13 @@ import com.bis.sourcelead.dto.TicketCommentDTO;
 import com.bis.sourcelead.dto.TicketDTO;
 import com.bis.sourcelead.dto.TicketPriorityDTO;
 import com.bis.sourcelead.dto.TicketStatusDTO;
+import com.bis.sourcelead.dto.TicketStatusHistoryDTO;
 import com.bis.sourcelead.dto.TicketTypeDTO;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.dto.Response;
+
 
 public interface TicketManagementService {
 
@@ -26,7 +30,7 @@ public interface TicketManagementService {
 
 	public List<TicketCategoryDTO> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status);
 
-	public Boolean saveTicketCategory(TicketCategoryDTO ticketCategoryDTO, long userId, OrgLocations loginOrgLocation);
+	public Boolean saveTicketCategory(TicketCategoryDTO ticketCategoryDTO,User user, long userId, OrgLocations loginOrgLocation);
 
 	public TicketCategoryDTO getTicketCategoryDataById(long ticketCategoryId, OrgLocations loginOrgLocation);
 
@@ -60,7 +64,7 @@ public interface TicketManagementService {
 
 	public Boolean changeTicketStatusDataById(long id, int status, OrgLocations orgLocation);
 
-	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId, long userId, String dateFormat);
+	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId, long userId, int status, String dateFormat);
 
 	public TicketDTO getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId, String dateFormat);
 
@@ -71,6 +75,27 @@ public interface TicketManagementService {
 	public List<TicketAttachmentDTO> getTicketAttachmentStatusByTicketId(Long ticketId);
 
 	public TicketDTO getTicketDataById(long ticketId, String dateFormat);
+
+	public Boolean changeTicketManagementStatusDataById(long id, int status, OrgLocations orgLocation);
+
+	public Response<Boolean> changeTicketStatus(TicketStatusHistoryDTO ticketStatusHistoryDTO, User user, OrgLocations orgLocation);
+
+	
+
+	public Ticket getTicketSnoAndTicketId(String ticketSno, Long ticketId, Long orgLocationsId);
+
+	public Boolean validateTicketId(String ticketSno, Long orgLocationsId);
+
+
+
+	
+
+	
+	
+
+	
+
+	
 
 	
 

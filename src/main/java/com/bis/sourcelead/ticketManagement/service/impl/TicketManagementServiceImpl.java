@@ -1,15 +1,22 @@
 package com.bis.sourcelead.ticketManagement.service.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.TicketAssignToDTO;
 import com.bis.sourcelead.dto.TicketAttachmentDTO;
 import com.bis.sourcelead.dto.TicketCategoryDTO;
@@ -17,21 +24,28 @@ import com.bis.sourcelead.dto.TicketCommentDTO;
 import com.bis.sourcelead.dto.TicketDTO;
 import com.bis.sourcelead.dto.TicketPriorityDTO;
 import com.bis.sourcelead.dto.TicketStatusDTO;
+import com.bis.sourcelead.dto.TicketStatusHistoryDTO;
 import com.bis.sourcelead.dto.TicketTypeDTO;
-import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.TicketType;
-import com.bis.sourcelead.entity.TicketStatus;
-import com.bis.sourcelead.entity.TicketPriority;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketAssignTo;
 import com.bis.sourcelead.entity.TicketCategory;
 import com.bis.sourcelead.entity.TicketCategoryAssignTo;
 import com.bis.sourcelead.entity.TicketComment;
+import com.bis.sourcelead.entity.TicketPriority;
+import com.bis.sourcelead.entity.TicketStatus;
+import com.bis.sourcelead.entity.TicketStatusHistory;
+import com.bis.sourcelead.entity.TicketType;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.ticketManagement.dao.TicketManagementDao;
-import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.ticketManagement.service.TicketManagementService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -44,6 +58,18 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private CommonUtil commonUtil;
+	
+	@Autowired
+	private EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	private EmailScenerioUtil emailScenerioUtil;
+
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 
 	@Override
 	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations() {
@@ -168,8 +194,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		return ticketCategoryDTOList;
 	}
 
-	@Override
-	public Boolean saveTicketCategory(TicketCategoryDTO ticketCategoryDTO, long userId,OrgLocations loginOrgLocation) {
+	public Boolean saveTicketCategory(TicketCategoryDTO ticketCategoryDTO, User user, long userId, OrgLocations loginOrgLocation) {
 		try {
 			TicketCategory ticketCategory = null;
 			if (ticketCategoryDTO.getId() > 0) {
@@ -199,9 +224,36 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 					assignToList.add(assignTo);
 				}
 			}
+			List<Long> deleteAssignToIdList = ticketManagementDao.getTicketAssignToIdList(ticketCategory.getId());
+			List<TicketCategoryAssignTo> categoryAssignToList = new LinkedList<>();
+			if(ticketCategoryDTO.getAssignedTo() != null) {
+				for(String assignUserId : ticketCategoryDTO.getAssignedTo()) {
+					User assignedUser = userDao.getUserById(Long.parseLong(assignUserId));
+					TicketCategoryAssignTo assignTo = ticketManagementDao.getTicketCategoryAssignToByUserIdAndTicket(assignedUser.getId(), ticketCategory.getId());
+					if (assignTo == null) {
+						assignTo = new TicketCategoryAssignTo();
+						assignTo.setCreatedBy(user.getId());
+						assignTo.setCreatedDate(new Date());
+					} else {
+						assignTo.setUpdatedBy(user.getId());
+						assignTo.setUpdatedDate(new Date());
+					}
+					assignTo.setUser(assignedUser);
+					assignTo.setTicketCategory(ticketCategory);
+					categoryAssignToList.add(assignTo);
+					//send Assign email & notification
+					deleteAssignToIdList.remove(assignTo.getUser().getId());
+				}
+			}
+			
+			for(Long assignUserId : deleteAssignToIdList) {
+				TicketAssignTo assignTo = ticketManagementDao.getTicketAssignToByUserIdAndTicket(assignUserId, ticketCategory.getId());
+				ticketManagementDao.deleteTicketAssignTo(assignTo);
+			}
 			
 			ticketCategory.setTicketCategoryAssignToList(assignToList);
 			return ticketManagementDao.saveTicketCategory(ticketCategory);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -424,6 +476,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 
 
 	@Override
+	@SuppressWarnings("unused")
 	public Boolean saveTicket(TicketDTO ticketDTO, User user, OrgLocations orgLocations) {
 		try {
 			Ticket ticketManagement = null;
@@ -437,6 +490,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 				ticketManagement.setCreatedDate(new Date());
 				ticketManagement.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
 				ticketManagement.setOrgLocations(orgLocations);
+				ticketManagement.setStatus(1);
 			}
 			ticketManagement.setTicketType(ticketManagementDao.getTicketTypeById(ticketDTO.getTicketTypeId()));
 			ticketManagement.setTicketCategory(ticketManagementDao.getTicketCategoryById(ticketDTO.getTicketCategoryId()));
@@ -446,27 +500,54 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 			ticketManagement.setTitle(ticketDTO.getTitle());
 			ticketManagement.setGeneratedId(ticketDTO.getGeneratedId());
 			ticketManagement.setNotifyTo(ticketDTO.getNotifyTo());
-			if(ticketDTO.getNotifyTo() != null && !ticketDTO.getNotifyTo().isEmpty() && ticketDTO.getId() == 0) {
-				// send Nofitify email & notification
-			}
 			
+			List<Long> deleteAssignToIdList = ticketManagementDao.getTicketAssignToIdList(ticketManagement.getId());
 			List<TicketAssignTo> assignToList = new LinkedList<>();
 			if(ticketDTO.getAssignedTo() != null) {
 				for(String assignUserId : ticketDTO.getAssignedTo()) {
-					TicketAssignTo assignTo = new TicketAssignTo();
 					User assignedUser = userDao.getUserById(Long.parseLong(assignUserId));
+					TicketAssignTo assignTo = ticketManagementDao.getTicketAssignToByUserIdAndTicket(assignedUser.getId(), ticketManagement.getId());
+					if (assignTo == null) {
+						assignTo = new TicketAssignTo();
+						assignTo.setCreatedBy(user.getId());
+						assignTo.setCreatedDate(new Date());
+					} else {
+						assignTo.setUpdatedBy(user.getId());
+						assignTo.setUpdatedDate(new Date());
+					}
 					assignTo.setUser(assignedUser);
 					assignTo.setTicket(ticketManagement);
-					assignTo.setCreatedBy(user.getId());
-					assignTo.setCreatedDate(new Date());
 					assignToList.add(assignTo);
-					//send Assign email & notification
+					deleteAssignToIdList.remove(assignTo.getUser().getId());
 				}
 			}
 			
+			for(Long assignUserId : deleteAssignToIdList) {
+				TicketAssignTo assignTo = ticketManagementDao.getTicketAssignToByUserIdAndTicket(assignUserId, ticketManagement.getId());
+				ticketManagementDao.deleteTicketAssignTo(assignTo);
+			}
 			ticketManagement.setTicketAssignToList(assignToList);
-			return ticketManagementDao.saveTicket(ticketManagement);
+			Boolean issaved = ticketManagementDao.saveTicket(ticketManagement);
 			
+			
+			if(issaved && ticketDTO.getId() == 0) {
+				//send Assign email & notification
+				if(ticketDTO.getAssignedTo() != null) {
+					for(String assignUserId : ticketDTO.getAssignedTo()) {
+						User toUser = userDao.getUserById(Long.parseLong(assignUserId));
+						sendTicketManagementEmailToAssignedUsers(user,orgLocations,ticketManagement,toUser, null);
+					}
+				}
+				
+				//send notifyTo email & Notification
+				if(ticketDTO.getNotifyTo() != null && !ticketDTO.getNotifyTo().isEmpty()) {
+					for(String notifyToEmail : ticketDTO.getNotifyTo().split(",")) {
+//						sendTicketManagementEmailToNotifyUsers(user,orgLocations,ticketManagement,notifyToEmail);
+						sendTicketManagementEmailToAssignedUsers(user,orgLocations,ticketManagement, null, notifyToEmail);
+					}
+				}
+			}
+				
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -502,6 +583,78 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	 * } } catch (Exception e) { e.printStackTrace(); } return ticketDTO; }
 	 */
 
+	private void sendTicketManagementEmailToAssignedUsers(User loginUser, OrgLocations orgLocations, Ticket ticketManagement, User toUser, String notifyToEmail) throws Exception {
+		try {
+			EmailMessage emailMessage = new EmailMessage();
+			emailMessage.setFirstName(loginUser.getFirstName());
+			emailMessage.setLastName(loginUser.getLastName());
+			emailMessage.setToEmail(toUser != null ? toUser.getEmail() : notifyToEmail);
+			emailMessage.setFromEmail(loginUser.getEmail());
+			emailMessage.setCreatedBy(loginUser.getUserCode());
+			StringBuilder msgBuild = new StringBuilder();
+			emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
+			// setting the class filed values
+			Map<String, String> globalVarsMap = new HashMap<String, String>();
+
+			if(toUser != null) {
+				if (toUser.getLastName() != null && toUser.getLastName() != "") {
+					StringBuilder fNameBulid = new StringBuilder();
+					globalVarsMap.put("AssignTo", fNameBulid.append(toUser.getFirstName()).append(" ").append(toUser.getLastName()).toString());
+				} else {
+					globalVarsMap.put("AssignTo", toUser.getFirstName());
+				}
+			} else {
+				globalVarsMap.put("AssignTo", "");
+			}
+
+			globalVarsMap.put("TicketTitle", ticketManagement.getTitle());
+			globalVarsMap.put("TicketId", ticketManagement.getGeneratedId());
+			globalVarsMap.put("CategoryName", ticketManagement.getTicketCategory().getName());
+			globalVarsMap.put("Type", ticketManagement.getTicketType().getName());
+			globalVarsMap.put("Priority", ticketManagement.getTicketPriority().getName());
+
+			StringBuilder loginBuilder = new StringBuilder();
+			globalVarsMap.put("Login", loginBuilder.append("<a href='").append(sourceleadUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
+
+			if (StringUtils.isNotBlank(loginUser.getFirstName())) {
+				StringBuilder loginUserBuild = new StringBuilder();
+				globalVarsMap.put("LoginUser", loginUserBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			} else {
+				globalVarsMap.put("LoginUser", loginUser.getFirstName());
+			}
+
+			if (StringUtils.isNotBlank(orgLocations.getOrgLocationName())) {
+				globalVarsMap.put("LoginOrg", orgLocations.getOrgLocationName());
+			}
+
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.TICKET_MANAGEMENT_EMAIL, new ArrayList<EmailAttachment>());
+
+			/* send notification */
+			if(toUser != null) {
+				// find required notification scenarios
+				EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TICKET_MANAGEMENT_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+	
+				// set notification body
+				String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+				notificationScenario.setBody(notificationbody);
+	
+				// calling the sendEmail method of emailScenerioUtil
+				StringBuilder notificationLink = new StringBuilder();
+				String actionLink = "";
+	
+				/*
+				 * actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID=" + requirement.getRequirementUUID()).toString();
+				 */
+	
+				emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, orgLocations, notificationScenario, new HashMap<String, String>());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	public Boolean changeStatusTicketTypeDataById(long id, int status, OrgLocations orgLocation) {
 		return  ticketManagementDao.changeStatusTicketTypeDataById(id, status, orgLocation);
@@ -523,11 +676,11 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId, String dateFormat) {
+	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId,int status, String dateFormat) {
 		List<TicketDTO> ticketDTOList = new LinkedList<>();
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-			List<Ticket> ticketManagementList = ticketManagementDao.getTicketManagementListByOrgLocationId(orgLocationId,userId);
+			List<Ticket> ticketManagementList = ticketManagementDao.getTicketManagementListByOrgLocationId(orgLocationId,userId,status);
 			if (ticketManagementList != null && !ticketManagementList.isEmpty()) {
 				for (Ticket ticketManagement : ticketManagementList) {
 					TicketDTO ticketDTO = new TicketDTO();
@@ -539,7 +692,10 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 					ticketDTO.setTicketCategory(ticketManagement.getTicketCategory().getName());
 					ticketDTO.setTicketStatus(ticketManagement.getTicketStatus().getName());
 					ticketDTO.setTicketPriority(ticketManagement.getTicketPriority().getName());
+					ticketDTO.setTicketPriorityTextColor(ticketManagement.getTicketPriority().getColorCode());
+					ticketDTO.setTicketPriorityImage(ticketManagement.getTicketPriority().getFileURL());
 					ticketDTO.setCreatedById(ticketManagement.getCreatedBy().getId());
+					ticketDTO.setCreatedBy(ticketManagement.getCreatedBy().getFullName());
 					ticketDTO.setCreatedDate(sdf.format(ticketManagement.getCreatedDate()));
 					if(ticketManagement.getUpdatedBy() != null) {
 						ticketDTO.setUpdatedById(ticketManagement.getUpdatedBy().getId());
@@ -728,6 +884,66 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		}
 		return ticketDTO;
 	}
+
+	@Override
+	public Boolean changeTicketManagementStatusDataById(long id, int status, OrgLocations orgLocation) {
+		return  ticketManagementDao.changeTicketManagementStatusDataById(id, status, orgLocation);
+	}
+
+	@Override
+	public Response<Boolean> changeTicketStatus(TicketStatusHistoryDTO ticketStatusHistoryDTO, User user, OrgLocations orgLocation) {
+		Response<Boolean> response = new Response<>();
+		try {
+			Ticket ticket = ticketManagementDao.getTicketById(ticketStatusHistoryDTO.getTicketId());
+			TicketStatus ticketStatus = ticketManagementDao.getTicketStatusById(ticketStatusHistoryDTO.getStatusId());
+			if(ticket != null && ticketStatus != null) {
+				String previousStatus = ticket.getTicketStatus().getName();
+				String newStatus = "";
+				ticket.setTicketStatus(ticketStatus);
+				ticket.setUpdatedBy(user);
+				ticket.setUpdatedDate(new Date());
+				boolean result = ticketManagementDao.saveTicket(ticket);
+				response.setObject(result);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+				if(result) {
+					TicketStatusHistory ticketStatusHistory = new TicketStatusHistory();
+					ticketStatusHistory.setTicket(ticket);
+					ticketStatusHistory.setComment(ticketStatusHistoryDTO.getComment());
+					ticketStatusHistory.setPreviousStatus(previousStatus);
+					newStatus = ticket.getTicketStatus().getName();
+					ticketStatusHistory.setNewStatus(newStatus);
+					ticketStatusHistory.setCreatedBy(user.getId());
+					ticketStatusHistory.setCreatedDate(new Date());
+					ticketManagementDao.saveTicketStatusHistory(ticketStatusHistory);
+					
+					//Send Ticket Status got changed Email & Notification
+				}
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+
+	@Override
+	public Ticket getTicketSnoAndTicketId(String generatedId, Long ticketId, Long orgLocationsId) {
+		return ticketManagementDao.getTicketSnoAndTicketId(generatedId,ticketId,orgLocationsId);
+	}
+	
+
+	@Override
+	public Boolean validateTicketId(String generatedId, Long orgLocationsId) {
+		
+		return ticketManagementDao.validateTicketId(generatedId,orgLocationsId);
+	}
+	
+	
 
 	
 
