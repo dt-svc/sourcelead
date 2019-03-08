@@ -369,7 +369,7 @@ function addCertification(candidateId) {
 		$("#popUpDivEmp").empty();
 		$("#popUpDivEmp").append(result);
 		
-		$(".edit-details").toggleClass("edit-details-active");
+		$(".edit-details").addClass("edit-details-active");
 		
 		$(".close-div").click(function(){
 			 $(this).parent("div.edit-details").removeClass("edit-details-active");
@@ -531,7 +531,7 @@ function editCertification(candidateCertificationId, candidateId) {
 				$("#popUpDivEmp").empty();
 				$("#popUpDivEmp").append(result);
 				
-				$(".edit-details").toggleClass("edit-details-active");
+				$(".edit-details").addClass("edit-details-active");
 				
 				$(".close-div").click(function(){
 					 $(this).parent("div.edit-details").removeClass("edit-details-active");

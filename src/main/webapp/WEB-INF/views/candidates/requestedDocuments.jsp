@@ -138,7 +138,7 @@ var atsUrl = '${SourceLeadWeb_atsUrl}';
    
 <script type="text/javascript">
    function requestDocSave(){
-	  
+	  var atsUrl ='${atsUrl}';
 	   var validationSettings = {
 	        errorMessagePosition : 'element',
 	        borderColorOnError : '',
@@ -155,7 +155,7 @@ var atsUrl = '${SourceLeadWeb_atsUrl}';
 				data: formData,
 			    processData: false,
 			    contentType:false, 
-				url :  sourceleadUrl.replace("app", "ats")+"/ws/uploadRequestedDocuments?",
+				url :  atsUrl+"/ws/uploadRequestedDocuments?",
 				success : function(response) {
 					if (response && response.response === "INVALID_DATA") {
 					    showError(response.responseMessage);
