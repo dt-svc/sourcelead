@@ -552,55 +552,7 @@ public class DataMigrationCommonController {
 	            e.printStackTrace();
 	        }
 			
-		}
-	 
-	 @RequestMapping(value = "/downloadTemplateForAssociateBankingDetails", method = RequestMethod.GET)
-		public void downloadTemplateForAssociateBankingDetails(HttpServletRequest request,HttpServletResponse response) throws Exception{
-	        @SuppressWarnings("resource")
-	        HSSFWorkbook workbook = new HSSFWorkbook();
-	        HSSFSheet sheet = workbook.createSheet("AssociateBankingTemplate");
-	        String[] tableColumns = Constants.DATA_MIGRATION_ASSOCIATE_BANKING_EXCEL_HEADERS;
-	 
-	        Row row = sheet.createRow(0);
-	        int cellnum = 0;
-	        for (String key : tableColumns) {
-	            Cell cell = row.createCell(cellnum++);
-	            cell.setCellValue((String)key);
-	            if(key.equalsIgnoreCase("Payment Mode*")) {
-	            	sheet.addValidationData(getDropDownListForCell(Constants.PAYMENT_MODE, cellnum-1, "xls"));
-	            }
-	            
-	        }
-	        try {
-	            File file = new File("Associate_Banking_Template.xls");
-	    		FileOutputStream out = new FileOutputStream(file);
-	    		workbook.write(out);
-	            
-	            out.close();
-	            out.flush();
-	            
-	            String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-				if (mimeType == null) {
-					mimeType = "application/octet-stream";
-				}
-				response.setContentType(mimeType);
-				StringBuilder fileNameSB = new StringBuilder();
-				response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
-				response.setContentLength((int) file.length());
-				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-				FileCopyUtils.copy(inputStream, response.getOutputStream());
-				inputStream.close();
-				response.getOutputStream().close();
-				response.getOutputStream().flush();
-	            
-	        }
-	        catch (Exception e) {
-	            e.printStackTrace();
-	        }
-			
-		}
-	 
-	 
+		}	 
 	 
 		private DataValidation getDropDownListForCell(String[] ratePerList, int column, String fileName)
 		{

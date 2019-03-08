@@ -67,7 +67,7 @@ public class AssociateImportController {
 		if (itrator.hasNext()) {
 			multipartFile = request.getFile(itrator.next());
 		}
-		IndAssociatePaymentAccountDTO response = null;
+		IndAssociatePaymentAccountDTO response = new IndAssociatePaymentAccountDTO();
 		if (multipartFile != null) {
 			response = paymentAccountService.saveImportBankDetails(multipartFile, orgLocation);
 			return response;

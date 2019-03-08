@@ -34,6 +34,7 @@ public class IndAssociatePaymentAccountDTO {
     private String paymentAccountId;
     private String email;
     private String ifscCode;
+    private String recordCount;
 
     /**
      * @return the id
@@ -307,6 +308,14 @@ public class IndAssociatePaymentAccountDTO {
 
 	public void setIfscCode(String ifscCode) {
 		this.ifscCode = ifscCode;
+	}
+
+	public String getRecordCount() {
+		return recordCount;
+	}
+
+	public void setRecordCount(String recordCount) {
+		this.recordCount = recordCount;
 	}
      
 }
