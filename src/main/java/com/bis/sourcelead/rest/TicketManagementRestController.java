@@ -22,8 +22,9 @@ import com.bis.sourcelead.dto.TicketPriorityDTO;
 import com.bis.sourcelead.dto.TicketStatusDTO;
 import com.bis.sourcelead.dto.TicketStatusHistoryDTO;
 import com.bis.sourcelead.dto.TicketTypeDTO;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.OrgLocations;
-
+import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.ticketManagement.service.TicketManagementService;
@@ -202,7 +203,7 @@ public class TicketManagementRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
-				response.setObject(ticketManagementService.saveTicketCategory(ticketCategoryDTO, user.getId(), loginOrgLocation));
+				response.setObject(ticketManagementService.saveTicketCategory(ticketCategoryDTO, user, user.getId(), loginOrgLocation));
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -705,6 +706,23 @@ public class TicketManagementRestController {
 		}
 		return responseList;
 	}
+	
+	@RequestMapping(value = "/validateTicketId",  method = RequestMethod.POST)
+    public @ResponseBody Boolean validateTicketId(@RequestParam(value="generatedId", required=false) String generatedId, @RequestParam(value="ticketId", required=false) Long ticketId,
+    		HttpServletRequest request) throws Exception {
+	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	       Ticket ticket=null;
+	       if(null != ticketId){
+	    	   ticket = ticketManagementService.getTicketSnoAndTicketId(generatedId, ticketId, orgLocation.getId());
+	       }
+	       Boolean flag = false;
+		    if(ticket == null){
+		    	flag =  ticketManagementService.validateTicketId(generatedId, orgLocation.getId());
+		    	
+		    }
+			return flag;
+		 
+	    }
 	
 	/*
 	 * @RequestMapping(value = "/changeTicketManagementStatusDataById", method =
