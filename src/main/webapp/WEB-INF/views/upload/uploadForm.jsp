@@ -510,10 +510,10 @@ if ($('#upload_banking_form').validate(false, validationSettings)){
 		    url : sourceleadUrl+"/uploadbankdetails?"+tokenParamName+"="+tokenValue+"", 	   
  		    success : function(json) {
  		    		$("#loading").removeAttr("style");
- 		    	    if(json.updateCount != null && json.updateCount != '')
+ 		    	    if(json.recordCount != null && json.recordCount != '')
  		    	    $("#msgDiv").removeAttr("style");
  		 			$("#msgDiv").css({ display: "block" });
- 		 			$("#msgDiv").html(json.updateCount+ " Associates Bank details updated ..!");
+ 		 			$("#msgDiv").html(json.recordCount+ " Associates Bank details updated ..!");
  			    	msgFadein();
  		    	    closeImportFile();
  		    	   resetUpload();
