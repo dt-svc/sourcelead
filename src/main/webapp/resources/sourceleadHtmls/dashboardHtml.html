@@ -52,6 +52,7 @@ $( document ).ready(function() {
 			   || roleActionsArray.indexOf("ROLE_VIEW_MEMBER_TIMESHEETS")  > -1 || roleActionsArray.indexOf("ROLE_EXPORT_MEMBER_TIMESHEETS") > -1 ){
 		  if(bothTimesheets == 'true' || onlyTimesheets == 'true'){
 			  timeSheetSubmissionStatusCount("myTimesheets");
+			  $("#timesheetEmpDiv").remove();
 		  }
 		  else{
 			  timeSheetSubmissionStatusCount("employes");
@@ -86,24 +87,35 @@ $( document ).ready(function() {
 	 // check the user has below role or not.
 	 if(roleActionsArray.indexOf("ROLE_VIEW_REQUIREMENT") > -1){
 	  requirementList(false, -1);//jobs section requirements.
-	 } 
+	 }else{
+		 $("#jobsDiv").remove();
+	 }  
 
 	 // checking user has role on boarding role or not.
 	 if(roleActionsArray.indexOf("ROLE_CREATE_ON_BOARD_USER") > -1 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_ON_BOARD_USER") > -1){
 	  onboardingCandidatesList();// onboarding candidate list , need to check authorizarion
+	 }else{
+		 $("#candOnboardDiv").remove();
 	 }
 	  <!-- Candidates for Invoice -->  // canidate invoice is pending in template.
 	 if(roleActionsArray.indexOf("ROLE_ADD_INVOICE") > -1 || roleActionsArray.indexOf("ROLE_VIEW_REQUIREMENT") > -1){
 		 candidateInvoiceList();// canidate Invoice List.
+	 }else{
+		 $("#candInvoiceDiv").remove();
 	 }
 	  if(roleActionsArray.indexOf("ROLE_RESOURCE_REQUEST_APPROVER") > -1){
 			  getProjectResourceReqestsListCount();// Project Requests Resource Associate  need to check authorizarion
 			  resourceRequestList("Waiting For Approval");// Project Requests Resource Associate  need to check authorizarion
 			
+	  }else{
+		  $("#projectRequestDiv").remove();
 	  }
 	if(roleActionsArray.indexOf("ROLE_VIEW_REQUIREMENT") > -1){
 	  requirementApproverList('SUBMITTED'); 
 	  ApplicantAuthorization('requestSent');
+	}else{
+		$("#jobApprovalsDiv").remove();
+		$("#jobApplicantDiv").remove();
 	}
 	 // getInterviewsDates();;//need to check functionaity is commented dashboardEvents.jsp ====>
 	  getJobFairDates();
@@ -111,6 +123,8 @@ $( document ).ready(function() {
 	  // check the contrats roles
 	  if(roleActionsArray.indexOf("ROLE_VIEW_CONTRACT") > -1){
 		  contractList();
+		}else{
+			$("#contractListDiv").remove();
 		}
 	
 	
@@ -152,7 +166,7 @@ $('#dasboardTaskDatpicker').datepicker({
         <input type="hidden" value="" id="timesheetSocketsFor">
         <ul class="nav nav-tabs pull-right">
           <li class="active"><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('myTimesheets');">Self</a></li>
-          <li><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('employes');">Employees</a></li>
+          <li><a data-toggle="tab" id="timesheetEmpDiv" onclick="timeSheetSubmissionStatusCount('employes');">Employees</a></li>
         </ul>
       </div>
       <div class="db-widget-sm">
@@ -385,7 +399,7 @@ $('#dasboardTaskDatpicker').datepicker({
       </div>
     </div>
   </div>
-   <div class="mb clearfix col-md-12"> 
+   <div class="mb clearfix col-md-12" id="jobsDiv"> 
       <!-- Assigned Requirements -->
       <div class="dashNewWrap mb10" id="assignedRequirementsDiv">
         <div class="dashNewWrapHead noBor clearfix">
@@ -437,7 +451,7 @@ $('#dasboardTaskDatpicker').datepicker({
       </div>
     </div>
   <div class="clearfix"></div>
-  <div class="col-md-12">
+  <div class="col-md-12" id="candOnboardDiv">
     <div class="mb clearfix col-md-12 noPad">
       <div class=" dashNewWrap hdrPosition minHeight_225 mb10">
         <div class="dashNewWrapHead noBor clearfix">
@@ -477,7 +491,7 @@ $('#dasboardTaskDatpicker').datepicker({
   </div>
   
  <div class="clearfix"></div>
- <div class="mb clearfix col-md-12"> 
+ <div class="mb clearfix col-md-12" id="candInvoiceDiv"> 
       <div class=" dashNewWrap hdrPosition minHeight_225 mb10">
       
         	<div class="dashNewWrapHead noBor clearfix">
@@ -492,7 +506,7 @@ $('#dasboardTaskDatpicker').datepicker({
     </div>
  <div class="mb clearfix col-md-12">
   <div class="mb clearfix col-md-12">
-  <div class="dashNewWrap mb10">
+  <div class="dashNewWrap mb10" id="projectRequestDiv">
  <div class="dashNewWrap mb10">
         	<div class="dashNewWrapHead clearfix">
 				<h4 class="pull-left">Project Requests</h4>
@@ -590,7 +604,7 @@ $('#dasboardTaskDatpicker').datepicker({
 				</div>
 </div>
 </div>
-  <div class="col-md-6 mb">
+  <div class="col-md-6 mb" id="jobApprovalsDiv">
     <div class="dashNewWrap mb10">
       <div class="dashNewWrapHead clearfix">
         <h4 class="pull-left">Job Approvals</h4>
@@ -634,7 +648,7 @@ $('#dasboardTaskDatpicker').datepicker({
     </div>
   </div>
   </sec:authorize>
-  <div class="col-md-6 mb">
+  <div class="col-md-6 mb" id="jobApplicantDiv">
     <div class="dashNewWrap mb10">
       <div class="dashNewWrapHead clearfix">
         <h4 class="pull-left">Applicant Permission</h4>
