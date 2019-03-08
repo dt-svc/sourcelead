@@ -22,16 +22,21 @@
 <link href="/resources/css/sourcelead-bundle.css" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/timesheet.css">
 
+
+<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${SourceLeadWeb_googleMapsLocationApiKey}" type="text/javascript"></script>
 <script src="/resources/js/jquery-1.11.1.min.js"></script>
 <script src="/resources/js/masterHeaderAction.js"></script>
 <script src="/resources/js/jquery-ui.js"></script>
-<script src="/resources/js/formvalidator.js"></script>
-<script src="/resources/js/bootstrap-select.min.js"></script>
 <script src="/resources/js/chosen.jquery.min.js"></script>
 <script src="/resources/js/jquery.dataTables.min.js"></script>
-<script src="/resources/js/sourcelead-app.js"></script>
 <script src="/resources/js/jquery.timepicker.js"></script>
+<script src="/resources/js/slead-common.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
+<script src="/resources/js/bootstrap-select.min.js"></script>
+
+<script src="/resources/js/sourcelead-app.js"></script>
 <script src="/resources/js/masterHeaderAction.js"></script>
+
 </head>
 
 <!-- 

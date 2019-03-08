@@ -184,9 +184,9 @@ function requirementSubmissionsCount(daterange){
 		  });
 		 
 		 if(daterange == "today"){
-			 $("#jobsLink").attr("href", "/ats/jobsList");
+			 $("#jobsLink").attr("href", "${SourceLeadWeb_atsUrl}/jobsList");
 		 }else{
-			 $("#jobsLink").attr("href", "/ats/jobsList");
+			 $("#jobsLink").attr("href", "${SourceLeadWeb_atsUrl}/jobsList");
 		 }
 		 
 	}// Jobs End
@@ -4559,7 +4559,7 @@ function getDateFormatByOrgLocation() { // updated.
 				$('#dateFormatForOrgId').trigger("chosen:updated"); 
         },  
    });
-   $(function(){ // updated.
+   /*$(function(){ // updated.
 	    var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -4572,7 +4572,7 @@ function getDateFormatByOrgLocation() { // updated.
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 		  })
-	});
+	});*/
 }
 function assignTasksList() { // updated.
 	var date = $("#dasboardTaskDatpicker").val();
@@ -6203,7 +6203,6 @@ var validationSettings = {
 	});
 	
 $('body').on('submit', '#addApplicant_form', function(e){
-
 		  var requirementId = $("#requirementId").val();
 		  if ($(this).validate(false, validationSettings)){
 	      e.preventDefault();
@@ -6342,7 +6341,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 		        processData: false,
 		        contentType:false,
 	 	        dataType : 'json',
-	 	    	url : sourceleadUrl+"/saveAddApplicant?=&jsonData="+jsonData+"&con="+con,
+	 	    	url : atsUrl+"/saveAddApplicant?=&jsonData="+jsonData+"&con="+con,
 		        success: function(result) {
 		        	 $(".new_side_wrap").removeClass("new_side_wrap_active");
 		        	 if(result.response === "SESSION_TIMEDOUT") {
@@ -6751,17 +6750,28 @@ function genarateInvoiceFromDashboard(orgRelationId,submissionId,candidateId){
    });  
 }
 // Invoice end here>>>>>>>>>>>>.
-// duplicated function from the slead-common.js for avoiding confilict for the varibale config.
-function getJSDateFormat(locationDate){
-	 var jsDateFormat= '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  jsDateFormat = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  jsDateFormat = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  jsDateFormat = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  jsDateFormat = 'yy-dd-mm'; 
-	  }
-	  return jsDateFormat;
+function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId,addressId){
+	$("#"+locationId).val('');
+	$("#"+stateId).val('');
+	$("#"+cityId).val('');
+	$("#"+zipCodeId).val('');
+	$("#"+addressId).val('');
+	$("#"+countryId).val('');
+	$("#"+countryId).trigger("chosen:updated");
+}
+
+function zipcodeMask(country,zipCodeId){
+	
+	if(country == "India" || country == "Singapore"){
+		 $("#"+zipCodeId).mask("999999");
+	}else if(country == "United States" || country == "France"){
+		$("#"+zipCodeId).mask("99999");
+	}else if(country == "Australia"){
+		$("#"+zipCodeId).mask("9999");
+	}else if(country == "United Kingdom"){
+		$("#"+zipCodeId).mask("aa99");
+	}else{
+		$("#"+zipCodeId).mask("999999");
+	}
+		     
 }

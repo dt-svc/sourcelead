@@ -389,6 +389,116 @@ var masterHeader = new buildMasterHeaderPanel();
 		}
 		
 }
+//initLocationAuto  from master header
+ 
+ function initLocationAuto(locationId,countryId,stateId,cityId,zipCodeId,latitudeId,longtitudeId,type,addressId) {
+	    initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId,latitudeId,longtitudeId);
+	    geolocate(latitudeId,longtitudeId);
+	}
+	function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId,latitudeId,longtitudeId) {
+	    if(type == "invite"){
+	    	 var input = (document.getElementById(locationId));
+	    	    var options = {
+	    	    		types: ['geocode'],
+	    	        componentRestrictions: {
+	    	        	country: ["IN","US","AU","SG","GB","FR"]
+	    	        }
+	    	    };
+	    	    autocomplete = new google.maps.places.Autocomplete(input, options);
+	    }else{
+	    	autocomplete = new google.maps.places.Autocomplete((document.getElementById(locationId)), {
+	    		types: ['geocode'],
+	      
+	        });
+	    }
+	   
+	  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+	  place = autocomplete.getPlace();
+	  var address = {};
+	  for (var i = 0; i < place.address_components.length; i++) {
+	    var addressType = place.address_components[i].types[0];
+	    switch (addressType) {
+	       case "route":
+	    	 address.name=place.address_components[i].long_name;
+	    	 break;
+	      case "locality":
+	        address.city = place.address_components[i].long_name;
+	        break;
+	      case "administrative_area_level_1":
+	        address.state = place.address_components[i].long_name;
+	        break;
+	      case "country":
+	        address.country = place.address_components[i].long_name;
+	        break;
+	      case "postal_code":
+	        address.zipcode = place.address_components[i].long_name;
+	        
+	    }
+	  }
+	 
+	  $("#"+stateId).val(address.state).change();
+	  $("#"+cityId).val(address.city).change();
+	  $("#"+zipCodeId).val(address.zipcode).change();
+	  $("#"+addressId).val($("#"+locationId).val().replace(", "+$("#"+cityId).val()+", "+$("#"+stateId).val()+", "+$("#"+countryId).val(), ""));
+	  $("#"+countryId).val(address.country).change();
+	  $("#"+countryId).trigger("chosen:updated");
+
+	  $("#"+latitudeId).val(place.geometry.location.lat());
+	  $("#"+longtitudeId).val(place.geometry.location.lng());
+	  
+	  if(type == "invite"){
+		  getTimezonesList();
+	  }
+	  if(type != "editAssociate"){
+	    zipcodeMask(address.country,zipCodeId);	
+	  }
+	});
+	}
+	function geolocate(latitudeId,longtitudeId) {
+	    if (navigator.geolocation) {
+	        navigator.geolocation.getCurrentPosition(function (position) {
+	            var geolocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+	            var latitude = position.coords.latitude;
+	            var longitude = position.coords.longitude;
+	            if(latitudeId != null && latitudeId != '' && latitudeId !='undefined'){
+	            	$("#"+latitudeId).val(latitude);
+	            }
+	            if(longtitudeId != null && longtitudeId != '' && longtitudeId != 'undefined'){
+	                $("#"+longtitudeId).val(longitude);
+	            }
+	            autocomplete.setBounds(new google.maps.LatLngBounds(geolocation, geolocation));
+	        });
+	    }
+	}
+	
+	//cooling offer period 
+	
+	function isCoolingOff(requirementId){
+		var candidateEmail =   $("input[name=EmailId]").val();
+		var sourceleadUrl ='${sourceleadUrl}';
+		var reqCoolingOffPeriod = document.getElementById("reqCoolingOffPeriod").value;
+		var orgLocationId ='${SourceLeadWeb_orgLocationId}';
+		$.ajax({
+			type: "POST",
+		    url: atsUrl+"/verifyCoolingOffPeriod?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&candidateEmail="+candidateEmail+"&reqCoolingOffPeriod="+reqCoolingOffPeriod+"&orgLocationId="+orgLocationId,
+		    success: function(response) {
+		    	if (response.response === "AWKWARD") {
+		    	    location.href = "/errorPage";
+		    	} else if (response.response === "SUCCESS") {
+		    		if(response.object === true){
+			    		isCoolingOffAlert();
+			    		return true;
+			    	} else {
+			    		return false;
+			    	}
+		    	} else if (response.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    	    showError("Operation failed, please try again");
+		    	}
+		    },
+		});
+	}
  /*function linkReadAndUnread(uuId){
 	 $.ajax({
 	      type: "POST",
