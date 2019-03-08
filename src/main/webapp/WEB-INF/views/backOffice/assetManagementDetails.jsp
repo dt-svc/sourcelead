@@ -101,7 +101,7 @@ function assetNotesList(assetUUID){
 	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
-         url: atsUrl+urlForm,        
+         url: sourceleadUrl+urlForm,        
          success :function(data) {
 		var output = "";
 	    if(data != null && data != 'undefined' && data != "" && data != '[]'){
@@ -189,7 +189,7 @@ function assetNotesList(assetUUID){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : atsUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"",
+						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"",
 						success : function(result) {
 							/* closeDocPopup();
 							assetNotesList(assetId); */

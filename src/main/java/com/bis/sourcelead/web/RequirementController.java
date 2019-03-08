@@ -235,10 +235,13 @@ public class RequirementController {
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLocId);
+				
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User loginUser = userService.getUserById(userId);
 		
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		model.addObject("loginUser",loginUser);
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		model.addObject("orgLocationDateFormat", orgLocations.getDateFormat());
 		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_REQUIREMENT);
 	     model.addObject("actionId",action.getId());
@@ -414,9 +417,10 @@ public class RequirementController {
 			requirement = new Requirement();
 		}
 		
+		SourceLeadSessionManager.setSessionAttribute(request, "profilePercentage", orgLocations.getProfilePercentage());
+		SourceLeadSessionManager.setSessionAttribute(request, "coolingOffPeriod", orgLocations.getCoolingOffPeriod());
 		List<LookUpData> experienceLevelList = lookUpDataService.getLookUpDataByCategory(Constants.EXPERIENCELEVEL);
-		 model.addObject("experienceLevelList", experienceLevelList);
-		 
+		model.addObject("experienceLevelList", experienceLevelList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirement");
 		
