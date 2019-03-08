@@ -19,6 +19,8 @@ public class AssociateBankDataDTO {
 	
 	private String userId;
 	
+	private String emailId;
+	
 	public Long getId()
 	{
 		return id;
@@ -87,5 +89,13 @@ public class AssociateBankDataDTO {
 	public void setAssociateBankDataUUID(String associateBankDataUUID)
 	{
 		this.associateBankDataUUID = associateBankDataUUID;
+	}
+	
+	public String getEmailId() {
+		return emailId;
+	}
+
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
 	}
 }

@@ -2799,7 +2799,7 @@ public class CrowdSourcingRequirementsRestController {
       				referContacDTO.setContactType("Other");
       			}
       			if(referContacts.getContactUserPhone() != null){
-      				referContacDTO.setPhone(referContacts.getContactUserPhone());
+      				referContacDTO.setPhone(referContacts.getContactUserPhone().trim());
       			}
       		}
       		

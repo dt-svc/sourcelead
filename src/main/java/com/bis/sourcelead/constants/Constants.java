@@ -488,6 +488,7 @@ public class Constants {
 	public static final String JOBS = "Jobs";
 	public static final String Vendors = "Vendors";
 	public static final String Candidates = "Candidates";
+	public static final String Favourite = "Favourite";
 	public static final String Candidate = "Candidate";
 	public static final String Associates = "Associates";
 	public static final String OnAndOffboard = "OnAndOffboard";
