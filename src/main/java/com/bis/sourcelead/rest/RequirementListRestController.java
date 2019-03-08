@@ -2251,8 +2251,7 @@ public class RequirementListRestController {
 				 resp.setResponseMessage(Result.SUCCESS.getValue());
 			}catch(Exception e) {
 				e.printStackTrace();
-				resp.setResponse(Result.AWKWARD.name());
-				resp.setResponseMessage(Result.AWKWARD.getValue());
+				resp.setError(e.getMessage());
 			}
 		}else {
 			resp.setResponse(Result.SESSION_TIMEDOUT.name());
