@@ -63,7 +63,7 @@ function getTicketTypeList() {
 		    		$("#ticketTypeList").append(text);
 				}
 			} else {
-				alert("Empty list returned....");
+				
 			}
 			ticketManagementTypePagination();
 		} else if (response.indexOf('Sign In') !== -1) {
@@ -204,7 +204,7 @@ function getTicketCategoryList() {
 					
 				}
 			} else {
-				alert("Empty list returned....");
+				
 			}
 			ticketManagementCategoryPagination();
 		} else if (response.indexOf('Sign In') !== -1) {
@@ -350,7 +350,7 @@ function getTicketPriorityList(){
 				for(var e in response.data) {
 					
 					var text = "<tr>";
-							    text += ' <td><div class="tblminwidth-150">' + (response.data[e].fileName !== null && response.data[e].fileName !== "" ? response.data[e].fileName : "--") + '</i></div></td>';
+							    text += ' <td><div class="tblminwidth-150">' + (response.data[e].fileURL !== null && response.data[e].fileURL !== "" ? "<div class='priorityImage'><img src='" + response.data[e].fileURL + "' alt='images' title='Priority Images'></div>" : "--") + '</i></div></td>';
 							    text +='<td><div class="tblminwidth-150">' + response.data[e].name+ '</div></td>';
 							    text += '<td><div class="tblminwidth-150">' + response.data[e].description + '</div></td>';
 							    text += '<td>';
@@ -369,7 +369,7 @@ function getTicketPriorityList(){
 								$("#ticketPriorityList").append(text);
 						}
 					  } else {
-								alert("Empty list returned....");
+								
 					   }
 			ticketManagementPriorityPagination();	
 				} else if (response.indexOf('Sign In') !== -1) {
@@ -507,7 +507,7 @@ function getTicketStatusList() {
 		    		$("#ticketStatusList").append(text);
 				}
 			} else {
-				alert("Empty list returned....");
+				
 			}
 			ticketManagementStatusPagination();
 		} else if (response.indexOf('Sign In') !== -1) {

@@ -102,7 +102,7 @@ $(document).ready(function() {
 				<div class="col-md-6">
 					<label class="col-md-3">Category</label>
 					<div class="col-md-9">
-						<select class="chosen-select" name="ticketCategoryId" field-name="Category" id="ticketCategory" data-validation="required">
+						<select class="chosen-select" name="ticketCategoryId" field-name="Category" id="ticketCategory" data-validation="required" onchange="getCategoryAssignToUsers();">
 							<option value="">Select Ticket Category</option>
 							<c:forEach items="${ticketCategoryList}" var="ticketCategory">
 								<option value="${ticketCategory.id}" ${ticketSummary.ticketCategoryId == ticketCategory.id ? "selected='selected'" : ""}>${ticketCategory.name}</option>
@@ -161,7 +161,7 @@ $(document).ready(function() {
 					</div>
 				</div>
 				<div class="col-md-6">
-			        <label class="col-md-3">Attachments<span class="text-danger paddingLeft">&nbsp;*</span></label>
+			        <label class="col-md-3">Attachments</label>
 			        <div class="col-md-9" id="attachmentsDiv">
 				        <c:choose>
 				        	<c:when test="${ticketSummary.attachmentList.size() > 0}">
@@ -252,6 +252,27 @@ function getTicketManagementDescription(ticketUUID){
 		    	$('.Editor-editor').html(result.description);
 		    }
     });
+}
+
+function getCategoryAssignToUsers() {
+	$('#assignedTo').val('').trigger('chosen:updated');
+	var categoryId = $("#ticketCategory").val();
+	$.post(sourceleadUrl + "/getCategoryAssignToListByTicketCategoryId?ticketCategoryId=" + categoryId, {}, function(response) {
+		if (response && response.response === "INVALID_DATA") {
+			showError(response.responseMessage);
+		} else if (response.response === "AWKWARD") {
+			location.href = "/errorPage";
+		} else if (response.response === "SUCCESS") {
+			for(var e in response.data) {
+				$('#assignedTo').find("option[value='" + response.data[e].id + "']").prop("selected", true).end().trigger('chosen:updated');
+			}
+			$("#assignedTo").trigger('chosen:update');
+		} else if (response.indexOf('Sign In') !== -1) {
+			location.replace(sourceleadUrl);
+		} else {
+			showError("Operation failed, please try again");
+		}
+	});
 }
 </script>
 
