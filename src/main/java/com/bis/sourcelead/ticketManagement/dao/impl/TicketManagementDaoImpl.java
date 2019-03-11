@@ -11,8 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
-import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketAssignTo;
@@ -441,10 +442,13 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId, int status) {
+	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId, int status, String userRole) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from Ticket t where t.orgLocations.id=" + orgLocationId;
+			if(!Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) && !Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+				query += " and t.createdBy.id=" + userId;
+			}
 			if(status >= 0) {
 				query += " and t.status=" + status;
 			}
