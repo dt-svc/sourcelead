@@ -31,7 +31,7 @@
 <script src="/resources/js/masterHeaderAction.js"></script>
 <script src="/resources/js/masterSideNav.js"></script>
 <script src="/resources/js/masterHeader.js"></script>
-<script src="${SourceLeadWeb_atsUrl}/resources/js/candidate.js"></script>
+<script src="${SourceLeadWeb_atsUrl}/resources/js/candidates.js"></script>
 </head>
 <c:if test="${!empty msg}"> <!-- candidatesProfile.jsp script -->
        <div class="success_pop" id="selector"  style="display: block;"> 
