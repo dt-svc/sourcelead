@@ -10249,3 +10249,6 @@ display: block;
  .chartDashboard .amcharts-main-div a {
     display: block !important;
 }
+.fileInput {
+	background-color: #fff !important;
+}

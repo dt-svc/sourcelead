@@ -2,10 +2,10 @@ package com.bis.sourcelead.ticketManagement.dao;
 
 import java.util.List;
 import com.bis.sourcelead.entity.TicketType;
-import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketAssignTo;
+import com.bis.sourcelead.entity.TicketAttachment;
 import com.bis.sourcelead.entity.TicketCategory;
 import com.bis.sourcelead.entity.TicketCategoryAssignTo;
 import com.bis.sourcelead.entity.TicketComment;
@@ -100,23 +100,10 @@ public interface TicketManagementDao {
 
 	public List<User> getCategoryAssignToListByTicketCategoryId(long ticketCategoryId,Long orgLocationId, long userId);
 
-	
+	public TicketAttachment getTicketAttachmentByTicketIdAndUUID(long ticketId, String uuid);
 
-	
+	public List<String> getSavedTicketAttachmentUUIDList(long ticketId);
 
-	
-
-	
-	
-	
-
-	
-
-	
-
-	
-
-	
-
+	public void deleteTicketAttachment(TicketAttachment ticketAttachment);
 	
 }

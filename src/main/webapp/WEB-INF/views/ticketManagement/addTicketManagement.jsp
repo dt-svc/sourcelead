@@ -3,7 +3,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
-<script type="text/javascript" src="/resources/js/ticketManagement/ticket_configuration.js"></script>
+<script type="text/javascript" src="/resources/js/ticketManagement/ticket.js"></script>
 <script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
 <link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
 <script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
@@ -55,7 +55,7 @@ $(document).ready(function() {
 });
 </script>
 <section class="content-wraper">
-<div class="success_pop" >
+	<div class="success_pop" >
 		<i class="fa fa-check-circle"></i><span></span>
 	</div>
 	<section class="content-header clearfix">
@@ -111,7 +111,6 @@ $(document).ready(function() {
 					</div>
 					<div class="clearfix"></div>
 				</div>
-	
 				<div class="col-md-6">
 					<label class="col-md-3">Priority</label>
 					<div class="col-md-9">
@@ -124,7 +123,6 @@ $(document).ready(function() {
 					</div>
 					<div class="clearfix"></div>
 				</div>
-	
 				<div class="col-md-6">
 					<label class="col-md-3">Status</label>
 					<div class="col-md-9">
@@ -137,7 +135,6 @@ $(document).ready(function() {
 					</div>
 					<div class="clearfix"></div>
 				</div>
-	
 				<div class="col-md-6">
 					<label class="col-md-3">Assign To</label>
 					<div class="col-md-9">
@@ -163,39 +160,58 @@ $(document).ready(function() {
 						<textarea id="txtEditor" name="description"  field-name="Description" value="" class="form-control newContrtextarea" data-validation="required">${ticketSummary.description}</textarea>
 					</div>
 				</div>
-	
-					<%--  <div id='attachmentSection' class='col-md-4 minHeight'>
-	                   <label>Attachments<span class="text-danger">&nbsp;*</span></label>
-	                   <i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB '></i>
-		                   <div class="uploadFile timesheet_week_comm edit-Expense-upload">
-			                  <input type='hidden' name='dbAttachmentMaxRowNumber${(2*(entryCount.count))-1}'  id='dbAttachmentMaxRowNumber${(2*(entryCount.count))-1}' value='${entry.fileInfo.size()}' />
-			                 <input type='hidden' name='attcahmentMaxRowNumber${(2*(entryCount.count))-1}'  id='attcahmentMaxRowNumber${(2*(entryCount.count))-1}' value='1' />
-			                 <div id='ticketManagementDocumentsId' class=''>
-			                       <c:forEach var="entryDoc" items="${entry.fileInfo}" varStatus="entryDocCount">
-			                       <c:if test = '${entryDoc.status == 1}'>
-			                         <strong class='proDown' id='${entryDocCount.index}document${(2*(entryCount.count))-1}'>
-			                          <input type='hidden' name='${entryDocCount.index}DbdocFileId${(2*(entryCount.count))-1}' id='${entryDocCount.index}DbdocFileId${(2*(entryCount.count))-1}' value='${entryDoc.fileDbId}'/>
-			                          <input type='hidden' name='${entryDocCount.index}DbdocFileIsDeleted${(2*(entryCount.count))-1}' id='${entryDocCount.index}DbdocFileIsDeleted${(2*(entryCount.count))-1}' value='N'/>
-			                             <a class='downicon' href='${entryDoc.fileURL}' download>
-			                                 <i class='glyphicon glyphicon-save'></i>
-								            <input type='button' value='${entryDoc.fileName}'/>
-					      </a>
-						<input class='dele' type='button' onclick="removeDbAttachment(${entryDocCount.index},${(2*(entryCount.count))-1});deleteAttchment(${entryDoc.fileDbId})"/>
-			                         </strong>
-			                         </c:if>
-			                       </c:forEach>
-			                 </div> 
-			                 <span> 
-			                     <table class='timesheetAttachment' id='attachmentTable${(2*(entryCount.count))-1}' cellpadding='0' cellspacing='0' width="100%">
-			                       <tr id='${(2*(entryCount.count))-1}divAttachmentTsRow0'>
-			                           <td><div id='0docFileuploadFileGroup${(2*(entryCount.count))-1}'><input type='file' name='0docFile${(2*(entryCount.count))-1}' id='0docFile${(2*(entryCount.count))-1}' field-name='Attachment' onchange='validateUploadFile(0,${(2*(entryCount.count))-1})' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment(${(2*(entryCount.count))-1},"EDIT")'></i></div></td> 
-			                       </tr>
-			                   </table>
-			                 </span>
-			             </div>
-			             </div>  --%>
-
-</div>
+				<div class="col-md-6">
+			        <label class="col-md-3">Attachments<span class="text-danger paddingLeft">&nbsp;*</span></label>
+			        <div class="col-md-9" id="attachmentsDiv">
+				        <c:choose>
+				        	<c:when test="${ticketSummary.attachmentList.size() > 0}">
+				        		<c:set var="attachmentCount" value="0"></c:set>
+				        		<c:set var="deleteFlag" value="false"></c:set>
+				        		<c:forEach items="${ticketSummary.attachmentList}" var="attachment">
+				        			<div class="row mb" data-index="${attachmentCount}">
+							            <div class="input-group col-md-11 pull-left">
+											<label class="input-group-btn">
+												<span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+													<input type="file" style="display: none;" id="uploadFile${attachmentCount}" data-name="file" data-index="${attachmentCount}" class="upload" onchange='validateUploadFile(this, ${attachmentCount})'>
+												</span>
+											</label>
+							              	<input type="text" class="form-control fileInput" readonly id="uploadFileInput${attachmentCount}" data-name="input" placeholder="Upload File ..." value="${attachment.fileName}">
+							            </div>
+							            	<c:choose>
+								            	<c:when test="${deleteFlag}">
+										            <div class="input-group col-md-1 colorRed text-center">
+										             	<i class="fa fa-times cursorPointer mt10" data-name="delete" onclick="removeAttachmentRow(this, ${attachmentCount})"></i>
+										            </div>
+								            	</c:when>
+								            	<c:otherwise>
+													<div class="input-group col-md-1 text-primary text-center">
+									             		<i class="fa fa-plus cursorPointer mt10" onclick="addAttachmentRow();"></i>
+									             	</div>
+								            	</c:otherwise>
+							            	</c:choose>
+									</div>
+									<c:set var="attachmentCount" value="${attachmentCount + 1}"></c:set>
+									<c:set var="deleteFlag" value="true"></c:set>
+				        		</c:forEach>
+				        	</c:when>
+				        	<c:otherwise>
+				        		<div class="row mb" data-index="0">
+						            <div class="input-group col-md-11 pull-left">
+										<label class="input-group-btn">
+											<span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+												<input type="file" style="display: none;" id="uploadFile0" data-name="file" data-index="0" class="upload" onchange='validateUploadFile(this, 0)'>
+											</span>
+										</label>
+						              	<input type="text" class="form-control fileInput" readonly id="uploadFileInput0" data-name="input" placeholder="Upload File ...">
+						            </div>
+						            <div class="input-group col-md-1 text-primary text-center">
+						             	<i class="fa fa-plus cursorPointer mt10" onclick="addAttachmentRow();"></i>
+						            </div>
+								</div>
+				        	</c:otherwise>
+				        </c:choose>
+			      	</div>
+			      </div>
 			</div>
 		</div>
 		<div class="form-footer clearfix mt">
@@ -206,6 +222,15 @@ $(document).ready(function() {
 				</div>
 			</div>
 		</div>
+		<c:set var="attachmentCount" value="0"></c:set>
+		<c:forEach items="${ticketSummary.attachmentList}" var="attachment">
+			<input type="hidden" name="fileInfo[${attachmentCount}].fileModified" data-id="uploadFile${attachmentCount}" value="false">
+			<input type="hidden" name="fileInfo[${attachmentCount}].fileDbId" data-id="uploadFile${attachmentCount}" value="${attachment.uuid}">
+			<input type="hidden" name="fileInfo[${attachmentCount}].fileURL" data-id="uploadFile${attachmentCount}" value="${attachment.fileUrl}">
+			<input type="hidden" name="fileInfo[${attachmentCount}].fileName" data-id="uploadFile${attachmentCount}" value="${attachment.fileName}">
+			<input type="hidden" name="fileInfo[${attachmentCount}].contentType" data-id="uploadFile${attachmentCount}" value="${attachment.fileType}">
+			<c:set var="attachmentCount" value="${attachmentCount + 1}"></c:set>
+		</c:forEach>
 	</form>
 </section>
 <div id='changeStatusPopup' class='remove_user_pop remove_user_pop_a'>
@@ -216,19 +241,17 @@ $(document).ready(function() {
 		<input id="cancelStatusPopup" class='u_can_color' type='button' value='Cancel' onClick='closeDeletePopup()'>
 	</b>
 </div>
-
-
 <script>
+var attachmentCount = ${ticketSummary.attachmentList.size() > 0 ? ticketSummary.attachmentList.size() : 1};
 function getTicketManagementDescription(ticketUUID){
-	 $.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/getTicketManagementDescription?${_csrf.parameterName}=${_csrf.token}&uuid="+ticketUUID, 	   
-			    success: function(result) {
-			    	$('#txtEditor').html(result.description);
-			    	$('.Editor-editor').html(result.description);
-			    }
-			    	 
-	     });
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getTicketManagementDescription?${_csrf.parameterName}=${_csrf.token}&uuid="+ticketUUID, 	   
+		    success: function(result) {
+		    	$('#txtEditor').html(result.description);
+		    	$('.Editor-editor').html(result.description);
+		    }
+    });
 }
 </script>
 
@@ -314,5 +337,4 @@ function validateTicketId(ticketId) {
 		$(".mask, #modalTasktype").fadeOut();
 	}
 </script>
-
 <jsp:include page="../masterFooter.jsp" />

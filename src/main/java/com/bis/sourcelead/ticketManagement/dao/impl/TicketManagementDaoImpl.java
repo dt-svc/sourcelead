@@ -16,6 +16,7 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketAssignTo;
+import com.bis.sourcelead.entity.TicketAttachment;
 import com.bis.sourcelead.entity.TicketPriority;
 import com.bis.sourcelead.entity.TicketStatus;
 import com.bis.sourcelead.entity.TicketStatusHistory;
@@ -640,6 +641,50 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
+	public TicketAttachment getTicketAttachmentByTicketIdAndUUID(long ticketId, String uuid) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from TicketAttachment ta where ta.ticket.id=:ticketId and ta.uuid=:uuid";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("ticketId", ticketId);
+			queryObj.setString("uuid", uuid);
+			List<TicketAttachment> ticketAttachmentList = queryObj.list();
+			if(ticketAttachmentList != null && !ticketAttachmentList.isEmpty()) {
+				return ticketAttachmentList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getSavedTicketAttachmentUUIDList(long ticketId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select ta.uuid from TicketAttachment ta where ta.ticket.id=:ticketId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("ticketId", ticketId);
+			return queryObj.list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public void deleteTicketAttachment(TicketAttachment ticketAttachment) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.delete(ticketAttachment);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
 	public List<User> getCategoryAssignToListByTicketCategoryId(long ticketCategoryId, Long orgLocationId, long userId) {
 		try {
 			Session session =  this.sessionFactory.getCurrentSession();
@@ -650,7 +695,5 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 			e.printStackTrace();
 		}
 		return null;
-	}
-	
+	}	
 }
-

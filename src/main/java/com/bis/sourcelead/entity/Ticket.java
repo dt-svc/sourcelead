@@ -99,6 +99,9 @@ public class Ticket implements Serializable {
 
 	@OneToMany(mappedBy = "ticket", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<TicketAssignTo> ticketAssignToList;
+	
+	@OneToMany(mappedBy = "ticket", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<TicketAttachment> ticketAttachmentList;
 
 	public long getId() {
 		return id;
@@ -218,6 +221,14 @@ public class Ticket implements Serializable {
 
 	public void setTicketAssignToList(List<TicketAssignTo> ticketAssignToList) {
 		this.ticketAssignToList = ticketAssignToList;
+	}
+
+	public List<TicketAttachment> getTicketAttachmentList() {
+		return ticketAttachmentList;
+	}
+
+	public void setTicketAttachmentList(List<TicketAttachment> ticketAttachmentList) {
+		this.ticketAttachmentList = ticketAttachmentList;
 	}
 
 	public static long getSerialversionuid() {
