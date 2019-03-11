@@ -608,6 +608,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
             </div>
             
             <div class="clearfix mt mb"></div>
+            
+            <c:if test="${SourceLeadWeb_country == 'India'}">
             <div class="newRepListCta">
                 <h2><a href="javascript:void(0)">India Payroll Reports</a></h2>
                 <ul class="repSearchList">
@@ -622,9 +624,10 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div>
+            </c:if>
             
             
-            <c:if test="${SourceLeadWeb_loginCountryName == 'United States'}">
+            <c:if test="${SourceLeadWeb_country == 'United States'}">
             	<div class="newRepListCta">
                 <h2><a href="javascript:void(0)">US Payroll Reports</a></h2>
 	                <ul class="repSearchList">
