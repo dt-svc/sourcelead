@@ -691,8 +691,15 @@ public class Constants {
 	
 	public static final String[] DATA_MIGRATION_ASSOCIATE_BANKING_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","Payment Mode*","Bank Name","Account Number","BSR Number","MICR Code","IFSC Code",
 			"First Name","Last Name",};
+	
+	public static final String[] DATA_MIGRATION_ASSOCIATE_SALARY_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","Pay Type*","Pay Frequency*","Pay Group","Standard Hours*","Annual Salary","Pay Per Salary",
+			"Hourly rate"};						
 
 	public static final String[] PAYMENT_MODE = {"Savings", "Cheque", "Cash"};
+	
+	public static final String[] ASSOCIATE_SALARY_PAYTYPE = {"Salary"};
+	
+	public static final String[] ASSOCIATE_SALARY_PAYFREQUENCY = {"Annually", "Monthly", "Bi-Weekly", "Weekly"};
 
 	public static final String[] REQIREMENT_APPLICANT_HEADERS = { "Applicant Name", "Email","Job", "Client", "Phone Number",  "Job Location",   "Source", "Status","Job Rating" ,"Incentivized"};
 
