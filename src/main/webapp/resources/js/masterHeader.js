@@ -56,12 +56,12 @@ var masterHeader = new buildMasterHeaderPanel();
 	    
 			
 	    masterNavHtml = masterNavHtml+'<div class="headProfile">';	
-	    masterNavHtml = masterNavHtml+'<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="'+userType+'" title="'+loginUser+'" onerror="predefineProfileImage(this);"  src="'+userImgUrl+'"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="'+loginUser+'"> '+loginUser+' </div>';
+	    masterNavHtml = masterNavHtml+'<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="'+userType+'" title="'+loginUser+'" onerror="masterHeader.predefineProfileImage(this);"  src="'+userImgUrl+'"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="'+loginUser+'"> '+loginUser+' </div>';
 	    masterNavHtml = masterNavHtml+'<div class="headPop" id="profilePop">';
 	    masterNavHtml = masterNavHtml+'<div class="headPopInn">';
 	    masterNavHtml = masterNavHtml+'<a href="/app/userProfile" title="Profile">';
 	    masterNavHtml = masterNavHtml+'<div class="headPopUser clearfix">';
-	    masterNavHtml = masterNavHtml+'<div class="pull-left"><img class="img-circle" data-id="userProfileImage" title="'+loginUser+'" alt="'+userType+'" onerror="predefineProfileImage(this);" src="'+userImgUrl+'"></div>';
+	    masterNavHtml = masterNavHtml+'<div class="pull-left"><img class="img-circle" data-id="userProfileImage" title="'+loginUser+'" alt="'+userType+'" onerror="masterHeader.predefineProfileImage(this);" src="'+userImgUrl+'"></div>';
 	    masterNavHtml = masterNavHtml+'<div class="pull-right">';
 	    masterNavHtml = masterNavHtml+'<p>'+loginUser+'</p>';
 	   
