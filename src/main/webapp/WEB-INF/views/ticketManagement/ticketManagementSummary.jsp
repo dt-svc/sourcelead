@@ -95,12 +95,12 @@
                   <div class="clearfix mt">
                     <button type="button" id="addComment" class="btn btn-primary pull-right btn-sm mr">Add Comment</button>
                     <div class="add-ticketcomment" style="display: none;" id="add-comment">
-                      <form role="form" id="sourceleadTicketComment_form" name="sourceleadTicketComment_form" method="post">
-                        <textarea rows="3" class="form-control clearfix mb10 valid error" placeholder="Comments here..." id="ticketComment" name="ticketComment" field-name="Comment" data-validation="required validate_length length1-5000" style="border-color: rgb(204, 204, 204);"></textarea>
-                        <span class="clearfix pull-right">
-                        <input type="button" id="submit_comment" value="Add" class="btn btn-sm btn-success" onclick="addTicketComments('61','53VxGwIC')" style="border-color: rgb(204, 204, 204);">
-                        <input type="button" value="Cancel" class="btn btn-sm btn-default" onclick="closeTicketComment()" style="border-color: rgb(204, 204, 204);">
-                        </span>
+                      <form role="form" id="ticketComment_form" name="sourceleadTicketComment_form" method="post">
+	                        <textarea rows="3" class="form-control clearfix mb10 valid error" placeholder="Comments here..." id="ticketComment" name="comment" field-name="Comment" data-validation="required validate_length length1-5000" style="border-color: rgb(204, 204, 204);"></textarea>
+	                        <span class="clearfix pull-right">
+	                        <input type="button" id="submit_comment" value="Add" class="btn btn-sm btn-success" onclick="saveTicketComment('${ticketSummary.id}');" style="border-color: rgb(204, 204, 204);">
+	                        <input type="button" value="Cancel" class="btn btn-sm btn-default" onclick="closeTicketComment()" style="border-color: rgb(204, 204, 204);">
+	                        </span>
                       </form>
                     </div>
                   </div>
@@ -128,5 +128,16 @@
           $(".project_tabs_inn").not(tab).css("display", "none");
           $(tab).fadeIn();
       });
+</script>
+<script>
+$(document).ready(function(){
+	$(".add-ticketcomment").attr('style', "right:30px !important; top:45px");
+});
+$("#addComment").click(function(){
+	$("#add-comment").show();
+});
+function closeTicketComment(){
+	$("#add-comment").hide();
+}
 </script>
    <jsp:include page="../masterFooter.jsp" />
