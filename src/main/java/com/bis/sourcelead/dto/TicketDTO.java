@@ -12,15 +12,27 @@ public class TicketDTO implements Serializable {
 	private long id;
 	private String uuid;
 	private String generatedId;
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	private String title;
 	private long ticketTypeId;
 	private String ticketType;
 	private long ticketCategoryId;
 	private String ticketCategory;
 	private long ticketPriorityId;
 	private String ticketPriority;
+	private String ticketPriorityTextColor;
 	private String ticketPriorityImage;
 	private long ticketStatusId;
 	private String ticketStatus;
+	private int status;
 	private String description;
 	private List<String> assignedTo;
 	private List<TicketAssignToDTO> ticketAssignToList;
@@ -31,6 +43,8 @@ public class TicketDTO implements Serializable {
 	private String createdDate;
 	private Long updatedById;
 	private String updatedDate;
+	private List<FileInfo> fileInfo;
+	private List<TicketAttachmentDTO> attachmentList;
 
 	public long getId() {
 		return id;
@@ -104,6 +118,14 @@ public class TicketDTO implements Serializable {
 		this.ticketPriority = ticketPriority;
 	}
 
+	public String getTicketPriorityTextColor() {
+		return ticketPriorityTextColor;
+	}
+
+	public void setTicketPriorityTextColor(String ticketPriorityTextColor) {
+		this.ticketPriorityTextColor = ticketPriorityTextColor;
+	}
+
 	public String getTicketPriorityImage() {
 		return ticketPriorityImage;
 	}
@@ -126,6 +148,14 @@ public class TicketDTO implements Serializable {
 
 	public void setTicketStatus(String ticketStatus) {
 		this.ticketStatus = ticketStatus;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
 	public String getDescription() {
@@ -210,6 +240,22 @@ public class TicketDTO implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public List<FileInfo> getFileInfo() {
+		return fileInfo;
+	}
+
+	public void setFileInfo(List<FileInfo> attachmentList) {
+		this.fileInfo = attachmentList;
+	}
+
+	public List<TicketAttachmentDTO> getAttachmentList() {
+		return attachmentList;
+	}
+
+	public void setAttachmentList(List<TicketAttachmentDTO> attachmentList) {
+		this.attachmentList = attachmentList;
 	}
 
 }

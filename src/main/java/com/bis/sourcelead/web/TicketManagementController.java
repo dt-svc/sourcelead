@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.dto.TicketCommentDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -74,8 +73,13 @@ public class TicketManagementController {
 	@RequestMapping(value = "/ticketManagementList")
 	public ModelAndView ticketManagementList(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(user != null) {
+			model.addObject("statusList",ticketManagementService.getTicketStatusListByOrgLocationId(orgLocations.getId(), 1));
+			model.addObject("sourceleadUrl", sourceleadUrl);
+		}
 		model.setViewName("ticketManagement/ticketManagementList");
-		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
 
@@ -90,7 +94,7 @@ public class TicketManagementController {
 			model.addObject("ticketPriorityList", ticketManagementService.getTicketPriorityListByOrgLocationId(orgLocations.getId(),1));
 			model.addObject("ticketStatusList", ticketManagementService.getTicketStatusListByOrgLocationId(orgLocations.getId(),1));
 			if(uuid != null && !uuid.isEmpty()) {
-				model.addObject("ticketSummary", ticketManagementService.getTicketSummaryByUUID(uuid, user.getId(), orgLocations.getId(), orgLocations.getDateFormat()));
+				model.addObject("ticketSummary", ticketManagementService.getTicketSummaryByUUID(uuid, user.getId(), orgLocations.getId(), orgLocations.getDateFormat(), true));
 			}
 			model.setViewName("ticketManagement/addTicketManagement");
 			List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
@@ -106,7 +110,7 @@ public class TicketManagementController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if(user != null) {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			model.addObject("ticketSummary", ticketManagementService.getTicketSummaryByUUID(uuid, user.getId(), orgLocations.getId(), orgLocations.getDateFormat()));
+			model.addObject("ticketSummary", ticketManagementService.getTicketSummaryByUUID(uuid, user.getId(), orgLocations.getId(), orgLocations.getDateFormat(), false));
 			//model.addObject("ticketComment", ticketManagementService.getTicketCommentByTicketId(ticketCommentDTO,ticketId,user.getId(),orgLocations.getId()));
 			model.setViewName("ticketManagement/ticketManagementSummary");
 			model.addObject("sourceleadUrl", sourceleadUrl);

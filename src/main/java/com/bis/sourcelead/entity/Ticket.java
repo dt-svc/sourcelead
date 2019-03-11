@@ -34,6 +34,17 @@ public class Ticket implements Serializable {
 
 	@Column(name = "GENERATED_ID")
 	private String generatedId;
+	
+	@Column(name = "TICKET_TITLE")
+	private String title;
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TICKET_TYPE_ID", referencedColumnName = "ID")
@@ -61,6 +72,17 @@ public class Ticket implements Serializable {
 	@Column(name = "NOTIFY_TO", columnDefinition = "LONGTEXT default NULL")
 	private String notifyTo;
 
+	@Column(name = "STATUS")
+	private int status;
+	
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_BY", referencedColumnName = "ID")
 	private User createdBy;
@@ -77,6 +99,9 @@ public class Ticket implements Serializable {
 
 	@OneToMany(mappedBy = "ticket", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<TicketAssignTo> ticketAssignToList;
+	
+	@OneToMany(mappedBy = "ticket", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<TicketAttachment> ticketAttachmentList;
 
 	public long getId() {
 		return id;
@@ -196,6 +221,14 @@ public class Ticket implements Serializable {
 
 	public void setTicketAssignToList(List<TicketAssignTo> ticketAssignToList) {
 		this.ticketAssignToList = ticketAssignToList;
+	}
+
+	public List<TicketAttachment> getTicketAttachmentList() {
+		return ticketAttachmentList;
+	}
+
+	public void setTicketAttachmentList(List<TicketAttachment> ticketAttachmentList) {
+		this.ticketAttachmentList = ticketAttachmentList;
 	}
 
 	public static long getSerialversionuid() {
