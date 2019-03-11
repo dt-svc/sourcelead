@@ -1,18 +1,18 @@
 package com.bis.sourcelead.ticketManagement.dao;
 
 import java.util.List;
-
 import com.bis.sourcelead.entity.TicketType;
-import com.bis.sourcelead.dto.TicketAttachmentDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketAssignTo;
+import com.bis.sourcelead.entity.TicketAttachment;
 import com.bis.sourcelead.entity.TicketCategory;
 import com.bis.sourcelead.entity.TicketCategoryAssignTo;
 import com.bis.sourcelead.entity.TicketComment;
 import com.bis.sourcelead.entity.TicketPriority;
 import com.bis.sourcelead.entity.TicketStatus;
 import com.bis.sourcelead.entity.TicketStatusHistory;
+import com.bis.sourcelead.entity.User;
 
 public interface TicketManagementDao {
 
@@ -80,8 +80,6 @@ public interface TicketManagementDao {
 
 	public Boolean saveTicketComment(TicketComment ticketComment);
 
-	public List<TicketAttachmentDTO> getExpenseAttachmentStatusByCategoryId(Long ticketId);
-
 	public Ticket getTicketDataById(long ticketId);
 
 	public Boolean changeTicketManagementStatusDataById(long id, int status, OrgLocations orgLocation);
@@ -92,7 +90,7 @@ public interface TicketManagementDao {
 
 	public TicketAssignTo getTicketAssignToByUserIdAndTicket(long userId, long ticketId);
 	
-	public TicketCategoryAssignTo getTicketCategoryAssignToByUserIdAndTicket(long userId, long id);
+	public TicketCategoryAssignTo getTicketCategoryAssignToByUserIdAndTicket(long userId, long ticketCategoryId);
 
 	public void deleteTicketAssignTo(TicketAssignTo ticketAssignTo);
 
@@ -100,23 +98,12 @@ public interface TicketManagementDao {
 
 	public Boolean validateTicketId(String generatedId, Long orgLocationsId);
 
-	
+	public List<User> getCategoryAssignToListByTicketCategoryId(long ticketCategoryId,Long orgLocationId, long userId);
 
-	
+	public TicketAttachment getTicketAttachmentByTicketIdAndUUID(long ticketId, String uuid);
 
-	
+	public List<String> getSavedTicketAttachmentUUIDList(long ticketId);
 
-	
-	
-	
-
-	
-
-	
-
-	
-
-	
-
+	public void deleteTicketAttachment(TicketAttachment ticketAttachment);
 	
 }

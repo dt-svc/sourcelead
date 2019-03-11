@@ -227,7 +227,7 @@ public class UploadController {
 	{
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		    String filePath = dataMigrationCommonDTO.getFilePath();
-			FileInputStream inputStream = new FileInputStream(new File(filePath, "/temp/")));
+			FileInputStream inputStream = new FileInputStream(new File(filePath, "/temp/"));
 			Workbook workbook = null;
 			DataFormatter objDefaultFormat = new DataFormatter();
 			FormulaEvaluator objFormulaEvaluator = null;

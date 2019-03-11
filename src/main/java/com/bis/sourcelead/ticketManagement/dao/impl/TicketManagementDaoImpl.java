@@ -11,13 +11,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.bis.sourcelead.dao.UserDao;
-import com.bis.sourcelead.dto.TicketAttachmentDTO;
-import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketAssignTo;
+import com.bis.sourcelead.entity.TicketAttachment;
 import com.bis.sourcelead.entity.TicketPriority;
 import com.bis.sourcelead.entity.TicketStatus;
 import com.bis.sourcelead.entity.TicketStatusHistory;
@@ -516,21 +515,7 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 		}
 		return false;
 	}
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<TicketAttachmentDTO> getExpenseAttachmentStatusByCategoryId(Long ticketId) {
-		
-			String attachment = null;
-			Session session = this.sessionFactory.getCurrentSession();
-			String query ="select ta.isAttachemtRequired from TicketAttachment ta where ta.id = :ticketId";
-			
-			List<String> ticketAttachmentList = session.createQuery(query).setLong("ticketId", ticketId).list();
-			if(ticketAttachmentList != null && !ticketAttachmentList.isEmpty()) {
-				attachment = ticketAttachmentList.get(0);
-			}
-			return null;
-		}
-
+	
 	@Override
 	public Ticket getTicketDataById(long id) {
 		try {
@@ -612,14 +597,76 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public TicketCategoryAssignTo getTicketCategoryAssignToByUserIdAndTicket(long userId, long id) {
+	public TicketCategoryAssignTo getTicketCategoryAssignToByUserIdAndTicket(long userId, long ticketCategoryId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from TicketCategoryAssignTo tat where tat.ticket.id=:ticketId and tat.user.id=:userId";
-			List<TicketCategoryAssignTo> ticketCategoryAssignToList = session.createQuery(query).setLong("id", id).setLong("userId", userId).list();
+			String query = "from TicketCategoryAssignTo tcat where tcat.ticketCategory.id=:ticketCategoryId and tcat.user.id=:userId";
+			List<TicketCategoryAssignTo> ticketCategoryAssignToList = session.createQuery(query).setLong("ticketCategoryId", ticketCategoryId).setLong("userId", userId).list();
 			if(ticketCategoryAssignToList != null && !ticketCategoryAssignToList.isEmpty())
 				return ticketCategoryAssignToList.get(0);
-			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Ticket getTicketSnoAndTicketId(String generatedId, Long ticketId, Long orgLocationsId) {
+		try {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Ticket ticket where ticket.generatedId = :generatedId and ticket.orgLocations.id = :orgLocationsId and ticket.id = :ticketId and ticket.status = 1";
+		List<Ticket> ticketList =  session.createQuery(query) .setString("generatedId", generatedId).setLong("ticketId", ticketId).setLong("orgLocationsId", orgLocationsId).list();
+		if(ticketList != null && !ticketList.isEmpty()) {
+			return ticketList.get(0);
+		}
+	}catch (Exception e) {
+		e.printStackTrace();
+	}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Boolean validateTicketId(String generatedId, Long orgLocationsId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Ticket ticket where ticket.orgLocations.id = :orgLocationsId and ticket.generatedId = :generatedId and ticket.status = 1 ";
+		List<Ticket> ticketList = session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setString("generatedId", generatedId).list();
+		if (ticketList != null && ticketList.size() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public TicketAttachment getTicketAttachmentByTicketIdAndUUID(long ticketId, String uuid) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from TicketAttachment ta where ta.ticket.id=:ticketId and ta.uuid=:uuid";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("ticketId", ticketId);
+			queryObj.setString("uuid", uuid);
+			List<TicketAttachment> ticketAttachmentList = queryObj.list();
+			if(ticketAttachmentList != null && !ticketAttachmentList.isEmpty()) {
+				return ticketAttachmentList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getSavedTicketAttachmentUUIDList(long ticketId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select ta.uuid from TicketAttachment ta where ta.ticket.id=:ticketId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("ticketId", ticketId);
+			return queryObj.list();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -627,36 +674,26 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 	}
 
 	@Override
-	public Ticket getTicketSnoAndTicketId(String generatedId, Long ticketId, Long orgLocationsId) {
-		Session session =  this.sessionFactory.getCurrentSession();
-		String query = "from Ticket ticket where ticket.generatedId = :ticketSno and ticket.orgLocations.id = :orgLocationsId and ticket.id = :ticketId and ticket.status = 1";
-		List<Ticket> ticketList =  session.createQuery(query) .setString("generatedId", generatedId).setLong("ticketId", ticketId).setLong("orgLocationsId", orgLocationsId).list();
-		Ticket ticket = null;
-		if(ticketList != null && !ticketList.isEmpty())
-		{
-			ticket = (Ticket) ticketList.iterator().next();
+	public void deleteTicketAttachment(TicketAttachment ticketAttachment) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.delete(ticketAttachment);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return ticket;
 	}
-
+	
+	@SuppressWarnings("unchecked")
 	@Override
-	public Boolean validateTicketId(String generatedId, Long orgLocationsId) {
-		
-		Session session = this.sessionFactory.getCurrentSession();
-		
-		String query = "from Ticket ticket where ticket.orgLocations.id = :orgLocationsId and ticket.generatedId = :generatedId and ticket.status = 1 ";
-		List<Ticket> ticketList = session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setString("generatedId", generatedId).list();
-
-		if (ticketList.size() > 0) {
-			return true;
-		} else {
-			return false;
+	public List<User> getCategoryAssignToListByTicketCategoryId(long ticketCategoryId, Long orgLocationId, long userId) {
+		try {
+			Session session =  this.sessionFactory.getCurrentSession();
+			String query = "select tca.user from TicketCategoryAssignTo tca where tca.ticketCategory.id = :ticketCategoryId ";
+			List<User> userList = session.createQuery(query).setLong("ticketCategoryId", ticketCategoryId).list();
+			return userList;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-	}
-	
-	
+		return null;
+	}	
 }
-
-	
-	
-
