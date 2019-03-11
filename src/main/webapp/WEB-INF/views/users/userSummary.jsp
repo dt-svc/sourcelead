@@ -498,7 +498,7 @@ window.onload = function () {
 				
 				if(json.user.fileUrl != null && json.user.fileUrl != "" && json.user.fileUrl !="undefiend"){
 					result = result + '<div class="user_change_img">';
-					result = result +"<img data-id= 'userProfileImage' src='"+json.user.fileUrl+"' alt='image'>";
+					result = result +"<img data-id= 'userProfileImage' src=\""+json.user.fileUrl+"\" alt='image'>";
 					result = result + '</div>';
 					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">'
 					result=result + '<div class="btn-group uploadfile uploadfile-candidate">';
