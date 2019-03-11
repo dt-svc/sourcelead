@@ -5,6 +5,9 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script type="text/javascript" src="/resources/js/ticketManagement/ticket_configuration.js"></script>
 <section class="content-wraper">
+	<div class="success_pop" >
+		<i class="fa fa-check-circle"></i><span></span>
+	</div>
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Ticket Type</h2>
