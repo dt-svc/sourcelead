@@ -20,3 +20,7 @@ INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) V
 INSERT INTO `ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('TicketManagementNotification', 'Notification');
 INSERT INTO `EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`,`CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`,`STATUS`,`DEFAULT_TEMPLATE`) VALUES
 ('TicketManagementNotification', 'Notification', 'TicketManagementNotification', 'This notification is forward when the user commented on the ticket.', 'New ticket generated on [Category_Name] category..', 'org', '', 'New ticket generated on [Category_Name] category','N','SLADMIN', 'slead', 'sleadIN',1,'Y');
+
+
+CALL AlterTableAddColumn ('ASSOCIATE_PF_ESI_DETAILS','AADHAR_NUMBER','VARCHAR (50)  DEFAULT NULL AFTER `ENROLLED_DATE`');
+

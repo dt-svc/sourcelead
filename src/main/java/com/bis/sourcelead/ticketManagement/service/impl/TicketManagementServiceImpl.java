@@ -26,6 +26,7 @@ import com.bis.sourcelead.dto.TicketPriorityDTO;
 import com.bis.sourcelead.dto.TicketStatusDTO;
 import com.bis.sourcelead.dto.TicketStatusHistoryDTO;
 import com.bis.sourcelead.dto.TicketTypeDTO;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -904,12 +905,6 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketAttachmentDTO> getTicketAttachmentStatusByTicketId(Long ticketId) {
-		
-		 return ticketManagementDao.getExpenseAttachmentStatusByCategoryId(ticketId);
-	}
-
-	@Override
 	public TicketDTO getTicketDataById(long ticketId, String dateFormat) {
 		TicketDTO ticketDTO = new TicketDTO();
 		try {
@@ -1002,14 +997,26 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 
 	@Override
 	public Boolean validateTicketId(String generatedId, Long orgLocationsId) {
-		
 		return ticketManagementDao.validateTicketId(generatedId,orgLocationsId);
 	}
 	
-	
-
-	
-
+	@Override
+	public List<UserDTO> getCategoryAssignToListByTicketCategoryId(long ticketCategoryId, long userId, Long orgLocationId) {
+		List<UserDTO> userDTOList = new LinkedList<>();
+		try {
+			List<User> userList = ticketManagementDao.getCategoryAssignToListByTicketCategoryId(ticketCategoryId, userId, orgLocationId);
+			if (userList != null && !userList.isEmpty()) {
+				for (User user : userList) {
+					UserDTO userDTO = new UserDTO();
+					userDTO.setId(user.getId());
+					userDTO.setUserName(user.getFullName());
+					userDTOList.add(userDTO);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return userDTOList;
+	}
 	
 }
-

@@ -1,8 +1,6 @@
 package com.bis.sourcelead.ticketManagement.service;
 
 import java.util.List;
-
-import com.bis.sourcelead.dto.TicketAttachmentDTO;
 import com.bis.sourcelead.dto.TicketCategoryDTO;
 import com.bis.sourcelead.dto.TicketCommentDTO;
 import com.bis.sourcelead.dto.TicketDTO;
@@ -10,10 +8,12 @@ import com.bis.sourcelead.dto.TicketPriorityDTO;
 import com.bis.sourcelead.dto.TicketStatusDTO;
 import com.bis.sourcelead.dto.TicketStatusHistoryDTO;
 import com.bis.sourcelead.dto.TicketTypeDTO;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.dto.Response;
+
 
 
 public interface TicketManagementService {
@@ -72,19 +72,19 @@ public interface TicketManagementService {
 	
 	public Boolean saveTicketComment(TicketCommentDTO ticketCommentDTO, User user);
 
-	public List<TicketAttachmentDTO> getTicketAttachmentStatusByTicketId(Long ticketId);
-
 	public TicketDTO getTicketDataById(long ticketId, String dateFormat);
 
 	public Boolean changeTicketManagementStatusDataById(long id, int status, OrgLocations orgLocation);
 
 	public Response<Boolean> changeTicketStatus(TicketStatusHistoryDTO ticketStatusHistoryDTO, User user, OrgLocations orgLocation);
 
-	
-
 	public Ticket getTicketSnoAndTicketId(String ticketSno, Long ticketId, Long orgLocationsId);
 
 	public Boolean validateTicketId(String ticketSno, Long orgLocationsId);
+	
+	public List<UserDTO> getCategoryAssignToListByTicketCategoryId(long ticketCategoryId, long userId, Long orgLocationId);
+
+	
 
 
 

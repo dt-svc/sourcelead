@@ -30,7 +30,7 @@ public class TicketCategoryAssignTo implements Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TICKET_CATEGORY_ID", referencedColumnName = "ID")
-	private TicketCategory TicketCategory;
+	private TicketCategory ticketCategory;
 
 	@Column(name = "CREATED_BY")
 	private Long createdBy;
@@ -61,11 +61,11 @@ public class TicketCategoryAssignTo implements Serializable {
 	}
 
 	public TicketCategory getTicketCategory() {
-		return TicketCategory;
+		return ticketCategory;
 	}
 
 	public void setTicketCategory(TicketCategory ticketCategory) {
-		TicketCategory = ticketCategory;
+		this.ticketCategory = ticketCategory;
 	}
 
 	public Long getCreatedBy() {

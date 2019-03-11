@@ -63,7 +63,7 @@ function getTicketTypeList() {
 		    		$("#ticketTypeList").append(text);
 				}
 			} else {
-				alert("Empty list returned....");
+				
 			}
 			ticketManagementTypePagination();
 		} else if (response.indexOf('Sign In') !== -1) {
@@ -204,7 +204,7 @@ function getTicketCategoryList() {
 					
 				}
 			} else {
-				alert("Empty list returned....");
+				
 			}
 			ticketManagementCategoryPagination();
 		} else if (response.indexOf('Sign In') !== -1) {
@@ -369,7 +369,7 @@ function getTicketPriorityList(){
 								$("#ticketPriorityList").append(text);
 						}
 					  } else {
-								alert("Empty list returned....");
+								
 					   }
 			ticketManagementPriorityPagination();	
 				} else if (response.indexOf('Sign In') !== -1) {
@@ -507,7 +507,7 @@ function getTicketStatusList() {
 		    		$("#ticketStatusList").append(text);
 				}
 			} else {
-				alert("Empty list returned....");
+				
 			}
 			ticketManagementStatusPagination();
 		} else if (response.indexOf('Sign In') !== -1) {
