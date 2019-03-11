@@ -1,5 +1,8 @@
 package com.bis.sourcelead.service;
 
+
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.dto.IndAssociatePaymentAccountDTO;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -16,10 +19,8 @@ public interface PaymentAccountService {
 	
 	PaymentAccount getPaymentAccountDetailsByCandidateId(Long candidateId) throws Exception;
 	
-//	PaymentAccount getPaymentAccountDetailsByOrglocationId(Long OrgLocationId) throws Exception;
+	//List <PaymentAccount> getPaymentAccountDetailsByOrglocationId(Long OrgLocationId) throws Exception;
 	
 	IndAssociatePaymentAccountDTO saveImportBankDetails(MultipartFile multipartFile, OrgLocations orgLocation) throws Exception;
-	
-	//PaymentAccount saveBankingAccountDetails(IndAssociatePaymentAccountDTO paymentAccountDTO,OrgLocations orgLocations) throws Exception;
 	
 }

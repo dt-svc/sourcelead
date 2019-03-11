@@ -33,15 +33,6 @@ public class TicketDTO implements Serializable {
 	private long ticketStatusId;
 	private String ticketStatus;
 	private int status;
-
-	public int getStatus() {
-		return status;
-	}
-
-	public void setStatus(int status) {
-		this.status = status;
-	}
-
 	private String description;
 	private List<String> assignedTo;
 	private List<TicketAssignToDTO> ticketAssignToList;
@@ -52,6 +43,8 @@ public class TicketDTO implements Serializable {
 	private String createdDate;
 	private Long updatedById;
 	private String updatedDate;
+	private List<FileInfo> fileInfo;
+	private List<TicketAttachmentDTO> attachmentList;
 
 	public long getId() {
 		return id;
@@ -157,6 +150,14 @@ public class TicketDTO implements Serializable {
 		this.ticketStatus = ticketStatus;
 	}
 
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
 	public String getDescription() {
 		return description;
 	}
@@ -239,6 +240,22 @@ public class TicketDTO implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public List<FileInfo> getFileInfo() {
+		return fileInfo;
+	}
+
+	public void setFileInfo(List<FileInfo> attachmentList) {
+		this.fileInfo = attachmentList;
+	}
+
+	public List<TicketAttachmentDTO> getAttachmentList() {
+		return attachmentList;
+	}
+
+	public void setAttachmentList(List<TicketAttachmentDTO> attachmentList) {
+		this.attachmentList = attachmentList;
 	}
 
 }
