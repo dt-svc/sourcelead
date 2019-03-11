@@ -1,7 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="/resources/js/masterSideNav.js"></script>
+<script src="/resources/js/masterHeader.js"></script>
 </head>
+<script>
+$( document ).ready(function() {
+	 // below fucntion is used to build MasterSide Naigation panel.
+	  $("#masterSideNav").html(masterSideNav.masterSideNavPanel());
+	  // below fucntion is used to build MasterHeader panel.
+	  $("#masterHeaderNav").html(masterHeader.masterHeaderPanel());
+	  
+	   candidateListCheck(serachValue,universalCanddateList,candidateKeyword,candidateIdSearchId);
+	    if(candidateUUID != null && candidateUUID != '' && candidateUUID != 'undefined'){
+			candidateQuickViewProfile(candidateUUID);
+		} 
+});
+</script>
 <body>
 <div class="wraper">
   <header class="main-header" id="masterHeaderNav"></header>
@@ -286,81 +301,3 @@
 <div class="pop_mask"></div>
       <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
 </html>
-<script>
-$(document).ready(function() {
-candidateListCheck("${serachValue}","${universalCanddateList}","${candidateKeyword}","${candidateIdSearchId}");
-if('${candidateUUID}' != null && '${candidateUUID}' != '' && '${candidateUUID}' != 'undefined'){
-		candidateQuickViewProfile('${candidateId}');
-	}
-$('body').load("/resources/candidateTemplate.html");
-$('body').on('blur', '#candidatelist_form', function() {
-	$("#candidatelist_form").showHelpOnFocus();
-	$("#candidatelist_form").validateOnBlur(false, validationSettings);
-});
-});
-function getActions(){
-	$(".action-pop").slideToggle(200);
-	$(".newActPop").slideUp(200);
-}	
-$("html").click(function(){
-	$(".action-pop").slideUp(200);
-});
-$(".action, .action-pop").click(function(e){
- 	e.stopPropagation();
-});	
-
-function newActions(){
-	$(".newActPop").slideToggle(200);
-	$(".action-pop").slideUp(200);
-}
-$("html").click(function(){
-	$(".newActPop").slideUp(200);
-});
-$(".overIcon, .newActPop").click(function(e){
- 	e.stopPropagation();
-});
-function closeCandidateFilterPop(){
-	$("#candidateFilterPopup").hide();
-	$(".advancedsearch-mask").fadeOut();
-}
-function openCandidateFilterPop(){
-	$("#candidateFilterPopup").toggle();
-	 $(".advancedsearch-mask").fadeIn();
-}
-function resetCandidateFilter(){
-	clearCandidateSearchKeys();
-	$("ul#TypeFilter > li input:radio").prop("checked",false);
-	$("ul#AllTypeFilter > li input:radio").prop("checked",false);
-	$("ul#UpdatedFilter > li input:radio").prop("checked",false);
-	$("ul#employmentFilter > li input:checkbox").prop("checked",false);
-	$("ul#availabilityFilter > li input:checkbox").prop("checked",false);
-	$("ul#skillsUL > li input:checkbox").prop("checked",false);
-	$("ul#candidateTypeFilter > li input:checkbox").prop("checked",false);
-	$("ul#createdByTypeFilter > li input:radio").prop("checked",false);
-	
-	
-	$("#dataTableSearch").val('');
-	document.getElementById("candidateTypeAll").checked = true;
-	document.getElementById("candidateAll").checked = true;
-	document.getElementById("candidateCheck").checked = true;
-	document.getElementById("myCandidatesRadio").checked = true;
-	candidateList();
-}
-//Close Advanced Search
-function closePop(){
-	 $("div.cand-advsrch-popup").hide();
-	 $('#expId').find('p.jquery_form_error_message').remove();
-	 $(".advancedsearch-mask").fadeOut();
-}
-function openPop(){
-  $("#dataTableSearch").val('');
-  $(".advancedsearch-mask").fadeIn();
-  $(".cand-advsrch-popup").fadeIn();
-  $("#candidateFilterPopup").fadeIn();
-  
-};
-function closeAdsrch(){
-	$("div.cand-advsrch-popup").fadeOut();
-	$(".advancedsearch-mask").fadeOut();
-};
-</script>
