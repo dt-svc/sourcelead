@@ -1408,4 +1408,8 @@ public class Constants {
 	public static final String TICKET_MANAGEMENT_EMAIL = "AddTicketEmail";
 	public static final String TICKET_MANAGEMENT_NOTIFICATION ="TicketManagementNotification";
 	
+	public static final String TICKET_UPDATE_EMAIL = "ChangedStatusEmail";
+	public static final String TICKET_UPDATE_NOTIFICATION = "TicketUpdateNotification";
+
+	
 }

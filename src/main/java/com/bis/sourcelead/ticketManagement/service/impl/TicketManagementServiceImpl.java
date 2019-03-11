@@ -542,7 +542,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 				//send notifyTo email & Notification
 				if(ticketDTO.getNotifyTo() != null && !ticketDTO.getNotifyTo().isEmpty()) {
 					for(String notifyToEmail : ticketDTO.getNotifyTo().split(",")) {
-//						sendTicketManagementEmailToNotifyUsers(user,orgLocations,ticketManagement,notifyToEmail);
+				//	sendTicketManagementEmailToNotifyUsers(user,orgLocations,ticketManagement,notifyToEmail);
 					}
 				}
 			}
@@ -595,7 +595,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		
 		
-			// setting the class filed values
+			// setting the class field values
 			Map<String, String> globalVarsMap = new HashMap<String, String>();
 		
 			if(toUser.getLastName() != null && toUser.getLastName() !=""){
@@ -650,8 +650,8 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 			StringBuilder notificationLink = new StringBuilder();
 			String actionLink = "";
 			
-		/*	actionLink = notificationLink.append(sourceleadUrl).append("/")
-					.append("requirementSummary?requirementUUID=" + requirement.getRequirementUUID()).toString();*/
+		actionLink = notificationLink.append(sourceleadUrl).append("/rest/")
+					.append("ticketSummary?uuid=" + ticketManagement.getUuid()).toString();
 
 			emailScenerioUtil.sendNotification(actionLink, loginUser, toUser,orgLocations,
 					notificationScenario, new HashMap<String, String>());
@@ -919,18 +919,106 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 					ticketManagementDao.saveTicketStatusHistory(ticketStatusHistory);
 					
 					//Send Ticket Status got changed Email & Notification
+					if(ticketStatusHistory.getTicket().getNotifyTo()!= null && !ticketStatusHistory.getTicket().getNotifyTo().isEmpty()) {
+						for(String notifyToEmail : ticketStatusHistory.getTicket().getNotifyTo().split(",")) {
+							User notifyUser = userDao.findByEmail(notifyToEmail);
+							sendTicketManagementEmailToNotifyUsers(user,orgLocation,ticketStatusHistory,notifyUser);			
+						}
+					}
 				}
 			} else {
 				response.setResponse(Result.INVALID_DATA.name());
 				response.setResponseMessage(Result.INVALID_DATA.getValue());
-			}
-		} catch (Exception e) {
+			 }
+			}catch (Exception e) {
 			e.printStackTrace();
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 		}
 		return response;
-	}
+}
+	
+	
+	private void sendTicketManagementEmailToNotifyUsers(User user, OrgLocations orgLocations, TicketStatusHistory ticketStatusHistory, User notifyUser) throws Exception {
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(user.getFirstName());
+		emailMessage.setLastName(user.getLastName());
+		emailMessage.setToEmail(notifyUser.getEmail());
+		emailMessage.setFromEmail(user.getEmail());
+		emailMessage.setCreatedBy(user.getUserCode());
+		StringBuilder msgBuild = new StringBuilder();
+		emailMessage.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		
+		
+		//setting the class field values
+		
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		
+		if(user.getLastName() != null && user.getLastName() !=""){
+		StringBuilder fNameBulid= new StringBuilder();
+			globalVarsMap.put("AssignTo", fNameBulid.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		}else{
+			globalVarsMap.put("AssignTo", user.getFirstName());
+		}
+		
+		globalVarsMap.put("PreviousStatus", ticketStatusHistory.getPreviousStatus());
+		globalVarsMap.put("NewStatus", ticketStatusHistory.getNewStatus());
+	
+		globalVarsMap.put("TicketTitle", ticketStatusHistory.getTicket().getTitle());
+		
+		
+		globalVarsMap.put("TicketId", ticketStatusHistory.getTicket().getGeneratedId());
+		
+		globalVarsMap.put("CategoryName", ticketStatusHistory.getTicket().getTicketCategory().getName());
+		
+		globalVarsMap.put("Type", ticketStatusHistory.getTicket().getTicketType().getName());
+		
+		globalVarsMap.put("Priority", ticketStatusHistory.getTicket().getTicketPriority().getName());
+		
+		StringBuilder loginBuilder = new StringBuilder();
+		globalVarsMap.put("Login",loginBuilder.append("<a href='").append(sourceleadUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
+		
+		
+		if(StringUtils.isNotBlank(user.getFirstName())){
+			StringBuilder loginUserBuild= new StringBuilder();
+				globalVarsMap.put("LoginUser", loginUserBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+			}else{
+				globalVarsMap.put("LoginUser", user.getFirstName());
+			}
+		
+		if(StringUtils.isNotBlank(orgLocations.getOrgLocationName())){
+				globalVarsMap.put("LoginOrg", orgLocations.getOrgLocationName());
+			}
+		
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.TICKET_UPDATE_EMAIL,new ArrayList<EmailAttachment>());
+	
+		/*send notification*/
+		
+		//find required notification scenarios
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
+				Constants.TICKET_UPDATE_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+		
+		//set notification body
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,
+				notificationScenario);
+		notificationScenario.setBody(notificationbody);
+					
+		// calling the sendEmail method of emailScenerioUtil
+		StringBuilder notificationLink = new StringBuilder();
+		String actionLink = "";
+		
+	actionLink = notificationLink.append(sourceleadUrl).append("/rest/")
+				.append("ticketSummary?uuid=" + ticketStatusHistory.getTicket().getUuid()).toString();
+
+		emailScenerioUtil.sendNotification(actionLink, user, notifyUser,orgLocations,
+				notificationScenario, new HashMap<String, String>());
+		
+}
+		
+		
+		
+	
 
 	@Override
 	public Ticket getTicketSnoAndTicketId(String generatedId, Long ticketId, Long orgLocationsId) {
