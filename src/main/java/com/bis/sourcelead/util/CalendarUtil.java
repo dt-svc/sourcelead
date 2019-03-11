@@ -205,8 +205,8 @@ public  class CalendarUtil {
 	/*public static Map<String, String> getStartAndEndDateForGivenFrequency(Date frequencyStartDate,Date frequencyEndDate) {
 	 	 int monthDiff =monthsBetween(frequencyStartDate, frequencyEndDate);
 	      Map<String, String> startEndDate = new LinkedHashMap<>();
-	      Calendar Q1StartDate=Calendar.getInstance();
-		    Calendar Q1EndDate =Calendar.getInstance();
+	      Calendar Q1StartDate=Calendar.getInstance(TimeZone.getDefault());
+		    Calendar Q1EndDate =Calendar.getInstance(TimeZone.getDefault());
 		    for(int i =0;i<=monthDiff;i++){
 		    if(i==0){
 		    	Q1StartDate.setTime(frequencyStartDate);
@@ -364,7 +364,7 @@ public  class CalendarUtil {
 	public static LinkedHashSet<String> getMonthStringsFromStartDateAndEndDate(Date frequencyStartDate,Date frequencyEndDate) {
 	 	 int monthDiff =monthsBetween(frequencyStartDate, frequencyEndDate);
 	      LinkedHashSet<String> monthString = new LinkedHashSet<>();
-	      Calendar Q1StartDate=Calendar.getInstance();
+	      Calendar Q1StartDate=Calendar.getInstance(TimeZone.getDefault());
 		    for(int i =0;i<=monthDiff;i++){
 		    if(i==0){
 		    	Q1StartDate.setTime(frequencyStartDate);
@@ -426,7 +426,7 @@ public  class CalendarUtil {
 	}
 
 	public static int monthsBetween(Date a, Date b) {
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 		if (a.before(b)) {
 			cal.setTime(a);
 		} else {
@@ -735,7 +735,7 @@ public  class CalendarUtil {
 
 	public static HashMap<String,Date> getMonthStartDateAndEndDateByMothPreference(Date startDate,Integer monthPreference){
 		HashMap<String,Date> dateList = new HashMap<String,Date>();
-		Calendar calendar = Calendar.getInstance();   
+		Calendar calendar = Calendar.getInstance(TimeZone.getDefault());   
 		calendar.setTime(startDate);
 		calendar.add(Calendar.MONTH, monthPreference);
 		calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
@@ -746,7 +746,7 @@ public  class CalendarUtil {
 	}
 
 	public static String getMonthAndYearPatternDateByMonthPreference(Date date,Integer monthPreference){
-		Calendar calendar = Calendar.getInstance();   
+		Calendar calendar = Calendar.getInstance(TimeZone.getDefault());   
 		calendar.setTime(date);
 		calendar.add(Calendar.MONTH, monthPreference);
 		DateFormat format = Constants.MY;
@@ -755,7 +755,7 @@ public  class CalendarUtil {
 	}
 
 	public static String getYearPatternByYearPreference(Date date,Integer yearPreference){
-		Calendar calendar = Calendar.getInstance();   
+		Calendar calendar = Calendar.getInstance(TimeZone.getDefault());   
 		calendar.setTime(date);
 		calendar.add(Calendar.YEAR, yearPreference);
 		DateFormat format = Constants.Y;
@@ -787,7 +787,7 @@ public  class CalendarUtil {
 	public static LinkedHashMap<String,Date> getMonthStartDateAndEndDateFromGivenMonthString(String month){
 		LinkedHashMap<String,Date> dateList = new LinkedHashMap<String,Date>();
 		final DateFormat format = Constants.MY;
-		final Calendar calendar = Calendar.getInstance();
+		final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 		Date date;
 		try {
 			date = format.parse(month);
@@ -804,7 +804,7 @@ public  class CalendarUtil {
 	public static LinkedHashMap<String,Date> getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(String month,String year){
 		LinkedHashMap<String,Date> dateList = new LinkedHashMap<String,Date>();
 		final DateFormat format = Constants.M;
-		final Calendar calendar = Calendar.getInstance();
+		final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 		Date date;
 		try {
 			date = format.parse(month);
@@ -821,7 +821,7 @@ public  class CalendarUtil {
 	
 	public static LinkedHashMap<String,Date> getPreviousMonthStartDateAndEndDateFromGivenStartDateForTsReports(Date startDate){
 		LinkedHashMap<String,Date> dateList = new LinkedHashMap<String,Date>();
-		final Calendar calendar = Calendar.getInstance();
+		final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 		calendar.setTime(startDate);
 		calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
 		calendar.add(Calendar.MONTH, -1);
@@ -889,7 +889,7 @@ public  class CalendarUtil {
 	}
 	public static HashMap<String,Date> getMonthStartDateByGivenDate(Date date,Integer monthPreference){
 		HashMap<String,Date> dateList = new HashMap<String,Date>();
-		Calendar calendar = Calendar.getInstance();   
+		Calendar calendar = Calendar.getInstance(TimeZone.getDefault());   
 		calendar.setTime(date);
 		calendar.add(Calendar.MONTH, monthPreference);
 		calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
@@ -900,7 +900,7 @@ public  class CalendarUtil {
 
 	public static HashMap<String,Date> getMonthEndDateByGivenDate(Date date,Integer monthPreference){
 		HashMap<String,Date> dateList = new HashMap<String,Date>();
-		Calendar calendar = Calendar.getInstance();   
+		Calendar calendar = Calendar.getInstance(TimeZone.getDefault());   
 		calendar.setTime(date);
 		calendar.add(Calendar.MONTH, monthPreference);
 		calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
@@ -910,7 +910,7 @@ public  class CalendarUtil {
 
 	public static HashMap<String,Date> getMonthStartDateAnd15thDateByGivenDateAndMothPreference(Date startDate,Integer monthPreference){
 		HashMap<String,Date> dateList = new HashMap<String,Date>();
-		Calendar calendar = Calendar.getInstance();   
+		Calendar calendar = Calendar.getInstance(TimeZone.getDefault());   
 		calendar.setTime(startDate);
 		calendar.add(Calendar.MONTH, monthPreference);
 		calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
@@ -922,7 +922,7 @@ public  class CalendarUtil {
 
 	public static HashMap<String,Date> getMonth16thDateAndEndDateByGivenDateAndMothPreference(Date sixteenthDate,Integer monthPreference){
 		HashMap<String,Date> dateList = new HashMap<String,Date>();
-		Calendar calendar = Calendar.getInstance();   
+		Calendar calendar = Calendar.getInstance(TimeZone.getDefault());   
 		calendar.setTime(sixteenthDate);
 		calendar.add(Calendar.MONTH, monthPreference);
 		calendar.set(Calendar.DAY_OF_MONTH, 16); 
@@ -936,7 +936,7 @@ public  class CalendarUtil {
 
 	public static HashMap<String,Date> getMonth15thDateByGivenDate(Date date,Integer monthPreference){
 		HashMap<String,Date> dateList = new HashMap<String,Date>();
-		Calendar calendar = Calendar.getInstance();   
+		Calendar calendar = Calendar.getInstance(TimeZone.getDefault());   
 		calendar.setTime(date);
 		calendar.add(Calendar.MONTH, monthPreference);
 		calendar.set(Calendar.DAY_OF_MONTH, 15); 
@@ -947,7 +947,7 @@ public  class CalendarUtil {
 
 	public static HashMap<String,Date> getMonth16thDateByGivenDate(Date date,Integer monthPreference){
 		HashMap<String,Date> dateList = new HashMap<String,Date>();
-		Calendar calendar = Calendar.getInstance();   
+		Calendar calendar = Calendar.getInstance(TimeZone.getDefault());   
 		calendar.setTime(date);
 		calendar.add(Calendar.MONTH, monthPreference);
 		calendar.set(Calendar.DAY_OF_MONTH, 16); 
@@ -955,7 +955,7 @@ public  class CalendarUtil {
 		return dateList;
 	}
 
-	//    Calendar calendar = Calendar.getInstance();
+	//    Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 	//	Date date = calendar.getTime();
 	//	// 3 letter name form of the day
 	//	System.out.println(new SimpleDateFormat("EE", Locale.ENGLISH).format(date.getTime()).toUpperCase());
@@ -963,7 +963,7 @@ public  class CalendarUtil {
 	public static String currentDay()
 	{
 		try{
-			Calendar calendar = Calendar.getInstance();
+			Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 			Date date = calendar.getTime();
 			return new SimpleDateFormat("EE", Locale.ENGLISH).format(date.getTime()).toUpperCase();
 		}catch(Exception ex){
@@ -986,7 +986,7 @@ public  class CalendarUtil {
 
 	}
 	public static int getDayOfTheDate(Date date){
-		Calendar c = Calendar.getInstance();
+		Calendar c = Calendar.getInstance(TimeZone.getDefault());
 		c.setTime(date);
 		int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
 		return dayOfWeek;
@@ -995,14 +995,14 @@ public  class CalendarUtil {
 	public static String getNextDate(String  curDate,String dateFormat) throws ParseException {
 		final DateFormat format = new SimpleDateFormat(dateFormat);   //Constants.DF_DMY;(old logic)
 		final Date date = format.parse(curDate);
-		final Calendar calendar = Calendar.getInstance();
+		final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 		calendar.setTime(date);
 		calendar.add(Calendar.DAY_OF_YEAR, 1);
 		return format.format(calendar.getTime()); 
 	}
 	
 	public static Date getNextDate(Date  curDate) throws ParseException {
-		final Calendar calendar = Calendar.getInstance();
+		final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 		calendar.setTime(curDate);
 		calendar.add(Calendar.DAY_OF_YEAR, 1);
 		return calendar.getTime(); 
@@ -1018,7 +1018,7 @@ public  class CalendarUtil {
 	public static String getPreviousDateByDecrementor(String  curDate,int decrementor,String dateFormat) throws ParseException {
 		final DateFormat format = new SimpleDateFormat(dateFormat);  //Constants.DF_DMY;(old format)
 		final Date date = format.parse(curDate.replaceAll("/", "-"));
-		final Calendar calendar = Calendar.getInstance();
+		final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 		calendar.setTime(date);
 		calendar.add(Calendar.DAY_OF_YEAR, -decrementor);
 		return format.format(calendar.getTime()); 
@@ -1037,13 +1037,13 @@ public  class CalendarUtil {
 	public static Map<String, Date> getStartAndEndDateFromMonthAndYear(int i,String years) {
 	      Map<String, Date> dateList = new LinkedHashMap<>();
 		    
-	      Calendar Q1StartDate=Calendar.getInstance();
+	      Calendar Q1StartDate=Calendar.getInstance(TimeZone.getDefault());
 		  Q1StartDate.set(Calendar.YEAR,Integer.parseInt(years));
 	      Q1StartDate.set(Calendar.MONTH,i);
 	      Q1StartDate.set(Calendar.DATE,1);
 		   
 		   
-		  Calendar Q1EndDate =Calendar.getInstance();
+		  Calendar Q1EndDate =Calendar.getInstance(TimeZone.getDefault());
 		  Q1EndDate.set(Calendar.YEAR,Integer.parseInt(years));
 		  Q1EndDate.set(Calendar.MONTH, i);
 		  Q1EndDate.set(Calendar.DATE, Q1EndDate.getActualMaximum(Calendar.DAY_OF_MONTH));
@@ -1090,7 +1090,7 @@ public  class CalendarUtil {
 	public static String getCurrentYear()
 	{
 
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 		DateFormat format =Constants.Y;
 		return format.format(cal.getTime());
 		//		return Year.now().getValue();
@@ -1098,7 +1098,7 @@ public  class CalendarUtil {
 	
 	public static String getCurrentMonth()
 	{
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 		DateFormat format =Constants.M;
 		return format.format(cal.getTime());
 	}
@@ -1126,9 +1126,9 @@ public  class CalendarUtil {
 	
 	public static int  getNumberOfBillableDates(Date assignDate, Date terminatedDate) {
 	    int count = 0;
-	    Calendar start = Calendar.getInstance();
+	    Calendar start = Calendar.getInstance(TimeZone.getDefault());
 	    start.setTime(assignDate);
-	    Calendar end = Calendar.getInstance();
+	    Calendar end = Calendar.getInstance(TimeZone.getDefault());
 	    end.setTime(terminatedDate);
 	    end.add(Calendar.DAY_OF_YEAR, 1); //Add 1 day to endDate to make sure endDate is included into the final list
 	    while (start.before(end)) {
@@ -1144,9 +1144,9 @@ public  class CalendarUtil {
 
  public static List<Date> getListOfDaysBetweenTwoDates(Date assignDate, Date terminatedDate) {
     List<Date> result = new ArrayList<Date>();
-    Calendar start = Calendar.getInstance();
+    Calendar start = Calendar.getInstance(TimeZone.getDefault());
     start.setTime(assignDate);
-    Calendar end = Calendar.getInstance();
+    Calendar end = Calendar.getInstance(TimeZone.getDefault());
     end.setTime(terminatedDate);
     end.add(Calendar.DAY_OF_YEAR, 1); //Add 1 day to endDate to make sure endDate is included into the final list
     while (start.before(end)) {
@@ -1172,7 +1172,7 @@ public  class CalendarUtil {
 	}
  
  public static Date removeTime(Date date) {    
-     Calendar cal = Calendar.getInstance();  
+     Calendar cal = Calendar.getInstance(TimeZone.getDefault());  
      cal.setTime(date);  
      cal.set(Calendar.HOUR_OF_DAY, 0);  
      cal.set(Calendar.MINUTE, 0);  
@@ -1183,10 +1183,10 @@ public  class CalendarUtil {
   
  
  public static int numberOfDayOccurancesBetweenTwoDates(Date d1,Date d2,String day_Of_Week) {
-	 Calendar c1 = Calendar.getInstance();
+	 Calendar c1 = Calendar.getInstance(TimeZone.getDefault());
 	 c1.setTime(d1);
 	  
-	 Calendar c2 = Calendar.getInstance();
+	 Calendar c2 = Calendar.getInstance(TimeZone.getDefault());
 	 c2.setTime(d2);
 	 int count = 0;
 	  
@@ -1213,7 +1213,7 @@ public  class CalendarUtil {
 	public static Date addDaysForGenerateInvoice(Date date, int days)
 	{
 		try {
-			Calendar cal = Calendar.getInstance();
+			Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 			cal.setTime(date);
 			cal.add(Calendar.DATE, days);
 			return cal.getTime();
