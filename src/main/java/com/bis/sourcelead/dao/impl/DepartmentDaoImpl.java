@@ -87,7 +87,7 @@ public class DepartmentDaoImpl implements DepartmentDao{
 	public Department validateDepartmentnameByDepartmentIdAndDepartmentName(Long departmentId, String departmentName)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Department department  where department.id =:departmentId and department.departmentName =:departmentName ";
+		String query = "from Department department  where department.id =:departmentId and department.departmentName =:departmentName and department.status = '1'";
 		List<Department> departmentList =session.createQuery(query) .setString("departmentName", departmentName).setLong("departmentId", departmentId).list();
 		Department department = null;
 		if(departmentList != null && !departmentList.isEmpty())
