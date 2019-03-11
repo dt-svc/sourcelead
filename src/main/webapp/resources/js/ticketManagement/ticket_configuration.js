@@ -350,7 +350,7 @@ function getTicketPriorityList(){
 				for(var e in response.data) {
 					
 					var text = "<tr>";
-							    text += ' <td><div class="tblminwidth-150">' + (response.data[e].fileName !== null && response.data[e].fileName !== "" ? response.data[e].fileName : "--") + '</i></div></td>';
+							    text += ' <td><div class="tblminwidth-150">' + (response.data[e].fileURL !== null && response.data[e].fileURL !== "" ? "<div class='priorityImage'><img src='" + response.data[e].fileURL + "' alt='images' title='Priority Images'></div>" : "--") + '</i></div></td>';
 							    text +='<td><div class="tblminwidth-150">' + response.data[e].name+ '</div></td>';
 							    text += '<td><div class="tblminwidth-150">' + response.data[e].description + '</div></td>';
 							    text += '<td>';
