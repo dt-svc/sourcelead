@@ -102,6 +102,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
+	@Value("${atsUrl}")
+    private String atsUrl;
+	
 	@Autowired
 	RequirementOfferHistoryService requirementOfferHistoryService;
 	
@@ -554,7 +557,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     			
                 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
                 StringBuilder actionLinkBuilder = new StringBuilder();
-                String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=OFFERMADE&requirementUUID="+clientrequirement.getRequirementUUID()).toString();	 
+                String actionLink =actionLinkBuilder.append("").append(atsUrl).append("/").append("requirementSummary?type=OFFERMADE&requirementUUID="+clientrequirement.getRequirementUUID()).toString();	 
                OrgLocations vendorLocation = clientrequirement.getOrgLocationId();
 				emailScenerioUtil.sendNotification(actionLink, loginUser, clientrequirement.getSpocId().getVendorUser(), vendorLocation, notificationScenario,new HashMap<String,String>());
         		}catch (MessagingException e) {
@@ -644,13 +647,13 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
          StringBuilder acceptLinkBuilder=new StringBuilder();
          StringBuilder rejectLinkBuilder=new StringBuilder();
          StringBuilder negotiationLinkBuilder=new StringBuilder();
-         globalVarsMap.put("acceptLink",acceptLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/acceptOrRejectRequirementOffer?offerStatus=Accepted&offerId=").append(requirementOffers.getId()).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
-         globalVarsMap.put("rejectLink",rejectLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/acceptOrRejectRequirementOffer?offerStatus=Rejected&offerId=").append(requirementOffers.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
-         globalVarsMap.put("negotiationLink",negotiationLinkBuilder.append("<a href='").append(sourceleadUrl).append("/ws/acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Negotiate&submissionId=").append(requirementOffers.getSubmissionId().getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>").toString());
+         globalVarsMap.put("acceptLink",acceptLinkBuilder.append("<a href='").append(atsUrl).append("/").append("ws/acceptOrRejectRequirementOffer?offerStatus=Accepted&offerId=").append(requirementOffers.getId()).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+         globalVarsMap.put("rejectLink",rejectLinkBuilder.append("<a href='").append(atsUrl).append("/").append("ws/acceptOrRejectRequirementOffer?offerStatus=Rejected&offerId=").append(requirementOffers.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
+         globalVarsMap.put("negotiationLink",negotiationLinkBuilder.append("<a href='").append(atsUrl).append("/ws/acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Negotiate&submissionId=").append(requirementOffers.getSubmissionId().getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>").toString());
         
         StringBuilder attachmentLinkBuilder=new StringBuilder();
         if(requirementOffers.getFileName() != null && !requirementOffers.getFileName().isEmpty() ){
-            globalVarsMap.put("attachment",attachmentLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/downloadOfferAttachment?offerId=").append(requirementOffers.getId()).append("' style='text-decoration:none; '><div style='width:100px; margin: 15px auto; font-size:15px;'>Attachment").append("<br/></div></a>").toString());
+            globalVarsMap.put("attachment",attachmentLinkBuilder.append("<a href='").append(atsUrl).append("/").append("ws/downloadOfferAttachment?offerId=").append(requirementOffers.getId()).append("' style='text-decoration:none; '><div style='width:100px; margin: 15px auto; font-size:15px;'>Attachment").append("<br/></div></a>").toString());
         }/*else{
             globalVarsMap.put(" ",attachmentLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/downloadOfferAttachment?offerId=").append(requirementOffers.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment").append("<br/></div></a>").toString());
 
@@ -697,7 +700,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		StringBuilder actionLinkBuilder = new StringBuilder();                          
-		String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=OFFERMADE&requirementUUID="+applicant.getRequirement().getRequirementUUID()).toString();	 
+		String actionLink =actionLinkBuilder.append("").append(atsUrl).append("/").append("requirementSummary?type=OFFERMADE&requirementUUID="+applicant.getRequirement().getRequirementUUID()).toString();	 
         User applicantuser = applicant.getOrgLocations().getOrg().getUser();
 		emailScenerioUtil.sendNotification(actionLink, loginUser, applicantuser, orgLocations, notificationScenario,new HashMap<String,String>());
         
@@ -1258,7 +1261,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					// calling the sendEmail method of emailScenerioUtil
 					emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 					StringBuilder actionLinkBuilder = new StringBuilder();
-					String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="
+					String actionLink = actionLinkBuilder.append("").append(atsUrl).append("/").append("requirementSummary?requirementUUID="
 							+ requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()).toString();
 					emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario, new HashMap<String, String>());
 				}
@@ -1345,7 +1348,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 StringBuilder actionLinkBuilder = new StringBuilder();
-		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getRequirementUUID()).toString();	 
+		 String actionLink =actionLinkBuilder.append("").append(atsUrl).append("/").append("requirementSummary?requirementUUID="+requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getRequirementUUID()).toString();	 
 		 emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario,new HashMap<String,String>());
 		
 		// TODO Auto-generated method stub
@@ -1713,7 +1716,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
        notificationScenario.setBody(notificationbody);
        
        StringBuilder actionLinkBuilder = new StringBuilder();
-       String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()).toString();	 
+       String actionLink =actionLinkBuilder.append("").append(atsUrl).append("/").append("requirementSummary?requirementUUID="+requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()).toString();	 
        emailScenerioUtil.sendNotification(actionLink, touser, touser , orgloc, notificationScenario,new HashMap<String,String>());
 		
 	}
@@ -1786,7 +1789,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
        notificationScenario.setBody(notificationbody);
        
        StringBuilder actionLinkBuilder = new StringBuilder();
-       String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=APPLICANTS&requirementUUID="+requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()+"&candidateUUID="+requirementOffers.getSubmissionId().getCandidate().getCandidateUUID()+"&submissionId="+requirementOffers.getSubmissionId().getId()).toString();	 
+       String actionLink =actionLinkBuilder.append("").append(atsUrl).append("/").append("requirementSummary?type=APPLICANTS&requirementUUID="+requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()+"&candidateUUID="+requirementOffers.getSubmissionId().getCandidate().getCandidateUUID()+"&submissionId="+requirementOffers.getSubmissionId().getId()).toString();	 
        emailScenerioUtil.sendNotification(actionLink, touser, touser , orgloc, notificationScenario,new HashMap<String,String>());
 		
 	}

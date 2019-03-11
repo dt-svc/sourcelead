@@ -1289,7 +1289,6 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	public void sendEmailToApplicants(Candidate candidate,OrgLocations loginOrgLocations,RequirementSubmission requirementSubmission, User loginUser, Org loginOrg, RequirementInterview requirementInterview) throws Exception {
 		 
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
-		Timezone timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
 		//SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(requirementSubmissionTemplateFields.getFirstName());
