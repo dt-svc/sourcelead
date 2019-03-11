@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.ticketManagement.service.TicketManagementService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -34,6 +35,9 @@ public class TicketManagementRestController {
 
 	@Value("${static.path}")
 	private String staticPath;
+	
+	@Autowired
+	private UserService userService;
 
 	@Autowired
 	private TicketManagementService ticketManagementService;
@@ -741,5 +745,27 @@ public class TicketManagementRestController {
 	 * response.setResponse(Result.AWKWARD.name());
 	 * response.setResponseMessage(Result.AWKWARD.getValue()); } return response; }
 	 */
+	
+	@RequestMapping(value = "/getUserListByLoginOrgLocationId")
+	public ResponseList<User> getAllUsersByOrgLocationId(HttpServletRequest request) {
+		ResponseList<User> responseList = new ResponseList<>(); 
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if(user != null) {
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				responseList.setData(userService.getAllUsersByOrgLocationCode(orgLocations.getId()));
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return responseList;
+	}
 
 }
