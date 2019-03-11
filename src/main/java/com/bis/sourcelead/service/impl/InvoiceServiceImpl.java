@@ -1772,9 +1772,11 @@ public class InvoiceServiceImpl implements InvoiceService {
   	  						float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode,vendorCurrencyCode,1f);
   	  		  		      	float roundAmount = Float.parseFloat((new DecimalFormat(".###").format(((convertedAmount * 100.0) / 100.0))));
   	  		  		      	exchangeRate = roundAmount *Float.valueOf(invoice.getTotal());
+  	  		  		      	if(!loginOrgCurrencyCode.equalsIgnoreCase(vendorCurrencyCode)){
   	  		  		      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
   	  		  		      	invoice.setConvertAmount(String.valueOf(roundAmount));
   	  		  		      	invoice.setExchangeRate(String.valueOf(exchangeRate));
+  	  		  		      	}
   	  		  		      	invoice.setInvoiceFrequency(frequency);
   	  		  		        Invoice savedInvoice = invoiceDao.saveInvoce(invoice);
   	  		  		        updateSubmissionApproverHierachy(savedInvoice,invoiceType);
@@ -1880,9 +1882,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 					float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode,vendorCurrencyCode,1f);
 	  		      	float roundAmount = Float.parseFloat((new DecimalFormat(".###").format(((convertedAmount * 100.0) / 100.0))));
 	  		      	exchangeRate = roundAmount *Float.valueOf(invoice.getTotal());
+	  		      	if(!loginOrgCurrencyCode.equalsIgnoreCase(vendorCurrencyCode)){
 	  		      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
 	  		      	invoice.setConvertAmount(String.valueOf(roundAmount));
 	  		      	invoice.setExchangeRate(String.valueOf(exchangeRate));
+	  		      	}
 	  		        Invoice savedInvoice = invoiceDao.saveInvoce(invoice);
 	  		   // update requirement submission 
 					if(savedInvoice !=null){
