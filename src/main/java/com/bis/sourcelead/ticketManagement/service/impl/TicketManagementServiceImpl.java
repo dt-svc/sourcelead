@@ -32,6 +32,7 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketAssignTo;
+import com.bis.sourcelead.entity.TicketAttachment;
 import com.bis.sourcelead.entity.TicketCategory;
 import com.bis.sourcelead.entity.TicketCategoryAssignTo;
 import com.bis.sourcelead.entity.TicketComment;
@@ -53,6 +54,9 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 @Service
 public class TicketManagementServiceImpl implements TicketManagementService {
 
+	@Value("${static.path}")
+	private String staticPath;
+	
 	@Autowired
 	private TicketManagementDao ticketManagementDao;
 	
@@ -476,7 +480,6 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 
 
 	@Override
-	@SuppressWarnings("unused")
 	public Boolean saveTicket(TicketDTO ticketDTO, User user, OrgLocations orgLocations) {
 		try {
 			Ticket ticketManagement = null;
@@ -527,6 +530,43 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 				ticketManagementDao.deleteTicketAssignTo(assignTo);
 			}
 			ticketManagement.setTicketAssignToList(assignToList);
+			
+			List<String> deleteTicketAttachmentUUIDList = ticketManagementDao.getSavedTicketAttachmentUUIDList(ticketManagement.getId());
+			List<TicketAttachment> ticketAttachmentList = new LinkedList<>();
+			if (ticketDTO.getFileInfo() != null && !ticketDTO.getFileInfo().isEmpty()) {
+				for (FileInfo fileInfo : ticketDTO.getFileInfo()) {
+					TicketAttachment ticketAttachment = null;
+					if(fileInfo.getFileDbId() != null && !fileInfo.getFileDbId().isEmpty()) {
+						deleteTicketAttachmentUUIDList.remove(fileInfo.getFileDbId());
+						if(fileInfo.isFileModified()) {
+							ticketAttachment = ticketManagementDao.getTicketAttachmentByTicketIdAndUUID(ticketManagement.getId(), fileInfo.getFileDbId());
+							if(ticketAttachment != null) {
+								ticketAttachment.setUpdatedBy(user.getId());
+								ticketAttachment.setUpdatedDate(new Date());
+							}
+						}
+					} else if(fileInfo.getFileDbId() == null || fileInfo.getFileDbId().isEmpty()) {
+						ticketAttachment = new TicketAttachment();
+						ticketAttachment.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
+						ticketAttachment.setCreatedBy(user.getId());
+						ticketAttachment.setCreatedDate(new Date());
+					}
+					if (ticketAttachment != null) {
+						FileUploadUtil.moveFile(staticPath, fileInfo, "ticket");
+						ticketAttachment.setFileUrl(fileInfo.getFileURL());
+						ticketAttachment.setFileName(fileInfo.getFileName());
+						ticketAttachment.setFileType(fileInfo.getContentType());
+						ticketAttachment.setStatus(1);
+						ticketAttachment.setTicket(ticketManagement);
+						ticketAttachmentList.add(ticketAttachment);
+					}
+				}
+			}
+			ticketManagement.setTicketAttachmentList(ticketAttachmentList);
+			for(String attachmentUUID : deleteTicketAttachmentUUIDList) {
+				TicketAttachment ticketAttachment = ticketManagementDao.getTicketAttachmentByTicketIdAndUUID(ticketManagement.getId(), attachmentUUID);
+				ticketManagementDao.deleteTicketAttachment(ticketAttachment);
+			}
 			Boolean issaved = ticketManagementDao.saveTicket(ticketManagement);
 			
 			
@@ -717,7 +757,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public TicketDTO getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId, String dateFormat) {
+	public TicketDTO getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId, String dateFormat, boolean includeAttachments) {
 		TicketDTO ticketDTO =  new TicketDTO();
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat();
@@ -763,6 +803,29 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 				}
 				ticketDTO.setTicketAssignToList(assignedToList);
 				ticketDTO.setNotifyTo(ticketManagement.getNotifyTo());
+				if(includeAttachments) {
+					List<TicketAttachmentDTO> attachmentList = new LinkedList<>();
+					List<TicketAttachment> savedAttachmentList = ticketManagement.getTicketAttachmentList();
+					if(savedAttachmentList != null && !savedAttachmentList.isEmpty()) {
+						for(TicketAttachment ticketAttachment : savedAttachmentList) {
+							TicketAttachmentDTO ticketAttachmentDTO = new TicketAttachmentDTO();
+							ticketAttachmentDTO.setId(ticketAttachment.getId());
+							ticketAttachmentDTO.setUuid(ticketAttachment.getUuid());
+							ticketAttachmentDTO.setFileName(ticketAttachment.getFileName());
+							ticketAttachmentDTO.setFileType(ticketAttachment.getFileType());
+							ticketAttachmentDTO.setFileUrl(ticketAttachment.getFileUrl());
+							ticketAttachmentDTO.setStatus(ticketAttachment.getStatus());
+							ticketAttachmentDTO.setCreatedBy(ticketAttachment.getCreatedBy());
+							ticketAttachmentDTO.setCreatedDate(sdf.format(ticketAttachment.getCreatedDate()));
+							if(ticketAttachment.getUpdatedBy() != null) {
+								ticketAttachmentDTO.setUpdatedBy(ticketAttachment.getUpdatedBy());
+								ticketAttachmentDTO.setUpdatedDate(sdf.format(ticketAttachment.getUpdatedDate()));
+							}
+							attachmentList.add(ticketAttachmentDTO);
+						}
+					}
+					ticketDTO.setAttachmentList(attachmentList);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

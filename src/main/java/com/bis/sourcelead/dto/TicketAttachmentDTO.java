@@ -9,9 +9,9 @@ public class TicketAttachmentDTO implements Serializable {
 	 * VeeraRaghava
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private long id;
-	
+
 	private String uuid;
 
 	private long ticketId;
@@ -25,6 +25,12 @@ public class TicketAttachmentDTO implements Serializable {
 	private int status;
 
 	private Long createdBy;
+
+	private String createdDate;
+
+	private Long updatedBy;
+
+	private String updatedDate;
 
 	public long getId() {
 		return id;
@@ -90,11 +96,11 @@ public class TicketAttachmentDTO implements Serializable {
 		this.createdBy = createdBy;
 	}
 
-	public Date getCreatedDate() {
+	public String getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(String createdDate) {
 		this.createdDate = createdDate;
 	}
 
@@ -106,11 +112,11 @@ public class TicketAttachmentDTO implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
-	public Date getUpdatedDate() {
+	public String getUpdatedDate() {
 		return updatedDate;
 	}
 
-	public void setUpdatedDate(Date updatedDate) {
+	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
 	}
 
@@ -118,9 +124,4 @@ public class TicketAttachmentDTO implements Serializable {
 		return serialVersionUID;
 	}
 
-	private Date createdDate;
-
-	private Long updatedBy;
-
-	private Date updatedDate;
 }
