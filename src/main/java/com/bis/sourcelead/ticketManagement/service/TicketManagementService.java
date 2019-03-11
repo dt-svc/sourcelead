@@ -66,7 +66,7 @@ public interface TicketManagementService {
 
 	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId, long userId, int status, String dateFormat);
 
-	public TicketDTO getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId, String dateFormat);
+	public TicketDTO getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId, String dateFormat, boolean includeAttachments);
 
 	public List<TicketCommentDTO> getTicketCommentListByTicketId(Long ticketId, long userId, Long orgLocationId, String dateFormat);
 	

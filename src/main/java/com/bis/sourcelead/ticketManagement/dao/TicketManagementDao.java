@@ -7,6 +7,7 @@ import com.bis.sourcelead.dto.TicketAttachmentDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketAssignTo;
+import com.bis.sourcelead.entity.TicketAttachment;
 import com.bis.sourcelead.entity.TicketCategory;
 import com.bis.sourcelead.entity.TicketCategoryAssignTo;
 import com.bis.sourcelead.entity.TicketComment;
@@ -99,6 +100,12 @@ public interface TicketManagementDao {
 	public Ticket getTicketSnoAndTicketId(String generatedId, Long ticketId, Long orgLocationsId);
 
 	public Boolean validateTicketId(String generatedId, Long orgLocationsId);
+
+	public TicketAttachment getTicketAttachmentByTicketIdAndUUID(long ticketId, String uuid);
+
+	public List<String> getSavedTicketAttachmentUUIDList(long ticketId);
+
+	public void deleteTicketAttachment(TicketAttachment ticketAttachment);
 
 	
 
