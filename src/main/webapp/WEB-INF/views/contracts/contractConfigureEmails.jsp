@@ -26,10 +26,10 @@ $("#WaitingTobeSigned").click(function() {
 function reminderJobClosingFun() { 
 	document.getElementById("jobClosingReminder").style.display="block";
 }
-$("#ContractExpire").click(function() {
+$("#ContractExpire").change(function() {
 	$("#contractExpireDiv").toggle();
 });
-$("#WaitingTobeSigned").click(function() {
+$("#WaitingTobeSigned").change(function() {
 	$("#waitingTobeSignedDiv").toggle();
 });
 
@@ -361,7 +361,7 @@ function hideandshow_WaitingTobeSigned(){
 										<div class="col-md-9" id="notifyToDiv_waitingTobeSigned_form">
 											<input type="text" class="form-control" name="notifyTo" id="notifyTo" value="${waitingTobeSigned.notifyTo}" placeholder="Enter email ids separated by commas" field-name="Notify To" data-validation="required validate_Space">
 										</div>
-										<input type="text" style="display: none;" class="form-control" name="scenarioName" id="scenarionName" value="WAITING_TO_BE_SIGNED">
+										<input type="text" style="display: none;" class="form-control" name="scenarioName" id="scenarionName" value="waitingContractToBeSigned">
 										<input type="text" style="display: none;" class="form-control" name="tabsId" id="tabsId" value="16">
 										<input type="text" style="display: none;" class="form-control" name="id" value="${waitingTobeSigned.id}">
 									</div>

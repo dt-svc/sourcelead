@@ -4384,6 +4384,13 @@ public class EMailJobScheduler {
 		globalVarsMap.put("applicantsInfo",applicantsInfoGrid.toString());
 		List<EmailAttachment> attachmentList=new ArrayList<EmailAttachment>();
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, emailReminder.getOrgLocationsId().getOrg(), emailReminder.getOrgLocationsId(), Constants.APPLICANT_JOINING, attachmentList);
+		
+		// Calling the saveCroneTracker method
+		try {
+			saveCronTracker("ApplicantJoiningReminder","applicationReminderEmailPreparationAndSend","0 0 0/1 1/1 * ?","Scheduled for every one hour");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -4567,7 +4574,9 @@ public class EMailJobScheduler {
 											emailScenerioUtil.sendNotification(actionLink,
 													orgLocations.getOrg().getUser(), user, orgLocations,
 													notificationScenario, new HashMap<String, String>());
-
+											
+											// calling the saveCroneTracker method
+											saveCronTracker("ApplicantHolidayRemainder","runLeaveHolidaySchedulerEmailReminderAtOrgLevel","0 0 0/1 1/1 * ?","Scheduled for every one hour");
 										}
 
 									}
@@ -4647,9 +4656,6 @@ public class EMailJobScheduler {
 							SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 							String updatedDateStr = dateFormat.format(calendar.getTime());
 							Date updatedDate = dateFormat.parse(updatedDateStr);
-
-							/*List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
-							for (OrgLocations orgLocation : orgLocationsList) {*/
 
 								List<Leave> userLeaveLIst = null;
 								if(leaveStatus.equalsIgnoreCase(Constants.APPROVE_PENDING_LEAVES)) {
@@ -4764,7 +4770,6 @@ public class EMailJobScheduler {
 									}
 
 								}
-							/*}*/
 						}
 					}
 				}
@@ -4806,9 +4811,6 @@ public class EMailJobScheduler {
 							if(expiredContractsList != null) {
 								for(Contracts contracts : expiredContractsList){
 								
-								// loop for notify to emails
-								
-									
 									contractExpiryRemainderMail(contracts,updatedDateStr, emailReminder);
 								}
 							}
@@ -4848,8 +4850,7 @@ public class EMailJobScheduler {
 			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 			 emailMessage.setCreatedBy("sladmin");
 			 emailMessage.setFromName(orgLocations.getOrgName()); 
-			 
-			 
+			 			 
 			 String fromEmail = null;
 			 EmailConfigurationFromMail confFromMail=null;
 			 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orgLocations.getId());
@@ -4878,8 +4879,7 @@ public class EMailJobScheduler {
 			 if(StringUtils.isNotBlank(fromEmail)){
 				 emailMessage.setFromEmail(fromEmail);
 			 }
-	         
-			 
+	         			 
 			 String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),contracts.getEndDate());
 			 String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),contracts.getStartDate());
 			 String dayCount = String.valueOf(days);
@@ -4948,13 +4948,11 @@ public class EMailJobScheduler {
 				 }else{
 					 globalVarsMap.put("receiverParty",contracts.getContactUser().getFirstName());
 				}
-			 
-			 
+			 			 
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
 			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_EXPIRY_REMAINDER,Constants.ENTITY_TYPE_EMAIL);
 			 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_EXPIRY_REMAINDER,Constants.ENTITY_TYPE_NOTIFICATION);
 
-			
 			 //covert subject,body and signature
 			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
@@ -4994,11 +4992,11 @@ public class EMailJobScheduler {
 					}
 					emailMessage.setToEmail(toUser.getEmail());
 					emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
-				}
-			 
-			 
+				} 
 //			 emailScenerioUtil.sendNotification(actionLink, null,owner, contracts.getOrgLocationId(), notificationScenario);
-		
+			 
+			 // Calling the save crone tracker method
+			 saveCronTracker("ContractReminderEmail","contractExpiryRemainderMail","0 0 0/1 1/1 * ?","Scheduled for every one hour");	
 	}
 	
 }
