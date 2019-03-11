@@ -117,7 +117,7 @@ function changeStatus(requirementId, requirementStatus){ // updated.
 		location.reload();
 	}
 
-	 var userId ='${SourceLeadWeb_userId}';
+	 //var userId ='${SourceLeadWeb_userId}';
      if(status == "DRAFT"){
         	 $.ajax({
              type : "POST",
@@ -451,7 +451,7 @@ function changeStatus(requirementId, requirementStatus){ // updated.
 		
 		$("#jobFairList").empty();
 		$("#jobFairList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	//	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
 			  var canEduDatePattern = 'YYYY-MM-DD';
 		  }if(locationList.match("dd-MM-yyyy")){
@@ -461,8 +461,8 @@ function changeStatus(requirementId, requirementStatus){ // updated.
 		  }if(locationList.match("yyyy-dd-MM")){
 			  var canEduDatePattern = 'YYYY-DD-MM'; 
 		  }
-		var orgATS = '${SourceLeadWeb_ats}';
-		var orgVMS = '${SourceLeadWeb_vms}';
+		//var orgATS = '${SourceLeadWeb_ats}';
+		//var orgVMS = '${SourceLeadWeb_vms}';
 		 $("#jobFairList").removeAttr("style");
 		 $("#jobFairList").empty();
 		var result = "";
@@ -815,7 +815,7 @@ function changeStatus(requirementId, requirementStatus){ // updated.
 
 	function prepareRequirementData(url,atsUrl){
 		
-		 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+		// var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
 			  var canEduDatePattern = 'YYYY-MM-DD';
 		  }if(locationList.match("dd-MM-yyyy")){
@@ -825,8 +825,8 @@ function changeStatus(requirementId, requirementStatus){ // updated.
 		  }if(locationList.match("yyyy-dd-MM")){
 			  var canEduDatePattern = 'YYYY-DD-MM'; 
 		  }
-		var orgATS = '${SourceLeadWeb_ats}';
-		var orgVMS = '${SourceLeadWeb_vms}';
+		//var orgATS = '${SourceLeadWeb_ats}';
+		//var orgVMS = '${SourceLeadWeb_vms}';
 		 $("#requirementList").removeAttr("style");
 		 $("#requirementList").empty();
 		 var result = "";
@@ -2224,8 +2224,8 @@ function filterTeamMembers(){
 	}
 	 function isCoolingOff(requirementId){
 		var candidateEmail =   $("input[name=EmailId]").val();
-		var reqCoolingOffPeriod ='${requirement.reqCoolingOffPeriod}';
-		var orgLocationId ='${SourceLeadWeb_orgLocationId}';
+		//var reqCoolingOffPeriod ='${requirement.reqCoolingOffPeriod}';
+		//var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 		$.ajax({
 			type: "POST",
 		    url: atsUrl+"/verifyCoolingOffPeriod?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&candidateEmail="+candidateEmail+"&reqCoolingOffPeriod="+reqCoolingOffPeriod+"&orgLocationId="+orgLocationId, 
@@ -2757,7 +2757,7 @@ function filterTeamMembers(){
 	function getCandidateDetails(){
 		var candidateId = document.getElementById("candidateId").value
 		var requirementId = $("#requirementId").val();
-		var orgLocationId ='${SourceLeadWeb_orgLocationId}';
+	//	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 		if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 			 $.ajax({
 			    	type: "POST",
@@ -2954,13 +2954,13 @@ function filterTeamMembers(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${SourceLeadWeb_atsUrl}'+"/countryAutoComplete?"+tokenParamName+"="+tokenValue+"",
+	    	 url: atsUrl+"/countryAutoComplete?"+tokenParamName+"="+tokenValue+"",
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#submissionCountry').empty();
 	        	$('#submissionCountry').append('<option value="">---Select Country---</option>');
 	            for(var i=0;i<json.length;i++){
-	            	if(json[i] == '${SourceLeadWeb_orgLocations.country}'){
+	            	if(json[i] == country){
 	            		$('#submissionCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
 	            	}
 	            	else{
@@ -2983,7 +2983,7 @@ function filterTeamMembers(){
 			$.ajax({
 		    	type: "POST",
 		    	dataType: "json",
-		    	 url: '${SourceLeadWeb_atsUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+		    	 url: atsUrl+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#submissionState').empty();
@@ -3028,7 +3028,7 @@ function filterTeamMembers(){
 			$.ajax({
 		    	type: "POST",
 		    	dataType: "json",
-		    	 url: '${SourceLeadWeb_atsUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+		    	 url: atsUrl+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#submissionCity').empty();
@@ -3056,7 +3056,7 @@ function filterTeamMembers(){
 	function init(){
 		getAllSubmissionCandidateCountries();
 		initLocationAuto('submissionLocation','submissionCountry','submissionState','submissionCity','submissionZipCode','','','');
-		var country = '${SourceLeadWeb_orgLocations.country}';
+		//var country = '${SourceLeadWeb_orgLocations.country}';
 		$("#submissionCountry").val(country)
 		      
 	/* 	 $("#submissionCountry").on('change', function (e) {
@@ -3076,7 +3076,7 @@ function filterTeamMembers(){
 	}
 
 	function setRateTypesByLocation(){
-		var country = '${SourceLeadWeb_country}';
+		//var country = '${SourceLeadWeb_country}';
 		if(country == 'India'){
 			$('#currentCTCRateType').val('INR');
 			$('#expectedCTCRateType').val('INR');
