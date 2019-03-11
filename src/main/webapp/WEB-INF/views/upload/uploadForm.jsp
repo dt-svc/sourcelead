@@ -254,13 +254,7 @@ var uploadflag= true;
 	<!--      Dropdown div for Associate information      -->		
 			
 		<div id="associateInfo" style="display:none;">
-			Associate Information
-		</div>
-		
-	<!--      Dropdown div for Associate salary      -->			
-		
-		<div id="associateSalary" style="display:none;">
-				<div class="clearfix"></div>
+			<div class="clearfix"></div>
 		<div class="clearfix" id="dataFileImportDiv">
 		<form:form id="upload_job_form" name="upload_job_form" method="post" enctype="multipart/form-data">
 			<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
@@ -351,6 +345,11 @@ var uploadflag= true;
 		</form:form>
 	</div>
 	</div>
+		
+	<!--      Dropdown div for Associate salary      -->			
+		
+		<div id="associateSalary" style="display:none;">
+		Associate salary
 	</div>
 
 		

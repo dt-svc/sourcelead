@@ -54,6 +54,11 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 	
 	@Autowired
 	private CandidateService candidateService;
+	
+	//@Autowired
+//	PaymentAccountService paymentAccountService;
+	
+	
 	@Override
 	public PaymentAccount savePaymentAccount(PaymentAccount paymentAccount) throws Exception {
 		return paymentAccountDao.savePaymentAccount(paymentAccount);
@@ -100,11 +105,17 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 		return paymentAccountDao.getPaymentAccountDetailsByCandidateId(candidateId);
 	}
 
+	/*@Override
+	public List<PaymentAccount> getPaymentAccountDetailsByOrglocationId(Long id) throws Exception {
+		return paymentAccountDao.getPaymentAccountDetailsByOrglocationId(id);
+	}*/
 /*	     reading data from excel sheet      */
 	@Override
 	public IndAssociatePaymentAccountDTO saveImportBankDetails(MultipartFile multipartFile, OrgLocations orgLocation) throws Exception{
 		
 		String fileName = multipartFile.getOriginalFilename();
+		List<IndAssociatePaymentAccountDTO> list = new ArrayList<>();
+		IndAssociatePaymentAccountDTO importDTO = new IndAssociatePaymentAccountDTO();
 		try {
 			File file = new File(multipartFile.getOriginalFilename());
 			multipartFile.transferTo(file);
@@ -112,7 +123,6 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 			Workbook workbook;
 			logger.debug("File Extension is: " + multipartFile.getOriginalFilename());
 			//list of dto
-			List<IndAssociatePaymentAccountDTO> list = new ArrayList<>();
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
 			for (int i = 0; i < numberOfSheets; i++) {
@@ -121,7 +131,6 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 				
 				int count =0;
 				while (rowIterator.hasNext()) {
-					IndAssociatePaymentAccountDTO importDTO = new IndAssociatePaymentAccountDTO();
 					Row row = rowIterator.next();
 					
 						if (row.getRowNum() > 0 && (row.getCell(1) != null && row.getCell(2) != null)) { // Excluding column names
@@ -155,15 +164,16 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 								    }
 							}
 						else{
-							count = count++;
+							count = count+1;
 							if(count == 5)	
 							 break;
 						}
 				       }				
 					}	
-			int size =list.size();
+			if(list.size() > 0) {
 			this.saveBanking(list,orgLocation);
-			fis.close();
+			fis.close();}
+			else {System.out.println("Invalid Data");}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (EncryptedDocumentException e) {
@@ -171,16 +181,25 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 		} catch (InvalidFormatException e) {
 			e.printStackTrace();
 		}
-		return null;
+		
+	   importDTO.setRecordCount(Integer.toString(list.size()));
+		return importDTO;
 	}
 	
 	private void saveBanking(List<IndAssociatePaymentAccountDTO> list, OrgLocations orgLocation) throws Exception {
 		
            try {
 			List<Candidate> candidateList =  candidateService.getAllCandidatesByLocation(orgLocation.getId());
-		//	List<PaymentAccount> PaymentList = paymentAccountService.getPaymentAccountDetailsByOrglocationId(orgLocation.getId());
 			Map<String, Long> map = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getId));
-			  int a = paymentAccountDao.saveBankingDetailInPaymentAccount(orgLocation.getId(),list,map);
+			
+	      List<PaymentAccount> paymentListsss =paymentAccountDao.getPaymentAccountDetailsByOrglocationId(orgLocation.getId());
+			
+			//List<String> acc = new ArrayList<>();
+//			Map<String, List<String>>  map2 = paymentListsss.stream().collect(Collectors.toMap(PaymentAccount::getEmail, Collectors.Coll);
+			// Map<String,  List<PaymentAccount>> sum = paymentListsss.stream().collect(Collectors.groupingBy(PaymentAccount::getAccountNumber)));
+			
+			
+			  int a = paymentAccountDao.saveBankingDetailInPaymentAccount(orgLocation.getId(),list,map,paymentListsss);
 			  System.out.println(a +"Details Added");			
 			
 		} catch (Exception e) {
