@@ -1075,7 +1075,8 @@ return responseList;
 //		String resultJson;
 		OrgLocations orgLocations = null;
 		Invoice invoiceId = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
-		orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		 orgLocations = orgLocationService.getOrgLocationById(orgLocId);
 		Long Id = null;
 		Invoice parentInvoice = invoiceService.getInvoicetByParentInvoiceId(invoiceId.getId());
 		if (parentInvoice.getParentInvoiceId() != null) {
@@ -1089,7 +1090,7 @@ return responseList;
 		SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 		List<Invoice> viewinvoiceList = invoiceService.getViewInvoiceListByInvoiceIdAndOrglocationId(Id, orgLocations.getId());
 		for (Invoice invoice : viewinvoiceList) {
-			OrgLocations LoginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			OrgLocations LoginOrgLocations = orgLocationService.getOrgLocationById(orgLocId);
 			//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (invoice.getOrgRelationID().getLocationId().getId().equals(LoginOrgLocations.getId())) {
 				invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
