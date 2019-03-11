@@ -182,6 +182,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Value("${static.path}")
 	private String staticPath;
+	
+	@Value("${vmsUrl}")
+	private String vmsUrl;
 
 	@Autowired
 	private EmailScenerioUtil emailScenerioUtil;
@@ -1038,11 +1041,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 		// Invoice invoice2=getInvoicetByParentId(invoice.getId());
 		Invoice notificationInvoice = getInvoicetByParentId(invoice.getId());
 		if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
-			actionLink = notificationLink.append(sourceleadUrl).append("/")
+			actionLink = notificationLink.append(vmsUrl).append("/")
 					.append("viewInvoice?invoiceUUID=" + notificationInvoice.getInvoiceUUID() + "&invoiceType=Payables")
 					.toString();
 		} else {
-			actionLink = notificationLink.append(sourceleadUrl).append("/").append(
+			actionLink = notificationLink.append(vmsUrl).append("/").append(
 					"viewInvoice?invoiceUUID=" + notificationInvoice.getInvoiceUUID() + "&invoiceType=Receivable")
 					.toString();
 
@@ -3004,11 +3007,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 					// Invoice invoice2=getInvoicetByParentId(invoice.getId());
 					Invoice notificationInvoice = getInvoicetByParentId(invoice.getId());
 					if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
-						actionLink = notificationLink.append(sourceleadUrl).append("/")
+						actionLink = notificationLink.append(vmsUrl).append("/")
 								.append("viewInvoice?invoiceUUID=" + notificationInvoice.getInvoiceUUID() + "&invoiceType=Payables")
 								.toString();
 					} else {
-						actionLink = notificationLink.append(sourceleadUrl).append("/").append(
+						actionLink = notificationLink.append(vmsUrl).append("/").append(
 								"viewInvoice?invoiceUUID=" + notificationInvoice.getInvoiceUUID() + "&invoiceType=Receivable")
 								.toString();
 			
