@@ -1,9 +1,8 @@
 package com.bis.sourcelead.ticketManagement.dao;
 
 import java.util.List;
-
 import com.bis.sourcelead.entity.TicketType;
-import com.bis.sourcelead.dto.TicketAttachmentDTO;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketAssignTo;
@@ -13,6 +12,7 @@ import com.bis.sourcelead.entity.TicketComment;
 import com.bis.sourcelead.entity.TicketPriority;
 import com.bis.sourcelead.entity.TicketStatus;
 import com.bis.sourcelead.entity.TicketStatusHistory;
+import com.bis.sourcelead.entity.User;
 
 public interface TicketManagementDao {
 
@@ -97,6 +97,8 @@ public interface TicketManagementDao {
 	public Ticket getTicketSnoAndTicketId(String generatedId, Long ticketId, Long orgLocationsId);
 
 	public Boolean validateTicketId(String generatedId, Long orgLocationsId);
+
+	public List<User> getCategoryAssignToListByTicketCategoryId(long ticketCategoryId,Long orgLocationId, long userId);
 
 	
 

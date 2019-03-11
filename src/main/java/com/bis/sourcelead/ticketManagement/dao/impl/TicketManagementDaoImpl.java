@@ -11,9 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.bis.sourcelead.dao.UserDao;
-import com.bis.sourcelead.dto.TicketAttachmentDTO;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketAssignTo;
@@ -637,6 +636,20 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 		} else {
 			return false;
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<User> getCategoryAssignToListByTicketCategoryId(long ticketCategoryId, Long orgLocationId, long userId) {
+		try {
+			Session session =  this.sessionFactory.getCurrentSession();
+			String query = "select tca.user from TicketCategoryAssignTo tca where tca.ticketCategory.id = :ticketCategoryId ";
+			List<User> userList = session.createQuery(query).setLong("ticketCategoryId", ticketCategoryId).list();
+			return userList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 }

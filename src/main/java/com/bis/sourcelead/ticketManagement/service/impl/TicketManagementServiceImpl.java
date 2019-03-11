@@ -20,6 +20,7 @@ import com.bis.sourcelead.dto.TicketPriorityDTO;
 import com.bis.sourcelead.dto.TicketStatusDTO;
 import com.bis.sourcelead.dto.TicketStatusHistoryDTO;
 import com.bis.sourcelead.dto.TicketTypeDTO;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketAssignTo;
@@ -824,7 +825,24 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		return ticketManagementDao.validateTicketId(generatedId,orgLocationsId);
 	}
 	
-	
+	@Override
+	public List<UserDTO> getCategoryAssignToListByTicketCategoryId(long ticketCategoryId, long userId, Long orgLocationId) {
+		List<UserDTO> userDTOList = new LinkedList<>();
+		try {
+			List<User> userList = ticketManagementDao.getCategoryAssignToListByTicketCategoryId(ticketCategoryId, userId, orgLocationId);
+			if (userList != null && !userList.isEmpty()) {
+				for (User user : userList) {
+					UserDTO userDTO = new UserDTO();
+					userDTO.setId(user.getId());
+					userDTO.setUserName(user.getFullName());
+					userDTOList.add(userDTO);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return userDTOList;
+	}		
 
 	
 

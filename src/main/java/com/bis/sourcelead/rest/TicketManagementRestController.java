@@ -10,14 +10,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
-
 import com.bis.sourcelead.dto.TicketCategoryDTO;
 import com.bis.sourcelead.dto.TicketCommentDTO;
-import com.bis.sourcelead.dto.TicketAttachmentDTO;
 import com.bis.sourcelead.dto.TicketDTO;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.TicketPriorityDTO;
 import com.bis.sourcelead.dto.TicketStatusDTO;
 import com.bis.sourcelead.dto.TicketStatusHistoryDTO;
@@ -699,6 +697,28 @@ public class TicketManagementRestController {
 		 
 	    }
 	
+	@RequestMapping(value = "/getCategoryAssignToListByTicketCategoryId", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<UserDTO> getAssignToListByCategoryId(HttpServletRequest request,@RequestParam(defaultValue = "0") long ticketCategoryId) {
+		ResponseList<UserDTO> responseList = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				responseList.setData(ticketManagementService.getCategoryAssignToListByTicketCategoryId(ticketCategoryId, user.getId(), loginOrgLocation.getId()));
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return responseList;
+	}
 	/*
 	 * @RequestMapping(value = "/changeTicketManagementStatusDataById", method =
 	 * RequestMethod.POST)
