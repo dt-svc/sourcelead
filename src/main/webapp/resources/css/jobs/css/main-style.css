@@ -694,7 +694,7 @@ content p i {
 		top: 11px;
 	}
 	.searchWrap span i.fa-briefcase {
-		top: 14px;
+		top: 14px; left: 25px;
 	}
 	.adSearch {
 		width: 90%;

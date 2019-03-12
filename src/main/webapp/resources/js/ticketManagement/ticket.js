@@ -38,13 +38,13 @@ function getTicketManagementList() {
 		            text+= "      <td><div class='tblminwidth-150'>" + response.data[e].generatedId + "</div></td>";
 		            text+= "      <td><div class='tbldata-dotdot-vsm'><a href='/app/ticketSummary?uuid=" + response.data[e].uuid + "' title='" + response.data[e].title + "'>" + response.data[e].title + "</a></div></td>";
 		            /*text+= "     <td><div class='tbldata-dotdot-vsm'>" + response.data[e].ticketCategory + "</div></td>";*/
-		            text += "<td><select onChange='changeTicketStatus(this, \"" + response.data[e].id + "\")'>";
+		            text += "<td><select class='sel' onChange='changeTicketStatus(this, \"" + response.data[e].id + "\")'>";
 		            for(var s in statusList) {
 		            	text += "<option data-comment=" + statusList[s].commentRequired + " value='" + statusList[s].id + "' " + (statusList[s].name === response.data[e].ticketStatus ? "selected" : "") + ">" + statusList[s].name + "</option>";
 		            }
 		            text += "</select></td>";
 		            /*text+= "     <td><div class='tbldata-dotdot-vsm'>" + response.data[e].ticketStatus + "</div></td>";*/
-		            text+= "   	<td><div class='tblminwidth-75' style='color:" + (response.data[e].ticketPriorityTextColor != null && response.data[e].ticketPriorityTextColor !== "" ? response.data[e].ticketPriorityTextColor : "") + "'>" + (response.data[e].ticketPriorityImage !== null && response.data[e].ticketPriorityImage !== "" ? "<img src=\"" + response.data[e].ticketPriorityImage + "\" style='height:20px;' class='mr10'/>" : "") + response.data[e].ticketPriority + "</div></td>";
+		            text+= "   	<td><div class='tblminwidth-75 priorityImage' style='color:" + (response.data[e].ticketPriorityTextColor != null && response.data[e].ticketPriorityTextColor !== "" ? response.data[e].ticketPriorityTextColor : "") + "'>" + (response.data[e].ticketPriorityImage !== null && response.data[e].ticketPriorityImage !== "" ? "<img src=\"" + response.data[e].ticketPriorityImage + "\" class='mr10'/>" : "") + response.data[e].ticketPriority + "</div></td>";
 		            text+= "    <td><div class='tbldata-dotdot-vsm'>" + response.data[e].createdBy + "</div></td>";
 		            var assignTo = "";
 					for(var a in response.data[e].assignedTo) {
