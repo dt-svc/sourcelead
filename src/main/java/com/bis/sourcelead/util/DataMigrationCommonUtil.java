@@ -709,8 +709,7 @@ public class DataMigrationCommonUtil {
 			{
 				
 				if(!dataMigrationDTOJsonCopy.getString("email").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("email"))) {
-					Long candidateId = candidateService.getCandidateIdByEmailAndOrgLocationId(dataMigrationDTOJsonCopy.getString("email"), orgLocation.getId());
-					/*if (candidateEmailsList.contains(dataMigrationDTOJsonCopy.getString("email"))) {*/
+					Long candidateId = candidateService.getCandidateIdByEmailAndOrgLocationId(dataMigrationDTOJsonCopy.get("email").toString(), orgLocation.getId());
 					if (candidateId != null) {
 						errorSet.put("email", "Candidate already exist.!");
 					}else {
@@ -3087,6 +3086,140 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			flag = false;
 		}
 		return flag;
+	}
+	
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	public void dataValidationForCandidateBulkImports(HashMap< String, String> errorSet, org.json.simple.JSONObject dataMigrationDTOJsonCopy,OrgLocations orgLocation,List<OrgRelations> vendorsList) throws Exception
+	{
+		
+		if(dataMigrationDTOJsonCopy.get("email").toString() != null) {
+			Long candidateId = candidateService.getCandidateIdByEmailAndOrgLocationId(dataMigrationDTOJsonCopy.get("email").toString(), orgLocation.getId());
+			if (candidateId != null) {
+				errorSet.put("email", "Candidate already exist.!");
+			}else {
+				
+				Matcher matcher = null;
+				Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+						+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+				
+				matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("email").toString().trim());
+				if(matcher.matches() == false) {
+					errorSet.put("email", "Invalid Email");
+					return;
+				}
+				
+				if(dataMigrationDTOJsonCopy.get("firstName") == null) {
+					errorSet.put("firstName", "First Name field is missing");
+					    return;
+				}
+				
+				
+				
+				if (dataMigrationDTOJsonCopy.get("vendorcontact") != null) {
+					matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("vendorcontact").toString().trim());
+					if(matcher.matches() == false) {
+						errorSet.put("vendorcontact", "Invalid Vendor Contact Email");
+						return;
+					}
+					
+					if (dataMigrationDTOJsonCopy.get("vendor") != null) {
+						
+						Long vendorId = 0l;
+						for(OrgRelations rel : vendorsList) {
+							if((dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
+								vendorId = rel.getId();
+								break;
+							}
+						}
+						
+
+						List<OrgSpoc> vendorContactsList = orgSpocService.getOrgSpocByOrgRelationId(vendorId);
+						
+						for(OrgSpoc vendorContacts : vendorContactsList) {
+							if(!dataMigrationDTOJsonCopy.get("vendorcontact").toString().equalsIgnoreCase(vendorContacts.getVendorUser().getEmail())) {
+								errorSet.put("vendorcontact", "No contact exists with entered email");
+								return;
+							}
+						}
+						
+						if(vendorContactsList == null || vendorContactsList.size() == 0) {
+							errorSet.put("vendorcontact","No Active contacts exists with this vendor");
+							return;
+						}
+					
+						
+					}
+					
+					if(dataMigrationDTOJsonCopy.get("vendor") == null) {
+						errorSet.put("vendor", "Vendor field is missing for Vendor");
+						return;
+					}
+				}
+			
+				String mobileRegex = "([\\.\\-\\s+\\/()]*[0-9]*\\.?[\\.\\-\\s+\\/()]*){8,15}";
+				if (dataMigrationDTOJsonCopy.get("mobilePhone") != null) {
+					boolean flag = false;
+					String mobNum = dataMigrationDTOJsonCopy.get("mobilePhone").toString();
+					if (mobNum.length() > 9 && mobNum.length() <= 20) {
+						flag = mobNum.matches(mobileRegex);
+					}
+					if(flag == false) {
+						errorSet.put("mobilePhone", "Invalid Mobile Phone");
+						return;
+					}
+					
+				}
+				
+				if (dataMigrationDTOJsonCopy.get("alternateMobilePhone") != null) {
+					boolean flag = false;
+					String alternatemobNum = dataMigrationDTOJsonCopy.get("alternateMobilePhone").toString();
+					if (alternatemobNum.length() > 9 && alternatemobNum.length() <= 20) {
+						flag = alternatemobNum.matches(mobileRegex);
+					}
+					if(flag == false) {
+						errorSet.put("alternateMobilePhone", "Invalid Alternate Mobile Phone");
+						return;
+					}
+					
+				}
+				
+				String rateRegEx = "^[0-9\b]+$";
+				if (dataMigrationDTOJsonCopy.get("expectedRate") != null) {
+					boolean flag = false;
+					String expectedRate = dataMigrationDTOJsonCopy.get("expectedRate").toString();
+					if (expectedRate.length() > 0 && expectedRate.length() <= 8) {
+						flag = expectedRate.matches(rateRegEx);
+					}
+					if(flag == false) {
+						errorSet.put("expectedRate", "Expected Rate Allow Only Integers and length 0-8");
+						return;
+					}
+					
+				}
+				
+				if (dataMigrationDTOJsonCopy.get("currentRate") != null) {
+					boolean flag = false;
+					String currentRate = dataMigrationDTOJsonCopy.get("currentRate").toString();
+					if (currentRate.length() > 0 && currentRate.length() <= 8) {
+						flag = currentRate.matches(rateRegEx);
+					}
+					if(flag == false) {
+						errorSet.put("currentRate", "Current Rate Allow Only Integers and length 0-8");
+						return;
+					}
+					
+				}
+				
+			}
+		}else {
+			errorSet.put("email", "Email field is missing");
+		}
+		
+		
+		
 	}
 		
 	}
