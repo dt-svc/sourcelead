@@ -128,6 +128,9 @@ var uploadflag= true;
 		</div>
 		</form:form>
 	</div>
+	<div class="require_wrap_table datatable_filter">
+		<div id="errorDataDIV"></div>
+        </div>
 	<div id="dataFieldsDiv" style="display: none"></div>
 <div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop">
 	<h5 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Recent Uploads History</h5>
@@ -216,6 +219,9 @@ function importAssociateBankDetail(){
  		    	    $("#msgDiv").removeAttr("style");
  		 			$("#msgDiv").css({ display: "block" });
  		 			$("#msgDiv").html(json.updateCount+ " Associates are updated ..!");
+ 		 			if(json.errorData != null && json.errorData.length >0){
+ 		 				showFailedExcelData(json);
+ 		 			}
  			    	},
 		 		   error: function(e){
 			        }
@@ -232,6 +238,64 @@ function cancelFileImport(){
 	location.replace(sourceleadUrl+"/usersList");
 }
 </script>
+
+<script>
+  function showFailedExcelData(json){
+	 /*  var sourceleadUrl = '${sourceleadUrl}';
+	  $.get( sourceleadUrl+ "/getAllSignatoriesByLocationId?${_csrf.parameterName}=${_csrf.token}", function(data) { */
+		  var result = "";
+	    	 result += '<table id="errorDataList" class="display" cellspacing="0" width="100%" >';
+	         result += '<thead>';
+	         result += '  <tr>';
+	         result += '    <th>Assoicate Id</th>';
+	         result += '    <th>Associate Email*</th>';
+	         result += '    <th>Account Type</th>';
+	         result += '    <th>Bank Name</th>';
+	         result += '    <th>Account Number</th>';
+	         result += '    <th>Routing Number</th>';
+	         result += '    <th>Reson</th>';
+	         result += '  </tr>';
+	         result += '</thead>';
+	         result += '<tbody>';
+	         var data = json.errorData;
+	    	 for(i=0;i < data.length;i++){
+	    		 var report = data[i];
+	    		 result += '<tr>';
+		         result += '<td>one</td>';
+		         result += '<td>'+report.emailId+'</td>';
+		         result += '<td>'+report.accountType+'</td>';
+		         result += '<td>'+report.bankName+'</td>';
+		         result += '<td>'+report.accountNumber+'</td>';
+		         result += '<td>'+report.routingNumber+'</td>';
+		         result += '<td>'+report.reason+'</td>';
+		         result += '  </tr>';
+	    	 }
+	    	
+	         result += '  </tbody>';
+    		 result += '</table> ';
+    		 $("#errorDataDIV").empty();
+    		 $("#errorDataDIV").append(result);
+    		 $("#loading").removeAttr('style');
+    		 signatoryPagination();
+	     /* });  */
+  }
+  
+  function signatoryPagination(){
+		$('#errorDataList').DataTable({ 
+			"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": ""
+	     	}
+	    });
+		$("#errorDataList").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
+
+	}
+  </script>
 
 
 <!-- Footer Area -->

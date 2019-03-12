@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Connections;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.payroll.dao.AssociateBankDataDao;
@@ -109,45 +111,47 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 		return flag;
 	}
 
+
 	@Override
 	@Transactional
-	public void saveAssociateBankingDetailInAssociateBankData(Long id, List<AssociateBankDataDTO> list,
-			Map<String, Long> map) throws Exception {
-		
+	public int saveAssociateBankDetails(Long orgLocationId, List<AssociateBankDataDTO> list, Map<String, Long> map)
+	{
+		List<Integer> listCount = new ArrayList<>();
+		int totalCount = 0;
 		try {
-
 			Session session = this.sessionFactory.getCurrentSession();
 			session.doWork(new Work() {
 				@Override
 				public void execute(java.sql.Connection connection) throws SQLException {
 					boolean initialAutocommitSetting = connection.getAutoCommit();
 					connection.setAutoCommit(false);
-					CallableStatement stmt = connection.prepareCall("{call associateBankingDetails(?,?,?,?,?,?)}");
-					
-					
-					for (AssociateBankDataDTO dataList : list) {
-						Long  candidateId = map.get(""+dataList.getId());
-						if(candidateId !=null) {
-							stmt.setLong(1, candidateId);
-							stmt.setString(2, dataList.getEmailId());
-							stmt.setString(3, dataList.getAccountType());
-							stmt.setString(4, dataList.getBankName());
-							stmt.setString(5, dataList.getAccountNumber());
-							stmt.setString(6, dataList.getRoutingNumber());
-							stmt.addBatch();
+					CallableStatement stmt = connection.prepareCall("{call associateBankDataProcedure(?,?,?,?,?)}");
+					for (AssociateBankDataDTO bankDto : list) {
+						if(bankDto.getEmailId() !=null && !"".equalsIgnoreCase(bankDto.getEmailId())) {
+							stmt.setLong(1, map.get(bankDto.getEmailId()));
+						}else {
+							stmt.setLong(1, 0);							
 						}
-						
-					
+						stmt.setString(2, bankDto.getAccountType());
+						stmt.setString(3, bankDto.getBankName());
+						stmt.setString(4, bankDto.getAccountNumber());
+						stmt.setString(5, bankDto.getRoutingNumber());
+						stmt.addBatch();
 					}
-					
 					int[] updateCount = stmt.executeBatch();
+					listCount.add(updateCount.length);
 					connection.commit();
 					connection.setAutoCommit(initialAutocommitSetting);
 				}
 			});
+			if(listCount.size() >0) {
+				totalCount = 0;
+			}
+			return totalCount;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return totalCount;
 		}
-		
 	}
+
 }

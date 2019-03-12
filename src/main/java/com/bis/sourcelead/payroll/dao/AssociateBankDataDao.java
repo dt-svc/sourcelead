@@ -20,5 +20,5 @@ public interface AssociateBankDataDao {
 	
 	AssociateBankData getAssociateBankDataByOrgLocationId(Long locationId);
 	
-	void saveAssociateBankingDetailInAssociateBankData(Long id, List<AssociateBankDataDTO> list, Map<String, Long> map) throws Exception;
+	int saveAssociateBankDetails(Long orgLocationId,List<AssociateBankDataDTO> list,Map<String,Long> map);
 }
