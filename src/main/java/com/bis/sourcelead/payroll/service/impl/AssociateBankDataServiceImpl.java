@@ -204,9 +204,8 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 							bankDataDTO.setRoutingNumber(getCellValueAsString(row.getCell(5), fileName));
 							list.add(bankDataDTO);
 						}else {
-							if (row.getCell(0) != null) {
-								bankDataDTO.setId(Long.parseLong(getCellValueAsString(row.getCell(0), fileName)));	
-							}
+							bankDataDTO.setAssociateId(getCellValueAsString(row.getCell(0), fileName));	
+							bankDataDTO.setAssociateId(getCellValueAsString(row.getCell(1), fileName));
 							bankDataDTO.setEmailId(getCellValueAsString(row.getCell(1), fileName));
 		                    bankDataDTO.setAccountType(getCellValueAsString(row.getCell(2), fileName));																	
 							bankDataDTO.setBankName(getCellValueAsString(row.getCell(3), fileName));
