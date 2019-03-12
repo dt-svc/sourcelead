@@ -498,7 +498,7 @@ window.onload = function () {
 				
 				if(json.user.fileUrl != null && json.user.fileUrl != "" && json.user.fileUrl !="undefiend"){
 					result = result + '<div class="user_change_img">';
-					result = result +"<img data-id= 'userProfileImage' src='"+json.user.fileUrl+"' alt='image'>";
+					result = result +"<img data-id= 'userProfileImage' src=\""+json.user.fileUrl+"\" alt='image'>";
 					result = result + '</div>';
 					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">'
 					result=result + '<div class="btn-group uploadfile uploadfile-candidate">';
@@ -982,7 +982,7 @@ function deleteAssociateImage(userId){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure you want to delete this image ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteAssociateProfileImage("+userId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteAssociateProfileImage("+userId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelPic();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -4619,6 +4619,13 @@ function cancel(candidateId){
 }
 </script>
 
+
+<script type="text/javascript">
+function cancelPic(){ 
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
 <script>
 function showComment(candidateId){

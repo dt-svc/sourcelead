@@ -2030,6 +2030,40 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 		return releasedJobsList;
 	}
+	
+	/*@Override
+	@SuppressWarnings("unchecked")
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getAllReleasedJobsBasedOnOrgRelationIdAndOrgLocationIdAndUserId(long orgLocationId, long orgRelationId, long userId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "";
+			query = "from Requirement requirement left join fetch requirement.parentRequirement where requirement.orgLocationId.id =:orgLocationId and requirement.clientId.id =:orgRelationId and requirement.createdBy.id=:userId and requirement.parentRequirement IS NOT NULL";
+			List<Requirement> releasedJobsList = session.createQuery(query).setLong("orgLocationId", orgLocationId)
+					.setLong("orgRelationId", orgRelationId).setLong("userId", userId).list();
+			return releasedJobsList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}*/
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getAllReleasedJobsBasedOnSpocId(long spocId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "";
+			query = "from Requirement requirement left join fetch requirement.parentRequirement where requirement.spocId.id=:spocId and requirement.parentRequirement IS NOT NULL";
+			List<Requirement> releasedJobsList = session.createQuery(query).setLong("spocId", spocId).list();
+			return releasedJobsList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

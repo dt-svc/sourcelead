@@ -331,11 +331,21 @@ function getUsersSearchResult(searchValue){
 		                    <li>
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
-									<span> 
+									<span class="ovrShow"> 
 									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
 									<a href="<c:url value='${appPath}/addAssociateFromLocations'/>">Add From Loc</a>
 									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
-										<a href="<c:url value='${appPath}/uploadForm'/>">Import</a>
+										<%-- <a href="<c:url value='${appPath}/uploadForm'/>">Import</a> --%>
+										<div class="immSub">
+											<a href="#">Import</a>
+											<div class="immSubMenu">
+												<a href="<c:url value='${sourceleadUrl}/uploadForm'/>">Associate Import</a>
+												<a href="<c:url value='${sourceleadUrl}/uploadAssociateBankForm'/>">Associate Bank Deatils Import</a>
+												<a href="javascript:void(0)">Option 1</a>
+												<a href="javascript:void(0)">Option 1</a>
+											</div>
+										</div>
+										
 									</sec:authorize>									
 									</span>
 								</div>
@@ -907,7 +917,7 @@ function getUserSummary(userId){
 			       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 			       	    	result = result +"<div class='text-center image-parent'>";
 			       	    	result = result +"<div class='imageParent'>";
-			       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+userRole.user.fileUrl+"' alt='image'>";
+			       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src=\""+userRole.user.fileUrl+"\" alt='image'>";
 			       	    	result = result +"</div>";
 			       	    	
 			       	    	
@@ -1274,7 +1284,7 @@ function dynamicUserListPagination(url){
 		        			   result = result +"<td><div class='proj_show divmax-width dotdotwithImage'>"    
 		        			    result = result +" <a href='<c:url value='/app/userSummary/"+userRole.userCode+"'/>'' class='UserTextLeft' title = '"+userRole.userName+"'>";
 		        			    if(userRole.fileUrl != null && userRole.fileUrl !="" && userRole.fileUrl != "undefined"){
-				       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs pull-left'  src='"+userRole.fileUrl+"' alt='image'>";
+				       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs pull-left'  src=\""+userRole.fileUrl+"\" alt='image'>";
 		        			    }else{
 					       	    result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs pull-left'  src='/resources/images/userprofileImg.jpg' alt='image'>";
 		        			    }
