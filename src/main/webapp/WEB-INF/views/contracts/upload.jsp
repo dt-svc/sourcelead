@@ -5,7 +5,7 @@
 <spring:url value="/resources/css/styles.css" var="cssmy"/>
 <link href="${cssmy}" rel="stylesheet">
 <script src="/resources/js/jquery-1.11.3.min.js"></script>
-<script src="/resources/js/signer.js" type="text/javascript"></script>
+<script src="${SourceLeadWeb_vmsUrl}/resources/js/signer.js" type="text/javascript"></script>
              
              
 <c:if test='${!empty SourceLeadWeb_sourceleadUrl}'>
@@ -195,7 +195,7 @@ position: relative;top:8px;
                                 <button value="Sign This Document" id="btnComplete" class="btn btn-success">Complete</button>
                             </div>
                         </div>
-                        <input type="hidden" id="sourceUrl" value="${sourceleadUrl}">
+                        <input type="hidden" id="sourceUrl" value="${SourceLeadWeb_vmsUrl}">
                         <input id="contractOrgLocationId" value="${contract.contractOrgLocationId.id}" type="hidden">
                         <input type="hidden" id="contractId" value="${contract.id}">
                     </div>
