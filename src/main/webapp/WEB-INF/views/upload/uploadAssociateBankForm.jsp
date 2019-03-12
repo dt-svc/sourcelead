@@ -261,7 +261,7 @@ function cancelFileImport(){
 	    	 for(i=0;i < data.length;i++){
 	    		 var report = data[i];
 	    		 result += '<tr>';
-		         result += '<td>one</td>';
+		         result += '<td>'+report.associateId+'</td>';
 		         result += '<td>'+report.emailId+'</td>';
 		         result += '<td>'+report.accountType+'</td>';
 		         result += '<td>'+report.bankName+'</td>';
