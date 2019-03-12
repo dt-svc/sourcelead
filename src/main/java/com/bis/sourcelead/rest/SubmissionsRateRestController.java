@@ -600,7 +600,12 @@ public class SubmissionsRateRestController {
 			String expectedRateRN = "";
 			String expectedRateTypeRN = "";
 			String expectedRatePerRN = "";
-			OrgLocations orgLocations = requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement().getOrgLocationId();
+			OrgLocations orgLocations = null;
+			if(requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement() !=null){
+			 orgLocations = requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement().getOrgLocationId();
+			}else{
+				orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+			}
 			//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 			if(null != requirementSubmissionTemplateFields){
 					if(null  != requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement()){
