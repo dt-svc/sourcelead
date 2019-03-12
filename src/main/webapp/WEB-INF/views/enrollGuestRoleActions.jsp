@@ -4,7 +4,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 
-<link rel="stylesheet" href="/resources/css/jquery.tree-multiselect.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jquery.tree-multiselect.css?staticTime=${staticTime}">
 
 <script type="text/javascript">
 window.onload = function () {
@@ -58,12 +58,12 @@ window.onload = function () {
   </section>
   <!-- Content Area Ends--> 
 
-<script src="/resources/js/jquery.tree-multiselect.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.tree-multiselect.js"></script>
 
 
 
 <jsp:include page="masterFooter.jsp" />	
-<div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
+<div class="backtotop" style="display: none;"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/backtotop.png"></div>  
 
 
 

@@ -3,10 +3,10 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<!-- <script src="/resources/js/jquery-1.11.1.min.js"></script> -->
-<!-- <script src="/resources/js/jquery-ui.js"></script> -->
-<!-- <script src="/resources/js/jquery-fun.js"></script> -->
-<!-- <script src="/resources/js/jquery.timepicker.js"></script> -->
+<!-- <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-1.11.1.min.js"></script> -->
+<!-- <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-ui.js"></script> -->
+<!-- <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-fun.js"></script> -->
+<!-- <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.timepicker.js"></script> -->
 
 
 
@@ -44,7 +44,7 @@
                 </c:otherwise>
                 </c:choose>
 				
-<%-- 				<p><i class="flag-image"><a><img src="/resources/images/${userRole.orgLocations.country}.gif" title="${userRole.orgLocations.country}"></a></i></p> --%>
+<%-- 				<p><i class="flag-image"><a><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/${userRole.orgLocations.country}.gif" title="${userRole.orgLocations.country}"></a></i></p> --%>
 			</div>
 	    </div>
 	    </a>

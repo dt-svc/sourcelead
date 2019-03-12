@@ -15,17 +15,17 @@
        <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
      </c:if>
     <title>::. Verify Your Account .::</title>
-    <link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
+    <link rel="icon" type="/resources/image/png" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
-	<link rel="stylesheet" href="/resources/css/font-awesome.min.css?staticTime=${staticTime}">
-	<link rel="stylesheet" href="/resources/css/timesheet.css" type="text/css" >   
-	<link href="/resources/css/jquery-ui.css" rel="stylesheet"> 
+	<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/font-awesome.min.css?staticTime=${staticTime}">
+	<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/timesheet.css" type="text/css" >   
+	<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jquery-ui.css" rel="stylesheet"> 
 </head>
 
-<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
 
 <script type="text/javascript">
 window.onload = function () {
@@ -52,7 +52,7 @@ window.onload = function () {
 
 <section class="emailBg">
     <section class="emailVeri emailverification-contnet" id="thanksForRegisterDiv" style="display:none">
-<!--         <span><img src="/resources/images/email-veri.png" alt=""/></span> -->
+<!--         <span><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/email-veri.png" alt=""/></span> -->
         <h2>Thank You! For Registering into Sourcelead.</h2>
 		<p>You are almost done! We have emailed you a verification link on your registered email. Kindly click on the link.</p>
 		<p>If you have not received the email, click on the link below to resend the verification mail.</p>
@@ -60,14 +60,14 @@ window.onload = function () {
     </section>
     
     <section class="emailVeri emailverification-contnet" id="urlExpiredDiv" style="display:none">
-        <span><img src="/resources/images/email-veri.png" alt=""/></span>
+        <span><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/email-veri.png" alt=""/></span>
         <h2>Sorry your verification Link has been expired</h2>
 		<p>Your Verification link has expired,kindly click on the link below to resend the verification mail.</p>
         <p><a onclick="resendVerf();">Resend Verification Mail</a></p>
     </section>
     
     <section class="emailVeri emailverification-contnet" id="emailVerifiedDiv" style="display:none">
-        <span><img src="/resources/images/email-veri.png" alt=""/></span>
+        <span><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/email-veri.png" alt=""/></span>
         <h2>Congratulations !! </h2><p>Your Sourcelead account was successfully verified. You may start using your account.</p>
         <p>Click to <a onclick="redirect();">Login</a></p>
     </section>

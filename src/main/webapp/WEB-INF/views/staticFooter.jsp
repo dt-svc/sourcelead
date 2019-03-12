@@ -116,7 +116,7 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 <!--   Menu Responsive   -->
 
 <!-- Free trail and demo -->
-<div class="clPop"><img src="/resources/static-web/images/menu-close.png" alt=""/></div> 
+<div class="clPop"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/static-web/images/menu-close.png" alt=""/></div> 
 <section class="freeTrialPop" id="freeTrial">
 
    <div class="Rdemo getDemo">
@@ -219,14 +219,14 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 <section class="asMask"></section>     
 <!-- Free trail and demo -->
 
-<div class="backtotop" style="display: none;"><img src="/resources/static-web/images/backtotop.png" alt="" style="max-height: 45px;"></div>
+<div class="backtotop" style="display: none;"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/static-web/images/backtotop.png" alt="" style="max-height: 45px;"></div>
 <div class="backshadow" onclick="closeNav();"></div>
-<script src="/resources/static-web/js/jquery-1.11.3.min.js"></script>
-<script src="/resources/js/bootstrap-select.min.js"></script>
-<script src="/resources/static-web/js/owl.carousel.js"></script>
-<script src="/resources/static-web/js/bootstrap.min.js"></script> 
-<script src="/resources/static-web/js/jquery.prettyPhoto.js" type="text/javascript"></script>
-<script src="/resources/static-web/js/customscripts.js" type="text/javascript"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/static-web/js/jquery-1.11.3.min.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap-select.min.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/static-web/js/owl.carousel.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/static-web/js/bootstrap.min.js"></script> 
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/static-web/js/jquery.prettyPhoto.js" type="text/javascript"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/static-web/js/customscripts.js" type="text/javascript"></script>
 
 <script>
 function removeCountryValidation(){
@@ -257,10 +257,10 @@ $(document).ready(function(){
 });
 </script>
 
-	<script src="/resources/js/jquery-ui.js"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-ui.js"></script>
     <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${googleMapsLocationApiKey}" type="text/javascript"></script>
-	<script src="/resources/js/formvalidator.js"></script>
-	<script src="/resources/js/jquery.timepicker.js"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.timepicker.js"></script>
 <script>
 $(document).ready(function(){
 	getDemoModules();
@@ -444,6 +444,6 @@ var validationSettings = {
 </script>
 
 
-<script src="/resources/js/slead-common.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/slead-common.js"></script>
 </body>
 </html>

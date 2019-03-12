@@ -17,7 +17,7 @@
 				                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgImgUrl}">
 				                   </c:if>
 				                   <c:if test="${empty links.orgImgUrl}">
-				                     <img src="/resources/images/office-image.jpg">
+				                     <img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/office-image.jpg">
 				                   </c:if>
 				                     
 				                     </div>
@@ -47,7 +47,7 @@
 					                <div class="clearfix">
 					                   <div class="pull-left image-parent positionRelative">
 						                   <div class="imageParent org-imagelink">
-						                   <img src="/resources/images/office-image.jpg">
+						                   <img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/office-image.jpg">
 						                     </div>
 						                   </div>
 					                       <div class="pull-left">

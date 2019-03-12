@@ -5,8 +5,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
-<link rel="stylesheet" href="/resources/css/bootstrap-clockpicker.min.css">
-<script src="/resources/js/bootstrap-clockpicker.min.js"></script>
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap-clockpicker.min.css">
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap-clockpicker.min.js"></script>
 
 
 <script type="text/javascript">

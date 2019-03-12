@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/resources/js/masterSideNav.js"></script>
+<script src="/resources/js/masterHeader.js"></script>
+</head>
+<script>
+$( document ).ready(function() {
+	 // below fucntion is used to build MasterSide Naigation panel.
+	  $("#masterSideNav").html(masterSideNav.masterSideNavPanel());
+	  // below fucntion is used to build MasterHeader panel.
+	  $("#masterHeaderNav").html(masterHeader.masterHeaderPanel());
+	  
+	   candidateListCheck(serachValue,universalCanddateList,candidateKeyword,candidateIdSearchId);
+	    if(candidateUUID != null && candidateUUID != '' && candidateUUID != 'undefined'){
+			candidateQuickViewProfile(candidateUUID);
+		} 
+});
+</script>
+<body>
+<div class="wraper">
+  <header class="main-header" id="masterHeaderNav"></header>
+  <aside class="" id="masterSideNav">
+   
+  </aside>
+  <section class="content-wraper">
+    <div class="dashboard_loaded">
+      <section class="content-header clearfix">
+   <div class="success_pop" id="candSelector" style="display: none;"> 
+     <i class="fa fa-check-circle"></i><span id="candMsgDiv"></span> 
+   </div>
+    <div class="pull-left">
+      <h2 id="headerLbl">Candidate List</h2>
+    </div>
+    <div class="pull-right brud-crum"><a href="/app/dashboard/1146">Home </a> &raquo; <label id="brudCrumLbl">Candidate List </label> </div>
+  </section>
+    </div>
+  <div class="clearfix">
+    <ul class="project-tabs-menu projecttabs-custom clearfix">
+      <li id="" class="current"><a href="javascript:void(0)" onclick="javascript:goToCandidateList();">Candidate List</a></li>
+      <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
+      <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
+      <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
+      <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
+      <li id=""><a href="javascript:void(0)" onclick="javascript:goToWalletList();">Wallet</a></li>
+      <div class="clearfix"></div>
+    </ul>
+  </div>
+  <div class="timesheet_out" id="candidatesInfoDiv">
+    <div class="positionRelative reportHead clearfix">
+		<span class="pull-left refreIcon" id="advanceSearchDiv">
+			<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetCandidateFilter();"></a>
+			<a href="javascript:void(0)" class="newAdBtn pull-left" title="Advanced Search" onclick="openPop();getSourceleadTags();"> Advanced Search &nbsp; <i class="fa fa-search"></i>
+			</a>
+		</span>
+      <ul class="pull-right list-unstyled list-inline">
+        <li class="tableShare" style="display: none;">
+			<a class="marketplaceIcon mr5" title="Market Place" onclick="callAddToMarket()"></a> <a class="shareIcon mr5" title="Share" href="javascript:void(0)" onclick="shareJob();"></a> <a class="sendIcon mr5" title="Submit" href="javascript:void(0)" onclick="submitCandidatesToJob();"></a>
+		  </li>
+        <li>
+			<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Candidate <i class="fa fa-caret-down"></i></a>
+          <div class="action-pop"> <span> <a href="/app/candidate">Parse Resume</a> <a href="/app/addCandidate">Add Manual</a> <a href="/app/bulk-resume-import.html">Bulk Resume Parsing</a> <a href="uploadCandidateForm">Import XLS</a> </span> </div>
+        </li>
+        <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openCandidateFilterPop();"></a></li>
+        <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+          <div class="newActPop"> <span> <a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a> </span> </div>
+        </li>
+        <li class="">
+          <input type="text" class="repSearchBar" placeholder="Search" id="dataTableSearch">
+          <span class="repSearchIcon" onclick="candidateList();"></span>
+		</li>
+      </ul>
+    </div>
+    <div class="candidate_wrap_table datatable_filter">
+      <div id="candidateList">
+        <div class="tbldata-dotdot-vsm"> </div>
+        <div id="candidatePagination_wrapper" class="dataTables_wrapper no-footer">
+          <div id="candidatePagination_processing" class="dataTables_processing" style="display: none;"><img src="/resources/images/loading.gif" style="width: 75px; height: 75px;"></div>
+          <div style="overflow-x: auto; overflow-y: hidden;">
+            <table id="candidatePagination" class="display dataTable no-footer" role="grid" aria-describedby="candidatePagination_info" style="width: 100%;" width="100%" cellspacing="0">
+              <thead>
+                <tr role="row">
+                  <th><input type="checkbox" id="sharedcheckbox" onclick="toggleShareCandidates(this);">
+					</th>
+                  <th>&nbsp;</th>
+                  <th>Generated ID</th>
+                  <th>Name</th>
+                  <th>Primary Skill</th>
+                  <th>Employment Type</th>
+                  <th>Email</th>
+                  <th>Mobile Number</th>
+                  <th>Location</th>
+                  <th>Last Update</th>
+                  <th>Profile %</th>
+                  <th>No Of Jobs</th>
+                  <th>Created By</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr role="row" class="odd">
+                  <td>
+					  <input type="checkbox"></td>
+                  <td><div class="tblminwidth-75 pull-left">
+                      <div class="iconClass pull-left star-rating">
+                        <input type="checkbox" title="Add as Favourite">
+                        <label></label>
+                      </div>
+                    </div></td>
+                  <td><div><span title="GDFHCD71">GDFHCD71</span></div></td>
+                  <td><div class="proj_show divmax-width" onclick="candidateQuickViewProfile(176379);"><span title="Snigitha ">Snigitha </span><i class="fa fa-binoculars"></i></div></td>
+                  <td><div>--</div></td>
+                  <td><div>W-2</div></td>
+                  <td>
+					  <div><span title="snigitha@yopmail.com">snigitha@yopmail.com</span></div>
+				  </td>
+                  <td><div class="tbldata-dotdot-vsm">889966521</div></td>
+                  <td><div><span title="Hyderabad, Telangana, India">Hyderabad, Telangana, India</span></div></td>
+                  <td class="tblminwidth-75 sorting_1"><div>14-11-2018</div></td>
+                  <td>
+					  <div class="profilePercentageClass176379 tbldata-dotdot-vsm colorRed">
+                      <div id="176379profilePercentage">40%</div>
+                    </div>
+				  </td>
+                  <td><div class="tbldata-dotdot-vsm submittedRequirementCount" id="176379"><a href="#" onclick="getSubmittedJobsList(176379)">
+                      <div id="176379submittedRequirementCount">1</div>
+                      </a></div></td>
+                  <td class=" tblminwidth-75"><div><span title="neha ">neha </span></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+<!-- advanced filter pop up start -->
+  <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="candidateFilterPopup">
+	<h5 class="headerAdsrch">Filters
+		<a href="javascript:void(0)" class="close-div" onClick="closeCandidateFilterPop()"><i
+			class="fa fa-close"></i></a>
+	</h5>
+	<div class="addInner">
+		<div class="row">
+			<div class="col-md-2">
+			<div class="row">
+			
+			<div class="col-md-12 mb">
+				<label><strong>All Candidates</strong></label>
+				 <div class="clearfix">
+					<ul class="list-unstyled" id="AllTypeFilter">
+					    <li class="radioIput positionRelative"><input id="candidateAll" type="radio" name="candidateStatus" checked  value ="2"   ><label for="candidateAll">All</label></li>
+						<li class="radioIput positionRelative"><input id="candidateActive" type="radio" name="candidateStatus" value ="1"  ><label for="candidateActive">Active</label></li>
+						<li class="radioIput positionRelative" ><input id="candidateInActive" name="candidateStatus" type="radio" value ="0" ><label for="candidateInActive">In Active</label></li>
+                    </ul>
+				 </div>
+				 </div> 
+				 
+				 
+			    <div class="col-md-12 mb">
+				<label><strong>Type</strong></label>
+				 <div class="clearfix">
+					<ul class="list-unstyled" id="TypeFilter">
+					     <li class="radioIput positionRelative" ><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" ><label for="candidateTypeAll">All</label></li>
+						 <li class="radioIput positionRelative" ><input id="onlycandidate" type="radio" name="candidateType" value ="Favourite" ><label for="onlycandidate">Favourite</label></li>
+                    </ul>
+				 </div>
+				 </div>
+				 
+				 
+				 <div class="col-md-12 mb">
+				<label><strong>Candidate Type</strong></label>
+				 <div class="clearfix">
+					<ul class="list-unstyled" id="candidateTypeFilter">
+					    <li class="checkBox positionRelative" ><input  type="checkbox" id="candidateCheck" name="candidateTypeFilter" checked value ="Candidates"  ><label>Candidates</label></li>
+						 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+						<li class="checkBox positionRelative" ><input  type="checkbox" id="associateCheck"  name="candidateTypeFilter"  value ="Associates" ><label>Associates</label></li>
+                   </c:if>
+                    </ul>
+				 </div>
+				 </div>  
+			  </div>
+			</div>
+			
+			<div class="col-md-2">
+				<div class="row">
+			       <div class="col-md-12 mb">
+				     <label><strong>Updated</strong></label>
+					 <div class="clearfix">
+						<ul class="list-unstyled" id="UpdatedFilter">
+						<li class="radioIput positionRelative" ><input id="allCandidates" type="radio" name="upcandidateStatus" value ="all" ><label for="allCandidates">All</label></li>
+                        <li class="radioIput positionRelative" ><input id="candidateToDay" type="radio" name="upcandidateStatus" value ="0"  ><label for="candidateDayAgo">Today</label></li>
+                        <li class="radioIput positionRelative" ><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1" ><label for="candidateDayAgo">1 Day ago</label></li>
+						<li class="radioIput positionRelative" ><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3" ><label for="candidate3DayAgo">3 Days ago</label></li>
+						<li class="radioIput positionRelative" ><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7" ><label for="candidate1WeekAgo">1 Week ago</label></li>
+						<li class="radioIput positionRelative" ><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="14" ><label for="candidate3WeekAgo">2 Weeks ago</label></li>
+						<li class="radioIput positionRelative" ><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="30" ><label for="candidateMonthAgo">1 Month ago</label></li>
+	                    <li class="radioIput positionRelative" ><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="90"><label for="candidate3Months">3 Months ago</label></li>
+	                    
+                        </ul>
+					 </div>
+				 </div>
+				 
+				 <div class="col-md-12 mb">
+				<label><strong>Created By</strong></label>
+				 <div class="clearfix">
+					<ul class="list-unstyled" id="createdByTypeFilter">
+					    <li class="radioIput positionRelative" ><input  type="radio" id="myCandidatesRadio" name="createdByFilter"  value ="myCandidates" checked ><label>My Candidates</label></li>
+						<li class="radioIput positionRelative" ><input  type="radio" id="allCandidatesRadio"  name="createdByFilter"  value ="allCandidates"  ><label>All Candidates</label></li>
+                    </ul>
+				 </div>
+				 </div>  
+			 </div>
+			</div> 
+			
+			<div class="col-md-2">
+				<div class="row">
+					<div class="col-md-12 mb">
+						<label><strong>Employment Type</strong></label>
+						 <div class="clearfix">
+							<ul class="list-unstyled" id="employmentFilter">
+	                    	    <li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="C2C"  ><label>C2C</label></li>
+								<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="C2C-1099" ><label>C2C-1099</label></li>
+								<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="W-2" ><label>W-2</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="C2H"  ><label>C2H</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="C2H -1099" ><label>C2H -1099</label></li>
+	               			    <li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="Part Time" ><label>Part Time</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="Full Time" ><label>Full Time</label></li>
+	                        </ul>
+						 </div>
+						 </div> 
+				     </div>
+			</div>
+			
+			
+			<div class="col-md-2">
+				<div class="row">
+					<div class="col-md-12 mb">
+						<label><strong>Availability</strong></label>
+						 <div class="clearfix">
+							<ul class="list-unstyled" id="availabilityFilter">
+	                    	    <li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="Immediately available"  ><label>Immediately available</label></li>
+								<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="15 Days" ><label>15 Days</label></li>
+								<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="1 Month" ><label>1 Month</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="2 Months"  ><label>2 Months</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="3 Months" ><label>3 Months</label></li>
+	                        </ul>
+						 </div>
+						 </div> 
+				     </div>
+			</div>
+			
+			<div class="col-md-3">
+					<div class="clearfix dynamic_search filterDynamicsearch">
+						<input type="text" id="mySkillsInput" onkeyup="mySkillsFunction()" placeholder="Skills" title="Type in a skills">
+						<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+					</div>
+					 <div class="clearfix filterSearch-ul">
+						<ul class="list-unstyled positionRelative filterSearch mt5" id="skillsUL">
+							<c:forEach var="skill" items="${skillsList}">
+							<li class="checkBox positionRelative"><input  type="checkbox" name="candidateFilterSkills" value ="${skill.name}" ><label>${skill.name}</label></li>
+							</c:forEach>
+						</ul>
+					 </div> 
+		 </div> 
+			
+		</div>
+		</div>
+		<div class="clearfix advancedsearch-footer">
+			<div class="pull-right mr">
+				<input type="button" value="Apply" id="search_requiremet" onclick="closeCandidateFilterPop();candidateList();" class="btn btn-sm btn-success" />
+				<input type="button" value="Reset" id="clear_search" onclick="resetCandidateFilter();" class="btn btn-sm btn-primary" />
+			</div>
+		</div>
+</div>
+<!-- advanced filter pop End -->
+<!-- Footer Area -->
+<footer class="footer-area clearfix text-center">
+    <div class="clearfix">&copy; 2017 SourceLead<sup class="paddingRight paddingLeft">&reg;</sup>, All Rights Reserved</div>
+<!--     <div class="powered-by"> Powered by: businessintelli.com </div>
+ -->  </footer>
+  
+  <div class='file_mask'>
+  </div>
+  <!-- <div class="alert alert-danger" role="alert" style='display:none;'>
+	<div>
+		<strong>Alert</strong>
+		<div class="close" data-type="2"></div>
+	</div>
+	<span></span>
+  </div>-->
+  <div class="alert alert-success" role="alert" style='display:none;'>
+	<div>
+		<strong>Message</strong>
+		<div class="close" data-type="1"></div>
+	</div>
+	<span></span>
+  </div> 
+</body>
+<div class="pop_mask"></div>
+      <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
+</html>

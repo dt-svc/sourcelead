@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link href="/resources/css/crowdsourcingstyles.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/crowdsourcingstyles.css?staticTime=${staticTime}" rel="stylesheet">
 
 <style>
 .margin-down{
@@ -261,7 +261,7 @@ function getProfessionalInfo(){
 				 result = result +'	    <div class="col-md-4">';
 				 
 				
-				 result = result +'	         <div class="reportsH profileanchor pull-right"><a title="Account Settings" href="<c:url value='${sourceleadUrl}/userProfile'/>"><i class="userSettingImages"><img src="/resources/images/usersetting-img.png" alt="User settings image"></i></a>';
+				 result = result +'	         <div class="reportsH profileanchor pull-right"><a title="Account Settings" href="<c:url value='${sourceleadUrl}/userProfile'/>"><i class="userSettingImages"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/usersetting-img.png" alt="User settings image"></i></a>';
 				 result = result +'	            </div>';
 				 
 				 result = result +'	        <h5>Primary Skill</h5>';

@@ -13,39 +13,39 @@
 </c:if>
 
 <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet"> -->
-<link href="/resources/css/login.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/login.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 <link
-	href="/resources/css/font-awesome.min.css?staticTime=${staticTime}"
+	href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/font-awesome.min.css?staticTime=${staticTime}"
 	rel="stylesheet" type="text/css">
 <%-- <link rel="stylesheet"
-	href="/resources/css/static-web/reset.css?staticTime=${staticTime}"> --%>
+	href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/static-web/reset.css?staticTime=${staticTime}"> --%>
 <link
-	href="/resources/css/jobs/css/source-style.css?staticTime=${staticTime}"
+	href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jobs/css/source-style.css?staticTime=${staticTime}"
 	rel="stylesheet">
 <link
-	href="/resources/css/jobs/css/source-responsive.css?staticTime=${staticTime}"
+	href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jobs/css/source-responsive.css?staticTime=${staticTime}"
 	rel="stylesheet">
 <link rel="stylesheet"
-	href="/resources/css/jobs/css/chosen.min.css?staticTime=${staticTime}">
+	href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jobs/css/chosen.min.css?staticTime=${staticTime}">
 <link rel="stylesheet"
-	href="/resources/css/jobs/css/bootstrap-select.min.css?staticTime=${staticTime}">
+	href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jobs/css/bootstrap-select.min.css?staticTime=${staticTime}">
 <link rel="stylesheet"
-	href="/resources/css/jobs/css/sourcelead-main.css?staticTime=${staticTime}">
+	href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jobs/css/sourcelead-main.css?staticTime=${staticTime}">
 <link
-	href="/resources/css/jobs/css/main-style.css?staticTime=${staticTime}"
+	href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jobs/css/main-style.css?staticTime=${staticTime}"
 	rel="stylesheet">
-<link rel="icon" type="image/png" href="/resources/images/fav.png" />
-<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}"
+<link rel="icon" type="image/png" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/fav.png" />
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap.min.css?staticTime=${staticTime}"
 	rel="stylesheet" type="text/css">
 <link
-	href="/resources/css/dataTablePagination.css?staticTime=${staticTime}"
+	href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/dataTablePagination.css?staticTime=${staticTime}"
 	rel="stylesheet" type="text/css">
-<link href="/resources/css/jquery-ui.css?staticTime=${staticTime}"
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jquery-ui.css?staticTime=${staticTime}"
 	rel="stylesheet">
 <link rel="stylesheet"
-	href="/resources/css/jquery.timepicker.css?staticTime=${staticTime}">
+	href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jquery.timepicker.css?staticTime=${staticTime}">
 <link rel="stylesheet"
-	href="/resources/css/timesheet.css?staticTime=${staticTime}"
+	href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/timesheet.css?staticTime=${staticTime}"
 	type="text/css">
 <style type="text/css">
 .jobDesc b {
@@ -56,35 +56,35 @@ display: inline-block;
 	src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${SourceLeadWeb_googleMapsLocationApiKey}"
 	type="text/javascript"></script>
 <script
-	src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+	src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
 <script
-	src="/resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
+	src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
 <script
-	src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+	src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 <script
-	src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
+	src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
 <script type="text/javascript"
-	src="/resources/js/static-web/modernizr.custom.86080.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jobs/js/controls.js?staticTime=${staticTime}"></script>
+	src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/static-web/modernizr.custom.86080.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jobs/js/controls.js?staticTime=${staticTime}"></script>
 <script
-	src="/resources/js/static-web/jquery-1.12.4.min.js?staticTime=${staticTime}"></script>
+	src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/static-web/jquery-1.12.4.min.js?staticTime=${staticTime}"></script>
 <script
-	src="/resources/js/static-web/jquery.sldr.js?staticTime=${staticTime}"></script>
+	src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/static-web/jquery.sldr.js?staticTime=${staticTime}"></script>
 <script
-	src="/resources/js/static-web/masonry.pkgd.min.js?staticTime=${staticTime}"></script>
+	src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/static-web/masonry.pkgd.min.js?staticTime=${staticTime}"></script>
 <script
-	src="/resources/js/jobs/js/bootstrap.js?staticTime=${staticTime}"></script>
+	src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jobs/js/bootstrap.js?staticTime=${staticTime}"></script>
 <script
-	src="/resources/js/jobs/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
+	src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jobs/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
 <script
-	src="/resources/js/jobs/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script>
+	src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jobs/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script>
 <script
-	src="/resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
-<!-- <script src="/resources/staic-web/js/customscripts.js" type="text/javascript"></script> -->
+	src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+<!-- <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/staic-web/js/customscripts.js" type="text/javascript"></script> -->
 <div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
     <a href="#" class="loc-alertclose close">&times;</a>
     <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
@@ -368,7 +368,7 @@ top: 21px;height: 32px; line-height: 18px;
 </div>
 
 <section class="compaBann" id="orgImage" style="display:none">
-	<span><img src="/resources/images/company-banner.jpg" alt=""></span>
+	<span><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/company-banner.jpg" alt=""></span>
 	<div class="compaBannLogo" style="background-image: url(/resources/images/company-logo.jpg)"></div>
 	<div class="compaBannLogoText"><b id="selectedOrg"></b></div>
 </section>
@@ -945,13 +945,13 @@ top: 21px;height: 32px; line-height: 18px;
             <h4>Go social</h4>
             <div class="socila">
                 <a href="javascript:void(0)"><img
-                    src="/resources/css/jobs/images/in.png" alt="" /></a> <a
+                    src="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jobs/images/in.png" alt="" /></a> <a
                     href="javascript:void(0)"><img
-                    src="/resources/css/jobs/images/fb.png" alt="" /></a> <a
+                    src="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jobs/images/fb.png" alt="" /></a> <a
                     href="javascript:void(0)"><img
-                    src="/resources/css/jobs/images/tw.png" alt="" /></a> <a
+                    src="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jobs/images/tw.png" alt="" /></a> <a
                     href="javascript:void(0)"><img
-                    src="/resources/css/jobs/images/gp.png" alt="" /></a>
+                    src="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jobs/images/gp.png" alt="" /></a>
             </div>
         </div>
         <div class="clear"></div>
@@ -970,7 +970,7 @@ top: 21px;height: 32px; line-height: 18px;
 
 <section class="pageLoad"></section>
 <div class="backtotop">
-	<img src="/resources/css/jobs/images/backtotop.png" alt="" />
+	<img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jobs/images/backtotop.png" alt="" />
 </div>
 
 <!-- Footer Area -->
@@ -2425,7 +2425,7 @@ function alertClose(){
 	
 }
 </script>
-<!-- <script src="/resources/js/jobs/js/bootstrap-select.min.js"></script> -->
+<!-- <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jobs/js/bootstrap-select.min.js"></script> -->
 <script>
 function createAlert(requirementUUID){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -3038,10 +3038,10 @@ function preventTabkey(e){
 
 <!--   Free trial pop   -->
  
-<div class="clPop"><img src="/resources/css/static-web/images/menu-close.png" alt=""/></div> 
+<div class="clPop"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/static-web/images/menu-close.png" alt=""/></div> 
 <section class="freeTrialPop" id="requestDemo">
 	<div class="Rdemo">
-    	<img src="/resources/css/static-web/images/demo-1.png" alt=""/>
+    	<img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/static-web/images/demo-1.png" alt=""/>
     	<h3>Request a Demo</h3>
     	<p>We are so glad for your interest in SourceLead.
 Please mail us at </p>
@@ -3052,7 +3052,7 @@ Please mail us at </p>
 <section class="freeTrialPop" id="freeTrial">
 
 	<div class="Rdemo">
-    	<img src="/resources/css/static-web/images/demo-1.png" alt=""/>
+    	<img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/static-web/images/demo-1.png" alt=""/>
     	<h3>Free Trial</h3>
     	<p>We are so glad for your interest in SourceLead.
 Please mail us at </p>
@@ -3116,5 +3116,5 @@ function forgotPassword(){
  }
  </script>                                                                                     
    <script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5a60382a93e935c2"></script>
-   <script src="/resources/js/formvalidator.js"></script>
+   <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js"></script>
 <jsp:include page="../socialinviterscripts.jsp" />

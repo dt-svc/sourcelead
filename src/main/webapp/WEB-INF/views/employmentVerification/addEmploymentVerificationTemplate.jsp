@@ -4,8 +4,8 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 
-<script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
-<link href="/resources/css/summernote.css?staticTime=${staticTime}"
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/summernote.js?staticTime=${staticTime}"></script>
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/summernote.css?staticTime=${staticTime}"
 	rel="stylesheet" />
 
 

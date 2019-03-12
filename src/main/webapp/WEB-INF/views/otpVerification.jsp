@@ -4,10 +4,10 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <c:if test='${empty SourceLeadWeb_sourceleadUrl}'>
-<script src="/resources/js/jquery-1.11.1.min.js"></script>
-<script src="/resources/js/jquery-ui.js"></script>
-<script src="/resources/js/jquery-fun.js"></script>
-<script src="/resources/js/jquery.timepicker.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-1.11.1.min.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-ui.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-fun.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.timepicker.js"></script>
 </c:if>
 
 <style>
@@ -34,7 +34,7 @@
 		</div>
 <%--     </c:if> --%>
              
-		<img src="/resources/images/otp.png" alt=""/>
+		<img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/otp.png" alt=""/>
 		<div class="otpMail">
 			<span class="clearfix">
 				<input type="hidden" name="userRoleId" id="otpuserRoleId" value="${userRoleId}">

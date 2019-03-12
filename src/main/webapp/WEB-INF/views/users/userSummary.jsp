@@ -1689,7 +1689,6 @@ function getChangeRole(userId,userRoleId){
 			$('#RatePer').removeAttr('data-validation');
 			$('#RatePer').attr("data-validation-optional","true"); 
 		} */
-     
       if ($('#editUser_form').validate(false, validationSettings)){
     	  if(EmployeeId != null && EmployeeId != "" && empId != EmployeeId){
           $.ajax({
@@ -1810,10 +1809,10 @@ function getChangeRole(userId,userRoleId){
         return false;
       }
     }
-    $('body').on('blur', '#editUser_form', function() {
+  /*   $('body').on('blur', '#editUser_form', function() {
         $("#editUser_form").showHelpOnFocus();;
         $("#editUser_form").validateOnBlur(false, validationSettings);  
-    });
+    }); */
 </script>
 
 
@@ -2084,13 +2083,12 @@ $("#editRoleDetailsList").empty();
 					
 					if("${SourceLeadWeb_country}" == 'United States'){
 					var ssn = '';	
-					alert(json.user.ssn)
 					if(json.user.ssn != null && json.user.ssn != '' && json.user.ssn != 'undefined'){
 						ssn = json.user.ssn;
 					}
 					result = result + ' <div class="user_summary_edit_cta" id="ssnnum">';
 					result = result + ' <label>SSN<span class="text-danger">&nbsp;*</span></label>';
-					result = result + ' <input type="text" id="SSN" name="ssn" value="'+ssn+'" field-name="SSN" onblur="validateSSNNumber();"/>';
+					result = result + ' <input type="text" id="SSN" name="ssn" value="'+ssn+'" field-name="SSN" onblur="validateSSNNumber();" data-validation="required"/>';
 
 					result = result + ' </div>';
 					}
@@ -3971,7 +3969,7 @@ function profileDetails(candidateId){
 						 if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
 						 result = result+'   <img  id="userImage" data-id="profileImage" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';
 						 }else{
-						 result = result+'<img data-id="profileImage" id="userImage" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';
+						 result = result+'<img data-id="profileImage" id="userImage" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';
 
 						 }
 						 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';
