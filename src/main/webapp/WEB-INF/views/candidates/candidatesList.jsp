@@ -9,28 +9,28 @@
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="/resources/images/fav.png" />
+<link rel="icon" type="image/png" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/fav.png" />
 <title>Welcome to Source Lead</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<link href="/resources/css/sourcelead-main.css" rel="stylesheet">
-<link rel="stylesheet" href="/resources/css/chosen.min.css">
-<link href="/resources/css/sourcelead-main.css" rel="stylesheet">
-<link rel="stylesheet" href="/resources/css/timesheet.css">
-<link href="/resources/css/sourcelead-bundle.css" rel="stylesheet">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/sourcelead-main.css" rel="stylesheet">
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/chosen.min.css">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/sourcelead-main.css" rel="stylesheet">
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/timesheet.css">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/sourcelead-bundle.css" rel="stylesheet">
 
-<script src="/resources/js/jquery-1.11.1.min.js"></script>
-<script src="/resources/js/masterHeaderAction.js"></script>
-<script src="/resources/js/jquery-ui.js"></script>
-<script src="/resources/js/formvalidator.js"></script>
-<script src="/resources/js/bootstrap-select.min.js"></script>
-<script src="/resources/js/chosen.jquery.min.js"></script>
-<script src="/resources/js/jquery.dataTables.min.js"></script>
-<script src="/resources/js/sourcelead-app.js"></script>
-<script src="/resources/js/jquery.timepicker.js"></script>
-<script src="/resources/js/masterHeaderAction.js"></script>
-<script src="/resources/js/masterSideNav.js"></script>
-<script src="/resources/js/masterHeader.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-1.11.1.min.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/masterHeaderAction.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-ui.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap-select.min.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/chosen.jquery.min.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.dataTables.min.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/sourcelead-app.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.timepicker.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/masterHeaderAction.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/masterSideNav.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/masterHeader.js"></script>
 <script src="${SourceLeadWeb_atsUrl}/resources/js/candidates.js"></script>
 </head>
 <c:if test="${!empty msg}"> <!-- candidatesProfile.jsp script -->
@@ -104,7 +104,7 @@ function noAccess(id){
     var result = "";
 	result = result + '	  <div class="blank-pages-tech">';
 	result = result + '   <p class="text-center text-danger permissondenied mb">';
-	result = result + '       <img src="/resources/images/sourcelead-load.png" alt="Source Lead" title="Source Lead">';
+	result = result + '       <img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/sourcelead-load.png" alt="Source Lead" title="Source Lead">';
 	result = result + '   </p>';
 	result = result + '   <p class="big-txt mt">PERMISSION DENIED</p>';
 	result = result + '   <p class="text-muted">You dont have permission to access this page.</p>';

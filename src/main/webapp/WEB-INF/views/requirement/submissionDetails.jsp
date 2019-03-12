@@ -190,7 +190,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                if(json.candidate.fileUrl != null && json.candidate.fileUrl !='' && json.candidate.fileUrl !="undefined"){
                result = result + '<div class="imageParent"><img data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.candidate.fileUrl+'"  alt="candidate" title="Candidate"></div>';
                }else{
-               result = result + '<div class="imageParent"><img data-id="profileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="candidate" title="Candidate"></div>';
+               result = result + '<div class="imageParent"><img data-id="profileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/userprofileImg.jpg" alt="candidate" title="Candidate"></div>';
    
                }
                if(json.candidateScore != null && json.candidateScore != '' && json.candidateScore != 'undefined'){

@@ -252,7 +252,7 @@ function getAssociates(){
 	result = result +'<c:forEach var="locations" items="${orgLocationsList}">';
 	result = result +'<li>';
 	result = result +'<input class="ml10" value="${locations.id}" onclick="getOrgLocationRoles();"  checked  name="orgLocations"  type="radio">';
-	result = result +'<label class="radioAlign"><img src="/resources/images/${locations.country}.gif">${locations.orgLocationName}</label>';
+	result = result +'<label class="radioAlign"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/${locations.country}.gif">${locations.orgLocationName}</label>';
 	result = result +'</li>';
 	result = result +'</c:forEach>';
 	result = result +'</ul>';

@@ -149,7 +149,7 @@ var uploadflag= true;
     <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 </div>
 
-<script type="text/javascript" src="/resources/js/xlsupload.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/xlsupload.js"></script>
 <script type="text/javascript">
 document.getElementById("uploadBtn").onchange = function () {
 	$('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));

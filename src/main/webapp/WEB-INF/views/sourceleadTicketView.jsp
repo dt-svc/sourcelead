@@ -124,7 +124,7 @@
 	
  
   </section>
-<div class="backtotop" style="display: block;"><img src="/resources/images/backtotop.png"></div>
+<div class="backtotop" style="display: block;"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/backtotop.png"></div>
 <script>
 $(function(){
 $("#addComment").click(function() {
@@ -189,7 +189,7 @@ function getSourceleadTicketCommets(ticketId){
 	 					if(report.userImage != null && report.userImage != "" && report.userImage != "undefined"){
 	 						result = result +'			<div class="commentsimg-inner"> <img onerror="predefineProfileImage(this);" src="'+report.userImage+'"></div>';
 	 					}else{
-	 						result = result +'			<div class="commentsimg-inner"> <img onerror="predefineProfileImage(this);" src="/resources/images/userprofile-img.png"></div>';
+	 						result = result +'			<div class="commentsimg-inner"> <img onerror="predefineProfileImage(this);" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/userprofile-img.png"></div>';
 
 	 					}
 	 					result = result +'		</div>';

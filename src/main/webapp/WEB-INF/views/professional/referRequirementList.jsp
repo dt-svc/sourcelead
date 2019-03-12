@@ -71,7 +71,7 @@ $(document).ready(function() {
             
             <div class="panel panel-default">
                 <div class="panel-heading">
-                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><span class="fa fa-angle-down pull-right"></span><img src="/resources/images/gmail-icon.png" class="contact-images">Gmail</a> </h4>
+                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><span class="fa fa-angle-down pull-right"></span><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/gmail-icon.png" class="contact-images">Gmail</a> </h4>
                 </div>
                 <div id="collapseTwo" class="panel-collapse collapse">
                   <div class="panel-body">
@@ -89,7 +89,7 @@ $(document).ready(function() {
               
               <div class="panel panel-default">
                 <div class="panel-heading">
-                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="fa fa-angle-down pull-right"></span><img src="/resources/images/outlook-icon.png" class="contact-images">Outlook</a> </h4>
+                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="fa fa-angle-down pull-right"></span><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/outlook-icon.png" class="contact-images">Outlook</a> </h4>
                 </div>
                 <div id="collapseOne" class="panel-collapse collapse">
                   <div class="panel-body">
@@ -106,7 +106,7 @@ $(document).ready(function() {
               
               <div class="panel panel-default">
                 <div class="panel-heading">
-                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><span class="fa fa-angle-down pull-right"></span><img src="/resources/images/thunderbird-ic.png" class="contact-images">Thunderbird</a> </h4>
+                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><span class="fa fa-angle-down pull-right"></span><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/thunderbird-ic.png" class="contact-images">Thunderbird</a> </h4>
                 </div>
                 <div id="collapseThree" class="panel-collapse collapse">
                   <div class="panel-body">
@@ -121,7 +121,7 @@ $(document).ready(function() {
               </div>
               <div class="panel panel-default">
                 <div class="panel-heading">
-                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour"><span class="fa fa-angle-down pull-right"></span><img src="/resources/images/yahoo-icon.png" class="contact-images">Yahoo Mail</a> </h4>
+                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour"><span class="fa fa-angle-down pull-right"></span><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/yahoo-icon.png" class="contact-images">Yahoo Mail</a> </h4>
                 </div>
                 <div id="collapseFour" class="panel-collapse collapse">
                   <div class="panel-body">
@@ -137,7 +137,7 @@ $(document).ready(function() {
               </div>
               <div class="panel panel-default">
                 <div class="panel-heading">
-                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive"><span class="fa fa-angle-down pull-right"></span><img src="/resources/images/linkedin-icon.png" class="contact-images">LinkedIn</a> </h4>
+                  <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive"><span class="fa fa-angle-down pull-right"></span><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/linkedin-icon.png" class="contact-images">LinkedIn</a> </h4>
                 </div>
                 <div id="collapseFive" class="panel-collapse collapse">
                   <div class="panel-body">
@@ -418,7 +418,7 @@ function addContactsGroup(){
 
 </script>
 <jsp:include page="../masterFooter.jsp" />
-<div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div> 
+<div class="backtotop" style="display: none;"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/backtotop.png"></div> 
 
 
 <script>

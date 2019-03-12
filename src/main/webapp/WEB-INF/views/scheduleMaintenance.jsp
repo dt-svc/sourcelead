@@ -4,8 +4,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="/resources/js/moment.min.js"></script>
-<script src="/resources/js/bootstrap-datetimepicker.min.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/moment.min.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap-datetimepicker.min.js"></script>
 
 <style>
 #scheduleDateValidation {

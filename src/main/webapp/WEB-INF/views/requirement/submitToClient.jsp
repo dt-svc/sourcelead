@@ -10,11 +10,11 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
 </c:if>
 
-<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
-<link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}">
-<script src="/resources/js/bootstrap3-wysihtml5.all.min.js?staticTime=${staticTime}"></script> 
-<script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/style.css?staticTime=${staticTime}" />
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}">
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap3-wysihtml5.all.min.js?staticTime=${staticTime}"></script> 
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/summernote.js?staticTime=${staticTime}"></script>
 
 <style type="text/css">
 .add_inter table tr td {

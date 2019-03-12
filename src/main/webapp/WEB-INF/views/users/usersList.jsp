@@ -406,7 +406,7 @@ function getUsersSearchResult(searchValue){
       <!-- Content Area Ends--> 
  <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
       <jsp:include page="../masterFooter.jsp" />
-      <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
+      <div class="backtotop" style="display: none;"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/backtotop.png"></div>  
   
  <!--  Rajashkar
   SCript is used to export user data as xls format -->    
