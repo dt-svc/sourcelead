@@ -1055,7 +1055,7 @@ function assetmanagemetServicePopUp(assetId,workingStatus,assetUUID){
 	 result = result + '	<input type="hidden" name="assetUUID" id="assetUUID" value='+assetUUID+'>';
 	 result = result + '	<input type="hidden" name="workingStatus" id="workingState" value='+workingStatus+'>';
 	 result = result + '	<div class="clearfix">';
-		result = result + '	<div class="popupHead">Asset Management Sevice<i class="closePop pull-right popClose" onclick="closePopup(\''+assetUUID+'\',\''+assetId+'\');"></i></div>';
+		result = result + '	<div class="popupHead">Asset Management Service<i class="closePop pull-right popClose" onclick="closePopup(\''+assetUUID+'\',\''+assetId+'\');"></i></div>';
 			result = result + '	<div class="popupContent">';
 				result = result + '	<div class="row form-group">';
 					result = result + '<div class="col-md-4">';
