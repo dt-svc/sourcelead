@@ -616,7 +616,7 @@ public class TicketManagementRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
-				response.setObject(ticketManagementService.getTicketSummaryByUUID(uuid, user.getId(), loginOrgLocation.getId(), loginOrgLocation.getDateFormat(), false));
+				response.setObject(ticketManagementService.getTicketSummaryByUUID(uuid, loginOrgLocation.getId(), loginOrgLocation.getDateFormat(), false));
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -635,7 +635,7 @@ public class TicketManagementRestController {
 	public TicketDTO getTicketManagementDescription(@RequestParam(value = "uuid", required = false) String uuid, HttpServletRequest request) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		TicketDTO ticketDTO = ticketManagementService.getTicketSummaryByUUID(uuid, user.getId(), orgLocations.getId(), orgLocations.getDateFormat(), false);
+		TicketDTO ticketDTO = ticketManagementService.getTicketSummaryByUUID(uuid, orgLocations.getId(), orgLocations.getDateFormat(), false);
 		return ticketDTO;
 	}
 

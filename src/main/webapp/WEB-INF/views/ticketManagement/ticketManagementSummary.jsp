@@ -44,7 +44,7 @@
                     <div class="col-md-10">
                       <div class="row">
                         <c:forEach items="${ticketSummary.ticketAssignToList}" var="assignTo">
-	                        <div class="col-md-4">
+	                        <div class="col-md-4 mb10">
 	                          <div class="assigNeeImg mr10"> <img src="${assignTo.userImageURL != null && assignTo.userImageURL != '' ? assignTo.userImageURL : '/resources/images/userprofile-img.png'}" alt="" title="${assignTo.userName}"> </div>
 	                          <label>${assignTo.userName}</label>
 	                        </div>
@@ -64,11 +64,11 @@
                   </div>
                   <div class="form-group clearfix">
                     <label class="col-md-2 paddingRight">Priority<span class="pull-right paddingLeft">:</span></label>
-                    <div class="col-md-10 priorityImage">
+                    <div class="col-md-10">
                     	<c:if test="${ticketSummary.ticketPriorityImage != null}">
-	                     	<img class="mr10" src="${ticketSummary.ticketPriorityImage}">
+	                     	<div class="priorityImage pull-left mr10"><img class="mr10" src="${ticketSummary.ticketPriorityImage}"></div>
                     	</c:if>
-                     	${ticketSummary.ticketPriority}
+                    	<div class="pull-left">${ticketSummary.ticketPriority}</div>
                      </div>
                   </div>
                   <div class="form-group clearfix">

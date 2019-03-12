@@ -44,7 +44,7 @@ function getTicketManagementList() {
 		            }
 		            text += "</select></td>";
 		            /*text+= "     <td><div class='tbldata-dotdot-vsm'>" + response.data[e].ticketStatus + "</div></td>";*/
-		            text+= "   	<td><div class='tblminwidth-75 priorityImage' style='color:" + (response.data[e].ticketPriorityTextColor != null && response.data[e].ticketPriorityTextColor !== "" ? response.data[e].ticketPriorityTextColor : "") + "'>" + (response.data[e].ticketPriorityImage !== null && response.data[e].ticketPriorityImage !== "" ? "<img src=\"" + response.data[e].ticketPriorityImage + "\" class='mr10'/>" : "") + response.data[e].ticketPriority + "</div></td>";
+		            text+= "   	<td><div class='tblminwidth-75' style='color:" + (response.data[e].ticketPriorityTextColor != null && response.data[e].ticketPriorityTextColor !== "" ? response.data[e].ticketPriorityTextColor : "") + "'>" + (response.data[e].ticketPriorityImage !== null && response.data[e].ticketPriorityImage !== "" ? "<div class='priorityImage pull-left mr10'><img src=\"" + response.data[e].ticketPriorityImage + "\" class='mr10'/></div>" : "<div class='blank-div mr10'></div>") + "<div class='pull-left'>" + response.data[e].ticketPriority + "</div></div></td>";
 		            text+= "    <td><div class='tbldata-dotdot-vsm'>" + response.data[e].createdBy + "</div></td>";
 		            var assignTo = "";
 					for(var a in response.data[e].assignedTo) {
