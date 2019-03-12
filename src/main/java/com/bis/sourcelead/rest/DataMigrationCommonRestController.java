@@ -164,7 +164,7 @@ public class DataMigrationCommonRestController {
 	
 	
 	
-	@RequestMapping(value = {"/candidateUploadFieldMapping","/rest/candidateUploadFieldMapping"}, method = RequestMethod.POST)
+	/*@RequestMapping(value = {"/candidateUploadFieldMapping","/rest/candidateUploadFieldMapping"}, method = RequestMethod.POST)
 	public ModelAndView candidateUploadFieldMapping(DataMigrationCommonDTO dataMigrationCommonDTO , HttpServletRequest request) throws Exception
 	{
 		  
@@ -189,7 +189,7 @@ public class DataMigrationCommonRestController {
 		return model;
 	}
 	
-	/*@RequestMapping(value = {"/storeCandidateBulkUpload","/rest/storeCandidateBulkUpload"}, method = RequestMethod.POST)
+	@RequestMapping(value = {"/storeCandidateBulkUpload","/rest/storeCandidateBulkUpload"}, method = RequestMethod.POST)
 	public ModelAndView storeCandidateBulkUpload(CandidateBulkUploadDTO candidateBulkUploadDTO, UploadEntriesDTO uploadEntriesDTO, HttpServletRequest request) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
