@@ -119,7 +119,7 @@ public class InvoiceRestController {
 	@Autowired
 	private OrgService orgService;
 	@Autowired
-	private CommonUtil commonUtil;
+	private CommonUtil commonUtil;  
 	@Autowired
 	private OrgSpocService orgSpocService;
 	@Value("${sourceleadUrl}")
@@ -128,6 +128,10 @@ public class InvoiceRestController {
 	private String sourceleadLoginUrl;
 	@Value("${static.path}")
 	private String staticPath;
+	
+	@Value("${vmsUrl}")
+	private String vmsUrl;
+	
 	@Autowired
 	EmailScenarioService emailScenarioService;
 	@Autowired
@@ -1075,7 +1079,8 @@ return responseList;
 //		String resultJson;
 		OrgLocations orgLocations = null;
 		Invoice invoiceId = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
-		orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		 orgLocations = orgLocationService.getOrgLocationById(orgLocId);
 		Long Id = null;
 		Invoice parentInvoice = invoiceService.getInvoicetByParentInvoiceId(invoiceId.getId());
 		if (parentInvoice.getParentInvoiceId() != null) {
@@ -1089,7 +1094,7 @@ return responseList;
 		SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 		List<Invoice> viewinvoiceList = invoiceService.getViewInvoiceListByInvoiceIdAndOrglocationId(Id, orgLocations.getId());
 		for (Invoice invoice : viewinvoiceList) {
-			OrgLocations LoginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			OrgLocations LoginOrgLocations = orgLocationService.getOrgLocationById(orgLocId);
 			//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (invoice.getOrgRelationID().getLocationId().getId().equals(LoginOrgLocations.getId())) {
 				invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
@@ -1700,11 +1705,11 @@ return responseList;
 					String actionLink = "";
 					StringBuilder notificationLink = new StringBuilder();
 					if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
-						actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
+						actionLink = notificationLink.append(vmsUrl).append("/").append("viewInvoice?invoiceUUID="
 								+ invoice.getInvoiceUUID() + "&invoiceType=Payables").toString();
 					}
 					else {
-						actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
+						actionLink = notificationLink.append(vmsUrl).append("/").append("viewInvoice?invoiceUUID="
 								+ invoice.getInvoiceUUID() + "&invoiceType=Receivable").toString();
 					}
 					emailScenerioUtil.sendNotification(actionLink, loginUser, contactUser, invoice.getResponderLocationId(), notificationScenario, new HashMap<String, String>());
@@ -1940,11 +1945,11 @@ return responseList;
 							String actionLink = "";
 							StringBuilder notificationLink = new StringBuilder();
 							if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
-								actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
+								actionLink = notificationLink.append(vmsUrl).append("/").append("viewInvoice?invoiceUUID="
 										+ invoice.getInvoiceUUID() + "&invoiceType=Payables").toString();
 							}
 							else {
-								actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
+								actionLink = notificationLink.append(vmsUrl).append("/").append("viewInvoice?invoiceUUID="
 										+ invoice.getInvoiceUUID() + "&invoiceType=Receivable").toString();
 							}
 							emailScenerioUtil.sendNotification(actionLink, loginUser, contactUser, invoice.getResponderLocationId(), notificationScenario, new HashMap<String, String>());
