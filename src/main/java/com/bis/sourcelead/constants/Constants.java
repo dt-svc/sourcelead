@@ -175,6 +175,12 @@ public class Constants {
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE = "MailReopenApprovedMailToEmployee";
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE_NOTIFICATION = "MailReopenApprovedMailToEmployeeNotification";
 	
+	public static final String IN_SEQUENTIAL_MECHANISM_MAIL_FROM_APPROVERONE_TO_APPROVERTWO = "InSequentialMechanismMailFromApproverOneToApproverTwo";
+	public static final String IN_SEQUENTIAL_MECHANISM_MAIL_FROM_APPROVERONE_TO_APPROVERTWO_NOTIFICATION = "InSequentialMechanismMailFromApproverOneToApproverTwo";
+	
+	public static final String IN_PARALLEL_MECHANISM_MAIL_FROM_APPROVERONE_TO_APPROVERTWO = "InSequentialMechanismMailFromApproverOneToApproverTwo";
+	public static final String IN_PARALLEL_MECHANISM_MAIL_FROM_APPROVERONE_TO_APPROVERTWO_NOTIFICATION = "InSequentialMechanismMailFromApproverOneToApproverTwo";
+	
 	public static final String UPDATED_TASK_EMAIL = "UpdatedTaskEmail";
 	public static final String UPDATED_TASK_NOTIFICATION = "UpdatedTaskNotification";
 	

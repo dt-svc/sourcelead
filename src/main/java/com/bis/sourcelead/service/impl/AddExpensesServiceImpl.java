@@ -349,7 +349,9 @@ private void storeExpenseApprovers(String status,Expenses expenses,HashMap<Integ
 	 }
 	 
 	 if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
-		managers.remove(2);
+		 if(expenses.getProjects().getExpenseApprovalType().equalsIgnoreCase(Constants.SEQUENTIAL)) {
+			 managers.remove(2);
+		 }
 		 if(managers != null && !managers.isEmpty()){
 				expenses.setProjectManagerUserList(new ArrayList(managers.values()));
 		 }
