@@ -62,10 +62,8 @@ function getTicketTypeList() {
 					text+= "</tr>";
 		    		$("#ticketTypeList").append(text);
 				}
-			} else {
-				
+				ticketManagementTypePagination();
 			}
-			ticketManagementTypePagination();
 		} else if (response.indexOf('Sign In') !== -1) {
 			location.replace(sourceleadUrl);
 		} else {
