@@ -1,5 +1,7 @@
 package com.bis.sourcelead.payroll.service;
 
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dto.IndAssociatePaymentAccountDTO;
@@ -20,4 +22,6 @@ public interface AssociateBankDataService {
 	AssociateBankData getAssociateBankDataByOrgLocationId(Long locationId);
 	
 	AssociateBankErrorData  saveAssociateBankData(MultipartFile multipartFile, OrgLocations orgLocation) throws Exception;
+
+	List<AssociateBankData> findAllAssociateBankDataByCandidateId(Long candidateId, Long orgLocationId);
 }

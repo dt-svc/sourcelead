@@ -276,11 +276,11 @@ function cancelFileImport(){
     		 $("#errorDataDIV").empty();
     		 $("#errorDataDIV").append(result);
     		 $("#loading").removeAttr('style');
-    		 signatoryPagination();
+    		 excelDataPagination();
 	     /* });  */
   }
   
-  function signatoryPagination(){
+  function excelDataPagination(){
 		$('#errorDataList').DataTable({ 
 			"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],

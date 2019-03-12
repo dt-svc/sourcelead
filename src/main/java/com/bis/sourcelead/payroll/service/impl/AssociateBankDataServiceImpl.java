@@ -319,4 +319,10 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 		}
 		return 0;
 	}
+
+	@Override
+	public List<AssociateBankData> findAllAssociateBankDataByCandidateId(Long candidateId, Long orgLocationId)
+	{
+		return associateBankDataDao.findAllAssociateBankDataByCandidateId(candidateId,orgLocationId);
+	}
 }

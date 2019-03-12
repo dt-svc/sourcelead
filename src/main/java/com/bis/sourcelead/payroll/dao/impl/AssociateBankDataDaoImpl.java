@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -17,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.Connections;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.payroll.dao.AssociateBankDataDao;
 import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 import com.bis.sourcelead.payroll.entity.AssociateBankData;
@@ -94,7 +90,7 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 		    	assBankData = assBankDataList.get(0);
 		    }
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 		return assBankData;
 	}
@@ -152,6 +148,21 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 			e.printStackTrace();
 			return totalCount;
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<AssociateBankData> findAllAssociateBankDataByCandidateId(Long candidateId, Long orgLocationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<AssociateBankData> assBankDataList = null;
+		try {
+			assBankDataList = session.createQuery("from AssociateBankData assBankData where assBankData.orgLocationId.id =:orgLocationId and assBankData.candidate.id = :candidateId").setLong("orgLocationId", orgLocationId).setLong("candidateId", candidateId).list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return assBankDataList;
 	}
 
 }
