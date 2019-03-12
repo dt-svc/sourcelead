@@ -874,17 +874,14 @@ public void updateOrgBasedRoles(OrgLicenseSubscriptionDTO orgLicenseSubscription
 					}
 					
 					rolesDao.storeRoles(roles);
-				}
-			}
-		}
-		
-		
-		if(isCouchbaseEnabled.equalsIgnoreCase("true") && orgLocationsIdsList != null && !orgLocationsIdsList.isEmpty()) {
-			for(Long orgLocationId : orgLocationsIdsList) {
-				List<UserRole> usersRolesList =  userRoleService.getAllUsersBasedOrgLocationId(orgLocationId);
-				if(usersRolesList != null && !usersRolesList.isEmpty()) {
-					for(UserRole userRole : usersRolesList) {
-							userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+					
+					if(isCouchbaseEnabled.equalsIgnoreCase("true")){ 
+						List<UserRole> userRolesList = userRoleService.getAllUserRolesByRoleId(roles.getId());
+						if(userRolesList != null && !userRolesList.isEmpty()) {
+							for(UserRole userRole : userRolesList) {
+								userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+							}
+						}
 					}
 				}
 			}
