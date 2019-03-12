@@ -119,7 +119,7 @@
 		<div class="col-md-6">
 			<div class="row">
 			<div class="col-md-3">
-      	<div class="featuresImages"> <img src="/resources/static-web/images/Integrated.png" alt="Image" class="animated bounceIn"> </div>
+      	<div class="featuresImages"> <img src="/resources/static-web/images/integrated.png" alt="Image" class="animated bounceIn"> </div>
 			</div>
 			<div class='col-md-9'>
 			<h4>Integrated with Sourcelead ATS</h4>

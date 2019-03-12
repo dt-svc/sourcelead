@@ -66,7 +66,7 @@ public interface TicketManagementDao {
 
 	public Boolean changeTicketStatusDataById(long id, int status, OrgLocations orgLocation);
 
-	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId, int status);
+	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId, int status, String userRole);
 
 	public Ticket getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId);
 
