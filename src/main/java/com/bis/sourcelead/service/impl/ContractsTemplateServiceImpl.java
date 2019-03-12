@@ -1010,7 +1010,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				StringBuilder ownerName = new StringBuilder();
 				StringBuilder vendorName = new StringBuilder();
 				List<Long> ownerUserIds = new ArrayList<>();
-				if(null != contracts.getOwnerHierarchyList()){
+				if(null != contracts.getOwnerHierarchyList() && contracts.getOwnerHierarchyList().size() > 0){
 					for(ContractOwnerHierarchy coh : contracts.getOwnerHierarchyList()){
 						ownerUserIds.add(coh.getOwnerUserId().getId());
 						if(null != coh.getOwnerUserId().getFirstName() && null != coh.getOwnerUserId().getLastName()){
@@ -1208,7 +1208,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				StringBuilder ownerName = new StringBuilder();
 				StringBuilder vendorName = new StringBuilder();
 				List<Long> ownerUserIds = new ArrayList<>();
-				if(null != contracts.getOwnerHierarchyList()){
+				if(null != contracts.getOwnerHierarchyList() && contracts.getOwnerHierarchyList().size() > 0){
 					for(ContractOwnerHierarchy coh : contracts.getOwnerHierarchyList()){
 						ownerUserIds.add(coh.getOwnerUserId().getId());
 						if(null != coh.getOwnerUserId().getFirstName() && null != coh.getOwnerUserId().getLastName()){
@@ -2192,8 +2192,8 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 	}
 	
 	@Override
-	public ContractsTemplate findByContractTemplateName(String templateName,String contractType,Long orgLocationId) throws Exception {
-		return contractsTemplateDao.findByContractTemplateName(templateName,contractType,orgLocationId);
+	public ContractsTemplate findByContractTemplateName(String templateName,String contractType,Long orgLocationId, String templateUUID) throws Exception {
+		return contractsTemplateDao.findByContractTemplateName(templateName,contractType,orgLocationId,templateUUID);
 	}
 
 	@Override
@@ -3788,6 +3788,12 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 		individualCounts.setTotalDraftApplicantCount(totalApplicantCount);
 		
 		return individualCounts;
+	}
+	
+	@Override
+	public List<Contracts> getAllContractsBasedOnConfigureDate(Date updatedDate) throws Exception
+	{
+		return contractsTemplateDao.getAllContractsBasedOnConfigureDate(updatedDate);
 	}
 	
 }
