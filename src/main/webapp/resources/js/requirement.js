@@ -41,7 +41,7 @@ function getSourceleadTags(){ // updated.
 	        },
 	    }); 
 }
-function filterPop(){ // updated.
+/*function filterPop(){ // updated.
 	$("#requirementFilterPopup").toggle();
 	$(".sideMask").fadeIn();
 };
@@ -49,9 +49,9 @@ function closeFilter(){ // updated.
 	$("#requirementFilterPopup").hide();
 	$(".sideMask").fadeOut();
 
-}
+}*/
 
-function columPop(){ // updated
+/*function columPop(){ // updated
 	$(".colPop").show();
 	$(".colPopFot").show();
 }
@@ -103,7 +103,7 @@ function checkAllColumns(obj){// updated
 	} 
 		
 }
-function changeStatus(requirementId, requirementStatus){ // updated.
+*/function changeStatus(requirementId, requirementStatus){ // updated.
 	var status = document.getElementById('changeStatusId' + requirementId).value;
 	$("tr").find("td.sorting_1").removeClass("sorting_1");
 	if(status == "FILLEDCLOSED" ||  status == "UNFILLEDCLOSED" || status == "ONHOLD" || status == "OPEN" ){
