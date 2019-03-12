@@ -56,8 +56,6 @@ public interface TicketManagementDao {
 
 	public Boolean saveTicket(Ticket ticketManagement);
 
-	
-
 	public Boolean changeStatusTicketTypeDataById(long id, int status, OrgLocations orgLocation);
 
 	public Boolean changeTicketCategoryStatusDataById(long id, int status, OrgLocations orgLocation);
@@ -105,5 +103,7 @@ public interface TicketManagementDao {
 	public List<String> getSavedTicketAttachmentUUIDList(long ticketId);
 
 	public void deleteTicketAttachment(TicketAttachment ticketAttachment);
+
+	public boolean changeTicketManagementStatus(long ticketId, int status);
 	
 }
