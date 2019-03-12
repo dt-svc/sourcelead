@@ -9,7 +9,42 @@ function associateBankData(userId){
            type : "GET",
            url: sourceleadUrl+"/findAssociateBankDataByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
             success :function(json) {
-            	var result = "";
+            	  var result = "";
+     	    	 result += '<table id="associateBankDataList" class="display" cellspacing="0" width="100%" >';
+     	         result += '<thead>';
+     	         result += '  <tr>';
+     	         result += '    <th>Account Type</th>';
+     	         result += '    <th>Bank Name</th>';
+     	         result += '    <th>Account Number</th>';
+     	         result += '    <th>Routing Number</th>';
+     	        result += '    <th>First Name</th>';
+     	       	result += '    <th>Last Name</th>';
+     	      	result += '    <th>Default</th>';
+     	      	result += '    <th>Active</th>';
+     	      	result += '    <th>Action</th>';
+     	         result += '  </tr>';
+     	         result += '</thead>';
+     	         result += '<tbody>';
+     	    	 for(i=0;i < json.length;i++){
+     	    		 var report = json[i];
+     	    		 result += '<tr>';
+     		         result += '<td>'+report.accountType+'</td>';
+     		         result += '<td>'+report.bankName+'</td>';
+     		         result += '<td>'+report.accountNumber+'</td>';
+     		         result += '<td>'+report.routingNumber+'</td>';
+     		         
+					 result += '<td>'+report.routingNumber+'</td>';
+					 result += '<td>'+report.routingNumber+'</td>';
+					 result += '<td>'+report.routingNumber+'</td>';
+					 result += '<td>'+report.routingNumber+'</td>';
+					 result += '<td>'+report.routingNumber+'</td>';
+					     result += '  </tr>';
+     	    	 }
+     	    	
+     	         result += '  </tbody>';
+         		 result += '</table> ';
+         		 
+            	/* var result = "";
             	result = result + '<div id="editTest" class="col-md-12">';
             	result = result + '<a onclick="editAssociateBankDataFun('+userId+');" class="anchor-black pull-right" target="_self" title="Edit"><i class="fa fa-pencil paddingRight"></i>Edit</a>';
             	result = result + '</div>';
@@ -44,7 +79,7 @@ function associateBankData(userId){
                 result = result + '<div class="clearfix"></div>';
                 result = result + '</div>';
                 result = result + '</div>';
-                result = result + '<div id="finalTest"></div>';
+                result = result + '<div id="finalTest"></div>'; */
                 $("#tab-18").empty(); 
                 $("#tab-17").empty(); 
                 $("#tab-19").empty(); 
@@ -54,10 +89,30 @@ function associateBankData(userId){
                 $("#tab-21").empty(); 
                 $("#tab-25").empty();
                 $("#tab-21").append(result); 
+                assoBankDatapagination();
           },
             
        }); 
   } 
+</script>
+
+<script>
+
+function assoBankDatapagination(){
+		$('#associateBankDataList').DataTable({ 
+			"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": ""
+	     	}
+	    });
+		$("#associateBankDataList").wrap("<div class='overflow_Auto require_wrap_table' style='width:100%;'></div>");  
+
+	}
 </script>
 
 <input type="hidden"/>

@@ -90,6 +90,7 @@ import com.bis.sourcelead.payroll.dto.USPayrollAssociateTaxHistoryDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.dto.USPaysheetDTO;
 import com.bis.sourcelead.payroll.dto.VendorRecruitersDTO;
+import com.bis.sourcelead.payroll.entity.AssociateBankData;
 import com.bis.sourcelead.payroll.entity.AssociateContribution;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 import com.bis.sourcelead.payroll.entity.BankDataHistory;
@@ -614,14 +615,15 @@ public class USPayrollRestController {
 		 */
 		@RequestMapping(value = { "/findAssociateBankDataByUserId","/rest/findAssociateBankDataByUserId" }, method = RequestMethod.GET)
 		@ResponseBody
-		public AssociateBankDataDTO findAssociateBankDataByUserId(@RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request, HttpServletResponse response) throws Exception
+		public List<AssociateBankData> findAssociateBankDataByUserId(@RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request, HttpServletResponse response) throws Exception
 		{
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			AssociateBankDataDTO  associateBankDataDTO = associateBankDataService.findAssociateBankDataByUserId(userId,orgLocation);	
-			return associateBankDataDTO;
+			Candidate candidate = candidateService.getCandidateByConsultantUserId(userId, orgLocation.getId());
+			List<AssociateBankData> associateBankDataList =  associateBankDataService.findAllAssociateBankDataByCandidateId(candidate.getId(),orgLocation.getId());
+			return associateBankDataList;
 		}
 		
-		
+
 		/**
 		 * find Associate Tax Summary By User Id
 		 * @param associateDeductionDTO
