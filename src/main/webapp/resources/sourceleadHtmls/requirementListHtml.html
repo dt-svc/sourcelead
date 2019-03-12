@@ -109,6 +109,89 @@ $(document).ready(function(){
 			requirementListCheck(searchValue,universalRequirementList,"universalSearch",atsUrl);
 		}
 });
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+ $("html").click(function(){
+	$(".newActPop").slideUp(200);
+}); 
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+function columPop(){ // updated
+	$(".colPop").show();
+	$(".colPopFot").show();
+}
+function columClose(){// updated
+	$(".colPop").hide();
+}
+$("html").click(function(){// updated
+	$(".colPop").hide();
+});
+$(".refreIcon, .colPop").click(function(e){// updated
+ 	e.stopPropagation();
+});	
+function columHide(){// updated
+	hideColumns=[]; // reset the array object.
+	$(".toggle-vis").each(function() {
+		columClose();// 
+	   var chkdVal= $(this).prop('checked');
+//		alert("chkdVal "+chkdVal);
+	   var column = table.column($(this).attr('data-column'));
+//		   alert("column "+column);
+		  if(chkdVal == true){
+//				  alert("1");
+		         column.visible(true);
+		    }
+		    else{
+//			    	 alert("2");
+		      column.visible(false);
+		      hideColumns.push($(this).attr('data-column')); // used for hiding the columns when user searched the data.
+		  }
+    });
+	$(".colPop").hide();
+	
+	reqTable.column(0).visible(false);
+
+}
+function checkAllColumns(obj){// updated
+	var id = obj.id;
+	var chkdVal= $('.toggle-vis:input:checkbox').prop('checked');
+	if(chkdVal == true){
+	if(id =='columnsPickerCheckAll'){
+		$('.toggle-vis:input:checkbox').prop('checked',true);
+	}
+	}
+	else{
+		if(id =='columnsPickerCheckAll'){
+			$('.toggle-vis:input:checkbox').prop('checked',false);
+		}
+	} 
+		
+}
+function filterPop(){ // updated.
+	$("#requirementFilterPopup").toggle();
+	$(".sideMask").fadeIn();
+};
+function closeFilter(){ // updated.
+	$("#requirementFilterPopup").hide();
+	$(".sideMask").fadeOut();
+
+}
+
+function getActions(){// // toggle events are not worked properly thats why kept in jsp.
+	$(".action-pop").slideToggle(200);
+	$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, #exportPop, #exportPopJobFair").slideUp(200);
+	
+	$("html").click(function(){
+		$(".action-pop").slideUp(200);
+	});
+	$(".action, .action-pop").click(function(e){
+	 	e.stopPropagation();
+ 	});	
+}
 </script>
 		
 </head>
@@ -2826,7 +2909,10 @@ function importAddApplicantDoc(){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				});
-</script>
+
+			
+			</script>
+
 <!-- <script>
 $(document).tooltip({
 position: {
