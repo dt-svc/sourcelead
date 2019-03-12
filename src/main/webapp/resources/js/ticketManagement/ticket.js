@@ -38,7 +38,7 @@ function getTicketManagementList() {
 		            text+= "      <td><div class='tblminwidth-150'>" + response.data[e].generatedId + "</div></td>";
 		            text+= "      <td><div class='tbldata-dotdot-vsm'><a href='/app/ticketSummary?uuid=" + response.data[e].uuid + "' title='" + response.data[e].title + "'>" + response.data[e].title + "</a></div></td>";
 		            /*text+= "     <td><div class='tbldata-dotdot-vsm'>" + response.data[e].ticketCategory + "</div></td>";*/
-		            text += "<td><select onChange='changeTicketStatus(this, \"" + response.data[e].id + "\")'>";
+		            text += "<td><select class='sel' onChange='changeTicketStatus(this, \"" + response.data[e].id + "\")'>";
 		            for(var s in statusList) {
 		            	text += "<option data-comment=" + statusList[s].commentRequired + " value='" + statusList[s].id + "' " + (statusList[s].name === response.data[e].ticketStatus ? "selected" : "") + ">" + statusList[s].name + "</option>";
 		            }
