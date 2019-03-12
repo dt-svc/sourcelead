@@ -8,6 +8,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
+import com.bis.sourcelead.payroll.dto.AssociateBankErrorData;
 import com.bis.sourcelead.payroll.entity.AssociateBankData;
 
 public interface AssociateBankDataService {
@@ -18,6 +19,5 @@ public interface AssociateBankDataService {
 
 	AssociateBankData getAssociateBankDataByOrgLocationId(Long locationId);
 	
-//	AssociateBankData saveAssociateBankData(AssociateBankDataDTO account, OrgLocations orgLocations) throws Exception;
-	public AssociateBankData saveAssociateBankData(MultipartFile multipartFile, OrgLocations orgLocation) throws Exception;
+	AssociateBankErrorData  saveAssociateBankData(MultipartFile multipartFile, OrgLocations orgLocation) throws Exception;
 }
