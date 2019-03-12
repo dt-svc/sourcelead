@@ -4681,13 +4681,19 @@ public class EMailJobScheduler {
 										approvePendingInfoGrid.append("<th> Leave type </th>");
 										approvePendingInfoGrid.append("<th> Duration </th>");
 										approvePendingInfoGrid.append("<th> Applied On </th>");
+										
+										if(leaveStatus.equalsIgnoreCase(Constants.EMPLOYEE_ON_LEAVE)) {
+											approvePendingInfoGrid.append("<th> No of days </th>");
+											approvePendingInfoGrid.append("<th> Status</th>");
+										}
+										
 										approvePendingInfoGrid.append("</tr>");
 
 										String AssociateName = "";
 										String LeaveType = "";
 										String LeaveDuration = "";
 										String leaveApplyDate = "";
-
+										
 										if (pendingLeave.getUser().getUserName() != null) {
 											AssociateName = " " + pendingLeave.getUser().getFullName();
 										}
@@ -4707,6 +4713,22 @@ public class EMailJobScheduler {
 										approvePendingInfoGrid.append("<td>" + LeaveType + "</td>");
 										approvePendingInfoGrid.append("<td>" + LeaveDuration + "</td>");
 										approvePendingInfoGrid.append("<td>" + leaveApplyDate + "</td>");
+										
+										if(leaveStatus.equalsIgnoreCase(Constants.EMPLOYEE_ON_LEAVE)) {
+											String noOfDays = "";
+											String lStatus = "";
+											
+											if (" " + pendingLeave.getNumberOfDays() != null) {
+												noOfDays = " " + pendingLeave.getNumberOfDays();
+											}
+											if (" " + pendingLeave.getStatus() != null) {
+												lStatus = " " + pendingLeave.getStatus();
+											}
+											
+											
+											approvePendingInfoGrid.append("<td>" + noOfDays + "</td>");
+											approvePendingInfoGrid.append("<td>" + lStatus + "</td>");
+										}
 										approvePendingInfoGrid.append("</tr>");
 										approvePendingInfoGrid.append("</tbody>");
 										approvePendingInfoGrid.append("</table>");
@@ -4764,6 +4786,10 @@ public class EMailJobScheduler {
 													emailReminder.getOrgLocationsId().getOrg(),
 													emailReminder.getOrgLocationsId(), Constants.APPROVE_PENDING_LEAVES,
 													attachmentList);
+											
+											if(leaveStatus.equalsIgnoreCase(Constants.EMPLOYEE_ON_LEAVE)) {
+											commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, emailReminder.getOrgLocationsId().getOrg(), emailReminder.getOrgLocationsId(), Constants.EMPLOYEE_ON_LEAVE, attachmentList);
+											}
 
 										} // end for loop
 
@@ -4785,8 +4811,8 @@ public class EMailJobScheduler {
 	
 	
 	@SuppressWarnings("deprecation")
-	//@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
-	@Scheduled(cron = "0 * * * * *") // Scheduled for every minute
+	@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
+	//@Scheduled(cron = "0 * * * * *") // Scheduled for every minute
 	@Async
 	public void runContractExpireEmailReminderAtOrgLevel() {
 		try {

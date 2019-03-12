@@ -219,7 +219,7 @@ function hideandshow_WaitingTobeSigned(){
 				</div> 
 
 
-			 <div class="row">
+			 <%-- <div class="row">
 				<div class="col-md-3 textBold"> Waiting to be signed</div>
 				<div class="col-md-9">
 					<div class="checkbox-new">
@@ -274,7 +274,7 @@ function hideandshow_WaitingTobeSigned(){
 																		<option ${hierarchy.remindertime == '12:00PM' ? 'selected' : ''}>12:00PM</option>
 																	</select>
 															</div>
-																<%-- <input type="text" style="display: none;" class="form-control" name="emailReminderHierarchyList[${hierarchy.reminderhierarchy}].reminderhierarchy" value="${hierarchy.reminderhierarchy}"> --%>
+																<input type="text" style="display: none;" class="form-control" name="emailReminderHierarchyList[${hierarchy.reminderhierarchy}].reminderhierarchy" value="${hierarchy.reminderhierarchy}">
 																<input type="text" style="display: none;" class="form-control" name="emailReminderHierarchyList[${hierarchy.reminderhierarchy}].id" value="${hierarchy.id}">
 															<c:if test="${loop.index == 0}">
 																<div title="Add Reminder" onClick="cloneRow('waitingTobeSigned_form');"
@@ -380,7 +380,7 @@ function hideandshow_WaitingTobeSigned(){
 							</div>
 						</form:form>
 					</div>
-				</div> 
+				</div>  --%>
   </div>
   </div>
 
