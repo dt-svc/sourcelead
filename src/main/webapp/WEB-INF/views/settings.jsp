@@ -596,20 +596,21 @@
 				
 				     	   
 			     <div class="col-md-2 reportNewCta">			
-					<!-- <div class="dropdown pull-right report-dropdown">
-					<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown">
-						<span class="caret cursorPointer"></span>
-					</span>
-						<ul class="dropdown-menu minHeight50 maxHeight250">
-						<li><a href="payrollRegister-I.html">Invite Company</a></li>
-						</ul>
-					</div> -->
-				          <a href="${SourceLeadWeb_sourceleadUrl}/emailreminderConfigurationDashboard">
+					<a href="${SourceLeadWeb_sourceleadUrl}/emailreminderConfigurationDashboard">
 							<div class="clearfix text-center mb10"><i class="reminderconfigSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4>Reminder Configuration</h4>
 					</div>
-				</div>			
+				</div>		
+				
+				
+			<%-- <div class="col-md-2 reportNewCta">
+				<a href="${SourceLeadWeb_sourceleadUrl}/performanceManagementConfiguration">
+							<div class="clearfix text-center mb10"><i class="roleconfigSVG"></i></div>
+					<div class="clearfix text-center">
+						<h4>Performance Management</h4>
+					</div>
+			</div>	 --%>
 				
 				
 				 <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 

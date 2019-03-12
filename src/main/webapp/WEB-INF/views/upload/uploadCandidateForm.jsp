@@ -21,25 +21,16 @@
 </style>
 
 
-<script type="text/javascript">
-var uploadflag= true;
-		window.onload = function () {
-			var refreshId = setInterval(function(){
-				var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';	
-				if(uploadflag == true){
-					xlsupload.getUploadInprogressProgressBar("Candidates",dateFormat);
-				  }else{
-					     clearInterval(refreshId);
-						 $(".browseProgress").hide();
-						 $("#upload_button").removeAttr("disabled");
-						 xlsupload.getUploadInprogressProgressBar("Candidates",dateFormat);
-				  }
-			},1000);
-		 };
-</script>
 
 <section class="content-wraper">
 	<section class="content-header clearfix">
+	
+	<section class="content-header clearfix">
+	        <div class="success_pop" id="selector" style="display: none; width: 600px;">
+		         <i class="fa fa-check-circle"></i><span id="successMsg"></span>
+			</div>
+    </section>
+    
       <div class="pull-left">
         <h2>Import Candidates</h2>
       </div>
@@ -52,6 +43,7 @@ var uploadflag= true;
       </c:if>
     </section>
 	<div id="loading"></div>
+	<div id="loadingMsg"></div>
 	<div class="content-area clearfix" id="dataFileImportDiv">
 		<form:form id="upload_candidate_form" name="upload_candidate_form" method="post" enctype="multipart/form-data">
 			<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
@@ -77,7 +69,7 @@ var uploadflag= true;
 								</div>
 								<div class="btn-group">
 									<input type="reset" class="btn btn-danger" value="Reset"
-										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadCandidateForm'/>'">
+										onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_sourceleadUrl}/uploadCandidateForm'/>'">
 								</div>
 							</div>
 						</div>
@@ -103,7 +95,7 @@ var uploadflag= true;
 								<input id="uploadFile" placeholder="" disabled="disabled"
 									style="width: 100%;" />
 							</div>
-							 <p class="text-danger small" style="font-size: 12px; display: none;" id="errorImage" ><i class="fa fa-exclamation-triangle" ></i><b>&nbsp;Document size should be less than 10 MB</b></p>
+							 <p class="text-danger small" style="font-size: 12px; display: none;" id="errorImage" ><i class="fa fa-exclamation-triangle" ></i><b>&nbsp;Document size should be less than 8 MB</b></p>
 						</div>
 
 						<!--  Downloaded File show here -->
@@ -177,7 +169,7 @@ function checkInviteEmail(){
 <script type="text/javascript">
 document.getElementById("uploadBtn").onchange = function () {
 	  var sizeinbytes = document.getElementById('uploadBtn').files[0].size;
-	  if(sizeinbytes > 10485760){
+	  if(sizeinbytes > 8485760){
 		  document.getElementById("errorImage").style.display="";
 		  $('#newUploadFile').text('');
 		  $("#upload_button").attr("disabled","disabled");
@@ -202,7 +194,7 @@ function fetchFieldsWithMatchedColumn(){
       	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
           	$.ajax({
     			type: "POST",
-    		    url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition, 
+    		    url: sourceleadUrl+"/candidateUploadFieldMapping?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition, 
     		    success: function(data) {
     		    	$("#dataFileImportDiv").attr("style","display:none");
     		    	$('#dataFieldsDiv').removeAttr("style");

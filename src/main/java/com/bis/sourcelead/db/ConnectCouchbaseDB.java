@@ -2,6 +2,10 @@ package com.bis.sourcelead.db;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.json.simple.JSONObject;
@@ -9,9 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.bis.sourcelead.couchbase.UserRoleSessionProfileDTO;
 import com.bis.sourcelead.service.CouchbaseClusterService;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.CouchbaseCluster;
+import com.couchbase.client.java.datastructures.collections.CouchbaseQueue;
+import com.couchbase.client.java.document.JsonArrayDocument;
 import com.couchbase.client.java.document.JsonDocument;
 import com.couchbase.client.java.document.json.JsonObject;
 import com.couchbase.client.java.env.CouchbaseEnvironment;
@@ -30,7 +37,7 @@ public class ConnectCouchbaseDB {
 public void ConnectCouchbase() throws IOException, SQLException {
 	
 	try {
- 
+		
 	 System.out.println("----Connecting to userProfile bkt statrs-----");
 		
 	 CouchbaseEnvironment environment = DefaultCouchbaseEnvironment.builder().socketConnectTimeout(536699)
@@ -38,6 +45,15 @@ public void ConnectCouchbase() throws IOException, SQLException {
 	 
 	 Cluster cluster = CouchbaseCluster.create(environment, "127.0.0.1");
 			 Bucket bucket = cluster.openBucket("test","root123",56678L, TimeUnit.MILLISECONDS);
+			 
+			 try {
+				tryQueue(bucket);
+			} catch (Exception e) {
+				e.printStackTrace();
+				
+			}
+			 
+			 
 			 
 			 ObjectMapper sessionObj = new ObjectMapper();
 	         try {
@@ -74,6 +90,38 @@ public void ConnectCouchbase() throws IOException, SQLException {
 
 
  
+private void tryQueue(Bucket bucket) {
+	Queue<String> shoppingList = new CouchbaseQueue<String>("queueDocId", bucket);
+	shoppingList.add("loaf of bread");
+	shoppingList.add("VENKATA");
+	shoppingList.add("SUBBAYYA");
+	shoppingList.add("GARU");
+	shoppingList.add("container of milk");
+	shoppingList.add("stick of butter");
+	shoppingList.add("SUPERSTAR");
+	shoppingList.add("SUPERMAN");
+
+	// What does the JSON document look like?
+	System.out.println(bucket.get(JsonArrayDocument.create("queueDocId")).content());
+	        //=> ["stick of butter","container of milk","loaf of bread"]
+
+	/*String item; int count = 0;
+	while ((item = shoppingList.poll()) != null && count <= 3) {
+		count++;
+	    System.out.println(item);
+	    // => loaf of bread
+	    // => container of milk
+	    // => stick of butter
+	}*/
+
+	// What does the JSON document look like after draining the queue?
+	System.out.println(bucket.get(JsonArrayDocument.create("queueDocId")).content());
+	       	
+}
+
+
+
+
 public static void main(String[] args) throws IOException, SQLException {
 	ConnectCouchbaseDB dump = new ConnectCouchbaseDB();
 	dump.ConnectCouchbase();

@@ -164,7 +164,7 @@ public class DataMigrationCommonRestController {
 	
 	
 	
-	/*@RequestMapping(value = {"/candidateUploadFieldMapping","/rest/candidateUploadFieldMapping"}, method = RequestMethod.POST)
+	@RequestMapping(value = {"/candidateUploadFieldMapping","/rest/candidateUploadFieldMapping"}, method = RequestMethod.POST)
 	public ModelAndView candidateUploadFieldMapping(DataMigrationCommonDTO dataMigrationCommonDTO , HttpServletRequest request) throws Exception
 	{
 		  
@@ -189,18 +189,23 @@ public class DataMigrationCommonRestController {
 		return model;
 	}
 	
-	@RequestMapping(value = {"/storeCandidateBulkUpload","/rest/storeCandidateBulkUpload"}, method = RequestMethod.POST)
-	public ModelAndView storeCandidateBulkUpload(CandidateBulkUploadDTO candidateBulkUploadDTO, UploadEntriesDTO uploadEntriesDTO, HttpServletRequest request) throws Exception
+	@RequestMapping(value = {"/storeCandidateBulkUploadToCouchbase","/rest/storeCandidateBulkUploadToCouchbase"}, method = RequestMethod.POST)
+	public ModelAndView storeCandidateBulkUploadToCouchbase(CandidateBulkUploadDTO candidateBulkUploadDTO, UploadEntriesDTO uploadEntriesDTO, HttpServletRequest request) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
-		String importStatus = dataMigrationService.storeCandidateBulkUploads(candidateBulkUploadDTO,uploadEntriesDTO,request);
+		String couchbaseQueueKey = dataMigrationService.storeCandidateBulkUploadToCouchbase(candidateBulkUploadDTO,uploadEntriesDTO,request);
 		 
 		model.setViewName("upload/candidateImportFieldMapping");
-		model.addObject("importStatus", importStatus);
-		model.addObject("uploadType", uploadEntriesDTO.getUploadType());
+		model.addObject("couchbaseQueueKey", couchbaseQueueKey);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
-	}*/
+	}
+	
+	@RequestMapping(value = {"/storeCandidateBulkUpload","/rest/storeCandidateBulkUpload"}, method = RequestMethod.POST)
+	public void storeCandidateBulkUpload(@RequestParam(value = "couchbaseQueueKey", required = true) String couchbaseQueueKey, HttpServletRequest request) throws Exception
+	{
+		dataMigrationService.saveCandidateBulkImports(couchbaseQueueKey,request);
+	}
 	
 	
 	@RequestMapping(value = {"/getDataByMatchedFields","/rest/getDataByMatchedFields"}, method = RequestMethod.POST)
