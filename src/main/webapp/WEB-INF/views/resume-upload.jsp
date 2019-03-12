@@ -13,7 +13,7 @@
 	href="http://netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"
 	rel="stylesheet">
 <link
-	href="/resources/css/bootstrap.min.css"
+	href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap.min.css"
 	rel="stylesheet">
 </head>
 <style>
@@ -274,7 +274,7 @@ padding: 2px
 	</footer>
 </body>
 
-<script src="/resources/js/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-1.11.1.min.js" type="text/javascript"></script>
 <!-- <script src="resources/js/clipboard.min.js" type="text/javascript"></script> -->
 <script>
 var sourceleadUrl = '${sourceleadUrl}';
@@ -316,10 +316,10 @@ var sourceleadUrl = '${sourceleadUrl}';
 	
 </script>
 <input type='file' style='display:none' multiple="multiple" id='filesSelected'/>
-<script type="text/javascript" src="/resources/pluploadjs/plupload.full.min.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/pluploadjs/plupload.full.min.js"></script>
 
-<script type="text/javascript" src="/resources/pluploadjs/jquery.plupload.queue.min.js" charset="UTF-8"></script>
-<link type="text/css" rel="stylesheet" href="/resources/pluploadjs/jquery.plupload.queue.css" media="screen" />
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/pluploadjs/jquery.plupload.queue.min.js" charset="UTF-8"></script>
+<link type="text/css" rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/pluploadjs/jquery.plupload.queue.css" media="screen" />
 
 <script type="text/javascript">
 $(function() {

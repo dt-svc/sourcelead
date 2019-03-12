@@ -135,7 +135,7 @@ var uploadflag= true;
 	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table>
 		</div>
 	
-<script type="text/javascript" src="/resources/js/xlsupload.js"></script>	
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/xlsupload.js"></script>	
 <script type="text/javascript">
 function cancelFileImport(){
 	location.replace(atsUrl+"/uploadCandidateForm");

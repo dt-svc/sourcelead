@@ -6,9 +6,9 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 
-<!-- <script src="/resources/js/summernote.js"></script> -->
+<!-- <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/summernote.js"></script> -->
 
-<%-- <link rel="stylesheet" href="/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css"> --%>
+<%-- <link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css"> --%>
 
 <style>
     .modal-backdrop{ display: none;    }
@@ -226,17 +226,17 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 					<ul>
 						<li>
 							<a onclick="getEmailSettings('gmail');">
-							<img src="/resources/images/gmail-logo.jpg" alt="" />Gmail
+							<img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/gmail-logo.jpg" alt="" />Gmail
 							</a>
 						</li>
 						<li>
 							<a onclick="getEmailSettings('yahoo');">
-							<img src="/resources/images/yahoo-logo.jpg" alt="" />Yahoo
+							<img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/yahoo-logo.jpg" alt="" />Yahoo
 							</a>
 						</li>
 						<li>
 							<a onclick="getEmailSettings('others');">
-							<img src="/resources/images/mail-icon.jpg" alt="" />Other
+							<img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/mail-icon.jpg" alt="" />Other
 							</a>
 						</li>
 					</ul>
@@ -329,8 +329,8 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 	<p><span id='emailResponseText'></span><i class="fa fa-close" onclick='textBoxCancel();'></i></p>
 </div>
 
-<script src="/resources/js/nicEdit-latest.js"></script>
-<script src="/resources/js/nicEdit.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/nicEdit-latest.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/nicEdit.js"></script>
 
 <script type="text/javascript">
 	var mailType = '${mailType}';

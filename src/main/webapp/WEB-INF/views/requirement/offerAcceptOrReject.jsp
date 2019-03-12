@@ -13,16 +13,16 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
 
-<link rel="icon" type="image/png" href="/resources/images/fav.png" />
+<link rel="icon" type="image/png" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/fav.png" />
 <title>Welcome to Source Lead :: Account List</title>
 <!-- Bootstrap -->
-<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
-<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
-<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
  <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 
 </head>
@@ -57,7 +57,7 @@ width: auto;
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="/resources/images/SourceLead-logo.png" alt="Source Lead"> </i>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/SourceLead-logo.png" alt="Source Lead"> </i>
     </a>
     </span>
     <nav class="header-nav navbar">

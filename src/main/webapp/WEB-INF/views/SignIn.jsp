@@ -7,7 +7,7 @@
     	<c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
     </c:if>
     <title>::. Sign In .::</title>
-    <%-- <link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
+    <%-- <link rel="icon" type="/resources/image/png" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
     <link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
@@ -48,7 +48,7 @@
         }
         %>
         
-	<a href="/"><img src="/resources/images/SourceLead-logo.png" alt="SourceLead Logo" title="SourceLead Logo" class="img-responsive"/></a>
+	<a href="/"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/SourceLead-logo.png" alt="SourceLead Logo" title="SourceLead Logo" class="img-responsive"/></a>
 		<h1>Sign In</h1>
 		<div id="loginWhiteListDiv" class="orgErrorMes"></div>
 	       	<c:if test="${not empty error}">
@@ -208,10 +208,10 @@
     </div>
   </div>   --%>
   
-	<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
     
 </body>
 

@@ -4,8 +4,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link rel="stylesheet" href="/resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
-<link rel="stylesheet" href="/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
 
 <script type="text/javascript" src="${SourceLeadWeb_atsUrl}/resources/js/campaignRecipient.js"></script>
 <script type="text/javascript" src="${SourceLeadWeb_atsUrl}/resources/js/campaignSender.js"></script>
@@ -213,7 +213,7 @@ display: none;
     
   </section>
   
-  <script src="/resources/js/nicEdit.js"></script> 
+  <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/nicEdit.js"></script> 
   
    <script type="text/javascript">
    function manuallyEnterJoblistToEmail(){

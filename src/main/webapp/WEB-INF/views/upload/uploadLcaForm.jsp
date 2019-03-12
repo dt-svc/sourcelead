@@ -145,7 +145,7 @@ var uploadflag= true;
 </div>
 
 
-<script type="text/javascript" src="/resources/js/xlsupload.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/xlsupload.js"></script>
 
 <script type="text/javascript">
 document.getElementById("uploadBtn").onchange = function () {

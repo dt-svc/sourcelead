@@ -236,7 +236,7 @@ function getSelectedDateFromCalendar(selectedDate) {
 						 result = result + '          </div>                       ';
 						 result = result + '              <div class="media-body paddingLeft">   ';
 						 result = result + '                  <figure class="pull-left">         ';
-						 result = result + '                  <img src="/resources/images/interview_icons.png" class="img-responsive" width="40">    ';
+						 result = result + '                  <img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/interview_icons.png" class="img-responsive" width="40">    ';
 						 result = result + '                  </figure>                                                                   ';
 						 result = result + '                      <div class="pull-left event_details form-horizontal">                   ';
 						 result = result + '                          <p><label class="text-muted small col-md-2">Name:</label>'+report.candidateName+' </p>    ';
@@ -298,7 +298,7 @@ function getSelectedDateFromCalendar(selectedDate) {
 						 	 opt = opt + '         </div>                          ';
 						 	 opt = opt + '             <div class="media-body paddingLeft"> ';
 						 	 opt = opt + '                 <figure class="pull-left">       ';
-						 	 opt = opt + '                 <img src="/resources/images/task-icon.png" class="img-responsive" width="40">    ';
+						 	 opt = opt + '                 <img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/task-icon.png" class="img-responsive" width="40">    ';
 						 	 opt = opt + '                 </figure>                                                             ';
 						 	 opt = opt + '                     <div class="pull-left event_details">                             ';
 						 	 opt = opt + '                         <p><label class="text-muted small col-md-2">Subject:</label> '+report.subject+'</p>         ';

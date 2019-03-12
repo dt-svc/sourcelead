@@ -7,30 +7,30 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<link rel="icon" type="image/png" href="/resources/images/fav.png" />
+<link rel="icon" type="image/png" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/fav.png" />
 <title>Welcome to Source Lead</title>
-<link rel="stylesheet" href="/resources/css/cropper.min.css" >
-<link rel="stylesheet" href="/resources/css/style.css" />
-<link rel="stylesheet" href="/resources/css/chosen.min.css">
-<link href="/resources/css/sourcelead-bundle.css" rel="stylesheet">
-<link href="/resources/css/sourcelead-main.css" rel="stylesheet">
-<link rel="stylesheet" href="/resources/css/timesheet.css" type="text/css">
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/cropper.min.css" >
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/style.css" />
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/chosen.min.css">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/sourcelead-bundle.css" rel="stylesheet">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/sourcelead-main.css" rel="stylesheet">
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/timesheet.css" type="text/css">
 <!--  scripts are added here  -->
 
-<script src="/resources/js/masterHeaderAction.js"></script>
-<script src="/resources/js/jquery-1.11.1.min.js"></script>
-<script src="/resources/js/jquery-ui.js"></script>
-<script src="/resources/js/bootstrap-select.min.js"></script>
-<script src="/resources/js/formvalidator.js"></script>
-<script src="/resources/js/sourcelead-app.js"></script>
-<script src="/resources/js/jquery.dataTables.min.js"></script>
-<script src="/resources/js/jquery.timepicker.js"></script>
-<script  src="/resources/js/jobs/js/controls.js"></script>
-<script src="/resources/js/cropper.min.js"></script> 
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/masterHeaderAction.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-1.11.1.min.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-ui.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap-select.min.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/sourcelead-app.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.dataTables.min.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.timepicker.js"></script>
+<script  src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jobs/js/controls.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/cropper.min.js"></script> 
 <script src="${SourceLeadWeb_atsUrl}/resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
 <script src="${SourceLeadWeb_atsUrl}/resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
-<script src="/resources/js/chosen.jquery.min.js"></script>
-<script src="/resources/js/slead-common.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/chosen.jquery.min.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/slead-common.js"></script>
 <script src="${SourceLeadWeb_atsUrl}/resources/js/requirement.js"></script>
 <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${SourceLeadWeb_googleMapsLocationApiKey}" type="text/javascript"></script>
 

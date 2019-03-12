@@ -16,14 +16,14 @@
 
     
     <title>::. Registration .::</title>
-    <link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
+    <link rel="icon" type="/resources/image/png" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="/resources/css/bootstrap-select.min.css">
-    <link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
-    <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-    <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-    <link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-    <link href="/resources/css/crowdsourcing-main.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/chosen.min.css?staticTime=${staticTime}">
+    <link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+    <link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+    <link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
+    <link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/crowdsourcing-main.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
     
 </head>
 
@@ -320,7 +320,7 @@ window.onload = function () {
   <div class="container">
     
     <div class="outsoucing-registaion registerwith">
-        <div class="company_logo companyLogo pull-left mb10"><a href="<c:url value='/'/>"><img src="/resources/images/SourceLead-logo.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></a></div>
+        <div class="company_logo companyLogo pull-left mb10"><a href="<c:url value='/'/>"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/SourceLead-logo.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></a></div>
       <div class="clearfix"></div>
       <ul class="nav nav-tabs">
           <li class="active" id="jobSeekerId"><a data-toggle="tab" href="#professional" onclick="resetCredentials('Professional')"><i class="fa fa-user paddingRight"></i>Job Seeker</a></li>
@@ -736,10 +736,10 @@ window.onload = function () {
       </div>
   </div>
 </div>
-<script src="/resources/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script> 
-<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
-<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script> 
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 </body>
 
 <script>
@@ -783,7 +783,7 @@ function removeValidationNameRecPop(){
 	}
 }
 </script>
-<script src="/resources/js/bootstrap-select.min.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap-select.min.js"></script>
 <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${googleMapsLocationApiKey}" type="text/javascript"></script>
 <script>
 function resetCredentials(type){

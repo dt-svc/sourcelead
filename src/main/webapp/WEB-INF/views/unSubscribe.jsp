@@ -15,9 +15,9 @@
        <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
      </c:if>
     <title>::. Unsubscribe .::</title>
-    <link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
-	<link rel="stylesheet" href="/resources/css/font-awesome.min.css?staticTime=${staticTime}">
-	<link rel="stylesheet" href="/resources/css/timesheet.css" type="text/css" >   
+    <link rel="icon" type="/resources/image/png" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/fav.png" />
+	<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/font-awesome.min.css?staticTime=${staticTime}">
+	<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/timesheet.css" type="text/css" >   
 </head>
 
 
@@ -400,16 +400,16 @@ function validateUserEmail(){
 	});
 }
 </script>
-<script src="/resources/js/jquery-ui.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-ui.js"></script>
 <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${googleMapsLocationApiKey}" type="text/javascript"></script>
-<script src="/resources/js/formvalidator.js"></script>
-<script src="/resources/js/jquery.timepicker.js"></script>
-<script src="/resources/static-web/js/jquery-1.11.3.min.js"></script>
-<script src="/resources/js/bootstrap-select.min.js"></script>
-<script src="/resources/static-web/js/owl.carousel.js"></script>
-<script src="/resources/static-web/js/bootstrap.min.js"></script> 
-<script src="/resources/static-web/js/jquery.prettyPhoto.js" type="text/javascript"></script>
-<script src="/resources/static-web/js/customscripts.js" type="text/javascript"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.timepicker.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/static-web/js/jquery-1.11.3.min.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap-select.min.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/static-web/js/owl.carousel.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/static-web/js/bootstrap.min.js"></script> 
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/static-web/js/jquery.prettyPhoto.js" type="text/javascript"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/static-web/js/customscripts.js" type="text/javascript"></script>
 <jsp:include page="masterFooter.jsp" />
 <%-- <jsp:include page="staticFooter.jsp" /> --%>
 </html>
