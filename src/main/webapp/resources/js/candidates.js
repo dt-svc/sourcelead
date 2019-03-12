@@ -9525,27 +9525,27 @@ function storeCertificate(candidateId) {
 					}); 
 				}  */
 			function goToCandidateList(){
-				location.href = "${SourceLeadWeb_atsUrl}/candidatesList";
+				location.href = atsUrl+"/candidatesList";
 			}
 				
 			function goToGlobalMarketPlaceList(){
-				location.href = "${SourceLeadWeb_atsUrl}/globalMarketplacePage";
+				location.href = atsUrl+"/globalMarketplacePage";
 			}
 
 			function goToOrgMarketPlaceList(){
-				location.href = "${SourceLeadWeb_atsUrl}/OrgMarketplace";
+				location.href = atsUrl+"/OrgMarketplace";
 			}
 			function goToPurchaseOrderList(){
-				location.href ="${SourceLeadWeb_atsUrl}/PurchaseOrderList";
+				location.href =atsUrl+"/PurchaseOrderList";
 				}
 			function goToSalesOrderList(){
-				location.href = "${SourceLeadWeb_atsUrl}/SalesOrderList";
+				location.href = atsUrl+"/SalesOrderList";
 			}
 			function goToCartList(){
-				location.href = "${SourceLeadWeb_atsUrl}/candidateMarketplaceCart";
+				location.href = atsUrl+"/candidateMarketplaceCart";
 			}
 			function goToWalletList(){
-				location.href = "${SourceLeadWeb_atsUrl}/walletList";
+				location.href = atsUrl+"/walletList";
 			}
 // updated Here 1213.
 // candidateTable.js scripts start here.
