@@ -17,7 +17,7 @@
         <div class="project_side_wrap_inn_tabs">
           <ul class="project-tabs-menu project-tabs-menu-custom">
             <li class="current"><a href="#tab-1">Details</a></li>
-            <li class=""><a href="#tab-2" onclick="getTicketCommetList('${ticketSummary.id}');">Comment</a></li>
+            <%-- <li class=""><a href="#tab-2" onclick="getTicketCommetList('${ticketSummary.id}');">Comment</a></li> --%>
             <div class="clearfix"></div>
           </ul>
           <div class="project_tabs project_wrap">
@@ -45,7 +45,7 @@
                       <div class="row">
                         <c:forEach items="${ticketSummary.ticketAssignToList}" var="assignTo">
 	                        <div class="col-md-4">
-	                          <div class="assigNeeImg mr10"> <img src="../images/23.jpg" alt="Assignee Image" title="Assignee"> </div>
+	                          <div class="assigNeeImg mr10"> <img src="${assignTo.userImageURL != null && assignTo.userImageURL != '' ? assignTo.userImageURL : '/resources/images/userprofile-img.png'}" alt="" title="${assignTo.userName}"> </div>
 	                          <label>${assignTo.userName}</label>
 	                        </div>
                         </c:forEach>
@@ -64,9 +64,9 @@
                   </div>
                   <div class="form-group clearfix">
                     <label class="col-md-2 paddingRight">Priority<span class="pull-right paddingLeft">:</span></label>
-                    <div class="col-md-10">
+                    <div class="col-md-10 priorityImage">
                     	<c:if test="${ticketSummary.ticketPriorityImage != null}">
-	                     	<img src="${ticketSummary.ticketPriorityImage}" style="height: 50px;width: 50px;" class="mr10">
+	                     	<img class="mr10" src="${ticketSummary.ticketPriorityImage}">
                     	</c:if>
                      	${ticketSummary.ticketPriority}
                      </div>

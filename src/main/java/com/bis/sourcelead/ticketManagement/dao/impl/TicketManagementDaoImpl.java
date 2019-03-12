@@ -445,9 +445,13 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId, int status, String userRole) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from Ticket t where t.orgLocations.id=" + orgLocationId;
+			String query = "select t from Ticket t";
 			if(!Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) && !Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
-				query += " and t.createdBy.id=" + userId;
+				query += " join t.ticketAssignToList assignTo";
+			}
+			query += " where t.orgLocations.id=" + orgLocationId;
+			if(!Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) && !Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+				query += " and t.createdBy.id=" + userId + " or assignTo.user.id=" + userId;
 			}
 			if(status >= 0) {
 				query += " and t.status=" + status;
@@ -462,13 +466,12 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Ticket getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId) {
+	public Ticket getTicketSummaryByUUID(String uuid, Long orgLocationId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from Ticket t where t.uuid=:uuid and t.orgLocations.id=:orgLocationId and t.createdBy.id=:userId";
+			String query = "from Ticket t where t.uuid=:uuid and t.orgLocations.id=:orgLocationId";
 			Query queryObj = session.createQuery(query);
 			queryObj.setString("uuid", uuid);
-			queryObj.setLong("userId", userId);
 			queryObj.setLong("orgLocationId", orgLocationId);
 			List<Ticket> ticketList = queryObj.list();
 			if(ticketList != null && !ticketList.isEmpty())

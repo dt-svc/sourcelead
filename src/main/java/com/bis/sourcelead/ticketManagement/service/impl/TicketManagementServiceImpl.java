@@ -650,11 +650,11 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public TicketDTO getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId, String dateFormat, boolean includeAttachments) {
+	public TicketDTO getTicketSummaryByUUID(String uuid, Long orgLocationId, String dateFormat, boolean includeAttachments) {
 		TicketDTO ticketDTO =  new TicketDTO();
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat();
-			Ticket ticketManagement = ticketManagementDao.getTicketSummaryByUUID(uuid,userId,orgLocationId);
+			Ticket ticketManagement = ticketManagementDao.getTicketSummaryByUUID(uuid, orgLocationId);
 			if (ticketManagement != null) {
 				ticketDTO.setId(ticketManagement.getId());
 				ticketDTO.setUuid(ticketManagement.getUuid());
