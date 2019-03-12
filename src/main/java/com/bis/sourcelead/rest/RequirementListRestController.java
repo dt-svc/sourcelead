@@ -2239,20 +2239,19 @@ public class RequirementListRestController {
 			            	}
 			            }
 					}
-				}
+			
 				 resp.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
 				 SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
 						.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,
 								search.getStart(), search.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilderForCount);
 				
 				 resp.setRecordsTotal(searchResponseForCount == null ? resp.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
-			     resp.setData(reqList);
-			     resp.setResponse(Result.SUCCESS.name());
-				 resp.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				 resp.setData(reqList);
+			     
 			}catch(Exception e) {
 				e.printStackTrace();
-				resp.setResponse(Result.AWKWARD.name());
-				resp.setResponseMessage(Result.AWKWARD.getValue());
+				resp.setError(e.getMessage());
 			}
 		}else {
 			resp.setResponse(Result.SESSION_TIMEDOUT.name());

@@ -921,7 +921,7 @@ function getEmployeementType(designationType){
 
 <script type="text/javascript">
  function createUser() {
-	 var country = '${SourceLeadWeb_loginCountryName}'; 
+	 var country = '${SourceLeadWeb_country}'; 
  	 	var RatePer = document.getElementById("RatePer").value; 
 		if(RatePer != null && RatePer != ""){
 			$('#Rate').removeAttr('data-validation-optional');
@@ -1315,7 +1315,7 @@ function getAssociateUserDetails(){
  function getDepartmentsList(){
 	 $.ajax({
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getDepartmentsList?"+tokenParamName+"="+tokenValue+"",
+	    	url: atsUrl+"/getDepartmentsList?"+tokenParamName+"="+tokenValue+"",
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
