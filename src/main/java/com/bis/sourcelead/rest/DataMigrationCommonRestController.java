@@ -35,6 +35,7 @@ import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UploadXlsHistoryService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
@@ -63,6 +64,26 @@ public class DataMigrationCommonRestController {
 	
 	@Autowired
 	UploadXlsHistoryService uploadXlsHistoryService;
+	
+	
+	
+   @RequestMapping(value = "/uploadCandidateForm")
+	public ModelAndView uploadCandidateForm(HttpServletRequest request) {
+	 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+		ModelAndView model = new ModelAndView();
+		model.setViewName("upload/uploadCandidateForm");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		sessionData.setNav(Constants.Candidates);
+		return model;
+
+	}
+	 
 	
 	@RequestMapping(value = {"/dataMigrationCommon","/rest/dataMigrationCommon"}, method = RequestMethod.POST)
 	public ModelAndView dataMigrationCommon(DataMigrationCommonDTO dataMigrationCommonDTO , HttpServletRequest request) throws Exception
@@ -154,7 +175,7 @@ public class DataMigrationCommonRestController {
 		dataWithCellId = dataMigrationService.getCandidateMappingFileData(ac+dataMigrationCommonDTO.getFilePath(), dataMigrationCommonDTO.getHeaderPosition());
 		List<SourceleadFormFields>  formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(73l, 1);
 		
-		model.setViewName("upload/candidateDataImportFieldMapping");
+		model.setViewName("upload/candidateImportFieldMapping");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("dataWithCellId", dataWithCellId);
 		model.addObject("fields", formFields);
@@ -168,18 +189,18 @@ public class DataMigrationCommonRestController {
 		return model;
 	}
 	
-	@RequestMapping(value = {"/storeCandidateBulkUpload","/rest/storeCandidateBulkUpload"}, method = RequestMethod.POST)
+	/*@RequestMapping(value = {"/storeCandidateBulkUpload","/rest/storeCandidateBulkUpload"}, method = RequestMethod.POST)
 	public ModelAndView storeCandidateBulkUpload(CandidateBulkUploadDTO candidateBulkUploadDTO, UploadEntriesDTO uploadEntriesDTO, HttpServletRequest request) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
 		String importStatus = dataMigrationService.storeCandidateBulkUploads(candidateBulkUploadDTO,uploadEntriesDTO,request);
 		 
-		model.setViewName("upload/candidateDataImportFieldMapping");
+		model.setViewName("upload/candidateImportFieldMapping");
 		model.addObject("importStatus", importStatus);
 		model.addObject("uploadType", uploadEntriesDTO.getUploadType());
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
-	}
+	}*/
 	
 	
 	@RequestMapping(value = {"/getDataByMatchedFields","/rest/getDataByMatchedFields"}, method = RequestMethod.POST)
