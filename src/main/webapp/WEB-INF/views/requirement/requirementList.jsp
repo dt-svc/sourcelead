@@ -62,6 +62,8 @@ var country = '${SourceLeadWeb_country}';
 var loginUser = '${SourceLeadWeb_loginUserFullName}';
 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 var userImgUrl =  '${SourceLeadWeb_userImgUrl}'; 
+var tokenParamName = "${_csrf.parameterName}";
+var tokenValue = "${_csrf.token}";
 //
 
 var viewTab = "${viewTab}";
@@ -143,7 +145,7 @@ function clearAllStatus(){
 	$("ul#status > li input:checkbox").prop("checked",false);
 	requirementList('list','${SourceLeadWeb_atsUrl}');
 }
-function getActions(){// // toggle events are not worked properly thats why kept in jsp.
+/* function getActions(){// // toggle events are not worked properly thats why kept in jsp.
 	$(".action-pop").slideToggle(200);
 	$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, #exportPop, #exportPopJobFair").slideUp(200);
 	
@@ -153,17 +155,17 @@ function getActions(){// // toggle events are not worked properly thats why kept
 	$(".action, .action-pop").click(function(e){
 	 	e.stopPropagation();
  	});	
-}
-function newActions(){
+} */
+/* function newActions(){
 	$(".newActPop").slideToggle(200);
 	$(".action-pop").slideUp(200);
 }
-$("html").click(function(){
+ $("html").click(function(){
 	$(".newActPop").slideUp(200);
-});
+}); 
 $(".overIcon, .newActPop").click(function(e){
  	e.stopPropagation();
-});	
+});	 */
 </script>
 <script>
 $(document).ready(function() {
@@ -670,4 +672,6 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	};
 	
 }
+
+
 </script>
