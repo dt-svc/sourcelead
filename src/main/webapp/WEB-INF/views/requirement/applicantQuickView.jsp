@@ -133,7 +133,7 @@ function applicantQuickViewProfile(submissionId,candidateId){
 					  if(json.candidate.fileUrl != null && json.candidate.fileUrl !='' && json.candidate.fileUrl !="undefined"){
 					result = result+'<img  data-id="profileImage" id="userImage" onerror="predefineProfileImage(this);" src="'+json.candidate.fileUrl+'" alt="Profile Image" class="media-object" style="width:65px">';
 					  }else{
-					result = result+'<img  data-id="profileImage" id="userImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class="media-object" style="width:65px">';
+					result = result+'<img  data-id="profileImage" id="userImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/userprofileImg.jpg" alt="Profile Image" class="media-object" style="width:65px">';
   
 					  } 
 					if(json.candidateScore != null && json.candidateScore != '' && json.candidateScore != 'undefined'){

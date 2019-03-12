@@ -15,7 +15,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
  
- <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+ <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
     <script type="text/javascript">
 		window.onload = function () {
 			initLocationAuto('userLocation','','','','','','');

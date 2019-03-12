@@ -4,8 +4,8 @@
 
 <spring:url value="/resources/css/styles.css" var="cssmy"/>
 <link href="${cssmy}" rel="stylesheet">
-<script src="/resources/js/jquery-1.11.3.min.js"></script>
-<script src="/resources/js/signer.js" type="text/javascript"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-1.11.3.min.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/signer.js" type="text/javascript"></script>
              
              
 <c:if test='${!empty SourceLeadWeb_sourceleadUrl}'>
@@ -14,11 +14,11 @@
 </c:if>
 
  <c:if test='${empty SourceLeadWeb_sourceleadUrl}'>
- <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
- <link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
- <link href="/resources/css/bootstrap.min.css" rel="stylesheet">
- <script src="/resources/js/bootstrap.min.js"></script> 
+ <link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+ <link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
+ <link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap.min.css" rel="stylesheet">
+ <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap.min.js"></script> 
  </c:if>
 
 <script>
@@ -96,7 +96,7 @@ position: relative;top:8px;
 <header class="publicpageHeader">
 <div class="clearfix">
 	<div class="publicpage-logo col-md-2 text-center">
-		<a href="javascript:void(0)" title="Source Lead"> <i> <img src="/resources/images/logo-sourceld.png" alt="Source Lead"></i></a>
+		<a href="javascript:void(0)" title="Source Lead"> <i> <img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/logo-sourceld.png" alt="Source Lead"></i></a>
 	</div>
 	</div>
 </header>

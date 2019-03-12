@@ -14,8 +14,8 @@
 	<jsp:include page="requirementAssignedTo.jsp"></jsp:include>
 </c:if>
 
-<script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
-<link href="/resources/css/editor.css?staticTime=${staticTime}"
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/editor.js?staticTime=${staticTime}"></script>
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/editor.css?staticTime=${staticTime}"
 	type="text/css" rel="stylesheet" />
 
 <script>

@@ -9,7 +9,7 @@
               <exception></exception>
               <div class="blank-pages-tech">
                 <p class="text-center">
-                	<img src="/resources/images/alertone.png" alt="Alert Tone">
+                	<img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/alertone.png" alt="Alert Tone">
                 </p>
                 <p class="big-txt">Well, this is Awkward ...</p>
                 <p>Due to technical difficulties we are unable to process your request.

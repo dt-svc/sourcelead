@@ -76,7 +76,7 @@ function alertClose(){
 	$(".modal.modal_createalert").fadeOut();
 }
 </script>
-<script src="/resources/js/jobs/js/bootstrap-select.min.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jobs/js/bootstrap-select.min.js"></script>
 <script>
 function createAlert(){
 	var email = '${SourceLeadWeb_user.email}';

@@ -6,7 +6,7 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <link
-	href="/resources/css/candidate-common.css?staticTime=${staticTime}"
+	href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/candidate-common.css?staticTime=${staticTime}"
 	rel="stylesheet">
 
 <script type="text/javascript">
