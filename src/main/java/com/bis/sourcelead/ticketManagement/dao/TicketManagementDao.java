@@ -68,7 +68,7 @@ public interface TicketManagementDao {
 
 	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId, int status, String userRole);
 
-	public Ticket getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId);
+	public Ticket getTicketSummaryByUUID(String uuid, Long orgLocationId);
 
 //	public TicketComment getTicketSummaryByTicketId(Long ticketId, long userId, Long orgLocationId);
 
