@@ -1,6 +1,5 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.List;
 
@@ -17,9 +16,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.XlsBulkUploadHistroyDao;
-import com.bis.sourcelead.dto.UploadXlsHistoryDTO;
 import com.bis.sourcelead.dto.XlsBulkUploadHistroyDTO;
-import com.bis.sourcelead.entity.UploadXlsHistory;
 import com.bis.sourcelead.entity.XlsBulkUploadHistroy;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 

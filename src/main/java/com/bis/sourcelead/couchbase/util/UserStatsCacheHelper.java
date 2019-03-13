@@ -474,6 +474,38 @@ public class UserStatsCacheHelper {
 	
 	
 	
+	@SuppressWarnings("unchecked")
+	public JSONObject getBulkImportsFailureList(String dockey) {
+
+		JSONObject failureUploadJson = new JSONObject();
+		Object sv = null;
+		sv = couchbaseClient.getCouchbaseQueueDocumentsList(dockey);
+		if (sv != null) {
+			JSONParser parser = new JSONParser();
+			try {
+				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
+				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+					String key = (String) iterator.next();
+					Object jsonValue = jsonObject.get(key);
+					JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
+					for (Object okey : jsonObjVal.keySet()) {
+						String keyStr = (String) okey;
+						Object keyvalue = jsonObjVal.get(keyStr);
+						failureUploadJson.put(keyStr, keyvalue);
+
+					}
+				}
+
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return failureUploadJson;
+	
+	}
+	
+	
+	
 	/**
 	 * @author Venkat
 	 * @param orgLocations
