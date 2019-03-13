@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.bis.sourcelead.dto.JobFairDTO;
+import com.bis.sourcelead.dto.OfferAcceptanceRateDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -18,6 +19,7 @@ import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementIncentive;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
@@ -138,6 +140,7 @@ public interface RequirementDao {
 	public List<Requirement> getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(List<Long> parentreqIds,
 			Long relationId)throws Exception;
 	
+	
 	public List<Requirement> getAllClientJobsBasedonRelationId(Long locationId,Long relationId,String userRoleName,User user,String status)throws Exception;
 
 	public Requirement checkRequirementIdNumberInDatebase(Long orgLocationId);
@@ -243,5 +246,13 @@ public interface RequirementDao {
 	void deleteRequirementIncentiveByRequirementIdOrIds(long requirementId, String ids) throws Exception;
 	
 	public List<Requirement> getJobsListByOrgRelationAndLocation(Long orglocationId,String orgRelationIds,Date startDateUTC,Date endDateUTC) throws Exception;
+
+	public List<Requirement> getAllReleasedJobsForVendorBasedOnOrgRelationId(Long orgLocationId, Long orgRelationId);
+	
+	public List<Requirement> getAllReleasedJobsBasedOnSpocId(long spocId);
+
+	public long getQualityCandidatesForVendors(List<Long> requirementIdList, long orgRelationId, long spocId, String status);
+
+	public List<RequirementSubmission> getApplicantDeclineCountsForVendor(List<Long> requirementIdList, long orgRelationId, long spocId, String submissionStatus);
 
 }

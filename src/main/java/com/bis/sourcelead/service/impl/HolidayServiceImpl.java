@@ -290,10 +290,10 @@ public class HolidayServiceImpl implements HolidayService{
 	}
 
 	@Override
-	public List<HolidayDTO> getAllHolidaysListByOrgloationIdAndShiftId(Long locationId, String shiftIds) throws Exception {
+	public List<HolidayDTO> getAllHolidaysListByOrgloationIdAndShiftId(Long locationId, String shiftIds, String reportYear) throws Exception {
 		List<HolidayDTO> holidayDTOList = new ArrayList<HolidayDTO>();
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
-		List<Holiday> holidaysList =  holidayDAO.getAllHolidaysListByOrgloationIdAndShiftId(locationId,shiftIds);
+		List<Holiday> holidaysList =  holidayDAO.getAllHolidaysListByOrgloationIdAndShiftId(locationId,shiftIds,reportYear);
 		for(Holiday hlist : holidaysList)
 		{ 
 			HolidayDTO hDTO = new HolidayDTO();

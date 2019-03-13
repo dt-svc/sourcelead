@@ -27,8 +27,9 @@ public class RequirementRateSubmissionNegotiationServiceImpl implements Requirem
 	 private CommonUtil commonUtil;
 	
 	@Value("${sourceleadUrl}")
-    private String sourceleadUrl;
-	
+    private String sourceleadUrl;	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
 	@Autowired
 	RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
 	
@@ -73,6 +74,12 @@ public class RequirementRateSubmissionNegotiationServiceImpl implements Requirem
 			Requirement requirement, Candidate candidate, Long submissionId, String type) throws Exception {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
+		
+		//URL for redirection of page
+		//String redirectURL1 = "/requirementSummary?requirementUUID="+requirementSubmissionTemplateFields.getSourceSubmission().getRequirement().getRequirementUUID()+"&submissionId="+requirementSubmission.getId()+"&candidateUUID="+requirementSubmissionTemplateFields.getRequirementSubmission().getCandidate().getCandidateUUID()+"&submissionStatus=SUBMIT_TO_CLIENT").toString();
+		 String redirectURL = "/requirementSummary-params-requirementUUID="+requirementSubmissionTemplateFields.getRequirementSubmission().getSourceSubmission().getRequirement().getRequirementUUID()+"-and-submissionId="+submissionId+"-and-candidateUUID="+requirementSubmissionTemplateFields.getRequirementSubmission().getCandidate().getCandidateUUID()+"-and-submissionStatus=SUBMIT_TO_CLIENT";
+		 Long redirectOrgLocationId =  candidate.getOrgLocationId().getId();
+		 
 		
 		StringBuilder tempHTML = new StringBuilder();
 		 if(!negotiationList.isEmpty()){
@@ -119,7 +126,8 @@ public class RequirementRateSubmissionNegotiationServiceImpl implements Requirem
 		        	/*tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRateNegotiateClientOrVendorRates?status=Accepted&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
 		        	tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRateNegotiateClientOrVendorRates?status=Rejected&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");
 			        tempHTML.append("<a href='").append(sourceleadUrl).append("/acceptOrRateNegotiateClientOrVendorRates?rateStatus=Negotiate&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>");*/
-		        	tempHTML.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+		        	tempHTML.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append
+                    ("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Rate Negotiation</div></a>");
 		        }else{
 		        	//these links are provided in applicant to user Negotiate email
 		        	tempHTML.append("<a href='").append(sourceleadUrl).append("/ws/acceptOrRejectOrRateNegotiateUserRates?rateStatus=Accepted&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left; margin-left:25px;'><div style=' width:160px; border-radius:20px; background-color:#5cb85c; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:0px;'>Accept</div></a>");
@@ -128,6 +136,12 @@ public class RequirementRateSubmissionNegotiationServiceImpl implements Requirem
 		        }
 		 	}
 		return tempHTML;
+	}
+
+	@Override
+	public RequirementRateSubmissionNegotiation getRequirementRateSubmissionByMaxId(Long submissionId) {
+		
+		return requirementRateSubmissionNegotiationDao.getRequirementRateSubmissionByMaxId(submissionId);
 	}
 
 }

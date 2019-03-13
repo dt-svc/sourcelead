@@ -1809,7 +1809,9 @@ public class USPayrollRestController {
 					 dto = new CandidateDTO();
 					
 					StringBuilder name = new StringBuilder();
-					if(StringUtils.isNotBlank(associateSalary.getCandidate().getLastName())){
+					if(StringUtils.isNotBlank(associateSalary.getCandidate().getMiddelName()) && StringUtils.isNotBlank(associateSalary.getCandidate().getLastName())){
+						name.append(associateSalary.getCandidate().getFirstName()).append(" ").append(associateSalary.getCandidate().getMiddelName()).append(" ").append(associateSalary.getCandidate().getLastName());
+					}else if(StringUtils.isNotBlank(associateSalary.getCandidate().getLastName()) && StringUtils.isBlank(associateSalary.getCandidate().getMiddelName())){
 						name.append(associateSalary.getCandidate().getFirstName()).append(" ").append(associateSalary.getCandidate().getLastName());
 					}else {
 						name.append(associateSalary.getCandidate().getFirstName());
@@ -2036,7 +2038,7 @@ public class USPayrollRestController {
 		public ResponseList<FilteredClientDTO>getFilteredClientList(HttpServletRequest request,HttpServletResponse response) 
 		{
 			ResponseList<FilteredClientDTO> res = new ResponseList<>();
-			String DEST = "/home/rajasekhar/confidential/clients_filtered.json";
+			String DEST = "/home/confidential/clients_filtered.json";
 			try (FileReader reader = new FileReader(DEST))
 			{
 				res = payrollUtil.getFilteredClientListData(reader);
@@ -2054,7 +2056,8 @@ public class USPayrollRestController {
 		public Response<Map<String,String>> getCategoriesForStaffingFiltered(HttpServletRequest request,HttpServletResponse response) 
 		{
 			Response<Map<String,String>> res = new Response<>();
-			String DEST = "/home/rajasekhar/confidential/staffing_filtered.json";
+			
+			String DEST = "/home/confidential/staffing_filtered.json";
 			try (FileReader reader = new FileReader(DEST))
 			{
 				res = payrollUtil.getCategoriesForStaffingFilteredData(reader);
@@ -2072,7 +2075,7 @@ public class USPayrollRestController {
 		{
 			ResponseList<StaffingFilteredDTO> res = new ResponseList<>();
 			JSONParser jsonParser = new JSONParser();
-			String DEST = "/home/rajasekhar/confidential/staffing_filtered.json";
+			String DEST = "/home/confidential/staffing_filtered.json";
 			try (FileReader reader = new FileReader(DEST))
 			{
 				res = payrollUtil.getStaffingFilteredListByCategoryIdData(reader,categoryId);
@@ -2090,7 +2093,7 @@ public class USPayrollRestController {
 		{
 			ResponseList<VendorRecruitersDTO> res = new ResponseList<>();
 			JSONParser jsonParser = new JSONParser();
-			String DEST = "/home/rajasekhar/confidential/vendor_recruiters.json";
+			String DEST = "/home/confidential/vendor_recruiters.json";
 			try (FileReader reader = new FileReader(DEST))
 			{
 				res = payrollUtil.getVendorRecruiterData(reader);

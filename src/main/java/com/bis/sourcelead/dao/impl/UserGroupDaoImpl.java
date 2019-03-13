@@ -18,14 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserGroupDTO;
-import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.entity.UserIdView;
-import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.indPayroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.TotalHoursDTO;
-import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 
 @Repository
 public class UserGroupDaoImpl implements UserGroupDao{

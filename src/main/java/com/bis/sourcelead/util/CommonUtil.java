@@ -377,6 +377,22 @@ public class CommonUtil {
 		}
 		return date;
 		}
+	
+	public  Date stringToDateByOrgLocationFormat(String dateString, String orgLocationFormat){
+
+		DateFormat df = new SimpleDateFormat(orgLocationFormat);
+		Date date = null;
+		try {
+
+		date = df.parse(dateString);
+
+		} catch (Exception e) {
+
+		e.printStackTrace();
+
+		}
+		return date;
+		}
 	/**
 	 * Convert String to Capitalized String
 	 * @param name
@@ -2201,11 +2217,12 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		try {
 			ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
 			if(projectClients != null) {
+				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 				if((projectClients.getOrgLocationsId().getId().equals(orgLocations.getId())) || (StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES))) {
 					if(StringUtils.isNotBlank(loginUserRole) && (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN"))) {
 						ProjectApproverHierarchy approverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
 						ExpenseProjectApproverHierarchy expenseApproverHierarchy = expenseProjectApproverHierarchyService.getExpenseApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
-						ProjectMembers pm = projectMembersService.getProjectMembersByCandidateIdAndProjectClientId(candidateId, projectClients.getId());
+						ProjectMembers pm = projectMembersService.getProjectMembersByMasterCandiateIdAndProjectClientId(candidate.getMasterCandidateId().getId(), projectClients.getId());
 						Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
 						if(expenseApproverHierarchy != null || approverHierarchy != null || pm != null || projects.getCreatedBy().equalsIgnoreCase(loginUser.getUserCode()) || isGlobalAccess.equalsIgnoreCase(Constants.YES)) {
 							flag = true;
@@ -2214,6 +2231,11 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 						flag = true;
 					}
 					
+				}else {
+					ProjectMembers pm = projectMembersService.getProjectMembersByMasterCandiateIdAndProjectClientId(candidate.getMasterCandidateId().getId(), projectClients.getId());
+					if(pm != null) {
+						flag = true;
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -2285,6 +2307,10 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 			 if(null != pmh.getProjectMemberId()){
 				 user = userService.getUserById(projectApproverHierarchy.getApproverUserId().getId());
 		}
+			 
+		 String redirectURL = "/projectSummary-params-projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"-and-projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()+"-and-tabType=team";
+		 Long redirectOrgLocationId = orgLocations.getId();
+		 
 		 //SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
@@ -2346,7 +2372,8 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 			}
 		 
 		 StringBuilder linkBuild = new StringBuilder();
-	     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+	     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append
+	    		 ("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Employee Terimination</div></a>").toString());
 	   
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -2371,8 +2398,8 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		}
 	
 	public static TimesheetActivities getTimesheetActivity(SubmissionApproverHierarchy sah,String activityStatus) {
-		TimesheetActivities timesheetActivity = null;
-		if(sah != null) {
+		TimesheetActivities timesheetActivity = new TimesheetActivities();
+	/*	if(sah != null) {
 			timesheetActivity = new TimesheetActivities();
 			timesheetActivity.setProjectId(sah.getSubmissionId().getProjects());
 			timesheetActivity.setActivityStatus(activityStatus.toUpperCase());
@@ -2396,7 +2423,7 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 			timesheetActivity.setWeekTotal(sah.getSubmissionId().getTotalHours());
 			timesheetActivity.setWeekTotalBillable(sah.getSubmissionId().getBillableHours());
 			timesheetActivity.setWeekTotalNonBillable(sah.getSubmissionId().getNonBillableHours());
-		}
+		}*/
 		return timesheetActivity;
 	}
 	

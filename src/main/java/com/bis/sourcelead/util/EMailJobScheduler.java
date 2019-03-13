@@ -123,6 +123,7 @@ import com.bis.sourcelead.payroll.service.GenerateUSPayrollService;
 import com.bis.sourcelead.payroll.service.PayrollScheduleService;
 import com.bis.sourcelead.payroll.service.USPaysheetService;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
+import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.AssociateSalaryService;
@@ -389,6 +390,9 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	private RequirementOffersService requirementOffersService;
+	
+	@Autowired
+	private AppliedLeaveDateService appliedLeaveDateService;
 
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -948,6 +952,7 @@ public class EMailJobScheduler {
 	 * Fires on Monday at 11:45 PM of every week of the month emailJobScheduler.job.cron.everyfriday.expression
 	 */
 	@Scheduled(cron = "0 45 23 ? * MON")
+//	@Scheduled(cron = "0 0/1 * 1/1 * ?")
 	public void runJobSchedulerByMondayForWeeklyAndBiWeekly() {
 		try {
 			  logger.info("******************  Notification Job Scheduler MONDAY of every week of the Month started (Weekly) to Level 1 Manager..! **********");
@@ -1200,7 +1205,6 @@ public class EMailJobScheduler {
 	 * Fires on Friday at 11:45 PM of every week of the month emailJobScheduler.job.cron.everyfriday.expression
 	 */
 	@Scheduled(cron = "0 45 23 ? * FRI")
-	//@Scheduled(cron = "0 0/1 * 1/1 * ?")
 	public void runJobSchedulerByFRIDay() {
 		logger.info("******************  Notification Job Scheduler WednesDay of every week of the Month started (Weekly) to Admin..! **********");
 		try {
@@ -1250,114 +1254,118 @@ public class EMailJobScheduler {
 	
 	@Async
 	private void adminCronRemainder(String invoiceFrequency) throws Exception {
-		List<Org> orgList = orgService.getOrgs();
-		Map<String,String>  timesheetFrequencyMap = null;
-		for (Org org : orgList) {
-				StringBuilder tempHTML = new StringBuilder();
-				int count=0;
-				tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
-				List<OrgLocations> orgLocations = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
-				for (OrgLocations ol : orgLocations) {
-					     if(count==0){	
-						            tempHTML.append("<tr>");
-							        tempHTML.append("<th> Employee Name </th>");
-							        tempHTML.append("<th> Frequency </th>");
-									tempHTML.append("<th> Project Name </th>");
-									tempHTML.append("<th> Manager Name </th>");
-									tempHTML.append("</tr>");
-									count++;
-						   }
-					    	
-					    	 HashSet<ProjectMembers> projectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(invoiceFrequency,ol.getId());
-					    	 boolean pmCheck = true;
-					    	 if(null != projectMembersList && !projectMembersList.isEmpty()){
-								for (ProjectMembers projectMembers : projectMembersList) {
-									 boolean freqCheck = true;
-									timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMembers,ol,"approverScheduler");
-									  if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
-									            LinkedList<String> frequency = new LinkedList<>();
-												 Date cronStartDate = null;
-												 Date cronEndDate = null;
-												
-												 for(Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
-													    String key = entry.getKey();
-													    String value =entry.getValue();
-													    
-													    Date frequencyStartDate = commonUtil.orgLocationDateFormat(ol.getDateFormat(),key.replaceAll("/", "-"));
-														Date frequencyEndDate = commonUtil.orgLocationDateFormat(ol.getDateFormat(),value.replaceAll("/", "-"));
-														Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
-														currentCal.setLenient(false);
-														currentCal.setTime(CommonUtil.currentDate());
-											             Boolean flag = true;
-											             if(CalendarUtil.getNumberOfDays(frequencyEndDate,currentCal.getTime()) <-2 && invoiceFrequency.equalsIgnoreCase(Constants.BI_WEEKLY)){
-											            	 flag = false;
-											             }
-											             
-											             if(flag && submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMembers.getMasterCandidateId().getId(),projectMembers.getProjects().getId())){
-											            	    freqCheck = false;
-											            	    pmCheck = false;
-											            	    if(cronStartDate == null){
-																	cronStartDate = frequencyStartDate;
-																}
-																if(cronEndDate == null || CalendarUtil.getNextDate(cronEndDate).equals(frequencyStartDate)){
-																	cronEndDate = frequencyEndDate;
-																}else{
-																	String stDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronStartDate);
-																	String eDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronEndDate);
-																	frequency.add("<b>"+stDate.replaceAll("/", "-")+" To "+eDate.replaceAll("/", "-"));
-																	cronStartDate = null;
-																	cronEndDate = null;
-																}
-														 }
-													    
-												 }
-												 if(freqCheck)
-													continue;
-												 tempHTML.append("<tr>");
-												 if(projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName()!= null && projectMembers.getProjectMemberCandidteId().getConsultantUser().getLastName() !=null){
-													 tempHTML.append("<td style='text-align: center;'>"+projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName()+" "+projectMembers.getProjectMemberCandidteId().getConsultantUser().getLastName()+"</td>");
-												 }else{
-													 tempHTML.append("<td style='text-align: center;'>"+projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName()+"</td>");
-												 }
-												 if(cronStartDate != null && cronEndDate != null){
-													    String stDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronStartDate);
-														String eDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronEndDate);
-														frequency.add("<b>"+stDate.replaceAll("/", "-")+" To "+eDate.replaceAll("/", "-"));
-														cronStartDate = null;
-														cronEndDate = null;
-												 }
-											     if(frequency != null && !frequency.isEmpty()){
-												    tempHTML.append("<td style='text-align: center;'>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
-											     }
-												  tempHTML.append("<td style='text-align: center;'>"+projectMembers.getProjects().getProjectName()+"</td>");
-												 
-												  Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(),ol.getId());
-												  StringBuilder projectStringBuilder=new StringBuilder();
-												  for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
-													    if(StringUtils.isNoneEmpty(projectStringBuilder.toString())){
-													    	projectStringBuilder.append(" , ");
+		try {
+			List<Org> orgList = orgService.getOrgs();
+			Map<String,String>  timesheetFrequencyMap = null;
+			for (Org org : orgList) {
+					StringBuilder tempHTML = new StringBuilder();
+					int count=0;
+					tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
+					List<OrgLocations> orgLocations = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+					for (OrgLocations ol : orgLocations) {
+						     if(count==0){	
+							            tempHTML.append("<tr>");
+								        tempHTML.append("<th> Employee Name </th>");
+								        tempHTML.append("<th> Frequency </th>");
+										tempHTML.append("<th> Project Name </th>");
+										tempHTML.append("<th> Manager Name </th>");
+										tempHTML.append("</tr>");
+										count++;
+							   }
+						    	
+						    	 HashSet<ProjectMembers> projectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(invoiceFrequency,ol.getId());
+						    	 boolean pmCheck = true;
+						    	 if(null != projectMembersList && !projectMembersList.isEmpty()){
+									for (ProjectMembers projectMembers : projectMembersList) {
+										 boolean freqCheck = true;
+										timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMembers,ol,"approverScheduler");
+										  if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
+										            LinkedList<String> frequency = new LinkedList<>();
+													 Date cronStartDate = null;
+													 Date cronEndDate = null;
+													
+													 for(Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
+														    String key = entry.getKey();
+														    String value =entry.getValue();
+														    
+														    Date frequencyStartDate = commonUtil.orgLocationDateFormat(ol.getDateFormat(),key.replaceAll("/", "-"));
+															Date frequencyEndDate = commonUtil.orgLocationDateFormat(ol.getDateFormat(),value.replaceAll("/", "-"));
+															Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
+															currentCal.setLenient(false);
+															currentCal.setTime(CommonUtil.currentDate());
+												             Boolean flag = true;
+												             if(CalendarUtil.getNumberOfDays(frequencyEndDate,currentCal.getTime()) <-2 && invoiceFrequency.equalsIgnoreCase(Constants.BI_WEEKLY)){
+												            	 flag = false;
+												             }
+												             
+												             if(flag && submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMembers.getMasterCandidateId().getId(),projectMembers.getProjects().getId())){
+												            	    freqCheck = false;
+												            	    pmCheck = false;
+												            	    if(cronStartDate == null){
+																		cronStartDate = frequencyStartDate;
+																	}
+																	if(cronEndDate == null || CalendarUtil.getNextDate(cronEndDate).equals(frequencyStartDate)){
+																		cronEndDate = frequencyEndDate;
+																	}else{
+																		String stDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronStartDate);
+																		String eDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronEndDate);
+																		frequency.add("<b>"+stDate.replaceAll("/", "-")+" To "+eDate.replaceAll("/", "-"));
+																		cronStartDate = null;
+																		cronEndDate = null;
+																	}
+															 }
+														    
+													 }
+													 if(freqCheck)
+														continue;
+													 tempHTML.append("<tr>");
+													 if(projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName()!= null && projectMembers.getProjectMemberCandidteId().getConsultantUser().getLastName() !=null){
+														 tempHTML.append("<td style='text-align: center;'>"+projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName()+" "+projectMembers.getProjectMemberCandidteId().getConsultantUser().getLastName()+"</td>");
+													 }else{
+														 tempHTML.append("<td style='text-align: center;'>"+projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName()+"</td>");
+													 }
+													 if(cronStartDate != null && cronEndDate != null){
+														    String stDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronStartDate);
+															String eDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(),cronEndDate);
+															frequency.add("<b>"+stDate.replaceAll("/", "-")+" To "+eDate.replaceAll("/", "-"));
+															cronStartDate = null;
+															cronEndDate = null;
+													 }
+												     if(frequency != null && !frequency.isEmpty()){
+													    tempHTML.append("<td style='text-align: center;'>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
+												     }
+													  tempHTML.append("<td style='text-align: center;'>"+projectMembers.getProjects().getProjectName()+"</td>");
+													 
+													  Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(),ol.getId());
+													  StringBuilder projectStringBuilder=new StringBuilder();
+													  for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
+														    if(StringUtils.isNoneEmpty(projectStringBuilder.toString())){
+														    	projectStringBuilder.append(" , ");
+														    }
+													    	if(approverHierarchy.getLevel()==1){
+													    		projectStringBuilder.append(approverHierarchy.getApproverUserId().getFullName()).toString();
+													    	}else if(approverHierarchy.getLevel()==2){
+													    		projectStringBuilder.append(approverHierarchy.getApproverUserId().getFullName()).toString();
+													    	}
 													    }
-												    	if(approverHierarchy.getLevel()==1){
-												    		projectStringBuilder.append(approverHierarchy.getApproverUserId().getFullName()).toString();
-												    	}else if(approverHierarchy.getLevel()==2){
-												    		projectStringBuilder.append(approverHierarchy.getApproverUserId().getFullName()).toString();
-												    	}
-												    }
-												    
-												  tempHTML.append("<td style='text-align: center;'>").append(projectStringBuilder).append("</td>");
-												  tempHTML.append("</tr>");
-									          }
-								       }	
-								}
-					    	    if(pmCheck)
-					    	    	continue;
-					    	    tempHTML.append("</table> ");
-					    	    
-								if(null != ol.getUser() && null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
-								   projectsService.userEmailToAdmin(tempHTML,ol,ol.getUser());
-								}
-				  }
-			}
+													    
+													  tempHTML.append("<td style='text-align: center;'>").append(projectStringBuilder).append("</td>");
+													  tempHTML.append("</tr>");
+										          }
+									       }	
+									}
+						    	    if(pmCheck)
+						    	    	continue;
+						    	    tempHTML.append("</table> ");
+						    	    
+									if(null != ol.getUser() && null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
+									   projectsService.userEmailToAdmin(tempHTML,ol,ol.getUser());
+									}
+					  }
+				}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	//=============================================== ADMIN TIME SHEETS MAILS END==========================================
 	
@@ -2041,7 +2049,7 @@ public class EMailJobScheduler {
 	 * Morning 8 Am for us/canada
 	 */
 
-	@Scheduled(cron = "0 0 15 1/1 * ?")
+	/*@Scheduled(cron = "0 0 15 1/1 * ?")
 	@Async
 	public void notifyToUsersAboutContractExpiry() throws Exception
 	{
@@ -2095,7 +2103,7 @@ public class EMailJobScheduler {
 		//this cron is related to invoices to run every day.
 //		getDueDateCompletedInvoicesLists();
 
-	}
+	}*/
 
 	/**
 	 * @author Rajashekar
@@ -2122,12 +2130,18 @@ public class EMailJobScheduler {
 	}
 	
 
-	private void contractExpiryRemainderMail(Contracts contracts, int days) throws Exception
+	/*private void contractExpiryRemainderMail(Contracts contracts, int days) throws Exception
 	{
 			User owner = userService.getUserByUserCode(contracts.getOwnerUserId().getUserCode());
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(contracts.getOrgLocationId().getId());
 			EmailMessage emailMessage = new EmailMessage();
 			 emailMessage.setFirstName(owner.getFirstName());
+			 
+			 
+			//Url for redirection 			 
+		     String redirectURL = "/contractListbyStatus-params-"+"contractType="+contracts.getContractType()+"-and-status=waiting";
+			 Long redirectOrgLocationId = orgLocations.getId();
+
 			 if(owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
 				 
 				 emailMessage.setLastName(owner.getLastName());
@@ -2169,8 +2183,6 @@ public class EMailJobScheduler {
 				 emailMessage.setFromEmail(fromEmail);
 			 }
 	         
-			 
-			 
 			 
 			 String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),contracts.getEndDate());
 			 String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),contracts.getStartDate());
@@ -2231,7 +2243,8 @@ public class EMailJobScheduler {
 			}
 			
 			StringBuilder loginBuilder = new StringBuilder();
-			globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append
+                           ("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reminder</div></a>").toString());
 			
 			 if(contracts.getContactUser().getFirstName() != null && contracts.getContactUser().getLastName()!=null && !"".equalsIgnoreCase(contracts.getContactUser().getFirstName()) && !"".equalsIgnoreCase(contracts.getContactUser().getLastName())){
 				 StringBuilder userBuild = new StringBuilder();
@@ -2264,13 +2277,14 @@ public class EMailJobScheduler {
 			 if(StringUtils.isNotBlank(fromMail)){
 				 emailMessage.setFromEmail(fromMail);
 			 } 
-			 
+			 StringBuilder notificationLink = new StringBuilder();
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			 String actionLink="";
+			 actionLink = notificationLink.append(sourceleadUrl).append("/").append("contractListbyStatus?"+"contractType="+contracts.getContractType()+"&status=waiting").toString();
 			 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 //			 emailScenerioUtil.sendNotification(actionLink, null,owner, contracts.getOrgLocationId(), notificationScenario);
 		
-	}
+	}*/
 	
 	
 	
@@ -4370,6 +4384,645 @@ public class EMailJobScheduler {
 		globalVarsMap.put("applicantsInfo",applicantsInfoGrid.toString());
 		List<EmailAttachment> attachmentList=new ArrayList<EmailAttachment>();
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, emailReminder.getOrgLocationsId().getOrg(), emailReminder.getOrgLocationsId(), Constants.APPLICANT_JOINING, attachmentList);
+		
+		// Calling the saveCroneTracker method
+		try {
+			saveCronTracker("ApplicantJoiningReminder","applicationReminderEmailPreparationAndSend","0 0 0/1 1/1 * ?","Scheduled for every one hour");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
+   // @Scheduled(cron = "0 * * * * *") // Scheduled for every minute
+	@Async
+	public void runLeaveHolidaySchedulerEmailReminderAtOrgLevel() {
+		try {
+
+			// Applicant Holiday remainder
+			List<EmailReminder> emailReminderList = emailReminderService
+					.getEmailReminderListByEmailScenarioName(Constants.HOLIDAY_REMAINDER);
+			for (EmailReminder emailReminder : emailReminderList) {
+				if (emailReminder.getEmailReminderHierarchyList().size() > 0) {
+					for (EmailReminderHierarchy emailReminderHierarchy : emailReminder
+							.getEmailReminderHierarchyList()) {
+						Date convertedOrgDate = commonUtil.orgLocationCommonDate(new Date(),
+								emailReminder.getOrgLocationsId());
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(convertedOrgDate);
+						int hrs = calendar.get(Calendar.HOUR_OF_DAY);
+						int ampm = calendar.get(Calendar.AM_PM);
+						if ((ampm == 0 && emailReminderHierarchy.getRemindertime().contains("AM")
+								&& hrs == Integer.parseInt(emailReminderHierarchy.getRemindertime().split(":")[0]))
+								|| (ampm == 1 && emailReminderHierarchy.getRemindertime().contains("PM")
+										&& hrs == Integer.parseInt(
+												emailReminderHierarchy.getRemindertime().split(":")[0]) + (hrs==12?0:12))) {
+							calendar.add(Calendar.DATE, emailReminderHierarchy.getReminderdays().intValue()); // Adding
+																												// remainderDays
+																												// days
+							SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+							String updatedDateStr = dateFormat.format(calendar.getTime());
+							Date updatedDate = dateFormat.parse(updatedDateStr);
+
+							DateTime zoned = new DateTime(updatedDate);
+							DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+							DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+							DateFormat ts = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+							String startDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE,
+									Constants.UTC_TIMEZONE, updatedDateStr);
+							Date holidayStartDate = ts.parse(startDateString);
+							String endDate = outputFormatter.print(zoned);
+							String endDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE,
+									Constants.UTC_TIMEZONE, endDate);
+							Date holidayEndDate = ts.parse(endDateString);
+							List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+							for (OrgLocations orgLocations : orgLocationsList) {
+								List<Holiday> holidayList = holidayService.getHolidaybyLocationIdAndFromdate(
+										holidayStartDate, holidayEndDate, orgLocations.getId());
+								String holidayNames = "";
+								int i = 0;
+								if (holidayList != null && !holidayList.isEmpty()) {
+									Map<String, String> map = new HashMap<>();
+									for (Holiday holiday : holidayList) {
+										if (i == holidayList.size() - 1) {
+											for (HolidayShift hshift : holiday.getHolidayShift())
+												map.put(hshift.getShift().getShiftName(), holiday.getHolidayName());
+										} else {
+											for (HolidayShift hshift : holiday.getHolidayShift()) {
+												if (map.containsKey(hshift.getShift().getShiftName())) {
+													String name = map.get(hshift.getShift().getShiftName());
+													StringBuilder sb = new StringBuilder();
+													sb.append(name).append(",").append(holiday.getHolidayName());
+													map.put(hshift.getShift().getShiftName(), sb.toString());
+												} else {
+													map.put(hshift.getShift().getShiftName(), holiday.getHolidayName());
+												}
+											}
+										}
+
+										i++;
+									}
+
+									List<UserRole> userList = userRoleService
+											.getAllActiveUsersListByOrgLocationId(orgLocations.getId());
+									for (UserRole uRole : userList) {
+										User user = uRole.getUser();
+										if (uRole.getShift() != null
+												&& map.containsKey(uRole.getShift().getShiftName())) {
+											EmailMessage emailMessage = new EmailMessage();
+											emailMessage.setFirstName(user.getFirstName());
+											if (StringUtils.isNotBlank(user.getLastName()))
+												emailMessage.setLastName(user.getLastName());
+											emailMessage.setToEmail(user.getEmail());
+											emailMessage.setFromEmail("defaultFromEmailAddressForProd");
+
+											String fromEmail = null;
+											EmailConfigurationFromMail confFromMail = null;
+											List<EmailConfigurationFromMail> emailConfigMailList = emailScenarioconService
+													.getConfFromMailList(orgLocations.getId());
+											if (emailConfigMailList != null && !emailConfigMailList.isEmpty()) {
+												for (EmailConfigurationFromMail fromMail : emailConfigMailList) {
+													if (fromMail.getEmailModules() != null) {
+														String[] jobIds = fromMail.getEmailModules().split(",");
+														for (int j = 0; j < jobIds.length; j++) {
+															if (Long.valueOf(jobIds[j]) == 31L) {
+																confFromMail = fromMail;
+															}
+														}
+													}
+												}
+
+												if (confFromMail == null) {
+													confFromMail = emailScenarioconService
+															.getConfFromMailByStatus(orgLocations.getId());
+													if (confFromMail != null) {
+														fromEmail = confFromMail.getEmail();
+													}
+												} else {
+													fromEmail = confFromMail.getEmail();
+												}
+											}
+
+											if (StringUtils.isNotBlank(fromEmail)) {
+												emailMessage.setFromEmail(fromEmail);
+											}
+											// for URL redirections from mail
+											String redirectURL = "/leaveManagementReports";
+											Long redirectOrgLocationId = orgLocations.getId();
+
+											StringBuilder msgBuild = new StringBuilder();
+											emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+											// setting the class filed values
+											Map<String, String> globalVarsMap = new HashMap<String, String>();
+											globalVarsMap.put("loginUser", emailMessage.getFromName());
+											StringBuilder name = new StringBuilder();
+											if (user.getLastName() != null && user.getLastName() != ""
+													&& user.getLastName() != "undefined") {
+												globalVarsMap.put("UserName", name.append(user.getFirstName())
+														.append(" ").append(user.getLastName()).toString());
+											} else {
+												globalVarsMap.put("UserName", user.getFirstName());
+											}
+											globalVarsMap.put("companyName", orgLocations.getOrg().getOrgName());
+											globalVarsMap.put("date", commonUtil.dateStrFromOrgDateFormatter(
+													orgLocations.getDateFormat(), holidayEndDate));
+											globalVarsMap.put("holidayname", map.get(uRole.getShift().getShiftName()));
+											InternetAddress[] iAdressArray = InternetAddress
+													.parse(emailMessage.getToEmail());
+
+											EmailScenario emailScenario = null;
+											if (orgLocations != null)
+												emailScenario = emailScenarioService
+														.getEmailScenarioByUniqueNameAndOrgLocationId(
+																Constants.HOLIDAY_REMAINDER,
+																Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+											if (emailScenario == null) {
+												emailScenario = emailScenarioService.getEmailScenarioByUniqueName(
+														Constants.HOLIDAY_REMAINDER, Constants.ENTITY_TYPE_EMAIL);
+											}
+
+											// configured Email
+											String fromMail = commonUtil.getConfiguredFromEmail(orgLocations.getId(),
+													emailScenario);
+											if (StringUtils.isNotBlank(fromMail)) {
+												emailMessage.setFromEmail(fromMail);
+											}
+
+											StringBuilder loginBuilder = new StringBuilder();
+											globalVarsMap.put("loginURL", loginBuilder.append("<a href='")
+													.append(sourceleadLoginUrl + "?redirectURL=" + redirectURL
+															+ "&redirectOrgLocationId=" + redirectOrgLocationId)
+													.append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Holiday</div></a>")
+													.toString());
+
+											commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,
+													orgLocations.getOrg(), orgLocations, Constants.HOLIDAY_REMAINDER,
+													new ArrayList<EmailAttachment>());
+											EmailScenario notificationScenario = emailScenarioService
+													.getEmailScenarioByUniqueName(
+															Constants.HOLIDAY_REMAINDER_NOTIFICATION,
+															Constants.ENTITY_TYPE_NOTIFICATION);
+											String notificationBody = emailScenerioUtil.buildTemplateBody(
+													notificationScenario.getBody(), globalVarsMap,
+													notificationScenario);
+											notificationScenario.setBody(notificationBody);
+											StringBuilder actionLinkBuilder = new StringBuilder();
+											String actionLink = actionLinkBuilder.append("").append(sourceleadUrl)
+													.append("/").append("leaveManagementReports").toString();
+											emailScenerioUtil.sendNotification(actionLink,
+													orgLocations.getOrg().getUser(), user, orgLocations,
+													notificationScenario, new HashMap<String, String>());
+											
+											// calling the saveCroneTracker method
+											saveCronTracker("ApplicantHolidayRemainder","runLeaveHolidaySchedulerEmailReminderAtOrgLevel","0 0 0/1 1/1 * ?","Scheduled for every one hour");
+										}
+
+									}
+								}
+							}
+
+						}
+
+					}
+				}
+			}
+		} catch (Exception e) {
+			logger.error(
+					"*****************Exception caught while EmailReminder shceduler *************" + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	@SuppressWarnings({ "deprecation", "unused" })
+	@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
+	//@Scheduled(cron = "0 * * * * *") // Scheduled for every minute
+	@Async
+	public void runApprovedAndPendingLeaveSchedulerEmailReminderAtOrgLevel() {
+		try {
+			
+				runLeaveSchedulerEmailReminderAtOrgLevel(Constants.APPROVE_PENDING_LEAVES);
+				runLeaveSchedulerEmailReminderAtOrgLevel(Constants.EMPLOYEE_ON_LEAVE);
+			
+			
+			}
+		catch(Exception e) {
+		    logger.error(
+                    "*****************Exception caught while EmailReminder shceduler *************" + e.getMessage());
+			e.printStackTrace();
+			
+		}
+	}
+	
+	
+	public void runLeaveSchedulerEmailReminderAtOrgLevel(String leaveStatus) {
+		try {
+
+			// Approved Leave remainder
+			List<EmailReminder> emailReminderList = null;
+			if(leaveStatus.equalsIgnoreCase(Constants.APPROVE_PENDING_LEAVES)) {
+				emailReminderList = emailReminderService
+						.getEmailReminderListByEmailScenarioName(Constants.APPROVE_PENDING_LEAVES);
+			}else if(leaveStatus.equalsIgnoreCase(Constants.EMPLOYEE_ON_LEAVE)) {
+				emailReminderList = emailReminderService
+						.getEmailReminderListByEmailScenarioName(Constants.EMPLOYEE_ON_LEAVE);
+			}
+			
+			for (EmailReminder emailReminder : emailReminderList) {
+				if (emailReminder.getEmailReminderHierarchyList().size() > 0) {
+					for (EmailReminderHierarchy emailReminderHierarchy : emailReminder
+							.getEmailReminderHierarchyList()) {
+						Date convertedOrgDate = commonUtil.orgLocationCommonDate(new Date(),
+								emailReminder.getOrgLocationsId());
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(convertedOrgDate);
+						int hrs = calendar.get(Calendar.HOUR_OF_DAY);
+						int ampm = calendar.get(Calendar.AM_PM);
+						if ((ampm == 0 && emailReminderHierarchy.getRemindertime().contains("AM")
+								&& hrs == Integer.parseInt(emailReminderHierarchy.getRemindertime().split(":")[0]))
+								|| (ampm == 1 && emailReminderHierarchy.getRemindertime().contains("PM")
+										&& hrs == Integer
+												.parseInt(emailReminderHierarchy.getRemindertime().split(":")[0])
+												+ (hrs == 12 ? 0 : 12))) {
+							if(leaveStatus.equalsIgnoreCase(Constants.APPROVE_PENDING_LEAVES)) {
+								calendar.add(Calendar.DATE, -emailReminderHierarchy.getReminderdays().intValue()); // remainderDays days
+							}else if(leaveStatus.equalsIgnoreCase(Constants.EMPLOYEE_ON_LEAVE)) {
+								calendar.add(Calendar.DATE, emailReminderHierarchy.getReminderdays().intValue()); // remainderDays days
+							}
+							
+							SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+							String updatedDateStr = dateFormat.format(calendar.getTime());
+							Date updatedDate = dateFormat.parse(updatedDateStr);
+
+								List<Leave> userLeaveLIst = null;
+								if(leaveStatus.equalsIgnoreCase(Constants.APPROVE_PENDING_LEAVES)) {
+									userLeaveLIst = leaveService
+											.getAllLeavesByLocationIdAndStatusAndAppliedDate(
+													emailReminder.getOrgLocationsId().getId(), "PENDING", updatedDate);
+								}else if(leaveStatus.equalsIgnoreCase(Constants.EMPLOYEE_ON_LEAVE)) {
+									userLeaveLIst = leaveService
+											.getAllLeavesByLocationIdAndStatusAndAppliedDate(
+													emailReminder.getOrgLocationsId().getId(), "APPROVED", updatedDate);
+								}
+								
+								
+								if (userLeaveLIst != null && userLeaveLIst.size() > 0) {
+									for (Leave pendingLeave : userLeaveLIst) {
+
+										StringBuffer approvePendingInfoGrid = new StringBuffer();
+										approvePendingInfoGrid.append(
+												"<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
+										approvePendingInfoGrid.append("<tbody>");
+										approvePendingInfoGrid.append("<tr>");
+										approvePendingInfoGrid.append("<th> Associate Name </th>");
+										approvePendingInfoGrid.append("<th> Leave type </th>");
+										approvePendingInfoGrid.append("<th> Duration </th>");
+										approvePendingInfoGrid.append("<th> Applied On </th>");
+										
+										if(leaveStatus.equalsIgnoreCase(Constants.EMPLOYEE_ON_LEAVE)) {
+											approvePendingInfoGrid.append("<th> No of days </th>");
+											approvePendingInfoGrid.append("<th> Status</th>");
+										}
+										
+										approvePendingInfoGrid.append("</tr>");
+
+										String AssociateName = "";
+										String LeaveType = "";
+										String LeaveDuration = "";
+										String leaveApplyDate = "";
+										
+										if (pendingLeave.getUser().getUserName() != null) {
+											AssociateName = " " + pendingLeave.getUser().getFullName();
+										}
+										if (pendingLeave.getLeaveType() != null
+												&& pendingLeave.getLeaveType().getName() != null) {
+											LeaveType = pendingLeave.getLeaveType().getName();
+										}
+										if (" " + pendingLeave.getNumberOfDays() != null) {
+											LeaveDuration = " " + pendingLeave.getNumberOfDays();
+										}
+										if (" " + pendingLeave.getCreatedDate() != null) {
+											leaveApplyDate = " " + pendingLeave.getCreatedDate();
+										}
+
+										approvePendingInfoGrid.append("<tr>");
+										approvePendingInfoGrid.append("<td>" + AssociateName + "</td>");
+										approvePendingInfoGrid.append("<td>" + LeaveType + "</td>");
+										approvePendingInfoGrid.append("<td>" + LeaveDuration + "</td>");
+										approvePendingInfoGrid.append("<td>" + leaveApplyDate + "</td>");
+										
+										if(leaveStatus.equalsIgnoreCase(Constants.EMPLOYEE_ON_LEAVE)) {
+											String noOfDays = "";
+											String lStatus = "";
+											
+											if (" " + pendingLeave.getNumberOfDays() != null) {
+												noOfDays = " " + pendingLeave.getNumberOfDays();
+											}
+											if (" " + pendingLeave.getStatus() != null) {
+												lStatus = " " + pendingLeave.getStatus();
+											}
+											
+											
+											approvePendingInfoGrid.append("<td>" + noOfDays + "</td>");
+											approvePendingInfoGrid.append("<td>" + lStatus + "</td>");
+										}
+										approvePendingInfoGrid.append("</tr>");
+										approvePendingInfoGrid.append("</tbody>");
+										approvePendingInfoGrid.append("</table>");
+
+										// loop for notify to emails
+										for (String email : emailReminder.getNotifyTo().split(",")) {
+											User toUser = new User();
+											toUser.setEmail(email.trim());
+											toUser.setFirstName("");
+											toUser.setLastName("");
+
+											// sending the mail
+
+											EmailMessage emailMessage = new EmailMessage();
+											String Manager = "";
+											if (StringUtils.isNotBlank(toUser.getFirstName())) {
+												emailMessage.setFirstName(toUser.getFirstName());
+												Manager = toUser.getFullName();
+											}
+											if (StringUtils.isNotBlank(toUser.getLastName())) {
+												emailMessage.setLastName(toUser.getLastName());
+											}
+											emailMessage.setToEmail(toUser.getEmail());
+											emailMessage.setFromEmail("info@sourcelead.com");
+											emailMessage.setFromName("Sourcelead Team");
+											emailMessage.setEmailType(Constants.APPROVE_PENDING_LEAVES);
+											emailMessage.setCreatedBy(
+													emailReminder.getOrgLocationsId().getUser().getUserCode());
+											emailMessage.setOrgLocationId(emailReminder.getOrgLocationsId().getId());
+
+											// setting the class filed values
+
+											Map<String, String> globalVarsMap = new HashMap<String, String>();
+											globalVarsMap.put("Manager", Manager);
+											globalVarsMap.put("ApplyLeaveDate", leaveApplyDate);
+											globalVarsMap.put("NoOfApprovePendingLeaves",
+													String.valueOf(userLeaveLIst.size()));
+											globalVarsMap.put("noOfDays",
+													emailReminderHierarchy.getReminderdays() + " days");
+											globalVarsMap.put("applicantsInfo", approvePendingInfoGrid.toString());
+
+											// Setting the approveLeave
+
+											StringBuilder linkBuild = new StringBuilder();
+											globalVarsMap.put("approveLeaveLink", linkBuild.append("<a href='")
+													.append(sourceleadUrl).append("/").append("employeeRequestedLeaves")
+													.append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Approve Leave</div></a>")
+													.toString());
+
+											// globalVarsMap.put("approveLeaveLink", approveLink.append("<a
+											// href='").append(sourceleadUrl).append("/").append("employeeRequestedLeaves").append("</a>").toString());
+
+											List<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+											commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,
+													emailReminder.getOrgLocationsId().getOrg(),
+													emailReminder.getOrgLocationsId(), Constants.APPROVE_PENDING_LEAVES,
+													attachmentList);
+											
+											if(leaveStatus.equalsIgnoreCase(Constants.EMPLOYEE_ON_LEAVE)) {
+											commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, emailReminder.getOrgLocationsId().getOrg(), emailReminder.getOrgLocationsId(), Constants.EMPLOYEE_ON_LEAVE, attachmentList);
+											}
+
+										} // end for loop
+
+									}
+
+								}
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			logger.error(
+					"*****************Exception caught while EmailReminder shceduler *************" + e.getMessage());
+			e.printStackTrace();
+
+		}
+
+	}
+	
+	
+	@SuppressWarnings("deprecation")
+	@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
+	//@Scheduled(cron = "0 * * * * *") // Scheduled for every minute
+	@Async
+	public void runContractExpireEmailReminderAtOrgLevel() {
+		try {
+			List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByEmailScenarioName(Constants.CONTRACT_EXPIRY_REMAINDER);
+			for(EmailReminder emailReminder : emailReminderList) {
+				if(emailReminder.getEmailReminderHierarchyList().size() > 0) {
+					for(EmailReminderHierarchy emailReminderHierarchy : emailReminder.getEmailReminderHierarchyList()) {
+						Date convertedOrgDate = commonUtil.orgLocationCommonDate(new Date(), emailReminder.getOrgLocationsId());
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(convertedOrgDate);
+						int hrs = calendar.get(Calendar.HOUR_OF_DAY);
+						int ampm = calendar.get(Calendar.AM_PM);
+						if( (ampm == 0 && emailReminderHierarchy.getRemindertime().contains("AM") && hrs == Integer.parseInt(emailReminderHierarchy.getRemindertime().split(":")[0])) || (ampm == 1 && emailReminderHierarchy.getRemindertime().contains("PM") && hrs == Integer.parseInt(emailReminderHierarchy.getRemindertime().split(":")[0])+12) ) {
+							calendar.add(Calendar.DATE, emailReminderHierarchy.getReminderdays().intValue()); // Adding remainderDays days
+							SimpleDateFormat dateFormat = new SimpleDateFormat(emailReminder.getOrgLocationsId().getDateFormat());
+					        String updatedDateStr = dateFormat.format(calendar.getTime());
+					        Date updatedDate = dateFormat.parse(updatedDateStr);
+					         
+					        //method for the contractexpired cron 
+					        
+							List<Contracts> expiredContractsList = contractsTemplateService.getAllContractsBasedOnConfigureDate(updatedDate);
+							if(expiredContractsList != null) {
+								for(Contracts contracts : expiredContractsList){
+								
+									contractExpiryRemainderMail(contracts,updatedDateStr, emailReminder);
+								}
+							}
+						}
+					}
+				}
+			}
+			
+		}catch (Exception e) {
+			logger.error(
+					"*****************Exception caught while EmailReminder shceduler *************" + e.getMessage());
+			e.printStackTrace();
+
+		}
+	}
+	
+	@SuppressWarnings("unused")
+	private void contractExpiryRemainderMail(Contracts contracts, String days, EmailReminder emailReminder) throws Exception
+	{
+			User owner = userService.getUserByUserCode(contracts.getOwnerUserId().getUserCode());
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(contracts.getOrgLocationId().getId());
+			
+			EmailMessage emailMessage = new EmailMessage();
+			emailMessage.setFirstName(owner.getFirstName());
+			 
+			//Url for redirection 			 
+		     String redirectURL = "/contractListbyStatus-params-"+"contractType="+contracts.getContractType()+"-and-status=waiting";
+			 Long redirectOrgLocationId = orgLocations.getId();
+
+			 if(owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
+				 
+				 emailMessage.setLastName(owner.getLastName());
+			 }else{
+				 emailMessage.setLastName("");
+			 }
+			 emailMessage.setToEmail(owner.getEmail());
+			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+			 emailMessage.setCreatedBy("sladmin");
+			 emailMessage.setFromName(orgLocations.getOrgName()); 
+			 			 
+			 String fromEmail = null;
+			 EmailConfigurationFromMail confFromMail=null;
+			 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orgLocations.getId());
+			 if(emailConfigMailList != null && !emailConfigMailList.isEmpty()){
+				 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
+					 if( fromMail.getEmailModules() != null){
+						String[] jobIds = fromMail.getEmailModules().split(",");
+							for(int j=0; j<jobIds.length; j++) {
+								if(Long.valueOf(jobIds[j]) == 16L ){
+									confFromMail=fromMail;
+								}
+							}
+					 }
+				 } 
+				 
+				 if(confFromMail == null){
+					 confFromMail = emailScenarioconService.getConfFromMailByStatus(orgLocations.getId());
+					 if(confFromMail != null){
+						 fromEmail = confFromMail.getEmail();
+					 }
+				 }else{
+					 fromEmail = confFromMail.getEmail();
+				 }
+			 }
+			 
+			 if(StringUtils.isNotBlank(fromEmail)){
+				 emailMessage.setFromEmail(fromEmail);
+			 }
+	         			 
+			 String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),contracts.getEndDate());
+			 String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),contracts.getStartDate());
+			 String dayCount = String.valueOf(days);
+			 
+			//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 
+			 if(contracts.getContractTitle()!= null && !"".equalsIgnoreCase(contracts.getContractTitle())){
+				 globalVarsMap.put("contractTitle", contracts.getContractTitle());
+				 }else{
+					 globalVarsMap.put("contractTitle","--");
+				 }
+			 
+			 if(contracts.getContractType()!= null && !"".equalsIgnoreCase(contracts.getContractType())){
+				 globalVarsMap.put("contractType", contracts.getContractType());
+				 }else{
+					 globalVarsMap.put("contractType","--");
+				 }
+			
+			 if(contracts.getEndDate()!= null && !"".equalsIgnoreCase(contracts.getEndDate().toString())){
+				 globalVarsMap.put("contractEndDate", endDate);
+				 }else{
+					 globalVarsMap.put("contractEndDate","--");
+				 }
+			 
+			 if(contracts.getStartDate()!= null && !"".equalsIgnoreCase(contracts.getStartDate().toString())){
+				 globalVarsMap.put("contractStartDate", startDate);
+				 }else{
+					 globalVarsMap.put("contractStartDate","--");
+				 }
+			 
+			 if(contracts.getTemplateSubmissionStatus() != null && !"".equalsIgnoreCase(contracts.getTemplateSubmissionStatus())){
+				 globalVarsMap.put("status", contracts.getTemplateSubmissionStatus());
+				 }else{
+					 globalVarsMap.put("status","--");
+				 }
+			 
+			 globalVarsMap.put("expiringdays",dayCount);
+			 if(contracts.getContactUser().getLastName() !=null && !"".equalsIgnoreCase(contracts.getContactUser().getLastName())){
+				 
+				 StringBuilder builder=new StringBuilder();
+				 
+				 globalVarsMap.put("clientContact",builder.append(contracts.getContactUser().getFirstName()).append(" ").append(contracts.getContactUser().getLastName()).toString());
+				 
+			 }
+			 else{
+			 globalVarsMap.put("clientContact",contracts.getContactUser().getFirstName());
+			 }
+			 
+			if(owner.getFirstName()!= null && !"".equalsIgnoreCase(owner.getFirstName()) && owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
+				StringBuilder creatorSb = new StringBuilder();
+				globalVarsMap.put("contractOwner", creatorSb.append(owner.getFirstName()).append(" ").append(owner.getLastName()).toString());
+			}else if(owner.getFirstName()!= null && !"".equalsIgnoreCase(owner.getFirstName())){
+				globalVarsMap.put("contractOwner",owner.getFirstName());
+			}else{
+				globalVarsMap.put("contractOwner","--");
+			}
+			
+			StringBuilder loginBuilder = new StringBuilder();
+			globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append
+                           ("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reminder</div></a>").toString());
+			
+			 if(contracts.getContactUser().getFirstName() != null && contracts.getContactUser().getLastName()!=null && !"".equalsIgnoreCase(contracts.getContactUser().getFirstName()) && !"".equalsIgnoreCase(contracts.getContactUser().getLastName())){
+				 StringBuilder userBuild = new StringBuilder();
+				 globalVarsMap.put("receiverParty",userBuild.append(contracts.getContactUser().getFirstName()).append(" ").append(contracts.getContactUser().getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("receiverParty",contracts.getContactUser().getFirstName());
+				}
+			 			 
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_EXPIRY_REMAINDER,Constants.ENTITY_TYPE_EMAIL);
+			 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_EXPIRY_REMAINDER,Constants.ENTITY_TYPE_NOTIFICATION);
+
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = sourceleadUrl;
+			 
+			String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
+			 notificationScenario.setBody(notificationbody);
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, contracts.getOrgLocationId().getOrg(),contracts.getOrgLocationId());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 String fromMail=commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
+			 if(StringUtils.isNotBlank(fromMail)){
+				 emailMessage.setFromEmail(fromMail);
+			 } 
+			 StringBuilder notificationLink = new StringBuilder();
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			 String actionLink="";
+			 actionLink = notificationLink.append(sourceleadUrl).append("/").append("contractListbyStatus?"+"contractType="+contracts.getContractType()+"&status=waiting").toString();
+			 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 
+			 for (String email : emailReminder.getNotifyTo().split(",")) {
+					User toUser = new User();
+					toUser.setEmail(email.trim());
+					toUser.setFirstName("");
+					toUser.setLastName("");
+					String notify = "";
+					if (StringUtils.isNotBlank(toUser.getFirstName())) {
+						emailMessage.setFirstName(toUser.getFirstName());
+						notify = toUser.getFullName();
+					}
+					if (StringUtils.isNotBlank(toUser.getLastName())) {
+						emailMessage.setLastName(toUser.getLastName());
+					}
+					emailMessage.setToEmail(toUser.getEmail());
+					emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+				} 
+//			 emailScenerioUtil.sendNotification(actionLink, null,owner, contracts.getOrgLocationId(), notificationScenario);
+			 
+			 // Calling the save crone tracker method
+			 saveCronTracker("ContractReminderEmail","contractExpiryRemainderMail","0 0 0/1 1/1 * ?","Scheduled for every one hour");	
 	}
 	
 }

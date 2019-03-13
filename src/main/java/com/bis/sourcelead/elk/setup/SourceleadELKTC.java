@@ -72,7 +72,7 @@ public class SourceleadELKTC<T> {
         catch(DocumentMissingException e){
         	client.prepareIndex(index, type,id)
 		    .setSource(value, XContentType.JSON).execute().actionGet();
-		    logger.info(type+" has been indexed.");
+		    logger.info(type+" has been indexed. " + id);
 		}
 		catch (Exception e) {
 			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
