@@ -18,8 +18,17 @@
 	background: transparent
 }
 
-</style>
+.textLoad {
+	text-align: center;
+    padding: 0px 0px;
+    margin: 30% auto 0px;
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+    display: none;
+}	
 
+</style>
 
 
 <section class="content-wraper">
@@ -42,8 +51,7 @@
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home</a> &raquo; <a href="${appPath}/candidatesList">Candidates List</a> &raquo; Import Candidates </div>
       </c:if>
     </section>
-	<div id="loading"></div>
-	<div id="loadingMsg"></div>
+	<div id="loading"><p class="textLoad" id="LoadingTextMsg"></p></div>
 	<div class="content-area clearfix" id="dataFileImportDiv">
 		<form:form id="upload_candidate_form" name="upload_candidate_form" method="post" enctype="multipart/form-data">
 			<div class="clearfix form-area form-horizontal toggle-div remove-div mt">

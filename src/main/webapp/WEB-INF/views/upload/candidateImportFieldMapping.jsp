@@ -4,6 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
+	
 
 <div class="content-area content-new clearfix" id="dataFieldsDiv">
 
@@ -68,7 +69,8 @@
 			var uploadid = new Date().getTime();
 
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			
+			document.getElementById("LoadingTextMsg").style.display="block"; 
+			$('#LoadingTextMsg').text('Your file is now uploading. Please be patient'); 
 			$.ajax({
 				type : "POST",
 				data : formData,
@@ -96,6 +98,7 @@
 			    	$('#dataFieldsDiv').empty();
 			    	$("#dataFileImportDiv").removeAttr("style");
 			    	$('#loading').removeAttr("style");
+			    	document.getElementById("LoadingTextMsg").style.display="none"; 
 			    	$("#selector11").fadeOut(3000);
 				}
 			});
