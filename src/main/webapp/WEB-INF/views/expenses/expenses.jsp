@@ -526,6 +526,14 @@ $("#appro-pop").click(function(){
 	$(".newActPop").hide();
 	$(".approved_pop").toggle();
 });
+$("html").click(function(){
+	$(".approved_pop").hide();
+}); 
+
+$("#appro-pop").click(function(e){
+	e.stopPropagation();
+});	
+
 
 $(document).ready(function(){
 	$("#SearchExpensesData").keyup(function(event) {
