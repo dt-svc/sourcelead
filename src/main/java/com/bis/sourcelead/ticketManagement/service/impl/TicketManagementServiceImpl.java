@@ -923,6 +923,16 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		return userDTOList;
 	}
 	
+	@Override
+	public boolean changeTicketManagementStatus(long ticketId, int status) {
+		try {
+			return ticketManagementDao.changeTicketManagementStatus(ticketId, status);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	private void sendTicketManagementEmailToAssignedUsers(User loginUser, OrgLocations orgLocations, Ticket ticketManagement, User toUser, String notifyToEmail) throws Exception {
 		try {
 			EmailMessage emailMessage = new EmailMessage();

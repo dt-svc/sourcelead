@@ -54,7 +54,7 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations() {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from OrgLocations";
+			String query = "select distinct o from OrgLocations o order by o.id";
 			List<OrgLocations> orgLocationsList = session.createQuery(query).list();
 			User adminUser = userDao.getUserByEmail("info@sourcelead.com");
 			if (adminUser != null && orgLocationsList != null && !orgLocationsList.isEmpty()) {
@@ -690,6 +690,22 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 		}
 	}
 	
+	@Override
+	public boolean changeTicketManagementStatus(long ticketId, int status) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			Ticket ticket = (Ticket) session.get(Ticket.class, ticketId);
+			if(ticket != null) {
+				ticket.setStatus(status);
+				session.saveOrUpdate(ticket);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<User> getCategoryAssignToListByTicketCategoryId(long ticketCategoryId, Long orgLocationId, long userId) {

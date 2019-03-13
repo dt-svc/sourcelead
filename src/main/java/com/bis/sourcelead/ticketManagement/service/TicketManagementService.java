@@ -84,6 +84,8 @@ public interface TicketManagementService {
 	
 	public List<UserDTO> getCategoryAssignToListByTicketCategoryId(long ticketCategoryId, long userId, Long orgLocationId);
 
+	public boolean changeTicketManagementStatus(long ticketId, int status);
+
 	
 
 
