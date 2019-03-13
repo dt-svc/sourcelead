@@ -71,21 +71,21 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 		Response<AssociateBankDataDTO> resObj = new Response<>();
 		try {
 			if (Validator.validate(associateBankDataDTO)) {
+				Candidate candidate = candidateDao.getCandidateByConsultantUserId(Long.parseLong(associateBankDataDTO.getUserId()),orgLocation.getId());
 				if(associateBankDataDTO.getId() != null){
-					Candidate candidate = candidateDao.getCandidateByConsultantUserId(Long.parseLong(associateBankDataDTO.getUserId()),orgLocation.getId());
 					associateBankData = associateBankDataDao.findAssociateBankDataByCandidateId(candidate.getId(),orgLocation);
-					if(associateBankData != null) {
-						associateBankData.setUpdatedBy(loginUser.getUserCode());
-						associateBankData.setUpdatedDate(new Date());
-					}else {
-						associateBankData = new AssociateBankData();
-//						User user = userService.getUserById(Long.parseLong(associateBankDataDTO.getUserId()));
-						candidate = candidateService.getCandidateByConsultantUserId(Long.parseLong(associateBankDataDTO.getUserId()), orgLocation.getId());
-						associateBankData.setCandidate(candidate);
-						associateBankData.setCreatedDate(new Date());
-						associateBankData.setCreatedBy(loginUser.getUserCode());
-					}
-				
+					associateBankData.setUpdatedBy(loginUser.getUserCode());
+					associateBankData.setUpdatedDate(new Date());
+				}else {
+					associateBankData = new AssociateBankData();
+					candidate = candidateService.getCandidateByConsultantUserId(Long.parseLong(associateBankDataDTO.getUserId()), orgLocation.getId());
+					associateBankData.setCandidate(candidate);
+					associateBankData.setCreatedDate(new Date());
+					associateBankData.setCreatedBy(loginUser.getUserCode());
+				}
+				boolean isDefaultAccnt = associateBankDataDao.checkDeafaultAccountActiveOrNot(candidate.getId(),orgLocation.getId());
+				if(!isDefaultAccnt) {
+					associateBankData.setDefaultAccount(true);
 				}
 				associateBankData.setAccountType(associateBankDataDTO.getAccountType());
 				if(StringUtils.isNotBlank(associateBankDataDTO.getBankName()))
@@ -330,5 +330,11 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 	public AssociateBankData findAssociateBankDataByUUID(String associateBankUUID, Long orgLocationId)
 	{
 		return associateBankDataDao.findAssociateBankDataByUUID(associateBankUUID,orgLocationId);
+	}
+
+	@Override
+	public boolean changeActiveAccount(Long associateBankId, Long candidateId)
+	{
+		return associateBankDataDao.changeActiveAccount(associateBankId,candidateId);
 	}
 }
