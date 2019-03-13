@@ -148,11 +148,14 @@
 						<strong>Submitted Amount:</strong><span>${expenses.totalsubmittedAmount}</span><div class="clearfix"></div>
 					</div>
 					
-					 <div class="project_details_cta">
+					<div class="project_details_cta">
+						<strong>Submitted On:</strong><span>${expenses.submittedDate}</span><div class="clearfix"></div>
+					</div>
 					  <c:if test="${submissionStatus == 'APPROVED'}">
+					 <div class="project_details_cta">
 					      <strong>Approved Amount:</strong><span>${expenses.totalAmount}</span><div class="clearfix"></div> 	
-					    </c:if>
 					    </div>
+					    	    </c:if>
 					<div class="project_details_cta">
 						<strong>Created By:</strong><span>${expenses.createdBy}</span><div class="clearfix"></div>
 					</div>

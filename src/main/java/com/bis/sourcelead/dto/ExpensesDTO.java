@@ -65,8 +65,17 @@ private static final long serialVersionUID = 1L;
 	
 	private String projectMemberEndDate;
 	
+	private String submittedDate;
 	
 	
+	public String getSubmittedDate() {
+		return submittedDate;
+	}
+
+	public void setSubmittedDate(String submittedDate) {
+		this.submittedDate = submittedDate;
+	}
+
 	public String getProjectMemberStartDate() {
 		return projectMemberStartDate;
 	}
