@@ -1521,7 +1521,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 							if(candidateDTO.getCountry() == null || candidateDTO.getCountry().isEmpty()) {
 								candidateDTO.setCountry(orgLocations.getCountry());
 							}
-							//candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user, vendorsList);
+							candidateService.saveCandidateBulkImports(candidateDTO, orgLocations, user, vendorsList);
 							 bucket.remove(docs.toString());
 						}else {
 							BulkImportFailureCacheDTO failureCacheDTO = new BulkImportFailureCacheDTO();
