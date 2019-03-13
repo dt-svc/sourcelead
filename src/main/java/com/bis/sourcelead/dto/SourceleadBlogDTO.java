@@ -18,7 +18,7 @@ public class SourceleadBlogDTO extends SearchDTO implements Serializable{
 	
 	private String blogId;
 	
-	@Required(desc = "blog Title")
+	@Required(desc = "blogTitle")
 	private String blogTitle;
 	
 	private String categoryId;
@@ -37,7 +37,7 @@ public class SourceleadBlogDTO extends SearchDTO implements Serializable{
 	@CleanHtml(escape=true)
 	private String description;
 	
-	@Required(desc = "short description")
+	@Required(desc = "shortdescription")
 	@CleanHtml(escape=true)
 	private String shortDescription;
 
