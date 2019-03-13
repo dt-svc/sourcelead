@@ -66,7 +66,7 @@ public interface TicketManagementService {
 
 	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId, long userId, int status, String dateFormat, String userRole);
 
-	public TicketDTO getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId, String dateFormat, boolean includeAttachments);
+	public TicketDTO getTicketSummaryByUUID(String uuid, Long orgLocationId, String dateFormat, boolean includeAttachments);
 
 	public List<TicketCommentDTO> getTicketCommentListByTicketId(Long ticketId, long userId, Long orgLocationId, String dateFormat);
 	
@@ -83,6 +83,8 @@ public interface TicketManagementService {
 	public Boolean validateTicketId(String ticketSno, Long orgLocationsId);
 	
 	public List<UserDTO> getCategoryAssignToListByTicketCategoryId(long ticketCategoryId, long userId, Long orgLocationId);
+
+	public boolean changeTicketManagementStatus(long ticketId, int status);
 
 	
 

@@ -1400,7 +1400,12 @@ public class Constants {
 	public static final String EMAIL_REMAINDER_INVOICE =  "Applicants Invoice";
 	
 	public static final String APPLICANT_JOINING = "ApplicantJoining";
+	public static final String EMPLOYEE_ON_LEAVE = "EmployeeOnLeave";
+	public static final String APPROVE_PENDING_LEAVES="approvePendingLeaves";
 	
+
+	public static final String WAITING_CONTRACT_TO_BE_SIGNED = "WaitingContractToBeSigned";
+
 	public static final String ASSOCIATE_BANK_DETAIL_HEADERS [] = {"Assoicate Id",	"Associate Email*",	"Account Type",	"Bank Name","Account Number","Routing Number"};
 	
 	public static final String[] BANK_TYPE_DROPDOWN = {"Cheque","Direct Deposit"};
@@ -1410,6 +1415,5 @@ public class Constants {
 	
 	public static final String TICKET_UPDATE_EMAIL = "ChangeTicketStatusEmail";
 	public static final String TICKET_UPDATE_NOTIFICATION = "ChangeTicketStatusNotification";
-
 	
 }
