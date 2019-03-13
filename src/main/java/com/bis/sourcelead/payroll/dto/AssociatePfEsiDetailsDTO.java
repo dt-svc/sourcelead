@@ -14,6 +14,8 @@ public class AssociatePfEsiDetailsDTO {
 	@Required(desc="pfNumber", dependsOn = "eligibleForPf", parentValueAny = true)
 	private String pfNumber;
 	
+	@Required(desc="aadharNumber", dependsOn = "eligibleForPf", parentValueAny = true)
+	private String aadharNumber;
 	
 	private String enroleDate;
 	
@@ -126,6 +128,12 @@ public class AssociatePfEsiDetailsDTO {
 	public void setNominee(String nominee) {
 		this.nominee = nominee;
 	}
-	
-	
+
+	public String getAadharNumber() {
+		return aadharNumber;
+	}
+
+	public void setAadharNumber(String aadharNumber) {
+		this.aadharNumber = aadharNumber;
+	}
 }
