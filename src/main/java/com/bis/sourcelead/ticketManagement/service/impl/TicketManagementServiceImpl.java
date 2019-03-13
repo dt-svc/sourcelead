@@ -650,11 +650,11 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public TicketDTO getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId, String dateFormat, boolean includeAttachments) {
+	public TicketDTO getTicketSummaryByUUID(String uuid, Long orgLocationId, String dateFormat, boolean includeAttachments) {
 		TicketDTO ticketDTO =  new TicketDTO();
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat();
-			Ticket ticketManagement = ticketManagementDao.getTicketSummaryByUUID(uuid,userId,orgLocationId);
+			Ticket ticketManagement = ticketManagementDao.getTicketSummaryByUUID(uuid, orgLocationId);
 			if (ticketManagement != null) {
 				ticketDTO.setId(ticketManagement.getId());
 				ticketDTO.setUuid(ticketManagement.getUuid());
@@ -923,6 +923,16 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		return userDTOList;
 	}
 	
+	@Override
+	public boolean changeTicketManagementStatus(long ticketId, int status) {
+		try {
+			return ticketManagementDao.changeTicketManagementStatus(ticketId, status);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	private void sendTicketManagementEmailToAssignedUsers(User loginUser, OrgLocations orgLocations, Ticket ticketManagement, User toUser, String notifyToEmail) throws Exception {
 		try {
 			EmailMessage emailMessage = new EmailMessage();

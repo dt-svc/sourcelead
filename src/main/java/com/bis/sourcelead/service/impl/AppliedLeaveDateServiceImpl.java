@@ -57,6 +57,5 @@ public class AppliedLeaveDateServiceImpl implements AppliedLeaveDateService{
 	{
 		return appliedLeaveDateDao.getAppliedLeaveByUserId(orgLocationId, leaveTypeId, startDate, endDate, userId,orgId);
 	}
-
 	
 }

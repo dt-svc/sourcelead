@@ -54,7 +54,7 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations() {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from OrgLocations";
+			String query = "select distinct o from OrgLocations o order by o.id";
 			List<OrgLocations> orgLocationsList = session.createQuery(query).list();
 			User adminUser = userDao.getUserByEmail("info@sourcelead.com");
 			if (adminUser != null && orgLocationsList != null && !orgLocationsList.isEmpty()) {
@@ -445,9 +445,13 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId, int status, String userRole) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from Ticket t where t.orgLocations.id=" + orgLocationId;
+			String query = "select t from Ticket t";
 			if(!Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) && !Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
-				query += " and t.createdBy.id=" + userId;
+				query += " join t.ticketAssignToList assignTo";
+			}
+			query += " where t.orgLocations.id=" + orgLocationId;
+			if(!Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) && !Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+				query += " and t.createdBy.id=" + userId + " or assignTo.user.id=" + userId;
 			}
 			if(status >= 0) {
 				query += " and t.status=" + status;
@@ -462,13 +466,12 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Ticket getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId) {
+	public Ticket getTicketSummaryByUUID(String uuid, Long orgLocationId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from Ticket t where t.uuid=:uuid and t.orgLocations.id=:orgLocationId and t.createdBy.id=:userId";
+			String query = "from Ticket t where t.uuid=:uuid and t.orgLocations.id=:orgLocationId";
 			Query queryObj = session.createQuery(query);
 			queryObj.setString("uuid", uuid);
-			queryObj.setLong("userId", userId);
 			queryObj.setLong("orgLocationId", orgLocationId);
 			List<Ticket> ticketList = queryObj.list();
 			if(ticketList != null && !ticketList.isEmpty())
@@ -687,6 +690,22 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 		}
 	}
 	
+	@Override
+	public boolean changeTicketManagementStatus(long ticketId, int status) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			Ticket ticket = (Ticket) session.get(Ticket.class, ticketId);
+			if(ticket != null) {
+				ticket.setStatus(status);
+				session.saveOrUpdate(ticket);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<User> getCategoryAssignToListByTicketCategoryId(long ticketCategoryId, Long orgLocationId, long userId) {
