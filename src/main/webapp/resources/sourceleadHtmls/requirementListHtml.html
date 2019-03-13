@@ -108,15 +108,17 @@ $(document).ready(function(){
 	  $("#masterSideNav").html(masterSideNav.masterSideNavPanel());
 	  // below fucntion is used to build MasterHeader panel.
 	  $("#masterHeaderNav").html(masterHeader.masterHeaderPanel());
-
+	 
+	  $('body').append(advnSearchPopEle);
+	  $('body').append(advnFilterPopEle);
+	  $('.chosen-select').chosen();
+	 
 	  if(viewTab === 'jobFair') {
 			jobFairListCheck();
 		} else {
 			requirementListCheck(searchValue,universalRequirementList,"universalSearch",atsUrl);
 		}
-	     $('body').append(advnSearchPopEle);
-	     $('body').append(advnFilterPopEle);
-		 $('.chosen-select').chosen();
+	    
 });
 function newActions(){
 	$(".newActPop").slideToggle(200);
