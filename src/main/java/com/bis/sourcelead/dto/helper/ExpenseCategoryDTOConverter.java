@@ -1,17 +1,18 @@
 package com.bis.sourcelead.dto.helper;
 
-import com.bis.sourcelead.dto.ExpensesCategoryDTO;
+import com.bis.sourcelead.dto.ExpensesCategoryListDTO;
 import com.bis.sourcelead.entity.ExpensesCategory;
 
 public class ExpenseCategoryDTOConverter {
 
-	public static ExpensesCategoryDTO  getExpensesCategoryDTOFromExpensesCategory(ExpensesCategory expensesCategory){
-		ExpensesCategoryDTO ecDTO = new ExpensesCategoryDTO();
+	public static ExpensesCategoryListDTO  getExpensesCategoryDTOFromExpensesCategory(ExpensesCategory expensesCategory){
+		ExpensesCategoryListDTO ecDTO = new ExpensesCategoryListDTO();
 		ecDTO.setId(expensesCategory.getId());
-		ecDTO.setExpensesName(expensesCategory.getExpensesName());
+		ecDTO.setCategoryName(expensesCategory.getExpensesName());
 		ecDTO.setAllowedAmount(expensesCategory.getAllowedAmount());
 		ecDTO.setAmountType(expensesCategory.getAmountType());
 		ecDTO.setDescription(expensesCategory.getDescription());
+		ecDTO.setIsAttachemtRequired(expensesCategory.getIsAttachemtRequired());
 		return ecDTO;
 	}
 }

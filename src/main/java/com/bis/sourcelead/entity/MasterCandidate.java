@@ -15,8 +15,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
-@Table(name = "MASTER_CANDIDATE", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "masterCandidate")
+@Table(name = "MASTER_CANDIDATE")
 public class MasterCandidate implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

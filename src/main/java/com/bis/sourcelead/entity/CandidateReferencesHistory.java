@@ -23,16 +23,15 @@ import org.hibernate.annotations.NotFoundAction;
  *		
  */
 @Entity
-@Table(name = "CANDIDATE_REFERENCES_HISTORY", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateReferencesHistory")
+@Table(name = "CANDIDATE_REFERENCES_HISTORY")
 public class CandidateReferencesHistory implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = false)
 	private Long id;
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_REFERENCES", nullable = false)
 	private CandidateReferences candidateReferences;
 	@Column(name = "NAME")
@@ -49,7 +48,7 @@ public class CandidateReferencesHistory implements Serializable {
 	private String comment;
 	@Column(name = "STATUS ")
 	private Integer status;
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_USER")
 	private User createdUser;

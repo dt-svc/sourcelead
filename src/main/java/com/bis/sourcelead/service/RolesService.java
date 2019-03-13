@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.Roles;
 
@@ -40,5 +41,19 @@ public interface RolesService {
 	List<Roles> getUserRolesListByRoleHierarchyIdAndOrgLocationId(Long orgLocationId,Long hierarchyId,String orgCode) throws Exception;
 	
 	Roles getRolesByRoleNameAndOrgId(String roleName,Long orgId) throws Exception;
+	
+	List<Roles> getAllRolesListByOrgLocationIdList(List<Long> orgLocationIdsList) throws Exception;
+	
+	Roles getRolesByUUIDAndOrgLocationId(String uuid,Long orgLocationId) throws Exception;
+	
+	Roles getRolesByUUID(String uuid) throws Exception;
+	
+	List<String> getRolesListByOrgLocationId(Long orgLocationId) throws Exception;
+	
+
+	List<Roles> getRolesListUsingMultipleIds(String[] roleIds) throws Exception;
+
+	List<RoleDTO> getRolesDTOListByOrgLocationId(Long orgLocationId) throws Exception;
+
 
 }

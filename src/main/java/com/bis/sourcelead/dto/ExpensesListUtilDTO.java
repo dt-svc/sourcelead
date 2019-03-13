@@ -6,13 +6,15 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class ExpensesListUtilDTO implements Serializable{
+public class ExpensesListUtilDTO  extends SearchDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
 	private Long userId;
 	
 	private String locationCode;
+	
+	private String expenseLocationCode;
 	
 	private List<String> expenseStatus;
 	
@@ -22,6 +24,13 @@ public class ExpensesListUtilDTO implements Serializable{
 	
 	private String expenseId;
 	
+	private int pageNo;
+	
+	private int pageSize;
+	
+	private String expenseDashboardStatus;
+	
+	private String isGlobalAccess;
 
 	public Long getUserId() {
 		return userId;
@@ -73,6 +82,46 @@ public class ExpensesListUtilDTO implements Serializable{
 
 	public void setExpenseId(String expenseId) {
 		this.expenseId = expenseId;
+	}
+
+	public String getExpenseLocationCode() {
+		return expenseLocationCode;
+	}
+
+	public void setExpenseLocationCode(String expenseLocationCode) {
+		this.expenseLocationCode = expenseLocationCode;
+	}
+
+	public int getPageNo() {
+		return pageNo;
+	}
+
+	public void setPageNo(int pageNo) {
+		this.pageNo = pageNo;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+
+	public String getExpenseDashboardStatus() {
+		return expenseDashboardStatus;
+	}
+
+	public void setExpenseDashboardStatus(String expenseDashboardStatus) {
+		this.expenseDashboardStatus = expenseDashboardStatus;
+	}
+
+	public String getIsGlobalAccess() {
+		return isGlobalAccess;
+	}
+
+	public void setIsGlobalAccess(String isGlobalAccess) {
+		this.isGlobalAccess = isGlobalAccess;
 	}
 	
 }

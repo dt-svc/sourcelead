@@ -3,18 +3,22 @@ package com.bis.sourcelead.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OnBoardingTemplateDao;
+import com.bis.sourcelead.dto.OnBoardingTemplateDTO;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OnBoardingTemplateService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+
+import cucumber.deps.difflib.StringUtills;
 
 @Service
 public class OnBoardingTemplateServiceImpl implements OnBoardingTemplateService{
@@ -59,22 +63,22 @@ public class OnBoardingTemplateServiceImpl implements OnBoardingTemplateService{
 	
 
 	@Override
-	public OnBoardingTemplate getOnBoardTemplateDetails(JSONObject jsonObj, User user, OrgLocations orgLocations)
+	public OnBoardingTemplate getOnBoardTemplateDetails(OnBoardingTemplateDTO onBoardingTemplateDTO, User user, OrgLocations orgLocations)
 			throws Exception {
 		
 		 OnBoardingTemplate onBoardingTemplate = null;
 		
-		 if(jsonObj.has("templateId") && !isNullOrEmpty(jsonObj.getString("templateId"))){
-		 		onBoardingTemplate = getOnBoardingTemplateById(Long.valueOf(jsonObj.getString("templateId")));
-		 		onBoardingTemplate.setTemplateName(jsonObj.getString("templateName"));
-			 	onBoardingTemplate.setDescription(jsonObj.getString("description"));
+		 if(StringUtils.isNotBlank(onBoardingTemplateDTO.getTemplateId())){
+		 		onBoardingTemplate = getOnBoardingTemplateById(Long.valueOf(onBoardingTemplateDTO.getTemplateId()));
+		 		onBoardingTemplate.setTemplateName(onBoardingTemplateDTO.getTemplateName());
+			 	onBoardingTemplate.setDescription(onBoardingTemplateDTO.getDescription().trim());
 			 	onBoardingTemplate.setUpdatedBy(user.getUserCode());
 			 	onBoardingTemplate.setUpdatedDate(new Date());
 		 	 
 		 	 }else{
 		 		 onBoardingTemplate = new OnBoardingTemplate();
-			 	 onBoardingTemplate.setTemplateName(jsonObj.getString("templateName"));
-			 	 onBoardingTemplate.setDescription(jsonObj.getString("description"));
+			 	 onBoardingTemplate.setTemplateName(onBoardingTemplateDTO.getTemplateName());
+			 	 onBoardingTemplate.setDescription(onBoardingTemplateDTO.getDescription().trim());
 			 	 onBoardingTemplate.setOrgLocationId(orgLocations);
 			 	
 			 	 StringBuilder userName = new StringBuilder();

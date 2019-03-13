@@ -1,1 +1,1 @@
-CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE','RATE_TYPE','VARCHAR(20) NULL AFTER `EXPECTED_RATE`');
+CALL AlterTableAddColumn ('CANDIDATE','RATE_TYPE','VARCHAR(20) NULL AFTER `EXPECTED_RATE`');

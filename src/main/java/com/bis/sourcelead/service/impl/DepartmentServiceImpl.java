@@ -4,12 +4,14 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.DepartmentDao;
+import com.bis.sourcelead.dto.DepartmentDTO;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -45,18 +47,18 @@ public class DepartmentServiceImpl implements DepartmentService{
 	}
 
 	@Override
-	public String saveDepartment(JSONObject jsonObj) throws Exception {
+	public String saveDepartmentDTO(DepartmentDTO  departmentDTO) throws Exception {
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	
 		Department department = new Department();
 		
-		if(jsonObj.has("departmentName") && !"".equalsIgnoreCase(jsonObj.getString("departmentName"))){
-			department.setDepartmentName(jsonObj.getString("departmentName"));
+		if(StringUtils.isNotBlank(departmentDTO.getDepartmentName())){
+			department.setDepartmentName(departmentDTO.getDepartmentName());
 		}
-		if(jsonObj.has("departmentDesc") && !"".equalsIgnoreCase(jsonObj.getString("departmentDesc"))){
-			department.setDescription(jsonObj.getString("departmentDesc"));
+		if(StringUtils.isNotBlank(departmentDTO.getDepartmentDesc())){
+			department.setDescription(departmentDTO.getDepartmentDesc());
 		}
 		department.setOrgLocationId(loginOrgLocation);
 		department.setStatus(Constants.RECORD_ACTIVE);
@@ -81,6 +83,27 @@ public class DepartmentServiceImpl implements DepartmentService{
 	@Override
 	public List<Department> getDepartmentByOrgLocationIdAndStatus(Long orgLocationId, String status) throws Exception {
 		return departmentDao.getDepartmentByOrgLocationIdAndStatus(orgLocationId, status);
+	}
+
+	@Override
+	public List<String> getDepartmentList(Long orgLocationId) throws Exception {
+		return departmentDao.getDepartmentList(orgLocationId);
+	}
+
+	@Override
+	public Department getDepartmentByOrgLocationIdAndDepartmentName(Long orgLocationId, String departmentName)
+			throws Exception {
+		return departmentDao.getDepartmentByOrgLocationIdAndDepartmentName(orgLocationId, departmentName);
+	}
+
+	@Override
+	public List<DepartmentDTO> getDepartmentsListByIds(List<Long> id) throws Exception {
+		return departmentDao.getDepartmentsListByIds(id);
+	}
+
+	@Override
+	public List<DepartmentDTO> getDepartmentsListByOrgLocationId(Long orgLocationId) throws Exception {
+		return departmentDao.getDepartmentsListByOrgLocationId(orgLocationId);
 	}
 	
 }

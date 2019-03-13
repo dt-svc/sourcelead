@@ -1,28 +1,20 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.math.BigInteger;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Contracts;
 
 public class RequirementSubmissionsDTO extends SearchDTO implements Serializable {
 
 	private long requirementId;
 	private long orgLocationId;
 	private long userId;
+	private long id;
+	private long submissionId;
+	private long orgRelationId;
+	private long spocId;
 	private String submissionType;
 	private String loginUserRole;
 	private String userCode;
@@ -39,6 +31,50 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	private String fileContentType;
 	private String fileName;
 	private String fileURL;
+	private String createdUser;
+	
+	
+  //Dashboard realated properties added on 13/08/2018
+	private String candidateName;
+	private String candidateEmail;
+	private String requirementName;
+	private String candidateUUID;
+	private String requirementUUID;
+	private BigInteger reqManagerId;
+	private String reqReleaseAllJobUserStatus;
+	private String offerJoinDate;
+	private String positionType;
+	private String rateType;
+	private String paymentType;
+	private String offerUUID;
+	private BigInteger candidateId;
+	private BigInteger offerId;
+	private String onboardUUId;
+	private String onboardStatus;
+	
+    private BigInteger reqId;
+	
+	private String submissionStatus;
+	
+	private String invoiceGenerateDate;
+	
+	private String paymentTerm;
+	
+	private String joinedDate;
+	
+	private String submissionDate;
+	
+	private String submissionTime;
+	
+	private String generatedId;
+	
+	private String submittedBy;
+	
+	private String clientOrVendorName;
+	
+	private List<Contracts>contractsList;
+	
+	private Boolean generateDate = false;
 		
 	public long getRequirementId()
 	{
@@ -192,4 +228,206 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	{
 		this.fileURL = fileURL;
 	}
+	public String getCandidateName() {
+		return candidateName;
+	}
+	public String getCandidateEmail() {
+		return candidateEmail;
+	}
+	public String getRequirementName() {
+		return requirementName;
+	}
+	public String getCandidateUUID() {
+		return candidateUUID;
+	}
+	public String getRequirementUUID() {
+		return requirementUUID;
+	}
+	public String getReqReleaseAllJobUserStatus() {
+		return reqReleaseAllJobUserStatus;
+	}
+	public String getOfferJoinDate() {
+		return offerJoinDate;
+	}
+	public String getPositionType() {
+		return positionType;
+	}
+	public String getRateType() {
+		return rateType;
+	}
+	public String getPaymentType() {
+		return paymentType;
+	}
+	public String getOfferUUID() {
+		return offerUUID;
+	}
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+	public void setCandidateEmail(String candidateEmail) {
+		this.candidateEmail = candidateEmail;
+	}
+	public void setRequirementName(String requirementName) {
+		this.requirementName = requirementName;
+	}
+	public void setCandidateUUID(String candidateUUID) {
+		this.candidateUUID = candidateUUID;
+	}
+	public void setRequirementUUID(String requirementUUID) {
+		this.requirementUUID = requirementUUID;
+	}
+	 
+	public void setReqReleaseAllJobUserStatus(String reqReleaseAllJobUserStatus) {
+		this.reqReleaseAllJobUserStatus = reqReleaseAllJobUserStatus;
+	}
+	public void setOfferJoinDate(String offerJoinDate) {
+		this.offerJoinDate = offerJoinDate;
+	}
+	public void setPositionType(String positionType) {
+		this.positionType = positionType;
+	}
+	public void setRateType(String rateType) {
+		this.rateType = rateType;
+	}
+	public void setPaymentType(String paymentType) {
+		this.paymentType = paymentType;
+	}
+	public void setOfferUUID(String offerUUID) {
+		this.offerUUID = offerUUID;
+	}
+	public BigInteger getReqManagerId() {
+		return reqManagerId;
+	}
+	public BigInteger getCandidateId() {
+		return candidateId;
+	}
+	public BigInteger getOfferId() {
+		return offerId;
+	}
+	public void setReqManagerId(BigInteger reqManagerId) {
+		this.reqManagerId = reqManagerId;
+	}
+	public void setCandidateId(BigInteger candidateId) {
+		this.candidateId = candidateId;
+	}
+	public void setOfferId(BigInteger offerId) {
+		this.offerId = offerId;
+	}
+	public String getOnboardUUId() {
+		return onboardUUId;
+	}
+	public String getOnboardStatus() {
+		return onboardStatus;
+	}
+	public void setOnboardUUId(String onboardUUId) {
+		this.onboardUUId = onboardUUId;
+	}
+	public void setOnboardStatus(String onboardStatus) {
+		this.onboardStatus = onboardStatus;
+	}
+	public BigInteger getReqId() {
+		return reqId;
+	}
+	public void setReqId(BigInteger reqId) {
+		this.reqId = reqId;
+	}
+	public String getSubmissionStatus() {
+		return submissionStatus;
+	}
+	public void setSubmissionStatus(String submissionStatus) {
+		this.submissionStatus = submissionStatus;
+	}
+	public String getSubmissionDate() {
+		return submissionDate;
+	}
+	public void setSubmissionDate(String submissionDate) {
+		this.submissionDate = submissionDate;
+	}
+	public String getSubmissionTime() {
+		return submissionTime;
+	}
+	public void setSubmissionTime(String submissionTime) {
+		this.submissionTime = submissionTime;
+	}
+	public String getGeneratedId() {
+		return generatedId;
+	}
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
+	}
+	public String getSubmittedBy() {
+		return submittedBy;
+	}
+	public void setSubmittedBy(String submittedBy) {
+		this.submittedBy = submittedBy;
+	}
+	public String getInvoiceGenerateDate() {
+		return invoiceGenerateDate;
+	}
+	public void setInvoiceGenerateDate(String invoiceGenerateDate) {
+		this.invoiceGenerateDate = invoiceGenerateDate;
+	}
+	public String getPaymentTerm() {
+		return paymentTerm;
+	}
+	public void setPaymentTerm(String paymentTerm) {
+		this.paymentTerm = paymentTerm;
+	}
+	public String getJoinedDate() {
+		return joinedDate;
+	}
+	public void setJoinedDate(String joinedDate) {
+		this.joinedDate = joinedDate;
+	}
+	public String getClientOrVendorName() {
+		return clientOrVendorName;
+	}
+	public void setClientOrVendorName(String clientOrVendorName) {
+		this.clientOrVendorName = clientOrVendorName;
+	}
+	public long getId() {
+		return id;
+	}
+	public void setId(long id) {
+		this.id = id;
+	}
+	public long getSubmissionId() {
+		return submissionId;
+	}
+	public void setSubmissionId(long submissionId) {
+		this.submissionId = submissionId;
+	}
+	public List<Contracts> getContractsList() {
+		return contractsList;
+	}
+	public void setContractsList(List<Contracts> contractsList) {
+		this.contractsList = contractsList;
+	}
+	public long getOrgRelationId() {
+		return orgRelationId;
+	}
+	public void setOrgRelationId(long orgRelationId) {
+		this.orgRelationId = orgRelationId;
+	}
+	public long getSpocId() {
+		return spocId;
+	}
+	public void setSpocId(long spocId) {
+		this.spocId = spocId;
+	}
+	public Boolean getGenerateDate() {
+		return generateDate;
+	}
+	public void setGenerateDate(Boolean generateDate) {
+		this.generateDate = generateDate;
+	}
+	public String getCreatedUser() {
+		return createdUser;
+	}
+	public void setCreatedUser(String createdUser) {
+		this.createdUser = createdUser;
+	}
+	
+	
+	
 }

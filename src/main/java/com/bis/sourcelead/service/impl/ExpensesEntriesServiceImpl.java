@@ -1,12 +1,12 @@
 package com.bis.sourcelead.service.impl;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,13 +15,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesEntriesDao;
 import com.bis.sourcelead.dao.ExpensesEntryDocumentsDao;
-import com.bis.sourcelead.dto.AddExpensesDTO;
-import com.bis.sourcelead.dto.CategoryDTO;
+import com.bis.sourcelead.dto.ExpensesDTO;
+import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Expenses;
@@ -33,6 +32,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.enums.PaymentModes;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -63,104 +63,129 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 	@Autowired
 	private CommonUtil commonUtil;
 	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
 	@Override
-	public Set<ExpensesEntries> prepareExpensesEntriesListByJson(AddExpensesDTO addExpensesDTO,HttpServletRequest request,Expenses expenses) throws Exception {
+	public Set<ExpensesEntries> prepareExpensesEntriesListByJson(ExpensesDTO addExpensesDTO,HttpServletRequest request,Expenses expenses) throws Exception {
 		
 		    List<Long> expenseEntryDbIds = null;
+		    OrgLocations orgLocation = null;
 		    ArrayList<Long> expenseEntryIds = new ArrayList<>();
 		    if(null != expenses && null != expenses.getId()){
 		    	expenseEntryDbIds = expensesEntriesDao.getExpensesEntryIdsByExpenseId(expenses.getId());
 		    }
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 
+			/*if(orgLocation == null && addExpensesDTO.getLocationCode() != null ){
+			 orgLocation = orgLocationService.getOrgLocationsByLocationCode(addExpensesDTO.getLocationCode());
+			}*/
+			
 		    HashSet<ExpensesEntries> expensesEntriesList = new HashSet<ExpensesEntries>(); 
-		    for(CategoryDTO category:addExpensesDTO.getCategoryDTO()){
-			    if(StringUtils.isNotBlank(category.getCategoryType())){
-				//int maxCount = Integer.parseInt(category.getMaxRecCount());
-				//SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
-				//for (int c = 1; c < maxCount; c++) {
+		    for(ExpensesEntriesDTO entryCategory:addExpensesDTO.getExpenseEntry()){
+			    if(StringUtils.isNotEmpty(entryCategory.getCategoryType())){
 						ExpensesEntries  entries  = new ExpensesEntries();
-						if(StringUtils.isNotBlank(category.getExpenseEntryId())){
-							entries.setId(Long.parseLong(category.getExpenseEntryId()));
+						if(entryCategory.getId() != null){
+							entries.setId(entryCategory.getId());
 						}
-						if(StringUtils.isNotBlank(category.getCategoryType())){
-							ExpensesCategory ec = new ExpensesCategory();
-							String categoryType[] = category.getCategoryType().split(",");
-							ec.setId(Long.parseLong(categoryType[0]));
-							entries.setExpensesCategoryId(ec);
+						ExpensesCategory ec = new ExpensesCategory();
+						if(entryCategory.getCategoryTypeId() > 0){
+							ec.setId(entryCategory.getCategoryTypeId());
+						}
+						else{
+							ec.setId(Long.parseLong(entryCategory.getCategoryType().split(",")[0]));
+						}
+						entries.setExpensesCategoryId(ec);
 						
-						if(StringUtils.isNotBlank(category.getCategoryDate())){
-							Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
-							DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-							Date date = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),category.getCategoryDate());
-							String currentTimeStr = Constants.TZ_DF.format(date);  
-							String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
-							Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-							entries.setExpenseDate(converteDate);
+						if(StringUtils.isNotBlank(entryCategory.getDateOccurred())){
+							Date date = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),entryCategory.getDateOccurred());
+							entries.setExpenseDate(date);
 						}
 						
-						if(StringUtils.isNotBlank(category.getReceiptIssuedBy())){
-							entries.setReceiptIssuedBy(category.getReceiptIssuedBy());
+						if(StringUtils.isNotBlank(entryCategory.getReceiptIssuedBy())){
+							entries.setReceiptIssuedBy(entryCategory.getReceiptIssuedBy());
 						}
 						
-						/*if(jsonObj.has("expenseRateType"+c)){
-							entries.setCurrencyType(jsonObj.getString("expenseRateType"+c));
+
+						//Countries country = countriesService.getCountriesByCountryName(orgLocation.getCountry());
+						/*String currencyType = null;
+
+						/*Countries country = countriesService.getCountriesByCountryName(orgLocation.getCountry());
+						String currencyType = null;
+
+						if(country!= null &&  country.getCurrency()!= null && !country.getCurrency().equalsIgnoreCase(entryCategory.getCategoryAmountType())){
+							currencyType = country.getCurrency();
 						}
 						
-						if(jsonObj.has("expenseAmount"+c)){
-							entries.setAmount(Float.valueOf(jsonObj.getString("expenseAmount"+c)));
+						if(StringUtils.isEmpty(entryCategory.getCategoryAmountType()) || (StringUtils.isNotEmpty(currencyType) && !currencyType.equalsIgnoreCase(entryCategory.getCategoryAmountType()))){
+							entries.setCurrencyType(entryCategory.getCategoryAmountType());
+						}else {
+							entries.setCurrencyType(currencyType);
 						}*/
-						if(StringUtils.isNotBlank(category.getExpenseAmount()) && StringUtils.isNotBlank(category.getExpenseRateType())){
-							Countries country = countriesService.getCountriesByCountryName(orgLocation.getCountry());
-							if(!country.getCurrency().equalsIgnoreCase(category.getExpenseRateType())){
-							 Float amount = conversionUtil.convert(category.getExpenseRateType(),country.getCurrency(),Float.valueOf(category.getExpenseAmount()));
-							 entries.setCurrencyType(country.getCurrency());
-							 entries.setAmount(amount);
-							}else{
-								entries.setCurrencyType((category.getExpenseRateType()));
-								entries.setAmount(Float.valueOf(category.getExpenseAmount()));
-							}
+
+						entries.setCurrencyType(entryCategory.getCategoryAmountType());
+						
+
+						entries.setSubmittedamount(new BigDecimal(entryCategory.getCategoryAmount()));
+						
+						if(StringUtils.isNotBlank(entryCategory.getCategoryApprovedAmount())){
+							entries.setAmount(new BigDecimal(entryCategory.getCategoryApprovedAmount()));
+							entries.setAmountchangereason(null);
+						}else {
+							entries.setAmount(new BigDecimal(entryCategory.getCategoryAmount()));
+							entries.setAmountchangereason(null);
 						}
-					}
-					if(StringUtils.isNotBlank(category.getEntryDes())){
-						entries.setDescription(category.getEntryDes());
-					}
-					
-					if(StringUtils.isNotBlank(category.getPaymentMode())){
-						entries.setPaymentMode(PaymentModes.getNameByValue(category.getPaymentMode()));
+						
+						
+					if(StringUtils.isNotBlank(entryCategory.getEntryDescription())){
+						entries.setDescription(entryCategory.getEntryDescription());
 					}
 					
-					category.setStaticPath(staticPath);
+					
+					if (StringUtils.isNotBlank(entryCategory.getPaidBy())){
+						entries.setPaidBy(entryCategory.getPaidBy());
+					 }
+					
+					if(StringUtils.isNotBlank(entryCategory.getPaymentMode())){
+						entries.setPaymentMode(PaymentModes.getNameByValue(entryCategory.getPaymentMode()));
+					}
+					
+					//category.setStaticPath(staticPath);
 					
 					entries.setCreatedDate(CommonUtil.currentDate());
 					entries.setCreatedBy(expenses.getCreatedBy());
 					entries.setUpdatedDate(CommonUtil.currentDate());
 					entries.setExpensesId(expenses);
 					entries.setUpdatedBy(expenses.getUpdatedBy());
-					
-					if(StringUtils.isNotBlank(category.getDbdocFileId())){
-						System.out.println("ExpenseEntryId"+category.getDbdocFileId());
-						System.out.println("ExpenseEntryId"+category.getDbdocFileIsDeleted());
+					if(entryCategory.getBillable() != null) {
+						entries.setBillable(entryCategory.getBillable());
+					}else {
+						entries.setBillable(false);
 					}
+					
+					
+					
+					
 					
 				    //save  mutliple attachments.
 					 HashSet<ExpensesEntryDocuments> eeDocList = new HashSet<>();
- 	                   if(category.getFileInfo() != null && !category.getFileInfo().isEmpty()) {
-				    		for ( FileInfo fileinfo:category.getFileInfo()) {
-				    		  ExpensesEntryDocuments eedoc = new ExpensesEntryDocuments();
-				    		  eedoc.setExpensesEntriesId(entries);	
-				    		  eedoc.setFileURL(fileinfo.getFileURL());
-				    		  eedoc.setFileName(fileinfo.getFileName());
-				    		  eedoc.setFileContentType(fileinfo.getContentType());
-							  FileUploadUtil.moveFile(category.getStaticPath(), fileinfo, "expsesDocuments");
-				    		  
-			                       eedoc.setStatus(Constants.CANDIDATE_ACTIVE);
-			                       eedoc.setCreatedDate(CommonUtil.currentDate());
-			                       eedoc.setCreatedBy(entries.getCreatedBy());
-			                       eedoc.setUpdatedDate(CommonUtil.currentDate());
-			                       eedoc.setUpdatedBy(entries.getUpdatedBy());
-				                   eeDocList.add(eedoc);
-				    	  }
+ 	                   if(entryCategory.getFileInfo() != null && !entryCategory.getFileInfo().isEmpty()) {
+				    		for ( FileInfo fileinfo:entryCategory.getFileInfo()) {
+				    			if(StringUtils.isEmpty(fileinfo.getFileDbId()) || (fileinfo.getFileDbId().contains("null")))	{
+				    		      ExpensesEntryDocuments eedoc = new ExpensesEntryDocuments();
+				    		  	  FileUploadUtil.moveFile(staticPath, fileinfo, "expsesDocuments");
+					    		  eedoc.setExpensesEntriesId(entries);	
+					    		  eedoc.setFileURL(fileinfo.getFileURL());
+					    		  eedoc.setFileName(fileinfo.getFileName());
+					    		  eedoc.setFileContentType(fileinfo.getContentType());
+			                      eedoc.setStatus(Constants.CANDIDATE_ACTIVE);
+			                      eedoc.setCreatedDate(CommonUtil.currentDate());
+			                      eedoc.setCreatedBy(entries.getCreatedBy());
+			                      eedoc.setUpdatedDate(CommonUtil.currentDate());
+			                      eedoc.setUpdatedBy(entries.getUpdatedBy());
+				                  eeDocList.add(eedoc);
+				    	       }
+ 	                        }
 				    	  entries.setExpensesEntryDocuments(eeDocList);
  	                    }
 						entries.setStatus(Constants.RECORD_ACTIVE.toString());
@@ -180,6 +205,12 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 		    		expensesEntriesDao.removeAllExpenseEntries(expenseEntryDbIds);
 		    	}
 		    }
+		    if(addExpensesDTO.getRemovedDocumentIds() != null && ! addExpensesDTO.getRemovedDocumentIds().isEmpty()){
+		    	for(Long id :addExpensesDTO.getRemovedDocumentIds()) {
+		    		expensesEntryDocumentsDao.removeExpensesEntryDocouments(id);
+		    	}
+		    }
+		   
 		   return expensesEntriesList;
 		    		  
 	}
@@ -188,5 +219,21 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 	public List<ExpensesEntries> getExpensesEntriesByExpenseId(long expenseId) {
 		return expensesEntriesDao.getExpensesEntriesByExpenseId(expenseId);
 	}
+
+	@Override
+	public int dumpExpenceCategoryAmountToOldRecords() {
+		return expensesEntriesDao.dumpExpenceCategoryAmountToOldRecords();
+	}
+
+	@Override
+	public int changeDocumentNameWithWhiteSpacesToUnderScore(String staticPath) {
+		try {
+			return expensesEntriesDao.changeDocumentNameWithWhiteSpacesToUnderScore(staticPath);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
 	
 }

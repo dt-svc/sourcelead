@@ -13,6 +13,7 @@ public class TimesheetHours {
 	private String weekTotal;
 	private String sdate;
 	private String edate;
+	private long weekTotalHours;
 
 	
 	public String getTaskName() {
@@ -115,6 +116,12 @@ public class TimesheetHours {
 		this.edate = edate;
 	}
 
+	public long getWeekTotalHours() {
+		return weekTotalHours;
+	}
 
+	public void setWeekTotalHours(long weekTotalHours) {
+		this.weekTotalHours = weekTotalHours;
+	}
 
 }

@@ -2,6 +2,9 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
+
+import com.bis.sourcelead.annotations.CleanHtml;
 /**
  * DTO foe client and Vendor
  * Date :16-08-1989
@@ -23,8 +26,10 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	private String longitude;
 	private String level;
 	private String address;
+	@CleanHtml(escape=false)
 	private String billingAddress;
-	private String PaymentTerm;
+	//private String PaymentTerm;
+	private String paymentTerms;
 	private String email;
 	private String firstName;
 	private String lastName;
@@ -42,9 +47,85 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	private List<String> clientIds;
 	private List<String> status;
 	private List<String> invitationStatus;
-	
+
+	private String UUID;
+	private List<String> emailAdvanced;
+	private List<String> contactNameAdvanced;
+
 	private AddUserDTO addUserDTO;
+	private List<String> phoneNumberAdvanced;
+	private List<String> orgAdvanced;
+	private List<String> ownerAdvanced;
+	private List<String> statusAdvanced;
+	private List<String> invitationAdvanced;
 	
+	private String isVendorOnboardSubmitted;
+	private String industryName;
+	private String currency;
+	private String sicCode;
+	private String naicsCode;
+	private String einCode;
+	private String taxRegistrationNumber;
+	private String dunsNumber;
+	private String accountName;
+	private String accountNumber;
+	private String bankName;
+	private String branchNumber;
+	private String bankIdentifierCode;
+	private String bankAddress;
+	private String poEmail;
+	private String paymentRemittanceEmail;
+	
+	private String vendorCreateduserName;
+	
+	private String jobCampaignType;
+	
+	private String searchValue;
+	
+	private String filterSearchValue;
+	
+	private String orgType;
+	
+	private Map<String,String> clientCustomFieldlabelNameAndValue;
+	
+	private String recipientsEmails;
+	
+	private String orgRelationIds;
+	
+	private String isLawFirm;
+	
+	private String isAccountingFirm;
+	
+	private String generateBill;
+	
+	private String generateInvoice;
+	
+	public String getOrgRelationIds() {
+		return orgRelationIds;
+	}
+
+	public void setOrgRelationIds(String orgRelationIds) {
+		this.orgRelationIds = orgRelationIds;
+	}
+
+	public String getVendorCreateduserName()
+	{
+		return vendorCreateduserName;
+	}
+
+	public void setVendorCreateduserName(String vendorCreateduserName)
+	{
+		this.vendorCreateduserName = vendorCreateduserName;
+	}
+
+	public List<String> getOrgAdvanced() {
+		return orgAdvanced;
+	}
+
+	public void setOrgAdvanced(List<String> orgAdvanced) {
+		this.orgAdvanced = orgAdvanced;
+	}
+
 	public String getOrgName() {
 		return orgName;
 	}
@@ -165,13 +246,13 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 		this.billingAddress = billingAddress;
 	}
 
-	public String getPaymentTerm() {
+	/*public String getPaymentTerm() {
 		return PaymentTerm;
 	}
 
 	public void setPaymentTerm(String paymentTerm) {
 		PaymentTerm = paymentTerm;
-	}
+	}*/
 
 	public String getEmail() {
 		return email;
@@ -326,7 +407,287 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	}
 
 
-	
-	
+	public String getUUID() {
+		return UUID;
+	}
 
+	public void setUUID(String uUID) {
+		UUID = uUID;
+	}
+
+
+	public List<String> getEmailAdvanced() {
+		return emailAdvanced;
+	}
+
+	public void setEmailAdvanced(List<String> emailAdvanced) {
+		this.emailAdvanced = emailAdvanced;
+	}
+
+	public List<String> getContactNameAdvanced() {
+		return contactNameAdvanced;
+	}
+
+	public void setContactNameAdvanced(List<String> contactNameAdvanced) {
+		this.contactNameAdvanced = contactNameAdvanced;
+	}
+
+	public List<String> getPhoneNumberAdvanced() {
+		return phoneNumberAdvanced;
+	}
+
+	public void setPhoneNumberAdvanced(List<String> phoneNumberAdvanced) {
+		this.phoneNumberAdvanced = phoneNumberAdvanced;
+	}
+
+	public List<String> getOwnerAdvanced() {
+		return ownerAdvanced;
+	}
+
+	public void setOwnerAdvanced(List<String> ownerAdvanced) {
+		this.ownerAdvanced = ownerAdvanced;
+	}
+
+	public List<String> getStatusAdvanced() {
+		return statusAdvanced;
+	}
+
+	public void setStatusAdvanced(List<String> statusAdvanced) {
+		this.statusAdvanced = statusAdvanced;
+	}
+
+	public List<String> getInvitationAdvanced() {
+		return invitationAdvanced;
+	}
+
+	public void setInvitationAdvanced(List<String> invitationAdvanced) {
+		this.invitationAdvanced = invitationAdvanced;
+	}
+
+	public String getPaymentTerms()
+	{
+		return paymentTerms;
+	}
+
+	public void setPaymentTerms(String paymentTerms)
+	{
+		this.paymentTerms = paymentTerms;
+	}
+
+	public String getIsVendorOnboardSubmitted() {
+		return isVendorOnboardSubmitted;
+	}
+
+	public void setIsVendorOnboardSubmitted(String isVendorOnboardSubmitted) {
+		this.isVendorOnboardSubmitted = isVendorOnboardSubmitted;
+	}
+
+	public String getIndustryName() {
+		return industryName;
+	}
+
+	public void setIndustryName(String industryName) {
+		this.industryName = industryName;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+
+	public String getSicCode() {
+		return sicCode;
+	}
+
+	public void setSicCode(String sicCode) {
+		this.sicCode = sicCode;
+	}
+
+	public String getNaicsCode() {
+		return naicsCode;
+	}
+
+	public void setNaicsCode(String naicsCode) {
+		this.naicsCode = naicsCode;
+	}
+
+	public String getEinCode() {
+		return einCode;
+	}
+
+	public void setEinCode(String einCode) {
+		this.einCode = einCode;
+	}
+
+	public String getTaxRegistrationNumber() {
+		return taxRegistrationNumber;
+	}
+
+	public void setTaxRegistrationNumber(String taxRegistrationNumber) {
+		this.taxRegistrationNumber = taxRegistrationNumber;
+	}
+
+	public String getDunsNumber() {
+		return dunsNumber;
+	}
+
+	public void setDunsNumber(String dunsNumber) {
+		this.dunsNumber = dunsNumber;
+	}
+
+	public String getAccountName() {
+		return accountName;
+	}
+
+	public void setAccountName(String accountName) {
+		this.accountName = accountName;
+	}
+
+	public String getAccountNumber() {
+		return accountNumber;
+	}
+
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
+	public String getBranchNumber() {
+		return branchNumber;
+	}
+
+	public void setBranchNumber(String branchNumber) {
+		this.branchNumber = branchNumber;
+	}
+
+	public String getBankIdentifierCode() {
+		return bankIdentifierCode;
+	}
+
+	public void setBankIdentifierCode(String bankIdentifierCode) {
+		this.bankIdentifierCode = bankIdentifierCode;
+	}
+
+	public String getBankAddress() {
+		return bankAddress;
+	}
+
+	public void setBankAddress(String bankAddress) {
+		this.bankAddress = bankAddress;
+	}
+
+	public String getPoEmail() {
+		return poEmail;
+	}
+
+	public void setPoEmail(String poEmail) {
+		this.poEmail = poEmail;
+	}
+
+	public String getPaymentRemittanceEmail() {
+		return paymentRemittanceEmail;
+	}
+
+	public void setPaymentRemittanceEmail(String paymentRemittanceEmail) {
+		this.paymentRemittanceEmail = paymentRemittanceEmail;
+	}
+
+	public String getJobCampaignType()
+	{
+		return jobCampaignType;
+	}
+
+	public void setJobCampaignType(String jobCampaignType)
+	{
+		this.jobCampaignType = jobCampaignType;
+	}
+
+	public String getSearchValue()
+	{
+		return searchValue;
+	}
+
+	public void setSearchValue(String searchValue)
+	{
+		this.searchValue = searchValue;
+	}
+
+	public String getOrgType()
+	{
+		return orgType;
+	}
+
+	public void setOrgType(String orgType)
+	{
+		this.orgType = orgType;
+	}
+
+	public Map<String, String> getClientCustomFieldlabelNameAndValue() {
+		return clientCustomFieldlabelNameAndValue;
+	}
+
+	public void setClientCustomFieldlabelNameAndValue(Map<String, String> clientCustomFieldlabelNameAndValue) {
+		this.clientCustomFieldlabelNameAndValue = clientCustomFieldlabelNameAndValue;
+	}
+
+	public String getRecipientsEmails() {
+		return recipientsEmails;
+	}
+
+	public void setRecipientsEmails(String recipientsEmails) {
+		this.recipientsEmails = recipientsEmails;
+	}
+
+	public String getFilterSearchValue() {
+		return filterSearchValue;
+	}
+
+	public void setFilterSearchValue(String filterSearchValue) {
+		this.filterSearchValue = filterSearchValue;
+	}
+
+	public String getIsLawFirm() {
+		return isLawFirm;
+	}
+
+	public void setIsLawFirm(String isLawFirm) {
+		this.isLawFirm = isLawFirm;
+	}
+
+	public String getIsAccountingFirm() {
+		return isAccountingFirm;
+	}
+
+	public void setIsAccountingFirm(String isAccountingFirm) {
+		this.isAccountingFirm = isAccountingFirm;
+	}
+
+	public String getGenerateBill() {
+		return generateBill;
+	}
+
+	public void setGenerateBill(String generateBill) {
+		this.generateBill = generateBill;
+	}
+
+	public String getGenerateInvoice() {
+		return generateInvoice;
+	}
+
+	public void setGenerateInvoice(String generateInvoice) {
+		this.generateInvoice = generateInvoice;
+	}
+
+	
+	
 }

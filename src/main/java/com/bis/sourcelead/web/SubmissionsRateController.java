@@ -51,6 +51,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller  
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class SubmissionsRateController {
 	
 	@Autowired
@@ -95,7 +96,7 @@ public class SubmissionsRateController {
 	 * this method is used to Accept or reject or to negotiate rate from Candidate
 	 *
 	 */
-	@RequestMapping(value = "/acceptOrRejectOrRateNegotiateApplicantRates")
+	@RequestMapping(value = "/ws/acceptOrRejectOrRateNegotiateApplicantRates")
 	public ModelAndView acceptOrRejectOrRateNegotiateApplicantRates(@RequestParam(value="rateStatus", required=false) String rateStatus,
 			@RequestParam(value = "submissionId", required = false) Long submissionId,
 			 HttpServletRequest request) throws Exception {
@@ -165,7 +166,7 @@ public class SubmissionsRateController {
 			//requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
 			requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.REQUEST_SENT.toString());
 			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
-			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 			
 			Requirement requirement = requirementSubmission.getRequirement();
 			Candidate candidate = requirementSubmission.getCandidate();
@@ -182,7 +183,7 @@ public class SubmissionsRateController {
 	/**
 	 * This method is used to Accept or Reject or Negotiate Rate from User.
 	 */
-	@RequestMapping(value = "/acceptOrRejectOrRateNegotiateUserRates")
+	@RequestMapping(value = "/ws/acceptOrRejectOrRateNegotiateUserRates")
 	public ModelAndView acceptOrRejectOrRateNegotiateUserRates(@RequestParam(value="rateStatus", required=false) String rateStatus,
 			@RequestParam(value = "submissionId", required = false) Long submissionId,
 			 HttpServletRequest request) throws Exception {
@@ -257,7 +258,7 @@ public class SubmissionsRateController {
 	/**
 	 * This method is used to Accept or Reject Rate from Candidate.
 	 */
-	@RequestMapping(value = "/acceptOrRejectRequirement")
+	@RequestMapping(value = "/ws/acceptOrRejectRequirement")
 	public ModelAndView acceptOrRejectRequirement(@RequestParam(value="rateStatus", required=false) String rateStatus,@RequestParam(value = "submissionId", required = false) Long submissionId,
 			 HttpServletRequest request) throws Exception {
 		
@@ -299,11 +300,11 @@ public class SubmissionsRateController {
 			
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 			requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.REQUEST_SENT.toString());
-			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 			
 			Requirement requirement = requirementSubmission.getRequirement();
 			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
-			requirementSubmissionService.applicantAcceptMailAboutRequirement(requirement, user, requirementSubmission.getCandidate(), orgLocations);
+			requirementSubmissionService.applicantAcceptMailAboutRequirement(requirement, user, requirementSubmission, orgLocations);
 		}
 		return model;
 

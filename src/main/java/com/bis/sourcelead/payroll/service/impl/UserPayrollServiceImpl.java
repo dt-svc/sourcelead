@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import com.bis.sourcelead.payroll.entity.UserPayroll;
 import com.bis.sourcelead.payroll.service.UserPayrollService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class UserPayrollServiceImpl implements UserPayrollService{
@@ -70,8 +72,8 @@ public class UserPayrollServiceImpl implements UserPayrollService{
 	}
 
 	@Override
-	public List<Checks> getChecksListByEmployeeId(Long empId, OrgLocations orgLocations) throws Exception {
-		return userPayrollDao.getChecksListByEmployeeId(empId,orgLocations);
+	public ResponseList<Checks> getChecksListByEmployeeId(OrgLocations orgLocations,ChecksDTO checksDTO) throws Exception {
+		return userPayrollDao.getChecksListByEmployeeId(orgLocations,checksDTO);
 	}
 
 	@Override
@@ -81,12 +83,13 @@ public class UserPayrollServiceImpl implements UserPayrollService{
 		Checks checks = userPayrollDao.getUniqueChecksListByEmployeeId(empId, orgLocationId);
 		Checks checksnew = new Checks();
 		checksnew.setEmpId(empId);
+		if(checks != null)
 		checksnew.setEmpName(checks.getEmpName());
 		checksnew.setCheckNo(checksDTO.getCheckNo());
 		checksnew.setDate(conversionUtil.getDateFromString(checksDTO.getDate()));
 		checksnew.setOrgLocationId(orgLocations);
-		checksnew.setMonth(
-				new SimpleDateFormat("MMM yyyy").format(conversionUtil.getDateFromString(checksDTO.getDate())));
+		checksnew.setMonth(new SimpleDateFormat("MMM yyyy").format(conversionUtil.getDateFromString(checksDTO.getDate())));
+		checksnew.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		if (checksDTO.getMemo() != null && !"".equals(checksDTO.getMemo())) {
 			checksnew.setTypeOfExpense(checksDTO.getMemo());
 		}
@@ -105,6 +108,23 @@ public class UserPayrollServiceImpl implements UserPayrollService{
 			checksnew.setPayrollChecks(Double.parseDouble(checksDTO.getAmount()));
 		}
 		return bisUserMappingDao.saveChecks(checksnew);
+	}
+
+	@Override
+	public Object deletePayrollEntitiesByUUIDAndEntityType(Object obj)
+	{
+		return userPayrollDao.deletePayrollEntitiesByUUIDAndEntityType(obj);
+	}
+
+	@Override
+	public Object getPayrollEntitiesByUUIDAndEntityType(String uuid, String entityType)
+	{
+		return userPayrollDao.getPayrollEntitiesByUUIDAndEntityType(uuid,entityType);
+	}
+
+	@Override
+	public List<Checks> getChecksListByEmployeeId(Long empId, OrgLocations orgLocations) throws Exception {
+		return userPayrollDao.getChecksListByEmployeeId(empId,orgLocations);
 	}
 
 }

@@ -12,13 +12,14 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 
 public interface ClientService {
 	
 
-	public void storeClient(ClientDTO clientDTO,AddUserDTO AddUserDTO,CandidateDTO candidateDTO,User user,OrgLocations orgLocations,String responderType,Org org) throws Exception;
+	public OrgLocations storeClient(ClientDTO clientDTO,AddUserDTO AddUserDTO,CandidateDTO candidateDTO,User user,OrgLocations orgLocations,String responderType,Org org) throws Exception;
 
 	public void updateClientDetails(ClientDTO clientDTO,Long orgRelationId, Long clientLocationId, Long loginLocationId, User user) throws Exception;
 
@@ -41,5 +42,6 @@ public interface ClientService {
 	
 	public Integer getReleasedJobsCountByOrgRelationId(Long orgRelationId,OrgLocations orgLocations,String userRole,User loginUser) throws Exception;
 
+	public List<Requirement> getReleasedJobsByOrgRelationId(long orgRelationId, long spocId, String userRole);
 
 }

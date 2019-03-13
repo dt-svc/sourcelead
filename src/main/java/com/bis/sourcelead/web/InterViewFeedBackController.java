@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -19,6 +20,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/app")
 public class InterViewFeedBackController {
 	
 	
@@ -44,9 +46,10 @@ public class InterViewFeedBackController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')")
 	@RequestMapping(value = "/interViewFeedBackTemplate")
-	public ModelAndView interViewFeedBackTemplate(HttpServletRequest request) throws Exception {
+	public ModelAndView interViewFeedBackTemplate(HttpServletRequest request,@RequestParam(value = "type", required = false) String type) throws Exception {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("type", type);
 		model.setViewName("requirement/interViewFeedBackTemplate");
 		return model;
 
@@ -61,17 +64,17 @@ public class InterViewFeedBackController {
 	 * @return
 	 * @throws Exception
 	 */
-	
-	@RequestMapping(value = "/publicInterviewFeedBackTemplate")
-	public ModelAndView publicInterviewFeedBackTemplate(@RequestParam(value = "templateId", required = false) Long templateId,@RequestParam(value = "interviewerUserId", required = false) Long interviewerUserId,
-			@RequestParam(value = "requirementInterviewid", required = false) Long requirementInterviewerId,HttpServletRequest request) throws Exception {
+    @RequestMapping(value = "/ws/publicInterviewFeedBackTemplate")
+	public ModelAndView publicInterviewFeedBackTemplate(@RequestParam(value = "templateId", required = true) String templateId,
+			@RequestParam(value = "requirementInterviewid", required = true) String requirementInterviewerId,HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
 		model.addObject("templateId", templateId);
 		model.addObject("requirementInterviewid", requirementInterviewerId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		InterviewFeedbackTemplate ift =interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(requirementInterviewerId);
+		RequirementInterviewer interviewer = requirementInterviewerService.getRequirementInterviewerByUUID(requirementInterviewerId);
+		InterviewFeedbackTemplate ift = interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(interviewer.getId());
 		if(ift !=null){
-			String requirementId = ift.getRequirementInterviewerId().getId().toString();
+			String requirementId = ift.getRequirementInterviewerId().getUuid();
 			model.addObject("feedbackStatus", ift.getStatus());
 			model.addObject("afterRequirementInterviewid", requirementId);
 		}
@@ -92,8 +95,8 @@ public class InterViewFeedBackController {
 	 */
 	
 	@RequestMapping(value = "/dashboardInterviewFeedBackTemplate")
-	public ModelAndView dashboardInterviewFeedBackTemplate(@RequestParam(value = "templateId", required = false) Long templateId,
-			@RequestParam(value = "requirementInterviewid", required = false) Long requirementInterviewId,HttpServletRequest request) throws Exception {
+	public ModelAndView dashboardInterviewFeedBackTemplate(@RequestParam(value = "templateId", required = false) String templateId,
+			@RequestParam(value = "requirementInterviewid", required = false) String requirementInterviewId,HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
 		model.addObject("templateId", templateId);
 		model.addObject("requirementInterviewid", requirementInterviewId);
@@ -103,7 +106,7 @@ public class InterViewFeedBackController {
 
 	    model.addObject("orgLocations", loginOrgLocations.getId());
 	    
-	    RequirementInterviewer reqInterviewer = requirementInterviewerService.getInterviwerstByInterviewId(requirementInterviewId);
+	    RequirementInterviewer reqInterviewer = requirementInterviewerService.getRequirementInterviewerByUUID(requirementInterviewId);
 	    if(null != reqInterviewer){
 	    	if(null != reqInterviewer.getRequirementInterview()){
 	    		if(null != reqInterviewer.getRequirementInterview().getSubmissionId()){
@@ -121,9 +124,10 @@ public class InterViewFeedBackController {
 	    }
 	    
 	    //req.setInterviewerName(req.getRequirementInterview().getSubmissionId().getCandidate().getFirstName());
-		InterviewFeedbackTemplate ift =interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(requirementInterviewId);
+	    RequirementInterviewer interviewer = requirementInterviewerService.getRequirementInterviewerByUUID(requirementInterviewId);
+		InterviewFeedbackTemplate ift =interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(interviewer.getId());
 		if(ift !=null){
-			String requirementId = ift.getRequirementInterviewerId().getId().toString();
+			String requirementId = ift.getRequirementInterviewerId().getUuid();
 			model.addObject("feedbackStatus", ift.getStatus());
 			model.addObject("afterRequirementInterviewid", requirementId);
 		}

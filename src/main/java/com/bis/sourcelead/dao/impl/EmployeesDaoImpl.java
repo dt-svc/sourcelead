@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
@@ -84,7 +86,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Employees emp left join fetch emp.user where emp.id = :id ";
 		@SuppressWarnings("unchecked")
-		List<Employees> empList = (List<Employees>)session.createQuery(query).setLong("id", Long.parseLong(id)).setCacheable(true).list();
+		List<Employees> empList = (List<Employees>)session.createQuery(query).setLong("id", Long.parseLong(id)).list();
 		Employees employees = null;
 		if(empList != null && !empList.isEmpty()){
 			employees = empList.iterator().next();
@@ -120,7 +122,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		 logger.debug("In EmployeeDaoImpl class getEmployeeByUserId method");
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from Employees emp where emp.user.id = :userId";
-			List<Employees> employeesList =  session.createQuery(query) .setLong("userId", userId).setCacheable(true).list();
+			List<Employees> employeesList =  session.createQuery(query) .setLong("userId", userId).list();
 			Employees employee = null;
 			if(employeesList != null && !employeesList.isEmpty())
 			{
@@ -140,7 +142,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		 boolean flag = false;
 		 if(employeeId != null && orgLocationsId != null){
 				String query = "from Employees emp where emp.orgLocations = :orgLocationsId and emp.employeeId = :employeeId ";
-				List<Employees> employeesList = session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setString("employeeId", employeeId).setCacheable(true).list();
+				List<Employees> employeesList = session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setString("employeeId", employeeId).list();
 
 				if (employeesList != null && employeesList.size() > 0) {
 					flag = true;
@@ -156,7 +158,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		 logger.debug("In EmployeesDaoImpl class getEmployeeByIdAndUserIdAndOrgLocationsId method");
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from Employees emp left join fetch emp.user where emp.employeeId = :employeeId and  emp.user.id = :userId and emp.orgLocations = :orgLocationsId";
-			List<Employees> employeesList =  session.createQuery(query) .setString("employeeId", employeeId).setLong("userId", userId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+			List<Employees> employeesList =  session.createQuery(query) .setString("employeeId", employeeId).setLong("userId", userId).setLong("orgLocationsId", orgLocationsId).list();
 			Employees employee = null;
 			if(employeesList != null && !employeesList.isEmpty())
 			{
@@ -172,7 +174,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Employees> addItemsList = null;
 		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user");
-		addItemsList=employeesListQuery.setCacheable(true).list();
+		addItemsList=employeesListQuery.list();
 		return addItemsList;
 	}
 	
@@ -184,7 +186,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		List<Employees> addItemsList = null;
 		
 		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user usr where emp.id NOT IN(SELECT employee from ProjectMembers where projects = :projectId) and emp.orgLocations = :orgLocationsId  and usr.userState <> 'INACTIVE' and usr.userType <>'Admin' ");
-		addItemsList=employeesListQuery.setLong("projectId", projectId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		addItemsList=employeesListQuery.setLong("projectId", projectId).setLong("orgLocationsId", orgLocationsId).list();
 		return addItemsList;
 	}
 
@@ -202,15 +204,15 @@ public class EmployeesDaoImpl implements EmployeesDao{
         if(level1Manager!=null && level2Manager!=null){
         	
         	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager and emp.user.id <> :level2Manager and user.userType <>'Admin' and user.userState <> 'INACTIVE'" );
-    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).setLong("level2Manager", level2Manager).setCacheable(true).list(); 
+    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).setLong("level2Manager", level2Manager).list(); 
         }else if(level1Manager!=null){
         	
         	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager and user.userType <>'Admin' and user.userState <> 'INACTIVE'");
-    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).setCacheable(true).list();
+    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).list();
         }else{
         	
         	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and user.userType <>'Admin' and user.userState <> 'INACTIVE'");
-    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).list();
         }
 		return employeeList;
 	}
@@ -222,7 +224,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		 boolean flag = false;
 		 if(userId != null && emailId != null){
 				String query = "from User user where user.email = :emailId and user.id != :userId ";
-				List<Employees> userEmailIdList = session.createQuery(query).setLong("userId", userId).setString("emailId", emailId).setCacheable(true).list();
+				List<Employees> userEmailIdList = session.createQuery(query).setLong("userId", userId).setString("emailId", emailId).list();
 
 				if (userEmailIdList != null && userEmailIdList.size() > 0) {
 					flag = true;
@@ -245,18 +247,20 @@ public class EmployeesDaoImpl implements EmployeesDao{
         }
         
         String actionsQuery = "select sa.id from SourceleadActions sa where (sa.tabs.id = :tabId or sa.tabs.id = :tabId2)  ";
-        List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong("tabId", Constants.TAB_MY_TIMESHEET).setLong("tabId2", Constants.TAB_TIMESHEET_APPROVAL).setCacheable(true).list();
+        List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong("tabId", Constants.TAB_MY_TIMESHEET).setLong("tabId2", Constants.TAB_TIMESHEET_APPROVAL).list();
         
         String rolesQuery = "from Roles roles where roles.orgLocations.id = :orgLocationsId ";
-        List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgLocationsId", orgLocationId).setCacheable(true).list();
+        List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgLocationsId", orgLocationId).list();
         List<Long> ownerRolesList = new ArrayList<Long>();
         
         for(Roles roles : rolesList){
        	 List<Long> roleActionsList = new ArrayList<Long>();
-       	 for (String s : roles.getActionId().split(",")){
+       	 /*for (String s : roles.getActionId().split(",")){
        		 roleActionsList.add(Long.parseLong(s));
-       	 }
-       	 
+       	 }*/
+       	for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+			 roleActionsList.add(Long.parseLong(s));
+       	}
        	 roleActionsList.retainAll(tabActionsIds);
        	 if(roleActionsList.size() > 0){
        		 ownerRolesList.add(roles.getId());
@@ -268,15 +272,15 @@ public class EmployeesDaoImpl implements EmployeesDao{
         if(level1Manager!=null && level2Manager!=null){
         	
         	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user  where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager and emp.user.id <> :level2Manager and (emp.user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations = :orgLocationId and userRole.roles.roleName <> 'ROLE_ADMIN' and userRole.userState <> 'INACTIVE' and userRole.roles.id IN (:ownerRolesList))) "+search+"");
-    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).setLong("level2Manager", level2Manager).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list(); 
+    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).setLong("level2Manager", level2Manager).setParameterList("ownerRolesList", ownerRolesList).list(); 
         }else if(level1Manager!=null){
         	
         	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and emp.user.id <> :level1Manager and (emp.user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations = :orgLocationId and userRole.roles.roleName <> 'ROLE_ADMIN' and userRole.userState <> 'INACTIVE' and userRole.roles.id IN (:ownerRolesList))) "+search+"");
-    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();
+    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setLong("level1Manager", level1Manager).setParameterList("ownerRolesList", ownerRolesList).list();
         }else{
         	
         	Query employeeListQuery= session.createQuery("from Employees emp left join fetch emp.user user   where emp.orgLocations = :orgLocationId and (emp.user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations = :orgLocationId and userRole.roles.roleName <> 'ROLE_ADMIN' and userRole.userState <> 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)))  "+search+"");
-    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();
+    		employeeList=employeeListQuery.setLong("orgLocationId", orgLocationId).setParameterList("ownerRolesList", ownerRolesList).list();
         }
 		return employeeList;
 	}
@@ -299,17 +303,20 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		
 		
 		 String actionsQuery = "select sa.id from SourceleadActions sa where (sa.tabs.id = :tabId or sa.tabs.id = :tabId2)  ";
-	        List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong("tabId", Constants.TAB_MY_TIMESHEET).setLong("tabId2", Constants.TAB_TIMESHEET_APPROVAL).setCacheable(true).list();
+	        List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong("tabId", Constants.TAB_MY_TIMESHEET).setLong("tabId2", Constants.TAB_TIMESHEET_APPROVAL).list();
 	        
 	        String rolesQuery = "from Roles roles where roles.orgLocations.id = :orgLocationsId ";
-	        List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+	        List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgLocationsId", orgLocationsId).list();
 	        List<Long> ownerRolesList = new ArrayList<Long>();
 	        
 	        for(Roles roles : rolesList){
 	       	 List<Long> roleActionsList = new ArrayList<Long>();
-	       	 for (String s : roles.getActionId().split(",")){
+	       	 /*for (String s : roles.getActionId().split(",")){
 	       		 roleActionsList.add(Long.parseLong(s));
-	       	 }
+	       	 }*/
+	       	for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	       		roleActionsList.add(Long.parseLong(s));
+	       	}
 	       	 
 	       	 roleActionsList.retainAll(tabActionsIds);
 	       	 if(roleActionsList.size() > 0){
@@ -321,7 +328,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		List<Employees> addItemsList = null;
 		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user usr where emp.id NOT IN(SELECT employee from ProjectMembers where projects = :projectId) and emp.orgLocations = :orgLocationsId  "
 				+ "and (emp.user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations = :orgLocationsId and userRole.userState <> 'INACTIVE' and userRole.userType <> 'Admin' and userRole.roles.id IN (:ownerRolesList))) "+search+"");
-		addItemsList=employeesListQuery.setLong("projectId", projectId).setLong("orgLocationsId", orgLocationsId).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();
+		addItemsList=employeesListQuery.setLong("projectId", projectId).setLong("orgLocationsId", orgLocationsId).setParameterList("ownerRolesList", ownerRolesList).list();
 		return addItemsList;
 	}
 
@@ -330,8 +337,8 @@ public class EmployeesDaoImpl implements EmployeesDao{
 	public Employees getEmployeeByUserIdAndOrgLocationsId(Long userId, Long orgLocationsId) {
 		logger.debug("In EmployeesDaoImpl class getEmployeeByUserIdAndOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Employees emp left join fetch emp.user where emp.user.id = :userId and emp.orgLocations = :orgLocationsId";
-		List<Employees> employeesList =  session.createQuery(query).setLong("userId", userId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		String query = "from Employees emp left join fetch emp.user left join fetch emp.departmentId where emp.user.id = :userId and emp.orgLocations = :orgLocationsId";
+		List<Employees> employeesList =  session.createQuery(query).setLong("userId", userId).setLong("orgLocationsId", orgLocationsId).list();
 		Employees employee = null;
 		if(employeesList != null && !employeesList.isEmpty())
 		{
@@ -346,7 +353,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		logger.debug("In Employee getEmployeesByLocationId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		Query employeesListQuery= session.createQuery("from Employees employees left join fetch employees.user left join fetch employees.orgLocations orgloc where orgloc.id = :orgLocationsId ");
-		List<Employees> employeesList = employeesListQuery.setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		List<Employees> employeesList = employeesListQuery.setLong("orgLocationsId", orgLocationsId).list();
 		return employeesList;
 	}
 
@@ -356,11 +363,54 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user left join fetch emp.orgLocations left join fetch emp.orgRelationId where emp.user.id = :userId and  emp.orgRelationId.id= :orgRelationId");
 		Employees employee = null;
-		List<Employees> employeesList = employeesListQuery.setLong("userId", userId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+		List<Employees> employeesList = employeesListQuery.setLong("userId", userId).setLong("orgRelationId", orgRelationId).list();
 		if(employeesList != null && employeesList.size() >0){
 			employee = employeesList.get(0);
 		}
 		return employee;
+	}
+
+	@Override
+	@Transactional
+	public Employees getEmployeeByUserAndOrgLocationId(Long userId, Long orgLocationId)
+	{
+		Employees employee = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			Query employeesListQuery= session.createQuery("from Employees emp where emp.user.id = :userId and  emp.orgLocations.id= :orgLocationId");
+			employee = (Employees) employeesListQuery.setLong("userId", userId).setLong("orgLocationId", orgLocationId).uniqueResult();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return employee;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<Employees> getEmployeesBasedOnDepartment(String departmentId, OrgLocations orgLocation) {
+		
+		Long[] data = null;
+		if(departmentId != null && !"null".equalsIgnoreCase(departmentId)) {
+			String[] idsValues = departmentId.split(",");
+			// convert string array to long array
+			 data = new Long[idsValues.length];
+			for (int i = 0; i < idsValues.length; i++) {
+			  data[i] = Long.valueOf(idsValues[i]);
+			}
+		}
+		
+		List<Employees> employeesList = new ArrayList<>();
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		Query employeesListQuery= session.createQuery("from Employees emp where emp.orgLocations.id = :orgLocationId and  emp.departmentId.id IN ( :ids )");
+		if(data != null) {
+			 employeesList = employeesListQuery.setLong("orgLocationId", orgLocation.getId()).setParameterList("ids", data).list();
+		}else {
+			return employeesList;
+		}
+		
+		return employeesList;
 	}
 
 }

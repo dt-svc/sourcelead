@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -53,21 +54,18 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(OrgLocations orgLocation,EmployerPayrollCostDTO employerPayrollCostDTO) throws Exception {
-		/*Session session = this.sessionFactory.getCurrentSession();
-		List<EmployerPayrollCost> empCostList = null;
-		String query = "from EmployerPayrollCost empPayroll  left join fetch empPayroll.orgLocationId where empPayroll.orgLocationId.id =:orgLocationId";
-	    empCostList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
-		if(empCostList != null && empCostList.size() >0)
-		{
-			return empCostList;
-		}
-		return empCostList;*/
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<EmployerPayrollCost> employerPayrollCostList = null;
 		ResponseList<EmployerPayrollCost> response = new ResponseList<>();
-		String query = "from EmployerPayrollCost epc  left join fetch epc.orgLocationId where epc.orgLocationId.id =:orgLocationId";
-		String countQuery = "from EmployerPayrollCost epc  where epc.orgLocationId.id =:orgLocationId";
+		
+		String qry = "";
+		if(StringUtils.isNotBlank(employerPayrollCostDTO.getSortColumn())) {
+			qry = " order by epc."+ employerPayrollCostDTO.getSortColumn() +" "+employerPayrollCostDTO.getSortOrder();
+		}
+		
+		String query = "from EmployerPayrollCost epc  left join fetch epc.orgLocationId where epc.orgLocationId.id =:orgLocationId and (epc.status IS NULL or epc.status <> '0')";
+		String countQuery = "from EmployerPayrollCost epc  where epc.orgLocationId.id =:orgLocationId and (epc.status IS NULL or epc.status <> '0')";
 		
 		if(employerPayrollCostDTO.getSearchValue().contains("/") || employerPayrollCostDTO.getSearchValue().contains("-")){
 			String convertedDate=employerPayrollCostDTO.getSearchValue();
@@ -80,7 +78,7 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
             String newDate = parsedDate.format(f2);
             Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
             java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
-            String queryDate = "from EmployerPayrollCost epc where epc.orgLocationId.id =:orgLocationId and ( epc.fromDate =:sqlDate or epc.toDate =:sqlDate )";
+            String queryDate = "from EmployerPayrollCost epc where epc.orgLocationId.id =:orgLocationId and and (epc.status IS NULL or epc.status <> '0') and ( epc.fromDate =:sqlDate or epc.toDate =:sqlDate )";
             Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocation.getId());
             response.setData(queryObjDate.list());
 
@@ -102,16 +100,16 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
 					.append("OR epc.adminFee like '%" + employerPayrollCostDTO.getSearchValue() + "%' ")
 					.append("OR epc.totalErCost like '%" + employerPayrollCostDTO.getSearchValue() + "%' ");
 			}
-		Query queryObj = session.createQuery(query + query1.toString());
+		Query queryObj = session.createQuery(query + query1.toString()+qry);
 		if (employerPayrollCostDTO != null && employerPayrollCostDTO.getLength() > 0) {
 			queryObj.setFirstResult(employerPayrollCostDTO.getStart());
 			queryObj.setMaxResults(employerPayrollCostDTO.getLength());
-			queryObj.setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+			queryObj.setLong("orgLocationId", orgLocation.getId()).list();
 		}
 		employerPayrollCostList = queryObj.list();
 		int count = 0;
 		int filteredCount = 0;
-		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).list();
 		if(countlist != null && !countlist.isEmpty()) {
 			count = countlist.iterator().next().intValue();
 		}
@@ -138,7 +136,7 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<EmployerPayrollCost> empCostList = null;
 		String query = "from EmployerPayrollCost empPayroll  left join fetch empPayroll.orgLocationId where empPayroll.employeeId =:empId";
-	    empCostList = session.createQuery(query).setString("empId", EmpId).setCacheable(true).list();
+	    empCostList = session.createQuery(query).setString("empId", EmpId).list();
 		if(empCostList != null && empCostList.size() >0)
 		{
 			return empCostList.get(0);
@@ -152,12 +150,22 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "SELECT MAX(ep.version)  FROM EmployerPayrollCost ep where ep.orgLocationId.id =:orgLocationId";
-		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).setCacheable(true).list();
+		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).list();
 		Integer count = 0;
 		if(version != null && !version.isEmpty() && version.get(0) != null){
 				count = version.get(0);
 		}
 		return count;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<EmployerPayrollCost> getEmployerPayrollCostByLocationId(Long locationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from EmployerPayrollCost ep where ep.orgLocationId.id =:orgLocationId";
+		List<EmployerPayrollCost> list = session.createQuery(query).setLong("orgLocationId", locationId).list();
+		return list;
 	}
 
 }

@@ -25,4 +25,16 @@ public interface SourceleadActionsService {
 	List<SourceleadActions> getLoginCrowdSourcingUserRoleActionsByOrgLocationId(Long roleId) throws Exception;
 	
 	List<SourceleadActions> getAllSourceleadActionsByOrgLocationId(OrgLocations orgLocations) throws Exception;
+	
+	List<SourceleadActions> getAllSourceleadActionsForEnrollByOrgLocationIdAndOrgId(OrgLocations orgLocations,Org org) throws Exception;
+	
+	SourceleadActions getSourceleadActionsByActionRole(String actionRole);
+	
+	List<SourceleadActions> getAllSourceleadActionsByTabsList(List<Long> tabsList) throws Exception;
+	
+	List<SourceleadActions> getAllSourceleadGuestOrgActionsForEnroll() throws Exception;
+	
+	List<SourceleadActions> getAllSourceleadActionsByIdsList(List<Long> actionIdList) throws Exception;
+	
+	List<Long> getAllSourceleadActionsIdsByTabsList(List<Long> tabsList) throws Exception;
 }

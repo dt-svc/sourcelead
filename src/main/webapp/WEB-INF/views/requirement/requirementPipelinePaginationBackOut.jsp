@@ -23,7 +23,7 @@
 							"ajax" : $.fn.dataTable.pipeline({
 								url : url,
 								method : 'POST',
-								pages : 2
+								pages : 1
 							}),
 							"columns" : [ {
 								"data" : "name"
@@ -110,7 +110,7 @@
 													&& opt.resumeId != ''
 													&& opt.resumeId != 'undefined') {
 												result = result
-														+ '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"></a><a class="fa fa-eye ml10" onclick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a></span></div></td>';
+														+ '         <td><div><span><a download class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"></a><a class="fa fa-eye ml10" onclick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a></span></div></td>';
 											} else {
 												result = result
 														+ '         <td><div>--</div></td>';
@@ -422,7 +422,35 @@
 													+ '<td><div class="tblwidth-150"><span>'
 													+ opt.submissionStatus
 													+ '</span>';
-											result = result + '</div></td>';
+											if (opt.backOutReason != null
+													&& opt.backOutReason != ''
+														&& opt.backOutReason != 'undefined'
+														&& opt.backOutCategoryType != null
+														&& opt.backOutCategoryType != 'Other') {
+												result = result
+														+ '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'
+														+ "<font color='red'>Category</font>: "
+														+ opt.backOutCategoryType
+														+ '<br>'
+														+ opt.backOutReason
+														+ '</p></div></i></div></td>';
+											}
+											if (opt.backOutReason != null
+													&& opt.backOutReason != ''
+														&& opt.backOutReason != 'undefined'
+														&& opt.backOutCategoryType != null
+														&& opt.backOutCategoryType == 'Other') {
+												result = result
+														+ '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'
+														+ "<font color='red'>Category</font>: "
+														+ opt.backOutCategoryType
+														+ '<br>'
+														+ "Other: "
+														+ opt.backOutCategoryOther
+														+ '<br>'
+														+ opt.backOutReason
+														+ '</p></div></i></div></td>';
+											}
 											return result;
 										}
 									} ],
@@ -439,7 +467,7 @@
 								"sSearch" : "",
 								"sZeroRecords" : "",
 								"sEmptyTable" : "",
-								"sProcessing" : "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+								"sProcessing" : "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 							}
 						});
 		$("#requirementsPagination").wrap(

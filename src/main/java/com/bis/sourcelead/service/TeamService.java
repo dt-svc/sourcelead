@@ -34,6 +34,10 @@ public interface TeamService {
 	
 	public Team findByTeamName(String name,Long orgLocationId) throws Exception;
 	
+	public List<Team> getTeamListByTeamOwnerAndStatus(Long userId, Long orgLocationId) throws Exception;
+	
+	List<Team> getTeamListByMultipleIds(String[] teamsids,Long locationId) throws Exception;
+	
 	
 	
 	
