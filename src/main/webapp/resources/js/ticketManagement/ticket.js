@@ -60,8 +60,6 @@ function getTicketManagementList() {
 		            text+= "   </tr>";
 		    		$("#ticketManagementList").append(text);
 				}
-			} else {
-				alert("Empty list returned....");
 			}
 			ticketManagementListPagination();
 		} else if (response.indexOf('Sign In') !== -1) {
