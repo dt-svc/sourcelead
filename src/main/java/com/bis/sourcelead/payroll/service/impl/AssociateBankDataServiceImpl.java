@@ -249,11 +249,23 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 	private boolean validateAssociateBankExeclData(Row row, String fileName, AssociateBankDataDTO bankDataDTO)
 	{
 		
-		if (row.getCell(1) == null || "".equalsIgnoreCase(row.getCell(1).toString())) {
+		if (getCellValueAsString(row.getCell(1), fileName) == null || "".equalsIgnoreCase(getCellValueAsString(row.getCell(1), fileName))) {
 			bankDataDTO.setReason("Email Mandatory");
 			return false;
-		}else if(row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString()) && !validateEmail(row.getCell(1).toString())){
+		}else if(getCellValueAsString(row.getCell(1), fileName) != null && !"".equalsIgnoreCase(getCellValueAsString(row.getCell(1), fileName)) && !validateEmail(getCellValueAsString(row.getCell(1), fileName))){
 			bankDataDTO.setReason("Invalid Email");
+			return false;
+		}else if (getCellValueAsString(row.getCell(4), fileName) == null || "".equalsIgnoreCase(getCellValueAsString(row.getCell(4), fileName))) {
+			bankDataDTO.setReason("Bank Account Mandatory");
+			return false;
+		}else if(getCellValueAsString(row.getCell(4), fileName) != null && !"".equalsIgnoreCase(getCellValueAsString(row.getCell(4), fileName)) && !validateAccount(getCellValueAsString(row.getCell(4), fileName))){
+			bankDataDTO.setReason("Invalid Bank Account");
+			return false;
+		}else if (getCellValueAsString(row.getCell(5), fileName) == null || "".equalsIgnoreCase(getCellValueAsString(row.getCell(5), fileName))) {
+			bankDataDTO.setReason("Routing Number Mandatory");
+			return false;
+		}else if(getCellValueAsString(row.getCell(5), fileName) != null && !"".equalsIgnoreCase(getCellValueAsString(row.getCell(5), fileName)) && !validateRouting(getCellValueAsString(row.getCell(5), fileName))){
+			bankDataDTO.setReason("Invalid Routing Number");
 			return false;
 		}
 		
@@ -274,6 +286,32 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 			  
 		}
 		
+		/**
+		 * validate bank account
+		 * @param accnum
+		 * @return boolean
+		 */
+		private boolean validateAccount(String accNum){
+			String acNo = accNum.trim();
+			Pattern pattern = Pattern.compile("[0-9]{10,12}");
+			Matcher matcher = pattern.matcher(acNo);
+			return matcher.matches();
+    	}
+		
+		//validateRouting
+		/**
+		 * validate routing Number
+		 * @param routingNum
+		 * @return boolean
+		 */
+		private boolean validateRouting(String routingNum){
+			String rutNo = routingNum.trim();
+			Pattern pattern = Pattern.compile("[0-9]{9,9}");
+			Matcher matcher = pattern.matcher(rutNo);
+			return matcher.matches();
+    	}
+		
+
 	/**
 	 * Read cell value as String
 	 * @param cell
