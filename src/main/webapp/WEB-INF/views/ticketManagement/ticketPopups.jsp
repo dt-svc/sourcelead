@@ -3,7 +3,7 @@
 	<div>&nbsp;&nbsp;&nbsp;</div>
 	<b>
 		<input id='confirmStatusWithoutCommentId' type='button' value='Ok' onclick='changeTicketStatusFinal(false)' class="pull-left">
-		<input class='u_can_color' type='button' value='Cancel' onClick='closeChangeStatusPopup()'>
+		<input class='u_can_color' type='button' value='Cancel' onClick='closeChangeStatusPopup(true)'>
 	</b>
 </div>
 
@@ -16,7 +16,7 @@
 	</div>
 	<b>
 		<input id='confirmStatusWithCommentId' type='button' value='Ok' onclick='changeTicketStatusFinal(true)' class="pull-left">
-		<input class='u_can_color' type='button' value='Cancel' onClick='closeChangeStatusPopup()'>
+		<input class='u_can_color' type='button' value='Cancel' onClick='closeChangeStatusPopup(true)'>
 	</b>
 </div>
 

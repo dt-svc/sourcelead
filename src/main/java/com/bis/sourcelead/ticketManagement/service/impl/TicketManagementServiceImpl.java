@@ -87,10 +87,10 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status) {
+	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
 		List<TicketTypeDTO> ticketTypeDTOList = new LinkedList<>();
 		try {
-			List<TicketType> ticketTypeList = ticketManagementDao.getTicketTypeListByOrgLocationId(orgLocationId, status);
+			List<TicketType> ticketTypeList = ticketManagementDao.getTicketTypeListByOrgLocationId(orgLocationId, status, searchValue);
 			if (ticketTypeList != null && !ticketTypeList.isEmpty()) {
 				for (TicketType ticketType : ticketTypeList) {
 					TicketTypeDTO ticketTypeDTO = new TicketTypeDTO();
@@ -487,6 +487,9 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 				ticketManagement.setUpdatedBy(user);
 				ticketManagement.setUpdatedDate(new Date());
 			} else {
+				if (ticketManagementDao.validateTicketId(ticketDTO.getGeneratedId(), orgLocations.getId())) {
+					return false;
+				}
 				ticketManagement = new Ticket();
 				ticketManagement.setCreatedBy(user);
 				ticketManagement.setCreatedDate(new Date());
@@ -624,6 +627,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 					ticketDTO.setUuid(ticketManagement.getUuid());
 					ticketDTO.setTicketType(ticketManagement.getTicketType().getName());
 					ticketDTO.setTicketCategory(ticketManagement.getTicketCategory().getName());
+					ticketDTO.setTicketStatusId(ticketManagement.getTicketStatus().getId());
 					ticketDTO.setTicketStatus(ticketManagement.getTicketStatus().getName());
 					ticketDTO.setTicketPriority(ticketManagement.getTicketPriority().getName());
 					ticketDTO.setTicketPriorityTextColor(ticketManagement.getTicketPriority().getColorCode());
