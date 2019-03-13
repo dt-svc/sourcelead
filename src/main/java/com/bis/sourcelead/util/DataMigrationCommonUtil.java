@@ -3098,7 +3098,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 		if(dataMigrationDTOJsonCopy.get("email").toString() != null) {
 			Long candidateId = candidateService.getCandidateIdByEmailAndOrgLocationId(dataMigrationDTOJsonCopy.get("email").toString(), orgLocation.getId());
 			if (candidateId != null) {
-				errorSet.put("email", "Candidate already exist.!");
+				errorSet.put("email", "Candidate already existed");
 			}else {
 				
 				Matcher matcher = null;
@@ -3108,12 +3108,10 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("email").toString().trim());
 				if(matcher.matches() == false) {
 					errorSet.put("email", "Invalid Email");
-					return;
 				}
 				
 				if(dataMigrationDTOJsonCopy.get("firstName") == null) {
 					errorSet.put("firstName", "First Name field is missing");
-					    return;
 				}
 				
 				
@@ -3122,7 +3120,6 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("vendorcontact").toString().trim());
 					if(matcher.matches() == false) {
 						errorSet.put("vendorcontact", "Invalid Vendor Contact Email");
-						return;
 					}
 					
 					if (dataMigrationDTOJsonCopy.get("vendor") != null) {
@@ -3131,7 +3128,6 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						for(OrgRelations rel : vendorsList) {
 							if((dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
 								vendorId = rel.getId();
-								break;
 							}
 						}
 						
@@ -3141,13 +3137,11 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						for(OrgSpoc vendorContacts : vendorContactsList) {
 							if(!dataMigrationDTOJsonCopy.get("vendorcontact").toString().equalsIgnoreCase(vendorContacts.getVendorUser().getEmail())) {
 								errorSet.put("vendorcontact", "No contact exists with entered email");
-								return;
 							}
 						}
 						
 						if(vendorContactsList == null || vendorContactsList.size() == 0) {
 							errorSet.put("vendorcontact","No Active contacts exists with this vendor");
-							return;
 						}
 					
 						
@@ -3155,7 +3149,6 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					
 					if(dataMigrationDTOJsonCopy.get("vendor") == null) {
 						errorSet.put("vendor", "Vendor field is missing for Vendor");
-						return;
 					}
 				}
 			
@@ -3168,7 +3161,6 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					}
 					if(flag == false) {
 						errorSet.put("mobilePhone", "Invalid Mobile Phone");
-						return;
 					}
 					
 				}
@@ -3181,7 +3173,6 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					}
 					if(flag == false) {
 						errorSet.put("alternateMobilePhone", "Invalid Alternate Mobile Phone");
-						return;
 					}
 					
 				}
@@ -3195,7 +3186,6 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					}
 					if(flag == false) {
 						errorSet.put("expectedRate", "Expected Rate Allow Only Integers and length 0-8");
-						return;
 					}
 					
 				}
@@ -3208,7 +3198,6 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					}
 					if(flag == false) {
 						errorSet.put("currentRate", "Current Rate Allow Only Integers and length 0-8");
-						return;
 					}
 					
 				}
