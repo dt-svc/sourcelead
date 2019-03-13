@@ -43,6 +43,7 @@ private static final long serialVersionUID = 1L;
 	
 	private boolean sahApproved;
 	
+	
 //	private String expenseLocationCode;
 	
 	private BigDecimal expenseAmountDivId;
@@ -332,7 +333,6 @@ private static final long serialVersionUID = 1L;
 	public void setProjectStatus(String projectStatus) {
 		this.projectStatus = projectStatus;
 	}
-	
-	
+
 
 }

@@ -115,8 +115,8 @@
 					  <c:if test="${submissionStatus == 'APPROVED'}">
 					   <div class="project_details_cta">
 					      <strong>Approved Amount:</strong><span>${expenses.totalAmount}</span><div class="clearfix"></div> 	
-					    </c:if>
 					    </div>
+					  </c:if>
 					
 					<div class="project_details_cta">
 						<strong>Created By:</strong><span>${expenses.createdBy}</span><div class="clearfix"></div>

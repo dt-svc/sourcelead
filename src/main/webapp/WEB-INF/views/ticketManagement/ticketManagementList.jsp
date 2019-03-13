@@ -1,5 +1,6 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+<jsp:include page="../ticketManagement/ticketPopups.jsp" flush="true"></jsp:include>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -10,9 +11,7 @@
       <div class="pull-left">
         <h2>Ticket Management</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo; 
-						<a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; 
-						<a href="<c:url value='${appPath}/ticketManagementList'/>">TicketManagement</a>&raquo; Ticket Management</div>
+	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Ticket List</div>
     </section>
     <div class="content-area clearfix timesheet_out">
           <div class="positionRelative reportHead clearfix">
@@ -46,18 +45,7 @@
     </div>
     </div>
   </section>
-   <div id='changeStatusPopup' class='remove_user_pop remove_user_pop_a'>
-		<p>Comment Required</p>
-		<div>
-			<form id="ticketStatusForm">
-				<textarea class="form-control" rows="4" id="statusComment" data-validation="validate_length length1-500" placeholder="Enter Comment"></textarea>
-			</form>
-		</div>
-		<b>
-			<input id='confirmStatusId' type='button' value='Ok' onclick='changeTicketStatusFinal(true)' class="pull-left">
-			<input id="cancelStatusPopup" class='u_can_color' type='button' value='Cancel' onClick='closeChangeStatusPopup()'>
-		</b>
-	</div>
+
   <script type="text/javascript">
 	$(document).ready(function() {
 		getTicketStatusList();

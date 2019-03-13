@@ -724,6 +724,7 @@ public class DumpPublicRestCalls {
 	@RequestMapping(value="/ws/updateDashboardItemCandidateForInvoice")
 	@ResponseBody
 	public String updateDashboardItemCandidateForInvoice(HttpServletRequest request) {
+		int result = 0;
 		try {
 			System.out.println("-------- Initiated dashboard items updation --------");
 			String itemName = "Candidates for Invoice";
@@ -732,13 +733,13 @@ public class DumpPublicRestCalls {
 			rolesList.add("ROLE_ADD_INVOICE");
 			rolesList.add("ROLE_VIEW_REQUIREMENT");
 
-			int result = userService.addItemToDashboard(itemName, itemSize, rolesList);
+			result = userService.addItemToDashboard(itemName, itemSize, rolesList);
 			System.out.println("-------- Completed dashboard items updation --------");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "Exception occured while updating dashboard items";
 		}
-		return "Successfully updated 'Candidate For Invoice' in dashboard items";
+		return "Successfully updated " + result + " records for 'Candidate For Invoice' in dashboard items";
 	}
 	
 }

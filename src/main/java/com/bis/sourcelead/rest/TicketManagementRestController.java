@@ -50,9 +50,12 @@ public class TicketManagementRestController {
 	public String dumpTicketManagementPreDefinedValuesToAllOrgLocations(HttpServletRequest request) {
 		int count = 0;
 		try {
-			System.out.println("-------- Stated Dump of pre-defined Ticket Management values to all OrgLocations --------");
-			count = ticketManagementService.dumpTicketManagementPreDefinedValuesToAllOrgLocations();
-			System.out.println("-------- Completed Dump of pre-defined Ticket Management values to all OrgLocations --------");
+			if(request.getSession().getAttribute("dumpTicketManagementData") == null || (!(Boolean) request.getSession().getAttribute("dumpTicketManagementData"))) {
+				request.getSession().setAttribute("dumpTicketManagementData", true);
+				System.out.println("-------- Stated Dump of pre-defined Ticket Management values to all OrgLocations --------");
+				count = ticketManagementService.dumpTicketManagementPreDefinedValuesToAllOrgLocations();
+				System.out.println("-------- Completed Dump of pre-defined Ticket Management values to all OrgLocations --------");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -607,6 +610,28 @@ public class TicketManagementRestController {
 		}
 		return response;
 	}
+	
+	@RequestMapping(value="/changeTicketManagementStatus",method = RequestMethod.POST)
+	public Response<Boolean> deleteTicket(HttpServletRequest request, @RequestParam(defaultValue = "0") long ticketId, @RequestParam(defaultValue = "1") int status) {
+		Response<Boolean> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (user != null) {
+				response.setObject(ticketManagementService.changeTicketManagementStatus(ticketId, status));
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
 
 
 	@RequestMapping(value = "/rest/ticketSummary")
@@ -616,7 +641,7 @@ public class TicketManagementRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
-				response.setObject(ticketManagementService.getTicketSummaryByUUID(uuid, user.getId(), loginOrgLocation.getId(), loginOrgLocation.getDateFormat(), false));
+				response.setObject(ticketManagementService.getTicketSummaryByUUID(uuid, loginOrgLocation.getId(), loginOrgLocation.getDateFormat(), false));
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -635,7 +660,7 @@ public class TicketManagementRestController {
 	public TicketDTO getTicketManagementDescription(@RequestParam(value = "uuid", required = false) String uuid, HttpServletRequest request) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		TicketDTO ticketDTO = ticketManagementService.getTicketSummaryByUUID(uuid, user.getId(), orgLocations.getId(), orgLocations.getDateFormat(), false);
+		TicketDTO ticketDTO = ticketManagementService.getTicketSummaryByUUID(uuid, orgLocations.getId(), orgLocations.getDateFormat(), false);
 		return ticketDTO;
 	}
 

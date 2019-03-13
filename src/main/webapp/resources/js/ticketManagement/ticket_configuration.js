@@ -288,7 +288,7 @@ function editTicketCategory(id){
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
 				var data = response.object;
-				$("#ticketCategoryFormHead").html("Edit Type");
+				$("#ticketCategoryFormHead").html("Edit Category");
 				$("#ticketCategoryId").val(data.id);
 				$("#ticketCategoryName").val(data.name);
 				$("#ticketCategoryDesc").val(data.description);
@@ -434,7 +434,7 @@ function eidtTicketPriority(id){
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
 				var data = response.object;
-				$("#ticketPriorityFormHead").html("Edit Type");
+				$("#ticketPriorityFormHead").html("Edit Priority");
 				$("#ticketPriorityId").val(data.id);
 				$("#ticketPriorityName").val(data.name);
 				$("#favcolorP").val(data.colorCode);
@@ -576,7 +576,7 @@ function editTicketStatus(id){
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
 				var data = response.object;
-				$("#ticketStatusFormHead").html("Edit Type");
+				$("#ticketStatusFormHead").html("Edit Status");
 				$("#ticketStatusId").val(data.id);
 				$("#ticketStatusName").val(data.name);
 				$("#ticketStatusDesc").val(data.description);

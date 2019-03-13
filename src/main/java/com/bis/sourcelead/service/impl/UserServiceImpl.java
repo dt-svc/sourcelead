@@ -1982,7 +1982,7 @@ public class UserServiceImpl implements UserService {
 			DashboardItems dashboardItems = userDao.getDashboardItemsByUserId(loginUserId, orgLocationId);
 			if (dashboardItems != null) {
 				DashboardItemsDTO dashboardItemsDTO = new DashboardItemsDTO();
-				
+				dashboardItemsDTO.setId(dashboardItems.getId());				
 				JSONArray jsonArray = new JSONArray(dashboardItems.getItems());
 				if (jsonArray != null && jsonArray.length() > 0) {
 					List<JSONObject> itemsObjectList = new LinkedList<>();
@@ -1993,7 +1993,6 @@ public class UserServiceImpl implements UserService {
 					}
 					dashboardItemsDTO.setItemsObjectList(itemsObjectList);
 				}
-				dashboardItemsDTO.setId(dashboardItems.getId());
 				return dashboardItemsDTO;
 			}
 		} catch (Exception e) {
@@ -2458,11 +2457,11 @@ public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportD
 
 	@Override
 	public int addItemToDashboard(String itemName, String itemSize, List<String> rolesList) {
+		int count = 0;
 		try {
 			List<DashboardItems> dashboardItemsList = userDao.getAllDashboardItems();
 			if (dashboardItemsList != null && !dashboardItemsList.isEmpty()) {
-//				for (DashboardItems dashboardItems : dashboardItemsList) {
-					DashboardItems dashboardItems = dashboardItemsList.get(0);
+				for (DashboardItems dashboardItems : dashboardItemsList) {
 					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(dashboardItems.getUser().getId(), dashboardItems.getOrgLocations().getId());
 					if (userRole != null) {
 						List<Long> modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(dashboardItems.getOrgLocations());
@@ -2478,25 +2477,40 @@ public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportD
 								}
 							}
 							if (hasRole) {
+								boolean containsItem = false;
 								JSONArray jsonArray = new JSONArray(dashboardItems.getItems());
-								String items = dashboardItems.getItems();
-								JsonObject jsonObject = new JsonObject();
-								jsonObject.addProperty("name", itemName);
-								jsonObject.addProperty("checked", true);
-								jsonObject.addProperty("order", jsonArray.length() + 1);
-								jsonObject.addProperty("size", itemSize);
-								items = items.replace("]", "," + jsonObject + "]");
-								System.out.println(items);
+								if (jsonArray != null && jsonArray.length() > 0) {
+									for (int i = 0; i < jsonArray.length(); i++) {
+										JSONObject jsonObject = jsonArray.getJSONObject(i);
+										if(jsonObject.has("name") && jsonObject.getString("name").equalsIgnoreCase(itemName)) {
+											containsItem = true;
+										}
+									}
+								}
+								if(!containsItem) {
+									String items = dashboardItems.getItems();
+									JsonObject jsonObject = new JsonObject();
+									jsonObject.addProperty("name", itemName);
+									jsonObject.addProperty("checked", true);
+									jsonObject.addProperty("order", jsonArray.length() + 1);
+									jsonObject.addProperty("size", itemSize);
+									items = items.replace("]", "," + jsonObject + "]");
+									dashboardItems.setItems(items);
+									userDao.saveDashboardItems(dashboardItems);
+									System.out.println(dashboardItems.getId() + " : " + items);
+									count++;
+								}
 							}
 						}
 					}
 
-//				}
+				}
 			}
+			System.out.println("Total Updates : " + count);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return 0;
+		return count;
 	}
 
 	
