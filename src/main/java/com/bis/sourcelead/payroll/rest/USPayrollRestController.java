@@ -623,6 +623,22 @@ public class USPayrollRestController {
 			return associateBankDataList;
 		}
 		
+		
+		/**
+		 * find Associate bank Data By UUID
+		 * @param associateDeductionDTO
+		 * @param request
+		 * @param response
+		 * @return Response<AssociateDeductionDTO>
+		 * @throws Exception
+		 */
+		@RequestMapping(value = { "/findAssociateBankDataByUUID","/rest/findAssociateBankDataByUUID" }, method = RequestMethod.GET)
+		@ResponseBody
+		public AssociateBankData findAssociateBankDataByUUID(@RequestParam(value = "associateBankUUID", required = false) String associateBankUUID,HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			return  associateBankDataService.findAssociateBankDataByUUID(associateBankUUID,orgLocation.getId());
+		}
 
 		/**
 		 * find Associate Tax Summary By User Id

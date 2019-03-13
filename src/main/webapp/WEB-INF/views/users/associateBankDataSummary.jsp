@@ -2,7 +2,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
  
  
- 
+
  <script>
 function associateBankData(userId){  
 	$.ajax({
@@ -10,6 +10,12 @@ function associateBankData(userId){
            url: sourceleadUrl+"/findAssociateBankDataByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
             success :function(json) {
             	  var result = "";
+            	  result += '<div class="reportHead clearfix">';
+            		  result += '<ul class="pull-right list-unstyled list-inline">';
+            			  result += '<li><a onclick="editAssociateBankPopUp();" class="newAdBtn mr5">+ Add</a></li>';
+            				  result += '</ul>';
+            					  result += '</div> ';
+            					  
      	    	 result += '<table id="associateBankDataList" class="display" cellspacing="0" width="100%" >';
      	         result += '<thead>';
      	         result += '  <tr>';
@@ -19,7 +25,6 @@ function associateBankData(userId){
      	         result += '    <th>Routing Number</th>';
      	        result += '    <th>First Name</th>';
      	       	result += '    <th>Last Name</th>';
-     	      	result += '    <th>Default</th>';
      	      	result += '    <th>Active</th>';
      	      	result += '    <th>Action</th>';
      	         result += '  </tr>';
@@ -36,8 +41,16 @@ function associateBankData(userId){
 					 result += '<td>'+report.routingNumber+'</td>';
 					 result += '<td>'+report.routingNumber+'</td>';
 					 result += '<td>'+report.routingNumber+'</td>';
-					 result += '<td>'+report.routingNumber+'</td>';
-					 result += '<td>'+report.routingNumber+'</td>';
+					 result += '<td>';
+					 
+						result += '<div class="tblminwidth-50">';
+						result += '<div title="Edit" class="paddingRight pull-left"><a herf="#"><i class="fa fa-pencil text-primary cursorPointer" onclick="editBankDetail(\''+report.associateBankUuid+'\')"></i></a></div>';
+						result += '<label class="switch">';
+						result += '<input type="checkbox" checked="">';
+						result += '<div class="slider round"></div>';
+						result += '</label>';
+						result += '</div>';
+						result += '</td>';
 					     result += '  </tr>';
      	    	 }
      	    	
@@ -105,6 +118,7 @@ function assoBankDatapagination(){
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
+	    	"searching": false,
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": ""
@@ -115,101 +129,97 @@ function assoBankDatapagination(){
 	}
 </script>
 
-<input type="hidden"/>
-<script>
-
-function editAssociateBankDataFun(userId){
+<div class="modal paymentaccount-modal" id="adEdBankingDetails" style="display:none;">
+    <div class="modal-dialog modal-lg">
+     <div id="accountDetailsLoading"></div>
+      <!-- Modal content-->
+      <form:form id="associate_bank_data_form" name="associate_bank_data_form" method="post">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" onclick="closeadEdBankingDetailsPop();" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add/Edit Banking Details</h4>
+        </div>
+        <div class="modal-body minHeightcol5">
+		   <input type="hidden" name="paymentAccountId" id="paymentAccountId"/>
+		   <div class="clearfix row minHeightcol5">
+		 		<div class="col-md-6" id="">
+		                <label>Account Type<span class="text-danger">&nbsp;*</span></label>
+		                <div>
+		                  <select class="sel width100Percnt" id="accountType" name ="accountType" data-validation="required" onchange="showHideAccountTypes(); resetValues();" field-name="Account Type">
+		                        <option value="">--Select Account Type--</option>
+			                    <option value="Direct Deposit" data-type="1">Direct Deposit</option>
+			                    <option value="Cheque" data-type="2">Cheque</option>
+		                  </select>
+		                  <input type="hidden" name="id" id="id"/>
+		                </div>
+		         </div>
+		         
+		         <div class="col-md-6" id="bankNameDiv">
+		                  <label>Bank Name</label>
+		                  <div>
+		                   <input type="text" class="form-control" id="bankName" name="bankName" data-validation="required validate_Space validate_length length2-100" field-name="Bank Name"/>
+		                  </div>
+		          </div>
+		          <div class="clearfix"></div>
+		          <div class="col-md-6" id="">
+		                  <label>Account Number</label>
+		                  <div>
+		                   <input type="text" class="form-control" id="accountNumber" name="accountNumber" data-validation="required validate_Space validate_int validate_length length2-100" field-name="Account Number"/>
+		                  </div>
+		          </div>
+		          
+		          <div class="col-md-6" id="">
+		                  <label>Routing Number</label>
+		                  <div>
+		                   <input type="text" class="form-control" id="routingNumber" name="routingNumber"  data-validation="required validate_space validate_int validate_length length9-9" field-name="Routing Number"/>
+		                  </div>
+		          </div>
+		            <div class="clearfix"></div>
+		  </div>
+          
+        </div>
+        <div class="clearfix"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success btnSuccess" id="save_associate_bank_data_button" onclick="saveAssociateBankData();">Save</button>
+          <button type="button" class="btn btn-default ml10" onClick="closeadEdBankingDetailsPop();">Cancel</button>
+        </div>
+      </div>
+       </form:form>
+    </div>
+  </div>
+  
+  <script>
+  
+  function editAssociateBankPopUp(){
+	  $("#adEdBankingDetails, .mask").fadeIn();
+	  $("#save_associate_bank_data_button").removeAttr("disabled");
+  }
+  
+  	function closeadEdBankingDetailsPop(){
+  		$("#adEdBankingDetails, .mask").fadeOut();
+  	}
+  </script>
+  
+  
+  
+  
+  <script>
+  function editBankDetail(associateBankUUID){
 	  $.ajax({
           type : "GET",
-          url: sourceleadUrl+"/findAssociateBankDataByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
+          url: sourceleadUrl+"/findAssociateBankDataByUUID?"+tokenParamName+"="+tokenValue+"&associateBankUUID="+associateBankUUID,    
            success :function(json) {
-        	   var result = "";
-        	   result += '<div class="clearfix row minHeightcol5 col-md-12 mt">';
-              result += '<form id="associate_bank_data_form"  name="associate_bank_data_form" method="post">'; 
-              var id = "";
-              if(json.id != null && json.id != '' && json.id != 'undefined'){
-            	  id = json.id;
-              }else{
-            	  id = "";
-              }
-              result += '<input type="hidden" value='+id+' name="id" id="id"/>';
-               result += '<div class="col-md-5">';
-               result += ' <label>Account Type<span class="text-danger">&nbsp;*</span></label>';
-               result += ' <div class="clearfix">';
-               result += '   <select class="form-control sel" id="accountType" name ="accountType" data-validation="required" onchange="showHideAccountTypes(); resetValues();" field-name="Account Type">';
-              /*  <option ${payrollDeduction.payrollDeductionMethod == 'Fixed' ? 'selected' : ''} value = "Fixed">Fixed</option> */
-//                result += '     <option '+ (json.accountType == "Bank Transfer" ? "selected" : '') +' value="Bank Transfer">Bank Transfer</option>';
-               result += '     <option '+ (json.accountType == "Direct Deposit" ? "selected" : '') +' value="Direct Deposit">Direct Deposit</option>';
-               result += '     <option '+ (json.accountType == "Cheque" ? "selected" : '') +' value="Cheque">Cheque</option>';
-               result += '     <option '+ (json.accountType == "Cash" ? "selected" : '') +' value="Cash">Cash</option>';
-               result += '   </select>';
-               result += ' </div>';
-               result += '</div>';
-               
-               result += '<div id="accountTypeChildDivs">';
-               
-               result += '<div class="col-md-5">';
-               result += ' <label>Bank Name<span id="editBankNameSpanId" class="text-danger">&nbsp;*</span></label>';
-               result += ' <div>';
-               var bankName = "";
-               if(json.bankName != null && json.bankName != '' && json.bankName != 'undefined'){
-            	   bankName = json.bankName;
-               }else{
-            	   bankName = "";
-               }
-               result += '   <input type="text" class="form-control" id="bankName" name="bankName" value=\''+bankName+'\' data-validation="required validate_Space validate_length length2-100" field-name="Bank Name">';
-               result += ' </div>';
-               result += '</div>';
-               result += '<div class="col-md-5">';
-               result += ' <label>Account Number<span id="editAccountNumberSpanId" class="text-danger">&nbsp;*</span></label>';
-               result += ' <div>';
-               var accountNumber = "";
-               if(json.accountNumber != null && json.accountNumber != '' && json.accountNumber != 'undefined'){
-            	   accountNumber = json.accountNumber;
-               }else{
-            	   accountNumber = "";
-               }
-               result += '   <input type="text" class="form-control" id="accountNumber" name="accountNumber" value=\''+accountNumber+'\' data-validation="required validate_Space validate_int validate_length length2-100" field-name="Account Number">';
-               result += ' </div>';
-               result += '</div>';
-               result += '<div class="col-md-5">';
-               result += ' <label>Routing Number<span id="editRoutingNumberSpanId" class="text-danger">&nbsp;*</span></label>';
-               result += ' <div>';
-               var routingNumber = "";
-               if(json.routingNumber != null && json.routingNumber != '' && json.routingNumber != 'undefined'){
-            	   routingNumber = json.routingNumber;
-               }else{
-            	   routingNumber = "";
-               }
-               result += '   <input type="text" class="form-control" id="routingNumber" name="routingNumber" value=\''+routingNumber+'\' data-validation="required validate_space validate_int validate_length length9-9" field-name="Routing Number">';
-               result += ' </div>';
-               result += '</div>';
-               
-               result += '</div>';
-               
-              result += '<div class="clearfix"></div>';
-                 result += '<div class="clearfix footerstyelsNew">';
-                  result += ' <div class="col-md-10">';
-                result += '  <div class="pull-right">';
-               result += '   <input value="Save" class="btn btn-success btnSuccess" id="save_associate_bank_data_button" onclick="saveAssociateBankData('+userId+');" type="button">';
-
-                 result += '   <input value="Cancel" onclick="cancelButtonBank('+userId+');" class="btn btn-default ml10" type="button">';
-
-                 result += '   </div>';
-               result += ' </div>';
-               result += '</div>';
-               result += '</form>';
-               result += '</div>'; 
-        	   
-        	  $("#editTest").hide();
-         	  $("#test").hide();
-         	  $("#finalTest").show();
-         	  $("#finalTest").append(result);
-         	 showHideAccountTypes();
+        	   $("#id").val(json.id);
+        	   $("#accountType").val(json.accountType);
+        	   $("#bankName").val(json.bankName);
+        	   $("#accountNumber").val(json.accountNumber);
+        	   $("#routingNumber").val(json.routingNumber);
+        	   editAssociateBankPopUp();
            },
 	  });
-}
-</script>
+  }
+  </script>
+  
  
  <script>
 function showHideAccountTypes(){
@@ -255,8 +265,9 @@ function resetValues(){
 </script>
 
  <script type="text/javascript">
- function saveAssociateBankData(userId) {
-		 if ($('#associate_bank_data_form').validate(false, validationSettings)){ 
+ function saveAssociateBankData() {
+	 var userId = '${userId}';
+	 if ($('#associate_bank_data_form').validate(false, validationSettings)){ 
 			   var formData = getFormData("associate_bank_data_form");
 				$("#save_associate_bank_data_button").attr("disabled", "disabled");
 				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -273,10 +284,11 @@ function resetValues(){
 		                } else if (result.response === "AWKWARD") {
 		                    location.href = "/errorPage";
 		                } else if (result.response === "SUCCESS") {
+		                	closeadEdBankingDetailsPop();
 		                	associateBankData(userId);
-		                	 $("#editTest").show();
+		                	/*  $("#editTest").show();
 		                	  $("#test").show();
-		                	  $("#finalTest").hide();
+		                	  $("#finalTest").hide(); */
 		                } else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
 						} else {

@@ -22,4 +22,6 @@ public interface AssociateBankDataDao {
 	int saveAssociateBankDetails(Long orgLocationId,List<AssociateBankDataDTO> list,Map<String,Long> map);
 
 	List<AssociateBankData> findAllAssociateBankDataByCandidateId(Long candidateId, Long orgLocationId);
+
+	AssociateBankData findAssociateBankDataByUUID(String associateBankUUID, Long orgLocationId);
 }

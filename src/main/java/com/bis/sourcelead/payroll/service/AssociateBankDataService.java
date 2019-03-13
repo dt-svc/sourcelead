@@ -4,10 +4,8 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.bis.sourcelead.dto.IndAssociatePaymentAccountDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 import com.bis.sourcelead.payroll.dto.AssociateBankErrorData;
@@ -24,4 +22,6 @@ public interface AssociateBankDataService {
 	AssociateBankErrorData  saveAssociateBankData(MultipartFile multipartFile, OrgLocations orgLocation) throws Exception;
 
 	List<AssociateBankData> findAllAssociateBankDataByCandidateId(Long candidateId, Long orgLocationId);
+
+	AssociateBankData findAssociateBankDataByUUID(String associateBankUUID, Long orgLocationId);
 }

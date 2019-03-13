@@ -165,4 +165,21 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 		return assBankDataList;
 	}
 
+	@Override
+	@Transactional
+	public AssociateBankData findAssociateBankDataByUUID(String associateBankUUID, Long orgLocationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		AssociateBankData assBankData = null;
+		try {
+			List<AssociateBankData> dataList = session.createQuery("from AssociateBankData assBankData where assBankData.orgLocationId.id =:orgLocationId and assBankData.associateBankUuid = :associateBankUUID").setLong("orgLocationId", orgLocationId).setString("associateBankUUID", associateBankUUID).list();
+			if(dataList != null && dataList.size() >0) {
+				assBankData = dataList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return assBankData;
+	}
+
 }
