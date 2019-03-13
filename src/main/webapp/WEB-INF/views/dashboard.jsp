@@ -22,20 +22,23 @@
 <link href="/resources/css/sourcelead-bundle.css" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/timesheet.css">
 
-
 <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${SourceLeadWeb_googleMapsLocationApiKey}" type="text/javascript"></script>
+<!-- Don't change js file order due to some overlapping issues ordered by prasadk-->
+
 <script src="/resources/js/jquery-1.11.1.min.js"></script>
 <script src="/resources/js/masterHeaderAction.js"></script>
+
 <script src="/resources/js/jquery-ui.js"></script>
 <script src="/resources/js/chosen.jquery.min.js"></script>
 <script src="/resources/js/jquery.dataTables.min.js"></script>
 <script src="/resources/js/jquery.timepicker.js"></script>
-<script src="/resources/js/slead-common.js"></script>
+
 <script src="/resources/js/formvalidator.js"></script>
 <script src="/resources/js/bootstrap-select.min.js"></script>
 
 <script src="/resources/js/sourcelead-app.js"></script>
 <script src="/resources/js/masterHeaderAction.js"></script>
+<script src="/resources/js/slead-common.js"></script>
 
 </head>
 
@@ -79,10 +82,10 @@ var orgATS = '${SourceLeadWeb_ats}';
 var orgVMS = '${SourceLeadWeb_vms}';
 var requirementId = '${requirementId}'; 
 var locationDate = '${SourceLeadWeb_dateFormat}';	
-
 </script>
 <script>
   $(document).ready(function() {
 	  $('body').load("/resources/sourceleadHtmls/dashboardHtml.html");
 	});
 </script>
+
