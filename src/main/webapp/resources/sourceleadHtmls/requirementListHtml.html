@@ -7,16 +7,7 @@
 
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><style type="text/css">.pac-container{background-color:#fff;position:absolute!important;z-index:1000;border-radius:2px;border-top:1px solid #d9d9d9;font-family:Arial,sans-serif;box-shadow:0 2px 6px rgba(0,0,0,0.3);-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;overflow:hidden}.pac-logo:after{content:"";padding:1px 1px 1px 0;height:18px;box-sizing:border-box;text-align:right;display:block;background-image:url(https://maps.gstatic.com/mapfiles/api-3/images/powered-by-google-on-white3.png);background-position:right;background-repeat:no-repeat;background-size:120px 14px}.hdpi.pac-logo:after{background-image:url(https://maps.gstatic.com/mapfiles/api-3/images/powered-by-google-on-white3_hdpi.png)}.pac-item{cursor:default;padding:0 4px;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;line-height:30px;text-align:left;border-top:1px solid #e6e6e6;font-size:11px;color:#999}.pac-item:hover{background-color:#fafafa}.pac-item-selected,.pac-item-selected:hover{background-color:#ebf2fe}.pac-matched{font-weight:700}.pac-item-query{font-size:13px;padding-right:3px;color:#000}.pac-icon{width:15px;height:20px;margin-right:7px;margin-top:6px;display:inline-block;vertical-align:top;background-image:url(https://maps.gstatic.com/mapfiles/api-3/images/autocomplete-icons.png);background-size:34px}.hdpi .pac-icon{background-image:url(https://maps.gstatic.com/mapfiles/api-3/images/autocomplete-icons_hdpi.png)}.pac-icon-search{background-position:-1px -1px}.pac-item-selected .pac-icon-search{background-position:-18px -1px}.pac-icon-marker{background-position:-1px -161px}.pac-item-selected .pac-icon-marker{background-position:-18px -161px}.pac-placeholder{color:gray}
 </style>
- <script type="text/javascript">
-    var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
- </script>
+ 
  
 <!--  <script>
 $(document).ready(function(){
@@ -25,7 +16,22 @@ $(document).ready(function(){
 	 }
 });
 </script> -->
- 
+<script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				});
+</script>
 
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
@@ -1857,24 +1863,24 @@ top: 18px;height: 32px; line-height: 18px;
 			<div class="col-md-4">
 				<label>Generated ID</label>
 				<div class="clearfix">
-					<select class="chosen-select form-control input-sm" multiple="" data-placeholder="Generated ID" id="generatedId" name="generatedId" style="display: none;">
-					</select><div class="chosen-container chosen-container-multi" style="width: 100%;" title="" id="generatedId_chosen"><ul class="chosen-choices"><li class="search-field"><input type="text" value="Generated ID" class="default" autocomplete="off" style="width: 90px;"></li></ul><div class="chosen-drop"><ul class="chosen-results"></ul></div></div>
+					<select class="form-control input-sm" multiple="" data-placeholder="Generated ID" id="generatedId" name="generatedId">
+					</select>
 				</div>
 			</div>
 			
 			<div class="col-md-4">
 				<label>Title</label>
 				<div class="clearfix">
-					<select class="chosen-select form-control input-sm" multiple="" data-placeholder="Job Title" id="requirementTitle" name="requirementTitle" style="display: none;">
-					</select><div class="chosen-container chosen-container-multi" style="width: 100%;" title="" id="requirementTitle_chosen"><ul class="chosen-choices"><li class="search-field"><input type="text" value="Job Title" class="default" autocomplete="off" style="width: 74px;"></li></ul><div class="chosen-drop"><ul class="chosen-results"></ul></div></div>
+					<select class="form-control input-sm" multiple="" data-placeholder="Job Title" id="requirementTitle" name="requirementTitle">
+					</select>
 				</div>
 			</div>
 			
 			<div class="col-md-4">
 				<label>Job Id</label>
 				<div class="clearfix">
-					<select class="chosen-select form-control input-sm" multiple="" data-placeholder="Job Id" id="jobId" name="jobId" style="display: none;">
-					</select><div class="chosen-container chosen-container-multi" style="width: 100%;" title="" id="jobId_chosen"><ul class="chosen-choices"><li class="search-field"><input type="text" value="Job Id" class="default" autocomplete="off" style="width: 60px;"></li></ul><div class="chosen-drop"><ul class="chosen-results"></ul></div></div>
+					<select class="chosen-select form-control input-sm" multiple="" data-placeholder="Job Id" id="jobId" name="jobId">
+					</select>
 				</div>
 			</div>
 
@@ -1884,7 +1890,7 @@ top: 18px;height: 32px; line-height: 18px;
 			<div class="col-md-4">
 				<label>Job status </label>
 				<div class="clearfix">
-					<select id="requirementStatu" name="requirementStatus" class="chosen-select" data-placeholder="Job status " multiple="" style="display: none;">
+					<select id="requirementStatu" name="requirementStatus" class="chosen-select" data-placeholder="Job status " multiple="">
 						<option>NEW</option>
 						<option>DRAFT</option>
 						<option>SUBMITTED</option>
@@ -1894,13 +1900,13 @@ top: 18px;height: 32px; line-height: 18px;
 						<option>FILLEDCLOSED</option>
 						<option>UNFILLEDCLOSED</option>
 						<option>REJECTED</option>
-					</select><div class="chosen-container chosen-container-multi" style="width: 100%;" title="" id="requirementStatu_chosen"><ul class="chosen-choices"><li class="search-field"><input type="text" value="Job status " class="default" autocomplete="off" style="width: 84px;"></li></ul><div class="chosen-drop"><ul class="chosen-results"></ul></div></div>
+					</select>
 				</div>
 			</div>
 			<div class="col-md-4">
 				<label>Posted On</label>
 				<div class="clearfix">
-					<select class="chosen-select" id="updatedOn" name="updatedOn" data-placeholder="Posted On" style="display: none;">
+					<select class="chosen-select" id="updatedOn" name="updatedOn" data-placeholder="Posted On">
 						<option>All</option>
 						<option>1 Day Ago</option>
 						<option>3 Days Ago</option>
@@ -1908,7 +1914,7 @@ top: 18px;height: 32px; line-height: 18px;
 						<option>2 Weeks Ago</option>
 						<option>1 Month Ago</option>
 						<option>3 Months Ago</option>
-					</select><div class="chosen-container chosen-container-single" style="width: 100%;" title="" id="updatedOn_chosen"><a class="chosen-single"><span>All</span><div><b></b></div></a><div class="chosen-drop"><div class="chosen-search"><input type="text" autocomplete="off"></div><ul class="chosen-results"></ul></div></div>
+					</select>
 				</div>
 			</div>
 
@@ -1918,10 +1924,8 @@ top: 18px;height: 32px; line-height: 18px;
 					<select class="chosen-select" id="client" name="client" data-placeholder="Select Client" multiple="" style="display: none;">
 						
 								<option value="truglobal.com">truglobal.com</option>
-							
-							
-						
-					</select><div class="chosen-container chosen-container-multi" style="width: 100%;" title="" id="client_chosen"><ul class="chosen-choices"><li class="search-field"><input type="text" value="Select Client" class="default" autocomplete="off" style="width: 90px;"></li></ul><div class="chosen-drop"><ul class="chosen-results"></ul></div></div>
+			
+					</select>
 				</div>
 			</div>
 		</div>
@@ -1943,28 +1947,25 @@ top: 18px;height: 32px; line-height: 18px;
 		<div class="col-md-4">
 			<label>Notice Period</label>
 			<div class="clearfix">
-				<select multiple="" class="chosen-select form-control" id="noticePeriod" name="noticePeriod" data-validation-optional="true" data-placeholder="Select Notice Period" style="display: none;">
+				<select multiple="" class="chosen-select form-control" id="noticePeriod" name="noticePeriod" data-validation-optional="true" data-placeholder="Select Notice Period">
 					<option>Immediately Available</option>
 					<option>15-Days</option>
 					<option>1-Month</option>
 					<option>2-Month</option>
 					<option>3-Month</option>
-				</select><div class="chosen-container chosen-container-multi" style="width: 100%;" title="" id="noticePeriod_chosen"><ul class="chosen-choices"><li class="search-field"><input type="text" value="Select Notice Period" class="default" autocomplete="off" style="width: 90px;"></li></ul><div class="chosen-drop"><ul class="chosen-results"></ul></div></div>
+				</select>
 			</div>
 		</div>
 			
 		<div class="col-md-4">
 			<label>Skills</label>
 			<div class="clearfix">
-				<select class="chosen-select form-control input-sm" multiple="" data-placeholder="Skills" id="requirementSkills" name="requirementSkills" style="display: none;">
-				
-				
-				
-			
+				<select class="chosen-select form-control input-sm" multiple="" data-placeholder="Skills" id="requirementSkills" name="requirementSkills">
 				
 				<option value="5S">5S</option>
 				
-				</select><div class="chosen-container chosen-container-multi" style="width: 100%;" title="" id="requirementSkills_chosen"><ul class="chosen-choices"><li class="search-field"><input type="text" value="Skills" class="default" autocomplete="off" style="width: 55px;"></li></ul><div class="chosen-drop"><ul class="chosen-results"></ul></div></div>
+				</select>
+				
 			 </div>
 		</div>
 		
@@ -1972,21 +1973,21 @@ top: 18px;height: 32px; line-height: 18px;
 		<div class="col-md-4">
 			<label>Immigration Status</label>
 			<div class="clearfix">
-                <select multiple="" class="chosen-select form-control" name="visaType" id="visaType" data-placeholder="Select Visa" data-validation-optional="true" style="display: none;">
+                <select multiple="" class="chosen-select form-control" name="visaType" id="visaType" data-placeholder="Select Visa" data-validation-optional="true">
 				
 				<option value="B-1 Visa(United States)">B-1 Visa(United States)</option>
 				
 				<option value="H1B Filing (Extension)(United States)">H1B Filing (Extension)(United States)</option>
 				
-				</select><div class="chosen-container chosen-container-multi" style="width: 100%;" title="" id="visaType_chosen"><ul class="chosen-choices"><li class="search-field"><input type="text" value="Select Visa" class="default" autocomplete="off" style="width: 90px;"></li></ul><div class="chosen-drop"><ul class="chosen-results"></ul></div></div>
+				</select>
 			 </div>
 		</div>
 		
 		<div class="col-md-12 mb">
 			<label>Tags</label>
 				<div class="clearfix">
-					<select class="chosen-select form-control input-sm" multiple="" data-placeholder="Tags" id="jobsTags" name="jobsTags" style="display: none;">
-					</select><div class="chosen-container chosen-container-multi" style="width: 100%;" title="" id="jobsTags_chosen"><ul class="chosen-choices"><li class="search-field"><input type="text" value="Tags" class="default" autocomplete="off" style="width: 52px;"></li></ul><div class="chosen-drop"><ul class="chosen-results"></ul></div></div>
+					<select class="chosen-select form-control input-sm" multiple="" data-placeholder="Tags" id="jobsTags" name="jobsTags">
+					</select>
 				 </div>
 			</div>
 			
@@ -2005,8 +2006,8 @@ top: 18px;height: 32px; line-height: 18px;
 			<div class="col-md-8">
 				<label>Selected Cities</label>
 				<div class="clearfix">
-				   <select class="chosen-select form-control input-sm" multiple="" data-placeholder="sletected cites" id="city" name="city" style="display: none;">
-					</select><div class="chosen-container chosen-container-multi" style="width: 100%;" title="" id="city_chosen"><ul class="chosen-choices"><li class="search-field"><input type="text" value="sletected cites" class="default" autocomplete="off" style="width: 90px;"></li></ul><div class="chosen-drop"><ul class="chosen-results"></ul></div></div>
+				   <select class="chosen-select form-control input-sm" multiple="" data-placeholder="sletected cites" id="city" name="city">
+					</select>
 				</div>
 			</div>
 		</div>
@@ -2894,24 +2895,7 @@ function importAddApplicantDoc(){
    });
 });
        </script>
-       <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				});
-
-			
-			</script>
+      
 
 <!-- <script>
 $(document).tooltip({
@@ -2927,9 +2911,40 @@ $( this ).addClass( feedback.vertical )
 });
 </script> -->
 
-
-
 <div id="imagecrop" class="post_popup"></div>
 
 
 <div class="pac-container pac-logo" style="display: none; width: 0px; position: absolute; left: 0px; top: 149px;"></div></body></html>
+<script type="text/javascript">
+$(function() { // updated need to check working properly or not  
+    //Adding Customized Job Title list this method is slead-common.js
+	   tagIt("requirementTitle", 'Press Enter-Key Or Comma(,) Or Tab To Add Title:', 'tagItBykeyForSkills','skills','Job Title');
+    
+	   //Adding Customized Job Id list this method is slead-common.js
+	   tagIt("jobId", 'Press Enter-Key Or Comma(,) Or Tab To Add Add Requirement ID:', 'tagItBykeyForSkills','skills','Job Id');
+	   
+	 //Adding Customized Job Id list this method is slead-common.js
+	   tagIt("generatedId", 'Press Enter-Key Or Comma(,) Or Tab To Add Add Generated ID:', 'tagItBykeyForSkills','skills','Generated ID');
+	 
+	 //Adding Customized Job Skills list this method is slead-common.js
+	   tagIt("requirementSkills", 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:', 'tagItBykeyForSkills','skills','Skills');
+
+	   tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
+
+	   
+});  
+</script>
+<script type="text/javascript">
+function activeTabs(){
+	document.getElementById("tab-1").style.display="none";
+	$("#quickviewTabsdetails").removeClass("active");
+	$("#quickviewTabsqv").addClass("active");
+	$("#quickresume_view").addClass("active in");
+	$("#detailrecommondations").removeClass("active in");
+	
+	$("#pipelineQuickviewTabsdetails").removeClass("active");
+	$("#pipelineQuickviewTabsqv").addClass("active");
+	$("#quickview").addClass("active in");
+	$("#detailview").removeClass("active in");
+}
+</script>
