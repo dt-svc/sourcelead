@@ -19,7 +19,7 @@
 }
 </style>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 var uploadflag= true;
 		window.onload = function () {
 			var refreshId = setInterval(function(){
@@ -34,7 +34,7 @@ var uploadflag= true;
 				  }
 			},1000);
 		 };
-</script>
+</script> -->
 
 
 <section class="content-wraper">
@@ -74,7 +74,7 @@ var uploadflag= true;
 
 											<div class="btn-group">
 												<input type="reset" class="btn btn-danger" value="Reset"
-													onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadForm'/>'">
+													onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadAssociateSalary'/>'">
 											</div>
 										</div>
 									</div>
@@ -150,7 +150,7 @@ var uploadflag= true;
     <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 </div>
 
-<script type="text/javascript" src="/resources/js/xlsupload.js"></script>
+<!-- <script type="text/javascript" src="/resources/js/xlsupload.js"></script> -->
 
 <script type="text/javascript">
 document.getElementById("uploadBtn").onchange = function () {
@@ -182,10 +182,11 @@ if ($('#upload_salary_form').validate(false, validationSettings)){
 		    url : sourceleadUrl+"/saveAssociateSalaryDetailsTemplate?"+tokenParamName+"="+tokenValue+"", 	   
  		    success : function(json) {
  		    		$("#loading").removeAttr("style");
- 		    	    if(json.updateCount != null && json.updateCount != '')
+ 		    	    if(json.recordUpdatedCount != null && json.recordUpdatedCount != '')
  		    	    $("#msgDiv").removeAttr("style");
  		 			$("#msgDiv").css({ display: "block" });
- 		 			$("#msgDiv").html(json.updateCount+ " Associates Salary details updated ..!");
+ 		 			$("#msgDiv").html(json.recordUpdatedCount+ " Associates Salary details updated ..!");
+ 		 			$("#selector11").removeAttr('style');
  			    	msgFadein();
  		    	    closeImportFile();
  		    	   resetUpload();
@@ -205,9 +206,6 @@ $('body').on('blur', '#upload_job_form', function() {
 
 <script type="text/javascript">
 function cancelFileImport(){
-	/* $("#jobFieldsDiv").attr("style","display:none");
-	$('#jobFileImportDiv').removeAttr("style");
-	$('#jobFieldsDiv').empty(); */
 	location.replace(sourceleadUrl+"/usersList");
 }
 </script>
