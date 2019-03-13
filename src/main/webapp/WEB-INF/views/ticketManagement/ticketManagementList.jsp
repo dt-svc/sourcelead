@@ -19,21 +19,21 @@
               <li><a href="/app/addTicket" class="newAdBtn mr5" title="Add" id="addPop">+ Add</a></li>
               <li class="">
                 <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
+                <span class="repSearchIcon" onclick="getTicketManagementList();"></span></li>
             </ul>
           </div>
           <div class="candidate_wrap_table">
-            <div class="candidate_wrap_table datatable_filter">            
+            <div class="candidate_wrap_table datatable_filter require_wrap_table">            
             <table style="width: 100%;" id="ticketManagementListTable">
               <thead>
                 <tr>
                   <th>Ticket Id</th>
                   <th>Ticket Title</th>
                   <!-- <th>Category</th> -->
-                  <th>Status</th>
                   <th>Priority</th>
                   <th>Requested By</th>
                   <th>Assign To</th>
+                  <th>Status</th>
                   <th>Action</th>
                 </tr>
               </thead>

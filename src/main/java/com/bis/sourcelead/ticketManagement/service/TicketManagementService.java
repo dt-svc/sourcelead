@@ -20,7 +20,7 @@ public interface TicketManagementService {
 
 	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations();
 
-	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status);
+	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue);
 
 	public boolean saveTicketType(TicketTypeDTO ticketTypeDTO, long userId, OrgLocations loginOrgLocation);
 

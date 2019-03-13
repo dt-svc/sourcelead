@@ -30,9 +30,9 @@
           <div class="positionRelative timesheet_head clearfix">
             <ul class="pull-right list-unstyled list-inline">
               <li><a class="newAdBtn mr5" title="Add" id="addPop">+ Add</a></li>
-              <li class=" hidden">
+              <li class="hidden">
                 <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
+                <span class="repSearchIcon" onclick="getTicketCategoryList();"></span></li>
             </ul>
           </div>
           <div class="candidate_wrap_table datatable_filter">

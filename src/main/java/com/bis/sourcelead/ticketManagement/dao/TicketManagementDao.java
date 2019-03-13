@@ -18,7 +18,7 @@ public interface TicketManagementDao {
 
 	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations();
 
-	public List<TicketType> getTicketTypeListByOrgLocationId(Long orgLocationId, int status);
+	public List<TicketType> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue);
 
 	public TicketType getTicketTypeById(long id);
 	
