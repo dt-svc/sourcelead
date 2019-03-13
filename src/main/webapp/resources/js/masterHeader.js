@@ -499,6 +499,25 @@ var masterHeader = new buildMasterHeaderPanel();
 		    },
 		});
 	}
+	 function tagItBykeyForEmails(e){
+			if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 32 || e.which == 188){
+				 $(document).click();
+				 return true;
+			}
+		}
+
+
+	 function tagItBykeyForSkills(e){
+			if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 188){
+				 $(document).click();
+				 return true;
+			}
+		}
+	 function preventTabkey(e){
+		 if(e.which == 9){
+			 e.preventDefault();
+		 }
+	}
  /*function linkReadAndUnread(uuId){
 	 $.ajax({
 	      type: "POST",
@@ -507,28 +526,6 @@ var masterHeader = new buildMasterHeaderPanel();
      			 }							     
 	}); 
 }
- function tagItBykeyForEmails(e){
-		if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 32 || e.which == 188){
-			 $(document).click();
-			 return true;
-		}
-	}
-
-
- function tagItBykeyForSkills(e){
-		if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 188){
-			 $(document).click();
-			 return true;
-		}
-	}
- function preventTabkey(e){
-	 if(e.which == 9){
-		 e.preventDefault();
-	 }
-}
- function predefineProfileImage(imageId){
-		$(imageId).attr('src','/resources/images/userprofile-img.png');
-	}
 
  function linkFormSubmit(orgLocationId) {
 		document.getElementById("logoutForm").action="http://localhost:8080/app/dashboard/"+orgLocationId // need to be dynamic
