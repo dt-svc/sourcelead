@@ -3,7 +3,6 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -60,7 +59,7 @@ public class TicketCategory implements Serializable {
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 
-	@OneToMany(mappedBy = "TicketCategory", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "ticketCategory", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<TicketCategoryAssignTo> ticketCategoryAssignToList;
 
 	public long getId() {
