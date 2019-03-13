@@ -8,6 +8,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.XlsBulkUploadHistroyDao;
+import com.bis.sourcelead.dto.UploadXlsHistoryDTO;
+import com.bis.sourcelead.dto.XlsBulkUploadHistroyDTO;
 import com.bis.sourcelead.entity.UploadXlsHistory;
 import com.bis.sourcelead.entity.XlsBulkUploadHistroy;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -82,6 +85,47 @@ public class XlsBulkUploadHistroyDaoImpl implements XlsBulkUploadHistroyDao{
 		}
 		return xlsBulkUploadHistroy;
 		
+	}
+
+	@Override
+	public List<XlsBulkUploadHistroyDTO> getXlsBulkUploadHistroyByUploadTypeAndOrgLocationId(String uploadEntityType,String uploadType,
+			Long orgLocationId,String dateFormat) throws Exception {
+		List<XlsBulkUploadHistroyDTO> xlsBulkUploadHistroyDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		
+		 String locationDateFormat = null;
+		 if(dateFormat.equalsIgnoreCase("yyyy-MM-dd")){
+			 locationDateFormat = "%Y-%m-%d";
+		  }if(dateFormat.equalsIgnoreCase("dd-MM-yyyy")){
+			  locationDateFormat = "%d-%m-%Y";
+		  }if(dateFormat.equalsIgnoreCase("MM-dd-yyyy")){
+			  locationDateFormat = "%m-%d-%Y";
+		  }if(dateFormat.equalsIgnoreCase("yyyy-dd-MM")){
+			  locationDateFormat = "%Y-%d-%m";
+		  }
+		
+		query =  "SELECT "
+				+" HISTORY.FAILED_COUNT AS failureCount, "
+				+" HISTORY.FILE_URL AS fileUrl, "
+				+" HISTORY.DOCUMENT_KEY AS documentKey, "
+				+" HISTORY.UUID AS uuid, "
+				+" DATE_FORMAT(HISTORY.CREATED_DATE, '"+locationDateFormat+"') AS date, "
+				+" DATE_FORMAT(HISTORY.CREATED_DATE, '%h:%i:%s %p') AS time "
+				+" FROM XLS_BULK_UPLOAD_HISTORY HISTORY "
+				+" WHERE "
+				+" HISTORY.UPLOAD_ENTITY_TYPE = :uploadEntityType AND "
+				+" HISTORY.UPLOAD_TYPE = :uploadType AND "
+				+" HISTORY.ORG_LOCATION_ID = :orgLocationId ORDER BY HISTORY.ID DESC";
+		
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("orgLocationId", orgLocationId);
+		queryObj.setString("uploadEntityType", uploadEntityType);
+		queryObj.setString("uploadType", uploadType);
+		queryObj.setMaxResults(5);
+		queryObj.setResultTransformer(Transformers.aliasToBean(XlsBulkUploadHistroyDTO.class));
+		xlsBulkUploadHistroyDTOList = queryObj.list();
+		return xlsBulkUploadHistroyDTOList;
 	}
 
 }

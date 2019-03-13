@@ -49,6 +49,9 @@ public class XlsBulkUploadHistroy implements Serializable{
 	@Column(name = "UUID")
 	private String uuid;
 	
+	@Column(name = "FAILED_COUNT")
+	private int failedCount;
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -65,8 +68,6 @@ public class XlsBulkUploadHistroy implements Serializable{
     @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "UPDATED_BY", nullable = false)
    	private User updatedBy;
-    
-    
     
 
 	public Long getId() {
@@ -179,6 +180,14 @@ public class XlsBulkUploadHistroy implements Serializable{
 
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public int getFailedCount() {
+		return failedCount;
+	}
+
+	public void setFailedCount(int failedCount) {
+		this.failedCount = failedCount;
 	}
 	
 	

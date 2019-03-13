@@ -1488,7 +1488,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			sourceLeadSessionManager.setCouchbaseQueueJsonString(key, "bulkImports", jsonObject);
 			workbook.close();
 			
-			saveXlsBulkUploadHistory(key, "Upload", orgLocations, user, uploadEntriesDTO.getExportFilePath(), "Candidates");
+			saveXlsBulkUploadHistory(key, Constants.COUCH_DOCUMENT_UPLOAD_TYPE, orgLocations, user, uploadEntriesDTO.getExportFilePath(), "Candidates",0);
 			
 			return key;
 	}
@@ -1559,7 +1559,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				sourceLeadSessionManager.setCouchbaseQueueJsonString(failureDocumentKey, "bulkImports", jsonObject);
 				
 				XlsBulkUploadHistroy history = xlsBulkUploadHistroyService.getXlsBulkUploadHistroyByDocumentKey(documentKey);
-				saveXlsBulkUploadHistory(failureDocumentKey, "Failure", orgLocations, user, history.getFileUrl(), "Candidates");
+				saveXlsBulkUploadHistory(failureDocumentKey, Constants.COUCH_DOCUMENT_UPLOAD_FAILURE_TYPE, orgLocations, user, history.getFileUrl(), "Candidates",failureList.size());
 				history.setUploadStatus("Completed");
 				history.setUpdatedBy(user);
 				history.setUpdatedDate(new Date());
@@ -1574,7 +1574,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	}
 	
 
-    public void saveXlsBulkUploadHistory(String documentKey, String uploadType,OrgLocations orgLocations,User user,String fileUrl,String uploadEntityType) {
+    public void saveXlsBulkUploadHistory(String documentKey, String uploadType,OrgLocations orgLocations,User user,String fileUrl,String uploadEntityType,Integer count) {
     
 		try {
 			XlsBulkUploadHistroy history = new XlsBulkUploadHistroy();
@@ -1587,6 +1587,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			history.setUploadStatus(Constants.NEW_TYPE);
 			history.setUuid(SourceLeadRandomCodeHelper.generateRandomUniquUserName());
 			history.setStatus(Constants.RECORD_ACTIVE);
+			history.setFailedCount(count);
 			history.setCreatedDate(new Date());
 			history.setCreatedBy(user);
 			xlsBulkUploadHistroyService.storeXlsBulkUploadHistroy(history);
