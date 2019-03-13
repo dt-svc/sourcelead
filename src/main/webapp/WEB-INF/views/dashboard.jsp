@@ -39,7 +39,14 @@
 <script src="/resources/js/sourcelead-app.js"></script>
 <script src="/resources/js/masterHeaderAction.js"></script>
 <script src="/resources/js/slead-common.js"></script>
-
+<style>
+.pac-container {
+z-index: 1000000000 !important;
+}
+.pac-container::after {
+display:none;
+}
+</style>
 </head>
 
 <!-- 
