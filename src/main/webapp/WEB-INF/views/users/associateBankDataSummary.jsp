@@ -141,7 +141,7 @@ function changeActiveAccount(associateBankId,candidateId,userId) {
 	
 }
 </script>
-<div class="modal paymentaccount-modal" id="adEdBankingDetails" style="display:none;">
+<div class="modal" id="adEdBankingDetails" style="display:none;">
     <div class="modal-dialog modal-lg">
      <div id="accountDetailsLoading"></div>
       <!-- Modal content-->
