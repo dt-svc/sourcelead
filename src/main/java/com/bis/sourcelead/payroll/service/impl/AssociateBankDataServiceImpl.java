@@ -71,7 +71,7 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 		Response<AssociateBankDataDTO> resObj = new Response<>();
 		try {
 			if (Validator.validate(associateBankDataDTO)) {
-				if(associateBankDataDTO.getUserId() != null){
+				if(associateBankDataDTO.getId() != null){
 					Candidate candidate = candidateDao.getCandidateByConsultantUserId(Long.parseLong(associateBankDataDTO.getUserId()),orgLocation.getId());
 					associateBankData = associateBankDataDao.findAssociateBankDataByCandidateId(candidate.getId(),orgLocation);
 					if(associateBankData != null) {
@@ -80,7 +80,7 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 					}else {
 						associateBankData = new AssociateBankData();
 //						User user = userService.getUserById(Long.parseLong(associateBankDataDTO.getUserId()));
-//						candidate = candidateService.getCandidateByConsultantUserId(Long.parseLong(associateBankDataDTO.getUserId()), orgLocation.getId());
+						candidate = candidateService.getCandidateByConsultantUserId(Long.parseLong(associateBankDataDTO.getUserId()), orgLocation.getId());
 						associateBankData.setCandidate(candidate);
 						associateBankData.setCreatedDate(new Date());
 						associateBankData.setCreatedBy(loginUser.getUserCode());
@@ -324,5 +324,11 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 	public List<AssociateBankData> findAllAssociateBankDataByCandidateId(Long candidateId, Long orgLocationId)
 	{
 		return associateBankDataDao.findAllAssociateBankDataByCandidateId(candidateId,orgLocationId);
+	}
+
+	@Override
+	public AssociateBankData findAssociateBankDataByUUID(String associateBankUUID, Long orgLocationId)
+	{
+		return associateBankDataDao.findAssociateBankDataByUUID(associateBankUUID,orgLocationId);
 	}
 }
