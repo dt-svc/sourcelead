@@ -27,7 +27,7 @@ function buildMasterSideNavPanel(){
 	       }
 	        
 	       if(tabAccessArray.indexOf("Jobs") > -1){
-	    	   sideNavHtml = sideNavHtml+'<li class=""><a href="'+atsUrl+'/jobs" title="Jobs"><span class="navIcons jobIcon"></span><b>Jobs</b></a></li>';
+	    	   sideNavHtml = sideNavHtml+'<li class=""><a href="'+atsUrl+'/jobsList" title="Jobs"><span class="navIcons jobIcon"></span><b>Jobs</b></a></li>';
 	       }
 	       
 	       if(tabAccessArray.indexOf("Vendors") > -1){
