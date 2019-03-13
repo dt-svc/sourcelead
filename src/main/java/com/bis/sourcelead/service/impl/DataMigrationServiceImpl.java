@@ -91,6 +91,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.UploadXlsHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UsersImport;
+import com.bis.sourcelead.entity.XlsBulkUploadHistroy;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.CandidateService;
@@ -110,6 +111,7 @@ import com.bis.sourcelead.service.UploadFileService;
 import com.bis.sourcelead.service.UploadXlsHistoryService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.XlsBulkUploadHistroyService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.DataMigrationCommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -203,6 +205,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	
 	@Autowired
 	UserStatsCacheHelper userStatsCacheHelper;
+	
+	@Autowired
+	XlsBulkUploadHistroyService xlsBulkUploadHistroyService;
 	
 	int candidateIndexKey = 0;
 	List<Candidate> uploadedCandidatesList = null;
@@ -1397,6 +1402,8 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			throws Exception {
 		
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 
 		 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		
 		 String ac = StringUtils.removeEnd(staticPath, "/slead-static");
@@ -1480,24 +1487,26 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			String key = SourceLeadRandomCodeHelper.generateRandomCustomToken();
 			sourceLeadSessionManager.setCouchbaseQueueJsonString(key, "bulkImports", jsonObject);
 			workbook.close();
+			
+			saveXlsBulkUploadHistory(key, "Upload", orgLocations, user, uploadEntriesDTO.getExportFilePath(), "Candidates");
+			
 			return key;
 	}
 	
 	
-	public void saveCandidateBulkImports(String key,HttpServletRequest request) {
+	public void saveCandidateBulkImports(String documentKey,HttpServletRequest request) {
 		
 		 ApplicationContext ctx = new AnnotationConfigApplicationContext(CouchbasePropertyPathConfiguration.class);
 	     CouchbaseConnectionConfig couchConfig = ctx.getBean(CouchbaseConnectionConfig.class);
 	     Bucket bucket = couchbaseClusterService.openBucket(couchConfig.getBulkImportsBucket(), couchConfig.getPassword());
 	     
-	     List<String> queueDocumentsList =  userStatsCacheHelper.getCouchbaseQueueDocumentsList(key);
+	     List<String> queueDocumentsList =  userStatsCacheHelper.getCouchbaseQueueDocumentsList(documentKey);
 	     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		 
-		 List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
+		 List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
 	   
-		 //System.out.println("Validation Entry" + Calendar.getInstance().getTime());
 		 List<BulkImportFailureCacheDTO> failureList = new ArrayList<>();
 	    for(String document : queueDocumentsList){
 				JsonArray doucumentsList =  bucket.get(JsonArrayDocument.create(document)).content();
@@ -1505,12 +1514,12 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					 try {
 						 HashMap<String, String> errorSet = new HashMap<String, String>();
 						 org.json.simple.JSONObject candidateJosn = userStatsCacheHelper.getCandidateDocument(docs.toString());
-						 dataMigrationCommonUtil.dataValidationForCandidateBulkImports(errorSet, candidateJosn,orgLocation,vendorsList);
+						 dataMigrationCommonUtil.dataValidationForCandidateBulkImports(errorSet, candidateJosn,orgLocations,vendorsList);
 						if (errorSet.isEmpty()) {
 							Gson gson = new Gson();
 							CandidateDTO candidateDTO = gson.fromJson(candidateJosn.toString(), CandidateDTO.class);
 							if(candidateDTO.getCountry() == null || candidateDTO.getCountry().isEmpty()) {
-								candidateDTO.setCountry(orgLocation.getCountry());
+								candidateDTO.setCountry(orgLocations.getCountry());
 							}
 							//candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user, vendorsList);
 							 bucket.remove(docs.toString());
@@ -1534,7 +1543,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			try {
 				
 				BulkImportFailureDocumentsCacheDTO failureDocsDTO = new BulkImportFailureDocumentsCacheDTO();
-				failureDocsDTO.setDocumentType("Candidates Import Failure");
+				failureDocsDTO.setDocumentType("Candidates Upload Failure");
 				failureDocsDTO.setUserId(user.getId().toString());
 				failureDocsDTO.setOrgLocationId(String.valueOf(orgLocationId));
 				failureDocsDTO.setEmail(user.getEmail());
@@ -1546,9 +1555,15 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			    ObjectMapper sessionObj = new ObjectMapper();
 			    String sessionJsonStr = sessionObj.writeValueAsString(failureDocsDTO); 
 				JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
-				String documentKey = SourceLeadRandomCodeHelper.generateRandomCustomToken();
-				System.out.println(documentKey);
-				sourceLeadSessionManager.setCouchbaseQueueJsonString(documentKey, "bulkImports", jsonObject);
+				String failureDocumentKey = SourceLeadRandomCodeHelper.generateRandomCustomToken();
+				sourceLeadSessionManager.setCouchbaseQueueJsonString(failureDocumentKey, "bulkImports", jsonObject);
+				
+				XlsBulkUploadHistroy history = xlsBulkUploadHistroyService.getXlsBulkUploadHistroyByDocumentKey(documentKey);
+				saveXlsBulkUploadHistory(failureDocumentKey, "Failure", orgLocations, user, history.getFileUrl(), "Candidates");
+				history.setUploadStatus("Completed");
+				history.setUpdatedBy(user);
+				history.setUpdatedDate(new Date());
+				xlsBulkUploadHistroyService.storeXlsBulkUploadHistroy(history);
 				
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -1556,8 +1571,30 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			
 		}
 	    
-	   // System.out.println("Validation Exit" + Calendar.getInstance().getTime());
 	}
+	
+
+    public void saveXlsBulkUploadHistory(String documentKey, String uploadType,OrgLocations orgLocations,User user,String fileUrl,String uploadEntityType) {
+    
+		try {
+			XlsBulkUploadHistroy history = new XlsBulkUploadHistroy();
+			history.setDocumentKey(documentKey);
+			history.setUploadEntityType(uploadEntityType);
+			history.setOrgLocation(orgLocations.getOrgName());
+			history.setOrgLocationId(orgLocations);
+			history.setFileUrl(fileUrl);
+			history.setUploadType(uploadType);
+			history.setUploadStatus(Constants.NEW_TYPE);
+			history.setUuid(SourceLeadRandomCodeHelper.generateRandomUniquUserName());
+			history.setStatus(Constants.RECORD_ACTIVE);
+			history.setCreatedDate(new Date());
+			history.setCreatedBy(user);
+			xlsBulkUploadHistroyService.storeXlsBulkUploadHistroy(history);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
 }
 
 
