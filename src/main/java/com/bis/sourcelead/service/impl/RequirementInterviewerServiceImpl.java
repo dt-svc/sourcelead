@@ -174,7 +174,7 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,OrgLoc.getOrg(),OrgLoc,Constants.UPDATED_FEEDBACK_NOTIFICATIONTO_REQUIREMENTOWNER,new ArrayList<EmailAttachment>());
 		 
 		 StringBuilder actionLinkBuilder = new StringBuilder();
-		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()+"&submissionId="+requirementSubmission.getId()+"&candidateUUID="+requirementSubmission.getCandidate().getCandidateUUID()).toString();		 
+		 String actionLink = actionLinkBuilder.append("").append(atsUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()+"&submissionId="+requirementSubmission.getId()+"&candidateUUID="+requirementSubmission.getCandidate().getCandidateUUID()).toString();		 
 
 		if(interviewerUser != null) {
 			emailScenerioUtil.sendNotification(actionLink, InterviewScheduler, requirement.getCreatedBy(), OrgLoc, notificationScenario,new HashMap<String,String>());
