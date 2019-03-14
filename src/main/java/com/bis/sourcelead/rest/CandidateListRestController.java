@@ -1951,9 +1951,10 @@ public class CandidateListRestController {
 	
 	
 	@RequestMapping(value = "/getSourceleadTagsList")
-	public  Set<String>  getSourceleadTagsList(
+	public  List<String>  getSourceleadTagsList(
 			 HttpServletRequest request) throws Exception {
-		 Set<String> tagsList =  (Set<String>) SourceLeadSessionManager.getSessionAttribute(request, "tagsList");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<String> tagsList = sourceleadTagsService.sourceleadTagsListByEntitypeAndOrgloactionId(TagEntites.JOBS.getValue(),loginOrgLocation.getId());
 		return tagsList;
 	}
 	

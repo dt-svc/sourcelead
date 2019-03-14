@@ -118,7 +118,28 @@ $(document).ready(function(){
 		} else {
 			requirementListCheck(searchValue,universalRequirementList,"universalSearch",atsUrl);
 		}
+	  
+	  if(roleActionsArray.indexOf("ROLE_CREATE_REQUIREMENT") > == -1){
+		  $("#jobActions").remove();
+	  }
+	  if(roleActionsArray.indexOf("ROLE_EXPORT_REQUIREMENTS") > == -1){
+		  $("#jobExportAndImportActions").remove();
+	  }
+	  if(roleActionsArray.indexOf("ROLE_CREATE_REQUIREMENT") > == -1){
+		  $("#jobFairAction").remove();
+	  }
+	  if(roleActionsArray.indexOf("ROLE_CREATE_REQUIREMENT") > == -1){
+		  $("#crowdsourcingJobsAction").remove();
+	  }
+	  if(roleActionsArray.indexOf("ROLE_CREATE_REQUIREMENT") > == -1 || roleActionsArray.indexOf("ROLE_VIEW_REQUIREMENT") == -1 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_REQUIREMENT") == -1){
+		  $("#filter1ApprovedPop").remove();
+	  }
 	    
+	  if(roleActionsArray.indexOf("ROLE_CREATE_REQUIREMENT") > == -1 || roleActionsArray.indexOf("ROLE_VIEW_REQUIREMENT") == -1 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_REQUIREMENT") == -1){
+		  $("#jobFairExportActions").remove();
+	  }
+	    
+	  
 });
 function newActions(){
 	$(".newActPop").slideToggle(200);
@@ -1835,7 +1856,7 @@ top: 18px;height: 32px; line-height: 18px;
 <div id="popUp"></div>
 <section class="content-wraper">
 	<section class="content-header clearfix">
-		<div class="pull-left">
+		<div class="pull-left" id="crowdsourcingJobsAction">
         	<h2>Jobs 
 					
 						<a href="/ats/professionalRequirements" class="jobHeadBtn">Crowdsourcing Jobs</a>
@@ -2072,10 +2093,8 @@ top: 18px;height: 32px; line-height: 18px;
 									
 								</ul>
 						 </div>
-					  
 					
-					
-		                    <li>
+		                    <li id="jobActions">
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
 									<span> 
@@ -2092,7 +2111,7 @@ top: 18px;height: 32px; line-height: 18px;
 				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a></li>
 				
 				
-				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+				<li id="jobExportAndImportActions"><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>	           	   		
 							
@@ -2118,11 +2137,11 @@ top: 18px;height: 32px; line-height: 18px;
       <ul class="pull-right list-unstyled list-inline">
 					
 					
-						<li><a href="http://localhost:8080/app/addJobFair" class="newAdBtn">+ Job Fair</a></li>
+						<li id="jobFairAction"><a href="http://localhost:8080/app/addJobFair" class="newAdBtn">+ Job Fair</a></li>
 										
 									
 					
-						<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+						<li id="jobFairExportActions"><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 							<div class="newActPop">
 								<span>
 									 	<a href="javascript:void(0)" onclick="exportToPdf(2);" title="PDF">Export PDF</a>

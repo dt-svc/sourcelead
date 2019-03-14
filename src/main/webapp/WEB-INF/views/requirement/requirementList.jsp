@@ -17,8 +17,8 @@
 <link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/timesheet.css" type="text/css">
 <!--  scripts are added here  -->
 
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/masterHeaderAction.js"></script>
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-1.11.1.min.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/masterHeaderAction.js"></script>
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-ui.js"></script>
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap-select.min.js"></script>
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js"></script>
