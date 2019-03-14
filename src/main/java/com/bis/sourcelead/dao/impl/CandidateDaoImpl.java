@@ -3330,8 +3330,8 @@ public class CandidateDaoImpl implements CandidateDao {
 	public List<MarketplacePurchaseOrder> getPurchaseCandidateListByOrglocation(Long id) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from MarketplacePurchaseOrder mpo where mpo.orgLocationId.id=:rajat";
-		List<MarketplacePurchaseOrder> list = session.createQuery(query).setLong("rajat", id).list();
+		String query = "from MarketplacePurchaseOrder mpo where mpo.orgLocationId.id=:id";
+		List<MarketplacePurchaseOrder> list = session.createQuery(query).setLong("id", id).list();
 		return list;
 	}
 	public List<Candidate> getCandidateDetailsListById(List<Long> Ids) {
@@ -3408,5 +3408,4 @@ public class CandidateDaoImpl implements CandidateDao {
 			e.printStackTrace();
 		}
 	}
-	
 }

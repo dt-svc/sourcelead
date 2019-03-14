@@ -2018,13 +2018,8 @@ public class VendorRestController {
 						}
 					}
 				}
-				System.out.println(requirementIdsList.toString());
-				/*System.out.println("Requirement ID's :");
-				for(Long id : requirementIdsList) {
-					System.out.println(id);
-				}*/
+//				System.out.println(requirementIdsList.toString());
 				SourceLeadSessionManager.setSessionAttribute(request, "requirementIdsList", requirementIdsList);
-				
 				RequirementStagesReport requirementStagesReport = new RequirementStagesReport();
 				requirementStagesReport.setOpenRequirementsCount(new BigDecimal(openJobsCount));
 				requirementStagesReport.setClosedRequirementsCount(new BigDecimal(closedJobsCount));
