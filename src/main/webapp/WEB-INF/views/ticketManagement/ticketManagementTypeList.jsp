@@ -5,11 +5,14 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script type="text/javascript" src="/resources/js/ticketManagement/ticket_configuration.js"></script>
 <section class="content-wraper">
+	<div class="success_pop" >
+		<i class="fa fa-check-circle"></i><span></span>
+	</div>
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Ticket Type</h2>
       </div>
-       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; Ticket Management Type</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a> &raquo; Ticket Type List</div>
     </section>
     <div class="content-area content-new clearfix timesheet_out">
       <div class="clearfix mt mb">
@@ -24,24 +27,17 @@
         <div class="col-md-10 padding_left">
 			<div class="project_tabs projectTabsborder">
 				<div id="tab-1">
-		          <div class="positionRelative timesheet_head clearfix">
+		          <div class="positionRelative reportHead clearfix">
 		            <ul class="pull-right list-unstyled list-inline">
 		              <li><a class="newAdBtn mr5" title="Add" id="addPop">+ Add</a></li>
-			            </ul>
+		              <li>
+		                <input class="repSearchBar" placeholder="Search" id="ticketTypeDataTableSearch" type="text">
+		                <span class="repSearchIcon" onclick="getTicketTypeList();"></span>
+		               </li>
+			        </ul>
 		          </div>
-		          <div class="candidate_wrap_table datatable_filter">
-		            <table style="width: 100%;" id="ticketManagementTypeTable">
-		              <thead>
-		                <tr>
-		                  <th>Type</th>
-		                  <th>Description</th>
-		                  <th>Action</th>
-		                </tr>
-		              </thead>
-		              <tbody id="ticketTypeList">
-		                
-		              </tbody>
-		            </table>
+		          <div class="candidate_wrap_table datatable_filter" id="ticketTypeParentList">
+		            
 		          </div>
 			</div>
 		  </div>

@@ -48,7 +48,7 @@ public class EmailReminder {
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "CREATED_BY")
 	private User createdBy;
 

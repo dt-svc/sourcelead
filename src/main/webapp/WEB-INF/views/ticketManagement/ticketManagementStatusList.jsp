@@ -6,11 +6,14 @@
 <script type="text/javascript" src="/resources/js/ticketManagement/ticket_configuration.js"></script>
 
 <section class="content-wraper">
+<div class="success_pop" >
+		<i class="fa fa-check-circle"></i><span></span>
+	</div>
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Ticket Status</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; Ticket Status</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a> &raquo; Ticket Status List</div>
     </section>
     <div class="content-area content-new clearfix timesheet_out">
       <div class="clearfix mt mb">
@@ -30,7 +33,7 @@
               <li><a class="newAdBtn mr5" title="Add" id="addPop">+ Add</a></li>
               <li class="hidden">
                 <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
+                <span class="repSearchIcon" onclick="getTicketStatusList();"></span></li>
             </ul>
           </div>
           <div class="candidate_wrap_table">

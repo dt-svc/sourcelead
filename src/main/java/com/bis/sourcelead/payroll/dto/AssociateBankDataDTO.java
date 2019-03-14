@@ -25,6 +25,7 @@ public class AssociateBankDataDTO {
 	
 	private String associateId;
 	
+
 	public Long getId()
 	{
 		return id;

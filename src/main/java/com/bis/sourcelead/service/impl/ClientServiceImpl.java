@@ -2384,10 +2384,10 @@ public class ClientServiceImpl implements ClientService {
 			List<Requirement> vendorReleasedJobsList = null;
 			if (spocId == 0 && Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)) {
 				if (orgRelation != null) {
-					vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendor(orgRelation.getLocationId().getId(), orgRelation.getId(), null, null);
+					vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendorBasedOnOrgRelationId(orgRelation.getLocationId().getId(), orgRelation.getId());
 				}
 			} else if(spocId > 0) {
-//				vendorReleasedJobsList = requirementService.getAllReleasedJobsBasedOnSpocId(spocId);
+				vendorReleasedJobsList = requirementService.getAllReleasedJobsBasedOnSpocId(spocId);
 			}
 			return vendorReleasedJobsList;
 		} catch (Exception e) {

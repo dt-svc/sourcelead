@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -529,11 +530,17 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ContractsTemplate findByContractTemplateName(String templateName,String contractType, Long orgLocationId) throws Exception {
+	public ContractsTemplate findByContractTemplateName(String templateName,String contractType, Long orgLocationId, String templateUUID) throws Exception {
 			Session session = this.sessionFactory.getCurrentSession();
 			List<ContractsTemplate> contractsTemp = new ArrayList<ContractsTemplate>();
+			if(StringUtils.isNotBlank(templateUUID)) {
+				contractsTemp = session.createQuery("from ContractsTemplate conTemp where conTemp.templateName=:templateName and conTemp.templateType=:contractType and conTemp.orgLocationId.id = :orgLocationId and conTemp.templateUUID != :templateUUID" )
+						.setString( "templateName", templateName ).setString("contractType", contractType).setLong("orgLocationId", orgLocationId ).setString("templateUUID", templateUUID ).list();
+			}else {
 				contractsTemp = session.createQuery("from ContractsTemplate conTemp where conTemp.templateName=:templateName and conTemp.templateType=:contractType and conTemp.orgLocationId.id = :orgLocationId" )
 						.setString( "templateName", templateName ).setString("contractType", contractType).setLong("orgLocationId", orgLocationId ).list();
+			}
+				
 				if (contractsTemp.size() > 0) {
 					return contractsTemp.get(0);
 				} else {
@@ -883,4 +890,21 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		status = q.executeUpdate();
 		return status;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Contracts> getAllContractsBasedOnConfigureDate(Date updatedDate) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		Calendar c = Calendar.getInstance(); 
+		c.setTime(updatedDate); 
+		c.add(Calendar.DATE, 1);
+		Date nextUpdatedDate = c.getTime();
+		
+		@SuppressWarnings("unchecked")
+		List<Contracts>  contractsList = session.createQuery("from Contracts ct left join fetch ct.contactUser where ct.endDate BETWEEN :updatedDate and :nextUpdatedDate ").setParameter("updatedDate", updatedDate).setParameter("nextUpdatedDate", nextUpdatedDate).list();
+		return contractsList;
+	}
 }
+
