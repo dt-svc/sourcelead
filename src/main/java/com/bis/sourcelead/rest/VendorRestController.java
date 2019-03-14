@@ -76,6 +76,8 @@ import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.reportsDTO.ApplicantDeclineDTO;
+import com.bis.sourcelead.reportsDTO.ApplicantsBackoutDTO;
 import com.bis.sourcelead.reportsDTO.JobFilterDTO;
 import com.bis.sourcelead.reportsDTO.JobPipelineDTO;
 import com.bis.sourcelead.rest.reportsRestController.JobPipelineReoprtsRestController;
@@ -2016,13 +2018,8 @@ public class VendorRestController {
 						}
 					}
 				}
-				
-				/*System.out.println("Requirement ID's :");
-				for(Long id : requirementIdsList) {
-					System.out.println(id);
-				}*/
+//				System.out.println(requirementIdsList.toString());
 				SourceLeadSessionManager.setSessionAttribute(request, "requirementIdsList", requirementIdsList);
-				
 				RequirementStagesReport requirementStagesReport = new RequirementStagesReport();
 				requirementStagesReport.setOpenRequirementsCount(new BigDecimal(openJobsCount));
 				requirementStagesReport.setClosedRequirementsCount(new BigDecimal(closedJobsCount));
@@ -2044,12 +2041,88 @@ public class VendorRestController {
 		return response;
 	}
 	
-	public Response<String> getQualityCandidatesForVendors(HttpServletRequest request) {
+	@RequestMapping(value="/getQualityCandidatesListForVendor")
+	@SuppressWarnings("unchecked")
+	public Response<String> getQualityCandidatesForVendors(HttpServletRequest request, @RequestParam(defaultValue = "0") long orgRelationId, @RequestParam(defaultValue = "0") long spocId) {
 		Response<String> response = new Response<>();
 		try {
-			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if(user != null) {
+				/*String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				if(orgRelationId > 0) {
+					if(spocId > 0) {
+						OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
+						if(orgSpoc != null) {
+							userRole = orgSpoc.getClientUser().getUserRole().iterator().next().getRoles().getRoleName();
+						}
+					}
+				}*/
+				List<Long> requirementIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(request, "requirementIdsList");
+				if(requirementIdList != null && !requirementIdList.isEmpty()) {
+					long joinedCount = requirementService.getQualityCandidatesForVendors(requirementIdList, orgRelationId, spocId, "JOINED");
+					long rejectedCount = requirementService.getQualityCandidatesForVendors(requirementIdList, orgRelationId, spocId, "REJECTED");
+					response.setObject("Joined:" + joinedCount + "<>Rejected:" + rejectedCount);
+				}
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+	
+	@RequestMapping(value="/getApplicantDeclineCountsForVendor")
+	@SuppressWarnings("unchecked")
+	public Response<ApplicantDeclineDTO> getApplicantDeclineCountsForVendor(HttpServletRequest request, @RequestParam(defaultValue = "0") long orgRelationId, @RequestParam(defaultValue = "0") long spocId) {
+		Response<ApplicantDeclineDTO> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if(user != null) {
+				List<Long> requirementIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(request, "requirementIdsList");
+				if(requirementIdList != null && !requirementIdList.isEmpty()) {
+					response.setObject(requirementService.getApplicantDeclineCountsForVendor(requirementIdList, orgRelationId, spocId));
+				}
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+	
+	@RequestMapping(value="/getApplicantBackoutCountsForVendor")
+	@SuppressWarnings("unchecked")
+	public Response<ApplicantsBackoutDTO> getApplicantBackoutCountsForVendor(HttpServletRequest request, @RequestParam(defaultValue = "0") long orgRelationId, @RequestParam(defaultValue = "0") long spocId) {
+		Response<ApplicantsBackoutDTO> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if(user != null) {
+				List<Long> requirementIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(request, "requirementIdsList");
+				if(requirementIdList != null && !requirementIdList.isEmpty()) {
+					response.setObject(requirementService.getApplicantBackoutCountsForVendor(requirementIdList, orgRelationId, spocId));
+				}
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
 		}
 		return response;
 	}

@@ -8,6 +8,7 @@ public class FileInfo {
 	private Integer status;
 	private String fileDbId;
 	private String tempFolderName;
+	private boolean fileModified;
 
 	public String getFileURL() {
 		return fileURL;
@@ -57,6 +58,14 @@ public class FileInfo {
 
 	public void setTempFolderName(String tempFolderName) {
 		this.tempFolderName = tempFolderName;
+	}
+
+	public boolean isFileModified() {
+		return fileModified;
+	}
+
+	public void setFileModified(boolean fileModified) {
+		this.fileModified = fileModified;
 	}
 
 }

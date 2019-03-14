@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -889,4 +890,21 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		status = q.executeUpdate();
 		return status;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Contracts> getAllContractsBasedOnConfigureDate(Date updatedDate) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		Calendar c = Calendar.getInstance(); 
+		c.setTime(updatedDate); 
+		c.add(Calendar.DATE, 1);
+		Date nextUpdatedDate = c.getTime();
+		
+		@SuppressWarnings("unchecked")
+		List<Contracts>  contractsList = session.createQuery("from Contracts ct left join fetch ct.contactUser where ct.endDate BETWEEN :updatedDate and :nextUpdatedDate ").setParameter("updatedDate", updatedDate).setParameter("nextUpdatedDate", nextUpdatedDate).list();
+		return contractsList;
+	}
 }
+
