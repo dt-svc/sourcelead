@@ -1864,7 +1864,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				advSeach.append(" Q1.employementType IN (" + designationTypesStr + ") ");
 				flag = true;
 			} else {
-				advSeach.append(" OR Q1.employementType IN (" + designationTypesStr + ") ");
+				advSeach.append(" AND Q1.employementType IN (" + designationTypesStr + ") ");
 			}
 
 		}
@@ -1876,7 +1876,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				advSeach.append(" Q1.noticePeriod IN (" + noticePeriodStr + ") ");
 				flag = true;
 			} else {
-				advSeach.append(" OR Q1.noticePeriod IN (" + noticePeriodStr + ") ");
+				advSeach.append(" AND Q1.noticePeriod IN (" + noticePeriodStr + ") ");
 			}
 
 		}
@@ -1888,7 +1888,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				advSeach.append(" Q1.orgRelationId IN (" + orgRelationIdStr + ") ");
 				flag = true;
 			} else {
-				advSeach.append(" OR Q1.orgRelationId IN (" + orgRelationIdStr + ") ");
+				advSeach.append(" AND Q1.orgRelationId IN (" + orgRelationIdStr + ") ");
 			}
 
 		}
@@ -1904,7 +1904,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				advSeach.append(" (Q1.updatedDate BETWEEN '" + fromDate + "' AND '" + toDate + "') ");
 				flag = true;
 			} else {
-				advSeach.append(" OR (Q1.updatedDate BETWEEN '" + fromDate + "' AND '" + toDate + "') ");
+				advSeach.append(" AND (Q1.updatedDate BETWEEN '" + fromDate + "' AND '" + toDate + "') ");
 			}
 
 		}
@@ -1916,7 +1916,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				advSeach.append(" Q1.skills IN (" + skillsStr + ") ");
 				flag = true;
 			} else {
-				advSeach.append(" OR Q1.skills IN (" + skillsStr + ") ");
+				advSeach.append(" AND Q1.skills IN (" + skillsStr + ") ");
 			}
 
 		}
@@ -1928,7 +1928,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				advSeach.append(" Q1.city IN (" + citiesStr + ") ");
 				flag = true;
 			} else {
-				advSeach.append(" OR Q1.city IN (" + citiesStr + ") ");
+				advSeach.append(" AND Q1.city IN (" + citiesStr + ") ");
 			}
 
 		}
