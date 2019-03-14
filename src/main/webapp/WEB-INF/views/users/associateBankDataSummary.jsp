@@ -205,6 +205,7 @@ function changeActiveAccount(associateBankId,candidateId,userId) {
   function editAssociateBankPopUp(){
 	  $("#adEdBankingDetails, .mask").fadeIn();
 	  $("#save_associate_bank_data_button").removeAttr("disabled");
+	  resetValues();
   }
   
   	function closeadEdBankingDetailsPop(){
