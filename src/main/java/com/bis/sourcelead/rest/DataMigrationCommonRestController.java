@@ -1,40 +1,17 @@
 package com.bis.sourcelead.rest;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URLConnection;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.json.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,7 +28,6 @@ import com.bis.sourcelead.dto.DataMigrationDTO;
 import com.bis.sourcelead.dto.UploadEntriesDTO;
 import com.bis.sourcelead.dto.UploadXlsHistoryDTO;
 import com.bis.sourcelead.dto.XlsBulkUploadHistroyDTO;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadFormFields;
@@ -293,137 +269,5 @@ public class DataMigrationCommonRestController {
 		return xlsBulkUploadHistroyDTOList;
 	}
 	
-	
-	@RequestMapping(value = "/dumpBulkImportsFailureList", method = RequestMethod.GET)
-	public void dumpBulkImportsFailureList(@RequestParam(value = "documentKey", required = true) String documentKey, 
-			HttpServletRequest request,HttpServletResponse response) throws Exception {
-		
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		JSONObject jsonObject = userStatsCacheHelper.getBulkImportsFailureList(documentKey);
-		Map<String,String> columnsMap = commonUtil.getCandidateBulkImportHeaderMap();
-		File file = null;
-		Workbook createExcelworkbook =  new XSSFWorkbook();
-		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-		 StringBuilder excelSheet = new StringBuilder();
-		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSheet.append(orgLocations.getOrgName()).append("_BULK_UPLOAD_").append(dateFormat.format(new Date())).toString());	
-		 Row writeRow = null;
-		 int column=0;
-		for (Object key : jsonObject.keySet()) {
-	        String keyStr = (String)key;
-	        if(keyStr.equalsIgnoreCase("failureList")) {
-	        	String jsonString = jsonObject.get(keyStr).toString();
-	    		JSONArray jsonArray = new JSONArray(jsonString);
-	    		
-	   		 for (int i = 0; i < jsonArray.length(); i++) {
-	   			writeRow = createExcelsheet.createRow(column+1);
-	   			 JSONParser parser = new JSONParser();
-	   			 JSONObject jsonObjVal = (JSONObject) parser.parse(jsonArray.get(i).toString());
-	   			 int j=0;
-	   			 for (Object okey : jsonObjVal.keySet()) {
-	   				 String failurekeyStr = (String) okey;
-	   				 if(!failurekeyStr.equalsIgnoreCase("errorMsg")) {
-	   					 String keyvalue = jsonObjVal.get(failurekeyStr).toString();
-	   					 JSONObject errorJson = userStatsCacheHelper.getCandidateDocument(keyvalue);
-	   					
-	   					 for (Object errdockey : errorJson.keySet()) {
-	   						 String docKeyStr = (String) errdockey;
-	   						StringBuilder uploadedkeyvalue = new StringBuilder();
-	   							 
-	   						if(columnsMap.containsKey(docKeyStr)) {
-	   							String headerColumn = columnsMap.get(docKeyStr);
-	   							if(errorJson.get(docKeyStr) != null) {
-	   								Object dockeyvalue = errorJson.get(docKeyStr);
-	   								uploadedkeyvalue = uploadedkeyvalue.append(headerColumn).append(": ").append(dockeyvalue.toString());
-			   						writeRow.createCell(j).setCellValue(uploadedkeyvalue.toString()); 
-			   						j++;
-	   							 }else {
-	   								uploadedkeyvalue = uploadedkeyvalue.append(headerColumn).append(": ").append("");
-	   								writeRow.createCell(j).setCellValue(uploadedkeyvalue.toString()); 
-			   						j++;
-	   							 }
-	   						}
-	   				
-	   					 }
-	   					 
-	   				 }else {
-	   					 String keyvalue = jsonObjVal.get(failurekeyStr).toString();
-	   					 JSONObject jsonObjErrorVal = (JSONObject) parser.parse(keyvalue);
-	   					 StringBuilder errorList = new StringBuilder();
-	   					 for (Object errorkey : jsonObjErrorVal.keySet()) {
-	   						 String errkeyStr = (String) errorkey;
-	   						 String errkeyvalue = jsonObjErrorVal.get(errkeyStr).toString();
-	   						 errorList = errorList.append(errkeyvalue).append(",");
-	   					 }
-	   					 
-	   					String errorMassages = errorList.deleteCharAt(errorList.length()-1).toString();
-	   					StringBuilder failureReasons = new StringBuilder();
-	   					failureReasons = failureReasons.append("Failure Reasons : ").append(errorMassages);
-	   					writeRow.createCell(j).setCellValue(failureReasons.toString());
-	   				 }
-	   				
-	   			 }
-	   			 column++;
-	            }
-	        }
-	        
-	    }
-		 StringBuilder orgNameSB = new StringBuilder();
-		 file = File.createTempFile(orgNameSB.append(orgLocations.getOrgName()).append("_BULK_UPLOAD_").append(dateFormat.format(new Date())).toString(),".xls");
-		 file.setReadable(true);
-			 FileOutputStream fos = new FileOutputStream(file);
-			 try {
-				 createExcelworkbook.write(fos);
-				fos.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}	 	
-			 
-			/* String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-				if (mimeType == null) {
-					mimeType = "application/octet-stream";
-				}
-				response.setContentType(mimeType);
-
-				StringBuilder filename = new StringBuilder();
-				response.setHeader("Content-Disposition",
-						filename.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
-				response.setContentLength((int) file.length());
-				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-				FileCopyUtils.copy(inputStream, response.getOutputStream());
-				inputStream.close();
-				response.getOutputStream().close();
-				response.getOutputStream().flush();
-				createExcelworkbook.close();
-				if (file != null) {
-					file.delete();
-				}
-				*/
-				
-				response.setContentType("application/octet-stream");
-				StringBuilder fileName = new StringBuilder();
-				response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"")
-						.append(file.getName()).append("\"").toString());
-				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-				OutputStream outStream = null;
-				try {
-					 outStream = response.getOutputStream();
-
-					byte[] buffer = new byte[4096];
-					int bytesRead = -1;
-
-					while ((bytesRead = inputStream.read(buffer)) != -1) {
-						outStream.write(buffer, 0, bytesRead);
-					}
-					createExcelworkbook.close();
-					inputStream.close();
-					outStream.flush();
-					outStream.close();
-					
-					
-				} catch (FileNotFoundException e) {
-					logger.error(ExceptionUtils.getFullStackTrace(e));
-				}
-				
-	}
 	
 }
