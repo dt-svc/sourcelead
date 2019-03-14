@@ -18,7 +18,8 @@ public class AssociateBankDataDTO {
 	private String associateBankDataUUID;
 	
 	private String userId;
-	
+
+
 	public Long getId()
 	{
 		return id;

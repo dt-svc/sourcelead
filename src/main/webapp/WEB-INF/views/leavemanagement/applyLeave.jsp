@@ -248,7 +248,7 @@ window.onload = function() {
 			    <div class="form-group clearfix" id="notifyOtherDiv" style="display:none;">
               <label class="col-md-3">&nbsp;&nbsp;</label>
               <div class="col-md-9">
-              	<select  multiple data-placeholder="Select Approver" class="chosen-select form-control" id="approverId" name="otherApproverUser" field-name="Approver" data-validation-optional = "true">
+              	<select  multiple data-placeholder="Select Notifiers" class="chosen-select form-control" id="approverId" name="otherApproverUser" field-name="Approver" data-validation-optional = "true">
 	                  </select>
               </div>
              </div>

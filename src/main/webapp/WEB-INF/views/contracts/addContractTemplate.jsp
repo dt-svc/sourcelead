@@ -48,6 +48,8 @@
 							</div>
 							<input type="hidden" name="templateId" id="templateId"
 								value="${contractsTemplate.id}" />
+								<input type="hidden" name="templateUUID" id="templateUUID"
+								value="${contractsTemplate.templateUUID}" />
 						</div>
 
 						<div class="form-group">
@@ -85,9 +87,9 @@
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 					 <div class="form-group">
-              <label class="col-md-4">Choose Letter Head<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Choose Letter Head<span class="text-danger">&nbsp;</span></label>
               <div class="col-md-8">
-                  <select class="form-control selectpicker" data-live-search="true" title="Select Letterhead" name="letterHead" field-name="Letterhead" data-validation="required">
+                  <select class="form-control selectpicker" data-live-search="true" title="Select Letterhead" name="letterHead" field-name="Letterhead">
                     <c:forEach var="letter" items="${letterHeadList}">
                   <%--  <c:if test = "${letter.id == letter.letterHead.id}">
 				         <option selected value="${letter.letterHeadUUID}">${letter.letterHeadName}</option>
@@ -710,7 +712,6 @@
 		var templateName = $('#templateName').val();
 		var contractType = $('#contractType').val();
 		var sourceleadUrl = '${sourceleadUrl}';
-		
 		var templateUUID = '${contractsTemplate.templateUUID}';
 		
 		if (templateName != null && templateName != "" && contractType != null
@@ -721,8 +722,7 @@
 						url : sourceleadUrl
 								+ "/validateContractTemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="
 								+ templateName + "&contractType="
-								+ contractType + "&templateUUID="
-								+templateUUID,
+								+ contractType+"&templateUUID="+templateUUID,
 						success : function(data) {
 							if (data == 'true') {
 

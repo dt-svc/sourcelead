@@ -607,7 +607,7 @@ public class OrgSettingsController {
 	   	    ModelAndView model = new ModelAndView();
 	   	    List<LookUpData> referTypeList = lookUpDataService.getReferLookUpDataByCategory(Constants.TASKSEVERITY);
 			model.addObject("referTypeList", referTypeList);
-	   		model.setViewName("project/emailreminderConfigurationDashboard");
+	   		model.setViewName("emailreminderConfigurationDashboard");
 	   		model.addObject("sourceleadUrl", sourceleadUrl);
 	   		return model;
 	       }
@@ -657,4 +657,46 @@ public class OrgSettingsController {
 			model.addObject("sourceleadUrl", sourceleadUrl);			
 			return model;
 		}
+	    
+	    
+	    @RequestMapping(value = "/emailReminderLeaveConfiguration")
+	   	public ModelAndView reminderLeaveConfigureEmails(HttpServletRequest request) throws Exception {
+	   	    ModelAndView model = new ModelAndView();
+	   	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			//get job related reminders
+			List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByTabsIdAndOrgLocationId(31l , orgLocations.getId());
+			//model.addObject("emailReminderList", emailReminderList);
+			
+			for(EmailReminder emailReminder : emailReminderList) {
+				emailReminder.setEmailReminderHierarchyList(emailReminder.getEmailReminderHierarchyList().stream().filter(h->h.getStatus() != 0).collect(Collectors.toList()));
+				if(emailReminder.getScenarionName().equalsIgnoreCase("employeeholiday")) {
+					model.addObject("Holiday", emailReminder);
+				}
+
+			}
+	   		model.setViewName("leavemanagement/emailReminderLeaveConfiguration");
+	   		model.addObject("sourceleadUrl", sourceleadUrl);
+	   		return model;
+	       }
+	    
+	    @RequestMapping(value = "/contractConfigureEmails")
+	   	public ModelAndView reminderContractsConfigureEmails(HttpServletRequest request) throws Exception {
+	   	    ModelAndView model = new ModelAndView();
+	   	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			//get contracts related reminders
+			List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByTabsIdAndOrgLocationId(16l , orgLocations.getId());
+			//model.addObject("emailReminderList", emailReminderList);
+			
+			for(EmailReminder emailReminder : emailReminderList) {
+				emailReminder.setEmailReminderHierarchyList(emailReminder.getEmailReminderHierarchyList().stream().filter(h->h.getStatus() != 0).collect(Collectors.toList()));
+				if(emailReminder.getScenarionName().equalsIgnoreCase("ApplicantJoining")) {
+					model.addObject("Contracts", emailReminder);
+				}
+			}
+	   		model.setViewName("contracts/contractConfigureEmails");
+	   		model.addObject("sourceleadUrl", sourceleadUrl);
+	   		return model;
+	       }
 }
