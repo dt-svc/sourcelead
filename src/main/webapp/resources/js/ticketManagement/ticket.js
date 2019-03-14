@@ -38,30 +38,28 @@ function getTicketManagementList() {
 		            text+= "      <td><div class='tblminwidth-150'>" + response.data[e].generatedId + "</div></td>";
 		            text+= "      <td><div class='tbldata-dotdot-vsm'><a href='/app/ticketSummary?uuid=" + response.data[e].uuid + "' title='" + response.data[e].title + "'>" + response.data[e].title + "</a></div></td>";
 		            /*text+= "     <td><div class='tbldata-dotdot-vsm'>" + response.data[e].ticketCategory + "</div></td>";*/
-		            text += "<td><select onChange='changeTicketStatus(this, \"" + response.data[e].id + "\")'>";
-		            for(var s in statusList) {
-		            	text += "<option data-comment=" + statusList[s].commentRequired + " value='" + statusList[s].id + "' " + (statusList[s].name === response.data[e].ticketStatus ? "selected" : "") + ">" + statusList[s].name + "</option>";
-		            }
-		            text += "</select></td>";
 		            /*text+= "     <td><div class='tbldata-dotdot-vsm'>" + response.data[e].ticketStatus + "</div></td>";*/
-		            text+= "   	<td><div class='tblminwidth-75' style='color:" + (response.data[e].ticketPriorityTextColor != null && response.data[e].ticketPriorityTextColor !== "" ? response.data[e].ticketPriorityTextColor : "") + "'>" + (response.data[e].ticketPriorityImage !== null && response.data[e].ticketPriorityImage !== "" ? "<img src=\"" + response.data[e].ticketPriorityImage + "\" style='height:20px;' class='mr10'/>" : "") + response.data[e].ticketPriority + "</div></td>";
+		            text+= "   	<td><div class='tblminwidth-75' style='color:" + (response.data[e].ticketPriorityTextColor != null && response.data[e].ticketPriorityTextColor !== "" ? response.data[e].ticketPriorityTextColor : "") + "'>" + (response.data[e].ticketPriorityImage !== null && response.data[e].ticketPriorityImage !== "" ? "<div class='priorityImage pull-left mr10'><img src=\"" + response.data[e].ticketPriorityImage + "\" class='mr10'/></div>" : "<div class='blank-div mr10'></div>") + "<div class='pull-left'>" + response.data[e].ticketPriority + "</div></div></td>";
 		            text+= "    <td><div class='tbldata-dotdot-vsm'>" + response.data[e].createdBy + "</div></td>";
 		            var assignTo = "";
 					for(var a in response.data[e].assignedTo) {
 						assignTo += (assignTo === "" ? "" : ",") + response.data[e].assignedTo[a];
 					}
 					text += "    <td><div class='tbldata-dotdot'>" + (assignTo === "" ? "--" : assignTo) + "</div></td>";
+					text += "<td><select class='sel' onChange='changeTicketStatus(this, \"" + response.data[e].id + "\", \"" + response.data[e].ticketStatusId + "\")'>";
+					for(var s in statusList) {
+						text += "<option data-comment=" + statusList[s].commentRequired + " value='" + statusList[s].id + "' " + (statusList[s].name === response.data[e].ticketStatus ? "selected" : "") + ">" + statusList[s].name + "</option>";
+					}
+					text += "</select></td>";
 		            text+= "      <td>";
 					text+= "		  <ul class=list-inline list-unstyled'>";
 					text+= "			  <li><i class='fa fa-pencil cursorPointer' onClick='editTicketManagement(\"" + response.data[e].uuid + "\");'></i></li>";
-					text+= "		  <li><i class='fa fa-trash cursorPointer' onclick='showDeletePopup("+response.data[e].id+", 1);'></i></li>";
+					text+= "		  <li><i class='fa fa-trash cursorPointer' onclick='showDeletePopup(" + response.data[e].id + ", 0);'></i></li>";
 					text+= "	  </ul>";
 					text+= "		</td>";
 		            text+= "   </tr>";
 		    		$("#ticketManagementList").append(text);
 				}
-			} else {
-				alert("Empty list returned....");
 			}
 			ticketManagementListPagination();
 		} else if (response.indexOf('Sign In') !== -1) {
@@ -112,29 +110,40 @@ function ticketManagementListPagination(){
 function editTicketManagement(uuid) {
 	location.href = sourceleadUrl + "/editTicket?uuid=" + uuid;
 }
-
-function changeTicketStatus(ele, ticketId) {
-	document.getElementById("ticketStatusForm").reset();
+var activeElement = null, previousStatusId = "";
+function changeTicketStatus(ele, ticketId, previousStatus) {
+	activeElement = ele;
+	previousStatusId = previousStatus;
 	var statusId = $(ele).val();
 	var commentRequired = $(ele).find(':selected').data("comment");
 	if(commentRequired) {
-		showChangeStatusPopup(ticketId, statusId);
+//		showChangeStatusPopup(ticketId, statusId);
+		document.getElementById("ticketStatusForm").reset();
+		$("#confirmStatusWithCommentId").data("ticket_id", ticketId);
+		$("#confirmStatusWithCommentId").data("status_id", statusId);
+		$("#changeStatusPopupWithComment").slideDown(200);
 	} else {
-		changeTicketStatusFinal(false, ticketId, statusId);
+//		changeTicketStatusFinal(false, ticketId, statusId);
+		$("#confirmStatusWithoutCommentId").data("ticket_id", ticketId);
+		$("#confirmStatusWithoutCommentId").data("status_id", statusId);
+		$("#changeStatusPopupWithoutComment").slideDown(200);
 	}
+	$(".mask").fadeIn(200);
 }
 
 function changeTicketStatusFinal(popupFlag, ticketId, statusId) {
 	var comment = "";
 	var flag = !popupFlag ? true : false;
 	if(popupFlag && $('#ticketStatusForm').validate(false, validationSettings)) {
-		ticketId = $("#confirmStatusId").data("ticket_id");
-		statusId = $("#confirmStatusId").data("status_id");
+		ticketId = $("#confirmStatusWithCommentId").data("ticket_id");
+		statusId = $("#confirmStatusWithCommentId").data("status_id");
 		comment = $("#statusComment").val();
 		flag = true;
+	} else {
+		ticketId = $("#confirmStatusWithoutCommentId").data("ticket_id");
+		statusId = $("#confirmStatusWithoutCommentId").data("status_id");
 	}
 	if(flag) {
-		alert(ticketId + " : " + statusId + (comment ? " : " + comment : ""));
 		$.post(sourceleadUrl + "/changeTicketStatusType?ticketId="+ ticketId + "&statusId=" + statusId + "&comment=" + comment, function(response) {
 			if (response && response.response === "INVALID_DATA") {
 				showError(response.responseMessage);
@@ -142,8 +151,8 @@ function changeTicketStatusFinal(popupFlag, ticketId, statusId) {
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
 				if(response.object === true) {
-					closeChangeStatusPopup();
-					getTicketManagementList();
+					closeChangeStatusPopup(false);
+					location.reload();
 				}
 			} else if (response.indexOf('Sign In') !== -1) {
 				location.replace(sourceleadUrl);
@@ -154,45 +163,34 @@ function changeTicketStatusFinal(popupFlag, ticketId, statusId) {
 	}
 }
 
-function showChangeStatusPopup(ticketId, statusId) {
-	$("#confirmStatusId").data("ticket_id", ticketId);
-	$("#confirmStatusId").data("status_id", statusId);
-	$("#changeStatusPopup").slideDown(200);
-	$(".mask").fadeIn(200);
-}
-
-function closeChangeStatusPopup() {
-	$("#changeStatusPopup").slideUp(200);
+function closeChangeStatusPopup(cancelFlag) {
+	if(cancelFlag) {
+		$(activeElement).val(previousStatusId);
+	}
+	$("#changeStatusPopupWithoutComment").slideUp(200);
+	$("#changeStatusPopupWithComment").slideUp(200);
 	$(".mask").fadeOut(200);
 }
 
 function showDeletePopup(id, status) {
-	$("#confirmId").data("id", id);
-	$("#confirmId").data("status", status);
-	var name = $("#changeStatusHeading").data("name");
-	$("#changeStatusHeading").html("Are are sure you want to " + (status === 0 ? "disable " : "enable ") + name +"?");
-	$("#changeStatusPopup").slideDown(200);
+	$("#confirmDeleteId").data("id", id);
+	$("#confirmDeleteId").data("status", status);
+	$("#deletePopup").slideDown(200);
 	$(".mask").fadeIn(200);
 }
 
-function closeDeletePopup() {
-	$("#changeStatusPopup").slideUp(200);
-	$(".mask").fadeOut(200);
-}
-
-function changeTicketManagementStatus(ticketId) {
-	var id = $("#confirmId").data("id");
-	var status = $("#confirmId").data("status");
-	$.post(sourceleadUrl + "/changeTicketManagementStatusDataById?id="+ id + "&status=" + status, function(response) {
+function deleteTicket() {
+	var id = $("#confirmDeleteId").data("id");
+	var status = $("#confirmDeleteId").data("status");
+	$.post(sourceleadUrl + "/changeTicketManagementStatus?ticketId=" + id + "&status=" + status, function(response) {
 		if (response && response.response === "INVALID_DATA") {
 			showError(response.responseMessage);
 		} else if (response.response === "AWKWARD") {
 			location.href = "/errorPage";
 		} else if (response.response === "SUCCESS") {
 			if(response.object === true) {
-				//alert(response.responseMessage);
 				closeDeletePopup();
-				getTicketManagementList();
+				location.reload();
 			}
 		} else if (response.indexOf('Sign In') !== -1) {
 			location.replace(sourceleadUrl);
@@ -200,7 +198,114 @@ function changeTicketManagementStatus(ticketId) {
 			showError("Operation failed, please try again");
 		}
 	});
-	
+}
+
+function closeDeletePopup() {
+	$("#deletePopup").slideUp(200);
+	$(".mask").fadeOut(200);
+}
+
+/* ============================ Add Ticket ================================= */
+function getTicketManagementDescription(ticketUUID){
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getTicketManagementDescription?${_csrf.parameterName}=${_csrf.token}&uuid="+ticketUUID, 	   
+		    success: function(result) {
+		    	$('#txtEditor').html(result.description);
+		    	$('.Editor-editor').html(result.description);
+		    }
+    });
+}
+
+function getCategoryAssignToUsers() {
+	$('#assignedTo').val('').trigger('chosen:updated');
+	var categoryId = $("#ticketCategory").val();
+	$.post(sourceleadUrl + "/getCategoryAssignToListByTicketCategoryId?ticketCategoryId=" + categoryId, {}, function(response) {
+		if (response && response.response === "INVALID_DATA") {
+			showError(response.responseMessage);
+		} else if (response.response === "AWKWARD") {
+			location.href = "/errorPage";
+		} else if (response.response === "SUCCESS") {
+			for(var e in response.data) {
+				$('#assignedTo').find("option[value='" + response.data[e].id + "']").prop("selected", true).end().trigger('chosen:updated');
+			}
+			$("#assignedTo").trigger('chosen:update');
+		} else if (response.indexOf('Sign In') !== -1) {
+			location.replace(sourceleadUrl);
+		} else {
+			showError("Operation failed, please try again");
+		}
+	});
+}
+
+function validateTicketId(ticketId) {
+	 var generatedId = $("#ticketId").val(); 
+	 if(ticketId !=null && ticketId !='' && ticketId !='undefined') {
+		 generatedId = ticketId;
+	 }
+	 if(generatedId != null && generatedId != "") {
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateTicketId?generatedId="+generatedId, 
+		        success: function(data) {
+		        	if(data == true){
+		        		$('#ticketDivId').find('p.jquery_form_error_message').remove();
+		        		$("input#ticketId").after ("<p class='jquery_form_error_message'>"+generatedId+" is Already Existed</span>");
+						document.getElementById("ticketId").setAttribute('record-exist','yes');
+						document.getElementById("ticketId").setAttribute('record-exist-errorMsg',generatedId+' is Already Existed'); 
+		        	} else {
+		        		$('input#ticketId').removeAttr( "record-exist record-exist-errormsg"); 
+		        		$('#ticketDivId').find('p.jquery_form_error_message').remove(); 
+		        		$("#ticketId").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+}
+
+function saveTicket() {
+	var ee = $("#txtEditor").val($('.Editor-editor').html()); 
+	if ($('#addTicketManagementForm').validate(false, validationSettings)) {
+		if ($("#notifyTo").val() !== "") {
+			for (var e in $("#notifyTo").val().split(",")) {
+				if (!jQueryFormUtils.validateEmail($("#notifyTo").val().split(",")[e].replace(/\s+/g, ''))) {
+					flag = false;
+					$("#notifyTo").parent().append("<p class='jquery_form_error_message'>Enter valid email id</p>");
+					return;
+				}
+			}
+		}
+		var formData = getFormData1("addTicketManagementForm");
+		$.ajax({
+			 type : "POST",
+			 data: formData,
+		     processData: false,
+		     contentType:false, 
+		     url : sourceleadUrl+"/saveTicket",
+			 success : function(response) {
+		  		if (response && response.response === "INVALID_DATA") {
+					showError(response.responseMessage);
+				} else if (response.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (response.response === "SUCCESS") {
+						$(".success_pop span").html("Ticket saved successfully...");
+						$(".success_pop").show();
+						setTimeout(function() {
+							location.replace(sourceleadUrl+"/ticketManagementList");
+							/* getTicketManagementList(); */
+							$(".success_pop").hide();
+				 		}, 1000);  
+				} else if (response.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
+			},
+		});
+		return true;
+	} else {
+		return false;
+	}
 }
 
 //	================================	TicketComment		==============================================
@@ -231,10 +336,7 @@ function getTicketCommetList(ticketId) {
                     text += "  </div>";
 		    		$("#ticketCommentListDivId").append(text);
 				}
-			} else {
-				alert("Empty list returned....");
 			}
-			
 		} else if (response.indexOf('Sign In') !== -1) {
 			location.replace(sourceleadUrl);
 		} else {
@@ -253,7 +355,6 @@ function saveTicketComment(ticketId){
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
 				if(response.object === true) {
-					alert(response.responseMessage);
 					getTicketCommetList(ticketId);
 					closeTicketComment();
 				}

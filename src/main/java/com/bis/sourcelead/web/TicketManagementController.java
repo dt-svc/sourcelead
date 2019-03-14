@@ -74,9 +74,9 @@ public class TicketManagementController {
 	public ModelAndView ticketManagementList(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		if(user != null) {
-			model.addObject("statusList",ticketManagementService.getTicketStatusListByOrgLocationId(orgLocations.getId(), 1));
+//			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+//			model.addObject("statusList",ticketManagementService.getTicketStatusListByOrgLocationId(orgLocations.getId(), 1));
 			model.addObject("sourceleadUrl", sourceleadUrl);
 		}
 		model.setViewName("ticketManagement/ticketManagementList");
@@ -89,12 +89,12 @@ public class TicketManagementController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if(user != null) {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			model.addObject("ticketTypeList", ticketManagementService.getTicketTypeListByOrgLocationId(orgLocations.getId(), 1));
+			model.addObject("ticketTypeList", ticketManagementService.getTicketTypeListByOrgLocationId(orgLocations.getId(), 1, null));
 			model.addObject("ticketCategoryList", ticketManagementService.getTicketCategoryListByOrgLocationId(orgLocations.getId(),1));
 			model.addObject("ticketPriorityList", ticketManagementService.getTicketPriorityListByOrgLocationId(orgLocations.getId(),1));
 			model.addObject("ticketStatusList", ticketManagementService.getTicketStatusListByOrgLocationId(orgLocations.getId(),1));
 			if(uuid != null && !uuid.isEmpty()) {
-				model.addObject("ticketSummary", ticketManagementService.getTicketSummaryByUUID(uuid, user.getId(), orgLocations.getId(), orgLocations.getDateFormat(), true));
+				model.addObject("ticketSummary", ticketManagementService.getTicketSummaryByUUID(uuid, orgLocations.getId(), orgLocations.getDateFormat(), true));
 			}
 			model.setViewName("ticketManagement/addTicketManagement");
 			List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
@@ -110,7 +110,8 @@ public class TicketManagementController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if(user != null) {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			model.addObject("ticketSummary", ticketManagementService.getTicketSummaryByUUID(uuid, user.getId(), orgLocations.getId(), orgLocations.getDateFormat(), false));
+			model.addObject("statusList", ticketManagementService.getTicketStatusListByOrgLocationId(orgLocations.getId(), -1));
+			model.addObject("ticketSummary", ticketManagementService.getTicketSummaryByUUID(uuid, orgLocations.getId(), orgLocations.getDateFormat(), true));
 			//model.addObject("ticketComment", ticketManagementService.getTicketCommentByTicketId(ticketCommentDTO,ticketId,user.getId(),orgLocations.getId()));
 			model.setViewName("ticketManagement/ticketManagementSummary");
 			model.addObject("sourceleadUrl", sourceleadUrl);

@@ -141,7 +141,7 @@
 		<div class="row">
 			<div class="col-md-3">
 		<div class="featuresImages">
-		<img src="/resources/static-web/images/Integrated.png" alt="Image" class="animated bounceIn">
+		<img src="/resources/static-web/images/integrated.png" alt="Image" class="animated bounceIn">
 	</div>
 	</div>
 	<div class="col-md-9">

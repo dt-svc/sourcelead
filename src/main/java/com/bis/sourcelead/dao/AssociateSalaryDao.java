@@ -12,6 +12,7 @@ import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 
 public interface AssociateSalaryDao {
 
@@ -46,5 +47,6 @@ public interface AssociateSalaryDao {
 	List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId,String payType);
 
 	AssociateSalary getAssociateSalaryBySalaryId(Long salaryId);
+
 
 }

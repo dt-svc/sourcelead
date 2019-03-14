@@ -20,7 +20,7 @@ public interface TicketManagementService {
 
 	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations();
 
-	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status);
+	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue);
 
 	public boolean saveTicketType(TicketTypeDTO ticketTypeDTO, long userId, OrgLocations loginOrgLocation);
 
@@ -64,9 +64,9 @@ public interface TicketManagementService {
 
 	public Boolean changeTicketStatusDataById(long id, int status, OrgLocations orgLocation);
 
-	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId, long userId, int status, String dateFormat);
+	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId, long userId, int status, String dateFormat, String userRole);
 
-	public TicketDTO getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId, String dateFormat, boolean includeAttachments);
+	public TicketDTO getTicketSummaryByUUID(String uuid, Long orgLocationId, String dateFormat, boolean includeAttachments);
 
 	public List<TicketCommentDTO> getTicketCommentListByTicketId(Long ticketId, long userId, Long orgLocationId, String dateFormat);
 	
@@ -83,6 +83,8 @@ public interface TicketManagementService {
 	public Boolean validateTicketId(String ticketSno, Long orgLocationsId);
 	
 	public List<UserDTO> getCategoryAssignToListByTicketCategoryId(long ticketCategoryId, long userId, Long orgLocationId);
+
+	public boolean changeTicketManagementStatus(long ticketId, int status);
 
 	
 
