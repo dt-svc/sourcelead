@@ -102,7 +102,7 @@ public class DocumentSignController {
 			byte[] fileBytes = null;
 			if(Constants.CUSTOM_TYPE.equalsIgnoreCase(contract.getTypeOfContract())) {
 				String path =StringUtils.removeEnd(staticPath, "/slead-static");
-				fileBytes = CommonUtil.readBytesFromFile(path+contract.getFileURL());
+				fileBytes = CommonUtil.readBytesFromFile(path+contract.getParentContractId().getFileURL());
 			}else{
 				fileBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,contract.getOrgLocationId(),contract.getOrgLocationId().getOrg());
 			}
