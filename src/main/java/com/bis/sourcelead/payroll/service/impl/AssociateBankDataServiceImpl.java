@@ -1,6 +1,12 @@
 package com.bis.sourcelead.payroll.service.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.plexus.util.StringUtils;
@@ -8,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.Response;
@@ -40,6 +45,7 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 	
 	@Autowired
 	private CandidateDao candidateDao;
+	
 	
 	@Override
 	public Response<AssociateBankDataDTO> saveAssociateBankData(AssociateBankDataDTO associateBankDataDTO, OrgLocations orgLocation, User loginUser)
