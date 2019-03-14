@@ -52,6 +52,8 @@
 	</form:form>
 </div>
 
+<script type="text/javascript" src="/resources/js/xlsBulkUpload.js"></script>
+
 <script type="text/javascript">
 	function saveCandiateDataFields() {
 		if ($('#dataMigration_form').validate(false, validationSettings)) {
@@ -117,6 +119,8 @@ function storeCandidateBulkUpload(couchbaseQueueKey){
 	    	type: "POST",
 	        url: sourceleadUrl+"/storeCandidateBulkUpload?couchbaseQueueKey="+couchbaseQueueKey, 
 	        success: function(result) {
+	        	var dateFormat ='${SourceLeadWeb_dateFormat}';	
+	        	xlsupload.getFailureUploadStats("Candidates",dateFormat);
 	        },
 	    });
 }

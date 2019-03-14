@@ -2,18 +2,15 @@ package com.bis.sourcelead.db;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Queue;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import org.json.JSONArray;
 import org.json.simple.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.json.simple.parser.JSONParser;
 
 import com.bis.sourcelead.couchbase.UserRoleSessionProfileDTO;
-import com.bis.sourcelead.service.CouchbaseClusterService;
-import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.couchbase.client.deps.com.fasterxml.jackson.databind.ObjectMapper;
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.CouchbaseCluster;
@@ -23,8 +20,6 @@ import com.couchbase.client.java.document.JsonDocument;
 import com.couchbase.client.java.document.json.JsonObject;
 import com.couchbase.client.java.env.CouchbaseEnvironment;
 import com.couchbase.client.java.env.DefaultCouchbaseEnvironment;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ConnectCouchbaseDB {
 	
@@ -71,11 +66,39 @@ public void ConnectCouchbase() throws IOException, SQLException {
 					}else {
 						System.out.println("document not retervied from couchbase");
 					}
-			} catch (JsonProcessingException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			 
 			 System.out.println("----Connecting to userProfile bkt ends-----");
+		
+		
+/*		String jsonString = "[{\"documentId\":\"jquGZds1XmhFOs0\",\"errorMsg\":{\"firstName\":\"First Name field is missing\",\"mobilePhone\":\"Invalid Mobile Phone\",\"email\":\"Invalid Email\"}},{\"documentId\":\"E00j1wVZkiXw7r9\",\"errorMsg\":{\"mobilePhone\":\"Invalid Mobile Phone\",\"email\":\"Invalid Email\"}},{\"documentId\":\"KTRDDuHb6WktKgZ\",\"errorMsg\":{\"email\":\"Candidate already existed\"}}]";
+		JSONArray jsonArray = new JSONArray(jsonString);
+		 for (int i = 0; i < jsonArray.length(); i++) {
+			 JSONParser parser = new JSONParser();
+			 JSONObject jsonObjVal = (JSONObject) parser.parse(jsonArray.get(i).toString());
+			 for (Object okey : jsonObjVal.keySet()) {
+				 String keyStr = (String) okey;
+				 if(!keyStr.equalsIgnoreCase("errorMsg")) {
+					 String keyvalue = jsonObjVal.get(keyStr).toString();
+					 System.out.println(keyvalue);
+				 }
+				
+				 if(keyStr.equalsIgnoreCase("errorMsg")) {
+					 String keyvalue = jsonObjVal.get(keyStr).toString();
+					 JSONObject jsonObjErrorVal = (JSONObject) parser.parse(keyvalue);
+					 for (Object errorkey : jsonObjErrorVal.keySet()) {
+						 String errkeyStr = (String) errorkey;
+						 String errkeyvalue = jsonObjErrorVal.get(errkeyStr).toString();
+						 System.out.println(errkeyvalue);
+					 }
+				 }
+				
+			 }
+         }
+		*/
+		
 		
 	}catch(Exception e){
 		e.printStackTrace();

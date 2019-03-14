@@ -31,6 +31,15 @@
 </style>
 
 
+<script type="text/javascript">
+window.onload = function () {
+	var dateFormat ='${SourceLeadWeb_dateFormat}';	
+	xlsupload.getFailureUploadStats("Candidates",dateFormat);
+};
+		
+</script>
+
+
 <section class="content-wraper">
 	<section class="content-header clearfix">
 	
@@ -146,20 +155,21 @@
 		</div>
 		</form:form>
 	</div>
+	
+	<div class="clearfix">
 	<div id="dataFieldsDiv" style="display: none"></div>
 	<input type="hidden" id="inviteEmail" name="inviteEmail" value="N"/>
 	
 	<div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop">
-		<h5 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Recent Uploads History</h5>
+		<h5 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Recent Failure Uploads History</h5>
 	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table>
-	    	<input type="hidden"  id="uploadedPercentage" value="0">
 		</div>	  
 </section>
 
 <div class="success_pop" id="selector11" style="display: none;">
     <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 </div>
-<script type="text/javascript" src="/resources/js/xlsupload.js"></script>
+<script type="text/javascript" src="/resources/js/xlsBulkUpload.js"></script>
 
 <script>
 function checkInviteEmail(){
