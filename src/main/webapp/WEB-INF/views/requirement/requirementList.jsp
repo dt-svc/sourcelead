@@ -698,7 +698,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 
 </script>
 <!-- advanced search popup Start  Block -->
-<form:form id="requirement_form" name="requirement_form" enctype='multipart/form-data'>
+<form id="requirement_form" name="requirement_form" enctype='multipart/form-data'>
 <div class="cand-advsrch-popup advancedsearch-popup reqadvsrch candAdvsrch ">
 <h5 class="headerAdsrch">Advanced Search
 	<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
@@ -935,7 +935,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 		</div>
 	</div>
 </div>
-</form:form>
+</form>
 <!-- advanced search End Block -->
 
 <!-- advanced filter code is below -->
