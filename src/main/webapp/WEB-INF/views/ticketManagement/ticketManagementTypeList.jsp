@@ -88,16 +88,5 @@
 	$(document).ready(function() {
 		getTicketTypeList();
 	});
-	$(function() {
-		/* $("#addPop").click(function() {
-			$(".mask, #modalTasktype").fadeIn();
-		});
-		$(".popClose").click(function() {
-			$(".mask, #modalTasktype").fadeOut();
-		}); */
-	});
 </script>
-
- <jsp:include page="../masterFooter.jsp" />	
-
- 
+<jsp:include page="../masterFooter.jsp" />	

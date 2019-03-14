@@ -611,7 +611,6 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 	}
 
 	@SuppressWarnings("unchecked")
@@ -730,5 +729,29 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 			e.printStackTrace();
 		}
 		return null;
-	}	
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Long> getTicketCategoryAssignToIdList(long ticketCategoryId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select tcat.user.id from TicketCategoryAssignTo tcat where tcat.ticketCategory.id=:ticketCategoryId";
+			return session.createQuery(query).setLong("ticketCategoryId", ticketCategoryId).list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Override
+	public void deleteTicketCategoryAssignTo(TicketCategoryAssignTo ticketCategoryAssignTo) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.delete(ticketCategoryAssignTo);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
 }
