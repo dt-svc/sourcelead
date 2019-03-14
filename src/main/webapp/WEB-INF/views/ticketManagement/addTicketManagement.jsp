@@ -18,11 +18,8 @@
 		<div class="pull-left">
 			<h2>Add Ticket Management</h2>
 		</div>
-		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo;
-			<a href="<c:url value='${appPath}/ticketManagementList'/>">Ticket Management</a>&raquo; Add Ticket Management
-		</div>
-	</section>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/ticketManagementList'/>">Ticket List</a> &raquo; ${ticketSummary != null ? "Edit" : "Add"} Ticket</div>
+s	</section>
 	<form id="addTicketManagementForm">
 		<input type="hidden" name="id" value="${ticketSummary != null ? ticketSummary.id : 0}"/>
 		<div class="content-area content-new clearfix">

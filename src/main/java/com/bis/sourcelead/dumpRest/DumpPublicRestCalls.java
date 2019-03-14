@@ -220,7 +220,19 @@ public class DumpPublicRestCalls {
 		}
 		return  count+" Records updated SuccessFully";
 	}
-	
+	@RequestMapping(value = "/ws/updateAllExpensesSubmittedDate", method = RequestMethod.GET)
+	@ResponseBody
+	public String updateAllExpensesSubmittedDate() throws Exception {
+		List<Expenses> expensesList = expensesService.getAllExpenses();
+		int count =0;
+		if(expensesList != null && !expensesList.isEmpty()) {
+			for(Expenses expenses :expensesList) {
+					expenses.setSubmittedDate(expenses.getUpdatedDate());
+					addExpensesDao.storeAddExpensesData(expenses);
+			}
+		} 
+		return  count+" Records updated SuccessFully";
+	}
 	/*Expenses expenses = expensesDao.getExpenseById(expenseId);
 	List<String> expenseStatus = new ArrayList<>();
 	expenseStatus =   expenses.getApproverHierarchyList().stream().map(hierarchy -> hierarchy.getExpenseApprovalStatus().getValue()).collect(Collectors.toList());
@@ -712,6 +724,7 @@ public class DumpPublicRestCalls {
 	@RequestMapping(value="/ws/updateDashboardItemCandidateForInvoice")
 	@ResponseBody
 	public String updateDashboardItemCandidateForInvoice(HttpServletRequest request) {
+		int result = 0;
 		try {
 			System.out.println("-------- Initiated dashboard items updation --------");
 			String itemName = "Candidates for Invoice";
@@ -720,13 +733,13 @@ public class DumpPublicRestCalls {
 			rolesList.add("ROLE_ADD_INVOICE");
 			rolesList.add("ROLE_VIEW_REQUIREMENT");
 
-			int result = userService.addItemToDashboard(itemName, itemSize, rolesList);
+			result = userService.addItemToDashboard(itemName, itemSize, rolesList);
 			System.out.println("-------- Completed dashboard items updation --------");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "Exception occured while updating dashboard items";
 		}
-		return "Successfully updated 'Candidate For Invoice' in dashboard items";
+		return "Successfully updated " + result + " records for 'Candidate For Invoice' in dashboard items";
 	}
 	
 }

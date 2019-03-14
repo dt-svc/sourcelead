@@ -87,10 +87,10 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status) {
+	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
 		List<TicketTypeDTO> ticketTypeDTOList = new LinkedList<>();
 		try {
-			List<TicketType> ticketTypeList = ticketManagementDao.getTicketTypeListByOrgLocationId(orgLocationId, status);
+			List<TicketType> ticketTypeList = ticketManagementDao.getTicketTypeListByOrgLocationId(orgLocationId, status, searchValue);
 			if (ticketTypeList != null && !ticketTypeList.isEmpty()) {
 				for (TicketType ticketType : ticketTypeList) {
 					TicketTypeDTO ticketTypeDTO = new TicketTypeDTO();
@@ -167,11 +167,10 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketCategoryDTO> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status) {
+	public List<TicketCategoryDTO> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
 		List<TicketCategoryDTO> ticketCategoryDTOList = new LinkedList<>();
 		try {
-			List<TicketCategory> ticketCategoryList = ticketManagementDao
-					.getTicketCategoryListByOrgLocationId(orgLocationId, status);
+			List<TicketCategory> ticketCategoryList = ticketManagementDao.getTicketCategoryListByOrgLocationId(orgLocationId, status, searchValue);
 			if (ticketCategoryList != null && !ticketCategoryList.isEmpty()) {
 				for (TicketCategory ticketCategory : ticketCategoryList) {
 					TicketCategoryDTO ticketCategoryDTO = new TicketCategoryDTO();
@@ -300,10 +299,10 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketPriorityDTO> getTicketPriorityListByOrgLocationId(Long orgLocationId,int status) {
+	public List<TicketPriorityDTO> getTicketPriorityListByOrgLocationId(Long orgLocationId,int status, String searchValue) {
 		List<TicketPriorityDTO> ticketPriorityDTOList = new LinkedList<>();
 		try {
-			List<TicketPriority> ticketPriorityList = ticketManagementDao.getTicketPriorityListByOrgLocationId(orgLocationId,status);
+			List<TicketPriority> ticketPriorityList = ticketManagementDao.getTicketPriorityListByOrgLocationId(orgLocationId, status, searchValue);
 			if (ticketPriorityList != null && !ticketPriorityList.isEmpty()) {
 				for (TicketPriority ticketpriority : ticketPriorityList) {
 					TicketPriorityDTO ticketPriorityDTO = new TicketPriorityDTO();
@@ -396,10 +395,10 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketStatusDTO> getTicketStatusListByOrgLocationId(Long orgLocationId, int status) {
+	public List<TicketStatusDTO> getTicketStatusListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
 		List<TicketStatusDTO> ticketStatusDTOList = new LinkedList<>();
 		try {
-			List<TicketStatus> ticketStatusList = ticketManagementDao.getTicketStatusListByOrgLocationId(orgLocationId, status);
+			List<TicketStatus> ticketStatusList = ticketManagementDao.getTicketStatusListByOrgLocationId(orgLocationId, status, searchValue);
 			if (ticketStatusList != null && !ticketStatusList.isEmpty()) {
 				for (TicketStatus ticketStatus : ticketStatusList) {
 					TicketStatusDTO ticketStatusDTO = new TicketStatusDTO();
@@ -487,6 +486,9 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 				ticketManagement.setUpdatedBy(user);
 				ticketManagement.setUpdatedDate(new Date());
 			} else {
+				if (ticketManagementDao.validateTicketId(ticketDTO.getGeneratedId(), orgLocations.getId())) {
+					return false;
+				}
 				ticketManagement = new Ticket();
 				ticketManagement.setCreatedBy(user);
 				ticketManagement.setCreatedDate(new Date());
@@ -624,6 +626,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 					ticketDTO.setUuid(ticketManagement.getUuid());
 					ticketDTO.setTicketType(ticketManagement.getTicketType().getName());
 					ticketDTO.setTicketCategory(ticketManagement.getTicketCategory().getName());
+					ticketDTO.setTicketStatusId(ticketManagement.getTicketStatus().getId());
 					ticketDTO.setTicketStatus(ticketManagement.getTicketStatus().getName());
 					ticketDTO.setTicketPriority(ticketManagement.getTicketPriority().getName());
 					ticketDTO.setTicketPriorityTextColor(ticketManagement.getTicketPriority().getColorCode());
