@@ -325,7 +325,7 @@ function getAllRelationssByOrgLocation(){
 		        	$('#attorneyId').empty();
 		            for(var i=0;i<json.length;i++){
 		            var opt = json[i];
-		            $('#attorneyId').append('<option attrval='+opt.immigrationRelatedId+' value='+opt.orgName+' >'+opt.orgName+'</option>');
+		            $('#attorneyId').append('<option attrval='+opt.immigrationRelatedId+' value="'+opt.orgName+'" >'+opt.orgName+'</option>');
 		            }
 		            $('#attorneyId').trigger("chosen:updated");
 		        }
@@ -625,9 +625,13 @@ function resetImmForm(){
 	 $("#petitionStatus").trigger("chosen:updated"); 
 	 $("#attorneyId").val('');
 	 $("#attorneyId").trigger("chosen:updated"); 
-	 $("#dateFrequency").val('');
+	 //By default date filter shows This year or current year
+	 $("#dateFrequency").val('YTD');
+	 $('#custFromDateDiv').find('p.jquery_form_error_message').remove(); 
 	 $("#custFromDate").val('');
+	 $("#custToDateDiv").find('p.jquery_form_error_message').remove();
 	 $("#custToDate").val('');
+	 $("#custom-select").hide();
 }
 </script>
 <!-- =============== Pdf and  Excel Export by prasad k =================== -->

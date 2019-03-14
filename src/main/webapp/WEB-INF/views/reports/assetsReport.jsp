@@ -311,17 +311,7 @@ function dynamicAssetReportPagination(){
 <script>
 
 function aseetsDataExport(type){
-	 /* var formData = getFormData1("assetForm");
-	  $.ajax({
-           url: sourceleadUrl+"/getAssetsReportExport?&type="+type,
-           type: "POST",
-           data: formData,
-	        processData: false,
-	        contentType:false, 
-           success: function (data) {
-        	   alert(data)
-           }
-       }); */
+	
        var locationValue = sourceleadUrl+"/getAssetsReportExport?type="+type+"&fromDate=" + $("#fromDate").val() + "&toDate=" + $("#toDate").val() + "&dateType=" + $("[name='dateType']:checked").val();
        if($("#categoryId").val() !== null) {
        	locationValue += "&categories=" + $("#categoryId").val();

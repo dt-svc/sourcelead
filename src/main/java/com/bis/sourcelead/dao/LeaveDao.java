@@ -7,11 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.bis.sourcelead.dto.DayWiseLeaveReportDTO;
 import com.bis.sourcelead.dto.HrLeaveReportDTO;
-
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
@@ -24,8 +21,8 @@ import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
-import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PayrollLopHis;
 import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 
@@ -112,7 +109,6 @@ public interface LeaveDao {
 	 Set<PayrollLopHis> getLeaveByFrequency(Long candidateId, Date freqStartDate, Date freqEndDate, OrgLocations orgLocations, EmployeePayroll employeePayroll);
 	 
 	 Set<PayrollLopHis> getLeaveByFrequencyInd(Long candidateId, Date freqStartDate, Date freqEndDate, OrgLocations orgLocations, IndEmployeePayroll employeePayroll);
+
+    List<Leave> getAllLeavesByLocationIdAndStatusAndAppliedDate(Long locationId, String status, Date appliedDate);
 }
-
-
-

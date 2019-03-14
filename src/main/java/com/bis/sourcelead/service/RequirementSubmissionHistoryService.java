@@ -4,9 +4,11 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.OfferAcceptanceRateDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RecruiterJobsReportView;
 import com.bis.sourcelead.entity.RecruiterReportView;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -47,5 +49,12 @@ public interface RequirementSubmissionHistoryService {
 	List<RecruiterReportView> getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(Long orgLocationId, List<String> userCodeList ,String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception ;
 
 	public int updateSourceUserCodeForSubmissionHistory();
+	
+	public List<RecruiterJobsReportView> getSubmissionApplicantCountsForRecruiterJobreports(Long orgLocationId, User user,Date[] searchDates,Long requirementId) throws Exception;
+
+	
+	public ResponseList<OfferAcceptanceRateDTO> getOfferAcceptanceRateList(String userCode, long orgLocationId, String selectedClients, String filterType, String filteredDate);
+	
+	public ResponseList<OfferAcceptanceRateDTO> getOfferAcceptanceRateListForVendor(long orgLocationId, long orgRelationId, long spocId, String filterType, String filteredDate);
 
 }

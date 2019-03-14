@@ -50,11 +50,7 @@ public class AssociateSalaryIndDTO extends CommonDTO {
 	
 	private Long candidateId;
 	
-	/*private BigDecimal ctc;
-	
-	private BigDecimal fbp;
-	
-	private BigDecimal variablePay;*/
+	private String stopSalary;
 	
 	private Integer status;
 	
@@ -69,6 +65,8 @@ public class AssociateSalaryIndDTO extends CommonDTO {
   	private String updatedDate;
     
     private List<AssociateSalaryPayheadIndDTO> associateSalaryPayheadIndList;
+    
+    private Integer recordUpdatedCount;
 
 	public Long getId() {
 		return id;
@@ -230,6 +228,14 @@ public class AssociateSalaryIndDTO extends CommonDTO {
 		this.candidateId = candidateId;
 	}
 	
+	public String getStopSalary() {
+		return stopSalary;
+	}
+
+	public void setStopSalary(String stopSalary) {
+		this.stopSalary = stopSalary;
+	}
+
 	public Integer getStatus() {
 		return status;
 	}
@@ -284,6 +290,14 @@ public class AssociateSalaryIndDTO extends CommonDTO {
 
 	public void setAssociateSalaryPayheadIndList(List<AssociateSalaryPayheadIndDTO> associateSalaryPayheadIndList) {
 		this.associateSalaryPayheadIndList = associateSalaryPayheadIndList;
+	}
+
+	public Integer getRecordUpdatedCount() {
+		return recordUpdatedCount;
+	}
+
+	public void setRecordUpdatedCount(Integer recordUpdatedCount) {
+		this.recordUpdatedCount = recordUpdatedCount;
 	}
 
 }

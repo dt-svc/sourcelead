@@ -390,13 +390,13 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })*/
 	public List<ProjectTasks> addProjectTasksForLoginUserAndLeaveType(User user,Long orgLocationId,String leaveType,String billableType) throws Exception {
 		List<ProjectTasks> projectTaskList = new ArrayList<>();
-		Candidate candidate = candidateDao.findByCandidateEmail(user.getEmail(), orgLocationId);
+		/*Candidate candidate = candidateDao.findByCandidateEmail(user.getEmail(), orgLocationId);
 		if(candidate != null){
 			List<ProjectMembers> projectMembersList =  projectMembersDao.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocationId,candidate.getId());
 			if(projectMembersList != null && !projectMembersList.isEmpty()){
 				
 			}
-		}
+		}*/
 		
 		/*Session session = this.sessionFactory.getCurrentSession();
 		String query ="select count(*) from ProjectTasks pt where pt.projectId.id = :projectId ";

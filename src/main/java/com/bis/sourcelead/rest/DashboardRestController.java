@@ -67,7 +67,9 @@ import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementLocations;
+import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
+import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Tasks;
@@ -91,7 +93,9 @@ import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementLocationsService;
+import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
+import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TaskService;
@@ -102,6 +106,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.DashboardController;
@@ -180,6 +185,9 @@ public class DashboardRestController {
 	 RequirementOffersService requirementOffersService;
 	 
 	 @Autowired
+	 RequirementOfferHistoryService requirementOfferHistoryService;
+	 
+	 @Autowired
 	 private ExpensesApproverHierarchyService expensesApproverHierarchyService;
 	 
 	 @Autowired
@@ -200,6 +208,12 @@ public class DashboardRestController {
 	 @Autowired
 	 private InvoiceService invoiceService;
 	 
+	 @Autowired
+	 private ConversionUtil conversionUtil;
+	 
+	 @Autowired
+	 private RequirementRateSubmissionNegotiationService requirementRateSubmissionNegotiationService;
+	 
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 		}
@@ -211,13 +225,16 @@ public class DashboardRestController {
 	
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/getTimeSheetSubmissionStatus")
-	public TimeSheetSubmissionCount getTimeSheetSubmissionStatus(@RequestParam(value="timesheetType", required=false) String timesheetType,@RequestParam(value="timesheetCountType") String timesheetCountType,HttpServletRequest request) throws Exception {
+	public TimeSheetSubmissionCount getTimeSheetSubmissionStatus(@RequestParam(value="timesheetType", required=false) String timesheetType,@RequestParam(value="timesheetCountType", required=false) String timesheetCountType,HttpServletRequest request) throws Exception {
 
 	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Candidate candidate =(Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
+		if(StringUtils.isEmpty(timesheetCountType)) {
+			timesheetCountType = "All";
+		}
 		if("employes".equalsIgnoreCase(timesheetType)){
 			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId(),timesheetCountType,isGlobalAccess);
 		}else if("myTimesheets".equalsIgnoreCase(timesheetType)){
@@ -1645,8 +1662,10 @@ public class DashboardRestController {
                         String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
                         Integer result = 0;
                         try {
+                        	if(StringUtils.isNotBlank(payTerm)){
                             payTerm=payTerm.replaceAll("\\D", "");
                             result = Integer.parseInt(payTerm);
+                        	}
                         } catch (Exception e) {
                             result = 0;
                         }
@@ -1658,7 +1677,7 @@ public class DashboardRestController {
 						rshDTO.setJobRate(rsh.getSubmissionId().getRequirement().getJobRate().toString());
 					}
 					
-					if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null &&  rsh.getSubmissionId().getJoinedDate()  != null){
+					if (rshDTO.getPayTerm() > 0 && rsh.getSubmissionId().getJoinedDate() != null) {
 //						Integer result = Integer.parseInt(rshDTO.getPayOutPeriod());
 						if(rshDTO.getPayTerm() != 0){
 							Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), rshDTO.getPayTerm());
@@ -1744,7 +1763,32 @@ public class DashboardRestController {
 					rshDTO.setSubmittedBy(rsh.getCreatedUser());
 		//					}
 						
+					/*RequirementRateSubmissionNegotiation rateNegotiation = requirementRateSubmissionNegotiationService.getRequirementRateSubmissionByMaxId(rsh.getSubmissionId().getId());
+					if(rateNegotiation !=null && rateNegotiation.getCurrentRate()!=null){
+						float currentRate = conversionUtil.rateConvertToYear(rateNegotiation.getCurrentRate(),rateNegotiation.getCurrentRateType(),loginOrgLocations);
+						float expectedRate = conversionUtil.rateConvertToYear(rateNegotiation.getExpectedRate(),rateNegotiation.getExpectedRateType(),loginOrgLocations);
+						float finalRatePerYear = expectedRate-currentRate;
+						rshDTO.setMarginRateYearly(String.format("%.3f", Float.valueOf(finalRatePerYear)));
+					}*/
 					
+					
+					List<RequirementOfferHistory> offerHistorList = requirementOfferHistoryService.getRequirementInternalAndIsClientOfferssBySubmissionIdAndOrgLocationsId(rsh.getSubmissionId().getId(), loginOrgLocations.getId());
+					if(offerHistorList != null && !offerHistorList.isEmpty()) {
+						float clientOfferRate = 0;
+						float internalOfferRate = 0;
+						for(RequirementOfferHistory roh : offerHistorList) {
+//							System.out.println("OfferID:"+roh.getOfferId().getId() + " SubmissionID:"+roh.getSubmissionId().getId()+ " Amount:" + roh.getOfferId().getAmount() + " Status:" + roh.getOfferId().getOfferStatus());
+							if(roh.getOfferId().getOfferStatus().equalsIgnoreCase("CLIENT_OFFERACCEPTED")) {
+								clientOfferRate = conversionUtil.rateConvertToYear(roh.getOfferId().getAmount(),roh.getOfferId().getPaymentMode(),loginOrgLocations);
+							} else if(roh.getOfferId().getOfferStatus().equalsIgnoreCase("OFFERACCEPTED")) {
+								internalOfferRate = conversionUtil.rateConvertToYear(roh.getOfferId().getAmount(),roh.getOfferId().getPaymentMode(),loginOrgLocations);
+							}
+						}
+						if(clientOfferRate > 0) {
+							float finalRatePerYear = clientOfferRate-internalOfferRate;
+							rshDTO.setMarginRateYearly(String.format("%.3f", Float.valueOf(finalRatePerYear)));
+						}
+					}
 					
 					int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocations.getId(), rsh.getSubmissionId().getRequirement().getId(), "INTERVIEWED");
 					rshDTO.setNumOfInterview(interviewedCount);
@@ -1752,6 +1796,8 @@ public class DashboardRestController {
 						List<RequirementOffers> offersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(rsh.getSubmissionId().getId(), loginOrgLocations.getId());
 						for (RequirementOffers requirementOffers : offersList) {
 							rshDTO.setOfferId(requirementOffers.getId());
+							float rate = conversionUtil.rateConvertToYear(requirementOffers.getAmount(),requirementOffers.getPaymentMode(),loginOrgLocations);
+							rshDTO.setOfferRateforYearly(String.format("%.3f", Float.valueOf(rate)));
 							rshDTO.setOfferRate(requirementOffers.getAmount());
 							rshDTO.setPaymentType(requirementOffers.getPaymentType());
 							rshDTO.setPaymentMode(requirementOffers.getPaymentMode());
@@ -1964,87 +2010,7 @@ public class DashboardRestController {
 			file.delete();
 		}
    }
-	@RequestMapping(value = "/applicantsJoinedListExport")
-	public void applicantsJoinedListExport(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, HttpServletRequest request,HttpServletResponse response)throws Exception
-   {
-		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Timezone timezone = null;
-		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if(loginOrgLocations.getTimezone() != null){
-			timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
-		}
-		Date[] freqDates = new Date[2];
-		String userType = null;
-		Date startUTCDate = null;
-		Date endUTCDate = null;
-		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-		DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
-		DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
-		if("Custom".equalsIgnoreCase(requirementSubmissionHistoryDTO.getFrequency())){
-			Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getFromDate());
-			Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getToDate());
-			String customStartTimeStr = TZ_DF_CSD.format(startTime);  
-			String customEndTimeStr = TZ_DF_CED.format(endTime);  
-			startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
-			endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
-		}else{
-			freqDates = reportsUtil.getJobFilterDate(requirementSubmissionHistoryDTO.getFrequency(),loginOrgLocations);
-			String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
-			String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
-			startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
-			endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
-		}
-		  
-		
-		if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
-			userType = Constants.ADMIN;
-		} 
-		
-		
-	   ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist =requirementSubmissionDao.getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(requirementSubmissionHistoryDTO, loginOrgLocations.getId(),requirementSubmissionHistoryDTO.getSubmissionStatus(),requirementSubmissionHistoryDTO.getTabType(),userType,user,startUTCDate,endUTCDate,loginOrgLocations);
-
-	   
-		 Workbook createExcelworkbook =  new XSSFWorkbook();
-		 StringBuilder excelSB = new StringBuilder();
-		 Sheet createExcelsheet = null;
-	 	createExcelsheet = createExcelworkbook.createSheet(excelSB.append("joined").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),new Date())).toString());
-
- 		File file = null;
- 		if(!"pdf".equalsIgnoreCase(requirementSubmissionHistoryDTO.getExportType())){
- 			createExcelsheet = requirementSubmissionService.getApplicaantJoinedListExcelFile(createExcelsheet,createExcelworkbook,dashboardJobsCountlist,loginOrgLocations,requirementSubmissionHistoryDTO.getSubmissionStatus());
- 			 StringBuilder templateSB = new StringBuilder();
-		 		  file = File.createTempFile(templateSB.append("joind_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),new Date())).toString(),".xls");
-	 		  file.setReadable(true);
-	 		  
-			 FileOutputStream fos = new FileOutputStream(file);
-			 try {
-				createExcelworkbook.write(fos);
-				fos.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}	 	
- 		}else {
- 			file = requirementSubmissionService.getApplicantsJoinedListPdfFile(dashboardJobsCountlist,loginOrgLocations);
- 			
- 		}
- 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-		if (mimeType == null) {
-			mimeType = "application/octet-stream";
-		}
-		response.setContentType(mimeType);
-		StringBuilder fileNameSB = new StringBuilder();
-		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
-		response.setContentLength((int) file.length());
-		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-		FileCopyUtils.copy(inputStream, response.getOutputStream());
-		inputStream.close();
-		response.getOutputStream().close();
-		response.getOutputStream().flush();	
-		if(file!= null){
-			file.delete();
-		}
-   }
+	
 
 	@RequestMapping(value = "/associateJoinedReport")
 	public @ResponseBody ResponseList<AssociateJoineReportDTO> associateJoineReport(AssociateJoineReportDTO associateJoineReportDTO, HttpServletRequest request)throws Exception
@@ -2055,7 +2021,7 @@ public class DashboardRestController {
 				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 				
-				String[] tableColumns = {"empId","empName", "gender","empType","deptName", "userRole","rate","hireDate", "reportingManager", "shiftName"};
+				String[] tableColumns = {"employeeId","empName", "gender","empType","deptName", "userRole","rate","hireDate", "reportingManager", "shiftName"};
 
 				   int sortColumnIndex = 1; //by default sorting using updated date
 				   String sortColumnOrder = "desc"; //by default descending order
@@ -2100,8 +2066,10 @@ public class DashboardRestController {
 				for(AssociateJoineReportDTO rsh: toDayReqApplicantscount.getData()){
 					AssociateJoineReportDTO rshDTO = new AssociateJoineReportDTO();
 					StringBuilder sb = new StringBuilder();
-					if(rsh.getEmpId() !=null){
-						rshDTO.setEmpId(rsh.getEmpId());
+					if(rsh.getEmployeeId() !=null){
+						rshDTO.setEmployeeId(rsh.getEmployeeId());
+					}else{
+						rshDTO.setEmployeeId("---");
 					}
 					if(rsh.getEmpName() !=null){
 						rshDTO.setEmpName(rsh.getEmpName());
@@ -2169,7 +2137,7 @@ public class DashboardRestController {
 				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 				
-				String[] tableColumns = {"empId","empName", "empType","hireDate","reportingManager", "terminateDate","terminatedReason","userRole", "gender", "shiftName", "deptName", "rate"};
+				String[] tableColumns = {"employeeId","empName", "empType","hireDate","reportingManager", "terminateDate","terminatedReason","userRole", "gender", "shiftName", "deptName", "rate"};
 
 				   int sortColumnIndex = 1; //by default sorting using updated date
 				   String sortColumnOrder = "desc"; //by default descending order
@@ -2214,8 +2182,8 @@ public class DashboardRestController {
 				for(AssociateJoineReportDTO rsh: toDayReqApplicantscount.getData()){
 					AssociateJoineReportDTO rshDTO = new AssociateJoineReportDTO();
 					StringBuilder sb = new StringBuilder();
-					if(rsh.getEmpId() !=null){
-						rshDTO.setEmpId(rsh.getEmpId());
+					if(rsh.getEmployeeId() !=null){
+						rshDTO.setEmployeeId(rsh.getEmployeeId());
 					}
 					if(rsh.getEmpName() !=null){
 						rshDTO.setEmpName(rsh.getEmpName());
@@ -2292,7 +2260,7 @@ public class DashboardRestController {
 				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 				
-				String[] tableColumns = {"empId","empName", "gender","empType","deptName", "userRole","rate","hireDate", "reportingManager", "shiftName"};
+				String[] tableColumns = {"employeeId","empName", "gender","empType","deptName", "userRole","rate","hireDate", "reportingManager", "shiftName"};
 
 				   int sortColumnIndex = 1; //by default sorting using updated date
 				   String sortColumnOrder = "desc"; //by default descending order

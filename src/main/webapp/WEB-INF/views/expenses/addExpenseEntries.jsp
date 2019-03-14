@@ -451,9 +451,9 @@ function addAttachment(entityRowId,from){
 	                 <div class="col-md-4 minHeight">
 							<label>Paid by<span class="text-danger">&nbsp;*</span></label>
 							<select id="paidByREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].paidBy" class="form-control" placeholder="Paid By" field-name="Paid By" data-validation="required">
-							         <option value="" disabled>Select paid By</option>
+							         <option value="">Select paid By</option>
 							         <c:forEach var="paidByType" items="${expEntry.paidByType}">
-							         			<option ${paidByType == 'Company' ? 'selected' : ''} value="${paidByType}">${paidByType}</option>
+							         			<option value="${paidByType}">${paidByType}</option>
 									 </c:forEach>
 							</select> 
 					</div>
@@ -863,15 +863,15 @@ function validate_fileupload(fileName)
 }
 </script>
  <script type="text/javascript">
- function validateUploadFile(id,entityId)
+ function validateUploadFile(id)
 	{
-	      var selectedFile = $('#'+id+'docFile'+entityId).val();
+	      var selectedFile = $('#'+id+'docFile').val();
 		  if(validate_fileupload(selectedFile)){
 			      var docSize = $('#'+id+'docFile'+entityId)[0].files[0].size;
 		           $("#"+id+"docFileuploadFileGroup"+entityId).find('p.jquery_form_error_message').remove();
 		    	  $('input#'+id+'docFile'+entityId).removeAttr( "record-exist record-exist-errormsg");
 	   		      $('#'+id+'docFileuploadFileGroup'+entityId).find('p.jquery_form_error_message').remove(); 
-	   		      fileUpload(""+id+"docFile"+entityId+"", "expsesDocuments", "add_expenses_form","expenseEntry["+parseInt(((entityId+1)/2)-1)+"].fileInfo","","");
+	   		      fileUpload(""+id+"docFile"+entityId+"", "ticket", "add_expenses_form","expenseEntry["+parseInt(((entityId+1)/2)-1)+"].fileInfo","","");
 		  }
 		  else{
 			      $('#'+id+'docFileuploadFileGroup'+entityId).find('p.jquery_form_error_message').remove();

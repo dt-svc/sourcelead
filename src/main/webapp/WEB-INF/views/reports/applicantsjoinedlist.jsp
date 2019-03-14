@@ -70,11 +70,11 @@
 					<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 						<div class="newActPop" style="display: none;">
 							<span>
-			           	   		<a href="javascript:void(0)" id="applicantExportPdf" onclick="projectExport('Pdf');" title="PDF" style="display: none">Export PDF</a>
-								<a href="javascript:void(0)" id="applicantExportExcel" onclick="projectExport('Excel');" title="Excel" style="display: none">Export Excel</a>  
+			           	   		<a href="javascript:void(0)" id="applicantExportPdf" onclick="exportByApplicant('Pdf');" title="PDF" style="display: none">Export PDF</a>
+								<a href="javascript:void(0)" id="applicantExportExcel" onclick="exportByApplicant('Excel');" title="Excel" style="display: none">Export Excel</a>  
 								
-								 		<a href="javascript:void(0)" id="recurterExportPdf" onclick="exportToPdf();" title="PDF" style="display: block">Export PDF</a>
-								<a href="javascript:void(0)" id="recurterExportExcel" onclick="exportUserData();" title="Excel" style="display: block">Export Excel</a>           
+								 		<a href="javascript:void(0)" id="recurterExportPdf" onclick="exportByRecruiter('Pdf');" title="PDF" style="display: block">Export PDF</a>
+								<a href="javascript:void(0)" id="recurterExportExcel" onclick="exportByRecruiter('Excel');" title="Excel" style="display: block">Export Excel</a>           
 							</span>
 						</div>
 					</li>
@@ -153,7 +153,9 @@ function getAppliantJoinedListByRecruiter(){
 		 var url = sourceleadUrl+"/getAllApplicantJoinedListByOrgLocationsId?timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&clients="+clients+"&searchValue="+searchValue;
 // 		 usersListPagination(url,sourceleadUrl);
 			prepareAllDaywiseLeaveReportList(url);
-
+			if(timePeriod == 'custom'){
+				 $("#customSearch").hide();
+			}
 	 }
 }
 </script>	
@@ -377,6 +379,9 @@ function prepareOfferList(url){
 		result = result + '<th>Client</th>';
 		result = result + '<th>Source</th>';
 		result = result + '<th>Date Of Join</th>';
+		result = result + '<th>Offer Rate</th>';
+		result = result + '<th>Offer Rate Yearly</th>';
+		result = result + '<th>Margin Rate Yearly</th>';
 		result = result + '<th>Payment Term</th>';
 		result = result + '<th>Generate Invoice</th>';
 		result = result + '</tr>';
@@ -411,6 +416,9 @@ function offerpagination(url){
             { "data": "client"},
             { "data": "souorce"},
             { "data": "joinDate"},
+            { "data": "offerRate"},
+            { "data": "offerRateYearly"},
+            { "data": "marginRateYearly"},
             { "data": "paymentTerm"},
             { "data": "generateInvoice"}
         ],
@@ -518,6 +526,42 @@ function offerpagination(url){
     	              return result;
                 }
           } ,{
+              "targets": colIndex++,
+              "data": "offerRate",
+              "render": function ( data, type, opt, meta ) {
+              		var result = "";
+              		if(opt.offerRate !=null && opt.offerRate !='' && opt.offerRate !='undefined'){
+							result = result + ' <td><div><span>'+opt.paymentType+' '+opt.offerRate+'/'+opt.paymentMode+'</span></div></td>';
+						}else{
+							result = result + ' <td><div><span>---</span></div></td>';
+						}
+  	              return result;
+              }
+        } ,{
+            "targets": colIndex++,
+            "data": "offerRateYearly",
+            "render": function ( data, type, opt, meta ) {
+            		var result = "";
+            		if(opt.offerRateforYearly !=null && opt.offerRateforYearly !='' && opt.offerRateforYearly !='undefined'){
+							result = result + ' <td><div><span>'+opt.offerRateforYearly+'</span></div></td>';
+						}else{
+							result = result + ' <td><div><span>---</span></div></td>';
+						}
+	              return result;
+            }
+      } ,{
+          "targets": colIndex++,
+          "data": "marginRateYearly",
+          "render": function ( data, type, opt, meta ) {
+          		var result = "";
+          		if(opt.marginRateYearly !=null && opt.marginRateYearly !='' && opt.marginRateYearly !='undefined'){
+							result = result + ' <td><div><span>'+opt.marginRateYearly+'</span></div></td>';
+						}else{
+							result = result + ' <td><div><span>---</span></div></td>';
+						}
+	              return result;
+          }
+    	} ,{
                       "targets": colIndex++,
                       "data": "paymentTerm",
                       "render": function ( data, type, opt, meta ) {
@@ -889,7 +933,7 @@ function myTeamsFunction() {
 
 <!-- =============== Pdf and  Excel Export scripts writen by Laxman =================== -->
 <script>
-function projectExport(type){
+function exportByApplicant(type){
 	if(type == "Pdf"){
 		exportType = "pdf";
 	}else{
@@ -925,7 +969,7 @@ function projectExport(type){
 			 incentivizedType.push($(this).val());
 		 });
 		 var searchType = $('input[name=searchType]:checked').val();
-
+		 if(noApplicantJoinedList !=	 0){
 		    if(frequency == "custom"){
     	        var fromDate = $("#ReportStartDate").val();
     	  		  var toDate = $("#ReportEndDate").val();
@@ -941,25 +985,25 @@ function projectExport(type){
    	    		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType+"&type=applicantReport";
     	        }
     	    }else{
-      	        if(noApplicantJoinedList !=	 0){
-      	        	document.getElementById("reportsStartDate").style.display="none";
+      	        document.getElementById("reportsStartDate").style.display="none";
        			 document.getElementById("reportsEndDate").style.display="none";
       	 		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType+"&type=applicantReport";
-      	        }
-      	        else{
-      	        	var result = "";
-      				result = result +"	<div class='project_inn_mask'></div>";
-      				result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
-      				result = result +"		<p>Applicants List is Empty</p>";
-      				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-      				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
-      				result = result +"	</div>";
-      				$("#emptyPopup").append(result);
-      				$("#candidate_user_pop").slideDown(200);
-      				$(".project_inn_mask").fadeIn(200);
-      	        }
+      	        
     	    	 
     	    } 
+		 }
+	        else{
+	        	var result = "";
+				result = result +"	<div class='project_inn_mask'></div>";
+				result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+				result = result +"		<p>Applicants List is Empty</p>";
+				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
+				result = result +"	</div>";
+				$("#emptyPopup").append(result);
+				$("#candidate_user_pop").slideDown(200);
+				$(".project_inn_mask").fadeIn(200);
+	        }
 // 		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType;
 	     
 }
@@ -1070,12 +1114,11 @@ $(function() {
 });
 </script> 
 <script>
-function exportToPdf(){
+function exportByRecruiter(exportType){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#daywiseReportDataTableSearch").val();
 	 var timePeriod = $("#reportTypeId").val();
 	 var  noRecruiterApplicantJoinedList=$("#noRecruiterApplicantJoinedList").val(); 
-	var exportType = "pdf";
 	 var flag = true;
 	 var startDate = '';
 	 var endDate = '';
@@ -1130,65 +1173,5 @@ function exportToPdf(){
 	
 }
 </script>
-<script>
-function exportUserData(){
-	var sourceleadUrl ='${sourceleadUrl}';
-	var searchValue = $("#daywiseReportDataTableSearch").val();
-	 var timePeriod = $("#reportTypeId").val();
-	 var  noRecruiterApplicantJoinedList=$("#noRecruiterApplicantJoinedList").val();
-	var exportType = "xls";
-	 var flag = true;
-	 var startDate = '';
-	 var endDate = '';
-   if(timePeriod == 'custom'){
-   	startDate = $("#ReportStartDate").val();
-		  endDate = $("#ReportEndDate").val();
-		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
-			  if(startDate == null || startDate == ''){
-				  document.getElementById("reportsStartDate").style.display="block";
-				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
-			  }
-			  
-			  if(endDate == null || endDate == ''){
-				  document.getElementById("reportsEndDate").style.display="block";
-				  $("#reportsEndDate").empty().append("End Date is Required") ; 
-			  }
-			  flag = false;
-		  }
-	 }else{
-		 document.getElementById("reportsStartDate").style.display="none";
-		 document.getElementById("reportsEndDate").style.display="none";
-	 } 
-   var orgTeams = [];
-	$('input:checkbox[name=orgTeams]:checked').each(function() 
-		    {
-		orgTeams.push($(this).val());
-    });
-	 var orgTeams = [];
-		$('input:checkbox[name=teamNameById]:checked').each(function() 
-			    {
-			orgTeams.push($(this).val());
-	     });
-		var clients = [];
-		$('input:checkbox[name=clientNameById]:checked').each(function() {
-			clients.push($(this).val());
-		});
-	if(noRecruiterApplicantJoinedList != 0){
-		window.location.href = sourceleadUrl + "/exportAllApplicantJoinedList?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&clients="+clients+"&exportType="+exportType;
 
-	}else{
-		var result = "";
-		result = result +"	<div class='project_inn_mask'></div>";
-		result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
-		result = result +"		<p>Applicants List is Empty</p>";
-		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
-		result = result +"	</div>";
-		$("#emptyPopup").append(result);
-		$("#candidate_user_pop").slideDown(200);
-		$(".project_inn_mask").fadeIn(200);
-	}
-	
-}
-</script>
 <jsp:include page="../masterFooter.jsp" />

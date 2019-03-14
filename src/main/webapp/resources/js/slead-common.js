@@ -185,7 +185,8 @@ function viewFile(fileURL, title, contentType){
 }
 
 function getFormData(formId) {
-	var $form = $("#"+formId);
+	var $form = $("#"+formId); 
+	var disabled = $form.find(':input:disabled').removeAttr('disabled'); // Added by Srinivas Sabbu on 25-Feb-2019 for pushing disabled element values to form.
 	var unindexed_array = $($form).serializeArray();
 	var indexed_array = {};
 	$.map(unindexed_array, function (n, i) {
@@ -286,8 +287,8 @@ function applyData(data, formId, name, id) {
 		if(data[0].fileInfo) {
 			data1 = data[e].fileInfo;
 		}
-		var html = "<input type='hidden' name='"+name+"["+i+"].fileURL' data-id="+id+" value='"+data1.fileURL+"'/>";
-		html += "<input type='hidden' name='"+name+"["+i+"].fileName' data-id="+id+" value='"+data1.fileName+"'/>";
+		var html = "<input type='hidden' name='"+name+"["+i+"].fileURL' data-id="+id+" value=\""+data1.fileURL+"\"/>";
+		html += "<input type='hidden' name='"+name+"["+i+"].fileName' data-id="+id+" value=\""+data1.fileName+"\"/>";
 		html += "<input type='hidden' name='"+name+"["+i+"].contentType' data-id="+id+" value='"+data1.contentType+"'/>";
 		if(name == 'uploadContractsFile' || name == 'uploadFormsFile'){
 			html += "<input type='hidden' name='"+name+"["+i+"].fileDbId' data-id="+id+" value='"+id.split(name)[1]+"'/>";

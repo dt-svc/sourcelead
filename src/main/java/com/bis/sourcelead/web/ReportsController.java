@@ -27,10 +27,12 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.indPayroll.utill.INDPayrollCommonUtil;
 import com.bis.sourcelead.reportsDTO.TimeToFillDTO;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TeamService;
@@ -66,6 +68,12 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	
 	@Autowired
 	ProjectsService projectsService;
+	
+	@Autowired
+	INDPayrollCommonUtil iNDPayrollCommonUtil;
+	
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
 	@RequestMapping(value = "/recruitersReports")
 	public ModelAndView recruitersReports(HttpServletRequest request,HttpServletResponse response) throws Exception {
@@ -404,6 +412,26 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 return model;
 	 }	
 	 
+	/**
+	 * @author Mahaveer Manoj
+	 */
+	@RequestMapping(value = "/vendorPerformanceReport")
+	public ModelAndView vendorPeformanceReport(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		try {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+			boolean vendorTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_VENDOR));
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("vendorTabAccess", vendorTabAccess);
+			model.setViewName("reports/vendorPerformanceReport");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return model;
+	}
+	 
 	 @RequestMapping(value = "/userUsageReport")
 		public ModelAndView userUsageReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		 
@@ -643,22 +671,36 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
 		}
-	 
 		
-		 @RequestMapping(value = "/indPayrollReportList")
-			public ModelAndView indPayrollReportList(HttpServletRequest request,HttpServletResponse response) throws Exception {
-			 ModelAndView model = new ModelAndView();
-			 model.addObject("sourceleadUrl", sourceleadUrl);
-			 model.setViewName("reports/indPayrollReportList");
-			 return model;
-		 }
-		 
-		 
-		 @RequestMapping(value = "/indPayrollRegisterReport")
-			public ModelAndView indPayrollRegisterReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
-			 ModelAndView model = new ModelAndView();
-			 model.addObject("sourceleadUrl", sourceleadUrl);
-			 model.setViewName("reports/indPayrollRegisterReport");
-			 return model;
-		 }
+	@RequestMapping(value = "/offerAcceptanceRate")
+	public ModelAndView offerAcceptanceRateReport(HttpServletRequest request) {
+		ModelAndView model = new ModelAndView();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (user != null) {
+				model.addObject("loginOrgLocId", orgLocations.getId());
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				model.setViewName("reports/offerAcceptanceRate");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/availableAssociatesReport")
+	public ModelAndView availableAassociatesReport(HttpServletRequest request,HttpServletResponse response) throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.addObject("userList", userList);
+		 model.setViewName("reports/availableAssociates");
+
+		return model;
+		
+	}
+	 
 }

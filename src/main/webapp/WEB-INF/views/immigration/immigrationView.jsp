@@ -8,7 +8,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
-<script src="/resources/js/immigration.js"></script>
+<script src="/resources/js/immigration.js?staticTime=${staticTime}"></script>
 <style>
 .disabledLink
 {
@@ -251,10 +251,11 @@ $(document).ready(function() {
         immigration.getCandidateResidenceList(candidateId);
         }else if(tab=='#passportsTab'){
         showLoading("immigrationLoadingPassportsTab");
-        immigration.displayPassportDetails(candidateId,'Passport');
+        //immigration.displayPassportDetails(candidateId,'Passport');
+        immigration.displayPassportDetails(candidateId);
         }else if(tab=='#visasTab'){
         showLoading("immigrationLoadingVisasTab");
-        immigration.displayVisaDetails(candidateId,'Visa');
+        immigration.displayVisaDetails(candidateId);
         }else if(tab=='#lcaTab'){
         	showLoading("immigrationLcaLoadingTab");
         	immigration.getLcaDetailsInfo(immigrationId);
@@ -372,9 +373,15 @@ $("#packageZipfile").click(function() {
 		$(".project_inn_mask").fadeOut(200);
 		$("#deletepopUp").empty();
 	}
+
 	function deleteImmigrationRecordById(elem, arg1, arg2){	
 		if(typeof elem ==='function') {
-			elem(arg1, arg2);
+			if(typeof arg2 == 'undefiend'){
+				elem(arg1);
+			}
+			else{
+			  elem(arg1, arg2);
+			}
 		}
 		else{
 			alert("Not a valid Function call.");
