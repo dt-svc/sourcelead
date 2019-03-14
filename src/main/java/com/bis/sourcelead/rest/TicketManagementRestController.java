@@ -182,14 +182,14 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = {"/getTicketCategoryList", "/rest/getTicketCategoryList"}, method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<TicketCategoryDTO> getTicketCategoryList(HttpServletRequest request) {
+	public ResponseList<TicketCategoryDTO> getTicketCategoryList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue) {
 		ResponseList<TicketCategoryDTO> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				boolean forMobile = request.getRequestURI().contains("rest");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				List<TicketCategoryDTO> ticketCategoryDTOList = ticketManagementService.getTicketCategoryListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1); 
+				List<TicketCategoryDTO> ticketCategoryDTOList = ticketManagementService.getTicketCategoryListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue); 
 				responseList.setData(ticketCategoryDTOList);
 				responseList.setRecordsTotal(ticketCategoryDTOList.size());
 				responseList.setRecordsFiltered(ticketCategoryDTOList.size());
@@ -299,14 +299,14 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = {"/getTicketPriorityList", "/rest/getTicketPriorityList"}, method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<TicketPriorityDTO> getTicketPriorityList(HttpServletRequest request) {
+	public ResponseList<TicketPriorityDTO> getTicketPriorityList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue) {
 		ResponseList<TicketPriorityDTO> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				boolean forMobile = request.getRequestURI().contains("rest");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				List<TicketPriorityDTO> ticketPriorityDTOList = ticketManagementService.getTicketPriorityListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1);
+				List<TicketPriorityDTO> ticketPriorityDTOList = ticketManagementService.getTicketPriorityListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue);
 				responseList.setData(ticketPriorityDTOList);
 				responseList.setRecordsTotal(ticketPriorityDTOList.size());
 				responseList.setRecordsFiltered(ticketPriorityDTOList.size());
@@ -418,14 +418,14 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = {"/getTicketStatusList", "/rest/getTicketStatusList"}, method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<TicketStatusDTO> getTicketStatusList(HttpServletRequest request) {
+	public ResponseList<TicketStatusDTO> getTicketStatusList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue) {
 		ResponseList<TicketStatusDTO> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				boolean forMobile = request.getRequestURI().contains("rest");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				List<TicketStatusDTO> ticketStatusDTOList = ticketManagementService.getTicketStatusListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1); 
+				List<TicketStatusDTO> ticketStatusDTOList = ticketManagementService.getTicketStatusListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue); 
 				responseList.setData(ticketStatusDTOList);
 				responseList.setRecordsTotal(ticketStatusDTOList.size());
 				responseList.setRecordsFiltered(ticketStatusDTOList.size());

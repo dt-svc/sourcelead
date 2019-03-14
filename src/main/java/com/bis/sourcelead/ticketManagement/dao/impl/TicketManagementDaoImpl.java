@@ -180,12 +180,15 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<TicketCategory> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status) {
+	public List<TicketCategory> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from TicketCategory t where t.orgLocations.id=" + orgLocationId;
 			if(status >= 0) {
 				query += " and t.status=" + status;
+			}
+			if(searchValue != null && !searchValue.isEmpty()) {
+				query += " and (t.name like '%" + searchValue + "%' or t.description like '%" + searchValue + "%')";
 			}
 			query += " order by t.id desc";
 			return session.createQuery(query).list();
@@ -236,12 +239,15 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<TicketPriority> getTicketPriorityListByOrgLocationId(Long orgLocationId,int status) {
+	public List<TicketPriority> getTicketPriorityListByOrgLocationId(Long orgLocationId,int status, String searchValue) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from TicketPriority t where t.orgLocations.id=" + orgLocationId;
 			if(status >= 0) {
 				query += " and t.status=" + status;
+			}
+			if(searchValue != null && !searchValue.isEmpty()) {
+				query += " and (t.name like '%" + searchValue + "%' or t.description like '%" + searchValue + "%')";
 			}
 			query += " order by t.id desc";
 			return session.createQuery(query).list();
@@ -291,12 +297,15 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<TicketStatus> getTicketStatusListByOrgLocationId(Long orgLocationId, int status) {
+	public List<TicketStatus> getTicketStatusListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from TicketStatus t where t.orgLocations.id=" + orgLocationId;
 			if(status >= 0) {
 				query += " and t.status=" + status;
+			}
+			if(searchValue != null && !searchValue.isEmpty()) {
+				query += " and (t.name like '%" + searchValue + "%' or t.description like '%" + searchValue + "%')";
 			}
 			query += " order by t.id desc";
 			return session.createQuery(query).list();
