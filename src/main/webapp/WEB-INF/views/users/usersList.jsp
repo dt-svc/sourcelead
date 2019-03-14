@@ -908,7 +908,7 @@ function getUserSummary(userId){
 			       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 			       	    	result = result +"<div class='text-center image-parent'>";
 			       	    	result = result +"<div class='imageParent'>";
-			       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+userRole.user.fileUrl+"' alt='image'>";
+			       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src=\""+userRole.user.fileUrl+"\" alt='image'>";
 			       	    	result = result +"</div>";
 			       	    	
 			       	    	
@@ -1275,7 +1275,7 @@ function dynamicUserListPagination(url){
 		        			   result = result +"<td><div class='proj_show divmax-width dotdotwithImage'>"    
 		        			    result = result +" <a href='<c:url value='/userSummary/"+userRole.userCode+"'/>'' class='UserTextLeft' title = '"+userRole.userName+"'>";
 		        			    if(userRole.fileUrl != null && userRole.fileUrl !="" && userRole.fileUrl != "undefined"){
-				       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs pull-left'  src='"+userRole.fileUrl+"' alt='image'>";
+				       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs pull-left'  src=\""+userRole.fileUrl+"\" alt='image'>";
 		        			    }else{
 					       	    result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs pull-left'  src='/resources/images/userprofileImg.jpg' alt='image'>";
 		        			    }
