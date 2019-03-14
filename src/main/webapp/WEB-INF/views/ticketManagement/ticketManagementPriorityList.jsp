@@ -8,9 +8,9 @@
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Ticket Pritory</h2>
+        <h2>Ticket Priority</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo;  <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo;Ticket Priority</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo;  <a href="<c:url value='${appPath}/settings'/>">Settings</a> &raquo; Ticket Priority List</div>
     </section>
     <div class="content-area content-new clearfix timesheet_out">
       <div class="clearfix mt mb">
@@ -30,7 +30,7 @@
               <li><a class="newAdBtn mr5" title="Add" id="addPop">+ Add</a></li>
               <li class="hidden">
                 <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
+                <span class="repSearchIcon" onclick="getTicketPriorityList();"></span></li>
             </ul>
           </div>
           <div class="candidate_wrap_table datatable_filter">
@@ -89,7 +89,7 @@
 							<label class="input-group-btn"> 
 								<span class="btn btn-danger" onchange="uploadPriorityImage();">
 									<i class="fa fa-folder-open-o"></i> &nbsp;Browse File 
-									<input type="file" style="display: none;" multiple id="uploadBtn" class="upload">
+									<input type="file" style="display: none;" multiple id="uploadBtn" class="upload" accept="image/*">
 									<input type="hidden" id="dataFilePath">
 								</span>
 							</label>

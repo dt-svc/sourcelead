@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.service;
 
+
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -13,4 +14,5 @@ public interface AssociateBankDataService {
 	AssociateBankDataDTO findAssociateBankDataByUserId(Long userId, OrgLocations orgLocation);
 
 	AssociateBankData getAssociateBankDataByOrgLocationId(Long locationId);
+	
 }

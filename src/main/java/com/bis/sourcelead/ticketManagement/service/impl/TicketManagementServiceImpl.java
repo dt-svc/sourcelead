@@ -87,10 +87,10 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status) {
+	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
 		List<TicketTypeDTO> ticketTypeDTOList = new LinkedList<>();
 		try {
-			List<TicketType> ticketTypeList = ticketManagementDao.getTicketTypeListByOrgLocationId(orgLocationId, status);
+			List<TicketType> ticketTypeList = ticketManagementDao.getTicketTypeListByOrgLocationId(orgLocationId, status, searchValue);
 			if (ticketTypeList != null && !ticketTypeList.isEmpty()) {
 				for (TicketType ticketType : ticketTypeList) {
 					TicketTypeDTO ticketTypeDTO = new TicketTypeDTO();
@@ -487,6 +487,9 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 				ticketManagement.setUpdatedBy(user);
 				ticketManagement.setUpdatedDate(new Date());
 			} else {
+				if (ticketManagementDao.validateTicketId(ticketDTO.getGeneratedId(), orgLocations.getId())) {
+					return false;
+				}
 				ticketManagement = new Ticket();
 				ticketManagement.setCreatedBy(user);
 				ticketManagement.setCreatedDate(new Date());
@@ -610,11 +613,11 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId,int status, String dateFormat) {
+	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId,int status, String dateFormat, String userRole) {
 		List<TicketDTO> ticketDTOList = new LinkedList<>();
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-			List<Ticket> ticketManagementList = ticketManagementDao.getTicketManagementListByOrgLocationId(orgLocationId,userId,status);
+			List<Ticket> ticketManagementList = ticketManagementDao.getTicketManagementListByOrgLocationId(orgLocationId,userId,status, userRole);
 			if (ticketManagementList != null && !ticketManagementList.isEmpty()) {
 				for (Ticket ticketManagement : ticketManagementList) {
 					TicketDTO ticketDTO = new TicketDTO();
@@ -624,6 +627,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 					ticketDTO.setUuid(ticketManagement.getUuid());
 					ticketDTO.setTicketType(ticketManagement.getTicketType().getName());
 					ticketDTO.setTicketCategory(ticketManagement.getTicketCategory().getName());
+					ticketDTO.setTicketStatusId(ticketManagement.getTicketStatus().getId());
 					ticketDTO.setTicketStatus(ticketManagement.getTicketStatus().getName());
 					ticketDTO.setTicketPriority(ticketManagement.getTicketPriority().getName());
 					ticketDTO.setTicketPriorityTextColor(ticketManagement.getTicketPriority().getColorCode());
@@ -650,11 +654,11 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public TicketDTO getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId, String dateFormat, boolean includeAttachments) {
+	public TicketDTO getTicketSummaryByUUID(String uuid, Long orgLocationId, String dateFormat, boolean includeAttachments) {
 		TicketDTO ticketDTO =  new TicketDTO();
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat();
-			Ticket ticketManagement = ticketManagementDao.getTicketSummaryByUUID(uuid,userId,orgLocationId);
+			Ticket ticketManagement = ticketManagementDao.getTicketSummaryByUUID(uuid, orgLocationId);
 			if (ticketManagement != null) {
 				ticketDTO.setId(ticketManagement.getId());
 				ticketDTO.setUuid(ticketManagement.getUuid());
@@ -923,6 +927,16 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		return userDTOList;
 	}
 	
+	@Override
+	public boolean changeTicketManagementStatus(long ticketId, int status) {
+		try {
+			return ticketManagementDao.changeTicketManagementStatus(ticketId, status);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	private void sendTicketManagementEmailToAssignedUsers(User loginUser, OrgLocations orgLocations, Ticket ticketManagement, User toUser, String notifyToEmail) throws Exception {
 		try {
 			EmailMessage emailMessage = new EmailMessage();

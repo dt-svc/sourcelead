@@ -18,7 +18,7 @@ public interface TicketManagementDao {
 
 	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations();
 
-	public List<TicketType> getTicketTypeListByOrgLocationId(Long orgLocationId, int status);
+	public List<TicketType> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue);
 
 	public TicketType getTicketTypeById(long id);
 	
@@ -56,8 +56,6 @@ public interface TicketManagementDao {
 
 	public Boolean saveTicket(Ticket ticketManagement);
 
-	
-
 	public Boolean changeStatusTicketTypeDataById(long id, int status, OrgLocations orgLocation);
 
 	public Boolean changeTicketCategoryStatusDataById(long id, int status, OrgLocations orgLocation);
@@ -66,9 +64,9 @@ public interface TicketManagementDao {
 
 	public Boolean changeTicketStatusDataById(long id, int status, OrgLocations orgLocation);
 
-	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId, int status);
+	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId, int status, String userRole);
 
-	public Ticket getTicketSummaryByUUID(String uuid, long userId, Long orgLocationId);
+	public Ticket getTicketSummaryByUUID(String uuid, Long orgLocationId);
 
 //	public TicketComment getTicketSummaryByTicketId(Long ticketId, long userId, Long orgLocationId);
 
@@ -105,5 +103,7 @@ public interface TicketManagementDao {
 	public List<String> getSavedTicketAttachmentUUIDList(long ticketId);
 
 	public void deleteTicketAttachment(TicketAttachment ticketAttachment);
+
+	public boolean changeTicketManagementStatus(long ticketId, int status);
 	
 }

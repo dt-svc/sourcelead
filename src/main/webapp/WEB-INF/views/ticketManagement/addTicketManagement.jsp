@@ -1,5 +1,6 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+<jsp:include page="../ticketManagement/ticketPopups.jsp" flush="true"></jsp:include>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
@@ -9,20 +10,6 @@
 <script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
 <link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet" />
 
-
-<script>
-$(document).ready(function() {
-	getTicketManagementDescription('${ticketSummary.uuid}');
-	<c:forEach items="${ticketSummary.ticketAssignToList}" var="assignTo">
-		$("#assignedTo option[value='${assignTo.userId}']").attr("selected", true);
-    </c:forEach>
-	$("#assignedTo").chosen();
-	$("#assignedTo").trigger("chosen:updated");
-	$("#txtEditor").Editor();
-	
-});
-
-</script>
 <section class="content-wraper">
 	<div class="success_pop" >
 		<i class="fa fa-check-circle"></i><span></span>
@@ -31,11 +18,8 @@ $(document).ready(function() {
 		<div class="pull-left">
 			<h2>Add Ticket Management</h2>
 		</div>
-		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo;
-			<a href="<c:url value='${appPath}/ticketManagementList'/>">Ticket Management</a>&raquo; Add Ticket Management
-		</div>
-	</section>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/ticketManagementList'/>">Ticket List</a> &raquo; ${ticketSummary != null ? "Edit" : "Add"} Ticket</div>
+s	</section>
 	<form id="addTicketManagementForm">
 		<input type="hidden" name="id" value="${ticketSummary != null ? ticketSummary.id : 0}"/>
 		<div class="content-area content-new clearfix">
@@ -103,9 +87,9 @@ $(document).ready(function() {
 					<div class="clearfix"></div>
 				</div>
 				<div class="col-md-6">
-					<label class="col-md-3">Assign To <b class="valStar">*</b></label>
+					<label class="col-md-3">Assign To</label>
 					<div class="col-md-9">
-						<select multiple class="chosen-select form-control" name="assignedTo" field-name="Assign To" id="assignedTo" data-validation="required">
+						<select multiple class="chosen-select form-control" name="assignedTo" field-name="Assign To" id="assignedTo">
 							<c:forEach items="${userList}" var="user">
 								<option value="${user.id}">${user.firstName}&nbsp;${user.lastName}</option>
 							</c:forEach>
@@ -114,9 +98,9 @@ $(document).ready(function() {
 					<div class="clearfix"></div>
 				</div>
 				<div class="col-md-6">
-					<label class="col-md-3">Notify To <b class="valStar">*</b></label>
+					<label class="col-md-3">Notify To</label>
 					<div class="col-md-9">
-						<textarea class="form-control" rows="4" id="notifyTo" name="notifyTo" field-name="NotifyTo" data-validation="required" placeholder="Enter multiple Email Id's separated by commas(,)">${ticketSummary.notifyTo}</textarea>
+						<textarea class="form-control" rows="4" id="notifyTo" name="notifyTo" field-name="NotifyTo" placeholder="Enter multiple Email Id's separated by commas(,)">${ticketSummary.notifyTo}</textarea>
 					</div>
 					<div class="clearfix"></div>
 				</div>
@@ -124,11 +108,11 @@ $(document).ready(function() {
 				<div class="clearfix mb col-md-12">
 					<label class="col-md-3">Description <b class="valStar">*</b></label>
 					<div class="col-md-12 txtEditor_p">
-						<textarea id="txtEditor" name="description"  field-name="Description" value="" class="form-control newContrtextarea" data-validation="required">${ticketSummary.description}</textarea>
+						<textarea id="txtEditor" name="description" field-name="Description" value="" class="form-control newContrtextarea" data-validation="required">${ticketSummary.description}</textarea>
 					</div>
 				</div>
 				<div class="col-md-6">
-			        <label class="col-md-3">Attachments <b class="valStar">*</b></label>
+			        <label class="col-md-3">Attachments</label>
 			        <div class="col-md-9" id="attachmentsDiv">
 				        <c:choose>
 				        	<c:when test="${ticketSummary.attachmentList.size() > 0}">
@@ -139,15 +123,15 @@ $(document).ready(function() {
 							            <div class="input-group col-md-11 pull-left">
 											<label class="input-group-btn">
 												<span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-													<input type="file" style="display: none;" id="uploadFile${attachmentCount}" data-name="file" data-validation="required" data-index="${attachmentCount}" class="upload" onchange='validateUploadFile(this, ${attachmentCount})' >
+													<input type="file" style="display: none;" id="uploadFile${attachmentCount}" data-name="file" data-index="${attachmentCount}" class="upload" onchange='validateUploadFile(this, ${attachmentCount})' >
 												</span>
 											</label>
-							              	<input type="text" class="form-control fileInput" readonly id="uploadFileInput${attachmentCount}" data-name="input" data-validation="required" placeholder="Upload File ..." value="${attachment.fileName}">
+							              	<input type="text" class="form-control fileInput" readonly id="uploadFileInput${attachmentCount}" data-name="input" placeholder="Upload File ..." value="${attachment.fileName}">
 							            </div>
 							            	<c:choose>
 								            	<c:when test="${deleteFlag}">
 										            <div class="input-group col-md-1 colorRed text-center">
-										             	<i class="fa fa-times cursorPointer mt10" data-name="delete" data-validation="required" onclick="removeAttachmentRow(this, ${attachmentCount})"></i>
+										             	<i class="fa fa-times cursorPointer mt10" data-name="delete" onclick="removeAttachmentRow(this, ${attachmentCount})"></i>
 										            </div>
 								            	</c:when>
 								            	<c:otherwise>
@@ -203,126 +187,17 @@ $(document).ready(function() {
         </div>
 	</form>
 </section>
-<div id='changeStatusPopup' class='remove_user_pop remove_user_pop_a'>
-	<p id='changeStatusHeading' data-name="Ticket"></p>
-	<div>&nbsp;&nbsp;&nbsp;</div>
-	<b>
-		<input id='confirmId' type='button' value='Ok' onclick='changeTicketManagementStatus()' class="pull-left">
-		<input id="cancelStatusPopup" class='u_can_color' type='button' value='Cancel' onClick='closeDeletePopup()'>
-	</b>
-</div>
-<script>
-var attachmentCount = ${ticketSummary.attachmentList.size() > 0 ? ticketSummary.attachmentList.size() : 1};
-function getTicketManagementDescription(ticketUUID){
-	$.ajax({
-	   	type: "POST",
-	    url: sourceleadUrl+"/getTicketManagementDescription?${_csrf.parameterName}=${_csrf.token}&uuid="+ticketUUID, 	   
-		    success: function(result) {
-		    	$('#txtEditor').html(result.description);
-		    	$('.Editor-editor').html(result.description);
-		    }
-    });
-}
-
-function getCategoryAssignToUsers() {
-	$('#assignedTo').val('').trigger('chosen:updated');
-	var categoryId = $("#ticketCategory").val();
-	$.post(sourceleadUrl + "/getCategoryAssignToListByTicketCategoryId?ticketCategoryId=" + categoryId, {}, function(response) {
-		if (response && response.response === "INVALID_DATA") {
-			showError(response.responseMessage);
-		} else if (response.response === "AWKWARD") {
-			location.href = "/errorPage";
-		} else if (response.response === "SUCCESS") {
-			for(var e in response.data) {
-				$('#assignedTo').find("option[value='" + response.data[e].id + "']").prop("selected", true).end().trigger('chosen:updated');
-			}
-			$("#assignedTo").trigger('chosen:update');
-		} else if (response.indexOf('Sign In') !== -1) {
-			location.replace(sourceleadUrl);
-		} else {
-			showError("Operation failed, please try again");
-		}
+<script type="text/javascript">
+	$(document).ready(function() {
+		getTicketManagementDescription('${ticketSummary.uuid}');
+		<c:forEach items="${ticketSummary.ticketAssignToList}" var="assignTo">
+			$("#assignedTo option[value='${assignTo.userId}']").attr("selected", true);
+	    </c:forEach>
+		$("#assignedTo").chosen();
+		$("#assignedTo").trigger("chosen:updated");
+		$("#txtEditor").Editor();
 	});
-}
+	var attachmentCount = ${ticketSummary.attachmentList.size() > 0 ? ticketSummary.attachmentList.size() : 1};
 </script>
 
-					<!-- =================== saving the addTicketManagement ================================ -->
-<script>
-	
-function validateTicketId(ticketId) {
-	 var generatedId = $("#ticketId").val(); 
-	 if(ticketId !=null && ticketId !='' && ticketId !='undefined'){
-		 generatedId = ticketId;
-	 }
-	 if(generatedId != null && generatedId != ""){
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/validateTicketId?generatedId="+generatedId, 
-		        success: function(data) {
-		        	if(data == true){
-		        		     $('#ticketDivId').find('p.jquery_form_error_message').remove();
-		        			  $("input#ticketId").after ("<p class='jquery_form_error_message'>"+generatedId+" is Already Existed</span>");
-							  document.getElementById("ticketId").setAttribute('record-exist','yes');
-							  document.getElementById("ticketId").setAttribute('record-exist-errorMsg',generatedId+' is Already Existed'); 
-		        		  
-		        	}else{
-	        			 $('input#ticketId').removeAttr( "record-exist record-exist-errormsg"); 
-		        		 $('#ticketDivId').find('p.jquery_form_error_message').remove(); 
-                       $("#ticketId").removeAttr("disabled");
-		        	}
-		        },
-		    });
-	 } 
-}
-	
-	
-	function saveTicket() {
-		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
-		if ($('#addTicketManagementForm').validate(false, validationSettings)) {
-			if ($("#notifyTo").val() !== "") {
-				for (var e in $("#notifyTo").val().split(",")) {
-					if (!jQueryFormUtils.validateEmail($("#notifyTo").val().split(",")[e].replace(/\s+/g, ''))) {
-						flag = false;
-						$("#notifyTo").parent().append("<p class='jquery_form_error_message'>Enter valid email id</p>");
-						return;
-					}
-				}
-			}
-			var formData = getFormData1("addTicketManagementForm");
-			$.ajax({
-				 type : "POST",
-				 data: formData,
-			     processData: false,
-			     contentType:false, 
-			     url : sourceleadUrl+"/saveTicket",
-				 success : function(response) {
-			  		if (response && response.response === "INVALID_DATA") {
-						showError(response.responseMessage);
-					} else if (response.response === "AWKWARD") {
-						location.href = "/errorPage";
-					} else if (response.response === "SUCCESS") {
-						
-						location.replace(sourceleadUrl+"/ticketManagementList");
-							$(".success_pop span").html("TicketList saved successfully...");
-							$(".success_pop").show();
-							cancelTicket();
-							
-							 setTimeout(function() {
-								getTicketManagementList();
-							$(".success_pop").hide();
-					 		}, 1000);  
-					} else if (response.indexOf('Sign In') !== -1) {
-						location.replace(sourceleadUrl);
-					} else {
-						showError("Operation failed, please try again");
-					}
-				},
-			});
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-</script>
 <jsp:include page="../masterFooter.jsp" />

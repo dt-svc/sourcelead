@@ -1,5 +1,7 @@
 package com.bis.sourcelead.rest;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,9 +52,12 @@ public class TicketManagementRestController {
 	public String dumpTicketManagementPreDefinedValuesToAllOrgLocations(HttpServletRequest request) {
 		int count = 0;
 		try {
-			System.out.println("-------- Stated Dump of pre-defined Ticket Management values to all OrgLocations --------");
-			count = ticketManagementService.dumpTicketManagementPreDefinedValuesToAllOrgLocations();
-			System.out.println("-------- Completed Dump of pre-defined Ticket Management values to all OrgLocations --------");
+			if(request.getSession().getAttribute("dumpTicketManagementData") == null || (!(Boolean) request.getSession().getAttribute("dumpTicketManagementData"))) {
+				request.getSession().setAttribute("dumpTicketManagementData", true);
+				System.out.println("-------- Stated Dump of pre-defined Ticket Management values to all OrgLocations --------");
+				count = ticketManagementService.dumpTicketManagementPreDefinedValuesToAllOrgLocations();
+				System.out.println("-------- Completed Dump of pre-defined Ticket Management values to all OrgLocations --------");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -61,14 +66,17 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = {"/getTicketTypeList", "/rest/getTicketTypeList"}, method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<TicketTypeDTO> getTicketTypeList(HttpServletRequest request) {
+	public ResponseList<TicketTypeDTO> getTicketTypeList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue) {
 		ResponseList<TicketTypeDTO> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				boolean forMobile = request.getRequestURI().contains("rest");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				responseList.setData(ticketManagementService.getTicketTypeListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1));
+				List<TicketTypeDTO> ticketTypeDTOList = ticketManagementService.getTicketTypeListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue);
+				responseList.setData(ticketTypeDTOList);
+				responseList.setRecordsTotal(ticketTypeDTOList.size());
+				responseList.setRecordsFiltered(ticketTypeDTOList.size());
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -181,7 +189,10 @@ public class TicketManagementRestController {
 			if (user != null) {
 				boolean forMobile = request.getRequestURI().contains("rest");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				responseList.setData(ticketManagementService.getTicketCategoryListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1));
+				List<TicketCategoryDTO> ticketCategoryDTOList = ticketManagementService.getTicketCategoryListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1); 
+				responseList.setData(ticketCategoryDTOList);
+				responseList.setRecordsTotal(ticketCategoryDTOList.size());
+				responseList.setRecordsFiltered(ticketCategoryDTOList.size());
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -295,7 +306,10 @@ public class TicketManagementRestController {
 			if (user != null) {
 				boolean forMobile = request.getRequestURI().contains("rest");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				responseList.setData(ticketManagementService.getTicketPriorityListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1));
+				List<TicketPriorityDTO> ticketPriorityDTOList = ticketManagementService.getTicketPriorityListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1);
+				responseList.setData(ticketPriorityDTOList);
+				responseList.setRecordsTotal(ticketPriorityDTOList.size());
+				responseList.setRecordsFiltered(ticketPriorityDTOList.size());
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -411,7 +425,10 @@ public class TicketManagementRestController {
 			if (user != null) {
 				boolean forMobile = request.getRequestURI().contains("rest");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				responseList.setData(ticketManagementService.getTicketStatusListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1));
+				List<TicketStatusDTO> ticketStatusDTOList = ticketManagementService.getTicketStatusListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1); 
+				responseList.setData(ticketStatusDTOList);
+				responseList.setRecordsTotal(ticketStatusDTOList.size());
+				responseList.setRecordsFiltered(ticketStatusDTOList.size());
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -544,8 +561,9 @@ public class TicketManagementRestController {
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
+				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				responseList.setData(ticketManagementService.getTicketManagementListByOrgLocationId(loginOrgLocation.getId(), user.getId(), 1, loginOrgLocation.getDateFormat()));
+				responseList.setData(ticketManagementService.getTicketManagementListByOrgLocationId(loginOrgLocation.getId(), user.getId(), 1, loginOrgLocation.getDateFormat(), userRole));
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -606,6 +624,28 @@ public class TicketManagementRestController {
 		}
 		return response;
 	}
+	
+	@RequestMapping(value="/changeTicketManagementStatus",method = RequestMethod.POST)
+	public Response<Boolean> deleteTicket(HttpServletRequest request, @RequestParam(defaultValue = "0") long ticketId, @RequestParam(defaultValue = "1") int status) {
+		Response<Boolean> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (user != null) {
+				response.setObject(ticketManagementService.changeTicketManagementStatus(ticketId, status));
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
 
 
 	@RequestMapping(value = "/rest/ticketSummary")
@@ -615,7 +655,7 @@ public class TicketManagementRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
-				response.setObject(ticketManagementService.getTicketSummaryByUUID(uuid, user.getId(), loginOrgLocation.getId(), loginOrgLocation.getDateFormat(), false));
+				response.setObject(ticketManagementService.getTicketSummaryByUUID(uuid, loginOrgLocation.getId(), loginOrgLocation.getDateFormat(), false));
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -632,9 +672,12 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = "getTicketManagementDescription", method = RequestMethod.POST)
 	public TicketDTO getTicketManagementDescription(@RequestParam(value = "uuid", required = false) String uuid, HttpServletRequest request) throws Exception {
+		TicketDTO ticketDTO = new TicketDTO();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		TicketDTO ticketDTO = ticketManagementService.getTicketSummaryByUUID(uuid, user.getId(), orgLocations.getId(), orgLocations.getDateFormat(), false);
+		if (user != null) {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			ticketDTO = ticketManagementService.getTicketSummaryByUUID(uuid, orgLocations.getId(), orgLocations.getDateFormat(), false);
+		}
 		return ticketDTO;
 	}
 
@@ -684,22 +727,26 @@ public class TicketManagementRestController {
 		return response;
 	}
 	
-	@RequestMapping(value = "/validateTicketId",  method = RequestMethod.POST)
-    public @ResponseBody Boolean validateTicketId(@RequestParam(value="generatedId", required=false) String generatedId, @RequestParam(value="ticketId", required=false) Long ticketId,
-    		HttpServletRequest request) throws Exception {
-	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	       Ticket ticket=null;
-	       if(null != ticketId){
-	    	   ticket = ticketManagementService.getTicketSnoAndTicketId(generatedId, ticketId, orgLocation.getId());
-	       }
-	       Boolean flag = false;
-		    if(ticket == null){
-		    	flag =  ticketManagementService.validateTicketId(generatedId, orgLocation.getId());
-		    	
-		    }
-			return flag;
-		 
-	    }
+	@RequestMapping(value = {"/validateTicketId", "/rest/validateTicketId"}, method = RequestMethod.POST)
+	public @ResponseBody Boolean validateTicketId(@RequestParam(value = "generatedId", required = false) String generatedId,
+			@RequestParam(value = "ticketId", required = false) Long ticketId, HttpServletRequest request) throws Exception {
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Ticket ticket = null;
+				if (ticketId != null) {
+					ticket = ticketManagementService.getTicketSnoAndTicketId(generatedId, ticketId, orgLocation.getId());
+				}
+				if (ticket == null) {
+					return ticketManagementService.validateTicketId(generatedId, orgLocation.getId());
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 	
 	@RequestMapping(value = "/getCategoryAssignToListByTicketCategoryId", method = RequestMethod.POST)
 	@ResponseBody
@@ -723,30 +770,9 @@ public class TicketManagementRestController {
 		}
 		return responseList;
 	}
-	/*
-	 * @RequestMapping(value = "/changeTicketManagementStatusDataById", method =
-	 * RequestMethod.POST)
-	 * 
-	 * @ResponseBody public Response<Boolean>
-	 * changeTicketManagementStatusDataById(HttpServletRequest request,
-	 * 
-	 * @RequestParam(defaultValue = "0") long id, int status) throws Exception {
-	 * Response<Boolean> response = new Response<>(); try { User user = (User)
-	 * SourceLeadSessionManager.getSessionAttribute(request, "user"); OrgLocations
-	 * orgLocation = (OrgLocations)
-	 * SourceLeadSessionManager.getSessionAttribute(request, "orgLocations"); if
-	 * (user != null) { response.setObject(ticketManagementService.
-	 * changeTicketManagementStatusDataById(id, status, orgLocation));
-	 * response.setResponse(Result.SUCCESS.name());
-	 * response.setResponseMessage(Result.SUCCESS.getValue()); } else {
-	 * response.setResponse(Result.SESSION_TIMEDOUT.name());
-	 * response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue()); } } catch
-	 * (Exception e) { e.printStackTrace();
-	 * response.setResponse(Result.AWKWARD.name());
-	 * response.setResponseMessage(Result.AWKWARD.getValue()); } return response; }
-	 */
 	
-	@RequestMapping(value = "/getUserListByLoginOrgLocationId")
+	@RequestMapping(value = "/rest/getUserListByLoginOrgLocationId", method = RequestMethod.POST)
+	@ResponseBody
 	public ResponseList<User> getAllUsersByOrgLocationId(HttpServletRequest request) {
 		ResponseList<User> responseList = new ResponseList<>(); 
 		try {
