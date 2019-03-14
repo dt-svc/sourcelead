@@ -119,23 +119,23 @@ $(document).ready(function(){
 			requirementListCheck(searchValue,universalRequirementList,"universalSearch",atsUrl);
 		}
 	  
-	  if(roleActionsArray.indexOf("ROLE_CREATE_REQUIREMENT") > == -1){
+	  if(roleActionsArray.indexOf("ROLE_CREATE_REQUIREMENT") == -1){
 		  $("#jobActions").remove();
 	  }
-	  if(roleActionsArray.indexOf("ROLE_EXPORT_REQUIREMENTS") > == -1){
+	  if(roleActionsArray.indexOf("ROLE_EXPORT_REQUIREMENTS") == -1){
 		  $("#jobExportAndImportActions").remove();
 	  }
-	  if(roleActionsArray.indexOf("ROLE_CREATE_REQUIREMENT") > == -1){
+	  if(roleActionsArray.indexOf("ROLE_CREATE_REQUIREMENT")  == -1){
 		  $("#jobFairAction").remove();
 	  }
-	  if(roleActionsArray.indexOf("ROLE_CREATE_REQUIREMENT") > == -1){
+	  if(roleActionsArray.indexOf("ROLE_CREATE_REQUIREMENT") == -1){
 		  $("#crowdsourcingJobsAction").remove();
 	  }
-	  if(roleActionsArray.indexOf("ROLE_CREATE_REQUIREMENT") > == -1 || roleActionsArray.indexOf("ROLE_VIEW_REQUIREMENT") == -1 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_REQUIREMENT") == -1){
+	  if(roleActionsArray.indexOf("ROLE_CREATE_REQUIREMENT") == -1 || roleActionsArray.indexOf("ROLE_VIEW_REQUIREMENT") == -1 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_REQUIREMENT") == -1){
 		  $("#filter1ApprovedPop").remove();
 	  }
 	    
-	  if(roleActionsArray.indexOf("ROLE_EXPORT_REQUIREMENTS") > == -1){
+	  if(roleActionsArray.indexOf("ROLE_EXPORT_REQUIREMENTS") == -1){
 		  $("#jobFairExportActions").remove();
 	  }
 	    

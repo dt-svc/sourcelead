@@ -929,7 +929,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	<div class="clearfix advancedsearch-footer">
 		<div class="pull-right mr">
 			<input type="button" value="Search" id="search_requiremet"
-				onclick="requirementListCheck('','','advanceSearch','${sourceleadUrl}');" class="btn btn-sm btn-success" />
+				onclick="requirementListCheck('','','advanceSearch','${SourceLeadWeb_atsUrl}');" class="btn btn-sm btn-success" />
 			<input type="button" value="Reset" id="clear_search"
 				onclick="clearSearch();" class="btn btn-sm btn-primary" />
 		</div>
@@ -1120,7 +1120,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 			<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" 
-								onclick="closeFilter();requirementList('list','${sourceleadUrl}');" class="btn btn-sm btn-success" />
+								onclick="closeFilter();requirementList('list','${SourceLeadWeb_atsUrl}');" class="btn btn-sm btn-success" />
 							<input type="button" value="Reset" id="clear_search"
 								onclick="resetJobFilter();" class="btn btn-sm btn-primary" />
 						</div>
