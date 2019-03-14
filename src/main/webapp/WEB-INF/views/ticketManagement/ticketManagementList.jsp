@@ -17,6 +17,14 @@
           <div class="positionRelative reportHead clearfix">
             <ul class="pull-right list-unstyled list-inline">
               <li><a href="/app/addTicket" class="newAdBtn mr5" title="Add" id="addPop">+ Add</a></li>
+              <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+							<div class="newActPop" style="display: none;">
+								<span>
+									 	<a href="javascript:void(0)" onclick="exportTicketManagementSheet('Pdf');" title="PDF" style="display: block">Export PDF</a>
+										<a href="javascript:void(0)" onclick="exportTicketManagementSheet('Excel');" title="Excel" style="display: block">Export Excel</a>					
+								</span>
+							</div>
+				</li>
               <li class="">
                 <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
                 <span class="repSearchIcon" onclick="getTicketManagementList();"></span></li>
@@ -51,5 +59,25 @@
 		getTicketStatusList();
 		getTicketManagementList();
 	});
+</script>
+<!-- Export of Ticket Management -->
+<script>
+
+function exportTicketManagementSheet(exportType){
+	alert("ooo")
+	window.location.href = sourceleadUrl+"/getTicketManagementExportListByOrgLocationId?"+tokenParamName+"="+tokenValue+"&exportType="+exportType;
+
+}
+</script><script>
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});
 </script>
 <jsp:include page="../masterFooter.jsp" />	 
