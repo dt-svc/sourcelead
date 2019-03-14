@@ -77,6 +77,9 @@ public class ContractController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${vmsUrl}")
+	private String vmsUrl;
+	
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
 	
@@ -767,14 +770,14 @@ public class ContractController {
 		ModelAndView model = new ModelAndView();
 		Contracts contract = contractsTemplateService.getContractByContractUUID(contractUUID);
 		String permission = "";
-		if("public".equalsIgnoreCase(type) && (Constants.WAITING_TO_BE_VERIFY.equalsIgnoreCase(contract.getTemplateSubmissionStatus()) || Constants.FINALIZED.equalsIgnoreCase(contract.getTemplateSubmissionStatus()))){
+		if("public".equalsIgnoreCase(type) && (Constants.SEND_FOR_VERIFICATION.equalsIgnoreCase(contract.getTemplateSubmissionStatus()) || Constants.FINALIZED.equalsIgnoreCase(contract.getTemplateSubmissionStatus()))){
 			permission = "No";
 			model.addObject("permission", permission);
 		}
 		
 		model.addObject("contract", contract);
 		
-		if(contract.getOwnerUserId() != null){
+		if(contract.getOwnerUserId() != null && !"public".equalsIgnoreCase(type)){
 			if(StringUtils.isNotBlank(contract.getOwnerUserId().getLastName())) {
 				StringBuilder sb = new StringBuilder();
 				StringBuilder sbn = new StringBuilder();
@@ -788,6 +791,7 @@ public class ContractController {
 
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("type", type);
+		model.addObject("vmsUrl", vmsUrl);
 		model.setViewName("contracts/upload");
 		return model;
 	}
