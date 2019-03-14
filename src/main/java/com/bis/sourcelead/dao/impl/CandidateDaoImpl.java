@@ -2473,7 +2473,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			}
 			if (candidateMarketPlaceDTO.getStatus() != null
 					&& candidateMarketPlaceDTO.getStatus().equals("" + Constants.CANDIDATE_ALL)) {
-				statusQuery.append(" and marketplace.candidateId.status = 0 or marketplace.candidateId.status = 1 ");
+				statusQuery.append(" and ((marketplace.candidateId.status = 0) or (marketplace.candidateId.status = 1)) ");
 			}
 			if (!dateValue.isEmpty()) {
 				dateQuery.append(
