@@ -10,7 +10,7 @@
     	<div class="pull-left">
 				<h2>Associate Joined Report</h2>
 		</div>
-        <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/performanceReportList'/>">Performance Reports</a> &raquo; Applicants Joined Report  </div>
+        <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard">Reports Dashboard</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/associateReportsList">Associate Reports</a> &raquo; Applicants Joined Report  </div>
     </section>
        
     <!-- Project -->
