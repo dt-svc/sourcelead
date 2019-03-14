@@ -33,7 +33,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>View Contract</h2>
       </div>
-     <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_vmsUrl}/contractListbyStatus">Contracts</a> &raquo; View Contract</div>
+     <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_vmsUrl}/contractListbyStatus">Contracts</a> &raquo; View Contract</div>
     </section>
     
 
