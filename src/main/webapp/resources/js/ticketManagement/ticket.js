@@ -38,11 +38,6 @@ function getTicketManagementList() {
 		            text+= "      <td><div class='tblminwidth-150'>" + response.data[e].generatedId + "</div></td>";
 		            text+= "      <td><div class='tbldata-dotdot-vsm'><a href='/app/ticketSummary?uuid=" + response.data[e].uuid + "' title='" + response.data[e].title + "'>" + response.data[e].title + "</a></div></td>";
 		            /*text+= "     <td><div class='tbldata-dotdot-vsm'>" + response.data[e].ticketCategory + "</div></td>";*/
-		            text += "<td><select class='sel' onChange='changeTicketStatus(this, \"" + response.data[e].id + "\")'>";
-		            for(var s in statusList) {
-		            	text += "<option data-comment=" + statusList[s].commentRequired + " value='" + statusList[s].id + "' " + (statusList[s].name === response.data[e].ticketStatus ? "selected" : "") + ">" + statusList[s].name + "</option>";
-		            }
-		            text += "</select></td>";
 		            /*text+= "     <td><div class='tbldata-dotdot-vsm'>" + response.data[e].ticketStatus + "</div></td>";*/
 		            text+= "   	<td><div class='tblminwidth-75' style='color:" + (response.data[e].ticketPriorityTextColor != null && response.data[e].ticketPriorityTextColor !== "" ? response.data[e].ticketPriorityTextColor : "") + "'>" + (response.data[e].ticketPriorityImage !== null && response.data[e].ticketPriorityImage !== "" ? "<div class='priorityImage pull-left mr10'><img src=\"" + response.data[e].ticketPriorityImage + "\" class='mr10'/></div>" : "<div class='blank-div mr10'></div>") + "<div class='pull-left'>" + response.data[e].ticketPriority + "</div></div></td>";
 		            text+= "    <td><div class='tbldata-dotdot-vsm'>" + response.data[e].createdBy + "</div></td>";
@@ -51,6 +46,11 @@ function getTicketManagementList() {
 						assignTo += (assignTo === "" ? "" : ",") + response.data[e].assignedTo[a];
 					}
 					text += "    <td><div class='tbldata-dotdot'>" + (assignTo === "" ? "--" : assignTo) + "</div></td>";
+					text += "<td><select class='sel' onChange='changeTicketStatus(this, \"" + response.data[e].id + "\", \"" + response.data[e].ticketStatusId + "\")'>";
+					for(var s in statusList) {
+						text += "<option data-comment=" + statusList[s].commentRequired + " value='" + statusList[s].id + "' " + (statusList[s].name === response.data[e].ticketStatus ? "selected" : "") + ">" + statusList[s].name + "</option>";
+					}
+					text += "</select></td>";
 		            text+= "      <td>";
 					text+= "		  <ul class=list-inline list-unstyled'>";
 					text+= "			  <li><i class='fa fa-pencil cursorPointer' onClick='editTicketManagement(\"" + response.data[e].uuid + "\");'></i></li>";
@@ -110,8 +110,10 @@ function ticketManagementListPagination(){
 function editTicketManagement(uuid) {
 	location.href = sourceleadUrl + "/editTicket?uuid=" + uuid;
 }
-
-function changeTicketStatus(ele, ticketId) {
+var activeElement = null, previousStatusId = "";
+function changeTicketStatus(ele, ticketId, previousStatus) {
+	activeElement = ele;
+	previousStatusId = previousStatus;
 	var statusId = $(ele).val();
 	var commentRequired = $(ele).find(':selected').data("comment");
 	if(commentRequired) {
@@ -142,7 +144,6 @@ function changeTicketStatusFinal(popupFlag, ticketId, statusId) {
 		statusId = $("#confirmStatusWithoutCommentId").data("status_id");
 	}
 	if(flag) {
-		alert(ticketId + " : " + statusId + (comment ? " : " + comment : ""));
 		$.post(sourceleadUrl + "/changeTicketStatusType?ticketId="+ ticketId + "&statusId=" + statusId + "&comment=" + comment, function(response) {
 			if (response && response.response === "INVALID_DATA") {
 				showError(response.responseMessage);
@@ -150,7 +151,7 @@ function changeTicketStatusFinal(popupFlag, ticketId, statusId) {
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
 				if(response.object === true) {
-					closeChangeStatusPopup();
+					closeChangeStatusPopup(false);
 					location.reload();
 				}
 			} else if (response.indexOf('Sign In') !== -1) {
@@ -162,7 +163,10 @@ function changeTicketStatusFinal(popupFlag, ticketId, statusId) {
 	}
 }
 
-function closeChangeStatusPopup() {
+function closeChangeStatusPopup(cancelFlag) {
+	if(cancelFlag) {
+		$(activeElement).val(previousStatusId);
+	}
 	$("#changeStatusPopupWithoutComment").slideUp(200);
 	$("#changeStatusPopupWithComment").slideUp(200);
 	$(".mask").fadeOut(200);
@@ -236,27 +240,27 @@ function getCategoryAssignToUsers() {
 
 function validateTicketId(ticketId) {
 	 var generatedId = $("#ticketId").val(); 
-	 if(ticketId !=null && ticketId !='' && ticketId !='undefined'){
+	 if(ticketId !=null && ticketId !='' && ticketId !='undefined') {
 		 generatedId = ticketId;
 	 }
-	 if(generatedId != null && generatedId != ""){
+	 if(generatedId != null && generatedId != "") {
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateTicketId?generatedId="+generatedId, 
 		        success: function(data) {
 		        	if(data == true){
-		        		     $('#ticketDivId').find('p.jquery_form_error_message').remove();
-		        			  $("input#ticketId").after ("<p class='jquery_form_error_message'>"+generatedId+" is Already Existed</span>");
-							  document.getElementById("ticketId").setAttribute('record-exist','yes');
-							  document.getElementById("ticketId").setAttribute('record-exist-errorMsg',generatedId+' is Already Existed'); 
-		        	}else{
-	        			 $('input#ticketId').removeAttr( "record-exist record-exist-errormsg"); 
-		        		 $('#ticketDivId').find('p.jquery_form_error_message').remove(); 
-                      $("#ticketId").removeAttr("disabled");
+		        		$('#ticketDivId').find('p.jquery_form_error_message').remove();
+		        		$("input#ticketId").after ("<p class='jquery_form_error_message'>"+generatedId+" is Already Existed</span>");
+						document.getElementById("ticketId").setAttribute('record-exist','yes');
+						document.getElementById("ticketId").setAttribute('record-exist-errorMsg',generatedId+' is Already Existed'); 
+		        	} else {
+		        		$('input#ticketId').removeAttr( "record-exist record-exist-errormsg"); 
+		        		$('#ticketDivId').find('p.jquery_form_error_message').remove(); 
+		        		$("#ticketId").removeAttr("disabled");
 		        	}
 		        },
 		    });
-	 } 
+	 }
 }
 
 function saveTicket() {
@@ -332,10 +336,7 @@ function getTicketCommetList(ticketId) {
                     text += "  </div>";
 		    		$("#ticketCommentListDivId").append(text);
 				}
-			} else {
-				alert("Empty list returned....");
 			}
-			
 		} else if (response.indexOf('Sign In') !== -1) {
 			location.replace(sourceleadUrl);
 		} else {
@@ -354,7 +355,6 @@ function saveTicketComment(ticketId){
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
 				if(response.object === true) {
-					alert(response.responseMessage);
 					getTicketCommetList(ticketId);
 					closeTicketComment();
 				}

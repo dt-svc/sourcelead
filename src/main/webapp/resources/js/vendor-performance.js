@@ -52,7 +52,11 @@ $(document).ready(function() {
 	$("#getVendorPerformance").click(function() {
 		orgRelationId = $("#vendorList").val() != null ? $("#vendorList").val() : 0;
 		contactUserId = $("#contactList").val() != null ? $("#contactList").val() : 0;
-		getVendorsReportGraphData();
+		if(orgRelationId > 0) {
+			getVendorsReportGraphData();
+		} else {
+			alert("Please select Vendor");
+		}
 	});
 	
 //	$("#graphView").click();
@@ -115,22 +119,24 @@ function getContactList() {
 }
 
 function getVendorsReportGraphData() {
-	getReleasedJobsGraph();
-	getOfferAcceptanceRateGraph();
-	
-	$("#avgPercentMovingFwdloadingDiv").show();
-	$("#avgPercentMovingFwdNoRecordsDiv").hide();
-	$("#avgPercentMovingFwdChartDiv").hide();
-	
-	$("#qualityCandidatesloadingDiv").show();
-	$("#qualityCandidatesNoRecordsDiv").hide();
-	$("#qualityCandidatesChartDiv").hide();
-	
-	$("#applicantDeclineloadingDiv").show();
-	$("#applicantDeclineNoRecordsDiv").hide();
-	$("#applicantDeclineChartDiv").hide();
-	
-	getAverageTimeToFillGraph();
+	if(orgRelationId > 0) {
+		getReleasedJobsGraph();
+		getOfferAcceptanceRateGraph();
+		
+		$("#avgPercentMovingFwdloadingDiv").show();
+		$("#avgPercentMovingFwdNoRecordsDiv").hide();
+		$("#avgPercentMovingFwdChartDiv").hide();
+		
+		$("#qualityCandidatesloadingDiv").show();
+		$("#qualityCandidatesNoRecordsDiv").hide();
+		$("#qualityCandidatesChartDiv").hide();
+		
+		$("#applicantDeclineloadingDiv").show();
+		$("#applicantDeclineNoRecordsDiv").hide();
+		$("#applicantDeclineChartDiv").hide();
+		
+		getAverageTimeToFillGraph();
+	}
 }
 
 // Released Jobs
@@ -570,6 +576,7 @@ function getQualityCandidatesGraph() {
 
 /*Applicant Decline*/
 function getApplicantDeclineGraph() {
+	$("#applicantsDeclineCount").html(0);
 	$("#applicantDeclineloadingDiv").show();
 	$("#applicantDeclineNoRecordsDiv").hide();
 	$("#applicantDeclineChartDiv").hide();
@@ -673,6 +680,7 @@ function getApplicantDeclineGraph() {
 
 /*Backout Candidates*/
 function getApplicantBackoutGraph() {
+	$("#backoutCandidatesCount").html(0);
 	$("#backoutCandidatesloadingDiv").show();
 	$("#backoutCandidatesNoRecordsDiv").hide();
 	$("#backoutCandidatesChartDiv").hide();

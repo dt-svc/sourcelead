@@ -106,9 +106,14 @@
 					<div class="project_details_cta">
 						<strong>Submitted Amount:</strong><span>${expenses.totalsubmittedAmount}</span><div class="clearfix"></div>
 					</div>
+					  <c:if test="${submissionStatus == 'DRAFT'}">
+					<div class="project_details_cta">
+						<strong>Submitted On:</strong><span>${expenses.submittedDate}</span><div class="clearfix"></div>
+					</div>
+					 </c:if>
 					
 					  <c:if test="${submissionStatus == 'APPROVED'}">
-						 <div class="project_details_cta">
+					   <div class="project_details_cta">
 					      <strong>Approved Amount:</strong><span>${expenses.totalAmount}</span><div class="clearfix"></div> 	
 					    </div>
 					  </c:if>

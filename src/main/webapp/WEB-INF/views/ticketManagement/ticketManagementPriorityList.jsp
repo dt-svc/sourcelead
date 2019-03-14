@@ -8,7 +8,7 @@
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Ticket Pritory</h2>
+        <h2>Ticket Priority</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo;  <a href="<c:url value='${appPath}/settings'/>">Settings</a> &raquo; Ticket Priority List</div>
     </section>
@@ -25,34 +25,20 @@
         <div class="col-md-10 padding_left">
 			<div class="project_tabs projectTabsborder">
 				<div id="tab-1">
-          <div class="positionRelative timesheet_head clearfix">
-            <ul class="pull-right list-unstyled list-inline">
-              <li><a class="newAdBtn mr5" title="Add" id="addPop">+ Add</a></li>
-              <li class="hidden">
-                <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
-            </ul>
-          </div>
-          <div class="candidate_wrap_table datatable_filter">
-           <table style="width: 100%;" id="ticketManagementPriorityTable">
-              <thead>
-                <tr>
-                    <th>Icon</th>
-                    <th>Priority</th>
-                    <th>Description</th>
-                    <th>Color</th>
-                    <th>Action</th>
-                  </tr>
-              </thead>
-              <tbody id="ticketPriorityList">
-                  
-                  </tbody>
-            </table>
-          </div>
-			</div>
-				
+		        	<div class="positionRelative reportHead clearfix">
+			            <ul class="pull-right list-unstyled list-inline">
+			              <li><a class="newAdBtn mr5" title="Add" id="addPop">+ Add</a></li>
+			                <li>
+				                <input class="repSearchBar" placeholder="Search" id="ticketPriorityDataTableSearch" type="text">
+				                <span class="repSearchIcon" onclick="getTicketCategoryList();"></span>
+				            </li>
+			            </ul>
+					</div>
+		          <div class="candidate_wrap_table datatable_filter" id="ticketPriorityParentList">
+		           
+		          </div>
+				</div>
 		  </div>
-		  
         </div>
       </div>
     </div>
@@ -74,7 +60,7 @@
                 <label class="noPad">Color</label>
                 <div class="clearfix">
                     <div class="input-group">
-                        <input id="favcolor" type="text" class="form-control valid" readonly="" name="colorPic" placeholder="Color Pic">
+                        <input id="favcolor" type="text" class="form-control valid" readonly name="colorPic" placeholder="Color Pic">
                         <span class="input-group-addon" style="padding: 2px 10px;">
                         <input type="color" id="favcolorP" name="colorCode" style="width: 20px; height: 20px;" onchange="colorPicker();">
                         </span> 
@@ -84,21 +70,25 @@
             <div class="clearfix mb">
                 <label class="noPad">Icon</label>
 				<div class="clearfix">
-					<div class="input-group col-md-12">
+					<div class="input-group col-md-11 pull-left">
 						<span class="input-group-btn">
 							<label class="input-group-btn"> 
 								<span class="btn btn-danger" onchange="uploadPriorityImage();">
 									<i class="fa fa-folder-open-o"></i> &nbsp;Browse File 
-									<input type="file" style="display: none;" multiple id="uploadBtn" class="upload">
+									<input type="file" style="display: none;" multiple id="uploadBtn" class="upload" accept="image/*">
 									<input type="hidden" id="dataFilePath">
+									<input type="hidden" id="refreshImage" name="refreshImage" value="false"/>
 								</span>
 							</label>
 						</span>
-						<input type="text" class="form-control" readonly id="uploadFile" placeholder="Upload Resume ...">
+						<input type="text" class="form-control" readonly id="uploadFile" placeholder="Upload Priority Image ...">
 					</div>
-
+					<div class="col-md-1 pull-left">
+						<i class="fa fa-refresh cursorPointer mt10 text-primary" title="Refresh Icon" onclick="refreshPriorityImage();"></i>
+					</div>
+					<div class="clearfix"></div>
 					<div class="clearfix mt10 text-muted">
-						<i class="fa fa-question-circle text-info"></i>&nbsp; Upload icon images ...
+						<i class="fa fa-question-circle text-info"></i>&nbsp; Upload icon image ...
 					</div>
 				</div>
 			</div>

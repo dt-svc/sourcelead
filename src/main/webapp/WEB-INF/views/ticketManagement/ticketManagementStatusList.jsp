@@ -28,36 +28,23 @@
         <div class="col-md-10 padding_left">
 			<div class="project_tabs projectTabsborder">
 				<div id="tab-1">
-          <div class="positionRelative timesheet_head clearfix">
+          <div class="positionRelative reportHead clearfix">
             <ul class="pull-right list-unstyled list-inline">
               <li><a class="newAdBtn mr5" title="Add" id="addPop">+ Add</a></li>
-              <li class="hidden">
-                <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
+              <li>
+                <input class="repSearchBar" placeholder="Search" id="ticketStatusDataTableSearch" type="text">
+                <span class="repSearchIcon" onclick="getTicketStatusList();"></span></li>
             </ul>
           </div>
           <div class="candidate_wrap_table">
-            <div class="candidate_wrap_table datatable_filter">
-            <table style="width: 100%;" id="ticketManagementStatusTable">
-              <thead>
-                <tr>
-                  <th>Status</th>
-                  <th>Description</th>
-                  <th>Comment</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="ticketStatusList">
-               
-              </tbody>
-            </table>
-          </div>
+            <div class="candidate_wrap_table datatable_filter" id="ticketStatusParentList">
 			</div>
-				
 		  </div>
 		  
         </div>
       </div>
+    </div>
+    </div>
     </div>
   </section>
   <!-- Footer Area --> 
@@ -76,7 +63,7 @@
         <div class="clearfix mb">
           <label class="noPad">Required Comment<b class="valStar">*</b></label>
           <div class="clearfix">
-              <select class="sel" name="commentRequired" field-name="Required Comment" data-validation="required">
+              <select class="sel" name="commentRequired" id="ticketCommentRequired" field-name="Required Comment" data-validation="required">
                   <option value="">Select</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
