@@ -2317,11 +2317,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		if(candidateDTO.getDocFile() != null && !candidateDTO.getDocFile().equals("")) {
 			candidateResumesList = new HashSet<CandidateResumes>();
 			long time = new Date().getTime();
-			File folder = new File(staticPath+"/"+orgLocations.getOrg().getId()+"/"+orgLocations.getId()+"/resumes/");
+			File folder = new File(staticPath+"/"+orgLocations.getOrgId()+"/"+orgLocations.getId()+"/resumes/");
 			if (!folder.exists())
 				folder.mkdirs();
 			File file = new File(folder,candidateDTO.getFirstName() + time+".docx");
-			String fileUrl = "/slead-static/"+orgLocations.getOrg().getId()+"/"+orgLocations.getId()+"/resumes/"+file.getName();
+			String fileUrl = "/slead-static/"+orgLocations.getOrgId()+"/"+orgLocations.getId()+"/resumes/"+file.getName();
 			XWPFDocument document = new XWPFDocument(); 
 			FileOutputStream out = new FileOutputStream(file);
 			XWPFParagraph paragraph = document.createParagraph();

@@ -3095,7 +3095,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 	public void dataValidationForCandidateBulkImports(HashMap< String, String> errorSet, org.json.simple.JSONObject dataMigrationDTOJsonCopy,OrgLocations orgLocation,List<OrgRelations> vendorsList) throws Exception
 	{
 		
-		if(dataMigrationDTOJsonCopy.get("email").toString() != null) {
+		if(dataMigrationDTOJsonCopy.get("email") != null) {
 			Long candidateId = candidateService.getCandidateIdByEmailAndOrgLocationId(dataMigrationDTOJsonCopy.get("email").toString(), orgLocation.getId());
 			if (candidateId != null) {
 				errorSet.put("email", "Candidate already existed");

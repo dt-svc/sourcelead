@@ -1432,13 +1432,16 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					JSONObject dataMigrationDTOJsonCopy = new JSONObject(dataMigrationDTOCopy);
 					keys = dataMigrationDTOJson.keys();
 					dataMigrationDTOJsonCopy.put("orgLocationId", orgLocationId);
-					
+					boolean flag = false;
 					while (keys.hasNext()) {
 						String k = (String) keys.next();
 						if (StringUtils.isNotEmpty(k)) {
 							Iterator<Cell> cellIterator = nextRow.cellIterator();
 							while (cellIterator.hasNext()) {
 								Cell cell = cellIterator.next();
+								if(StringUtils.isNotBlank(cell.getStringCellValue()) && flag == false) {
+									flag = true;
+								}
 								if (dataMigrationDTOJson.has((String) k) && dataMigrationDTOJson.get((String) k) != null) {
 									if ((dataMigrationDTOJson.get((String) k).toString().replaceAll("\\d", ""))
 											.equalsIgnoreCase(CellReference.convertNumToColString(cell.getColumnIndex()))) {
@@ -1449,24 +1452,27 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 						}
 					}
 					
-					 String documentId = SourceLeadRandomCodeHelper.generateRandomCustomToken();
-					 JsonObject jsonObject = JsonObject.fromJson(dataMigrationDTOJsonCopy.toString());
-					 sourceLeadSessionManager.setCouchbaseBulkImportJsonString(documentId, "bulkImports", jsonObject);
-					 
-					 
-					 if(i == 10000 || i == 0 ) {
-						 documentQueueId = SourceLeadRandomCodeHelper.generateRandomCustomToken();
-						 doucumentQueueIdsList.add(documentQueueId);
-						 i = 0;
-					 }
-					 
-					 i++;
-					 
-				 try {
-					 sourceLeadSessionManager.setCouchbaseQueue(documentQueueId, documentId);	
-					 }catch (Exception e) {
-						 e.printStackTrace();
+					if(flag == true) {
+						 String documentId = SourceLeadRandomCodeHelper.generateRandomCustomToken();
+						 JsonObject jsonObject = JsonObject.fromJson(dataMigrationDTOJsonCopy.toString());
+						 sourceLeadSessionManager.setCouchbaseBulkImportJsonString(documentId, "bulkImports", jsonObject);
+						 
+						 
+						 if(i == 10000 || i == 0 ) {
+							 documentQueueId = SourceLeadRandomCodeHelper.generateRandomCustomToken();
+							 doucumentQueueIdsList.add(documentQueueId);
+							 i = 0;
+						 }
+						 
+						 i++;
+						 
+					 try {
+						 sourceLeadSessionManager.setCouchbaseQueue(documentQueueId, documentId);	
+						 }catch (Exception e) {
+							 e.printStackTrace();
+						}
 					}
+			
 				}
 		
 			}
