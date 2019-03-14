@@ -1010,7 +1010,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				StringBuilder ownerName = new StringBuilder();
 				StringBuilder vendorName = new StringBuilder();
 				List<Long> ownerUserIds = new ArrayList<>();
-				if(null != contracts.getOwnerHierarchyList()){
+				if(null != contracts.getOwnerHierarchyList() && contracts.getOwnerHierarchyList().size() > 0){
 					for(ContractOwnerHierarchy coh : contracts.getOwnerHierarchyList()){
 						ownerUserIds.add(coh.getOwnerUserId().getId());
 						if(null != coh.getOwnerUserId().getFirstName() && null != coh.getOwnerUserId().getLastName()){
@@ -1021,11 +1021,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					}
 					
 				}else{
-					ownerUserIds.add(contracts.getOwnerUserId().getId());
-					if(StringUtils.isNotBlank(contracts.getOwnerUserId().getLastName())){
-						ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
-					}else{
-						ownerName.append(contracts.getOwnerUserId().getFirstName());
+					if(contracts.getOwnerUserId() != null) {
+						ownerUserIds.add(contracts.getOwnerUserId().getId());
+						if(StringUtils.isNotBlank(contracts.getOwnerUserId().getLastName())){
+							ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
+						}else{
+							ownerName.append(contracts.getOwnerUserId().getFirstName());
+						}
 					}
 				}
 				venContractsDto.setOwnerName(ownerName.toString().replaceAll("\\s*,\\s*$", ""));
@@ -1208,7 +1210,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				StringBuilder ownerName = new StringBuilder();
 				StringBuilder vendorName = new StringBuilder();
 				List<Long> ownerUserIds = new ArrayList<>();
-				if(null != contracts.getOwnerHierarchyList()){
+				if(null != contracts.getOwnerHierarchyList() && contracts.getOwnerHierarchyList().size() > 0){
 					for(ContractOwnerHierarchy coh : contracts.getOwnerHierarchyList()){
 						ownerUserIds.add(coh.getOwnerUserId().getId());
 						if(null != coh.getOwnerUserId().getFirstName() && null != coh.getOwnerUserId().getLastName()){
@@ -1220,11 +1222,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					
 
 				}else{
-					ownerUserIds.add(contracts.getOwnerUserId().getId());
-					if(StringUtils.isNotBlank(contracts.getOwnerUserId().getLastName())){
-						ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
-					}else{
-						ownerName.append(contracts.getOwnerUserId().getFirstName());
+					if(contracts.getOwnerUserId() != null) {
+						ownerUserIds.add(contracts.getOwnerUserId().getId());
+						if(StringUtils.isNotBlank(contracts.getOwnerUserId().getLastName())){
+							ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
+						}else{
+							ownerName.append(contracts.getOwnerUserId().getFirstName());
+						}
 					}
 				}
 
