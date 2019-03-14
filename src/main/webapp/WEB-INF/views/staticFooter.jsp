@@ -104,7 +104,8 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 			  <span class="fa fa-angle-down"></span></a>
 			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom">
 				<li><a class="helpbtn" href="/help.html">Help</a></li>
-				<li><a href="/all.html" id="blogID">Blog</a></li>
+				<li><a href="/blog/all.html" id="blogID">Blog</a></li>
+				<li><a href="/blog/allReleaseNote.html" id="releaseNoteID">Release Note</a></li>
 			</ul>
 	</li>
 

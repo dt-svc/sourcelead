@@ -217,7 +217,6 @@ public class UploadController {
 	public AssociateBankErrorData saveAssociateBankDetailTemplate(MultipartHttpServletRequest request) throws Exception
 	{
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		    
 		    MultipartFile multipartFile = null;
 			Iterator<String> itrator = request.getFileNames();
 			if (itrator.hasNext()) {

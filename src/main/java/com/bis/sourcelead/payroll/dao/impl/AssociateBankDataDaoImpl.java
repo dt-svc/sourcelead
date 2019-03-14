@@ -193,7 +193,7 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean isActiveAccount = false;
 		try {
-			List<AssociateBankData> dataList = session.createQuery("from AssociateBankData assBankData where assBankData.orgLocationId.id =:orgLocationId and assBankData.defaultAccount = :defaultAccount").setLong("orgLocationId", orgLocationId).setBoolean("defaultAccount", true).list();
+			List<AssociateBankData> dataList = session.createQuery("from AssociateBankData assBankData where assBankData.orgLocationId.id =:orgLocationId and assBankData.defaultAccount = :defaultAccount and assBankData.candidate.id = :candidateId").setLong("orgLocationId", orgLocationId).setLong("candidateId", candidateId).setBoolean("defaultAccount", true).list();
 			if(dataList != null && dataList.size() >0) {
 				isActiveAccount = true;;
 			}

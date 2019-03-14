@@ -9804,6 +9804,102 @@ border:none; width: 20px; height: 20px; float: left; margin-right: 10px; cursor:
 .visaCalendarInput.calendar {
 background-size: 15px !important;
 }
+.ind_bankacountSVG {
+	background: url("../images/ind_bankSVG.svg"); background-repeat: no-repeat; background-size: 50px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+	}
+	.ind_payrollSVG {
+	background: url("../images/ind_payroll.svg"); background-repeat: no-repeat; background-size: 50px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+	}
+.newRepGrid .perfDashCta h3 {
+	padding-top: 10px;
+}
+.newRepGrid .perfDashCta:hover {
+	background: #fff;
+}
+.fontSize14 {
+	font-size: 14px;
+}
+.goalsDash .col-md-2 {
+	width: 20%;
+}
+/*
+.tableCardmodel table {
+	width: 100%; border-collapse: separate; border-spacing: 0 10px;
+}
+.tableCardmodel table thead {
+	background-color: #fff; padding: 15px 15px; border: none; min-height: 40px; line-height: 40px;
+}
+.tableCardmodel table tr th, .tableCardmodel table tr td  {
+ 	text-align: left; width: 200px; padding:0px 15px; 
+}
+.tableCardmodel table tr th:nth-child(1), .tableCardmodel table tr td:nth-child(1)  {
+	width: 475px;
+}
+.tableCardmodel table tr th:nth-last-child(1), .tableCardmodel table tr td:nth-last-child(1)  {
+	width: 125px;
+}
+.tableCardmodel table tbody tr {
+	background-color: #fff; margin:0; border-radius: 3px; webkit-box-shadow: 0 1px 4px rgba(57,73,76,0.35);
+    box-shadow: 0 1px 4px rgba(57,73,76,0.35);
+}
+.tableCardmodel table tbody tr h4.media-heading{
+	font-size: 16px;
+}
+*/
+.tableCardmodel table {
+	width: 100%; border-collapse: collapse; border: 1px solid #e0e0e0; border-radius: 10px;
+	box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
+}
+.tableCardmodel table thead {
+	background-color:rgba(0, 0, 0, 0.1); padding: 15px 15px; min-height: 40px; line-height: 40px;
+}
+.tableCardmodel table tr th  {
+	text-align: left; padding:2px 15px; color: #606060;
+}
+.tableCardmodel table tr td  {
+ 	text-align: left; padding:15px;
+}
+.tableCardmodel table tr {
+	border-bottom:1px solid #ededed;
+}
+.tableCardmodel table tr:last-child {
+	border-bottom:1px solid #e0e0e0;
+}
+.tableCardmodel table tbody tr {
+	background-color: #fff;
+}
+.tableCardmodel table tbody tr h4.media-heading{
+	font-size: 16px;
+}
+.progress.progressGoals {
+	border-radius:0px; height: 5px;
+}
+.goalssummar_widget {
+	background: #fff; border-radius: 5px; padding: 25px 15px; position: relative;
+	webkit-box-shadow: 0 1px 1px rgba(57,73,76,0.2); box-shadow: 0 1px 1px rgba(57,73,76,0.2);
+}
+.editBtn-position {
+	position: absolute; right: 15px; top: 10px; padding: 5px 10px; z-index: 1;
+	transition: all 0.3s linear;
+}
+.editBtn-position:hover a {
+	color: #e17700;
+}
+.goalsImg {
+	width: 40px; height: 40px; float: left;
+}
+.goalsImg img {
+	max-height: 100%; border-radius: 50%;
+}
+.goalscomments-list > li {
+	border-bottom: 1px solid #ededed;
+}
+ul.goalsList-list li {
+	padding: 15px 0; border-bottom: 1px solid #ededed;
+}
+.blank-div {
+    width:25px; height:25px; float:left;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
@@ -9983,9 +10079,7 @@ margin-left: 1%;
 .content-wraper {
   margin-left: 0;
 }
-.searchArea_mrgn{
-margin-left: 0%;
-}
+.searchArea_mrgn { margin-left: 0%; }
 .side-bar .user-panel.user-panel-active .media .media-body .text-logo .tbldata-dotdot {
 font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 180px; display: block;
 }
@@ -10246,6 +10340,3 @@ display: block;
  .progressCount {
  font-size: 12px; font-weight: 500; color: #368ee0; display: block; padding: 2px 0px 0px 0px;
  }
- .chartDashboard .amcharts-main-div a {
-    display: block !important;
-}
