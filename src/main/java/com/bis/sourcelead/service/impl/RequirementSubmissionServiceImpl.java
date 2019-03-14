@@ -2589,8 +2589,6 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					attachmentList.add(emailAttachment);
 
 				}*/
-			 
-			 
 			 //URL for page redirection
 			 String redirectURL = null;
 			 if(reqSub.getRequirement().getParentRequirement() !=null) {

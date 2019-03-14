@@ -1878,7 +1878,6 @@ public class CandidateDaoImpl implements CandidateDao {
 			} else {
 				advSeach.append(" AND Q1.noticePeriod IN (" + noticePeriodStr + ") ");
 			}
-
 		}
 
 		if (StringUtils.isNotBlank(candidateDTO.getVendor())) {
