@@ -56,14 +56,14 @@
 				<div class="col-md-12">
 					<div class="clearfix minHeightcol5">
 						<div class="row">
-							<h4 class="col-md-10">Provident Fund</h4>
+							<h4 class="col-md-10">Provident Fund11</h4>
 							<div class="col-md-5">
 								<label class="clearfix">Ceil Value</label>
 								
 								<div class="clearfix">
 							<input type="number" class="form-control" id="ceilvaluepf"
 								name="ceilvaluepf" field-name="CeilValue" data-validation="validate_length length1-10 "
-								data-validation-optional="true" value="${centralTax.ceilvaluepf}"placeholder="Enter">
+								data-validation-optional="true" value="${centralTax.ceilvaluepf}" placeholder="Enter">
 						</div>
 							</div>
 							<div class="col-md-5">
@@ -71,7 +71,7 @@
 								<div class="clearfix">
 									<input type="number" title="no.of employees" id="noofemployees"
 										name="noofemployees" class="form-control" name="Website" data-validation="validate_length length1-10 "
-										value="${centralTax.noofemployees}" placeholder="Enter">
+										value="${centralTax.noofEmployees}" placeholder="Enter">
 								</div>
 							</div>
 							<div class="col-md-5">
@@ -79,7 +79,7 @@
 								<div class="clearfix">
 									<input type="number" id="employeepf" name="employeepf"
 										class="form-control" name="Website" data-validation="validate_length length1-3 "
-										value="${centralTax.employeepf}" placeholder="Enter %">
+										value="${centralTax.employeePf}" placeholder="Enter %">
 								</div>
 							</div>
 							<div class="col-md-5">
@@ -88,7 +88,7 @@
 						
 									<input type="number" id="employerpf" name="employerpf" data-validation="validate_length length1-3 "
 										class="form-control" name="Website"
-										value="${centralTax.employerpf}" placeholder="Enter %">
+										value="${centralTax.employerPf}" placeholder="Enter %">
 								</div>
 							</div>
 							<div class="clearfix"></div>
@@ -111,7 +111,7 @@
 								<div class="clearfix">
 									<input type="number"  id="employeeesi" name="employeeEsi" data-validation="validate_length length1-3 "
 										class="form-control" name="Website"
-										value="${centralTax.employeeEsi}" placeholder="Enter">
+										value="${centralTax.esiEmployee}" placeholder="Enter">
 								</div>
 							</div>
 							<div class="col-md-5">
@@ -119,7 +119,7 @@
 								<div class="clearfix">
 									<input type="number" id="employeresi" name="employerEsi" data-validation="validate_length length1-3 "
 										class="form-control" name="Website"
-										value="${centralTax.employerEsi}" placeholder="Enter">
+										value="${centralTax.esiEmployer}" placeholder="Enter">
 								</div>
 							</div>
 							<div class="clearfix"></div>
