@@ -21,30 +21,23 @@
             <li class="actTicketList"><a href="/app/ticketManagementTypeList"><i class="fa fa-ticket mr10"></i>Type</a></li>
             <li><a href="/app/ticketManagementCategoryList"><i class="fa fa-navicon mr10"></i>Category</a></li>
             <li><a href="/app/ticketManagementPriorityList"><i class="fa fa-asterisk mr10"></i>Priority</a></li>
-            <li><a href="/app/ticketManagementStatusList"><i class="fa fa-check-circle mr10"></i> Status</a></li>
+            <li><a href="/app/ticketManagementStatusList"><i class="fa fa-check-circle mr10"></i>Status</a></li>
           </ul>
         </div>
         <div class="col-md-10 padding_left">
 			<div class="project_tabs projectTabsborder">
 				<div id="tab-1">
-		          <div class="positionRelative timesheet_head clearfix">
+		          <div class="positionRelative reportHead clearfix">
 		            <ul class="pull-right list-unstyled list-inline">
 		              <li><a class="newAdBtn mr5" title="Add" id="addPop">+ Add</a></li>
-			            </ul>
+		              <li>
+		                <input class="repSearchBar" placeholder="Search" id="ticketTypeDataTableSearch" type="text">
+		                <span class="repSearchIcon" onclick="getTicketTypeList();"></span>
+		              </li>
+			        </ul>
 		          </div>
-		          <div class="candidate_wrap_table datatable_filter">
-		            <table style="width: 100%;" id="ticketManagementTypeTable">
-		              <thead>
-		                <tr>
-		                  <th>Type</th>
-		                  <th>Description</th>
-		                  <th>Action</th>
-		                </tr>
-		              </thead>
-		              <tbody id="ticketTypeList">
-		                
-		              </tbody>
-		            </table>
+		          <div class="candidate_wrap_table datatable_filter" id="ticketTypeParentList">
+		            
 		          </div>
 			</div>
 		  </div>
