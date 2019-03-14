@@ -34,6 +34,24 @@
 <script src="${SourceLeadWeb_atsUrl}/resources/js/requirement.js"></script>
 <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${SourceLeadWeb_googleMapsLocationApiKey}" type="text/javascript"></script>
 
+<style>
+.pac-container {
+z-index: 1000000000 !important;
+}
+.pac-container::after {
+display:none;
+}
+
+.varsCheckbox .checkbox label, .varsCheckbox .radio label {
+	padding-left: 0 !important;
+}
+.varsCheckbox .checkbox input[type=checkbox] {
+    margin-left: 0 !important;
+}
+.varsCheckboxDynamic .checkbox input[type=checkbox] {
+    margin-left: 0 !important;
+}
+</style>
 </head>
 <%-- 
      @author : Srinivas Sabbu.<!
@@ -107,7 +125,11 @@ var universalRequirementList = "${universalRequirementList}";
  <script type="text/javascript">
  var hideColumns = [];
  var table = "";
+ var advnSearchPopEle="";
+ var advnFilterPopEle="";
  $(document).ready(function () {
+	 advnSearchPopEle= $("#requirement_form");
+	 advnFilterPopEle =$("#requirementFilterPopup");
 	 $('body').load(atsUrl+"/resources/sourceleadHtmls/requirementListHtml.html");
      $('label.toggle-vis').on('click', function (e) {
          e.preventDefault();
@@ -675,3 +697,437 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 
 
 </script>
+<!-- advanced search popup Start  Block -->
+<form:form id="requirement_form" name="requirement_form" enctype='multipart/form-data'>
+<div class="cand-advsrch-popup advancedsearch-popup reqadvsrch candAdvsrch ">
+<h5 class="headerAdsrch">Advanced Search
+	<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
+		class="fa fa-close"></i></a>
+</h5>
+<div class="addInner">
+	<div class="row">
+		<div class="clearfix">
+			<div class="col-md-4">
+				<label>Generated ID</label>
+				<div class="clearfix">
+					<select class="chosen-select form-control input-sm" multiple
+						data-placeholder="Generated ID" id="generatedId" name="generatedId">
+					</select>
+				</div>
+			</div>
+			
+			<div class="col-md-4">
+				<label>Title</label>
+				<div class="clearfix">
+					<select class="chosen-select form-control input-sm" multiple
+						data-placeholder="Job Title" id="requirementTitle"
+						name="requirementTitle">
+					</select>
+				</div>
+			</div>
+			
+			<div class="col-md-4">
+				<label>Job Id</label>
+				<div class="clearfix">
+					<select class="chosen-select form-control input-sm" multiple
+						data-placeholder="Job Id" id="jobId" name="jobId">
+					</select>
+				</div>
+			</div>
+
+		</div>
+		<div class="clearfix">
+
+			<div class="col-md-4">
+				<label>Job status </label>
+				<div class="clearfix">
+					<select id="requirementStatu" name="requirementStatus"
+						class="chosen-select" data-placeholder="Job status " multiple>
+						<option>NEW</option>
+						<option>DRAFT</option>
+						<option>SUBMITTED</option>
+						<option>OPEN</option>
+						<option>CANCEL</option>
+						<option>ONHOLD</option>
+						<option>FILLEDCLOSED</option>
+						<option>UNFILLEDCLOSED</option>
+						<option>REJECTED</option>
+					</select>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<label>Posted On</label>
+				<div class="clearfix">
+					<select class="chosen-select" id="updatedOn" name="updatedOn"
+						data-placeholder="Posted On">
+						<option>All</option>
+						<option>1 Day Ago</option>
+						<option>3 Days Ago</option>
+						<option>1 Week Ago</option>
+						<option>2 Weeks Ago</option>
+						<option>1 Month Ago</option>
+						<option>3 Months Ago</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="col-md-4">
+				<label>Client</label>
+				<div class="clearfix">
+					<select class="chosen-select" id="client" name="client"
+						data-placeholder="Select Client" multiple>
+						<c:forEach var="report" items="${add_clientList}">
+							<c:if test="${report.locationId.id == loginOrgLocId}">
+								<option
+									value="${report.responderLocationId.org.orgName}"
+									${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.responderLocationId.org.orgName}</option>
+							</c:if>
+							<c:if
+								test="${report.responderLocationId.id == loginOrgLocId}">
+								<option
+									value="${report.locationId.org.orgName}"
+									${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
+							</c:if>
+						</c:forEach>
+					</select>
+				</div>
+			</div>
+		</div>
+		<%-- <div class="clearfix">
+			<div class="col-md-4">
+				<label>Country</label>
+				<div class="clearfix adv-srh-chosen">
+					<select class="chosen-select" name="country" id="country" field-name="Country">
+						<option value="">---select Country---</option>
+						<c:forEach var="cntry" items="${countryList}">
+							<option value="${cntry.name},${cntry.code2}">${cntry.name}</option>
+						</c:forEach>
+					</select>
+				</div>
+			</div>
+
+			<div class="col-md-4">
+				<label>State</label>
+				<div class="clearfix adv-srh-chosen">
+					<select class="chosen-select" name="state" id="state"
+						field-name="State">
+						<option value="">---select state---</option>
+						<c:forEach var="state" items="${statesList}">
+							<option value="${state.stateName}">${state.stateName}</option>
+						</c:forEach>
+					</select>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<label>City</label>
+				<div class="clearfix adv-srh-chosen">
+					<select class="chosen-select" name="city" id="city"
+						field-name="City">
+						<option value="">---select city---</option>
+					</select>
+				</div>
+			</div>
+		</div> --%>
+		<div class="clearfix">
+			<div class="col-md-4 hidden">
+				<label>Client</label>
+				<div class="clearfix">
+					<select class="chosen-select" id="client" name="client"
+						data-placeholder="Client" multiple>
+						<c:forEach var="report" items="${add_clientList}">
+							<c:if test="${report.locationId.id == loginOrgLocId}">
+								<option
+									value="${report.id},${report.responderLocationId.org.orgName}"
+									${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.responderLocationId.org.orgName}</option>
+							</c:if>
+							<c:if
+								test="${report.responderLocationId.id == loginOrgLocId}">
+								<option
+									value="${report.id},${report.responderLocationId.org.orgName}"
+									${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
+							</c:if>
+						</c:forEach>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<label>Notice Period</label>
+			<div class="clearfix">
+				<select multiple class="chosen-select form-control"
+					id="noticePeriod" name="noticePeriod"
+					data-validation-optional="true"
+					data-placeholder="Select Notice Period">
+					<option
+						${requirement.noticeperiodList  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
+					<option
+						${requirement.noticeperiodList  == '15-Days' ? 'selected' : ''}>15-Days</option>
+					<option
+						${requirement.noticeperiodList  == '1-Month' ? 'selected' : ''}>1-Month</option>
+					<option
+						${requirement.noticeperiodList  == '2-Month' ? 'selected' : ''}>2-Month</option>
+					<option
+						${requirement.noticeperiodList  == '3-Month' ? 'selected' : ''}>3-Month</option>
+				</select>
+			</div>
+		</div>
+			
+		<div class="col-md-4">
+			<label>Skills</label>
+			<div class="clearfix">
+				<select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="requirementSkills" name="requirementSkills">
+				<c:forEach var="skill" items="${skillList}">
+				<option value="${skill.name}">${skill.name}</option>
+				</c:forEach>
+				</select>
+			 </div>
+		</div>
+		
+		
+		<div class="col-md-4">
+			<label>Immigration Status</label>
+			<div class="clearfix">
+                <select multiple class="chosen-select form-control" name="visaType" id="visaType" data-placeholder="Select Visa" data-validation-optional="true">
+				<c:forEach var="visaList" items="${visaList}">
+				<option value="${visaList}">${visaList}</option>
+				</c:forEach>
+				</select>
+			 </div>
+		</div>
+		
+		<div class="col-md-12 mb">
+			<label>Tags</label>
+				<div class="clearfix">
+					<select class="chosen-select form-control input-sm" multiple data-placeholder="Tags" id="jobsTags" name="jobsTags">
+					</select>
+				 </div>
+			</div>
+			
+		<div class="clearfix">
+		   <div class="col-md-4">
+				<label>Choose City</label>
+				<div class="clearfix">
+				<div class="col-md-14">
+			      <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">
+				  <i class="fa fa-refresh btn btn-primary refresh-icon mr ref-top" title="Refresh" onClick="refreshGoogleApiCity('apiLocation');"></i>
+				 </div>
+				</div>
+			</div>
+			
+			
+			<div class="col-md-8">
+				<label>Selected Cities</label>
+				<div class="clearfix">
+				   <select class="chosen-select form-control input-sm" multiple
+						data-placeholder="sletected cites" id="city" name="city">
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	<div class="clearfix advancedsearch-footer">
+		<div class="pull-right mr">
+			<input type="button" value="Search" id="search_requiremet"
+				onclick="requirementListCheck('','','advanceSearch','${sourceleadUrl}');" class="btn btn-sm btn-success" />
+			<input type="button" value="Reset" id="clear_search"
+				onclick="clearSearch();" class="btn btn-sm btn-primary" />
+		</div>
+	</div>
+</div>
+</form:form>
+<!-- advanced search End Block -->
+
+<!-- advanced filter code is below -->
+<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="requirementFilterPopup">
+<h5 class="headerAdsrch">Filters <a href="javascript:void(0)" class="close-div" onClick="closeFilter()"><i class="fa fa-close"></i></a></h5>
+<div class="addInner">
+<div class="row">
+ 
+ <div class='col-md-2'>
+ <div class='row'>
+ <div class='col-md-12 varsCheckbox'>
+ <label><strong>Assign To</strong></label>
+ <div class='clearfix'>
+ 	<ul id="assignTo" class="list-unstyled">
+		<li class="radioIput positionRelative"><input id="r1" type="radio" name="requirementAssignTo" value="Alljobs" ><label for="r1">All Jobs </label></li>
+		<li class="radioIput positionRelative"><input id="r2" type="radio" name="requirementAssignTo" value="Myjobs" ><label for="r2">My Jobs </label></li>
+		<!-- <li class="radioIput positionRelative"><input id="r3" type="radio" name="requirementAssignTo" value="CrowdsourcingJobs" ><label for="r3">Crowdsourcing Jobs</label></li> -->
+	</ul>
+	</div>
+ </div>
+ 
+ 			<div  class="col-md-12 varsCheckbox">
+ 			<label><strong>Priority</strong></label>
+ 			<div class='clearfix'>
+								<ul id="priority" class="list-unstyled">
+									<li class="checkBox positionRelative"><input id="c1" type="checkbox" name="requirementPriority" value="Medium" ><label for="c1">Medium </label></li>
+									<li class="checkBox positionRelative"><input id="c2" type="checkbox" name="requirementPriority" value="Low" ><label for="c2">Low </label></li>
+									<li class="checkBox positionRelative"><input id="c3" type="checkbox" name="requirementPriority" value="Urgent" ><label for="c3">Urgent </label></li>
+									<li class="checkBox positionRelative"><input id="c4" type="checkbox" name="requirementPriority" value="High" ><label for="c4">High </label></li>
+								</ul>
+				</div>
+			</div>
+			
+			<div class="col-md-12 varsCheckbox">
+				<label><strong>Jobs</strong></label>
+					<div class='clearfix'>
+				<ul id="jobs" class="list-unstyled">
+					<li class="checkBox positionRelative"><input id="j1" type="checkbox" name="requirementSpecJobs" value="ClientJobs" ><label for="j1">All Client Jobs </label></li>
+					<li class="checkBox positionRelative"><input id="j2" type="checkbox" name="requirementSpecJobs" value="NormalJobs" ><label for="j2">All Internal jobs</label></li>
+				
+				</ul>
+			</div>
+           </div>
+			</div>
+			</div>
+			
+			<div  class="col-md-2 varsCheckbox">
+			<label><strong>Job Type</strong></label>
+			<div class='clearfix'>
+								<ul id="jobType" class="list-unstyled">
+									<li class="checkBox positionRelative"><input id="c11" type="checkbox" name="requirementType" value="C2C" ><label for="c11">C2C </label></li>
+									<li class="checkBox positionRelative"><input id="c12" type="checkbox" name="requirementType" value="W-2" ><label for="c12">W-2 </label></li>
+									<li class="checkBox positionRelative"><input id="c13" type="checkbox" name="requirementType" value="C2H" ><label for="c13">C2H </label></li>
+									<li class="checkBox positionRelative"><input id="c14" type="checkbox" name="requirementType" value="Contract" ><label for="c14">Contract </label></li>
+									<li class="checkBox positionRelative"><input id="c15" type="checkbox" name="requirementType" value="Part Time" ><label for="c15">Part Time </label></li>
+									<li class="checkBox positionRelative"><input id="c16" type="checkbox" name="requirementType" value="Full Time" ><label for="c16">Full Time </label></li>
+									<li class="checkBox positionRelative"><input id="c17" type="checkbox" name="requirementType" value="Other" ><label for="c17">Other </label></li>
+								</ul>
+				</div>
+							</div>
+							
+						
+						
+						<div  class="col-md-2 varsCheckbox">
+			<label><strong>Status</strong></label>
+			<div class='clearfix'>	
+			
+								<ul id="status" class="list-unstyled">
+									<li class="checkBox positionRelative"><input id="c6" type="checkbox"
+										name="requirementStatus" value="NEW"><label for="c6">New<span id="newRequirementCount"></span></label></li>
+									<li class="checkBox positionRelative"><input id="c7" name="requirementStatus" type="checkbox" value="DRAFT" ><label
+										for="c7">Draft<span id="draftRequirementCount"></span></label></li>
+									<li class="checkBox positionRelative"><input id="c8" type="checkbox"
+										name="requirementStatus" type="checkbox" value="SUBMITTED" ><label for="c8">Submitted
+											<span id="submittedRequirementCount"></span>
+									</label></li>
+									<li class="checkBox positionRelative"><input id="c9" type="checkbox"
+										name="requirementStatus" type="checkbox" value="OPEN" ><label for="c9">Open
+											<span id="openRequirementCount"></span>
+									</label></li>
+									<li class="checkBox positionRelative"><input id="c10" type="checkbox"
+										name="requirementStatus" type="checkbox" value="ONHOLD" ><label for="c10">On
+											Hold <span id="onHoldRequirementCount"></span>
+									</label></li>
+									<li class="checkBox positionRelative"><input id="c11" type="checkbox"
+										name="requirementStatus" type="checkbox" value="CANCEL" ><label for="c11">Cancel
+											<span id="cancelRequirementCount"></span>
+									</label></li>
+									<li class="checkBox positionRelative"><input id="c12" type="checkbox"
+										name="requirementStatus" type="checkbox" value="FILLEDCLOSED" ><label for="c12">Filled
+											Closed<span id="filledClosedRequirementCount"></span>
+									</label></li>
+									<li class="checkBox positionRelative"><input id="c13" type="checkbox"
+										name="requirementStatus" type="checkbox" 
+										value="UNFILLEDCLOSED" ><label
+										for="c13">UnFilled Closed<span
+											id="unFilledClosedRequirementCount"></span></label></li>
+									<li class="checkBox positionRelative"><input id="c14" type="checkbox"
+										name="requirementStatus" type="checkbox" value="REJECTED" ><label for="c14">Rejected<span
+											id="rejectedRequirementCount"></span></label></li>
+									<li class="checkBox positionRelative"><input id="c15" type="checkbox"
+										name="requirementStatus" type="checkbox" value="CLOSED" ><label for="c15">Closed<span
+											id="closedRequirementCount"></span></label></li>
+								</ul>
+							</div>
+			
+			</div>
+							
+							
+							
+							
+						<div class="col-md-3 mb positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch ">
+								<input type="text" id="myClientInput" onkeyup="myClientFunction()" placeholder="Clients" title="Type in a teams">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul varsCheckboxDynamic">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientUL">
+									<c:forEach var="team" items="${add_clientList}">
+									
+									<c:if test="${team.locationId.id == loginOrgLocId}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" data-val = "${team.id}" value ="${team.responderLocationId.org.orgName}" ><label>${team.responderLocationId.org.orgName}</label></li>
+									</c:if>
+									
+									<c:if test="${team.responderLocationId.id == loginOrgLocId}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" data-val = "${team.id}"  value ="${team.locationId.org.orgName}" ><label>${team.locationId.org.orgName}</label></li>
+									</c:if>
+									
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						
+							<div class="col-md-3 mb positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myCityInput" onkeyup="myCityFunction()" placeholder="City" title="Type in a teams">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul varsCheckboxDynamic">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myCitytUL">
+									<c:forEach var="city" items="${cityList}">
+									
+<%-- 									<c:if test="${team.city == loginOrgLocId}"> --%>
+									<li class="checkBox positionRelative"><input  type="checkbox" name="cityName" value ="${city}" ><label>${city}</label></li>
+<%-- 									</c:if> --%>
+									
+<%-- 									<c:if test="${team.responderLocationId.id == loginOrgLocId}"> --%>
+<%-- 									<li class="checkBox positionRelative"><input  type="checkbox" name="cityNames" value ="${city.locationId.id}" ><label>${city.locationId.id}</label></li> --%>
+<%-- 									</c:if> --%>
+									
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						
+			<!-- //projectList -->
+			<div class="clearfix"></div>
+			
+			<div class="col-md-3 mb positionRelative">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myProjectInput" onkeyup="myProjectFunction()" placeholder="Projects" title="Type in a teams">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul varsCheckboxDynamic">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myprojectUL">
+									<c:forEach var="project" items="${projectList}">
+									
+									<li class="checkBox positionRelative"><input  type="checkbox" name="projectNameById" value ="${project.id}" ><label>${project.projectId.projectName}</label></li>
+									
+									<%-- <c:if test="${team.responderLocationId.id == loginOrgLocId}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${team.locationId.org.orgName}" ><label>${team.locationId.org.orgName}</label></li>
+									</c:if> --%>
+									
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+			
+			
+			</div>
+			</div>
+			<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" 
+								onclick="closeFilter();requirementList('list','${sourceleadUrl}');" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search"
+								onclick="resetJobFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+							
+							
+							
+ 
+</div>
+<!-- advanced filter code end.-->
