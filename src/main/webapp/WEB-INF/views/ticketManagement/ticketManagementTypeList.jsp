@@ -21,7 +21,7 @@
             <li class="actTicketList"><a href="/app/ticketManagementTypeList"><i class="fa fa-ticket mr10"></i>Type</a></li>
             <li><a href="/app/ticketManagementCategoryList"><i class="fa fa-navicon mr10"></i>Category</a></li>
             <li><a href="/app/ticketManagementPriorityList"><i class="fa fa-asterisk mr10"></i>Priority</a></li>
-            <li><a href="/app/ticketManagementStatusList"><i class="fa fa-check-circle mr10"></i> Status</a></li>
+            <li><a href="/app/ticketManagementStatusList"><i class="fa fa-check-circle mr10"></i>Status</a></li>
           </ul>
         </div>
         <div class="col-md-10 padding_left">
@@ -33,7 +33,7 @@
 		              <li>
 		                <input class="repSearchBar" placeholder="Search" id="ticketTypeDataTableSearch" type="text">
 		                <span class="repSearchIcon" onclick="getTicketTypeList();"></span>
-		               </li>
+		              </li>
 			        </ul>
 		          </div>
 		          <div class="candidate_wrap_table datatable_filter" id="ticketTypeParentList">

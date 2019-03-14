@@ -65,7 +65,7 @@ var uploadflag= true;
 							<div class="btn-group btn-group-justified">
 								<div class="btn-group">
 									<input type="button" class="btn btn-primary" id="upload_button"
-										name="upload_button" onclick="saveAssociateBankDetailTemplate();"
+										name="upload_button" onclick="importAssociateBankDetail();"
 										value="Import">
 								</div>
 								<div class="btn-group">
@@ -86,7 +86,7 @@ var uploadflag= true;
 									class="fa fa-paperclip" title="Attach file"></i> <br /> <input
 									type="file" name="file" field-name="File Upload"
 									style="display: none;" id="uploadBtn"
-									data-validation="required validate_importFile">
+									data-validation="required validate_importFile" multiple>
 								</label>
 								<div class="clearfix"></div>
 								<label id="newUploadFile"></label> 
@@ -128,6 +128,9 @@ var uploadflag= true;
 		</div>
 		</form:form>
 	</div>
+	<div class="require_wrap_table datatable_filter">
+		<div id="errorDataDIV"></div>
+        </div>
 	<div id="dataFieldsDiv" style="display: none"></div>
 <div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop">
 	<h5 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Recent Uploads History</h5>
@@ -180,6 +183,54 @@ $('body').on('blur', '#upload_job_form', function() {
 </script>
 
 <script type="text/javascript">
+function importAssociateBankDetail(){
+	var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+	var fileUrl = $("#dataFilePath").val();
+	var uploadType = "associateUpload";
+	var headerPosition = $("#headerPosition").val();
+
+	var frm = $('#upload_job_form').serializeFormJSON();
+	var con = JSON.stringify(frm);
+	con = con.replace(/[{}]/g, "");
+	
+	
+	//It will escape all the special characters
+	var jsonData = encodeURIComponent(con);
+	var form = $('#upload_job_form')[0];
+	var formData = new FormData(form); 
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $.ajax({
+		   	type: "POST",
+		   	data: formData,
+    	    contentType : 'application/json; charset=utf-8',
+    	    enctype: 'multipart/form-data',
+	        processData: false,
+	        contentType:false,
+    	    dataType : 'json',
+    	    url: sourceleadUrl+"/saveAssociateBankDetailTemplate?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition, 	   
+ 		    success : function(json) {
+ 		    		$("#loading").removeAttr("style");
+ 		    	    if(json.updateCount != null && json.updateCount != '')
+ 		    	    $("#msgDiv").removeAttr("style");
+ 		 			$("#msgDiv").css({ display: "block" });
+ 		 			$("#msgDiv").html(json.updateCount+ " Associates are updated ..!");
+ 		 			if(json.errorData != null && json.errorData.length >0){
+ 		 				showFailedExcelData(json);
+ 		 			}
+ 			    	},
+		 		   error: function(e){
+			        }
+			 });
+}
+</script>
+
+
+<script type="text/javascript">
 function cancelFileImport(){
 	/* $("#jobFieldsDiv").attr("style","display:none");
 	$('#jobFileImportDiv').removeAttr("style");
@@ -187,6 +238,64 @@ function cancelFileImport(){
 	location.replace(sourceleadUrl+"/usersList");
 }
 </script>
+
+<script>
+  function showFailedExcelData(json){
+	 /*  var sourceleadUrl = '${sourceleadUrl}';
+	  $.get( sourceleadUrl+ "/getAllSignatoriesByLocationId?${_csrf.parameterName}=${_csrf.token}", function(data) { */
+		  var result = "";
+	    	 result += '<table id="errorDataList" class="display" cellspacing="0" width="100%" >';
+	         result += '<thead>';
+	         result += '  <tr>';
+	         result += '    <th>Assoicate Id</th>';
+	         result += '    <th>Associate Email*</th>';
+	         result += '    <th>Account Type</th>';
+	         result += '    <th>Bank Name</th>';
+	         result += '    <th>Account Number</th>';
+	         result += '    <th>Routing Number</th>';
+	         result += '    <th>Reson</th>';
+	         result += '  </tr>';
+	         result += '</thead>';
+	         result += '<tbody>';
+	         var data = json.errorData;
+	    	 for(i=0;i < data.length;i++){
+	    		 var report = data[i];
+	    		 result += '<tr>';
+		         result += '<td>'+report.associateId+'</td>';
+		         result += '<td>'+report.emailId+'</td>';
+		         result += '<td>'+report.accountType+'</td>';
+		         result += '<td>'+report.bankName+'</td>';
+		         result += '<td>'+report.accountNumber+'</td>';
+		         result += '<td>'+report.routingNumber+'</td>';
+		         result += '<td>'+report.reason+'</td>';
+		         result += '  </tr>';
+	    	 }
+	    	
+	         result += '  </tbody>';
+    		 result += '</table> ';
+    		 $("#errorDataDIV").empty();
+    		 $("#errorDataDIV").append(result);
+    		 $("#loading").removeAttr('style');
+    		 excelDataPagination();
+	     /* });  */
+  }
+  
+  function excelDataPagination(){
+		$('#errorDataList').DataTable({ 
+			"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": ""
+	     	}
+	    });
+		$("#errorDataList").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
+
+	}
+  </script>
 
 
 <!-- Footer Area -->

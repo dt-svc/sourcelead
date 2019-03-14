@@ -30,19 +30,19 @@ public interface TicketManagementDao {
 
 	public boolean deleteTicketTypeDataById(long id);
 
-	public List<TicketCategory> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status);
+	public List<TicketCategory> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status, String searchValue);
 
 	public Boolean saveTicketCategory(TicketCategory ticketCategory);
 
 	public Boolean deleteTicketCategoryDataById(long id);
 
-	public List<TicketPriority> getTicketPriorityListByOrgLocationId(Long orgLocationId, int status);
+	public List<TicketPriority> getTicketPriorityListByOrgLocationId(Long orgLocationId, int status, String searchValue);
 
 	public Boolean saveTicketPriority(TicketPriority ticketpriority);
 
 	public Boolean deleteTicketPriorityDataById(long id);
 
-	public List<TicketStatus> getTicketStatusListByOrgLocationId(Long orgLocationId, int status);
+	public List<TicketStatus> getTicketStatusListByOrgLocationId(Long orgLocationId, int status, String searchValue);
 
 	public TicketStatus getTicketStatusById(long id);
 
