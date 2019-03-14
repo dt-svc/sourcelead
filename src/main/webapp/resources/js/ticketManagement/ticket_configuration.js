@@ -1,9 +1,9 @@
 $(document).ready(function() {
 	$("#addPop").click(function() {
-		$("#ticketTypeFormHead").html("Edit Type");
-		$("#ticketCategoryFormHead").html("Edit Type");
-		$("#ticketPriorityFormHead").html("Edit Type");
-		$("#ticketStatusFormHead").html("Edit Type");
+		$("#ticketTypeFormHead").html("Add Type");
+		$("#ticketCategoryFormHead").html("Add Category");
+		$("#ticketPriorityFormHead").html("Add Priority");
+		$("#ticketStatusFormHead").html("Add Status");
 		$(".mask, #modalTasktype").fadeIn();
 	});
 	$(".popClose").click(function() {
@@ -734,8 +734,11 @@ function saveTicketPriority() {
 	}
 }
 function cancelTicketPriority() {
-	if(document.getElementById("addTicketPriorityForm") !== null)
+	if(document.getElementById("addTicketPriorityForm") !== null) {
 		document.getElementById("addTicketPriorityForm").reset();
+		$("#addTicketPriorityForm").find("input[data-id='uploadBtn']").remove();
+		$("#refreshImage").val(false);
+	}
 	$(".mask, #modalTasktype").fadeOut();
 }
 function eidtTicketPriority(id){
@@ -754,6 +757,7 @@ function eidtTicketPriority(id){
 				$("#ticketPriorityName").val(data.name);
 				$("#favcolorP").val(data.colorCode);
 				$("#favcolor").val(data.colorCode);
+				$("#uploadFile").val(data.fileName);
 				$("#ticketPriorityDesc").val(data.description);
 				$(".mask, #modalTasktype").fadeIn();
 			} else if (response.indexOf('Sign In') !== -1) {
@@ -784,9 +788,13 @@ function changeTicketPriorityStatus() {
 			showError("Operation failed, please try again");
 		}
 	});
-	
 }
 
+function refreshPriorityImage() {
+	$("#refreshImage").val(true);
+	$("#addTicketPriorityForm").find("input[data-id='uploadBtn']").remove();
+	$("#uploadFile").val("");
+}
 
 		//=============================	Ticket Management Status	===============================================
 
@@ -1027,45 +1035,5 @@ function changeTicketStatus() {
 
 function uploadPriorityImage() {
 	fileUpload('uploadBtn', 'ticketPriority', 'addTicketPriorityForm');
-	/*$(".file_mask").show();
-	
-	var data = new FormData();
-	var files = document.getElementById("uploadBtn").files;
-	var invalidFiles = false;
-	var count = 0;
-	expr = /.zip/;
-	ecpr1=/.rar/;
-	for(var e in files) {
-		if(!$.isNumeric(e))
-			continue;
-		if(files[e].name.toLowerCase().match(expr) || files[e].name.toLowerCase().match(ecpr1))
-			continue;
-		data.append('file', files[e]);
-		count ++;
-	}
-	if(count === 0) {
-		$("#addTicketPriorityForm input[data-id*=uploadBtn]").remove();
-		$(".file_mask").hide();
-		alert("Please select valid file (zip files and rar files are not allowed)");
-		return;
-	}
-	
-	$.ajax({ 
-		url: sourceleadUrl + ("/ws/upload/ticketPriority"), 
-		data: data, 
-		processData: false, 
-		type: 'POST', 
-		contentType: false, 
-		success: function (data) {
-			if(data && data.length > 0) {
-				var fileUrl = data[0].fileURL.replace("ticketPriority","temp");
-				var fileName = data[0].fileName;
-				$("#uploadFile").val(fileName);
-				$(".file_mask").hide();
-			}
-		}, 
-		error: function (err) { 
-			 $(".file_mask").hide();
-		} 
-	});*/
+	$("#refreshImage").val(false);
 }

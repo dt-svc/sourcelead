@@ -70,19 +70,23 @@
             <div class="clearfix mb">
                 <label class="noPad">Icon</label>
 				<div class="clearfix">
-					<div class="input-group col-md-12">
+					<div class="input-group col-md-11 pull-left">
 						<span class="input-group-btn">
 							<label class="input-group-btn"> 
 								<span class="btn btn-danger" onchange="uploadPriorityImage();">
 									<i class="fa fa-folder-open-o"></i> &nbsp;Browse File 
 									<input type="file" style="display: none;" multiple id="uploadBtn" class="upload" accept="image/*">
 									<input type="hidden" id="dataFilePath">
+									<input type="hidden" id="refreshImage" name="refreshImage" value="false"/>
 								</span>
 							</label>
 						</span>
-						<input type="text" class="form-control" readonly id="uploadFile" placeholder="Upload Resume ...">
+						<input type="text" class="form-control" readonly id="uploadFile" placeholder="Upload Priority Image ...">
 					</div>
-
+					<div class="col-md-1 pull-left">
+						<i class="fa fa-refresh cursorPointer mt10 text-primary" title="Refresh Icon" onclick="refreshPriorityImage();"></i>
+					</div>
+					<div class="clearfix"></div>
 					<div class="clearfix mt10 text-muted">
 						<i class="fa fa-question-circle text-info"></i>&nbsp; Upload icon image ...
 					</div>
