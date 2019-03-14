@@ -5,8 +5,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.jdbc.Work;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.payroll.dao.AssociateBankDataDao;
 import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 import com.bis.sourcelead.payroll.entity.AssociateBankData;
@@ -180,6 +183,51 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 			e.printStackTrace();
 		}
 		return assBankData;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public boolean checkDeafaultAccountActiveOrNot(Long candidateId, Long orgLocationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean isActiveAccount = false;
+		try {
+			List<AssociateBankData> dataList = session.createQuery("from AssociateBankData assBankData where assBankData.orgLocationId.id =:orgLocationId and assBankData.defaultAccount = :defaultAccount").setLong("orgLocationId", orgLocationId).setBoolean("defaultAccount", true).list();
+			if(dataList != null && dataList.size() >0) {
+				isActiveAccount = true;;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return isActiveAccount;
+	}
+
+	@Override
+	@Transactional
+	public boolean changeActiveAccount(Long associateBankId, Long candidateId)
+	{
+		boolean isChanged = false;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			AssociateBankData associateBankData = session.get(AssociateBankData.class, associateBankId);
+			associateBankData.setDefaultAccount(true);
+			session.saveOrUpdate(associateBankData);
+			// Setting false to remaining accoungts
+			String query = "from AssociateBankData assoBank where assoBank.candidate.id = :candidateId and assoBank.id != :id";
+			Query queryObj = session.createQuery(query).setLong("id", associateBankId).setLong("candidateId", candidateId);
+			List<AssociateBankData> list = queryObj.list();
+			for (AssociateBankData b : list) {
+				b.setDefaultAccount(false);
+				session.saveOrUpdate(b);
+			}
+			if (associateBankData != null) {
+				isChanged = true;
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return isChanged;
 	}
 
 }

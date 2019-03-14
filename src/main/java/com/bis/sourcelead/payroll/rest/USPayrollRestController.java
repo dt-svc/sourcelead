@@ -499,6 +499,22 @@ public class USPayrollRestController {
 		return resObj;
 	}
 	
+	
+	/**
+	 * save associate tax
+	 * @param associateTaxDTO
+	 * @param request
+	 * @param response
+	 * @return Response<AssociateTaxDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/changeActiveAccount","/rest/changeActiveAccount" }, method = RequestMethod.GET)
+	@ResponseBody
+	public boolean changeActiveAccount(@RequestParam(value = "associateBankId", required = false) Long associateBankId ,@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		return associateBankDataService.changeActiveAccount(associateBankId,candidateId);	
+	}
+	
 	/**
 	 * check state has Local tax or not
 	 * @param associateTaxDTO

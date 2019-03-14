@@ -23,8 +23,6 @@ function associateBankData(userId){
      	         result += '    <th>Bank Name</th>';
      	         result += '    <th>Account Number</th>';
      	         result += '    <th>Routing Number</th>';
-     	        result += '    <th>First Name</th>';
-     	       	result += '    <th>Last Name</th>';
      	      	result += '    <th>Active</th>';
      	      	result += '    <th>Action</th>';
      	         result += '  </tr>';
@@ -37,20 +35,21 @@ function associateBankData(userId){
      		         result += '<td>'+report.bankName+'</td>';
      		         result += '<td>'+report.accountNumber+'</td>';
      		         result += '<td>'+report.routingNumber+'</td>';
-     		         
-					 result += '<td>'+report.routingNumber+'</td>';
-					 result += '<td>'+report.routingNumber+'</td>';
-					 result += '<td>'+report.routingNumber+'</td>';
+     		        result += '<td>';
+					result += '<label class="switch">';
+					if(report.defaultAccount == true){
+						result += '<input type="checkbox" checked class="toggle-button" id="defaultAccount'+report.id+'" name="defaultAccount" onclick="changeActiveAccount('+report.id+','+report.candidate.id+','+userId+')">';
+					}else{
+						result += '<input type="checkbox" class="toggle-button" id="defaultAccount'+report.id+'" name="defaultAccount" onclick="changeActiveAccount('+report.id+','+report.candidate.id+','+userId+')">';
+					}
+					result += '<div class="slider round"></div>';
+					result += '</label>';
+					result += '</div>';
+					result += '</td>'; 
 					 result += '<td>';
-					 
 						result += '<div class="tblminwidth-50">';
 						result += '<div title="Edit" class="paddingRight pull-left"><a herf="#"><i class="fa fa-pencil text-primary cursorPointer" onclick="editBankDetail(\''+report.associateBankUuid+'\')"></i></a></div>';
-						result += '<label class="switch">';
-						result += '<input type="checkbox" checked="">';
-						result += '<div class="slider round"></div>';
-						result += '</label>';
-						result += '</div>';
-						result += '</td>';
+						result += '</td>'; 
 					     result += '  </tr>';
      	    	 }
      	    	
@@ -129,7 +128,20 @@ function assoBankDatapagination(){
 	}
 </script>
 
-<div class="modal paymentaccount-modal" id="adEdBankingDetails" style="display:none;">
+
+<script type="text/javascript">
+function changeActiveAccount(associateBankId,candidateId,userId) {
+	  $.ajax({
+          type : "GET",
+          url: sourceleadUrl+"/changeActiveAccount?"+tokenParamName+"="+tokenValue+"&associateBankId="+associateBankId+"&candidateId="+candidateId,    
+           success :function(json) {
+        	   associateBankData(userId);
+           },
+	  });
+	
+}
+</script>
+<div class="modal" id="adEdBankingDetails" style="display:none;">
     <div class="modal-dialog modal-lg">
      <div id="accountDetailsLoading"></div>
       <!-- Modal content-->

@@ -24,4 +24,6 @@ public interface AssociateBankDataService {
 	List<AssociateBankData> findAllAssociateBankDataByCandidateId(Long candidateId, Long orgLocationId);
 
 	AssociateBankData findAssociateBankDataByUUID(String associateBankUUID, Long orgLocationId);
+
+	boolean changeActiveAccount(Long associateBankId, Long candidateId);
 }
