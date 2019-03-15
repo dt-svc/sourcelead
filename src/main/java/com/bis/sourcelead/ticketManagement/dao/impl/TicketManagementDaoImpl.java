@@ -149,16 +149,85 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public boolean saveTicketType(TicketType ticketType) {
+	public long getTicketTypeIdByNameAndOrgLocationId(String name, long orgLocationsId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			session.saveOrUpdate(ticketType);
-			return true;
+			String query= "select t.id from TicketType t where t.name=:name and t.orgLocations.id=:orgLocationsId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("name", name);
+			queryObj.setLong("orgLocationsId", orgLocationsId);
+			List<Long> ticketIdlist = queryObj.list();
+			if(ticketIdlist != null && !ticketIdlist.isEmpty()) 
+				return ticketIdlist.get(0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return 0;
+	}
+	
+	@Override
+	public long getTicketCategoryIdByNameAndOrgLocationId(String name, long orgLocationsId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query= "select t.id from TicketCategory t where t.name=:name and t.orgLocations.id=:orgLocationsId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("name", name);
+			queryObj.setLong("orgLocationsId", orgLocationsId);
+			List<Long> ticketIdlist = queryObj.list();
+			if(ticketIdlist != null && !ticketIdlist.isEmpty()) 
+				return ticketIdlist.get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	@Override
+	public long getTicketPriorityIdByNameAndOrgLocationId(String name, long orgLocationsId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query= "select t.id from TicketPriority t where t.name=:name and t.orgLocations.id=:orgLocationsId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("name", name);
+			queryObj.setLong("orgLocationsId", orgLocationsId);
+			List<Long> ticketIdlist = queryObj.list();
+			if(ticketIdlist != null && !ticketIdlist.isEmpty()) 
+				return ticketIdlist.get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	@Override
+	public long getTicketStatusIdByNameAndOrgLocationId(String name, long orgLocationsId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query= "select t.id from TicketStatus t where t.name=:name and t.orgLocations.id=:orgLocationsId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("name", name);
+			queryObj.setLong("orgLocationsId", orgLocationsId);
+			List<Long> ticketIdlist = queryObj.list();
+			if(ticketIdlist != null && !ticketIdlist.isEmpty()) 
+				return ticketIdlist.get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	@Override
+	public long saveTicketType(TicketType ticketType) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(ticketType);
+			return ticketType.getId();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 
 	@Override
@@ -211,15 +280,15 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 	}
 
 	@Override
-	public Boolean saveTicketCategory(TicketCategory ticketCategory) {
+	public long saveTicketCategory(TicketCategory ticketCategory) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			session.saveOrUpdate(ticketCategory);
-			return true;
+			return ticketCategory.getId();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return 0;
 }
 
 	@Override
@@ -269,15 +338,15 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 	}
 
 	@Override
-	public Boolean saveTicketPriority(TicketPriority ticketpriority) {
+	public long saveTicketPriority(TicketPriority ticketpriority) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			session.saveOrUpdate(ticketpriority);
-			return true;
+			return ticketpriority.getId();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return 0;
 	}
 
 	@Override
@@ -327,15 +396,15 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 	}
 
 	@Override
-	public Boolean saveTicketStatus(TicketStatus ticketStatus) {
+	public long saveTicketStatus(TicketStatus ticketStatus) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			session.saveOrUpdate(ticketStatus);
-			return true;
+			return ticketStatus.getId();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return 0;
 	}
 
 	@Override
@@ -611,7 +680,6 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 	}
 
 	@SuppressWarnings("unchecked")
@@ -730,5 +798,29 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 			e.printStackTrace();
 		}
 		return null;
-	}	
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Long> getTicketCategoryAssignToIdList(long ticketCategoryId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select tcat.user.id from TicketCategoryAssignTo tcat where tcat.ticketCategory.id=:ticketCategoryId";
+			return session.createQuery(query).setLong("ticketCategoryId", ticketCategoryId).list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Override
+	public void deleteTicketCategoryAssignTo(TicketCategoryAssignTo ticketCategoryAssignTo) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.delete(ticketCategoryAssignTo);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
 }

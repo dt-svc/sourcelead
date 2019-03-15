@@ -475,6 +475,16 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				
 				response.setMyPayroll(list);
 				response.setConfirmPayTotalSum(paySum);
+			}else {
+				Map<String, Double> preDList = new HashMap<>();
+			    response.setPreDed(preDList);
+			    response.setPostDed(preDList);
+			    response.setContribution(preDList);
+			    response.setMyPayroll(list);
+			    response.setPayItem(preDList);
+				response.setConfirmPayTotalSum(paySum);
+				List<AssociateLoanAndAdvancesDTO> loanAdvance = new ArrayList<>();
+				response.setLoanAdvance(loanAdvance);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

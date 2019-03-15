@@ -75,10 +75,16 @@ public class RequirementRateSubmissionNegotiationServiceImpl implements Requirem
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		
+		String redirectURL = null;
 		//URL for redirection of page
 		//String redirectURL1 = "/requirementSummary?requirementUUID="+requirementSubmissionTemplateFields.getSourceSubmission().getRequirement().getRequirementUUID()+"&submissionId="+requirementSubmission.getId()+"&candidateUUID="+requirementSubmissionTemplateFields.getRequirementSubmission().getCandidate().getCandidateUUID()+"&submissionStatus=SUBMIT_TO_CLIENT").toString();
-		 String redirectURL = "/requirementSummary-params-requirementUUID="+requirementSubmissionTemplateFields.getRequirementSubmission().getSourceSubmission().getRequirement().getRequirementUUID()+"-and-submissionId="+submissionId+"-and-candidateUUID="+requirementSubmissionTemplateFields.getRequirementSubmission().getCandidate().getCandidateUUID()+"-and-submissionStatus=SUBMIT_TO_CLIENT";
-		 Long redirectOrgLocationId =  candidate.getOrgLocationId().getId();
+		if(requirementSubmissionTemplateFields.getRequirementSubmission().getSourceSubmission() !=null) {
+		 redirectURL = "/requirementSummary-params-requirementUUID="+requirementSubmissionTemplateFields.getRequirementSubmission().getSourceSubmission().getRequirement().getRequirementUUID()+"-and-submissionId="+submissionId+"-and-candidateUUID="+requirementSubmissionTemplateFields.getRequirementSubmission().getCandidate().getCandidateUUID()+"-and-submissionStatus=SUBMIT_TO_CLIENT";
+		}else{
+			 redirectURL = "/requirementSummary-params-requirementUUID="+requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement().getRequirementUUID()+"-and-submissionId="+submissionId+"-and-candidateUUID="+requirementSubmissionTemplateFields.getRequirementSubmission().getCandidate().getCandidateUUID()+"-and-submissionStatus=SUBMIT_TO_CLIENT";
+	
+		}
+		Long redirectOrgLocationId =  candidate.getOrgLocationId().getId();
 		 
 		
 		StringBuilder tempHTML = new StringBuilder();

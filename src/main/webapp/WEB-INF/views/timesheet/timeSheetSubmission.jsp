@@ -8,7 +8,9 @@
  <c:if test="${timesheetEntryDetailsDTO.timesheetFor == 'approver'}">
    <div class='data_loading' id="loadTime"></div>
  <div class="pull-left timeAppUse-show col-md-6">
-	<span class="pull-left"><img id="userImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofile-img.png"> </span>
+	    <span class="pull-left">
+	      <img id="userImage" onerror="predefineProfileImage(this);" src="${timesheetEntryDetailsDTO.profileImageFileUrl}" alt="Profile Image"> 
+	     </span>
 		<ul class="col-md-9 margin-top0 list-unstyled padding_left">
 			<li>
 			<c:if test="${not empty timesheetEntryDetailsDTO.employeeName}">
