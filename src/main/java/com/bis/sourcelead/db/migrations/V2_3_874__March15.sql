@@ -1,6 +1,6 @@
-DELIMITER //
 DROP procedure associateBankingDetails;
 
+DELIMITER //
 CREATE PROCEDURE insertAssociateBankingDetails 
 (                                                       
     IN candidateId bigint,
