@@ -25,7 +25,6 @@
               <div class="project_tabs_inn_table">
                 <div class="project_details col2Custom">
 					<div class="useredit">
-						<%-- <a href="javascript:void(0);" class="textSuccess"><i class="fa fa-check"></i>${ticketSummary.ticketStatus}</a> --%> 
 						<div class="width150px">
 							<select class="sel" onchange="changeTicketStatus(this, ${ticketSummary.id});">
 								<c:forEach items="${statusList}" var="status">
@@ -33,7 +32,9 @@
 								</c:forEach>
 							</select>
 						</div>
-						<a href="/app/editTicket?uuid=${ticketSummary.uuid}"><i class="fa fa-pencil"></i>Edit</a>
+						<sec:authorize access="hasRole(\'ROLE_ADD_TICKET\')">
+							<a href="/app/editTicket?uuid=${ticketSummary.uuid}"><i class="fa fa-pencil"></i>Edit</a>
+						</sec:authorize>
 						<div class="clearfix"></div>
 					</div>
 					<div class="form-group clearfix">
