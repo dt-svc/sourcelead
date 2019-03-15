@@ -13,7 +13,7 @@
       <h2 id="headerLbl">Marketplace List</h2>
     </div>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl">Global Marketplace List</label> </div>
+	    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; <label id="brudCrumLbl">Global Marketplace List</label> </div>
 	  </c:if>
 	  </section>
     <div class="clearfix"></div>
@@ -440,13 +440,13 @@
 					 <div class="clearfix">
 						<ul class="list-unstyled" id="UpdatedFilter">
 						<li class="radioIput positionRelative" ><input id="allCandidates" type="radio" name="upcandidateStatus" value ="all" ><label for="allCandidates">All</label></li>
-                        <li class="radioIput positionRelative" ><input id="candidateToDay" type="radio" name="upcandidateStatus" value ="0"  ><label for="candidateDayAgo">Today</label></li>
-                        <li class="radioIput positionRelative" ><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1" ><label for="candidateDayAgo">1 Day ago</label></li>
-						<li class="radioIput positionRelative" ><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3" ><label for="candidate3DayAgo">3 Days ago</label></li>
-						<li class="radioIput positionRelative" ><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7" ><label for="candidate1WeekAgo">1 Week ago</label></li>
-						<li class="radioIput positionRelative" ><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="14" ><label for="candidate3WeekAgo">2 Weeks ago</label></li>
-						<li class="radioIput positionRelative" ><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="30" ><label for="candidateMonthAgo">1 Month ago</label></li>
-	                    <li class="radioIput positionRelative" ><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="90"><label for="candidate3Months">3 Months ago</label></li>
+                        <li class="radioIput positionRelative" ><input id="candidateToDay" type="radio" name="upcandidateStatus" value ="today"  ><label for="candidateDayAgo">Today</label></li>
+                        <li class="radioIput positionRelative" ><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1_day_ago" ><label for="candidateDayAgo">1 Day ago</label></li>
+						<li class="radioIput positionRelative" ><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3_days_ago" ><label for="candidate3DayAgo">3 Days ago</label></li>
+						<li class="radioIput positionRelative" ><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="1_week_ago" ><label for="candidate1WeekAgo">1 Week ago</label></li>
+						<li class="radioIput positionRelative" ><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="2_weeks_ago" ><label for="candidate3WeekAgo">2 Weeks ago</label></li>
+						<li class="radioIput positionRelative" ><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="1_month_ago" ><label for="candidateMonthAgo">1 Month ago</label></li>
+	                    <li class="radioIput positionRelative" ><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="3_months_ago"><label for="candidate3Months">3 Months ago</label></li>
 	                    
                         </ul>
 					 </div>
@@ -574,13 +574,38 @@ function mySkillsFunction() {
 var globalMarketDivType = null;
 function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 	globalMarketDivType = divType;
+	
+	//fetching filter values..
+	var status = $('input[name=candidateStatus]:checked').val();
+	var updatedDate = $('input[name=upcandidateStatus]:checked').val();
+	var isAssociate = $('input[name=candidateTypeFilter]:checked').val();
+	var isFavourite = $('input[name=candidateType]:checked').val();
+	var createdBy = $('input[name=createdByFilter]:checked').val();
+	var employmentType = [];
+		$('input:checkbox[name=employmentType]:checked').each(function() 
+		     {
+		 		employmentType.push($(this).val());
+			 });
+	var noticePeriod = [];
+		$('input:checkbox[name=availability]:checked').each(function() 
+			 {
+				noticePeriod.push($(this).val());
+			 });
+	var candidateSkills = [];
+	 	$('input:checkbox[name=candidateFilterSkills]:checked').each(function() 
+     		{
+	 			candidateSkills.push($(this).val());
+	 		});
+	 	
 	var searchValue = $("#globalMarketSearh").val();
 	searchValue = searchValue ? searchValue : "";
 	var candidateLocation = $("#candidateLocation").val();
 	candidateLocation = (candidateLocation.length != null) ? candidateLocation : "" ;
 	$.ajax({
 			type : "POST",
-			url : atsUrl +"/getGlobalMarketplaceListGridCard?searchValue="+searchValue+"&candidateLocation="+candidateLocation+"&searchCandidateIds="+globalCandidateIds,
+			url : atsUrl +"/getGlobalMarketplaceListGridCard?searchValue="+searchValue+"&candidateLocation="+candidateLocation+"&searchCandidateIds="+globalCandidateIds+
+			"&status="+status+"&updatedDate="+updatedDate+"&employmentType="+employmentType+"&noticePeriod="+noticePeriod+"&skillsName="+candidateSkills+
+			"&isFavourite="+isFavourite+"&isAssociate="+isAssociate+"&createdBy="+createdBy,
 			success : function(object) {
 				if(object != null){
 					var result = "";
@@ -901,7 +926,7 @@ function filterPop() {
     function initMarketplacePayment() {
          $.ajax({
 	      type: "POST",
-    	   url: "/app/init-marketplace-payment?cartId=1234",
+    	   url: "${SourceLeadWeb_sourceleadUrl}/init-marketplace-payment?cartId=1234",
       	success: function(data) {
       		 if (data) {
 	                location.href = data;
