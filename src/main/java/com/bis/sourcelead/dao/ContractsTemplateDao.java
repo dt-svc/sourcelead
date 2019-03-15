@@ -37,7 +37,7 @@ public interface ContractsTemplateDao {
 
 	Contracts getChildContractById(Long contractId);
 	
-	ContractsTemplate findByContractTemplateName(String templateName,String contractType, Long orgLocationId) throws Exception;
+	ContractsTemplate findByContractTemplateName(String templateName,String contractType, Long orgLocationId, String templateUUID) throws Exception;
 
 	List<Contracts> getListOfContractsEnvId();
 
@@ -72,4 +72,6 @@ public interface ContractsTemplateDao {
 	List<Contracts> getContractsBylocationIdForReminder(Long locationId, String status, Date date);
 
 	Integer deleteContractOwnerHierarchyListByContractId(Long id);
+	
+	List<Contracts> getAllContractsBasedOnConfigureDate(Date updatedDate) throws Exception;
 }

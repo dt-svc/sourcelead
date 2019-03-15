@@ -2702,6 +2702,29 @@ public class ReportRestController {
 
 	}
 	
+	@RequestMapping(value = "/offerAcceptanceRateListForVendor")
+	public ResponseList<OfferAcceptanceRateDTO> getOfferAcceptanceRateListForVendor(HttpServletRequest request, 
+			@RequestParam(defaultValue = "") long orgRelationId,
+			@RequestParam(defaultValue = "") long spocId,
+			@RequestParam(defaultValue = "") String filteredDate,
+			@RequestParam(defaultValue = "") String filterType) {
+		ResponseList<OfferAcceptanceRateDTO> responseList = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if(user != null) {
+				responseList =  requirementSubmissionHistoryService.getOfferAcceptanceRateListForVendor(orgLocations.getId(), orgRelationId, spocId, filterType, filteredDate);
+			} else {
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return responseList;
+	}
 	
 	
 }

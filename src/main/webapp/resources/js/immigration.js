@@ -485,17 +485,13 @@ function Immigration() {
         			immigration.udpatePopupFormdata(formObj,childPopNames,data);
         		    $('#visaType').val(data.visaType);
         			$('#visaType').selectpicker('refresh');
+        			$('#visaType').prop("disabled",true);
         			$('#visaCountry').val(data.country);
         			$('#visaCountry').selectpicker('refresh');
+        			$('#visaCountry').prop("disabled",true);
+        			$('#visaNumber').prop("disabled",true);
         			$('#candidateVisaId').val(data.candidateVisaId);
         			$('#visaHistoryId').val(data.id);
-        			if(data.isCurrent == "Y"){
-        				$("#isCurr").attr("checked", true);
-        				$("#isCurr").val("Y");
-        			}else{
-        				$("#isCurr").attr("checked", false);
-        				$("#isCurr").val("N");
-        			}
 	        	}
 	        }
 	    });
@@ -1310,14 +1306,11 @@ function Immigration() {
 		
 	}
 
-	this.validateCandidateVisa = function() {
-		 var validationSettings = {
-	            errorMessagePosition: 'element',
-	            borderColorOnError: '',
-	            scrollToTopOnError: true,
-	            dateFormat: 'yyyy/mm/dd'
-	        };
-		  var candidateId = $("#candidateID").val();
+	this.validateCandidateVisaAndSave = function() {
+		if ($("#CandidateVisaform").validate(false, validationSettings)) {
+		 var  country =   $('#visaCountry').val();
+		 if(country == '') return;
+		 var candidateId = $("#candidateID").val();
 		 
 		  var idNumberVal = null;
 		  var id = null;
@@ -1329,20 +1322,25 @@ function Immigration() {
 		  $('#idNumberDiv').find('p.jquery_form_error_message').remove();
 			 $.ajax({
 			    	type: "GET",
-			    	 url:sourceleadUrl + immiModulePath + "/validateCandidateVisa?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&visaNumber="+visaNumber+"&id="+id, 
+			    	 url:sourceleadUrl + immiModulePath + "/validateCandidateVisa?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&visaNumber="+visaNumber+"&country="+country+"&id="+id, 
 			        success: function(data) {
 			        	if(data == true){
-			        		   $("input#visaNumber").after("<p class='jquery_form_error_message'>"+visaNumber+" is Already Existed</span>");
+			        		   $("input#visaNumber").after("<p class='jquery_form_error_message'>"+visaNumber+" is Already Existed With Active Details.</span>");
 							   $("#visa_save_id").attr('disabled','disabled');
 			        	}
 			        	else{
 			        		  $('input#visaNumber').removeAttr( "record-exist record-exist-errormsg");
 			        		  $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove(); 
 	                          $("#visa_save_id").removeAttr("disabled");
+	                            immigration.saveVisaDetails(); // saving the visa details once validation is 
 			        	}
 			        
 			        },
 			    });
+			
+		} else {
+			return false;
+		}
 	}
 	this.addvisaExtensionDate = function(visaId, extensionDate){
 		 var candidateId = $("#candidateID").val();

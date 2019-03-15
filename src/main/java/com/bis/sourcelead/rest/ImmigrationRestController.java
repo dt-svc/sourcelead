@@ -1111,8 +1111,10 @@ public class ImmigrationRestController {
 
 	@RequestMapping(value = { "/deleteImmigrationTaskList" })
 	public void deleteImmigrationTaskList(HttpServletRequest request,
-			@RequestParam(value = "id", required = false) String id) {
-		immigrationTemplateService.deleteImmigrationTaskList(id);
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "taskName", required = false) String taskName) {
+		
+		immigrationTemplateService.deleteImmigrationTaskList(id, taskName);
 	}
 
 	@RequestMapping(value = { "/savePetitionTemplateDetailsValues" })
@@ -1313,16 +1315,15 @@ public class ImmigrationRestController {
 				"orgLocations");
 		Response<String> response = new Response<>();
 		logger.debug("Candidate ID ----> :  " + immigrationVisaDTO.getCandidateId());
-		if(immigrationVisaDTO.getIsCurrent()== null || immigrationVisaDTO.getIsCurrent().isEmpty()) {
+/*		if(immigrationVisaDTO.getIsCurrent()== null || immigrationVisaDTO.getIsCurrent().isEmpty()) {
 			immigrationVisaDTO.setIsCurrent(ImmigrationConstants.IS_CURRENT_NO);// setting value as "N"
-		}
+		}*/
 		if(visaHistoryId != null) {
 			immigrationVisaDTO.setId(visaHistoryId);// setting value as "N"
 		}
 		if (user != null) {
 			try {
 				if (Validator.validate(immigrationVisaDTO)) {
-					
 					immigrationCommonService.saveVisaDetails(immigrationVisaDTO, user, orgLocations,
 							  immigrationId, visaHistoryId); // in edit mode we will get visaHistoryId from the UI as a request parameter.
 					response.setResponse(Result.SUCCESS.name());
@@ -2397,14 +2398,20 @@ public class ImmigrationRestController {
 	public Boolean validateCandidateVisa(
 			@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "visaNumber", required = false) String visaNmuber,
+			@RequestParam(value = "country", required = false) String country,
 			@RequestParam(value = "id", required = false) Long id, HttpServletRequest request) throws Exception {
-		CandidateVisa candidateVisa = null;
+		//CandidateVisa candidateVisa = null;
+		ImmigrationVisaDTO visaDto= null;
 		if (null != id) {
-			candidateVisa = immigrationCommonService.getCandidateVisaDetailsByIdNumberAndId(visaNmuber, candidateId, id);
+		//	candidateVisa = immigrationCommonService.getCandidateVisaDetailsByIdNumberAndId(visaNmuber, candidateId, id);
+			visaDto = immigrationCommonService.getCandidateActiveVisaDetailsByVisaNumberAndCountry(candidateId, visaNmuber, country);
 		}
 		Boolean flag = false;
-		if (candidateVisa == null) {
-			flag = immigrationCommonService.validateCandidateVisa(candidateId, visaNmuber);
+		if (visaDto == null) {
+			visaDto = immigrationCommonService.getCandidateActiveVisaDetailsByVisaNumberAndCountry(candidateId,visaNmuber, country);
+			if(visaDto != null) {
+				flag = true;
+			}
 		}
 		return flag;
 	}
@@ -2674,7 +2681,7 @@ public class ImmigrationRestController {
 		Lca lca= immigrationCommonService.getLcaByLcaId(lcaId);
 		StringBuilder actionDesc = new StringBuilder();
 		if (lca != null) {
-			actionDesc.append(Constants.LCA_DELETED).toString();
+			actionDesc.append(ImmigrationConstants.LCA_DELETED).toString();
 		} 
 		
 	//	lcaActivityCommonUtil.saveLcaActivities(user, orgLocations, lca, null, actionDesc.toString());
@@ -2698,7 +2705,7 @@ public class ImmigrationRestController {
 		Lca lca= immigrationCommonService.getLcaByLcaId(lcaId);
 		StringBuilder actionDesc = new StringBuilder();
 		if (lca != null) {
-			actionDesc.append(Constants.LCA_RE_ACTIVE).toString();
+			actionDesc.append(ImmigrationConstants.LCA_RE_ACTIVE).toString();
 		} 
 		//lcaActivityCommonUtil.saveLcaActivities(user, orgLocations, lca, null, actionDesc.toString());
 		

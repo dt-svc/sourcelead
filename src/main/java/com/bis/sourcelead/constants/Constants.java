@@ -488,6 +488,7 @@ public class Constants {
 	public static final String JOBS = "Jobs";
 	public static final String Vendors = "Vendors";
 	public static final String Candidates = "Candidates";
+	public static final String Favourite = "Favourite";
 	public static final String Candidate = "Candidate";
 	public static final String Associates = "Associates";
 	public static final String OnAndOffboard = "OnAndOffboard";
@@ -588,7 +589,7 @@ public class Constants {
 	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Title",
 			"Min Experience", "Max Experience", "Min/Max Rate", "Location", "City",	"State", "Country", "Zip Code",	
 			"Education", "Skills", "Immigration Status", "Cooling-off Period", "Travel Allowance", "Closed Date",
-			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority", "Description", "Attachment", "Manager", "Approver", "Assign To",
+			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority", "Description", "Attachment", "Manager(Email)", "Approver", "Assign To",
 			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
 	
 	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category", "Work Status",
@@ -678,8 +679,8 @@ public class Constants {
 	public static final String[] DATA_MIGRATION_PROJECT_TASKS_EXCEL_HEADERS = { "Task Type*" , "Task Title*","Assigned To", "Due Date", "Priority", "Estimated Time","Severity","Status*", "Owner","Billing Type*","Currency Type","Business Value", "Description"};
 	
 
-	public static final String[] IMMIGRATION_LIST_EXCEL_HEADERS = { "Emp ID", "Beneficiary First Name", "Beneficiary Last Name", "Beneficiary Email", "Phone Number", "Experience", "SSN", "I-94 Number", "I-20 SEVIS Number If Student", "EAD Number If Student",
-			"DOB", "Marital Status", "Petition Type", "Template", "Date Of Arrival", "Open On", "Status", "Visa No", "Visa Start Date", "Visa End Date", "Attorney/Company", "Contact Name", "Contact Email", "Receipt No", "Location", "LCA Start Date", 
+	public static final String[] IMMIGRATION_LIST_EXCEL_HEADERS = { "ID", "Country", "Beneficiary First Name", "Beneficiary Last Name", "Beneficiary Email", "Phone Number", "Experience", "SSN", "I-94 Number", "I-20 SEVIS Number If Student", "EAD Number If Student",
+			"DOB", "Marital Status", "Petition Type", "Template", "Date Of Arrival", "Open On", "Status", "Visa No", "Visa Start Date", "Visa End Date", "Visa Status", "Attorney/Company", "Contact Name", "Contact Email", "Receipt No", "Location", "LCA Start Date", 
 			"LCA End Date", "LCA Number", "LCA Rate", "LCA Location", "LCA Title","Job Name","Job Id", "Previous LCA Start Date", "Previous LCA End Date", "Previous LCA Number", "Previous LCA Rate", "Previous LCA Title", "Previous LCA Location" };
 
 	
@@ -687,7 +688,17 @@ public class Constants {
 	
 	public static final String[] DATA_MIGRATION_ASSOCIATE_EXCEL_HEADERS = { "Employee Id" , "First Name*", "Last Name", "Middle Name", "Email Id*", "Phone Number", "Extension",
 			"Rate", "Rate Currency", "Rate Per", "Gender*","Marital Status","Date of Join","Date of Birth","Role*","Day hours(HH:MM)","Manager*(Email)", "Employment type*","Vendor(Email)","Vendor Contact(Email)","Grade","Designation*","Shift*","Department*","Send Mail to User","Is Global Manager"};
+	
+	public static final String[] DATA_MIGRATION_ASSOCIATE_BANKING_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","Payment Mode*","Bank Name","Account Number","BSR Number","MICR Code","IFSC Code",
+			"First Name","Last Name",};
+	
+	public static final String[] DATA_MIGRATION_ASSOCIATE_SALARY_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","Pay Type*","Pay Frequency*","Pay Group*","Standard Hours","Annual Salary*"};						
 
+	public static final String[] PAYMENT_MODE = {"Savings", "Cheque", "Cash"};
+	
+	public static final String[] ASSOCIATE_SALARY_PAYTYPE = {"Salary"};
+	
+	public static final String[] ASSOCIATE_SALARY_PAYFREQUENCY = {"Annually", "Monthly", "Bi-Weekly", "Weekly"};
 
 	public static final String[] REQIREMENT_APPLICANT_HEADERS = { "Applicant Name", "Email","Job", "Client", "Phone Number",  "Job Location",   "Source", "Status","Job Rating" ,"Incentivized"};
 
@@ -1399,9 +1410,20 @@ public class Constants {
 	public static final String EMAIL_REMAINDER_INVOICE =  "Applicants Invoice";
 	
 	public static final String APPLICANT_JOINING = "ApplicantJoining";
+	public static final String EMPLOYEE_ON_LEAVE = "EmployeeOnLeave";
+	public static final String APPROVE_PENDING_LEAVES="approvePendingLeaves";
 	
-	public static final String LCA_DELETED = "Lca deleted";
-	public static final String LCA_RE_ACTIVE = "Lca ReActive";
-	public static final String LCA_IMPORTED = "Lca import";
+
+	public static final String WAITING_CONTRACT_TO_BE_SIGNED = "WaitingContractToBeSigned";
+
+	public static final String ASSOCIATE_BANK_DETAIL_HEADERS [] = {"Assoicate Id",	"Associate Email*",	"Account Type",	"Bank Name","Account Number","Routing Number"};
+	
+	public static final String[] BANK_TYPE_DROPDOWN = {"Cheque","Direct Deposit"};
+
+	public static final String TICKET_MANAGEMENT_EMAIL = "NewTicketEmail";
+	public static final String TICKET_MANAGEMENT_NOTIFICATION ="NewTicketNotification";
+	
+	public static final String TICKET_UPDATE_EMAIL = "ChangeTicketStatusEmail";
+	public static final String TICKET_UPDATE_NOTIFICATION = "ChangeTicketStatusNotification";
 	
 }
