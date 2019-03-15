@@ -193,7 +193,7 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean isActiveAccount = false;
 		try {
-			List<AssociateBankData> dataList = session.createQuery("from AssociateBankData assBankData where assBankData.orgLocationId.id =:orgLocationId and assBankData.defaultAccount = :defaultAccount and assBankData.candidate.id = :candidateId").setLong("orgLocationId", orgLocationId).setLong("candidateId", candidateId).setBoolean("defaultAccount", true).list();
+			List<AssociateBankData> dataList = session.createQuery("from AssociateBankData assBankData where assBankData.orgLocationId.id =:orgLocationId and assBankData.defaultAccount = :defaultAccount").setLong("orgLocationId", orgLocationId).setBoolean("defaultAccount", true).list();
 			if(dataList != null && dataList.size() >0) {
 				isActiveAccount = true;;
 			}
@@ -228,6 +228,28 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 			ex.printStackTrace();
 		}
 		return isChanged;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<AssociateBankDataDTO> getAssociateBankDataListByOrgLocationId(Long locationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<AssociateBankDataDTO> dtolist = new ArrayList<AssociateBankDataDTO>();
+		try {
+			List<AssociateBankData> assBankDataList = session.createQuery("from AssociateBankData assBankData where assBankData.orgLocationId.id =:orgLocationId").setLong("orgLocationId", locationId).list();
+		    for(AssociateBankData b : assBankDataList) {
+		    	AssociateBankDataDTO dto = new AssociateBankDataDTO();
+		    	dto.setCandidateId(b.getCandidate().getId().toString());
+		    	dto.setAccountType(b.getAccountType());
+		    	dto.setAccountNumber(b.getAccountNumber());
+		    	dtolist.add(dto);
+		    }
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dtolist;
 	}
 
 }
