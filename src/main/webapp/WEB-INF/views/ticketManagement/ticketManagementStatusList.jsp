@@ -28,36 +28,25 @@
         <div class="col-md-10 padding_left">
 			<div class="project_tabs projectTabsborder">
 				<div id="tab-1">
-          <div class="positionRelative timesheet_head clearfix">
+          <div class="positionRelative reportHead clearfix">
             <ul class="pull-right list-unstyled list-inline">
+            <sec:authorize access="hasRole('ROLE_ADD_TICKET_CONFIGURATION')">
               <li><a class="newAdBtn mr5" title="Add" id="addPop">+ Add</a></li>
-              <li class="hidden">
-                <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
+            </sec:authorize>
+              <li>
+                <input class="repSearchBar" placeholder="Search" id="ticketStatusDataTableSearch" type="text">
+                <span class="repSearchIcon" onclick="getTicketStatusList();"></span></li>
             </ul>
           </div>
           <div class="candidate_wrap_table">
-            <div class="candidate_wrap_table datatable_filter">
-            <table style="width: 100%;" id="ticketManagementStatusTable">
-              <thead>
-                <tr>
-                  <th>Status</th>
-                  <th>Description</th>
-                  <th>Comment</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="ticketStatusList">
-               
-              </tbody>
-            </table>
-          </div>
+            <div class="candidate_wrap_table datatable_filter" id="ticketStatusParentList">
 			</div>
-				
 		  </div>
 		  
         </div>
       </div>
+    </div>
+    </div>
     </div>
   </section>
   <!-- Footer Area --> 
@@ -76,7 +65,7 @@
         <div class="clearfix mb">
           <label class="noPad">Required Comment<b class="valStar">*</b></label>
           <div class="clearfix">
-              <select class="sel" name="commentRequired" field-name="Required Comment" data-validation="required">
+              <select class="sel" name="commentRequired" id="ticketCommentRequired" field-name="Required Comment" data-validation="required">
                   <option value="">Select</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
@@ -131,27 +120,152 @@ function applicableForAll() {
 	document.getElementById("experienceDiv").style.display="none";
 }
 $(function(){
-$("#addPop").click(function() {
-	$(".mask, #modalTasktype").fadeIn();
-});
-$(".popClose").click(function() {
-	$(".mask, #modalTasktype").fadeOut();
-});
+	$("#addPop").click(function() {
+		$(".mask, #modalTasktype").fadeIn();
 	});
+	$(".popClose").click(function() {
+		$(".mask, #modalTasktype").fadeOut();
+	});
+});
 </script>
 
 <script type="text/javascript">
 	$(document).ready(function() {
 		getTicketStatusList();
 	});
-	$(function() {
-		/* $("#addPop").click(function() {
-			$(".mask, #modalTasktype").fadeIn();
-		});
-		$(".popClose").click(function() {
-			$(".mask, #modalTasktype").fadeOut();
-		}); */
-	});
+	function ticketManagementStatusPagination(url){
+		var colIndex = 0;
+	    $('#ticketManagementStatusTable').DataTable( {
+	    	"processing": true,
+	       "serverSide": true,
+	       "searching": true,
+	       "searchHighlight": true,
+	       "ajax": $.fn.dataTable.pipeline( {
+	           url: url,
+	           method: 'POST',
+	           pages: 1
+	       }),
+	       "columns": [
+	    	   {"data": "id"},
+	           {"data": "status"},
+	           {"data": "description"},
+	           {"data": "comment"},
+	           {"data": "actions" }
+	       	],
+		       "columnDefs": [
+	    	   {
+		            "targets": colIndex++,
+		            "data": "id",
+		            "visible": false,
+		            "render": function ( data, type, opt, meta ) {
+		            		var result = "";
+	           		   if(opt.id != null && opt.id != '' && opt.id != 'undefined') {
+		     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.id+'</div></td>';
+	           		   } else {
+							result = result +"<td><div>-----</div></td>";
+	           	       }
+			           		return result;
+		             }
+		        },
+		        {
+		            "targets": colIndex++,
+		            "data": "status",
+		            "sortable": true,
+		            "render": function ( data, type, opt, meta ) {
+		            		var result = "";
+	           		   if(opt.name != null && opt.name != '' && opt.name != 'undefined') {
+		     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.name+'</div></td>';
+	           		   } else {
+							result = result +"<td><div>-----</div></td>";
+	           	       }
+			           		return result;
+		             }
+		        },
+		        {
+		            "targets": colIndex++,
+		            "data": "description",
+		            "sortable": true,
+		            "render": function ( data, type, opt, meta ) {
+		            		var result = "";
+	           		   if(opt.description != null && opt.description != '' && opt.description != 'undefined'){
+		     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.description+'</div></td>';
+	           		   } else {
+							result = result +"<td><div>-----</div></td>";
+	           	       }
+			                return result;
+		             }
+		        },
+		        {
+		            "targets": colIndex++,
+		            "data": "comment",
+		            "sortable": true,
+		            "render": function ( data, type, opt, meta ) {
+		            		var result = "";
+		            		result = result + '<td><div  class="tbldata-dotdot-sm">' + (opt.commentRequired ? "YES" : "NO") + '</div></td>';
+			                return result;
+		             }
+		        },
+		        {
+		            "targets": colIndex++,
+		            "data": "actions",
+		            "sortable": false,
+		            "render": function ( data, type, opt, meta ) {
+		            	var result = '<div class=" widthIcon widthIcon-three">';
+		            	'<sec:authorize access="hasRole(\'ROLE_ADD_TICKET_CONFIGURATION\')">';
+			            	result +='	<div class="text-center">';
+			            	result +='		<a href="javascript:void(0)" title="Edit TicketStatus" onclick="editTicketStatus(' + opt.id + ')">';
+			            	result +='		<i class="fa fa-pencil"></i>';
+			            	result +='		</a>';
+			            	result +='	</div>';
+		            	'</sec:authorize>';
+		            	'<sec:authorize access="hasRole(\'ROLE_DELETE_TICKET_CONFIGURATION\')">'; 
+			            	result +='	<div class="text-center">';
+			            	if(opt.status === 0) {
+			            		result +='		<a href="javascript:void(0)" title="Active TicketStatus" onclick="showDeletePopup(' + opt.id + ', 1)">';
+			            		result +='		<i class="fa fa-edit"></i>';
+			            	} else {
+			            		result +='		<a href="javascript:void(0)" title="In-active TicketStatus" onclick="showDeletePopup(' + opt.id + ', 0)">';
+			            		result +='		<i class="fa fa-trash"></i>';
+			            	}
+			            	result +='		</a>';
+			            	result +='	</div>';
+		            	'</sec:authorize>';
+		            	result +='</div>';
+	           	        return result;
+		             }
+		        }
+	           ],
+		    	"scrollCollapse": false,
+		    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+		    	"aaSorting": [[1,'desc']],
+		    	"bLengthChange": true,
+		    	"bDestroy": true,
+		    	"ordering": true,
+		    	"createdRow": function ( row, data, index ) {
+		    		row.setAttribute('id',"ticketStatus_"+data.id);
+	    	    },
+		    	"initComplete": function( settings, json ) {
+		    		 $('#ticketStatusDataTableSearch').removeAttr('disabled');
+		    	},
+		    	"oLanguage": {
+		     		"sSearch": "",
+		     		 "sZeroRecords": "", "sEmptyTable": "", 
+		     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+		     },
+		     drawCallback: function(){
+	   	      $('a.paginate_button', this.api().table().container()).on('click', function(){
+	   	    	setTimeout(function () {
+	   	  		var body = $( table.table().body() );
+	   	 	        body.unhighlight();
+	   	 	        body.highlight($("#ticketStatusDataTableSearch").val());   
+	   	 			
+	   	 			}, 1000);
+	   	      });
+	   	   	}
+	   });
+	   $("#ticketManagementStatusTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
+	   $("input[type=search]").hide();
+	}
 </script>
 
  <jsp:include page="../masterFooter.jsp" />	
