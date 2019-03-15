@@ -686,31 +686,5 @@ public class DataMigrationCommonController {
 						file.delete();
 					}
 					
-					
-					/*response.setContentType("application/octet-stream");
-					StringBuilder fileName = new StringBuilder();
-					response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"")
-							.append(file.getName()).append("\"").toString());
-					InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-					OutputStream outStream = null;
-					try {
-						 outStream = response.getOutputStream();
-
-						byte[] buffer = new byte[4096];
-						int bytesRead = -1;
-
-						while ((bytesRead = inputStream.read(buffer)) != -1) {
-							outStream.write(buffer, 0, bytesRead);
-						}
-						createExcelworkbook.close();
-						inputStream.close();
-						outStream.flush();
-						outStream.close();
-						
-						
-					} catch (FileNotFoundException e) {
-						logger.error(ExceptionUtils.getFullStackTrace(e));
-					}*/
-					
 		}
 }

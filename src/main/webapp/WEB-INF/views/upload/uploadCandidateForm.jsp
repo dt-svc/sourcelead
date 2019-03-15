@@ -142,14 +142,13 @@ window.onload = function () {
 				</div>
 				
 		  <div class="clearfix"></div>
-	        <div class="form-group">
+	        <!-- <div class="form-group">
 	             <div class="col-md-9">
 	               <div class="checkbox checkBox ml">
 	                     <label><input type="checkbox" onclick="checkInviteEmail();" id="inviteEmailCheck"></label><span>Invite to SourceLead</span>
 	               </div>
 	                </div>
-	         </div>
-          
+	         </div> -->
 			</div>
             
 		</div>

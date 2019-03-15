@@ -8,10 +8,15 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +26,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.constants.ImmigrationConstants;
+import com.bis.sourcelead.couchbase.connection.CouchbaseConnectionConfig;
+import com.bis.sourcelead.couchbase.connection.CouchbasePropertyPathConfiguration;
 import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dto.CandidateBulkUploadDTO;
 import com.bis.sourcelead.dto.DataMigrationCommonDTO;
@@ -32,6 +39,8 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadFormFields;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.XlsBulkUploadHistroy;
+import com.bis.sourcelead.service.CouchbaseClusterService;
 import com.bis.sourcelead.service.DataMigrationService;
 import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.TimeZoneService;
@@ -40,6 +49,7 @@ import com.bis.sourcelead.service.XlsBulkUploadHistroyService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.couchbase.client.java.Bucket;
 
 /**
  * This class is used for...
@@ -74,7 +84,8 @@ public class DataMigrationCommonRestController {
 	@Autowired
 	UserStatsCacheHelper userStatsCacheHelper;
 	
-	
+	@Autowired
+	CouchbaseClusterService couchbaseClusterService;
 	
    @RequestMapping(value = "/uploadCandidateForm")
 	public ModelAndView uploadCandidateForm(HttpServletRequest request) {
@@ -269,5 +280,44 @@ public class DataMigrationCommonRestController {
 		return xlsBulkUploadHistroyDTOList;
 	}
 	
+	@RequestMapping(value = {"/deleteBulkImportFailureRecordsByFailureDocumentKey","/rest/deleteBulkImportFailureRecordsByFailureDocumentKey"}, method = RequestMethod.POST)
+	public String deleteBulkImportFailureRecordsByFailureDocumentKey(@RequestParam(value = "documentKey", required = true) String documentKey, HttpServletRequest request) throws Exception
+	{
+		
+		JSONObject jsonObject = userStatsCacheHelper.getBulkImportsFailureList(documentKey);
+		
+		if(!jsonObject.isEmpty()) {
+			 ApplicationContext ctx = new AnnotationConfigApplicationContext(CouchbasePropertyPathConfiguration.class);
+		     CouchbaseConnectionConfig couchConfig = ctx.getBean(CouchbaseConnectionConfig.class);
+		     Bucket bucket = couchbaseClusterService.openBucket(couchConfig.getBulkImportsBucket(), couchConfig.getPassword());
+		     
+			for (Object key : jsonObject.keySet()) {
+				 String keyStr = (String)key;
+			        if(keyStr.equalsIgnoreCase("failureList")) {
+			        	String jsonString = jsonObject.get(keyStr).toString();
+			    		JSONArray jsonArray = new JSONArray(jsonString);
+			    		
+				   		 for (int i = 0; i < jsonArray.length(); i++) {
+				   			 JSONParser parser = new JSONParser();
+				   			 JSONObject jsonObjVal = (JSONObject) parser.parse(jsonArray.get(i).toString());
+				   			 for (Object okey : jsonObjVal.keySet()) {
+				   				 String failurekeyStr = (String) okey;
+				   				 if(failurekeyStr.equalsIgnoreCase("documentId")) {
+				   					 String keyvalue = jsonObjVal.get(failurekeyStr).toString();
+				   					 bucket.remove(keyvalue);
+				   				 }
+				   				
+				   			 }
+				   		 }
+			        }
+			}
+			bucket.remove(documentKey);
+		}
+		
+		XlsBulkUploadHistroy history =  xlsBulkUploadHistroyService.getXlsBulkUploadHistroyByDocumentKey(documentKey);
+		history.setStatus(Constants.RECORD_INACTIVE);
+		xlsBulkUploadHistroyService.storeXlsBulkUploadHistroy(history);
+		return "Success";
 	
+	}
 }
