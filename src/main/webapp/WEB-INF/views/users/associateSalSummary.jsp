@@ -472,7 +472,7 @@ function refreshPayItems(i){
               <div class="col-md-5">
                 <label>Annual Salary</label>
                 <div id="AnnualSal">
-                  <input class="form-control" name="annualSal" id="annualSal" type="text" data-validation="required" field-name="Annual Salary" onblur = "calculateSal();">
+                  <input class="form-control allownumericwithdecimal" name="annualSal" id="annualSal" type="text" data-validation="required" field-name="Annual Salary" onblur = "calculateSal();">
                    <input class="form-control" name="previousAnnualSal" id="previousAnnualSal" type="hidden">
                    
                 </div>
@@ -480,14 +480,14 @@ function refreshPayItems(i){
               <div class="col-md-5">
                 <label>Per Pay Salary</label>
                 <div id="PerPaySal">
-                  <input class="form-control" name="perPaySal" id="perPaySal" type="text" data-validation="required" field-name="Per Pay Salary" onblur = "calculatePayPerSal();">
+                  <input class="form-control allownumericwithdecimal" name="perPaySal" id="perPaySal" type="text" data-validation="required" field-name="Per Pay Salary" onblur = "calculatePayPerSal();">
                     <input class="form-control" name="previousPerPaySal" id="previousPerPaySal" type="hidden">
                 </div>
               </div>
               <div class="col-md-5">
                 <label>Hourly Rate</label>
                 <div id="HourlyRate">
-                  <input class="form-control" name="hourlyRate" id="hourlyRate" type="text" data-validation="required" field-name="Hourly Rate" onblur = "calculateHourlyRateSal();">
+                  <input class="form-control allownumericwithdecimal" name="hourlyRate" id="hourlyRate" type="text" data-validation="required" field-name="Hourly Rate" onblur = "calculateHourlyRateSal();">
                    <input class="form-control" name="previousHourlyRate" id="previousHourlyRate" type="hidden">
                 </div>
               </div>
@@ -501,7 +501,7 @@ function refreshPayItems(i){
               <div class="col-md-5">
                 <label>% Increase</label>
                 <div>
-                  <input class="form-control " name="increasePer" id="increasePer" type="text" onblur = "calculatePercentSal();">
+                  <input class="form-control allownumericwithdecimal" name="increasePer" id="increasePer" type="text" onblur = "calculatePercentSal();">
                 </div>
               </div>
                <div class="col-md-5">
@@ -1185,6 +1185,14 @@ function getPayGroups(groupUUID){
 				}
 		 });
 }
+
+
+$(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+	$(this).val($(this).val().replace(/[^0-9\.]/g,''));
+	if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+	event.preventDefault();
+	}
+	});
 </script>
 
 
