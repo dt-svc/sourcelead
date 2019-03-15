@@ -1405,7 +1405,7 @@ public class Constants {
 	
 	public static final String COUCH_DOCUMENT_TYPE_USER_LOGIN_SESSION = "Session";
 	
-	public static final String COUCH_DOCUMENT_UPLOAD_TYPE = "Upload";
+	public static final String COUCH_DOCUMENT_UPLOAD_TYPE = "Import";
 	
 	public static final String COUCH_DOCUMENT_UPLOAD_FAILURE_TYPE = "Failure";
 	

@@ -37,6 +37,12 @@ public class XlsBulkUploadHistroyServiceImpl implements XlsBulkUploadHistroyServ
 		return xlsBulkUploadHistroyDao.getXlsBulkUploadHistroyByUploadTypeAndOrgLocationId(uploadEntityType,uploadType, orgLocationId,dateFormat);
 	}
 
+	@Override
+	public List<XlsBulkUploadHistroyDTO> getRegisteredOrgsXlsBulkUploadHistroyByUploadType(String uploadType,
+			String dateFormat) throws Exception {
+		return xlsBulkUploadHistroyDao.getRegisteredOrgsXlsBulkUploadHistroyByUploadType(uploadType, dateFormat);
+	}
+
 	
 
 }

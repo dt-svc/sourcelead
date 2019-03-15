@@ -13,6 +13,10 @@ public class XlsBulkUploadHistroyDTO {
 	private String date;
 	
 	private String time;
+	
+	private String uploadEntityType;
+	
+	private String orgName;
 
 	public int getFailureCount() {
 		return failureCount;
@@ -60,6 +64,22 @@ public class XlsBulkUploadHistroyDTO {
 
 	public void setTime(String time) {
 		this.time = time;
+	}
+
+	public String getUploadEntityType() {
+		return uploadEntityType;
+	}
+
+	public void setUploadEntityType(String uploadEntityType) {
+		this.uploadEntityType = uploadEntityType;
+	}
+
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
 	}
 	
 	

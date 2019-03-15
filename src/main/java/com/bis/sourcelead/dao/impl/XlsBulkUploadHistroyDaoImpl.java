@@ -74,7 +74,7 @@ public class XlsBulkUploadHistroyDaoImpl implements XlsBulkUploadHistroyDao{
 	public XlsBulkUploadHistroy getXlsBulkUploadHistroyByDocumentKey(String documentKey) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from XlsBulkUploadHistroy history where history.documentKey = :documentKey  ";  
+		String query = "from XlsBulkUploadHistroy history left join fetch history.orgLocationId where history.documentKey = :documentKey  ";  
 		List<XlsBulkUploadHistroy> xlsBulkUploadHistroyList =  session.createQuery(query).setString("documentKey", documentKey).list();
 		XlsBulkUploadHistroy xlsBulkUploadHistroy = null;
 		if (xlsBulkUploadHistroyList != null && xlsBulkUploadHistroyList.size() > 0) {
@@ -120,6 +120,44 @@ public class XlsBulkUploadHistroyDaoImpl implements XlsBulkUploadHistroyDao{
 		queryObj.setString("uploadEntityType", uploadEntityType);
 		queryObj.setString("uploadType", uploadType);
 		queryObj.setMaxResults(10);
+		queryObj.setResultTransformer(Transformers.aliasToBean(XlsBulkUploadHistroyDTO.class));
+		xlsBulkUploadHistroyDTOList = queryObj.list();
+		return xlsBulkUploadHistroyDTOList;
+	}
+
+	@Override
+	public List<XlsBulkUploadHistroyDTO> getRegisteredOrgsXlsBulkUploadHistroyByUploadType(String uploadType,
+			String dateFormat) throws Exception {
+		List<XlsBulkUploadHistroyDTO> xlsBulkUploadHistroyDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		
+		 String locationDateFormat = null;
+		 if(dateFormat.equalsIgnoreCase("yyyy-MM-dd")){
+			 locationDateFormat = "%Y-%m-%d";
+		  }if(dateFormat.equalsIgnoreCase("dd-MM-yyyy")){
+			  locationDateFormat = "%d-%m-%Y";
+		  }if(dateFormat.equalsIgnoreCase("MM-dd-yyyy")){
+			  locationDateFormat = "%m-%d-%Y";
+		  }if(dateFormat.equalsIgnoreCase("yyyy-dd-MM")){
+			  locationDateFormat = "%Y-%d-%m";
+		  }
+		
+		query =  "SELECT "
+				+" HISTORY.UPLOAD_ENTITY_TYPE AS uploadEntityType, "
+				+" HISTORY.FILE_URL AS fileUrl, "
+				+" HISTORY.DOCUMENT_KEY AS documentKey, "
+				+" HISTORY.UUID AS uuid, "
+				+" HISTORY.ORG_LOCATION AS orgName, "
+				+" DATE_FORMAT(HISTORY.CREATED_DATE, '"+locationDateFormat+"') AS date, "
+				+" DATE_FORMAT(HISTORY.CREATED_DATE, '%h:%i:%s %p') AS time "
+				+" FROM XLS_BULK_UPLOAD_HISTORY HISTORY "
+				+" WHERE "
+				+" HISTORY.UPLOAD_TYPE = :uploadType AND HISTORY.UPLOAD_STATUS = 'New' AND "
+				+" HISTORY.STATUS = '1' ORDER BY HISTORY.ID DESC";
+		
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setString("uploadType", uploadType);
 		queryObj.setResultTransformer(Transformers.aliasToBean(XlsBulkUploadHistroyDTO.class));
 		xlsBulkUploadHistroyDTOList = queryObj.list();
 		return xlsBulkUploadHistroyDTOList;

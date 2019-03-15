@@ -15,4 +15,6 @@ public interface XlsBulkUploadHistroyService {
 	
 	List<XlsBulkUploadHistroyDTO> getXlsBulkUploadHistroyByUploadTypeAndOrgLocationId(String uploadEntityType, String uploadType,Long orgLocationId,String dateFormat) throws Exception;
 	
+	List<XlsBulkUploadHistroyDTO> getRegisteredOrgsXlsBulkUploadHistroyByUploadType(String uploadType,String dateFormat) throws Exception;
+	
 }
