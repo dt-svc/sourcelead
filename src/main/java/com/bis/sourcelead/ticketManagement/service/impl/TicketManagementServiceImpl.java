@@ -229,7 +229,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 					assignToList.add(assignTo);
 				}
 			}
-			List<Long> deleteAssignToIdList = ticketManagementDao.getTicketAssignToIdList(ticketCategory.getId());
+			List<Long> deleteAssignToIdList = ticketManagementDao.getTicketCategoryAssignToIdList(ticketCategory.getId());
 			List<TicketCategoryAssignTo> categoryAssignToList = new LinkedList<>();
 			if(ticketCategoryDTO.getAssignedTo() != null) {
 				for(String assignUserId : ticketCategoryDTO.getAssignedTo()) {
@@ -251,10 +251,10 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 				}
 			}
 			for(Long assignUserId : deleteAssignToIdList) {
-				TicketAssignTo assignTo = ticketManagementDao.getTicketAssignToByUserIdAndTicket(assignUserId, ticketCategory.getId());
-				ticketManagementDao.deleteTicketAssignTo(assignTo);
+				TicketCategoryAssignTo assignTo = ticketManagementDao.getTicketCategoryAssignToByUserIdAndTicket(assignUserId, ticketCategory.getId());
+				ticketManagementDao.deleteTicketCategoryAssignTo(assignTo);
 			}
-			ticketCategory.setTicketCategoryAssignToList(assignToList);
+			ticketCategory.setTicketCategoryAssignToList(categoryAssignToList);
 			return ticketManagementDao.saveTicketCategory(ticketCategory);
 			
 		} catch (Exception e) {
@@ -348,12 +348,16 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 			ticketpriority.setName(ticketPriorityDTO.getName());
 			ticketpriority.setDescription(ticketPriorityDTO.getDescription());
 			ticketpriority.setColorCode(ticketPriorityDTO.getColorCode());
-			if (ticketPriorityDTO.getFileInfo() != null && !ticketPriorityDTO.getFileInfo().isEmpty()) {
+			if (ticketPriorityDTO.isRefreshImage()) {
+				ticketpriority.setFileName("");
+				ticketpriority.setFileContentType("");
+				ticketpriority.setFileURL("");
+			} else if (ticketPriorityDTO.getFileInfo() != null && !ticketPriorityDTO.getFileInfo().isEmpty()) {
 				FileInfo fileInfo = ticketPriorityDTO.getFileInfo().get(0);
 				ticketpriority.setFileName(fileInfo.getFileName());
 				ticketpriority.setFileContentType(fileInfo.getContentType());
 				ticketpriority.setFileURL(fileInfo.getFileURL());
-				FileUploadUtil.moveFile(ticketPriorityDTO.getStaticPath(), fileInfo, "ticketPriority");
+				FileUploadUtil.moveFile(staticPath, fileInfo, "ticketPriority");
 			}
 			return ticketManagementDao.saveTicketPriority(ticketpriority);
 		} catch (Exception e) {
@@ -585,6 +589,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 					}
 				}
 			}
+			return issaved;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

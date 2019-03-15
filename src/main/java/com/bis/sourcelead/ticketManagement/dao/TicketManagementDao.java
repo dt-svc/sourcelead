@@ -106,4 +106,8 @@ public interface TicketManagementDao {
 
 	public boolean changeTicketManagementStatus(long ticketId, int status);
 	
+	public List<Long> getTicketCategoryAssignToIdList(long ticketCategoryId);
+	
+	public void deleteTicketCategoryAssignTo(TicketCategoryAssignTo ticketCategoryAssignTo);
+	
 }
