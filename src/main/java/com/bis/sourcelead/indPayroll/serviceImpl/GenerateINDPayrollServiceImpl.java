@@ -296,7 +296,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					Double tdsMonthlyTotal = 0.0;
 					Double tdsExemptionTotal = 0.0;
 					Double tdsEligibilityTotal = 0.0;
-					
+					if(utilDTO.getAssociatePayrollPayheadHistory() != null) {
 					for(AssociatePayrollPayheadHistory ph : utilDTO.getAssociatePayrollPayheadHistory()) {
 						//if L&D in Associate Payroll Payheads
 						if(ph.getPayrollPayhead().getShortCode().equalsIgnoreCase("L&D")) {
@@ -322,7 +322,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 							isARR = true;
 						}
 						
-						
+					  }
 					}
 					
 					//if L&D not found in Associate Payroll Payheads
