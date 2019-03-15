@@ -9775,7 +9775,7 @@ ul.actTicketUL li.actTicketList a{
 	width: 25px; height: 25px; display: block; margin: 0 auto;
 }
 .priorityImage img {
-	max-height: 100%;
+	width: 100%; height: 100%; border-radius: 50%;
 }
 .col2Custom .col-md-2 {
 	width: 12%;
