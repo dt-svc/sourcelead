@@ -591,14 +591,17 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = { "/getTicketList", "/rest/getTicketList" }, method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<TicketDTO> getTicketManagementList(HttpServletRequest request) {
+	public ResponseList<TicketDTO> getTicketManagementList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue) {
 		ResponseList<TicketDTO> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				responseList.setData(ticketManagementService.getTicketManagementListByOrgLocationId(loginOrgLocation.getId(), user.getId(), 1, loginOrgLocation.getDateFormat(), userRole));
+				List<TicketDTO> ticketDTOList = ticketManagementService.getTicketManagementListByOrgLocationId(loginOrgLocation.getId(), user.getId(), 1, loginOrgLocation.getDateFormat(), userRole, searchValue);
+				responseList.setData(ticketDTOList);
+				responseList.setRecordsTotal(ticketDTOList.size());
+				responseList.setRecordsFiltered(ticketDTOList.size());
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
