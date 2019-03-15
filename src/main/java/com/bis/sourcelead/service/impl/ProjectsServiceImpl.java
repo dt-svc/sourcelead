@@ -4111,7 +4111,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			}
 
 			if (null != reportList.getProjectStartDate()) {
-				writeRow.createCell(2).setCellValue(reportList.getProjectStartDate()+ " "+ "to" +" "+(reportList.getProjectEndDate()));
+				writeRow.createCell(2).setCellValue(reportList.getProjectStartDate()+ " "+ "to" +" "+(reportList.getProjectEndDate() != null ? reportList.getProjectEndDate() : "--"));
 				createExcelsheet.autoSizeColumn(2);
 			} else {
 				writeRow.createCell(2).setCellValue("--");
