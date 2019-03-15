@@ -273,9 +273,15 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		
-		StringBuilder actionLinkBuilder = new StringBuilder();			//viewPaySheetFrequencyData?approverStatus=SENT&paySheetFrequencyUUID=aXRlrhm6&payPeriodNum=650
-//		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("viewPaySheetFrequencyData?approverStatus="+immigration.getImmigrationUuid()+"&paySheetFrequencyUUID="+immigration.getCandidate().getCandidateUUID()+"&payPeriodNum="+immigration.getImmigrationTemplateId().getUuid()).toString();
-		emailScenerioUtil.sendNotification(null, loginUser, payrollApprover.getUser(), orgLocation, notificationScenario,new HashMap<String,String>());
+
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder
+				.append("").append(sourceleadUrl).append("/").append("viewPaySheetFrequencyData?approverStatus=SENT&paySheetFrequencyUUID="
+						+ savedPF.getPaySheetFrequencyUUID() + "&payPeriodNum=" + uSPayPeriodw.getPayPeriodNum())
+				.toString();
+		
+		emailScenerioUtil.sendNotification(actionLink, loginUser, payrollApprover.getUser(), orgLocation, notificationScenario,new HashMap<String,String>());
+
 		
 		
 	}
