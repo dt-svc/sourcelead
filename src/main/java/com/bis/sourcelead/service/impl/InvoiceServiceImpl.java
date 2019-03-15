@@ -462,7 +462,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 				
 				invoice.setCustomInvoiceTemplate(customInvoiceTemplate);
 			}
-		} 
+		} else {
+			invoice.setCustomInvoiceTemplate(null);
+		}
 		if(!invoiceTemplateConfigured)
 			file = invoicePdfHelper.createPdfTableForInvoice(invoice, orgLocation, user, org, invoiceType, vendorCurrencyCode, loginOrgCurrencyCode);
 		
@@ -3294,7 +3296,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 			if(customInvoiceTemplate != null) {
 				file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "other", defaultFont, sourceleadUrl);
 				invoiceTemplateConfigured = true;
+				invoice.setCustomInvoiceTemplate(customInvoiceTemplate);
 			}
+		}else{
+			invoice.setCustomInvoiceTemplate(null);
 		}
 		if(!invoiceTemplateConfigured)
 			file = expensesInvoicePdfHelper.createPdfTableForExpensesInvoice(invoice, orgLocation, user, org, invoiceType, vendorCurrencyCode, loginOrgCurrencyCode);

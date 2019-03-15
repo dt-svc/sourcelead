@@ -254,7 +254,7 @@ var validationSettings = {
 	                    		   location.replace(sourceleadUrl+ "/roleActions/"+data+""); 
 	                    		   $(".mask").hide();
 	                    		   $("#addRolePop").fadeOut(100);
-	                    		else if (data.indexOf('Sign In') !== -1) {
+	                    		}else if (data.indexOf('Sign In') !== -1) {
 	                    			location.replace(sourceleadUrl);
 	          				} else {
 	          					showError("Operation failed, please try again");
