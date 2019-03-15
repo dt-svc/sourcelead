@@ -3,6 +3,7 @@ package com.bis.sourcelead.service.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ import com.bis.sourcelead.dao.DataMigrationDao;
 import com.bis.sourcelead.dto.AssetAssignDTO;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.AssetsDataImportDTO;
+import com.bis.sourcelead.dto.CandidateBulkUploadDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DataMigrationDTO;
 import com.bis.sourcelead.dto.FileInfo;
@@ -60,6 +62,7 @@ import com.bis.sourcelead.dto.LcaPlaceOfEmploymentDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
+import com.bis.sourcelead.dto.UploadEntriesDTO;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
@@ -104,6 +107,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ibm.icu.util.Calendar;
+import com.monitorjbl.xlsx.StreamingReader;
 
 
 @Service
@@ -255,7 +259,6 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		Iterator<Row> rowIterator = firstSheet.iterator();
 		int colCount = 0;
 		Boolean isEmptyExcel = true;
-		List<String> candidateEmailsList = null;
 		logger.debug("Upload Start Time>>>"+Calendar.getInstance().getTime());
 		while (rowIterator.hasNext()) {
 			Row nextRow = rowIterator.next();
@@ -268,12 +271,10 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				}
 			}
 			
-			/*if(dataMigrationDTO.getUploadType().equalsIgnoreCase("candidatesUpload")) {
-				candidateEmailsList = candidateService.getCandidateEmailsByOrgLocationId(orgLocation.getId());
-			}*/
 			
+			int rw = 0;
 			if (nextRow.getRowNum() + 1 > Integer.parseInt(dataMigrationDTO.getHeaderPosition())) {
-				
+				System.out.println(++rw + "Row Processing Entry" + Calendar.getInstance().getTime());
 				isEmptyExcel = false;
 				HashMap<String, String> errorSet = new HashMap<String, String>();
 				Gson gson = new Gson();
@@ -396,9 +397,10 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					break;
 					
 				case "candidatesUpload":
+					System.out.println(++rw + "Row Validation Entry Starts" + Calendar.getInstance().getTime());
 					dataMigrationDTOJsonCopy.put("inviteEmail", dataMigrationDTO.getInviteEmail());
-					dataMigrationCommonUtil.dataValidationForCandidates(errorSet, dataMigrationDTOJsonCopy, user,
-							orgLocation,candidateEmailsList);
+					dataMigrationCommonUtil.dataValidationForCandidates(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);
+					System.out.println(++rw + "Row Validation Entry Ends" + Calendar.getInstance().getTime());
 					break;
 					
 				case "timesheetUpload":
@@ -439,7 +441,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				}
 
 				if (errorSet.isEmpty()) {
+					System.out.println(++rw + "Row Saving Entry Starts" + Calendar.getInstance().getTime());
 					mapToEntities(dataMigrationDTOJsonCopy, user, orgLocation, dataMigrationDTO.getUploadType(),jsonString,dataMigrationDTO.getUploadid());
+					System.out.println(++rw + "Row Saving Entry Ends" + Calendar.getInstance().getTime());
 					importStatus = "success";
 					FileOutputStream outputStream = new FileOutputStream(
 							new File(ac + dataMigrationDTO.getExportFilePath()));
@@ -1345,6 +1349,106 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		}
 
 		
+	}
+	
+	
+	
+	@Override
+	public Map<String, String> getCandidateMappingFileData(String filePath, String headerPosition) throws Exception {
+			 
+		     InputStream inputStream = new FileInputStream(new File(filePath.replace("/dataMigration/", "/temp/")));
+			 Workbook workbook = StreamingReader.builder()
+			            .rowCacheSize(100)    
+			            .bufferSize(4096)     
+			            .open(inputStream); 
+			 
+			Sheet firstSheet = workbook.getSheetAt(0);
+			Iterator<Row> rowIterator = firstSheet.iterator();
+			Map<String, String> dataWithCellId = new TreeMap<String, String>();
+			List<String> fieldList = new ArrayList<String>();
+			while (rowIterator.hasNext()) {
+				Row nextRow = rowIterator.next();
+				if (nextRow.getRowNum() + 1 == Integer.parseInt(headerPosition)) {
+					Iterator<Cell> cellIterator = nextRow.cellIterator();
+					while (cellIterator.hasNext()) {
+						Cell cell = cellIterator.next();
+						if(StringUtils.isNotBlank(cell.getStringCellValue())) {
+							dataWithCellId.put(
+									CellReference.convertNumToColString(cell.getColumnIndex()) + cell.getRowIndex(),
+									cell.getStringCellValue());
+						    fieldList.add(CellReference.convertNumToColString(cell.getColumnIndex()));
+						}
+						fieldList.add(CellReference.convertNumToColString(cell.getColumnIndex()));
+					}
+				}
+				
+			}
+			workbook.close();
+			inputStream.close();
+			return dataWithCellId;
+		}
+
+
+	@Override
+	public String storeCandidateBulkUploads(CandidateBulkUploadDTO candidateBulkUploadDTO,UploadEntriesDTO uploadEntriesDTO,HttpServletRequest request)
+			throws Exception {
+		
+		 String ac = StringUtils.removeEnd(staticPath, "/slead-static");
+		  InputStream inputStream = new FileInputStream(new File(ac + uploadEntriesDTO.getExportFilePath().replace("/dataMigration/", "/temp/")));
+		 Workbook workbook = StreamingReader.builder()
+		            .rowCacheSize(100)    
+		            .bufferSize(8192)     
+		            .open(inputStream); 
+		 
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+		 /*OPCPackage pkg = OPCPackage.open(new File(ac + uploadEntriesDTO.getExportFilePath().replace("/dataMigration/", "/temp/")));
+		 Workbook workbook = new XSSFWorkbook(pkg);*/
+		 
+		 	
+		    Sheet firstSheet = workbook.getSheetAt(0);
+			Iterator<Row> rowIterator = firstSheet.iterator();
+			logger.debug("Upload Start Time In MilliSec for Streaming>>>"+System.currentTimeMillis()+">>>Current Time"+Calendar.getInstance().getTime());
+			int rw = 0;
+			while (rowIterator.hasNext()) {
+				Row nextRow = rowIterator.next();
+				if (nextRow.getRowNum() + 1 > Integer.parseInt(uploadEntriesDTO.getHeaderPosition())) {
+					System.out.println(++rw + "Row " + Calendar.getInstance().getTime());
+					HashMap<String, String> errorSet = new HashMap<String, String>();
+					Gson gson = new Gson();
+					String gsonOutput = gson.toJson(candidateBulkUploadDTO);
+					CandidateBulkUploadDTO dataMigrationDTOCopy = new CandidateBulkUploadDTO();
+					Iterator<?> keys = null;
+					JSONObject dataMigrationDTOJson = new JSONObject(gsonOutput);
+					JSONObject dataMigrationDTOJsonCopy = new JSONObject(dataMigrationDTOCopy);
+					keys = dataMigrationDTOJson.keys();
+					
+					while (keys.hasNext()) {
+						String k = (String) keys.next();
+						if (StringUtils.isNotEmpty(k)) {
+							Iterator<Cell> cellIterator = nextRow.cellIterator();
+							while (cellIterator.hasNext()) {
+								Cell cell = cellIterator.next();
+								if (dataMigrationDTOJson.has((String) k) && dataMigrationDTOJson.get((String) k) != null) {
+									if ((dataMigrationDTOJson.get((String) k).toString().replaceAll("\\d", ""))
+											.equalsIgnoreCase(CellReference.convertNumToColString(cell.getColumnIndex()))) {
+										dataMigrationDTOJsonCopy.put((String) k, cell.getStringCellValue()).toString().trim();
+									}
+								}
+							}
+						}
+					}
+					
+					logger.debug(dataMigrationDTOJsonCopy.toString());
+					dataMigrationCommonUtil.dataValidationForCandidates(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);
+					
+				}
+		
+			}
+			logger.debug("Upload End Time In MilliSec for Streaming>>>"+System.currentTimeMillis()+">>>End Time"+Calendar.getInstance().getTime());
+			workbook.close();
+			return null;
 	}
 }
 

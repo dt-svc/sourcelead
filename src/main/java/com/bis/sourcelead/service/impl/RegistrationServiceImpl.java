@@ -438,7 +438,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		saveOrgLocationDefaultProject(registration, orgLocations, user);
 		commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);
-		commonUtil.storeDefaultPayheadsWithOrgLocation(user, orgLocations);
+//		commonUtil.storeDefaultPayheadsWithOrgLocation(user, orgLocations);
 		
 		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
 		userService.sendEmail(user, loginUser, password,orgLocations.getId());
@@ -1369,7 +1369,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		userRole.setUserState(Status.NOT_LOGGEDIN);
 		userRole.setUserType(Constants.PROFESSIONAL);
 		userRole.setIsMailSent(Status.Y);
-		userRoleService.addUserRole(userRole);
+		userRole = userRoleService.addUserRole(userRole);
 		
 		Candidate candidate = new Candidate();
 		candidate.setConsultantUser(user);
@@ -1438,6 +1438,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 			}
 			
 			
+		}
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
 		}
 		
 		if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
@@ -1686,6 +1690,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidateService.addCandidate(candidate);
 		candidateService.getCandidatePercentage(candidate, orgLocations);
 		candidateService.saveOrUpdateCandidateElkDocument(candidate);
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+		}
 		
 		if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
 			sendActivationEmail(user,orgLocations);

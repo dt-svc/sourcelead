@@ -101,6 +101,9 @@ public class UserLoginHelper {
 	@Value("${vmsUrl}")
 	private String vmsUrl;
 	
+	@Value("${sourceleadDomainUrl}")
+	private String sourceleadDomainUrl;
+	
 	@Value("${isCouchbaseEnabled}")
 	private String isCouchbaseEnabled;
 	
@@ -140,7 +143,8 @@ public class UserLoginHelper {
 		 }
 		 JSONObject userRole = userStatsCacheHelper.getLogInUserRoleStats(uname.toLowerCase()+"_AUTH_"+userSession.get("userRoleUUID").toString());
 		 JSONObject orgLocations = userStatsCacheHelper.getOrgLocationCacheDetails(userSession.get("orgLocationCode").toString());
-		 
+		 SourceLeadSessionManager.setSessionAttribute(req, "actionUUID", userSession.get("actionUUID").toString());
+		 SourceLeadSessionManager.setSessionAttribute(req, "actionId", Long.parseLong(userSession.get("actionId").toString()));
 		 
 		 try {
 			
@@ -150,7 +154,7 @@ public class UserLoginHelper {
 			Org logInOrg = getLoginOrgDetails(orgLocations);
 			SourceLeadSessionManager.setSessionAttribute(req, "org", logInOrg);
 			
-			User loginUser = getLoginUserDetails(userRole);
+			User loginUser = getLoginUserDetails(userRole,userSession);
 			SourceLeadSessionManager.setSessionAttribute(req, "user", loginUser);
 			
 			UserRole loginUserRole = getLoginUserRoleDetails(userRole);
@@ -167,7 +171,7 @@ public class UserLoginHelper {
 		 
 		 
 		  try {
-			  if(userRole != null && userRole.get("userState").toString() != null && userRole.get("userState").toString().equals(Status.NOT_LOGGEDIN)){
+			  if(userRole != null && userRole.get("userState").toString() != null && userRole.get("userState").toString().equals("NOT_LOGGEDIN")){
 	  			   UserRole uRole = userRoleService.getUserRoleById(Long.valueOf(userRole.get("userRoleId").toString()));
 	  					 uRole.setUserState(Status.ACTIVE);
 	  			         uRole.setNewlyLoginUser(Constants.NO);
@@ -182,29 +186,6 @@ public class UserLoginHelper {
 			  e.printStackTrace();
 		   }
 		  
-		  
-		  RequestAttributes attribs = RequestContextHolder.getRequestAttributes();
-		  if (RequestContextHolder.getRequestAttributes() != null) {
-		      HttpServletRequest request = ((ServletRequestAttributes) attribs).getRequest();
-		      String ipAddress = getClientIpAddr(request);
-		      
-		      if(userRole != null){
-			    	UserLoginLogoutSession userLoginSession = new UserLoginLogoutSession();
-			    	userLoginSession.setIpaddress(ipAddress);
-			    	User loginUser = new User();
-			    	loginUser.setId(Long.valueOf(userRole.get("userId").toString()));
-				    userLoginSession.setUserId(loginUser);
-				    if(StringUtils.isNotEmpty(verfDone) && verfDone.equalsIgnoreCase("Y")){
-				    	userLoginSession.setAuthenticated("Y");
-				    }else{
-				    	userLoginSession.setAuthenticated("N");
-				    }
-				    userLoginSession.setLoginTime(new Date());
-				    userLoginSession.setActionUUID(RandomStringUtils.randomAlphanumeric(16));
-				    userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
-				    request.getSession().setAttribute("userLoginSession", userLoginSession);
-			    }
-		  }
 		  
 		  SourceLeadSessionManager.setSessionAttribute(req, "sourceleadLogoutUrl", sourceleadLogoutUrl);
 		  
@@ -316,6 +297,12 @@ public class UserLoginHelper {
 				 SourceLeadSessionManager.setSessionAttribute(req, "redirectURL", redirectURL);
 				 SourceLeadSessionManager.setSessionAttribute(req, "redirectOrgLocationId", redirectOrgLocationId);
 			 }
+			 
+			 
+		  UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) req.getSession().getAttribute("userLoginSession");
+		  if(userLoginSession != null) {
+			  SourceLeadSessionManager.setSessionAttribute(req, "userLoginSession", userLoginSession);
+		  }
 		  
 		  List<String> weekOffDaysList = new ArrayList<>();
 		  String[] weekOffDays = orgLocations.get("weekOffDays").toString().split(",");
@@ -328,6 +315,7 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "pmsUrl", pmsUrl);
 		  SourceLeadSessionManager.setSessionAttribute(req, "atsUrl", atsUrl);
 		  SourceLeadSessionManager.setSessionAttribute(req, "vmsUrl", vmsUrl);
+		  SourceLeadSessionManager.setSessionAttribute(req, "sourceleadDomainUrl", sourceleadDomainUrl);
 		  SourceLeadSessionManager.setSessionAttribute(req, "googleMapsLocationApiKey", googleMapsLocationApiKey);
 	
 		  
@@ -356,6 +344,9 @@ public class UserLoginHelper {
 		SourceLeadSessionManager.setSessionAttribute(req, "isJobsTabAccessable", "N");
 		boolean isReportTabAccessable = false;
 		SourceLeadSessionManager.setSessionAttribute(req, "reportsTabConfigured", "N");
+		
+		boolean isVendorsTabAccessable = false;
+		SourceLeadSessionManager.setSessionAttribute(req, "isVendorsTabAccessable", "N");
 		
 		try {
 				tabsList =  userStatsCacheHelper.getLogInUserRoleMenusList(uname.toLowerCase()+"_AUTH_"+userSession.get("userRoleUUID").toString());
@@ -397,6 +388,13 @@ public class UserLoginHelper {
 						}
 					}
 					
+					if (isVendorsTabAccessable == false) {
+						if (tab.equalsIgnoreCase("Vendors")) {
+							isVendorsTabAccessable = true;
+							SourceLeadSessionManager.setSessionAttribute(req, "isVendorsTabAccessable", "Y");
+						}
+					}
+					
 				}
 			
 			
@@ -406,6 +404,7 @@ public class UserLoginHelper {
 			SourceLeadSessionManager.setSessionAttribute(req, "expensesTabCount", expensesTabCount);
 			SourceLeadSessionManager.setSessionAttribute(req, "resourcesTabCount", resourcesTabCount);
 			SourceLeadSessionManager.setSessionAttribute(req, "paryrollTabCount", paryrollTabCount);
+			SourceLeadSessionManager.setSessionAttribute(req, "actionsList", actionsList);
 			
 			
 			
@@ -413,7 +412,8 @@ public class UserLoginHelper {
 				List<UserAccountsDTO> accountsList = new ArrayList<>();
 				String[] userAccountsList = userSession.get("loginUserAccounts").toString().split(",");
 				for(int i=0; i<userAccountsList.length; i++) {
-					JSONObject accountsJson = userStatsCacheHelper.getLogInUserRoleStats(uname.toLowerCase()+"_AUTH_"+userAccountsList[i]);
+					String[] userAccount = userAccountsList[i].toString().split("\\^");
+					JSONObject accountsJson = userStatsCacheHelper.getLogInUserRoleStats(userAccount[0].toLowerCase()+"_AUTH_"+userAccount[1]);
 					UserAccountsDTO accountsDTO = new UserAccountsDTO();
 					accountsDTO.setRoleName(accountsJson.get("roleName").toString());
 					accountsDTO.setDisplayName(accountsJson.get("roleDisplayName").toString());
@@ -509,26 +509,6 @@ public class UserLoginHelper {
 			   }
 			  
 			  RequestAttributes attribs = RequestContextHolder.getRequestAttributes();
-			  if (RequestContextHolder.getRequestAttributes() != null) {
-			      HttpServletRequest request = ((ServletRequestAttributes) attribs).getRequest();
-			      String ipAddress = getClientIpAddr(request);
-			      
-			      if(loginUser != null){
-				    	UserLoginLogoutSession userLoginSession = new UserLoginLogoutSession();
-				    	userLoginSession.setIpaddress(ipAddress);
-					    userLoginSession.setUserId(loginUser);
-					    if(StringUtils.isNotEmpty(verfDone) && verfDone.equalsIgnoreCase("Y")){
-					    	userLoginSession.setAuthenticated("Y");
-					    }else{
-					    	userLoginSession.setAuthenticated("N");
-					    }
-					    userLoginSession.setLoginTime(new Date());
-					    userLoginSession.setActionUUID(RandomStringUtils.randomAlphanumeric(16));
-					    userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
-					    request.getSession().setAttribute("userLoginSession", userLoginSession);
-				    }
-			  }
-			  
 			  SourceLeadSessionManager.setSessionAttribute(req, "sourceleadLogoutUrl", sourceleadLogoutUrl);
 			  SourceLeadSessionManager.setSessionAttribute(req, "user", loginUser);
 			  SourceLeadSessionManager.setSessionAttribute(req, "userId", loginUser.getId());
@@ -611,6 +591,11 @@ public class UserLoginHelper {
 					 SourceLeadSessionManager.setSessionAttribute(req, "redirectURL", redirectURL);
 					 SourceLeadSessionManager.setSessionAttribute(req, "redirectOrgLocationId", redirectOrgLocationId);
 				 }
+				 
+			 UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) req.getSession().getAttribute("userLoginSession");
+			  if(userLoginSession != null) {
+				  SourceLeadSessionManager.setSessionAttribute(req, "userLoginSession", userLoginSession);
+			  }
 			  
 			  if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL") || 
 					  userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")) {
@@ -725,6 +710,8 @@ public class UserLoginHelper {
 			SourceLeadSessionManager.setSessionAttribute(req, "isJobsTabAccessable", "N");
 			boolean isReportTabAccessable = false;
 			SourceLeadSessionManager.setSessionAttribute(req, "reportsTabConfigured", "N");
+			boolean isVendorsTabAccessable = false;
+			SourceLeadSessionManager.setSessionAttribute(req, "isVendorsTabAccessable", "N");
 			
 			if(!userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_PROFESSIONAL) && !userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_INDEPENDENT_RECRUITER)){
 				orgLocations = userRole.getOrgLocations();
@@ -768,6 +755,14 @@ public class UserLoginHelper {
 								SourceLeadSessionManager.setSessionAttribute(req, "isJobsTabAccessable", "Y");
 							}
 						}
+						
+						if (isVendorsTabAccessable == false) {
+							if (tabs.getTabName().equalsIgnoreCase("Vendors")) {
+								isVendorsTabAccessable = true;
+								SourceLeadSessionManager.setSessionAttribute(req, "isVendorsTabAccessable", "Y");
+							}
+						}
+						
 						tabNamesList.add(tabs.getTabName());
 					}
 				
@@ -891,75 +886,6 @@ public class UserLoginHelper {
 		return Result;
 	}
 		
-	public String getIpAddress(){
-		 String ipAddress = null;
-		 RequestAttributes attribs = RequestContextHolder.getRequestAttributes();
-		  if (attribs != null) {
-		      HttpServletRequest request = ((ServletRequestAttributes) attribs).getRequest();
-		      ipAddress = getClientIpAddr(request);
-		  }
-		  return ipAddress;
-	}
-	public String getClientIpAddr(HttpServletRequest request) {  
-	    String ip = request.getHeader("X-Forwarded-For");  
-	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-	        ip = request.getHeader("Proxy-Client-IP");  
-	    }  
-	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-	        ip = request.getHeader("WL-Proxy-Client-IP");  
-	    }  
-	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-	        ip = request.getHeader("HTTP_X_FORWARDED_FOR");  
-	    }  
-	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-	        ip = request.getHeader("HTTP_X_FORWARDED");  
-	    }  
-	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-	        ip = request.getHeader("HTTP_X_CLUSTER_CLIENT_IP");  
-	    }  
-	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-	        ip = request.getHeader("HTTP_CLIENT_IP");  
-	    }  
-	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-	        ip = request.getHeader("HTTP_FORWARDED_FOR");  
-	    }  
-	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-	        ip = request.getHeader("HTTP_FORWARDED");  
-	    }  
-	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-	        ip = request.getHeader("HTTP_VIA");  
-	    }  
-	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-	        ip = request.getHeader("REMOTE_ADDR");  
-	    }  
-	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-	        ip = request.getRemoteAddr();  
-	    }  
-        if (ip.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
-            InetAddress localip = null;
-			try {
-				localip = java.net.InetAddress.getLocalHost();
-			} catch (UnknownHostException e) {
-			}
-			if(localip != null)
-            ip = localip.getHostAddress();
-        }
-        String[] ipArray = ip.split(",");
-		if(ipArray.length > 1){
-			for(String s :ipArray){
-				if(StringUtils.isNotEmpty(s)){
-					ip =s.replaceAll("[^0-9.]", "");
-					break;
-				}
-			}
-			
-		}else{
-			ip = ip.replaceAll("[^0-9.]", "");
-		}
-        
-	    return ip;  
-	}
-	
 	
 	public String getLoginUserAuthenticationTocken() {
 		   Authentication auth = SecurityContextHolder.getContext().getAuthentication();	
@@ -986,11 +912,16 @@ public class UserLoginHelper {
 		orgLocations.setTimeZoneId(orgLocationJson.get("timeZoneId").toString());
 		orgLocations.setTimeZoneName(orgLocationJson.get("timeZone").toString());
 		orgLocations.setLocationCode(orgLocationJson.get("orgLocationCode").toString());
+		orgLocations.setOrgLocationName(orgLocationJson.get("orgLocationName").toString());
+		if(orgLocationJson.get("orgName").toString() != null) {
+			orgLocations.setOrgName(orgLocationJson.get("orgName").toString());
+		}
 		orgLocations.setOrgCode(orgLocationJson.get("orgCode").toString());
 		orgLocations.setCurrencyCode(orgLocationJson.get("currencyCode").toString());
 		orgLocations.setCountryCode(orgLocationJson.get("countryCode").toString());
 		orgLocations.setCountry(orgLocationJson.get("country").toString());
 		orgLocations.setOrgId(Long.valueOf(orgLocationJson.get("orgId").toString()));
+		orgLocations.setOrgLocationName(orgLocationJson.get("orgLocationName").toString());
 		
 		if(orgLocationJson.get("orgShortCode") != null) {
 			orgLocations.setGeneratedUserId(orgLocationJson.get("orgShortCode").toString());
@@ -1014,13 +945,14 @@ public class UserLoginHelper {
 	}
 	
 	
-	public User getLoginUserDetails(JSONObject userRoleJson) {
+	public User getLoginUserDetails(JSONObject userRoleJson, JSONObject userSession) {
 		
 		User user = new User();
 		user.setId(Long.valueOf(userRoleJson.get("userId").toString()));
 		user.setUserCode(userRoleJson.get("userCode").toString());
 		user.setFullName(userRoleJson.get("loginUserFullName").toString());
 		user.setEmail(userRoleJson.get("email").toString());
+		user.setUserName(userSession.get("loginUserName").toString());
 		
 		if(userRoleJson.get("firstName") != null) {
 			user.setFirstName(userRoleJson.get("firstName").toString());
@@ -1059,4 +991,66 @@ public class UserLoginHelper {
 		}
 		return candidate;
 	}
+	
+	
+	public List<UserAccountsDTO> getUserAccountsList(){
+		  Authentication auth = SecurityContextHolder.getContext().getAuthentication();	
+	      String authToken[] = auth.getName().split("##");
+	      JSONObject userSession =  userStatsCacheHelper.getLogInUserSessionJson(authToken[2]+"_SESSION");
+		
+	      List<UserAccountsDTO> accountsList = new ArrayList<>();
+	      
+	      String[] userAccountsList = userSession.get("loginUserAccounts").toString().split(",");
+			for(int i=0; i<userAccountsList.length; i++) {
+				String[] userAccount = userAccountsList[i].toString().split("\\^");
+				JSONObject accountsJson = userStatsCacheHelper.getLogInUserRoleStats(userAccount[0].toLowerCase()+"_AUTH_"+userAccount[1]);
+				UserAccountsDTO accountsDTO = new UserAccountsDTO();
+				accountsDTO.setRoleName(accountsJson.get("roleName").toString());
+				accountsDTO.setDisplayName(accountsJson.get("roleDisplayName").toString());
+				accountsDTO.setOrgLocationId(accountsJson.get("orgLocationId").toString());
+				accountsDTO.setUserRoleId(accountsJson.get("userRoleId").toString());
+				
+				if(accountsJson.get("userLoginSecurity") != null) {
+					accountsDTO.setLoginSecurity(accountsJson.get("userLoginSecurity").toString());
+				}
+				
+				accountsDTO.setUserId(accountsJson.get("userId").toString());
+				
+				if(accountsJson.get("designation") != null) {
+					accountsDTO.setDesignation(accountsJson.get("designation").toString());
+				}
+				
+				if(userSession.get("userType") != null) {
+					accountsDTO.setUserType(accountsJson.get("userType").toString());
+				}
+			
+				JSONObject accountOrgLocations = userStatsCacheHelper.getOrgLocationCacheDetails(accountsJson.get("orgLocationCode").toString());
+				
+				if(accountOrgLocations.get("imgUrl") != null) {
+					accountsDTO.setOrgImgUrl(accountOrgLocations.get("imgUrl").toString());
+				}
+				
+				accountsDTO.setOrgLocationLoginSecurity(accountOrgLocations.get("orgLocationLoginSecurity").toString());
+				accountsDTO.setOrgLocationName(accountOrgLocations.get("orgLocationName").toString());
+				accountsDTO.setOrgName(accountOrgLocations.get("orgName").toString());
+				
+				if(accountOrgLocations.get("country") != null) {
+					accountsDTO.setCountry(accountOrgLocations.get("country").toString());
+				}
+				
+				if(accountOrgLocations.get("state") != null) {
+					accountsDTO.setState(accountOrgLocations.get("state").toString());
+				}
+				
+				if(accountOrgLocations.get("city") != null) {
+					accountsDTO.setCity(accountOrgLocations.get("city").toString());
+				}
+				
+				accountsList.add(accountsDTO);
+			}
+		
+		return accountsList;
+	}
+	
+	
 }

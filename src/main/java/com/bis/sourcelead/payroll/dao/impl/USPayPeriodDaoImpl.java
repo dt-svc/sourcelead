@@ -51,7 +51,7 @@ public class USPayPeriodDaoImpl implements USPayPeriodDao{
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 
-		if(uSPayPeriod != null) {
+		if(uSPayPeriod != null && uSPayPeriod.size() > 0) {
 			return uSPayPeriod.get(0);
 		}
 		return null;

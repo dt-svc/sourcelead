@@ -14,6 +14,9 @@ import javax.persistence.Id;
 
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 /**
  * 
  * @author rajat rana
@@ -22,6 +25,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "CRON_TRACKER")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "cronTracker")
 public class CronTracker implements Serializable{
 	
 	

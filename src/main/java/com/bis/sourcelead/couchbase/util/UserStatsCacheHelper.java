@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -33,6 +35,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.couchbase.client.java.document.json.JsonObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -74,6 +77,9 @@ public class UserStatsCacheHelper {
 	
 	@Autowired
 	SourceLeadSessionManager sourceLeadSessionManager;
+	
+	@Autowired
+	UserService userService;
 	
 	
 	
@@ -672,7 +678,7 @@ public class UserStatsCacheHelper {
 	}
 	
 	
-	public void saveLoginUserSessionStoreToCouchbase(String generatedCustomTocken,UserRole userRole,HttpServletRequest request) {
+	public void saveLoginUserSessionStoreToCouchbase(String generatedCustomTocken,UserRole userRole,String actionUUID,Long actionId,HttpServletRequest request) {
 		LoginUserSessionStoreDTO sessionDTO = new LoginUserSessionStoreDTO();
 		
 		sessionDTO.setDocumentType(Constants.COUCH_DOCUMENT_TYPE_USER_LOGIN_SESSION);
@@ -685,16 +691,29 @@ public class UserStatsCacheHelper {
 		sessionDTO.setCountry(userRole.getOrgLocations().getCountry());
 		sessionDTO.setState(userRole.getOrgLocations().getState());
 		sessionDTO.setCity(userRole.getOrgLocations().getCity());
+		sessionDTO.setActionUUID(actionUUID);
+		sessionDTO.setActionId(String.valueOf(actionId));
 	    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 	    LocalDateTime now = LocalDateTime.now();  
 	    sessionDTO.setLastUpdatedDate(dtf.format(now));
 	    StringBuilder accountsList = new StringBuilder();
 	    String userAccounts = null;
 	    try {
-			List<UserRole> userRolesList = userRoleService.getLoginUserAccountsList(userRole.getUser().getId());
+	    	List<Long> userIdsList = new ArrayList<>();
+	    	userIdsList.add(userRole.getUser().getId());
+	    	List<Long> linkedUserIdsList = userService.getUserIdsListByLinkedUserId(userRole.getUser().getId());
+	    	if(linkedUserIdsList != null && !linkedUserIdsList.isEmpty()) {
+	    		userIdsList.addAll(linkedUserIdsList);
+	    	}
+			Set<Long> loginUserIdsSet = new LinkedHashSet<>();
+			loginUserIdsSet.addAll(userIdsList);
+			userIdsList.addAll(loginUserIdsSet);
+			
+			List<UserRole> userRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
+			
 			if(userRolesList != null && userRolesList.size() > 1) {
 				for(UserRole ur : userRolesList) {
-					accountsList.append(ur.getUuid()).append(",").toString();
+					accountsList.append(ur.getUser().getUserName()+"^"+ur.getUuid()).append(",").toString();
 				}
 				 userAccounts = accountsList.deleteCharAt(accountsList.length()-1).toString(); 
 				 sessionDTO.setLoginUserAccounts(userAccounts);

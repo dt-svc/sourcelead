@@ -20,6 +20,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name="PASSWORD_RESETS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "passwordResets")
 public class PasswordResets implements Serializable{
 
 	private static final long serialVersionUID = 1L;
