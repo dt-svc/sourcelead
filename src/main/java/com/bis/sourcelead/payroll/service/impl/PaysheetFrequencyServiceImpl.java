@@ -254,7 +254,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		 }
 		 String url = sourceleadUrl;
         
-        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,emailScenario);
+        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getSubject(), globalVarsMap,emailScenario);
         notificationScenario.setBody(notificationbody);
 
 
@@ -273,7 +273,13 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		
-		emailScenerioUtil.sendNotification(null, loginUser, payrollApprover.getUser(), orgLocation, notificationScenario,new HashMap<String,String>());
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder
+				.append("").append(sourceleadUrl).append("/").append("viewPaySheetFrequencyData?approverStatus=SENT&paySheetFrequencyUUID="
+						+ savedPF.getPaySheetFrequencyUUID() + "&payPeriodNum=" + uSPayPeriodw.getPayPeriodNum())
+				.toString();
+		
+		emailScenerioUtil.sendNotification(actionLink, loginUser, payrollApprover.getUser(), orgLocation, notificationScenario,new HashMap<String,String>());
 		
 		
 	}
