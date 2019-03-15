@@ -31,10 +31,27 @@ function associateBankData(userId){
      	    	 for(i=0;i < json.length;i++){
      	    		 var report = json[i];
      	    		 result += '<tr>';
-     		         result += '<td>'+report.accountType+'</td>';
-     		         result += '<td>'+report.bankName+'</td>';
-     		         result += '<td>'+report.accountNumber+'</td>';
-     		         result += '<td>'+report.routingNumber+'</td>';
+     	    		 if(report.accountType != null){
+     	    			result += '<td>'+report.accountType+'</td>';
+					 }else{
+						 result += '<td>--</td>';
+					 }
+     	    		if(report.bankName != null){
+     	    			result += '<td>'+report.bankName+'</td>';
+					 }else{
+						 result += '<td>--</td>';
+					 }
+     	    		if(report.accountNumber != null){
+     	    			result += '<td>'+report.accountNumber+'</td>';
+					 }else{
+						 result += '<td>--</td>';
+					 }
+     	    		if(report.routingNumber != null){
+     	    			result += '<td>'+report.routingNumber+'</td>';
+					 }else{
+						 result += '<td>--</td>';
+					 }
+     	    		 
      		        result += '<td>';
 					result += '<label class="switch">';
 					if(report.defaultAccount == true){

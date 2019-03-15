@@ -273,6 +273,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		
+
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = actionLinkBuilder
 				.append("").append(sourceleadUrl).append("/").append("viewPaySheetFrequencyData?approverStatus=SENT&paySheetFrequencyUUID="
@@ -280,6 +281,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				.toString();
 		
 		emailScenerioUtil.sendNotification(actionLink, loginUser, payrollApprover.getUser(), orgLocation, notificationScenario,new HashMap<String,String>());
+
 		
 		
 	}
