@@ -114,6 +114,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.XlsBulkUploadHistroyService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.DataMigrationCommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.couchbase.client.java.Bucket;
@@ -1413,7 +1414,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		            .bufferSize(8192)     
 		            .open(inputStream); 
 		 
-		   
+		 FileInfo fileInfo = new FileInfo();
+		 fileInfo.setFileURL(uploadEntriesDTO.getExportFilePath());
+		 FileUploadUtil.moveFile(candidateBulkUploadDTO.getStaticPath(), fileInfo, "dataMigration");
 			
 		    Sheet firstSheet = workbook.getSheetAt(0);
 			Iterator<Row> rowIterator = firstSheet.iterator();
