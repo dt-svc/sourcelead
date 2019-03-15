@@ -114,9 +114,13 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public boolean saveTicketType(TicketTypeDTO ticketTypeDTO, long userId, OrgLocations loginOrgLocation) {
+	public long saveTicketType(TicketTypeDTO ticketTypeDTO, long userId, OrgLocations loginOrgLocation) {
 		try {
 			TicketType ticketType = null;
+			long savedTicketTypeId = ticketManagementDao.getTicketTypeIdByNameAndOrgLocationId(ticketTypeDTO.getName(), loginOrgLocation.getId());
+			if(savedTicketTypeId > 0 && savedTicketTypeId != ticketTypeDTO.getId()) {
+				return -1;
+			}
 			if (ticketTypeDTO.getId() > 0) {
 				ticketType = ticketManagementDao.getTicketTypeById(ticketTypeDTO.getId());
 				ticketType.setUpdatedBy(userId);
@@ -135,7 +139,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return 0;
 	}
 
 	@Override
@@ -199,9 +203,13 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		return ticketCategoryDTOList;
 	}
 
-	public Boolean saveTicketCategory(TicketCategoryDTO ticketCategoryDTO, User user, long userId, OrgLocations loginOrgLocation) {
+	public long saveTicketCategory(TicketCategoryDTO ticketCategoryDTO, User user, long userId, OrgLocations loginOrgLocation) {
 		try {
 			TicketCategory ticketCategory = null;
+			long savedTicketCategoryId = ticketManagementDao.getTicketCategoryIdByNameAndOrgLocationId(ticketCategoryDTO.getName(), loginOrgLocation.getId());
+			if(savedTicketCategoryId > 0 && savedTicketCategoryId != ticketCategoryDTO.getId()) {
+				return -1;
+			}
 			if (ticketCategoryDTO.getId() > 0) {
 				ticketCategory = ticketManagementDao.getTicketCategoryById(ticketCategoryDTO.getId());
 				ticketCategory.setUpdatedBy(userId);
@@ -260,7 +268,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return 0;
 	}
 
 	@Override
@@ -330,9 +338,13 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public Boolean saveTicketPriority(TicketPriorityDTO ticketPriorityDTO, long userId, OrgLocations loginOrgLocation) {
+	public long saveTicketPriority(TicketPriorityDTO ticketPriorityDTO, long userId, OrgLocations loginOrgLocation) {
 		try {
 			TicketPriority ticketpriority = null;
+			long savedTicketPriorityId = ticketManagementDao.getTicketPriorityIdByNameAndOrgLocationId(ticketPriorityDTO.getName(), loginOrgLocation.getId());
+			if(savedTicketPriorityId > 0 && savedTicketPriorityId != ticketPriorityDTO.getId()) {
+				return -1;
+			}
 			if (ticketPriorityDTO.getId() > 0) {
 				ticketpriority = ticketManagementDao.getTicketPriorityById(ticketPriorityDTO.getId());
 				ticketpriority.setUpdatedBy(userId);
@@ -363,7 +375,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return 0;
 	}
 
 	@Override
@@ -427,9 +439,13 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public Boolean saveTicketStatus(TicketStatusDTO ticketStatusDTO, long userId, OrgLocations orgLocations) {
+	public long saveTicketStatus(TicketStatusDTO ticketStatusDTO, long userId, OrgLocations orgLocations) {
 		try {
 			TicketStatus ticketStatus = null;
+			long savedTicketStatusId = ticketManagementDao.getTicketStatusIdByNameAndOrgLocationId(ticketStatusDTO.getName(), orgLocations.getId());
+			if(savedTicketStatusId > 0 && savedTicketStatusId != ticketStatusDTO.getId()) {
+				return -1;
+			}
 			if (ticketStatusDTO.getId() > 0) {
 				ticketStatus = ticketManagementDao.getTicketStatusById(ticketStatusDTO.getId());
 				ticketStatus.setUpdatedBy(userId);
@@ -449,7 +465,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return 0;
 	}
 
 	@Override
