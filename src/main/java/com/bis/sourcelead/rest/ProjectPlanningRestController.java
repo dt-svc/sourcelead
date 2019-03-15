@@ -812,7 +812,7 @@ public class ProjectPlanningRestController {
 									}
 									projectMembers.setProjectMemberCandidteId(cand);
 									projectMembers.setMasterCandidateId(cand.getMasterCandidateId());
-									projectMembers = saveProjectMembers(projectPlanningRequest.getProjectId(), candidate, projectPlanningResourceRequest, user, projectClients);
+									projectMembers = saveProjectMembers(projectPlanningRequest.getProjectId(), cand, projectPlanningResourceRequest, user, projectClients);
 									saveProjectMembersHistory(projectMembers,user,projectClients);
 									if(cand.getParentCandidateId() != null){
 										parentCandidatId = cand.getParentCandidateId().getId();
@@ -1126,7 +1126,12 @@ public class ProjectPlanningRestController {
 	    
 	    public ProjectMembers saveProjectMembers(Projects projects, Candidate candidate,ProjectPlanningResourceRequest projectPlanningResourceRequest,User user,ProjectClients projectClients) throws Exception {
 	    	
-	    	 ProjectMembers projectMembers = new ProjectMembers();
+	    	 ProjectMembers projectMembers = null;
+	    	 
+	    	 projectMembers = projectMembersService.getProjectMembersByCandidateIdAndProjectClientId(candidate.getId(), projectClients.getId());
+	    	 if(projectMembers == null) {
+	    		 projectMembers =  new ProjectMembers();
+	    	 }
 				projectMembers.setProjects(projects);
 				projectMembers.setProjectMemberCandidteId(candidate);
 				projectMembers.setMasterCandidateId(candidate.getMasterCandidateId());
