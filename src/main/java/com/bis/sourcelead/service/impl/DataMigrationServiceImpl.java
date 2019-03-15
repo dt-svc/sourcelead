@@ -1520,21 +1520,24 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					 try {
 						 HashMap<String, String> errorSet = new HashMap<String, String>();
 						 org.json.simple.JSONObject candidateJosn = userStatsCacheHelper.getCandidateDocument(docs.toString());
-						 dataMigrationCommonUtil.dataValidationForCandidateBulkImports(errorSet, candidateJosn,orgLocations,vendorsList);
-						if (errorSet.isEmpty()) {
-							Gson gson = new Gson();
-							CandidateDTO candidateDTO = gson.fromJson(candidateJosn.toString(), CandidateDTO.class);
-							if(candidateDTO.getCountry() == null || candidateDTO.getCountry().isEmpty()) {
-								candidateDTO.setCountry(orgLocations.getCountry());
-							}
-							candidateService.saveCandidateBulkImports(candidateDTO, orgLocations, user, vendorsList);
-							 bucket.remove(docs.toString());
-						}else {
-							BulkImportFailureCacheDTO failureCacheDTO = new BulkImportFailureCacheDTO();
-							failureCacheDTO.setDocumentId(docs.toString());
-							failureCacheDTO.setErrorMsg(errorSet);
-							failureList.add(failureCacheDTO);
-							
+						
+						if(!candidateJosn.isEmpty()) {
+							 dataMigrationCommonUtil.dataValidationForCandidateBulkImports(errorSet, candidateJosn,orgLocations,vendorsList);
+								if (errorSet.isEmpty()) {
+									Gson gson = new Gson();
+									CandidateDTO candidateDTO = gson.fromJson(candidateJosn.toString(), CandidateDTO.class);
+									if(candidateDTO.getCountry() == null || candidateDTO.getCountry().isEmpty()) {
+										candidateDTO.setCountry(orgLocations.getCountry());
+									}
+									candidateService.saveCandidateBulkImports(candidateDTO, orgLocations, user, vendorsList);
+									 bucket.remove(docs.toString());
+								}else {
+									BulkImportFailureCacheDTO failureCacheDTO = new BulkImportFailureCacheDTO();
+									failureCacheDTO.setDocumentId(docs.toString());
+									failureCacheDTO.setErrorMsg(errorSet);
+									failureList.add(failureCacheDTO);
+									
+								}
 						}
 						
 					} catch (Exception e) {

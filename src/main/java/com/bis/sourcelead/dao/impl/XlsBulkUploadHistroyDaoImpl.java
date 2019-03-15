@@ -113,13 +113,13 @@ public class XlsBulkUploadHistroyDaoImpl implements XlsBulkUploadHistroyDao{
 				+" WHERE "
 				+" HISTORY.UPLOAD_ENTITY_TYPE = :uploadEntityType AND "
 				+" HISTORY.UPLOAD_TYPE = :uploadType AND "
-				+" HISTORY.ORG_LOCATION_ID = :orgLocationId ORDER BY HISTORY.ID DESC";
+				+" HISTORY.ORG_LOCATION_ID = :orgLocationId AND HISTORY.STATUS = '1' ORDER BY HISTORY.ID DESC";
 		
 		Query queryObj = session.createSQLQuery(query);
 		queryObj.setLong("orgLocationId", orgLocationId);
 		queryObj.setString("uploadEntityType", uploadEntityType);
 		queryObj.setString("uploadType", uploadType);
-		queryObj.setMaxResults(5);
+		queryObj.setMaxResults(10);
 		queryObj.setResultTransformer(Transformers.aliasToBean(XlsBulkUploadHistroyDTO.class));
 		xlsBulkUploadHistroyDTOList = queryObj.list();
 		return xlsBulkUploadHistroyDTOList;
