@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -332,7 +332,6 @@ public class TicketManagementRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
-				ticketPriorityDTO.setStaticPath(staticPath);
 				response.setObject(ticketManagementService.saveTicketPriority(ticketPriorityDTO, user.getId(), loginOrgLocation));
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
@@ -578,7 +577,7 @@ public class TicketManagementRestController {
 		return responseList;
 	}
 
-	@RequestMapping(value = { "/saveTicket", "/rest/saveTicket" }, method = RequestMethod.POST)
+	@RequestMapping(value = {"/saveTicket"}, method = RequestMethod.POST)
 	@ResponseBody
 	public Response<Boolean> saveTicket(HttpServletRequest request, TicketDTO ticketDTO) {
 		Response<Boolean> response = new Response<>();
@@ -599,6 +598,12 @@ public class TicketManagementRestController {
 			response.setResponseMessage(Result.AWKWARD.getValue());
 		}
 		return response;
+	}
+	
+	@RequestMapping(value = {"/rest/saveTicket"}, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Boolean> saveTicketForMobile(HttpServletRequest request, @RequestBody TicketDTO ticketDTO) {
+		return saveTicket(request, ticketDTO);
 	}
 	
 	@RequestMapping(value = "/getTicketDataById", method = RequestMethod.POST)
@@ -630,7 +635,6 @@ public class TicketManagementRestController {
 		Response<Boolean> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
 				response.setObject(ticketManagementService.changeTicketManagementStatus(ticketId, status));
 				response.setResponse(Result.SUCCESS.name());
