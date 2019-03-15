@@ -582,6 +582,24 @@ public class DataMigrationCommonController {
 		}
 		
 		
+		
+		 @RequestMapping(value = "/orgBulkUploads")
+			public ModelAndView orgBulkUploads(HttpServletRequest request) {
+			 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+				if(sessionData == null)
+				{
+					sessionData = new SessionMaintainanceData();
+				}
+				sessionData.setNav(Constants.Dashboard);
+				request.getSession().setAttribute("sessionData",sessionData);
+				ModelAndView model = new ModelAndView();
+				model.setViewName("upload/orgBulkUploads");
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				return model;
+
+			}
+		
+		
 		@RequestMapping(value = "/dumpBulkImportsFailureList", method = RequestMethod.GET)
 		public void dumpBulkImportsFailureList(@RequestParam(value = "documentKey", required = true) String documentKey, 
 				HttpServletRequest request,HttpServletResponse response) throws Exception {

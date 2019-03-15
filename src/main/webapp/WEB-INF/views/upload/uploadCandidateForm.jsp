@@ -158,6 +158,8 @@ window.onload = function () {
 	<div class="clearfix">
 	<div id="dataFieldsDiv" style="display: none"></div>
 	<input type="hidden" id="inviteEmail" name="inviteEmail" value="N"/>
+	<input type="hidden" id="sizeinbytes" name="sizeinbytes"/>
+	
 	
 	<div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop">
 		<h5 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Recent Failure Uploads History</h5>
@@ -186,12 +188,13 @@ function checkInviteEmail(){
 <script type="text/javascript">
 document.getElementById("uploadBtn").onchange = function () {
 	  var sizeinbytes = document.getElementById('uploadBtn').files[0].size;
-	  if(sizeinbytes > 8485760){
+	  if(sizeinbytes > 8000000){
 		  document.getElementById("errorImage").style.display="";
 		  $('#newUploadFile').text('');
 		  $("#upload_button").attr("disabled","disabled");
 		  $('#uploadDocDiv').find('p.jquery_form_error_message').remove();
 	  }else{
+		  $('#sizeinbytes').val(sizeinbytes); 
 		  document.getElementById("errorImage").style.display="none";
 		  $('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));
 		  fileUpload("uploadBtn", "dataMigration");

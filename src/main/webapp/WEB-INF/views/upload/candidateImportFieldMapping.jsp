@@ -69,11 +69,11 @@
 	    	$('#dataFieldsDiv').empty();
 	    	var flag= true;
 			var uploadid = new Date().getTime();
-
+			
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			document.getElementById("LoadingTextMsg").style.display="block"; 
 			$('#LoadingTextMsg').text('Your file is now uploading. Please be patient'); 
-			$.ajax({
+			 $.ajax({
 				type : "POST",
 				data : formData,
 				processData : false,
@@ -89,8 +89,12 @@
 			    		$('#successMsg').text('The file has successfully uploaded. Changes will be updated soon.');
 			    		$("#selector").fadeIn(200);
 			    		$('#selector').delay(3000).fadeOut('slow');
+			    		var uploadedSize = $('#sizeinbytes').val();
 			    		
-			    		storeCandidateBulkUpload(couchbaseQueueKey);
+			    		if(uploadedSize <= 2000000){
+			    			storeCandidateBulkUpload(couchbaseQueueKey);
+			    		}
+			    		
 			    	}
 			    	$('#errorDownloadDiv').val('');
 			    	$('#newUploadFile').text('');
@@ -103,7 +107,7 @@
 			    	document.getElementById("LoadingTextMsg").style.display="none"; 
 			    	$("#selector11").fadeOut(3000);
 				}
-			});
+			}); 
 		}
 	}
 	$('body').on('blur', '#dataMigration_form', function() {

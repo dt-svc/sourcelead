@@ -280,6 +280,29 @@ public class DataMigrationCommonRestController {
 		return xlsBulkUploadHistroyDTOList;
 	}
 	
+	
+	
+	@RequestMapping(value = "/getAllOrgsUploadsList", method = RequestMethod.POST)
+	public @ResponseBody List<XlsBulkUploadHistroyDTO> getAllOrgsUploadsList(HttpServletRequest request) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 List<XlsBulkUploadHistroyDTO> xlsBulkUploadHistroyDTOList  = null;
+		try {
+			xlsBulkUploadHistroyDTOList = xlsBulkUploadHistroyService.getRegisteredOrgsXlsBulkUploadHistroyByUploadType(Constants.COUCH_DOCUMENT_UPLOAD_TYPE,orgLocations.getDateFormat());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return xlsBulkUploadHistroyDTOList;
+	}
+	
+	
+	@RequestMapping(value = {"/saveOrgImportedBulkUploads","/rest/saveOrgImportedBulkUploads"}, method = RequestMethod.POST)
+	public String saveOrgImportedBulkUploads(@RequestParam(value = "documentKey", required = true) String documentKey, HttpServletRequest request) throws Exception
+	{
+		dataMigrationService.saveCandidateBulkImports(documentKey,request);
+		return "Success";
+	}
+	
 	@RequestMapping(value = {"/deleteBulkImportFailureRecordsByFailureDocumentKey","/rest/deleteBulkImportFailureRecordsByFailureDocumentKey"}, method = RequestMethod.POST)
 	public String deleteBulkImportFailureRecordsByFailureDocumentKey(@RequestParam(value = "documentKey", required = true) String documentKey, HttpServletRequest request) throws Exception
 	{
