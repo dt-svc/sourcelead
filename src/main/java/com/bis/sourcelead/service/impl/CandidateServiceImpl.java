@@ -1760,6 +1760,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							vendorCandidate.setCreatedBy(user.getUserCode());
 							vendorCandidate.setCreatedDate(new Date());
 							vendorCandidate.setUpdatedDate(new Date());
+							// by default 30 %
+							vendorCandidate.setCandidateProfilePercentage(30);
 							
 							Candidate savedCandidate = candidateDao.storeCandidate(vendorCandidate);
 	    					saveOrUpdateCandidateElkDocument(savedCandidate);
