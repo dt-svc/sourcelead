@@ -4034,6 +4034,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 						dto.setAvailableHours(String.valueOf(obj[8]));
 					if(obj[9] != null)
 						dto.setHoursperWeek(String.valueOf(obj[9]));
+					dto.setOrgWorkingHours(orgLocations.getAverageWorkingHours() * orgLocations.getWorkingDaysPerWeek());
 					availableAssociatesDTOList.add(dto);
 				}
 				return availableAssociatesDTOList;
