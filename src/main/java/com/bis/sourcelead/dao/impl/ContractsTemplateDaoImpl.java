@@ -435,9 +435,9 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		}*/
 		
 		String subquery1 = "";
-		if("WAITING_FOR_APPROVER".equalsIgnoreCase(contractStatus)){
+		if("WAITING_FOR_APPROVER".equalsIgnoreCase(contractStatus) || "WAITING_TO_SEND".equalsIgnoreCase(contractStatus)){
 			subquery1 += " (contracts.templateSubmissionStatus = 'WAITING_FOR_APPROVER' or contracts.templateSubmissionStatus = 'WAITING_TO_SEND') ";
-		}else if("WAITING_TO_BE_SIGNED".equalsIgnoreCase(contractStatus)){
+		}else if("WAITING_TO_BE_SIGNED".equalsIgnoreCase(contractStatus) || "PENDING".equalsIgnoreCase(contractStatus)){
 			subquery1 += " (contracts.templateSubmissionStatus = 'WAITING_TO_BE_SIGNED' or contracts.templateSubmissionStatus = 'PENDING') ";
 		}else{
 			subquery1 += " contracts.templateSubmissionStatus = '"+contractStatus+"'";
