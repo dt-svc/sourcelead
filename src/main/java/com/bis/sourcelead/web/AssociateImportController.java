@@ -403,7 +403,6 @@ public class AssociateImportController {
 											continue;
 										}
 										
-										
 										assoSalPayheadIndDTOList.add(assoSalPayheadIndDTO);
 									}
 						        }
