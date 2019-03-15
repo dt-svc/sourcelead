@@ -1462,7 +1462,7 @@ function toDate(selector) {
 		        		 $("#paymentAccountId").val(json.paymentAccountId);
 		        	 }
 		        	 result = result +'<option disabled selected>--Select Client--</option>';
-		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' data-Invoice ='+json['generateInvoice']+'>'+json['orgName']+'</option>';
+		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' data-Invoice ='+json['generateInvoice']+' data-responder_location_id= '+json['dataResponderLocationId']+'>'+json['orgName']+'</option>';
 		        	 $("#clientOrgRelationId").empty();
 		           	 $("#clientOrgRelationId").append(result); 
 		           	 $('#clientOrgRelationId').trigger("chosen:updated");
@@ -1501,6 +1501,7 @@ function toDate(selector) {
 		           	/* buildLineItemAndTaxAddRows(); */
 		           	
 		           	/* editInvoice(json['invoiceLineItemsList']);*/
+		           	getInvoiceTemplateList(json.customInvoiceId);
 		        	$("#inoviceTotal").val(json['subTotal']);
 		        	$("#subTotal").val(json['subTotal']);
 		        	$("#disCount").val(json['discountType']);
@@ -1940,7 +1941,7 @@ function getPaymentTerms(){
 	});
 }
 
-function getInvoiceTemplateList() {
+function getInvoiceTemplateList(selectedId) {
 	var orgRelationId = $("#clientOrgRelationId").val();
 	var responderLocationId = $("#clientOrgRelationId :selected").data("responder_location_id");
 	$("#invoiceTemplateId").empty("");
@@ -1952,7 +1953,7 @@ function getInvoiceTemplateList() {
 			$("#invoiceTemplateId").append("<option value='-1' selected>Default Template</option>");
 			if(data && data.data != null && data.data.length > 0) {
 				for(var e in data.data) {
-					$("#invoiceTemplateId").append("<option value=" + data.data[e].id + ">" + data.data[e].name + "</option>");
+					$("#invoiceTemplateId").append("<option value=" + data.data[e].id + " "+ (selectedId && selectedId === data.data[e].id ? "selected" : "") +">" + data.data[e].name + "</option>");
 				}
 			}
 		}
