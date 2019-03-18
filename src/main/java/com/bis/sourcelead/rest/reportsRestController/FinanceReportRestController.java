@@ -706,7 +706,7 @@ public class FinanceReportRestController {
 					if(!assetGrowthDTO.getDateSelection().equalsIgnoreCase("custom")) {
 						searchDates = reportsUtil.getJobFilterDate(assetGrowthDTO.getDateSelection(),orgLocation);
 					}else {
-						Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+						Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 						DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 						DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
