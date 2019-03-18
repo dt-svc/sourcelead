@@ -3509,6 +3509,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public void deleteCandidateFromMarketplaceByCandidateUuid(String candidateUuid) throws Exception {
 		candidateDao.deleteCandidateFromMarketplaceByCandidateUuid(candidateUuid);
 	}
-	
+
+	@Override
+	public List<Candidate> getAllAssociateByLocation(Long orgLocationId) throws Exception {		
+		return candidateDao.getAllAssociateByLocation(orgLocationId);
+	}
 }
 
