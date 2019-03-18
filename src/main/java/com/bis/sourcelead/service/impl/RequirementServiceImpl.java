@@ -2485,7 +2485,7 @@ public class RequirementServiceImpl implements RequirementService {
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation,
 				Constants.MAILREQUIREMENTTOMANAGER, new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/")
+		String actionLink = actionLinkBuilder.append("").append(atsUrl).append("/")
 				.append("requirementSummary?requirementUUID=" + requirement.getRequirementUUID()).toString();
 		emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, loginOrgLocation, notificationScenario,
 				new HashMap<String, String>());
@@ -2756,7 +2756,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 		StringBuilder notificationLink = new StringBuilder();
 		String actionLink = "";
-		actionLink = notificationLink.append(sourceleadUrl).append("/")
+		actionLink = notificationLink.append(atsUrl).append("/")
 				.append("requirementSummary?requirementUUID=" + requirement.getRequirementUUID()).toString();
 
 		emailScenerioUtil.sendNotification(actionLink, loginUser, requirement.getManagerUserId(), loginOrgLocation,
@@ -2861,7 +2861,7 @@ public class RequirementServiceImpl implements RequirementService {
 				Constants.REJECTED_EMAIL_NOTIFICATION, new ArrayList<EmailAttachment>());
 
 		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/")
+		String actionLink = actionLinkBuilder.append("").append(atsUrl).append("/")
 				.append("requirementSummary?requirementUUID=" + requirement.getRequirementUUID()).toString();
 		emailScenerioUtil.sendNotification(actionLink, loginUser, requirement.getManagerUserId(), loginOrgLocation,
 				notificationScenario, new HashMap<String, String>());
@@ -3007,7 +3007,7 @@ public class RequirementServiceImpl implements RequirementService {
 		// emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(),
 		// iAdressArray, new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/")
+		String actionLink = actionLinkBuilder.append("").append(atsUrl).append("/")
 				.append("requirementSummary?requirementUUID=" + requirement.getRequirementUUID()).toString();
 		emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario,
 				new HashMap<String, String>());
@@ -4715,7 +4715,7 @@ public class RequirementServiceImpl implements RequirementService {
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, requirement.getOrgLocationId().getOrg(), requirement.getOrgLocationId(),Constants.CHANGE_JOB_STATUS_EMAIL, new ArrayList<EmailAttachment>());
 
 		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/")
+		String actionLink = actionLinkBuilder.append("").append(atsUrl).append("/")
 				.append("requirementSummary?requirementUUID=" + requirement.getRequirementUUID()).toString();
 		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, toUserOrg.getOrgLocations(), notificationScenario,
 				new HashMap<String, String>());	
