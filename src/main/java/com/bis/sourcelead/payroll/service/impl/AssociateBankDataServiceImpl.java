@@ -7,12 +7,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.EncryptedDocumentException;
@@ -30,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dao.CandidateDao;
@@ -67,7 +64,6 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 	@Autowired
 	private CandidateDao candidateDao;
 	
-	
 	@Override
 	public Response<AssociateBankDataDTO> saveAssociateBankData(AssociateBankDataDTO associateBankDataDTO, OrgLocations orgLocation, User loginUser)
 	{
@@ -77,7 +73,7 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 			if (Validator.validate(associateBankDataDTO)) {
 				Candidate candidate = candidateDao.getCandidateByConsultantUserId(Long.parseLong(associateBankDataDTO.getUserId()),orgLocation.getId());
 				if(associateBankDataDTO.getId() != null){
-					associateBankData = associateBankDataDao.findAssociateBankDataByCandidateId(candidate.getId(),orgLocation);
+					associateBankData = associateBankDataDao.findAssociateBankDataById(associateBankDataDTO.getId());
 					associateBankData.setUpdatedBy(loginUser.getUserCode());
 					associateBankData.setUpdatedDate(new Date());
 				}else {
@@ -177,6 +173,12 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 //		long startTime = System.nanoTime();
 		String fileName = multipartFile.getOriginalFilename();
 		AssociateBankErrorData associateBankErrorData = new AssociateBankErrorData();
+		List<Candidate> candidateList = candidateService.getAllCandidatesByLocation(orgLocation.getId());
+		Map<String, Long> canMap = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getId));
+		
+		List<AssociateBankDataDTO> bankDataList = associateBankDataDao.getAssociateBankDataListByOrgLocationId(orgLocation.getId());
+		Map<String, List<AssociateBankDataDTO>> bankMap = bankDataList.stream().collect(Collectors.groupingBy(AssociateBankDataDTO::getCandidateId, Collectors.toList()));
+		
 		int insertedCount = 0;
 		try {
 			File file = new File(multipartFile.getOriginalFilename());
@@ -195,26 +197,35 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
 					AssociateBankDataDTO bankDataDTO = new AssociateBankDataDTO();
-					if (row.getRowNum() > 0 && row.getCell(2) != null) { // Excluding column names
-						isValidated = validateAssociateBankExeclData(row,fileName,bankDataDTO);
+					if (row.getRowNum() > 0 && row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) { // Excluding column names
+						isValidated = validateAssociateBankExeclData(row,fileName,bankDataDTO,canMap,bankMap);
 						if(isValidated) {
-							if (row.getCell(0) != null) {
+							if (row.getCell(0) != null  && !"".equalsIgnoreCase(row.getCell(0).toString()))
 								bankDataDTO.setId(Long.parseLong(getCellValueAsString(row.getCell(0), fileName)));	
-							}
-							bankDataDTO.setEmailId(getCellValueAsString(row.getCell(1), fileName));
-		                    bankDataDTO.setAccountType(getCellValueAsString(row.getCell(2), fileName));																	
-							bankDataDTO.setBankName(getCellValueAsString(row.getCell(3), fileName));
-							bankDataDTO.setAccountNumber(getCellValueAsString(row.getCell(4), fileName));
-							bankDataDTO.setRoutingNumber(getCellValueAsString(row.getCell(5), fileName));
+							if(row.getCell(1) != null  && !"".equalsIgnoreCase(row.getCell(1).toString()))
+								bankDataDTO.setEmailId(getCellValueAsString(row.getCell(1), fileName));
+							if(row.getCell(2) != null  && !"".equalsIgnoreCase(row.getCell(2).toString()))
+								bankDataDTO.setAccountType(getCellValueAsString(row.getCell(2), fileName));																	
+							if(row.getCell(3) != null  && !"".equalsIgnoreCase(row.getCell(3).toString()))
+								bankDataDTO.setBankName(getCellValueAsString(row.getCell(3), fileName));
+							if(row.getCell(4) != null  && !"".equalsIgnoreCase(row.getCell(4).toString()))
+								bankDataDTO.setAccountNumber(getCellValueAsString(row.getCell(4), fileName));
+							if(row.getCell(5) != null  && !"".equalsIgnoreCase(row.getCell(5).toString()))
+								bankDataDTO.setRoutingNumber(getCellValueAsString(row.getCell(5), fileName));
 							list.add(bankDataDTO);
 						}else {
-							bankDataDTO.setAssociateId(getCellValueAsString(row.getCell(0), fileName));	
-							bankDataDTO.setAssociateId(getCellValueAsString(row.getCell(1), fileName));
-							bankDataDTO.setEmailId(getCellValueAsString(row.getCell(1), fileName));
-		                    bankDataDTO.setAccountType(getCellValueAsString(row.getCell(2), fileName));																	
-							bankDataDTO.setBankName(getCellValueAsString(row.getCell(3), fileName));
-							bankDataDTO.setAccountNumber(getCellValueAsString(row.getCell(4), fileName));
-							bankDataDTO.setRoutingNumber(getCellValueAsString(row.getCell(5), fileName));
+							if(row.getCell(0) != null  && !"".equalsIgnoreCase(row.getCell(0).toString()))
+								bankDataDTO.setAssociateId(getCellValueAsString(row.getCell(0), fileName));	
+							if(row.getCell(1) != null  && !"".equalsIgnoreCase(row.getCell(1).toString()))
+								bankDataDTO.setEmailId(getCellValueAsString(row.getCell(1), fileName));
+							if(row.getCell(2) != null  && !"".equalsIgnoreCase(row.getCell(2).toString()))
+								bankDataDTO.setAccountType(getCellValueAsString(row.getCell(2), fileName));																	
+							if(row.getCell(3) != null  && !"".equalsIgnoreCase(row.getCell(3).toString()))
+								bankDataDTO.setBankName(getCellValueAsString(row.getCell(3), fileName));
+							if(row.getCell(4) != null  && !"".equalsIgnoreCase(row.getCell(4).toString()))
+								bankDataDTO.setAccountNumber(getCellValueAsString(row.getCell(4), fileName));
+							if(row.getCell(5) != null  && !"".equalsIgnoreCase(row.getCell(5).toString()))
+								bankDataDTO.setRoutingNumber(getCellValueAsString(row.getCell(5), fileName));
 							errorlist.add(bankDataDTO);
 						}
 						
@@ -226,9 +237,19 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 					}
 				}
 			}				
-			 insertedCount = saveBanking(list,orgLocation);
-			 associateBankErrorData.setErrorData(errorlist);
-			 associateBankErrorData.setInsertedCount(insertedCount);
+			
+			/*
+			 * Iterator itr=map.entrySet().iterator(); while(itr.hasNext()) { Map.Entry
+			 * entry=(Map.Entry)itr.next(); List<AssociateBankDataDTO> s =
+			 * (List<AssociateBankDataDTO>) entry.getValue(); for(AssociateBankDataDTO
+			 * abdList : s) {
+			 * if(abdList.getEmailId().equalsIgnoreCase(entry.getKey().toString())){
+			 * System.out.println("True"); } else { System.out.println("False"); } } }
+			 */
+			
+			insertedCount =  associateBankDataDao.saveAssociateBankDetails(orgLocation.getId(), list, canMap);
+			associateBankErrorData.setErrorData(errorlist);
+			associateBankErrorData.setInsertedCount(insertedCount);
 			fis.close();
 //			long endTime   = System.nanoTime();
 //			long totalTime = endTime - startTime;
@@ -248,29 +269,55 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 	 * @param row
 	 * @param fileName
 	 * @param bankDataDTO 
+	 * @param map 
+	 * @param bankMap 
 	 * @return boolean
 	 */
-	private boolean validateAssociateBankExeclData(Row row, String fileName, AssociateBankDataDTO bankDataDTO)
+	private boolean validateAssociateBankExeclData(Row row, String fileName, AssociateBankDataDTO bankDataDTO, Map<String, Long> map, Map<String, List<AssociateBankDataDTO>> bankMap)
 	{
-		
-		if (getCellValueAsString(row.getCell(1), fileName) == null || "".equalsIgnoreCase(getCellValueAsString(row.getCell(1), fileName))) {
-			bankDataDTO.setReason("Email Mandatory");
-			return false;
-		}else if(getCellValueAsString(row.getCell(1), fileName) != null && !"".equalsIgnoreCase(getCellValueAsString(row.getCell(1), fileName)) && !validateEmail(getCellValueAsString(row.getCell(1), fileName))){
-			bankDataDTO.setReason("Invalid Email");
-			return false;
-		}else if (getCellValueAsString(row.getCell(4), fileName) == null || "".equalsIgnoreCase(getCellValueAsString(row.getCell(4), fileName))) {
-			bankDataDTO.setReason("Bank Account Mandatory");
-			return false;
-		}else if(getCellValueAsString(row.getCell(4), fileName) != null && !"".equalsIgnoreCase(getCellValueAsString(row.getCell(4), fileName)) && !validateAccount(getCellValueAsString(row.getCell(4), fileName))){
-			bankDataDTO.setReason("Invalid Bank Account");
-			return false;
-		}else if (getCellValueAsString(row.getCell(5), fileName) == null || "".equalsIgnoreCase(getCellValueAsString(row.getCell(5), fileName))) {
-			bankDataDTO.setReason("Routing Number Mandatory");
-			return false;
-		}else if(getCellValueAsString(row.getCell(5), fileName) != null && !"".equalsIgnoreCase(getCellValueAsString(row.getCell(5), fileName)) && !validateRouting(getCellValueAsString(row.getCell(5), fileName))){
-			bankDataDTO.setReason("Invalid Routing Number");
-			return false;
+		if(map.get(getCellValueAsString(row.getCell(1), fileName)) != null) {
+			if (row.getCell(1) == null || "".equalsIgnoreCase(row.getCell(1).toString())) {
+				bankDataDTO.setReason("Email Mandatory");
+				return false;
+			}else if(row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString()) && !validateEmail(getCellValueAsString(row.getCell(1), fileName))){
+				bankDataDTO.setReason("Invalid Email");
+				return false;
+			}else if(row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
+				if("Direct Deposit".equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName))) {
+					if (row.getCell(4) == null || "".equalsIgnoreCase(row.getCell(4).toString())) {
+						bankDataDTO.setReason("Bank Account Mandatory");
+						return false;
+					}else if(row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString()) && !validateAccount(getCellValueAsString(row.getCell(4), fileName))){
+						bankDataDTO.setReason("Invalid Bank Account");
+						return false;
+					}else if (row.getCell(5) == null || "".equalsIgnoreCase(row.getCell(5).toString())) {
+						bankDataDTO.setReason("Routing Number Mandatory");
+						return false;
+					}else if(row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString()) && !validateRouting(getCellValueAsString(row.getCell(5), fileName))){
+						bankDataDTO.setReason("Invalid Routing Number");
+						return false;
+					}
+				}
+			}
+			
+			if(bankMap != null ) {
+				Long candidateId = map.get(getCellValueAsString(row.getCell(1),fileName));
+				if(bankMap.get(candidateId.toString()) != null) {
+					List<AssociateBankDataDTO> list = bankMap.get(candidateId.toString());
+					for(AssociateBankDataDTO b : list) {
+						if(row.getCell(4) != null && b.getAccountNumber() != null) {
+							if(getCellValueAsString(row.getCell(4), fileName).equalsIgnoreCase(b.getAccountNumber())) {
+								bankDataDTO.setReason("account already existed with this email");
+								return false;
+							}
+						}
+					}
+				}
+				
+			}
+			
+		}else {
+			bankDataDTO.setReason("candidate does't existed with given email");
 		}
 		
 		return true;
@@ -350,17 +397,7 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 			return cellValue;
 		}
 	
-	private int saveBanking(List<AssociateBankDataDTO> list, OrgLocations orgLocation) throws Exception
-	{
-		try {
-			List<Candidate> candidateList = candidateService.getAllCandidatesByLocation(orgLocation.getId());
-			Map<String, Long> map = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getId));
-			return associateBankDataDao.saveAssociateBankDetails(orgLocation.getId(), list, map);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return 0;
-	}
+	
 
 	@Override
 	public List<AssociateBankData> findAllAssociateBankDataByCandidateId(Long candidateId, Long orgLocationId)
