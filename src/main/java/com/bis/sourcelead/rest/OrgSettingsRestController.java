@@ -176,9 +176,19 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/saveOrgImage", method = RequestMethod.POST)
 	public String saveOrgImage(CompanyRegistrationDTO companyRegistrationDTO, HttpServletRequest request) throws Exception
 	{
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		Long orgId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgId");
 		companyRegistrationDTO.setStaticPath(staticPath);
+		Org org = orgService.findOrgByID(orgId);
 		org = orgService.saveOrgSettings(companyRegistrationDTO, org);
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocationsByOrgId(orgId);
+			for(OrgLocations orgLocations : orgLocationsList) {
+					userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(orgLocations);
+			}
+		}
+		
+		
 		return "success";
 	}
 	
@@ -190,36 +200,21 @@ public class OrgSettingsRestController {
 		 * Iterator<String> itrator = request.getFileNames(); MultipartFile
 		 * multiFile = request.getFile(itrator.next());
 		 */
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Response<String> response = new Response<>();
 	
 		try {
 			if(user != null){
 			if (Validator.validate(orgSettingsDTO)) {
+				Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 				ModelMapper mapper1 = new ModelMapper();
 				OrgSettings orgSettings = mapper1.map(orgSettingsDTO, OrgSettings.class);
-				
-					orgLocations = orgLocationService.saveOrgLocations(orgSettings, orgLocations);
+				OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+				orgLocations = orgLocationService.saveOrgLocations(orgSettings, orgLocations);
 					if (orgLocations.getGeneratedUserId() != null) {
 						changeShortCodeForExpenses(orgLocations.getGeneratedUserId(), orgLocations.getId());
 					}
-					SourceLeadSessionManager.setSessionAttribute(request, "org", org);
-					SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
-					SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
-					SourceLeadSessionManager.setSessionAttribute(request, "address", orgLocations.getOrgLocationAddress());
-					SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
-					SourceLeadSessionManager.setSessionAttribute(request, "dba", orgLocations.getDba());
-					SourceLeadSessionManager.setSessionAttribute(request, "businessType", orgSettings.getBusinessType());
-					List<String> weekOffDaysList = new ArrayList<>();
-					if(orgLocations.getWeekOffDays() != null && !orgLocations.getWeekOffDays().isEmpty()) {
-						String[] weekOffDays = orgLocations.getWeekOffDays().split(",");
-						for(int i=0; i < weekOffDays.length; i++) {
-							weekOffDaysList.add(weekOffDays[i]);
-						}
-					}
-					SourceLeadSessionManager.setSessionAttribute(request, "weekOffDaysList", weekOffDaysList);
+		
 					if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
 						userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(orgLocations);
 					}
@@ -341,20 +336,19 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/deleteOrgImage", method = RequestMethod.GET)
 	public String deleteOrgImage(HttpServletRequest request) throws Exception
 	{
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		Long orgId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgId");
+		Org org = orgService.findOrgByID(orgId);
 		org.setDocFile(null);
 		org.setFileName(null);
 		org.setFileUrl(null);
 		org.setFileContentType(null);
 		orgService.updateOrg(org);
-		SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 		return "success";
 	}
 	
 	@RequestMapping(value = "/app/changeHierarchyLevels", method = RequestMethod.POST)
 	public String changeHierarchyLevels(@RequestParam(value = "hierarchyOrder", required = false) String hierarchyOrder, HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String[] hierarchyids = hierarchyOrder.split(",");
 		int val = 1;
 		for (int i = 0; i < hierarchyids.length; i++) {
@@ -695,10 +689,8 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/getCoolingOffPeriod")
 	public String getCoolingOffPeriod(HttpServletRequest request) throws Exception
 	{
-		String resultJson = null;
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		resultJson = toJSON(orgLocations);
-		return resultJson;
+		String coolingOffPeriod = (String) SourceLeadSessionManager.getSessionAttribute(request, "coolingOffPeriod");
+		return coolingOffPeriod;
 	}
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
@@ -707,11 +699,13 @@ public class OrgSettingsRestController {
 	{
 		String jsonc = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		if (jsonObj.has("coolingOff")) {
 			orgLocation.setCoolingOffPeriod(jsonObj.getString("coolingOff"));
 		}
 		orgLocationService.updateOrgLocations(orgLocation);
+		SourceLeadSessionManager.setSessionAttribute(request, "coolingOffPeriod", orgLocation.getCoolingOffPeriod());
 		return "success";
 	}
 	
@@ -808,6 +802,11 @@ public class OrgSettingsRestController {
 		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		OrgLocations orgLocationsSession = orgLocationService.saveOrgLocationsOrgShortCode(orgLocations, jsonObj);
 		SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocationsSession);
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(orgLocationsSession);
+		}
+		
 		return "success";
 	}
 	
@@ -829,7 +828,8 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/updateLoginSecurity", method = RequestMethod.GET)
 	public String updateLoginSecurity(@RequestParam(value = "security") String security, @RequestParam(value = "locationId") Long locationId, HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		if (Constants.YES.equalsIgnoreCase(security)) {
 			orgLocations.setLoginSecurity(Constants.YES);
 			orgLocationService.updateOrgLocations(orgLocations);
@@ -848,8 +848,12 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/saveWhiteListIps", method = RequestMethod.GET)
 	public Response<String> saveWhiteListIps(WhiteListIPAddressDTO whiteListIPAddressDTO, HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user =  userService.getUserById(userId);
+		
 		Response<String> response = new Response<>();
 		if (user != null) {
 			try {
@@ -881,7 +885,6 @@ public class OrgSettingsRestController {
 	public List<WhiteListIPAddressDTO> getWhiteListIps(HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		List<WhiteListIPAddressDTO> ipList = whiteListIpAddressService.getWhiteListIpsByLocationId(orgLocations.getId(), null);
 		return ipList;
 	}
@@ -926,7 +929,8 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/saveFinanacialYear", method = RequestMethod.GET)
 	public String saveFinanacialYear(@RequestParam(value = "locationId", required = false) Long locationId, @RequestParam(value = "startMonth", required = false) String startMonth, @RequestParam(value = "endMonth", required = false) String endMonth, HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		if (startMonth != null && endMonth != null) {
 			orgLocations.setStartMonth(startMonth);
 			orgLocations.setEndMonth(endMonth);
@@ -940,7 +944,8 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/saveCustomRecommendation", method = RequestMethod.POST)
 	public String saveCustomRecommendation(OrgLocationDTO locationDto, HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		orgLocations.setRecommendedSkillPercent(locationDto.getRecommSkill());
 		orgLocations.setRecommendedEducationPercent(locationDto.getRecommEducation());
 		orgLocations.setRecommendedLocationPercent(locationDto.getRecommLocation());
@@ -1010,14 +1015,15 @@ public class OrgSettingsRestController {
 	public String generateCareerPageKey(HttpServletRequest request) throws Exception
 	{
 		try {
-			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			Long orgId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgId");
+			Org org = orgService.findOrgByID(orgId);
 			if (org == null) {
 				return "logout";
 			}
 			String key = orgService.generateCareerPageKey(org.getId(), org.getOrgName());
-			org.setCareerPageKey(key);
-			org.setCareerPageKeyActive(true);
-			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
+			SourceLeadSessionManager.setSessionAttribute(request, "careerPageKey", key);
+			SourceLeadSessionManager.setSessionAttribute(request, "careerPageKeyActive", true);
+			
 			return "key;" + key;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -1029,13 +1035,14 @@ public class OrgSettingsRestController {
 	public String careerPageKeyStatus(HttpServletRequest request) throws Exception
 	{
 		try {
-			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			Long orgId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgId");
+			Org org = orgService.findOrgByID(orgId);
 			if (org == null) {
 				return "logout";
 			}
 			int status = orgService.changeCareerPageKeyStatus(org.getId());
 			org.setCareerPageKeyActive(status == 1);
-			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
+			SourceLeadSessionManager.setSessionAttribute(request, "careerPageKeyActive", org.getCareerPageKeyActive());
 			return "status;" + status;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -1187,7 +1194,8 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/saveProfilePercentage")
 	public Response<String> saveProfilePercentage(@RequestParam(value = "profilePercentage", required = true) Integer profilePercentage,HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Response<String> response = new Response<>();
 		try {
@@ -1213,7 +1221,8 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/configShowCompanyNameInMarkeplace")
 	public Response<String> configShowCompanyNameInMarkeplace(@RequestParam(value = "showCompnayName", required = true) String showCompnayName,HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Response<String> response = new Response<>();
 		try {
@@ -1444,10 +1453,16 @@ public class OrgSettingsRestController {
 	public ProbationDTO getProbationData(HttpServletRequest request) throws Exception
 	{
 		ProbationDTO probation = new ProbationDTO();
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		if(orgLocations != null) {
 			probation.setProbationPeriod(orgLocations.getProbationPeriod());
-			probation.setNoOfDays(orgLocations.getNoOfDays());
+			if(orgLocations.getNoOfDays() != null) {
+				probation.setNoOfDays(orgLocations.getNoOfDays());
+			}else {
+				probation.setNoOfDays(0);
+			}
+			
 		}
 		return probation;
 	}
@@ -1587,7 +1602,8 @@ public class OrgSettingsRestController {
 	@RequestMapping(value = "/app/saveProbationData", method = RequestMethod.POST)
 	public Response<String> saveProbationData(ProbationDTO probationDTO,HttpServletRequest request) throws Exception
 	{
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Response<String> response = new Response<>();
 		if(user != null) {

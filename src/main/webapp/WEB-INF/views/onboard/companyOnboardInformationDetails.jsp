@@ -105,8 +105,8 @@ right: 15px;
 				   <div id="loading"></div> 
 			         <jsp:include page="informationDetails.jsp" />
 					<div class="welBtns welBtnsA">
-				    <input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardLocations'/>'"><input type="submit" value="Save & Continue" class="Brig" id="save_button">
-					<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardBankingDetails'/>'"></a>
+				    <input type="button" value="Prev" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/companyOnboardLocations'"><input type="submit" value="Save & Continue" class="Brig" id="save_button">
+					<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/companyOnboardBankingDetails'"></a>
 						<div class="clearfix"></div>
 					</div>
 				  </div>

@@ -6,7 +6,15 @@
 
 <link href="/resources/css/summernote-new.css" rel="stylesheet" type="text/css">
 
-
+ <script>
+$(window).load(function() {
+	$('#publishedDate').datepicker({
+		changeMonth: true,
+		changeYear: true, 
+		minDate: 0
+	});
+})
+</script>
 <div class="wraper">
 <!-- Content Area -->
 <section class="content-wraper">
@@ -14,7 +22,7 @@
     <div class="pull-left">
       <h2>Add Blog</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/app/blogs'/>">Blogs</a> &raquo; Add Blog</div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/blogs">Blogs</a> &raquo; Add Blog</div>
   </section>
   <div class="content-area content-new clearfix">
    <div id="blogLoading"></div>
@@ -106,9 +114,9 @@
         </div>
        
         <div class="form-group">
-          <label class="col-md-3">Published On</label>
+          <label class="col-md-3">Published On </label>
           <div class="col-md-9">
-				<input type="text" name="publishOn"   class="form-control calendar" id="publishOn" value="${publishon}">
+				<input type="text" name="publishOn"   class="form-control calendar" id="publishedDate" value="${publishon}">
           </div>
         </div>
         
@@ -138,7 +146,7 @@
           <input type="button" value="Publish" class="btn btn-primary" id="publish" onclick="saveBlog('published');">
            <input type="hidden" value="${sourceleadBlog.blogUUID}" id="blogUUID">
           <input type="button" value="Save" class="btn btn-info ml mr" id="save" onclick="saveBlog('Publish');">
-          <input type="button" value="Cancel" id="cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/blogs'/>'" class="btn btn-default">
+          <input type="button" value="Cancel" id="cancel" onClick="javascript:window.location.href ="${SourceLeadWeb_sourceleadUrl}/blogs" class="btn btn-default">
         </div>
       </div>
     </div>
@@ -226,10 +234,10 @@ function uploadFileDoc(){
       });
    $("#blogKeywords").trigger("chosen:updated");
    // current Date And Time Script.
-	$('#publishOn').datetimepicker({
+/* 	$('#publishedDate').datetimepicker({
 		//useCurrent: false,
 		minDate: new Date()
-	}).val('');
+	}).val(''); */
 
 </script>
 	
@@ -306,7 +314,7 @@ function validateBlogTitle(blogUUID){
 <script src="/resources/js/summernote.min.js"></script>
 <script>
 $(function() { 
-  $('#publishOn').empty().val('${publishon}');
+  $('#publishedDate').empty().val('${publishon}');
   setTimeout(function () {
     var description = '${sourceleadBlog.description}';
 	 $("textarea[name=description]").html(description);

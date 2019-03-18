@@ -287,9 +287,9 @@ function preventTabkey(e){
 
 <script>
 		function logoutFormSubmit() {
-		/* 	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
-			var userSessionId = '${userLoginSession.id}';
-			window.location.href = sourceleadUrl+"/getActionHistoryList?&userSessionId="+userSessionId; */
+			var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+			var userSessionId = '${SourceLeadWeb_actionUUID}';
+			window.location.href = sourceleadUrl+"/getActionHistoryList?&userSessionId="+userSessionId; 
 			document.getElementById("logoutForm").submit();
 		}
 </script>
@@ -411,14 +411,14 @@ function preventTabkey(e){
 
 
 <div class="headProfile">
-	<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_imgUrl}"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_userName}"> ${SourceLeadWeb_userName} </div>
+	<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_loginUserFullName}" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_userImgUrl}"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_loginUserFullName}"> ${SourceLeadWeb_loginUserFullName} </div>
 	<div class="headPop" id="profilePop">
 		<div class="headPopInn">
 				<a href="<c:url value='${sourceleadUrl}/userProfile'/>" title="Profile">
 				<div class="headPopUser clearfix">
-					<div class="pull-left"><img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_imgUrl}"></div>
+					<div class="pull-left"><img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_loginUserFullName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_userImgUrl}"></div>
 					<div class="pull-right">
-						<p>${SourceLeadWeb_userName}</p>
+						<p>${SourceLeadWeb_loginUserFullName}</p>
 		                 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
 		                 	<b>${!empty SourceLeadWeb_designation ? SourceLeadWeb_designation : 'Job Seeker'}</b>
 		                 </c:if>
@@ -455,15 +455,15 @@ function preventTabkey(e){
 				</sec:authorize>	
 				
  				<sec:authorize access="hasRole('ROLE_SUPPORT')"> 
-				<li><a href="/app/sourceleadTicketList" title="Report Issue"><i class="reporttaskIC"></i>Report Issue</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/sourceleadTicketList" title="Report Issue"><i class="reporttaskIC"></i>Report Issue</a></li>
 				</sec:authorize>
 				
-	             <%-- <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-	              <li><a href="<c:url value='${appPath}/professionalProfile'/>" title="Profile">Profile</a></li>
+	              <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+	              <li><a title="Profile" href="${SourceLeadWeb_atsUrl}/professionalProfile"><i class="contactsIC"></i>Profile</a></li>
 	              </c:if>
-	              <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-	              <li><a href="<c:url value='${appPath}/userProfile'/>" title="Profile">Profile</a></li>
-	              </c:if> --%>				
+	             <%--  <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+	               <li><a title="Profile" href="<c:url value='${SourceLeadWeb_atsUrl}/userProfile'/>"><i class="Profile"></i>Profile</a></li>
+	              </c:if>  --%>				
 				 <li><a class="logColor" href="javascript:logoutFormSubmit();" title="Log Out"><i class="logOutIC"></i>Log Out</a></li>
 			</ul>
 		</div>
@@ -486,43 +486,43 @@ function preventTabkey(e){
 					<ul>
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
 		              <li>
-				              <c:if test="${links.roles.displayName != 'Professional' && links.roles.displayName != 'Independent Recruiter'}">
-					              <c:if test="${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == null}">
+				              <c:if test="${links.displayName != 'Professional' && links.displayName != 'Independent Recruiter'}">
+					              <c:if test="${links.orgLocationId == SourceLeadWeb_orgLocationId}">
 					              		<a class="sopcSwith noPad">
 					              </c:if>
-					              		<a onclick="checkAuth(${links.orgLocations.id},${links.id},'${links.orgLocations.loginSecurity}','${links.user.id}');" class="sopcSwith noPad">
-						                <div class="clearfix  ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_user.id == links.user.id ? 'orgAct' : ''}">
-						                <div class="orgProfile"><img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}"></div>
+					              		<a onclick="checkAuth(${links.orgLocationId},${links.userRoleId},'${links.orgLocationLoginSecurity}','${links.userId}');" class="sopcSwith noPad">
+						                <div class="clearfix  ${links.orgLocationId == SourceLeadWeb_orgLocationId && SourceLeadWeb_userId == links.userId ? 'orgAct' : ''}">
+						                <div class="orgProfile"><img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgImgUrl}"></div>
 										<div class="orgDetails">
-											<h3>${links.orgLocations.orgLocationName}</h3>
-											<h4><i	class="fa fa fa-map-marker"></i>${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</h4>
-											<h4><i	class="fa fa-user"></i>${!empty links.designation ? links.designation : links.roles.displayName}</h4>
+											<h3>${links.orgLocationName}</h3>
+											<h4><i	class="fa fa fa-map-marker"></i>${!empty links.city ? links.city : ""} ${links.country}</h4>
+											<h4><i	class="fa fa-user"></i>${!empty links.designation ? links.designation : links.displayName}</h4>
 										</div>						                   
 						                </div>
 						                
 					                </a>
 				              </c:if>
 				              
-				              <c:if test="${links.roles.displayName == 'Professional'}">
-				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}/${links.user.id}'/>" class="sopcSwith noPad">
-						                <div class="clearfix ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Professional' ? 'orgAct' : ''}">
+				              <c:if test="${links.displayName == 'Professional'}">
+				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocationId}/${links.userType}/${links.userId}'/>" class="sopcSwith noPad">
+						                <div class="clearfix ${links.orgLocationId == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Professional' ? 'orgAct' : ''}">
 						                   
-						                    <div class="orgProfile"><img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}"></div>
+						                    <div class="orgProfile"><img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgImgUrl}"></div>
 											<div class="orgDetails">
-												<h3>${links.orgLocations.orgLocationName}</h3>
+												<h3>${links.orgLocationName}</h3>
 												<h4><i	class="fa fa-user"></i>${!empty links.designation ? links.designation : 'Job Seeker'}</h4>
 											</div>						                   
 						                </div>
 					                </a>
 				              </c:if>
 				              
-				              <c:if test="${links.roles.displayName == 'Independent Recruiter'}">
-				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}/${links.user.id}'/>" class="sopcSwith noPad">
-						                <div class="clearfix ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Independent Recruiter' ? 'orgAct' : ''}">
+				              <c:if test="${links.displayName == 'Independent Recruiter'}">
+				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocationId}/${links.userType}/${links.userId}'/>" class="sopcSwith noPad">
+						                <div class="clearfix ${links.orgLocationId == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Independent Recruiter' ? 'orgAct' : ''}">
 						                   
-						                    <div class="orgProfile"> <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}"></div>
+						                    <div class="orgProfile"> <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgImgUrl}"></div>
 											<div class="orgDetails">
-												<h3>${links.orgLocations.orgLocationName}</h3>
+												<h3>${links.orgLocationName}</h3>
 												<h4><i	class="fa fa-user"></i>${!empty links.designation ? links.designation : 'Freelance Recruiter'}</h4>
 											</div>							                   
 						                </div>
@@ -536,10 +536,10 @@ function preventTabkey(e){
 	            </div>
 	            </div>
 	          </li>
-	          </c:if>	
+         </c:if>
 		
         <c:if test="${SourceLeadWeb_reportsTabConfigured == 'Y'}"> 
-        	 <li><a title="Reports" href="<c:url value='${appPath}/reportsDashboard'/>"><i class="headNavIcon reporIcon"></i></a></li>
+        	 <li><a title="Reports" href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard"><i class="headNavIcon reporIcon"></i></a></li>
          </c:if>
          
          <sec:authorize access="hasRole('ROLE_VIEW_CART')">
@@ -551,17 +551,19 @@ function preventTabkey(e){
         </sec:authorize>
         
          <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
-         	<li><a href="<c:url value='${sourceleadUrl}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
+         	<li><a href="${SourceLeadWeb_atsUrl}/mailBox/mails" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
          </sec:authorize>		
 		
+          <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
           <li> 
           <a id="notiPopId" href="#" title="Alerts" onclick="getNotificationsByuserId()"><i class="headNavIcon notiIcon"></i> <c:if test="${SourceLeadWeb_notificationCount > 0}"><span class="label-warning">${SourceLeadWeb_notificationCount}</span></c:if></a>
           <div class="headPop headPopnoti" id="notificationPopup"></div>
           </li>	
+          </c:if>
           
          <!--  Setting page 	 -->
          
-           <li><a href="<c:url value='${sourceleadUrl}/settings'/>" title="Settings" id=""><i class="headNavIcon setiIcon"></i></a></li>
+           <li><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/settings'/>" title="Settings" id=""><i class="headNavIcon setiIcon"></i></a></li>
 		
 	</ul>
 </div>    

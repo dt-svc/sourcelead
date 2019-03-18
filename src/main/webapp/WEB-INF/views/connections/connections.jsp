@@ -10,6 +10,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
  <script>
+ var atsUrl = '${SourceLeadWeb_atsUrl}';
 	function predefineProfileImage(imageId){
 		$(imageId).attr('src','/resources/images/userprofileImg.jpg');
 	}
@@ -30,7 +31,7 @@ window.onload = function () {
   <div class="pull-left">
     <h2>Connections</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Conections</div>
+  <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Conections</div>
 <div id="loadingConnectionDiv"></div>
 </section>
 
@@ -40,9 +41,9 @@ window.onload = function () {
  <input type="hidden" name="orgOffset" id="orgOffset" value="0"/>
 	<div class="conneWrapHead clearfix">
 		<ul class="clearfix connection-count">
-			<li><a href="<c:url value='${appPath}/loadConnectedList?status=connected'/>">Connected <i id="connectedCountVal"></i></a></li>
-			<li><a href="${appPath}/loadSentConnections?status=sent">Sent<i id="sentCountVal"></i></a></li>
-			<li><a href="<c:url value='${appPath}/loadReceivedConnections?status=received'/>">Received<i id="receivedCountVal"></i></a></li>
+			<li><a href="${SourceLeadWeb_sourceleadUrl}/loadConnectedList?status=connected">Connected <i id="connectedCountVal"></i></a></li>
+			<li><a href="${SourceLeadWeb_sourceleadUrl}/loadSentConnections?status=sent">Sent<i id="sentCountVal"></i></a></li>
+			<li><a href="${SourceLeadWeb_sourceleadUrl}/loadReceivedConnections?status=received">Received<i id="receivedCountVal"></i></a></li>
 			<li class="current"><a href="#" onclick="getConnectionListOnClick()">Find</a></li>
 		</ul>
 		<span><input class="immigraTabSerach" id="searchFindConnId" placeholder="Name/Email/Role/Org" type="text"></span>
@@ -144,7 +145,7 @@ function getConnectionsList(type){
 		$("#loadingConnectionDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({ 
 	    	type : "POST",
-			url : sourceleadUrl+"/getUserListForConnections?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&offset="+offset,
+			url : '${SourceLeadWeb_atsUrl}'+"/getUserListForConnections?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue+"&offset="+offset,
             success: function(json) {
 	        var result = "";
 	        var mutualResult = "";

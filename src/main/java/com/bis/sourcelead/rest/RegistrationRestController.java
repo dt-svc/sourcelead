@@ -52,6 +52,7 @@ import com.bis.sourcelead.dto.RegistrationDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TabsDTO;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLicenseSubscriptionPrice;
@@ -60,12 +61,14 @@ import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.RegistrationOptionalService;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Tabs;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.form.RestResponsetUtil;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionPriceService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -76,6 +79,7 @@ import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TabsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -157,6 +161,14 @@ public class RegistrationRestController {
 	 @Autowired
 	 UserStatsCacheHelper userStatsCacheHelper;
 	 
+	 @Autowired
+	 TimeZoneService timeZoneService;
+	 
+	 @Value("${isCouchbaseEnabled}")
+	 private String isCouchbaseEnabled;
+	 
+	 @Autowired
+     LookUpDataService lookUpDataService;
 	 
 	 @RequestMapping(value = "/app/getOrgsList")
 	 		public @ResponseBody String getUsersList(HttpServletRequest request,
@@ -634,11 +646,29 @@ public class RegistrationRestController {
 	 public  String changePrimaryAdmin(@RequestParam(value="userId", required=false) Long userId,
 			 @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception {
 		 	
+		 UserRole userRole = null;
+		 Long existingUserId = null;
 		 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		 if(orgLocations.getUser() != null) {
+			 existingUserId = orgLocations.getUser().getId();
+		 }
+		 
 		 User user = new User();
 		 user.setId(userId);
 		 orgLocations.setUser(user);
 		 orgLocationService.updateOrgLocations(orgLocations);
+		 
+		 if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			 userRole = userRoleService.getUserDetailsByUserIdAndLocationId(userId, orgLocationId);
+			 userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+			 
+			 if(existingUserId != null) {
+				 userRole = userRoleService.getUserDetailsByUserIdAndLocationId(existingUserId, orgLocationId);
+				 userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+			 }
+		 }
+		
+		 
 		 return "success";
 	   }
 	 
@@ -648,12 +678,28 @@ public class RegistrationRestController {
 	 public  String changeSuperAdmin(@RequestParam(value="userId", required=false) Long userId,
 			 @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception {
 		 	
+		 UserRole userRole = null;
+		 Long existingUserId = null;
 		 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		 if(orgLocations.getUser() != null) {
+			 existingUserId = orgLocations.getUser().getId();
+		 }
 		 User user = new User();
 		 user.setId(userId);
 		 Org org = orgLocations.getOrg();
 		 org.setUser(user);
 		 orgService.addOrganization(org);
+		 
+		 if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			 userRole = userRoleService.getUserDetailsByUserIdAndLocationId(userId, orgLocationId);
+			 userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+			 
+			 if(existingUserId != null) {
+				 userRole = userRoleService.getUserDetailsByUserIdAndLocationId(existingUserId, orgLocationId);
+				 userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+			 }
+		 }
+		 
 		 return "success";
 	   }
 	 
@@ -771,6 +817,20 @@ public class RegistrationRestController {
 		  registrationService.saveIndividualEmployer(employerRegistrationDTO);
 		 return "success";
 	   }
+	 @RequestMapping(value = "/app/getAdminDemoModulesList", method = RequestMethod.GET)
+		public @ResponseBody List<LookUpData> getAdminDemoModulesList(HttpServletRequest request) throws Exception
+		{
+			List<LookUpData> requestOrgList = lookUpDataService.getLookUpDataByCategory(Constants.REQUEST_ORG);
+			return requestOrgList;
+		}
+	 @RequestMapping(value = "/app/getDemoTimezonesList", method = RequestMethod.POST)
+		public @ResponseBody String getDemoTimezonesList(HttpServletRequest request) throws Exception
+		{
+			String resultJson = null;
+			List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
+			resultJson = commonUtil.toJSON(timezoneList);
+			return resultJson;
+		}
 	 
 	 @RequestMapping(value = "/app/ws/validateOrgRequestCompanyNameByName" , method = RequestMethod.POST)
 	 public  String validateOrgRequestCompanyNameByName(@RequestParam(value="companyNames", required=false) String companyNames) throws Exception {
@@ -1405,29 +1465,41 @@ public class RegistrationRestController {
 	public String verificationDone(@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password, @RequestParam(value = "userRoleId", required = false) long userRoleId, @RequestParam(value = "verfDone", required = false) String verfDone, HttpServletRequest request) throws Exception
 	{
 		UserRole userRole = null;
+		User user = null;
+		String actionUUID = null;
 		if (userRoleId > 0)
 			userRole = userRoleService.getUserRoleById(userRoleId);
 		else {
-			User user = userService.findByUserName(userName);
+			 user = userService.findByUserName(userName);
 			userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 		}
-		if ("".equalsIgnoreCase(userName) || userName == null) {
-			UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
-			if (userLoginSession != null) {
-				if (Constants.YES.equalsIgnoreCase(verfDone))
-					userLoginSession.setAuthenticated(Constants.YES);
-				request.getSession().setAttribute("userLoginSession", userLoginSession);
-			}
-		}
+		
 		
 		StringBuilder generatedToken = new StringBuilder();
 		generatedToken.append(SourceLeadRandomCodeHelper.generateRandomCustomToken());
-		userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(generatedToken.toString(),userRole, request);
+		UserLoginLogoutSession userLoginSession = null;
+	    if(userRole != null){
+		    	userLoginSession = new UserLoginLogoutSession();
+		    	String ipAddress = commonUtil.getClientIpAddr(request);
+		    	userLoginSession.setIpaddress(ipAddress);
+			    userLoginSession.setUserId(userRole.getUser());
+				if (Constants.YES.equalsIgnoreCase(verfDone))
+					userLoginSession.setAuthenticated(Constants.YES);
+			    userLoginSession.setLoginTime(new Date());
+			    actionUUID = RandomStringUtils.randomAlphanumeric(16);
+			    userLoginSession.setActionUUID(actionUUID);
+			    userLoginSession =  userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
+			    request.getSession().setAttribute("userLoginSession", userLoginSession);
+		    }
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			userStatsCacheHelper.saveLoginUserSessionStoreToCouchbase(generatedToken.toString(),userRole,actionUUID,userLoginSession.getId(),request);
+		}
 		
 		StringBuilder userNameString = new StringBuilder();
 		userNameString.append(userName).append("##").append(userRole.getId()).append("##").append(generatedToken.toString());
 		SecurityContextHolder.clearContext();
-		SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, userNameString.toString(), password, verfDone,userRole.getUuid()));
+		SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, userNameString.toString(), password, verfDone));
 		return "true";
 	}
 	
@@ -1492,7 +1564,7 @@ public class RegistrationRestController {
 			userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 		}
 		if ("".equalsIgnoreCase(ipAddress) || ipAddress == null) {
-			ipAddress = userLoginHelper.getClientIpAddr(request);
+			ipAddress = commonUtil.getClientIpAddr(request);
 		}
 		
 		return whiteListIpAddressService.validateIPAddress(ipAddress, userRole,whiteListId,accessingType);
@@ -1508,9 +1580,18 @@ public class RegistrationRestController {
 			User user = userService.findByUserName(userName);
 			userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 		}
-		String ipAddress = userLoginHelper.getClientIpAddr(request);
+		String ipAddress = commonUtil.getClientIpAddr(request);
 		boolean alreadyVerifiedBefore = userLoginLogoutSessionService.validatePreviouslyAuthenticatedByUserIdAndIpAddress(ipAddress, userRole.getUser().getId());
 		return alreadyVerifiedBefore;
+	}
+	
+	@RequestMapping(value = "/app/getTimezonesList")
+	public @ResponseBody String getTimezonesList(HttpServletRequest request) throws Exception
+	{
+		String resultJson = null;
+		List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
+		resultJson = commonUtil.toJSON(timezoneList);
+		return resultJson;
 	}
 	
 	

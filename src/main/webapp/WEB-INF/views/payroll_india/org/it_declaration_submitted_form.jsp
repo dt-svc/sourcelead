@@ -8,9 +8,8 @@
 		<div class="pull-left">
 			<h2>IT Declaration</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; IT Declaration</div>
+		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; IT Declaration</div>
 	</section>
-	<jsp:include page="../org/formHeader.jsp"></jsp:include>
 	<form action="" id="itDeclarationForm">
 		<div class="contentareaInner-styles clearfix">
 			<div class="clearfix form-horizontal minHeight_225 minHeightcol5">

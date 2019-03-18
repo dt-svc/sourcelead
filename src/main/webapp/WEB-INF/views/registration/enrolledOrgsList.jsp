@@ -53,13 +53,13 @@ margin-right: 15px;
       <div class="pull-left">
         <h2>Orgs List</h2>
       </div>
-       <div class="pull-right brud-crum"><a href="${appPath}/dashboard">Home</a> &raquo; Orgs List </div>
+       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard">Home</a> &raquo; Orgs List </div>
       <div class="clearfix"></div> 
       <div class="reportsCount req_Crowd clearfix">
           <ul class="clearfix">
-          <li id="crowd"><label class="mr10"><span><i class="fa fa-registered"></i></span><b id="crowdActive"><input class="myCheckbox valid" type="radio" checked name="sourceleadOrgType" id="sourceleadOrg" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/enrolledOrgsList'/>'" >&nbsp;Registered Companies</label></b></li>
-          <li id="crowd"><label class="mr10"><span><i class="fa fa-cubes"></i></span><b id="savedActive"><input class="myCheckbox valid" type="radio" name="sourceleadOrgType" id="sourceleadOrg" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/requestedOrgs'/>'" >&nbsp;Registration Requests</label></b></li>
-          <li id="crowd"><label class="mr10"><span><i class="fa fa-laptop"></i></span><b id="savedActive"><input class="myCheckbox valid" type="radio" name="sourceleadOrgType" id="sourceleadOrg" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/demoRequests'/>'">&nbsp;Demo Requests</label></b></li>
+          <li id="crowd"><label class="mr10"><span><i class="fa fa-registered"></i></span><b id="crowdActive"><input class="myCheckbox valid" type="radio" checked name="sourceleadOrgType" id="sourceleadOrg" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/enrolledOrgsList'" >&nbsp;Registered Companies</label></b></li>
+          <li id="crowd"><label class="mr10"><span><i class="fa fa-cubes"></i></span><b id="savedActive"><input class="myCheckbox valid" type="radio" name="sourceleadOrgType" id="sourceleadOrg" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/requestedOrgs'" >&nbsp;Registration Requests</label></b></li>
+          <li id="crowd"><label class="mr10"><span><i class="fa fa-laptop"></i></span><b id="savedActive"><input class="myCheckbox valid" type="radio" name="sourceleadOrgType" id="sourceleadOrg" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/demoRequests'">&nbsp;Demo Requests</label></b></li>
           </ul>
       </div> 
       
@@ -79,7 +79,7 @@ margin-right: 15px;
 			   </select>
           
           </li>
-          <li><a href="<c:url value='${appPath}/enrollOrg'/>"><i class="fa fa-cubes"></i>&nbsp;Create</a></li>
+          <li><a href="${SourceLeadWeb_sourceleadUrl}/enrollOrg"><i class="fa fa-cubes"></i>&nbsp;Create</a></li>
 		 <li class="positionRelative">
 		 <div class="dynamic_search">
 	   			<input type='text' placeholder='Search' id='dynamicOrgDataTableSearch'/>
@@ -143,6 +143,7 @@ function prepareDynamicOrgList(url){
 		dynamicOrgListPagination(url);
 }
 function dynamicOrgListPagination(url){
+	var sourceleadUrl= '${SourceLeadWeb_sourceleadUrl}';
 	var colIndex = 0;
     $('#dynamicOrgListView').DataTable( { 
 	  "processing": true,
@@ -161,7 +162,7 @@ function dynamicOrgListPagination(url){
     	  		result = result +"<td><div class='tbldata-dotdot-200 UserTextLeft'>";
        	    	result = result +"<img onerror='predefineOrgImage(this);' class='m-t-xs' data-id='orgLogoImage' src="+org.fileUrl+" alt='image'>";
        	    	if(org.registrationStatus != 'Draft' ){
-       	    		result = result +"<a href='<c:url value='/app/orgSummary/"+org.orgCode+"'/>' title='"+org.orgName+"'>"+org.orgName+" </a>";
+       	    		result = result +"<a href='${SourceLeadWeb_sourceleadUrl}/orgSummary/"+org.orgCode+"' title='"+org.orgName+"'>"+org.orgName+" </a>";
        	    	}else{
        	    		result = result +'<a href="'+sourceleadUrl+'/enrollOrg?locationCode='+org.locationCode+'">'+org.orgName+'</a>';
        	    	}
@@ -265,12 +266,12 @@ function dynamicOrgListPagination(url){
 
 <script type="text/javascript">
 function resendInvitation(userId,orgId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	if(userId != null && userId != ""){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgId="+orgId,  
+			        url: atsUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgId="+orgId,  
 			        success: function(result) {
 			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)'  onClick='resendInvitation("+userId+", "+orgId+");'>&nbsp;Resend</a>");
 			        	$("#loading").removeAttr("style"); 

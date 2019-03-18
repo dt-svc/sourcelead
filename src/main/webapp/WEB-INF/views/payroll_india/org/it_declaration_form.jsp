@@ -2,14 +2,16 @@
 <jsp:include page="../../masterSideNav.jsp" />
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script type="text/javascript" src="/resources/js/tax/it_declaration.js"></script>
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
 <section class="content-wraper contentWraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
 			<h2>IT Declaration</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; IT Declaration</div>
+		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/myPayrollInd">My Payroll</a> &raquo; IT Declaration</div>
 	</section>
-	<jsp:include page="../org/formHeader.jsp"></jsp:include>
 	<form action="" id="itDeclarationForm">
 		<div class="contentareaInner-styles clearfix">
 			<div class="clearfix form-horizontal minHeight_225 minHeightcol5">
@@ -35,7 +37,7 @@
 						<label class="clearfix">Associate Name</label>
 						<div class="clearfix">
 							<input type="text" class="form-control" readonly="readonly"
-								id="associateName" field-name="Associate Name" value="${user.firstName} ${user.lastName}"
+								id="associateName" field-name="Associate Name" value="${user.fullName}"
 								data-validation="required" placeholder="Associate Name">
 						</div>
 					</div>

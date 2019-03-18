@@ -20,14 +20,14 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Missing Bill(s)</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/financialReportsList'/>">Financial Reports</a> &raquo; Missing Bill(s)</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard">Reports Dashboard</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/financialReportsList">Financial Reports</a> &raquo; Missing Bill(s)</div>
     </section>
     <!-- hiring Process  -->
     <div class="content-dashboard clearfix">
       <div class="ReqRepHead clearfix">
         <div class="col-md-3 pull-left reqListBtn">
-        <a href='${appPath}/missingBillGraphReport' title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
-        <a href='${appPath}/missingBillReport' title="List View" class="btn btn-default rAct"><i class="fa fa-list"></i></a>
+        <a href='${SourceLeadWeb_sourceleadUrl}/missingBillGraphReport' title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
+        <a href='${SourceLeadWeb_sourceleadUrl}/missingBillReport' title="List View" class="btn btn-default rAct"><i class="fa fa-list"></i></a>
         </div>
         <div class="col-md-4">
           <select class="chosen-select form-control" multiple data-placeholder="Select Vendor" id="orgIds" name="orgIds">
