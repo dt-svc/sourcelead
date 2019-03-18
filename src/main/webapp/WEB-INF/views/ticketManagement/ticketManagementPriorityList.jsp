@@ -83,7 +83,7 @@
 								</span>
 							</label>
 						</span>
-						<input type="text" class="form-control" readonly id="uploadFile" placeholder="Upload Priority Image ...">
+						<input type="text" class="form-control" readonly id="uploadFile" placeholder="Upload Priority Image ..." data-validation="validateimage">
 					</div>
 					<div class="col-md-1 pull-left">
 						<i class="fa fa-refresh cursorPointer mt10 text-primary" title="Refresh Icon" onclick="refreshPriorityImage();"></i>
@@ -97,7 +97,7 @@
             <div class="clearfix mb">
                 <label class="noPad">Description</label>
                 <div class="clearfix">
-					<textarea placeholder="Description" name="description" id="ticketPriorityDesc" class="form-control" rows="2"></textarea>
+					<textarea placeholder="Description" name="description" id="ticketPriorityDesc" class="form-control" rows="2" data-validation="validate_length length0-1000"></textarea>
                 </div>
             </div>
         </div>

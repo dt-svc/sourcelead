@@ -1,7 +1,11 @@
 var statusOptions = [];
 var statusList = [];
 $(document).ready(function() {
-	
+	$("#ticketListSearch").keyup(function(e) {
+		if(e.which === 13) {
+			getTicketManagementList();
+		}
+	});
 });
 
 //============================== Ticket Management List 	=============================================
@@ -22,43 +26,6 @@ function getTicketStatusList() {
 			showError("Operation failed, please try again");
 		}
 	});
-}
-
-/*function validateTicketId(ticketId) {
-	$.ajax({
-		type : "POST",
-	url : sourceleadUrl+ "/validateTicketId?ticketId="+id,
-		success : function(response) {
-		if (response && response.response === "INVALID_DATA") {
-			showError(response.responseMessage);
-		} else if (response.response === "AWKWARD") {
-			location.href = "/errorPage";
-		} else if (response.response === "SUCCESS") {
-			if(response.data.length > 0) {
-				statusList = response.data;
-			}
-		} else if (response.indexOf('Sign In') !== -1) {
-			location.replace(sourceleadUrl);
-		} else {
-			showError("Operation failed, please try again");
-		}
-	  }
-  });
-}*/
-
-
-function ticketManagementListPagination(){
-	 $('#ticketManagementListTable').DataTable( { 
-	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-	    	"bLengthChange": true,
-	    	"bDestroy": true,
-	    	"ordering": true,
-	    	"oLanguage": {
-	     		"sSearch": "",
-	     		"sZeroRecords": "", "sEmptyTable": ""
-	     	}
-	    } );
 }
 
 function editTicketManagement(uuid) {
@@ -163,7 +130,7 @@ function closeDeletePopup() {
 function getTicketManagementDescription(ticketUUID){
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getTicketManagementDescription?${_csrf.parameterName}=${_csrf.token}&uuid="+ticketUUID, 	   
+	    url: sourceleadUrl+"/getTicketManagementDescription?uuid="+ticketUUID, 	   
 		    success: function(result) {
 		    	$('#txtEditor').html(result.description);
 		    	$('.Editor-editor').html(result.description);
