@@ -15,7 +15,7 @@
 <script src="/resources/js/performanceFeedbackForm-html-generator.js" type="text/javascript" ></script> <!-- form builder -->
 
 <script>
-var locationDateFormat = '${SourceLeadWeb_orgLocations.dateFormat}'; 
+var locationDateFormat = '${SourceLeadWeb_dateFormat}'; 
 </script>
 
 <section class="content-wraper contentWraper" id="performanceManagementDiv">
@@ -24,7 +24,7 @@ var locationDateFormat = '${SourceLeadWeb_orgLocations.dateFormat}';
 	      <!-- <h2>Submission Templates</h2> -->
 	      <h2 class="pull-left">Performance Management Configuration</h2>
 	    </div>
-	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Performance Management Configuration</div>
+	    <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Performance Management Configuration</div>
 	 	<div class="clearfix"></div>
     </section>
     

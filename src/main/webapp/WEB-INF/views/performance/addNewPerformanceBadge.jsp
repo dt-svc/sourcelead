@@ -7,7 +7,7 @@
 
 <div class="mask"></div>
 <div class="popupWrap" id="modalTasktype">
-      <div class="popupHead"><span>Add Badge</span><i class="closePop pull-right popClose" onclick="closeBadgePopup();"></i></div>
+      <div class="popupHead"><span>Add Badge</span><i class="closePop pull-right popClose" onclick="performanceManagement.closeBadgePopup();"></i></div>
          <div id="badgeDetailsLoading"></div>
         <form:form id="performance_badge_form" name="performance_badge_form" method="post">
 	        <div class="popupContent">
@@ -27,7 +27,7 @@
 	        		<!--  <label id="newUploadFile"></label> --> 
 					 <input type="text" hidden readonly id="dataFilePath" value="" >
 					 
-					 <img id="badgeImg" onerror='predefineBadgeImage(this);' src='' class="mediaObject" alt="Image">
+					 <img id="badgeImg" onerror='predefineBadgeImage(this);' style="width: 30px;" src='' class="mediaObject" alt="Image">
 	                </div>
 	
 	            <div class="clearfix mb" id="badgeDescriptionDiv">
