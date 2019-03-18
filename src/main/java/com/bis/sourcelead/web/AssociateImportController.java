@@ -59,6 +59,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.payroll.dto.AssociateBankErrorData;
 import com.bis.sourcelead.rest.PayrollConfigurationRestController;
+import com.bis.sourcelead.service.AssociateImportService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.PaymentAccountService;
 import com.bis.sourcelead.service.PayrollPayheadService;
@@ -84,6 +85,9 @@ public class AssociateImportController {
 	
 	@Autowired
 	private CandidateService candidateService;
+	
+	@Autowired
+	AssociateImportService associateImportService;
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -185,7 +189,7 @@ public class AssociateImportController {
 	 /*   --------Ends here--------   */
 	 
 	 
-//for associate Information import
+//for associate Information import--------------------------------------------------
 	 
 	 @PreAuthorize("hasRole('ROLE_USER_BULK_IMPORTS')")
 		@RequestMapping(value = "/app/uploadAssociateInformationForm")
@@ -224,7 +228,7 @@ public class AssociateImportController {
 		}
 		AssociateBankErrorData response = null;
 		if (multipartFile != null) {
-			response = paymentAccountService.saveImportBankDetails(multipartFile, orgLocation);
+			response = associateImportService.saveAssociateInformation(multipartFile, orgLocation);
 			return response;
 		}
 		return response;

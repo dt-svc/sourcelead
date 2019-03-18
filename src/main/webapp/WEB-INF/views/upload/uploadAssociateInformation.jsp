@@ -67,7 +67,7 @@ var uploadflag= true;
 								</div>
 								<div class="btn-group">
 									<input type="reset" class="btn btn-danger" value="Reset"
-										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadAssociateInformation'/>'">
+										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadAssociateInformationForm'/>'">
 								</div>
 							</div>
 						</div>
