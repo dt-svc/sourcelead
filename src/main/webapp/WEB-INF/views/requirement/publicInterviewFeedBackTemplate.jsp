@@ -33,7 +33,11 @@
 <script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
 <link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}" type="text/css" >
 
+<script type="text/javascript">
+var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 
+var atsUrl = '${SourceLeadWeb_atsUrl}';
+</script>
 <style type="text/css">
 .paddingTop {
 padding-top: 55px;	
@@ -455,10 +459,10 @@ $('body').on('blur', '#interviewTemplate_form', function() {
 function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
     //empty out the preview area
     $("#interviewsjfb-fields").empty();
-  
+    var atsUrl = '${SourceLeadWeb_atsUrl}';
     $.ajax({
     	type: "GET",
-        url:"/getInterviewrsViewFeedbackList?templateId="+templateId, 
+        url:atsUrl+"/getInterviewrsViewFeedbackList?templateId="+templateId, 
         success: function(data) {
         	 var data = eval(data);
         	 

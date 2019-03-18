@@ -6,7 +6,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
+<script type="text/javascript">
+var atsUrl = "${SourceLeadWeb_atsUrl}";
+var sourceleadUrl = "${SourceLeadWeb_sourceleadUrl}";
+</script>
 <style type="text/css">
 .viewTemplate .sjfb-field{
 margin: 0;
@@ -371,7 +374,7 @@ function saveInterviewTemplate(){
 		    	data: formData,
 		    	  processData: false,
 	    	        contentType:false,
-	 	    	url : sourceleadUrl+"/ws/savePublicInterviewFeddbackTemlate?"+tokenParamName+"="+tokenValue+"&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid,
+	 	    	url : atsUrl+"/ws/savePublicInterviewFeddbackTemlate?"+tokenParamName+"="+tokenValue+"&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid,
 		        success: function(result) {
 		        	$("#interviewTemplateFormDiv").hide();
 		        	viewTemplate(sourceleadUrl,templateId)
@@ -429,12 +432,12 @@ $('body').on('blur', '#interviewTemplate_form', function() {
 <script>
 
 function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
-	var atsUrl ='${SourceLeadWeb_atsUrl}';
     //empty out the preview area
     $("#interviewsjfb-fields").empty();
+  var atsUrl = "${SourceLeadWeb_atsUrl}";
     $.ajax({
     	type: "GET",
-        url: atsUrl+"/getInterviewrsViewFeedbackList?templateId="+templateId, 
+        url:atsUrl+"/getInterviewrsViewFeedbackList?templateId="+templateId, 
         success: function(data) {
         	 var data = eval(data);
         	 
@@ -625,7 +628,7 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
 				     result = result + ' <div class="content clearfix">'; 
 				     result = result + submissionDetails;
 				     result = result + ' </div>';
-	       	         result = result +"<h5><a class='btn btn-primary btn-sm' href='<c:url value='/app/dashboard/"+orgLocations+"'/>''> <span title='Back'><i class='fa fa-angle-double-left paddingRight'></i>Back</span> </a> </h5>";
+	       	         result = result +"<h5><a class='btn btn-primary btn-sm' href='/app/dashboard/"+orgLocations+"'> <span title='Back'><i class='fa fa-angle-double-left paddingRight'></i>Back</span> </a> </h5>";
 				     result = result + ' </div>';
 	                 result = result + ' </div>';
                      result = result + ' </div>'; 

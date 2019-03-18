@@ -596,58 +596,45 @@
 				
 				     	   
 			     <div class="col-md-2 reportNewCta">			
-					<!-- <div class="dropdown pull-right report-dropdown">
-					<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown">
-						<span class="caret cursorPointer"></span>
-					</span>
-						<ul class="dropdown-menu minHeight50 maxHeight250">
-						<li><a href="payrollRegister-I.html">Invite Company</a></li>
-						</ul>
-					</div> -->
-				          <a href="${SourceLeadWeb_sourceleadUrl}/emailreminderConfigurationDashboard">
+					<a href="${SourceLeadWeb_sourceleadUrl}/emailreminderConfigurationDashboard">
 							<div class="clearfix text-center mb10"><i class="reminderconfigSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4>Reminder Configuration</h4>
 					</div>
-				</div>			
+				</div>		
+				
 				
 				
 				 <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
-				<div class="col-md-2 reportNewCta">
-					<!-- <div class="dropdown pull-right report-dropdown">
-					<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown">
-						<span class="caret cursorPointer"></span>
-					</span>
-						<ul class="dropdown-menu minHeight50 maxHeight250">
-						<li><a href="payrollRegister-I.html">Guest Action Roles</a></li>
-						</ul>
-					</div> -->
-					<a href="${SourceLeadWeb_sourceleadUrl}/guestOrgActionRoles">
-							<div class="clearfix text-center mb10"><i class="guestactionroleSVG"></i></div>
-					<div class="clearfix text-center">
-						<h4>Guest Action Roles</h4>
-					</div>
-				</div>	
+					<div class="col-md-2 reportNewCta">
+						<a href="${SourceLeadWeb_sourceleadUrl}/guestOrgActionRoles">
+								<div class="clearfix text-center mb10"><i class="guestactionroleSVG"></i></div>
+						<div class="clearfix text-center">
+							<h4>Guest Action Roles</h4>
+						</div>
+					</div>	
 				</sec:authorize>
 				
 				
-				  <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
+			  <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
 				<div class="col-md-2 reportNewCta">
-				<!-- 	<div class="dropdown pull-right report-dropdown">
-					<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown">
-						<span class="caret cursorPointer"></span>
-					</span>
-						<ul class="dropdown-menu minHeight50 maxHeight250">
-						<li><a href="payrollRegister-I.html">Email Templates</a></li>
-						</ul>
-					</div> -->
 					<a href="${SourceLeadWeb_sourceleadUrl}/emailTemplates">
 							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4>Email Templates</h4>
 					</div>
-				</div>	
-				</sec:authorize>		  		  	  
+				</div>
+				
+				
+				<div class="col-md-2 reportNewCta">
+					<a href="${SourceLeadWeb_sourceleadUrl}/orgBulkUploads">
+							<div class="clearfix text-center mb10"><i class="fa fa-upload" aria-hidden="true"></i></div>
+					<div class="clearfix text-center">
+						<h4>Bulk Uploads</h4>
+					</div>
+				</div>
+					
+			</sec:authorize>		  		  	  
 			      	   
       	  </div>
       	  
@@ -698,15 +685,6 @@
            
             <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}"> 
            	<div class="col-md-2 reportNewCta">
-			
-					<!-- <div class="dropdown pull-right report-dropdown">
-					<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown">
-						<span class="caret cursorPointer"></span>
-					</span>
-						<ul class="dropdown-menu minHeight50 maxHeight250">
-						<li><a href="payrollRegister-I.html">Invite Company</a></li>
-						</ul>
-					</div> -->
 				<a href="${SourceLeadWeb_sourceleadUrl}/bulk-resume-import.html">
 							<div class="clearfix text-center mb10"><i class="bulkImport"></i></div>
 					<div class="clearfix text-center">

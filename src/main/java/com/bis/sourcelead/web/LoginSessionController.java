@@ -656,17 +656,6 @@ public class LoginSessionController {
 	 * DATEFORMAT = new SimpleDateFormat(orgLocations.getDateFormat()); }
 	 */
 
-	private void setSessionOrgAttributes(Org org, OrgLocations orgLocations, HttpServletRequest request) {
-		SourceLeadSessionManager.setSessionAttribute(request, "org", org);
-		SourceLeadSessionManager.setSessionAttribute(request, "orgCode", org.getOrgCode());
-		SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
-		SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
-		SourceLeadSessionManager.setSessionAttribute(request, "address", orgLocations.getOrgLocationAddress());
-		if (orgLocations.getDba() == null || orgLocations.getDba().isEmpty()) {
-			SourceLeadSessionManager.setSessionAttribute(request, "dba", orgLocations.getDba());
-		}
-
-	}
 
 	private void getOnboardingDetails(CandidateOnBoarding candidateOnBoarding, Long orgLocId, String dateFormat,
 			HttpServletRequest request) throws Exception {
@@ -775,7 +764,7 @@ public class LoginSessionController {
 		if (user != null)
 			userSpocRolesList = userRoleService.getUserSpocsListByUserId(user.getId());
 
-		String ipAddress = userLoginHelper.getClientIpAddr(request);
+		String ipAddress = commonUtil.getClientIpAddr(request);
 
 		boolean alreadyVerifiedBefore = userLoginLogoutSessionService
 				.validatePreviouslyAuthenticatedByUserIdAndIpAddress(ipAddress, user.getId());
