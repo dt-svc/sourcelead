@@ -69,7 +69,7 @@ var uploadflag= true;
 				<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 					<!-- Download File button -->
 					<div class="clearfix mb row">
-					<div class="col-xs-2 col-md-2 col-md-offset-4">
+					<div class="col-xs-2 col-md-3">
 						<input type="text" class="form-control" placeholder="Header Index" id="headerPosition" name="headerPosition"  field-name="Header index" data-validation="required validate_Space validate_length length1-6 validate_int">
 					</div>			
 						<div class="col-xs-2 col-md-2">
@@ -78,9 +78,9 @@ var uploadflag= true;
 							</a>
 						</div>				
 						
-						<div class="col-xs-4 col-md-4">
+						<div class="col-xs-2 col-md-5">
 							<div class="btn-group btn-group-justified">
-								<div class="btn-group" id="import1">
+								<div class="btn-group" id="import">
 									<input type="button" class="btn btn-primary" id="upload_button"
 										name="upload_button" onclick="fetchFieldsWithMatchedColumn();"
 										value="Import">
@@ -160,7 +160,7 @@ var uploadflag= true;
 	
 		<div id="associateBnkdet" style="display:none;">
 			Associate banking details        
-			</div>>
+			</div>
 	
 			
 	<!--      Dropdown div for Associate information      -->		
