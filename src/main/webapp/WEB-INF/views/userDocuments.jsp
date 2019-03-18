@@ -455,6 +455,8 @@ function getDocument(candidateId, documentId){
        			 	$("#uploadFile").removeAttr("data-validation");
        			 	if(data.fileName != null && data.fileName !="undefined" && data.fileName != "") {
 	       				$("#docNameDiv").show();
+       			 	}else{
+       			 	$("#uploadDocDiv").show();
        			 	}
        			 	$("#docsName").append(data.fileName);
        			 	$("#docsName").prop('title', data.fileName);
@@ -473,6 +475,8 @@ function getDocument(candidateId, documentId){
 			    	            }
 	        			 	}
        			 		}
+       			 	
+       			 	
        			 		$("#update_doc").attr("onclick", "storeCandidateDocument("+data.candidateId.id+",\""+data.documentUUID+"\");");
        			 
 		       			if(data.description != null && data.description != "undefined" && data.description != "") {
@@ -491,7 +495,6 @@ function getDocument(candidateId, documentId){
 
 <script>
 function getDocType(){
-	
 	$.get(sourceleadUrl+"/getUserDocumentList", function(result) {
 		var json = result.data;
 		var output = "";
@@ -499,7 +502,7 @@ function getDocType(){
     	for (var i = 0; i < json.length; i++) { 
     		  var documentList = json[i];
     		  if(documentList != null){
-    			  output = output +'<option value='+documentList.name+'>'+documentList.name+'</option>';
+    			  output = output +'<option value="'+documentList.name+'">'+documentList.name+'</option>';
     		  }
     	  }
     	$("#docName").empty();
