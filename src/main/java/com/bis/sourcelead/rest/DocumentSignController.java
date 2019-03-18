@@ -73,7 +73,7 @@ public class DocumentSignController {
 	private EMailJobScheduler eMailJobScheduler;
 	
 
-	@RequestMapping(value = {"/app/signer","/app/ws/signer"},method = RequestMethod.POST)
+	@RequestMapping(value = {"/signer","/ws/signer"},method = RequestMethod.POST)
 	@ResponseBody
 	public String upload(HttpServletRequest req,@RequestParam(value="contractId", required=false) Long contractId) throws Exception {
 		UserInfo userInfo =  new UserInfo();
@@ -102,7 +102,7 @@ public class DocumentSignController {
 			byte[] fileBytes = null;
 			if(Constants.CUSTOM_TYPE.equalsIgnoreCase(contract.getTypeOfContract())) {
 				String path =StringUtils.removeEnd(staticPath, "/slead-static");
-				fileBytes = CommonUtil.readBytesFromFile(path+contract.getFileURL());
+				fileBytes = CommonUtil.readBytesFromFile(path+contract.getParentContractId().getFileURL());
 			}else{
 				fileBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,contract.getOrgLocationId(),contract.getOrgLocationId().getOrg());
 			}
@@ -124,7 +124,7 @@ public class DocumentSignController {
 	}
 
 	
-	@RequestMapping(value ={"/app/saveSignatureCoordinates","/app/ws/saveSignatureCoordinates"}, method = RequestMethod.POST,
+	@RequestMapping(value ={"/saveSignatureCoordinates","/ws/saveSignatureCoordinates"}, method = RequestMethod.POST,
 			consumes = "application/json", produces = "application/json")
 	@ResponseBody
 	public String saveSignatureCoordinates(@RequestBody CoordinatesInfo coordinatesInfo,HttpServletRequest req) {
@@ -146,7 +146,7 @@ public class DocumentSignController {
 		
 	}
 
-	@RequestMapping(value = {"/app/signImage", "/app/ws/signImage"}, method = RequestMethod.POST,
+	@RequestMapping(value = {"/signImage", "/ws/signImage"}, method = RequestMethod.POST,
 			consumes = "application/json", produces = "application/json")
 	@ResponseBody
 	public String signUploadedImage(@RequestBody SignedImageInfo signedImageInfo,  HttpServletRequest req) throws FontFormatException {
@@ -160,7 +160,7 @@ public class DocumentSignController {
 		return "{\"SignatureFileName\" : \"signedImage.jpeg\",\"InitialFileName\" : \"initialsImage.jpeg\"}";
 	}
 
-	@RequestMapping(value = {"/app/signDocument", "/app/ws/signDocument"}, method = RequestMethod.POST,consumes = "application/json", produces = "application/json")
+	@RequestMapping(value = {"/signDocument", "/ws/signDocument"}, method = RequestMethod.POST,consumes = "application/json", produces = "application/json")
 	@ResponseBody
 	public String signUploadedDocument(@RequestBody CoordinatesInfo coordinatesInfo, HttpServletRequest req,@RequestParam(value="contractId", required=false) Long contractId) throws Exception {
 		
