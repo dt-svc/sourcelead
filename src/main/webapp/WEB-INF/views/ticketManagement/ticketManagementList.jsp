@@ -19,6 +19,16 @@
             <sec:authorize access="hasRole('ROLE_ADD_TICKET')">
               <li><a href="/app/addTicket" class="newAdBtn mr5" title="Add" id="addPop">+ Add</a></li>
             </sec:authorize>
+            <sec:authorize access="hasRole('ROLE_VIEW_TICKET')">
+			  <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+							<div class="newActPop" style="display: none;">
+								<span>
+										<a href="javascript:void(0)" onclick="exportTicketManagementSheet('Pdf');" title="PDF" style="display: block">Export PDF</a>
+										<a href="javascript:void(0)" onclick="exportTicketManagementSheet('Excel');" title="Excel" style="display: block">Export Excel</a>					
+								</span>
+							</div>
+				</li>
+			</sec:authorize>
               <li class="">
                 <input class="repSearchBar" placeholder="Search" id="ticketListSearch" type="text">
                 <span class="repSearchIcon" onclick="getTicketManagementList();"></span></li>
@@ -131,7 +141,7 @@
 		var colIndex = 0;
 	    $('#ticketManagementListTable').DataTable( {
 	    	"processing": true,
-	       "serverSide": true,
+	       /* "serverSide": true, */
 	       "searching": true,
 	       "searchHighlight": true,
 	       "ajax": $.fn.dataTable.pipeline( {
@@ -220,7 +230,7 @@
 		        {
 		            "targets": colIndex++,
 		            "data": "assignTo",
-		            "sortable": true,
+		            "sortable": false,
 		            "render": function ( data, type, opt, meta ) {
 		            	var result = "";
 		            	var assignTo = "";
@@ -234,7 +244,7 @@
 		        {
 		            "targets": colIndex++,
 		            "data": "status",
-		            "sortable": true,
+		            "sortable": false,
 		            "render": function ( data, type, opt, meta ) {
 		            	var result = "";
 		            	result += "<td><select class='sel' onChange='changeTicketStatus(this, \"" + opt.id + "\", \"" + opt.ticketStatusId + "\")'>";
@@ -253,15 +263,15 @@
 		            	var result = '<div class=" widthIcon widthIcon-three">';
 		            	'<sec:authorize access="hasRole(\'ROLE_ADD_TICKET\')">';
 			            	result +='	<div class="text-center">';
-			            	result +='		<a href="javascript:void(0)" title="Edit Ticket" onclick="editTicketManagement(' + opt.id + ')">';
+			            	result +='		<a href="javascript:void(0)" title="Edit Ticket" onclick="editTicketManagement(\'' + opt.uuid + '\')">';
 			            	result +='		<i class="fa fa-pencil"></i>';
 			            	result +='		</a>';
 			            	result +='	</div>';
 		            	'</sec:authorize>';
 		            	'<sec:authorize access="hasRole(\'ROLE_DELETE_TICKET\')">'; 
 			            	result +='	<div class="text-center">';
-			            	result +='		<a href="javascript:void(0)" title="Delete Ticket" onclick="showDeletePopup(' + opt.id + ', 1)">';
-			            	result +='		<i class="fa fa-edit"></i>';
+			            	result +='		<a href="javascript:void(0)" title="Delete Ticket" onclick="showDeletePopup(' + opt.id + ', 0)">';
+			            	result +='		<i class="fa fa-trash"></i>';
 			            	result +='		</a>';
 			            	result +='	</div>';
 		            	'</sec:authorize>';
@@ -300,6 +310,10 @@
 	   });
 	   $("#ticketManagementListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 	   $("input[type=search]").hide();
+	}
+	
+	function exportTicketManagementSheet(exportType){
+		window.location.href = sourceleadUrl+"/getTicketManagementExportListByOrgLocationId?"+tokenParamName+"="+tokenValue+"&exportType="+exportType;
 	}
 </script>
 <jsp:include page="../masterFooter.jsp" />	 
