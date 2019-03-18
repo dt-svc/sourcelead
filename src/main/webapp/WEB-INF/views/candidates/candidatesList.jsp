@@ -1439,7 +1439,7 @@ function imageCancel(){
 						<a href="<c:url value='/candidate'/>">Parse Resume</a>
                         <a href="<c:url value='/addCandidate'/>">Add Manual</a>
                         <a href="${SourceLeadWeb_sourceleadUrl}/bulk-resume-import.html">Bulk Resume Parsing</a>
-                        <a href="uploadCandidateForm">Import XLS</a>
+                        <a href="${SourceLeadWeb_sourceleadUrl}/uploadCandidateForm">Import XLS</a>
 					</span>
 				</div>
 			</li>
