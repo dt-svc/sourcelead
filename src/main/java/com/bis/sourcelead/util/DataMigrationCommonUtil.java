@@ -3022,7 +3022,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			if(istabSpace==false){
 				flag = false;
 			}else{
-				if(name.length() > 2 && name.length() <= 200){
+				if(name.length() >= 2 && name.length() <= 200){
 					flag = true;
 				}
 		}
