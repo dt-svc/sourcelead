@@ -1428,4 +1428,8 @@ public class Constants {
 	
 	public static final String PAYMENT_MODE_SAVINGS = "Savings";
 	
+
+	public static final String[] DATA_MIGRATION_ASSOCIATE_INFO_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","UAN Number","PF Number","ESI Number"};						
+
+	
 }

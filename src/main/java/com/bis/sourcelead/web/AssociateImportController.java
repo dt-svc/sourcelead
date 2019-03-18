@@ -57,6 +57,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
+import com.bis.sourcelead.payroll.dto.AssociateBankErrorData;
 import com.bis.sourcelead.rest.PayrollConfigurationRestController;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.PaymentAccountService;
@@ -116,7 +117,7 @@ public class AssociateImportController {
 	 */
 	@RequestMapping(value = "/app/uploadbankdetails", method = RequestMethod.POST)
 	@ResponseBody
-	public IndAssociatePaymentAccountDTO uploadbankdetails(MultipartHttpServletRequest request) throws Exception
+	public AssociateBankErrorData uploadbankdetails(MultipartHttpServletRequest request) throws Exception
 	{
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -125,7 +126,7 @@ public class AssociateImportController {
 		if (itrator.hasNext()) {
 			multipartFile = request.getFile(itrator.next());
 		}
-		IndAssociatePaymentAccountDTO response = new IndAssociatePaymentAccountDTO();
+		AssociateBankErrorData response = null;
 		if (multipartFile != null) {
 			response = paymentAccountService.saveImportBankDetails(multipartFile, orgLocation);
 			return response;
@@ -182,6 +183,99 @@ public class AssociateImportController {
 		}
 	 
 	 /*   --------Ends here--------   */
+	 
+	 
+//for associate Information import
+	 
+	 @PreAuthorize("hasRole('ROLE_USER_BULK_IMPORTS')")
+		@RequestMapping(value = "/app/uploadAssociateInformationForm")
+		public ModelAndView uploadAssociateInformationForm(HttpServletRequest request) {
+			SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
+					.getAttribute("sessionData");
+			if (sessionData == null) {
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.Users);
+
+			request.getSession().setAttribute("sessionData", sessionData);
+			ModelAndView model = new ModelAndView();
+			model.setViewName("upload/uploadAssociateInformation");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+
+		}
+	
+	/**
+	 * @rajat
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/app/uploadAssociateInfomation", method = RequestMethod.POST)
+	@ResponseBody
+	public AssociateBankErrorData uploadAssociateInfomation(MultipartHttpServletRequest request) throws Exception
+	{
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		MultipartFile multipartFile = null;
+		Iterator<String> itrator = request.getFileNames();
+		if (itrator.hasNext()) {
+			multipartFile = request.getFile(itrator.next());
+		}
+		AssociateBankErrorData response = null;
+		if (multipartFile != null) {
+			response = paymentAccountService.saveImportBankDetails(multipartFile, orgLocation);
+			return response;
+		}
+		return response;
+	}
+	
+	
+	// method for creating excel sheet
+	 @RequestMapping(value = "/app/downloadTemplateForAssociateInfomation", method = RequestMethod.GET)
+		public void downloadTemplateForAssociateInfomation(HttpServletRequest request,HttpServletResponse response) throws Exception{
+	        @SuppressWarnings("resource")
+	        HSSFWorkbook workbook = new HSSFWorkbook();
+	        HSSFSheet sheet = workbook.createSheet("AssociateInformationTemplate");
+	        String[] tableColumns = Constants.DATA_MIGRATION_ASSOCIATE_INFO_EXCEL_HEADERS;
+	 
+	        Row row = sheet.createRow(0);
+	        int cellnum = 0;
+	        for (String key : tableColumns) {
+	            Cell cell = row.createCell(cellnum++);
+	            cell.setCellValue((String)key);
+	        }
+	        try {
+	            File file = new File("Associate_Information_Template.xls");
+	    		FileOutputStream out = new FileOutputStream(file);
+	    		workbook.write(out);
+	            
+	            out.close();
+	            out.flush();
+	            
+	            String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				StringBuilder fileNameSB = new StringBuilder();
+				response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();
+	            
+	        }
+	        catch (Exception e) {
+	            e.printStackTrace();
+	        }
+			
+		}
+	 
+	 /*   --------Ends here--------   */
+	 
 	 
 	 
 	 
