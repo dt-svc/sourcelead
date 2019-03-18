@@ -105,6 +105,7 @@ public class XlsBulkUploadHistroyDaoImpl implements XlsBulkUploadHistroyDao{
 		query =  "SELECT "
 				+" HISTORY.FAILED_COUNT AS failureCount, "
 				+" HISTORY.FILE_URL AS fileUrl, "
+				+" HISTORY.FAILURE_FILE_URL AS failureFileUrl, "
 				+" HISTORY.DOCUMENT_KEY AS documentKey, "
 				+" HISTORY.UUID AS uuid, "
 				+" DATE_FORMAT(HISTORY.CREATED_DATE, '"+locationDateFormat+"') AS date, "

@@ -40,6 +40,9 @@ public class XlsBulkUploadHistroy implements Serializable{
 	@Column(name = "FILE_URL", columnDefinition = "LONGTEXT default NULL")
 	private String fileUrl;
 	
+	@Column(name = "FAILURE_FILE_URL", columnDefinition = "LONGTEXT default NULL")
+	private String failureFileUrl;
+	
 	@Column(name = "UPLOAD_TYPE")
 	private String uploadType;
 	
@@ -188,6 +191,14 @@ public class XlsBulkUploadHistroy implements Serializable{
 
 	public void setFailedCount(int failedCount) {
 		this.failedCount = failedCount;
+	}
+
+	public String getFailureFileUrl() {
+		return failureFileUrl;
+	}
+
+	public void setFailureFileUrl(String failureFileUrl) {
+		this.failureFileUrl = failureFileUrl;
 	}
 	
 	

@@ -160,15 +160,6 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	LookUpDataService lookUpDataService;
 
 	@Autowired
-	private UserService userService;
-
-	@Autowired
-	private ShiftService shiftService;
-
-	@Autowired
-	private UserRoleService userRoleService;
-
-	@Autowired
 	private ImmigrationCommonService immigrationCommonService;
 	
 	@Autowired

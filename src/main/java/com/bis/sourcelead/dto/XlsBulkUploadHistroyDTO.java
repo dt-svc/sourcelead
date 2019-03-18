@@ -6,6 +6,8 @@ public class XlsBulkUploadHistroyDTO {
 	
 	private String fileUrl;
 	
+	private String failureFileUrl;
+	
 	private String uuid;
 	
 	private String documentKey;
@@ -81,8 +83,14 @@ public class XlsBulkUploadHistroyDTO {
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
 	}
-	
-	
+
+	public String getFailureFileUrl() {
+		return failureFileUrl;
+	}
+
+	public void setFailureFileUrl(String failureFileUrl) {
+		this.failureFileUrl = failureFileUrl;
+	}
 	
 	
 }
