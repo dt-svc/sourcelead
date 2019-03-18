@@ -28,6 +28,7 @@ import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
 import com.bis.sourcelead.entity.PayrollPaySlipInd;
 import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.PayrollBonusService;
 import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
 import com.bis.sourcelead.service.PayrollPaySlipIndService;
@@ -68,6 +69,8 @@ public class PayrollConfigurationController {
 	@Autowired
 	private PayrollPaySlipIndService payrollPaySlipIndService;
 	
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
 	@RequestMapping(value = "/indPayrollConfiguration")
 	public ModelAndView payrollConfiguration(HttpServletRequest request)
@@ -237,8 +240,9 @@ public class PayrollConfigurationController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				// commonUtil.highLightMenu(Constants.OrgSettings, request);
-				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
+				Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+				OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+				
 				String financialStartMonth = orgLocations.getStartMonth();
 				String financialEndMonth = orgLocations.getEndMonth();
 

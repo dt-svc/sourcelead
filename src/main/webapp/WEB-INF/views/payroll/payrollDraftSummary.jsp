@@ -87,9 +87,9 @@ function approvePayrollTab(){
 <!-- <div class="col-md-2"><a href="javascript:void(0)" class="btn anchorBlue">Exclude</a></div> -->
 	<div id="submitButtonDiv">
 	<ul class="pull-right mr list-unstyled list-inline">
-		<li><a href="#" class="btn btn-primary btnSuccess" id="Submit" onClick="sendPayrollForApprover();">Submit for Approve</a></li>
+		<li><a class="btn btn-primary btnSuccess" id="Submit" onClick="sendPayrollForApprover();">Submit for Approve</a></li>
 		<c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
-		<li><a href="#" class="btn btn-default ml mr" id="Confirm" onclick="confirmPayroll('FROMDRAFT');">Confirm</a></li>
+		<li><a class="btn btn-default ml mr" id="Confirm" onclick="confirmPayroll('FROMDRAFT');">Confirm</a></li>
 		</c:if>
 		<li><a class="btn btn-default" href="/pms/payrollList?&redirect=draft">Cancel</a></li>
 	</ul>

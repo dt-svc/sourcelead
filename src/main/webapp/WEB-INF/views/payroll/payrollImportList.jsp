@@ -254,7 +254,6 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			if ($('#run_payroll_cycle').validate(false, validationSettings)) {
 				$('#addPayrollDiv').removeClass("show-div");
 				var payrollCycle = payrollStartDate + " - " + payrollEndDate;
-				alert(payrollCycle)
 				var frm = $('#run_payroll_cycle').serializeFormJSON();
 				var con = JSON.stringify(frm);
 				con = con.replace(/[{}]/g, "");
