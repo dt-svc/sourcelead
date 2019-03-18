@@ -112,7 +112,9 @@ var masterHeader = new buildMasterHeaderPanel();
 	    masterNavHtml = masterNavHtml+'</div>';
 	    masterNavHtml = masterNavHtml+'</li>';
 	    
-	    
+	    if(tabAccessArray.indexOf("ROLE_ADD_TICKET")  > -1 || tabAccessArray.indexOf("ROLE_VIEW_TICKET")){
+	    	masterNavHtml = masterNavHtml+'<li><a title="Ticket Management" href="'+sourceleadUrl+'/ticketManagementList"><i class="ticketMgIC"></i></a></li>';
+	    }
 	    if(tabAccessArray.indexOf("Reports")  > -1){
 	    	masterNavHtml = masterNavHtml+'<li><a title="Reports" href="'+sourceleadUrl+'/reportsDashboard"><i class="headNavIcon reporIcon"></i></a></li>';
 	    }
