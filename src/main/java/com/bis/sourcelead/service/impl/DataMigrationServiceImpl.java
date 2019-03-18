@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -42,10 +44,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.constants.ImmigrationConstants;
+import com.bis.sourcelead.couchbase.BulkImportCacheDTO;
+import com.bis.sourcelead.couchbase.BulkImportFailureCacheDTO;
+import com.bis.sourcelead.couchbase.BulkImportFailureDocumentsCacheDTO;
+import com.bis.sourcelead.couchbase.connection.CouchbaseConnectionConfig;
+import com.bis.sourcelead.couchbase.connection.CouchbasePropertyPathConfiguration;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.DataMigrationDao;
 import com.bis.sourcelead.dto.AssetAssignDTO;
 import com.bis.sourcelead.dto.AssetDTO;
@@ -72,6 +81,7 @@ import com.bis.sourcelead.entity.CandidateVisaHistory;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -81,12 +91,15 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.UploadXlsHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UsersImport;
+import com.bis.sourcelead.entity.XlsBulkUploadHistroy;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CouchbaseClusterService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.DataMigrationService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
@@ -98,10 +111,16 @@ import com.bis.sourcelead.service.UploadFileService;
 import com.bis.sourcelead.service.UploadXlsHistoryService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.XlsBulkUploadHistroyService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.DataMigrationCommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.couchbase.client.java.Bucket;
+import com.couchbase.client.java.document.JsonArrayDocument;
+import com.couchbase.client.java.document.json.JsonArray;
+import com.couchbase.client.java.document.json.JsonObject;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -141,15 +160,6 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	LookUpDataService lookUpDataService;
 
 	@Autowired
-	private UserService userService;
-
-	@Autowired
-	private ShiftService shiftService;
-
-	@Autowired
-	private UserRoleService userRoleService;
-
-	@Autowired
 	private ImmigrationCommonService immigrationCommonService;
 	
 	@Autowired
@@ -175,6 +185,21 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	
 	@Autowired
 	UploadXlsHistoryService uploadXlsHistoryService;
+	
+	@Autowired
+	SourceLeadSessionManager sourceLeadSessionManager;
+	
+	@Autowired
+	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	CouchbaseClusterService couchbaseClusterService;
+	
+	@Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
+	
+	@Autowired
+	XlsBulkUploadHistroyService xlsBulkUploadHistroyService;
 	
 	int candidateIndexKey = 0;
 	List<Candidate> uploadedCandidatesList = null;
@@ -669,39 +694,14 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			
 			try {
 				CandidateDTO candidateDTO = new CandidateDTO();
-				ObjectMapper candidtemapper = new ObjectMapper();
-				candidtemapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-				candidtemapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 				candidateDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), CandidateDTO.class);
 				candidateDTO.setCandidateCreationType(Constants.IMPORT_CANDIDATE);
 				candidateDTO.setUploadId(uploadId);
 				if(candidateDTO.getCountry() == null || candidateDTO.getCountry().isEmpty()) {
 					candidateDTO.setCountry(orgLocation.getCountry());
 				}
-				
-					Candidate candidate = candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user);
-				/*	if(uploadedCandidatesList == null)
-					{
-						System.out.println("Processing Start Time>>>"+Calendar.getInstance().getTime()+candidateIndexKey);
-						uploadedCandidatesList= new ArrayList<>();
-				    }
-					if(uploadedCandidatesList.size() <= 50) {
-						uploadedCandidatesList.add(candidate);
-					}else {
-						List<Candidate> executedCandidatesList = null;
-						executedCandidatesList = new ArrayList<>();
-						executedCandidatesList.addAll(uploadedCandidatesList);
-						uploadedCandidatesList = null;
-						ExecutorService executorService  = null;
-						if(executorService == null) {
-							executorService = Executors.newSingleThreadExecutor();
-						}
-						System.out.println("Processing End Time>>>"+Calendar.getInstance().getTime()+candidateIndexKey);
-						
-						System.out.println("Thread Start Time>>>"+Calendar.getInstance().getTime()+">>> Thread"+candidateIndexKey);
-						executorService.execute(new UploadCandidateThread(executedCandidatesList,"Thread "+candidateIndexKey,orgLocation.getId()));
-						System.out.println("Thread End Time>>>"+Calendar.getInstance().getTime()+">>> Thread"+candidateIndexKey);
-					}*/
+				    List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
+					Candidate candidate = candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user, vendorsList);
 				
 			}catch (Exception e) {
 				UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
@@ -1359,7 +1359,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		     InputStream inputStream = new FileInputStream(new File(filePath.replace("/dataMigration/", "/temp/")));
 			 Workbook workbook = StreamingReader.builder()
 			            .rowCacheSize(100)    
-			            .bufferSize(4096)     
+			            .bufferSize(8192)     
 			            .open(inputStream); 
 			 
 			Sheet firstSheet = workbook.getSheetAt(0);
@@ -1390,32 +1390,34 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 
 	@Override
-	public String storeCandidateBulkUploads(CandidateBulkUploadDTO candidateBulkUploadDTO,UploadEntriesDTO uploadEntriesDTO,HttpServletRequest request)
+	public String storeCandidateBulkUploadToCouchbase(CandidateBulkUploadDTO candidateBulkUploadDTO,UploadEntriesDTO uploadEntriesDTO,HttpServletRequest request)
 			throws Exception {
 		
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 
+		 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		
 		 String ac = StringUtils.removeEnd(staticPath, "/slead-static");
-		  InputStream inputStream = new FileInputStream(new File(ac + uploadEntriesDTO.getExportFilePath().replace("/dataMigration/", "/temp/")));
+		 InputStream inputStream = new FileInputStream(new File(ac + uploadEntriesDTO.getExportFilePath().replace("/dataMigration/", "/temp/")));
 		 Workbook workbook = StreamingReader.builder()
 		            .rowCacheSize(100)    
 		            .bufferSize(8192)     
 		            .open(inputStream); 
 		 
-		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 FileInfo fileInfo = new FileInfo();
+		 fileInfo.setFileURL(uploadEntriesDTO.getExportFilePath());
+		 FileUploadUtil.moveFile(candidateBulkUploadDTO.getStaticPath(), fileInfo, "dataMigration");
 			
-		 /*OPCPackage pkg = OPCPackage.open(new File(ac + uploadEntriesDTO.getExportFilePath().replace("/dataMigration/", "/temp/")));
-		 Workbook workbook = new XSSFWorkbook(pkg);*/
-		 
-		 	
 		    Sheet firstSheet = workbook.getSheetAt(0);
 			Iterator<Row> rowIterator = firstSheet.iterator();
-			logger.debug("Upload Start Time In MilliSec for Streaming>>>"+System.currentTimeMillis()+">>>Current Time"+Calendar.getInstance().getTime());
-			int rw = 0;
+			int i = 0;
+			String documentQueueId = null;
+			List<String> doucumentQueueIdsList = new ArrayList<>();
+			
 			while (rowIterator.hasNext()) {
 				Row nextRow = rowIterator.next();
 				if (nextRow.getRowNum() + 1 > Integer.parseInt(uploadEntriesDTO.getHeaderPosition())) {
-					System.out.println(++rw + "Row " + Calendar.getInstance().getTime());
-					HashMap<String, String> errorSet = new HashMap<String, String>();
 					Gson gson = new Gson();
 					String gsonOutput = gson.toJson(candidateBulkUploadDTO);
 					CandidateBulkUploadDTO dataMigrationDTOCopy = new CandidateBulkUploadDTO();
@@ -1423,13 +1425,17 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					JSONObject dataMigrationDTOJson = new JSONObject(gsonOutput);
 					JSONObject dataMigrationDTOJsonCopy = new JSONObject(dataMigrationDTOCopy);
 					keys = dataMigrationDTOJson.keys();
-					
+					dataMigrationDTOJsonCopy.put("orgLocationId", orgLocationId);
+					boolean flag = false;
 					while (keys.hasNext()) {
 						String k = (String) keys.next();
 						if (StringUtils.isNotEmpty(k)) {
 							Iterator<Cell> cellIterator = nextRow.cellIterator();
 							while (cellIterator.hasNext()) {
 								Cell cell = cellIterator.next();
+								if(StringUtils.isNotBlank(cell.getStringCellValue()) && flag == false) {
+									flag = true;
+								}
 								if (dataMigrationDTOJson.has((String) k) && dataMigrationDTOJson.get((String) k) != null) {
 									if ((dataMigrationDTOJson.get((String) k).toString().replaceAll("\\d", ""))
 											.equalsIgnoreCase(CellReference.convertNumToColString(cell.getColumnIndex()))) {
@@ -1440,16 +1446,158 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 						}
 					}
 					
-					logger.debug(dataMigrationDTOJsonCopy.toString());
-					dataMigrationCommonUtil.dataValidationForCandidates(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);
-					
+					if(flag == true) {
+						 String documentId = SourceLeadRandomCodeHelper.generateRandomCustomToken();
+						 JsonObject jsonObject = JsonObject.fromJson(dataMigrationDTOJsonCopy.toString());
+						 sourceLeadSessionManager.setCouchbaseBulkImportJsonString(documentId, "bulkImports", jsonObject);
+						 
+						 
+						 if(i == 10000 || i == 0 ) {
+							 documentQueueId = SourceLeadRandomCodeHelper.generateRandomCustomToken();
+							 doucumentQueueIdsList.add(documentQueueId);
+							 i = 0;
+						 }
+						 
+						 i++;
+						 
+					 try {
+						 sourceLeadSessionManager.setCouchbaseQueue(documentQueueId, documentId);	
+						 }catch (Exception e) {
+							 e.printStackTrace();
+						}
+					}
+			
 				}
 		
 			}
-			logger.debug("Upload End Time In MilliSec for Streaming>>>"+System.currentTimeMillis()+">>>End Time"+Calendar.getInstance().getTime());
+			
+			BulkImportCacheDTO importDTO = new BulkImportCacheDTO();
+			importDTO.setDocumentType("Candidates");
+			importDTO.setUserId(user.getId().toString());
+			importDTO.setOrgLocationId(String.valueOf(orgLocationId));
+			importDTO.setEmail(user.getEmail());
+			importDTO.setQueueDocumentsList(doucumentQueueIdsList);
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+		    LocalDateTime now = LocalDateTime.now();  
+		    importDTO.setCreatedDate(dtf.format(now));
+		    
+		    ObjectMapper sessionObj = new ObjectMapper();
+		    String sessionJsonStr = sessionObj.writeValueAsString(importDTO); 
+			JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
+			String key = SourceLeadRandomCodeHelper.generateRandomCustomToken();
+			sourceLeadSessionManager.setCouchbaseQueueJsonString(key, "bulkImports", jsonObject);
 			workbook.close();
-			return null;
+			
+			saveXlsBulkUploadHistory(key, Constants.COUCH_DOCUMENT_UPLOAD_TYPE, orgLocations, user, uploadEntriesDTO.getExportFilePath(), "Candidates",0);
+			
+			return key;
 	}
+	
+	
+	public void saveCandidateBulkImports(String documentKey,HttpServletRequest request) throws Exception {
+		
+	 XlsBulkUploadHistroy history = xlsBulkUploadHistroyService.getXlsBulkUploadHistroyByDocumentKey(documentKey);
+	 if(history != null) {
+		 ApplicationContext ctx = new AnnotationConfigApplicationContext(CouchbasePropertyPathConfiguration.class);
+	     CouchbaseConnectionConfig couchConfig = ctx.getBean(CouchbaseConnectionConfig.class);
+	     Bucket bucket = couchbaseClusterService.openBucket(couchConfig.getBulkImportsBucket(), couchConfig.getPassword());
+	     
+	     List<String> queueDocumentsList =  userStatsCacheHelper.getCouchbaseQueueDocumentsList(documentKey);
+	     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	     
+		 List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(history.getOrgLocationId().getId());
+	   
+		 List<BulkImportFailureCacheDTO> failureList = new ArrayList<>();
+	    for(String document : queueDocumentsList){
+				JsonArray doucumentsList =  bucket.get(JsonArrayDocument.create(document)).content();
+				doucumentsList.forEach(docs -> {
+					 try {
+						 HashMap<String, String> errorSet = new HashMap<String, String>();
+						 org.json.simple.JSONObject candidateJosn = userStatsCacheHelper.getCandidateDocument(docs.toString());
+						
+						if(!candidateJosn.isEmpty()) {
+							 dataMigrationCommonUtil.dataValidationForCandidateBulkImports(errorSet, candidateJosn,history.getOrgLocationId(),vendorsList);
+								if (errorSet.isEmpty()) {
+									Gson gson = new Gson();
+									CandidateDTO candidateDTO = gson.fromJson(candidateJosn.toString(), CandidateDTO.class);
+									if(candidateDTO.getCountry() == null || candidateDTO.getCountry().isEmpty()) {
+										candidateDTO.setCountry(history.getOrgLocationId().getCountry());
+									}
+									candidateService.saveCandidateBulkImports(candidateDTO, history.getOrgLocationId(), user, vendorsList);
+									 bucket.remove(docs.toString());
+								}else {
+									BulkImportFailureCacheDTO failureCacheDTO = new BulkImportFailureCacheDTO();
+									failureCacheDTO.setDocumentId(docs.toString());
+									failureCacheDTO.setErrorMsg(errorSet);
+									failureList.add(failureCacheDTO);
+									
+								}
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					 
+				 });
+			}
+	    
+	    if(failureList != null && !failureList.isEmpty()) {
+			
+			try {
+				
+				BulkImportFailureDocumentsCacheDTO failureDocsDTO = new BulkImportFailureDocumentsCacheDTO();
+				failureDocsDTO.setDocumentType("Candidates Upload Failure");
+				failureDocsDTO.setUserId(user.getId().toString());
+				failureDocsDTO.setOrgLocationId(String.valueOf(history.getOrgLocationId().getId()));
+				failureDocsDTO.setEmail(user.getEmail());
+				failureDocsDTO.setFailureList(failureList);
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			    LocalDateTime now = LocalDateTime.now();  
+			    failureDocsDTO.setCreatedDate(dtf.format(now));
+			    
+			    ObjectMapper sessionObj = new ObjectMapper();
+			    String sessionJsonStr = sessionObj.writeValueAsString(failureDocsDTO); 
+				JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
+				String failureDocumentKey = SourceLeadRandomCodeHelper.generateRandomCustomToken();
+				sourceLeadSessionManager.setCouchbaseQueueJsonString(failureDocumentKey, "bulkImports", jsonObject);
+				
+				saveXlsBulkUploadHistory(failureDocumentKey, Constants.COUCH_DOCUMENT_UPLOAD_FAILURE_TYPE, history.getOrgLocationId(), user, history.getFileUrl(), "Candidates",failureList.size());
+				history.setUploadStatus("Completed");
+				history.setUpdatedBy(user);
+				history.setUpdatedDate(new Date());
+				xlsBulkUploadHistroyService.storeXlsBulkUploadHistroy(history);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+	    
+	} 
+}
+
+    public void saveXlsBulkUploadHistory(String documentKey, String uploadType,OrgLocations orgLocations,User user,String fileUrl,String uploadEntityType,Integer count) {
+    
+		try {
+			XlsBulkUploadHistroy history = new XlsBulkUploadHistroy();
+			history.setDocumentKey(documentKey);
+			history.setUploadEntityType(uploadEntityType);
+			history.setOrgLocation(orgLocations.getOrgName());
+			history.setOrgLocationId(orgLocations);
+			history.setFileUrl(fileUrl);
+			history.setUploadType(uploadType);
+			history.setUploadStatus(Constants.NEW_TYPE);
+			history.setUuid(SourceLeadRandomCodeHelper.generateRandomUniquUserName());
+			history.setStatus(Constants.RECORD_ACTIVE);
+			history.setFailedCount(count);
+			history.setCreatedDate(new Date());
+			history.setCreatedBy(user);
+			xlsBulkUploadHistroyService.storeXlsBulkUploadHistroy(history);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
 }
 
 
