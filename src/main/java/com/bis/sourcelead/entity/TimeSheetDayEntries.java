@@ -16,6 +16,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -23,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "TIMESHEET_DAY_ENTRIES")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "timeSheetDayEntries")
 public class TimeSheetDayEntries implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

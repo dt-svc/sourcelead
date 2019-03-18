@@ -44,14 +44,17 @@ public class USPayPeriodDaoImpl implements USPayPeriodDao{
 	public USPayPeriod getPayPeriodNumber(Long payFrequencyId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		USPayPeriod uSPayPeriod = null;
+		List<USPayPeriod> uSPayPeriod = null;
 		try {
 			String query = "from USPayPeriod ppn where ppn.payPeriodNum = (select MAX(paypn.payPeriodNum) from USPayPeriod paypn)";
-			uSPayPeriod = (USPayPeriod) session.createQuery(query).uniqueResult();
+			uSPayPeriod = session.createQuery(query).list();
 		} catch (Exception e) {
 			e.printStackTrace();
+		} 
+		if(uSPayPeriod != null && uSPayPeriod.size() > 0) {
+			return uSPayPeriod.get(0);
 		}
-		return uSPayPeriod;
+		return null;
 	}
 
 	@Override

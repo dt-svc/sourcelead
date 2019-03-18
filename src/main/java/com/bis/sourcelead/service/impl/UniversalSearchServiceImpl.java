@@ -512,7 +512,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 	
 	
 	@Override
-	public List<List<Object>> univesalSearchForAll(OrgLocations orgLocation, String searchType, String searchValue,Org org, String userRole, User user,Collection<Tabs> tabList) throws Exception {
+	public List<List<Object>> univesalSearchForAll(OrgLocations orgLocation, String searchType, String searchValue,Org org, String userRole, User user,List<String> tabList) throws Exception {
 
 		List<Object>   searchListForRequirement = new ArrayList<>();
 		List<Object>   searchListForUsers = new ArrayList<>();
@@ -527,8 +527,8 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		
-		for(Tabs tabs :tabList){
-			if(Constants.JOBS.equals(tabs.getTabName())){
+		for(String tabs :tabList){
+			if(Constants.JOBS.equals(tabs)){
 				BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 				boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
 				
@@ -604,7 +604,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 							}
 						}	
 			}
-			if("Associates".equals(tabs.getTabName())){
+			if("Associates".equals(tabs)){
 				// ELK list for the user
 				BoolQueryBuilder userBoolQueryBuilder = new BoolQueryBuilder();
 				userBoolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
@@ -642,18 +642,18 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 						}
 					}	
 			}
-			if("Clients".equals(tabs.getTabName())){
+			if("Clients".equals(tabs)){
 				// ELK list for the Clients and Vendors
 				String responderTypeAsVendor = Constants.VENDOR; 
 				 searchListForClient =	getSearchListForClientsVendors(searchType,orgLocation,df,searchListForClient,searchValue,responderTypeAsVendor);
 				 
 			}
-			if("Vendors".equals(tabs.getTabName())){
+			if("Vendors".equals(tabs)){
 				 String responderTypeAsClient = Constants.CLIENT;
 				 searchListForVendor =  getSearchListForClientsVendors(searchType,orgLocation,df,searchListForVendor,searchValue,responderTypeAsClient);
 			
 			}
-			if("Candidates".equals(tabs.getTabName())){
+			if("Candidates".equals(tabs)){
 				// ELK list for the Candidate
 				BoolQueryBuilder candidateBoolQueryBuilder = new BoolQueryBuilder();
 				candidateBoolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
@@ -708,7 +708,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 				    	
 				    }
 			}
-			if("Projects".equals(tabs.getTabName())){
+			if("Projects".equals(tabs)){
 				 // ELK list for the projects
 				BoolQueryBuilder projectBoolQueryBuilder = new BoolQueryBuilder();
 				projectBoolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));

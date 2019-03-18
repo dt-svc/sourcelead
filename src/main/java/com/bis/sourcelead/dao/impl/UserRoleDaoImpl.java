@@ -599,7 +599,8 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	public List<UserRole> getUsersListByUserId(Long userId) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user where userRole.user.id = :userId ";
+		String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user "
+				+ " left join fetch role.roleHierarchy where userRole.user.id = :userId ";
 		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).list();
 		return userRoleList;
 
@@ -1590,7 +1591,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from UserRole userRole left join fetch userRole.user user where user.id = :userId and userRole.userState = 'ACTIVE' ";
-		List<UserRole> userRoleList = session.createQuery(query.toString()).list();
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).list();
 		return userRoleList;
 
 	
@@ -1631,6 +1632,19 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("roleId", roleId).list();
 		return userRoleList;
 
+	
+	}
+
+	@Override
+	@Transactional
+	public List<UserRole> getLoginUserLoginAccountsList(Long userId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole left join fetch userRole.user user where user.id = :userId and (userRole.userState = 'ACTIVE' OR userRole.userState = 'NOT_LOGGEDIN') ";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).list();
+		return userRoleList;
+
+	
 	
 	}
 }

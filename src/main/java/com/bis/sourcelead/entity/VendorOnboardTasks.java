@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "VENDOR_ON_BOARD_TASKS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "vendorOnboardTasks")
 public class VendorOnboardTasks implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

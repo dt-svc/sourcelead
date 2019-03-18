@@ -159,14 +159,14 @@ public void sendNotification(String actionLink,User loginUser,User toUser, OrgLo
 	
 	if(loginUser != null) {
 	notification.setNotificationFrom(loginUser);
-	notification.setCreatedBy(loginUser.getCreatedBy());
+	notification.setCreatedBy(loginUser.getUserCode());
 	}
 	notification.setNotificationTo(toUser);
 	notification.setNotificationScenarioId(emailScenario);
 	notification.setMode(Constants.NOTIFICATION_UNREAD);
 	notification.setCreatedDate(new Date());
 	notification.setLocationCode(loginOrgLocation.getLocationCode());
-	notification.setOrgCode(loginOrgLocation.getOrg().getOrgCode());
+	notification.setOrgCode(loginOrgLocation.getOrgCode());
 	notification.setUserNotificationStatus("Sent");
 	notification.setNotificationStatus(Constants.NOTIFICATION_NOT_DELETED);
 	if(parameterList != null && !parameterList.isEmpty()) {
@@ -193,7 +193,11 @@ public void sendNotificationToClientOrVendor(String actionLink,String rejectActi
 	notification.setCreatedBy(loginUser.getUserCode());
 	notification.setCreatedDate(new Date());
 	notification.setLocationCode(loginOrgLocation.getLocationCode());
-	notification.setOrgCode(loginOrgLocation.getOrg().getOrgCode());
+	if(StringUtils.isNoneBlank(loginOrgLocation.getOrgCode())) {
+		notification.setOrgCode(loginOrgLocation.getOrgCode());
+	}else {
+		notification.setOrgCode(loginOrgLocation.getOrg().getOrgCode());
+	}
 	notification.setUserNotificationStatus("Sent");
 	notification.setNotificationStatus(Constants.NOTIFICATION_NOT_DELETED);
 	if(null != emailScenario.getUUID()  && !emailScenario.getUUID().isEmpty()){

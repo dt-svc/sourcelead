@@ -22,6 +22,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
@@ -33,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "ORG_LOCATIONS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orgLocations")
 public class OrgLocations implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -313,6 +316,23 @@ public class OrgLocations implements Serializable{
     @Transient
     @JsonProperty
     private String registeredLocation;
+    
+    @Transient
+    @JsonProperty
+    private String timeZoneId;
+    
+    @Transient
+	private Long primaryUserId;
+    
+    @Transient
+	private String countryCode;
+   
+    @Transient
+	private String currencyCode;
+    
+    @Transient
+   	private Long orgId;
+   
    
    
 	public Timezone getTimezone() {
@@ -650,6 +670,10 @@ public class OrgLocations implements Serializable{
 
 	public String getTimeZoneName()
 	{
+		if(timezone != null) {
+			timeZoneName =  timezone.getTimeZoneId();
+		}
+		
 		return timeZoneName;
 	}
 
@@ -1091,6 +1115,46 @@ public class OrgLocations implements Serializable{
 
 	public void setShowCompanyNameInMarkeplace(String showCompanyNameInMarkeplace) {
 		this.showCompanyNameInMarkeplace = showCompanyNameInMarkeplace;
+	}
+
+	public String getTimeZoneId() {
+		return timeZoneId;
+	}
+
+	public void setTimeZoneId(String timeZoneId) {
+		this.timeZoneId = timeZoneId;
+	}
+
+	public Long getPrimaryUserId() {
+		return primaryUserId;
+	}
+
+	public void setPrimaryUserId(Long primaryUserId) {
+		this.primaryUserId = primaryUserId;
+	}
+
+	public String getCountryCode() {
+		return countryCode;
+	}
+
+	public void setCountryCode(String countryCode) {
+		this.countryCode = countryCode;
+	}
+
+	public String getCurrencyCode() {
+		return currencyCode;
+	}
+
+	public void setCurrencyCode(String currencyCode) {
+		this.currencyCode = currencyCode;
+	}
+
+	public Long getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
 	}
 	
 }

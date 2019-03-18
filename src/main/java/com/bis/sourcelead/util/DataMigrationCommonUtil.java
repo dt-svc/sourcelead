@@ -705,7 +705,7 @@ public class DataMigrationCommonUtil {
 			}
 	
 			@SuppressWarnings("unchecked")
-			public void dataValidationForCandidates(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,List<String> candidateEmailsList) throws Exception
+			public void dataValidationForCandidates(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception
 			{
 				
 				if(!dataMigrationDTOJsonCopy.getString("email").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("email"))) {
@@ -2326,10 +2326,11 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 
 				}
+				
 				if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("passportNo"))
 				&& !dataMigrationDTOJsonCopy.getString("passportNo").equals("null") && !dataMigrationDTOJsonCopy.getString("candidateId").equals("null")) {
-				boolean flag = immigrationCommonService.validateCandidatePassportVisa(Long.parseLong(dataMigrationDTOJsonCopy.getString("candidateId")),
-				Constants.ID_TYPE_PASSPORT,dataMigrationDTOJsonCopy.getString("passportNo") );
+				boolean flag = immigrationCommonService.validateCandidatePassport(Long.parseLong(dataMigrationDTOJsonCopy.getString("candidateId")),
+				dataMigrationDTOJsonCopy.getString("passportNo") );
 				if(!flag) {
 
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("passportCountry")) || dataMigrationDTOJsonCopy.getString("passportCountry").equals("null")) {
@@ -2355,9 +2356,9 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 
 				if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaNo"))
 				&& !dataMigrationDTOJsonCopy.getString("visaNo").equals("null") && !dataMigrationDTOJsonCopy.getString("candidateId").equals("null")) {
-				boolean flag = immigrationCommonService.validateCandidatePassportVisa(Long.parseLong(dataMigrationDTOJsonCopy.getString("candidateId")),
-				Constants.ID_TYPE_VISA,dataMigrationDTOJsonCopy.getString("visaNo") );
-				if(!flag) {
+				//boolean flag = immigrationCommonService.validateCandidatePassportVisa(Long.parseLong(dataMigrationDTOJsonCopy.getString("candidateId")),
+				//.ID_TYPE_VISA,dataMigrationDTOJsonCopy.getString("visaNo") );
+				//if(!flag) {
 
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaCountry")) || dataMigrationDTOJsonCopy.getString("visaCountry").equals("null")) {
 				errorSet.put("visaCountry", "visaCountry is mandatory if you have entered visano");/// dropdown value.
@@ -2380,18 +2381,17 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				} else {
 				LookUpData data = lookUpDataService.getLookUpdataByCategoryAndName(Constants.VISA,
 				dataMigrationDTOJsonCopy.getString("visaType"));
-				System.out.println(" Visa Type--->"+dataMigrationDTOJsonCopy.getString("visaType"));
 				if (data == null) {
 				errorSet.put("visaType", "Visa Type is not found"); /// dropdown value.
 				} else {
 				// dataMigrationDTOJsonCopy.setString("petitionType", data.getId().toString());
-				dataMigrationDTOJsonCopy.put("visaType", data.getId());
+				dataMigrationDTOJsonCopy.put("visaType",data.getName());
 				}
 
 				}
-				}else {
-				errorSet.put("visaNo", "visaNo is already exist.");
-				}
+				//}else {
+			//	errorSet.put("visaNo", "visaNo is already exist.");
+			//	}
 
 				}
 

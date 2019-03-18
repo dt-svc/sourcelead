@@ -494,7 +494,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		Contracts  contracts =  null;
-		List<Contracts>  contractsList = session.createQuery("from Contracts ct where ct.id =:contractId").setLong("contractId", contractId).list();
+		List<Contracts>  contractsList = session.createQuery("from Contracts ct left join fetch ct.parentContractId where ct.id =:contractId").setLong("contractId", contractId).list();
 		if(null != contractsList && contractsList.size() >0){
 			contracts = contractsList.get(0);
 		}

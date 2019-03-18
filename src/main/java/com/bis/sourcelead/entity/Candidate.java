@@ -21,6 +21,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -30,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "CANDIDATE")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidate")
 public class Candidate implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -594,10 +597,13 @@ public class Candidate implements Serializable {
 	 @JsonProperty
 	 private Set<String> candidateTagsList;
      
+     @Transient
+ 	 @JsonProperty
+ 	 private String candidateAssignedJobsCount;
      
      @Transient
- 	@JsonProperty
- 	private String candidateAssignedJobsCount;
+ 	 @JsonProperty
+     private Long masterCandId;
 	 
 	public int getProfilePercentage()
 	{
@@ -1915,6 +1921,14 @@ public class Candidate implements Serializable {
 
 	public void setCandidateCertifications(Set<CandidateCertifications> candidateCertifications) {
 		this.candidateCertifications = candidateCertifications;
+	}
+
+	public Long getMasterCandId() {
+		return masterCandId;
+	}
+
+	public void setMasterCandId(Long masterCandId) {
+		this.masterCandId = masterCandId;
 	}
 
 	

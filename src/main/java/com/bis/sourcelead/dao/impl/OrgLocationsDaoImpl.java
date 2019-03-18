@@ -417,5 +417,18 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		List orgList = session.createQuery(query).setLong("orgId", orgId).list();
 		return orgList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgLocations getOrgLocationById(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from OrgLocations orgLocations where orgLocations.id = :id";
+		
+		List<OrgLocations> locationsList = session.createQuery(query).setLong("id", id).list();
+		OrgLocations locations = null;
+		if(locationsList != null && !locationsList.isEmpty())
+			locations = locationsList.iterator().next();
+		return locations;
+	}
 	 
 }

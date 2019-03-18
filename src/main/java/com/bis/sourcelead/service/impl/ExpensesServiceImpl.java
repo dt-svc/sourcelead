@@ -109,7 +109,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	public ResponseList<Expenses> getAllExpenses(OrgLocations orgLoc,User loginUser, String expenseStatus, String startDate, String endDate,String searchValue,int start,int length) throws Exception {
 			Date endDateUTC = null;
 			Date startDateUTC = null;
-			Timezone timezone = timeZoneService.getTimezone(orgLoc.getTimezone().getId());
+			Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLoc.getTimeZoneId()));
 			DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			
 			DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
@@ -245,7 +245,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		            StringBuilder purposeStringBuilder =new StringBuilder();
 		            StringBuilder totalStringBuilder =new StringBuilder();
 		            StringBuilder statusStringBuilder = new StringBuilder();
-		            ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId(),isGlobalUser);
+		            ProjectMembers pm= projectMembersService.getAllProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId(),isGlobalUser);
 		            
 			        orderedList.add(new ListItem(expenseId.append("Expense Id :").append(expenses.getExpenseId()).toString()));
 			        orderedList.add(new ListItem(locBuilder.append("Project :").append(pm.getProjects().getProjectName()).toString()));
@@ -596,7 +596,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		 StringBuilder projectName = new StringBuilder();	
 		 StringBuilder clientName = new StringBuilder();
 		 if(exp.getProjects() != null && exp.getMasterCandidateId() != null){
-	      ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(exp.getMasterCandidateId().getId(),exp.getProjects().getId(),orgLocations.getId(),isGlobalUser);
+	      ProjectMembers pm= projectMembersService.getAllProjectMembersByMasterCandidateIdAndProjectIdLocationId(exp.getMasterCandidateId().getId(),exp.getProjects().getId(),orgLocations.getId(),isGlobalUser);
 	      	  if(pm.getProjects().getProjectName()!= null){    
 	      		  projectName.append(pm.getProjects().getProjectName());
 	      	  }else{

@@ -39,6 +39,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name="ORG")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "org")
 public class Org implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -165,6 +166,9 @@ public class Org implements Serializable{
 	@Transient
 	@JsonProperty
 	private int noOfDays;
+	
+	@Transient
+	private Long superUserId;
 	
 	public Long getId() {
 		return id;
@@ -452,6 +456,14 @@ public class Org implements Serializable{
 
 	public void setCareerPageKeyActive(Boolean careerPageKeyActive) {
 		this.careerPageKeyActive = careerPageKeyActive;
+	}
+
+	public Long getSuperUserId() {
+		return superUserId;
+	}
+
+	public void setSuperUserId(Long superUserId) {
+		this.superUserId = superUserId;
 	}
 
 	

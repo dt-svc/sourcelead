@@ -261,8 +261,8 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	}
 	@Override
 	public void updateApprovalStatusByApproverForProjectMemberId(Long projectMemberId, Long approverUserId,
-			Date startDate, Date endDate, String status, String rejectedReason,OrgLocations orglocations) throws Exception {
-		 submissionApproverHierarchyDao.updateApprovalStatusByApproverForProjectMemberId(projectMemberId, approverUserId, startDate, endDate, status, rejectedReason,orglocations);
+			Date startDate, Date endDate, String status, String rejectedReason,OrgLocations orglocations,String isGlobalUser) throws Exception {
+		 submissionApproverHierarchyDao.updateApprovalStatusByApproverForProjectMemberId(projectMemberId, approverUserId, startDate, endDate, status, rejectedReason,orglocations,isGlobalUser);
 	}
 
 	@Override
@@ -337,8 +337,4 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 			Date frequencyEndDate, Long masterCandidateId, Long projectId) {
 		return submissionApproverHierarchyDao.isMissingTimesheetPerProjectByMasterCandidateIdAndProjectId(frequencyStartDate, frequencyEndDate, masterCandidateId, projectId);
 	}
-
-	
-	
-
 }

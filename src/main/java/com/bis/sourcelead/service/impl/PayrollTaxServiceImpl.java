@@ -102,7 +102,7 @@ public class PayrollTaxServiceImpl implements PayrollTaxService {
 		try {
 			StateTaxDTO stateTaxDTO = taxService.getStateTaxByStateNameAndFinancialYear(stateName, financialYear);
 			CentralTaxDTO centralTaxDTO = taxService.getCentralTaxByTaxType(taxType);
-
+			payrollTaxDTO.setId(centralTaxDTO.getId());
 			payrollTaxDTO.setEmployeeESIContribution(centralTaxDTO.getEmployeeEsi() + "");
 			payrollTaxDTO.setEmployerESIContribution(centralTaxDTO.getEmployerEsi() + "");
 			payrollTaxDTO.setEmployeePFContribution(centralTaxDTO.getEmployeepf() + "");

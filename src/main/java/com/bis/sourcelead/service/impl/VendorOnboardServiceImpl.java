@@ -114,6 +114,9 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
+	@Value("${vmsUrl}")
+    private String vmsUrl;
+	
 	@Value("${sourceleadLoginUrl}")
     private String sourceleadLoginUrl;
 	
@@ -387,7 +390,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		 globalVarsMap.put("registerName", professionalName);
 		 StringBuilder verifylink = new StringBuilder();
 		 
-		 globalVarsMap.put("verifyLink",verifylink.append("<a href='").append("/app/ws/activateEmail?&token=").append(user.getVerificationUUID()).append("'>").append(sourceleadUrl).append("/activateEmail?&token=").append(user.getVerificationUUID()).append("</a>").toString()); 
+		 globalVarsMap.put("verifyLink",verifylink.append("<a href='").append(sourceleadUrl).append("/ws/activateEmail?&token=").append(user.getVerificationUUID()).append("'>").append(sourceleadUrl).append("/activateEmail?&token=").append(user.getVerificationUUID()).append("</a>").toString()); 
 
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -582,10 +585,10 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 				 noificationEmailScenario.setUUID(notificationUUID);
 				 
 			     StringBuilder actionLinkBuilder = new StringBuilder();
-				 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("acceptVendorOnboardInvitation?onboardUUID=").append(onboarding.getOnboardUUID()).append("&notificationUUID=").append(notificationUUID).append("").toString();
+				 String actionLink = actionLinkBuilder.append("").append(vmsUrl).append("/").append("acceptVendorOnboardInvitation?onboardUUID=").append(onboarding.getOnboardUUID()).append("&notificationUUID=").append(notificationUUID).append("").toString();
 				 
 				 StringBuilder rejectActionBuilder = new StringBuilder();
-				 String  rejectActionLink = rejectActionBuilder.append("").append(sourceleadUrl).append("/").append("rejectVendorOnboardInvitation?onboardUUID=").append(onboarding.getOnboardUUID()).append("&notificationUUID=").append(notificationUUID).append("&orgSpocUUID=").append(orgSpc.getUUID()).append("").toString();
+				 String  rejectActionLink = rejectActionBuilder.append("").append(vmsUrl).append("/").append("rejectVendorOnboardInvitation?onboardUUID=").append(onboarding.getOnboardUUID()).append("&notificationUUID=").append(notificationUUID).append("&orgSpocUUID=").append(orgSpc.getUUID()).append("").toString();
 				 
 				 emailScenerioUtil.sendNotificationToClientOrVendor(actionLink,rejectActionLink, loginUser,loginUser, spocUser, vendorOrgLocation, noificationEmailScenario,orgSpc.getUUID());
 			}
@@ -597,10 +600,10 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 				 noificationEmailScenario.setUUID(notificationUUID);
 				 
 			     StringBuilder actionLinkBuilder = new StringBuilder();
-				 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("acceptVendorOnboardInvitation?onboardUUID=").append(onboarding.getOnboardUUID()).append("&notificationUUID=").append(notificationUUID).append("").toString();
+				 String actionLink = actionLinkBuilder.append("").append(vmsUrl).append("/").append("acceptVendorOnboardInvitation?onboardUUID=").append(onboarding.getOnboardUUID()).append("&notificationUUID=").append(notificationUUID).append("").toString();
 				 
 				 StringBuilder rejectActionBuilder = new StringBuilder();
-				 String  rejectActionLink = rejectActionBuilder.append("").append(sourceleadUrl).append("/").append("rejectVendorOnboardInvitation?onboardUUID=").append(onboarding.getOnboardUUID()).append("&notificationUUID=").append(notificationUUID).append("&orgSpocUUID=").append(orgSpoc.getUUID()).append("").toString();
+				 String  rejectActionLink = rejectActionBuilder.append("").append(vmsUrl).append("/").append("rejectVendorOnboardInvitation?onboardUUID=").append(onboarding.getOnboardUUID()).append("&notificationUUID=").append(notificationUUID).append("&orgSpocUUID=").append(orgSpoc.getUUID()).append("").toString();
 				 
 				 if(spocUser.getId().longValue() == orgSpoc.getClientUser().getId().longValue()) {
 					 emailScenerioUtil.sendNotificationToClientOrVendor(actionLink,rejectActionLink, loginUser,orgSpoc.getVendorUser(), spocUser, vendorOrgLocation, noificationEmailScenario,orgSpoc.getUUID());

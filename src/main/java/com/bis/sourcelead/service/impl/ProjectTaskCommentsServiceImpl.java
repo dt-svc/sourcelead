@@ -66,6 +66,9 @@ public class ProjectTaskCommentsServiceImpl implements ProjectTaskCommentsServic
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${pmsUrl}")
+	private String pmsUrlUrl;
+	
 	@Override
 	public ProjectTaskComments saveProjectTaskComments(ProjectTaskComments projectTaskComments) throws Exception {
 		return projectTaskCommentsDao.saveProjectTaskComments(projectTaskComments);
@@ -212,7 +215,7 @@ public class ProjectTaskCommentsServiceImpl implements ProjectTaskCommentsServic
 		notificationScenario.setOrgCode(loginOrgCode);
 		StringBuilder notificationLink = new StringBuilder();
 		String actionLink = "";
-		actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectTaskSummary?"
+		actionLink = notificationLink.append(pmsUrlUrl).append("/").append("projectTaskSummary?"
 				+ "taskUUID=" + tasks.getProjectTasksUUID() + "&projectClientUUID="+ projectClientUUID+"&active=notificationComment").toString();
 		if(user != null) {
 			emailScenerioUtil.sendNotification(actionLink, loginUser, user, loginOrgLocation, notificationScenario, new HashMap<String, String>());

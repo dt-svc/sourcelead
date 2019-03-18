@@ -9,8 +9,10 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -377,6 +379,21 @@ public class CommonUtil {
 		}
 		return date;
 		}
+	public  Date stringToDateByOrgLocationFormat(String dateString, String orgLocationFormat){
+
+		DateFormat df = new SimpleDateFormat(orgLocationFormat);
+		Date date = null;
+		try {
+
+		date = df.parse(dateString);
+
+		} catch (Exception e) {
+
+		e.printStackTrace();
+
+		}
+		return date;
+		}
 	/**
 	 * Convert String to Capitalized String
 	 * @param name
@@ -434,7 +451,7 @@ public class CommonUtil {
 	
 	public Date orgLocationCommonDate(Date date, OrgLocations loginOrgLocation){
 		DateTime dt = new DateTime(date);
-		DateTimeZone dtZone = DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId());
+		DateTimeZone dtZone = DateTimeZone.forID(loginOrgLocation.getTimeZoneName());
 		DateTime dtus = dt.withZone(dtZone); 
 		Date dateWithTimezone = dtus.toLocalDateTime().toDate();
 		return dateWithTimezone;
@@ -2868,6 +2885,67 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 		pps.setCreatedDate(new Date());
 		pps.setCreatedBy(user);
 		payrollPaySlipIndService.savePayrollPaySlipInd(pps);
+	}
+	
+	
+	public String getClientIpAddr(HttpServletRequest request) {  
+	    String ip = request.getHeader("X-Forwarded-For");  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("Proxy-Client-IP");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("WL-Proxy-Client-IP");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("HTTP_X_FORWARDED_FOR");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("HTTP_X_FORWARDED");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("HTTP_X_CLUSTER_CLIENT_IP");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("HTTP_CLIENT_IP");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("HTTP_FORWARDED_FOR");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("HTTP_FORWARDED");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("HTTP_VIA");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("REMOTE_ADDR");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getRemoteAddr();  
+	    }  
+        if (ip.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
+            InetAddress localip = null;
+			try {
+				localip = java.net.InetAddress.getLocalHost();
+			} catch (UnknownHostException e) {
+			}
+			if(localip != null)
+            ip = localip.getHostAddress();
+        }
+        
+        String[] ipArray = ip.split(",");
+		if(ipArray.length > 1){
+			for(String s :ipArray){
+				if(StringUtils.isNotEmpty(s)){
+					ip =s.replaceAll("[^0-9.]", "");
+					break;
+				}
+			}
+			
+		}else{
+			ip = ip.replaceAll("[^0-9.]", "");
+		}
+	    return ip;  
 	}
 }
 

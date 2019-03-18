@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
@@ -21,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "CANDIDATE_PASSPORT_VISA")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidatePassportVisa")
 public class CandidatePassportVisa implements Serializable {
 
 	private static final long serialVersionUID = 1L;
