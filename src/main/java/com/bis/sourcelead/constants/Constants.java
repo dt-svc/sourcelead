@@ -1426,4 +1426,6 @@ public class Constants {
 	public static final String TICKET_UPDATE_EMAIL = "ChangeTicketStatusEmail";
 	public static final String TICKET_UPDATE_NOTIFICATION = "ChangeTicketStatusNotification";
 	
+	public static final String PAYMENT_MODE_SAVINGS = "Savings";
+	
 }

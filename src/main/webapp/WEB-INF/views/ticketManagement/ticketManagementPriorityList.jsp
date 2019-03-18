@@ -83,7 +83,7 @@
 								</span>
 							</label>
 						</span>
-						<input type="text" class="form-control" readonly id="uploadFile" placeholder="Upload Priority Image ...">
+						<input type="text" class="form-control" readonly id="uploadFile" placeholder="Upload Priority Image ..." data-validation="validateimage">
 					</div>
 					<div class="col-md-1 pull-left">
 						<i class="fa fa-refresh cursorPointer mt10 text-primary" title="Refresh Icon" onclick="refreshPriorityImage();"></i>

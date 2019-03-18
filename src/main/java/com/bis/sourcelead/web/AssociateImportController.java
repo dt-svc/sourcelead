@@ -88,6 +88,26 @@ public class AssociateImportController {
 	private String sourceleadUrl;
 	
 	
+	/*  ---------------------Associate banking Details import starts from here---------------------------*/
+	
+	 @PreAuthorize("hasRole('ROLE_USER_BULK_IMPORTS')")
+		@RequestMapping(value = "/app/uploadAssociateBankingDetailsForm")
+		public ModelAndView uploadAssociateBankDetail(HttpServletRequest request) {
+			SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
+					.getAttribute("sessionData");
+			if (sessionData == null) {
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.Users);
+
+			request.getSession().setAttribute("sessionData", sessionData);
+			ModelAndView model = new ModelAndView();
+			model.setViewName("upload/uploadAssociateBankingDetailsForm");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+
+		}
+	
 	/**
 	 * @rajat
 	 * @param request
@@ -98,8 +118,7 @@ public class AssociateImportController {
 	@ResponseBody
 	public IndAssociatePaymentAccountDTO uploadbankdetails(MultipartHttpServletRequest request) throws Exception
 	{
-		//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		//Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		MultipartFile multipartFile = null;
 		Iterator<String> itrator = request.getFileNames();
@@ -115,6 +134,7 @@ public class AssociateImportController {
 	}
 	
 	
+	// method for creating excel sheet
 	 @RequestMapping(value = "/app/downloadTemplateForAssociateBankingDetails", method = RequestMethod.GET)
 		public void downloadTemplateForAssociateBankingDetails(HttpServletRequest request,HttpServletResponse response) throws Exception{
 	        @SuppressWarnings("resource")
@@ -160,6 +180,9 @@ public class AssociateImportController {
 	        }
 			
 		}
+	 
+	 /*   --------Ends here--------   */
+	 
 	 
 	 
 	 @PreAuthorize("hasRole('ROLE_USER_BULK_IMPORTS')")
@@ -402,7 +425,6 @@ public class AssociateImportController {
 										}else {
 											continue;
 										}
-										
 										
 										assoSalPayheadIndDTOList.add(assoSalPayheadIndDTO);
 									}
