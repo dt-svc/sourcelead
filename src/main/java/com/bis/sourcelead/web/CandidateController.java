@@ -179,9 +179,8 @@ public class CandidateController {
 					CandidateMarketPlaceDTO candidateMarketPlaceDTO,
 					HttpServletRequest request) {
 				List<CandidateMarketPlaceDTO> candidateMarketPlaceDTOs = null;
-				User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				candidateMarketPlaceDTOs = candidateService.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations, candidateLocation, searchValue, candidateMarketPlaceDTO, user.getId());
+				candidateMarketPlaceDTOs = candidateService.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations, candidateLocation, searchValue, candidateMarketPlaceDTO);
 				return candidateMarketPlaceDTOs;
 			}
 	

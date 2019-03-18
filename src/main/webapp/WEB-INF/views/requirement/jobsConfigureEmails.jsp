@@ -334,10 +334,12 @@ function hideandshowjobclosing(){
 			
 			$('#'+form+'_btn').prop('disabled', true);
 			var formData = getFormData(form);
+			var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+
 			$.ajax({
 				type : "POST",
 				data : formData,
-				url : sourceleadUrl + "/storeJobConfigureEmail?${_csrf.parameterName}=${_csrf.token}",
+				url : pmsUrl + "/storeJobConfigureEmail?${_csrf.parameterName}=${_csrf.token}",
 				success : function(result) {
 					if(result.object === 'MissingData'){
 			  			showError("Invalid data");
