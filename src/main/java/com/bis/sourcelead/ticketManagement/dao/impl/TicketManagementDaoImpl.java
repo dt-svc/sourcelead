@@ -523,7 +523,7 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId, int status, String userRole) {
+	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId, int status, String userRole, String searchValue) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "select t from Ticket t";
@@ -536,6 +536,9 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 			}
 			if(status >= 0) {
 				query += " and t.status=" + status;
+			}
+			if(searchValue != null && !searchValue.isEmpty()) {
+				query += " and (t.generatedId like '%" + searchValue + "%' or t.title like '%" + searchValue + "%' or t.ticketPriority.name like '%" + searchValue + "%' or t.createdBy.firstName like '%" + searchValue + "%' or t.createdBy.middelName like '%" + searchValue + "%' or t.createdBy.lastName like '%" + searchValue + "%' or t.ticketStatus.name like '%" + searchValue + "%')";
 			}
 			query += " order by t.id desc";
 			return session.createQuery(query).list();
