@@ -341,8 +341,12 @@ function getUsersSearchResult(searchValue){
 											<div class="immSubMenu">
 												<a href="<c:url value='${sourceleadUrl}/uploadForm'/>">Associate Import</a>
 												<a href="<c:url value='${sourceleadUrl}/uploadAssociateBankForm'/>">Associate Bank Deatils Import</a>
-												<!-- <a href="javascript:void(0)">Option 1</a>
-												<a href="javascript:void(0)">Option 1</a> -->
+												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateBankingDetailsForm'/>">Associate Bank Detail</a>
+												   <%--  <a href="<c:url value='${sourceleadUrl}/uploadAssociateInformationForm'/>">Associate Information</a> --%>
+													<a href="<c:url value='${sourceleadUrl}/uploadAssociateSalary'/>">Associate Salary Import</a>
+													
+												</c:if>
 											</div>
 										</div>
 										
