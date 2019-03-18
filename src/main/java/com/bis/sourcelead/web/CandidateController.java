@@ -179,9 +179,8 @@ public class CandidateController {
 					CandidateMarketPlaceDTO candidateMarketPlaceDTO,
 					HttpServletRequest request) {
 				List<CandidateMarketPlaceDTO> candidateMarketPlaceDTOs = null;
-				User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				candidateMarketPlaceDTOs = candidateService.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations, candidateLocation, searchValue, candidateMarketPlaceDTO, user.getId());
+				candidateMarketPlaceDTOs = candidateService.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations, candidateLocation, searchValue, candidateMarketPlaceDTO);
 				return candidateMarketPlaceDTOs;
 			}
 	
@@ -478,23 +477,6 @@ public class CandidateController {
 		
 	}
 	
-	 //uploadCandidateForm
-	 @RequestMapping(value = "/uploadCandidateForm")
-		public ModelAndView uploadCandidateForm(HttpServletRequest request) {
-		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-			if(sessionData == null)
-			{
-				sessionData = new SessionMaintainanceData();
-			}
-			
-			request.getSession().setAttribute("sessionData",sessionData);
-			ModelAndView model = new ModelAndView();
-			model.setViewName("upload/uploadCandidateForm");
-			model.addObject("sourceleadUrl", sourceleadUrl);
-			sessionData.setNav(Constants.Candidates);
-			return model;
-
-		}
 	 
 	 /*
 	  * author PrasadK
