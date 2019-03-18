@@ -213,6 +213,7 @@ public class DataMigrationCommonRestController {
 	public ModelAndView storeCandidateBulkUploadToCouchbase(CandidateBulkUploadDTO candidateBulkUploadDTO, UploadEntriesDTO uploadEntriesDTO, HttpServletRequest request) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
+		candidateBulkUploadDTO.setStaticPath(staticPath);
 		String couchbaseQueueKey = dataMigrationService.storeCandidateBulkUploadToCouchbase(candidateBulkUploadDTO,uploadEntriesDTO,request);
 		 
 		model.setViewName("upload/candidateImportFieldMapping");

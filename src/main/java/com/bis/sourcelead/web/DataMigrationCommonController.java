@@ -3,11 +3,9 @@ package com.bis.sourcelead.web;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -18,7 +16,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.hssf.usermodel.DVConstraint;
 import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -48,8 +45,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
-import com.bis.sourcelead.entity.AssetCategory;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.XlsBulkUploadHistroy;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CountriesService;
@@ -58,7 +56,9 @@ import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.ShiftService;
+import com.bis.sourcelead.service.XlsBulkUploadHistroyService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -100,6 +100,12 @@ public class DataMigrationCommonController {
 	
 	@Autowired
 	UserStatsCacheHelper userStatsCacheHelper;
+	
+	@Value("${static.path}")
+	private String staticPath;
+	
+	@Autowired
+	XlsBulkUploadHistroyService xlsBulkUploadHistroyService;
 	
 	 /*
 	  * author Venkat Kesav
@@ -605,6 +611,8 @@ public class DataMigrationCommonController {
 				HttpServletRequest request,HttpServletResponse response) throws Exception {
 			
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
+			
 			JSONObject jsonObject = userStatsCacheHelper.getBulkImportsFailureList(documentKey);
 			Map<String,String> columnsMap = commonUtil.getCandidateBulkImportHeaderMap();
 			File file = null;
@@ -682,7 +690,8 @@ public class DataMigrationCommonController {
 					fos.close();
 				} catch (IOException e) {
 					e.printStackTrace();
-				}	 	
+				}	
+				 
 				 
 				 String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 					if (mimeType == null) {
@@ -696,6 +705,14 @@ public class DataMigrationCommonController {
 					response.setContentLength((int) file.length());
 					InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 					FileCopyUtils.copy(inputStream, response.getOutputStream());
+					
+					System.out.println(file.getName());
+					String failureFileUrl = FileUploadUtil.moveBulkImportFailureFile(staticPath, org.getId(), orgLocations.getId(), "dataMigration", file);
+					XlsBulkUploadHistroy failureHistory = xlsBulkUploadHistroyService.getXlsBulkUploadHistroyByDocumentKey(documentKey);
+					failureHistory.setFailureFileUrl(failureFileUrl);
+					xlsBulkUploadHistroyService.storeXlsBulkUploadHistroy(failureHistory);
+					
+					 
 					inputStream.close();
 					response.getOutputStream().close();
 					response.getOutputStream().flush();
@@ -705,4 +722,6 @@ public class DataMigrationCommonController {
 					}
 					
 		}
+		
+		
 }

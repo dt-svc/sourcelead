@@ -39,7 +39,12 @@ function Xlsupload(){
 		        	   
 		        	   for(var i=0; i<json.length; i++){
 		        		   var report = json[i];
-		        		   var url = sourceleadUrl+"/dumpBulkImportsFailureList?&documentKey="+report.documentKey;
+		        		   var url = '';
+		        		   if(report.failureFileUrl != '' && report.failureFileUrl != null && report.failureFileUrl != 'undefined'){
+		        			   url =  report.failureFileUrl;
+		        		   }else{
+		        			   url = sourceleadUrl+"/dumpBulkImportsFailureList?&documentKey="+report.documentKey;
+		        		   }
 		        		    
 		        		    result = result + '<tr id="failure'+report.documentKey+'">';
 		        		    result = result + '<td><div class="tbldata-dotdot-me">'+report.date+'</div></td>';
