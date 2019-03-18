@@ -12,7 +12,7 @@ function associateBankData(userId){
             	  var result = "";
             	  result += '<div class="reportHead clearfix">';
             		  result += '<ul class="pull-right list-unstyled list-inline">';
-            			  result += '<li><a onclick="editAssociateBankPopUp();" class="newAdBtn mr5">+ Add</a></li>';
+            			  result += '<li><a onclick="addAssociateBankPopUp();" class="newAdBtn mr5">+ Add</a></li>';
             				  result += '</ul>';
             					  result += '</div> ';
             					  
@@ -222,6 +222,11 @@ function changeActiveAccount(associateBankId,candidateId,userId) {
   function editAssociateBankPopUp(){
 	  $("#adEdBankingDetails, .mask").fadeIn();
 	  $("#save_associate_bank_data_button").removeAttr("disabled");
+  }
+  
+  function addAssociateBankPopUp(){
+	  $("#adEdBankingDetails, .mask").fadeIn();
+	  $("#save_associate_bank_data_button").removeAttr("disabled");
 	  resetValues();
   }
   
@@ -291,6 +296,7 @@ function resetValues(){
 	$("#bankName").val('');
 	$("#accountNumber").val('');
 	$("#routingNumber").val('');
+// 	$("#id").val('');
 }
 </script>
 

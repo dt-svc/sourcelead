@@ -3192,5 +3192,15 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		return immigrationCommonDao.getCandidateActiveVisaDetailsByVisaNumberAndCountry(candidateId, visaNumber, country);
 	}
 
-
+	@Override
+	public Lca updateLcaAvailablePositionsById(Lca lca) {
+		
+		return immigrationCommonDao.updateLcaAvailablePositionsById(lca);
+	}
+	
+	@Override
+	public Lca getLcaNumber(String lcaNo) throws Exception{
+		
+		return immigrationCommonDao.getLcaNumber(lcaNo);
+	}
 }

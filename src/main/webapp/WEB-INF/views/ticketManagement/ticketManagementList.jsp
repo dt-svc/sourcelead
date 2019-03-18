@@ -131,7 +131,7 @@
 		var colIndex = 0;
 	    $('#ticketManagementListTable').DataTable( {
 	    	"processing": true,
-	       "serverSide": true,
+	       /* "serverSide": true, */
 	       "searching": true,
 	       "searchHighlight": true,
 	       "ajax": $.fn.dataTable.pipeline( {
@@ -220,7 +220,7 @@
 		        {
 		            "targets": colIndex++,
 		            "data": "assignTo",
-		            "sortable": true,
+		            "sortable": false,
 		            "render": function ( data, type, opt, meta ) {
 		            	var result = "";
 		            	var assignTo = "";
@@ -234,7 +234,7 @@
 		        {
 		            "targets": colIndex++,
 		            "data": "status",
-		            "sortable": true,
+		            "sortable": false,
 		            "render": function ( data, type, opt, meta ) {
 		            	var result = "";
 		            	result += "<td><select class='sel' onChange='changeTicketStatus(this, \"" + opt.id + "\", \"" + opt.ticketStatusId + "\")'>";
@@ -253,15 +253,15 @@
 		            	var result = '<div class=" widthIcon widthIcon-three">';
 		            	'<sec:authorize access="hasRole(\'ROLE_ADD_TICKET\')">';
 			            	result +='	<div class="text-center">';
-			            	result +='		<a href="javascript:void(0)" title="Edit Ticket" onclick="editTicketManagement(' + opt.id + ')">';
+			            	result +='		<a href="javascript:void(0)" title="Edit Ticket" onclick="editTicketManagement(\'' + opt.uuid + '\')">';
 			            	result +='		<i class="fa fa-pencil"></i>';
 			            	result +='		</a>';
 			            	result +='	</div>';
 		            	'</sec:authorize>';
 		            	'<sec:authorize access="hasRole(\'ROLE_DELETE_TICKET\')">'; 
 			            	result +='	<div class="text-center">';
-			            	result +='		<a href="javascript:void(0)" title="Delete Ticket" onclick="showDeletePopup(' + opt.id + ', 1)">';
-			            	result +='		<i class="fa fa-edit"></i>';
+			            	result +='		<a href="javascript:void(0)" title="Delete Ticket" onclick="showDeletePopup(' + opt.id + ', 0)">';
+			            	result +='		<i class="fa fa-trash"></i>';
 			            	result +='		</a>';
 			            	result +='	</div>';
 		            	'</sec:authorize>';
