@@ -7,12 +7,15 @@ CREATE PROCEDURE associateBankDataProcedure
     IN accountType varchar(250),
     IN bankName varchar(50),
 	IN accountNumber varchar(20),
-	IN routingNumber varchar(20)	
+	IN routingNumber varchar(20),
+	IN orgLocationID bigint,
+	IN createdDate date,
+	IN updatedDate date
 ) 
 
 BEGIN
-	   INSERT INTO ASSOCIATE_BANK_DATA(CANDIDATE_ID,ACCOUNT_TYPE, BANK_NAME, ACCOUNT_NUMBER, ROUTING_NUMBER)
-       values (candidateId,accountType, bankName, accountNumber, routingNumber); 
+	   INSERT INTO ASSOCIATE_BANK_DATA(CANDIDATE_ID, ACCOUNT_TYPE, BANK_NAME, ACCOUNT_NUMBER, ROUTING_NUMBER, ORG_LOCATION_ID, CREATED_DATE, UPDATED_DATE)
+       values (candidateId, accountType, bankName, accountNumber, routingNumber, orgLocationID, createdDate, updatedDate); 
 
 END;//
 

@@ -181,15 +181,15 @@ if ($('#upload_salary_form').validate(false, validationSettings)){
     	    dataType : 'json',
 		    url : sourceleadUrl+"/saveAssociateSalaryDetailsTemplate?"+tokenParamName+"="+tokenValue+"", 	   
  		    success : function(json) {
- 		    		$("#loading").removeAttr("style");
- 		    	    if(json.recordUpdatedCount != null && json.recordUpdatedCount != '')
- 		    	    $("#msgDiv").removeAttr("style");
- 		 			$("#msgDiv").css({ display: "block" });
- 		 			$("#msgDiv").html(json.recordUpdatedCount+ " Associates Salary details updated ..!");
- 		 			$("#selector11").removeAttr('style');
- 			    	msgFadein();
- 		    	    closeImportFile();
- 		    	   resetUpload();
+	 		    		$("#loading").removeAttr("style");
+	 		    	    if(json.recordUpdatedCount != null && json.recordUpdatedCount != '')
+	 		    	    $("#msgDiv").removeAttr("style");
+	 		 			$("#msgDiv").css({ display: "block" });
+	 		 			$("#msgDiv").html(json.recordUpdatedCount+ " Associates Salary details updated ..!");
+	 		 			$("#selector11").removeAttr('style');
+	 			    	msgFadein();
+	 		    	    closeImportFile();
+	 		    	    resetUpload();
 		 		    },
 		 		   error: function(e){
 			        }
