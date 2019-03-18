@@ -3,6 +3,7 @@ package com.bis.sourcelead.payroll.dao.impl;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -124,7 +125,7 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 				public void execute(java.sql.Connection connection) throws SQLException {
 					boolean initialAutocommitSetting = connection.getAutoCommit();
 					connection.setAutoCommit(false);
-					CallableStatement stmt = connection.prepareCall("{call associateBankDataProcedure(?,?,?,?,?)}");
+					CallableStatement stmt = connection.prepareCall("{call associateBankDataProcedure(?,?,?,?,?,?,?,?)}");
 					for (AssociateBankDataDTO bankDto : list) {
 						if(bankDto.getEmailId() !=null && !"".equalsIgnoreCase(bankDto.getEmailId())) {
 							stmt.setLong(1, map.get(bankDto.getEmailId()));
@@ -135,6 +136,12 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 						stmt.setString(3, bankDto.getBankName());
 						stmt.setString(4, bankDto.getAccountNumber());
 						stmt.setString(5, bankDto.getRoutingNumber());
+						stmt.setString(6, orgLocationId.toString());	//OrgLocationID
+						
+						java.util.Date date = Calendar.getInstance().getTime();
+						java.sql.Date sqlDate = new java.sql.Date(date.getTime()); 
+						stmt.setDate(7,sqlDate);	//Created Date
+						stmt.setDate(8, sqlDate);	//Updated Date
 						stmt.addBatch();
 					}
 					int[] updateCount = stmt.executeBatch();
@@ -193,7 +200,7 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean isActiveAccount = false;
 		try {
-			List<AssociateBankData> dataList = session.createQuery("from AssociateBankData assBankData where assBankData.orgLocationId.id =:orgLocationId and assBankData.defaultAccount = :defaultAccount and assBankData.candidate.id = :candidateId").setLong("orgLocationId", orgLocationId).setLong("candidateId", candidateId).setBoolean("defaultAccount", true).list();
+			List<AssociateBankData> dataList = session.createQuery("from AssociateBankData assBankData where assBankData.orgLocationId.id =:orgLocationId and assBankData.defaultAccount = :defaultAccount").setLong("orgLocationId", orgLocationId).setBoolean("defaultAccount", true).list();
 			if(dataList != null && dataList.size() >0) {
 				isActiveAccount = true;;
 			}
@@ -228,6 +235,28 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 			ex.printStackTrace();
 		}
 		return isChanged;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<AssociateBankDataDTO> getAssociateBankDataListByOrgLocationId(Long locationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<AssociateBankDataDTO> dtolist = new ArrayList<AssociateBankDataDTO>();
+		try {
+			List<AssociateBankData> assBankDataList = session.createQuery("from AssociateBankData assBankData where assBankData.orgLocationId.id =:orgLocationId").setLong("orgLocationId", locationId).list();
+		    for(AssociateBankData b : assBankDataList) {
+		    	AssociateBankDataDTO dto = new AssociateBankDataDTO();
+		    	dto.setCandidateId(b.getCandidate().getId().toString());
+		    	dto.setAccountType(b.getAccountType());
+		    	dto.setAccountNumber(b.getAccountNumber());
+		    	dtolist.add(dto);
+		    }
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dtolist;
 	}
 
 }

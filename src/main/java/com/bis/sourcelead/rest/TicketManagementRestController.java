@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -103,15 +104,24 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = "/saveTicketType", method = RequestMethod.POST)
 	@ResponseBody
-	public Response<Boolean> saveTicketType(HttpServletRequest request, TicketTypeDTO ticketTypeDTO) {
-		Response<Boolean> response = new Response<>();
+	public Response<Long> saveTicketType(HttpServletRequest request, TicketTypeDTO ticketTypeDTO) {
+		Response<Long> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
-				response.setObject(ticketManagementService.saveTicketType(ticketTypeDTO, user.getId(), loginOrgLocation));
-				response.setResponse(Result.SUCCESS.name());
-				response.setResponseMessage(Result.SUCCESS.getValue());
+				long result = ticketManagementService.saveTicketType(ticketTypeDTO, user.getId(), loginOrgLocation);
+				if(result == -1) {
+					response.setResponse(Result.DUPLICATE_NAME.name());
+					response.setResponseMessage(Result.DUPLICATE_NAME.getValue());
+				} else if(result > 0) {
+					response.setObject(result);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.FAILED.name());
+					response.setResponseMessage(Result.FAILED.getValue());
+				}
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
@@ -219,15 +229,24 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = "/saveTicketCategory", method = RequestMethod.POST)
 	@ResponseBody
-	public Response<Boolean> saveTicketCategory(HttpServletRequest request, TicketCategoryDTO ticketCategoryDTO) {
-		Response<Boolean> response = new Response<>();
+	public Response<Long> saveTicketCategory(HttpServletRequest request, TicketCategoryDTO ticketCategoryDTO) {
+		Response<Long> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
-				response.setObject(ticketManagementService.saveTicketCategory(ticketCategoryDTO, user, user.getId(), loginOrgLocation));
-				response.setResponse(Result.SUCCESS.name());
-				response.setResponseMessage(Result.SUCCESS.getValue());
+				long result = ticketManagementService.saveTicketCategory(ticketCategoryDTO, user, user.getId(), loginOrgLocation);
+				if(result == -1) {
+					response.setResponse(Result.DUPLICATE_NAME.name());
+					response.setResponseMessage(Result.DUPLICATE_NAME.getValue());
+				} else if(result > 0) {
+					response.setObject(result);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.FAILED.name());
+					response.setResponseMessage(Result.FAILED.getValue());
+				}
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
@@ -336,16 +355,24 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = "/saveTicketPriority", method = RequestMethod.POST)
 	@ResponseBody
-	public Response<Boolean> saveTicketPriority(HttpServletRequest request, TicketPriorityDTO ticketPriorityDTO) {
-		Response<Boolean> response = new Response<>();
+	public Response<Long> saveTicketPriority(HttpServletRequest request, TicketPriorityDTO ticketPriorityDTO) {
+		Response<Long> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
-				ticketPriorityDTO.setStaticPath(staticPath);
-				response.setObject(ticketManagementService.saveTicketPriority(ticketPriorityDTO, user.getId(), loginOrgLocation));
-				response.setResponse(Result.SUCCESS.name());
-				response.setResponseMessage(Result.SUCCESS.getValue());
+				long result = ticketManagementService.saveTicketPriority(ticketPriorityDTO, user.getId(), loginOrgLocation);
+				if(result == -1) {
+					response.setResponse(Result.DUPLICATE_NAME.name());
+					response.setResponseMessage(Result.DUPLICATE_NAME.getValue());
+				} else if(result > 0) {
+					response.setObject(result);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.FAILED.name());
+					response.setResponseMessage(Result.FAILED.getValue());
+				}
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
@@ -455,15 +482,24 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = "/saveTicketStatus", method = RequestMethod.POST)
 	@ResponseBody
-	public Response<Boolean> saveTicketStatus(HttpServletRequest request, TicketStatusDTO ticketStatusDTO) {
-		Response<Boolean> response = new Response<>();
+	public Response<Long> saveTicketStatus(HttpServletRequest request, TicketStatusDTO ticketStatusDTO) {
+		Response<Long> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
-				response.setObject(ticketManagementService.saveTicketStatus(ticketStatusDTO, user.getId(), loginOrgLocation));
-				response.setResponse(Result.SUCCESS.name());
-				response.setResponseMessage(Result.SUCCESS.getValue());
+				long result = ticketManagementService.saveTicketStatus(ticketStatusDTO, user.getId(), loginOrgLocation);
+				if(result == -1) {
+					response.setResponse(Result.DUPLICATE_NAME.name());
+					response.setResponseMessage(Result.DUPLICATE_NAME.getValue());
+				} else if(result > 0) {
+					response.setObject(result);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.FAILED.name());
+					response.setResponseMessage(Result.FAILED.getValue());
+				}
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
@@ -566,14 +602,17 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = { "/getTicketList", "/rest/getTicketList" }, method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<TicketDTO> getTicketManagementList(HttpServletRequest request) {
+	public ResponseList<TicketDTO> getTicketManagementList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue) {
 		ResponseList<TicketDTO> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				responseList.setData(ticketManagementService.getTicketManagementListByOrgLocationId(loginOrgLocation.getId(), user.getId(), 1, loginOrgLocation.getDateFormat(), userRole));
+				List<TicketDTO> ticketDTOList = ticketManagementService.getTicketManagementListByOrgLocationId(loginOrgLocation.getId(), user.getId(), 1, loginOrgLocation.getDateFormat(), userRole, searchValue);
+				responseList.setData(ticketDTOList);
+				responseList.setRecordsTotal(ticketDTOList.size());
+				responseList.setRecordsFiltered(ticketDTOList.size());
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -588,7 +627,7 @@ public class TicketManagementRestController {
 		return responseList;
 	}
 
-	@RequestMapping(value = { "/saveTicket", "/rest/saveTicket" }, method = RequestMethod.POST)
+	@RequestMapping(value = {"/saveTicket"}, method = RequestMethod.POST)
 	@ResponseBody
 	public Response<Boolean> saveTicket(HttpServletRequest request, TicketDTO ticketDTO) {
 		Response<Boolean> response = new Response<>();
@@ -609,6 +648,12 @@ public class TicketManagementRestController {
 			response.setResponseMessage(Result.AWKWARD.getValue());
 		}
 		return response;
+	}
+	
+	@RequestMapping(value = {"/rest/saveTicket"}, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Boolean> saveTicketForMobile(HttpServletRequest request, @RequestBody TicketDTO ticketDTO) {
+		return saveTicket(request, ticketDTO);
 	}
 	
 	@RequestMapping(value = "/getTicketDataById", method = RequestMethod.POST)
@@ -640,7 +685,6 @@ public class TicketManagementRestController {
 		Response<Boolean> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
 				response.setObject(ticketManagementService.changeTicketManagementStatus(ticketId, status));
 				response.setResponse(Result.SUCCESS.name());
@@ -803,6 +847,7 @@ public class TicketManagementRestController {
 		}
 		return responseList;
 	}
+	
 	@RequestMapping(value = "/getTicketManagementExportListByOrgLocationId")
 	public void getTicketManagementExportListByOrgLocationId(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam(value="exportType", required=false) String exportType) {
@@ -812,7 +857,7 @@ public class TicketManagementRestController {
 				ResponseList<TicketDTO> responseList = new ResponseList<>(); 
 				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				responseList.setData(ticketManagementService.getTicketManagementListByOrgLocationId(loginOrgLocation.getId(), user.getId(), 1, loginOrgLocation.getDateFormat(), userRole));
+				responseList.setData(ticketManagementService.getTicketManagementListByOrgLocationId(loginOrgLocation.getId(), user.getId(), 1, loginOrgLocation.getDateFormat(), userRole, null));
 				File file = null;
 				if (exportType.equalsIgnoreCase("pdf")) {
 					file = dynamicReport.ticketManagementPdfExport(responseList, loginOrgLocation);
