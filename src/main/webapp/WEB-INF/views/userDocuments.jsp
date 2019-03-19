@@ -457,6 +457,8 @@ function getDocument(candidateId, documentId){
        			 	$("#uploadFile").removeAttr("data-validation");
        			 	if(data.fileName != null && data.fileName !="undefined" && data.fileName != "") {
 	       				$("#docNameDiv").show();
+       			 	}else{
+       			 	$("#uploadDocDiv").show();	
        			 	}
        			 	$("#docsName").append(data.fileName);
        			 	$("#docsName").prop('title', data.fileName);
