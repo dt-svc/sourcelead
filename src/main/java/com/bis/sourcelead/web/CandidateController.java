@@ -477,23 +477,6 @@ public class CandidateController {
 		
 	}
 	
-	 //uploadCandidateForm
-	 @RequestMapping(value = "/uploadCandidateForm")
-		public ModelAndView uploadCandidateForm(HttpServletRequest request) {
-		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-			if(sessionData == null)
-			{
-				sessionData = new SessionMaintainanceData();
-			}
-			
-			request.getSession().setAttribute("sessionData",sessionData);
-			ModelAndView model = new ModelAndView();
-			model.setViewName("upload/uploadCandidateForm");
-			model.addObject("sourceleadUrl", sourceleadUrl);
-			sessionData.setNav(Constants.Candidates);
-			return model;
-
-		}
 	 
 	 /*
 	  * author PrasadK
