@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.performance.PerformanceCompetenciesDao;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.PerformanceCompetenciesDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.performance.PerformanceBadges;
 import com.bis.sourcelead.entity.performance.PerformanceCompetencies;
 import com.bis.sourcelead.service.performance.PerformanceCompetenciesService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -37,20 +39,49 @@ public class PerformanceCompetenciesServiceImpl implements PerformanceCompetenci
 	public PerformanceCompetencies storePerformanceCompetencies(PerformanceCompetenciesDTO performanceCompetenciesDTO,
 			Long orgLocationId, Long userId) throws Exception {
 		
-		PerformanceCompetencies performanceCompetencies = new PerformanceCompetencies();
-		performanceCompetencies.setCompetenciesName(performanceCompetenciesDTO.getName());
-		performanceCompetencies.setDescription(performanceCompetenciesDTO.getDescription());
-		performanceCompetencies.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		
 		OrgLocations orgLcoations = new OrgLocations();
 		orgLcoations.setId(orgLocationId);
-		performanceCompetencies.setOrgLocationId(orgLcoations);
+		
 		User user = new User();
 		user.setId(userId);
-		performanceCompetencies.setCreatedBy(user);
+		
+		PerformanceCompetencies performanceCompetencies = null;
+		if(performanceCompetenciesDTO.getCompetenceId() != null) {
+			performanceCompetencies = performanceCompetenciesDao.getPerformanceCompetenciesById(performanceCompetenciesDTO.getCompetenceId());
+			performanceCompetencies.setUpdatedBy(user);
+			performanceCompetencies.setUpdatedDate(new Date());
+		}else {
+			performanceCompetencies = new PerformanceCompetencies();
+			performanceCompetencies.setCreatedBy(user);
+			performanceCompetencies.setCreatedDate(new Date());
+			performanceCompetencies.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		}
+		performanceCompetencies.setCompetenciesName(performanceCompetenciesDTO.getName());
+		performanceCompetencies.setDescription(performanceCompetenciesDTO.getDescription());
+		performanceCompetencies.setOrgLocationId(orgLcoations);
 		performanceCompetencies.setStatus(Constants.RECORD_ACTIVE);
-		performanceCompetencies.setCreatedDate(new Date());
 		return performanceCompetenciesDao.savePerformanceCompetencies(performanceCompetencies);
 		
+	}
+
+	@Override
+	public ResponseList<PerformanceCompetenciesDTO> getPerformanceCompetenciesList(
+			PerformanceCompetenciesDTO performanceCompetenciesDTO, String dateFormat, Long orgLocationId)
+			throws Exception {
+		return performanceCompetenciesDao.getPerformanceCompetenciesList(performanceCompetenciesDTO, dateFormat, orgLocationId);
+	}
+
+	@Override
+	public PerformanceCompetenciesDTO getPerformanceCompetenciesDTOById(Long id) throws Exception {
+		PerformanceCompetencies compentencies =  performanceCompetenciesDao.getPerformanceCompetenciesById(id);
+		PerformanceCompetenciesDTO  competenciesDTO = new PerformanceCompetenciesDTO();
+		competenciesDTO.setCompetenceId(compentencies.getId());
+		competenciesDTO.setName(compentencies.getCompetenciesName());
+		competenciesDTO.setDescription(compentencies.getDescription());
+		return competenciesDTO;
+		
+				
 	}
 
 }
