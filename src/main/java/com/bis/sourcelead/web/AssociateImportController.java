@@ -25,6 +25,7 @@ import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -192,7 +193,7 @@ public class AssociateImportController {
 //for associate Information import--------------------------------------------------
 	 
 	 @PreAuthorize("hasRole('ROLE_USER_BULK_IMPORTS')")
-		@RequestMapping(value = "/app/uploadAssociateInformationForm")
+		@RequestMapping(value = "/app/uploadAssociateInformation")
 		public ModelAndView uploadAssociateInformationForm(HttpServletRequest request) {
 			SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
 					.getAttribute("sessionData");
@@ -247,8 +248,9 @@ public class AssociateImportController {
 	        int cellnum = 0;
 	        for (String key : tableColumns) {
 	            Cell cell = row.createCell(cellnum++);
+	            cell.setCellType(Cell.CELL_TYPE_STRING);
 	            cell.setCellValue((String)key);
-	        }
+	        }	        	        
 	        try {
 	            File file = new File("Associate_Information_Template.xls");
 	    		FileOutputStream out = new FileOutputStream(file);
@@ -281,7 +283,7 @@ public class AssociateImportController {
 	 /*   --------Ends here--------   */
 	 
 	 
-	 
+	 //import associate salary starts --------------------------------
 	 
 	 @PreAuthorize("hasRole('ROLE_USER_BULK_IMPORTS')")
 		@RequestMapping(value = "/app/uploadAssociateSalary")
