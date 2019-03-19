@@ -1,9 +1,12 @@
 package com.bis.sourcelead.web;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -700,10 +703,11 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
-		//List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 		List<ProjectMembers> list = projectMembersService.getAllActiveProjectsByUserIdAndOrgLocationId(user.getId() ,orgLocations.getId());
+		List<Serializable> newList = Stream.concat(userList.stream(), list.stream())  .collect(Collectors.toList());
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		 model.addObject("userList", list);
+		 model.addObject("userList", newList);
 		 model.setViewName("reports/availableAssociates");
 
 		return model;
