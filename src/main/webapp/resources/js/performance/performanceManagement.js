@@ -67,6 +67,7 @@ function PerformanceManagement(){
 			    	 url: sourceleadUrl+"/savePerformanceCompetence?",
 			        success: function(response) {
 			        	$("#competenceLoading").removeAttr('style');
+			        	performanceManagement.performanceCompetenceList();
 			        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
 	     	    		    showError(response.responseMessage);
 	     	    		}
@@ -226,6 +227,7 @@ function PerformanceManagement(){
    		     success :function(response) {
    		    	    $("#performanceManagementDiv").empty();  
    		    	    $("#performanceManagementDiv").append(response);
+   		    	    getCompetenceList();
    				},
    			}); 
    }
@@ -327,6 +329,37 @@ function PerformanceManagement(){
  			        	    location.href = "/errorPage";
  			        	} else if (response === "SUCCESS") {
  			        		performanceManagement.getBadgesList();
+ 			        	} else if (response.indexOf('Sign In') !== -1) {
+ 			        		location.replace(sourceleadUrl);
+ 			        	} else {
+ 			        	    showError("Operation failed, please try again");
+ 			        	}
+ 			    	  
+ 					},
+ 				}); 
+   }
+   
+   
+   
+   this.editCompetence = function(competenceId){
+	   performanceManagement.addNewCompetence();
+ 	  $("#competenceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 		$.ajax({
+ 			  type: "GET",
+ 			    url: sourceleadUrl+"/getPerformanceCompetenceDetailsById?competenceId="+competenceId,
+ 			     success :function(response) {
+ 			    	 
+ 			    		if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+ 	     	    		    showError(response.responseMessage);
+ 	     	    		    $("#badgeDetailsLoading").removeAttr('style');
+ 	     	    		}
+ 			        	else if (response.response === "AWKWARD") {
+ 			        	    location.href = "/errorPage";
+ 			        	} else if (response.response === "SUCCESS") {
+ 			        		 $("#competenceId").val(response.object.competenceId);
+ 			        		 $("#competenceName").val(response.object.name);
+ 			        		 $("textarea[id='competenceDescription']").text(response.object.description);
+ 			        		 $("#competenceLoading").removeAttr('style');
  			        	} else if (response.indexOf('Sign In') !== -1) {
  			        		location.replace(sourceleadUrl);
  			        	} else {

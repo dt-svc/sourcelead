@@ -146,7 +146,6 @@ public class PerformanceManagementController {
 	@RequestMapping(value = "/performanceCompetenceList")
 	public ModelAndView performanceCompetenceList(HttpServletRequest request) throws Exception{
 		ModelAndView model = new ModelAndView();
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("performance/performanceCompetenceList");
 		return model;

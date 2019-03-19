@@ -24,6 +24,7 @@ import com.bis.sourcelead.dto.DepartmentDTO;
 import com.bis.sourcelead.dto.PerformanceBadgesDTO;
 import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceCompetenciesDTO;
@@ -344,5 +345,43 @@ public class PerformanceManagementRestController {
   		}
   		 return resObj;
       }
+   
+   
+	 @RequestMapping(value = "/getPerformanceCompetenceList", method = RequestMethod.GET)
+	public ResponseList<PerformanceCompetenciesDTO> getPerformanceCompetenceList(PerformanceCompetenciesDTO performanceCompetenciesDTO,HttpServletRequest request) throws Exception {
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+		
+		String[] tableColumns = { "competenciesName", "createdDate", "description", "competenciesStatus" };
+		int sortColumnIndex = 1; // by default sorting using updated date
+		String sortColumnOrder = "desc"; // by default descending order
+		if (performanceCompetenciesDTO.getOrder() != null && !performanceCompetenciesDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(performanceCompetenciesDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = performanceCompetenciesDTO.getOrder().get(0).get("dir");
+		}
+		performanceCompetenciesDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		performanceCompetenciesDTO.setSortOrder(sortColumnOrder);
+		ResponseList<PerformanceCompetenciesDTO> performanceCompetenciesList = performanceCompetenciesService.getPerformanceCompetenciesList(performanceCompetenciesDTO, dateFormat, orgLocationId);
+		return performanceCompetenciesList;
+	}
+	 
+	 
+	    @RequestMapping(value = "/getPerformanceCompetenceDetailsById", method = RequestMethod.GET)
+		public Response<PerformanceCompetenciesDTO> getPerformanceCompetenceDetailsById(HttpServletRequest request, 
+				@RequestParam(value = "competenceId", required = true) Long competenceId){
+			 Response<PerformanceCompetenciesDTO> resObj = new Response<>();
+			 try {
+				 PerformanceCompetenciesDTO competenciesDTO =  performanceCompetenciesService.getPerformanceCompetenciesDTOById(competenceId);
+				 resObj.setObject(competenciesDTO);
+				 resObj.setResponse(Result.SUCCESS.name());
+				 resObj.setResponseMessage(Result.SUCCESS.getValue());
+			    
+			 }catch (Exception e) {
+				 resObj.setResponse(Result.AWKWARD.name());
+				 resObj.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			 return resObj;
+	    }
 
 }
