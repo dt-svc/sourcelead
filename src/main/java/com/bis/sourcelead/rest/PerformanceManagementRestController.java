@@ -26,6 +26,7 @@ import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
+import com.bis.sourcelead.dto.performance.PerformanceCompetenciesDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
@@ -36,6 +37,7 @@ import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalTemplateService;
 import com.bis.sourcelead.service.performance.PerformanceBadgesService;
+import com.bis.sourcelead.service.performance.PerformanceCompetenciesService;
 import com.bis.sourcelead.service.performance.PerformanceFeedbackTemplateService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -67,6 +69,9 @@ public class PerformanceManagementRestController {
 	
 	@Autowired
 	RolesService rolesService;
+	
+	@Autowired
+	PerformanceCompetenciesService performanceCompetenciesService;
 	
 	
     @RequestMapping(value = "/savePerformanceBudgetDetails", method = RequestMethod.POST)
@@ -314,5 +319,30 @@ public class PerformanceManagementRestController {
  		}
  		 return resObj;
    }
+   
+   
+   @RequestMapping(value = "/savePerformanceCompetence", method = RequestMethod.POST)
+  	public Response<PerformanceCompetenciesDTO> savePerformanceCompetence(HttpServletRequest request, 
+  			PerformanceCompetenciesDTO performanceCompetenciesDTO){
+  		 Response<PerformanceCompetenciesDTO> resObj = new Response<>();
+  		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+  		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+  		 try {
+  			 if(Validator.validate(performanceCompetenciesDTO)){
+  				performanceCompetenciesService.storePerformanceCompetencies(performanceCompetenciesDTO, orgLocation.getId(), user.getId());
+  			 resObj.setResponse(Result.SUCCESS.name());
+  			 resObj.setResponseMessage(Result.SUCCESS.getValue());
+  		    }
+  			 else {
+  				 resObj.setResponse(Result.INVALID_DATA.name());
+  				 resObj.setResponseMessage(Result.INVALID_DATA.getValue());
+  				
+  	    	 }
+  		 }catch (Exception e) {
+  			 resObj.setResponse(Result.AWKWARD.name());
+  			 resObj.setResponseMessage(Result.AWKWARD.getValue());
+  		}
+  		 return resObj;
+      }
 
 }

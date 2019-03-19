@@ -48,6 +48,55 @@ function PerformanceManagement(){
 	
 	
 	
+	
+	
+	this.savePerformanceCompetence  = function (){
+		 var validationSettings = {
+			        errorMessagePosition : 'element',
+			       borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+		         }; 
+		 
+		 if ($('#competence_form').validate(false, validationSettings)){ 
+		        var formData = getFormData("competence_form");
+		        $("#competenceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		         $.ajax({
+			    	type: "POST",
+			    	data: formData,
+			    	 url: sourceleadUrl+"/savePerformanceCompetence?",
+			        success: function(response) {
+			        	$("#competenceLoading").removeAttr('style');
+			        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+	     	    		    showError(response.responseMessage);
+	     	    		}
+			        	else if (response.response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (response.response === "SUCCESS") {
+			        		performanceManagement.closeCompetencePopup();
+			        		$(".mask, #competenceModalTasktype").fadeOut();
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
+			        },
+			    });  
+		        return true;
+		  } else {
+			return false;
+		  }
+	}
+
+	$('body').on('blur', '#competence_form', function() {
+			$("#competence_form").showHelpOnFocus();
+			$("#competence_form").validateOnBlur(false, validationSettings);  
+		});
+	
+	
+	
+	
+	
 	this.getBadgesList = function(){
     	$.ajax({
     		  type: "GET",
@@ -168,9 +217,26 @@ function PerformanceManagement(){
  				},
  			}); 
    }
+   
+   
+   this.performanceCompetenceList = function(){
+   	$.ajax({
+   		  type: "GET",
+   		    url: sourceleadUrl+"/performanceCompetenceList",
+   		     success :function(response) {
+   		    	    $("#performanceManagementDiv").empty();  
+   		    	    $("#performanceManagementDiv").append(response);
+   				},
+   			}); 
+   }
+   
 	
   this.addBadgePopup = function() {
  	  $(".mask, #modalTasktype").fadeIn();
+   }
+  
+  this.addNewCompetence = function() {
+ 	  $(".mask, #competenceModalTasktype").fadeIn();
    }
    
    this.closeBadgePopup = function(){
@@ -186,6 +252,32 @@ function PerformanceManagement(){
  		 document.getElementById("badgeImg").src = '/resources/images/rewards_badges.svg';
  	  
    }
+   
+   this.closeCompetencePopup = function(){
+	 	  $(".mask, #modalTasktype").fadeOut();
+	 	  $('#badgeNameDiv').find('p.jquery_form_error_message').remove();
+	 	  $('#badgeImageDiv').find('p.jquery_form_error_message').remove();
+	 	  $('#badgeDescriptionDiv').find('p.jquery_form_error_message').remove();
+	 	  $('#uploadBtn').val('');
+	 	  
+	 	     $("#badgeId").val('');
+	 		 $("#badgeName").val('');
+	 		 $("textarea[id='badgeDescription']").text('');
+	 		 document.getElementById("badgeImg").src = '/resources/images/rewards_badges.svg';
+	 	  
+	   }
+   
+   this.closeCompetencePopup = function(){
+	      $(".mask, #competenceModalTasktype").fadeOut();
+	 	  $('#competenceNameDiv').find('p.jquery_form_error_message').remove();
+	 	  $('#competenceDescriptionDiv').find('p.jquery_form_error_message').remove();
+	 	  
+	 	     $("#competenceId").val('');
+	 		 $("#competenceName").val('');
+	 		 $("textarea[id='competenceDescription']").text('');
+   }
+   
+   
    
    
    this.editBadge = function(badgeId){
