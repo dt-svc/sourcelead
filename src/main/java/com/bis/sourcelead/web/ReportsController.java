@@ -695,7 +695,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 			e.printStackTrace();
 		}
 		return model;
-	}
+		}
 	
 	
 	@RequestMapping(value = "/availableAssociatesReport")
@@ -703,9 +703,12 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
-		List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
-		List<ProjectMembers> list = projectMembersService.getAllActiveProjectsByUserIdAndOrgLocationId(user.getId() ,orgLocations.getId());
-		List<Serializable> newList = Stream.concat(userList.stream(), list.stream())  .collect(Collectors.toList());
+		//List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		List<ProjectMembers>newList = projectMembersService.getAllActiveProjectsByUserIdAndOrgLocationId(user.getId() ,orgLocations.getId());
+		
+		//List<User> pmUserList = (List<User>) list.stream().filter(pm -> pm.getEmployee().getUser());
+		
+		//List<Serializable> newList = Stream.concat(userList.stream(),list.stream()).collect(Collectors.toList());
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.addObject("userList", newList);
 		 model.setViewName("reports/availableAssociates");

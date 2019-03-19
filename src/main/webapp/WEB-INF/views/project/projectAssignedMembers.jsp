@@ -643,7 +643,6 @@ function toggleAssociates(source) {
 
 <script type="text/javascript">
 	function addRequestedResources() {
-		alert("todfhg th");
 		var projectStartDate = '${projectStartDate}';
 		var projectEndDate = '${projectEndDate}';
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 

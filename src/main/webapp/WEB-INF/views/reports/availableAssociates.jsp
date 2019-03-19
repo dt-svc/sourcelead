@@ -23,7 +23,7 @@
               <div class="col-md-12">
               <select class="chosen-select form-control" data-placeholder="Select Associate" autocomplete="off" onchange="getProjects();" id="associatesId" name="userIds" field-name="Associate" data-validation="required">
 			          <option selected="selected" disabled>Select Associate</option>
-			            <c:forEach var="option" items="${list}">
+			            <c:forEach var="option" items="${newList}">
 							<option value="${option.id}">${option.employee}</option>
 						</c:forEach>
 			          </select>
