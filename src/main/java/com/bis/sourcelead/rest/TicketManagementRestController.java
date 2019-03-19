@@ -32,7 +32,9 @@ import com.bis.sourcelead.dto.TicketTypeDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.ticketManagement.service.TicketManagementService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -48,6 +50,9 @@ public class TicketManagementRestController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private UserRoleService userRoleService;
 
 	@Autowired
 	private TicketManagementService ticketManagementService;
@@ -607,8 +612,15 @@ public class TicketManagementRestController {
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
-				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String userRole = null;
+				if(request.getRequestURI().contains("rest")) {
+					UserRole loginUserRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
+					if(loginUserRole != null) {
+						userRole = loginUserRole.getRoles().getRoleName();
+					}
+				} else 
+					userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				List<TicketDTO> ticketDTOList = ticketManagementService.getTicketManagementListByOrgLocationId(loginOrgLocation.getId(), user.getId(), 1, loginOrgLocation.getDateFormat(), userRole, searchValue);
 				responseList.setData(ticketDTOList);
 				responseList.setRecordsTotal(ticketDTOList.size());
@@ -709,7 +721,7 @@ public class TicketManagementRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
-				response.setObject(ticketManagementService.getTicketSummaryByUUID(uuid, loginOrgLocation.getId(), loginOrgLocation.getDateFormat(), false));
+				response.setObject(ticketManagementService.getTicketSummaryByUUID(uuid, loginOrgLocation.getId(), loginOrgLocation.getDateFormat(), true));
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
