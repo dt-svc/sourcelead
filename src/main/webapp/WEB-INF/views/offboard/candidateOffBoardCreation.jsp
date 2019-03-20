@@ -47,7 +47,7 @@
       <div class="pull-left">
         <h2>Employee offboarding</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="${SourceLeadWeb_atsUrl}/candidateOnBoardingList">Onboard & Offboard List</a> &raquo; Employee Offboarding </div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>  &raquo; <a href="${SourceLeadWeb_atsUrl}/candidateOnBoardingList">Onboard & Offboard List</a> &raquo; Employee Offboarding </div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="applicant_accept">
@@ -204,7 +204,7 @@
                         <span class="input-group-addon cursorPointer bg-blue" onclick="loadOffBoardingTemplates();"><i class="fa fa-refresh "></i></span>
                         </div>
  <sec:authorize access="hasAnyRole('ROLE_CREATE_OFF_BOARD_TEMPLATE')">
-                  <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/addNewOffboardTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
+                  <span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_atsUrl}/addNewOffboardTemplate" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
                </sec:authorize></div>                </div>
                 
                 

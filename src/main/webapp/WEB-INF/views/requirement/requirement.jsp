@@ -402,7 +402,7 @@ $(document).ready(function () {
 									<div class="col-md-9">
 										<input type="text" class="form-control" id="profilePercentage"
 											name="profilePercentage" onblur="validateProfilePercentage()"
-											value="${!empty requirement.profilePercentage  ? requirement.profilePercentage : SourceLeadWeb_orgLocations.profilePercentage}"
+											value="${!empty requirement.profilePercentage  ? requirement.profilePercentage : SourceLeadWeb_profilePercentage}"
 											field-name="Profile Percentage"
 											data-validation="required validate_Space validate_int">
 									</div>
@@ -1485,7 +1485,7 @@ $(document).ready(function () {
 													<c:if test="${requirement.isClientJob != 'Y'}">
 														<sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')">
 															<span class="col-md-3 noPad clearfix"><a
-																href="/vms/client" target="_blank"><i
+																href="${SourceLeadWeb_vmsUrl}/client" target="_blank"><i
 																	class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 																<span
 																class="input-group-addon cursorPointer bg-blue refreshBtn"
@@ -2462,7 +2462,7 @@ function validateProfilePercentage(){
 
 <script>
 	var orgLocationDateFormat = "${orgLocationDateFormat}";
-	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	  var jsDateFormat= '';
 	  if(locationDate.match("yyyy-MM-dd")){
 		  jsDateFormat = 'yy-mm-dd';

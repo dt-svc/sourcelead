@@ -182,7 +182,7 @@ function statusvalidating(id){
 					Jobs</a></span>
 		</div> --%>
 		<div class="pull-right brud-crum">
-			<a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Job List
+			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Job List
 		</div>
 	</section>
 	<div class="clearfix">
@@ -656,7 +656,7 @@ function statusvalidating(id){
 									<span> 
 									<a href="<c:url value='/requirement'/>" >Job</a>
 									<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
-										<a href="/app/uploadJobs">Import</a>
+										<a href="${SourceLeadWeb_sourceleadUrl}/uploadJobs">Import</a>
 									</sec:authorize>									
 									</span>
 								</div>
