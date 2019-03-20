@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.AssociatePfEsiDao;
@@ -63,8 +65,10 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 		Map<String, Long> canMap = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getId));
 		
 		List<AssociatePfEsiDetails> InfoList = associatePfEsiService.getAllPfEsiDetailsByOrgLocationid(orgLocation.getId());
-		Map<String, Candidate> pfeMap = InfoList.stream().collect(Collectors.toMap(AssociatePfEsiDetails::getUanNumber, AssociatePfEsiDetails::getCandidateId));
-	//	Map<String, List<AssociateBankDataDTO>> bankMap = bankDataList.stream().collect(Collectors.groupingBy(AssociateBankDataDTO::getCandidateId, Collectors.toList()));
+		Map<Long, String> pfeMap = new HashMap<Long, String>();
+		for (AssociatePfEsiDetails i : InfoList) pfeMap.put(i.getCandidateId().getId(), i.getUanNumber());
+		
+		
 		
 		int insertedCount = 0;
 		try {
@@ -72,48 +76,45 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			multipartFile.transferTo(file);
 			FileInputStream fis = new FileInputStream(file);
 			Workbook workbook;
-			List<AssociateBankDataDTO> list = new ArrayList<>();
-			List<AssociateBankDataDTO> errorlist = new ArrayList<>();
+			List<AssociatePfEsiDetailsDTO> list = new ArrayList<>();
+			List<AssociatePfEsiDetailsDTO> errorlist = new ArrayList<>();
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
-				int count =0;
+			
 				boolean isValidated = false;
+				int count =0;
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
-					AssociateBankDataDTO bankDataDTO = new AssociateBankDataDTO();
-					if (row.getRowNum() > 0 && row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) { // Excluding column names
-						isValidated = validateAssociateBankExeclData(row,fileName,bankDataDTO,canMap,pfeMap);
+					AssociatePfEsiDetailsDTO InfoDataDTO = new AssociatePfEsiDetailsDTO();
+					if (row.getRowNum() > 0 && row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) { // Excluding column names
+						isValidated = validateAssociateBankExeclData(row,fileName,InfoDataDTO,canMap,pfeMap);
 						if(isValidated) {
-							if (row.getCell(0) != null  && !"".equalsIgnoreCase(row.getCell(0).toString()))
-								bankDataDTO.setId(Long.parseLong(getCellValueAsString(row.getCell(0), fileName)));	
 							if(row.getCell(1) != null  && !"".equalsIgnoreCase(row.getCell(1).toString()))
-								bankDataDTO.setEmailId(getCellValueAsString(row.getCell(1), fileName));
+								InfoDataDTO.setEmail(getCellValueAsString(row.getCell(1), fileName));
 							if(row.getCell(2) != null  && !"".equalsIgnoreCase(row.getCell(2).toString()))
-								bankDataDTO.setAccountType(getCellValueAsString(row.getCell(2), fileName));																	
+								InfoDataDTO.setUanNumber(getCellValueAsString(row.getCell(2), fileName));																	
 							if(row.getCell(3) != null  && !"".equalsIgnoreCase(row.getCell(3).toString()))
-								bankDataDTO.setBankName(getCellValueAsString(row.getCell(3), fileName));
+								InfoDataDTO.setPfNumber(getCellValueAsString(row.getCell(3), fileName));
+							    InfoDataDTO.setEligibleForPf("Y");
 							if(row.getCell(4) != null  && !"".equalsIgnoreCase(row.getCell(4).toString()))
-								bankDataDTO.setAccountNumber(getCellValueAsString(row.getCell(4), fileName));
-							if(row.getCell(5) != null  && !"".equalsIgnoreCase(row.getCell(5).toString()))
-								bankDataDTO.setRoutingNumber(getCellValueAsString(row.getCell(5), fileName));
-							list.add(bankDataDTO);
+								InfoDataDTO.setEsinumber(getCellValueAsString(row.getCell(4), fileName));
+							    InfoDataDTO.setEligibleForEsi("Y");
+							list.add(InfoDataDTO);
 						}else {
 							if(row.getCell(0) != null  && !"".equalsIgnoreCase(row.getCell(0).toString()))
-								bankDataDTO.setAssociateId(getCellValueAsString(row.getCell(0), fileName));	
+								InfoDataDTO.setUserId(getCellValueAsString(row.getCell(0), fileName));
 							if(row.getCell(1) != null  && !"".equalsIgnoreCase(row.getCell(1).toString()))
-								bankDataDTO.setEmailId(getCellValueAsString(row.getCell(1), fileName));
+								InfoDataDTO.setEmail(getCellValueAsString(row.getCell(1), fileName));
 							if(row.getCell(2) != null  && !"".equalsIgnoreCase(row.getCell(2).toString()))
-								bankDataDTO.setAccountType(getCellValueAsString(row.getCell(2), fileName));																	
+								InfoDataDTO.setUanNumber(getCellValueAsString(row.getCell(2), fileName));																	
 							if(row.getCell(3) != null  && !"".equalsIgnoreCase(row.getCell(3).toString()))
-								bankDataDTO.setBankName(getCellValueAsString(row.getCell(3), fileName));
+								InfoDataDTO.setPfNumber(getCellValueAsString(row.getCell(3), fileName));
 							if(row.getCell(4) != null  && !"".equalsIgnoreCase(row.getCell(4).toString()))
-								bankDataDTO.setAccountNumber(getCellValueAsString(row.getCell(4), fileName));
-							if(row.getCell(5) != null  && !"".equalsIgnoreCase(row.getCell(5).toString()))
-								bankDataDTO.setRoutingNumber(getCellValueAsString(row.getCell(5), fileName));
-							errorlist.add(bankDataDTO);
+								InfoDataDTO.setEsinumber(getCellValueAsString(row.getCell(4), fileName));
+							errorlist.add(InfoDataDTO);
 						}
 						
 					}
@@ -125,22 +126,10 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 				}
 			}				
 			
-			/*
-			 * Iterator itr=map.entrySet().iterator(); while(itr.hasNext()) { Map.Entry
-			 * entry=(Map.Entry)itr.next(); List<AssociateBankDataDTO> s =
-			 * (List<AssociateBankDataDTO>) entry.getValue(); for(AssociateBankDataDTO
-			 * abdList : s) {
-			 * if(abdList.getEmailId().equalsIgnoreCase(entry.getKey().toString())){
-			 * System.out.println("True"); } else { System.out.println("False"); } } }
-			 */
-			
 			insertedCount =  associatePfEsiDao.saveAssociateInformation(orgLocation.getId(), list, canMap);
-			associateBankErrorData.setErrorData(errorlist);
+			associateBankErrorData.setPfErrorData(errorlist);
 			associateBankErrorData.setInsertedCount(insertedCount);
 			fis.close();
-//			long endTime   = System.nanoTime();
-//			long totalTime = endTime - startTime;
-//			System.out.println(totalTime);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (EncryptedDocumentException e) {
@@ -151,62 +140,53 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 		return associateBankErrorData;
 	}
 	
-	/**
-	 * Validate Excel Data
-	 * @param row
-	 * @param fileName
-	 * @param bankDataDTO 
-	 * @param map 
-	 * @param pfeMap 
-	 * @return boolean
+	/*
+	 * 
 	 */
-	private boolean validateAssociateBankExeclData(Row row, String fileName, AssociateBankDataDTO bankDataDTO, Map<String, Long> map, Map<String, Candidate> pfeMap)
-	{
-		if(map.get(getCellValueAsString(row.getCell(1), fileName)) != null) {
+	private boolean validateAssociateBankExeclData(Row row, String fileName, AssociatePfEsiDetailsDTO InfoDataDTO,
+			Map<String, Long> canMap, Map<Long, String> pfeMap) {
+		if(canMap.get(getCellValueAsString(row.getCell(1), fileName)) != null) {
 			if (row.getCell(1) == null || "".equalsIgnoreCase(row.getCell(1).toString())) {
-				bankDataDTO.setReason("Email Mandatory");
+				InfoDataDTO.setReason("Email Mandatory");
 				return false;
-			}else if(row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString()) && !validateEmail(getCellValueAsString(row.getCell(1), fileName))){
-				bankDataDTO.setReason("Invalid Email");
+			}else if(row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString()) 
+					&& !validateEmail(getCellValueAsString(row.getCell(1), fileName))){
+				InfoDataDTO.setReason("Invalid Email");
 				return false;
 			}else if(row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
-				if("Direct Deposit".equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName))) {
-					if (row.getCell(4) == null || "".equalsIgnoreCase(row.getCell(4).toString())) {
-						bankDataDTO.setReason("Bank Account Mandatory");
+			         if (row.getCell(2) == null || "".equalsIgnoreCase(row.getCell(2).toString())) {
+			        	 InfoDataDTO.setReason("Uan number Mandatory");
 						return false;
-					}else if(row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString()) && !validateAccount(getCellValueAsString(row.getCell(4), fileName))){
-						bankDataDTO.setReason("Invalid Bank Account");
+					}else if(row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString()) && !validateUan(getCellValueAsString(row.getCell(2), fileName))){
+						InfoDataDTO.setReason("Invalid Uan Number");
 						return false;
-					}else if (row.getCell(5) == null || "".equalsIgnoreCase(row.getCell(5).toString())) {
-						bankDataDTO.setReason("Routing Number Mandatory");
+					}else if (row.getCell(3) == null || "".equalsIgnoreCase(row.getCell(3).toString())) {
+						InfoDataDTO.setReason("Pf Number Mandatory");
 						return false;
-					}else if(row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString()) && !validateRouting(getCellValueAsString(row.getCell(5), fileName))){
-						bankDataDTO.setReason("Invalid Routing Number");
+					}else if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString()) && !validatePf(getCellValueAsString(row.getCell(3), fileName))){
+						InfoDataDTO.setReason("Invalid Pf Number");
 						return false;
-					}
+					}else if(row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString()) && !validateEsi(getCellValueAsString(row.getCell(4), fileName))){
+						InfoDataDTO.setReason("Invalid Esi Number");
+						return false;
 				}
 			}
 			
 			if(pfeMap != null ) {
-				Long candidateId = map.get(getCellValueAsString(row.getCell(1),fileName));
-				if(pfeMap.get(candidateId.toString()) != null) {
-					List<AssociateBankDataDTO> list = pfeMap.get(candidateId.toString());
-					for(AssociateBankDataDTO b : list) {
-						if(row.getCell(4) != null && b.getAccountNumber() != null) {
-							if(getCellValueAsString(row.getCell(4), fileName).equalsIgnoreCase(b.getAccountNumber())) {
-								bankDataDTO.setReason("account already existed with this email");
-								return false;
-							}
-						}
+				Long candidateId = canMap.get(getCellValueAsString(row.getCell(1),fileName));
+				if(pfeMap.get(candidateId) != null) {
+					String uanNum = pfeMap.get(candidateId);
+					if(getCellValueAsString(row.getCell(2), fileName).equalsIgnoreCase(uanNum)){
+						InfoDataDTO.setReason("account already existed with this email");
+						return false;
 					}
 				}
-				
 			}
-			
-		}else {
-			bankDataDTO.setReason("candidate does't existed with given email");
+		}else
+		{
+			InfoDataDTO.setReason("candidate does't existed with given email");	
+			return false;
 		}
-		
 		return true;
 	}
 
@@ -229,9 +209,9 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 		 * @param accnum
 		 * @return boolean
 		 */
-		private boolean validateAccount(String accNum){
-			String acNo = accNum.trim();
-			Pattern pattern = Pattern.compile("[0-9]{10,12}");
+		private boolean validateUan(String uan){
+			String acNo = uan.trim();
+			Pattern pattern = Pattern.compile("[0-9]{12}");
 			Matcher matcher = pattern.matcher(acNo);
 			return matcher.matches();
     	}
@@ -242,9 +222,23 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 		 * @param routingNum
 		 * @return boolean
 		 */
-		private boolean validateRouting(String routingNum){
-			String rutNo = routingNum.trim();
-			Pattern pattern = Pattern.compile("[0-9]{9,9}");
+		private boolean validatePf(String pfNum){
+			String rutNo = pfNum.trim();
+			Pattern pattern = Pattern.compile("[0-9]{15}");
+			Matcher matcher = pattern.matcher(rutNo);
+			return matcher.matches();
+    	}
+		
+		
+		//validateRouting
+		/**
+		 * validate routing Number
+		 * @param routingNum
+		 * @return boolean
+		 */
+		private boolean validateEsi(String esiNum){
+			String rutNo = esiNum.trim();
+			Pattern pattern = Pattern.compile("[0-9]{10,15}");
 			Matcher matcher = pattern.matcher(rutNo);
 			return matcher.matches();
     	}
