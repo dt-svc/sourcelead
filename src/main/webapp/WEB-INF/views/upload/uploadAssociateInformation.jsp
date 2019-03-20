@@ -40,12 +40,13 @@ var uploadflag= true;
 <section class="content-wraper">
 	<section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Import Associates</h2>
+        <h2>Import Associates Information</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Associates List</a> &raquo; Import Associates </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Associates List</a> &raquo; Import Associates Information </div>
     </section>
 	<div id="loading"></div>
 	<div class="content-area clearfix" id="dataFileImportDiv">
+	 <div class="success_pop" id="msgDiv" style="display: none;"></div>
 		<form:form id="upload_asso_info_form" name="upload_asso_info_form" method="post" enctype="multipart/form-data">
 			<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
 			<div class="row minHyewtriuwe rwrghek	fghjqwehjgfwej tkjreight">
@@ -126,10 +127,12 @@ var uploadflag= true;
 		</form:form>
 	</div>
 	<div class="require_wrap_table datatable_filter">
+	<!-- <h6 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Failed Records</h6> -->
 		<div id="errorDataDIV"></div>
         </div>
-	<!-- <div id="dataFieldsDiv" style="display: none"></div> -->
- <div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop" id="recentHistoryDiv">
+        
+        
+    <div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop" id="recentHistoryDiv">
 	<h5 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Recent Uploads History</h5>
 	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table>
 	    	<input type="hidden"  id="uploadedPercentage" value="0">
@@ -186,7 +189,8 @@ function importAssociateBankDetail(){
  		    	    if(json.insertedCount != null && json.insertedCount != '')
  		    	    $("#msgDiv").removeAttr("style");
  		 			$("#msgDiv").css({ display: "block" });
- 		 			$("#msgDiv").html(json.insertedCount+ " Associates are updated ..!");
+ 		 			$("#msgDiv").html(json.insertedCount+ " Associates are updated");
+ 		 			msgFadein();
  		 			if(json.pfErrorData != null && json.pfErrorData.length >0){
  		 				showFailedExcelData(json);
  		 				importassociteSel(json);
@@ -268,6 +272,12 @@ function importassociteSel(json){
 			$("#recentHistoryDiv").hide();
 		}
 </script>
+<script>
+	function msgFadein() {
+		$("#msgDiv").fadeIn(200);
+        $('#msgDiv').delay(2000).fadeOut('slow');
+	}
+    </script> 
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->

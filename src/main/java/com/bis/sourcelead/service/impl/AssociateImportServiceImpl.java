@@ -185,6 +185,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 		}else
 		{
 			InfoDataDTO.setReason("candidate does't existed with given email");	
+			return false;
 		}
 		return true;
 	}
