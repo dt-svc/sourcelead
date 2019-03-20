@@ -17,4 +17,8 @@ public interface PerformanceCompetenciesService {
 	ResponseList<PerformanceCompetenciesDTO> getPerformanceCompetenciesList(PerformanceCompetenciesDTO performanceCompetenciesDTO,String dateFormat,Long orgLocationId) throws Exception;
 	
 	PerformanceCompetenciesDTO getPerformanceCompetenciesDTOById(Long id) throws Exception;
+	
+	PerformanceCompetencies getPerformanceCompetenciesById(Long id) throws Exception;
+	
+	boolean isCompetenceNameExisted(Long orgLocationId, String competenceName) throws Exception;
 }

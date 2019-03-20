@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto.performance;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,8 @@ public class PerformanceCompetenciesDTO implements Serializable{
 	    private static final long serialVersionUID = 1L;
 	    
 	    private Long competenceId;
+	    
+	    private BigInteger id;
 	 
 	    @Required(desc="name")
 		private String name;
@@ -121,5 +124,13 @@ public class PerformanceCompetenciesDTO implements Serializable{
 
 		public void setCreatedDate(String createdDate) {
 			this.createdDate = createdDate;
+		}
+
+		public BigInteger getId() {
+			return id;
+		}
+
+		public void setId(BigInteger id) {
+			this.id = id;
 		}
 }

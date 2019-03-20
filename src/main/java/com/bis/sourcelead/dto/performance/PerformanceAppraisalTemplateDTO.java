@@ -52,7 +52,7 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	@Required(desc="appraisalCategories")
 	private String appraisalCategories;
 	
-	@Required(desc="jsonTemplateString")
+	@Required(desc="jsonCategoriesString")
 	private String jsonCategoriesString ;
 	
 	private List<DepartmentDTO> departmentList;

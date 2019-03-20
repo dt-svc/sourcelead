@@ -80,8 +80,17 @@ public class PerformanceCompetenciesServiceImpl implements PerformanceCompetenci
 		competenciesDTO.setName(compentencies.getCompetenciesName());
 		competenciesDTO.setDescription(compentencies.getDescription());
 		return competenciesDTO;
-		
-				
+	}
+
+	@Override
+	public PerformanceCompetencies getPerformanceCompetenciesById(Long id) throws Exception {
+		PerformanceCompetencies compentencies =  performanceCompetenciesDao.getPerformanceCompetenciesById(id);
+		return compentencies;
+	}
+
+	@Override
+	public boolean isCompetenceNameExisted(Long orgLocationId, String competenceName) throws Exception {
+		return performanceCompetenciesDao.isCompetenceNameExisted(orgLocationId, competenceName);
 	}
 
 }

@@ -81,7 +81,8 @@ public class PerformanceCompetenciesDaoImpl implements PerformanceCompetenciesDa
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = null;
 		query = "SELECT competencies.UUID AS uuid, "
-				+ " competencies.COMPETENCIES_NAME AS name "
+				+ " competencies.ID AS id, "
+				+ " competencies.COMPETENCIES_NAME AS name, "
 				+ " competencies.DESCRIPTION AS description "
 				+ " FROM PERFORMANCE_COMPETENCIES competencies WHERE competencies.ORG_LOCATION_ID = :orgLocationId AND competencies.STATUS = '1' ";
 		Query queryObj = session.createSQLQuery(query);
@@ -203,6 +204,21 @@ public class PerformanceCompetenciesDaoImpl implements PerformanceCompetenciesDa
 			return performanceCompetencies.get(0);
 		} else {
 			return null;
+		}
+	}
+
+	@Override
+	public boolean isCompetenceNameExisted(Long orgLocationId, String competenceName) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceCompetencies> performanceCompetencies = new ArrayList<PerformanceCompetencies>();
+		logger.debug("getPerformanceCompetenciesDTOById  start");
+		performanceCompetencies = session.createQuery("from PerformanceCompetencies competencies where competencies.orgLocationId.id = :orgLocationId and "
+				+ " competencies.competenciesName = :competenceName and competencies.status = '1' " ).setLong("orgLocationId", orgLocationId).setString("competenceName", competenceName).list();
+		logger.debug("getPerformanceCompetenciesDTOById  end");
+		if (performanceCompetencies.size() > 0) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 
