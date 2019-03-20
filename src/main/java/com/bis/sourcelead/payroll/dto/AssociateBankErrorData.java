@@ -7,6 +7,8 @@ public class AssociateBankErrorData {
 	private List<AssociateBankDataDTO> errorData;
 	
 	private int insertedCount;
+	
+	private List<AssociatePfEsiDetailsDTO> pfErrorData;
 
 	public List<AssociateBankDataDTO> getErrorData()
 	{
@@ -26,6 +28,14 @@ public class AssociateBankErrorData {
 	public void setInsertedCount(int insertedCount)
 	{
 		this.insertedCount = insertedCount;
+	}
+
+	public List<AssociatePfEsiDetailsDTO> getPfErrorData() {
+		return pfErrorData;
+	}
+
+	public void setPfErrorData(List<AssociatePfEsiDetailsDTO> pfErrorData) {
+		this.pfErrorData = pfErrorData;
 	}
 	
 	
