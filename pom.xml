@@ -11,7 +11,7 @@
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
-	<repositories>
+	<!-- <repositories>
 		<repository>
 			<id>elasticsearch-releases</id>
 			<url>https://artifacts.elastic.co/maven</url>
@@ -22,7 +22,7 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-	</repositories>
+	</repositories> -->
 	<dependencies>
 		<!-- Including Common Sourcelead Files -->
 		<dependency>
@@ -111,6 +111,14 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<!-- Exclude poi-2.5.1-final-20040804.jar in war build -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<packagingExcludes>WEB-INF/lib/poi-2.5.1-final-20040804.jar</packagingExcludes>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
