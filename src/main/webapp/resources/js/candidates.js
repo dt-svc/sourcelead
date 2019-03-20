@@ -6913,7 +6913,7 @@ function storeCertificate(candidateId) {
 				$('#city').val('').trigger('chosen:updated');
 				refreshGoogleApiCity('apiLocation');
 			}
-/*			  $(function() {  need to check later 
+			  $(function() {  need to check later 
 				       //Adding Customized Job Title list this method is slead-common.js
 					   tagIt("requirementTitle", 'Press Enter-Key Or Comma(,) Or Tab To Add Title:', 'tagItBykeyForSkills','skills','Job Title');
 				       
@@ -6927,7 +6927,7 @@ function storeCertificate(candidateId) {
 					   tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
 
 					   
-			  });*/
+			  });
 			function submitCandidatesToJob(){
 				
 				
@@ -8694,7 +8694,7 @@ function storeCertificate(candidateId) {
 				    $("#employers").empty();
 				    $("#excludeEmployers").empty();
 				}
-			/*  $(function() {  // need to check later.
+			  $(function() {  // need to check later.
 				       //Adding Customized Any KeyWord Title list this method is slead-common.js
 					   tagIt("anyOfKeyword", 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:', 'tagItBykeyForSkills','skills','Any Keyword');
 				       
@@ -8735,8 +8735,8 @@ function storeCertificate(candidateId) {
 					 
 					   
 					   
-			  });*/
-			    	   /* var config = {
+			  });
+			    	    var config = {
 			    				  '.chosen-select'           : {},
 			    				  '.chosen-select-deselect'  : {allow_single_deselect:true},
 			    				  '.chosen-select-no-single' : {disable_search_threshold:10},
@@ -9002,7 +9002,7 @@ function storeCertificate(candidateId) {
 
 												}
 											}
-										}); */
+										}); 
 					    
 					    
 					      $("#country").on('change', function (e) {
@@ -9021,13 +9021,13 @@ function storeCertificate(candidateId) {
 					    	   minMaxExperience();
 					       });
 					       
-							/* for (var selector in config) {
+							 for (var selector in config) {
 							  $(selector).chosen(config[selector]);
 							}
 							$('.chosen-select').each(function() {
 							var $this = $(this);
 							$this.next().css({'width': '100%'});
-							}) */
+							}) 
 			    //addcandidate-popup script
 			    function addCandidate(){
 			        $('.addcandidate-popup').fadeIn(200);
