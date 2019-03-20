@@ -136,4 +136,12 @@
     </div>
   </section>
   </div>
+  <script>
+//jquery ui sortable
+  $( function() {
+    $( "#sortable" ).sortable();
+  } );
+</script>
+  
+  
 <jsp:include page="../masterFooter.jsp" />
