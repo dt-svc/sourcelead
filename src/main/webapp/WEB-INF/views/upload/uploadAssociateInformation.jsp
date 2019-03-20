@@ -128,8 +128,8 @@ var uploadflag= true;
 	<div class="require_wrap_table datatable_filter">
 		<div id="errorDataDIV"></div>
         </div>
-	<div id="dataFieldsDiv" style="display: none"></div>
-<div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop">
+	<!-- <div id="dataFieldsDiv" style="display: none"></div> -->
+ <div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop" id="recentHistoryDiv">
 	<h5 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Recent Uploads History</h5>
 	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table>
 	    	<input type="hidden"  id="uploadedPercentage" value="0">
@@ -189,6 +189,7 @@ function importAssociateBankDetail(){
  		 			$("#msgDiv").html(json.insertedCount+ " Associates are updated ..!");
  		 			if(json.pfErrorData != null && json.pfErrorData.length >0){
  		 				showFailedExcelData(json);
+ 		 				importassociteSel(json);
  		 			}
  			    	},
 		 		   error: function(e){
@@ -262,8 +263,11 @@ function cancelFileImport(){
 
 	}
   </script>
-
-
+<script>
+function importassociteSel(json){			
+			$("#recentHistoryDiv").hide();
+		}
+</script>
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->

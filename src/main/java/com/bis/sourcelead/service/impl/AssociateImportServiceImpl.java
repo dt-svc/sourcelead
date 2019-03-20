@@ -223,7 +223,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 		 */
 		private boolean validatePf(String pfNum){
 			String rutNo = pfNum.trim();
-			Pattern pattern = Pattern.compile("[0-9]{8}");
+			Pattern pattern = Pattern.compile("[0-9]{15}");
 			Matcher matcher = pattern.matcher(rutNo);
 			return matcher.matches();
     	}
@@ -237,7 +237,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 		 */
 		private boolean validateEsi(String esiNum){
 			String rutNo = esiNum.trim();
-			Pattern pattern = Pattern.compile("[0-9]{5,10}");
+			Pattern pattern = Pattern.compile("[0-9]{10,15}");
 			Matcher matcher = pattern.matcher(rutNo);
 			return matcher.matches();
     	}
