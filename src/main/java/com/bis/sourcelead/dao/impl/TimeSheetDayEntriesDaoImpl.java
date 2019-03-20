@@ -124,7 +124,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 		}
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from TimeSheetDayEntries tde left join fetch tde.projectTask pt  where tde.timesheetSubmissions.Id =:submissionId and tde.timesheetDate between :startDate and :endDate and tde.status = '1' ";
-		List<TimeSheetDayEntries> timesheetEntriesList = session.createQuery(query).setLong("submissionId", submissionId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();	
+		List<TimeSheetDayEntries> timesheetEntriesList = session.createQuery(query).setLong("submissionId", submissionId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setCacheable(true).list();	
 		return timesheetEntriesList;
 	}
 	

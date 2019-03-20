@@ -257,24 +257,50 @@ public class TaskDaoImpl implements TaskDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Tasks> getTasksListByImmigrationIdAndCandidateId(String immigrationId, User user, String taskStatus, String searchVal) {
+	public List<Tasks> getTasksListByImmigrationIdAndCandidateId(String immigrationId, User user, String taskStatus,
+			String searchVal) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = null;
-		if(taskStatus != null && taskStatus.equalsIgnoreCase("N")) {
-			query = "from Tasks tasks where tasks.immigrationId.id = :immigrationId and tasks.taskOwnerId.id = :userId ";
-		}else {
-			query = "from Tasks tasks where tasks.immigrationId.id = :immigrationId and tasks.assignedUserId.id = :userId ";
+		if (taskStatus != null && taskStatus.equalsIgnoreCase("N")) {
+			query = "from Tasks tasks where tasks.immigrationId.id = :immigrationId and tasks.taskOwnerId.id = :userId and tasks.status = 1";
+		} else {
+			query = "from Tasks tasks where tasks.immigrationId.id = :immigrationId and tasks.assignedUserId.id = :userId and tasks.status = 1";
 		}
-		if(StringUtils.isNotBlank(searchVal)) {
+		if (StringUtils.isNotBlank(searchVal)) {
 			query = query + " and (tasks.subject like :searchVal )";
 		}
 		Query hqlQuery = session.createQuery(query).setLong("immigrationId", Long.parseLong(immigrationId))
 				.setLong("userId", user.getId());
-		if(StringUtils.isNotBlank(searchVal)) {
-			hqlQuery.setParameter("searchVal", "%"+searchVal+"%");
+		if (StringUtils.isNotBlank(searchVal)) {
+			hqlQuery.setParameter("searchVal", "%" + searchVal + "%");
 		}
 		List<Tasks> tasks = hqlQuery.list();
 		return tasks;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Tasks getTaskByTaskName(String taskName) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Tasks tasks  where tasks.subject = :taskName and tasks.status = 1";
+			Tasks task = (Tasks) session.createQuery(query).setString("taskName", taskName).uniqueResult();
+			return task;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void updateTaskStatus(Tasks task) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.update(task);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

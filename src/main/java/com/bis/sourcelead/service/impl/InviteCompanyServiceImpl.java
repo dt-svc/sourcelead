@@ -27,11 +27,13 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.InviteCompany;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ScheduleMaintenance;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.InviteCompanyService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -58,6 +60,8 @@ public class InviteCompanyServiceImpl implements InviteCompanyService{
 	 @Autowired
 	 private UserRoleService userRoleService;
 	 
+	 @Autowired
+	 private OrgService orgService;
 
 	@Override
 	public InviteCompany saveInviteCompany(InviteCompany inviteCompany) throws Exception {
@@ -111,7 +115,7 @@ public class InviteCompanyServiceImpl implements InviteCompanyService{
 	}
 
 	private void inviteCompanyEmail(User user, InviteCompanyDTO inviteCompanyDTO, OrgLocations orgLocations) throws Exception {
-//		UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		  Org org  = orgService.findOrgByID(orgLocations.getOrgId());
 		 StringBuilder sb = new StringBuilder();
 		 EmailMessage emailMessage = new EmailMessage();
 		 StringBuilder builder=new StringBuilder();
@@ -136,12 +140,12 @@ public class InviteCompanyServiceImpl implements InviteCompanyService{
 		 globalVarsMap.put("LoginUser Email", user.getEmail());
 		 globalVarsMap.put("Name",inviteCompanyDTO.getName());
 		 globalVarsMap.put("LoginUser",emailMessage.getFromName());
-		 globalVarsMap.put("LoginOrg",orgLocations.getOrg().getOrgName());
+		 globalVarsMap.put("LoginOrg",org.getOrgName());
 		 StringBuilder  inviteComapnyServiceDiv  = buildInviteCompanyServices();
 		 globalVarsMap.put("ServicesList", inviteComapnyServiceDiv.toString());
 		
 		 //calling the sendEmail method of emailScenerioUtil
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.INVITE_COMPANY,new ArrayList<EmailAttachment>());
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,org,orgLocations,Constants.INVITE_COMPANY,new ArrayList<EmailAttachment>());
 		
 	}
  

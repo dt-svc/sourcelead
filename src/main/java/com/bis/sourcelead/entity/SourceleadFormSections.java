@@ -25,6 +25,7 @@ import org.hibernate.annotations.NotFoundAction;
  */
 @Entity
 @Table(name = "SOURCELEAD_FORM_SECTIONS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadFormSections")
 public class SourceleadFormSections implements Serializable{
 	private static final long serialVersionUID = 1L;
 	

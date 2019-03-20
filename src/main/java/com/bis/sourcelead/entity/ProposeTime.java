@@ -21,6 +21,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "INTERVIEW_PROPOSE_TIME")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "proposeTime")
 public class ProposeTime implements Serializable{
 	
 private static final long serialVersionUID = 1L;
