@@ -89,7 +89,8 @@ public class UserProfileRestController {
 		if(userId > 0){
 			user = userService.getUserById(userId);		
 		} else {
-			user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			user = userService.getUserById(userId);
 		}
 		
 		if(user == null){
@@ -98,6 +99,14 @@ public class UserProfileRestController {
 		
 		if(user != null){
 			user = userService.saveUserProfileImage(addUserProfileDTO, user);
+			if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+				List<UserRole> userRolesList = userRoleService.getUsersListByUserId(userId);
+				for(UserRole userRole : userRolesList) {
+					 userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+				}
+			}
+			
+			
 			return "success";
 		}
 		else
@@ -121,16 +130,15 @@ public class UserProfileRestController {
 	@RequestMapping(value =  {"/saveUserProfile","/rest/saveUserProfile"}, method = RequestMethod.POST)
 	public Response<AddUserProfileDTO> saveUserProfile(AddUserProfileDTO addUserProfileDTO, HttpServletRequest request)
 			throws Exception {
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user = userService.getUserById(userId);
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		
 		Response<AddUserProfileDTO> response=new Response<>();
 		addUserProfileDTO.setStaticPath(staticPath);
-		if(user == null){
-			user = userService.getUserById(addUserProfileDTO.getUserId());
-		}
-		if(orgLocations == null){
-			 orgLocations = orgLocationService.getOrgLocations(Long.parseLong(addUserProfileDTO.getOrgLocationId()));
-		}
+	
 		UserRole userRoleElk = null;
 		AddUserProfileDTO profileDTO = null;
 		
@@ -283,8 +291,17 @@ public class UserProfileRestController {
 		user.setFileUrl(null);
 		user.setFileContentType(null);
 		userService.addUser(user);
-		SourceLeadSessionManager.setSessionAttribute(request, "user", user);
-
+		
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			List<UserRole> userRolesList = userRoleService.getUsersListByUserId(user.getId());
+			if(userRolesList != null && !userRolesList.isEmpty()) {
+				 for(UserRole userRole : userRolesList) {
+					 userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+				 }
+			}
+			
+		}
+		
 		return "success";
 
 	}
