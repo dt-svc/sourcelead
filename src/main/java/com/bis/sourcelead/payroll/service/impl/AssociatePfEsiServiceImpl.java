@@ -2,6 +2,7 @@ package com.bis.sourcelead.payroll.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -162,6 +163,11 @@ public class AssociatePfEsiServiceImpl implements AssociatePfEsiService{
 			
 		}
 		return efesiDTO;
+	}
+
+	@Override
+	public List<AssociatePfEsiDetails> getAllPfEsiDetailsByOrgLocationid(Long id) throws Exception {
+		return associatePfEsiDao.getAllPfEsiDetailsByOrgLocationid(id);
 	}
 
 }
