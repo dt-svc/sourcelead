@@ -140,9 +140,12 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 	    	 if (data.response === "AWKWARD") {
                     location.href = "/errorPage";
 	    	 } else if (data.response === "SUCCESS") {
-	    		 if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
+	    		 if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard' && from != null && from != '' && from != 'undefined' && from != 'approvalSummary'){
 	        		 var currentPageNumber =  $("#currentPageNumber").val();
 	        		 getStatusListData(""+currentPageNumber+"","");
+	        	 } else if(from != null && from != '' && from != 'undefined' && from == 'approvalSummary'){
+	        		 var currentTimeFrequency = startDate+"To"+endDate;
+	        		 timesheetApprovalTableRowByProjectMemberId(currentTimeFrequency,projectMemberId,tableFor);
 	        	 }
 	        	 else{
 	        		 $("#row"+projectMemberId).empty();

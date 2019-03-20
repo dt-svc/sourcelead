@@ -114,79 +114,63 @@ public class PaymentAccountDaoImpl implements PaymentAccountDao{
 
 	@Override
 	@Transactional
-	public int saveBankingDetailInPaymentAccount(Long orgLocationId, List<IndAssociatePaymentAccountDTO> list, Map<String, Long> map, List<PaymentAccount> paymentListsss) throws Exception {
+	public int saveBankingDetailInPaymentAccount(Long orgLocationId, List<IndAssociatePaymentAccountDTO> list, Map<String, Long> map) throws Exception {
 		
+		List<Integer> listCount = new ArrayList<>();
+		int totalCount = 0;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			session.doWork(new Work() {
+			session.doWork(new Work()
+			{
 				@Override
 				public void execute(java.sql.Connection connection) throws SQLException {
 					boolean initialAutocommitSetting = connection.getAutoCommit();
 					connection.setAutoCommit(false);
-					CallableStatement stmt = connection.prepareCall("{call associateBankingDetails(?,?,?,?,?,?,?,?,?,?)}");
-					
-					//List<String> account = new ArrayList<>();
+					CallableStatement stmt = connection.prepareCall("{call insertAssociateBankingDetails(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 					for (IndAssociatePaymentAccountDTO paymentlist : list) {
 						Long  candidateId = map.get(paymentlist.getEmail());
-						//account.add( map2.get(paymentlist.getEmail()));
-						if(candidateId !=null) {
-							stmt.setLong(1, candidateId);
-							stmt.setString(2, paymentlist.getEmail());
-							stmt.setString(3, paymentlist.getAccountType());
-							stmt.setString(4, paymentlist.getBankName());
-						/*	for(String str : account)
-							{
-								if(paymentlist.getAccountNumber() != str) {
-									stmt.setString(5, paymentlist.getAccountNumber());
-								}
-								else {
-									System.out.println("Duplicate record occured");
-			                         break;
-								}
-							}*/
-							int a=0;
-							for( PaymentAccount paymentacc : paymentListsss)
-							{
-								if(paymentacc.getAccountNumber() != paymentlist.getAccountNumber())
-								{}
-								else {
-									a=a+1;
-									break;}
-									
+						if(candidateId !=null){
+						//	if(status){
+									stmt.setLong(1, candidateId);
+									stmt.setString(2,   paymentlist.getEmail());
+									stmt.setString(3,   paymentlist.getAccountType());
+									stmt.setString(4,   paymentlist.getBankName());
+									stmt.setString(5,   paymentlist.getAccountNumber());
+									stmt.setString(6,   paymentlist.getBsrNumber());
+									stmt.setString(7,   paymentlist.getMicrCode());
+									stmt.setString(8,   paymentlist.getRoutingNumber());
+									stmt.setString(9,   paymentlist.getFirstName());
+									stmt.setString(10,  paymentlist.getLastName());	
+									stmt.setBoolean(11, false);	
+									stmt.setBoolean(12, false);
+									stmt.setBoolean(13, false);
+									stmt.setString(14,  orgLocationId.toString());	
+									stmt.addBatch();
 							}
-							if(a !=0)
-							{
-							stmt.setString(5, paymentlist.getAccountNumber());
-							stmt.setString(6, paymentlist.getBsrNumber());
-							stmt.setString(7, paymentlist.getMicrCode());
-							stmt.setString(8, paymentlist.getRoutingNumber());
-							stmt.setString(9, paymentlist.getFirstName());
-							stmt.setString(10, paymentlist.getLastName());					
-							stmt.addBatch();
-							}
-						}
-						
-					
 					}
-					
 					int[] updateCount = stmt.executeBatch();
+					listCount.add(updateCount.length);
 					connection.commit();
 					connection.setAutoCommit(initialAutocommitSetting);
 				}
-			});
-			return 1;
+			});			
+			if(listCount.size() >0) {
+				totalCount = 0;
+			}
+			return totalCount;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return 0;
-		}
-		
+			return totalCount;
+		}		
 	}
-
+     
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public List<PaymentAccount> getPaymentAccountDetailsByOrglocationId(Long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from  PaymentAccount payment where payment.orgLocation =:id ORDER BY payment.id DESC";
-		return session.createQuery(query).setLong("orgLocationId", id).list();
+		String query = "from  PaymentAccount payment where payment.orgLocation.id =:id";
+		List<PaymentAccount> paymentList = session.createQuery(query).setLong("id", id).list();
+		return paymentList;
 	}
 
 }

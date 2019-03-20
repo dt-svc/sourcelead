@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1090,39 +1091,58 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 
-		 if(null!= requirement.getJobTitle() && !"".equalsIgnoreCase(requirement.getJobTitle())){
-			 globalVarsMap.put("requirementName", requirement.getJobTitle());
-			 }else{
-				 globalVarsMap.put("requirementName","--");
-			 }
-		 if(null!= orgLocations.getOrgLocationName() && !"".equalsIgnoreCase(orgLocations.getOrgLocationName())){
-			 globalVarsMap.put("organizationName", orgLocations.getOrgLocationName());
-			 }else{
-				 globalVarsMap.put("organizationName","--");
-			 }
-		 if(null != requirementSubmissionTemplateFields.getFirstName() && null!= requirementSubmissionTemplateFields.getLastName() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
-			 StringBuilder candidateBuild = new StringBuilder();
-			 globalVarsMap.put("applicantName", candidateBuild.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
-			 }else{
-				 globalVarsMap.put("applicantName",requirementSubmissionTemplateFields.getFirstName());
-			 }
-		 if((null!= requirement.getMinExp() && !"".equalsIgnoreCase(requirement.getMinExp())) && (null!= requirement.getMaxExp() && !"".equalsIgnoreCase(requirement.getMaxExp()))){
-			 StringBuilder expBuild = new StringBuilder();
-			 globalVarsMap.put("experience",expBuild.append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).toString()); 
-		 	 }else if(requirement.getMinExp()!= null && !"".equalsIgnoreCase(requirement.getMinExp())){
-			 globalVarsMap.put("experience", requirement.getMinExp());
-		 	 }else{
-			 globalVarsMap.put("experience","--");
-			 }
-		 if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState()) && requirement.getCity()!= null && !"".equalsIgnoreCase(requirement.getCity())){
-			 StringBuilder locBuildeer = new StringBuilder();
-			 globalVarsMap.put("location", locBuildeer.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
-		 	}else if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState())){
-		 		StringBuilder locBuildeer = new StringBuilder();
-			 	globalVarsMap.put("location", locBuildeer.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
-		 	}else{
-			globalVarsMap.put("location",requirement.getCountry());
+		if (null != requirement.getJobTitle() && !"".equalsIgnoreCase(requirement.getJobTitle())) {
+			globalVarsMap.put("requirementName", requirement.getJobTitle());
+		} else {
+			globalVarsMap.put("requirementName", "--");
+		}
+		if (null != orgLocations.getOrgLocationName() && !"".equalsIgnoreCase(orgLocations.getOrgLocationName())) {
+			globalVarsMap.put("organizationName", orgLocations.getOrgLocationName());
+		} else {
+			globalVarsMap.put("organizationName", "--");
+		}
+		if (null != requirementSubmissionTemplateFields.getFirstName()
+				&& null != requirementSubmissionTemplateFields.getLastName()
+				&& !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName())
+				&& !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())) {
+			StringBuilder candidateBuild = new StringBuilder();
+			globalVarsMap.put("applicantName", candidateBuild.append(requirementSubmissionTemplateFields.getFirstName())
+					.append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
+		} else {
+			globalVarsMap.put("applicantName", requirementSubmissionTemplateFields.getFirstName());
+		}
+		if ((null != requirement.getMinExp() && !"".equalsIgnoreCase(requirement.getMinExp()))
+				&& (null != requirement.getMaxExp() && !"".equalsIgnoreCase(requirement.getMaxExp()))) {
+			StringBuilder expBuild = new StringBuilder();
+			globalVarsMap.put("experience",
+					expBuild.append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).toString());
+		} else if (requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp())) {
+			globalVarsMap.put("experience", requirement.getMinExp());
+		} else {
+			globalVarsMap.put("experience", "--");
+		}
+		 
+		List<RequirementLocations> locationsList;
+		String reqLocation = "";
+		StringBuilder requirementBuilder = new StringBuilder();
+		try {
+			locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+			if (locationsList != null && !locationsList.isEmpty()) {
+				for (RequirementLocations locationsJob : locationsList) {
+					if (locationsJob.getLocation() != null && locationsJob.getLocation() != null) {
+						reqLocation = requirementBuilder.append(locationsJob.getLocation()).toString();
+					} else {
+						reqLocation = "--";
+					}
+				}
 			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		 globalVarsMap.put("location",reqLocation);
+		 
 		 if(null != requirementSubmissionTemplateFields.getExpectedCTC() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedCTC()) && null != requirementSubmissionTemplateFields.getExpectedRatePer() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedRatePer())){
 			 StringBuilder ratebuild = new StringBuilder();
 			 globalVarsMap.put("requirementRate", ratebuild.append(requirementSubmissionTemplateFields.getExpectedCTC()).append(" / ").append(requirementSubmissionTemplateFields.getExpectedRatePer()).toString());
@@ -2558,8 +2578,31 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			List<String> submissionIsd = Arrays.asList(submissionId);
 			for(String subIds :submissionIsd){
 			 reqSub = getRequirementSubmissionById(Long.parseLong(subIds));
+			 
+			 /** resume tracking code*/
+			 
+			 CandidateResumes resumes = candidateResumesDao.getCandidateResumeByCandidateId(reqSub.getCandidate().getId());
+			 
+			 if (resumes != null ) {
+				 String fileURl = resumes.getFileURL().replace("/slead-static", staticPath);
+				 File resumeFile = new File(fileURl);
+				 if(resumeFile.exists()) {
+					 byte[] bytes =  Files.readAllBytes(resumeFile.toPath());
+					 EmailAttachment emailAttachment = new EmailAttachment();
+					emailAttachment.setName(resumes.getFileName());
+					emailAttachment.setDocFile(bytes);
+					emailAttachment.setType(resumes.getFileContentType());
+					attachmentList.add(emailAttachment);
+				 }
+			 }
+			 
 			 //URL for page redirection
-			String redirectURL = "requirementSummary-params-type=all-and-requirementUUID="+reqSub.getRequirement().getParentRequirement().getRequirementUUID()+"-and-submissionId="+reqSub.getId();
+			 String redirectURL = null;
+			 if(reqSub.getRequirement().getParentRequirement() !=null) {
+			 redirectURL = "requirementSummary-params-type=all-and-requirementUUID="+reqSub.getRequirement().getParentRequirement().getRequirementUUID()+"-and-submissionId="+reqSub.getId();
+			 }else {
+			 redirectURL = "requirementSummary-params-type=all-and-requirementUUID="+reqSub.getRequirement().getRequirementUUID()+"-and-submissionId="+reqSub.getId();
+			 }
 			//Long redirectOrgLocationId = loginOrgLocation.getId();
 			
 			StringBuilder linkBuild = new StringBuilder();

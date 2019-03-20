@@ -114,9 +114,13 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public boolean saveTicketType(TicketTypeDTO ticketTypeDTO, long userId, OrgLocations loginOrgLocation) {
+	public long saveTicketType(TicketTypeDTO ticketTypeDTO, long userId, OrgLocations loginOrgLocation) {
 		try {
 			TicketType ticketType = null;
+			long savedTicketTypeId = ticketManagementDao.getTicketTypeIdByNameAndOrgLocationId(ticketTypeDTO.getName(), loginOrgLocation.getId());
+			if(savedTicketTypeId > 0 && savedTicketTypeId != ticketTypeDTO.getId()) {
+				return -1;
+			}
 			if (ticketTypeDTO.getId() > 0) {
 				ticketType = ticketManagementDao.getTicketTypeById(ticketTypeDTO.getId());
 				ticketType.setUpdatedBy(userId);
@@ -135,7 +139,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return 0;
 	}
 
 	@Override
@@ -167,11 +171,10 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketCategoryDTO> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status) {
+	public List<TicketCategoryDTO> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
 		List<TicketCategoryDTO> ticketCategoryDTOList = new LinkedList<>();
 		try {
-			List<TicketCategory> ticketCategoryList = ticketManagementDao
-					.getTicketCategoryListByOrgLocationId(orgLocationId, status);
+			List<TicketCategory> ticketCategoryList = ticketManagementDao.getTicketCategoryListByOrgLocationId(orgLocationId, status, searchValue);
 			if (ticketCategoryList != null && !ticketCategoryList.isEmpty()) {
 				for (TicketCategory ticketCategory : ticketCategoryList) {
 					TicketCategoryDTO ticketCategoryDTO = new TicketCategoryDTO();
@@ -200,9 +203,13 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		return ticketCategoryDTOList;
 	}
 
-	public Boolean saveTicketCategory(TicketCategoryDTO ticketCategoryDTO, User user, long userId, OrgLocations loginOrgLocation) {
+	public long saveTicketCategory(TicketCategoryDTO ticketCategoryDTO, User user, long userId, OrgLocations loginOrgLocation) {
 		try {
 			TicketCategory ticketCategory = null;
+			long savedTicketCategoryId = ticketManagementDao.getTicketCategoryIdByNameAndOrgLocationId(ticketCategoryDTO.getName(), loginOrgLocation.getId());
+			if(savedTicketCategoryId > 0 && savedTicketCategoryId != ticketCategoryDTO.getId()) {
+				return -1;
+			}
 			if (ticketCategoryDTO.getId() > 0) {
 				ticketCategory = ticketManagementDao.getTicketCategoryById(ticketCategoryDTO.getId());
 				ticketCategory.setUpdatedBy(userId);
@@ -230,7 +237,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 					assignToList.add(assignTo);
 				}
 			}
-			List<Long> deleteAssignToIdList = ticketManagementDao.getTicketAssignToIdList(ticketCategory.getId());
+			List<Long> deleteAssignToIdList = ticketManagementDao.getTicketCategoryAssignToIdList(ticketCategory.getId());
 			List<TicketCategoryAssignTo> categoryAssignToList = new LinkedList<>();
 			if(ticketCategoryDTO.getAssignedTo() != null) {
 				for(String assignUserId : ticketCategoryDTO.getAssignedTo()) {
@@ -252,16 +259,16 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 				}
 			}
 			for(Long assignUserId : deleteAssignToIdList) {
-				TicketAssignTo assignTo = ticketManagementDao.getTicketAssignToByUserIdAndTicket(assignUserId, ticketCategory.getId());
-				ticketManagementDao.deleteTicketAssignTo(assignTo);
+				TicketCategoryAssignTo assignTo = ticketManagementDao.getTicketCategoryAssignToByUserIdAndTicket(assignUserId, ticketCategory.getId());
+				ticketManagementDao.deleteTicketCategoryAssignTo(assignTo);
 			}
-			ticketCategory.setTicketCategoryAssignToList(assignToList);
+			ticketCategory.setTicketCategoryAssignToList(categoryAssignToList);
 			return ticketManagementDao.saveTicketCategory(ticketCategory);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return 0;
 	}
 
 	@Override
@@ -300,10 +307,10 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketPriorityDTO> getTicketPriorityListByOrgLocationId(Long orgLocationId,int status) {
+	public List<TicketPriorityDTO> getTicketPriorityListByOrgLocationId(Long orgLocationId,int status, String searchValue) {
 		List<TicketPriorityDTO> ticketPriorityDTOList = new LinkedList<>();
 		try {
-			List<TicketPriority> ticketPriorityList = ticketManagementDao.getTicketPriorityListByOrgLocationId(orgLocationId,status);
+			List<TicketPriority> ticketPriorityList = ticketManagementDao.getTicketPriorityListByOrgLocationId(orgLocationId, status, searchValue);
 			if (ticketPriorityList != null && !ticketPriorityList.isEmpty()) {
 				for (TicketPriority ticketpriority : ticketPriorityList) {
 					TicketPriorityDTO ticketPriorityDTO = new TicketPriorityDTO();
@@ -331,9 +338,13 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public Boolean saveTicketPriority(TicketPriorityDTO ticketPriorityDTO, long userId, OrgLocations loginOrgLocation) {
+	public long saveTicketPriority(TicketPriorityDTO ticketPriorityDTO, long userId, OrgLocations loginOrgLocation) {
 		try {
 			TicketPriority ticketpriority = null;
+			long savedTicketPriorityId = ticketManagementDao.getTicketPriorityIdByNameAndOrgLocationId(ticketPriorityDTO.getName(), loginOrgLocation.getId());
+			if(savedTicketPriorityId > 0 && savedTicketPriorityId != ticketPriorityDTO.getId()) {
+				return -1;
+			}
 			if (ticketPriorityDTO.getId() > 0) {
 				ticketpriority = ticketManagementDao.getTicketPriorityById(ticketPriorityDTO.getId());
 				ticketpriority.setUpdatedBy(userId);
@@ -349,18 +360,22 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 			ticketpriority.setName(ticketPriorityDTO.getName());
 			ticketpriority.setDescription(ticketPriorityDTO.getDescription());
 			ticketpriority.setColorCode(ticketPriorityDTO.getColorCode());
-			if (ticketPriorityDTO.getFileInfo() != null && !ticketPriorityDTO.getFileInfo().isEmpty()) {
+			if (ticketPriorityDTO.isRefreshImage()) {
+				ticketpriority.setFileName("");
+				ticketpriority.setFileContentType("");
+				ticketpriority.setFileURL("");
+			} else if (ticketPriorityDTO.getFileInfo() != null && !ticketPriorityDTO.getFileInfo().isEmpty()) {
 				FileInfo fileInfo = ticketPriorityDTO.getFileInfo().get(0);
 				ticketpriority.setFileName(fileInfo.getFileName());
 				ticketpriority.setFileContentType(fileInfo.getContentType());
 				ticketpriority.setFileURL(fileInfo.getFileURL());
-				FileUploadUtil.moveFile(ticketPriorityDTO.getStaticPath(), fileInfo, "ticketPriority");
+				FileUploadUtil.moveFile(staticPath, fileInfo, "ticketPriority");
 			}
 			return ticketManagementDao.saveTicketPriority(ticketpriority);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return 0;
 	}
 
 	@Override
@@ -396,10 +411,10 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketStatusDTO> getTicketStatusListByOrgLocationId(Long orgLocationId, int status) {
+	public List<TicketStatusDTO> getTicketStatusListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
 		List<TicketStatusDTO> ticketStatusDTOList = new LinkedList<>();
 		try {
-			List<TicketStatus> ticketStatusList = ticketManagementDao.getTicketStatusListByOrgLocationId(orgLocationId, status);
+			List<TicketStatus> ticketStatusList = ticketManagementDao.getTicketStatusListByOrgLocationId(orgLocationId, status, searchValue);
 			if (ticketStatusList != null && !ticketStatusList.isEmpty()) {
 				for (TicketStatus ticketStatus : ticketStatusList) {
 					TicketStatusDTO ticketStatusDTO = new TicketStatusDTO();
@@ -424,9 +439,13 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public Boolean saveTicketStatus(TicketStatusDTO ticketStatusDTO, long userId, OrgLocations orgLocations) {
+	public long saveTicketStatus(TicketStatusDTO ticketStatusDTO, long userId, OrgLocations orgLocations) {
 		try {
 			TicketStatus ticketStatus = null;
+			long savedTicketStatusId = ticketManagementDao.getTicketStatusIdByNameAndOrgLocationId(ticketStatusDTO.getName(), orgLocations.getId());
+			if(savedTicketStatusId > 0 && savedTicketStatusId != ticketStatusDTO.getId()) {
+				return -1;
+			}
 			if (ticketStatusDTO.getId() > 0) {
 				ticketStatus = ticketManagementDao.getTicketStatusById(ticketStatusDTO.getId());
 				ticketStatus.setUpdatedBy(userId);
@@ -446,7 +465,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return 0;
 	}
 
 	@Override
@@ -586,6 +605,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 					}
 				}
 			}
+			return issaved;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -613,11 +633,11 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId,int status, String dateFormat, String userRole) {
+	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId,int status, String dateFormat, String userRole, String searchValue) {
 		List<TicketDTO> ticketDTOList = new LinkedList<>();
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-			List<Ticket> ticketManagementList = ticketManagementDao.getTicketManagementListByOrgLocationId(orgLocationId,userId,status, userRole);
+			List<Ticket> ticketManagementList = ticketManagementDao.getTicketManagementListByOrgLocationId(orgLocationId,userId,status, userRole, searchValue);
 			if (ticketManagementList != null && !ticketManagementList.isEmpty()) {
 				for (Ticket ticketManagement : ticketManagementList) {
 					TicketDTO ticketDTO = new TicketDTO();

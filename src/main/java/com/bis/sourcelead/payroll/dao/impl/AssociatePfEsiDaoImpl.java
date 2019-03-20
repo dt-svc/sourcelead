@@ -1,6 +1,7 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Session;
@@ -11,8 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.AssociatePfEsiDao;
+import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
+import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
 import com.bis.sourcelead.payroll.entity.AssociatePfEsiDetails;
 
 @Repository
@@ -66,5 +70,25 @@ public class AssociatePfEsiDaoImpl implements AssociatePfEsiDao{
 		}
 		return associatePfEsi;
 	}
-	 
-}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<AssociatePfEsiDetails> getAllPfEsiDetailsByOrgLocationid(Long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from AssociatePfEsiDetails pf  where pf.orgLocationId.id =:id";
+			List<AssociatePfEsiDetails> pfList = session.createQuery(query).setLong("id", id).list();
+			return pfList;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;	
+	      }
+
+	@Override
+	public int saveAssociateInformation(Long id, List<AssociateBankDataDTO> list, Map<String, Long> canMap) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+		
+	} 
