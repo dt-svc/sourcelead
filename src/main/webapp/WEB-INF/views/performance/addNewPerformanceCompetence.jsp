@@ -15,7 +15,7 @@
 	            <div class="clearfix mb" id="competenceNameDiv">
 	                <label class="noPad">Name<span class="text-danger">&nbsp;*</span></label>
 	                <div class="clearfix">
-			                    <input type="text" id="competenceName" name="name" class="form-control" placeholder="Name" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250">
+			                    <input type="text" id="competenceName" name="name" onblur="performanceManagement.validateCompetenceName();" class="form-control" placeholder="Name" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250">
 	                </div>
 	                 
 	            </div>
@@ -36,7 +36,6 @@
 	 </form:form>
 </div>
 
-  
-  
+
   
   

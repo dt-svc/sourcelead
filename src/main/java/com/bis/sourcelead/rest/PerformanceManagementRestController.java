@@ -28,6 +28,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceCompetenciesDTO;
+import com.bis.sourcelead.dto.performance.PerformanceTagCompetenciesDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
@@ -40,6 +41,7 @@ import com.bis.sourcelead.service.performance.PerformanceAppraisalTemplateServic
 import com.bis.sourcelead.service.performance.PerformanceBadgesService;
 import com.bis.sourcelead.service.performance.PerformanceCompetenciesService;
 import com.bis.sourcelead.service.performance.PerformanceFeedbackTemplateService;
+import com.bis.sourcelead.service.performance.PerformanceTagCompetenciesService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -73,6 +75,9 @@ public class PerformanceManagementRestController {
 	
 	@Autowired
 	PerformanceCompetenciesService performanceCompetenciesService;
+	
+	@Autowired
+	PerformanceTagCompetenciesService performanceTagCompetenciesService;
 	
 	
     @RequestMapping(value = "/savePerformanceBudgetDetails", method = RequestMethod.POST)
@@ -305,6 +310,19 @@ public class PerformanceManagementRestController {
 	   return templateDTOList;
    }
    
+   
+   @RequestMapping(value = "/getPerformanceCompetenceListForTagging" , method = RequestMethod.GET)
+   public List<PerformanceCompetenciesDTO> getPerformanceCompetenceListForTagging(HttpServletRequest request) throws Exception {
+	   Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+	   List<PerformanceCompetenciesDTO> competenciesDTOList = null;
+	   try {
+		   competenciesDTOList = performanceCompetenciesService.getPerformanceCompetenciesListByOrgLocationId(orgLocationId);
+	   }catch (Exception e) {
+		     e.printStackTrace();
+		}
+	   return competenciesDTOList;
+   }
+   
    @RequestMapping(value = "/deleteAppraisalCycleTemplateById", method = RequestMethod.POST)
  	public String deleteAppraisalCycleTemplateById(HttpServletRequest request, 
  			@RequestParam(value = "templateId", required = true) Long templateId){
@@ -383,5 +401,30 @@ public class PerformanceManagementRestController {
 			}
 			 return resObj;
 	    }
+	    
+	    
+	    @RequestMapping(value = "/savePerformanceTagCompetencies", method = RequestMethod.POST)
+		public Response<PerformanceTagCompetenciesDTO> savePerformanceTagCompetencies(HttpServletRequest request, 
+				PerformanceTagCompetenciesDTO tagCompetenciesDTO){
+			 Response<PerformanceTagCompetenciesDTO> resObj = new Response<>();
+			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 try {
+				 if(Validator.validate(tagCompetenciesDTO)){
+					 performanceTagCompetenciesService.storePerformanceTagCompetencies(tagCompetenciesDTO, orgLocation.getId(), user.getId());
+				 resObj.setResponse(Result.SUCCESS.name());
+				 resObj.setResponseMessage(Result.SUCCESS.getValue());
+			    }
+				 else {
+					 resObj.setResponse(Result.INVALID_DATA.name());
+					 resObj.setResponseMessage(Result.INVALID_DATA.getValue());
+					
+		    	 }
+			 }catch (Exception e) {
+				 resObj.setResponse(Result.AWKWARD.name());
+				 resObj.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			 return resObj;
+	   }
 
 }

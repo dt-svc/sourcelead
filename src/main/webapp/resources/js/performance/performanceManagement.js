@@ -49,6 +49,36 @@ function PerformanceManagement(){
 	
 	
 	
+	this.validateCompetenceName = function(){
+		var competenceName = document.getElementById("competenceName").value.trim(); 
+		var competenceId = $("#competenceId").val();
+		if(competenceId == 'undefined' || competenceId == null){
+			competenceId = '';
+		}
+		
+		if(competenceName != null && competenceName != '' && competenceName != 'undefined'){
+			$.ajax({
+		    	type: "GET",
+		    	 url: sourceleadUrl+"/validateCompetenceName?competenceName="+competenceName+"&competenceId="+competenceId,
+		        success: function(result) {
+		        	if (result == 'invalid') {
+		        		$("#savePerformanceCompetence").attr("disabled", "disabled");
+		        		$('#competenceNameDiv').find('p.jquery_form_error_message').remove();
+		        		$("input#competenceName").after( "<p class='jquery_form_error_message'>" + competenceName + " is Already Existed</span>");
+						document.getElementById("competenceName").setAttribute( 'record-exist', 'yes');
+						document.getElementById("competenceName").setAttribute( 'record-exist-errorMsg', competenceName +"  already existed");
+		        	}else{
+		        		$('input#competenceName').removeAttr("class record-exist record-exist-errormsg");
+						$('input#competenceName').attr('class','valid form-control');
+						$('#competenceNameDiv').find('p.jquery_form_error_message').remove();
+						
+		        		$("#savePerformanceCompetence").removeAttr("disabled")
+		        	}
+		        }
+			 });
+		}
+	}
+	
 	
 	this.savePerformanceCompetence  = function (){
 		 var validationSettings = {
@@ -215,6 +245,7 @@ function PerformanceManagement(){
  		     success :function(response) {
  		    	    $("#performanceManagementDiv").empty();  
  		    	    $("#performanceManagementDiv").append(response);
+ 		    	    performanceManagement.feedbackCategoriesList();
  				},
  			}); 
    }
@@ -231,6 +262,20 @@ function PerformanceManagement(){
    				},
    			}); 
    }
+   
+   
+   this.tagPerformanceCompetence = function(){
+	   $.ajax({
+ 		  type: "GET",
+ 		    url: sourceleadUrl+"/tagPerformanceCompetence",
+ 		     success :function(response) {
+ 		    	    $("#performanceManagementDiv").empty();  
+ 		    	    $("#performanceManagementDiv").append(response);
+ 		    	    performanceManagement.performanceCompetenciesList();
+ 				},
+ 			}); 
+   }
+   
    
 	
   this.addBadgePopup = function() {
@@ -678,7 +723,6 @@ function PerformanceManagement(){
 	});
   
   
-  
   this.validatePercentage = function(id){
 	  var profilePercentage = $('#percent'+id).val();
 		
@@ -688,7 +732,7 @@ function PerformanceManagement(){
 					$('input#percentageValidation'+id).attr('class','error signin_fild');
 					$("input#percentageValidation"+id).after("<p class='jquery_form_error_message'>Percentage should not in negitive</p>");
 					$('input#percentageValidation'+id).attr('record-exist','yes');
-					$('input#percentageValidation'+id).attr('record-exist-errorMsg','Profile Percentage should not in negitive'); 
+					$('input#percentageValidation'+id).attr('record-exist-errorMsg','Percentage should not in negitive'); 
 			 }else{
 				    $('#percentageDiv'+id).find('p.jquery_form_error_message').remove(); 
 				    $('input#percentageValidation'+id).attr('class','error signin_fild');
@@ -1060,22 +1104,192 @@ function PerformanceManagement(){
  
   }
   
-  this.addNewCompetenceDesignation = function(){
-		var text='<tr>';
-		text += '<td>';
-		text += '<div class=""><input type="text" class="form-control"></div>';
-		text += '</td>';
-		text += '<td>';
-		text += '<div class=""><input type="text" class="form-control"></div>';
-		text += '</td>';
-		text += '<td>';
-		text += '<div class="width50px pull-left">';
-		text += '<i class="fa fa-times btn btn-danger pull-left"></i>';
-		text += '</div>';
-		text += '</td>';
-		text += '</tr>';
-		$("#addCompetenceDesignationDiv").append(text);
-		return;
+  
+  
+$(document).on('change', '#performanceCompetence', function(evt, params) {
+		if (params.selected != undefined) {
+			performanceManagement.updateSelectedCompetenceRows(params.selected, false);
+		}
+		if (params.deselected != undefined) {
+			performanceManagement.updateSelectedCompetenceRows(params.deselected,true);
+		}
+	});
+
+this.updateSelectedCompetenceRows = function(id,removedFlag){
+	  if(id===0 && removedFlag){
+			$("#selectedCompetenceDiv").empty();
+		} else {	
+			$("#performanceCompetence option").each(function () {
+				if($(this).val() === id) {
+					if(removedFlag) {
+						$("#selectedCompetenceDiv").find("div[data-template_id=" + $(this).val() + "]").remove();
+						return;
+					} else {
+
+						var text="<div class='multiTemplates positionRelative' id="+$(this).val()+" data-template_id=" + $(this).val() + ">";
+						text += "<i class='fa fa-close close_multi_job' onclick='performanceManagement.closeCompetenceDiv(this)'></i>";
+						text += "<div class='multiJobTitle clearfix'>";
+						text += "<h2 class='pull-left'>" + $(this).text() + "</h2>";
+						text += "<span class='pull-right mr'><input type='text' onblur='performanceManagement.validateWeightage("+$(this).val()+");' id='weightage"+$(this).val()+"' class='form-control' field-name='Weightage' placeholder='Weightage' data-validation='validate_int required'></span>";
+						text += "</div>";
+						text += "<div class='row mxrateerror' id='weightageDiv"+$(this).val()+"'>";
+						text += "<input type='hidden' name='weightage"+$(this).val()+"' id='weightageValidation"+$(this).val()+"'>";
+						text += "</div>";
+						text += "</div>";
+						$("#selectedCompetenceDiv").append(text);
+						return;
+					
+						
+						
+					}
+				}
+			});
+		}
+}
+
+
+this.validateWeightage = function(id){
+
+	  var competenceWeightage = $('#weightage'+id).val();
+		
+		 if(competenceWeightage > 100 || competenceWeightage < 0){
+			 if(competenceWeightage < 0){
+				    $('#weightageDiv'+id).find('p.jquery_form_error_message').remove(); 
+					$('input#weightageValidation'+id).attr('class','error signin_fild');
+					$("input#weightageValidation"+id).after("<p class='jquery_form_error_message'>Weightage should not in negitive</p>");
+					$('input#weightageValidation'+id).attr('record-exist','yes');
+					$('input#weightageValidation'+id).attr('record-exist-errorMsg','Weightage should not in negitive'); 
+			 }else{
+				    $('#weightageDiv'+id).find('p.jquery_form_error_message').remove(); 
+				    $('input#weightageValidation'+id).attr('class','error signin_fild');
+				    $('input#weightageValidation'+id).after("<p class='jquery_form_error_message'>Weightage should not more than 100</p>");
+				    $('input#weightageValidation'+id).attr('record-exist','yes');
+				    $('input#weightageValidation'+id).attr('record-exist-errorMsg','Weightage should not more than 100'); 
+			 }
+		 }else{
+			 
+			 $('#weightageDiv'+id).find('p.jquery_form_error_message').remove(); 
+			 $('input#weightageValidation'+id).removeAttr( "class record-exist record-exist-errormsg");
+			 $('#weightageDiv'+id).find('p.jquery_form_error_message').remove();
+		 }
+
+}
+
+
+this.closeCompetenceDiv = function(ele) {
+	$(ele).parent().remove();
+	var id = $(ele).parent().data("template_id");
+	$('#performanceCompetence').find("option[value='" + id + "']").prop("selected",false).end().trigger('chosen:updated');
+}
+
+  
+
+  
+  this.performanceCompetenciesList = function(competenciesIds,percentageMap){
+	  
+	  $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getPerformanceCompetenceListForTagging", 
+	        success: function(json) {
+	        	var output = "";
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		/*if(competenciesIds != null && competenciesIds != '' && competenciesIds != 'undefined'){
+		        			var categIds = competenciesIds.split(",");
+		        			if (categIds.indexOf(opt.templateId.toString()) > -1) {
+		        				performanceManagement.editSelectedTemplateRows(opt.templateId,opt.templateName,percentageMap.get(opt.templateId));
+		        				output = output + "<option value='" +opt.templateId+ "' selected>"+opt.templateName+"</option>";
+		        			}else{
+		        				output = output + "<option value='" +opt.templateId+ "'>"+opt.templateName+"</option>";
+		        			}
+		        		}else{
+		        			output = output + "<option value='" +opt.templateId+ "'>"+opt.templateName+"</option>";
+		        		}*/
+		        		
+		        		output = output + "<option value='" +opt.id+ "'>"+opt.name+"</option>";
+		        		
+		        		
+				}
+	        	$("#performanceCompetence").empty();
+		        $("#performanceCompetence").append(output);
+		        $('#performanceCompetence').trigger("chosen:updated");
+	        },
+	    });
   }
+  
+  
+ /* this.editSelectedTemplateRows = function(id,templateName,percentage){
+	    var text="<div class='multiTemplates positionRelative' id="+id+" data-template_id=" + id + ">";
+		text += "<i class='fa fa-close close_multi_job' onclick='performanceManagement.closeSelectedJobDiv(this)'></i>";
+		text += "<div class='multiJobTitle clearfix'>";
+		text += "<h2 class='pull-left'>" + templateName + "</h2>";
+		text += "<span class='pull-right mr'><input type='text' value='"+percentage+"' onblur='performanceManagement.validatePercentage("+id+");performanceManagement.validatePercentageTotalSumValue();' id='percent"+id+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></span>";
+		text += "</div>";
+		text += "<div class='row mxrateerror' id='percentageDiv"+id+"'>";
+		text += "<input type='hidden' name='percent"+id+"' id='percentageValidation"+id+"'>";
+		text += "</div>";
+		text += "</div>";
+		$("#selectedTemplatesDiv").append(text);
+		return;
+  }*/
+  
+  
+  
+ this.saveCompetenceTagging = function(){
+	  
+	  var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	         }; 
+	  
+	  
+	  if ($('#tagCompetence_form').validate(false, validationSettings)){ 
+		  var ee = $("#txtEditor").val($('.Editor-editor').html()); 
+		   var compentencies = [];
+			$(".multiTemplates").each(function() {				
+				compentencies.push({
+					competenceId : $(this).data("template_id") ? $(this).data("template_id") : 0,
+					weightage : $("#weightage"+$(this).data("template_id")).val()
+				});
+			});
+			var con = JSON.stringify(compentencies);
+			$("#jsonCompetenceString").val(con);
+	        var appraisalFormData = getFormData1("tagCompetence_form");
+	        $("#tagCompetenceLoading").attr('style','position:absolute; width:100%; height:200%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        $.ajax({
+		    	type: "POST",
+		    	 processData: false,
+                 contentType: false,
+		    	 data: appraisalFormData,
+		    	 url: sourceleadUrl+"/savePerformanceTagCompetencies",
+		        success: function(response) {
+		        	$("#tagCompetenceLoading").removeAttr('style');
+		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+   	    		    showError(response.responseMessage);
+   	    		}
+		        	else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		getTagCompetenceList();
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
+		        },
+		    }); 
+	        return true;
+	  } else {
+		return false;
+	  }
+  }
+  
+  $('body').on('blur', '#tagCompetence_form', function() {
+		$("#tagCompetence_form").showHelpOnFocus();
+		$("#tagCompetence_form").validateOnBlur(false, validationSettings);  
+	});
   
 }

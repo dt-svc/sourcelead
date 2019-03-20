@@ -40,7 +40,7 @@
 				<div class="action-pop">
 					<span> 
 				          <a onclick="performanceManagement.addNewCompetence();" title="Create offboard">Add Competence</a>
-				          <a onclick="performanceManagement.tagCompetence();" title="Create onboard">Tag Competence</a> 
+				          <a onclick="performanceManagement.tagPerformanceCompetence();" title="Create onboard">Tag Competence</a> 
 					</span>
 				</div>
 			</li>
