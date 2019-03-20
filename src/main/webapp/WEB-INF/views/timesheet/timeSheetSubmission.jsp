@@ -4,17 +4,13 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
-
-
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
-
 <div class="time_pop" id="timeSheetErrorMsg"></div>
  <c:if test="${timesheetEntryDetailsDTO.timesheetFor == 'approver'}">
    <div class='data_loading' id="loadTime"></div>
  <div class="pull-left timeAppUse-show col-md-6">
-	<span class="pull-left"><img id="userImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofile-img.png"> </span>
+	    <span class="pull-left">
+	      <img id="userImage" onerror="predefineProfileImage(this);" src="${timesheetEntryDetailsDTO.profileImageFileUrl}" alt="Profile Image"> 
+	     </span>
 		<ul class="col-md-9 margin-top0 list-unstyled padding_left">
 			<li>
 			<c:if test="${not empty timesheetEntryDetailsDTO.employeeName}">
@@ -588,7 +584,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 								     </c:if>
 								     <input onclick="newSaveTimesheet('Submitted');" value="Submit" class="time_btn" type="button">
 								     <c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'SUBMITTED'}">
-								          <input onclick="approveTimesheet('approve');" value="Approve" class="time_btn time_appr" type="button">
+								          <input onclick="newSaveTimesheet('approve');" value="Approve" class="time_btn time_appr" type="button">
 								          <input onclick="approveTimesheet('reject');" value="Reject" class="time_btn time_rej" type="button">
 								     </c:if>
 								     
@@ -1911,11 +1907,6 @@ function timesheetEntriesExport(exportType){
   	 var projectMemberId = $("#projectMemberId").val();
   	 
 	 if(status == 'approve'){
-		 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
-		 $(".side_mask").fadeOut(200); 
-		 $("body").css('overflow-y', 'scroll');
-		 $("#dynamic").removeAttr('style');
-		 approveSubmissionByProjectMemberId(projectMemberId,dates[0],dates[1],tdSpan,tableFor);
 	 }else{
 		  	var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -1984,7 +1975,7 @@ function newSaveTimesheet(status){
 	 }; 
 	 if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){ 
 		 
-		     if(status != null && status != 'undefined' && status != '' && ((status == 'Submitted' && unfilledDates.length === 0) || (status == 'Draft'))){
+		     if(status != null && status != 'undefined' && status != '' && ((status == 'Submitted' && unfilledDates.length === 0) || (status == 'approve')|| (status == 'Draft'))){
 		    	   timesheetDbSave(status,savingType)
 	        	   return true;
 		     }
@@ -2055,20 +2046,42 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
     	 var projectMemberId = $("#projectMemberId").val();
     	 $("#loadTime").removeAttr('style');
     	 $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
-	   $.ajax({
+	      var actualStatus = status;
+	      if(actualStatus == 'approve'){
+	    	  status = 'Submitted';
+	      }
+    	 $.ajax({
 		    type : "POST",
    	        data: formData,
 	        processData: false,
 	        contentType:false,
 	      	  url: pmsUrl+"/saveTimesheetEntries?timesheetSubmission.timesheetStatus="+status+"&timesheetFor="+savingType,		
 		      success :function(data) {
+		    	  if(actualStatus == 'approve'){
+		    		  status = actualStatus;
+		    	  }
 		    	  if($("#timesheet_form input[data-id*=docFile]").length > 0) {
 		  			 $("#timesheet_form input[data-id*=docFile]").remove();
 		  		   }
 		    	   
 		    	  if(savingType != null && savingType != '' && savingType != 'undefined'&& savingType == 'approver'){
-		    		  if(status != null && status != 'undefined' && status != '' && status != 'Draft' && status != 'Submitted' ){
+		    		  if(status != null && status != 'undefined' && status != '' && status != 'Draft' && status != 'Submitted' && status != 'approve'){
 			    		  timesheetApprovalTableRowByProjectMemberId(currentTimeFrequency,projectMemberId,tableFor);
+			    	  }else if(status == 'approve'){
+			    			 var tdSpan = '';
+			    			 if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor =='dashboard'){
+			    				 tableFor = 'approval';
+			    				 tdSpan ='8' 
+			    			 }else {
+			    				 tableFor = 'approval';
+			    				 tdSpan = '6';
+			    			 }
+			    			 var dates = currentTimeFrequency.split("To");
+			    		     approveSubmissionByProjectMemberId(projectMemberId,dates[0],dates[1],tdSpan,tableFor+"Summary");
+			    		     $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
+			    			 $(".side_mask").fadeOut(200); 
+			    			 $("body").css('overflow-y', 'scroll');
+			    			 $("#dynamic").removeAttr('style');
 			    	  }
 			    	  else{
 			    		  $("#timesheetDivByFrequency").empty();
@@ -2084,17 +2097,24 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 				    	  $("#loadTime").removeAttr('style');
 			    	  } 
 		    	  }else{
-		    		  $("#timesheetDivByFrequency").empty();
-			    	  $("#timesheetDivByFrequency").append(data);
-			    	  setTotals();
-    		    	  maskme();
-			    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
-			    		  $("#currentTimeSubFrequency").val('');
-			    		  $("#timeSubFrequency").val('');
-			    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency);
-		            	  $("#timeSubFrequency").val(currentTimeSubFrequency);
-			    	  }
-			    	  $("#loadTime").removeAttr('style');
+		    		  if(status == 'approve'){
+		    			     var  tdSpan ='8';
+			    			 var dates = currentTimeFrequency.split("To");
+			    		     approveSubmissionByProjectMemberId(projectMemberId,dates[0],dates[1],tdSpan,tableFor);
+		    		  }else{
+		    			  $("#timesheetDivByFrequency").empty();
+				    	  $("#timesheetDivByFrequency").append(data);
+				    	  setTotals();
+	    		    	  maskme();
+				    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
+				    		  $("#currentTimeSubFrequency").val('');
+				    		  $("#timeSubFrequency").val('');
+				    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency);
+			            	  $("#timeSubFrequency").val(currentTimeSubFrequency);
+				    	  }
+				    	  $("#loadTime").removeAttr('style');
+		    		  }
+		    		  
 		    	  }
 		    	  timesheetActivityList();
 		      }

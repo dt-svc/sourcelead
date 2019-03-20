@@ -366,12 +366,13 @@ function findPayheadByNameOrShortCode(name, shortCode, listType){
             	if(result.error == "true"){
             		if(listType == "ByName"){
             			$('#payheadNameDiv').find('p.jquery_form_error_message').remove();
-                		$("input#payheadName").after("<p class='jquery_form_error_message'>Payhead already existed</p>");
-            		}
-            		if(listType == "ByShortCode"){
+            			$("input#payheadName").after("<p class='jquery_form_error_message'>"+name+" payhead is already existed</p>");
+            			$("#payheadName").val(y);
+            		}if(listType == "ByShortCode"){
             			$('#payheadShortCodeDiv').find('p.jquery_form_error_message').remove();
-                		$("input#shortCode").after("<p class='jquery_form_error_message'>Short code already existed</p>");
-            		}
+            			$("input#shortCode").after("<p class='jquery_form_error_message'>"+shortCode+" short code already existed</p>");
+            			$("#shortCode").val("");
+            	 }
             	}else{
             		$('#savePayheadBtn').removeAttr("disabled");
             	}
