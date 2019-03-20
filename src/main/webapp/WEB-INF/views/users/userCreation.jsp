@@ -921,7 +921,7 @@ function getEmployeementType(designationType){
 
 <script type="text/javascript">
  function createUser() {
-	 var country = '${SourceLeadWeb_loginCountryName}'; 
+	 var country = '${SourceLeadWeb_country}'; 
  	 	var RatePer = document.getElementById("RatePer").value; 
 		if(RatePer != null && RatePer != ""){
 			$('#Rate').removeAttr('data-validation-optional');
@@ -1569,7 +1569,7 @@ function refreshRoleList(){
 function refreshGradesList(){
 	 $.ajax({
 	      type : "POST",
-	       url: atsUrl+"/refreshGradesList",       
+	       url: sourceleadUrl+"/refreshGradesList",       
 	       success: function(json) {
 	        	var output = "";
 	        	output = output + "<option value=''>-Select Grade-</option>"; 
@@ -1601,7 +1601,7 @@ function refreshGradesList(){
 	 <script>
 	 function selectedVendor(){
 		 var vid = $('#vendors').val();
-		 window.open(atsUrl+"/addVendorContact?vid="+vid,'_blank');
+		 window.open(vmsUrl+"/addVendorContact?vid="+vid,'_blank');
 	 }
 	 </script>
 	
