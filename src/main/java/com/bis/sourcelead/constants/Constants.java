@@ -589,7 +589,7 @@ public class Constants {
 	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Title",
 			"Min Experience", "Max Experience", "Min/Max Rate", "Location", "City",	"State", "Country", "Zip Code",	
 			"Education", "Skills", "Immigration Status", "Cooling-off Period", "Travel Allowance", "Closed Date",
-			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority", "Description", "Attachment", "Manager", "Approver", "Assign To",
+			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority", "Description", "Attachment", "Manager(Email)", "Approver", "Assign To",
 			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
 	
 	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category", "Work Status",
@@ -1404,6 +1404,11 @@ public class Constants {
 	public static final String COUCH_DOCUMENT_TYPE_USER_LOGIN_ACCOUNT = "User Account";
 	
 	public static final String COUCH_DOCUMENT_TYPE_USER_LOGIN_SESSION = "Session";
+	
+	public static final String COUCH_DOCUMENT_UPLOAD_TYPE = "Import";
+	
+	public static final String COUCH_DOCUMENT_UPLOAD_FAILURE_TYPE = "Failure";
+	
 	
 	
 }
