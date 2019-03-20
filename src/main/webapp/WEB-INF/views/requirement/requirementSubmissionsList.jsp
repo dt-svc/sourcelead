@@ -5,9 +5,13 @@
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
   <!-- Header Area -->
+  <script type="text/javascript">
+var atsUrl = '${SourceLeadWeb_atsUrl}';
+var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+</script>
   <section class="content-wraper">
     <section class="content-header clearfix">
-       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Submission List</div>
+       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Submission List</div>
     </section>
     
     <!-- Project -->
@@ -60,9 +64,8 @@
  
  </script>
 <script type="text/javascript">
-var atsUrl = '${SourceLeadWeb_atsUrl}';
        function requirementSubmissionList(onloadFlag){
-    	   var sourceleadUrl ='${sourceleadUrl}';
+    	   var atsUrl = '${SourceLeadWeb_atsUrl}';
    		   var tab = '${tab}';
     	   var frequency = $('input[name=customDates]:checked').val(); 
     	    var fromDate = $("#custFromDate").val();
@@ -362,9 +365,9 @@ $("#dataTableSearch").keyup(function(e) {
     
  <script>
  function submissionDocumentListDocumentView(resumeUUID,title){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 		if(resumeUUID != null && resumeUUID != ""){
-			window.open(sourceleadUrl+'/viewInterviewListResumes/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
+			window.open(atsUrl+'/viewInterviewListResumes/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
 		}
  }
 </script>
@@ -633,10 +636,10 @@ $(".overIcon, .newActPop").click(function(e){
 
 <script>
 /* function getClientList(){
-	var sourceleadUrl = '${sourceleadUrl}';
+	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+ "/getClientList?${_csrf.parameterName}=${_csrf.token}",
+		url : atsUrl+ "/getClientList?${_csrf.parameterName}=${_csrf.token}",
 		success : function(data) {
 			var result = "";
 			  for (var i=0; i<data.length; i++)
@@ -682,10 +685,10 @@ function myClientFunction() {
 
 
 /* function getTeamsList(){
-	var sourceleadUrl = '${sourceleadUrl}';
+	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+ "/getTeamsListForLoginUser?${_csrf.parameterName}=${_csrf.token}",
+		url : atsUrl+ "/getTeamsListForLoginUser?${_csrf.parameterName}=${_csrf.token}",
 		success : function(data) {
 			var result = "";
 			  for (var i=0; i<data.length; i++)
@@ -739,7 +742,7 @@ function projectExport(type){
 	}else{
 		exportType = "xls";
 	}
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 	   var tab = '${tab}';
 	   var frequency = $('input[name=customDates]:checked').val(); 
 	    var fromDate = $("#custFromDate").val();

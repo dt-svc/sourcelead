@@ -43,9 +43,10 @@ function candidateDocuments(){
 <script>
 function candDocumentsList(candidateId){
 	var candidateType = '${candidateType}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
 
           success :function(response) {
         	  if (response && response.response === "INVALID_DATA") {
@@ -360,13 +361,13 @@ function uploadFileDoc(){
 				var formData = new FormData(frm);
 				$("#save_doc").attr("disabled", "disabled");
          		$("#save_doc").addClass('button').val('Processing..');
-         		
+         		var atsUrl = '${SourceLeadWeb_atsUrl}';
          		$.ajax({
 					type : "POST",
 	        	    data: formData,
 	    	        processData: false,
 	    	        contentType:false,
-	        	   	url : sourceleadUrl+"/saveCandidateDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
+	        	   	url : atsUrl+"/saveCandidateDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
 					success : function(response) {
 						if (response && response.response === "INVALID_DATA") {
 						    showError(response.responseMessage);
@@ -440,9 +441,10 @@ function closeAddDocPopup(){
 function getDocument(candidateId, documentId){
 	 $("#docsName").attr("data-validation-optional", "true");
 	  $("#documentOtherType").attr("data-validation-optional", "true");
+	  var atsUrl = '${SourceLeadWeb_atsUrl}';
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentId="+documentId, 	   
+		    url: atsUrl+"/getDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentId="+documentId, 	   
    		    success: function(response) {
    		    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
    		    	    showError(response.responseMessage);
@@ -455,6 +457,8 @@ function getDocument(candidateId, documentId){
        			 	$("#uploadFile").removeAttr("data-validation");
        			 	if(data.fileName != null && data.fileName !="undefined" && data.fileName != "") {
 	       				$("#docNameDiv").show();
+       			 	}else{
+       			 	$("#uploadDocDiv").show();	
        			 	}
        			 	$("#docsName").append(data.fileName);
        			 	$("#docsName").prop('title', data.fileName);
@@ -491,8 +495,8 @@ function getDocument(candidateId, documentId){
 
 <script>
 function getDocType(){
-	
-	$.get(sourceleadUrl+"/getUserDocumentList", function(result) {
+	 var atsUrl = '${SourceLeadWeb_atsUrl}';
+	$.get(atsUrl+"/getUserDocumentList", function(result) {
 		var json = result.data;
 		var output = "";
 		output = output +' <option value="">--Select Document Type--</option>';
@@ -579,10 +583,11 @@ function removeDocument(candidateId, documentId){
 function deleteDocument(candidateId, documentId){
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	//var message = confirm("You are choosing to delete the document");
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateDoc?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
+		    url: atsUrl+"/terminateDoc?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
    		    success: function(response) {
    		    	if (response && response.response === "INVALID_DATA") {
    		    	    showError(response.responseMessage);
