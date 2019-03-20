@@ -187,10 +187,10 @@ public class AssociateImportController {
 			
 		}
 	 
-	 /*   --------Ends here--------   */
+	 /*---Ends here---*/
 	 
 	 
-//for associate Information import--------------------------------------------------
+/*---------------------------------for associate Information import--------------------------------------------------*/
 	 
 	 @PreAuthorize("hasRole('ROLE_USER_BULK_IMPORTS')")
 		@RequestMapping(value = "/app/uploadAssociateInformation")
@@ -277,7 +277,6 @@ public class AssociateImportController {
 	        catch (Exception e) {
 	            e.printStackTrace();
 	        }
-			
 		}
 	 
 	 /*   --------Ends here--------   */

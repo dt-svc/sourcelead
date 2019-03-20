@@ -55,7 +55,6 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 	AssociatePfEsiDao associatePfEsiDao;
 	
 	
-	
 	@Override
 	public AssociateBankErrorData saveAssociateInformation(MultipartFile multipartFile, OrgLocations orgLocation) throws Exception{
 					
@@ -67,9 +66,6 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 		List<AssociatePfEsiDetails> InfoList = associatePfEsiService.getAllPfEsiDetailsByOrgLocationid(orgLocation.getId());
 		Map<Long, String> pfeMap = new HashMap<Long, String>();
 		for (AssociatePfEsiDetails i : InfoList) pfeMap.put(i.getCandidateId().getId(), i.getUanNumber());
-		
-		
-		
 		int insertedCount = 0;
 		try {
 			File file = new File(multipartFile.getOriginalFilename());
@@ -112,11 +108,11 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 								InfoDataDTO.setUanNumber(getCellValueAsString(row.getCell(2), fileName));																	
 							if(row.getCell(3) != null  && !"".equalsIgnoreCase(row.getCell(3).toString()))
 								InfoDataDTO.setPfNumber(getCellValueAsString(row.getCell(3), fileName));
-							if(row.getCell(4) != null  && !"".equalsIgnoreCase(row.getCell(4).toString()))
+							if(row.getCell(4) != null  && !"".equalsIgnoreCase(row.getCell(4).toString())) {
 								InfoDataDTO.setEsinumber(getCellValueAsString(row.getCell(4), fileName));
+							  }else{InfoDataDTO.setEsinumber("-");}
 							errorlist.add(InfoDataDTO);
 						}
-						
 					}
 					else{
 						count++;
@@ -125,7 +121,6 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 					}
 				}
 			}				
-			
 			insertedCount =  associatePfEsiDao.saveAssociateInformation(orgLocation.getId(), list, canMap);
 			associateBankErrorData.setPfErrorData(errorlist);
 			associateBankErrorData.setInsertedCount(insertedCount);
@@ -140,12 +135,10 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 		return associateBankErrorData;
 	}
 	
-	/*
-	 * 
-	 */
+	
 	private boolean validateAssociateBankExeclData(Row row, String fileName, AssociatePfEsiDetailsDTO InfoDataDTO,
 			Map<String, Long> canMap, Map<Long, String> pfeMap) {
-		if(canMap.get(getCellValueAsString(row.getCell(1), fileName)) != null) {
+		if(canMap.get(getCellValueAsString(row.getCell(1), fileName).toLowerCase()) != null) {
 			if (row.getCell(1) == null || "".equalsIgnoreCase(row.getCell(1).toString())) {
 				InfoDataDTO.setReason("Email Mandatory");
 				return false;
