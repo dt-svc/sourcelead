@@ -24,8 +24,10 @@ import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
+import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.impl.AssociateBankDataDaoImpl;
+import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 
 @Repository
@@ -432,4 +434,5 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 		AssociateSalary assSalary = (AssociateSalary) session.createQuery(qry).setLong("salaryId", salaryId).uniqueResult();
 		return assSalary;
 	}
+
 }

@@ -1121,7 +1121,7 @@ function withdrawMyTimesheet(projectMemberId){
 </script>
 
 <script>
-  function addAttachmentRow(rowNum){
+  function addAttachmentRow(rowNum,initAttRowNum){
 	  var attRowNum = $("#"+rowNum+"maxAttDivRowNumber").val();
 	  var maxRowNum = parseInt(attRowNum);
 	  $("#"+rowNum+"maxAttDivRowNumber").val(maxRowNum+1);
@@ -1134,6 +1134,7 @@ function withdrawMyTimesheet(projectMemberId){
 <script>
   function removeAttRow(comNum,rowNum){
 	 $("#"+comNum+"AttchmentDiv"+rowNum+"Id").remove();
+	 $("#timesheet_form input[data-id*='"+comNum+"docFile"+rowNum+"']").remove();
   }
 </script>
 <script>

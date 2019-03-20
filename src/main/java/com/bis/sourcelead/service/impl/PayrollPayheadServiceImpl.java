@@ -365,5 +365,10 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 	public AssociateSalaryHistoryInd saveAssociateSalaryHistoryInd(AssociateSalaryHistoryInd associateSalaryHistoryInd) throws Exception{
 		return payrollPayheadDao.saveAssociateSalaryHistoryInd(associateSalaryHistoryInd);
 	}
+
+	@Override
+	public List<AssociateSalaryInd> getAssociateSalaryIndListByOrgLocationsId(Long orgLocationId) throws Exception {
+		return payrollPayheadDao.getAssociateSalaryIndListByOrgLocationsId(orgLocationId);
+	}
 	
 }

@@ -11,7 +11,7 @@
       <div class="pull-left">
         <h2>Available Associates</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Reports &raquo; Available Associates</div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/associateReportsList'/>">Associate Reports</a> &raquo; Available Associates Report  </div>
     </section>
     <div class="content-area content-new clearfix backgroundWhite">
     <form name = "availableAssociates" id = "availableAssociatesFormId">
@@ -23,8 +23,8 @@
               <div class="col-md-12">
               <select class="chosen-select form-control" data-placeholder="Select Associate" autocomplete="off" onchange="getProjects();" id="associatesId" name="userIds" field-name="Associate" data-validation="required">
 			          <option selected="selected" disabled>Select Associate</option>
-			            <c:forEach var="option" items="${userList}">
-							<option value="${option.id}">${option.fullName}</option>
+			            <c:forEach var="option" items="${newList}">
+							<option value="${option.id}">${option.employee}</option>
 						</c:forEach>
 			          </select>
               </div>
@@ -44,7 +44,7 @@
             <div class="row">
               <label class="col-md-12 paddingRight">From</label>
               <div class="col-md-12">
-                <input type="text" class="form-control calendar" name = "fromDate" id="fromDate" data-validation="required" readonly>
+                <input type="text" class="form-control calendar" name = "fromDate" id="fromDate" field-name="From Date" data-validation="required" readonly>
               </div>
             </div>
           </div>
@@ -52,7 +52,7 @@
             <div class="row">
               <label class="col-md-12 paddingRight">To</label>
               <div class="col-md-12">
-                <input type="text" class="form-control calendar" name = "toDate" id="toDate" data-validation="required" readonly>
+                <input type="text" class="form-control calendar" name = "toDate" id="toDate" field-name="To Date" data-validation="required" readonly>
               </div>
             </div>
           </div>
@@ -114,10 +114,57 @@
       }
       </script>
       
-      <script>
+<!--       <script>
       $("#fromDate").datepicker();
       $("#toDate").datepicker();
-      </script>
+      </script> -->
+      
+      
+      
+      <script>
+	$(function() {
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		$('#fromDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			showOn: 'focus',
+            showButtonPanel: true,
+            closeText: 'Clear',
+            onClose: function (selected) {
+	            var dt = $(this).datepicker('getDate', '+1d');
+	            $("#toDate").datepicker("option", "minDate", dt);
+				var event = arguments.callee.caller.caller.arguments[0];
+                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                    $(this).val('');
+                }
+	        }
+		
+		});
+		
+		$('#toDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			showOn: 'focus',
+            showButtonPanel: true,
+            closeText: 'Clear',
+            onClose: function (selected) {
+	            var dt = $(this).datepicker('getDate', '-1d');
+	            $("#fromDate").datepicker("option", "maxDate", dt);
+	            var event = arguments.callee.caller.caller.arguments[0];
+                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                    $(this).val('');
+                }
+	        }
+		});
+		
+	});
+</script>
+      
+      
+      
+      
+      
+      
       
       <script>
       function resetForm(){
@@ -159,6 +206,7 @@
   		          
   						var text = "";
   						$("#availableAssociatesReporttableList").empty();
+  						$("#exportOptions").hide();
   						if(result.data.length > 0) {   	
   							text += "  <table class='table' id='availableAssociatesReporttableList1'>";
   							text += " 	<thead>";
@@ -167,13 +215,16 @@
   							text += " 		<th><div class='width180px text-center' style='display:block; margin:0 auto;'>Project Duration</div></th>";
   							text += " 		<th><div class='width180px text-center' style='display:block; margin:0 auto;'>Associate Duration</div></th>";
   							text += " 		<th><div class='width180px text-center' style='display:block; margin:0 auto;'> % Of Work</div></th>";
-  							text += " 		<th><div class='width180px text-center' style='display:block; margin:0 auto;'>No.of Hours</div></th>";
+  							text += " 		<th><div class='width180px text-center' style='display:block; margin:0 auto;'>No.of Hours Per Week</div></th>";
   							text += " 	  </tr>";
   							text += " 	</thead>";
   							text += " 	<tbody>";
   							var totalavailable = 0;
   							var totalHours = 0;
   							var availability = 0;
+  							var total = 0;
+  							var hours = 0;
+  							var orgWorkingHours = 0;
   							for(var e in result.data) {
   								
   								var report = result.data[e];
@@ -186,12 +237,23 @@
   								text += "	</tr>";
   								
   								totalavailable += (report.availableHours !== null && report.availableHours !== "") ? parseFloat(report.availableHours) : 0;
-  								
   								//availability = ((totalavailable)/result.data.length);
-  								
   								totalHours += (report.hoursperWeek !== null && report.hoursperWeek !== "") ? parseFloat(report.hoursperWeek) : 0;
+								orgWorkingHours = report.orgWorkingHours;  								
   							}
-  							text += " 	</tbody>";
+  							
+  							total = (totalavailable >= 100 ? 0 : 100 - totalavailable);
+							hours = (totalHours >= orgWorkingHours ? 0 : orgWorkingHours - totalHours);
+  							
+							text += " 	</tbody>";
+  							text += " 	<tfoot>";
+  							text += " 	<tr>";
+  							text += "<td colspan='2'></td>"
+  							text += "<td><div class='tbldata-dotdot'>" + "Available" + "</div></td>";
+  							text += "<td><div class='tbldata-dotdot'>" + total + "</div></td>";
+  							text += "<td><div class='tbldata-dotdot'>" + hours + "</div></td>";
+  							text += " 	</tr>";
+  							text += " 	</tfoot>";
   							text += " 	<tfoot>";
   							text += " 	<tr>";
   							text += "<td colspan='2'></td>"
@@ -201,7 +263,7 @@
   							text += " 	</tr>";
   							text += " 	</tfoot>";
   							text += "   </table>";
-  							
+  							$("#exportOptions").show();
   							$("#availableAssociatesReporttableList").append(text);
   						} else {
   							$("#availableAssociatesReporttableList").append("<div class='dataTables_empty'></div>");

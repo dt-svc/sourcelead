@@ -10,7 +10,7 @@
       <div class="pull-left">
         <h2>Ticket Summary</h2>
       </div>
-      <div class="pull-right brud-crum">Home » Ticket Summary</div>
+	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/ticketManagementList'/>">Ticket List</a> &raquo; Ticket Summary</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="clearfix">
@@ -25,7 +25,6 @@
               <div class="project_tabs_inn_table">
                 <div class="project_details col2Custom">
 					<div class="useredit">
-						<%-- <a href="javascript:void(0);" class="textSuccess"><i class="fa fa-check"></i>${ticketSummary.ticketStatus}</a> --%> 
 						<div class="width150px">
 							<select class="sel" onchange="changeTicketStatus(this, ${ticketSummary.id});">
 								<c:forEach items="${statusList}" var="status">
@@ -33,7 +32,9 @@
 								</c:forEach>
 							</select>
 						</div>
-						<a href="/app/editTicket?uuid=${ticketSummary.uuid}"><i class="fa fa-pencil"></i>Edit</a>
+						<sec:authorize access="hasRole(\'ROLE_ADD_TICKET\')">
+							<a href="/app/editTicket?uuid=${ticketSummary.uuid}"><i class="fa fa-pencil"></i>Edit</a>
+						</sec:authorize>
 						<div class="clearfix"></div>
 					</div>
 					<div class="form-group clearfix">
@@ -106,8 +107,8 @@
 			                    		<div class="row">
 			                    			<div class="col-md-8 tbldata-dotdot-200 inlineBlock">${attachment.fileName}</div>
 			                    			<ul class="list-unstyled list-inline col-md-4 text-center">
-			                    				<li><i class="fa fa-eye cursorPointer" title="View"></i></li>
-			                    				<li><i class="fa fa-download cursorPointer"  title="Download"></i></li>
+			                    				<li><a href="javascript:void(0)" onclick="viewFile('${attachment.fileUrl}','${attachment.fileName}','${attachment.fileType}');"><i class="fa fa-eye cursorPointer" title="View"></i></a></li>
+			                    				<li><a href="${attachment.fileUrl}" target="_blank"><i class="fa fa-download cursorPointer" title="Download"></i></a></li>
 			                    			</ul>
 			                    		</div>
 		                    		</div>

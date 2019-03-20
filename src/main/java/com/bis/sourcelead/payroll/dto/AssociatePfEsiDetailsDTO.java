@@ -32,6 +32,10 @@ public class AssociatePfEsiDetailsDTO {
 	private String pfesiId;
 	
 	private String nominee;
+	
+	private String reason;
+	
+	private String email;
 
 	public Long getId() {
 		return id;
@@ -135,5 +139,21 @@ public class AssociatePfEsiDetailsDTO {
 
 	public void setAadharNumber(String aadharNumber) {
 		this.aadharNumber = aadharNumber;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }

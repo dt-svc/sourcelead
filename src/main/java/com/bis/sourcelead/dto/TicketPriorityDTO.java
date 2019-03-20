@@ -4,12 +4,10 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import com.bis.sourcelead.entity.OrgLocations;
-
 public class TicketPriorityDTO implements Serializable {
 
 	/**
-	 *  @author VeeraRaghava
+	 * @author VeeraRaghava
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -43,7 +41,7 @@ public class TicketPriorityDTO implements Serializable {
 
 	private List<FileInfo> fileInfo;
 
-	private String staticPath;
+	private boolean refreshImage;
 
 	public long getId() {
 		return id;
@@ -165,17 +163,16 @@ public class TicketPriorityDTO implements Serializable {
 		this.fileInfo = fileInfo;
 	}
 
-	public String getStaticPath() {
-		return staticPath;
-	}
-
-	public void setStaticPath(String staticPath) {
-		this.staticPath = staticPath;
-	}
-
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
 
-	
+	public boolean isRefreshImage() {
+		return refreshImage;
+	}
+
+	public void setRefreshImage(boolean refreshImage) {
+		this.refreshImage = refreshImage;
+	}
+
 }

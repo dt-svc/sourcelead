@@ -1674,6 +1674,9 @@ ul.dropdownmenucustom_defualt li:hover {
 ul.dropdownmenucustom_defualt li a:hover {
 	color: #fff;
 }
+ul.dropdownmenucustom_defualt li a.slactive:hover {
+	color: #fff !important;
+}
 .dropdownmenucustom_defualt:before{
 	content: ""; position: absolute; bottom: 100%; width:0; height: 0; border-width: 10px !important;
 	border: solid transparent; pointer-events: none; border-bottom-color: #a21e23; right: 20%;

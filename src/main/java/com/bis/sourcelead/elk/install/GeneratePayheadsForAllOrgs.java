@@ -61,6 +61,10 @@ public void generatePayheadsByOrg() throws IOException, SQLException {
 			PreparedStatement stmt14 = conn.prepareStatement(sql14);
 			stmt14.executeUpdate();
 			
+			String sql16 = "DELETE from sourcelead.ASSOCIATE_SALARY_PAYHEAD_HISTORY_IND where sourcelead.ASSOCIATE_SALARY_PAYHEAD_HISTORY_IND.ID > 0 ";
+			PreparedStatement stmt16 = conn.prepareStatement(sql16);
+			stmt16.executeUpdate();
+			
 			String sql15 = "DELETE from sourcelead.PAYROLL_PAYHEAD where ORGLOCATION_ID != 1";
 			PreparedStatement stmt15 = conn.prepareStatement(sql15);
 			stmt15.executeUpdate();
