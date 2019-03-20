@@ -201,6 +201,12 @@ public class Constants {
 	public static final String SOURCLEAD_TICKET_EMAIL = "sourceleadTicketEmail";
 	public static final String SOURCLEAD_TICKET_NOTIFICATION = "sourceleadTicketNotification";
 	
+	public static final String TICKET_MANAGEMENT_EMAIL = "NewTicketEmail";
+	public static final String TICKET_MANAGEMENT_NOTIFICATION ="NewTicketNotification";
+	
+	public static final String TICKET_UPDATE_EMAIL = "ChangeTicketStatusEmail";
+	public static final String TICKET_UPDATE_NOTIFICATION = "ChangeTicketStatusNotification";
+	
 	public static final String ORGDEMO_EMAIL = "orgDemoEmail";
 	public static final String ORGDEMO_NOTIFICATION = "orgDemoNotification";
 	
