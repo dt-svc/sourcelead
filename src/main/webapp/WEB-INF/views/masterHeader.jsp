@@ -477,6 +477,9 @@ function preventTabkey(e){
 	
 <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
 
+		<li id="clPop" class="clPop"><a href="javascript:void(0)" title="Clock In">
+            <label class="clheadtime">04:05</label><i class="clockAni"><div class="clockAniAct"></div></i></a></li>
+
             <li><a id="orgPopId" href="javascript:void(0)" title="Locations"><i class="headNavIcon"></i></a>
             
 			<div class="headPop headPopnoti" id="orgPopView">
@@ -1520,6 +1523,85 @@ $("#searchType").selectpicker('refresh');
   
   <div class="mask"></div>
   
+  <!--  Clock In Popup   -->
+  
+  <div class="popupWrap popupWrap2" id="clockPop" >
+      <div class="popupHead"><span>Clock in/Out</span><i class="closePop pull-right clPopClose"></i></div>
+        <form id="#" name="" action="" method="post">
+          <div class="clockWrap">
+            <div class="clockIn clearfix">
+              <div class="clockTime pull-left"><p>Clock In</p> <b>04 : 40</b></div>
+              <div class="pull-right">
+                <a href="javascript:void(0)"><img src="/resources/images/break.png">Break</a>
+                <a class="ClockOut" href="javascript:void(0)"><img src="/resources/images/clock.png">Clock Out</a>
+              </div>
+            </div>
+            <div class="subClock clearfix">
+              <div class="subClockCta">
+                <p>Current</p>
+                <div class="sclock">04 : 45</div>
+              </div>
+              <div class="subClockCta">
+                <p>Day</p>
+                <div class="sclock">04 : 45</div>
+              </div>
+              <div class="subClockCta">
+                <p>Week</p>
+                <div class="sclock">04 : 45</div>
+              </div>
+              <div class="subClockCta">
+                <p>Month</p>
+                <div class="sclock">04 : 45</div>
+              </div>                                          
+            </div>
+            <div class="clockinn">
+                <div class="clearfix mb">
+                    <label class="noPad">Jobs <b class="valStar">*</b></label>
+                    <div class="clearfix addicon">
+                        <select class="form-control chosen-select">
+                          <option>Jobs 1</option>
+                          <option>Jobs 2</option>
+                          <option>Jobs 3</option>
+                          <option>Jobs 4</option>
+                        </select>
+                      </div>
+                </div> 
+                <div class="clearfix mb">
+                    <label class="noPad">Project Tasks <b class="valStar">*</b></label>
+                    <div class="clearfix addicon">
+                        <select class="form-control chosen-select">
+                          <option>Task 1</option>
+                          <option>Task 2</option>
+                          <option>Task 3</option>
+                          <option>Task 4</option>
+                        </select>
+                      </div>
+                </div>                 
+                <div class="clearfix mb">
+                    <label class="noPad">General Tasks <b class="valStar">*</b></label>
+                    <div class="clearfix addicon">
+                        <select class="form-control chosen-select">
+                          <option>Task 1</option>
+                          <option>Task 2</option>
+                          <option>Task 3</option>
+                          <option>Task 4</option>
+                        </select>
+                      </div>
+                </div> 
+                <div class="clearfix">
+                    <label class="noPad">Comments <b class="valStar">*</b></label>
+                    <div class="clearfix addicon">
+                        <textarea rows="3" class="form-control"></textarea>
+                    </div>
+                </div> 
+                <div><a class="timeEnt">Time Entry</a></div>              
+            </div>
+          </div>
+        
+        <div>
+</div></form>
+  </div>
+  
   
   <script>
   
@@ -1841,3 +1923,26 @@ function updateMarketplaceCartCountAndPrice(){
 	        });
 	}
 </script>
+
+<script>
+// clock in-Out jquery
+
+//clock sub
+$("#clSub").click(function(){
+  $(".clockSub").slideToggle(10);
+});
+
+$(".clockAni").click(function(){
+  $(this).css("background-image","url(/resources/images/clock-ani.gif)");
+  $(".clockAniAct").show();
+});
+
+$("#clPop").click(function() {
+	$(".mask, #clockPop").fadeIn();
+});
+$(".clPopClose").click(function() {
+	$(".mask, .popupWrap2").fadeOut();
+});
+
+</script>
+
