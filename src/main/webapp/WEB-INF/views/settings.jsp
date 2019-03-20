@@ -609,7 +609,18 @@
 					<div class="clearfix text-center">
 						<h4>Reminder Configuration</h4>
 					</div>
-				</div>			
+				</div>	
+				
+				<sec:authorize access="hasRole('ROLE_TICKET_CONFIGURATION')">
+					<div class="col-md-2 reportNewCta">
+						<a href="/app/ticketManagementTypeList">
+							<div class="clearfix text-center mb10"><i class="ticketManagementSVG"></i></div>
+							<div class="clearfix text-center">
+								<h4>Ticket Management</h4>
+							</div>
+						</a>
+					</div>
+				</sec:authorize>	
 				
 				
 				 <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
