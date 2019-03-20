@@ -40,6 +40,7 @@ import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
+import com.bis.sourcelead.payroll.dto.AssociateBankErrorData;
 import com.bis.sourcelead.payroll.service.impl.AssociateBankDataServiceImpl;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.PaymentAccountService;
@@ -106,14 +107,17 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 
 	/*	     reading data from excel sheet      */
 	@Override
-	public IndAssociatePaymentAccountDTO saveImportBankDetails(MultipartFile multipartFile, OrgLocations orgLocation) throws Exception{
+	public AssociateBankErrorData saveImportBankDetails(MultipartFile multipartFile, OrgLocations orgLocation) throws Exception{
 		
 		String fileName = multipartFile.getOriginalFilename();
-		List<IndAssociatePaymentAccountDTO> list = new ArrayList<>();
-		
-		 List<PaymentAccount> paymentDetailsList =paymentAccountDao.getPaymentAccountDetailsByOrglocationId(orgLocation.getId());
-		 List<Candidate> candidateList =  candidateService.getAllAssociateByLocation(orgLocation.getId());
-		 Map<String, Long> map = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getId));		
+		AssociateBankErrorData errorData = new AssociateBankErrorData();
+		List<IndAssociatePaymentAccountDTO> list = new ArrayList<>();		
+		List<PaymentAccount> paymentDetailsList =paymentAccountDao.getPaymentAccountDetailsByOrglocationId(orgLocation.getId());
+		List<Candidate> candidateList =  candidateService.getAllAssociateByLocation(orgLocation.getId());
+		Map<String, Long> map = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getId));
+		Map<String,  List<String>> accGroupByEmailList = new HashMap<String, List<String>>();
+		    map.forEach((k, v) -> {
+			   accGroupByEmailList.put(k, paymentDetailsList.stream().filter(t -> t.getEmail().equals(k)).map(PaymentAccount::getAccountNumber).collect(Collectors.toList()));  });
 		try {
 			File file = new File(multipartFile.getOriginalFilename());
 			multipartFile.transferTo(file);
@@ -124,27 +128,17 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 			int numberOfSheets = workbook.getNumberOfSheets();
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
-				Iterator<Row> rowIterator = sheet.iterator();
-				
+				Iterator<Row> rowIterator = sheet.iterator();				
 				int count =0;
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
-					
 						if (row.getRowNum() > 0 && (row.getCell(1) != null && row.getCell(2) != null)) { // Excluding column names
 							IndAssociatePaymentAccountDTO importDTO = new IndAssociatePaymentAccountDTO();
-								
-									String email = getCellValueAsString(row.getCell(1), fileName);	
-									if(validateEmail(email)) {
-					                importDTO.setEmail(email);
-					                //defalut values
-					                importDTO.setAccess(false);
-					                importDTO.setDefaultAccount(false);
-					                importDTO.setDisabled(false);
-					                importDTO.setOrgLocationId(orgLocation.getId());
-					      
-				                
-				                    String paymentMode = getCellValueAsString(row.getCell(2), fileName);
-				                    importDTO.setAccountType(paymentMode);
+							String email = getCellValueAsString(row.getCell(1), fileName);	
+							if(validateEmail(email)) {
+					            importDTO.setEmail(email);
+				                String paymentMode = getCellValueAsString(row.getCell(2), fileName);
+				                importDTO.setAccountType(paymentMode);
 				                    String  assoId = null;
 				                    String bankName = null;
 				                    String accnum = null;
@@ -153,73 +147,59 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 				                    String routcode= null;
 				                    String fName = null;
 				                    String Lname = null;
-				                    if( paymentMode.equalsIgnoreCase(Constants.PAYMENT_MODE_SAVINGS)){
-				                    	
-						     			
-				            		    Map<String,  List<String>> accGroupByEmailList = new HashMap<String, List<String>>();
-				            		    map.forEach((k, v) -> {
-				            			   accGroupByEmailList.put(k, paymentDetailsList.stream().filter(t -> t.getEmail().equals(k)).map(PaymentAccount::getAccountNumber).collect(Collectors.toList()));
-				            		   });
-				            		    List<String> accountNum =accGroupByEmailList.get(importDTO.getEmail());							    	  
-				            		    
-						                    	if(row.getCell(3) != null && row.getCell(4) != null&& row.getCell(7) != null && row.getCell(8) != null && row.getCell(9) != null) {
-						                    		  bankName =  getCellValueAsString(row.getCell(3), fileName);
-						                    		  if(row.getCell(0) != null) {
-						                    			  assoId = getCellValueAsString(row.getCell(0), fileName);
-						                    			  importDTO.setCandidateId(Long.parseLong(assoId));}
-								                      accnum = getCellValueAsString(row.getCell(4), fileName);
-								                      if(row.getCell(5) != null) {
-								                    	  bsrcode = getCellValueAsString(row.getCell(5), fileName); }					                    		  
-								                      if(row.getCell(6) != null) {
-								                    	  micrcode = getCellValueAsString(row.getCell(6), fileName); }						                    		 
-								                      routcode = getCellValueAsString(row.getCell(7), fileName);
-								                      fName = getCellValueAsString(row.getCell(8), fileName);	
-								                      Lname = getCellValueAsString(row.getCell(9), fileName);												  																												
-												     if(isStringInt(accnum) && validateBsrMicr(bsrcode) && validateBsrMicr(micrcode) &&routingNum(routcode)) {
-												    	importDTO.setBankName(bankName);
-												    	//account no validation for saving payment mode	 
-												    	 importDTO.setAccountNumber(accnum);	
-													    boolean a = accountNum.contains(importDTO.getAccountNumber());
-													    if(!a) {													    	   
-													    	    importDTO.setBsrNumber(bsrcode);
-															    importDTO.setMicrCode(micrcode);
-																importDTO.setRoutingNumber(routcode);
-																importDTO.setFirstName(fName);
-																importDTO.setLastName(Lname);
-																list.add(importDTO); }
-														}
-						                    	        }				     						                    	
-				                                	else{
-								                    		break;
-								                    	}				                    	
-											        }
-								                    else{
-								                    	//email validation for cash and cheque	 
-								                    String pEmail = importDTO.getEmail();
-								                   Boolean flag = false;
-				                        		for (PaymentAccount  py:  paymentDetailsList)
-				                        		{ 				                        			
-				                        			if(py.getEmail().equalsIgnoreCase(pEmail) && py.getAccountType().equalsIgnoreCase(paymentMode))
-				                        			{
-				                        				flag = true;				                        				
-				                        			}
+				                if( paymentMode.equalsIgnoreCase(Constants.PAYMENT_MODE_SAVINGS)){
+				                   List<String> accountNum =accGroupByEmailList.get(importDTO.getEmail());							    	   
+						                if(row.getCell(3) != null && row.getCell(4) != null&& row.getCell(7) != null && row.getCell(8) != null && row.getCell(9) != null) {
+						                    bankName =  getCellValueAsString(row.getCell(3), fileName);
+						                    if(row.getCell(0) != null) {
+						                      assoId = getCellValueAsString(row.getCell(0), fileName);
+						                      importDTO.setCandidateId(Long.parseLong(assoId));}
+								              accnum = getCellValueAsString(row.getCell(4), fileName);
+								            if(row.getCell(5) != null) {
+								              bsrcode = getCellValueAsString(row.getCell(5), fileName); }					                    		  
+								            if(row.getCell(6) != null) {
+								              micrcode = getCellValueAsString(row.getCell(6), fileName); }						                    		 
+								              routcode = getCellValueAsString(row.getCell(7), fileName);
+								              fName = getCellValueAsString(row.getCell(8), fileName);	
+								              Lname = getCellValueAsString(row.getCell(9), fileName);												  																												
+										    if(isStringInt(accnum) && validateBsrMicr(bsrcode) && validateBsrMicr(micrcode) &&routingNum(routcode)) {
+												 importDTO.setBankName(bankName);
+												 importDTO.setAccountNumber(accnum);	
+												 boolean a = accountNum.contains(importDTO.getAccountNumber());
+												if(!a) {													    	   
+												   importDTO.setBsrNumber(bsrcode);
+											       importDTO.setMicrCode(micrcode);
+												   importDTO.setRoutingNumber(routcode);
+												   importDTO.setFirstName(fName);
+												   importDTO.setLastName(Lname);
+												   list.add(importDTO); }
+											 }
+						                   }				     						                    	
+				                           else{ break; }	
+								     }
+								     else{
+						                   String pEmail = importDTO.getEmail();
+						                   Boolean flag = false;        
+				                           for (PaymentAccount  py:  paymentDetailsList){ 			
+				                        		if(py.getEmail().equalsIgnoreCase(pEmail) && py.getAccountType().equalsIgnoreCase(paymentMode)) {
+				                        			flag = true;}				                        				
 				                        		}
 				                        		if(flag) {
 				                        			continue;
 				                        		}else {
-						                    		list.add(importDTO);
-				                        		}
-				                    		}			                  			
+						                    	       list.add(importDTO);}
+				                    	 }			                  			
 								}			
 						}        
 						else{
-							count = count+1;
+							count++;
 							if(count == 5)	
 							 break;}				      
 						}				
 					}	
 		if(list.size() > 0) {
-			this.saveBanking(list,orgLocation,candidateList,map);
+			int recordsize = paymentAccountDao.saveBankingDetailInPaymentAccount(orgLocation.getId(),list,map);
+			errorData.setInsertedCount(recordsize);
 			fis.close();}
 			else {System.out.println("Invalid Data");}
 			
@@ -230,12 +210,10 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 		} catch (InvalidFormatException e) {
 			e.printStackTrace();
 		}
-		
-	  // importDTO.setRecordCount(Integer.toString(list.size()));
-		return null;
+		return errorData;
 	}
 	
-	private void saveBanking(List<IndAssociatePaymentAccountDTO> list, OrgLocations orgLocation,List<Candidate> candidateList,Map<String, Long> map) throws Exception {
+/*	private void saveBanking(List<IndAssociatePaymentAccountDTO> list, OrgLocations orgLocation,List<Candidate> candidateList,Map<String, Long> map) throws Exception {
 		
            try {			
 			    paymentAccountDao.saveBankingDetailInPaymentAccount(orgLocation.getId(),list,map);
@@ -244,7 +222,7 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		          
-	}
+	}*/
 
 	/**method for reading data from excel
 	 * Read cell value as String
