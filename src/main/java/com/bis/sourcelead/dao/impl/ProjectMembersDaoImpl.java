@@ -708,7 +708,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		
 		@SuppressWarnings("unchecked")
-		List<ProjectMembers> projectMemberList =  query.setLong("locationsId", locationsId).setLong("userId", approverUserId).setFirstResult(start).setMaxResults(length).list();
+		List<ProjectMembers> projectMemberList =  query.setLong("locationsId", locationsId).setLong("userId", approverUserId).setFirstResult(start).setMaxResults(length).setCacheable(true).list();
 		response.setData(projectMemberList);
 		
 		Query countQ = session.createQuery(countQuery);
@@ -728,7 +728,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		
 		List<Long> countList  = null;
 		if(countQ != null) {
-			countList  = countQ.list();
+			countList  = countQ.setCacheable(true).list();
 		}
 		int recordsTotal=0;
 		if(countList != null && !countList.isEmpty()) {
@@ -2047,7 +2047,11 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			  mts.setEmployeeName(mm[3].toString());
 			  mts.setProjectName(mm[1].toString());
 			  mts.setPayRate((double)mm[4]);
+			  if(mm[2] !=null){
 			  mts.setEmployeeId(mm[2].toString());
+			  }else{
+			  mts.setEmployeeId("--");  
+			  }
 			  mts.setPayRateType(mm[5].toString());
 			  mts.setPayRateCurrency(mm[6].toString());
 			  mts.setBillRate((double)mm[7]);

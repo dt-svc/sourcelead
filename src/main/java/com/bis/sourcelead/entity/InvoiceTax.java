@@ -19,6 +19,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "INVOICE_TAX")  
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "invoiceTax")
 public class InvoiceTax {
 	
 	private static final long serialVersionUID = 1L;

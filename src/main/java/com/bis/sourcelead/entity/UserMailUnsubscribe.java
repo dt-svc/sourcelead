@@ -12,6 +12,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 /**
  * @author Venkat Kesav
  *
@@ -19,6 +22,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "USER_MAIL_UNSUBSCRIBE")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userMailUnsubscribe")
 public class UserMailUnsubscribe implements Serializable{
 	private static final long serialVersionUID = 1L;
 

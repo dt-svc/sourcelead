@@ -1044,7 +1044,7 @@ public class LeaveServiceImpl implements LeaveService{
 			globalVarsMap.put("LeaveTypeName", leaveManagementHistory.getLeaveid().getLeaveType().getName());
 			
 			StringBuilder loginBuilder = new StringBuilder();
-			globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +pmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>View Leave</div></a>").toString());
+			globalVarsMap.put("loginLink",loginBuilder.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +pmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>View Leave</div></a>").toString());
 		
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		EmailScenario notificationScenario = null;
@@ -2388,7 +2388,7 @@ public class LeaveServiceImpl implements LeaveService{
 					if(userRole != null && leaveType != null) {
 						List<User> userList = new ArrayList<>();
 						userList.add(userRole.getUser());
-						AssociateBalanceLeave associa = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), userRole.getUser().getId(), orgLocation.getId(),orgLocation.getOrg().getId());
+						AssociateBalanceLeave associa = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), userRole.getUser().getId(), orgLocation.getId(),orgLocation.getOrgId());
 						if(associa != null) {
 							int result = associateBalanceLeaveService.addOrSubAssociateBalanceLeaveType(userList, orgLocation.getId(), leaveType, 1,Float.parseFloat(ltdto.getNumberOfLeaves()),"IMPORT",Constants.UPDATE);
 						}else {

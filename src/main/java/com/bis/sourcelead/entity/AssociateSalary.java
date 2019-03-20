@@ -18,11 +18,15 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.bis.sourcelead.payroll.entity.PayItem;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "ASSOCIATE_SALARY")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "associateSalary")
 public class AssociateSalary {
 	
    private static final long serialVersionUID = 1L;

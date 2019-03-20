@@ -16,12 +16,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.bis.sourcelead.enums.TagEntites;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.star.ucb.InteractiveNetworkGeneralException;
 
 @Entity
 @Table(name = "SOURCELEAD_TAGS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "sourceleadTags")
 public class SourceleadTags implements Serializable{
 
 	private static final long serialVersionUID = 1L;

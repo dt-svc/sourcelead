@@ -1,7 +1,9 @@
 package com.bis.sourcelead.util;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,21 @@ public class SourceLeadSessionManager {
 	@Autowired
 	CouchbaseClient couchbaseClient;
 
+	/**
+	 * We do not have to lookup couchbase for every ajax request
+	 * @param request
+	 * @param sessionObjectKey
+	 * @param sessionObject
+	 * @return
+	 */
+	public static boolean isSessionCachePopulated(HttpServletRequest request, String sessionObjectKey) {
+		HttpSession s = request.getSession(false);
+		if( s.getAttribute(sessionObjectKey)!= null) {
+			return true;
+		} 
+		return false;
+	}
+	
 	public static void setSessionAttribute(HttpServletRequest request, String attribute, Object obj) {
 		request.getSession().setAttribute("SourceLeadWeb_"+attribute, obj);
 	}
@@ -62,6 +79,47 @@ public class SourceLeadSessionManager {
 		}
 	}
 	
+	
+	public  void setCouchbaseQueue(String documentQueueId, String documentId) {
+		try {
+			if (documentQueueId != null && documentId != null) {
+				couchbaseClient.setCouchbaseQueue(documentQueueId, documentId);
+			} else
+				System.out.println("Queue is Null");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public  void setCouchbaseQueueJsonString(String key, String attribute, JsonObject jsonString) {
+		try {
+			if (key != null && attribute != null) {
+					if (jsonString != null) {
+						couchbaseClient.setCoucuchbaseQueueDocument(key, jsonString);
+					} else
+						System.out.println("Json String is NuLL : " + attribute);
+			} else
+				System.out.println("key is NuLL : " +  key);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public  void setCouchbaseBulkImportJsonString(String key, String attribute, JsonObject jsonString) {
+		try {
+			if (key != null && attribute != null) {
+					if (jsonString != null) {
+						couchbaseClient.setBulkImportDocuments(key, jsonString);
+					} else
+						System.out.println("Json String is NuLL : " + attribute);
+			} else
+				System.out.println("key is NuLL : " +  key);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	
 	public  void setUserLoginSessionJsonString(String sessionId, String attribute, JsonObject jsonString) {

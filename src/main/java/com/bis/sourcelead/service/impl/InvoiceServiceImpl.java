@@ -182,6 +182,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Value("${static.path}")
 	private String staticPath;
+	
+	@Value("${vmsUrl}")
+	private String vmsUrl;
 
 	@Autowired
 	private EmailScenerioUtil emailScenerioUtil;
@@ -1038,11 +1041,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 		// Invoice invoice2=getInvoicetByParentId(invoice.getId());
 		Invoice notificationInvoice = getInvoicetByParentId(invoice.getId());
 		if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
-			actionLink = notificationLink.append(sourceleadUrl).append("/")
+			actionLink = notificationLink.append(vmsUrl).append("/")
 					.append("viewInvoice?invoiceUUID=" + notificationInvoice.getInvoiceUUID() + "&invoiceType=Payables")
 					.toString();
 		} else {
-			actionLink = notificationLink.append(sourceleadUrl).append("/").append(
+			actionLink = notificationLink.append(vmsUrl).append("/").append(
 					"viewInvoice?invoiceUUID=" + notificationInvoice.getInvoiceUUID() + "&invoiceType=Receivable")
 					.toString();
 
@@ -1772,9 +1775,11 @@ public class InvoiceServiceImpl implements InvoiceService {
   	  						float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode,vendorCurrencyCode,1f);
   	  		  		      	float roundAmount = Float.parseFloat((new DecimalFormat(".###").format(((convertedAmount * 100.0) / 100.0))));
   	  		  		      	exchangeRate = roundAmount *Float.valueOf(invoice.getTotal());
+  	  		  		      	if(!loginOrgCurrencyCode.equalsIgnoreCase(vendorCurrencyCode)){
   	  		  		      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
   	  		  		      	invoice.setConvertAmount(String.valueOf(roundAmount));
   	  		  		      	invoice.setExchangeRate(String.valueOf(exchangeRate));
+  	  		  		      	}
   	  		  		      	invoice.setInvoiceFrequency(frequency);
   	  		  		        Invoice savedInvoice = invoiceDao.saveInvoce(invoice);
   	  		  		        updateSubmissionApproverHierachy(savedInvoice,invoiceType);
@@ -1880,9 +1885,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 					float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode,vendorCurrencyCode,1f);
 	  		      	float roundAmount = Float.parseFloat((new DecimalFormat(".###").format(((convertedAmount * 100.0) / 100.0))));
 	  		      	exchangeRate = roundAmount *Float.valueOf(invoice.getTotal());
+	  		      	if(!loginOrgCurrencyCode.equalsIgnoreCase(vendorCurrencyCode)){
 	  		      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
 	  		      	invoice.setConvertAmount(String.valueOf(roundAmount));
 	  		      	invoice.setExchangeRate(String.valueOf(exchangeRate));
+	  		      	}
 	  		        Invoice savedInvoice = invoiceDao.saveInvoce(invoice);
 	  		   // update requirement submission 
 					if(savedInvoice !=null){
@@ -2520,7 +2527,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 			String paymentStatus, String invoiceType, OrgLocations orgLocations, String dayWisetype,
 			String customStartDate, String customEndDate) throws Exception {
 
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocations.getTimeZoneId()));
 		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
 		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
@@ -3000,11 +3007,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 					// Invoice invoice2=getInvoicetByParentId(invoice.getId());
 					Invoice notificationInvoice = getInvoicetByParentId(invoice.getId());
 					if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
-						actionLink = notificationLink.append(sourceleadUrl).append("/")
+						actionLink = notificationLink.append(vmsUrl).append("/")
 								.append("viewInvoice?invoiceUUID=" + notificationInvoice.getInvoiceUUID() + "&invoiceType=Payables")
 								.toString();
 					} else {
-						actionLink = notificationLink.append(sourceleadUrl).append("/").append(
+						actionLink = notificationLink.append(vmsUrl).append("/").append(
 								"viewInvoice?invoiceUUID=" + notificationInvoice.getInvoiceUUID() + "&invoiceType=Receivable")
 								.toString();
 			

@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -648,7 +649,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				 candidateResumes.setFileName(jsonObj.get("fileInfo[0].fileName").toString());
 				 candidateResumes.setTitle(jsonObj.get("fileInfo[0].fileName").toString());
 				 candidateResumes.setFileContentType(jsonObj.get("fileInfo[0].contentType").toString());
-				 candidateResumes.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString());
+				 candidateResumes.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString().replaceAll(" ", "_"));
  				 candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
  				 candidateResumes.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
  				 candidateResumes.setCreatedDate(new Date());
@@ -1105,15 +1106,27 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 	 }else{
 			 globalVarsMap.put("experience","--");
 			 }
-		 if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState()) && requirement.getCity()!= null && !"".equalsIgnoreCase(requirement.getCity())){
-			 StringBuilder locBuildeer = new StringBuilder();
-			 globalVarsMap.put("location", locBuildeer.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
-		 	}else if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState())){
-		 		StringBuilder locBuildeer = new StringBuilder();
-			 	globalVarsMap.put("location", locBuildeer.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
-		 	}else{
-			globalVarsMap.put("location",requirement.getCountry());
+		 List<RequirementLocations> locationsList;
+		 String reqLocation = "";
+		 StringBuilder requirementBuilder=new StringBuilder();
+			try {
+				locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations locationsJob : locationsList) {
+						if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+							reqLocation = requirementBuilder.append(locationsJob.getLocation()).toString();
+						}else{
+							reqLocation = "--";
+						}
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+		 
+			globalVarsMap.put("location",reqLocation);
+			
 		 if(null != requirementSubmissionTemplateFields.getExpectedCTC() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedCTC()) && null != requirementSubmissionTemplateFields.getExpectedRatePer() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedRatePer())){
 			 StringBuilder ratebuild = new StringBuilder();
 			 globalVarsMap.put("requirementRate", ratebuild.append(requirementSubmissionTemplateFields.getExpectedCTC()).append(" / ").append(requirementSubmissionTemplateFields.getExpectedRatePer()).toString());
@@ -1448,7 +1461,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		     writeRow = createExcelsheet.createRow(i+8);
     		     for (int j=0; j<jsonRules.length();j++){
     		         JSONObject obj = (JSONObject) jsonRules.get(j);
-    		         createXlsSheet(createExcelsheet,writeRow,j,obj.getString("value"));
+    		         if(obj.has("value") && obj.getString("value") !=null) {
+    		        	 createXlsSheet(createExcelsheet,writeRow,j,obj.getString("value"));
+    		         }
     		     }
     		     
     		 } catch (JSONException e){
@@ -1937,7 +1952,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 User fromUser = userService.getUserById(Constants.USERID);
 		 
 		 StringBuilder actionLinkBuilder = new StringBuilder();
-		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()+"&submissionId="+requirementSubmissionTemplateFields.getRequirementSubmission().getId()+"&candidateUUID="+requirementSubmissionTemplateFields.getRequirementSubmission().getCandidate().getCandidateUUID()+"&submissionStatus=all").toString();		 
+		 String actionLink = actionLinkBuilder.append("").append(atsUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()+"&submissionId="+requirementSubmissionTemplateFields.getRequirementSubmission().getId()+"&candidateUUID="+requirementSubmissionTemplateFields.getRequirementSubmission().getCandidate().getCandidateUUID()+"&submissionStatus=all").toString();		 
 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendNotification(actionLink, fromUser,initiatorUser, orgLocations, notificationScenario,new HashMap<String,String>());
@@ -2456,7 +2471,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		     writeRow = createExcelsheet.createRow(i+8);
    		     for (int j=0; j<jsonRules.length();j++){
    		         JSONObject obj = (JSONObject) jsonRules.get(j);
+   		         if(obj.has("value") && obj.getString("value") !=null){
    		         createXlsSheet(createExcelsheet,writeRow,j,obj.getString("value"));
+   		         }
    		     }
    		     
    		 } catch (JSONException e){
@@ -2523,10 +2540,33 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			RequirementSubmission reqSub=null;
 			List<String> submissionIsd = Arrays.asList(submissionId);
 			for(String subIds :submissionIsd){
-			 reqSub = getRequirementSubmissionById(Long.parseLong(subIds));			 
+			 reqSub = getRequirementSubmissionById(Long.parseLong(subIds));		
+			 
+			 /** resume tracking code*/
+
+			 CandidateResumes resumes = candidateResumesDao.getCandidateResumeByCandidateId(reqSub.getCandidate().getId());
+
+				if (resumes != null) {
+					String fileURl = resumes.getFileURL().replace("/slead-static", staticPath);
+					File resumeFile = new File(fileURl);
+					if (resumeFile.exists()) {
+						byte[] bytes = Files.readAllBytes(resumeFile.toPath());
+						EmailAttachment emailAttachment = new EmailAttachment();
+						emailAttachment.setName(resumes.getFileName());
+						emailAttachment.setDocFile(bytes);
+						emailAttachment.setType(resumes.getFileContentType());
+						attachmentList.add(emailAttachment);
+					}
+				}
+			 
 			 //URL for page redirection
-				String redirectURL = "requirementSummary-params-type=all-and-requirementUUID="+reqSub.getRequirement().getParentRequirement().getRequirementUUID()+"-and-submissionId="+reqSub.getId();
-				//Long redirectOrgLocationId = loginOrgLocation.getId();
+			 String redirectURL ="";
+			 if(reqSub.getRequirement().getParentRequirement() !=null){
+				 redirectURL = "requirementSummary-params-type=all-and-requirementUUID="+reqSub.getRequirement().getParentRequirement().getRequirementUUID()+"-and-submissionId="+reqSub.getId();
+			 }else{
+				 redirectURL = "requirementSummary-params-type=all-and-requirementUUID="+reqSub.getRequirement().getRequirementUUID()+"-and-submissionId="+reqSub.getId();
+			 }
+			 //Long redirectOrgLocationId = loginOrgLocation.getId();
 				
 				StringBuilder linkBuild = new StringBuilder();
 				globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +atsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
@@ -2613,7 +2653,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			StringBuilder actionLinkBuilder = new StringBuilder();   
 			String actionLink = null;
 			if(reqSub.getRequirement() != null && reqSub.getRequirement().getParentRequirement() != null) {
-				 actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=all&requirementUUID="+reqSub.getRequirement().getParentRequirement().getRequirementUUID()+"&submissionId="+reqSub.getId()).toString();
+				 actionLink =actionLinkBuilder.append("").append(atsUrl).append("/").append("requirementSummary?type=all&requirementUUID="+reqSub.getRequirement().getParentRequirement().getRequirementUUID()+"&submissionId="+reqSub.getId()).toString();
 				 emailScenerioUtil.sendNotification(actionLink, user, toUser,reqSub.getRequirement().getSpocId().getClientLocationId(), notificationScenario,new HashMap<String,String>());
 			}
 				 
@@ -3519,7 +3559,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
-	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirementSubmission.getSourceSubmission().getRequirement().getRequirementUUID()+"&submissionId="+requirementSubmission.getId()+"&candidateUUID="+requirementSubmissionTemplateFields.getRequirementSubmission().getCandidate().getCandidateUUID()+"&submissionStatus=SUBMIT_TO_CLIENT").toString();
+	     actionLink = notificationLink.append(atsUrl).append("/").append("requirementSummary?requirementUUID="+requirementSubmission.getSourceSubmission().getRequirement().getRequirementUUID()+"&submissionId="+requirementSubmission.getId()+"&candidateUUID="+requirementSubmissionTemplateFields.getRequirementSubmission().getCandidate().getCandidateUUID()+"&submissionStatus=SUBMIT_TO_CLIENT").toString();
 
 		//calling the sendEmail method of emailScenerioUtil
 		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.CLIENT_RATE_NEGOTIATION,new ArrayList<EmailAttachment>());
@@ -4461,7 +4501,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		notificationScenario.setBody(notificationBody);
 		StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
-	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+submission.getSourceSubmission().getRequirement().getRequirementUUID()+"&submissionId="+submission.getSourceSubmission().getId()+"&candidateUUID="+submission.getCandidate().getCandidateUUID()+"&submissionStatus=REJECTED").toString();
+	     actionLink = notificationLink.append(atsUrl).append("/").append("requirementSummary?requirementUUID="+submission.getSourceSubmission().getRequirement().getRequirementUUID()+"&submissionId="+submission.getSourceSubmission().getId()+"&candidateUUID="+submission.getCandidate().getCandidateUUID()+"&submissionStatus=REJECTED").toString();
 
 		if(null != submission.getVendorLocationId()){
 		emailScenerioUtil.sendNotification(actionLink, userClient, userVendor, submission.getVendorLocationId(), notificationScenario,new HashMap<String,String>());
@@ -4604,7 +4644,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 								notificationScenario.setBody(notificationBody);
 								StringBuilder notificationLink = new StringBuilder();
 								 String actionLink="";
-							     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+reqsub.getSourceSubmission().getRequirement().getRequirementUUID()+"&submissionStatus=all").toString();
+							     actionLink = notificationLink.append(atsUrl).append("/").append("requirementSummary?requirementUUID="+reqsub.getSourceSubmission().getRequirement().getRequirementUUID()+"&submissionStatus=all").toString();
 
 								if(null != reqsub.getVendorLocationId()){
 								emailScenerioUtil.sendNotification(actionLink, userClient, userVendor, reqsub.getVendorLocationId(), notificationScenario,new HashMap<String,String>());

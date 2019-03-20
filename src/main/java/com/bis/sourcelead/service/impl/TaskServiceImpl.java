@@ -193,11 +193,7 @@ public class TaskServiceImpl implements TaskService {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Timezone timezone = timeZoneService.getTimezone(loginOrgLocation.getTimezone().getId());
-		// SimpleDateFormat simpleDateFormat =
-		// loginOrgLocation.getLocFullFormDateFormatter();
-		// String pattern = "dd-MM-yy";
-		// SimpleDateFormat format = new SimpleDateFormat(pattern);
+		Timezone timezone = timeZoneService.getTimezone(Long.parseLong(loginOrgLocation.getTimeZoneId()));
 
 		if (addTaskDTO.getAssignTo() != null) {
 			String assignOwnersId = null;
@@ -221,16 +217,6 @@ public class TaskServiceImpl implements TaskService {
 				if (StringUtils.isNotBlank(addTaskDTO.getDescription())) {
 					task.setDescription(addTaskDTO.getDescription());
 				}
-
-				/*
-				 * if(jsonObj.has("taskDatpicker") &&
-				 * !jsonObj.getString("taskDatpicker").isEmpty()){ Date taskDate =
-				 * format.parse(jsonObj.getString("taskDatpicker")); task.setTaskDate(taskDate);
-				 * }
-				 * 
-				 * if(jsonObj.has("timepicker") && !jsonObj.getString("timepicker").isEmpty()){
-				 * task.setTaskTime(jsonObj.getString("timepicker")); }
-				 */
 
 				if (addTaskDTO.getTaskDatpicker() != null && addTaskDTO.getTimepicker() != null) {
 					Date startTime = CalendarUtil
@@ -294,7 +280,7 @@ public class TaskServiceImpl implements TaskService {
 	 */
 	@Override
 	public void mailToUserTask(Tasks task) throws Exception {
-		Timezone timezone = timeZoneService.getTimezone(task.getOwnerOrglocationId().getTimezone().getId());
+		Timezone timezone = timeZoneService.getTimezone(Long.parseLong(task.getOwnerOrglocationId().getTimeZoneId()));
 
 		OrgLocations orglo = orgLocationService.getOrgLocations(task.getOwnerOrglocationId().getId());
 		// SimpleDateFormat simpleDateFormat = orglo.getLocFullFormDateFormatter();
@@ -496,5 +482,18 @@ public class TaskServiceImpl implements TaskService {
 		}
 		return taskDTOs;
 		
+	}
+	
+	@Override
+	public Tasks getTaskByTaskName(String taskName) throws Exception {
+		return taskDao.getTaskByTaskName(taskName);
+	}
+
+	@Override
+	public void updateTaskStatus(Tasks task) throws Exception {
+		if (task != null) {
+			task.setStatus(Constants.RECORD_INACTIVE);
+		}
+		taskDao.updateTaskStatus(task);
 	}
 }

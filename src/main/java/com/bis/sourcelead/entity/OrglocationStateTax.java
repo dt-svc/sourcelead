@@ -22,6 +22,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "ORGLOCATION_STATE_TAX")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orglocationStateTax")
 public class OrglocationStateTax implements Serializable{
 
 	private static final long serialVersionUID = 1L;

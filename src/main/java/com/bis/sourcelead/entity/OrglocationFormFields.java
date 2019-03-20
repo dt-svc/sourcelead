@@ -14,11 +14,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "ORGLOCATION_FORM_FIELDS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "orglocationFormFields")
 public class OrglocationFormFields implements Serializable{
 	private static final long serialVersionUID = 1L;
 

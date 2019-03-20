@@ -51,8 +51,17 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	
 	@Override
 	public OrgLocations addOrgLocations(OrgLocations orgLocations) throws Exception {
+		Boolean newLocation = true;
+		if(orgLocations != null && orgLocations.getId() != null) {
+			newLocation = false;
+		}
 		orgLocations.setCoolingOffPeriod(Constants.DEFAULT_COOLINGOFF_PERIOD); //to set default cooling-off period to three months
-		return orgLocationsDao.addOrgLocations(orgLocations);
+		orgLocations = orgLocationsDao.addOrgLocations(orgLocations);
+		
+		if(orgLocations != null && newLocation) {
+			commonUtil.storeDefaultPayheadsWithOrgLocation(null, orgLocations);
+		}
+		return orgLocations;
 	}
 
 	@Override
@@ -471,5 +480,10 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	@Override
 	public List<OrgLocations> getAllRegisteredWorkLocationsByOrgId(Long orgId) throws Exception {
 		return orgLocationsDao.getAllRegisteredWorkLocationsByOrgId(orgId);
+	}
+
+	@Override
+	public OrgLocations getOrgLocationById(Long id) throws Exception {
+		return orgLocationsDao.getOrgLocationById(id);
 	}
 }
