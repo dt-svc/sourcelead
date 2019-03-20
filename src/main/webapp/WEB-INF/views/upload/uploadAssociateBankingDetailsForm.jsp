@@ -190,12 +190,11 @@ if ($('#upload_banking_form').validate(false, validationSettings)){
 		    url : sourceleadUrl+"/uploadbankdetails?"+tokenParamName+"="+tokenValue+"", 	   
  		    success : function(json) {
  		    		$("#loading").removeAttr("style");
- 		    	    if(json.recordCount != null && json.recordCount != '')
+ 		    	    if(json.insertedCount != null && json.insertedCount != '')
  		    	    $("#msgDiv").removeAttr("style");
  		 			$("#msgDiv").css({ display: "block" });
- 		 			$("#msgDiv").html("record inserted");
+ 		 			$("#msgDiv").html(json.insertedCount +"Associate are updated");
  			    	msgFadein();
- 		    	    closeImportFile();
  		    	   resetUpload();
 		 		    },
 		 		   error: function(e){
