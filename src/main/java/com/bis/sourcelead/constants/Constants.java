@@ -201,6 +201,12 @@ public class Constants {
 	public static final String SOURCLEAD_TICKET_EMAIL = "sourceleadTicketEmail";
 	public static final String SOURCLEAD_TICKET_NOTIFICATION = "sourceleadTicketNotification";
 	
+	public static final String TICKET_MANAGEMENT_EMAIL = "NewTicketEmail";
+	public static final String TICKET_MANAGEMENT_NOTIFICATION ="NewTicketNotification";
+	
+	public static final String TICKET_UPDATE_EMAIL = "ChangeTicketStatusEmail";
+	public static final String TICKET_UPDATE_NOTIFICATION = "ChangeTicketStatusNotification";
+	
 	public static final String ORGDEMO_EMAIL = "orgDemoEmail";
 	public static final String ORGDEMO_NOTIFICATION = "orgDemoNotification";
 	
@@ -593,7 +599,7 @@ public class Constants {
 			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
 	
 	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category", "Work Status",
-			"Name","Laptop Serial Number/CPU Serial Number", "Make", "Model", "Memory", "CPU", "Monitor Serial Number", "Hard Disk","Operating System","OS Key","Anti-Virus","Manufactured Date","Purchase Date","Cost","Depreciation Assessment Date","Depreciation Amount","Vendor Details", "Description"};
+			"Name","Laptop Serial Number/CPU Serial Number", "Make", "Model", "MAC Address", "Memory", "CPU", "Monitor Serial Number", "Hard Disk","Operating System","OS Key","Anti-Virus","Manufactured Date","Purchase Date","Cost","Depreciation Assessment Date","Depreciation Amount","Vendor Details", "Description"};
 	
 	public static final String[] ROLE_DROPDOWN = { "Admin", "Project Manager", "HR Manager",
 			"Recruiter" };
@@ -1408,6 +1414,11 @@ public class Constants {
 	public static final String COUCH_DOCUMENT_UPLOAD_TYPE = "Import";
 	
 	public static final String COUCH_DOCUMENT_UPLOAD_FAILURE_TYPE = "Failure";
+	
+	
+    public static final String ASSOCIATE_BANK_DETAIL_HEADERS [] = {"Assoicate Id",	"Associate Email*",	"Account Type",	"Bank Name","Account Number","Routing Number"};
+	
+	public static final String[] BANK_TYPE_DROPDOWN = {"Cheque","Direct Deposit"};
 	
 	
 	
