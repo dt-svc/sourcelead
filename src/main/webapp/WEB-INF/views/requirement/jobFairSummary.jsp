@@ -204,9 +204,9 @@ var atsUrl = '${SourceLeadWeb_atsUrl}';
 			    	         	'<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 			    	            	if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 			    	                	if(opt.isRequirementReleasedByuser == 'Y') {
-			    	                    	result = result +"<div class='pull-left'><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success' title='Release Job'></i></a></div>"; 
+			    	                    	result = result +"<div class='pull-left'><a href='<c:url value='"+atsUrl+"/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success' title='Release Job'></i></a></div>"; 
 			    	                    } else {	
-			    	                    	result = result +"<div class='pull-left'><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn' title='Release Job'></i></a></div>";
+			    	                    	result = result +"<div class='pull-left'><a href='<c:url value='"+atsUrl+"/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn' title='Release Job'></i></a></div>";
 			    	                    }
 			    					} else {
 			    						result = result +"<div class='pull-left'>---</div>";

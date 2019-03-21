@@ -46,7 +46,9 @@ function addInterview(requirementId){
 	var clientSubmissions = '${clientSubmissions}';
 	var result = "";
 	result = result + '<div class="add_inter">';
-	result = result + '<form id="addInterview_form" name="addInterview_form" >';
+	result = result + '<div class="add_inter positionRelative">';
+	result = result + '<div id="interviewLoading"></div>';
+	result = result + '<form id="addInterview_form" name="addInterview_form" style="position:reletive; z-index:100;">';
 	result = result + '<input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';
 	result = result + '<input type="hidden" id="changeMaxTsRowNum" name="changeMaxTsRowNum" value="1" />';
 	result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
@@ -151,7 +153,7 @@ function addInterview(requirementId){
 	result = result + '</div>';
 	result = result +'<span class="col-md-2 noPad clearfix">';
 	result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_TEMPLATE\')">';	
-	result = result +'<a href="/app/interViewFeedBackTemplate" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>';
+	result = result +'<a href="${SourceLeadWeb_atsUrl}/interViewFeedBackTemplate" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>';
 	result = result +'</sec:authorize>';	
 	result = result + '</span>';
 	result = result + '</div>';
@@ -884,6 +886,7 @@ function cancelInterviewPopup(){
   
 <script type="text/javascript">
  function getShortListCandidates(rowId) {
+	 $("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 var clientSubmissions = '${clientSubmissions}';
 	 var isClientInterview = "";
 	 if(clientSubmissions == 'Y'){
@@ -935,8 +938,10 @@ function cancelInterviewPopup(){
 				       	    }
 			        	}
 			        	$("#"+rowId+"applicant").empty();
+			        	$("#"+rowId+"applicant").attr("data-placeholder", json.length + " Applicants available");
 			        	$("#"+rowId+"applicant").append(output);
 			        	$("#"+rowId+"applicant").trigger("chosen:updated");
+			        	$("#interviewLoading").removeAttr("style");
 			    	}else if (data.indexOf('Sign In') !== -1) {
 			    		location.replace(sourceleadUrl);
 			    	} else {
@@ -1133,7 +1138,7 @@ function interviewTemplate(){
 
 <script>
 function getTimezonesList(rowId){
-	var timezone = '${timezone}';
+	var timezone = '${SourceLeadWeb_timeZone}';
 	 $.ajax({
 	    	type: "POST",
 	    	url : atsUrl+"/getTimezonesList?"+tokenParamName+"="+tokenValue+"", 
@@ -1182,7 +1187,7 @@ function showCal(id){
 	$("#selectApp").empty();
 	var checkMaxTsRowNum1 = $("#maxTsRowNum").val();
 	$("#selectedTimeZoneId").empty();
-	var timezone = '${timezone}';
+	var timezone = '${SourceLeadWeb_timeZone}';
 	$("#selectedTimeZoneId").append(timezone);
 	
 	if(document.getElementById("button_id").value == id){
@@ -1314,7 +1319,7 @@ function checkAvailability(){
 	$("#selectApp").empty();
 	 $('.fullCount').hide();
 		$('.particalCount').hide();
-	var timezone = '${timezone}';
+	var timezone = '${SourceLeadWeb_timeZone}';
 	
 	
 	

@@ -326,10 +326,11 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		 Response<AddUserDTO> resObj = new Response<>();
 		 if(Validator.validate(addUserDTO) || Validator.validate(candidateDTO)){
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		addUserDTO.setDateFormat(orgLocations.getDateFormat());
 		candidateDTO.setDateFormat(orgLocations.getDateFormat());
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 		commonUtil.onboardCreationCandidateGeneratedIdUpdated(candidate,orgLocations);
 		User savedUser = userService.storeUser(addUserDTO, candidateDTO, user, orgLocations, "CREATEUSER", "", new Org());
 		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New associate created");
@@ -636,10 +637,14 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	  public @ResponseBody  String resendInvitationEmail(@RequestParam(value="userId", required=false) String userId,
 			  @RequestParam(value="orgId", required=false) Long orgId, @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception {
 		    
-		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		    //get user by userId
+		   
 		    User user = userService.getUserById(Long.parseLong(userId));
+		   
+		    Long loginUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		    User loginUser = userService.getUserById(loginUserId);
+		    
+		    Long loginOrgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		    OrgLocations orgLocations = orgLocationService.getOrgLocations(loginOrgLocationId);
 		    
 		    //generate random password
 		    String password = SourceLeadRandomCodeHelper.generateRandomPassword();
@@ -1592,8 +1597,6 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 
 	 @RequestMapping(value = "/getUserGroupByGroupUUID" , method = RequestMethod.GET)
 	 public Response<UserGroupDTO> getUserGroupByGroupUUID(UserGroupDTO userGroupDTO,HttpServletRequest request)throws Exception {
-		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		  User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		  Response<UserGroupDTO> userGroupDto =  userGroupService.findUserGroupById(userGroupDTO.getGroupUUID());
 		  return userGroupDto;
 	 }
@@ -1601,7 +1604,6 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 
 	 @RequestMapping(value = "/deleteUserGroupByUUID" , method = RequestMethod.GET)
 	 public Response<UserGroupDTO> deleteUserGroupByUUID(UserGroupDTO userGroupDTO,HttpServletRequest request)throws Exception {
-		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		  User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		  Response<UserGroupDTO> userGroupDto =  userGroupService.deleteUserGroupByUUID(userGroupDTO.getGroupUUID(),loginUser);
 		  return userGroupDto;
@@ -1610,7 +1612,8 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 @RequestMapping(value = "/getLinkedUserDetailsByUserName" , method = RequestMethod.POST)
 	 public String getLinkedUserDetailsByUserName(UserDTO userDTO, HttpServletRequest request)
 			throws Exception {
-           User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Long loginUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+	     User loginUser = userService.getUserById(loginUserId);
 	       String result = "";
            if(userDTO.getLinkedUserName().equalsIgnoreCase(loginUser.getUserName())) {
         	   result = "invalid";
@@ -1654,7 +1657,10 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 
 	 @RequestMapping(value = "/linkUser" , method = RequestMethod.POST)
 	 public Response<String> linkUser(UserDTO userDTO, HttpServletRequest request) throws Exception{
-	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	
+	 Long loginUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+     User user = userService.getUserById(loginUserId);
+	    
 	 Response<String> response = new Response<>();
 		try {
 			if(user != null) {
@@ -1710,8 +1716,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 
 	 @RequestMapping(value = "/removeLinkedUser" , method = RequestMethod.POST)
 	 public Response<String> removeLinkedUser(@RequestParam(value="userCode", required=true) String userCode, HttpServletRequest request) throws Exception{
-	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	 Response<String> response = new Response<>();
+		 Long loginUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+	     User user = userService.getUserById(loginUserId);
+	  Response<String> response = new Response<>();
 		try {
 			if(user != null) {
 				
@@ -1791,7 +1798,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	public ResponseList<AssociateBalanceLeaveDTO> getAssociateBalanceLeavesByUserId(@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		orgLocations.setOrgId(org.getId());
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ResponseList<AssociateBalanceLeaveDTO> response = new ResponseList();
 		try {
 			List<AssociateBalanceLeaveDTO> list = associateBalanceLeaveService.getAssociateBalanceLeavesByUserId(userId,orgLocations,loginUser);

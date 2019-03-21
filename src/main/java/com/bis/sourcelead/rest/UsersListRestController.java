@@ -48,6 +48,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.AssociateSalaryDao;
 import com.bis.sourcelead.dao.PayrollPayheadDao;
 import com.bis.sourcelead.dto.AddUserDTO;
@@ -283,6 +284,13 @@ public class UsersListRestController {
 	
 	@Autowired
 	PayrollPayheadDao payrollPayheadDao;
+	
+	@Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
+	
+	@Value("${isCouchbaseEnabled}")
+	private String isCouchbaseEnabled;
+	
 	
 	
 	/**
@@ -1219,9 +1227,14 @@ public class UsersListRestController {
 	@RequestMapping(value = "/terminateUser", method = RequestMethod.POST)
 	public @ResponseBody String terminateUser(AddUserDTO addUserDTO,@RequestParam(value = "userId", required = false) Long userId,
 			 HttpServletRequest request) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
+		Long loginUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user = userService.getUserById(loginUserId);
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		
+		
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
 
 		/*json = "{" + json + "}";
@@ -1249,10 +1262,6 @@ public class UsersListRestController {
 				}
 
 			}
-			
-			
-			
-			
 			
 			if (StringUtils.isNotBlank(addUserDTO.getAssignResourceManagers())) {
 				List<UserRole> userRolesList = userRoleService.getAllAssignedUsersByResourceManagerId(userId,
@@ -1555,6 +1564,9 @@ public class UsersListRestController {
 					orgLocations.getId());
 			userService.saveOrUpdateUserElkDocument(updateUserRole, employee, user.getUserCode());
 			
+			if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+				userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+			}
 			 
 		}
 		
@@ -2083,9 +2095,13 @@ public class UsersListRestController {
 			@RequestParam(value = "emailId", required = false) String emailId, HttpServletRequest request)
 			throws Exception {
 		if(Validator.validate(addUserDTO)){
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		
+		 Long loginUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+	     User loginUser = userService.getUserById(loginUserId);
+	     
+	     Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		
 		addUserDTO.setDateFormat(orgLocations.getDateFormat());
 		User user = userService.getUserById(userId);
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
