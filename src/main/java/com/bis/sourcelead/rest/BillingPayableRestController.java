@@ -119,11 +119,13 @@ public class BillingPayableRestController {
 					invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
 					invoice.setGenerateInvoice(invoice.getOrgRelationID().getGenerateInvoice());
 					invoice.setGenerateBill(invoice.getOrgRelationID().getGenerateBill());
+					invoice.setDataResponderLocationId(invoice.getOrgRelationID().getResponderLocationId().getId());
 				}
 				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
 					invoice.setGenerateInvoice(invoice.getOrgRelationID().getGenerateInvoice());
 					invoice.setGenerateBill(invoice.getOrgRelationID().getGenerateBill());
+					invoice.setDataResponderLocationId(invoice.getOrgRelationID().getLocationId().getId());
 				}
 				/*if(invoice.getContactUser() != null){
 					//invoice.setVendorContactId(invoice.getContactUser().getId());
@@ -208,7 +210,7 @@ public class BillingPayableRestController {
 		    	if(invoice.getProjectMemberId() !=null) {
 		    		StringBuilder sb = new StringBuilder();
 		    		if(invoice.getProjectMemberId().getMasterCandidateId().getLastName() != null) {
-		    			sb.append(invoice.getProjectMemberId().getMasterCandidateId().getFirstName()).append(invoice.getProjectMemberId().getMasterCandidateId().getLastName());
+		    			sb.append(invoice.getProjectMemberId().getMasterCandidateId().getFirstName()).append(" ").append(invoice.getProjectMemberId().getMasterCandidateId().getLastName());
 		    		}else {
 		    			sb.append(invoice.getProjectMemberId().getMasterCandidateId().getFirstName());	
 		    		}
