@@ -17,7 +17,7 @@
           <div class="positionRelative reportHead clearfix">
             <ul class="pull-right list-unstyled list-inline">
 				<li>
-				<a class="newAdBtn mr5" href="addQuestionnaire.html" title="Add">+ Add questionnaire</a>	
+				<a class="newAdBtn mr5" href="${SourceLeadWeb_atsUrl}/addQuestionnaire" title="Add">+ Add questionnaire</a>	
 					
 				</li>
               <li class="">
