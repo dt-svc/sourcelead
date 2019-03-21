@@ -22,9 +22,11 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -586,13 +588,14 @@ public class TimesheetRestController {
 		if (loginUser == null && eedDTO.getUserId() != null) {
 			loginUser = userService.getUserById(eedDTO.getUserId());
 		}
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		Long locationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
 		if (orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())) {
 			orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
 		}
-
-		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		Long candidateId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"candidateId");
+		
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 		if (candidate == null && loginUser != null && orgLocations != null) {
 			candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), orgLocations.getId());
 		}
@@ -2302,12 +2305,10 @@ public class TimesheetRestController {
 		    if (timesheetSubmissions != null) {
 					List<SubmissionApproverHierarchy> saHierarchyList = submissionApproverHierarchyService
 							.getSubmissionApproverHierarchyBySubmissionId(timesheetSubmissions.getId());
+					List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectMemberMasterCandidateIdAndProjectId(
+							                                                              projectMember.getMasterCandidateId().getId(),projectMember.getProjects().getId());
 					if (saHierarchyList == null || saHierarchyList.isEmpty()) {
 						ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
-						List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService
-								.getApproverUsersByProjectMemberMasterCandidateIdAndProjectId(
-										projectMember.getMasterCandidateId().getId(),
-										projectMember.getProjects().getId());
 						if (hierarchyList != null && !hierarchyList.isEmpty()) {
 							for (ProjectApproverHierarchy hierarchy : hierarchyList) {
 								SubmissionApproverHierarchy saHierarchy = new SubmissionApproverHierarchy();
@@ -2341,7 +2342,35 @@ public class TimesheetRestController {
 						}
 						timesheetSubmissionsList.add(timesheetSubmissions);
 						timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
+					}else {
+						Set<Long> existedIds = saHierarchyList.stream().map(sah -> sah.getHierarchyId().getId()).collect(Collectors.toSet());
+                        List<ProjectApproverHierarchy> freshProjectApproverHierarchyList = hierarchyList.stream().filter(pah->!existedIds.contains(pah.getId())).collect(Collectors.toList());
+                        if(freshProjectApproverHierarchyList != null && !freshProjectApproverHierarchyList.isEmpty()) {
+                        	for (ProjectApproverHierarchy hierarchy : freshProjectApproverHierarchyList) {
+    							SubmissionApproverHierarchy saHierarchy = new SubmissionApproverHierarchy();
+    							saHierarchy.setHeirarchyId(hierarchy);
+    							saHierarchy.setSubmissionId(timesheetSubmissions);
+    							saHierarchy.setSubmissionStatus(Submission_Status.getNameByValue(status));
+    							saHierarchy
+    									.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
+    							saHierarchy.setCreatedDate(timesheetSubmissions.getCreatedDate());
+    							if (frequencyStartDate != null)
+    								saHierarchy.setFrequencyStartDate(frequencyStartDate);
+    							if (frequencyEndDate != null)
+    								saHierarchy.setFrequencyEndDate(frequencyEndDate);
+    							saHierarchy.setCreatedBy(timesheetSubmissions.getCreatedBy());
+    							saHierarchy.setUpdatedDate(timesheetSubmissions.getUpdatedDate());
+    							saHierarchy.setUpdatedBy(timesheetSubmissions.getUpdatedBy());
+    							if(StringUtils.isNotEmpty(recordStatus) && recordStatus.equalsIgnoreCase("updated")) {
+    								saHierarchy.setStatus(Constants.RECORD_ACTIVE + "");
+    							}else {
+    								saHierarchy.setStatus(Constants.RECORD_INACTIVE + "");
+    							}
+    							saHierarchyList.add(saHierarchy);
+    						}
+                        }
 					}
+					
 					SubmissionApproverHierarchy sahActivity = null;
 					for (SubmissionApproverHierarchy saHierarchy : saHierarchyList) {
 						Submission_Status currentSahStatus = saHierarchy.getSubmissionStatus();
@@ -2893,8 +2922,9 @@ public class TimesheetRestController {
 
 	private TimesheetEntryDetailsDTO getWeekDaysMapForDisplayMobile(TimesheetEntryDetailsDTO tedDTO,
 			TimeSheetSubmissionDTO tsDTO, HttpServletRequest request) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		//OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Long locationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		Map<String, List<WeekDaysDTO>> entriesMap = new LinkedHashMap<>();
@@ -4008,13 +4038,18 @@ public class TimesheetRestController {
 		if (loginUser == null && eedDTO.getUserId() != null) {
 			loginUser = userService.getUserById(eedDTO.getUserId());
 		}
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		//OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Long locationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
 		if (orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())) {
 			orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
 		}
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
-		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		//Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+       Long candidateId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"candidateId");
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		
+		
 		if (candidate == null && loginUser != null && orgLocations != null) {
 			candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), orgLocations.getId());
 		}

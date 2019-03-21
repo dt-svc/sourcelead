@@ -14,8 +14,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>View Expense</h2>
       </div>
-      
-      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="/pms/expenses">My Expenses</a> &raquo; View Expense</div>
+        <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/expenses"> My Expense</a> &raquo; View Expense</div>
     </section>  
     <div class="project_tabs"> 
             <div class="project_tabs_inn_table">
