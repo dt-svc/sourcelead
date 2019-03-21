@@ -1,5 +1,6 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+<script src="../js/summernote.min.js"></script>
 <div class="wraper">
 <section class="content-wraper">
   <section class="content-header clearfix">
@@ -33,12 +34,13 @@
       <h4 class="col-md-9">Assign Taks</h4>
       <div class="col-md-3"> <a href="javascript:void(0)" class="btn btn-primary pull-right btn-sm" onClick="createNewtask();">Create New Taks</a> </div>
     </div>
-    <div class="clearfix col-md-12 mt">
+    
+    <!-- <div class="clearfix col-md-12 mt">
       <table class="table table-striped">
         <thead>
           <tr>
             <th>Title</th>
-            <th>Assign Top </th>
+            <th>Assign To </th>
             <th>Priority </th>
             <th>Description </th>
           </tr>
@@ -59,6 +61,9 @@
         </tbody>
       </table>
     </div>
+     -->
+      <!-- assign tasks starts here -->
+    
 <div id="createNewtask" style="display: none">
 		<div class="clearfix row">
 		  <div class="form-horizontal mt myForm">
@@ -74,7 +79,7 @@
 				<div class="col-md-9">
 				  <select class="sel form-control">
 					<option selected>Select</option>
-					<option>Applicant Owner</option>
+					<option >Applicant Owner</option>
 					<option>Job Owner</option>
 					<option>Primary Recruiter</option>
 				  </select>
@@ -85,7 +90,7 @@
 				<div class="col-md-9">
 				  <select class="sel form-control">
 					<option selected>Select</option>
-					<option>Urget</option>
+					<option>Urgent</option>
 					<option>High</option>
 					<option>Normal</option>
 					<option>Low</option>
@@ -114,6 +119,9 @@
         </div>
       </div>
   </div>
+
+  <!-- assign tasks ends here -->
+
 		<div class="clearfix row">
 		  <div class="form-horizontal mt myForm">
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
@@ -128,7 +136,7 @@
 						<option>Question2</option>
 					  </select>
 					</div>
-					<div class="col-md-1"> <a class="fa fa-plus btn btn-default" href="addQuestionnaire.html"></a> </div>
+					<div class="col-md-1"> <a class="fa fa-plus btn btn-default" href="${SourceLeadWeb_atsUrl}/addQuestionnaire"></a> </div>
 				  </div>
 				</div>
 			  </div>
@@ -182,8 +190,36 @@
 </section>
 </div>
 <script>
+function saveWorkflowTask(){
+	$.ajax({
+		type : "POST",
+		url : atsUrl +"",
+		success : function(object) {
+			var result ="";
+			if(object != null && object.length != 0){
+				for(var i = 0; i < object.length; i ++){
+					
+					
+				}
+		}
+		}
+	});
+	
+}
+</script>
+<script>
 function cancelAddStage(){
 	window.location.replace("${SourceLeadWeb_atsUrl}/defaultWorkflow");
 }
+
+function createNewtask() {
+	document.getElementById("createNewtask").style.display = "block";
+}
 </script>
+<script>
+	$(document).ready(function() {
+	  $('#summernote').summernote();
+	});
+</script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
 <jsp:include page="../masterFooter.jsp" />
