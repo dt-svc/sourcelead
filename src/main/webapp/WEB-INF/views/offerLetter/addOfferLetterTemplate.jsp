@@ -44,7 +44,7 @@
 									value="${offerLetterTemplate.templateName}"
 									field-name="Template Name"
 									data-validation="required validate_Space validate_length length1-250"
-									onblur="validateContractTemplateName();" type="text"
+									onblur="validateOfferLetterTemplateName();" type="text"
 									class="form-control">
 							</div>
 						</div>
@@ -212,49 +212,30 @@ function getTemplateContenet(templateUUID){
 }
 }
 </script>
-<!-- <script>
-	function validateContractTemplateName() {
-		var templateName = $('#templateName').val();
-		var contractType = $('#contractType').val();
-		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
-		
-		var templateUUID = '${contractsTemplate.templateUUID}';
-		
-		if (templateName != null && templateName != "" && contractType != null
-				&& contractType != "") {
-			$
-					.ajax({
-						type : "POST",
-						url : vmsUrl
-								+ "/validateContractTemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="
-								+ templateName + "&contractType="
-								+ contractType + "&templateUUID="
-								+templateUUID,
-						success : function(data) {
-							if (data == 'true') {
+<script>
+function validateOfferLetterTemplateName(){
+	var templateUUID = '${offerLetterTemplate.templateUUID}';
+	var sourceleadUrl = '${sourceleadUrl}';
+	var templateName = $("#templateName").val();
+	$('#templateDiv').find('p.jquery_form_error_message').remove();
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl+ "/validateOfferLetterTemplateName?${_csrf.parameterName}=${_csrf.token}&templateUUID="+templateUUID+"&templateName="+templateName,
+		success : function(data) {
+			 if (data == true) {
+				$("input#templateName").after("<p class='jquery_form_error_message'>"+ templateName+ " is Already Existed</span>");
+				document.getElementById("templateName").setAttribute('record-exist', 'yes');
+				document.getElementById("templateName").setAttribute('record-exist-errorMsg',templateName+ ' is Already Existed');
+				$('input#templateName').removeAttr( "record-exist record-exist-errorMsg");
 
-								$("input#templateName").after(
-										"<p class='jquery_form_error_message'>"
-												+ templateName
-												+ " is Already Existed</span>");
-								$("#save_template")
-										.attr("disabled", "disabled");
-								//  $("#save_template").addClass('button').val('Processing..');
-							} else {
-								$('input#templateName').removeAttr(
-										"record-exist record-exist-errormsg");
-								$('#templateDiv').find(
-										'p.jquery_form_error_message').remove();
-								$("#save_template").addClass('button').val(
-										'Save');
-								$("#save_template").removeAttr("disabled");
-						}
-						}
-					});
-		}
-	}
+			} else {
+				$('input#templateName').removeAttr("record-exist record-exist-errormsg");
+			} 
+		},
+	});
+}
 </script>
- -->
+
 
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />

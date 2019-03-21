@@ -60,6 +60,7 @@ import com.bis.sourcelead.dto.TabsDTO;
 import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
 import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.ContractsTemplate;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.OfferLetterTemplate;
@@ -1725,4 +1726,20 @@ public class OrgSettingsRestController {
 		offerLetterTemplateDao.saveOfferLetterTemplate(offerLetterTemplate);
 		return "success";
 	}
+	
+	
+    @RequestMapping(value = "/app/validateOfferLetterTemplateName" , method = RequestMethod.GET)
+	 public @ResponseBody  Boolean validateDepartmentname(@RequestParam(value="templateName", required=false) String templateName,
+			@RequestParam(value="templateUUID", required=false) String templateUUID,HttpServletRequest request) throws Exception {
+    	   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations"); 
+    	   OfferLetterTemplate offerLetterTemplate = null;
+    	   if(templateUUID != "" && templateUUID != null) {
+    		   offerLetterTemplate = offerLetterTemplateService.validateOfferLetterTemplateByTemplateUUIDAndTemplateName(templateUUID, templateName);
+    	   }
+    	   Boolean flag = false;
+    	   if(offerLetterTemplate == null) {
+    		   flag = offerLetterTemplateService.validateOfferLetterTemplateByOrgLocationIdAndTemplateName(loginOrgLocation.getId(), templateName);
+    	   }
+		return flag;
+	   }
 }
