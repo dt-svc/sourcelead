@@ -24,10 +24,6 @@
             <select multiple class="chosen-select form-control"
 								name="competenceRole" id="competenceRole" field-name="Role" data-placeholder="Select Role"
 								data-validation="required">
-								
-								<c:forEach var="roles" items="${rolesList}">
-													<option value="${roles.id}">${roles.displayName}</option>
-												</c:forEach>
 			</select>
           </div>
       </div>
@@ -59,7 +55,7 @@
 	<div class="clearfix">
 		<div class="pull-right mr">
 			<button type="button" class="slBtn md colorBtn" id="savePerformanceBudget" onclick="performanceManagement.saveCompetenceTagging();" >Save</button>
-	           <button type="button" class="slBtn md popClose"  onclick="" >Cancel</button>
+	           <button type="button" class="slBtn md popClose"  onclick="performanceManagement.performanceCompetenceList();" >Cancel</button>
 		</div>
 	</div>
 	</div>

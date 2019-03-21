@@ -162,10 +162,7 @@ public class PerformanceManagementController {
 	@RequestMapping(value = "/tagPerformanceCompetence")
 	public ModelAndView tagPerformanceCompetence(HttpServletRequest request) throws Exception
 	{
-		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"orgLocationId");
 		ModelAndView model = new ModelAndView();
-		List<Roles> rolesList = rolesService.getRoles(orgLocationId);
-		model.addObject("rolesList", rolesList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("performance/tagPerformanceCompetence");
 		return model;

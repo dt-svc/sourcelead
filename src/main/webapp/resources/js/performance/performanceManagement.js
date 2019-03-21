@@ -264,17 +264,70 @@ function PerformanceManagement(){
    }
    
    
-   this.tagPerformanceCompetence = function(){
+   this.tagPerformanceCompetence = function(tagCompetenceId){
 	   $.ajax({
  		  type: "GET",
  		    url: sourceleadUrl+"/tagPerformanceCompetence",
  		     success :function(response) {
  		    	    $("#performanceManagementDiv").empty();  
  		    	    $("#performanceManagementDiv").append(response);
- 		    	    performanceManagement.performanceCompetenciesList();
+ 		    	    
+ 		    	    if(tagCompetenceId != null && tagCompetenceId != 'undefined' && tagCompetenceId != ''){
+ 		    	    	 performanceManagement.editTagPerformanceCompetence(tagCompetenceId);
+ 		    	    }
+ 		    	    
+ 		    	   if(tagCompetenceId == null || tagCompetenceId == 'undefined' || tagCompetenceId != ''){
+ 		    		    performanceManagement.competenceRolesList();
+ 	 		    	    performanceManagement.performanceCompetenciesList();
+ 		    	   }
+ 		    	   
  				},
  			}); 
    }
+   
+   
+   this.editTagPerformanceCompetence = function(tagCompetenceId){
+		  
+	 	  $("#tagCompetenceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$.ajax({
+				  type: "GET",
+				    url: sourceleadUrl+"/getTagPerformanceCompetenceDetailsById?tagCompetenceId="+tagCompetenceId,
+				     success :function(response) {
+				    	 
+				    		if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+		     	    		    showError(response.responseMessage);
+		     	    		    $("#tagCompetenceLoading").removeAttr('style');
+		     	    		}
+				        	else if (response.response === "AWKWARD") {
+				        	    location.href = "/errorPage";
+				        	} else if (response.response === "SUCCESS") {
+				        		$("#tagCompetenceId").val(response.object.tagCompetenceId);
+				        		 performanceManagement.competenceRolesList(response.object.competenceRole);
+				        		 var weightageMap = new Map();
+				        		 if(response.object.jsonCompetenceString != null 
+				        				 && response.object.jsonCompetenceString != '' 
+				        					 && response.object.jsonCompetenceString != 'undefined'){
+				        			var data = eval(response.object.jsonCompetenceString);
+					        		 if (data) {
+					        			  $.each( data, function( k, v ) {
+					        				  weightageMap.set(v['competenceId'],v['weightage'])
+					        			  });
+					        		 }
+				        		}
+				        		 
+				        		 performanceManagement.performanceCompetenciesList(response.object.competenceIds,weightageMap);
+				        		 
+				        		 
+				        		 $("#tagCompetenceLoading").removeAttr('style');
+				        	} else if (response.indexOf('Sign In') !== -1) {
+				        		location.replace(sourceleadUrl);
+				        	} else {
+				        	    showError("Operation failed, please try again");
+				        	}
+				    	  
+						},
+					});
+	  }
    
    
 	
@@ -1001,6 +1054,37 @@ function PerformanceManagement(){
 	    });
   }
   
+  
+  
+  this.competenceRolesList = function(rolesIds){
+	  $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getRolesListForPerformanceAppraisal", 
+	        success: function(json) {
+	        	var output = "";
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		if(rolesIds != null && rolesIds != '' && rolesIds != 'undefined'){
+		        			var userRoleIds = rolesIds.split(",");
+		        			if (userRoleIds.indexOf(opt.rolesId.toString()) > -1) {
+		        				output = output + "<option value='" +opt.rolesId+ "' selected>"+opt.displayName+"</option>";
+		        			}else{
+		        				output = output + "<option value='" +opt.rolesId+ "'>"+opt.displayName+"</option>";
+		        			}
+		        		}else{
+		        			output = output + "<option value='" +opt.rolesId+ "'>"+opt.displayName+"</option>";
+		        		}
+		        		
+		        		
+				}
+	        	$("#competenceRole").empty();
+		        $("#competenceRole").append(output);
+		        $('#competenceRole').trigger("chosen:updated");
+	        },
+	    });
+  }
+  
   this.employeeTypeList = function(employeeTypes){
 	  $.ajax({
 	    	type: "GET",
@@ -1185,7 +1269,7 @@ this.closeCompetenceDiv = function(ele) {
   
 
   
-  this.performanceCompetenciesList = function(competenciesIds,percentageMap){
+  this.performanceCompetenciesList = function(competenciesIds,weightageMap){
 	  
 	  $.ajax({
 	    	type: "GET",
@@ -1195,19 +1279,18 @@ this.closeCompetenceDiv = function(ele) {
 	        	for (var i=0; i<json.length; i++)
 				{
 		        		var opt = json[i];
-		        		/*if(competenciesIds != null && competenciesIds != '' && competenciesIds != 'undefined'){
+		        		if(competenciesIds != null && competenciesIds != '' && competenciesIds != 'undefined'){
 		        			var categIds = competenciesIds.split(",");
-		        			if (categIds.indexOf(opt.templateId.toString()) > -1) {
-		        				performanceManagement.editSelectedTemplateRows(opt.templateId,opt.templateName,percentageMap.get(opt.templateId));
-		        				output = output + "<option value='" +opt.templateId+ "' selected>"+opt.templateName+"</option>";
+		        			if (categIds.indexOf(opt.id.toString()) > -1) {
+		        				performanceManagement.editSelectedCompetenciesRows(opt.id,opt.name,weightageMap.get(opt.id));
+		        				output = output + "<option value='" +opt.id+ "' selected>"+opt.name+"</option>";
 		        			}else{
-		        				output = output + "<option value='" +opt.templateId+ "'>"+opt.templateName+"</option>";
+		        				output = output + "<option value='" +opt.id+ "'>"+opt.name+"</option>";
 		        			}
 		        		}else{
-		        			output = output + "<option value='" +opt.templateId+ "'>"+opt.templateName+"</option>";
-		        		}*/
+		        			output = output + "<option value='" +opt.id+ "'>"+opt.name+"</option>";
+		        		}
 		        		
-		        		output = output + "<option value='" +opt.id+ "'>"+opt.name+"</option>";
 		        		
 		        		
 				}
@@ -1219,20 +1302,20 @@ this.closeCompetenceDiv = function(ele) {
   }
   
   
- /* this.editSelectedTemplateRows = function(id,templateName,percentage){
+ this.editSelectedCompetenciesRows = function(id,competenceName,weightage){
 	    var text="<div class='multiTemplates positionRelative' id="+id+" data-template_id=" + id + ">";
-		text += "<i class='fa fa-close close_multi_job' onclick='performanceManagement.closeSelectedJobDiv(this)'></i>";
+		text += "<i class='fa fa-close close_multi_job' onclick='performanceManagement.closeCompetenceDiv(this)'></i>";
 		text += "<div class='multiJobTitle clearfix'>";
-		text += "<h2 class='pull-left'>" + templateName + "</h2>";
-		text += "<span class='pull-right mr'><input type='text' value='"+percentage+"' onblur='performanceManagement.validatePercentage("+id+");performanceManagement.validatePercentageTotalSumValue();' id='percent"+id+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></span>";
+		text += "<h2 class='pull-left'>" + competenceName + "</h2>";
+		text += "<span class='pull-right mr'><input type='text' value='"+weightage+"' onblur='performanceManagement.validateWeightage("+id+");' id='weightage"+id+"' class='form-control' field-name='Percentage' placeholder='Weightage' data-validation='validate_int required'></span>";
 		text += "</div>";
-		text += "<div class='row mxrateerror' id='percentageDiv"+id+"'>";
-		text += "<input type='hidden' name='percent"+id+"' id='percentageValidation"+id+"'>";
+		text += "<div class='row mxrateerror' id='weightageDiv"+id+"'>";
+		text += "<input type='hidden' name='weightage"+id+"' id='weightageValidation"+id+"'>";
 		text += "</div>";
 		text += "</div>";
-		$("#selectedTemplatesDiv").append(text);
+		$("#selectedCompetenceDiv").append(text);
 		return;
-  }*/
+  }
   
   
   
@@ -1273,7 +1356,7 @@ this.closeCompetenceDiv = function(ele) {
 		        	else if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
-		        		getTagCompetenceList();
+		        		performanceManagement.performanceCompetenceList();
 		        	} else if (response.indexOf('Sign In') !== -1) {
 		        		location.replace(sourceleadUrl);
 		        	} else {
