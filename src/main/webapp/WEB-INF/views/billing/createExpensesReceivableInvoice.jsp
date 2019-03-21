@@ -610,15 +610,19 @@ function editExpensesDetailsEdit(data){
 
 
 <script>
-function getExpenses(projectMemberId,expensesFrequency){
+function getExpenses(projectMemberId,expensesFrequency,expenseId){
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var memberId = $("#projectMemberId").val();
 	if(projectMemberId !=null && projectMemberId !='undefined' && expensesFrequency !=null && expensesFrequency !='undefined'){
-		memberId = projectMemberId
+		memberId = projectMemberId;
+	}
+	var expenseId = 0;
+	if(expenseId !=null && expenseId !='undefined' && expensesFrequency !=null && expensesFrequency !='undefined'){
+		expenseId = expenseId;
 	}
 	$.ajax({
 		type : "GET",
-		url: vmsUrl+"/getExpensesByProjectMemberId?"+tokenParamName+"="+tokenValue+"&memberId="+memberId+"&invoiceType=Receivable",
+		url: vmsUrl+"/getExpensesByProjectMemberId?"+tokenParamName+"="+tokenValue+"&memberId="+memberId+"&expenseId="+expenseId+"&invoiceType=Receivable",
 		success :function(json) {
 			var output = "";
 			output = output + "<option value=''>--Select Expenses--</option>";
@@ -626,7 +630,7 @@ function getExpenses(projectMemberId,expensesFrequency){
 			{
 			var opt = json.data[i];
 			var selected = "";
-			 if(expensesFrequency = opt.dateFrequency && expensesFrequency !=null && expensesFrequency != '' && expensesFrequency !='undefined'){
+			 if(expensesFrequency == opt.dateFrequency && expensesFrequency !=null && expensesFrequency != '' && expensesFrequency !='undefined'){
 				selected = 'selected';
 			} 
 			output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.dateFrequency+"</option>";
@@ -657,7 +661,7 @@ function getProjectAssignMembers(pid,projectMemberName){
 			{
 			var opt = json.data[i];
 			var selected = "";
-			 if(projectMemberName = opt.empName && projectMemberName != null && projectMemberName !='' && projectMemberName !="undefined" ){
+			 if(projectMemberName == opt.empName && projectMemberName != null && projectMemberName !='' && projectMemberName !="undefined" ){
 				 selected = 'selected';
 			} 
 			output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.empName+"</option>";
@@ -1463,7 +1467,7 @@ function toDate(selector) {
 		           		getProjectsList(json['projectName']);
 		           		checkedvalue(json['expensesInvoices']);
 		           		getProjectAssignMembers(json['projectId'],json['projectMemberName']);
-		           		getExpenses(json['memberId'],json['expensesFrequency']);
+		           		getExpenses(json['memberId'],json['expensesFrequency'],json['expId']);
 		           		editExpensesDetailsEdit(json['invoiceLineItemsList']); 
 		           	}else{
 		           	 	editExpensesInlineItems(json['invoiceLineItemsList']);
