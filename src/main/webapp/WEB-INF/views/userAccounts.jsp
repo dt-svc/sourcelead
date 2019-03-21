@@ -103,13 +103,14 @@
  <script>
  function validateLinkedUserName(){
 	 var linkedUserName = $("#linkedUserName").val();
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var atsUrl ='${SourceLeadWeb_atsUrl}';
+
 	 if(linkedUserName){
 		 $("#confirm-id").attr("disabled", "disabled");
 		 $("#linkUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
         	      type: "POST",
-              	  url: sourceleadUrl+"/getLinkedUserDetailsByUserName?${_csrf.parameterName}=${_csrf.token}&linkedUserName="+linkedUserName,
+              	  url: atsUrl+"/getLinkedUserDetailsByUserName?${_csrf.parameterName}=${_csrf.token}&linkedUserName="+linkedUserName,
                 	success: function(result) {
                 		if(result == 'invalid'){
                 			$('#linkedUserNameDiv').find('p.jquery_form_error_message').remove();
@@ -143,13 +144,13 @@
  function validateLinkUsePwd(){
 	 var linkedUserName = $("#linkedUserName").val();
 	 var linkedUserPwd = $("#linkedUserPwd").val();
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var atsUrl ='${SourceLeadWeb_atsUrl}';
 	 if(linkedUserName && linkedUserPwd){
 		 $("#confirm-id").attr("disabled", "disabled");
 		 $("#linkUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
         	      type: "POST",
-              	  url: sourceleadUrl+"/validateLinkedUserPasswordByUserName?${_csrf.parameterName}=${_csrf.token}&linkedUserName="+linkedUserName+"&linkedUserPwd="+linkedUserPwd,
+              	  url: atsUrl+"/validateLinkedUserPasswordByUserName?${_csrf.parameterName}=${_csrf.token}&linkedUserName="+linkedUserName+"&linkedUserPwd="+linkedUserPwd,
                 	success: function(result) {
                 		if(result == 'invalid'){
                 			$('#linkedUserPwddiv').find('p.jquery_form_error_message').remove();
@@ -185,14 +186,16 @@
 
 		if ($('#linkUser_form').validate(false, validationSettings)) {
 			 var formData = getFormData1("linkUser_form");
-			 var sourceleadUrl ='${sourceleadUrl}';
+			 var atsUrl ='${SourceLeadWeb_atsUrl}';
+			 var sourceleadUrl = '${sourceleadUrl}';
+
      		$("#linkUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 						type : "POST",
 						data: formData,
 		  		        processData: false,
 		  		        contentType:false, 
-						url : sourceleadUrl+ "/linkUser?${_csrf.parameterName}=${_csrf.token}",
+						url : atsUrl+ "/linkUser?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
 							if (result && result.response === "INVALID_DATA") {
 								$("#linkUserLoading").removeAttr("style");
@@ -241,11 +244,14 @@
  
  
  function removelinkUser(userCode){
+
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var atsUrl ='${SourceLeadWeb_atsUrl}';
+
 	 $("#removeLinkUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
   	      type: "POST",
-        	  url: sourceleadUrl+"/removeLinkedUser?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode,
+        	  url: atsUrl+"/removeLinkedUser?${_csrf.parameterName}=${_csrf.token}&userCode="+userCode,
           	success: function(result) {
           		
           		if (result && result.response === "INVALID_DATA") {
