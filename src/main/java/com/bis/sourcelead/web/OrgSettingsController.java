@@ -7,9 +7,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -29,9 +29,10 @@ import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
 import com.bis.sourcelead.dto.OrgLocationIndiaBankingDetailsDTO;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailConfigurationFromMail;
-import com.bis.sourcelead.entity.EmailReminder;
 import com.bis.sourcelead.entity.EmailScenarioConfiguration;
+import com.bis.sourcelead.entity.LetterHead;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.OfferLetterTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLocationInformationDetails;
@@ -50,8 +51,10 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailReminderService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
+import com.bis.sourcelead.service.LetterHeadService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.OfferLetterTemplateService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLocationIndiaBankingDetailsService;
 import com.bis.sourcelead.service.OrgLocationInformationDetailsService;
@@ -144,6 +147,11 @@ public class OrgSettingsController {
 	@Autowired
 	OrglocationDepositTaxesService orglocationDepositTaxesService;
 
+	@Autowired
+	private LetterHeadService letterHeadService;
+	
+	@Autowired
+	private OfferLetterTemplateService offerLetterTemplateService;
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/orgSettings")
@@ -656,6 +664,31 @@ public class OrgSettingsController {
 			ModelAndView model = new ModelAndView();		
 			model.setViewName("settings");
 			model.addObject("sourceleadUrl", sourceleadUrl);			
+			return model;
+		}
+	    
+	    
+	    @RequestMapping(value = "/addOfferLetterTemplate")
+		public ModelAndView addOfferLetterTemplate(@RequestParam(value="templateUUID", required=false) String templateUUID ,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			ModelAndView model = new ModelAndView();
+			
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if(templateUUID != null) {
+				OfferLetterTemplate offerLetterTemplate = offerLetterTemplateService.getOfferLetterTemplateDetailsByTemplateUUID(templateUUID);
+				model.addObject("offerLetterTemplate", offerLetterTemplate);
+			}
+			List<LetterHead> letterHeadList = letterHeadService.getLetterheadBylocationId(orgLocation.getId());
+			model.addObject("letterHeadList", letterHeadList);
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("offerLetter/addOfferLetterTemplate");
+			return model;
+		}
+	    
+	    @RequestMapping(value = "/viewOfferLetterTemplate")
+		public ModelAndView orgContractTemplate() {
+			ModelAndView model = new ModelAndView();
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("offerLetter/viewOfferLetterTemplate");
 			return model;
 		}
 }
