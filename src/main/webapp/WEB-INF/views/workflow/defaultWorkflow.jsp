@@ -129,7 +129,7 @@
 	<div class="clearfix">
 		<div class="pull-right">
 		<input value="Save" class="btn btn-primary" type="button">
-		<input value="Cancel" class="btn btn-default ml" type="button">
+		<input value="Cancel" class="btn btn-default ml" type="button" onclick = "cancelDefaultWorkflow();">
 		</div>
 	</div>
 	</div>
@@ -141,6 +141,11 @@
   $( function() {
     $( "#sortable" ).sortable();
   } );
+  </script>
+<script>
+  function cancelDefaultWorkflow(){
+	  window.location.replace("${SourceLeadWeb_atsUrl}/workflowList");
+  }
 </script>
   
   
