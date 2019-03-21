@@ -6,7 +6,7 @@
       <div class="pull-left">
         <h2>Add Questionnaire</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings</a> &raquo; 
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
       <a href="${SourceLeadWeb_atsUrl}/questionnaireList">Questionnaire </a>&raquo; 
       Add Questionnaire</div>
     </section>
