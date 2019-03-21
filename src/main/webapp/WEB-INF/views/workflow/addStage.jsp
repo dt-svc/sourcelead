@@ -174,11 +174,16 @@
         <div class="clearfix col-md-12 mb">
           <div class="pull-right mr">
             <input value="Save" class="btn btn-primary" type="button">
-            <input value="Cancel" class="btn btn-default ml" type="button">
+            <input value="Cancel" class="btn btn-default ml" type="button" onclick = "cancelAddStage();">
           </div>
         </div>
       </div>
 	  </div>
 </section>
 </div>
+<script>
+function cancelAddStage(){
+	window.location.replace("${SourceLeadWeb_atsUrl}/defaultWorkflow");
+}
+</script>
 <jsp:include page="../masterFooter.jsp" />
