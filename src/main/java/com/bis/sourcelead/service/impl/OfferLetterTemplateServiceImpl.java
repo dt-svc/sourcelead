@@ -90,6 +90,16 @@ public class OfferLetterTemplateServiceImpl implements OfferLetterTemplateServic
 		
 		return offerLetterTemplateDao.getOfferLetterTemplateDetailsByTemplateUUID(templateUUID);
 	}
+
+	@Override
+	public OfferLetterTemplate validateOfferLetterTemplateByTemplateUUIDAndTemplateName(String templateUUID, String templateName) throws Exception {
+		return offerLetterTemplateDao.validateOfferLetterTemplateByTemplateUUIDAndTemplateName(templateUUID, templateName);
+	}
+
+	@Override
+	public Boolean validateOfferLetterTemplateByOrgLocationIdAndTemplateName(Long orgLocationId, String templateName) throws Exception {
+		return offerLetterTemplateDao.validateOfferLetterTemplateByOrgLocationIdAndTemplateName(orgLocationId, templateName);
+	}
 	
 	
 	

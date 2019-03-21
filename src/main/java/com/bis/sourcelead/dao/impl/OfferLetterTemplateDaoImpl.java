@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.OfferLetterTemplateDao;
 import com.bis.sourcelead.dto.OfferLetterTemplateDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.ContractsTemplate;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OfferLetterTemplate;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
@@ -115,6 +116,33 @@ public class OfferLetterTemplateDaoImpl implements OfferLetterTemplateDao{
 			offerLetterTemplate = offerLetterTemplateList.get(0);
 		}
 		return offerLetterTemplate;
+	}
+
+
+	@Override
+	public OfferLetterTemplate validateOfferLetterTemplateByTemplateUUIDAndTemplateName(String templateUUID, String templateName) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from OfferLetterTemplate offerLetter  where offerLetter.templateUUID =:templateUUID and offerLetter.templateName =:templateName and offerLetter.templateStatus = '1'";
+		List<OfferLetterTemplate> oferLetterTemplateList =session.createQuery(query) .setString("templateUUID", templateUUID).setString("templateName", templateName).list();
+		OfferLetterTemplate oferLetterTemplate = null;
+		if(oferLetterTemplateList != null && !oferLetterTemplateList.isEmpty())
+		{
+			oferLetterTemplate = (OfferLetterTemplate) oferLetterTemplateList.iterator().next();
+		}
+		return oferLetterTemplate;
+	}
+
+
+	@Override
+	public Boolean validateOfferLetterTemplateByOrgLocationIdAndTemplateName(Long orgLocationId, String templateName) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+			 String query = "from OfferLetterTemplate offerLetter where offerLetter.orgLocationId.id =:orgLocationId and offerLetter.templateName =:templateName and offerLetter.templateStatus = '1'";
+				Collection<OfferLetterTemplate> oferLetterTemplateList = session.createQuery(query) .setString("templateName", templateName).setLong("orgLocationId", orgLocationId).list();
+				if (oferLetterTemplateList != null && oferLetterTemplateList.size() > 0) {
+					flag = true;
+				}
+		return flag;
 	}
  
 }

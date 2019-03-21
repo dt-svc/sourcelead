@@ -13,4 +13,8 @@ public interface OfferLetterTemplateService {
 	
 	ResponseList<OfferLetterTemplate> getAllOfferLetterTemplatesByOrgLocationid(OfferLetterTemplateDTO offerLetterTemplateDTO)throws Exception;
 
+	OfferLetterTemplate validateOfferLetterTemplateByTemplateUUIDAndTemplateName(String templateUUID,String templateName)throws Exception;
+	
+	Boolean validateOfferLetterTemplateByOrgLocationIdAndTemplateName(Long orgLocationId,String templateName) throws Exception;
+
 }
