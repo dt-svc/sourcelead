@@ -22,6 +22,8 @@ import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.reportsDTO.ApplicantDeclineDTO;
+import com.bis.sourcelead.reportsDTO.ApplicantsBackoutDTO;
 import com.bis.sourcelead.reportsDTO.JobFilterDTO;
 
 /**
@@ -256,5 +258,14 @@ public interface RequirementService {
 
 	public void sendMailToPrimaryRecruiter(Requirement requirement,User loginUser,User toUser) throws Exception;
 	
+	public List<Requirement> getAllReleasedJobsForVendorBasedOnOrgRelationId(Long orgLocationId, Long orgRelationId);
+	
+	public List<Requirement> getAllReleasedJobsBasedOnSpocId(long spocId);
+
+	public long getQualityCandidatesForVendors(List<Long> requirementIdList, long orgRelationId, long spocId, String staus);
+
+	public ApplicantDeclineDTO getApplicantDeclineCountsForVendor(List<Long> requirementIdList, long orgRelationId, long spocId);
+	
+	public ApplicantsBackoutDTO getApplicantBackoutCountsForVendor(List<Long> requirementIdList, long orgRelationId, long spocId);
 	
 }
