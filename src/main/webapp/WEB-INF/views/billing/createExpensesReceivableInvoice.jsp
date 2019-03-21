@@ -610,15 +610,15 @@ function editExpensesDetailsEdit(data){
 
 
 <script>
-function getExpenses(projectMemberId,expensesFrequency,expenseId){
+function getExpenses(projectMemberId,expensesFrequency,expId){
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var memberId = $("#projectMemberId").val();
 	if(projectMemberId !=null && projectMemberId !='undefined' && expensesFrequency !=null && expensesFrequency !='undefined'){
 		memberId = projectMemberId;
 	}
 	var expenseId = 0;
-	if(expenseId !=null && expenseId !='undefined' && expensesFrequency !=null && expensesFrequency !='undefined'){
-		expenseId = expenseId;
+	if(expId !=null && expId !='undefined' && expensesFrequency !=null && expensesFrequency !='undefined'){
+		expenseId = expId;
 	}
 	$.ajax({
 		type : "GET",
