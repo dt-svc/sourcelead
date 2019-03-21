@@ -16,6 +16,17 @@
     
 <div class="reportNewDash">
 
+	<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
+		<a href='${appPath}/offerAcceptanceRate'>
+			<div class="repDashCta">
+				<span><i class="fa fa-bar-chart"></i></span>
+				<div class="repDashCtaWrap">
+					<h2>Offer Acceptance Rate</h2><b>View</b>
+				</div>
+			</div>
+		</a>
+	</sec:authorize>
+	
  	<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
 		<a href='${SourceLeadWeb_sourceleadUrl}/applicantsjoinedlist'>
 			<div class="repDashCta">
