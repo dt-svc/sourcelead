@@ -1,6 +1,8 @@
 package com.bis.sourcelead.dao.impl.performance;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.performance.PerformanceTagCompetenciesDao;
+import com.bis.sourcelead.dto.performance.PerformanceTagCompetenciesDTO;
+import com.bis.sourcelead.entity.performance.PerformanceCompetencies;
 import com.bis.sourcelead.entity.performance.PerformanceTagCompetencies;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -58,4 +62,23 @@ public class PerformanceTagCompetenciesDaoImpl implements PerformanceTagCompeten
 		}
 		return performanceTagCompetencies;
 	}
+
+	@Override
+	public PerformanceTagCompetencies getPerformanceTagCompetenciesById(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceTagCompetencies> performanceCompetenciesList = new ArrayList<PerformanceTagCompetencies>();
+		logger.debug("getPerformanceTagCompetenciesById  start");
+		performanceCompetenciesList = session.createQuery("from PerformanceTagCompetencies tagCompetencies where tagCompetencies.id = :id " ).setLong( "id", id).list();
+		logger.debug("getPerformanceTagCompetenciesById  end");
+		if (performanceCompetenciesList.size() > 0) {
+			return performanceCompetenciesList.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public List<PerformanceTagCompetencies> getPerformanceTagCompetenciesList(Long orgLocationId) throws Exception {Session session = this.sessionFactory.getCurrentSession();
+	String query = "from PerformanceTagCompetencies tagCompetencies where tagCompetencies.orgLocationId.id =:orgLocationId and tagCompetencies.status ='1' ";
+	return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();}
 }

@@ -12,12 +12,23 @@ public class PerformanceTagCompetenciesDTO implements Serializable{
 	
 	private String competenceRole;
 	
+	private String createdDate;
+	
 	@Required(desc="performanceCompetence")
 	private String performanceCompetence;
 	
 	@Required(desc="jsonCompetenceString")
 	private String jsonCompetenceString ;
 	
+	private String competenceRoleNames;
+	
+	private Integer competenceCount;
+	
+	private String uuid;
+	
+	private Integer totalWeightage;
+	
+	private String competenceIds;
 	
 
 	public Long getTagCompetenceId() {
@@ -51,7 +62,53 @@ public class PerformanceTagCompetenciesDTO implements Serializable{
 	public void setJsonCompetenceString(String jsonCompetenceString) {
 		this.jsonCompetenceString = jsonCompetenceString;
 	}
-	
-	
+
+	public String getCompetenceRoleNames() {
+		return competenceRoleNames;
+	}
+
+	public void setCompetenceRoleNames(String competenceRoleNames) {
+		this.competenceRoleNames = competenceRoleNames;
+	}
+
+	public Integer getCompetenceCount() {
+		return competenceCount;
+	}
+
+	public void setCompetenceCount(Integer competenceCount) {
+		this.competenceCount = competenceCount;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public Integer getTotalWeightage() {
+		return totalWeightage;
+	}
+
+	public void setTotalWeightage(Integer totalWeightage) {
+		this.totalWeightage = totalWeightage;
+	}
+
+	public String getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getCompetenceIds() {
+		return competenceIds;
+	}
+
+	public void setCompetenceIds(String competenceIds) {
+		this.competenceIds = competenceIds;
+	}
 
 }
