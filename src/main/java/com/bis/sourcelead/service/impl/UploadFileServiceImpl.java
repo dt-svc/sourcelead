@@ -2106,6 +2106,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 	 * @param associateBankDetailHeaders 
 	 * @return Sheet
 	 */
+	 @Override
 	private Sheet setAssociateTemplateHeader(Sheet sheet, String[] headers)
 	{
 		Row headerSheet = sheet.createRow(0);
@@ -2113,5 +2114,13 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			headerSheet.createCell(i).setCellValue(headers[i]);
 		}
 		return sheet;
+	}
+    @Override
+	public void changeDocumentNamesWithWhiteSpacesToUnderScore(String staticPath) {
+		try {
+			masterCandidateDao.changeDocumentNamesWithWhiteSpacesToUnderScore(staticPath);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
