@@ -2381,6 +2381,19 @@ public class UserDaoImpl implements UserDao {
 		}
 		return -1;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public List<DashboardItems> getAllDashboardItems() {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from DashboardItems d where d.user != null and d.orgLocations != null";
+			return session.createQuery(query).list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	@Override
 	@Transactional
