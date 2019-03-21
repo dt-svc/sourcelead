@@ -20,6 +20,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "INVOICE_DOCUMENTS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "invoiceDocument")
 public class InvoiceDocument {
 	
 	private static final long serialVersionUID = 1L;

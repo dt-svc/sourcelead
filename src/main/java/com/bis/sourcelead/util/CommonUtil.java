@@ -9,8 +9,10 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -2884,5 +2886,94 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 		pps.setCreatedBy(user);
 		payrollPaySlipIndService.savePayrollPaySlipInd(pps);
 	}
+	
+	
+	public String getClientIpAddr(HttpServletRequest request) {  
+	    String ip = request.getHeader("X-Forwarded-For");  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("Proxy-Client-IP");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("WL-Proxy-Client-IP");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("HTTP_X_FORWARDED_FOR");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("HTTP_X_FORWARDED");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("HTTP_X_CLUSTER_CLIENT_IP");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("HTTP_CLIENT_IP");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("HTTP_FORWARDED_FOR");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("HTTP_FORWARDED");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("HTTP_VIA");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getHeader("REMOTE_ADDR");  
+	    }  
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+	        ip = request.getRemoteAddr();  
+	    }  
+        if (ip.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
+            InetAddress localip = null;
+			try {
+				localip = java.net.InetAddress.getLocalHost();
+			} catch (UnknownHostException e) {
+			}
+			if(localip != null)
+            ip = localip.getHostAddress();
+        }
+        
+        String[] ipArray = ip.split(",");
+		if(ipArray.length > 1){
+			for(String s :ipArray){
+				if(StringUtils.isNotEmpty(s)){
+					ip =s.replaceAll("[^0-9.]", "");
+					break;
+				}
+			}
+			
+		}else{
+			ip = ip.replaceAll("[^0-9.]", "");
+		}
+	    return ip;  
+	}
+	
+	
+	public Map<String,String> getCandidateBulkImportHeaderMap() {
+		Map<String,String> headerMap = new HashMap<>();
+		headerMap.put("summary", "summary");
+		headerMap.put("lastName", "Last Name");
+		headerMap.put("vendorcontact", "Vendor Contact");
+		headerMap.put("alternateMobilePhone", "Alternate Mobile Number");
+		headerMap.put("address", "Address");
+		headerMap.put("primarySkill", "Primary Skill");
+		headerMap.put("expectedRate", "Expected Rate");
+		headerMap.put("experienceYears", "Experience");
+		headerMap.put("currentRate", "Current Rate");
+		headerMap.put("candidateSkills", "Skills");
+		headerMap.put("firstName", "First Name");
+		headerMap.put("candidateEmployers", "Employers");
+		headerMap.put("mobilePhone", "Phone");
+		headerMap.put("vendor", "Vendor");
+		headerMap.put("designationType", "Designation Type");
+		headerMap.put("docFile", "Resume");
+		headerMap.put("middleName", "middleName");
+		headerMap.put("designation", "Designation");
+		headerMap.put("candidateEducation", "Education");
+		headerMap.put("email", "Email");
+		return headerMap;
+		
+	}
+	
 }
 

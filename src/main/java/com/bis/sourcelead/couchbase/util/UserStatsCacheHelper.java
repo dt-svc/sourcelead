@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -33,6 +35,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.couchbase.client.java.document.json.JsonObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -74,6 +77,9 @@ public class UserStatsCacheHelper {
 	
 	@Autowired
 	SourceLeadSessionManager sourceLeadSessionManager;
+	
+	@Autowired
+	UserService userService;
 	
 	
 	
@@ -407,6 +413,99 @@ public class UserStatsCacheHelper {
 	
 	
 	
+	public List<String> getCouchbaseQueueDocumentsList(String queueKey) {
+
+		Object sv = null;
+		List<String> docsList = new ArrayList<>();
+		sv = couchbaseClient.getCouchbaseQueueDocumentsList(queueKey);
+		if (sv != null) {
+			JSONParser parser = new JSONParser();
+			try {
+				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
+				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+					String key = (String) iterator.next();
+					Object jsonValue = jsonObject.get(key);
+					JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
+					for (Object okey : jsonObjVal.keySet()) {
+						String keyStr = (String) okey;
+						if (keyStr.equalsIgnoreCase("queueDocumentsList")) {
+							String keyvalue = jsonObjVal.get(keyStr).toString();
+							String[] docsStringArray = keyvalue.toString().substring(1, keyvalue.toString().length()-1).split(",");
+							for(int i=0; i<docsStringArray.length; i++) {
+								docsList.add(docsStringArray[i].substring(1, docsStringArray[i].length()-1));
+							}
+						}
+
+					}
+				}
+
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return docsList;
+	}
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	public JSONObject getCandidateDocument(String dockey) {
+		JSONObject orgLocationJson = new JSONObject();
+		Object sv = null;
+		sv = couchbaseClient.getCouchbaseQueueDocumentsList(dockey);
+		if (sv != null) {
+
+			JSONParser parser = new JSONParser();
+			try {
+
+				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
+				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+					String key = (String) iterator.next();
+					Object jsonValue = jsonObject.get(key);
+					orgLocationJson = (JSONObject) parser.parse(jsonValue.toString());
+				}
+
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return orgLocationJson;
+	}
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	public JSONObject getBulkImportsFailureList(String dockey) {
+
+		JSONObject failureUploadJson = new JSONObject();
+		Object sv = null;
+		sv = couchbaseClient.getCouchbaseQueueDocumentsList(dockey);
+		if (sv != null) {
+			JSONParser parser = new JSONParser();
+			try {
+				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
+				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+					String key = (String) iterator.next();
+					Object jsonValue = jsonObject.get(key);
+					JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
+					for (Object okey : jsonObjVal.keySet()) {
+						String keyStr = (String) okey;
+						Object keyvalue = jsonObjVal.get(keyStr);
+						failureUploadJson.put(keyStr, keyvalue);
+
+					}
+				}
+
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return failureUploadJson;
+	
+	}
+	
+	
+	
 	/**
 	 * @author Venkat
 	 * @param orgLocations
@@ -414,16 +513,19 @@ public class UserStatsCacheHelper {
 	 */
 	
 	public void saveOrgLocationDetailsToCouchbase(OrgLocations orgLocations) {
-		OrgLocationCacheDTO orgLocationDTO = getOrgLocationCacheDetails(orgLocations);
-		 ObjectMapper sessionObj = new ObjectMapper();
-         try {
-			String sessionJsonStr = sessionObj.writeValueAsString(orgLocationDTO);
-			JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
-			StringBuilder orgLocationKey = new StringBuilder();
-			orgLocationKey.append("OrgLocation_").append(orgLocationDTO.getOrgLocationCode());
-			sourceLeadSessionManager.setOrgLocationsJsonString(orgLocationKey.toString(), "userProfile", jsonObject);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+		
+		if(orgLocations != null &&  orgLocations.getOrg() != null) {	 
+			OrgLocationCacheDTO orgLocationDTO = getOrgLocationCacheDetails(orgLocations);
+			 ObjectMapper sessionObj = new ObjectMapper();
+	         try {
+				String sessionJsonStr = sessionObj.writeValueAsString(orgLocationDTO);
+				JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
+				StringBuilder orgLocationKey = new StringBuilder();
+				orgLocationKey.append("OrgLocation_").append(orgLocationDTO.getOrgLocationCode());
+				sourceLeadSessionManager.setOrgLocationsJsonString(orgLocationKey.toString(), "userProfile", jsonObject);
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -586,7 +688,9 @@ public class UserStatsCacheHelper {
 			 if(candidate != null) {
 				 userRoleDTO.setCandidateId(String.valueOf(candidate.getId()));
 				 userRoleDTO.setCandidateUUID(candidate.getCandidateUUID());
-				 userRoleDTO.setMasterCandidateId(String.valueOf(candidate.getMasterCandidateId().getId()));
+				 if(candidate.getMasterCandidateId() != null) {
+					 userRoleDTO.setMasterCandidateId(String.valueOf(candidate.getMasterCandidateId().getId()));
+				 }
 			 }
 			
 			 StringBuilder userNameSB = new StringBuilder();
@@ -667,7 +771,7 @@ public class UserStatsCacheHelper {
 	}
 	
 	
-	public void saveLoginUserSessionStoreToCouchbase(String generatedCustomTocken,UserRole userRole,HttpServletRequest request) {
+	public void saveLoginUserSessionStoreToCouchbase(String generatedCustomTocken,UserRole userRole,String actionUUID,Long actionId,HttpServletRequest request) {
 		LoginUserSessionStoreDTO sessionDTO = new LoginUserSessionStoreDTO();
 		
 		sessionDTO.setDocumentType(Constants.COUCH_DOCUMENT_TYPE_USER_LOGIN_SESSION);
@@ -680,16 +784,29 @@ public class UserStatsCacheHelper {
 		sessionDTO.setCountry(userRole.getOrgLocations().getCountry());
 		sessionDTO.setState(userRole.getOrgLocations().getState());
 		sessionDTO.setCity(userRole.getOrgLocations().getCity());
+		sessionDTO.setActionUUID(actionUUID);
+		sessionDTO.setActionId(String.valueOf(actionId));
 	    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 	    LocalDateTime now = LocalDateTime.now();  
 	    sessionDTO.setLastUpdatedDate(dtf.format(now));
 	    StringBuilder accountsList = new StringBuilder();
 	    String userAccounts = null;
 	    try {
-			List<UserRole> userRolesList = userRoleService.getLoginUserAccountsList(userRole.getUser().getId());
+	    	List<Long> userIdsList = new ArrayList<>();
+	    	userIdsList.add(userRole.getUser().getId());
+	    	List<Long> linkedUserIdsList = userService.getUserIdsListByLinkedUserId(userRole.getUser().getId());
+	    	if(linkedUserIdsList != null && !linkedUserIdsList.isEmpty()) {
+	    		userIdsList.addAll(linkedUserIdsList);
+	    	}
+			Set<Long> loginUserIdsSet = new LinkedHashSet<>();
+			loginUserIdsSet.addAll(userIdsList);
+			userIdsList.addAll(loginUserIdsSet);
+			
+			List<UserRole> userRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
+			
 			if(userRolesList != null && userRolesList.size() > 1) {
 				for(UserRole ur : userRolesList) {
-					accountsList.append(ur.getUuid()).append(",").toString();
+					accountsList.append(ur.getUser().getUserName()+"^"+ur.getUuid()).append(",").toString();
 				}
 				 userAccounts = accountsList.deleteCharAt(accountsList.length()-1).toString(); 
 				 sessionDTO.setLoginUserAccounts(userAccounts);

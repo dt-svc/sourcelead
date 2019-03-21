@@ -77,6 +77,7 @@ import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionTypesService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
@@ -183,6 +184,9 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 	
 	@Autowired
 	UserStatsCacheHelper userStatsCacheHelper;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -327,7 +331,7 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			
 			saveOrgLocationDefaultProject(orgLocations, user);
 			commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);
-			commonUtil.storeDefaultPayheadsWithOrgLocation(user, orgLocations);
+//			commonUtil.storeDefaultPayheadsWithOrgLocation(user, orgLocations);
 			
 			userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
 			sendActivationEmail(user);
@@ -681,7 +685,7 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 		 }else{
 			 professionalName = sb.append(user.getFirstName()).toString();
 		 }
-		 
+		 emailMessage.setFirstName(professionalName);
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromName("Sourcelead Admin");
 		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
@@ -693,7 +697,7 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 		 globalVarsMap.put("registerName", professionalName);
 		 StringBuilder verifylink = new StringBuilder();
 		 
-		 globalVarsMap.put("verifyLink",verifylink.append("<a href='").append("/app/ws/activateEmail?&token=").append(user.getVerificationUUID()).append("'>").append(sourceleadUrl).append("/activateEmail?&token=").append(user.getVerificationUUID()).append("</a>").toString()); 
+		 globalVarsMap.put("verifyLink",verifylink.append("<a href='").append(sourceleadUrl).append("/ws/activateEmail?&token=").append(user.getVerificationUUID()).append("'>").append(sourceleadUrl).append("/activateEmail?&token=").append(user.getVerificationUUID()).append("</a>").toString()); 
 
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -870,6 +874,15 @@ public void updateOrgBasedRoles(OrgLicenseSubscriptionDTO orgLicenseSubscription
 					}
 					
 					rolesDao.storeRoles(roles);
+					
+					if(isCouchbaseEnabled.equalsIgnoreCase("true")){ 
+						List<UserRole> userRolesList = userRoleService.getAllUserRolesByRoleId(roles.getId());
+						if(userRolesList != null && !userRolesList.isEmpty()) {
+							for(UserRole userRole : userRolesList) {
+								userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+							}
+						}
+					}
 				}
 			}
 		}

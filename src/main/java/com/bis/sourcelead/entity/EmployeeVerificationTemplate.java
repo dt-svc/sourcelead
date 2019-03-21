@@ -12,6 +12,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 /**
  * Entity for EMPLOYEE_VERIFICATION_TEMPLATE
  * @author Rakshith
@@ -20,6 +23,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "EMPLOYEE_VERIFICATION_TEMPLATE")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "employeeVerificationTemplate")
 public class EmployeeVerificationTemplate {
 	
 	private static final long serialVersionUID = 1L;

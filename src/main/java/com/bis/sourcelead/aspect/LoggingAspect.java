@@ -2,6 +2,7 @@ package com.bis.sourcelead.aspect;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -16,6 +17,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.service.ActionHistoryService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
  *
@@ -31,7 +33,9 @@ public class LoggingAspect {
 	@Autowired(required=true)
 	private HttpServletRequest request;
 	
-
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 
@@ -122,8 +126,15 @@ public class LoggingAspect {
 		request = ((ServletRequestAttributes) RequestContextHolder
 				.getRequestAttributes()).getRequest();
 
-		UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Long actionId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"actionId");
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"userId");
+		String actionUUID = (String) SourceLeadSessionManager.getSessionAttribute(request,"actionUUID");
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations loginOrgLocation = null;
+		if(orgLocId != null) {
+			loginOrgLocation = orgLocationService.getOrgLocationById(orgLocId);
+		}
+		UserLoginLogoutSession userLoginLogoutSession = null;
 		String methodName = joinPoint.getSignature().getName();
 		String type = "";
 		if("searchClientContactDetails".equalsIgnoreCase(methodName) || "saveVenodrContact".equalsIgnoreCase(methodName) || "searchClientDetails".equalsIgnoreCase(methodName)){
@@ -168,10 +179,13 @@ public class LoggingAspect {
 		if("initMarketplacePayment".equalsIgnoreCase(methodName)){
 			type="initMarketplacePayment";
 		}
-		
 
-		if(userLoginSession != null)
-			actionHistoryService.saveActionHistory(methodName,userLoginSession,loginOrgLocation,type);
+		if(StringUtils.isNotBlank(actionUUID) && loginOrgLocation != null) {
+			userLoginLogoutSession = new UserLoginLogoutSession();
+		    userLoginLogoutSession.setId(actionId);
+			actionHistoryService.saveActionHistory(methodName,userLoginLogoutSession,loginOrgLocation,type,userId);
+		}
+		    
 	}
 
 	/*@AfterThrowing(pointcut = "execution(* com.bis.sourcelead.rest.*.*(..))", throwing = "error")

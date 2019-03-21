@@ -24,6 +24,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
@@ -40,6 +42,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 */
 	@Entity
 	@Table(name = "REQUIREMENT")
+	//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirement")
 	public class Requirement implements Serializable{
 
 	

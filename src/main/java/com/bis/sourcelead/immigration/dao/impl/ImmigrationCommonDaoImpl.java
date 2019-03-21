@@ -1282,6 +1282,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		   Session session = this.sessionFactory.getCurrentSession();
 			
            deleteLcaHistoryDetailsByImmigrationId(immigrationId);
+           deleteImmigrationNotesByImmigrationId(immigrationId);
 		   CandidateLcaJobDetails candLcaJobDetails = getCandidateLcaJobDetails(immigrationId);
 		   
 			 if(candLcaJobDetails != null) {
@@ -2463,68 +2464,21 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	public List<LcaDetailsDTO> getEmployeeByLcaId(Long lcaId,OrgLocations orgLocations) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<LcaDetailsDTO> empList = new ArrayList<LcaDetailsDTO>();
-		String queryString = "SELECT " + 
-				"IMM.GENERATED_ID AS petitionId, " + 
-				"IMM.IMMIGRATION_UUID AS immigrationUUID,"+
-				                                 "(SELECT " + 
-			                      	                       "CONCAT(FIRST_NAME, ' ', IFNULL(LAST_NAME, '')) " + 
-				                                           "FROM " + 
-				                                               " CANDIDATE " + 
-				                                                          " WHERE " + 
-				                                                               "ID = LH.CANDIDATE_ID) AS empName, " + 
-				                                                               "(SELECT "+
-				                                                                    "CANDIDATE_UUID "+
-				                                                                  "FROM "+
-				                                                                       "CANDIDATE " + 
-				                                                                   "WHERE "+
-				                                                                       "CANDIDATE_UUID = LH.CANDIDATE_ID) AS candidateUUID, "+        
-				                                       "(SELECT " + 
-				                                                    "NAME " + 
-				                                                         "FROM " + 
-				                                                             "LOOKUP_DATA " + 
-				                                                                       "WHERE " + 
-				                                                                         "ID = IMM.PETITION_TYPE) AS petitionType, " + 
-				                                        "(SELECT " + 
-				                                                      "NAME " + 
-				                                                              "FROM " + 
-				                                                                  "LOOKUP_DATA " + 
-				                                                                                "WHERE " + 
-				                                                                                         "ID = IMM.CURRENT_USCIS_STATUS) AS status, " + 
-				                                                                                         " DATE_FORMAT(IMM.OPEN_DATE ,'%Y-%m-%d') AS filedOn, " + 
-				                                      "(SELECT " + 
-				                                             "O.ORG_NAME " + 
-				                                                         "FROM " + 
-				                                                             "ORG_LOCATIONS OL, " + 
-				                                                                                 "ORG O " + 
-				                                                                                      "WHERE " + 
-				                                                                                         "OL.ORG_ID = O.ID " + 
-				                                                                                              "AND OL.ID = IMM.ORG_LOCATION_ID) AS client, " + 
-				                                       "(SELECT " + 
-				                                                    "O.ORG_NAME " + 
-				                                                                  "FROM " + 
-				                                                                            "ORG_LOCATIONS OL, " + 
-				                                                                                 " ORG O " + 
-				                                                                                     "WHERE " + 
-				                                                                                        " OL.ORG_ID = O.ID " + 
-				                                                                                           " AND OL.ID = IMM.ATTORNEY_LOCATION_ID) AS vendor, " + 
-				                                         "(SELECT " +
-			                                                         "CONVERT(ORG_LOCATION_ID,CHAR) "+
-			                                                                                    "FROM "+
-			                                                                                          "LCA "+
-			                                                                                               "WHERE "+
-			                                                                                                   "ID= LH.LCA_ID) AS orgLocationId, "+
-			                                           "(SELECT  "+
-			                                             "IT.UUID "+
-			                                                   "FROM "+
-			                                                         "IMMIGRATION_TEMPLATE IT "+
-			                                                                  "WHERE "+
-			                                                                        "IT.ID = IMM.IMMIGRATION_TEMPLATE_ID) AS immiTemplateUUID "+
-				                                                  "FROM " + 
-				                                                          "IMMIGRATION IMM, " + 
-				                                                              "LCA_HISTORY LH " + 
-				                                                                   "WHERE " + 
-				                                                                        "IMM.ID = LH.IMMIGRATION_ID " +
-				                                                                            "AND LH.LCA_ID =:lcaId";
+		String queryString = "SELECT " + "IMM.GENERATED_ID AS petitionId, " + "IMM.IMMIGRATION_UUID AS immigrationUUID,"
+				+ "(SELECT " + "CONCAT(FIRST_NAME, ' ', IFNULL(LAST_NAME, '')) " + "FROM " + " CANDIDATE " + " WHERE "
+				+ "ID = LH.CANDIDATE_ID) AS empName, " + "(SELECT " + "CANDIDATE_UUID " + "FROM " + "CANDIDATE "
+				+ "WHERE " + "ID = LH.CANDIDATE_ID) AS candidateUUID, " + "(SELECT " + "NAME " + "FROM "
+				+ "LOOKUP_DATA " + "WHERE " + "ID = IMM.PETITION_TYPE) AS petitionType, " + "(SELECT " + "NAME "
+				+ "FROM " + "LOOKUP_DATA " + "WHERE " + "ID = IMM.CURRENT_USCIS_STATUS) AS status, "
+				+ " DATE_FORMAT(IMM.OPEN_DATE ,'%Y-%m-%d') AS filedOn, " + "(SELECT " + "O.ORG_NAME " + "FROM "
+				+ "ORG_LOCATIONS OL, " + "ORG O " + "WHERE " + "OL.ORG_ID = O.ID "
+				+ "AND OL.ID = IMM.ORG_LOCATION_ID) AS client, " + "(SELECT " + "O.ORG_NAME " + "FROM "
+				+ "ORG_LOCATIONS OL, " + " ORG O " + "WHERE " + " OL.ORG_ID = O.ID "
+				+ " AND OL.ID = IMM.ATTORNEY_LOCATION_ID) AS vendor, " + "(SELECT " + "CONVERT(ORG_LOCATION_ID,CHAR) "
+				+ "FROM " + "LCA " + "WHERE " + "ID= LH.LCA_ID) AS orgLocationId, " + "(SELECT  " + "IT.UUID " + "FROM "
+				+ "IMMIGRATION_TEMPLATE IT " + "WHERE " + "IT.ID = IMM.IMMIGRATION_TEMPLATE_ID) AS immiTemplateUUID "
+				+ "FROM " + "IMMIGRATION IMM, " + "LCA_HISTORY LH " + "WHERE " + "IMM.ID = LH.IMMIGRATION_ID "
+				+ "AND LH.LCA_ID =:lcaId";
 		empList = session.createSQLQuery(queryString).setParameter("lcaId", lcaId).setResultTransformer(Transformers.aliasToBean(LcaDetailsDTO.class)).list();
 		for(LcaDetailsDTO obj : empList) {
 			if(orgLocations.getId().equals(obj.getOrgLocationId())) {
@@ -2642,7 +2596,23 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		return count;
 	}
-
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int deleteImmigrationNotesByImmigrationId(Long immigrationId) {
+		int count =0;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "delete from SourceleadNotes sn  where sn.immigration.id =:immigrationId";
+			 count= session.createQuery(query.toString()).setLong("immigrationId", immigrationId).executeUpdate();
+			return count;
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
+			e.printStackTrace();
+		}
+		return count;
+	}
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<ImmigrationReportViewDTO> getImmigrationReports(ImmigrationReportViewDTO immigrationReportDTO, OrgLocations orgLocations) {
@@ -3218,9 +3188,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	}
 	
 	//getVisanumber
-	/*@Override
+	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ImmigrationVisaDTO getCandidateVisaDetailsByVisaNumber(Long visaNumber) {
+	public ImmigrationVisaDTO getCandidateActiveVisaDetailsByVisaNumberAndCountry(Long candidateId, String visaNumber, String country) {
 		Session session = this.sessionFactory.getCurrentSession();
 		ImmigrationVisaDTO visaDTO= null;
 		try {
@@ -3231,7 +3201,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 						" cv.COUNTRY as country, CAST(cvh.VALID_FROM_DATE AS char) as validFrom," + 
 						" CAST(cvh.VALID_TO_DATE AS char) as validTo " + 
 						"  from CANDIDATE_VISA cv, CANDIDATE_VISA_HISTORY cvh  Where cv.ID= cvh.VISA_ID  "+
-						"  and cvh.status = 1 and cv.VISA_NUMBER=:visaHistoryId ";
+						"  and  cvh.IS_CURRENT  = 'Y' and cvh.status = 1 and cv.CANDIDATE_ID =:candidateId and cv.VISA_NUMBER=:visaNumber and cv.COUNTRY =:country order by cvh.id desc ";
 				visaDTO = (ImmigrationVisaDTO) session.createSQLQuery(sqlQueryString)
 										   .addScalar("id", StandardBasicTypes.LONG)
 										   .addScalar("candidateId", StandardBasicTypes.LONG)
@@ -3242,16 +3212,54 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 										   .addScalar("isCurrent", StandardBasicTypes.STRING)
 										   .addScalar("validFrom", StandardBasicTypes.STRING)
 										   .addScalar("validTo", StandardBasicTypes.STRING)
-										   .setLong("visaNumber", visaNumber)
+										   .setLong("candidateId", candidateId)
+										   .setString("visaNumber", visaNumber)
+										   .setString("country", country)
+										   .setMaxResults(1)
 										   .setResultTransformer(Transformers.aliasToBean(ImmigrationVisaDTO.class)).uniqueResult();
 		  }
 		} catch (Exception exception) {
-			logger.error("Exception caught while  getting Visa History details >>>>>>>>" + exception.getMessage());
+			logger.error("Exception caught while  getting Active visa number and details  >>>>>>>>" + exception.getMessage());
 			exception.printStackTrace();
 		}
 		return visaDTO;
-	}*/
-	
+	}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ImmigrationVisaDTO getCandidateVisaDetailsByVisaNumberAndCountry(Long candidateId, String visaNumber, String country) {
+		Session session = this.sessionFactory.getCurrentSession();
+		ImmigrationVisaDTO visaDTO= null;
+		try {
+			if (visaNumber != null) {
+				logger.debug(" before query execute to get  visa details by visa number  " + visaNumber);
+				String sqlQueryString = "select cvh.ID as id,  cv.CANDIDATE_ID as candidateId, cvh.VISA_ID as candidateVisaId ,"+
+						" cv.VISA_NUMBER as visaNumber, cv.VISA_TYPE as visaType, cvh.IS_CURRENT as isCurrent, " + 
+						" cv.COUNTRY as country, CAST(cvh.VALID_FROM_DATE AS char) as validFrom," + 
+						" CAST(cvh.VALID_TO_DATE AS char) as validTo " + 
+						"  from CANDIDATE_VISA cv, CANDIDATE_VISA_HISTORY cvh  Where cv.ID= cvh.VISA_ID  "+
+						"  and cvh.status = 1 and cv.CANDIDATE_ID =:candidateId and cv.VISA_NUMBER=:visaNumber and cv.COUNTRY =:country order by cvh.id desc ";
+				visaDTO = (ImmigrationVisaDTO) session.createSQLQuery(sqlQueryString)
+										   .addScalar("id", StandardBasicTypes.LONG)
+										   .addScalar("candidateId", StandardBasicTypes.LONG)
+										   .addScalar("candidateVisaId", StandardBasicTypes.LONG)
+										   .addScalar("visaNumber", StandardBasicTypes.STRING)
+										   .addScalar("country", StandardBasicTypes.STRING)
+										   .addScalar("visaType", StandardBasicTypes.STRING)
+										   .addScalar("isCurrent", StandardBasicTypes.STRING)
+										   .addScalar("validFrom", StandardBasicTypes.STRING)
+										   .addScalar("validTo", StandardBasicTypes.STRING)
+										   .setLong("candidateId", candidateId)
+										   .setString("visaNumber", visaNumber)
+										   .setString("country", country)
+										   .setMaxResults(1)
+										   .setResultTransformer(Transformers.aliasToBean(ImmigrationVisaDTO.class)).uniqueResult();
+		  }
+		} catch (Exception exception) {
+			logger.error("Exception caught while  getting Active visa number and details  >>>>>>>>" + exception.getMessage());
+			exception.printStackTrace();
+		}
+		return visaDTO;
+	}
 	@Override
 	@Transactional
 	public int updateCanVisaHistoryDetails(Long visaId, Long visaHistoryId)

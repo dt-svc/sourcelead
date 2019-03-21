@@ -31,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "INVOICE")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "invoice")
 public class Invoice {
 	
 	private static final long serialVersionUID = 1L;
@@ -406,6 +407,10 @@ public class Invoice {
 	@Transient
 	@JsonProperty
 	private String customInvoiceName;
+	
+	@Transient
+	@JsonProperty
+	private long dataResponderLocationId;
 
 	
 	public Long getId()
@@ -1283,6 +1288,14 @@ public class Invoice {
 
 	public void setCustomInvoiceName(String customInvoiceName) {
 		this.customInvoiceName = customInvoiceName;
+	}
+
+	public long getDataResponderLocationId() {
+		return dataResponderLocationId;
+	}
+
+	public void setDataResponderLocationId(long dataResponderLocationId) {
+		this.dataResponderLocationId = dataResponderLocationId;
 	}
 
 	
