@@ -2105,7 +2105,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public Candidate saveCandidateBulkImports(CandidateDTO candidateDTO, OrgLocations orgLocations,User user) throws Exception {
+	public Candidate saveCandidateBulkImports(CandidateDTO candidateDTO, OrgLocations orgLocations,User user,List<OrgRelations> vendorsList) throws Exception {
 		
 		StringBuffer activitySummary = new StringBuffer();
 		HashSet<CandidateResumes> candidateResumesList = null;
@@ -2173,7 +2173,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				
 				if ("India".equals(orgLocations.getCountry())) {
 					
-					//jsonObj.put("expectedRateCurrencey", "INR");
 					candidateDTO.setExpectedRateCurrencey("INR");
 				}
 				else if ("Australia".equals(orgLocations.getCountry())) {
@@ -2226,7 +2225,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				String countryCheck = orgLocations.getCountry();
 				switch (countryCheck) {
 					case "India":
-						//jsonObj.put("rateType", "Monthly");
 						candidateDTO.setRateType("Monthly");
 						break;
 					default:
@@ -2272,7 +2270,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		
 		// Vendor and Vendor Contact
 		if(candidateDTO.getVendor() != null && !candidateDTO.getVendor().equals("") && candidateDTO.getVendorcontact() != null && !candidateDTO.getVendorcontact().equals("")) {
-			List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
 			Long vendorId = 0l;
 			for(OrgRelations rel : vendorsList) {
 				if((candidateDTO.getVendor().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (candidateDTO.getVendor().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
@@ -2320,11 +2317,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		if(candidateDTO.getDocFile() != null && !candidateDTO.getDocFile().equals("")) {
 			candidateResumesList = new HashSet<CandidateResumes>();
 			long time = new Date().getTime();
-			File folder = new File(staticPath+"/"+orgLocations.getOrg().getId()+"/"+orgLocations.getId()+"/resumes/");
+			File folder = new File(staticPath+"/"+orgLocations.getOrgId()+"/"+orgLocations.getId()+"/resumes/");
 			if (!folder.exists())
 				folder.mkdirs();
 			File file = new File(folder,candidateDTO.getFirstName() + time+".docx");
-			String fileUrl = "/slead-static/"+orgLocations.getOrg().getId()+"/"+orgLocations.getId()+"/resumes/"+file.getName();
+			String fileUrl = "/slead-static/"+orgLocations.getOrgId()+"/"+orgLocations.getId()+"/resumes/"+file.getName();
 			XWPFDocument document = new XWPFDocument(); 
 			FileOutputStream out = new FileOutputStream(file);
 			XWPFParagraph paragraph = document.createParagraph();
@@ -2408,9 +2405,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		saveOrUpdateCandidateElkDocument(savedCandidate);
 		
-	    if(StringUtils.isNotBlank(candidateDTO.getInviteEmail()) && Constants.YES.equalsIgnoreCase(candidateDTO.getInviteEmail())){
+	    /*if(StringUtils.isNotBlank(candidateDTO.getInviteEmail()) && Constants.YES.equalsIgnoreCase(candidateDTO.getInviteEmail())){
 			inviteCandidateToSourceLead(user,savedCandidate,orgLocations);
-	    }
+	    }*/
 		
 	    return candidate;
 		
@@ -2635,18 +2632,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				activitySummary.append("Designation").append(" : ").append("---").append(" ");
 		candidate.setDesignation(candidateDto.getDesignation());
 		}
-		
-		/*if(candidateDto.getDesignationOtherType() !=null){
-			if(candidate.getDesignationOtherType() != null && candidate.getDesignationOtherType() != "" && !candidateDto.getDesignationOtherType().equalsIgnoreCase(candidate.getDesignationOtherType())){
-				activitySummary.append("Designation Other Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getDesignationOtherType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getDesignationOtherType()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}else
-				
-			activitySummary.append("Designation Other Type").append(" : ").append(" -- ");
-			
-			candidate.setDesignationOtherType(candidateDto.getDesignationOtherType());
-		}else{
-			candidate.setDesignationOtherType(null);
-		}*/
 		
 		if(candidateDto.getExpectedRate() !=null ){
 			if(candidate.getExpectedRate() != null  && candidate.getExpectedRate() != "" && !candidateDto.getExpectedRate().equalsIgnoreCase(candidate.getExpectedRate())){
@@ -2993,7 +2978,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, OrgLocations orgLocations, String candidateLocation, String searchValue, CandidateMarketPlaceDTO candidateMarketPlaceDTO, Long userId) {
+	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, OrgLocations orgLocations, String candidateLocation, String searchValue, CandidateMarketPlaceDTO candidateMarketPlaceDTO) {
 		List<CandidateMarketPlace> candidateMarketPlaces = null;
 		List<CandidateMarketPlaceDTO> marketPlaceDTOs = new ArrayList<>();
 		Date today = new Date();
@@ -3060,7 +3045,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		candidateMarketPlaces = candidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations.getId(), candidateLocation, searchValue, candidateMarketPlaceDTO, dateValue, userId);
+		candidateMarketPlaces = candidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations.getId(), candidateLocation, searchValue, candidateMarketPlaceDTO, dateValue);
 		if(candidateMarketPlaces != null){
 			for(CandidateMarketPlace marketPlace : candidateMarketPlaces){
 				CandidateMarketPlaceDTO marketPlaceDTO = new CandidateMarketPlaceDTO();

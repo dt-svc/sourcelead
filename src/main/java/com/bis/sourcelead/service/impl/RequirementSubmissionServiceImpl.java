@@ -6,12 +6,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -273,8 +275,19 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 	@Override
-	public List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception {
-		return requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations,requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
+	public List<RequirementSubmissionsDTO> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception {
+		List<RequirementSubmissionsDTO> requirementSubmissionsDTOList = new LinkedList<>();
+		List<Object[]> objList = requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations,requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
+		if(objList != null && !objList.isEmpty()) {
+			for(Object[] obj : objList) {
+				RequirementSubmissionsDTO requirementSubmissionsDTO = new RequirementSubmissionsDTO();
+				requirementSubmissionsDTO.setId(Long.parseLong(String.valueOf(obj[0])));
+				requirementSubmissionsDTO.setCreatedUser(String.valueOf(obj[1]));
+				requirementSubmissionsDTO.setClientSubmissions(String.valueOf(obj[2]));
+				requirementSubmissionsDTOList.add(requirementSubmissionsDTO);
+			}
+		}
+		return requirementSubmissionsDTOList;
 	}
 	
 	@Override
@@ -1105,15 +1118,27 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 	 }else{
 			 globalVarsMap.put("experience","--");
 			 }
-		 if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState()) && requirement.getCity()!= null && !"".equalsIgnoreCase(requirement.getCity())){
-			 StringBuilder locBuildeer = new StringBuilder();
-			 globalVarsMap.put("location", locBuildeer.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
-		 	}else if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState())){
-		 		StringBuilder locBuildeer = new StringBuilder();
-			 	globalVarsMap.put("location", locBuildeer.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
-		 	}else{
-			globalVarsMap.put("location",requirement.getCountry());
+		 List<RequirementLocations> locationsList;
+		 String reqLocation = "";
+		 StringBuilder requirementBuilder=new StringBuilder();
+			try {
+				locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations locationsJob : locationsList) {
+						if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+							reqLocation = requirementBuilder.append(locationsJob.getLocation()).toString();
+						}else{
+							reqLocation = "--";
+						}
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+		 
+			globalVarsMap.put("location",reqLocation);
+			
 		 if(null != requirementSubmissionTemplateFields.getExpectedCTC() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedCTC()) && null != requirementSubmissionTemplateFields.getExpectedRatePer() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedRatePer())){
 			 StringBuilder ratebuild = new StringBuilder();
 			 globalVarsMap.put("requirementRate", ratebuild.append(requirementSubmissionTemplateFields.getExpectedCTC()).append(" / ").append(requirementSubmissionTemplateFields.getExpectedRatePer()).toString());
@@ -2432,7 +2457,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, user, clientSubmissionHistory, clientUser.getUserCode());
 	   		 
 	   		 
-	   		 if(requirementSubmissionHistoryForCoolingOff != null){
+	   		 /*if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
 					 RequirementSubmissionHistory requirementSubmissionHistoryNewToSubmission = new RequirementSubmissionHistory();
 					 requirementSubmissionHistoryNewToSubmission.setFromStage(Submission_Status.NEW.toString());
@@ -2445,7 +2470,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					 requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, null, requirementSubmissionHistorySubmissionToRejected, clientUser.getUserCode());
 					 
 				 }
-	   		}
+	   		}*/
    		 }
    		 
    		 
@@ -2527,7 +2552,25 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			RequirementSubmission reqSub=null;
 			List<String> submissionIsd = Arrays.asList(submissionId);
 			for(String subIds :submissionIsd){
-			 reqSub = getRequirementSubmissionById(Long.parseLong(subIds));			 
+			 reqSub = getRequirementSubmissionById(Long.parseLong(subIds));		
+			 
+			 /** resume tracking code*/
+
+			 CandidateResumes resumes = candidateResumesDao.getCandidateResumeByCandidateId(reqSub.getCandidate().getId());
+
+				if (resumes != null) {
+					String fileURl = resumes.getFileURL().replace("/slead-static", staticPath);
+					File resumeFile = new File(fileURl);
+					if (resumeFile.exists()) {
+						byte[] bytes = Files.readAllBytes(resumeFile.toPath());
+						EmailAttachment emailAttachment = new EmailAttachment();
+						emailAttachment.setName(resumes.getFileName());
+						emailAttachment.setDocFile(bytes);
+						emailAttachment.setType(resumes.getFileContentType());
+						attachmentList.add(emailAttachment);
+					}
+				}
+			 
 			 //URL for page redirection
 			 String redirectURL ="";
 			 if(reqSub.getRequirement().getParentRequirement() !=null){
