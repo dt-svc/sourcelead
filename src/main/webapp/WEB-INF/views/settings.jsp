@@ -258,6 +258,16 @@
 				</div>		
 				
 				
+				<div class="col-md-2 reportNewCta">
+						<a href="${SourceLeadWeb_atsUrl}/workflowDashboard">
+							<div class="clearfix text-center mb10">
+								<i class="workflowSVG" title="Work Flow"></i>
+							</div>
+							<div class="clearfix text-center">
+								<h4>Workflow</h4>
+							</div>
+						</a>
+					</div>
 				
 				 <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
 					<div class="col-md-2 reportNewCta">
