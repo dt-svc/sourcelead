@@ -1763,7 +1763,7 @@ top: 18px;height: 32px; line-height: 18px;
 						</span>
 					</div>
 				</li>
-		  <li class=""><input type="text" class="repSearchBar" placeholder="Search" id="dataTableSearch"><span class="repSearchIcon" onclick="requirementListCheck(&#39;&#39;,&#39;&#39;,&#39;&#39;,&#39;http://localhost:8080/app&#39;);"></span></li>
+		  <li class=""><input type="text" class="repSearchBar" placeholder="Search" id="dataTableSearch"><span class="repSearchIcon" onclick=requirementListCheck('','','',atsUrl);></span></li>
         </ul>
       </div>		
 		
@@ -1793,7 +1793,7 @@ top: 18px;height: 32px; line-height: 18px;
 						</li>
 					
 				
-		   <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dataTableSearch'/><span class="repSearchIcon" onClick="requirementListCheck('','','',"+sourceleadUrl+");"></span></li>
+		   <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='jobFairDataTableSearch'/><span class="repSearchIcon" onClick="jobFairListCheck();"></span></li>
         </ul>
       </div>	
       	
@@ -2163,7 +2163,32 @@ function importAddApplicantDoc(){
 <!-- <div class="sideMask"></div> -->
 </div><div id="ui-datepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"></div>
 
-
+	<div class="timesheet_out" id="jobFairTabContent" style="display: none;">
+		<div class="vendor_wrap">
+<div class="positionRelative reportHead clearfix">
+      
+      <ul class="pull-right list-unstyled list-inline">
+					
+						<li><a href="/addJobFair" class="newAdBtn">+ Job Fair</a></li>
+									
+						<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+							<div class="newActPop">
+								<span>
+									 	<a href="javascript:void(0)" onclick="exportToPdf(2);" title="PDF">Export PDF</a>
+										<a href="javascript:void(0)" onclick="exportToExcel(2);" title="Excel">Export Excel</a>					
+								</span>
+							</div>
+						</li>
+				
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='jobFairDataTableSearch'/><span class="repSearchIcon" onClick="jobFairListCheck();"></span></li>
+        </ul>
+      </div>	
+      	
+			<div class="require_wrap_table datatable_filter">
+				<div id="jobFairList"></div>
+			</div>
+		</div>
+	</div>
 <script>
 
 </script>
