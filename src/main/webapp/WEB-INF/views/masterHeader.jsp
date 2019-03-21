@@ -1555,7 +1555,7 @@ $("#searchType").selectpicker('refresh');
               </div>                                          
             </div>
             <div class="clockinn">
-                <div class="clearfix mb">
+                <div class="clearfix mb" id="jobDIV">
                     <label class="noPad">Jobs <b class="valStar">*</b></label>
                     <div class="clearfix addicon">
                         <select class="form-control chosen-select">
@@ -1566,7 +1566,7 @@ $("#searchType").selectpicker('refresh');
                         </select>
                       </div>
                 </div> 
-                <div class="clearfix mb">
+                <div class="clearfix mb" id="projectTaskDIV">
                     <label class="noPad">Project Tasks <b class="valStar">*</b></label>
                     <div class="clearfix addicon">
                         <select class="form-control chosen-select">
@@ -1577,7 +1577,7 @@ $("#searchType").selectpicker('refresh');
                         </select>
                       </div>
                 </div>                 
-                <div class="clearfix mb">
+                <div class="clearfix mb" id="generalTaskDIV">
                     <label class="noPad">General Tasks <b class="valStar">*</b></label>
                     <div class="clearfix addicon">
                         <select class="form-control chosen-select">
@@ -1588,7 +1588,7 @@ $("#searchType").selectpicker('refresh');
                         </select>
                       </div>
                 </div> 
-                <div class="clearfix">
+                <div class="clearfix" id="commentsDIV">
                     <label class="noPad">Comments <b class="valStar">*</b></label>
                     <div class="clearfix addicon">
                         <textarea rows="3" class="form-control"></textarea>
@@ -1938,6 +1938,7 @@ $(".clockAni").click(function(){
 });
 
 $("#clPop").click(function() {
+	getClockInOutConfiguration();
 	$(".mask, #clockPop").fadeIn();
 });
 $(".clPopClose").click(function() {
@@ -1946,3 +1947,36 @@ $(".clPopClose").click(function() {
 
 </script>
 
+<script>
+function getClockInOutConfiguration(){
+	$.ajax({
+		 	url: sourceleadUrl + "/getClockInOutConfigData",
+	        type: 'GET',
+	        success: function (json) {
+	        	if(json != null){
+	        		 if(!json.isJobChecked){
+	        			$("#jobDIV").hide();
+	        		 }else{
+	        			 getAssignedJobTasks();
+	        		 }
+	        		if(!json.isProjectTasksChecked){
+	        			$("#projectTaskDIV").hide();
+	        		}
+	        		if(!json.isGeneralTaskChecked){
+	        			$("#generalTaskDIV").hide();
+	        		} 
+	        		if(!json.isClockInComment){
+	        			$("#commentsDIV").hide();
+	        		}
+	        	}
+	        	}
+	        });
+	
+}
+</script>
+
+<script>
+function getAssignedJobTasks(){
+	
+}
+</script>

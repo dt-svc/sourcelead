@@ -52,5 +52,6 @@ public class ClockInOutRestController {
 		return clockInOutConfigService.getClockInOutConfigBasedOnOrgLocationId(loginOrgLocation.getId());
 		
 	}
+	
 
 }
