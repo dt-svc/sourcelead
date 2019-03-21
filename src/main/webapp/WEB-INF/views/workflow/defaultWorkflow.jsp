@@ -147,6 +147,4 @@
 	  window.location.replace("${SourceLeadWeb_atsUrl}/workflowList");
   }
 </script>
-  
-  
 <jsp:include page="../masterFooter.jsp" />
