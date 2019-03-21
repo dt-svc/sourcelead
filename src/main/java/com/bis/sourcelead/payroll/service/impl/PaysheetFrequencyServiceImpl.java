@@ -254,7 +254,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		 }
 		 String url = sourceleadUrl;
         
-        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,emailScenario);
+        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getSubject(), globalVarsMap,emailScenario);
         notificationScenario.setBody(notificationbody);
 
 
@@ -273,7 +273,15 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		
-		emailScenerioUtil.sendNotification(null, loginUser, payrollApprover.getUser(), orgLocation, notificationScenario,new HashMap<String,String>());
+
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder
+				.append("").append(sourceleadUrl).append("/").append("viewPaySheetFrequencyData?approverStatus=SENT&paySheetFrequencyUUID="
+						+ savedPF.getPaySheetFrequencyUUID() + "&payPeriodNum=" + uSPayPeriodw.getPayPeriodNum())
+				.toString();
+		
+		emailScenerioUtil.sendNotification(actionLink, loginUser, payrollApprover.getUser(), orgLocation, notificationScenario,new HashMap<String,String>());
+
 		
 		
 	}
@@ -469,6 +477,36 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				
 				response.setMyPayroll(list);
 				response.setConfirmPayTotalSum(paySum);
+			}else {
+				Map<String, Double> preDList = new HashMap<>();
+			    response.setPreDed(preDList);
+			    response.setPostDed(preDList);
+			    response.setContribution(preDList);
+			    response.setPayItem(preDList);
+			    paySum.setFederalWithholding(federalWithholding);
+				paySum.setFicaWithholding(fica);
+				paySum.setMedicareWithholding(medicare);
+				paySum.setEarnedIncCredit(advancedEarnedIC);
+				paySum.setStateWithholding(stateWithholding);
+				paySum.setCountyWithholding(countyWithholding);
+				paySum.setLocalTax(localTax);
+				paySum.setTotalTax(empTotalTax);
+				paySum.setEmployerFICA(emplrFUTA);
+				paySum.setEmployerMedicare(emplrMedicare);
+				paySum.setEmployerFUTA(emplrFUTA);
+				paySum.setEmployerSUTA(emplrSUTA);
+				paySum.setEmployerRUIA(emplrRUIA);
+				paySum.setEmployerSutaSurchargeTax(emplrSUTASuracharge);
+				paySum.setEmployerSDI(emplrSDI);
+				paySum.setEmployerTransitTaxes(emplrTransitTaxes);
+				paySum.setEmployerWyomingWcTax(emplrWyomingWC);
+				paySum.setEmployerOregonWcTax(emplrOregonWC);
+				paySum.setEmployerTotalPay(emplrTotalTax);
+				response.setConfirmPayTotalSum(paySum);
+				List<AssociateLoanAndAdvancesDTO> loanAdvance = new ArrayList<>();
+				list = new ArrayList<>();
+				response.setMyPayroll(list);
+				response.setLoanAdvance(loanAdvance);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

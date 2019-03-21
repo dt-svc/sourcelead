@@ -59,6 +59,7 @@ function Immigration() {
     	
         $("#" + formId).closest('form').find("input[type=text], textarea, .form-control,.selectpicker, .chosen-select").val("").trigger('chosen:updated');
         $("#" + formId).closest('form').find(".selectpicker, .chosen-select option[value='']").attr('selected', true).trigger('change');
+        $("#" + formId).closest('form').find("input[type=checkbox]").attr("checked",false);
     }
     
     this.saveEducationImmigration = function (status) {
