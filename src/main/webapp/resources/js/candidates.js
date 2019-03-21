@@ -2720,13 +2720,13 @@ function storeCandidateResume(candidateId,resumeId){
 				$(".edit-details").removeClass("edit-details-active");
 			   });	 */
 			// <%-- Eductions and Skills Autocomplete Scripts Starts Here --%>
-			var config = {
+			/*var config = {
 				'.chosen-select'           : {},
 				'.chosen-select-deselect'  : {allow_single_deselect:true},
 				'.chosen-select-no-single' : {disable_search_threshold:10},
 				'.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 				'.chosen-select-width'     : {width:"95%"}
-			}
+			}*/
 			//Adding Customized Educations to the list
 		     var selectone, chosenone;
 		     selectone = $("#candEdu");
@@ -2962,7 +2962,7 @@ function storeCandidateResume(candidateId,resumeId){
 								$(".edit-details").removeClass("edit-details-active");
 							   });	 */
 							// <%-- Eductions and Skills Autocomplete Scripts Starts Here --%>
-							var config = {
+					/*		var config = {
 								  '.chosen-select'           : {},
 								  '.chosen-select-deselect'  : {allow_single_deselect:true},
 								  '.chosen-select-no-single' : {disable_search_threshold:10},
@@ -2975,7 +2975,7 @@ function storeCandidateResume(candidateId,resumeId){
 							$('.chosen-select').each(function() {
 								var $this = $(this);
 								$this.next().css({'width': '100%'});
-							});
+							});*/
 							//<%-- Eductions and Skills Autocomplete Scripts Ends Here --%>
 						}
 					} else if (response.indexOf('Sign In') !== -1) {
@@ -4558,7 +4558,7 @@ function storeCertificate(candidateId) {
 			    /* upload file script for size validation 2MB*/
 			   
 			// <%-- Eductions and Skills Autocomplete Scripts Starts Here --%>
-			 var config = {
+	/*		 var config = {
 					  '.chosen-select'           : {},
 					  '.chosen-select-deselect'  : {allow_single_deselect:true},
 					  '.chosen-select-no-single' : {disable_search_threshold:10},
@@ -4575,7 +4575,7 @@ function storeCertificate(candidateId) {
 					$('.chosen-select').each(function() {
 						var $this = $(this);
 						$this.next().css({'width': '100%'});
-						})
+						})*/
 			//	<%-- Eductions and Skills Autocomplete Scripts Ends Here --%>
 			}
 		function getDocumentType(documentType){
@@ -6381,7 +6381,7 @@ function storeCertificate(candidateId) {
 			    } );
 			 }	
 //9. candidatesCommentsList.jsp ENDS HERE  		
-//10. candidatesQuickView.jsp STARTS HERE
+/*//10. candidatesQuickView.jsp STARTS HERE
 			function candidateQuickViewProfile(candidateId){
 				  var skillsList = '${skillsList}'; 
 				  $.ajax({
@@ -6676,7 +6676,7 @@ function storeCertificate(candidateId) {
 							        	  	$("#qvemployeeSubmission").append(result);
 										}
 									} else if (data.indexOf('Sign In') !== -1) {
-										/* location.replace(sourceleadurl); */
+										 location.replace(sourceleadurl); 
 									} else {
 									    showError("Operation failed, please try again");
 									}
@@ -6759,13 +6759,13 @@ function storeCertificate(candidateId) {
 							                     $("#qveducationSubmission").append(result); 
 							                     
 							                     
-							                     /* var result = '';
+							                      var result = '';
 							               	  result = result +'            <div class="col-md-12 " style="display:none">';
 							               	  result = result +' <h4>Education</h4>';
 							               	  result = result +' <div>---</div>';
 							               	  result = result +'            </div>';
 							               	  $("#qveducationSubmission").empty();
-							               	  $("#qveducationSubmission").append(result); */
+							               	  $("#qveducationSubmission").append(result); 
 								       		} else if (data.indexOf('Sign In') !== -1) {
 			        							location.replace(sourceleadurl);
 								        	} else {
@@ -6815,9 +6815,9 @@ function storeCertificate(candidateId) {
 												result = result +' <h4>'+name+' ('+opt.score+' - '+opt.scoreType+') </h4>';
 											}
 											
-											/* result = result +'<div class="description">';
+											 result = result +'<div class="description">';
 											result = result +'  <p>'+opt.provider+'</p>';
-											result = result +'</div>';   */
+											result = result +'</div>';   
 											result = result +'                  </div>';
 										} 
 			        	  				}
@@ -6840,7 +6840,7 @@ function storeCertificate(candidateId) {
 			        },
 			     });
 			}
-			
+	*/		
 //10. candidatesQuickView.jsp ENDS HERE
 //11. candidatesTimelineActivity.jsp STARTS HERE	
 			 function getActivityDiv(candidateId){
@@ -6913,7 +6913,7 @@ function storeCertificate(candidateId) {
 				$('#city').val('').trigger('chosen:updated');
 				refreshGoogleApiCity('apiLocation');
 			}
-/*			  $(function() {  need to check later 
+/*			  $(function() {  
 				       //Adding Customized Job Title list this method is slead-common.js
 					   tagIt("requirementTitle", 'Press Enter-Key Or Comma(,) Or Tab To Add Title:', 'tagItBykeyForSkills','skills','Job Title');
 				       
@@ -7284,7 +7284,7 @@ function storeCertificate(candidateId) {
 			}			 
 //12.requirementListForSubmission.jsp ENDS here.		
 //13. canidateList Scripts here
-			var candidateStatusGlobal ="";
+/*			var candidateStatusGlobal ="";
 			function candidateSideBar(candidateId){
 				var loginUserId = userId;
 				  var candidateType = "Candidates";
@@ -7444,10 +7444,10 @@ function storeCertificate(candidateId) {
 								     } 
 									 result = result+'  </div>';
 									 result = result+'  </div>';
-									 /*  result = result+'  <div class="pull-right" style="position:relative; top:10px; right:-10px;">';
+									   result = result+'  <div class="pull-right" style="position:relative; top:10px; right:-10px;">';
 									 result = result+'  <a href="#" title="Save"><i class="fa fa-check-circle" onClick="saveCandidateImage('+candidateId+');" ></i></a>';
 									 result = result+'  <a href="#" title="Close"><i class="fa fa-close text-danger"></i></a>';
-									 result = result+'  </div>'; */
+									 result = result+'  </div>'; 
 									 result = result+'  </div>';
 									 
 									 result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
@@ -7479,7 +7479,7 @@ function storeCertificate(candidateId) {
 							             }
 						             result = result+'</ul>';
 						             result = result+'                 </div>';
-									/* else{ 
+									 else{ 
 										result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
 										result = result+' <div class="progress nomr">                                                                                                                                                       ';
 										result = result+'   <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%">  ';
@@ -7487,7 +7487,7 @@ function storeCertificate(candidateId) {
 										result = result+'   </div>                                                                                                                                                                     ';
 										result = result+' </div>                                                                                                                                                                       ';
 										result = result+' </div> ';
-									} */
+									} 
 									 
 									 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
 									 result = result+' </div>';
@@ -7497,14 +7497,14 @@ function storeCertificate(candidateId) {
 										
 									
 									  
-						             /*  result = result+'                     <div class="media-left image-parent">';
-						             result = result+'                     <div class="imageParent">'; */
-						             /* result = result+'                     	<img src="./images/24.jpg" alt="candidate" title="Candidate">'; */
-						             /* result = result+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/${SourceLeadWeb_userId}"/>"  alt="Profile Image" class="img-circle img-responsive">';
+						               result = result+'                     <div class="media-left image-parent">';
+						             result = result+'                     <div class="imageParent">'; 
+						              result = result+'                     	<img src="./images/24.jpg" alt="candidate" title="Candidate">'; 
+						              result = result+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayUserImage/${SourceLeadWeb_userId}"/>"  alt="Profile Image" class="img-circle img-responsive">';
 						             result = result+'                     </div>';
-						             result = result+'                     </div>'; */
+						             result = result+'                     </div>'; 
 						             result = result+'<div class="media-body candidate-details candidateDetails padding_left">';
-						            /*  result = result+'<h4 class="media-heading" title = "">'+json.generatedId+'</h4>'; */
+						              result = result+'<h4 class="media-heading" title = "">'+json.generatedId+'</h4>'; 
 						             result = result+'<h4 class="media-heading" title = "'+json.firstName+' '+middleName+' '+lastName+'">'+json.firstName+' '+middleName+' '+lastName+'</h4>';
 						            
 						             result = result+'<ul class="list-unstyled">';
@@ -7554,12 +7554,12 @@ function storeCertificate(candidateId) {
 						             
 						            
 						             result = result+'<ul class="list-inline list-unstyled">';
-						            /*  if(json.skillsList != null && json.skillsList != '' && json.skillsList != 'undefined'){
+						              if(json.skillsList != null && json.skillsList != '' && json.skillsList != 'undefined'){
 						              for (i=0;i < skills.length;i++)
 						             {
 						            	  result = result+'<li>'+skills[i]+'</li>';
 						             } 
-						             } */
+						             } 
 						             
 						             if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
 						            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Primary Skill</span><span class="padding_left padding_right">'+json.primarySkill+'</span></li>';
@@ -7608,7 +7608,7 @@ function storeCertificate(candidateId) {
 						             
 						             result = result+'</ul>';
 						             
-						            /* New comments div creation Nov 8th, 2016 */ 
+						             New comments div creation Nov 8th, 2016  
 						            if(json.status == '1' ){
 						          //  '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 						            result = result+'<div class="comments-div clearfix" id="latestMessage">';
@@ -7639,7 +7639,7 @@ function storeCertificate(candidateId) {
 						            result = result+'</div>';
 						         //   '</sec:authorize>';
 						            }
-						 		    /* New comments div creation Nov 8th, 2016 */
+						 		     New comments div creation Nov 8th, 2016 
 						             
 						             
 						             result = result+'               </div>';
@@ -7657,7 +7657,7 @@ function storeCertificate(candidateId) {
 							         result = result+' </div>';
 				
 							        
-						            /*  result = result+' <div class="newTagsWrap">';
+						              result = result+' <div class="newTagsWrap">';
 										result = result+'    <ul class="clearfix tagsWrap tagsWrapBor">';
 										result = result + '<select multiple class="chosen-select form-control" name="tagName" id="tagName" data-placeholder="add tags" data-validation="validate_Space" data-validation-optional="true">';
 										// here get lookup data tags and manually enter skills 
@@ -7680,7 +7680,7 @@ function storeCertificate(candidateId) {
 						                result = result + '</select>';
 										result = result+'        <div class="clearfix"></div>';
 										result = result+'    </ul>';
-										result = result+'</div>'; */
+										result = result+'</div>'; 
 										
 										
 										
@@ -7693,7 +7693,7 @@ function storeCertificate(candidateId) {
 
 						           //  '</sec:authorize>';
 						          //   
-						             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_RESUMES\',\'ROLE_VIEW_CANDIDATE_RESUMES\',\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\',\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+						          //   '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_RESUMES\',\'ROLE_VIEW_CANDIDATE_RESUMES\',\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\',\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 						               result = result+'<li id="candidateResumeTab"><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+','+json.status+');" >Resume</a></li>';
 						           //  '</sec:authorize>';
 						             
@@ -7724,7 +7724,7 @@ function storeCertificate(candidateId) {
 						              result = result+'<li id="candidateHistoryTab"><a href="#tab-8" onclick="requirementHistory('+candidateId+');">Job History</a></li>';
 						            //  '</sec:authorize>';
 						              
-						             /* result = result+'       <li><a href="#tab-6" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; */
+						              result = result+'       <li><a href="#tab-6" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; 
 						             result = result+'       <div class="clearfix"></div>';
 						             result = result+'     </ul>';
 						             result = result+'     <div class="project_tabs">';
@@ -7840,1690 +7840,8 @@ function storeCertificate(candidateId) {
 				  
 				  savedCommentAndCount(candidateId);
 							
-			}		
-			function getCandidateTagsList(candidateId){
-				$.ajax({  
-			        type : "POST",
-			        url: atsUrl+"/getCandidatesTags?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-			        success :function(json) {
-			        	var result = "";
-						$.each( json.tagsList, function( i, tags ) {
-						  var existed = 0;
-			                if(json.candidateTags != null && json.candidateTags != 'undefined' && json.candidateTags != '') {
-				                var res = [];
-				                res = json.candidateTags.split(",");
-				                res.forEach(function(item) {
-				                	if(tags == item){
-				                		existed = 1;
-				                		result = result + ' <option selected value="'+tags+'">'+tags+'</option>';
-				                	}
-				                });
-			                }
-			                if(existed == 0){
-			                	result = result + ' <option value="'+tags+'">'+tags+'</option>';
-			                }
-						});
-			            $("#candidateTagName").empty();
-			            $("#candidateTagName").append(result);
-			            $("#candidateTagName").chosen().trigger("chosen:updated")
-
-			        },
-				});
-			}
-			function saveCandidateTags(type,candidateId){
-				 var tagName = $("#candidateTagName").val();
-				 var jsonData = encodeURIComponent(tagName);
-				 var loginUserId = '${SourceLeadWeb_userId}';
-				 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-				 if(tagName != null && tagName != '' && tagName !='undefined') {
-					 Urlcheck = atsUrl+"/saveOrUpdateTagsBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&tagName="+jsonData
-				 } else {
-					 Urlcheck = atsUrl+"/saveOrUpdateTagsBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&tagName="+""
-				 }
-				 $.ajax({  
-			         type : "POST",
-			         url: Urlcheck,        
-			         success :function(result) {
-						if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
-			        		showError(result.responseMessage);
-			        	} else if (result.response === "AWKWARD") {
-			        	    location.href = "/errorPage";
-			        	} else if (result.response === "SUCCESS") {
-			        		if(type == "add"){
-			        			showSuccessStatusPopup1("Tags added successfully");
-			        		}else if(type == "delete"){
-			        			showDeleteStatusPopup("Tags deleted successfully");
-			        		}
-			        		getCandidateTagsList(candidateId);
-			        	} else if (result.indexOf('Sign In') !== -1) {
-			        		location.replace(sourceleadUrl);
-			        	} else {
-			        	    showError("Operation failed, please try again");
-			        	}
-			       },
-			    }); 
-			}
-
-			function showSuccessStatusPopup1(status) {
-				$("#addCandidateTagAlert").css("display","block");
-				$("#addCandidateTagAlert span").html(status);
-			    $('#addCandidateTagAlert').delay(2000).fadeOut('slow');
-			}
-			function showDeleteStatusPopup(status) {
-				$("#deleteCandidateTagAlert").css("display","block");
-				$("#deleteCandidateTagAlert span").html(status);
-			    $('#deleteCandidateTagAlert').delay(2000).fadeOut('slow');
-			}	
-			function deleteProfileImage(candidateId){   
-				var loginUserId = '${SourceLeadWeb_userId}';
-				var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-				 $.ajax({
-					    type: "GET",
-			            url: atsUrl+"/deleteCandidateImage?candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
-				        success: function(response) {
-				        	if (response.response === "AWKWARD") {
-				        	    location.href = "/errorPage";
-				        	} else if (response.response === "SUCCESS") {
-				        		var result = response.object;
-					        	 $("#popUp").empty();
-					        	 $(".project_inn_mask").fadeOut(200);
-					        	 $("[data-id=profileImage]").attr('src', '/resources/images/userprofileImg.jpg');
-					        	 candidateQuickViewProfile(candidateId);
-					        	 refreshImageBlock(candidateId);
-				        	} else if (response.indexOf('Sign In') !== -1) {
-				        		location.replace(sourceleadUrl);
-				        	} else {
-				        	    showError("Operation failed, please try again");
-				        	}
-				       },
-			     }); 
-			}
-
-/*
-			<%-- 
-			     @author : sarath kumar.
-			     this script is for refresh image block
-			     1.usage     : 
-			--%>*/
-			function refreshImageBlock(candidateId){   
-				  $.ajax({
-			          type : "POST",
-			           url: atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-			           success :function(result) { 
-			        	   var json = result.object;
-			        	   if(result.response === "SESSION_TIMEDOUT") {
-								location.replace(sourceleadUrl);
-							} else if (result.response === "AWKWARD") {
-								location.href = "/errorPage";
-							} else if (result.response === "SUCCESS") {
-								if(json != null){
-				                	 $("#candidateImageId").empty();
-				                	 var result = '';
-						             result = result+'<div class="well well-sm text-center clearfix">';
-									 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
-									 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';
-									 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';
-									 //result = result+'  <button type="button" class="btn btn-sm btn-primary">';
-									 //result = result+'  <i class="fa fa-upload"></i></button>';
-									 result = result+'  <label class="btn btn-sm btn-primary">';
-								     result = result+'  <i class="fa fa-upload paddingRight"></i>Upload / Change<input type="file" name="file" id="uploadedImage" accept="image/*"  onchange="cropImage(this,\'candidate_form\','+candidateId+',false);" style="display: none;">';
-								     result = result+'  </label>';
-								     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-									     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
-										 result = result+'  <i class="fa fa-trash"></i></button>';
-								     } 
-									 result = result+'  </div>';
-									 result = result+'  </div>';
-									 
-									 result = result+'  </div>';
-									 
-									 result = result+' <div class="mb mt5 UsProBar">';
-									 result = result+' <div class="progress nomr"> ';
-									 if(json.profilePercentage>=50){
-									 result = result+' <div class="progress-bar progress-bar-success ';
-									 }
-									 else{
-									 result = result+' <div class="progress-bar progress-bar-danger ';
-									 }
-									 result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%"> ';
-									 result = result+' <p id="disVal">'+json.profilePercentage+'%</p> ';
-									 result = result+' </div> ';
-									 result = result+' </div> ';
-									 
-									 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
-									 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>';
-									 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
-									 result = result+' </div>';
-									 $("#candidateImageId").append(result);
-			                	}
-							} else if (result.indexOf('Sign In') !== -1) {
-								location.replace(sourceleadUrl);
-							} else {
-								showError("Operation failed, please try again");
-							}
-			         	},
-			      }); 
-			   }
-			function addFavourite(candidateId){
-				
-				var checked = document.getElementById("fav"+candidateId).checked;
-				 	$.ajax({
-						type : "POST",
-						url : atsUrl+"/saveCandidateAsFavourite?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
-						success : function(response) {
-							if(checked){
-								 document.getElementById("favourite"+candidateId).removeAttribute("class");
-								 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating activestar-rating';
-								 document.getElementById("fav"+candidateId).setAttribute("title","Change to un Favourite");
-							} else {
-								 document.getElementById("favourite"+candidateId).classList.remove("activestar-rating");
-//			 					 document.getEmentById("favourite"+candidateId).className = 'iconClass pull-left star-rating';
-								 $("#fav"+candidateId).removeAttr("title");
-								 document.getElementById("fav"+candidateId).setAttribute("title","Add as Favourite");
-							}
-							if (response && response.response === "INVALID_DATA") {
-							    showError(response.responseMessage);
-							} else if (response.response === "AWKWARD") {
-							    location.href = "/errorPage";
-							} else if (response.response === "SUCCESS") {
-								var td = cacheLastJson.data;
-								for(var e in td) {
-									if(td[e].candidateId === candidateId) {
-										td[e]
-										if(isAssociate == "N"){
-											td[e].isFavourite = checked ? 1 : 0;
-						            	} else if(td[e].isFavouriteAssociate == '1' && isAssociate == "Y") {
-						            		td[e].isFavouriteAssociate = checked ? 1 : 0;
-						            	}
-										break;
-									}
-								}
-
-								cacheLastJson.data = td;
-									
-
-							} else if (response.indexOf('Sign In') !== -1) {
-								location.replace(sourceleadUrl);
-							} else {
-							    showError("Operation failed, please try again");
-							}
-						},
-					}); 
-			}
-/*
-
-			<%-- 
-			     @author : sarath kumar.
-			     this script is for validate image for candidate.
-			     1.usage     : used in candidateSideBar() function line number :171.
-			--%>*/
-			function loadFile(event,candidateId){
-				    var output = document.getElementById('userImage');
-				    var uploadedImage = document.getElementById('uploadedImage').value;
-				    var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
-				    document.getElementById("errorImage").style.display="none"; 
-				    
-				    var extension = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1).toLowerCase();
-				    
-				    if(extension != 'jpg'){
-				    	
-				    	var extensionName = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
-				 		var msg = "."+extensionName+" extension not supported";
-				 		alertMessage(msg,candidateId);
-				    }else if(sizeinbytes > 200000){
-				    	output.src = URL.createObjectURL(event.target.files[0]);
-				 		var msg = "Image size should be less than 200 KB";
-				 		alertMessage(msg,candidateId);
-				    }else{
-				    	output.src = URL.createObjectURL(event.target.files[0]);
-				    	var msg = "Do you want to save the picture.";
-				    	saveOrCancel(msg,candidateId);
-				   } 
-			}
-/*
-			<%-- 
-			     @author : sarath kumar.
-			     this script is for show  alert message for candidate image format.
-			     1.usage     : used in loadFile() function line number :422.
-			--%>
-*/
-			function alertMessage(message,candidateId){
-				var result = "";
-				result = result +"	<div class='project_inn_mask'></div>";
-				result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-				result = result +"		<p>"+message+"</p>";
-				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-				result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
-				result = result +"	</div>";
-				$("#popUp").append(result);
-				$("#remove_user_pop").slideDown(200);
-				$(".project_inn_mask").fadeIn(200);
-				refreshImageBlock(candidateId);
-
-			}
-/*
-			<%-- 
-			     @author : sarath kumar.
-			     this script is for conformation message to save file / not .
-			     1.usage     : used in loadFile() function line number :439.
-			--%>*/
-			function saveOrCancel(message,candidateId){
-				var result = "";
-				result = result +"	<div class='project_inn_mask'></div>";
-				result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-				result = result +"		<p>"+message+"</p>";
-				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-				result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick='saveCandidateImage("+candidateId+");' ><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
-				result = result +"	</div>";
-				$("#popUp").append(result);
-				$("#remove_user_pop").slideDown(200);
-				$(".project_inn_mask").fadeIn(200);
-			}
-/*
-			<%-- 
-			     @author : sarath kumar.
-			     this script is for close alert popup.
-			     1.usage     : used in saveOrCancel() / alertMessage function line number : 435 / 439.
-			--%>*/
-			function cancel(candidateId){ 
-				$("#popUp").empty();
-				$(".project_inn_mask").fadeOut(200);
-				refreshImageBlock(candidateId);
-			}
-			function imageCancel(){
-				$("#popUp").empty();
-				$(".project_inn_mask").fadeOut(200);
-			}
-			var candidateIdsMark = [];
-			   function appendIdsToMarketPlace(obj){
-				   if($(obj).is(":checked")){
-					   candidateIdsMark.push($(obj).attr("id"));
-				   }else if($(obj).not(":checked")){
-					   candidateIdsMark = jQuery.grep(candidateIdsMark, function(value) {
-						   return value != $(obj).attr("id");
-						});
-				   }
-			   }
-			   
-			   function callAddToMarket(){
-				 	 $.ajax({
-					    	type: "POST",
-					        url: atsUrl+"/getAddedMarketplaceCandidates",
-					        data : {candidateIdsVal : candidateIdsMark},
-					        success: function(json) {
-					        	candidateIDsArr = [];
-					        	popupDisplay(json['candidatesInMarketplace'].length, json['candidatesNotInMarketplace'].length, json['candidatesNotInMarketplace'] );
-					        }
-				 	}); 
-			 }
-			  
-			   function getSourceleadTags(){
-			 		 $.ajax({
-					    	type: "GET",
-					        url: atsUrl+"/getSourceleadTagsList?"+tokenParamName+"="+tokenValue, 
-					        success: function(json) {
-					        	var output = "";
-					        	for (var i=0; i<json.length; i++)
-								{
-						        		var opt = json[i];
-						        		output = output + "<option value='" +opt+ "'>"+opt+"</option>";
-						        		
-								}
-					        	$("#canTags").empty();
-						        $("#canTags").append(output);
-						        $('#canTags').trigger("chosen:updated");
-					        },
-					    }); 
-			   }
-				   function msgFadein() {
-						$("#candSelector").fadeIn(200);
-					    $('#candSelector').delay(2000).fadeOut('slow');
-					}
-				function activeTab() {
-					$("#candDetailView").removeClass("active");
-					$("#candQuickView").addClass("active");
-					$("#quickview").addClass("active in");
-					$("#detailview").removeClass("active in");
-					$("#candTimelineView").removeClass("active");
-					$("#timelineview").removeClass("active in");
-					$(".location-alert").fadeOut();
-					
-					$(".new_side_wrap").removeClass("new_side_wrap_active");
-					$(".req_side_mask").fadeOut(200);
-					$("body").css('overflow-y', 'auto');
-					candidateList();
-				}
-			  $('#selector').delay(2000).fadeOut('slow');
-		//	<!-- BELOW SCRIPTS ARE USED TO SHOW / HIDE POPUP'S --> 
-			// Error pop
-			$('#sucesspop').delay(2000).fadeOut('slow');
-			$(document).ready(function() {
-			    $(".glyphicon-trash").click(function(){
-					$(".vendor_error").slideToggle(200);
-					$(".vendor_wrap_mask").fadeIn(200);
-				});
-				$(".vendor_error a").click(function(){
-					$(".vendor_error").slideUp(200);
-					$(".vendor_wrap_mask").fadeOut(200);
-				});
-			});	
-
-			// Approved Popup
-			    $("#appro-pop").click(function(){
-					$(".approved_pop").toggle(200);
-					
-				});
-			    $("html").click(function() {
-			        $(".approved_pop").hide(200);
-			    });
-			    $(".approved_pop, #appro-pop").click(function(e) {
-			        e.stopPropagation();
-			    });	
-
-			// Export Popup
-			    $("#candidate-export").click(function(){
-					$(".export_pop").toggle();
-					$("#filter2ApprovedPop, #filter3ApprovedPop, #filter1ApprovedPop, #addmorepop").slideUp();
-				});
-			    $("html").click(function() {
-			        $(".export_pop").hide(200);
-			    });
-			    $(".export_pop, #candidate-export").click(function(e) {
-			        e.stopPropagation();
-			    });	
-			//add more popu
-
-			$("#addmore").click(function(){
-				$(this).next(".approved_pop").toggle();
-					//$(".approved_pop").toggle(200);
-				$("#filter2ApprovedPop, #filter3ApprovedPop, #filter1ApprovedPop, #filter4ApprovedPop").slideUp();
-				});
-			$("html").click(function() {
-			    $(".approved_pop").hide(200);
-			});
-			$(".approved_pop, #addmore").click(function(e) {
-			    e.stopPropagation();
-			});	
-			    
-			// project side bar tabs
-			$(document).ready(function() {
-				$("#tab-1").show()
-			    $(".project-tabs-menu a").click(function(event) {
-			        event.preventDefault();
-			        $(this).parent().addClass("current");
-			        $(this).parent().siblings().removeClass("current");
-			        var tab = $(this).attr("href");
-			       // $(".project_tabs_inn").not(tab).css("display", "none"); // commented due to script error in UI.
-			       // $(tab).fadeIn();
-			    }); 
-
-				
-			});
-			$(document).ready(function() {
-				
-				
-			    $("#filter1ApprovePop").click(function(){
-					$("#filter1ApprovedPop").slideToggle(200);
-					$(".export_pop, #filter3ApprovedPop, #addmorepop, #filter2ApprovedPop").slideUp();
-				});
-			    $("html").click(function() {
-			        $("#filter1ApprovedPop").slideUp(200);
-			    });
-			    $("#filter1ApprovedPop, #filter1ApprovePop").click(function(e) {  
-			        e.stopPropagation();
-			    });	
-			    
-			    
-			    $("#filter2ApprovePop").click(function(){
-					$("#filter2ApprovedPop").slideToggle(200);
-					$(".export_pop, #filter3ApprovedPop, #filter1ApprovedPop, #addmorepop").slideUp();
-				});
-			    $("html").click(function() {
-			        $("#filter2ApprovedPop").slideUp(200);
-			    });
-			    $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {  
-			        e.stopPropagation();
-			    });	
-			    
-			    $("#filter3ApprovePop").click(function(){
-					$("#filter3ApprovedPop").slideToggle(200);
-					$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, #addmorepop").slideUp();
-				});
-			    $("html").click(function() {
-			        $("#filter3ApprovedPop").slideUp(200);
-			    });
-			    $("#filter3ApprovedPop, #filter3ApprovePop").click(function(e) {  
-			        e.stopPropagation();
-			    });	
-			    
-			  
-			    
-			}); 
-			function toggle(source) {
-			    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-			    for (var i = 0; i < checkboxes.length; i++) {
-			        if (checkboxes[i] != source)
-			            checkboxes[i].checked = source.checked;
-			        
-			    }
-			$('input:checkbox:not(#checkAll)').click(function() {
-			    if(!this.checked) {
-			        $('#checkAll').removeAttr('checked');
-			    }
-			});
-			}
-			function exportToPdf(){
-				var isCandidatesAvailable= $("#noCandidates").val();
-				  var candFilterRadio = $('input[name=candidateStatus]');
-				  var candidateStatus = candFilterRadio.filter(':checked').val();
-				  if(candidateStatus == 1){
-			        $("#canDiv").text("Active Candidates");
-			    }else if(candidateStatus == 0){
-			  	  $("#canDiv").text("In Active Candidates");
-			    }else if(candidateStatus == 'ALL'){
-			  	  $("#canDiv").text("All Candidates");
-			    }else{
-			        $("#canDiv").removeAttr("onClick");
-			    }
-				  
-			    var candidateFilterSkills = [];
-				 $('input:checkbox[name=candidateFilterSkills]:checked').each(function() 
-			     {
-					 candidateFilterSkills.push($(this).val());
-				 });
-				 
-				 var availability = []
-				 $('input:checkbox[name=availability]:checked').each(function() 
-				     {
-				       availability.push($(this).val());
-					 });
-				 
-				 var candidateTypeFilter = []
-				 $('input:checkbox[name=candidateTypeFilter]:checked').each(function() 
-				     {
-					 candidateTypeFilter.push($(this).val());
-					 });
-				 
-				 var createdByRadio = $('input[name=createdByFilter]');
-				  var createdByFilter = createdByRadio.filter(':checked').val();
-				 
-				  var candTypeRadio = $('input[name=candidateType]');
-				  var candidateType = candTypeRadio.filter(':checked').val();
-				  if(isCandidatesAvailable > 0){
-				  window.location.href = atsUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&createdByFilter="+createdByFilter+"&isAssociate=N";	
-				  }else{
-					  var result = "";
-						result = result +"	<div class='project_inn_mask'></div>";
-						result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
-						result = result +"		<p>Candidates List is Empty</p>";
-						result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-						result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
-						result = result +"	</div>";
-						$("#emptyPopup").append(result);
-						$("#candidate_user_pop").slideDown(200);
-						$(".project_inn_mask").fadeIn(200);
-				  }
-			}
-
-			/* Dont remove ... value */
-			function popupDisplay(candidatesInMarketplace, noCandidateNotInMarketplace, ...candidatesNotInMarketplace){
-				$(".project_inn_mask").remove();
-				var result = "";
-				result = result +"	<div class='project_inn_mask'></div>";
-				result = result +"	   <div id='remove_immigration_pop' class='remove_user_pop remove_user_pop_a'>";
-				result = result +"<div class='modal-body'><p id='popupMsg'></p></div>";
-				result = result + ' <div id="reasonForTemplateDiv"></div>';
-				result = result +"<div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='cancelMarketplacePopup("+candidatesNotInMarketplace+");'></div>";
-				result = result +"	</div>";
-				$("#emptyPopup").empty().append(result);
-				$("#popupMsg").empty().append(candidatesInMarketplace+" has already processed for the Marketplace, <br/> "+noCandidateNotInMarketplace+" will process for the marketplace.");
-				$("#remove_immigration_pop").slideDown(200);
-				$(".project_inn_mask").fadeIn(200);
-			}
-
-			/* Dont remove ... value */
-			function cancelMarketplacePopup(...candidatesNotInMarketplace){
-				$("#remove_immigration_pop").fadeOut(200);
-				$(".project_inn_mask").fadeOut(200);
-				if(candidatesNotInMarketplace.length != 0){
-					$.ajax({
-				    	type: "POST",
-				        url: atsUrl+"/navigateMarketPlaceAjax",
-				        data : {candidateIdsVal : candidatesNotInMarketplace},
-				        success: function(json) {
-				        	location.href = atsUrl+"/navigateMarketPlaceList";
-				        	//candidatesNotInMarketplace = [];
-				        }
-			 	});
-				}
-			}
-			function candidtaeCancel(){
-				$("#emptyPopup").empty();
-				$(".project_inn_mask").fadeOut(200);
-			}
-			function exportToExcel(){
-				var isCandidatesAvailable= $("#noCandidates").val();
-				  var candFilterRadio = $('input[name=candidateStatus]');
-				  var candidateStatus = candFilterRadio.filter(':checked').val();
-				  if(candidateStatus == 1){
-			       $("#canDiv").text("Active Candidates");
-			   }else if(candidateStatus == 0){
-			 	  $("#canDiv").text("In Active Candidates");
-			   }else if(candidateStatus == 'ALL'){
-			 	  $("#canDiv").text("All Candidates");
-			   }else{
-			       $("#canDiv").removeAttr("onClick");
-			   }
-				  
-				  var candidateFilterSkills = [];
-					 $('input:checkbox[name=candidateFilterSkills]:checked').each(function() 
-				     {
-						 candidateFilterSkills.push($(this).val());
-					 });
-					 
-					 var availability = []
-					 $('input:checkbox[name=availability]:checked').each(function() 
-					     {
-					       availability.push($(this).val());
-						 });
-					 
-					 var candidateTypeFilter = []
-					 $('input:checkbox[name=candidateTypeFilter]:checked').each(function() 
-					     {
-						 candidateTypeFilter.push($(this).val());
-						 });
-					 
-					 var createdByRadio = $('input[name=createdByFilter]');
-					  var createdByFilter = createdByRadio.filter(':checked').val();
-				  
-				  var candTypeRadio = $('input[name=candidateType]');
-				  var candidateType = candTypeRadio.filter(':checked').val();
-				  if(isCandidatesAvailable > 0){
-				  window.location.href = atsUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&createdByFilter="+createdByFilter+"&isAssociate=N";	
-				  }else{
-					  var result = "";
-						result = result +"	<div class='project_inn_mask'></div>";
-						result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
-						result = result +"		<p>Candidates List is Empty</p>";
-						result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-						result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
-						result = result +"	</div>";
-						$("#emptyPopup").append(result);
-						$("#candidate_user_pop").slideDown(200);
-						$(".project_inn_mask").fadeIn(200);
-				  }
-			}
-			function showComment(candidateId){
-				var result = "";
-					result = result+'	        <form role="form" id="candidateComments_form" name="candidateComments_form" method="post">';
-				    result = result+'              <textarea rows="1" class="form-control clearfix mb10" placeholder="Comments here..." id="comment" name="comment" data-validation="required validate_length length2-500" field-name="Comment"></textarea>';
-				    result = result+'              <span class="clearfix pull-right">';
-				    result = result+'              		<input type="button" id="submit_comment" value="Add" class="btn btn-sm btn-success" onClick="addComment('+candidateId+')">';
-				    result = result+'              		<input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="closeComment()">';
-				    result = result+'              </span>';
-					result = result+'	        </form>';
-				$('.add-comment').empty();
-				$('.add-comment').append(result);
-				$('.add-comment').toggle(200);
-			}
-			function closeComment(){
-				$('.add-comment').toggle(200);
-			}
-
-/*
-			<%-- 
-			     @author : Venkat Kesav
-			     this script is for saving Comment
-			     1.usage     : onclick
-			     2.parameter : candidateId.
-			     3.ajax url implementation in CandidateResumeRestController.
-			--%>*/
-				function addComment(candidateId){
-						var validationSettings = {
-						        errorMessagePosition : 'element',
-						        borderColorOnError : '',
-								scrollToTopOnError : true,
-								dateFormat : 'yyyy/mm/dd' 
-					         }; 
-						 if ($('#candidateComments_form').validate(false, validationSettings)) {
-				      		 var formData = getFormData("candidateComments_form");
-							$("#submit_comment").attr("disabled", "disabled");
-			         		$("#submit_comment" ).addClass('button').val('Processing..');
-							
-							$.post(atsUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,formData,function(result){
-								if (result && result.response === "INVALID_USER") {
-					    		    showError(result.responseMessage);
-					    		} else if (result.response === "AWKWARD") {
-					    		    location.href = "/errorPage";
-					    		} else if (result.response === "SUCCESS") {
-					    			savedCommentAndCount(candidateId);
-					    		} else if (result.indexOf('Sign In') !== -1) {
-									location.replace(sourceleadUrl);
-								} else {
-								    showError("Operation failed, please try again");
-								}
-							});
-							$('.add-comment').toggle(200);
-							return true;
-						 } else { 
-								return false;
-						 }
-					}
-					$('body').on('blur', '#candidateComments_form', function() {
-					$("#candidateComments_form").showHelpOnFocus();
-					$("#candidateComments_form").validateOnBlur(false, validationSettings);
-					
-				});
-			function savedCommentAndCount(candidateId){
-				  $.ajax({
-			        type : "POST",
-			         url: atsUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-			         success :function(data) {
-			        	 if (data && data.response === "INVALID_DATA") {
-			        		    showError(data.responseMessage);
-			        		} else if (data.response === "AWKWARD") {
-			        		    location.href = "/errorPage";
-			        		} else if (data.response === "SUCCESS") {
-			        			var result = "";
-			                    if(data.data.length > 0) {
-			                    	var json = data.data;
-			                  		var totalComments = 0;
-			                  		if(json.length>0) {
-			                  			totalComments = json.length;
-			            	            var report = json[0];
-			   	 			            
-			   	 			            result = result+'    <div class="commentsimg">';
-			   				            result = result+'    <i class="fa fa-comments"></i>';
-			   				            result = result+'        <div class="commentsimg-inner">';
-			   				            
-			   				            result = result+'        	<img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorUserImage+'"/>';
-			   				            result = result+'        </div>';
-			   				            result = result+'    </div>';
-			   				            result = result+'     <div class="comments-content">';
-			   				            result = result+'         <div class="pull-left" id="latestMessage">';
-			   				            result = result+'         <p class="comment-by">';
-			   				            result = result+'            By <span class="text-danger">'+report.commentAuthor+'</span>';
-			   				            result = result+'            <span class="small">('+report.commentTime+')</span></p>';
-			   				            result = result+'         <p class="comment-text">'+report.comment+'</p>';
-			   				            result = result+'         </div>';
-			   				            result = result+'         <div class="pull-right cmt-button">';
-			   				            result = result+'          <span class="comments-button">';
-			   				            
-			   				            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+')">';
-			   				            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
-			   				            result = result+'            </button>';
-			   				            result = result+'            <div class="add-comment">';
-			   				            result = result+'            </div>';
-			   				            result = result+'          </span>';
-			   				            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">'+totalComments+'</span></a>';
-			   				 			result = result+'		</div>';
-			   				            result = result+'     </div>';
-			   	 			           
-			   	 			           	$("#latestMessage").empty();
-			   	 			           	$("#latestMessage").append(result);
-			                  		}
-								}
-			        		} else if (data.indexOf('Sign In') !== -1) {
-			        			location.replace(sourceleadUrl);
-			        		} else {
-			        		    showError("Operation failed, please try again");
-			        		}
-						},
-			      });
-			}
-				// Close Advanced Search
-					function closePop(){
-						 $("div.cand-advsrch-popup").hide();
-						 $('#expId').find('p.jquery_form_error_message').remove();
-						 $(".advancedsearch-mask").fadeOut();
-					}
-					function openPop(){
-					  $("#dataTableSearch").val('');
-					  $("div.cand-advsrch-popup").toggle();
-					  $(".advancedsearch-mask").fadeIn();
-					  $("#candidateFilterPopup").toggle();
-					};
-					function closeAdsrch(){
-						$("div.cand-advsrch-popup").fadeOut();
-						$(".advancedsearch-mask").fadeOut();
-					};
-			function getStates(){
-				var countryName = $("#country").val();
-				if(countryName != null && countryName != "" && countryName !="undefined"){
-					$.ajax({
-				    	type: "POST",
-				    	dataType: "json",
-				    	 url: atsUrl +"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
-				        success: function(data) {
-				        	var json = JSON.parse(data);
-				        	$('#state').empty();
-				        	$('#state').append('<option value="">---select state---</option>');
-				            for(var i=0;i<json.length;i++){
-				            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-				            }
-				            $('#state').trigger("chosen:updated");
-				            
-				            $('#citySearch').empty();
-				            $('#citySearch').append('<option value="">---select city---</option>');
-				            $('#citySearch').trigger("chosen:updated");
-				        },
-				        error: function(e){
-				        }
-				    });
-				}else{
-					$('#state').empty();
-			    	$('#state').append('<option value="">---select state---</option>');
-			    	$('#state').trigger("chosen:updated");
-			    	$('#citySearch').empty();
-			    	$('#citySearch').append('<option value="">---select city---</option>');
-			        $('#citySearch').trigger("chosen:updated");
-				}
-			}
-			function getCities(){
-				var countryName = $("#country").val();
-				var stateName = $("#state").val();
-				if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-					$.ajax({
-				    	type: "POST",
-				    	dataType: "json",
-				    	 url: atsUrl+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
-				        success: function(data) {
-				        	var json = JSON.parse(data);
-				        	$('#citySearch').empty();
-				        	$('#citySearch').append('<option value="">---select city---</option>');
-				            for(var i=0;i<json.length;i++){
-				            	$('#citySearch').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-				            }
-				            $('#citySearch').trigger("chosen:updated");
-				        },
-				        error: function(e){
-				        }
-				    });
-				}else{
-					$('#citySearch').empty();
-			    	$('#citySearch').append('<option value="">---select city---</option>');
-			    	$('#citySearch').trigger("chosen:updated");
-				}
-			}
-
-
-	//		<!-- Country,State,City Script Ends Here -->	
-				function loadChosenScripts(){
-				    
-				    $('#minRate').val(''); 
-				    $('#maxRate').val(''); 
-				    $('#currency').val(''); 
-				    $('#rateType').val(''); 
-				    
-				    /* $('#country').val(''); 
-				    $("#country").val('').trigger("chosen:updated"); */
-				    /* $("#state").empty();
-				    $("#state").val('').trigger("chosen:updated"); */
-				    $("#citySearch").empty();
-				    $("#citySearch").val('').trigger("chosen:updated");
-				    $('#rateType').val(''); 
-
-				    $('#emailDiv').find('p.jquery_form_error_message').remove();
-				    $('#search_candidate').removeAttr('disabled');
-				    $('#minRateDiv').find('p.jquery_form_error_message').remove();
-				    $('#maxRateDiv').find('p.jquery_form_error_message').remove();
-				    $('#currencyDiv').find('p.jquery_form_error_message').remove();
-				    $('#rateTypeDiv').find('p.jquery_form_error_message').remove();
-				    
-				    
-				    $("#anyOfKeyword").val('').trigger("chosen:updated");
-				    $("#allKeywords").val('').trigger("chosen:updated");
-				    $("#excludeKeyWord").val('').trigger("chosen:updated");
-				    $("#designation").val('').trigger("chosen:updated");
-				    $("#education").val('').trigger("chosen:updated");
-				    $("#excludeEducation").val('').trigger("chosen:updated");
-				    $("#certification").val('').trigger("chosen:updated");
-				    $("#employers").val('').trigger("chosen:updated");
-				    $("#excludeEmployers").val('').trigger("chosen:updated");
-				    $("#canSkills").val('').trigger("chosen:updated");
-				    $("#canVisa").val('').trigger("chosen:updated");
-				    $("#canTags").val('').trigger("chosen:updated");
-				    $("#noticePeriod").val('').trigger("chosen:updated");
-				    $("#primarySkill").val('').trigger("chosen:updated");
-				    
-				    $("#anyOfKeyword").empty();
-				    $("#allKeywords").empty();
-				    $("#excludeKeyWord").empty();
-				    $("#designation").empty();
-				    $("#certification").empty();
-				    $("#employers").empty();
-				    $("#excludeEmployers").empty();
-				}
-			/*  $(function() {  // need to check later.
-				       //Adding Customized Any KeyWord Title list this method is slead-common.js
-					   tagIt("anyOfKeyword", 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:', 'tagItBykeyForSkills','skills','Any Keyword');
-				       
-					   //Adding Customized All KeyWord Title list this method is slead-common.js
-					   tagIt("allKeywords", 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:', 'tagItBykeyForSkills','skills','All Keywords');
-					   
-					   //Adding Customized Exclude KeyWord Title list this method is slead-common.js
-					   tagIt("excludeKeyWord", 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:', 'tagItBykeyForSkills','skills','Exclude Keyword');
-					   
-					   //Adding Customized Designation list this method is slead-common.js
-					   tagIt("designation", 'Press Enter-Key Or Comma(,) Or Tab To Add Designation:', 'tagItBykeyForSkills','skills','Designation');
-					   
-					  //Adding Customized Certification list this method is slead-common.js
-					   tagIt("certification", 'Press Enter-Key Or Comma(,) Or Tab To Add Certification:', 'tagItBykeyForSkills','skills','Certification');
-					  
-					   //Adding Customized Employers list this method is slead-common.js
-					   tagIt("employers", 'Press Enter-Key Or Comma(,) Or Tab To Add Employer:', 'tagItBykeyForSkills','skills','Employers');
-					   
-					   //Adding Customized ExcludeEmployers list this method is slead-common.js
-					   tagIt("excludeEmployers", 'Press Enter-Key Or Comma(,) Or Tab To Add Employer:', 'tagItBykeyForSkills','skills','Exclude Employers');
-					   
-					   //Adding Customized PrimarySkill list this method is slead-common.js
-					   tagIt("primarySkill", 'Press Enter-Key Or Comma(,) Or Tab To Add Peimary Skills:', 'tagItBykeyForSkills','skills','Primary Skill');
-					   
-					 //Adding Customized Skill list this method is slead-common.js
-					   tagIt("canSkills", 'Press Enter-Key Or Comma(,) Or Tab To Add Skills:', 'tagItBykeyForSkills','skills','Skills');
-					 
-					   //Adding Customized Visa list this method is slead-common.js
-					   tagIt("canVisa", 'Press Enter-Key Or Comma(,) Or Tab To Add Visa:', 'tagItBykeyForSkills','skills','Visa');
-					   
-					   tagIt("canTags", 'Press Enter-Key Or Comma(,) Or Tab To Add Tags:', 'tagItBykeyForSkills','skills','Visa');
-					   
-					   //Adding Customized Visa list this method is slead-common.js
-					   tagIt("education", 'Press Enter-Key Or Comma(,) Or Tab To Add Education:', 'tagItBykeyForSkills','skills','Education');
-					   
-					   //Adding Customized Visa list this method is slead-common.js
-					   tagIt("excludeEducation", 'Press Enter-Key Or Comma(,) Or Tab To Add Exclude Education:', 'tagItBykeyForSkills','skills','Exclude Education');
-					 
-					   
-					   
-			  });*/
-			    	   /* var config = {
-			    				  '.chosen-select'           : {},
-			    				  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			    				  '.chosen-select-no-single' : {disable_search_threshold:10},
-			    				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			    				  '.chosen-select-width'     : {width:"95%"}
-			    	   }
-			    	   
-			    	   
-						//Adding Customized Any Of Keyword to the list 
-					    var select, chosen;
-					    select = $("#anyOfKeyword");
-					    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:' });
-					    chosen = select.data('chosen');
-					    chosen.search_field.on('keydown keyup', function(e)
-					    {
-					    	var anyKeyword = this.value.replace(",","");
-					        if (tagItBykeyForSkills(e) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
-					        {
-					        	preventTabkey(e); 
-					        	var par = this.parent;
-					            var option = $("<option>").val(anyKeyword).text(anyKeyword);
-					            select.append(option);
-					            select.find(option).prop('selected', true);
-			                    $("#anyOfKeyword option").each(function(){
-			                          $(this).siblings("[value='"+ this.value+"']").remove();
-			                    });
-				        		$("#anyOfKeyword").trigger("chosen:updated");
-				        		
-					        }
-					    });
-					    
-					  //Adding Customized Any Of Keyword to the list
-					    var selectone, chosenone;
-					    selectone = $("#allKeywords");
-					    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:' });
-					    chosenone = selectone.data('chosen');
-					    chosenone.search_field.on('keydown keyup', function(e1)
-					    {
-					    	var allKeyword = this.value.replace(",","");
-					        if (tagItBykeyForSkills(e1) && (allKeyword != null  && allKeyword != '' && allKeyword != 'undefined'))
-					        {
-					        	preventTabkey(e1); 
-					        	var par = this.parent;
-					            var option = $("<option>").val(allKeyword).text(allKeyword);
-					            selectone.append(option);
-					            selectone.find(option).prop('selected', true);
-			                    $("#allKeywords option").each(function(){
-			                          $(this).siblings("[value='"+ this.value+"']").remove();
-			                    });
-				        		$("#allKeywords").trigger("chosen:updated");
-				        		
-					        }
-					    });
-					    
-					    
-					    var selecttwo, chosentwo;
-					    selecttwo = $("#excludeKeyWord");
-					    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:' });
-					    chosentwo = selecttwo.data('chosen');
-					    chosentwo.search_field.on('keydown keyup', function(e2)
-					    {
-					    	var excludeKeyword = this.value.replace(",","");
-					        if (tagItBykeyForSkills(e2) && (excludeKeyword != null  && excludeKeyword != '' && excludeKeyword != 'undefined'))
-					        {
-					        	preventTabkey(e2);
-					        	var par = this.parent;
-					            var option = $("<option>").val(excludeKeyword).text(excludeKeyword);
-					            selecttwo.append(option);
-					            selecttwo.find(option).prop('selected', true);
-			                    $("#excludeKeyWord option").each(function(){
-			                          $(this).siblings("[value='"+ this.value+"']").remove();
-			                    });
-				        		$("#excludeKeyWord").trigger("chosen:updated");
-				        		
-					        }
-					    });
-					    
-					    var selectthree, chosenthree;
-					    selectthree = $("#designation");
-					    selectthree.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Designation:' });
-					    chosenthree = selectthree.data('chosen');
-					    chosenthree.search_field.on('keydown keyup', function(e3)
-					    {
-					    	var desg = this.value.replace(",","");
-					        if (tagItBykeyForSkills(e3) && (desg != null  && desg != '' && desg != 'undefined'))
-					        {
-					        	preventTabkey(e3);
-					        	var par = this.parent;
-					            var option = $("<option>").val(desg).text(desg);
-					            selectthree.append(option);
-					            selectthree.find(option).prop('selected', true);
-			                    $("#designation option").each(function(){
-			                          $(this).siblings("[value='"+ this.value+"']").remove();
-			                    });
-				        		$("#designation").trigger("chosen:updated");
-				        		
-					        }
-					    });
-					    
-					   	    
-					    var selectsix, chosensix;
-					    selectsix = $("#certification");
-					    selectsix.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Certification:' });
-					    chosensix = selectsix.data('chosen');
-					    chosensix.search_field.on('keydown keyup', function(e6)
-					    {
-					    	var cert = this.value.replace(",","");
-					        if (tagItBykeyForSkills(e6) && (cert != null  && cert != '' && cert != 'undefined'))
-					        {
-					        	preventTabkey(e6);
-					        	var par = this.parent;
-					            var option = $("<option>").val(cert).text(cert);
-					            selectsix.append(option);
-					            selectsix.find(option).prop('selected', true);
-			                    $("#certification option").each(function(){
-			                          $(this).siblings("[value='"+ this.value+"']").remove();
-			                    });
-				        		$("#certification").trigger("chosen:updated");
-				        		
-					        }
-					    });
-					    
-					    var selectseven, chosenseven;
-					    selectseven = $("#employers");
-					    selectseven.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Employer:' });
-					    chosenseven = selectseven.data('chosen');
-					    chosenseven.search_field.on('keydown keyup', function(e7)
-					    {
-					    	var emp = this.value.replace(",","");
-					        if (tagItBykeyForSkills(e7) && (emp != null  && emp != '' && emp != 'undefined'))
-					        {
-					        	preventTabkey(e7);
-					        	var par = this.parent;
-					            var option = $("<option>").val(emp).text(emp);
-					            selectseven.append(option);
-					            selectseven.find(option).prop('selected', true);
-			                    $("#employers option").each(function(){
-			                          $(this).siblings("[value='"+ this.value+"']").remove();
-			                    });
-				        		$("#employers").trigger("chosen:updated");
-				        		
-					        }
-					    });
-					    
-					    var selectzero, chosenzero;
-					    selectzero = $("#primarySkill");
-					    selectzero.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Primary Skill:' });
-					    chosenzero = selectzero.data('chosen');
-					    chosenzero.search_field.on('keydown keyup', function(e10)
-					    {
-					    	var prmSkill = this.value.replace(",","");
-					        if (tagItBykeyForSkills(e10) && (prmSkill != null  && prmSkill != '' && prmSkill != 'undefined'))
-					        {
-					        	preventTabkey(e10);
-					        	var par = this.parent;
-					            var option = $("<option>").val(prmSkill).text(prmSkill);
-					            selectzero.append(option);
-					            selectzero.find(option).prop('selected', true);
-			                    $("#primarySkill option").each(function(){
-			                          $(this).siblings("[value='"+ this.value+"']").remove();
-			                    });
-				        		$("#primarySkill").trigger("chosen:updated");
-				        		
-					        }
-					    });
-					    
-					    var selecteight, choseneight;
-					    selecteight = $("#excludeEmployers");
-					    selecteight.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Employer:' });
-					    choseneight = selecteight.data('chosen');
-					    choseneight.search_field.on('keydown keyup', function(e8)
-					    {
-					    	var excEmp = this.value.replace(",","");
-					        if (tagItBykeyForSkills(e8) && (excEmp != null  && excEmp != '' && excEmp != 'undefined'))
-					        {
-					        	preventTabkey(e8);
-					        	var par = this.parent;
-					            var option = $("<option>").val(excEmp).text(excEmp);
-					            selecteight.append(option);
-					            selecteight.find(option).prop('selected', true);
-			                    $("#excludeEmployers option").each(function(){
-			                          $(this).siblings("[value='"+ this.value+"']").remove();
-			                    });
-				        		$("#excludeEmployers").trigger("chosen:updated");
-				        		
-					        }
-					    });
-					    
-					    
-					    //Adding Customized Skills to the list
-				        var selectnine, chosennine;
-				        selectnine = $("#canSkills");
-				        selectnine.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:' });
-					    chosennine = selectnine.data('chosen');
-					    chosennine.search_field.bind(('keydown keyup'), function(e9)
-					    { 
-					    	 
-					    	 var enterSkillsArray = this.value.split(",");
-					    	 if(enterSkillsArray.length > 1){
-				        		 for (var i=0; i < enterSkillsArray.length; i++) {
-				        			 var option = $("<option>").val(enterSkillsArray[i].replace(",","")).text(enterSkillsArray[i].replace(",",""));
-				        			 selectnine.append(option);
-				        			 selectnine.find(option).prop('selected', true);
-				 	        		 $("#canSkills").trigger("chosen:updated");
-				                 }
-					    	 }else{
-						    	var newSkill = this.value.replace(","," ");
-						    	
-						    	 
-						        if (tagItBykeyForSkills(e9) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-						        {
-						        	preventTabkey(e9); 
-						        	var par = this.parent;
-						        		 var option = $("<option>").val(newSkill.replace(",","")).text(newSkill.replace(",",""));
-						        		 selectnine.append(option);
-						        		 selectnine.find(option).prop('selected', true);
-							        		$("#canSkills").trigger("chosen:updated");
-							        		
-							        		
-						        }
-					    	 }
-					    });
-					    
-					    
-					  //Adding Customized Visa to the list
-						var selectten, chosenten;
-						selectten = $("#canVisa");
-						selectten
-								.chosen({
-									no_results_text : 'Press Enter-Key Or Comma(,) Or Space To Add New Visa:'
-								});
-						chosenten = selectten.data('chosen');
-						chosenten.search_field
-								.bind(
-										('keydown keyup'),
-										function(e10) {
-
-											var enterVisaArray = this.value.split(",");
-											if (enterVisaArray.length > 1) {
-												for (var i = 0; i < enterVisaArray.length; i++) {
-													var option = $("<option>").val(
-															enterVisaArray[i].replace(",", ""))
-															.text(
-																	enterVisaArray[i].replace(",",
-																			""));
-													selectten.append(option);
-													selectten.find(option).prop('selected', true);
-													$("#canVisa").trigger("chosen:updated");
-												}
-											} else {
-												var newVisa = this.value.replace(",", " ");
-
-												if (tagItBykeyForVisa(e10)
-														&& (newVisa != null && newVisa != '' && newVisa != 'undefined')) {
-													preventTabkey(e10);
-													var par = this.parent;
-													var option = $("<option>").val(
-															newVisa.replace(",", "")).text(
-															newVisa.replace(",", ""));
-													selectten.append(option);
-													selectten.find(option).prop('selected', true);
-													$("#canVisa").trigger("chosen:updated");
-
-												}
-											}
-										}); */
-					    
-					    
-					      $("#country").on('change', function (e) {
-					    	   getStates();
-					       });
-					       $("#state").on('change', function (e) {
-					    	   getCities();
-					       });
-					       
-					       // here call experience validation
-					       $("#maxExpYears").on('change', function (e) {
-					    	   minMaxExperience();
-					       });
-					       
-					       $("#minExpYears").on('change', function (e) {
-					    	   minMaxExperience();
-					       });
-					       
-							/* for (var selector in config) {
-							  $(selector).chosen(config[selector]);
-							}
-							$('.chosen-select').each(function() {
-							var $this = $(this);
-							$this.next().css({'width': '100%'});
-							}) */
-			    //addcandidate-popup script
-			    function addCandidate(){
-			        $('.addcandidate-popup').fadeIn(200);
-			        $('.pop_mask').fadeIn(200);
-			        $('#addmorepop').slideUp(200);
-			    };
-			       function closeCandidate(){
-			        $('.addcandidate-popup').fadeOut(200);
-			        $('.pop_mask').fadeOut(200);
-			       }
-			//Function to validate if maxExpYears  value is more the minExpYears  value
-			function minMaxExperience(){
-			     var maxExpYears = ($('#maxExpYears').val());
-			     var minExpYears = ($('#minExpYears').val());
-			    
-			    if (parseFloat(maxExpYears) <= parseFloat(minExpYears)){
-			        $('#expId').find('p.jquery_form_error_message').remove(); 
-					$('input#expValidation').attr('class','error signin_fild');
-					$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience is greater than Min Experience</p>");
-					$('input#expValidation').attr('record-exist','yes');
-					$('input#expValidation').attr('record-exist-errorMsg','Max Experience is greater than Min Experience'); 
-			    }  else{
-			    	$('#expId').find('p.jquery_form_error_message').remove(); 
-			    	$('input#expValidation').removeAttr( "class record-exist record-exist-errormsg");
-					$('#expId').find('p.jquery_form_error_message').remove();
-			    } 
-			}
-
-
-			//<!-- This  clearCandidateSearchKeys() method for clear search data-->
-				function clearCandidateSearchKeys(){
-					
-				    $("#anyOfKeyword").val('').trigger("chosen:updated");
-				    $("#allKeywords").val('').trigger("chosen:updated");
-				    $("#excludeKeyWord").val('').trigger("chosen:updated");
-				    $("#designation").val('').trigger("chosen:updated");
-				    $("#noticePeriod").val('').trigger("chosen:updated");
-				    $("#minExpYears").val('').trigger("chosen:updated");
-				    $("#maxExpYears").val('').trigger("chosen:updated");
-				 /*    $("#country").val('').trigger("chosen:updated"); */
-				    $("#state").val('').trigger("chosen:updated");
-				    $("#citySearch").val('').trigger("chosen:updated");
-				    $("#education").val('').trigger("chosen:updated");
-				    $("#excludeEducation").val('').trigger("chosen:updated");
-				    $("#certification").val('').trigger("chosen:updated");
-				    $("#employers").val('').trigger("chosen:updated");
-				    $("#excludeEmployers").val('').trigger("chosen:updated");
-				    $("#applicantType").val('').trigger("chosen:updated");
-				    $("#canSkills").val('').trigger("chosen:updated");
-				    $("#canVisa").val('').trigger("chosen:updated");
-				    $("#canTags").val('').trigger("chosen:updated");
-				    $("#primarySkill").val('').trigger("chosen:updated");
-				    
-				    $("#designationType").val('').trigger("chosen:updated");
-				    
-				    $('#candidatelist_form').find('p.jquery_form_error_message').remove();
-				    
-				     $("#anyOfKeyword").empty();
-				     $("#allKeywords").empty();
-				     $("#excludeKeyWord").empty();
-				     $("#designation").empty();
-				      $("#minRate").val(''); 
-				     
-				      
-				     $("#currency").val('');
-				     $('.selectpicker').selectpicker('refresh');
-				     
-				     $("#maxRate").val(''); 
-				     
-				     $("#rateType").val(''); 
-				     $('.selectpicker').selectpicker('refresh');
-				     
-				     $("#minExpYears").val(''); 
-				     $("#maxExpYears").val(''); 
-				     $('#expId').find('p.jquery_form_error_message').remove();
-				     
-				     $("#noticePeriod").val(''); 
-				     
-				     $("#country").val(''); 
-				     $("#state").val(''); 
-				     $("#citySearch").val(''); 
-				     
-				     $("#designationType").val(''); 
-				     
-				     
-				     $("#education").val(''); 
-				     $("#excludeEducation").val('');
-				     $("#certification").val(''); 
-				     
-				     $("#employers").val(''); 
-				     $("#excludeEmployers").val(''); 
-				     $("#applicantType").val('');
-				     $("#canSkills").val('');
-				     $("#canVisa").val('');
-				     $("#canTags").val('');
-				     $("#primarySkill").val('');
-				    
-				}
-
-		//	<!-- End  clearCandidateSearchKeys() method for clear search data-->
-
-
-
-
-			//<!-- =========================================== share scriptin By Laxman ======================================== -->
-			function toggleShareCandidates(source){
-				  var checkboxes = document.querySelectorAll('input[class="contactscheckbox"]');
-				  if($(source).is(":checked")){
-					  $('input[class="contactscheckbox"]').prop('checked', 'checked');
-				  	  $(".tableShare").show();
-				  	$('input:checkbox[name=sharedcheckbox]:checked').each(function(){
-				  		candidateIdsMark.push($(this).attr("id"));
-				 	}); 
-				  }
-				  else{ 
-					  $('input[class="contactscheckbox"]').removeProp('checked');
-				      $(".tableShare").hide();
-				      $('input:checkbox[name=sharedcheckbox]not(:checked)').each(function(){
-				    	  candidateIdsMark = jQuery.grep(candidateIdsMark, function(value) {
-							   return value != $(this).attr("id");
-							});
-					 	});
-				      
-				  }
-				  $('input[class="contactscheckbox"]').each(function(i) {
-					  if($(this).is(":checked")) {
-					      shareCandidates[$(this).data("id")] = $(this).val();
-					  } else {
-						  shareCandidates[$(this).data("id")] = "";
-					  }
-				  });
-			}
-
-			function checkOrUncheckParent(tableId, selectedItems, checkboxId) {
-				$("#"+checkboxId).removeProp("checked");
-				   var count = 0;
-				   var data = $("#"+tableId).DataTable().data();
-				 for(var e in selectedItems) {
-				   if(!e || !selectedItems[e] || selectedItems[e] === "")
-					   continue;
-				   
-				   for(var f in data) {
-			 	   if(e === data[f].id+"") {
-			 		count ++;
-			 	   }
-					}
-				 }
-				 if(count == data.count()) {
-					$("#"+checkboxId).prop("checked", "checked");
-				 }
-			}
-			var shareCandidates = {};
-			function checkShareCandidates(elem) {
-				if($(elem).is(":checked")) {
-					 $(".tableShare").show();
-					shareCandidates[$(elem).data("id")] = $(elem).val();
-				} else{
-					 var candidateIds = new Array();
-					 for(var e in shareCandidates) {
-						 if(!e || !shareCandidates[e] || shareCandidates[e] === "")
-							   continue;
-						 candidateIds.push(shareCandidates[e]);
-					 } 
-					 if(candidateIds.length - 1 == 0){
-						 $(".tableShare").hide();
-					 }
-					$("#sharedcheckbox").removeProp('checked');
-					shareCandidates[$(elem).data("id")] = "";
-				}
-			}
-			function shareJob() {
-				$("#sharejob-pop").fadeIn();
-				$(".sideMask").fadeIn();
-				var candidateIds = new Array();
-				 for(var e in shareCandidates) {
-					 if(!e || !shareCandidates[e] || shareCandidates[e] === "")
-						   continue;
-					 candidateIds.push(shareCandidates[e]);
-				 }
-				 if(candidateIds.length > 0){
-					 sharejobpopup(candidateIds.length);
-					getRequirements();
-				 }else{
-					 $("#sharejob-pop").hide();
-						$(".sideMask").hide();
-					    var result = "";
-						result = result +"	<div class='project_inn_mask'></div>"; 
-						result = result +"	   <div id='shareCandidate' class='remove_user_pop remove_user_pop_a'>";
-						result = result +"		<p>Please select at least one Candidate</p>";
-						result = result + ' <div id="reasonForInvoiceDiv"/>';
-						result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="cancelShareCandidate();"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelShareCandidate();"></b>';
-						result = result +"	</div>";
-						$("#shareEmptypopUp").empty();
-						$("#shareEmptypopUp").append(result);
-						$("#shareCandidate").slideDown(200);
-						$(".project_inn_mask").fadeIn(200); 
-				 }
-				
-				}
-			function cancelShareCandidate(){
-				$("#shareCandidate").fadeOut();
-				$(".project_inn_mask").fadeOut(); 
-			}
-			function closejobpop() {
-				$("#sharejob-pop").fadeOut();
-				$(".sideMask").fadeOut();
-				}
-			function sharejobpopup(candidateCount) {
-				var result = "";
-				result = result+ '<form method="post">';
-				 result = result+ '<div  id="shareJob-form" name="shareJob-form" class="modal-dialog">';
-				 result = result+ '<div class="modal-content">';
-				 result = result+ '  <div class="modal-header positionRelative">';
-				 result = result+ '    <button type="button" class="close" data-dismiss="modal" onclick="closejobpop();">&times;</button>';
-				 result = result+ '    <h4 class="modal-title col-md-3">Share Job</h4>';
-				 result = result+ '    <h5 class="modal-title col-md-8">Selected Candidates:<span id="selectedcandidatescount" class="paddingLeft">'+candidateCount+'</span></h5>';
-				 result = result+ '  </div>';
-				 result = result+ '  <div class="modal-body">';
-				 result = result+ '    <div class="clearfix mb">';
-				 result = result+ '    <label class="col-md-3">Posted from <span class="text-danger">&nbsp;*</span></label>';
-				 result = result+ '    <div class="dropdown-select col-md-9">';
-				 result = result+ '    <select class="form-control" id="requirementsTimeRange" onchange="getRequirements();rolecustomedates();">';
-				 result = result+ '    <option value="today">Today</option>';
-				 result = result+ '    <option value="yesterday">1 Day Ago</option>';
-				 result = result+ '    <option value="1_week" selected="">1 week</option>';
-				 result = result+ '    <option value="2_weeks">2 weeks</option>';
-				 result = result+ '    <option value="1_month">1 month</option>';
-				 result = result+ '    <option value="2_months">2 months</option>';
-				 result = result+ '    <option value="custom">Custom</option>';
-				 result = result+ '    </select>';
-				 result = result+ '    </div>';
-				 result = result+ '  </div>';
-				 result = result+ '  <div class="clearfix mb" id="customedatesDiv" style="display:none">';
-				 result = result+ '    <label class="col-md-3">Custom Dates <span class="text-danger">&nbsp;*</span></label>';
-				 result = result+ '    <div class="col-md-9">';
-				 result = result+ '    <div class="row">';
-				 result = result+ '    <div class="col-md-6" id="StartErrMsg">';
-				 result = result+ '    <input type="text" class="form-control calendar" id="shareStartDate" placeholder="Start Date" field-name="Start Date" readonly>';
-				 result = result+ '    </div>';
-				 result = result+ '    <div class="col-md-6" id="EndErrMsg">';
-				 result = result+ '    <input type="text" class="form-control calendar" id="shareEndDate" placeholder="End Date" field-name="End Date" readonly>';
-				 result = result+ '    </div>';
-				 result = result+ '    </div>';
-				 result = result+ '    </div>';
-				 result = result+ '  </div>';
-				 
-				 result = result+ '  <div class="clearfix mb">';
-				 result = result+ '    <label class="col-md-3">Managers</label>';
-				 result = result+ '    <div class="dropdown-select col-md-9">';
-				 result = result+ '    <select class="form-control chosen-select" id="requirementManagerlist" onchange="getRequirements();">';
-				 result = result + '    <option value=""> -- Select Manager -- </option>';
-				 result = result+ '        <c:forEach var="report" items="${requirementApproverList}">';
-				 result = result+ '	         	<option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>';
-				 result = result+ '        </c:forEach>  ';
-				 result = result+ '    </select>';
-				 result = result+ '    </div>';
-				 result = result+ '  </div>';
-				 
-				 result = result+ '  <div class="clearfix mb">';
-				 result = result+ '    <label class="col-md-3">Job<span class="text-danger">&nbsp;*</span></label>';
-				 result = result+ '    <div class="dropdown-select col-md-9" id="ErrMsgJob">';
-				 result = result+ '    <select data-live-search="true" class="form-control selectpicker" id="shareRequirementsList" field-name="Job" data-validation="required" onchange="removeErrMsg();">';
-				 result = result+ '    </select>';
-				 result = result+ '    </div>';
-				 result = result+ '  </div>';
-				 result = result+ '  </div>';
-				 result = result+ '  <div class="modal-footer">';
-				 result = result+ '    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="selectedJobSharing();">Share Job</button>';
-				 result = result+ '    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="closejobpop();">Cancel</button>';
-				 result = result+ '  </div>';
-				 result = result+ '</div>';
-				 result = result+ '</div>';
-				 result = result+ '</form>';
-				 $("#sharejob-pop").empty();
-				 $("#sharejob-pop").append(result);
-				 
-				 $("#shareRequirementsList").selectpicker('refresh');
-				 
-				 $("#requirementManagerlist").chosen();
-				 $("#requirementManagerlist").trigger("chosen:updated");
-				 
-				 
-				 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-				  var finalDateFormatProjectSave = '';
-				  if(locationDate.match("yyyy-MM-dd")){
-					  finalDateFormatProjectSave = 'yy-mm-dd';
-				  }if(locationDate.match("dd-MM-yyyy")){
-					  finalDateFormatProjectSave = 'dd-mm-yy'; 
-				  }if(locationDate.match("MM-dd-yyyy")){
-					  finalDateFormatProjectSave = 'mm-dd-yy'; 
-				  }if(locationDate.match("yyyy-dd-MM")){
-					  finalDateFormatProjectSave = 'yy-dd-mm'; 
-				  }
-				 
-				  
-				  $('#shareStartDate').datepicker({
-						dateFormat : finalDateFormatProjectSave,
-						changeMonth: true,
-						changeYear: true, 
-						onSelect : function(selected) {
-							var dt = $(this).datepicker('getDate', '+1d');
-							dt.setDate(dt.getDate());
-							$("#shareEndDate").datepicker("option", "minDate", dt);
-							removeErrsgStartDate();
-							getRequirements();
-						}
-					});
-				  
-				  $('#shareEndDate').datepicker({
-						dateFormat : finalDateFormatProjectSave,
-						changeMonth: true,
-						changeYear: true, 
-						onSelect : function(selected) {
-							var dt = $(this).datepicker('getDate', '-1d');
-							dt.setDate(dt.getDate());
-							$("#shareStartDate").datepicker("option", "maxDate", dt);
-							removeErrEndDate();
-							getRequirements();
-						}
-					});
-			}
-			function selectedJobSharing(){
-				if ($('#shareJob-form').validate(false, validationSettings)) {
-					var requirementId = $("#shareRequirementsList").val();
-					var candidateIds = new Array();
-					 for(var e in shareCandidates) {
-						 if(!e || !shareCandidates[e] || shareCandidates[e] === "")
-							   continue;
-						 candidateIds.push(shareCandidates[e]);
-					 }
-					 $("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-					 $.ajax({
-				          type : "POST",
-				          url: atsUrl+"/shareAllRecommendations?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+requirementId,    
-				           success :function(data) {
-				        	   closejobpop();
-				        	    $("#recommendationsLoading").removeAttr("style");
-				        	    $("#selector4").removeAttr("style");
-				       			$("#selector4").css({ display: "block" });
-				       			$("#eduMsgDiv").html("Great ! you have successfully shared this job");
-				       			shareMsgFadeinFunction();
-				       			toggleShareCandidates();
-				           },
-				   }); 
-			      return true;
-					
-				}else {
-					return false;
-				}
-			}
-			$('body').on('blur', '#shareJob-form', function() {
-				$("#shareJob-form").showHelpOnFocus();
-				$("#shareJob-form").validateOnBlur(false, validationSettings);
-			});
-				function shareMsgFadeinFunction() {
-					$("#selector4").fadeIn(200);
-			        $('#selector4').delay(2000).fadeOut('slow');
-				}
-			//Role custome Dates
-			function rolecustomedates(){
-				var roleval = $("#requirementsTimeRange").val();
-				if(roleval == "custom"){
-					document.getElementById("customedatesDiv").style.display ="block";
-					 $('#shareStartDate').attr("data-validation","required"); 
-					 $('#shareEndDate').attr("data-validation","required"); 
-				}else {
-					document.getElementById("customedatesDiv").style.display ="none";
-					$('#shareStartDate').removeAttr("data-validation","required");
-					$('#shareEndDate').removeAttr("data-validation","required");
-				}
-			}
-
-			function removeErrsgStartDate(){
-				$("#StartErrMsg").find("p.jquery_form_error_message").remove();
-			}
-			function removeErrEndDate(){
-				$("#EndErrMsg").find("p.jquery_form_error_message").remove();
-			}
-			function removeErrMsg(){
-				$("#ErrMsgJob").find("p.jquery_form_error_message").remove();
-			}
-			function getRequirements(){
-				var postedDateRange =$("#requirementsTimeRange").val();
-				var startDate = $("#shareStartDate").val();
-				var endDate = $("#shareEndDate").val();
-				var managerId = $("#requirementManagerlist").val();
-				$.ajax({
-			        type : "GET",
-			        url: sourceleadUrl+"/getAllRequirementsForJobSharing?postedDateRange="+postedDateRange+"&startDate="+startDate+"&endDate="+endDate+"&managerId="+managerId,    
-			         success :function(json) {
-			              if(json != null && json != 'undefined' && json != "" && json != '[]'){
-			            	  var result = "";
-			            	  result = result + '<option value="">--- Select Job ---</option>';
-			                  for (var i = 0; i < json.length; i++) {
-			                 	 var opt = json[i]; 
-			                 	 result = result +  '<option value="'+opt.id+'"> '+opt.generatedId+' - '+opt.jobTitle+' ('+opt.postedDateStr+')</option>';
-			                  }
-			                  $("#shareRequirementsList").empty();
-			                  $("#shareRequirementsList").append(result);
-			                  $("#shareRequirementsList").selectpicker('refresh');
-			              }else{
-			            	  var result = "";
-			            	  result = result + '<option value="">--- Select Job ---</option>';
-			            	  $("#shareRequirementsList").empty();
-			                  $("#shareRequirementsList").append(result);
-			                  $("#shareRequirementsList").selectpicker('refresh');
-			              }
-			           
-			       },
-			    });
-
-			}
-			function closeCandidateFilterPop(){
-				$("#candidateFilterPopup").hide();
-				$(".advancedsearch-mask").fadeOut();
-			}
-			function openCandidateFilterPop(){
-				$("#candidateFilterPopup").toggle();
-				 $(".advancedsearch-mask").fadeIn();
-			}
-			function resetCandidateFilter(){
-				clearCandidateSearchKeys();
-				$("ul#TypeFilter > li input:radio").prop("checked",false);
-				$("ul#AllTypeFilter > li input:radio").prop("checked",false);
-				$("ul#UpdatedFilter > li input:radio").prop("checked",false);
-				$("ul#employmentFilter > li input:checkbox").prop("checked",false);
-				$("ul#availabilityFilter > li input:checkbox").prop("checked",false);
-				$("ul#skillsUL > li input:checkbox").prop("checked",false);
-				$("ul#candidateTypeFilter > li input:checkbox").prop("checked",false);
-				$("ul#createdByTypeFilter > li input:radio").prop("checked",false);
-				
-				
-				$("#dataTableSearch").val('');
-				document.getElementById("candidateTypeAll").checked = true;
-				document.getElementById("candidateAll").checked = true;
-				document.getElementById("candidateCheck").checked = true;
-				document.getElementById("myCandidatesRadio").checked = true;
-				candidateList();
-			}
-
-				
-			function mySkillsFunction() {
-			    var input, filter, ul, li, a, i;
-			    input = document.getElementById("mySkillsInput");
-			    filter = input.value.toUpperCase();
-			    ul = document.getElementById("skillsUL");
-			    li = ul.getElementsByTagName("li");
-			    for (i = 0; i < li.length; i++) {
-			        a = li[i].getElementsByTagName("label")[0];
-			        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
-			            li[i].style.display = "";
-			        } else {
-			            li[i].style.display = "none";
-
-			        }
-			    }
-			}
-
-			$(document).keyup(function(e) {
-				  if (e.keyCode === 27) {
-					  closeCandidateFilterPop();
-				  }
-				});
-			function getActions(){
-				$(".action-pop").slideToggle(200);
-				$(".newActPop").slideUp(200);
-			}	
-			$("html").click(function(){
-				$(".action-pop").slideUp(200);
-			});
-			$(".action, .action-pop").click(function(e){
-			 	e.stopPropagation();
-			});	
-
-			function newActions(){
-				$(".newActPop").slideToggle(200);
-				$(".action-pop").slideUp(200);
-			}
-			$("html").click(function(){
-				$(".newActPop").slideUp(200);
-			});
-			$(".overIcon, .newActPop").click(function(e){
-			 	e.stopPropagation();
-			});	
-				/* function goToGlaobalMarketList() {
-					alert("in global function");
-					 $.ajax({
-						type : "GET",
-						url : atsUrl + "/globalMarketplace?" + tokenParamName + "=" + tokenValue,
-						success : function(result) {
-							$('#candidatesInfoDiv').html(result);
-							$('#brudCrumLbl').html("Global Marketplace");
-							$('#headerLbl').html("Global Marketplace List");
-						},
-					}); 
-				}  */
+			}	*/	
+			
 			function goToCandidateList(){
 				location.href = atsUrl+"/candidatesList";
 			}

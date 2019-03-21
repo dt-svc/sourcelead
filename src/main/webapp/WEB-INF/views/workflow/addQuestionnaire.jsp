@@ -6,7 +6,7 @@
       <div class="pull-left">
         <h2>Add Questionnaire</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings</a> &raquo; 
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
       <a href="${SourceLeadWeb_atsUrl}/questionnaireList">Questionnaire </a>&raquo; 
       Add Questionnaire</div>
     </section>
@@ -127,7 +127,7 @@
               <div class="clearfix col-md-12 mb">
                 <div class="pull-right">
                   <input value="Save" class="btn btn-primary" type="button">
-                  <input value="Cancel" class="btn btn-default ml" type="button">
+                  <input value="Cancel" class="btn btn-default ml" type="button" onclick = "cancelAddQuestionnaire();">
                 </div>
               </div>
             </div>
@@ -225,5 +225,10 @@ slider.oninput = function() {
         $('<li />', {}).addClass("fa fa-star textWarning").appendTo('#starRating');
     })
     });
+</script>
+<script>
+function cancelAddQuestionnaire(){
+	window.location.replace("${SourceLeadWeb_atsUrl}/questionnaireList");
+}
 </script>
 <jsp:include page="../masterFooter.jsp" />
