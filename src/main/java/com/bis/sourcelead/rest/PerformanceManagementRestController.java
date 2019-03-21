@@ -33,6 +33,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
 import com.bis.sourcelead.entity.performance.PerformanceBadges;
+import com.bis.sourcelead.entity.performance.PerformanceCompetencies;
 import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
 import com.bis.sourcelead.entity.performance.PerformanceTagCompetencies;
 import com.bis.sourcelead.enums.Result;
@@ -134,6 +135,40 @@ public class PerformanceManagementRestController {
   			 badges.setStatus(Constants.RECORD_INACTIVE);
   			 performanceBadgesService.savePerformanceBadges(badges);
   			 resObj = Result.SUCCESS.name();
+  		    
+  		 }catch (Exception e) {
+  			resObj = Result.AWKWARD.name();
+  		}
+  		 return resObj;
+    }
+    
+    
+    @RequestMapping(value = "/deletePerformanceCompetenceById", method = RequestMethod.POST)
+  	public String deletePerformanceCompetenceById(HttpServletRequest request, 
+  			@RequestParam(value = "competenceId", required = true) Long competenceId){
+  		 String resObj = null;
+  		 try {
+  			 PerformanceCompetencies competence =  performanceCompetenciesService.getPerformanceCompetenciesById(competenceId);
+  			competence.setStatus(Constants.RECORD_INACTIVE);
+  			performanceCompetenciesService.savePerformanceCompetencies(competence);
+  			resObj = Result.SUCCESS.name();
+  		    
+  		 }catch (Exception e) {
+  			resObj = Result.AWKWARD.name();
+  		}
+  		 return resObj;
+    }
+    
+    
+    @RequestMapping(value = "/deletePerformanceTagCompetenceById", method = RequestMethod.POST)
+  	public String deletePerformanceTagCompetenceById(HttpServletRequest request, 
+  			@RequestParam(value = "tagCompetenceId", required = true) Long tagCompetenceId){
+  		 String resObj = null;
+  		 try {
+  			PerformanceTagCompetencies tagCompetence =  performanceTagCompetenciesService.getPerformanceTagCompetenciesById(tagCompetenceId);
+  			tagCompetence.setStatus(Constants.RECORD_INACTIVE);
+  			performanceTagCompetenciesService.savePerformanceTagCompetencies(tagCompetence);
+  			resObj = Result.SUCCESS.name();
   		    
   		 }catch (Exception e) {
   			resObj = Result.AWKWARD.name();

@@ -468,6 +468,53 @@ function PerformanceManagement(){
  				}); 
    }
    
+   this.deleteCompetence = function(competenceId){
+		$.ajax({
+			  type: "POST",
+			    url: sourceleadUrl+"/deletePerformanceCompetenceById?competenceId="+competenceId,
+			     success :function(response) {
+			    	 
+			    	 if (response && (response === "INVALID_DATA" || response === "INVALID_USER")) {
+	     	    		    showError("Invalid User");
+	     	    		}
+			        	else if (response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (response === "SUCCESS") {
+			        		performanceManagement.performanceCompetenceList();
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
+			    	  
+					},
+				});
+   }
+   
+   
+   this.deleteTagCompetence = function(tagCompetenceId){
+		$.ajax({
+			  type: "POST",
+			    url: sourceleadUrl+"/deletePerformanceTagCompetenceById?tagCompetenceId="+tagCompetenceId,
+			     success :function(response) {
+			    	 
+			    	 if (response && (response === "INVALID_DATA" || response === "INVALID_USER")) {
+	     	    		    showError("Invalid User");
+	     	    		}
+			        	else if (response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (response === "SUCCESS") {
+			        		performanceManagement.performanceCompetenceList();
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
+			    	  
+					},
+				});
+  }
+   
     
   this.applicableType = function(){
   	 var applicableForRadio = $('input[name=applicableFor]');

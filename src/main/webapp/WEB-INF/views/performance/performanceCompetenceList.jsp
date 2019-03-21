@@ -183,7 +183,7 @@ function competencePagination(url){
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    result = result	+ '<td><div class="tblminwidth-50 pull-left ml"><div class="pull-left"><a><i class="fa fa-pencil text-success" onclick="performanceManagement.editCompetence(\''+opt.competenceId+'\');"></i></a></div> <div class="pull-left mt2 ml5"><a><i class="fa fa-trash text-danger" onclick=""></i></a></div></div></td>';
+	            	    result = result	+ '<td><div class="tblminwidth-50 pull-left ml"><div class="pull-left"><a><i class="fa fa-pencil text-success" onclick="performanceManagement.editCompetence(\''+opt.competenceId+'\');"></i></a></div> <div class="pull-left mt2 ml5"><a><i class="fa fa-trash text-danger" onclick="performanceManagement.deleteCompetence(\''+opt.competenceId+'\');"></i></a></div></div></td>';
 	            		return result;
 	              }
 		     }],
@@ -282,7 +282,7 @@ function getTagCompetenceList(){
 		    			        		    result = result+'<td>';
 		    			        		    result = result+'<div class="tblminwidth-50 pull-left ml">'; 
 		    			        		    result = result	+'<div class="pull-left"><a><i class="fa fa-pencil text-success" onclick="performanceManagement.tagPerformanceCompetence(\''+report.tagCompetenceId+'\');"></i></a></div>';
-		    			        		    result = result	+'<div class="pull-left mt2 ml5"><a><i class="fa fa-trash text-danger" onclick=""></i></a></div>';
+		    			        		    result = result	+'<div class="pull-left mt2 ml5"><a><i class="fa fa-trash text-danger" onclick="performanceManagement.deleteCompetence(\''+report.tagCompetenceId+'\');"></i></a></div>';
 		    			        		    result = result+'</div></td>';
 		    			        		   
 		    			        		    result = result + '</tr>';
