@@ -332,11 +332,27 @@ function getUsersSearchResult(searchValue){
 		                    <li>
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
-									<span> 
-									<a href="${SourceLeadWeb_atsUrl}/userCreation">Add Associate</a>
-									<a href="${SourceLeadWeb_atsUrl}/addAssociateFromLocations">Add From Loc</a>
+									<span class="ovrShow"> 
+									<a href="<c:url value='${SourceleadWeb_atsUrl}/userCreation'/>">Add Associate</a>
+									<a href="<c:url value='${SourceleadWeb_atsUrl}/addAssociateFromLocations'/>">Add From Loc</a>
 									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
-										<a href="<c:url value='${sourceleadUrl}/uploadForm'/>">Import</a>
+										<%-- <a href="<c:url value='${appPath}/uploadForm'/>">Import</a> --%>
+										<div class="immSub">
+											<a href="#">Import</a>
+											<div class="immSubMenu">
+												<a href="${SourceleadWeb_sourceleadUrl}/uploadForm">Associate Import</a>
+												<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+													<a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateBankForm">Associate Bank Details Import</a>
+												</c:if>
+												
+												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+												    <a href="${SourceleadWeb_atsUrl}/uploadAssociateBankingDetailsForm">Associate Bank Detail</a>
+												    <a href="${SourceleadWeb_atsUrl}/uploadAssociateInformation">Associate Information</a>
+													<a href="${SourceleadWeb_atsUrl}/uploadAssociateSalary">Associate Salary Import</a>
+												</c:if>
+											</div>
+										</div>
+										
 									</sec:authorize>									
 									</span>
 								</div>
@@ -406,7 +422,7 @@ function getUsersSearchResult(searchValue){
       <!-- Content Area Ends--> 
  <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
       <jsp:include page="../masterFooter.jsp" />
-      <div class="backtotop" style="display: none;"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/backtotop.png"></div>  
+      <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
   
  <!--  Rajashkar
   SCript is used to export user data as xls format -->    
