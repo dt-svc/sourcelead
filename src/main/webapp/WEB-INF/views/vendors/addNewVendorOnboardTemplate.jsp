@@ -6,6 +6,10 @@
 <script src="/resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<script>
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+</script>
+
 <script src="/resources/js/formvalidator.js"></script>
 
 
@@ -16,7 +20,7 @@
           <div class="pull-left">
             <h2>Vendor Onboard Template</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/vendorOnboardTemplateList'/>">Onboard Templates List</a> &raquo; Add Onboard Template </div>
+          <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_vmsUrl}/vendorOnboardTemplateList">Onboard Templates List</a> &raquo; Add Onboard Template </div>
     </section>
     
     <div class="content-area content-new clearfix">
@@ -53,7 +57,7 @@
                 </div>
                 <div class="form-footer clearfix mt">
                   <div class="pull-right mr">
-                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/app/vendorOnboardTemplateList'">
+                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='${SourceLeadWeb_vmsUrl}/vendorOnboardTemplateList'">
                     <input type="button" value="Save" id="save_button"  onclick="createTemplate('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="save_continue_button" onclick="createTemplate('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
@@ -91,7 +95,7 @@
                 
                 <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/app/vendorOnboardTemplateList'">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='${SourceLeadWeb_vmsUrl}/vendorOnboardTemplateList'">
                     <input type="button" value="Save" id="save_doc_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="save_continue_doc_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
@@ -448,7 +452,7 @@ function addContractsAttachment(){
 			
 }	
 
-var sourceleadUrl = '${sourceleadUrl}';
+// var sourceleadUrl = '${sourceleadUrl}';
 function uploadContractDocument(id){
 	fileUpload(""+id+"contractsdocFile", "Vendor-Onboard-Template-Documents", "templateDocuments_form","vendorDocumentsFileInfo");
 }
@@ -483,13 +487,14 @@ function uploadContractDocument(id){
 
 <script>
 function getAssignToUsersList(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var templateId = document.getElementById("taskstemplateId").value;
     $("#taskstemplateId").val(templateId);
     
-	var sourceleadUrl = '${sourceleadUrl}';
+// 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
+	    url: vmsUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
 	    success: function(response) {
 	    	if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
@@ -504,7 +509,7 @@ function getAssignToUsersList(){
 	           	 $("#onboardAssignedTo").append(result); 
 	           	 $('#onboardAssignedTo').trigger("chosen:updated");
 	    	} else if (response.indexOf('Sign In') !== -1) {
-	    		location.replace(sourceleadUrl);
+	    		location.replace(vmsUrl);
 	    	} else {
 	    	    showError("Operation failed, please try again");
 	    	}
@@ -533,6 +538,7 @@ function validate_fileupload(fileName)
 
 <script>
 function createTemplate(saveType){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var validationSettings = {
 	        errorMessagePosition : 'element',
 	       borderColorOnError : '',
@@ -541,7 +547,7 @@ function createTemplate(saveType){
          }; 
 	
 	  if ($('#onboardTemplate_form').validate(false, validationSettings)){ 
-	        var sourceleadUrl ='${sourceleadUrl}';
+// 	        var sourceleadUrl ='${sourceleadUrl}';
 	    	$("#save_button").attr("disabled", "disabled");
     		$("#save_continue_button").attr("disabled", "disabled");
     		var formData = getFormData("onboardTemplate_form");
@@ -549,7 +555,7 @@ function createTemplate(saveType){
 	        $.ajax({
 	        	type : "POST",
   	    	    data: formData,
-		    	url: sourceleadUrl+"/createNewVendorOnBoardingTemplate?${_csrf.parameterName}=${_csrf.token}", 
+		    	url: vmsUrl+"/createNewVendorOnBoardingTemplate?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(response) {
 		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
 		    		    showError(response.responseMessage);
@@ -574,7 +580,7 @@ function createTemplate(saveType){
 		     	        $("#loading").removeAttr("style");
 		    			
 		    		}else if (response.indexOf('Sign In') !== -1) {
-		    			location.replace(sourceleadUrl);
+		    			location.replace(vmsUrl);
 		    		} else {
 		    		    showError("Operation failed, please try again");
 		    		}
@@ -605,6 +611,7 @@ $(document).on("keypress", 'form', function (e) {
 </script>
 <script>
 function createTemplateDocs(saveType){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			var validationSettings = {
 	        errorMessagePosition : 'element',
 	       borderColorOnError : '',
@@ -612,7 +619,7 @@ function createTemplateDocs(saveType){
 			dateFormat : 'yyyy/mm/dd' 
          }; 
 	
-	  var sourceleadUrl ='${sourceleadUrl}';
+// 	  var sourceleadUrl ='${sourceleadUrl}';
 	  
 	  if ($('#templateDocuments_form').validate(false, validationSettings)){ 
 		   $("#save_doc_button").attr("disabled", "disabled");
@@ -623,7 +630,7 @@ function createTemplateDocs(saveType){
 		$.ajax({
 		      type : "POST",
     	      data: formData,
-	    	  url: sourceleadUrl+"/saveVendorOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}",		
+	    	  url: vmsUrl+"/saveVendorOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}",		
 		      success :function(response) {
 		    	  if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
 		    		    showError(response.responseMessage);
@@ -645,7 +652,7 @@ function createTemplateDocs(saveType){
 		      	      $("#save_continue_doc_button").removeAttr("disabled");
 			    	  $("#loading").removeAttr("style");
 		    		}else if (response.indexOf('Sign In') !== -1) {
-		    			location.replace(sourceleadUrl);
+		    			location.replace(vmsUrl);
 		    		} else {
 		    		    showError("Operation failed, please try again");
 		    		}
@@ -671,7 +678,7 @@ function createTemplateDocs(saveType){
 
 <script>
 function saveOnboardTask(){
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var validationSettings = {
 	        errorMessagePosition : 'element',
 	       borderColorOnError : '',
@@ -681,7 +688,7 @@ function saveOnboardTask(){
 	
 	  if ($('#addonboardTask_form').validate(false, validationSettings)){ 
 		  	
-	        var sourceleadUrl ='${sourceleadUrl}';
+// 	        var sourceleadUrl ='${sourceleadUrl}';
 	        var formData = getFormData1("addonboardTask_form");
 	        
 	        $("#onboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -690,7 +697,7 @@ function saveOnboardTask(){
   	    	    data: formData,
   	    	    processData: false,
 		        contentType:false,
-	    	    url: sourceleadUrl+"/saveVendorOnBoardTemplateTasks?${_csrf.parameterName}=${_csrf.token}", 
+	    	    url: vmsUrl+"/saveVendorOnBoardTemplateTasks?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(response) {
 		        	 if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
 			    		    showError(response.responseMessage);
@@ -706,7 +713,7 @@ function saveOnboardTask(){
 					        	$("#selector").fadeIn(150);
 					        	$('#selector').delay(1000).fadeOut('slow');
 			    		}else if (response.indexOf('Sign In') !== -1) {
-			    			location.replace(sourceleadUrl);
+			    			location.replace(vmsUrl);
 			    		} else {
 			    		    showError("Operation failed, please try again");
 			    		}
@@ -763,9 +770,10 @@ $('body').on('blur', '#addonboardTask_form', function() {
 
 <script>
 function getTemplateDetails(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var templateId = document.getElementById("templateId").value;
 	if(templateId){
-		var sourceleadUrl ='${sourceleadUrl}';
+// 		var sourceleadUrl ='${sourceleadUrl}';
         $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/getVendorOnboardTemplateById?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId, 
@@ -781,7 +789,7 @@ function getTemplateDetails(){
 		        	 
 		        	 $("#onboardTasksList").empty();
 	    		}else if (response.indexOf('Sign In') !== -1) {
-	    			location.replace(sourceleadUrl);
+	    			location.replace(vmsUrl);
 	    		} else {
 	    		    showError("Operation failed, please try again");
 	    		}
@@ -794,16 +802,17 @@ function getTemplateDetails(){
 
 <script>
 function getTemplateVendorDocumentsDetails(templateId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$("#templateDocuments_form input[name*='vendorDocumentsFileInfo']").remove();
 	if(templateId == '' || templateId == null || templateId =='undefined'){
 		templateId = document.getElementById("templateId").value;
 	}
 	var documentType = "Documents"
 	if(templateId){
-		var sourceleadUrl ='${sourceleadUrl}';
+// 		var sourceleadUrl ='${sourceleadUrl}';
 	     $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getVendorOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
+		    	 url: vmsUrl+"/getVendorOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
 		        success: function(response) {
 		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
 		    		    showError(response.responseMessage);
@@ -861,7 +870,7 @@ function getTemplateVendorDocumentsDetails(templateId){
 	                	 $("#onboardTasksList").empty();
 		    			
 		    		}else if (response.indexOf('Sign In') !== -1) {
-		    			location.replace(sourceleadUrl);
+		    			location.replace(vmsUrl);
 		    		} else {
 		    		    showError("Operation failed, please try again");
 		    		}
@@ -939,9 +948,10 @@ function alertMessage(documentName){
 
 <script>
 function deleteTemplateDocument(documentUUID,documentId,documentType){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	   $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/deleteVendorTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
+	    	 url: vmsUrl+"/deleteVendorTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
 	        success: function(data) {
 	        	if(data == 'success'){
 	        		if(documentType == 'Documents'){
@@ -981,12 +991,12 @@ function alertRequiredMessage(documentUUID,id){
 
 <script>
 function docIsRequiredOrNot(documentUUID){
-	
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+// 	var sourceleadUrl ='${sourceleadUrl}';
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	   $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/requiredOrNotTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
+	    	 url: vmsUrl+"/requiredOrNotTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
 	        success: function(data) {
 	        	if(data == 'success'){
         			$("#loading").removeAttr("style");
@@ -1016,14 +1026,15 @@ function cancel(id){
 
 <script>
 function validateTemplateName(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var templateId = document.getElementById("templateId").value;
 	var templateName = document.getElementById("templateName").value;
 	
 	if(templateName){
-		var sourceleadUrl = '${sourceleadUrl}';
+// 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/validateVendorOnboardingTemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName+"&templateId="+templateId, 
+	    	url : vmsUrl+"/validateVendorOnboardingTemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName+"&templateId="+templateId, 
 	        success: function(result) {
 	        	if (result == 'invalid') {
 	        		$("#save_button").attr("disabled", "disabled");
@@ -1050,16 +1061,17 @@ function validateTemplateName(){
 
 <script>
 function getVendorOnboardingTasksList(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var templateId = document.getElementById("documentstemplateId").value;
 	var onboardTaskDiv = document.getElementById("onboardTaskDiv").value;
 	if(onboardTaskDiv == 'Y'){
-	var sourceleadUrl = '${sourceleadUrl}';
+// 	var sourceleadUrl = '${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/getVendorOnboardTemplateTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
+	    url: vmsUrl+"/getVendorOnboardTemplateTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
 	    success: function(response) {
 	    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
     		    showError(response.responseMessage);
@@ -1125,7 +1137,7 @@ function getVendorOnboardingTasksList(){
     	    		 $("#onboardTasksList").empty();
     	           	 $("#onboardTasksList").append(result); 
     		}else if (response.indexOf('Sign In') !== -1) {
-    			location.replace(sourceleadUrl);
+    			location.replace(vmsUrl);
     		} else {
     		    showError("Operation failed, please try again");
     		}
@@ -1143,11 +1155,11 @@ function getVendorOnboardingTasksList(){
 
 <script>
 function deleteTask(taskId){
-	
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+// 	var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/deleteVendorOnboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
+	    	 url: vmsUrl+"/deleteVendorOnboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
 	        success: function(response) {
 	        	
 	        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
@@ -1160,7 +1172,7 @@ function deleteTask(taskId){
 		        			$("#onboardTasksList").prepend("<div><h4>No Tasks Found</h4></div>");
 		        		}
 	    		}else if (response.indexOf('Sign In') !== -1) {
-	    			location.replace(sourceleadUrl);
+	    			location.replace(vmsUrl);
 	    		} else {
 	    		    showError("Operation failed, please try again");
 	    		}
@@ -1173,13 +1185,13 @@ function deleteTask(taskId){
 
 <script>
 function saveAndFinishOnboardTemplate(templateId){
-	
-	var sourceleadUrl = '${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+// 	var sourceleadUrl = '${sourceleadUrl}';
 	$("#finish_task").attr("disabled", "disabled");
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/saveAndFinishVendorOnboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
+	    url: vmsUrl+"/saveAndFinishVendorOnboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
 	    success: function(response) {
 	    	
 	    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
@@ -1188,9 +1200,9 @@ function saveAndFinishOnboardTemplate(templateId){
     		    location.href = "/errorPage";
     		} else if (response.response === "SUCCESS") {
     			 $("#finish_task").removeAttr("disabled");
-    	    	 location.replace(sourceleadUrl+"/vendorOnboardTemplateList");
+    	    	 location.replace(vmsUrl+"/vendorOnboardTemplateList");
     		}else if (response.indexOf('Sign In') !== -1) {
-    			location.replace(sourceleadUrl);
+    			location.replace(vmsUrl);
     		} else {
     		    showError("Operation failed, please try again");
     		}

@@ -7,7 +7,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<script src="/resources/js/immigration.js"></script>
+<script src="/resources/js/immigration.js?staticTime=${staticTime}"></script>
 <title>Insert title here</title>
 <style>
 .disabledLink
@@ -31,7 +31,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
         <h2></h2>
       </div>
      
-	   <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_vmsUrl}/immigration/viewLCAList">LCA List</a> &raquo; LCA Summary</div>
+	   <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_vmsUrl}/immigration/viewLCAList">LCA List</a> &raquo; LCA Summary</div>
       
         <input type="hidden" id ="lcaId" value ="${lcaId}">
     </section>

@@ -21,7 +21,7 @@
 			<h2>Add Contract Template</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>
 			&raquo;<a href="${SourceLeadWeb_vmsUrl}/orgContractTemplate"> Contract
 				Template List</a> &raquo; Add Contract Template
 		</div>
@@ -646,7 +646,7 @@
 					+ "/saveTemplate?${_csrf.parameterName}=${_csrf.token}",
 					formData, function(data) {
 						if (data != null) {
-							location.replace(sourceleadUrl
+							location.replace(vmsUrl
 									+ "/orgContractTemplate");
 						}
 					});

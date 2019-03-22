@@ -8,7 +8,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<script type="text/javascript" src="${SourceLeadWeb_vmsUrl}/resources/js/immigration.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_vmsUrl}/resources/js/immigration.js?staticTime=${staticTime}"></script>
 <script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
 <!-- <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script> -->
 <!-- <script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script> -->
@@ -237,7 +237,7 @@
 				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
-	                 		<a href="${SourceLeadWeb_vmsUrl}/uploadImmigrationForm">Import</a>
+	                 		<a href="${SourceLeadWeb_sourceleadUrl}/uploadImmigrationForm">Import</a>
 							<a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a>
 						</span>
 						<!-- <span>
@@ -553,7 +553,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
      result = result + '<th>Email</th>';
      result = result + '<th>Phone</th>';
      result = result + '<th>On Date</th>';
-     if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
+     if('${orgLocationInfo.isLawFirm}' == 'Y'){
      result = result + '<th>Company</th>';
      }else{
      result = result + '<th>Attorney</th>'; 
@@ -906,7 +906,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	
 	function getAttorneysByOrgLocation(){
 		var type = null ;
-		if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
+		if('${orgLocationInfo.isLawFirm}' == 'Y'){
 			type = "Client";
 		}else{
 			type = "Vendor";

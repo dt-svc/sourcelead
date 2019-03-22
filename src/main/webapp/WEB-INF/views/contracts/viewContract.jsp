@@ -33,7 +33,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>View Contract</h2>
       </div>
-     <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_vmsUrl}/contractListbyStatus'/>">Contracts</a> &raquo; View Contract</div>
+     <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_vmsUrl}/contractListbyStatus">Contracts</a> &raquo; View Contract</div>
     </section>
     
 
@@ -230,7 +230,7 @@ function saveContractTags(type){
         		
         		getContractTagsList(contractUUID);
         	} else if (result.indexOf('Sign In') !== -1) {
-        		location.replace(sourceleadUrl);
+        		location.replace(vmsUrl);
         	} else {
         	    showError("Operation failed, please try again");
         	}
@@ -300,10 +300,10 @@ function addContractNotes(){
 	var contractUUID = getParameterByName('contractUUID');
 	    urlForm = "/getContractNotes?${_csrf.parameterName}=${_csrf.token}&contractUUID="+contractUUID;
 		
-    var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+    var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	  $.ajax({
         type : "POST",
-         url: vmsUrl+urlForm,        
+         url: sourceleadUrl+urlForm,        
          success :function(data) {
 	var output = "";
     if(data != null && data != 'undefined' && data != "" && data != '[]'){
@@ -366,13 +366,13 @@ function addContractNotes(){
 	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	      	    formData.append("locationCode",locationCode);
 	      	    
-	      	    var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	      	  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
 		    	        processData: false,
 		    	        contentType:false,
-						url : vmsUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"locationCode="+locationCode,
+						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"locationCode="+locationCode,
 						success : function(result) {
 							
 							if (result && result.response === "INVALID_DATA") {
@@ -383,7 +383,7 @@ function addContractNotes(){
 								closeDocPopup();
 								addContractNotes();
 							} else if (result.indexOf('Sign In') !== -1) {
-								location.replace(sourceleadUrl);
+								location.replace(vmsUrl);
 							} else {
 							    showError("Operation failed, please try again");
 							}
@@ -923,7 +923,7 @@ function saveContractSigner(){
 		    		 $("#contactUserSpan").html(" : "+opt.ownerName);
 		    		 $(".editSignature").hide();
 		    	 }else if (response.indexOf('Sign In') !== -1) {
-		 			location.replace(sourceleadUrl);
+		 			location.replace(vmsUrl);
 		 	    } else if (response.response === "AWKWARD") {
 		 		    location.href = "/errorPage";
 		 	    }

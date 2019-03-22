@@ -290,7 +290,7 @@ function vendorContractsList(orgRelationId){
 	                		     		 
 		                		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 	                		     		 if((report.typeOfContract == "New" || report.typeOfContract == "Custom") && (report.templateSubmissionStatus == "WAITING_TO_BE_SIGNED") && (null != report.parentContractId && '' != report.parentContractId && 'undefined' != report.parentContractId)){
-	                		     			 result = result + '<div class="pull-left"><a href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></small></a><a href="<c:url value="/app/docusign?contractUUID='+report.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a></div>'; 
+	                		     			 result = result + '<div class="pull-left"><a href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></small></a><a href="${SourceLeadWeb_vmsUrl}/docusign?contractUUID='+report.contractUUID+'" title="Signature"><i class="fa fa-pencil-square-o"></i></a></div>'; 
 	                			         }else if((report.typeOfContract == "New" || report.typeOfContract == "Custom") && (report.templateSubmissionStatus == "PENDING") && (null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId)){
 	                		     			 result = result + '<div class="pull-left"><a href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></small></a></div>'; 
 	                			         }else if(report.typeOfContract == "Existing"){
@@ -298,7 +298,11 @@ function vendorContractsList(orgRelationId){
 	                			         }else if(report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" || report.templateSubmissionStatus == "FINALIZED"){
 	                			        	 result = result + '<a href="#" title="Preview"><small class="fa fa-eye" onClick="viewFile(\''+report.templateFileURL+'\', \''+report.contractType+'\', \'application/pdf\')"></small></a>';
 	                			         }else{
-	                			        	 result = result + '<div class="pull-left"><a href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="viewFile(\''+report.templateFileURL+'\', \''+report.contractType+'\', \'application/pdf\')"></small></a></div>';
+	                			        	 if(report.typeOfContract == "New" && report.templateSubmissionStatus == "DRAFT"){
+	                			        		 result = result + '<div class="pull-left"><a href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="PopUp(\''+report.contractUUID+'\',\'DRAFT\');"></small></a></div>';
+	                			        	 }else{
+	                			        		 result = result + '<div class="pull-left"><a href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="viewFile(\''+report.templateFileURL+'\', \''+report.contractType+'\', \'application/pdf\')"></small></a></div>';
+	                			        	 }
 	                			         }
 	                		     		'</sec:authorize>';
 // 	            	     	        	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
@@ -308,9 +312,9 @@ function vendorContractsList(orgRelationId){
 	                	       			if(report.templateSubmissionStatus == "DRAFT" || report.templateSubmissionStatus == "WAITING_FOR_APPROVER" || report.templateSubmissionStatus == "REJECTED" ){
 	                	       				'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 	                	     	     		if(report.typeOfContract == "New"){
-	                	     	     			result = result + '<div class="pull-left"><a href="/app/addNewContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
+	                	     	     			result = result + '<div class="pull-left"><a href="${SourceLeadWeb_vmsUrl}/addNewContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
 	                	     	     		}else if(report.typeOfContract == "Custom"){
-	                	     	     			result = result + '<div class="pull-left"><a href="/app/addCustomContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
+	                	     	     			result = result + '<div class="pull-left"><a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
 	                	     	     		}
 	                	       			'</sec:authorize>';
 	                	       			}
@@ -574,11 +578,11 @@ function PopUp(contractUUID){
 			
 			if(json.templateSubmissionStatus == 'DRAFT' || json.templateSubmissionStatus == 'REJECTED' || json.templateSubmissionStatus == 'WAITING_FOR_APPROVER'){
 				if('New' == json.typeOfContract){
-					result = result +	'	<a href="/app/addNewContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>  <i class="fa fa-times" onclick="contPopClose();"></i>';
+					result = result +	'	<a href="${SourceLeadWeb_vmsUrl}/addNewContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>  <i class="fa fa-times" onclick="contPopClose();"></i>';
 				}else if('Existing' == json.typeOfContract){
 					result = result +	'	<i class="fa fa-times" onclick="contPopClose();"></i>';
 				}else if('Custom' == json.typeOfContract){
-					result = result +	'	<a href="/app/addCustomContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>  <i class="fa fa-times" onclick="contPopClose();"></i>';
+					result = result +	'	<a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>  <i class="fa fa-times" onclick="contPopClose();"></i>';
 				}
 			}else{
 				result = result +	'	<i class="fa fa-times" onclick="contPopClose();"></i>';
@@ -919,4 +923,13 @@ function editClo(contractId){
 	
 }
 </script>
+
+<script>
+function PopUp(contractUUID,stage){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	localStorage.setItem("stage",stage);
+ 	window.location.replace(vmsUrl+'/viewContract?contractUUID='+contractUUID);
+}
+</script>
+
 

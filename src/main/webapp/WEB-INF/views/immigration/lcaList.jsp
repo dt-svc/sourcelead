@@ -56,7 +56,7 @@
 					<div class="newActPop">
 						<span>
 						<sec:authorize access="hasAnyRole(\'ROLE_IMPORT_LCA\')">
-							<a href="/app/uploadLcaForm">Import LCA</a>
+							<a href="${SourceLeadWeb_sourceleadUrl}/uploadLcaForm">Import LCA</a>
 						 </sec:authorize>
 						  
 						  <sec:authorize access="hasAnyRole(\'ROLE_EXPORT_LCA\')">
@@ -460,7 +460,7 @@ function deleteLcaListId(lcaUuid){ // only stauts updated with reason. active 1 
 	        success: function (result) {
 	        	$("#remove_lca_pop").fadeOut(200);
 	    		$(".project_inn_mask").fadeOut(200);
-	    		window.location.href = vmsdUrl+"/immigration/viewLCAList";
+	    		window.location.href = vmsUrl+"/immigration/viewLCAList";
 	        }
 		});
      }else if (reason.length >= 251){

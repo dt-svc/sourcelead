@@ -5,7 +5,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script type="text/javascript" src="/resources/js/contractCommonScripts.js"></script>
+
+<script type="text/javascript">
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+</script>
+<script type="text/javascript" src="${SourceLeadWeb_vmsUrl}/resources/js/contractCommonScripts.js"></script>
 
 <style type="text/css">
 .chosen-container {
@@ -70,7 +74,7 @@
 		 getParallelApprovers();
 	 }
 	 
-	 if(contractType != null && contractType != 'undefined' && contractType !=''){
+	 if(type != null && type != 'undefined' && type !=''){
 // 	 	 getContractTemplates();
 	 	 contractTypeLabels()
 	 }
@@ -184,7 +188,7 @@
 					 <span class="input-group-addon cursorPointer bg-blue" onclick="getContractTemplates();"><i class="fa fa-refresh "></i></span>
 					 </div>
 					  <sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')"> 
-					 <span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_sourceleadUrl}/addContractTemplate" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>           
+					 <span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_vmsUrl}/addContractTemplate" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>           
                    </sec:authorize>
                   <c:choose>
 				    <c:when test="${fn:length(contractsTemplateList) gt 0}">
@@ -323,7 +327,7 @@
 			                  <span class="input-group-addon cursorPointer bg-blue" onclick="refreshVendorList();addCustomEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 			              </div>
 	              		<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-	               			<span class="col-md-2 noPad clearfix"><a href="<c:url value="${SourceLeadWeb_sourceleadUrl}/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+	               			<span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_vmsUrl}/addVendor" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
 	                 	</sec:authorize>
                 	</c:if>
                 
@@ -381,7 +385,7 @@
 		                   <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();addCustomEmptyClientContact()"><i class="fa fa-refresh "></i></span>
 		              	</div>
 		                <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-		               		<span class="col-md-2 noPad clearfix"><a href="<c:url value="${SourceLeadWeb_sourceleadUrl}/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+		               		<span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_vmsUrl}/client" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
 	             	    </sec:authorize>
               		</c:if>
                
@@ -2426,8 +2430,8 @@ function flush(){
 
 <script>
 function cancelContract(){
-	var sourceleadUrl = '${sourceleadUrl}';
-	location.replace(sourceleadUrl+"/contractListbyStatus");
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	location.replace(vmsUrl+"/contractListbyStatus");
 }
 
 </script>

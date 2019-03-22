@@ -380,7 +380,7 @@ padding: 2px 300px 2px 0px;
 			var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             $.post( vmsUrl+ "/saveDocContracts?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId, formData, function(data) {
-            		location.replace(sourceleadUrl+"/contractListbyStatus");
+            		location.replace(vmsUrl+"/contractListbyStatus");
                     });
 			
 			
@@ -632,7 +632,7 @@ function preparedContractListVendorDraft(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -695,9 +695,17 @@ function preparedContractVendorListDraftPagination(url,tabType){
         "render": function(data, type, report, meta) {
         	var result = "";
             if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-            	result = result + '<div class="proj_show tblminwidth-150" onclick="PopUp(\''+report.contractUUID+'\',\'DRAFT\');"><div class="pull-left tbldata-dotdot-big inlineBlock text-left" title="'+report.autoGenId+' - '+report.contractTitle+'">'+report.autoGenId+' - '+report.contractTitle+'</div><i class="fa fa-binoculars" style="position: absolute; right: 0; top: 0;"></i></div>';
+            	if(report.autoGenId != null && report.autoGenId != '' && report.autoGenId != 'undefined'){
+            		result = result + '<div class="proj_show tblminwidth-150" onclick="PopUp(\''+report.contractUUID+'\',\'DRAFT\');"><div class="pull-left tbldata-dotdot-big inlineBlock text-left" title="'+report.autoGenId+' - '+report.contractTitle+'">'+report.autoGenId+' - '+report.contractTitle+'</div><i class="fa fa-binoculars" style="position: absolute; right: 0; top: 0;"></i></div>';
+            	}else{
+            		result = result + '<div class="proj_show tblminwidth-150" onclick="PopUp(\''+report.contractUUID+'\',\'DRAFT\');"><div class="pull-left tbldata-dotdot-big inlineBlock text-left" title="'+report.contractTitle+'">'+report.contractTitle+'</div><i class="fa fa-binoculars" style="position: absolute; right: 0; top: 0;"></i></div>';
+            	}
 	        }else{
-	        	result = result + '<div class="proj_show tblminwidth-150"><div class="pull-left tbldata-dotdot-big inlineBlock text-left" title="'+report.autoGenId+' - '+report.contractTitle+'">'+report.autoGenId+' - '+report.contractTitle+'</div></div>';
+	        	if(report.autoGenId != null && report.autoGenId != '' && report.autoGenId != 'undefined'){
+	        		result = result + '<div class="proj_show tblminwidth-150"><div class="pull-left tbldata-dotdot-big inlineBlock text-left" title="'+report.autoGenId+' - '+report.contractTitle+'">'+report.autoGenId+' - '+report.contractTitle+'</div></div>';
+	        	}else{
+	        		result = result + '<div class="proj_show tblminwidth-150"><div class="pull-left tbldata-dotdot-big inlineBlock text-left" title="'+report.contractTitle+'">'+report.contractTitle+'</div></div>';
+	        	}
 	        }
              return result; 
             }
@@ -865,7 +873,7 @@ function preparedContractListClientDraft(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1094,7 +1102,7 @@ function preparedContractListApplicantDraft(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1318,7 +1326,7 @@ function preparedContractListVendorWFA(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#clientContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1475,7 +1483,7 @@ function preparedVendorContractListWFAPagination(url,tabType){
 			    	    	    	    	    	    	result = result + '<div class="tbldata-dotdot-vsm">';
 			    	    	    	    	 	        	  if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 			    	    	    	    	 	        		  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.approverUserId){
-			    	    	    	    	 		      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+report.id+',\'REJECTED\');"></i></div></div>';
+			    	    	    	    	 		      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><a><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i></a>|<a><i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+report.id+',\'REJECTED\');"></i></a></div></div>';
 			    	    	    	    	 		      	         }
 			    	    	    	    	 	        	  }else if(report.templateSubmissionStatus == "WAITING_TO_SEND" && (report.isOwner == "Y" || '${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN")){
 			    	    	    	    	 	        		  result = result + '<a title="Send Contract"><i class="fa fa-share-square" onclick="sendContractFromOwner(\''+report.contractUUID+'\');"></i></a>';
@@ -1539,7 +1547,7 @@ function preparedContractListClientWFA(url,tabType){
 		$("#vendorContractsList").empty();
 	    $("#clientContractsList").empty();
 	    $("#clientContractsList").empty();
-	    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	    var locationList ='${SourceLeadWeb_dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
 			  locationDate = 'YYYY-MM-DD';
 		  }if(locationList.match("dd-MM-yyyy")){
@@ -1754,7 +1762,7 @@ function preparedContractListApplicantWFA(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#clientContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1953,7 +1961,7 @@ function preparedContractListVendorWTS(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -2127,7 +2135,7 @@ function preparedVendorContractListWTSPagination(url,tabType){
 			    	    	    	    	    			'</sec:authorize>';
 			    	    	    	    			         
 			    	    	    	    			         if(report.revisedReason != null && report.revisedReason != '' && report.revisedReason != 'undefined'){
-			    	    	    	    			        	 result += ' <a><i class="fa fa-commenting-o edit-reason" aria-hidden="true"><div class="edit-status edit-status-top"><p><font color="red">Revise request reason</font>: <br>'+report.revisedReason+'</p></div></i></a>'; 
+			    	    	    	    			        	 result += ' <a onclick="getContractReviseReasonPop('+report.id+');"><i class="fa fa-commenting-o edit-reason" aria-hidden="true"><div class="edit-status edit-status-top" id="reviseReasonDivPop'+report.id+'"><p><font color="red">Revise request reason</font>: <br>'+report.revisedReason+'</p></div></i></a>'; 
 			    	    	    	    			         }
 			    	    	    	    			         result += '</div>';
 			    	    	    	    			         '</sec:authorize>';
@@ -2162,12 +2170,20 @@ function preparedVendorContractListWTSPagination(url,tabType){
 	
 }
 	
+function getContractReviseReasonPop(conId){
+	if( $("#reviseReasonDivPop"+conId).css('display') == 'block' ) {
+		$("#reviseReasonDivPop"+conId).hide();
+	}else{
+		$("#reviseReasonDivPop"+conId).show();
+	}
+}
+
 function preparedContractListClientWTS(url,tabType){
 		var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 		$("#vendorContractsList").empty();
 	    $("#clientContractsList").empty();
 	    $("#applicantsContractsList").empty();
-	    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	    var locationList ='${SourceLeadWeb_dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
 			  locationDate = 'YYYY-MM-DD';
 		  }if(locationList.match("dd-MM-yyyy")){
@@ -2340,7 +2356,7 @@ function preparedClientContractListWTSPagination(url,tabType){
 		    	    	    	    	  			'</sec:authorize>';
 		    	    	    	    	 	         
 		    	    	    	    	 	         if(output.revisedReason != null && output.revisedReason != '' && output.revisedReason != 'undefined'){
-		    	    	    	    	 	        	 opt += '<a><i class="fa fa-commenting-o" aria-hidden="true"><div class="edit-status"><p><font color="red">Revise request reason</font>: <br>'+output.revisedReason+'</p></div></i></a>'; 
+		    	    	    	    	 	        	 opt += '<a onclick="getContractReviseReasonPop('+output.id+');"><i class="fa fa-commenting-o" aria-hidden="true"><div class="edit-status" id="reviseReasonDivPop'+output.id+'"><p><font color="red">Revise request reason</font>: <br>'+output.revisedReason+'</p></div></i></a>'; 
 		    	    	    	    	 	         }
 		    	    	    	    	 	         opt = opt + '</div>';
 		    	    	    	    	      		'</sec:authorize>';
@@ -2379,7 +2395,7 @@ function preparedContractListApplicantWTS(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -2558,12 +2574,12 @@ function preparedApplicantContractListWTSPagination(url,tabType){
 
 <script>
 function preparedContractListVendorWTV(url,tabType){
-	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
+	 var SourceLeadWeb_loginOrg = '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
     
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -2573,10 +2589,10 @@ function preparedContractListVendorWTV(url,tabType){
 	  }if(locationList.match("yyyy-dd-MM")){
 		  locationDate = 'YYYY-DD-MM'; 
 	  } 
-	  preparedVendorContractListWTV(url,tabType);
+	  preparedVendorContractListWTV(url,tabType); 
 }
 
-function preparedVendorContractListWTV(url,tabType){
+ function preparedVendorContractListWTV(url,tabType){
 // 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableWTV" class="display" cellspacing="0" width="100%" >';
@@ -2598,9 +2614,9 @@ function preparedVendorContractListWTV(url,tabType){
 		$("#vendorContractsList").empty();
 	    $("#vendorContractsList").append(result);
 		preparedVendorContractListWTVPagination(url,tabType);
-}
+} 
 
-function preparedVendorContractListWTVPagination(url,tabType){
+ function preparedVendorContractListWTVPagination(url,tabType){
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var colIndex = 0;
     $('#contractListTableWTV').DataTable( {
@@ -2669,7 +2685,7 @@ function preparedVendorContractListWTVPagination(url,tabType){
 	    	    	    	    	  if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
 	    	    	 		        	 if(report.orgRelationUUID != null && report.orgRelationUUID != '' && report.orgRelationUUID != 'undefined'){
 	    	    	 		        	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
-	    	    	 		        	   result = result + '<div><span title="'+report.contractWith+'"><a href="'+Url+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.contractWith+'">'+report.contractWith+'</a></span></div>';
+	    	    	 		        	   result = result + '<div><span title="'+report.contractWith+'"><a href="'+vmsUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.contractWith+'">'+report.contractWith+'</a></span></div>';
 	    	    	 		        	 '</sec:authorize>';
 	    	    	 		        	 }else{
 	    	    	 	        		 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
@@ -2773,14 +2789,14 @@ function preparedVendorContractListWTVPagination(url,tabType){
 	
 	
 	
-}
+} 
 
 function preparedContractListClientWTV(url,tabType){
 	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -2992,7 +3008,7 @@ function preparedContractListApplicantWTV(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -3186,7 +3202,8 @@ function previewContractPDF(fileURL, fileName, fileType) {
 }
 
 function previewNewContractPDF(uuid, templateName) {
- 	window.open(sourceleadUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+ 	window.open(vmsUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
 }
 </script>
 
@@ -3605,14 +3622,14 @@ function CountClick(contractUUID,parentId){
 
 function uploadRequestedDocuments(id){
 	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload("uploadBtn"+id+"", "Requested Documents", "contractDoc_form");
+	fileUpload("uploadBtn"+id+"", "Requested_Documents", "contractDoc_form");
 }
 
 
 function removeResumeNameDiv(id){
 	$("#removeDiv"+id).hide();
 	
-		 var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 $.ajax({
 	     type : "POST",
 	      url: vmsUrl+"/updateDocument?${_csrf.parameterName}=${_csrf.token}&docuId="+id,       
@@ -3690,7 +3707,10 @@ function editClo(contractId){
 	
 }
 </script>
-<script type="text/javascript" src="/resources/js/contractCommonScripts.js"></script>
+<script>
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+</script>
+<script type="text/javascript" src="/vms/resources/js/contractCommonScripts.js"></script>
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->

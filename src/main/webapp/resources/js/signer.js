@@ -724,7 +724,8 @@ function successHidePopuop(){
 	 $("#popUp").empty();
   	 $(".project_inn_mask").fadeOut(200);
   	 $("#remove_user_pop").hide();
-  	 location.replace(sourceleadUrl+"/contractListbyStatus");
+  	 let vmsUrl = $("#sourceUrl").val();
+  	 location.replace(vmsUrl+"/contractListbyStatus");
 }
 
 function errorHidePopuop(){

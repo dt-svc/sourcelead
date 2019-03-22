@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <c:set var = "immigrationDTO" scope = "page" value = '<%= session.getAttribute("immigrationDTO")%>'/>
-<script type="text/javascript" src="${SourceLeadWeb_vmsUrl}/resources/js/immigration.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_vmsUrl}/resources/js/immigration.js?staticTime=${staticTime}"></script>
 <section class="addImmiWrap">
 	<div class="addImmiInnWrap">
 		<!-- <div class="immiStepsHead clearfix"> removed steps process.
@@ -334,7 +334,7 @@
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 								</div>
 							<span class="col-md-2 noPad clearfix">
-							<a href="<c:url value="/app/userCreation" />" target="_blank" hidden="true"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							<a href="${SourceLeadWeb_sourceleadUrl}/userCreation" target="_blank" hidden="true"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 							</span>
 							</div>
 							</div>
@@ -1078,7 +1078,7 @@
    isValidBeneficiary = false;
 });
  */
- var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+ var locationDate ='${SourceLeadWeb_dateFormat}'; 
  var finalDateFormatOrg = getOrgDateFormat(locationDate);
  var orgLocationId = "";
  
@@ -1394,7 +1394,7 @@ $("#experienceValue").change(function () {
 			  }
 		}else{
 			type = "Vendor";
-			orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+			orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		}
 	 	
 			 $.ajax({
@@ -1497,7 +1497,7 @@ $("#experienceValue").change(function () {
         	}
 		  }
 		  
-		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		  var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 		 
 		  $('#openDate').datepicker({
@@ -1669,7 +1669,7 @@ function  removeValidationAttorneyContact() {
 	     $("#clearUploads").click(function(){
 	    	 $("#uploadFile").val("");
 	     });
-	     var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	     var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		 var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 		function showStartDatePicker(id){
 		  $("#residenceStartDate"+id).datepicker({
@@ -1709,7 +1709,7 @@ function  removeValidationAttorneyContact() {
 <!-- LcaNumber AutoPopulate Ui script -->
 <script type="text/javascript">
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
-var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var locationDate ='${SourceLeadWeb_dateFormat}'; 
 var finalDateFormatOrg = getOrgDateFormat(locationDate);
  $("#lcaNumber").autocomplete({ 
 	 minLength: 2, 
@@ -1796,7 +1796,7 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 
 <script type="text/javascript">
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
-var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var locationDate ='${SourceLeadWeb_dateFormat}'; 
 var finalDateFormatOrg = getOrgDateFormat(locationDate);
  $("#prevLcaNumber").autocomplete({ 
 	 minLength: 2, 
