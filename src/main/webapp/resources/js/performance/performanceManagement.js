@@ -515,63 +515,6 @@ function PerformanceManagement(){
 				});
   }
    
-    
-  this.applicableType = function(){
-  	 var applicableForRadio = $('input[name=applicableFor]');
-       var applicableForType = applicableForRadio.filter(':checked').val();
-       if(applicableForType == 'Experienced'){
-      	 $('#experienceYears').removeAttr('data-validation-optional');
-   		 $('#experienceYears').attr("data-validation","required");
-   		 
-   		 $('#experienceMonths').removeAttr('data-validation-optional');
-   		 $('#experienceMonths').attr("data-validation","required");
-   		 document.getElementById("experienceDiv").style.display="";
-   		 performanceManagement.getYearsDropDownCount();
-    	 performanceManagement.getMonthsDropDownCount();
-   		
-       }else{
-      	 $('#experienceYears').val('');
-      	 $('#experienceMonths').val('');
-      	 
-      	 $('#experienceYears').attr('data-validation-optional');
-   		 $('#experienceYears').removeAttr("data-validation","required");
-   		 
-   		 $('#experienceMonths').attr('data-validation-optional');
-   		 $('#experienceMonths').removeAttr("data-validation","required"); 
-   		 
-   		 $('#experienceYearsDiv').find('p.jquery_form_error_message').remove(); 
-   		 $('#experienceMonthsDiv').find('p.jquery_form_error_message').remove(); 
-   		 document.getElementById("experienceDiv").style.display="none";
-       }
-  }
-
-  this.getYearsDropDownCount = function(){
-  	var i = "";
-  	result = "";
-  	result = result
-  	+ '("<option selected value="">Select Years</option>")';
-  	for (var i = 0; i <= 50; i++) {
-  		result = result + '("<option value='+i+'>' + i + '</option>")';
-  		
-  	}
-  	result = result + '</select>';
-  	$('#experienceYears').empty();
-  	$('#experienceYears').append(result);
-  }
-
-  this.getMonthsDropDownCount = function(){
-  	var i = "";
-  	result = "";
-  	result = result
-  	+ '("<option selected value="">Select Months</option>")';
-  	for (var i = 0; i <= 12; i++) {
-  		result = result + '("<option value='+i+'>' + i + '</option>")';
-  	}
-  	result = result + '</select>';
-  	$('#experienceMonths').empty();
-  	$('#experienceMonths').append(result);
-  }
-
   this.appraisalStartDateAndEndDatePickers = function(){
 	  var finalDateFormat = getJSDateFormat(locationDateFormat);
 	   $(function() {
@@ -609,7 +552,7 @@ function PerformanceManagement(){
 	   
 	   
 	   
-		    $(function() {
+	    $(function() {
 			  $('#selfAppraisalStartDate').datepicker({
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
@@ -662,20 +605,56 @@ function PerformanceManagement(){
 		
 		
 		
-			$(function() {
-					  $('#appraisalApprovingEndDate').datepicker({
-					      dateFormat: finalDateFormat,
-					      changeMonth: true,
-					  	  changeYear: true, 
-					  	  minDate:0,
-					  	  onSelect : function(selected) {
-					  		var dt = $(this).datepicker('getDate', '-1d');
-							dt.setDate(dt.getDate() - 1);
-							$("#appraisalApprovingStartDate").datepicker("option", "maxDate", dt);
-							performanceManagement.validAppraisalDates();
-					 	  }
-					  });
+		$(function() {
+				  $('#appraisalApprovingEndDate').datepicker({
+				      dateFormat: finalDateFormat,
+				      changeMonth: true,
+				  	  changeYear: true, 
+				  	  minDate:0,
+				  	  onSelect : function(selected) {
+				  		var dt = $(this).datepicker('getDate', '-1d');
+						dt.setDate(dt.getDate() - 1);
+						$("#appraisalApprovingStartDate").datepicker("option", "maxDate", dt);
+						performanceManagement.validAppraisalDates();
+				 	  }
+				  });
+	  });
+		
+		
+		
+		
+		$(function() {
+			  $('#appraisalProcessStartDate').datepicker({
+			      dateFormat: finalDateFormat,
+			      changeMonth: true,
+			  	  changeYear: true, 
+			  	  minDate:0,
+			  	  onSelect : function(selected) {
+			  		var dt = $(this).datepicker('getDate', '+1d');
+					dt.setDate(dt.getDate() + 1);
+					$("#appraisalProcessEndDate").datepicker("option", "minDate", dt);
+					performanceManagement.validAppraisalDates();
+					$("#appraisalProcessEndDate").removeAttr("disabled");
+			 	  }
+			  });
 		  });
+		
+		
+		
+		$(function() {
+			  $('#appraisalProcessEndDate').datepicker({
+			      dateFormat: finalDateFormat,
+			      changeMonth: true,
+			  	  changeYear: true, 
+			  	  minDate:0,
+			  	  onSelect : function(selected) {
+			  		var dt = $(this).datepicker('getDate', '-1d');
+					dt.setDate(dt.getDate() - 1);
+					$("#appraisalProcessStartDate").datepicker("option", "maxDate", dt);
+					performanceManagement.validAppraisalDates();
+			 	  }
+			  });
+	  });
 			
 			
   }
@@ -711,6 +690,17 @@ function PerformanceManagement(){
      var appraisalApprovingEndDate = document.getElementById("appraisalApprovingEndDate").value;
 		 if(appraisalApprovingEndDate){
 			 $('#appraisalApprovingEndDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+		 
+		 
+	 var appraisalProcessStartDate = document.getElementById("appraisalProcessStartDate").value;
+		 if(appraisalProcessStartDate){
+			 $('#appraisalProcessStartDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+		 
+	 var appraisalProcessEndDate = document.getElementById("appraisalProcessEndDate").value;
+		 if(appraisalProcessEndDate){
+			 $('#appraisalProcessEndDateDiv').find('p.jquery_form_error_message').remove(); 
 		 }
   }
   
@@ -874,30 +864,56 @@ function PerformanceManagement(){
 	  $("#appraisalStartDate").val("");
 	  $("#appraisalEndDate").val("");
 	  $("#appraisalEndDate").attr("disabled", "disabled");
+	  
+	  $("input[id$='appraisalStartDate'], input[id$='appraisalEndDate']").datepicker( "option", "maxDate", null );
+	  $("input[id$='appraisalStartDate'], input[id$='appraisalEndDate']").datepicker( "option", "minDate", null );
   }
   
   this.clearAppraisalEndDate = function(){
 	  $("#appraisalEndDate").val("");
+	  $("input[id$='appraisalStartDate'], input[id$='appraisalEndDate']").datepicker( "option", "maxDate", null );
   }
   
   this.clearSelfAppraisalStartDate = function(){
 	  $("#selfAppraisalStartDate").val("");
 	  $("#selfAppraisalEndDate").val("");
 	  $("#selfAppraisalEndDate").attr("disabled", "disabled");
+	  
+	  $("input[id$='selfAppraisalStartDate'], input[id$='selfAppraisalEndDate']").datepicker( "option", "maxDate", null );
+	  $("input[id$='selfAppraisalStartDate'], input[id$='selfAppraisalEndDate']").datepicker( "option", "minDate", null );
   }
   
   this.clearSelfAppraisalEndDate = function(){
 	  $("#selfAppraisalEndDate").val("");
+	  $("input[id$='selfAppraisalStartDate'], input[id$='selfAppraisalEndDate']").datepicker( "option", "maxDate", null );
   }
   
   this.clearAppraisalApprovingStartDate = function(){
 	  $("#appraisalApprovingStartDate").val("");
 	  $("#appraisalApprovingEndDate").val("");
 	  $("#appraisalApprovingEndDate").attr("disabled", "disabled");
+	  
+	  $("input[id$='appraisalApprovingStartDate'], input[id$='appraisalApprovingEndDate']").datepicker( "option", "maxDate", null );
+	  $("input[id$='appraisalApprovingStartDate'], input[id$='appraisalApprovingEndDate']").datepicker( "option", "minDate", null );
   }
   
   this.clearAppraisalApprovingEndDate = function(){
 	  $("#appraisalApprovingEndDate").val("");
+	  $("input[id$='appraisalApprovingStartDate'], input[id$='appraisalApprovingEndDate']").datepicker( "option", "maxDate", null );
+  }
+  
+  this.clearAppraisalProcessStartDate = function(){
+	  $("#appraisalProcessStartDate").val("");
+	  $("#appraisalProcessEndDate").val("");
+	  $("#appraisalProcessEndDate").attr("disabled", "disabled");
+	  
+	  $("input[id$='appraisalProcessStartDate'], input[id$='appraisalProcessEndDate']").datepicker( "option", "maxDate", null );
+	  $("input[id$='appraisalProcessStartDate'], input[id$='appraisalProcessEndDate']").datepicker( "option", "minDate", null );
+  }
+  
+  this.clearAppraisalProcessEndDate = function(){
+	  $("#appraisalProcessEndDate").val("");
+	  $("input[id$='appraisalProcessStartDate'], input[id$='appraisalProcessEndDate']").datepicker( "option", "maxDate", null );
   }
   
   this.changeDescriptionDisplayStatus = function(){
@@ -971,31 +987,18 @@ function PerformanceManagement(){
 			        			 $("#appraisalApprovingEndDate").val(response.object.appraisalApprovingEndDate);
 			        		 }
 			        		 
-			        		 if(response.object.applicableFor != null 
-			        				 && response.object.applicableFor != ''
-			        					 && response.object.applicableFor != 'undefined'){
-			        			 if(response.object.applicableFor == 'All'){
-			        				 document.getElementById("applicableForExp").checked = false;
-			        				 document.getElementById("applicableForAll").checked = true;
-			        				 document.getElementById("experienceDiv").style.display="false";
-			        				 $('#experienceYears').removeAttr('data-validation');
-			        		   		 $('#experienceYears').attr("data-validation-optional","true");
-			        		   		 $('#experienceMonths').removeAttr('data-validation');
-			        		   		 $('#experienceMonths').attr("data-validation-optional","true");
-			        			 }else if(response.object.applicableFor == 'Experienced'){
-			        				 document.getElementById("applicableForAll").checked = false;
-			        				 document.getElementById("applicableForExp").checked = true;
-			        				 document.getElementById("experienceDiv").style.display="";
-			        		   		 performanceManagement.getYearsDropDownCount();
-			        		    	 performanceManagement.getMonthsDropDownCount();
-			        		    	 $('#experienceYears').val(response.object.experienceYears);
-			        		    	 $('#experienceMonths').val(response.object.experienceMonths);
-			        		    	 $('#experienceYears').removeAttr('data-validation-optional');
-			        		   		 $('#experienceYears').attr("data-validation","required");
-			        		   		 $('#experienceMonths').removeAttr('data-validation-optional');
-			        		   		 $('#experienceMonths').attr("data-validation","required");
-			        				
-			        			 }
+			        		 
+			        		 if(response.object.appraisalProcessStartDate != null 
+			        				 && response.object.appraisalProcessStartDate != ''
+			        					 && response.object.appraisalProcessStartDate != 'undefined'){
+			        			 $("#appraisalProcessEndDate").removeAttr("disabled");
+			        			 $("#appraisalProcessStartDate").val(response.object.appraisalProcessStartDate);
+			        		 }
+			        		 
+			        		 if(response.object.appraisalProcessEndDate != null 
+			        				 && response.object.appraisalProcessEndDate != ''
+			        					 && response.object.appraisalProcessEndDate != 'undefined'){
+			        			 $("#appraisalProcessEndDate").val(response.object.appraisalProcessEndDate);
 			        		 }
 			        		 
 			        		 if(response.object.descriptionDisplay != null 

@@ -69,7 +69,10 @@
 								</select>          	
 						  </div>
 						</div> 
-						<div class="form-group width100percnt">
+					</div>
+					
+				<div class="col-md-6">
+					<div class="form-group width100percnt">
 						  <label class="col-md-3">Employee Type</label>
 						  <div class="col-md-9">
 								<select  multiple class="chosen-select form-control"
@@ -78,9 +81,56 @@
 								</select>         	
 						  </div>
 						</div>
-					</div>
-					
+			        
+			        
+            	</div>
+            </div>
+            
+            </div>
+            
+	<div class="clearfix"></div>		
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
+				<div class="clearfix">
+						<label class="col-md-12"><span class="pull-left mr">Description</span>
+						  	<div class="checkbox-new pull-left">
+								<input id="descriptionDisplay" class="checkbox-custom" name="descriptionDisplay" value="N" onclick="performanceManagement.changeDescriptionDisplayStatus();" type="checkbox"/>
+								<label for="descriptionDisplay" class="checkbox-custom-label"/>
+								<span class="ml10 text-muted">Display to Employees </span>
+							</div>
+						</label>
+						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
+							<textarea id="txtEditor" name="description"   value="" class="form-control newContrtextarea"  data-validation-optional="true"></textarea>
+						</div>
+				</div>
+			</div>
+			
+			
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
+		<h2>Appraisal Period</h2>
+		<div class="row">
 				<div class="col-md-6">
+					
+					<div class="form-group width100percnt">
+			          <label class="col-md-3">Process Period</label>
+			          <div class="col-md-9">
+						  <div class="row">
+							 <div class="col-md-6" id="appraisalProcessStartDateDiv">
+								  <div class="input-group">
+									 <input type="text" class="form-control calendar" value="" id="appraisalProcessStartDate" name="appraisalProcessStartDate" field-name="Process Start Date" data-validation-optional="true" readonly="readonly" >
+								     <span class="input-group-addon" onClick="performanceManagement.clearAppraisalProcessStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+								  </div>
+							 </div>
+							  <div class="col-md-6" id="appraisalProcessEndDateDiv">
+							  <div class="input-group">
+							  	<input type="text" class="form-control calendar" disabled value="" id="appraisalProcessEndDate" name="appraisalProcessEndDate" field-name="Process End Date" data-validation-optional="true" readonly="readonly" >
+							    <span class="input-group-addon" onClick="performanceManagement.clearAppraisalProcessEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+							  </div>
+							  </div>
+						  </div>
+					  </div>
+			        </div>
+			        
+					
 					<div class="form-group width100percnt">
 			          <label class="col-md-3">Self Appraisal</label>
 			          <div class="col-md-9">
@@ -102,8 +152,11 @@
 					  </div>
 			        </div>
 			        
-			        <div class="form-group width100percnt">
-			          <label class="col-md-3">Approving From</label>
+            </div>
+            
+            <div class="col-md-6">
+            <div class="form-group width100percnt">
+			          <label class="col-md-3">Review Period</label>
 			          <div class="col-md-9">
 						  <div class="row">
 							 <div class="col-md-6" id="appraisalApprovingStartDateDiv">
@@ -121,62 +174,18 @@
 						  </div>
 					  </div>
 			        </div>
-			
-				<div class="form-group width100percnt">
-						<span class="radioStyles mr">
-						<input id="applicableForAll" name="applicableFor" checked  value="All" type="radio" onClick="performanceManagement.applicableType();">
-						<label for="applicableForAll">All</label>
-						</span>
-					<span class="radioStyles">
-						<input id="applicableForExp" name="applicableFor"  value="Experienced" type="radio" onClick="performanceManagement.applicableType();">
-						<label for="applicableForExp">Experienced</label>
-					</span>
-				</div>
-			
-			<div class="form-group width100percnt" style="display: none" id="experienceDiv">
-			 <label class="col-md-3">Experience<span class="text-danger">&nbsp;*</span></label>
-              <div class="clearfix">
-               <div class="row">
-				   <div class="col-md-4" id="experienceYearsDiv">
-				   	 <div class="clearfix dropdown-select">
-					  <select name="experienceYears" id="experienceYears" name="experienceYears" data-validation-optional="true" field-name="Years">
-				   	  <option selected value=''>Select Years</option>
-				   	  </select>
-				     </div> 
-				   </div>  	
-				   <div class="col-md-4" id="experienceMonthsDiv">
-				   	 <div class="clearfix dropdown-select">
-					  <select name="experienceMonths" id="experienceMonths" name="experienceMonths" data-validation-optional="true" field-name="Months">
-				   	  <option selected value=''>Select Months</option>
-				   	  </select>
-				     </div> 
-				   </div>   	
-               </div>
-              </div>
+            
             </div>
-            </div>
+            
             </div>
             
             </div>
             
-	<div class="clearfix"></div>		
-			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
-				<div class="clearfix">
-						<label class="col-md-12"><span class="pull-left mr">Description</span>
-						  	<div class="checkbox-new pull-left">
-								<input id="descriptionDisplay" class="checkbox-custom" name="descriptionDisplay" value="N" onclick="performanceManagement.changeDescriptionDisplayStatus();" type="checkbox"/>
-								<label for="descriptionDisplay" class="checkbox-custom-label"/>
-								<span class="ml10 text-muted">Display to Employees </span>
-							</div>
-						</label>
-						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
-							<textarea id="txtEditor" name="description"   value="" class="form-control newContrtextarea"  data-validation-optional="true"></textarea>
-						</div>
-				</div>
-			</div>
+	<div class="clearfix"></div>	
+			
 			
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
-	   		  <h2>Add Categories</h2>
+	   		  <h2>Weightage</h2>
 				<div class="col-md-6">
 				  <label class="col-md-3">Categories<span class="text-danger paddingLeft">&nbsp;*</span></label>
 				  <div class="col-md-9">
