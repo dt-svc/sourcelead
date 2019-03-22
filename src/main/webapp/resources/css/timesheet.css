@@ -8538,5 +8538,16 @@ bottom: auto !important; top: 55px !important;
 .unseen-text{ font-weight: 600;}
 .unseen .mailIcon.trashIcon { background-color: #e6e6e633 !important;}
 
+.ovrShow { overflow: visible !important;}
+.immSub {
+position: relative;
+}
+.immSubMenu {
+position: absolute; top:-10px; right:-165px; width: 200px; opacity:0; visibility:hidden;
+background-color: #fff; box-shadow: 0px 0px 6px rgba(0,0,0,0.2);
+}
+.immSub:hover .immSubMenu {
+opacity:1; visibility:visible;
+}
 
 
