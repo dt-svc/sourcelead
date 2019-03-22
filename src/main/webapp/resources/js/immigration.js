@@ -54,7 +54,7 @@ function Immigration() {
     }
 
     this.resetFormData = function (formId) {
-        $("#" + formId).closest('form').find("input[type=text], textarea, .selectpicker, .chosen-select").val("").trigger('chosen:updated');
+        $("#" + formId).closest('form').find("input[type=text], textarea, .form-control,.selectpicker, .chosen-select").val("").trigger('chosen:updated');
         $("#" + formId).closest('form').find(".selectpicker, .chosen-select option[value='']").attr('selected', true).trigger('change');
     }
     
@@ -279,10 +279,13 @@ function Immigration() {
             $("#newPetitionTemplateDiv").load("/vms" + immiModulePath + "/loadNewPetitionPage?forward=petitionDetails");
         } else if (status == 'saveContinue' || status == 'sendRequest') {
         	if ($("#petitionDetailsForm").validate(false, validationSettings)) {
-        		$("#saveAsDraftButton").prop("disabled",true);
+        	/*	$("#saveAsDraftButton").prop("disabled",true);
             	$("#savePageOneContinue").prop("disabled",true);
-            	$("#sendRequestButton").prop("disabled",true);
+            	$("#sendRequestButton").prop("disabled",true);*/
                 var formData = getFormData("petitionDetailsForm");
+                $("#sendRequestButton").attr("disabled","disabled");
+           	    $("#savePageOneContinue").attr("disabled","disabled");
+           	    $("#saveAsDraftButton").attr("disabled","disabled");
                 $.ajax({
                     url: vmsUrl + immiModulePath + "/savePetitionDetailsPage?removedResidenceIds="+removedResidenceIds+"&status="+status,
                     type: "POST",
@@ -319,10 +322,11 @@ function Immigration() {
             $("#newPetitionTemplateDiv").load("/vms" + immiModulePath + "/loadNewPetitionPage?forward=two");
         }else if(status == 'save'){
         	if ($("#petitionDetailsForm").validate(false, validationSettings)) {
-        		$("#saveAsDraftButton").prop("disabled",true);
+        		/*$("#saveAsDraftButton").prop("disabled",true);*/
             	//$("#savePageOneContinue").prop("disabled",true);
             	//$("#sendRequestButton").prop("disabled",true);
                 var formData = getFormData("petitionDetailsForm");
+                $("#saveAsDraftButton").attr("disabled","disabled");
                 $.ajax({
                     url: vmsUrl + immiModulePath + "/savePetitionDetailsPage?removedResidenceIds="+removedResidenceIds+"&status="+status,
                     type: "POST",

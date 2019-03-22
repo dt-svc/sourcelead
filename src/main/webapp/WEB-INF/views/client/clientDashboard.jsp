@@ -774,7 +774,7 @@ function clearSearch(){
 		}
 	    
 	    
-	    $("#citySearch").empty();
+/* 	    $("#citySearch").empty();
 		 $("#citySearch").val('').trigger("chosen:updated");
 		 
 		 $("#ownerAdvanced").empty();
@@ -788,7 +788,7 @@ function clearSearch(){
 
 	    $("#anyOfKeyword").empty();
 	    $("#allKeywords").empty();
-	    $("#excludeKeyWord").empty();
+	    $("#excludeKeyWord").empty(); */
 // 	    $("#orgNameAdvanced").empty();
 	}
 </script>   
@@ -2354,12 +2354,13 @@ $('#selector').delay(2000).fadeOut('slow');
 <script>
 function getStates(){
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var countryName = $("#countrySearch").val();
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: vmsUrl+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: sourceleadUrl+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#stateSearch').empty();
@@ -2391,6 +2392,7 @@ function getStates(){
 <script>
 function getCities(){
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var countryName = $("#countrySearch").val();
 	var stateName = $("#stateSearch").val();
 	
@@ -2398,7 +2400,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: vmsUrl+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: sourceleadUrl+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#citySearch').empty();

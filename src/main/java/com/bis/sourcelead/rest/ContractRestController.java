@@ -214,7 +214,6 @@ public class ContractRestController {
 			String header = "<div style='text-align: center;'>"+contractsTemplate.getTemplateName()+"<br></br></div><br></br><br></br><br></br>";
 			String totalBody =header+ contractsTemplate.getTemplateContent();
 			if(contractsTemplate.getLetterHead() != null)
-				
 			reportsUtil.viewCompleteletterheadData(totalBody, contractsTemplate.getLetterHead(), response);
     	
 	}
@@ -967,7 +966,7 @@ public class ContractRestController {
 							contractsTemplateService.documentsReceivedMailToOwner(contractRequestDocuments.getContractId(), user, org);
 						}
 						if (fileInfo != null) {
-							FileUploadUtil.moveFile(staticPath, fileInfo, "Requested Documents");
+							FileUploadUtil.moveFile(staticPath, fileInfo, "Requested_Documents");
 						}
 					}
 				}
