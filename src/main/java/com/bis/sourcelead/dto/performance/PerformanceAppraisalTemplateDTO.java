@@ -44,11 +44,23 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	
 	private String descriptionDisplay;
 	
-	@Required(desc="appraisalCategories")
+	private String feedbackCategory;
+	
+	@Required(desc="appraisalCategories", dependsOn = "feedbackCategory", parentValue = "Y")
 	private String appraisalCategories;
 	
-	@Required(desc="jsonCategoriesString")
+	@Required(desc="jsonCategoriesString",dependsOn = "feedbackCategory", parentValue = "Y")
 	private String jsonCategoriesString ;
+	
+	private String appraisalGoals;
+	
+	@Required(desc="goalsWeightage", dependsOn = "appraisalGoals", parentValue = "Y")
+	private String goalsWeightage;
+	
+	private String appraisalProjectTasks;
+	
+	@Required(desc="projectTasksWeightage", dependsOn = "appraisalProjectTasks", parentValue = "Y")
+	private String projectTasksWeightage;
 	
 	private List<DepartmentDTO> departmentList;
 	
@@ -195,6 +207,46 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 
 	public void setAppraisalProcessEndDate(String appraisalProcessEndDate) {
 		this.appraisalProcessEndDate = appraisalProcessEndDate;
+	}
+
+	public String getFeedbackCategory() {
+		return feedbackCategory;
+	}
+
+	public void setFeedbackCategory(String feedbackCategory) {
+		this.feedbackCategory = feedbackCategory;
+	}
+
+	public String getAppraisalGoals() {
+		return appraisalGoals;
+	}
+
+	public void setAppraisalGoals(String appraisalGoals) {
+		this.appraisalGoals = appraisalGoals;
+	}
+
+	public String getGoalsWeightage() {
+		return goalsWeightage;
+	}
+
+	public void setGoalsWeightage(String goalsWeightage) {
+		this.goalsWeightage = goalsWeightage;
+	}
+
+	public String getAppraisalProjectTasks() {
+		return appraisalProjectTasks;
+	}
+
+	public void setAppraisalProjectTasks(String appraisalProjectTasks) {
+		this.appraisalProjectTasks = appraisalProjectTasks;
+	}
+
+	public String getProjectTasksWeightage() {
+		return projectTasksWeightage;
+	}
+
+	public void setProjectTasksWeightage(String projectTasksWeightage) {
+		this.projectTasksWeightage = projectTasksWeightage;
 	}
 
 	
