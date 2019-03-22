@@ -7,7 +7,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<script type="text/javascript" src="/resources/js/immigration.js"></script>
+<script type="text/javascript" src="/resources/js/immigration.js?staticTime=${staticTime}"></script>
  <section class="content-wraper content-wraperNew">
    
     <section class="content-header clearfix addImmiHead">
@@ -19,7 +19,7 @@
 	   			<a href="${SourceLeadWeb_vmsUrl}/immigration/myImmigration">My Immigrations List</a> &raquo; New Petition</div>
 			</c:when>
 			<c:otherwise>
-				<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; 
+				<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; 
 				<a href="${SourceLeadWeb_vmsUrl}/immigration/viewImmigrationList">Petition List</a>&raquo; New Petition</div>
 			</c:otherwise>
 		</c:choose>

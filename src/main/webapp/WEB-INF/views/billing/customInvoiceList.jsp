@@ -9,7 +9,9 @@
 			<h2>Invoice Templates</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="/app/dashboard/3">Home</a> &raquo; <a href="<c:url value='/vms/clientDashboard'/>"> Clients List </a>&raquo; Invoice Templates
+
+			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_vmsUrl}/clientDashboard"> Clients List </a>&raquo; Invoice Templates
+
 		</div>
 	</section>
 
@@ -17,7 +19,7 @@
 		<div class="vendor_wrap">
 			<div class="positionRelative reportHead clearfix">
 				<ul class="pull-right list-unstyled list-inline">
-					<li><a href="/vms/customInvoice/addTemplate?orgLocationId=${orgLocationId}&orgRelationId=${orgRelationId}" class="newAdBtn">+ Template</a></li>
+					<li><a href="${SourceLeadWeb_vmsUrl}/customInvoice/addTemplate?orgLocationId=${orgLocationId}&orgRelationId=${orgRelationId}" class="newAdBtn">+ Template</a></li>
 					<%-- 
 					<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 						<div class="newActPop">

@@ -10,7 +10,7 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<script type="text/javascript" src="/resources/js/immigration.js"></script>
+<script type="text/javascript" src="/resources/js/immigration.js?staticTime=${staticTime}"></script>
 <c:set var = "lcaDTO" scope = "page" value = '<%= session.getAttribute("lcaDTO")%>'/>
 <c:set var="docRowIndex" value="0" scope="page" /><!-- used for dynamic row index  rowindex starts from 0-->
 <c:set var="rowIndexPlempt" value="0" scope="page" />
@@ -643,6 +643,8 @@
 			  var formData = getFormData("lcaDetailsForm");
 			  formData.lcaPlacaOfempDeletedListIds = removedLcaPlsOfEmpmntIds.join();
 			  formData.lcaDocumentListIds = removedLcaDocIds.join();
+			  $("#saveLca").attr("disabled", "disabled");
+	          $("#saveLca").addClass('button').val('Processing..');
 		 $.ajax({
 	            type: "POST",
 	            data : formData,

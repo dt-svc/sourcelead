@@ -54,7 +54,7 @@ function Immigration() {
     }
 
     this.resetFormData = function (formId) {
-        $("#" + formId).closest('form').find("input[type=text], textarea, .selectpicker, .chosen-select").val("").trigger('chosen:updated');
+        $("#" + formId).closest('form').find("input[type=text], textarea, .form-control,.selectpicker, .chosen-select").val("").trigger('chosen:updated');
         $("#" + formId).closest('form').find(".selectpicker, .chosen-select option[value='']").attr('selected', true).trigger('change');
     }
     
@@ -279,10 +279,13 @@ function Immigration() {
             $("#newPetitionTemplateDiv").load("/vms" + immiModulePath + "/loadNewPetitionPage?forward=petitionDetails");
         } else if (status == 'saveContinue' || status == 'sendRequest') {
         	if ($("#petitionDetailsForm").validate(false, validationSettings)) {
-        		$("#saveAsDraftButton").prop("disabled",true);
+        	/*	$("#saveAsDraftButton").prop("disabled",true);
             	$("#savePageOneContinue").prop("disabled",true);
-            	$("#sendRequestButton").prop("disabled",true);
+            	$("#sendRequestButton").prop("disabled",true);*/
                 var formData = getFormData("petitionDetailsForm");
+                $("#sendRequestButton").attr("disabled","disabled");
+           	    $("#savePageOneContinue").attr("disabled","disabled");
+           	    $("#saveAsDraftButton").attr("disabled","disabled");
                 $.ajax({
                     url: vmsUrl + immiModulePath + "/savePetitionDetailsPage?removedResidenceIds="+removedResidenceIds+"&status="+status,
                     type: "POST",
@@ -319,10 +322,11 @@ function Immigration() {
             $("#newPetitionTemplateDiv").load("/vms" + immiModulePath + "/loadNewPetitionPage?forward=two");
         }else if(status == 'save'){
         	if ($("#petitionDetailsForm").validate(false, validationSettings)) {
-        		$("#saveAsDraftButton").prop("disabled",true);
+        		/*$("#saveAsDraftButton").prop("disabled",true);*/
             	//$("#savePageOneContinue").prop("disabled",true);
             	//$("#sendRequestButton").prop("disabled",true);
                 var formData = getFormData("petitionDetailsForm");
+                $("#saveAsDraftButton").attr("disabled","disabled");
                 $.ajax({
                     url: vmsUrl + immiModulePath + "/savePetitionDetailsPage?removedResidenceIds="+removedResidenceIds+"&status="+status,
                     type: "POST",
@@ -483,17 +487,13 @@ function Immigration() {
         			immigration.udpatePopupFormdata(formObj,childPopNames,data);
         		    $('#visaType').val(data.visaType);
         			$('#visaType').selectpicker('refresh');
+        			$('#visaType').prop("disabled",true);
         			$('#visaCountry').val(data.country);
         			$('#visaCountry').selectpicker('refresh');
+        			$('#visaCountry').prop("disabled",true);
+        			$('#visaNumber').prop("disabled",true);
         			$('#candidateVisaId').val(data.candidateVisaId);
         			$('#visaHistoryId').val(data.id);
-        			if(data.isCurrent == "Y"){
-        				$("#isCurr").attr("checked", true);
-        				$("#isCurr").val("Y");
-        			}else{
-        				$("#isCurr").attr("checked", false);
-        				$("#isCurr").val("N");
-        			}
 	        	}
 	        }
 	    });
@@ -1307,40 +1307,42 @@ function Immigration() {
 			
 		}
 	 
-	this.validateCandidateVisa = function() {
-		 var validationSettings = {
-	            errorMessagePosition: 'element',
-	            borderColorOnError: '',
-	            scrollToTopOnError: true,
-	            dateFormat: 'yyyy/mm/dd'
-	        };
-		  var candidateId = $("#candidateID").val();
-		 
-		  var idNumberVal = null;
-		  var id = null;
+		this.validateCandidateVisaAndSave = function() {
+			if ($("#CandidateVisaform").validate(false, validationSettings)) {
+			 var  country =   $('#visaCountry').val();
+			 if(country == '') return;
+			 var candidateId = $("#candidateID").val();
+			 
+			  var idNumberVal = null;
+			  var id = null;
 
-		  
-		id = $("#candidateVisaId").val();
-	    visaNumber =$('#CandidateVisaform input[name="visaNumber"]').val().trim();  
-		  
-		  $('#idNumberDiv').find('p.jquery_form_error_message').remove();
-			 $.ajax({
-			    	type: "GET",
-			    	 url:vmsUrl + immiModulePath + "/validateCandidateVisa?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&visaNumber="+visaNumber+"&id="+id, 
-			        success: function(data) {
-			        	if(data == true){
-			        		   $("input#visaNumber").after("<p class='jquery_form_error_message'>"+visaNumber+" is Already Existed</span>");
-							   $("#visa_save_id").attr('disabled','disabled');
-			        	}
-			        	else{
-			        		  $('input#visaNumber').removeAttr( "record-exist record-exist-errormsg");
-			        		  $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove(); 
-	                          $("#visa_save_id").removeAttr("disabled");
-			        	}
-			        
-			        },
-			    });
-	}
+			  
+			id = $("#candidateVisaId").val();
+		    visaNumber =$('#CandidateVisaform input[name="visaNumber"]').val().trim();  
+			  
+			  $('#idNumberDiv').find('p.jquery_form_error_message').remove();
+				 $.ajax({
+				    	type: "GET",
+				    	 url:sourceleadUrl + immiModulePath + "/validateCandidateVisa?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&visaNumber="+visaNumber+"&country="+country+"&id="+id, 
+				        success: function(data) {
+				        	if(data == true){
+				        		   $("input#visaNumber").after("<p class='jquery_form_error_message'>"+visaNumber+" is Already Existed With Active Details.</span>");
+								   $("#visa_save_id").attr('disabled','disabled');
+				        	}
+				        	else{
+				        		  $('input#visaNumber').removeAttr( "record-exist record-exist-errormsg");
+				        		  $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove(); 
+		                          $("#visa_save_id").removeAttr("disabled");
+		                            immigration.saveVisaDetails(); // saving the visa details once validation is 
+				        	}
+				        
+				        },
+				    });
+				
+			} else {
+				return false;
+			}
+		}
 	
 	this.addvisaExtensionDate = function(visaId, extensionDate){
 		 var candidateId = $("#candidateID").val();

@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <c:set var = "immigrationDTO" scope = "page" value = '<%= session.getAttribute("immigrationDTO")%>'/>
-<script type="text/javascript" src="${SourceLeadWeb_vmsUrl}/resources/js/immigration.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_vmsUrl}/resources/js/immigration.js?staticTime=${staticTime}"></script>
 <section class="addImmiWrap">
 	<div class="addImmiInnWrap">
 		<!-- <div class="immiStepsHead clearfix"> removed steps process.
@@ -334,7 +334,7 @@
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 								</div>
 							<span class="col-md-2 noPad clearfix">
-							<a href="<c:url value="/app/userCreation" />" target="_blank" hidden="true"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							<a href="${SourceLeadWeb_sourceleadUrl}/userCreation" target="_blank" hidden="true"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 							</span>
 							</div>
 							</div>

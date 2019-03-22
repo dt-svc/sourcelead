@@ -8,7 +8,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<script type="text/javascript" src="/resources/js/immigration.js"></script>
+<script type="text/javascript" src="/resources/js/immigration.js?staticTime=${staticTime}"></script>
 <script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
 <!-- <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script> -->
 <!-- <script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script> -->
@@ -363,7 +363,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.generatedId !== null && opt.generatedId !== '' && opt.generatedId !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.generatedId+"'><a href=/app/immigration/viewImmigration?immigrationUUID="+opt.immigrationUUID+"&candidateUUID="+opt.candidateUUID+"&immiTemplateUUID="+opt.immiTemplateUUID+"&myImmigrationPage=Y>"+opt.generatedId+"</a></div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.generatedId+"'><a href=${SourceLeadWeb_sourceleadUrl}/immigration/viewImmigration?immigrationUUID="+opt.immigrationUUID+"&candidateUUID="+opt.candidateUUID+"&immiTemplateUUID="+opt.immiTemplateUUID+"&myImmigrationPage=Y>"+opt.generatedId+"</a></div></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
                      }

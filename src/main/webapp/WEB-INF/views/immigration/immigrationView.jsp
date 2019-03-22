@@ -8,7 +8,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
-<script src="${SourceLeadWeb_vmsUrl}/resources/js/immigration.js"></script>
+<script src="${SourceLeadWeb_vmsUrl}/resources/js/immigration.js?staticTime=${staticTime}"></script>
 
 <script type="text/javascript">
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
@@ -258,10 +258,10 @@ $(document).ready(function() {
         immigration.getCandidateResidenceList(candidateId);
         }else if(tab=='#passportsTab'){
         showLoading("immigrationLoadingPassportsTab");
-        immigration.displayPassportDetails(candidateId,'Passport');
+        immigration.displayPassportDetails(candidateId);
         }else if(tab=='#visasTab'){
         showLoading("immigrationLoadingVisasTab");
-        immigration.displayVisaDetails(candidateId,'Visa');
+        immigration.displayVisaDetails(candidateId);
         }else if(tab=='#lcaTab'){
         	showLoading("immigrationLcaLoadingTab");
         	immigration.getLcaDetailsInfo(immigrationId);
@@ -348,7 +348,7 @@ $("#packageZipfile").click(function() {
 		return;
 	$.post("downloadAllImmigrationDocsZip",{immigrationId: immigrationId}, function(data) { //  used for download all immigration doc files 
 		if(data !== "" && data.indexOf("Documents Found") === -1)
-			location.href = '${SourceLeadWeb_vmsUrl}/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
+			location.href = '${SourceLeadWeb_sourceleadUrl}/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
 		else if(data !== "" && data.indexOf("immigrationId Found") !== -1)
 			alert(data);
 		else
