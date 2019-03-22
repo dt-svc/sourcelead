@@ -27,7 +27,7 @@
   <div class="pull-left">
     <h2>Connections</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Conections</div>
+  <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Conections</div>
   <div id="loadingConnectionSentDiv"></div>
 </section>
 
@@ -38,10 +38,10 @@
 <div class="conneWrapHead clearfix">
 		<ul class="clearfix connection-count">
 			
-			<li><a href="<c:url value='${appPath}/loadConnectedList?status=connected'/>">Connected<i id="connectedCountVal"></i></a></li>
-			<li class="current"><a href="${appPath}/loadSentConnections?status=sent">Sent<i id="sentCountVal"></i></a></li>
-			<li><a href="<c:url value='${appPath}/loadReceivedConnections?status=received'/>">Received<i id="receivedCountVal"></i></a></li>
-			<li><a  href="<c:url value='${appPath}/loadFindConnections?status=find'/>">Find</a></li>
+			<li><a href="${SourceLeadWeb_sourceleadUrl}/loadConnectedList?status=connected">Connected<i id="connectedCountVal"></i></a></li>
+			<li class="current"><a href="${SourceLeadWeb_sourceleadUrl}/loadSentConnections?status=sent">Sent<i id="sentCountVal"></i></a></li>
+			<li><a href="${SourceLeadWeb_sourceleadUrl}/loadReceivedConnections?status=received">Received<i id="receivedCountVal"></i></a></li>
+			<li><a  href="${SourceLeadWeb_sourceleadUrl}/loadFindConnections?status=find">Find</a></li>
 		</ul>
 		<span><input class="immigraTabSerach" id="searchFindConnId" placeholder="Name/Email/Role/Company" type="text"></span>
 		<div class="conneWrapHeadBtn">

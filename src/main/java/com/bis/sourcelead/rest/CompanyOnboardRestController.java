@@ -54,6 +54,7 @@ import com.bis.sourcelead.service.OrglocationDepositTaxesService;
 import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
 import com.bis.sourcelead.service.OrglocationSignatoryService;
 import com.bis.sourcelead.service.OrglocationStateTaxService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -86,6 +87,9 @@ public class CompanyOnboardRestController {
 	private CandidateService candidateService;
 	
 	@Autowired
+	UserService userService;
+	
+	@Autowired
 	private OrglocationDepositTaxesService orglocationDepositTaxesService;
 	
 	@Value("${static.path}")
@@ -112,7 +116,10 @@ public class CompanyOnboardRestController {
 	{
 		Response<String> response = new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
+		
+		
 		try {
 			if (user != null) {
 				if (Validator.validate(federalAndStateTaxDTO)) {
@@ -555,9 +562,17 @@ public class CompanyOnboardRestController {
 	@ResponseBody
 	public Response<String> saveOrgLocationSignatory(OrglocationSignatoryDTO orglocationSignatoryDTO,HttpServletRequest request) throws Exception
 	{
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user = userService.getUserById(userId);
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
+		
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		
+		
 		Response<String> response = new Response<>();
 		try {
 			if (user != null) {

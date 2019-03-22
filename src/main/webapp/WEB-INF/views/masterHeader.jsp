@@ -287,9 +287,9 @@ function preventTabkey(e){
 
 <script>
 		function logoutFormSubmit() {
-		/* 	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
-			var userSessionId = '${userLoginSession.id}';
-			window.location.href = sourceleadUrl+"/getActionHistoryList?&userSessionId="+userSessionId; */
+			var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+			var userSessionId = '${SourceLeadWeb_actionUUID}';
+			window.location.href = sourceleadUrl+"/getActionHistoryList?&userSessionId="+userSessionId; 
 			document.getElementById("logoutForm").submit();
 		}
 </script>
@@ -537,6 +537,10 @@ function preventTabkey(e){
 	            </div>
 	          </li>
          </c:if>
+         
+         <sec:authorize access="hasAnyRole('ROLE_ADD_TICKET','ROLE_VIEW_TICKET')">
+			<li><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/ticketManagementList'/>" title="Ticket Management" ><i class="ticketMgIC"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
+		</sec:authorize>
 		
         <c:if test="${SourceLeadWeb_reportsTabConfigured == 'Y'}"> 
         	 <li><a title="Reports" href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard"><i class="headNavIcon reporIcon"></i></a></li>
@@ -554,10 +558,12 @@ function preventTabkey(e){
          	<li><a href="${SourceLeadWeb_atsUrl}/mailBox/mails" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
          </sec:authorize>		
 		
+          <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
           <li> 
           <a id="notiPopId" href="#" title="Alerts" onclick="getNotificationsByuserId()"><i class="headNavIcon notiIcon"></i> <c:if test="${SourceLeadWeb_notificationCount > 0}"><span class="label-warning">${SourceLeadWeb_notificationCount}</span></c:if></a>
           <div class="headPop headPopnoti" id="notificationPopup"></div>
           </li>	
+          </c:if>
           
          <!--  Setting page 	 -->
          

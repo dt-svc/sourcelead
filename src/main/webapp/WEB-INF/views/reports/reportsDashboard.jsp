@@ -34,6 +34,9 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu1" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
 				<sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
+				<li><a href='${appPath}/offerAcceptanceRate'>Offer Acceptance Rate</a></li>
+				</sec:authorize>
+				<sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/applicantsjoinedlist'>Applicants Joined Report</a></li>
 				</sec:authorize>
 				 <sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
@@ -415,6 +418,10 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                 <ul class="repSearchList">
                 
                 <sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
+				<li><a href='${appPath}/offerAcceptanceRate'>Offer Acceptance Rate</a></li>
+				</sec:authorize>
+                
+                <sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/applicantsjoinedlist'>Applicants Joined Report</a></li>
 				</sec:authorize>
 				
@@ -608,6 +615,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
             </div>
             
             <div class="clearfix mt mb"></div>
+            
+            <c:if test="${SourceLeadWeb_country == 'India'}">
             <div class="newRepListCta">
                 <h2><a href="javascript:void(0)">India Payroll Reports</a></h2>
                 <ul class="repSearchList">
@@ -622,9 +631,10 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div>
+            </c:if>
             
             
-            <c:if test="${SourceLeadWeb_loginCountryName == 'United States'}">
+            <c:if test="${SourceLeadWeb_country == 'United States'}">
             	<div class="newRepListCta">
                 <h2><a href="javascript:void(0)">US Payroll Reports</a></h2>
 	                <ul class="repSearchList">
