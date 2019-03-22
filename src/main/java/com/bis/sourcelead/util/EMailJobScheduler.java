@@ -21,6 +21,7 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.mail.internet.InternetAddress;
@@ -2930,6 +2931,7 @@ public class EMailJobScheduler {
 	 * cron runs every day at 9:00 AM to remind the approver about pending leaves
 	 * @throws Exception  
 	 */
+//	@Scheduled(cron = "0 * * * * *") // Scheduled for every minute
 	@Scheduled(cron = "0 0 9 1/1 * ?")
 //	@Scheduled(cron = "	0 0/1 * 1/1 * ?")
 //	@Scheduled(cron = "0/30 * * * * *")
@@ -2940,7 +2942,13 @@ public class EMailJobScheduler {
 		try {
 			
 			List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+			
+			List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByEmailScenarioName(Constants.APPROVE_PENDING_LEAVES);
+				
 			for(OrgLocations orgLocation : orgLocationsList){
+				
+				if(emailReminderList.stream().filter(e -> e.getOrgLocationsId().getId() == orgLocation.getId()).collect(Collectors.toList()).size() == 0) {
+					
 				List<LeaveApproveHierarchy> lahList = leaveService.getAllLeaveApproversList(orgLocation.getId());
 				
 				Collection<LeaveApproveHierarchy> filteredLahList = lahList.stream().<Map<Long, LeaveApproveHierarchy>> collect(HashMap::new,(m,e)->m.put(e.getApproverUserId().getId(), e), Map::putAll).values();
@@ -3031,6 +3039,7 @@ public class EMailJobScheduler {
 						
 					}
 				}
+			}
 			}
 			
 			sendProbationPeriodMail();
