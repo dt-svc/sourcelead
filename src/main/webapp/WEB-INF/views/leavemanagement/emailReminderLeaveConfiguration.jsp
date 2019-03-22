@@ -533,7 +533,7 @@ function hideandshowHoliday(){
 									</c:if>
 								<div id="reminderParent_Holiday_form" class="clearfix"></div>
 	
-									<div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb">
+									<%-- <div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb">
 										<label class="col-md-3">Notify To<span class="text-danger paddingLeft">*</span></label>
 										<div class="col-md-9" id="notifyToDiv_Holiday_form">
 											<input type="text" class="form-control" name="notifyTo" id="notifyTo" value="${Holiday.notifyTo}" placeholder="Enter email ids separated by commas" field-name="Notify To" data-validation="required validate_Space">
@@ -541,7 +541,7 @@ function hideandshowHoliday(){
 										<input type="text" style="display: none;" class="form-control" name="scenarioName" id="scenarionName" value="HolidayRemainder">
 										<input type="text" style="display: none;" class="form-control" name="tabsId" id="tabsId" value="31">
 										<input type="text" style="display: none;" class="form-control" name="id" value="${Holiday.id}">
-									</div>
+									</div> --%>
 								</div>
 							</div>
 							<div class="clearfix"></div>
