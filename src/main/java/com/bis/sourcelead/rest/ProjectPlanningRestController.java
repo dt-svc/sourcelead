@@ -524,7 +524,7 @@ public class ProjectPlanningRestController {
 	    		 rejectReason = rejectReason.append(jsonObj.getString("rejectedReason"));
 	    		 resourceRequest.setRejectedReason(rejectReason.toString());
 	    		 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_ON_HOLD);
-	    		 
+	    		 resourceRequest.setUpdatedBy(user);
 	    		/* ProjectPlanningRequest projectPlanningRequest = projectPlanningRequestService.getProjectPlanningRequestById(resourceRequest.getProjectPlanningRequestId().getId());
 	    		 projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_REJECTED);*/
 	    		 
@@ -811,7 +811,7 @@ public class ProjectPlanningRestController {
 									}
 									projectMembers.setProjectMemberCandidteId(cand);
 									projectMembers.setMasterCandidateId(cand.getMasterCandidateId());
-									projectMembers = saveProjectMembers(projectPlanningRequest.getProjectId(), candidate, projectPlanningResourceRequest, user, projectClients);
+									projectMembers = saveProjectMembers(projectPlanningRequest.getProjectId(), cand, projectPlanningResourceRequest, user, projectClients);
 									saveProjectMembersHistory(projectMembers,user,projectClients);
 									if(cand.getParentCandidateId() != null){
 										parentCandidatId = cand.getParentCandidateId().getId();
@@ -1057,7 +1057,7 @@ public class ProjectPlanningRestController {
 									clientCandidate.setParentCandidateId(candidate);
 									clientCandidate.setConsultantUser(candidate.getConsultantUser());
 									clientCandidate.setOrgRelationId(orl);
-									 Set<OrgSpoc> orgSpocList = orgRelations.getOrgSpocList();
+									Set<OrgSpoc> orgSpocList = orl.getOrgSpocList();
 									 for(OrgSpoc spoc : orgSpocList){
 										 orgSpoc =  spoc;
 									 }
@@ -1125,7 +1125,13 @@ public class ProjectPlanningRestController {
 	    
 	    public ProjectMembers saveProjectMembers(Projects projects, Candidate candidate,ProjectPlanningResourceRequest projectPlanningResourceRequest,User user,ProjectClients projectClients) throws Exception {
 	    	
-	    	 ProjectMembers projectMembers = new ProjectMembers();
+	    	 
+	    	 ProjectMembers projectMembers = null;
+	    	 
+	    	 projectMembers = projectMembersService.getProjectMembersByCandidateIdAndProjectClientId(candidate.getId(), projectClients.getId());
+	    	 if(projectMembers == null) {
+	    		 projectMembers =  new ProjectMembers();
+	    	 }
 				projectMembers.setProjects(projects);
 				projectMembers.setProjectMemberCandidteId(candidate);
 				projectMembers.setMasterCandidateId(candidate.getMasterCandidateId());
