@@ -54,7 +54,7 @@ function hideandshowjobclosing(){
     <div class="pull-left">
       <h2>Jobs</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="<c:url value='${appPath}/emailreminderConfigurationDashboard'/>"> Email Reminder Configuration</a> &raquo; Jobs Configuration</div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="${SourceLeadWeb_sourceleadUrl}/emailreminderConfigurationDashboard"> Email Reminder Configuration</a> &raquo; Jobs Configuration</div>
   </section>
    
   <div class="content-area content-new clearfix bgWhite" style="min-height: 50px;">
@@ -221,7 +221,7 @@ function hideandshowjobclosing(){
 										<input type="button" value="Save" id="job_ApplicantJoining_form_btn"
 											class="btn btn-primary"
 											onclick="stroeJobReminderConfiguration('job_ApplicantJoining_form');"> 
-											<input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='${appPath}/emailreminderConfigurationDashboard'/>'">
+											<input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/emailreminderConfigurationDashboard'">
 									</div>
 								</div>
 							</div>
@@ -334,10 +334,12 @@ function hideandshowjobclosing(){
 			
 			$('#'+form+'_btn').prop('disabled', true);
 			var formData = getFormData(form);
+			var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+
 			$.ajax({
 				type : "POST",
 				data : formData,
-				url : sourceleadUrl + "/storeJobConfigureEmail?${_csrf.parameterName}=${_csrf.token}",
+				url : pmsUrl + "/storeJobConfigureEmail?${_csrf.parameterName}=${_csrf.token}",
 				success : function(result) {
 					if(result.object === 'MissingData'){
 			  			showError("Invalid data");

@@ -13,7 +13,7 @@
       <div class="pull-left">
         <h2>Profie Summary</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo;<a href="<c:url value='/globalMarketplacePage'/>"> Global Marketplace List</a> &raquo; Profie Summary</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo;<a href="<c:url value='/globalMarketplacePage'/>"> Global Marketplace List</a> &raquo; Profie Summary</div>
     </section>
     <div class="clearfix">
     	<div class="clerfix row mt10">
@@ -255,7 +255,7 @@
 									<div class="media-body">
 									<div class="row">
 										<div class="col-md-12">
-											<h5 class="margin-top0"><a href="/ats/globalCandidateSummary?marketplaceUUID=${suggestedProfilesObj.marketplaceUUID}">${suggestedProfilesObj.fullName}</a></h5>
+											<h5 class="margin-top0"><a href="${SourceLeadWeb_atsUrl}/globalCandidateSummary?marketplaceUUID=${suggestedProfilesObj.marketplaceUUID}">${suggestedProfilesObj.fullName}</a></h5>
 									<p class="text-muted small mb5">${suggestedProfilesObj.designation}</p>
 																		<p class="text-muted small mb5">${suggestedProfilesObj.companyName}</p>
 									<p class="text-muted small">${suggestedProfilesObj.location}</p>

@@ -18,12 +18,12 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Purchase Order List</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;Purchase Order List</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;Purchase Order List</div>
     </section>
     
           <div class="clearfix">
 	<ul class="project-tabs-menu projecttabs-custom clearfix">
-          <li id="" ><a href="/ats/candidatesList">Candidate List</a></li>
+          <li id="" ><a href="${SourceLeadWeb_atsUrl}/candidatesList">Candidate List</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToCartList();">Cart</a></li>
@@ -167,31 +167,27 @@ $(document).ready(function(){
   <script>
   
   function goToCandidateList(){
-		location.href = "/ats/candidatesList";
+		location.href = "${SourceLeadWeb_atsUrl}/candidatesList";
 	}
 		
 	function goToGlobalMarketPlaceList(){
-		location.href = "/ats/globalMarketplacePage";
+		location.href = "${SourceLeadWeb_atsUrl}/globalMarketplacePage";
 	}
 
 	function goToOrgMarketPlaceList(){
-		location.href = "/ats/OrgMarketplace";
+		location.href = "${SourceLeadWeb_atsUrl}/OrgMarketplace";
 	}
 	function goToCartList(){
-		location.href = "/ats/candidateMarketplaceCart";
+		location.href = "${SourceLeadWeb_atsUrl}/candidateMarketplaceCart";
 	}
 	function goToPurchaseOrderList(){
-		location.href ="/ats/PurchaseOrderList";
+		location.href ="${SourceLeadWeb_atsUrl}/PurchaseOrderList";
 		}
 	function goToSalesOrderList(){
-		location.href = "/ats/SalesOrderList";
-	}
-	function refreshPage(){
-		$("#purchaseOrderDataTableSearch").val('');
-		getPurchaseOrderList();
+		location.href = "${SourceLeadWeb_atsUrl}/SalesOrderList";
 	}
 	function goToWalletList(){
-	    location.href = "/ats/walletList";
+	    location.href = "${SourceLeadWeb_atsUrl}/walletList";
 	}
 	function refreshPage(){
 		location.reload();
@@ -201,7 +197,7 @@ $(document).ready(function(){
   
       <script>
   
-  	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+  	var locationDate ='${SourceLeadWeb_dateFormat}'; 
   	var locationDateFormat = '';
   	if(locationDate.match("yyyy-MM-dd")){
   		locationDateFormat = 'yy-mm-dd';

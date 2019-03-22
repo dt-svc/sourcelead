@@ -2239,20 +2239,19 @@ public class RequirementListRestController {
 			            	}
 			            }
 					}
-				}
+			
 				 resp.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
 				 SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
 						.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,
 								search.getStart(), search.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilderForCount);
 				
 				 resp.setRecordsTotal(searchResponseForCount == null ? resp.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
-			     resp.setData(reqList);
-			     resp.setResponse(Result.SUCCESS.name());
-				 resp.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				 resp.setData(reqList);
+			     
 			}catch(Exception e) {
 				e.printStackTrace();
-				resp.setResponse(Result.AWKWARD.name());
-				resp.setResponseMessage(Result.AWKWARD.getValue());
+				resp.setError(e.getMessage());
 			}
 		}else {
 			resp.setResponse(Result.SESSION_TIMEDOUT.name());
@@ -2446,24 +2445,6 @@ public class RequirementListRestController {
 		resultJson = commonUtil.toJSON(timezoneList);
 		return resultJson;
 	}
-	
-	@RequestMapping(value = "/getDemoTimezonesList", method = RequestMethod.POST)
-	public @ResponseBody String getDemoTimezonesList(HttpServletRequest request) throws Exception
-	{
-		String resultJson = null;
-		List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
-		resultJson = commonUtil.toJSON(timezoneList);
-		return resultJson;
-	}
-	
-	@RequestMapping(value = "/getDemoModulesList", method = RequestMethod.POST)
-	public @ResponseBody List<LookUpData> getDemoModulesList(HttpServletRequest request) throws Exception
-	{
-		List<LookUpData> requestOrgList = lookUpDataService.getLookUpDataByCategory(Constants.REQUEST_ORG);
-		return requestOrgList;
-	}
-	
-	
 	
 	@RequestMapping(value = "/getRequirementLocations")
 	public @ResponseBody List<RequirementLocationsDTO> getRequirementLocations(@RequestParam(value = "requirementUUID", required = true) String requirementUUID) throws Exception

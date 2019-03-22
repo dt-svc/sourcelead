@@ -22,7 +22,7 @@
 <script type="text/javascript">
 var uploadflag= true;
 		window.onload = function () {
-			var refreshId = setInterval(function(){
+			/* var refreshId = setInterval(function(){ */
 				var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';	
 				if(uploadflag == true){
 					xlsupload.getUploadInprogressProgressBar("Assets",dateFormat);
@@ -32,7 +32,7 @@ var uploadflag= true;
 						 $("#upload_button").removeAttr("disabled");
 						 xlsupload.getUploadInprogressProgressBar("Assets",dateFormat);
 				  }
-			},1000);
+			/* },1000); */
 		 };
 </script>
 
@@ -45,7 +45,7 @@ var uploadflag= true;
 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/ats/assetManagement">Assets List</a>
+			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_atsUrl}/assetManagement">Assets List</a>
 			&raquo; Import Assets
 		</div>
 	</section>

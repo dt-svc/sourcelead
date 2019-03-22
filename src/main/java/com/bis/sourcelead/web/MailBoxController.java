@@ -34,6 +34,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.ContactsGroup;
 import com.bis.sourcelead.entity.EmailAccountSettings;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -60,6 +61,9 @@ public class MailBoxController {
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${atsUrl}")
+	private String atsUrl;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -103,16 +107,16 @@ public class MailBoxController {
 	}
 	
 	
-	@RequestMapping(value = "/ats/mailBox/{mailType}", method = RequestMethod.GET)
+	@RequestMapping(value = "/mailBox/{mailType}", method = RequestMethod.GET)
 	 public @ResponseBody void mailBox(@PathVariable String mailType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 			
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/ats/userMailBox?mailType=").append(mailType).toString());
+		     response.sendRedirect(redirectUrl.append(atsUrl+"/userMailBox?mailType=").append(mailType).toString());
 			
 	}
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
-	@RequestMapping(value = "/ats/userMailBox")
+	@RequestMapping(value = "/userMailBox")
  	public ModelAndView userMailBox(HttpServletRequest request,@RequestParam(value="mailType", required=false) String mailType) throws Exception {
 
 		    ModelAndView model = new ModelAndView();
@@ -130,7 +134,7 @@ public class MailBoxController {
 			if(emailAccountSettingsServiceList != null){
 				model.addObject("emailAccountSettingsServiceList", emailAccountSettingsServiceList);
 			}
- 			model.setViewName("mailBox");
+ 			model.setViewName("campaign/mailBox");
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			model.addObject("inboxUnreadMailsCount", inboxUnreadMailsCount);
  			model.addObject("requestedUnreadMailsCount", requestedUnreadMailsCount);
@@ -234,7 +238,7 @@ public class MailBoxController {
 		
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    ModelAndView model = new ModelAndView();
- 			model.setViewName("hotlistMail");
+ 			model.setViewName("campaign/hotlistMail");
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			 commonUtil.highLightMenu(Constants.Campaigns, request);
  			 List<ContactsGroup> contactsGroupList = contactsGroupService.getContactsGroupListByUserId(user.getId());
@@ -305,7 +309,7 @@ public class MailBoxController {
 			@RequestParam(value = "mailType", required = false) String mailType,
 			HttpServletRequest request) throws Exception {
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+	    Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocations.getTimeZoneId()));
 	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	    String resultJson;
 	    List<CampaignIndex> mailBoxList = new ArrayList<CampaignIndex>();

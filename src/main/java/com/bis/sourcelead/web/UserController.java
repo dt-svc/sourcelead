@@ -213,7 +213,9 @@ public class UserController {
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_ASSOCIATE','ROLE_VIEW_DELETE_ASSOCIATE','ROLE_VIEW_ASSOCIATE')")
 	@RequestMapping(value = "/userSummaryDetails")
 	public ModelAndView userSummaryDetails(HttpServletRequest request,
-			@RequestParam(value = "userCode", required = false) String userCode,@RequestParam(value = "userId", required = false) String userId) throws Exception {
+			@RequestParam(value = "userCode", required = false) String userCode,
+			@RequestParam(value = "userId", required = false) String userId,
+			@RequestParam(value = "tabType", required = false) String tabType) throws Exception {
 			ModelAndView model = new ModelAndView();
 			commonUtil.highLightMenu(Constants.Users, request);
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -234,6 +236,11 @@ public class UserController {
 		    	User user = userService.getUserById(Long.parseLong(userId));
 		    	userCode = user.getUserCode();
 		    }
+		    
+		    if(StringUtils.isNotBlank(tabType)) {
+		    	model.addObject("tabType", tabType);
+		    }
+		    
 			User user = userService.getUserByUserCodeAndOrgLocationsId(userCode, orgLocations.getId());
 			if(user != null){
 				// to get a project list by userId
@@ -283,6 +290,32 @@ public class UserController {
 	 
 	 protected static boolean isNullOrEmpty(String str) {
 			return str == null || "".equals(str.trim());
+		}
+	 
+		@RequestMapping(value = "/addAssociateDeduction")
+		public ModelAndView addAssociateDeduction(HttpServletRequest request,@RequestParam(value = "userCode",required = false) String userCode,@RequestParam(value = "saveType",required = false) String saveType) throws Exception
+		{
+			ModelAndView model = new ModelAndView();
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			User user = userService.getUserByUserCode(userCode);
+			model.addObject("userCode", user.getUserCode());
+			model.addObject("userId", user.getId());
+			model.addObject("saveType", saveType);
+			model.setViewName("users/addAssociateSummaryDeduction");
+			return model;
+		}
+		
+		@RequestMapping(value = "/addAssociateContribution")
+		public ModelAndView addAssociateContribution(HttpServletRequest request,@RequestParam(value = "userCode",required = false) String userCode,@RequestParam(value = "saveType",required = false) String saveType) throws Exception
+		{
+			ModelAndView model = new ModelAndView();
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			User user = userService.getUserByUserCode(userCode);
+			model.addObject("userCode", user.getUserCode());
+			model.addObject("userId", user.getId());
+			model.addObject("saveType", saveType);
+			model.setViewName("users/addAssociateSummaryContribution");
+			return model;
 		}
 	 
 }

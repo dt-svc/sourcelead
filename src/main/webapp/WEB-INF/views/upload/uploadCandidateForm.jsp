@@ -44,11 +44,11 @@ var uploadflag= true;
         <h2>Import Candidates</h2>
       </div>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_atsUrl}/candidatesList">Candidates List</a> &raquo; Import Candidates </div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_atsUrl}/candidatesList">Candidates List</a> &raquo; Import Candidates </div>
       </c:if>
       
        <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home</a> &raquo; <a href="${SourceLeadWeb_atsUrl}/candidatesList">Candidates List</a> &raquo; Import Candidates </div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/recruiterDashboard">Home</a> &raquo; <a href="${SourceLeadWeb_atsUrl}/candidatesList">Candidates List</a> &raquo; Import Candidates </div>
       </c:if>
     </section>
 	<div id="loading"></div>
@@ -202,7 +202,7 @@ function fetchFieldsWithMatchedColumn(){
       	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
           	$.ajax({
     			type: "POST",
-    		    url: sourceleadUrl+"/dataMigrationCommon?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition, 
+    		    url: sourceleadUrl+"/candidateUploadFieldMapping?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition, 
     		    success: function(data) {
     		    	$("#dataFileImportDiv").attr("style","display:none");
     		    	$('#dataFieldsDiv').removeAttr("style");
@@ -225,6 +225,7 @@ $('body').on('blur', '#upload_candidate_form', function() {
 
 <script type="text/javascript">
 function cancelFileImport(){
+	var atsUrl='${SourceLeadWeb_atsUrl}';
 	location.replace(atsUrl+"/uploadCandidateForm");
 }
 </script>

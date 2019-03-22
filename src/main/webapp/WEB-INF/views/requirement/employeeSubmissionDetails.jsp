@@ -3,6 +3,7 @@
 <meta http-equiv="Expires" content="0">
 
 <script>
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 	function employeeSubmissionDetails(candidateId){
 		var result = "";
 		
@@ -29,7 +30,7 @@
 <script>
 	function employeeSubmissionDetailsList(candidateId) {
 		
-		 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+		 var locationList ='${SourceLeadWeb_dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
 			  empSubListDate = 'YYYY-MM-DD';
 		  }if(locationList.match("dd-MM-yyyy")){
@@ -43,7 +44,7 @@
 		
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
+					url : atsUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
 							+ candidateId,
 					success : function(response) {
 						if (response && response.response === "INVALID_DATA") {

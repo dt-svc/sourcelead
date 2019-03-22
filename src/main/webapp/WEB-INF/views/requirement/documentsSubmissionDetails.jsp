@@ -18,6 +18,11 @@
 	     1.usage     : used at clientSideBar().
 	--%>
 	
+	
+	<script>
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
+	</script>
+	
 	<script>
 	function documentsSubmissionDetails(candidateId){
 	
@@ -46,7 +51,7 @@
 function candSubmissionDocumentsList(candidateId){	 
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
         	  if (response && response.response === "INVALID_USER") {
         		    showError(response.responseMessage);

@@ -53,7 +53,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
       <div class="pull-left">
         <h2>Employee Onboarding</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Onboarding </div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>  &raquo; <a href="${SourceLeadWeb_atsUrl}/candidateOnBoardingList">Onboard & Offboard List</a> &raquo; Employee Onboarding </div>
  </section>
  
  
@@ -93,7 +93,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
                   
                 <div class="form-footer">
                   <div class="pull-right mr">
-                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/ats/candidateOnBoardingList'">
+                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='${SourceLeadWeb_atsUrl}/candidateOnBoardingList'">
                     <input type="button" value="Save" id="save_onboardUser" onclick="saveOnboardingCandidateDetails('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="saveAndContinue_onboardUser" onclick="saveOnboardingCandidateDetails('saveAndContinue');"  class="btn btn-sm btn-primary">
                   </div>
@@ -167,7 +167,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
                 </div>
                 <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/ats/candidateOnBoardingList'">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='${SourceLeadWeb_atsUrl}/candidateOnBoardingList'">
                     <input type="button" value="Save" id="save_docs_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="save_continue_docs_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
@@ -2407,7 +2407,7 @@ function cancel(){
 
 <script>
 function addCandidateDetailsForOnboarding(){
-	var loginCountry = "${SourceLeadWeb_orgLocations.country}";
+	var loginCountry = "${SourceLeadWeb_country}";
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 var result = "";
 	 result = result +'<div class="form-group">';
@@ -2559,7 +2559,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<span class="input-group-addon cursorPointer bg-blue" onclick=" refreshRoleList(); "><i class="fa fa-refresh "></i></span>';
 	 result = result +' </div>';
 	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ENROLL_NEW_ROLE\')">';
-	 result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/orgRolesList" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'<span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_sourceleadUrl}/orgRolesList" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
 	 result = result +'</sec:authorize>';
 	 result = result +' </div>';
 	 result = result +'</div>';
@@ -2718,7 +2718,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'<span class="cursorPointer btn btn-primary col-md-1 padding_left" onclick="loadOnBoardingTemplates();"><i class="fa fa-refresh"></i></span>';
 	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_TEMPLATE\')">';
-	 result = result +'<span class="col-md-2 clearfix"><a href="<c:url value="/app/addNewOnboardTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'<span class="col-md-2 clearfix"><a href="${SourceLeadWeb_sourceleadUrl}/addNewOnboardTemplate" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
 	 result = result +'</div>';
 	 result = result +'</sec:authorize>';
 	 result = result +'</div>';
@@ -2933,7 +2933,7 @@ function changeCitizenShip(){
 function shiftList(shiftId){
 		 $.ajax({
 	      type : "POST",
-	       url: atsUrl+"/shiftList",       
+	       url: atsUrl+"/getOrgLocationsShiftList",       
 	       success: function(json) {
 	        	var output = "";
 	        	output = output + "<option value=''>Select Shift</option>"; 

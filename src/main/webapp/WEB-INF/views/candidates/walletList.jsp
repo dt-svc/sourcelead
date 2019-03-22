@@ -16,11 +16,11 @@
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left"><h2>Wallet</h2></div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;Wallet</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;Wallet</div>
     </section>
      <div class="clearfix">
 	<ul class="project-tabs-menu projecttabs-custom clearfix">
-           <li id="" ><a href="/ats/candidatesList">Candidate List</a></li>
+           <li id="" ><a href="${SourceLeadWeb_atsUrl}/candidatesList">Candidate List</a></li>
            <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
            <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
            <li id=""><a href="javascript:void(0)" onclick="javascript:goToCartList();">Cart</a></li>
@@ -204,20 +204,20 @@
 		
 	}
 	function goToGlobalMarketPlaceList(){
-		location.href = "/ats/globalMarketplacePage";
+		location.href = "${SourceLeadWeb_atsUrl}/globalMarketplacePage";
 	}
 
 	function goToOrgMarketPlaceList(){
-		location.href = "/ats/OrgMarketplace";
+		location.href = "${SourceLeadWeb_atsUrl}/OrgMarketplace";
 	}
 	function goToCartList(){
-		location.href = "/ats/candidateMarketplaceCart";
+		location.href = "${SourceLeadWeb_atsUrl}/candidateMarketplaceCart";
 	}
 	function goToPurchaseOrderList(){
-		location.href ="/ats/PurchaseOrderList";
+		location.href ="${SourceLeadWeb_atsUrl}/PurchaseOrderList";
 		}
 	function goToSalesOrderList(){
-		location.href = "/ats/SalesOrderList";
+		location.href = "${SourceLeadWeb_atsUrl}/SalesOrderList";
 	}
 	/* function goToWalletList(){
 		location.href = "/ats/walletList";

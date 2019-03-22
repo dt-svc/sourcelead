@@ -155,7 +155,7 @@ function editCandidate(candidateId){
 						    result  = result + '</div>';
 							result = result + '		    <div class="candidate-editdetails col-md-10 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
-							result  = result + '<input type="hidden" id="orgloationId" name="orgloationId" value="${SourceLeadWeb_orgLocations.id}" />';
+							result  = result + '<input type="hidden" id="orgloationId" name="orgloationId" value="${SourceLeadWeb_orgLocationId}" />';
 							result  = result + '<input type="hidden" id="loginUserId" name="loginUserId" value="${SourceLeadWeb_user.id}" />';
 							result = result + '		      <div class="form-horizontal clearfix">';
 							result = result + '<input type="hidden" class="form-control input-sm" name="candidateId"  value="'+candidateId+'">';
@@ -584,7 +584,7 @@ function editCandidate(candidateId){
 										var $this = $(this);
 										$this.next().css({'width': '100%'});
 								  })
-							 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+							 	  var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	  // written common method in slead-common.js for date formats start
 	  							var finalDateFormat = getJSDateFormat(locationDate); 
 								  $("#dateofbirth-candidate").datepicker({
@@ -2016,7 +2016,7 @@ function  removeValiationVendorContact() {
 			 var vendorSpocId = $("#updateSpocId").val();
 			 $.ajax({
 				    type: "POST",
-			        url: atsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
+			        url: vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 			        success: function(json) {
 			        	//var json = JSON.parse(data);
 			        	$('#vendorcontactName').empty();
@@ -2078,9 +2078,9 @@ function  removeValiationVendorContact() {
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(visaName != null && visaName != '' && visaName !='undefined'){
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+jsonData
+		 Urlcheck = atsUrl+"/saveOrUpdateOnlyVisaBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+jsonData
 	 }else{
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+""
+		 Urlcheck = atsUrl+"/saveOrUpdateOnlyVisaBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+""
 	 }
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  

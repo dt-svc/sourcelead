@@ -4,7 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="/ats/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_atsUrl}/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
 <jsp:include page="userProjectSummary.jsp" />
 <jsp:include page="userAssetManagement.jsp" />
@@ -25,7 +25,7 @@
 			<div class="pull-left">
 				<h2>Associate Summary</h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/ats/usersList">Associates</a> &raquo; Associate Summary <span id = "fname"></a> </div>				
+			<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_atsUrl}/usersList">Associates</a> &raquo; Associate Summary <span id = "fname"></a> </div>				
 		</section>
 
 		<!-- Timesheet -->
@@ -44,7 +44,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 $(document).ready(function(){
 	 var userId = '${userId}';
 	 
-	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	 var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	 // written common method in slead-common.js for date formats start 
 	 var finalDateFormat = getJSDateFormat(locationDate);
 	 getUserSummaryDetails(userId);
@@ -227,8 +227,9 @@ window.onload = function () {
 	 var timesheet = '${SourceLeadWeb_timesheet}';
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}'; 
 	 var loginCurrencyCode = '${SourceLeadWeb_currencyCode}';
-	 var country = '${SourceLeadWeb_orgLocations.country}'
+	 var country = '${SourceLeadWeb_country}'
 	 var loginCountry = '${SourceLeadWeb_country}';
+	 var tabType = '${tabType}';
 
 	 
 		 result = result + ' <div class="user_summ_wrap">';
@@ -256,8 +257,8 @@ window.onload = function () {
 			 '<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 
 				 result = result + '<li><a href="#tab-21" onClick="associateBankData('+userId+')" >Banking</a></li>';
 				 result = result + '<li><a href="#tab-22" onClick="associateTaxSummary('+userId+')" >TAX</a></li>';
-				 result = result + '<li><a href="#tab-23" onClick="associateDeductionSummary('+userId+')" >Deduction</a></li>';
-				 result = result + '<li><a href="#tab-24" onClick="associateContributionSummary('+userId+')"  >Contribution</a></li>';
+				 result = result + '<li id="deductionLiId"><a href="#tab-23" onClick="associateDeductionSummary('+userId+')" >Deduction</a></li>';
+				 result = result + '<li id="contributionLiId"><a href="#tab-24" onClick="associateContributionSummary('+userId+')"  >Contribution</a></li>';
 				 result = result + '<li><a href="#tab-25" onClick="associateSalSummary('+userId+')" >Salary</a></li>';
 			 '</sec:authorize>';
 		 }
@@ -309,7 +310,7 @@ window.onload = function () {
 		 result = result + '<div id="tab-24" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative taxes-details">';
 		 result = result + '</div>';
 		 
-		 result = result + '<div id="tab-25" class="clearfix axes-details">';
+		 result = result + '<div id="tab-25" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative taxes-details">';
 		 result = result + '</div>';
 		 
 		 result = result + '<div id="tab-29" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative">';
@@ -323,8 +324,14 @@ window.onload = function () {
 	     $("#candidateSideDiv").empty();
 	     $("#candidateSideDiv").append(result);
 	    
+	     if(tabType == 'contribution'){
+			 associateContributionSummary(userId,tabType);
+		 }else if(tabType == 'deduction'){
+			 associateDeductionSummary(userId,tabType);
+		 }else{
+			 userDetails(userId);
+		 }
 	  	
-	  	userDetails(userId);
  }
 </script>
 <script>
@@ -501,7 +508,7 @@ window.onload = function () {
 				
 				if(json.user.fileUrl != null && json.user.fileUrl != "" && json.user.fileUrl !="undefiend"){
 					result = result + '<div class="user_change_img">';
-					result = result +"<img data-id= 'userProfileImage' src='"+json.user.fileUrl+"' alt='image'>";
+					result = result +"<img data-id= 'userProfileImage' src=\""+json.user.fileUrl+"\" alt='image'>";
 					result = result + '</div>';
 					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">'
 					result=result + '<div class="btn-group uploadfile uploadfile-candidate">';
@@ -610,7 +617,7 @@ window.onload = function () {
 					result = result + '<div class="clearfix"></div>';
 				}
 				
-				if("${SourceLeadWeb_orgLocations.country}" == 'India'){
+				if("${SourceLeadWeb_country}" == 'India'){
 					if(json.panNumber != null && json.panNumber !='' && json.panNumber !='undefined'){
 						result = result + '			<div class="project_details_cta">';
 						result = result + '				 <strong>PAN Number:</strong><span class="fix">'+json.panNumber+'</span><div class="clearfix"></div>';
@@ -1682,7 +1689,6 @@ function getChangeRole(userId,userRoleId){
 			$('#RatePer').removeAttr('data-validation');
 			$('#RatePer').attr("data-validation-optional","true"); 
 		} */
-     
       if ($('#editUser_form').validate(false, validationSettings)){
     	  if(EmployeeId != null && EmployeeId != "" && empId != EmployeeId){
           $.ajax({
@@ -1803,10 +1809,10 @@ function getChangeRole(userId,userRoleId){
         return false;
       }
     }
-    $('body').on('blur', '#editUser_form', function() {
+  /*   $('body').on('blur', '#editUser_form', function() {
         $("#editUser_form").showHelpOnFocus();;
         $("#editUser_form").validateOnBlur(false, validationSettings);  
-    });
+    }); */
 </script>
 
 
@@ -2068,21 +2074,21 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <input type="text" value="'+json.user.email+'" '+readonly+' id="EmailId" name="email" field-name="EmailId" onblur="validateUserUpdatedEmail('+userId+');" data-validation="required validate_Space validate_email validate_length length2-100"/>';
 					result = result + ' </div>';
 					
-					if("${SourceLeadWeb_orgLocations.country}" == 'India'){
+					if("${SourceLeadWeb_country}" == 'India'){
 						result = result + ' <div class="user_summary_edit_cta" >';
 						result = result + ' <label>PAN Number<span class="text-danger">&nbsp;*</span></label>';
 						result = result + ' <input type="text" value="'+json.panNumber+'"  id="panNumber" name="panNumber" field-name="PAN Number" data-validation="required validate_Space fixed_length length10"/>';
 						result = result + ' </div>';
 					}
 					
-					if("${SourceLeadWeb_orgLocations.country}" == 'United States'){
+					if("${SourceLeadWeb_country}" == 'United States'){
 					var ssn = '';	
 					if(json.user.ssn != null && json.user.ssn != '' && json.user.ssn != 'undefined'){
 						ssn = json.user.ssn;
 					}
 					result = result + ' <div class="user_summary_edit_cta" id="ssnnum">';
 					result = result + ' <label>SSN<span class="text-danger">&nbsp;*</span></label>';
-					result = result + ' <input type="text" id="SSN" name="ssn" value="'+ssn+'" field-name="SSN" onblur="validateSSNNumber();"/>';
+					result = result + ' <input type="text" id="SSN" name="ssn" value="'+ssn+'" field-name="SSN" onblur="validateSSNNumber();" data-validation="required"/>';
 
 					result = result + ' </div>';
 					}
@@ -3023,7 +3029,7 @@ function removeUser(userId){
 	    	    $("#removeUserList").append(result);  
 	    	    $("#deleteLoading").removeAttr("style"); 
 	    	    
-	    	     var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	    	     var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		  		  var finalDateFormatProjectSave = '';
 		  		  if(locationDate.match("yyyy-MM-dd")){
 		  			  finalDateFormatProjectSave = 'yy-mm-dd';
@@ -3373,7 +3379,7 @@ function getStartandEndDate(){
 
 <script>
 function date() {
-	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	
 	  if($("#EndDate").val()==""){
 		  var selected = $("#StartDate").val();
@@ -3428,7 +3434,7 @@ function date() {
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
 	   */
-	   var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}';
+	   var locationDate ='${SourceLeadWeb_dateFormat}';
 	  $('#StartDate').datepicker({
 	      dateFormat: locationDate,
 	      onSelect: function (selected) {
@@ -3627,7 +3633,7 @@ function reActiveProject(projectMemberId,ProjectName,startDate,endDate,projectEn
    var reStatertDate = $('#Re-StartDate').val();
    
 		  
-	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}';
+	  var locationDate ='${SourceLeadWeb_dateFormat}';
 
   var reStatertDate = $('#Re-StartDate').val()
   if(projectEndDateStr != null && projectEndDateStr != "" && projectEndDateStr != 'undefined'){

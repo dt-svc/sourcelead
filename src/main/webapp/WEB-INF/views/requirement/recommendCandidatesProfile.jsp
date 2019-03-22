@@ -145,8 +145,8 @@ function editCandidate(candidateId){
 								result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
 								result = result + '		      <div class="form-horizontal clearfix">';
 								result = result + '<input type="hidden" class="form-control input-sm" name="candidateId"  value="'+candidateId+'">';
-								result  = result + '<input type="hidden" id="orgloationId" name="orgloationId" value="${SourceLeadWeb_orgLocations.id}" />';
-								result  = result + '<input type="hidden" id="loginUserId" name="loginUserId" value="${SourceLeadWeb_user.id}" />';
+								result  = result + '<input type="hidden" id="orgloationId" name="orgloationId" value="${SourceLeadWeb_orgLocationId}" />';
+								result  = result + '<input type="hidden" id="loginUserId" name="loginUserId" value="${SourceLeadWeb_userId}" />';
 								result = result + '		        <div class="clearfix mb10">';
 								result = result + '		          <div class="col-md-6">';
 								result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="required validate_AlphaNumber validate_Space validate_length length1-100">';

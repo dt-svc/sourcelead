@@ -99,7 +99,6 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		System.out.println("inside ats controller");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 		Collection<Roles> rolesList = null;
 		ModelAndView model = new ModelAndView();
 		model.setViewName("users/usersList");

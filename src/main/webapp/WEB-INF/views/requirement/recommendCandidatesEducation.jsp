@@ -56,7 +56,7 @@ function candidateEducation(candidateId){
 <script>
 function candidateEducationList(candidateId){
 	 
-	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	 var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  candEduListDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -287,7 +287,7 @@ function addEducation(candidateId) {
 	function educationStartDate(){
 	}
 	
-	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	  var finalDateFormatRecoEduSave = '';
 	  if(locationDate.match("yyyy-MM-dd")){
 		  finalDateFormatRecoEduSave = 'yy-mm-dd';
@@ -324,7 +324,7 @@ function addEducation(candidateId) {
 	/* $(".addUser-org").click(function(){
 		 $(".edit-details").toggleClass("edit-details-active");
 	 }); */
-	$(".edit-details").toggleClass("edit-details-active");
+	$(".edit-details").addClass("edit-details-active");
 	 $(".close-div").click(function(){ 
 		 $(this).parent("div.edit-details").removeClass("edit-details-active");
 		 });
@@ -545,7 +545,7 @@ $("#popUpDiv").append(result);
 function educationStartDate(){
 }
 
-var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var locationDate ='${SourceLeadWeb_dateFormat}'; 
   var finalDateFormatRecoEduEdit = '';
   if(locationDate.match("yyyy-MM-dd")){
 	  finalDateFormatRecoEduEdit = 'yy-mm-dd';
@@ -579,7 +579,7 @@ $('#startDateEdit').datepicker({
           }
   });
 
-$(".edit-details").toggleClass("edit-details-active");
+$(".edit-details").addClass("edit-details-active");
  $(".close-div").click(function(){ 
 	 $(this).parent("div.edit-details").removeClass("edit-details-active");
 	 });

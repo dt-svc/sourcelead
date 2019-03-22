@@ -173,7 +173,7 @@ function closeCertificatePopup(){
 <script>
 function candidateCertificateList(candidateId){
 	 
-	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	 var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  candCertListDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -369,7 +369,7 @@ function addCertification(candidateId) {
 		$("#popUpDivEmp").empty();
 		$("#popUpDivEmp").append(result);
 		
-		$(".edit-details").toggleClass("edit-details-active");
+		$(".edit-details").addClass("edit-details-active");
 		
 		$(".close-div").click(function(){
 			 $(this).parent("div.edit-details").removeClass("edit-details-active");
@@ -378,7 +378,7 @@ function addCertification(candidateId) {
 			 e.stopPropagation();
 		 });
 	   
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		 var locationDate ='${SourceLeadWeb_dateFormat}'; 
 		  var finalDateFormatRecomondedCandCertSave = '';
 		  if(locationDate.match("yyyy-MM-dd")){
 			  finalDateFormatRecomondedCandCertSave = 'yy-mm-dd';
@@ -531,7 +531,7 @@ function editCertification(candidateCertificationId, candidateId) {
 				$("#popUpDivEmp").empty();
 				$("#popUpDivEmp").append(result);
 				
-				$(".edit-details").toggleClass("edit-details-active");
+				$(".edit-details").addClass("edit-details-active");
 				
 				$(".close-div").click(function(){
 					 $(this).parent("div.edit-details").removeClass("edit-details-active");
@@ -540,7 +540,7 @@ function editCertification(candidateCertificationId, candidateId) {
 					 e.stopPropagation();
 				 });
 
-				 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+				 var locationDate ='${SourceLeadWeb_dateFormat}'; 
 				  var finalDateFormatRecCandCert = '';
 				  if(locationDate.match("yyyy-MM-dd")){
 					  finalDateFormatRecCandCert = 'yy-mm-dd';

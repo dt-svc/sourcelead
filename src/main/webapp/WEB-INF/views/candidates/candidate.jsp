@@ -3,8 +3,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
-
+<link href="${SourceLeadWeb_atsUrl}/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadUrl}/resources/js/sourcelead.common.js"></script>
 	<script type="text/javascript">
 	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 	 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
@@ -42,11 +42,11 @@
       <h2>Import Candidate</h2>
     </div>
      <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="${SourceLeadWeb_atsUrl}/candidatesList"> Candidate List</a> &raquo; Import Candidate</div>
+    	<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;<a href="${SourceLeadWeb_atsUrl}/candidatesList"> Candidate List</a> &raquo; Import Candidate</div>
      </c:if>
       
       <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-    	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}'/>">Home</a>&raquo;<a href="${SourceLeadWeb_atsUrl}/candidatesList"> Candidate List</a> &raquo; Import Candidate</div>
+    	<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}">Home</a>&raquo;<a href="${SourceLeadWeb_atsUrl}/candidatesList"> Candidate List</a> &raquo; Import Candidate</div>
      </c:if>
   </section>
   <div class="content-area content-new clearfix">
@@ -301,7 +301,7 @@
 			
 			<span class="col-md-2 noPad clearfix">
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-			<a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			<a href="${SourceLeadWeb_vmsUrl}/addVendor" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			</sec:authorize>
 			</span>
 			</div>
@@ -513,7 +513,7 @@
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary">
-          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/candidatesList'/>'" class="btn btn-default ml">
+          <input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/candidatesList'" class="btn btn-default ml">
         </div>
       </div>
     </div>
@@ -852,7 +852,7 @@ function  removeValiationVendorContact() {
 </script>
 <script>
  function getVendorContactList(){
-	 
+	 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	var orgRelationID = $('#vendors').val();
 		 $.ajax({
 			    type: "POST",
@@ -888,7 +888,7 @@ function  removeValiationVendorContact() {
  </script>
  <script>
   $( function() {
-	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	  // written common method in slead-common.js for date formats start
 	  var finalDateFormat = getJSDateFormat(locationDate);
 	  //end
@@ -916,9 +916,10 @@ function candidateEmptyVendorContact(){
 }
 </script>
 <script>
+     var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	 function selectedVendor(){
 		 var vid =  $('#vendors').val();
-		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+		 window.open(vmsUrl+"/addVendorContact?vid="+vid,'_blank');
 	 }
 	 </script>
 	 

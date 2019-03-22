@@ -54,6 +54,7 @@ top: 20%; right: auto; left: 40%;
 <body>
 <script type="text/javascript">
 var sourceleadUrl ='${sourceleadUrl}';
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 </script>
 <div class="clearfix"> 
   <!-- Header Area -->
@@ -137,7 +138,7 @@ var sourceleadUrl ='${sourceleadUrl}';
    
 <script type="text/javascript">
    function requestDocSave(){
-	   var atsUrl = '${SourceLeadWeb_atsUrl}';
+	  var atsUrl ='${atsUrl}';
 	   var validationSettings = {
 	        errorMessagePosition : 'element',
 	        borderColorOnError : '',
@@ -154,7 +155,7 @@ var sourceleadUrl ='${sourceleadUrl}';
 				data: formData,
 			    processData: false,
 			    contentType:false, 
-				url :  sourceleadUrl.replace("app", "ats")+"/ws/uploadRequestedDocuments?",
+				url :  atsUrl+"/ws/uploadRequestedDocuments?",
 				success : function(response) {
 					if (response && response.response === "INVALID_DATA") {
 					    showError(response.responseMessage);

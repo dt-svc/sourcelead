@@ -19,7 +19,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 			</div>
 	     </c:if>
     <div class="pull-left"><h2>Job Templates</h2></div>
-	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/orgTemplates"> Templates</a> &raquo; Job Templates</div>
+	<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/orgTemplates"> Templates</a> &raquo; Job Templates</div>
   </section>
   
   <div class="overflow_Auto vendor_wrap">
@@ -28,7 +28,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 	 <div class="reportHead reportHeadDataTab clearfix">
 	    <ul class="pull-right list-unstyled list-inline">
           <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE')">
-          	<li> <a href="/ats/addTemplate" class="newAdBtn">+ Job Template</a></li>
+          	<li> <a href="${SourceLeadWeb_atsUrl}/addTemplate" class="newAdBtn">+ Job Template</a></li>
          </sec:authorize>	    
 		</ul>
 	</div>	    
@@ -76,7 +76,7 @@ function requirementTemplateList(){
 	                    	 result = result +"<tr>"; 
 	                    	 result = result +"<td>";
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\',\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">'; 
-		                     	result = result +'<div class="proj_show tbldata-dotdot"><a href="/ats/requirementTemplateSummary?requirementId='+opt.id+'"><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+'</span><i class="fa fa-binoculars"></i></div></a>';
+		                     	result = result +'<div class="proj_show tbldata-dotdot"><a href="${SourceLeadWeb_atsUrl}/requirementTemplateSummary?requirementId='+opt.id+'"><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+'</span><i class="fa fa-binoculars"></i></div></a>';
 		                     '</sec:authorize>';
 		                     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\',\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">'; 
 		                     	result = result +'<div class="tbldata-dotdot"><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+'</span></div>';

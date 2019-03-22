@@ -12,9 +12,6 @@
 
   <div id="shareEmptypopUp"></div>
   
-  <script>
-  var atsUrl = '${SourceLeadWeb_atsUrl}';
-  </script>
   
 <script>
   function noAccess(id){ 	
@@ -111,6 +108,9 @@ function closeCandiatesSubmitedList() {
     padding-right: 5px;
 }
 </style>
+<script>
+  var atsUrl = '${SourceLeadWeb_atsUrl}';
+</script>
 <script type="text/javascript" src="${SourceLeadWeb_atsUrl}/resources/js/candidateTable.js"></script>
 
 <input type="hidden" id="noCandidates" name="noCandidates" />
@@ -456,7 +456,7 @@ function candidateSideBar(candidateId){
 			            result = result+'    <i class="fa fa-comments"></i>';
 			            result = result+'        <div class="commentsimg-inner">';
 			            
-			            result = result+'        	<img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"/>';
+			            result = result+'        	<img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_userImgUrl}"/>';
 			            result = result+'        </div>';
 			            result = result+'    </div>';
 			            result = result+'     <div class="comments-content">';
@@ -1090,11 +1090,11 @@ function imageCancel(){
     </div>
     
     <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl">Candidate List </label> </div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; <label id="brudCrumLbl">Candidate List </label> </div>
     </c:if> 
     
     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='/app/recruiterDashboard'/>">Home </a> &raquo; Candidate List  </div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/recruiterDashboard">Home </a> &raquo; Candidate List  </div>
     </c:if> 
     
      <%-- <div class=" pull-left reportsH">
@@ -1436,10 +1436,10 @@ function imageCancel(){
 				<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Candidate <i class="fa fa-caret-down"></i></a>
 				<div class="action-pop">
 					<span> 
-						<a href="<c:url value='/candidate'/>">Parse Resume</a>
-                        <a href="<c:url value='/addCandidate'/>">Add Manual</a>
-                        <a href="<c:url value='${appPath}/bulk-resume-import.html'/>">Bulk Resume Parsing</a>
-                        <a href="uploadCandidateForm">Import XLS</a>
+						<a href="${SourceLeadWeb_sourceleadUrl}/candidate">Parse Resume</a>
+                        <a href="${SourceLeadWeb_sourceleadUrl}/addCandidate">Add Manual</a>
+                        <a href="${SourceLeadWeb_sourceleadUrl}/bulk-resume-import.html">Bulk Resume Parsing</a>
+                        <a href="${SourceLeadWeb_sourceleadUrl}/uploadCandidateForm">Import XLS</a>
 					</span>
 				</div>
 			</li>
@@ -3162,27 +3162,27 @@ $(".overIcon, .newActPop").click(function(e){
 		}); 
 	}  */
 function goToCandidateList(){
-	location.href = "/ats/candidatesList";
+	location.href = "${SourceLeadWeb_atsUrl}/candidatesList";
 }
 	
 function goToGlobalMarketPlaceList(){
-	location.href = "/ats/globalMarketplacePage";
+	location.href = "${SourceLeadWeb_atsUrl}/globalMarketplacePage";
 }
 
 function goToOrgMarketPlaceList(){
-	location.href = "/ats/OrgMarketplace";
+	location.href = "${SourceLeadWeb_atsUrl}/OrgMarketplace";
 }
 function goToPurchaseOrderList(){
-	location.href ="/ats/PurchaseOrderList";
+	location.href ="${SourceLeadWeb_atsUrl}/PurchaseOrderList";
 	}
 function goToSalesOrderList(){
-	location.href = "/ats/SalesOrderList";
+	location.href = "${SourceLeadWeb_atsUrl}/SalesOrderList";
 }
 function goToCartList(){
-	location.href = "/ats/candidateMarketplaceCart";
+	location.href = "${SourceLeadWeb_atsUrl}/candidateMarketplaceCart";
 }
 function goToWalletList(){
-	location.href = "/ats/walletList";
+	location.href = "${SourceLeadWeb_atsUrl}/walletList";
 }
 
 </script> 

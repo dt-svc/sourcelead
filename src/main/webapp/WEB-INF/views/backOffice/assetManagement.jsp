@@ -72,7 +72,7 @@ $(document).ready(function(){
 <section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left"><h2>Asset Management</h2></div>
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Asset Management</div>
+  <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Asset Management</div>
 </section>
 
 <div class="project_wrap">
@@ -179,10 +179,10 @@ $(document).ready(function(){
 					        	<a href="javascript:void(0)"  onClick="addAssetManagementPopup();">Add Asset</a> 
 					        </sec:authorize>
 					        <sec:authorize access="hasRole('ROLE_ADD_ASSET_CATEGORY')"> 
-					        	<a href="/ats/assetCategory" class="">Categories List</a>
+					        	<a href="${SourceLeadWeb_atsUrl}/assetCategory" class="">Categories List</a>
 					        </sec:authorize>	
 					        
-					        <a href="/app/uploadassetManagement">Import</a>	  
+					        <a href="${SourceLeadWeb_sourceleadUrl}/uploadassetManagement">Import</a>	  
 					</span>
 				</div>
 			</li>
@@ -298,7 +298,7 @@ $(document).ready(function() {
    
   <script>
   function issueDateScript1(){
-  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+  var locationDate ='${SourceLeadWeb_dateFormat}'; 
   var finalDateFormat = getJSDateFormat(locationDate);
   $('#issueDate').datepicker({
       dateFormat: finalDateFormat,
@@ -640,6 +640,7 @@ function prepareDynamicAssetList(url){
 	result = result + '<thead>';
 	result = result + '<tr">';
 	result = result +'	<th>ID</th>';
+	result = result +'	<th>Name</th>';
 	result = result +'	<th>Serial Number</th>';
    	result = result +'  <th>Category</th>';
    	result = result +'  <th>Model</th>';
@@ -677,6 +678,18 @@ function projectAssetPaginations(url){
 			   	result = result+'<td><div class="tbldata-dotdot" title="'+report.id+'">'+report.id+'</div></td>';
 
 	             return result;
+	  	      }
+       		 },{
+	  	  	"targets": colIndex++,
+		  	"data": "",
+		  	"render": function(data, type, report) {
+		  		var result = "";
+		  		if(report.name != null && report.name != "") {
+				   	result = result+'<td><div class="tbldata-dotdot" title="'+report.name+'">'+report.name+'</div></td>';
+		  		} else {
+		  			result = result+'<td><div class="tbldata-dotdot">--</div></td>';	  			
+		  		}
+	            return result;
 	  	      }
 	  		},{
     	  	"targets": colIndex++,
@@ -1055,7 +1068,7 @@ function assetmanagemetServicePopUp(assetId,workingStatus,assetUUID){
 	 result = result + '	<input type="hidden" name="assetUUID" id="assetUUID" value='+assetUUID+'>';
 	 result = result + '	<input type="hidden" name="workingStatus" id="workingState" value='+workingStatus+'>';
 	 result = result + '	<div class="clearfix">';
-		result = result + '	<div class="popupHead">Asset Management Sevice<i class="closePop pull-right popClose" onclick="closePopup(\''+assetUUID+'\',\''+assetId+'\');"></i></div>';
+		result = result + '	<div class="popupHead">Asset Management Service<i class="closePop pull-right popClose" onclick="closePopup(\''+assetUUID+'\',\''+assetId+'\');"></i></div>';
 			result = result + '	<div class="popupContent">';
 				result = result + '	<div class="row form-group">';
 					result = result + '<div class="col-md-4">';
@@ -1099,7 +1112,7 @@ function assetmanagemetServicePopUp(assetId,workingStatus,assetUUID){
 	$("#assetServicePopUp").empty();
 	$("#assetServicePopUp").append(result)
 	
-	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	var finalDateFormat = getJSDateFormat(locationDate);
 	$('#serviceDate').datepicker({
 	    dateFormat: finalDateFormat,

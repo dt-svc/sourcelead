@@ -61,7 +61,7 @@ display: none;
       <div class="pull-left">
         <h2>Compose Mail</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/mailBox/mails'/>"> Mailbox</a>
+      <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${SourceLeadWeb_atsUrl}/mailBox/mails'/>"> Mailbox</a>
 			&raquo; Compose Mail</div>
     </section>
     
@@ -172,7 +172,7 @@ display: none;
             <div class="pull-right"> 
               <!--<input type="button" value="Schedule" class="btn btn-sm btn-primary">-->
               <button type="button" class="btn btn-sm btn-success" onclick="sendEmails();"><i class="fa fa-envelope-o"></i>&nbsp;Send</button>
-              <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '<c:url value='${appPath}/mailBox/mails'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
+              <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_atsUrl}/mailBox/mails'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
             </div>
           </div>
         <!-- Attachment button --> 
@@ -208,10 +208,10 @@ $(function() {
   
    <script>
   function loadMailBoxDetails(UUID){
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  var atsUrl = '${SourceleadWeb_atsUrl}';
 			 $.ajax({
 				 type: "POST",
-			        url: sourceleadUrl+"/getUserMailBoxDetailsByUUID?${_csrf.parameterName}=${_csrf.token}&UUID="+UUID, 
+			        url: atsUrl+"/getUserMailBoxDetailsByUUID?${_csrf.parameterName}=${_csrf.token}&UUID="+UUID, 
 			        success: function(data) {
 			        	var json = JSON.parse(data);
 			        	 $("input[name=subject]").val(json['subject']);
@@ -256,8 +256,9 @@ $(function() {
   
   <script type="text/javascript">
 	function sendEmails() {
-		var atsUrl ='${SourceLeadWeb_atsUrl}';
+		 var atsUrl = '${SourceleadWeb_atsUrl}';
 		if ($('#email_form').validate(false, validationSettings)){ 
+				var sourceleadUrl = '${sourceleadUrl}';
 				
 				nicEditors.findEditor('bodytext').saveContent();
 				
@@ -280,7 +281,7 @@ $(function() {
 			  		        contentType:false, 
 			  				url : atsUrl+"/sendEmailToUsers?${_csrf.parameterName}=${_csrf.token}",
 			  				success : function(result) {
-			  						location.replace(sourceleadUrl+"/mailBox/mails");
+			  						location.replace(atsUrl+"/mailBox/mails");
 			  				},
 			  			});  
 			  		
@@ -387,9 +388,8 @@ function textBoxCancel(){
   
   
   <script>
-function getUserList(teamType){ 
-	var atsUrl ='${SourceLeadWeb_atsUrl}';
-	  var sourceleadUrl ='${sourceleadUrl}';
+function getUserList(teamType){  
+	 var atsUrl = '${SourceleadWeb_atsUrl}';
 	  $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $("#userList").empty(); 
 	  $.ajax({
@@ -544,8 +544,7 @@ function getContactsList(){
 
 <script>
 function contactsDataTableList(){
-	 var atsUrl ='${SourceLeadWeb_atsUrl}';
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var atsUrl = '${SourceleadWeb_atsUrl}';
 	 var searchValue = $("#contactsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
 	 var contactsGroups = '';
@@ -674,8 +673,8 @@ function checkContactUsers(ele) {
 
 
 <script>
-function getTeamsList(teamType){ 
-	var atsUrl ='${SourceLeadWeb_atsUrl}';
+function getTeamsList(teamType){  
+	var atsUrl = '${SourceleadWeb_atsUrl}';
 	  $.ajax({
            type : "POST",
            url: atsUrl+"/getComposeMailTeamsList?${_csrf.parameterName}=${_csrf.token}",    

@@ -235,10 +235,13 @@ public class RequirementController {
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLocId);
+				
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User loginUser = userService.getUserById(userId);
 		
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		model.addObject("loginUser",loginUser);
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		model.addObject("orgLocationDateFormat", orgLocations.getDateFormat());
 		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_REQUIREMENT);
 	     model.addObject("actionId",action.getId());
@@ -414,9 +417,10 @@ public class RequirementController {
 			requirement = new Requirement();
 		}
 		
+		SourceLeadSessionManager.setSessionAttribute(request, "profilePercentage", orgLocations.getProfilePercentage());
+		SourceLeadSessionManager.setSessionAttribute(request, "coolingOffPeriod", orgLocations.getCoolingOffPeriod());
 		List<LookUpData> experienceLevelList = lookUpDataService.getLookUpDataByCategory(Constants.EXPERIENCELEVEL);
-		 model.addObject("experienceLevelList", experienceLevelList);
-		 
+		model.addObject("experienceLevelList", experienceLevelList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirement");
 		
@@ -739,8 +743,7 @@ public class RequirementController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
 		// isAdmin value is set to true as 'SourceLeadSessionManager.getSessionAttribute' method is returning null.
-		Boolean isAdmin = true;
-				//(Boolean) SourceLeadSessionManager.getSessionAttribute(request,"isAdmin");
+		Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request,"isAdmin");
 		
 		ModelAndView model = new ModelAndView();
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -874,7 +877,7 @@ public class RequirementController {
 				List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
 				model.addObject("locationsList",locationsList);
 				
-				model.addObject("timezone",orgLocations.getTimezone().getTimeZoneId());
+				model.addObject("timezone",orgLocations.getTimeZoneId());
 				
 				Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
 				model.addObject("isTeamMember",isTeamMember);
@@ -1008,7 +1011,7 @@ public class RequirementController {
 		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocations.getTimeZoneId()));
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		
 		Boolean isInterviewer = requirementInterviewerService.isInterviwerForByRequirementIdInterviewIdAndUserId(requirementUUID, interviewId, loginUser.getId());

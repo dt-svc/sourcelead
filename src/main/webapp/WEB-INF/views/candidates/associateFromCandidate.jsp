@@ -6,7 +6,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
-<link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="${SourceLeadWeb_atsUrl}/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 
 	
 	<script type="text/javascript">
@@ -39,7 +39,7 @@
     <div class="pull-left">
       <h2>Add Associate</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/associatesList'/>"> Associate List</a> &raquo; Add Associate</div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="<c:url value='/associatesList'/>"> Associate List</a> &raquo; Add Associate</div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 

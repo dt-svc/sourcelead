@@ -47,7 +47,7 @@
       <div class="pull-left">
         <h2>Employee offboarding</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Offboarding </div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>  &raquo; <a href="${SourceLeadWeb_atsUrl}/candidateOnBoardingList">Onboard & Offboard List</a> &raquo; Employee Offboarding </div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="applicant_accept">
@@ -204,13 +204,13 @@
                         <span class="input-group-addon cursorPointer bg-blue" onclick="loadOffBoardingTemplates();"><i class="fa fa-refresh "></i></span>
                         </div>
  <sec:authorize access="hasAnyRole('ROLE_CREATE_OFF_BOARD_TEMPLATE')">
-                  <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/addNewOffboardTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
+                  <span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_atsUrl}/addNewOffboardTemplate" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
                </sec:authorize></div>                </div>
                 
                 
                   <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/ats/candidateOnBoardingList'">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='${SourceLeadWeb_atsUrl}/candidateOnBoardingList'">
                     <input type="button" value="Save" id="save_offboardUser" onclick="saveOffboardingCandidateDetails('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="saveAndContinue_offboardUser" onclick="saveOffboardingCandidateDetails('saveAndContinue');"  class="btn btn-sm btn-primary">
                   </div>
@@ -257,7 +257,7 @@
                
                 <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/ats/candidateOnBoardingList'">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='${SourceLeadWeb_atsUrl}/candidateOnBoardingList'">
                     <input type="button" value="Save" id="save_docs_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="save_continue_docs_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>

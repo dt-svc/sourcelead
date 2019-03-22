@@ -5,7 +5,7 @@
  
  <script>
  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-function associateContributionSummary(userId){  
+function associateContributionSummary(userId,tabType){  
 		let searchParams = new URLSearchParams(window.location.search);
 		let param = searchParams.get('userCode')
 	  $.ajax({
@@ -19,7 +19,7 @@ function associateContributionSummary(userId){
             result = result + '<div class="table-header clearfix">';
             result = result + '<h4 class="pull-left margin-top0">Contribution</h4>';
             result = result + '<ul class="list-unstyled list-inline pull-right">';
-            result = result + '<li><a href="/pms/addAssociateContribution?userCode='+param+'&saveType=edit" class="fa fa-plus paddingRight" title="Add">Add</a></li>';
+            result = result + '<li><a href="'+atsUrl+'/addAssociateContribution?userCode='+param+'&saveType=edit" class="fa fa-plus paddingRight" title="Add">Add</a></li>';
             result = result + '<div class="clearfix"></div>';
             result = result + '</ul>';
             result = result + '</div>';
@@ -112,6 +112,16 @@ function associateContributionSummary(userId){
                 $("#tab-24").empty();
                 $("#tab-25").empty();
                 $("#tab-24").append(result); 
+                
+                if(tabType == 'contribution'){
+                	$("#contributionLiId").addClass("current");
+       	         	$("#contributionLiId").siblings().removeClass("current");
+       	         	var tab = $("#contributionLiId").attr("href");
+       	         	$(".project_tabs_inn").not(tab).css("display", "none");
+       	         	$(tab).fadeIn();
+       	         	$("#tab-24").show();
+                }
+   	         	
                 associateContributionListPagination();
           },
             

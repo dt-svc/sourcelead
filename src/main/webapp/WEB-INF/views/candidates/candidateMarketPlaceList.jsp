@@ -19,7 +19,7 @@ var atsUrl = '${SourceLeadWeb_atsUrl}';
       <div class="pull-left">
         <h2>Marketplace List</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;  <div class="pull-right brud-crum"><a href="${SourceLeadWeb_atsUrl}/candidatesList'">Candidates</a> &raquo; Marketplace</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;  <div class="pull-right brud-crum"><a href="${SourceLeadWeb_atsUrl}/candidatesList'">Candidates</a> &raquo; Marketplace</div>
     </section>
     <div class="timesheet_out">
       <div class="tablelist-wrap">
@@ -253,7 +253,7 @@ function callValidatePriceAmount(){
 		 if (result.response === "AWKWARD") {
                 location.href = "/errorPage";
             }else if(result.response === 'SUCCESS') {
-            	location.href = "/ats/globalMarketplacePage";
+            	location.href = "${SourceLeadWeb_atsUrl}/globalMarketplacePage";
             }else{
             	 showError("Operation failed, please try again");
             }

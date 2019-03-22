@@ -20,12 +20,12 @@
     </div>
     
     <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl">Marketplace List </label> </div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; <label id="brudCrumLbl">Marketplace List </label> </div>
     </c:if> 
   </section>
   <div class="clearfix">
 	<ul class="project-tabs-menu projecttabs-custom clearfix">
-            <li id="" ><a href="/ats/candidatesList">Candidate List</a></li>
+            <li id="" ><a href="${SourceLeadWeb_atsUrl}/candidatesList">Candidate List</a></li>
             <li id="" class="current"><a href="javascript:void(0)" >Marketplace</a></li>
             <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
             <li id=""><a href="javascript:void(0)" onclick="javascript:goToCartList();">Cart</a></li>
@@ -457,20 +457,20 @@ function cardModel() {
 	$("#cardDesign").show();
 }
 function goToGlobalMarketPlaceList(){
-	location.href = "/ats/globalMarketplacePage";
+	location.href = "${SourceLeadWeb_atsUrl}/globalMarketplacePage";
 }
 function goToCartList(){
-	location.href = "/ats/candidateMarketplaceCart";
+	location.href = "${SourceLeadWeb_atsUrl}/candidateMarketplaceCart";
 }
 function goToPurchaseOrderList(){
-	location.href ="/ats/PurchaseOrderList";
+	location.href ="${SourceLeadWeb_atsUrl}/PurchaseOrderList";
 	}
 function goToSalesOrderList(){
-	location.href = "/ats/SalesOrderList";
+	location.href = "${SourceLeadWeb_atsUrl}/SalesOrderList";
 }
 
 function goToWalletList(){
-    location.href = "/ats/walletList";
+    location.href = "${SourceLeadWeb_atsUrl}/walletList";
 }
 function cancelMarketPlace(){
 	$("#remove_marketPlace_pop, .project_inn_mask").fadeOut();

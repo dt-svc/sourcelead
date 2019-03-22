@@ -92,7 +92,7 @@ function candDocumentsList(candidateId){
                     
                     for (var i = 0; i < response.data.length; i++) {
                    		var opt = response.data[i];  
-                   	 	if(opt.isConfidential == 'N' || opt.docUploadStatus =="Requested"|| (opt.isConfidential == 'Y' && '${SourceLeadWeb_user.userCode}' == opt.userIdStr)) {
+                   	 	if(opt.isConfidential == 'N' || opt.docUploadStatus =="Requested"|| (opt.isConfidential == 'Y' && '${SourceLeadWeb_userCode}' == opt.userIdStr)) {
                    	 		result  = result + ' <tr>';
 	                   	 	if(opt.requestDocumentId != null && opt.requestedDocStatus == "Submitted"){
 	                   		 	result = result +'<td><input id="'+opt.id+'" value="'+opt.id+'"  onclick="deleteRequestedDoc();" type="checkbox" name="documents[]" class="myCheckbox" >';
@@ -381,7 +381,7 @@ function addDocument(candidateId, documentUUID) {
 	result = result+'<div class="col-md-12 validation_p">';
 	result = result+'<div class="input-group" id="uploadFileGroup">';
 	result = result+'<label class="input-group-btn" onchange="uploadFileDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-	result = result+'<input type="file"  id="uploadBtn" style="display: none;"  multiple="" class="upload">';
+	result = result+'<input type="file"  id="uploadBtn2" style="display: none;"  multiple="" class="upload">';
 	result = result+'</span> </label>';
 	result = result+'<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document..." field-name="Document" data-validation="required validate_Space validate_docimgpdf">';
 	result = result+'</div>';
@@ -421,7 +421,7 @@ function addDocument(candidateId, documentUUID) {
 	 });
 	 
 	 /* upload file script to show selected file name*/
-	    document.getElementById("uploadBtn").onchange = function () {
+	    document.getElementById("uploadBtn2").onchange = function () {
 	    	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
 	   }; 
 	    
@@ -743,7 +743,7 @@ function refreshDocList(candidateId){
 
 <script>
 function uploadFileDoc(){
-	fileUpload("uploadBtn", "candidateDocuments", "documentType_form");
+	fileUpload("uploadBtn2", "candidateDocuments", "documentType_form");
 }
 </script>
 

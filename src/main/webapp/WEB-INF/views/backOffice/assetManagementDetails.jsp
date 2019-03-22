@@ -101,7 +101,7 @@ function assetNotesList(assetUUID){
 	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
-         url: atsUrl+urlForm,        
+         url: sourceleadUrl+urlForm,        
          success :function(data) {
 		var output = "";
 	    if(data != null && data != 'undefined' && data != "" && data != '[]'){
@@ -110,7 +110,7 @@ function assetNotesList(assetUUID){
 	    output  = output + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
      	for(var i=0;i<json.length;i++){
        	var report = json[i];
-    	if(report.checkBox == 'Y' || (report.checkBox == 'N' && '${SourceLeadWeb_user.id}' == report.userIdStr)){
+    	if(report.checkBox == 'Y' || (report.checkBox == 'N' && '${SourceLeadWeb_userId}' == report.userIdStr)){
    	  	output = output+'<div class="comments-div comments-inner commentsNotes clearfix">';
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
@@ -172,7 +172,7 @@ function assetNotesList(assetUUID){
 	      		var formData = new FormData(form);
 	      		formData.append("json",con);
 	      		
-	      		var userId = '${SourceLeadWeb_user.id}';
+	      		var userId = '${SourceLeadWeb_userId}';
 	      		formData.append("userId",userId);
 	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	      	    formData.append("locationCode",locationCode);
@@ -189,7 +189,7 @@ function assetNotesList(assetUUID){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : atsUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"",
+						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"",
 						success : function(result) {
 							/* closeDocPopup();
 							assetNotesList(assetId); */
@@ -409,7 +409,7 @@ function assetDetails(assetUUID) {
 							result = result + ' <td><div class="tbldata-dotdot" title="'+report.shift.shiftName+'">'+report.shift.shiftName+'</div></td>';
 							result = result + ' <td><div class="tbldata-dotdot" title="'+report.userRole.user.fullName+'">'+report.userRole.user.fullName+'</div></td>';
 							if(report.fileName != null && report.fileName != "" && report.fileName != "undefined"){
-								result = result + ' <td><div class="pull-left"><div class="tbldata-dotdot">'+report.fileName+'</div></div><ul class="ml list-unstyled list-inline pull-left" ><li><a class="fa fa-download paddingRight cursorPointer" href="'+report.fileURL+'"></a><a class="fa fa-eye paddingLeft cursorPointer" onClick="viewFile(\''+report.fileURL+'\',\''+report.fileName+'\',\''+report.fileType+'\');"></a></li></ul></td>';
+								result = result + ' <td><div class="pull-left"><div class="tbldata-dotdot">'+report.fileName+'</div></div><ul class="ml list-unstyled list-inline pull-left" ><li><a download class="fa fa-download paddingRight cursorPointer" href="'+report.fileURL+'"></a><a class="fa fa-eye paddingLeft cursorPointer" onClick="viewFile(\''+report.fileURL+'\',\''+report.fileName+'\',\''+report.fileType+'\');"></a></li></ul></td>';
 							}else{
 								result = result + ' <td><div class="pull-left">--</div></td>';
 							}

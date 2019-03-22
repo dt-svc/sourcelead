@@ -38,7 +38,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/app")
 public class CampaignRestController {
 	private static final Logger logger = LoggerFactory.getLogger(CampaignRestController.class);
 	@Autowired
@@ -287,7 +286,8 @@ public class CampaignRestController {
 		if(campaignStats !=null) {
 			Campaign campaign = new Campaign();
 			campaign.setCampaignCategory(campaignStats.getCategoryName());
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
 			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocation);
 			String response = campaignUtil.readCampaignStatsByCategory(campaign,currentDate);
 			if(response !=null) {
@@ -331,7 +331,8 @@ public class CampaignRestController {
 		}else {
 			Campaign campaign = new Campaign();
 			campaign.setCampaignCategory(campaignName);
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
 			Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocation);
 			String response = campaignUtil.readCampaignStatsByCategory(campaign,currentDate);
 			if(response !=null) {
