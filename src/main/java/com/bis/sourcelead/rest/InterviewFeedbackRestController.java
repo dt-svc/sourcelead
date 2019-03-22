@@ -1,7 +1,6 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -40,7 +39,6 @@ import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;

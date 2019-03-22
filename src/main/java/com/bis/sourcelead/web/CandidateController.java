@@ -176,10 +176,11 @@ public class CandidateController {
 					@RequestParam(value = "searchValue", required = true)String searchValue,
 					@RequestParam(value = "candidateLocation", required = true)String candidateLocation,
 					@RequestParam(value = "searchCandidateIds", required = true)String[] searchCandidateIds,
+					CandidateMarketPlaceDTO candidateMarketPlaceDTO,
 					HttpServletRequest request) {
 				List<CandidateMarketPlaceDTO> candidateMarketPlaceDTOs = null;
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				candidateMarketPlaceDTOs = candidateService.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations, candidateLocation, searchValue);
+				candidateMarketPlaceDTOs = candidateService.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations, candidateLocation, searchValue, candidateMarketPlaceDTO);
 				return candidateMarketPlaceDTOs;
 			}
 	
@@ -476,23 +477,6 @@ public class CandidateController {
 		
 	}
 	
-	 //uploadCandidateForm
-	 @RequestMapping(value = "/uploadCandidateForm")
-		public ModelAndView uploadCandidateForm(HttpServletRequest request) {
-		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-			if(sessionData == null)
-			{
-				sessionData = new SessionMaintainanceData();
-			}
-			
-			request.getSession().setAttribute("sessionData",sessionData);
-			ModelAndView model = new ModelAndView();
-			model.setViewName("upload/uploadCandidateForm");
-			model.addObject("sourceleadUrl", sourceleadUrl);
-			sessionData.setNav(Constants.Candidates);
-			return model;
-
-		}
 	 
 	 /*
 	  * author PrasadK

@@ -640,6 +640,7 @@ function prepareDynamicAssetList(url){
 	result = result + '<thead>';
 	result = result + '<tr">';
 	result = result +'	<th>ID</th>';
+	result = result +'	<th>Name</th>';
 	result = result +'	<th>Serial Number</th>';
    	result = result +'  <th>Category</th>';
    	result = result +'  <th>Model</th>';
@@ -677,6 +678,18 @@ function projectAssetPaginations(url){
 			   	result = result+'<td><div class="tbldata-dotdot" title="'+report.id+'">'+report.id+'</div></td>';
 
 	             return result;
+	  	      }
+       		 },{
+	  	  	"targets": colIndex++,
+		  	"data": "",
+		  	"render": function(data, type, report) {
+		  		var result = "";
+		  		if(report.name != null && report.name != "") {
+				   	result = result+'<td><div class="tbldata-dotdot" title="'+report.name+'">'+report.name+'</div></td>';
+		  		} else {
+		  			result = result+'<td><div class="tbldata-dotdot">--</div></td>';	  			
+		  		}
+	            return result;
 	  	      }
 	  		},{
     	  	"targets": colIndex++,
@@ -1055,7 +1068,7 @@ function assetmanagemetServicePopUp(assetId,workingStatus,assetUUID){
 	 result = result + '	<input type="hidden" name="assetUUID" id="assetUUID" value='+assetUUID+'>';
 	 result = result + '	<input type="hidden" name="workingStatus" id="workingState" value='+workingStatus+'>';
 	 result = result + '	<div class="clearfix">';
-		result = result + '	<div class="popupHead">Asset Management Sevice<i class="closePop pull-right popClose" onclick="closePopup(\''+assetUUID+'\',\''+assetId+'\');"></i></div>';
+		result = result + '	<div class="popupHead">Asset Management Service<i class="closePop pull-right popClose" onclick="closePopup(\''+assetUUID+'\',\''+assetId+'\');"></i></div>';
 			result = result + '	<div class="popupContent">';
 				result = result + '	<div class="row form-group">';
 					result = result + '<div class="col-md-4">';

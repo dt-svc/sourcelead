@@ -1090,11 +1090,11 @@ function imageCancel(){
     </div>
     
     <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl">Candidate List </label> </div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; <label id="brudCrumLbl">Candidate List </label> </div>
     </c:if> 
     
     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='/app/recruiterDashboard'/>">Home </a> &raquo; Candidate List  </div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/recruiterDashboard">Home </a> &raquo; Candidate List  </div>
     </c:if> 
     
      <%-- <div class=" pull-left reportsH">
@@ -1436,10 +1436,10 @@ function imageCancel(){
 				<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Candidate <i class="fa fa-caret-down"></i></a>
 				<div class="action-pop">
 					<span> 
-						<a href="<c:url value='/candidate'/>">Parse Resume</a>
-                        <a href="<c:url value='/addCandidate'/>">Add Manual</a>
+						<a href="${SourceLeadWeb_sourceleadUrl}/candidate">Parse Resume</a>
+                        <a href="${SourceLeadWeb_sourceleadUrl}/addCandidate">Add Manual</a>
                         <a href="${SourceLeadWeb_sourceleadUrl}/bulk-resume-import.html">Bulk Resume Parsing</a>
-                        <a href="uploadCandidateForm">Import XLS</a>
+                        <a href="${SourceLeadWeb_sourceleadUrl}/uploadCandidateForm">Import XLS</a>
 					</span>
 				</div>
 			</li>

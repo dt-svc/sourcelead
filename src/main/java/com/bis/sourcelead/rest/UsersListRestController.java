@@ -1227,9 +1227,14 @@ public class UsersListRestController {
 	@RequestMapping(value = "/terminateUser", method = RequestMethod.POST)
 	public @ResponseBody String terminateUser(AddUserDTO addUserDTO,@RequestParam(value = "userId", required = false) Long userId,
 			 HttpServletRequest request) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
+		Long loginUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user = userService.getUserById(loginUserId);
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		
+		
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
 
 		/*json = "{" + json + "}";
@@ -2090,9 +2095,13 @@ public class UsersListRestController {
 			@RequestParam(value = "emailId", required = false) String emailId, HttpServletRequest request)
 			throws Exception {
 		if(Validator.validate(addUserDTO)){
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		
+		 Long loginUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+	     User loginUser = userService.getUserById(loginUserId);
+	     
+	     Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		
 		addUserDTO.setDateFormat(orgLocations.getDateFormat());
 		User user = userService.getUserById(userId);
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
