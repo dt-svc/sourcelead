@@ -164,7 +164,7 @@ function statusvalidating(id){
 		<div class="pull-left">
         	<h2>Jobs 
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
-						<a href="<c:url value='/professionalRequirements'/>" class="jobHeadBtn">Crowdsourcing Jobs</a>
+						<a href="${SourceLeadWeb_atsUrl}/professionalRequirements" class="jobHeadBtn">Crowdsourcing Jobs</a>
 					</sec:authorize>        	
         	</h2>
       	</div>
