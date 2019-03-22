@@ -205,6 +205,8 @@ function candidateQuickViewProfile(candidateId){
   				    qvemployeeSubmission(candidateId);
   				    qveducationSubmission(candidateId);
 					qwikCertificates(candidateId);
+					alert("success")
+					console.log(result);
 					candidateSideBar(candidateId); 
               	}else{
        	    	         var result ="";
@@ -219,6 +221,7 @@ function candidateQuickViewProfile(candidateId){
       					 result = result+"	</div>"; 
       					 result = result+"  </div> "; 
       					$("#candidateQuickViewDiv").empty();
+      					
       				    $("#candidateQuickViewDiv").append(result); 
                       }
 				} else if (result.indexOf('Sign In') !== -1) {

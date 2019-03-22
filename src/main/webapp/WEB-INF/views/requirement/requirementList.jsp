@@ -1579,10 +1579,10 @@ function getActions(){
  			<label><strong>Priority</strong></label>
  			<div class='clearfix'>
 								<ul id="priority" class="list-unstyled">
-									<li class="checkBox positionRelative"><input id="c1" type="checkbox" name="requirementPriority" value="Medium" ><label for="c1">Medium </label></li>
-									<li class="checkBox positionRelative"><input id="c2" type="checkbox" name="requirementPriority" value="Low" ><label for="c2">Low </label></li>
-									<li class="checkBox positionRelative"><input id="c3" type="checkbox" name="requirementPriority" value="Urgent" ><label for="c3">Urgent </label></li>
-									<li class="checkBox positionRelative"><input id="c4" type="checkbox" name="requirementPriority" value="High" ><label for="c4">High </label></li>
+									<li class="checkBox positionRelative mb0"><input id="c1" type="checkbox" name="requirementPriority" value="Medium" ><label for="c1">Medium </label></li>
+									<li class="checkBox positionRelative mb0"><input id="c2" type="checkbox" name="requirementPriority" value="Low" ><label for="c2">Low </label></li>
+									<li class="checkBox positionRelative mb0"><input id="c3" type="checkbox" name="requirementPriority" value="Urgent" ><label for="c3">Urgent </label></li>
+									<li class="checkBox positionRelative mb0"><input id="c4" type="checkbox" name="requirementPriority" value="High" ><label for="c4">High </label></li>
 								</ul>
 				</div>
 			</div>
@@ -1591,8 +1591,8 @@ function getActions(){
 				<label><strong>Jobs</strong></label>
 					<div class='clearfix'>
 				<ul id="jobs" class="list-unstyled">
-					<li class="checkBox positionRelative"><input id="j1" type="checkbox" name="requirementSpecJobs" value="ClientJobs" ><label for="j1">All Client Jobs </label></li>
-					<li class="checkBox positionRelative"><input id="j2" type="checkbox" name="requirementSpecJobs" value="NormalJobs" ><label for="j2">All Internal jobs</label></li>
+					<li class="checkBox positionRelative mb0"><input id="j1" type="checkbox" name="requirementSpecJobs" value="ClientJobs" ><label for="j1">All Client Jobs </label></li>
+					<li class="checkBox positionRelative mb0"><input id="j2" type="checkbox" name="requirementSpecJobs" value="NormalJobs" ><label for="j2">All Internal jobs</label></li>
 				
 				</ul>
 			</div>
@@ -1604,13 +1604,13 @@ function getActions(){
 			<label><strong>Job Type</strong></label>
 			<div class='clearfix'>
 								<ul id="jobType" class="list-unstyled">
-									<li class="checkBox positionRelative"><input id="c11" type="checkbox" name="requirementType" value="C2C" ><label for="c11">C2C </label></li>
-									<li class="checkBox positionRelative"><input id="c12" type="checkbox" name="requirementType" value="W-2" ><label for="c12">W-2 </label></li>
-									<li class="checkBox positionRelative"><input id="c13" type="checkbox" name="requirementType" value="C2H" ><label for="c13">C2H </label></li>
-									<li class="checkBox positionRelative"><input id="c14" type="checkbox" name="requirementType" value="Contract" ><label for="c14">Contract </label></li>
-									<li class="checkBox positionRelative"><input id="c15" type="checkbox" name="requirementType" value="Part Time" ><label for="c15">Part Time </label></li>
-									<li class="checkBox positionRelative"><input id="c16" type="checkbox" name="requirementType" value="Full Time" ><label for="c16">Full Time </label></li>
-									<li class="checkBox positionRelative"><input id="c17" type="checkbox" name="requirementType" value="Other" ><label for="c17">Other </label></li>
+									<li class="checkBox positionRelative mb0"><input id="c11" type="checkbox" name="requirementType" value="C2C" ><label for="c11">C2C </label></li>
+									<li class="checkBox positionRelative mb0"><input id="c12" type="checkbox" name="requirementType" value="W-2" ><label for="c12">W-2 </label></li>
+									<li class="checkBox positionRelative mb0"><input id="c13" type="checkbox" name="requirementType" value="C2H" ><label for="c13">C2H </label></li>
+									<li class="checkBox positionRelative mb0"><input id="c14" type="checkbox" name="requirementType" value="Contract" ><label for="c14">Contract </label></li>
+									<li class="checkBox positionRelative mb0"><input id="c15" type="checkbox" name="requirementType" value="Part Time" ><label for="c15">Part Time </label></li>
+									<li class="checkBox positionRelative mb0"><input id="c16" type="checkbox" name="requirementType" value="Full Time" ><label for="c16">Full Time </label></li>
+									<li class="checkBox positionRelative mb0"><input id="c17" type="checkbox" name="requirementType" value="Other" ><label for="c17">Other </label></li>
 								</ul>
 				</div>
 							</div>
@@ -1622,39 +1622,39 @@ function getActions(){
 			<div class='clearfix'>	
 			
 								<ul id="status" class="list-unstyled">
-									<li class="checkBox positionRelative"><input id="c6" type="checkbox"
+									<li class="checkBox positionRelative mb0"><input id="c6" type="checkbox"
 										name="requirementStatus" value="NEW"><label for="c6">New<span id="newRequirementCount"></span></label></li>
-									<li class="checkBox positionRelative"><input id="c7" name="requirementStatus" type="checkbox" value="DRAFT" ><label
+									<li class="checkBox positionRelative mb0"><input id="c7" name="requirementStatus" type="checkbox" value="DRAFT" ><label
 										for="c7">Draft<span id="draftRequirementCount"></span></label></li>
-									<li class="checkBox positionRelative"><input id="c8" type="checkbox"
+									<li class="checkBox positionRelative mb0"><input id="c8" type="checkbox"
 										name="requirementStatus" type="checkbox" value="SUBMITTED" ><label for="c8">Submitted
 											<span id="submittedRequirementCount"></span>
 									</label></li>
-									<li class="checkBox positionRelative"><input id="c9" type="checkbox"
+									<li class="checkBox positionRelative mb0"><input id="c9" type="checkbox"
 										name="requirementStatus" type="checkbox" value="OPEN" ><label for="c9">Open
 											<span id="openRequirementCount"></span>
 									</label></li>
-									<li class="checkBox positionRelative"><input id="c10" type="checkbox"
+									<li class="checkBox positionRelative mb0"><input id="c10" type="checkbox"
 										name="requirementStatus" type="checkbox" value="ONHOLD" ><label for="c10">On
 											Hold <span id="onHoldRequirementCount"></span>
 									</label></li>
-									<li class="checkBox positionRelative"><input id="c11" type="checkbox"
+									<li class="checkBox positionRelative mb0"><input id="c11" type="checkbox"
 										name="requirementStatus" type="checkbox" value="CANCEL" ><label for="c11">Cancel
 											<span id="cancelRequirementCount"></span>
 									</label></li>
-									<li class="checkBox positionRelative"><input id="c12" type="checkbox"
+									<li class="checkBox positionRelative mb0"><input id="c12" type="checkbox"
 										name="requirementStatus" type="checkbox" value="FILLEDCLOSED" ><label for="c12">Filled
 											Closed<span id="filledClosedRequirementCount"></span>
 									</label></li>
-									<li class="checkBox positionRelative"><input id="c13" type="checkbox"
+									<li class="checkBox positionRelative mb0"><input id="c13" type="checkbox"
 										name="requirementStatus" type="checkbox" 
 										value="UNFILLEDCLOSED" ><label
 										for="c13">UnFilled Closed<span
 											id="unFilledClosedRequirementCount"></span></label></li>
-									<li class="checkBox positionRelative"><input id="c14" type="checkbox"
+									<li class="checkBox positionRelative mb0"><input id="c14" type="checkbox"
 										name="requirementStatus" type="checkbox" value="REJECTED" ><label for="c14">Rejected<span
 											id="rejectedRequirementCount"></span></label></li>
-									<li class="checkBox positionRelative"><input id="c15" type="checkbox"
+									<li class="checkBox positionRelative mb0"><input id="c15" type="checkbox"
 										name="requirementStatus" type="checkbox" value="CLOSED" ><label for="c15">Closed<span
 											id="closedRequirementCount"></span></label></li>
 								</ul>
@@ -1675,11 +1675,11 @@ function getActions(){
 									<c:forEach var="team" items="${add_clientList}">
 									
 									<c:if test="${team.locationId.id == loginOrgLocId}">
-									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" data-val = "${team.id}" value ="${team.responderLocationId.org.orgName}" ><label>${team.responderLocationId.org.orgName}</label></li>
+									<li class="checkBox positionRelative  mb0"><input  type="checkbox" name="clientNameById" data-val = "${team.id}" value ="${team.responderLocationId.org.orgName}" ><label>${team.responderLocationId.org.orgName}</label></li>
 									</c:if>
 									
 									<c:if test="${team.responderLocationId.id == loginOrgLocId}">
-									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" data-val = "${team.id}"  value ="${team.locationId.org.orgName}" ><label>${team.locationId.org.orgName}</label></li>
+									<li class="checkBox positionRelative mb0"><input  type="checkbox" name="clientNameById" data-val = "${team.id}"  value ="${team.locationId.org.orgName}" ><label>${team.locationId.org.orgName}</label></li>
 									</c:if>
 									
 									</c:forEach>
@@ -1697,7 +1697,7 @@ function getActions(){
 									<c:forEach var="city" items="${cityList}">
 									
 <%-- 									<c:if test="${team.city == loginOrgLocId}"> --%>
-									<li class="checkBox positionRelative"><input  type="checkbox" name="cityName" value ="${city}" ><label>${city}</label></li>
+									<li class="checkBox positionRelative mb0"><input  type="checkbox" name="cityName" value ="${city}" ><label>${city}</label></li>
 <%-- 									</c:if> --%>
 									
 <%-- 									<c:if test="${team.responderLocationId.id == loginOrgLocId}"> --%>
@@ -1721,7 +1721,7 @@ function getActions(){
 								<ul class="list-unstyled positionRelative filterSearch mt5" id="myprojectUL">
 									<c:forEach var="project" items="${projectList}">
 									
-									<li class="checkBox positionRelative"><input  type="checkbox" name="projectNameById" value ="${project.id}" ><label>${project.projectId.projectName}</label></li>
+									<li class="checkBox positionRelative mb0"><input  type="checkbox" name="projectNameById" value ="${project.id}" ><label>${project.projectId.projectName}</label></li>
 									
 									<%-- <c:if test="${team.responderLocationId.id == loginOrgLocId}">
 									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${team.locationId.org.orgName}" ><label>${team.locationId.org.orgName}</label></li>
