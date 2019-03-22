@@ -400,6 +400,11 @@ public class UserLoginHelper {
 			SourceLeadSessionManager.setSessionAttribute(req, "paryrollTabCount", paryrollTabCount);
 			SourceLeadSessionManager.setSessionAttribute(req, "actionsList", actionsList);
 			
+			/*List<Long> jobIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(req, "requirementIdsList");
+			if(jobIdList != null) {
+				SourceLeadSessionManager.setSessionAttribute(req, "requirementIdsList", jobIdList);
+				System.out.println("jobIdList>>>>>"+jobIdList.size());
+			}*/
 			
 			
 			if(userSession.get("loginUserAccounts") != null) {

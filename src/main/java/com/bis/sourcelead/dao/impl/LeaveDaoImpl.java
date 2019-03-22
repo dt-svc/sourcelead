@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LeaveDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.DayWiseLeaveReportDTO;
 import com.bis.sourcelead.dto.HrLeaveReportDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
@@ -94,6 +96,9 @@ public class LeaveDaoImpl implements LeaveDao{
 	
 	@Autowired
 	LeaveManagementUtil leaveManagementUtil;
+	
+	@Autowired
+	UserDao userDao;
 	
 	@Override
 	@Transactional
@@ -1362,24 +1367,38 @@ public class LeaveDaoImpl implements LeaveDao{
                 startDateSqlDate = new java.sql.Date(startDate.getTime());
                 endDateSqlDate = new java.sql.Date(endDate.getTime());
             }
+            List<Long> userHierarchyIdList = new LinkedList<>();
+            String userHierarchyIdString = "";
+            if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
+            	userHierarchyIdList = userDao.getUserHierarchyIdList(hrLeaveReportDTO.getLoginUserId());
+            	if(!userHierarchyIdList.contains(hrLeaveReportDTO.getLoginUserId())) {
+            		userHierarchyIdList.add(hrLeaveReportDTO.getLoginUserId());
+            	}
+            	if(userHierarchyIdList != null && !userHierarchyIdList.isEmpty()) {
+            		userHierarchyIdString = StringUtils.join(userHierarchyIdList, ',');
+            	}
+            }
+            if(userHierarchyIdString.isEmpty()) {
+            	userHierarchyIdString = hrLeaveReportDTO.getLoginUserId() + "";
+            }
             if (loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && hrLeaveReportDTO.getStatus() != null
                     && !hrLeaveReportDTO.getStatus().isEmpty()) {
                 query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate)";
             }
             else if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN")
                     && hrLeaveReportDTO.getStatus().isEmpty()) {
-                query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId)and leaveReport.reportingManagerId = :loginUserId and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate)";
+                query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId)and leaveReport.reportingManagerId IN (" + userHierarchyIdString + ") and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate)";
             }
             else if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN")
                     && !hrLeaveReportDTO.getStatus().isEmpty()) {
-                query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId)and leaveReport.reportingManagerId = :loginUserId and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate)";
+                query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId)and leaveReport.reportingManagerId IN (" + userHierarchyIdString + ") and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate)";
             }
             else if (loginUserRole.equalsIgnoreCase("ROLE_ADMIN")
                     && hrLeaveReportDTO.getStatus().isEmpty()) {
                 query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate)";
             }
             else {
-                query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and leaveReport.reportingManagerId = :loginUserId and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate)";
+                query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and leaveReport.reportingManagerId IN (" + userHierarchyIdString + ") and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate)";
             }
             StringBuilder query1 = new StringBuilder();
             if (StringUtils.isNotBlank(hrLeaveReportDTO.getSearchValue())) {
