@@ -18,5 +18,8 @@ public interface UploadFileService {
 
 	public void saveBulkAssociate(UsersImport userImport, OrgLocations orgLocations, User loginUser)throws Exception;
 	
+	public File getAssociateBankDetailsTemplate();
+
 	public void changeDocumentNamesWithWhiteSpacesToUnderScore(String staticPath);
+
 }

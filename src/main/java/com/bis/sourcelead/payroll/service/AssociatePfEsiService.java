@@ -1,5 +1,7 @@
 package com.bis.sourcelead.payroll.service;
 
+import java.util.List;
+
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -13,5 +15,7 @@ public interface AssociatePfEsiService {
 	AssociatePfEsiDetails findAssociatePfEsiByCandidateId(Long candidateId, OrgLocations orgLocation);
 	
 	AssociatePfEsiDetailsDTO getAssociatePfEsiDetailsDTOByCandidateId(Long candidateId, OrgLocations orgLocation);
+	
+	List<AssociatePfEsiDetails> getAllPfEsiDetailsByOrgLocationid(Long id) throws Exception;
 
 }
