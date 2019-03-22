@@ -46,7 +46,7 @@ var uploadflag= true;
 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="/ats/jobsList">Job List</a>
+			<a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="${SourceLeadWeb_atsUrl}/jobsList">Job List</a>
 			&raquo; Import Jobs
 		</div>
 	</section>
@@ -63,7 +63,7 @@ var uploadflag= true;
 					</div>
 					
 						<div class="col-xs-5 col-md-5">
-							<a href="<c:url value='${appPath}/downloadDataImportTemplate'/>"
+							<a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/downloadDataImportTemplate'/>"
 								class="btn btn-success btn-block" title="Download Job Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Job Template
 							</a>
 						</div>
@@ -76,7 +76,7 @@ var uploadflag= true;
 								</div>
 								<div class="btn-group">
 									<input type="reset" class="btn btn-danger" value="Reset"
-										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadJobs'/>'">
+										onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_sourceleadUrl}/uploadJobs'/>'">
 								</div>
 							</div>
 						</div>
