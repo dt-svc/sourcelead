@@ -755,6 +755,25 @@ function PerformanceManagement(){
 	}
   
   
+  this.checkFeedbackCategories = function(){
+	  var feedbackCategories = $("#feedbackCategory").prop('checked');
+	  if(feedbackCategories == true){
+		  document.getElementById("fedbackCategoriesDiv").style.display="";
+		  $('#fedbackCategoriesDiv').find('p.jquery_form_error_message').remove(); 
+	   	  $('#appraisalCategories').attr("data-validation","required"); 
+	   	  $('#appraisalCategories').removeAttr('data-validation-optional');
+	  }else{
+		  document.getElementById("fedbackCategoriesDiv").style.display="none";
+		  $('#fedbackCategoriesDiv').find('p.jquery_form_error_message').remove(); 
+		  $('#appraisalCategories').attr('data-validation-optional',"true");
+	   	  $('#appraisalCategories').removeAttr("data-validation","required"); 
+	   	  $('#appraisalCategories').val('').trigger('chosen:updated');;
+	   	  $("#selectedTemplatesDiv").empty();
+	   	  $('#percentSumDiv').find('p.jquery_form_error_message').remove(); 
+	  }
+  }
+  
+  
   
   this.saveAppraisalCycleDetails = function(){
 	  
@@ -771,10 +790,32 @@ function PerformanceManagement(){
 		   var templates = [];
 			$(".multiTemplates").each(function() {				
 				templates.push({
+					type : "feedbackTemplate",
 					templateId : $(this).data("template_id") ? $(this).data("template_id") : 0,
 					percentage : $("#percent"+$(this).data("template_id")).val()
 				});
 			});
+			
+			var appraisalGoals = $('#appraisalGoals').val();
+			if(appraisalGoals == 'Y'){
+				var goalsWeightage = $('#goalsWeightage').val();
+				templates.push({
+					type : "goalsWeightage",
+					name : "Goals",
+					weightage : goalsWeightage
+				});
+			}
+			
+			var appraisalProjectTasks = $('#appraisalProjectTasks').val();
+			if(appraisalProjectTasks == 'Y'){
+				var projectTasksWeightage = $('#projectTasksWeightage').val();
+				templates.push({
+					type : "projectTasksWeightage",
+					name : "Project Tasks",
+					weightage : projectTasksWeightage
+				});
+			}
+			
 			var con = JSON.stringify(templates);
 			$("#jsonCategoriesString").val(con);
 	        var appraisalFormData = getFormData1("createAppraisal_form");
@@ -843,6 +884,20 @@ function PerformanceManagement(){
 	  $(".multiTemplates").each(function() {	
 		  percentage = Number(percentage)+Number($("#percent"+$(this).data("template_id")).val());
 	  });
+	  
+	  var appraisalGoals = $('#appraisalGoals').val();
+		if(appraisalGoals == 'Y'){
+			var goalsWeightage = $('#goalsWeightage').val();
+			 percentage = Number(percentage)+Number(goalsWeightage);
+			
+		}
+		
+	  var appraisalProjectTasks = $('#appraisalProjectTasks').val();
+		if(appraisalProjectTasks == 'Y'){
+			var projectTasksWeightage = $('#projectTasksWeightage').val();
+			 percentage = Number(percentage)+Number(projectTasksWeightage);
+			
+		}
 	  
 	  if(percentage > 100){
 		    $('#percentSumDiv').find('p.jquery_form_error_message').remove(); 
@@ -922,6 +977,40 @@ function PerformanceManagement(){
 		  $("#descriptionDisplay").val("Y");
 	  }else{
 		  $("#descriptionDisplay").val("N");
+	  }
+  }
+  
+  this.changeAppraisalGoalsStatus = function(){
+	  var isChecked = $("#appraisalGoals").is(":checked");
+	  if(isChecked){
+		  $("#appraisalGoals").val("Y");
+		  $('#goalsWeightage').attr("data-validation","required validate_int"); 
+	   	  $('#goalsWeightage').removeAttr('data-validation-optional');
+	   	  $("#goalsWeightage").removeAttr("disabled");
+	   	
+	  }else{
+		  $("#appraisalGoals").val("N");
+		  $('#goalsWeightageDiv').find('p.jquery_form_error_message').remove(); 
+		  $('#goalsWeightage').removeAttr("data-validation"); 
+	   	  $('#goalsWeightage').attr('data-validation-optional',"true");
+	      $('#goalsWeightage').val('');
+	      $("#goalsWeightage").attr("disabled", "disabled");
+	  }
+  }
+  
+  this.changeAppraisalProjectTasksStatus = function(){
+	  var isChecked = $("#appraisalProjectTasks").is(":checked");
+	  if(isChecked){
+		  $("#appraisalProjectTasks").val("Y");
+		  $('#projectTasksWeightage').attr("data-validation","required validate_int"); 
+	   	  $('#projectTasksWeightage').removeAttr('data-validation-optional');
+	      $("#projectTasksWeightage").removeAttr("disabled");
+	  }else{
+		  $("#appraisalProjectTasks").val("N");
+		  $('#projectTasksWeightageDiv').find('p.jquery_form_error_message').remove(); 
+		  $('#projectTasksWeightage').removeAttr("data-validation"); 
+	   	  $('#projectTasksWeightage').attr('data-validation-optional',"true");
+	   	  $("#projectTasksWeightage").attr("disabled", "disabled");
 	  }
   }
 	
@@ -1026,7 +1115,35 @@ function PerformanceManagement(){
 			        			var data = eval(response.object.jsonCategoriesString);
 				        		 if (data) {
 				        			  $.each( data, function( k, v ) {
-				        				  percentageMap.set(v['templateId'],v['percentage'])
+				        				  
+				        				  if(v['type'] == "feedbackTemplate"){
+				        					  percentageMap.set(v['templateId'],v['percentage'])
+				        					  document.getElementById("feedbackCategory").checked = true; 
+				        					  document.getElementById("fedbackCategoriesDiv").style.display="";
+				        				   	  $('#appraisalCategories').attr("data-validation","required"); 
+				        				   	  $('#appraisalCategories').removeAttr('data-validation-optional');
+				        				   	
+				        				  }
+				        				  
+				        				  if(v['type'] == "goalsWeightage"){
+				        					     $("#appraisalGoals").val("Y");
+							        			  document.getElementById("appraisalGoals").checked = true;
+							        			  $("#appraisalGoals").val("Y");
+							        			  $('#goalsWeightage').attr("data-validation","required validate_int"); 
+							        		   	  $('#goalsWeightage').removeAttr('data-validation-optional');
+							        		   	  $("#goalsWeightage").removeAttr("disabled");
+							        			  $("#goalsWeightage").val(v['weightage']) 
+				        				  }
+				        				  
+				        				  if(v['type'] == "projectTasksWeightage"){
+				        					     $("#appraisalProjectTasks").val("Y");
+							        			 document.getElementById("appraisalProjectTasks").checked = true;
+							        			  $("#appraisalProjectTasks").val("Y");
+							        			  $('#projectTasksWeightage').attr("data-validation","required validate_int"); 
+							        		   	  $('#projectTasksWeightage').removeAttr('data-validation-optional');
+							        		   	  $("#projectTasksWeightage").removeAttr("disabled");
+							        			  $("#projectTasksWeightage").val(v['weightage']) 
+				        				  }
 				        			  });
 				        		 }
 			        		}

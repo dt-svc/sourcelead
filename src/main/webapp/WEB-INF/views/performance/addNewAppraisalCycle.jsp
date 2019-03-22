@@ -184,24 +184,67 @@
 	<div class="clearfix"></div>	
 			
 			
-			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
-	   		  <h2>Weightage</h2>
-				<div class="col-md-6">
-				  <label class="col-md-3">Categories<span class="text-danger paddingLeft">&nbsp;*</span></label>
-				  <div class="col-md-9">
-						<select  multiple class="chosen-select form-control"
-												name="appraisalCategories" data-placeholder="Categories"
-												id="appraisalCategories" field-name="Categories" data-validation="required">
-						</select>
-				  </div>
-				  <input type="hidden" name="jsonCategoriesString" id="jsonCategoriesString"/>
-				</div> 
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
+   		  <h2>Weightage</h2>
 				
-			<div class="clearfix"></div>
+		 <div class="clearfix mb">
+            <div class="col-md-12">
+              <div class="checkbox-new pull-left mt10">
+                <input id="feedbackCategory" class="checkbox-custom" name="feedbackCategory" type="checkbox" onclick="performanceManagement.checkFeedbackCategories();">
+                <label for="feedbackCategory" class="checkbox-custom-label"></label>
+                <span class="ml10 text-muted">Feed back Categories</span>
+              </div>
+            </div>
+          </div>
+				
+		<div class="clearfix mb">		
+		<div class="col-md-6" id="fedbackCategoriesDiv" style="display: none;">
+		  <label class="col-md-3">Categories<span class="text-danger paddingLeft"></span></label>
+		  <div class="col-md-9">
+				<select  multiple class="chosen-select form-control"
+										name="appraisalCategories" data-placeholder="Categories"
+										id="appraisalCategories" field-name="Categories" data-validation-optional="true">
+				</select>
+		  </div>
+		  <input type="hidden" name="jsonCategoriesString" id="jsonCategoriesString"/>
+		<div class="clearfix"></div>
+		</div> 
+		</div>
+		
+		<div class="clearfix mb">
 			<div class="col-md-6">
-			<div class="clearfix" id="selectedTemplatesDiv">
+				<div class="clearfix" id="selectedTemplatesDiv">
+				</div>
 			</div>
-			</div>
+		</div>
+		<div class="clearfix"></div>	
+			
+	  <div class="clearfix mb form-group">
+        <div class="col-md-7">
+          <div class="checkbox-new pull-left mt10">
+            <input id="appraisalGoals" class="checkbox-custom" name="appraisalGoals" type="checkbox" value="N" onclick="performanceManagement.changeAppraisalGoalsStatus();" >
+            <label for="appraisalGoals" class="checkbox-custom-label"></label>
+            <span class="ml10 text-muted">Goals</span>
+          </div>
+        </div>
+        <div class="col-md-5" id="goalsWeightageDiv">
+          <input type="text" class="form-control" name="goalsWeightage"  id="goalsWeightage" field-name="Goals Weightate" onblur="performanceManagement.validatePercentageTotalSumValue();" disabled placeholder="Weightage" data-validation-optional="true">
+        </div>
+      </div>
+      <div class="clearfix"></div>
+      <div class="clearfix mb form-group">
+          <div class="col-md-7">
+            <div class="checkbox-new pull-left mt10">
+              <input id="appraisalProjectTasks" class="checkbox-custom" name="appraisalProjectTasks" type="checkbox" value="N" onclick="performanceManagement.changeAppraisalProjectTasksStatus();">
+              <label for="appraisalProjectTasks" class="checkbox-custom-label"></label>
+              <span class="ml10 text-muted">Project Task</span>
+            </div>
+          </div>
+          <div class="col-md-5" id="projectTasksWeightageDiv">
+            <input type="text" class="form-control" name="projectTasksWeightage"  id="projectTasksWeightage" onblur="performanceManagement.validatePercentageTotalSumValue();" disabled field-name="Project Task Weightate" placeholder="Weightage" data-validation-optional="true">
+          </div>
+        </div>
+		
 			<div class="row mxrateerror" id="percentSumDiv">
 										<input type="hidden" name="percentTotalSum"
 											id="percentTotalSum"/>
