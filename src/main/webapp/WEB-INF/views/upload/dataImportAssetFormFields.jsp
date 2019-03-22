@@ -268,4 +268,14 @@
 	</div>
 </div>
 
-
+<div class="form-group">
+	<label class="col-md-4 text-right mt5">MAC Address</label>
+	<div class="col-md-8 dropdown-select">
+		<select class="chosen-select form-control" name="macAddress" field-name="MAC Address">
+			<option value="">- - - Select - - -</option>
+			<c:forEach var="map" items="${dataWithCellId}">
+				<option value="${map.key}">${map.value}(column-${map.key})</option>
+			</c:forEach>
+		</select>
+	</div>
+</div>
