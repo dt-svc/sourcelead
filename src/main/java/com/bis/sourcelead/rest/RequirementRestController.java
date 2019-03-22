@@ -69,6 +69,7 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.JobShareService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -186,6 +187,9 @@ public class RequirementRestController {
 	 @Autowired
 	 RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
 	 
+	 @Autowired
+	 private OrgLocationService orgLocationService;
+	 
 	@Autowired
 	private PdfUtil pdfUtil;
 	 
@@ -194,9 +198,11 @@ public class RequirementRestController {
 			throws Exception {
 		Response<String> response = new Response<>();
 		try {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-					"orgLocations");
+			Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
+			
+			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			User user = userService.getUserById(userId);
 			if (user != null) {
 				if(Validator.validate(jobFairDTO)) {
 					response = requirementService.saveJobFair(jobFairDTO, user, orgLocation);
@@ -222,8 +228,11 @@ public class RequirementRestController {
 			@RequestParam(defaultValue = "0") int status) {
 		Response<Boolean> response = new Response<>();
 		try {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
+					
+			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			User user = userService.getUserById(userId);
 			if (user != null) {
 				boolean result = requirementService.changeJobFairStatus(jobFairId, status, user, orgLocation);
 				response.setObject(result);
@@ -246,10 +255,13 @@ public class RequirementRestController {
 	public ResponseList<String> getJobFairDatesForCalendar(HttpServletRequest request){
 		ResponseList<String> responseList = new ResponseList<>();
 		try {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			OrgLocations loginOrgLocations = orgLocationService.getOrgLocationById(orgLocId);
+					
+			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			User user = userService.getUserById(userId);
 			String roleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "displayName");
 			if(user !=null) {
-				OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				boolean adminFlag = false;
 				if("Admin".equalsIgnoreCase(roleName)) {
 					adminFlag = true;	
@@ -286,9 +298,12 @@ public class RequirementRestController {
 	public ResponseList<Requirement> getJobFairRequirements(HttpServletRequest request, @RequestParam(defaultValue="") String date) {
 		ResponseList<Requirement> responseList = new ResponseList<>();
 		try {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			OrgLocations loginOrgLocations = orgLocationService.getOrgLocationById(orgLocId);
+					
+			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			User user = userService.getUserById(userId);
 			String roleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "displayName");
-			OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
 				Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(), date);
 				DateFormat week_Day = new SimpleDateFormat ("EEEE");
@@ -335,8 +350,12 @@ public class RequirementRestController {
 			@RequestParam(defaultValue = "0") long jobFairId) {
 		ResponseList<Requirement> responseList = new ResponseList<>();
 		try {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			OrgLocations loginOrgLocations = orgLocationService.getOrgLocationById(orgLocId);
+					
+			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			User user = userService.getUserById(userId);
+			
 			if (user != null) {
 				String roleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "displayName");
 				boolean adminFlag = false;
@@ -399,10 +418,12 @@ public class RequirementRestController {
 		if (Validator.validate(requirementDTO)) {
 			requirementDTO.setStaticPath(staticPath);
 		//	FileUploadUtil.fillUploadedFileInfo(requirementDTO, requirementDTO.getFileInfo());
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			User user = userService.getUserById(userId); 
 			if(user != null) {
 				try {
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
 					requirementDTO.setDateFormat(orgLocation.getDateFormat());
 					Requirement requirement = requirementService.storeRequirement(requirementDTO, orgLocation, user);
 					if (requirementDTO.getSaveType().equalsIgnoreCase("saveType")
@@ -473,8 +494,11 @@ public class RequirementRestController {
 	@RequestMapping(value = "/storeRequirementTemplate", method = RequestMethod.POST)
 	public @ResponseBody String storeRequirementTemplate(RequirementDTO requirementDTO, HttpServletRequest request) throws Exception
 	{
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
+		
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user = userService.getUserById(userId);
 		Requirement requirement = requirementService.storeRequirementTemplate(requirementDTO, orgLocation, user);
 		StringBuilder reqTemplateSuccessMessage = new StringBuilder();
 		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsgTemplate", reqTemplateSuccessMessage.append("Success!! ").append(requirementDTO.getJobTitle()).append(" template  saved").toString());
@@ -523,9 +547,11 @@ public class RequirementRestController {
 			@RequestParam(value = "reason", required = false) String reason, HttpServletRequest request)
 			throws Exception {
 
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
+		
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User loginUser = userService.getUserById(userId);
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		User managerUser=userService.getUserById(requirement.getManagerUserId().getId());
 
@@ -844,8 +870,12 @@ public class RequirementRestController {
 	public @ResponseBody ResponseList<User> getUserList(@RequestParam(value = "teamType", required = false) String teamType,
 			HttpServletRequest request) throws Exception {
 		ResponseList<User> response =  new ResponseList<>();
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
+				
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User loginUser = userService.getUserById(userId);
+		
 	 	if(loginUser != null) {
 			try {
 

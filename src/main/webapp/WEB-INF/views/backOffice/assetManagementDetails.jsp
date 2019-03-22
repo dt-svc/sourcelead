@@ -101,7 +101,7 @@ function assetNotesList(assetUUID){
 	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
-         url: atsUrl+urlForm,        
+         url: sourceleadUrl+urlForm,        
          success :function(data) {
 		var output = "";
 	    if(data != null && data != 'undefined' && data != "" && data != '[]'){
@@ -189,7 +189,7 @@ function assetNotesList(assetUUID){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : atsUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"",
+						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"",
 						success : function(result) {
 							/* closeDocPopup();
 							assetNotesList(assetId); */
@@ -409,7 +409,7 @@ function assetDetails(assetUUID) {
 							result = result + ' <td><div class="tbldata-dotdot" title="'+report.shift.shiftName+'">'+report.shift.shiftName+'</div></td>';
 							result = result + ' <td><div class="tbldata-dotdot" title="'+report.userRole.user.fullName+'">'+report.userRole.user.fullName+'</div></td>';
 							if(report.fileName != null && report.fileName != "" && report.fileName != "undefined"){
-								result = result + ' <td><div class="pull-left"><div class="tbldata-dotdot">'+report.fileName+'</div></div><ul class="ml list-unstyled list-inline pull-left" ><li><a class="fa fa-download paddingRight cursorPointer" href="'+report.fileURL+'"></a><a class="fa fa-eye paddingLeft cursorPointer" onClick="viewFile(\''+report.fileURL+'\',\''+report.fileName+'\',\''+report.fileType+'\');"></a></li></ul></td>';
+								result = result + ' <td><div class="pull-left"><div class="tbldata-dotdot">'+report.fileName+'</div></div><ul class="ml list-unstyled list-inline pull-left" ><li><a download class="fa fa-download paddingRight cursorPointer" href="'+report.fileURL+'"></a><a class="fa fa-eye paddingLeft cursorPointer" onClick="viewFile(\''+report.fileURL+'\',\''+report.fileName+'\',\''+report.fileType+'\');"></a></li></ul></td>';
 							}else{
 								result = result + ' <td><div class="pull-left">--</div></td>';
 							}

@@ -292,4 +292,30 @@ public class UserController {
 			return str == null || "".equals(str.trim());
 		}
 	 
+		@RequestMapping(value = "/addAssociateDeduction")
+		public ModelAndView addAssociateDeduction(HttpServletRequest request,@RequestParam(value = "userCode",required = false) String userCode,@RequestParam(value = "saveType",required = false) String saveType) throws Exception
+		{
+			ModelAndView model = new ModelAndView();
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			User user = userService.getUserByUserCode(userCode);
+			model.addObject("userCode", user.getUserCode());
+			model.addObject("userId", user.getId());
+			model.addObject("saveType", saveType);
+			model.setViewName("users/addAssociateSummaryDeduction");
+			return model;
+		}
+		
+		@RequestMapping(value = "/addAssociateContribution")
+		public ModelAndView addAssociateContribution(HttpServletRequest request,@RequestParam(value = "userCode",required = false) String userCode,@RequestParam(value = "saveType",required = false) String saveType) throws Exception
+		{
+			ModelAndView model = new ModelAndView();
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			User user = userService.getUserByUserCode(userCode);
+			model.addObject("userCode", user.getUserCode());
+			model.addObject("userId", user.getId());
+			model.addObject("saveType", saveType);
+			model.setViewName("users/addAssociateSummaryContribution");
+			return model;
+		}
+	 
 }
