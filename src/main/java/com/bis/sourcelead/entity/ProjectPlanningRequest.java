@@ -20,6 +20,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
@@ -29,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_PLANNING_REQUREST")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "projectPlanningRequest")
 public class ProjectPlanningRequest implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

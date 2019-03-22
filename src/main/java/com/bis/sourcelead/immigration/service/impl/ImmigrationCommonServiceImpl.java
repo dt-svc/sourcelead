@@ -161,6 +161,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${vmsUrl}")
+	private String vmsUrl;
+	
 /*	@Autowired
 	LcaActivityCommonUtil lcaActivityCommonUtil;*/
 
@@ -360,6 +363,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				tasks.setTaskRepeat(templateTasks.getTaskRepeat());
 				tasks.setDescription(templateTasks.getDescription());
 				tasks.setTaskStatus(Constants.TASK_STATUS_OPEN);
+				tasks.setStatus(Constants.RECORD_ACTIVE);
 				Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 				tasks.setCreatedDate(currentDate);
 				tasks.setCreatedBy(user.getUserUUID());
@@ -386,6 +390,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 					tasks.setTaskRepeat(templateTasks.getTaskRepeat());
 					tasks.setDescription(templateTasks.getDescription());
 					tasks.setTaskStatus(Constants.TASK_STATUS_OPEN);
+					tasks.setStatus(Constants.RECORD_ACTIVE);
 					Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 					tasks.setCreatedDate(currentDate);
 					tasks.setCreatedBy(user.getUserUUID());
@@ -1994,8 +1999,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
 		notificationScenario.setBody(notificationBody);
 		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("immigration/viewImmigration?immigrationUUID="+immigration.getImmigrationUuid()+"&candidateUUID="+immigration.getCandidate().getCandidateUUID()+"&immiTemplateUUID="+immigration.getImmigrationTemplateId().getUuid()+"&myImmigrationPage=Y").toString();
-		emailScenerioUtil.sendNotification(actionLink, orgLocations.getOrg().getUser(), immigration.getCandidateUserId(), orgLocations,notificationScenario,new HashMap<String,String>());
+		String actionLink = actionLinkBuilder.append("").append(vmsUrl).append("/").append("immigration/viewImmigration?immigrationUUID="+immigration.getImmigrationUuid()+"&candidateUUID="+immigration.getCandidate().getCandidateUUID()+"&immiTemplateUUID="+immigration.getImmigrationTemplateId().getUuid()+"&myImmigrationPage=Y").toString();
+		emailScenerioUtil.sendNotification(actionLink, user, immigration.getCandidateUserId(), orgLocations,notificationScenario,new HashMap<String,String>());
 
 		// String actionLink="";
 		// emailScenerioUtil.sendNotification(actionLink, user, user, orgLocations,

@@ -103,6 +103,10 @@ public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  
 	private List<CandidateCertificationDTO> candidateCertifications;
 	
 	private List<CandidateMarketPlaceDTO> candidateMarketPlaceDTOs;
+	
+	private String isFavourite;
+	
+	private String isAssociate;
 
 	public Long getId() {
 		return id;
@@ -472,4 +476,19 @@ public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  
 		this.candidateMarketPlaceDTOs = candidateMarketPlaceDTOs;
 	}
 	
+	public String getIsFavourite() {
+		return isFavourite;
+	}
+
+	public void setIsFavourite(String isFavourite) {
+		this.isFavourite = isFavourite;
+	}
+
+	public String getIsAssociate() {
+		return isAssociate;
+	}
+
+	public void setIsAssociate(String isAssociate) {
+		this.isAssociate = isAssociate;
+	}
 }

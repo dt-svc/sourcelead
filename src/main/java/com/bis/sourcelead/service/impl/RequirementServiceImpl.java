@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.mail.internet.InternetAddress;
 
@@ -96,6 +97,8 @@ import com.bis.sourcelead.enums.HIERARCHY_TYPE;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.reportsDTO.ApplicantDeclineDTO;
+import com.bis.sourcelead.reportsDTO.ApplicantsBackoutDTO;
 import com.bis.sourcelead.reportsDTO.JobFilterDTO;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
@@ -1551,7 +1554,7 @@ public class RequirementServiceImpl implements RequirementService {
 				Constants.UPDATED_REQUIREMENT_EMAIL_TO_MANAGER, null);
 		StringBuilder notificationLink = new StringBuilder();
 		String actionLink = "";
-		actionLink = notificationLink.append(sourceleadUrl).append("/")
+		actionLink = notificationLink.append(atsUrl).append("/")
 				.append("requirementSummary?requirementUUID=" + requirement.getRequirementUUID()).toString();
 		emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, loginOrgLocation, notificationScenario,
 				new HashMap<String, String>());
@@ -1915,7 +1918,7 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		if (requirement.getFileName() != null && !requirement.getFileName().isEmpty()) {
 			StringBuilder attachmentBuild = new StringBuilder();
-			globalVarsMap.put("attachment", attachmentBuild.append("<a href='").append(sourceleadUrl).append("/")
+			globalVarsMap.put("attachment", attachmentBuild.append("<a href='").append(atsUrl).append("/")
 					.append("downloadRequirementAttachment?requirementId=").append(requirement.getId())
 					.append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment<br/></div></a>")
 					.toString());
@@ -1946,7 +1949,7 @@ public class RequirementServiceImpl implements RequirementService {
 		notificationScenario.setBody(notificationbody);
 		// construct HTML template using required data
 		StringBuilder actionLinkStringBuilder = new StringBuilder();
-		String actionLink = actionLinkStringBuilder.append(sourceleadUrl).append("/requirementSummary?requirementUUID=")
+		String actionLink = actionLinkStringBuilder.append(atsUrl).append("/requirementSummary?requirementUUID=")
 				.append(requirement.getRequirementUUID()).toString();
 		// String actionLink=
 		// sourceleadUrl"/requirementSummary?requirementUUID="+requirement.getRequirementUUID()+"";
@@ -2064,7 +2067,7 @@ public class RequirementServiceImpl implements RequirementService {
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations,
 				Constants.REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION, new ArrayList<EmailAttachment>());
 		StringBuilder notificationLink = new StringBuilder();
-		String actionLink = notificationLink.append(sourceleadUrl).append("/")
+		String actionLink = notificationLink.append(atsUrl).append("/")
 				.append("requirementSummary?requirementUUID=" + requirement.getRequirementUUID()).toString();
 
 		emailScenerioUtil.sendNotification(actionLink, loginUser, approverUser, orgLocations, notificationScenario,
@@ -2191,7 +2194,7 @@ public class RequirementServiceImpl implements RequirementService {
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations,
 				Constants.APPROVED_EMAIL_NOTIFICATION, new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/")
+		String actionLink = actionLinkBuilder.append("").append(atsUrl).append("/")
 				.append("requirementSummary?requirementUUID=" + requirement.getRequirementUUID()).toString();
 		emailScenerioUtil.sendNotification(actionLink, loginUser, intiatorUser, orgLocations, notificationScenario,
 				new HashMap<String, String>());
@@ -2485,7 +2488,7 @@ public class RequirementServiceImpl implements RequirementService {
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation,
 				Constants.MAILREQUIREMENTTOMANAGER, new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/")
+		String actionLink = actionLinkBuilder.append("").append(atsUrl).append("/")
 				.append("requirementSummary?requirementUUID=" + requirement.getRequirementUUID()).toString();
 		emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, loginOrgLocation, notificationScenario,
 				new HashMap<String, String>());
@@ -2648,7 +2651,7 @@ public class RequirementServiceImpl implements RequirementService {
 				Constants.ASSIGNTEAMMEMBERSFORREQUIREMENT, new ArrayList<EmailAttachment>());
 
 		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/")
+		String actionLink = actionLinkBuilder.append("").append(atsUrl).append("/")
 				.append("requirementSummary?requirementUUID=" + requirement.getRequirementUUID()).toString();
 		emailScenerioUtil.sendNotification(actionLink, loginUser, assUser, orgLocations, notificationScenario,
 				new HashMap<String, String>());
@@ -2756,7 +2759,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 		StringBuilder notificationLink = new StringBuilder();
 		String actionLink = "";
-		actionLink = notificationLink.append(sourceleadUrl).append("/")
+		actionLink = notificationLink.append(atsUrl).append("/")
 				.append("requirementSummary?requirementUUID=" + requirement.getRequirementUUID()).toString();
 
 		emailScenerioUtil.sendNotification(actionLink, loginUser, requirement.getManagerUserId(), loginOrgLocation,
@@ -2861,7 +2864,7 @@ public class RequirementServiceImpl implements RequirementService {
 				Constants.REJECTED_EMAIL_NOTIFICATION, new ArrayList<EmailAttachment>());
 
 		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/")
+		String actionLink = actionLinkBuilder.append("").append(atsUrl).append("/")
 				.append("requirementSummary?requirementUUID=" + requirement.getRequirementUUID()).toString();
 		emailScenerioUtil.sendNotification(actionLink, loginUser, requirement.getManagerUserId(), loginOrgLocation,
 				notificationScenario, new HashMap<String, String>());
@@ -3007,7 +3010,7 @@ public class RequirementServiceImpl implements RequirementService {
 		// emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(),
 		// iAdressArray, new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/")
+		String actionLink = actionLinkBuilder.append("").append(atsUrl).append("/")
 				.append("requirementSummary?requirementUUID=" + requirement.getRequirementUUID()).toString();
 		emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario,
 				new HashMap<String, String>());
@@ -4715,10 +4718,95 @@ public class RequirementServiceImpl implements RequirementService {
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, requirement.getOrgLocationId().getOrg(), requirement.getOrgLocationId(),Constants.CHANGE_JOB_STATUS_EMAIL, new ArrayList<EmailAttachment>());
 
 		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/")
+		String actionLink = actionLinkBuilder.append("").append(atsUrl).append("/")
 				.append("requirementSummary?requirementUUID=" + requirement.getRequirementUUID()).toString();
 		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, toUserOrg.getOrgLocations(), notificationScenario,
 				new HashMap<String, String>());	
+	}
+	
+	@Override
+	public List<Requirement> getAllReleasedJobsForVendorBasedOnOrgRelationId(Long orgLocationId, Long orgRelationId) {
+		try {
+			return requirementDao.getAllReleasedJobsForVendorBasedOnOrgRelationId(orgLocationId, orgRelationId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public List<Requirement> getAllReleasedJobsBasedOnSpocId(long spocId) {
+		try {
+			return requirementDao.getAllReleasedJobsBasedOnSpocId(spocId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public long getQualityCandidatesForVendors(List<Long> requirementIdList, long orgRelationId, long spocId, String status) {
+		try {
+			return requirementDao.getQualityCandidatesForVendors(requirementIdList, orgRelationId, spocId, status);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	@Override
+	public ApplicantDeclineDTO getApplicantDeclineCountsForVendor(List<Long> requirementIdList, long orgRelationId, long spocId) {
+		ApplicantDeclineDTO applicantDeclineDTO = new ApplicantDeclineDTO();
+		try {
+		 	List<RequirementSubmission> requirementSubmissionList = requirementDao.getApplicantDeclineCountsForVendor(requirementIdList, orgRelationId, spocId, "REJECTED");
+		 	if(requirementSubmissionList != null && !requirementSubmissionList.isEmpty()) {
+		 		int wrongSkillsCount = requirementSubmissionList.stream().filter(rs->rs.getRejectedCategoryType() != null && rs.getRejectedCategoryType().equalsIgnoreCase("Wrong Skill Sets")).collect(Collectors.toList()).size();
+		 		int unsubitablePersonalityCount = requirementSubmissionList.stream().filter(rs->rs.getRejectedCategoryType() != null && rs.getRejectedCategoryType().equalsIgnoreCase("Unsuitable Personality")).collect(Collectors.toList()).size();
+		 		int badFitCount = requirementSubmissionList.stream().filter(rs->rs.getRejectedCategoryType() != null && rs.getRejectedCategoryType().equalsIgnoreCase("Bad Fit")).collect(Collectors.toList()).size();
+		 		int salaryCount = requirementSubmissionList.stream().filter(rs->rs.getRejectedCategoryType() != null && rs.getRejectedCategoryType().equalsIgnoreCase("Salary")).collect(Collectors.toList()).size();
+		 		int interviewRejectionCount = requirementSubmissionList.stream().filter(rs->rs.getRejectedCategoryType() != null && rs.getRejectedCategoryType().equalsIgnoreCase("Interview Rejection")).collect(Collectors.toList()).size();
+		 		int otherCount = requirementSubmissionList.stream().filter(rs->rs.getRejectedCategoryType() != null && rs.getRejectedCategoryType().equalsIgnoreCase("Other")).collect(Collectors.toList()).size();
+		 		int totalCount = wrongSkillsCount + unsubitablePersonalityCount + badFitCount + salaryCount + interviewRejectionCount + otherCount;
+		 		
+				applicantDeclineDTO.setSkillsCount(new BigInteger(wrongSkillsCount + ""));
+				applicantDeclineDTO.setUnsuitableCount(new BigInteger(unsubitablePersonalityCount + ""));
+				applicantDeclineDTO.setBadfitCount(new BigInteger(badFitCount + ""));
+				applicantDeclineDTO.setSalaryCount(new BigInteger(salaryCount + ""));
+				applicantDeclineDTO.setInterviewCount(new BigInteger(interviewRejectionCount + ""));
+				applicantDeclineDTO.setOtherCount(new BigInteger(otherCount + ""));
+				applicantDeclineDTO.setTotalCount(new BigInteger(totalCount + ""));
+		 	}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return applicantDeclineDTO;
+	}
+	
+	@Override
+	public ApplicantsBackoutDTO getApplicantBackoutCountsForVendor(List<Long> requirementIdList, long orgRelationId, long spocId) {
+		ApplicantsBackoutDTO applicantBackoutDTO = new ApplicantsBackoutDTO();
+		try {
+		 	List<RequirementSubmission> requirementSubmissionList = requirementDao.getApplicantDeclineCountsForVendor(requirementIdList, orgRelationId, spocId, "BACKOUT");
+		 	if(requirementSubmissionList != null && !requirementSubmissionList.isEmpty()) {
+		 		int currentCompanyCount = requirementSubmissionList.stream().filter(rs->rs.getBackOutCategoryType() != null && rs.getBackOutCategoryType().equalsIgnoreCase("Current Company")).collect(Collectors.toList()).size();
+		 		int compensationCount = requirementSubmissionList.stream().filter(rs->rs.getBackOutCategoryType() != null && rs.getBackOutCategoryType().equalsIgnoreCase("Compensation")).collect(Collectors.toList()).size();
+		 		int betterOfferCount = requirementSubmissionList.stream().filter(rs->rs.getBackOutCategoryType() != null && rs.getBackOutCategoryType().equalsIgnoreCase("Better Offer")).collect(Collectors.toList()).size();
+		 		int coldFeetCount = requirementSubmissionList.stream().filter(rs->rs.getBackOutCategoryType() != null && rs.getBackOutCategoryType().equalsIgnoreCase("Cold Feet")).collect(Collectors.toList()).size();
+		 		int personalCount = requirementSubmissionList.stream().filter(rs->rs.getBackOutCategoryType() != null && rs.getBackOutCategoryType().equalsIgnoreCase("Personal")).collect(Collectors.toList()).size();
+		 		int otherCount = requirementSubmissionList.stream().filter(rs->rs.getBackOutCategoryType() != null && rs.getBackOutCategoryType().equalsIgnoreCase("Other")).collect(Collectors.toList()).size();
+				int totalCount = currentCompanyCount + compensationCount + betterOfferCount + coldFeetCount + personalCount + otherCount;
+		 		applicantBackoutDTO.setCurrentCompany(new BigInteger(currentCompanyCount + ""));
+				applicantBackoutDTO.setCompensation(new BigInteger(compensationCount + ""));
+				applicantBackoutDTO.setBetterOffer(new BigInteger(betterOfferCount + ""));
+				applicantBackoutDTO.setColdFeet(new BigInteger(coldFeetCount + ""));
+				applicantBackoutDTO.setPersonal(new BigInteger(personalCount + ""));
+				applicantBackoutDTO.setOther(new BigInteger(otherCount + ""));
+		 		applicantBackoutDTO.setTotalCount(new BigInteger(totalCount + ""));
+		 	}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return applicantBackoutDTO;
 	}
 	
 }

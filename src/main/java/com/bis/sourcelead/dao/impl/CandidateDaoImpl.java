@@ -1865,7 +1865,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				advSeach.append(" Q1.employementType IN (" + designationTypesStr + ") ");
 				flag = true;
 			} else {
-				advSeach.append(" OR Q1.employementType IN (" + designationTypesStr + ") ");
+				advSeach.append(" AND Q1.employementType IN (" + designationTypesStr + ") ");
 			}
 
 		}
@@ -1877,7 +1877,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				advSeach.append(" Q1.noticePeriod IN (" + noticePeriodStr + ") ");
 				flag = true;
 			} else {
-				advSeach.append(" OR Q1.noticePeriod IN (" + noticePeriodStr + ") ");
+				advSeach.append(" AND Q1.noticePeriod IN (" + noticePeriodStr + ") ");
 			}
 
 		}
@@ -1889,7 +1889,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				advSeach.append(" Q1.orgRelationId IN (" + orgRelationIdStr + ") ");
 				flag = true;
 			} else {
-				advSeach.append(" OR Q1.orgRelationId IN (" + orgRelationIdStr + ") ");
+				advSeach.append(" AND Q1.orgRelationId IN (" + orgRelationIdStr + ") ");
 			}
 
 		}
@@ -1905,7 +1905,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				advSeach.append(" (Q1.updatedDate BETWEEN '" + fromDate + "' AND '" + toDate + "') ");
 				flag = true;
 			} else {
-				advSeach.append(" OR (Q1.updatedDate BETWEEN '" + fromDate + "' AND '" + toDate + "') ");
+				advSeach.append(" AND (Q1.updatedDate BETWEEN '" + fromDate + "' AND '" + toDate + "') ");
 			}
 
 		}
@@ -1917,7 +1917,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				advSeach.append(" Q1.skills IN (" + skillsStr + ") ");
 				flag = true;
 			} else {
-				advSeach.append(" OR Q1.skills IN (" + skillsStr + ") ");
+				advSeach.append(" AND Q1.skills IN (" + skillsStr + ") ");
 			}
 
 		}
@@ -1929,7 +1929,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				advSeach.append(" Q1.city IN (" + citiesStr + ") ");
 				flag = true;
 			} else {
-				advSeach.append(" OR Q1.city IN (" + citiesStr + ") ");
+				advSeach.append(" AND Q1.city IN (" + citiesStr + ") ");
 			}
 
 		}
@@ -2429,13 +2429,91 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, Long orgId,
-			String candidateLocation, String searchValue) {
+			String candidateLocation, String searchValue, CandidateMarketPlaceDTO candidateMarketPlaceDTO,
+			Map<String, Date> dateValue) {
 		Session session = this.sessionFactory.getCurrentSession();
 		StringBuilder query1 = new StringBuilder("");
 		List<CandidateMarketPlace> queryList = null;
+
+		// creating filter queries..
+		StringBuilder statusQuery = new StringBuilder("");
+		StringBuilder dateQuery = new StringBuilder("");
+		StringBuilder employmentTypeQuery = new StringBuilder("");
+		StringBuilder noticePeriodQuery = new StringBuilder("");
+		StringBuilder skillsQuery = new StringBuilder("");
+		List<String> employmentList = new ArrayList<>();
+		List<String> noticePeriodList = new ArrayList<>();
+		List<String> skillsList = new ArrayList<>();
+		StringBuilder typeQuery = new StringBuilder("");
+		StringBuilder candidateTypeQuery = new StringBuilder("");
+		StringBuilder createdByQuery = new StringBuilder("");
+		if (candidateMarketPlaceDTO != null) {
+			if (StringUtils.isNotBlank(candidateMarketPlaceDTO.getEmploymentType())) {
+				String[] emplymentStr = candidateMarketPlaceDTO.getEmploymentType().split(",");
+				for (int i = 0; i < emplymentStr.length; i++) {
+					employmentList.add(emplymentStr[i]);
+				}
+			} 
+			if (StringUtils.isNotBlank(candidateMarketPlaceDTO.getNoticePeriod())) {
+				String[] noticePeriodStr = candidateMarketPlaceDTO.getNoticePeriod().split(",");
+				for (int i = 0; i < noticePeriodStr.length; i++) {
+					noticePeriodList.add(noticePeriodStr[i]);
+				}
+			}
+			if (StringUtils.isNotBlank(candidateMarketPlaceDTO.getSkillsName())) {
+				String[] skillsStr = candidateMarketPlaceDTO.getSkillsName().split(",");
+				for (int i = 0; i < skillsStr.length; i++) {
+					skillsList.add(skillsStr[i]);
+				}
+			}
+			if (candidateMarketPlaceDTO.getStatus() != null
+					&& candidateMarketPlaceDTO.getStatus().equals("" + Constants.CANDIDATE_ACTIVE)) {
+				statusQuery.append(" and (marketplace.candidateId.status = 1) ");
+			}
+			if (candidateMarketPlaceDTO.getStatus() != null
+					&& candidateMarketPlaceDTO.getStatus().equals("" + Constants.CANDIDATE_IN_ACTIVE)) {
+				statusQuery.append(" and (marketplace.candidateId.status = 0) ");
+			}
+			if (candidateMarketPlaceDTO.getStatus() != null
+					&& candidateMarketPlaceDTO.getStatus().equals("" + Constants.CANDIDATE_ALL)) {
+				statusQuery.append(" and ((marketplace.candidateId.status = 0) or (marketplace.candidateId.status = 1)) ");
+			}
+			if (!dateValue.isEmpty()) {
+				dateQuery.append(
+						" and ((marketplace.updatedDate BETWEEN :endDate AND :startDate) OR (marketplace.updatedDate = :endDate) OR (marketplace.updatedDate = :startDate)) ");
+			}
+			if (candidateMarketPlaceDTO != null && !candidateMarketPlaceDTO.getEmploymentType().equals("")) {
+				employmentTypeQuery.append(" and (marketplace.candidateId.designationType IN (:employmentList)) ");
+			}
+			if (candidateMarketPlaceDTO != null && !candidateMarketPlaceDTO.getNoticePeriod().equals("")) {
+				noticePeriodQuery.append(" and (marketplace.candidateId.noticePeriod IN (:noticePeriodList)) ");
+			}
+			if (candidateMarketPlaceDTO != null && !candidateMarketPlaceDTO.getSkillsName().equals("")) {
+				skillsQuery.append(" and (marketplace.candidateId.skillsName IN (:skillsList)) ");
+			}
+			if (candidateMarketPlaceDTO != null
+					&& candidateMarketPlaceDTO.getIsFavourite().equals(Constants.ALL_RECORDS)) {
+				typeQuery.append(" and (marketplace.candidateId.isFavourite = 0) ");
+			}
+			if (candidateMarketPlaceDTO != null
+					&& candidateMarketPlaceDTO.getIsFavourite().equals(Constants.Favourite)) {
+				typeQuery.append(" and (marketplace.candidateId.isFavourite = 1) ");
+			}
+			if (candidateMarketPlaceDTO != null
+					&& candidateMarketPlaceDTO.getIsAssociate().equals(Constants.Candidates)) {
+				candidateTypeQuery.append(" and (marketplace.candidateId.isAssociate = 'N') ");
+			}
+			if (candidateMarketPlaceDTO != null
+					&& candidateMarketPlaceDTO.getIsAssociate().equals(Constants.Associates)) {
+				candidateTypeQuery.append(" and (marketplace.candidateId.isAssociate = 'Y') ");
+			}
+		}
+
 		if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
 			searchValue = searchValue.trim();
-			query1.append(" and ((concat(marketplace.candidateId.firstName,' ',marketplace.candidateId.lastName) like '%" + searchValue + "%' )");
+			query1.append(
+					" and ((concat(marketplace.candidateId.firstName,' ',marketplace.candidateId.lastName) like '%"
+							+ searchValue + "%' )");
 			query1.append(" or (marketplace.candidateId.skillsName like '%" + searchValue + "%' )");
 			query1.append(" or (marketplace.candidateId.currentRate like '%" + searchValue + "%' )");
 			query1.append(" or (marketplace.candidateId.expectedRate like '%" + searchValue + "%' )");
@@ -2457,14 +2535,37 @@ public class CandidateDaoImpl implements CandidateDao {
 		if (searchCandidateIds.length == 0 && orgId != 0 && candidateLocation.equals("") && searchValue.equals("")) {
 			queryList = new ArrayList<>();
 		} else {
-			String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = 'Active' and marketplace.orgLocationId.id <> :candidateOrgLocId and marketplace.candidateId.isSharedInMarketplace = 'Y' and marketplace.candidateId.email not in (select Email from CandidateMarketCart cart where cart.targetOrgLocationId = :candidateOrgLocId and cart.cartStatus = 'Purchased')";
-			//Query queryObject = session.createQuery(listQuery+query1+query2).setParameter("candidateOrgLocId", orgId);
-			//if(searchCandidateIds.length != 0 && !searchCandidateIds[0].equals("undefined") ){
-			Query queryObject = session.createQuery(listQuery + query1 + query2).setParameter("candidateOrgLocId",
-					orgId);
-			
+			String listQuery = "from CandidateMarketPlace marketplace  where  (marketplace.status = 1) and (marketplace.candidateMarketStatus = 'Active') and (marketplace.orgLocationId.id <> :candidateOrgLocId) and (marketplace.candidateId.isSharedInMarketplace = 'Y') ";
+			String emailQuery = "and (marketplace.candidateId.email not in (select Email from CandidateMarketCart cart where cart.targetOrgLocationId = :candidateOrgLocId and cart.cartStatus = 'Purchased'))";	
+			Query queryObject = session.createQuery(listQuery + query1 + query2 + statusQuery + emailQuery
+					 + dateQuery + employmentTypeQuery + noticePeriodQuery + skillsQuery
+					 + typeQuery + candidateTypeQuery ).setParameter("candidateOrgLocId", orgId);
+
 			if (searchCandidateIds.length != 0 && !searchCandidateIds[0].equals("undefined")) {
 				queryObject.setParameterList("searchCandidateIds", searchCandiIdsLong);
+			}
+			if (candidateMarketPlaceDTO != null) {
+				if (!candidateMarketPlaceDTO.getEmploymentType().equals("")) {
+					queryObject.setParameterList("employmentList", employmentList);
+				}
+				if (!candidateMarketPlaceDTO.getNoticePeriod().equals("")) {
+					queryObject.setParameterList("noticePeriodList", noticePeriodList);
+				}
+				if (!candidateMarketPlaceDTO.getSkillsName().equals("")) {
+					queryObject.setParameterList("skillsList", skillsList);
+				}
+				if (!dateValue.isEmpty()) {
+					Iterator it = dateValue.entrySet().iterator();
+					while (it.hasNext()) {
+						Map.Entry pair = (Map.Entry) it.next();
+						if (pair.getKey().equals("fromDate")) {
+							queryObject.setDate("startDate", dateValue.get("fromDate"));
+						}
+						if (pair.getKey().equals("toDate")) {
+							queryObject.setDate("endDate", dateValue.get("toDate"));
+						}
+					}
+				}
 			}
 			queryList = queryObject.list();
 		}

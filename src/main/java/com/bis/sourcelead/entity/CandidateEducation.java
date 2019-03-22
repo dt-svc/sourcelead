@@ -20,6 +20,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -28,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "CANDIDATE_EDUCATION")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateEducation")
 public class CandidateEducation implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
