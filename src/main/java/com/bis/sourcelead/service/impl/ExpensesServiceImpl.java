@@ -1266,8 +1266,8 @@ public class ExpensesServiceImpl implements ExpensesService{
 	
 	@SuppressWarnings("static-access")
 	@Override
-	public List<Expenses> getExpensesByProjectMemberId(Long projectMemberId, String invoiceType) throws Exception {
-		List<Expenses> expensesList = expensesDao.getExpensesByProjectMemberId(projectMemberId,invoiceType);
+	public List<Expenses> getExpensesByProjectMemberId(Long projectMemberId, String invoiceType,Long expenseId) throws Exception {
+		List<Expenses> expensesList = expensesDao.getExpensesByProjectMemberId(projectMemberId,invoiceType,expenseId);
 		expensesList.forEach(expense->{
 			StringBuilder sb = new StringBuilder();
 			String startDate  = conversionUtil.getDateAsString(expense.getStartDate());

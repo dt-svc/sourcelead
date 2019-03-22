@@ -36,7 +36,7 @@ public interface ExpensesService {
 	
 	public List<Expenses>  getTotalMyExpensesListByMasterCandidateIdForEmployeeLogin(Long masterCandidateId, String expenseStatus)throws Exception;
 
-	public List<Expenses> getExpensesByProjectMemberId(Long projectMemberId, String invoiceType)throws Exception;
+	public List<Expenses> getExpensesByProjectMemberId(Long projectMemberId, String invoiceType,Long expenseId)throws Exception;
 
 	public List<ExpensesEntriesDTO> getApprovedExpenses(Long expenseId,Long locationsId)throws Exception;
 	
