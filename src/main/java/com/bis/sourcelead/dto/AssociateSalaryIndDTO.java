@@ -1,6 +1,5 @@
 package com.bis.sourcelead.dto;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import com.bis.sourcelead.annotations.Required;
@@ -49,7 +48,7 @@ public class AssociateSalaryIndDTO extends CommonDTO {
 	private String changeReason;
 	
 	private Long candidateId;
-
+	
 	private String stopSalary;
 	
 	private Integer status;
@@ -65,6 +64,8 @@ public class AssociateSalaryIndDTO extends CommonDTO {
   	private String updatedDate;
     
     private List<AssociateSalaryPayheadIndDTO> associateSalaryPayheadIndList;
+    
+    private Integer recordUpdatedCount;
 
 	public Long getId() {
 		return id;
@@ -226,6 +227,14 @@ public class AssociateSalaryIndDTO extends CommonDTO {
 		this.candidateId = candidateId;
 	}
 	
+	public String getStopSalary() {
+		return stopSalary;
+	}
+
+	public void setStopSalary(String stopSalary) {
+		this.stopSalary = stopSalary;
+	}
+
 	public Integer getStatus() {
 		return status;
 	}
@@ -282,12 +291,12 @@ public class AssociateSalaryIndDTO extends CommonDTO {
 		this.associateSalaryPayheadIndList = associateSalaryPayheadIndList;
 	}
 
-	public String getStopSalary() {
-		return stopSalary;
+	public Integer getRecordUpdatedCount() {
+		return recordUpdatedCount;
 	}
 
-	public void setStopSalary(String stopSalary) {
-		this.stopSalary = stopSalary;
+	public void setRecordUpdatedCount(Integer recordUpdatedCount) {
+		this.recordUpdatedCount = recordUpdatedCount;
 	}
 
 }
