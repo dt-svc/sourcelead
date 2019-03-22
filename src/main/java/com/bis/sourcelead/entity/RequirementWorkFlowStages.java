@@ -15,8 +15,8 @@ import javax.persistence.Table;
 
 	
 	@Entity
-	@Table(name = "REQUIREMENT_WORKFLOW_QUESTIONNAIRE")
-	public class RequirementWorkFlowQuestinnaire implements Serializable{
+	@Table(name = "REQUIREMENT_WORKFLOW_STAGES")
+	public class RequirementWorkFlowStages implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
@@ -29,14 +29,15 @@ import javax.persistence.Table;
 	@JoinColumn(name = "REQUIREMENT_WORKFLOW_ID", nullable = false)
 	private RequirementWorkFlow requirementWorkFlowId;
 	
-	@Column(name = "Name")
-	private String name;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
+	private OrgLocations orgLocationId;
 	
-	@Column(name = "DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
-	private String 	description;
+	@Column(name = "STAGE_NAME")
+	private String stageName;
 	
-	@Column(name = "CREATED_BY_USER_NAME")
-	private String createdByUserName;
+	@Column(name = "UUID ")
+	private String uuid;
 	
 	@Column(name = "STATUS")
 	private Byte status;
@@ -71,28 +72,28 @@ import javax.persistence.Table;
 		this.requirementWorkFlowId = requirementWorkFlowId;
 	}
 
-	public String getName() {
-		return name;
+	public OrgLocations getOrgLocationId() {
+		return orgLocationId;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setOrgLocationId(OrgLocations orgLocationId) {
+		this.orgLocationId = orgLocationId;
 	}
 
-	public String getDescription() {
-		return description;
+	public String getStageName() {
+		return stageName;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setStageName(String stageName) {
+		this.stageName = stageName;
 	}
 
-	public String getCreatedByUserName() {
-		return createdByUserName;
+	public String getUuid() {
+		return uuid;
 	}
 
-	public void setCreatedByUserName(String createdByUserName) {
-		this.createdByUserName = createdByUserName;
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	public Byte getStatus() {

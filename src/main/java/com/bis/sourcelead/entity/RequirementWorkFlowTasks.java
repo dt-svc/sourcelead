@@ -26,8 +26,12 @@ import javax.persistence.Table;
 	private Long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "REQUIREMENT_WORKFLOW_ID", nullable = false)
-	private RequirementWorkFlow requirementWorkFlowId;
+	@JoinColumn(name = "REQUIREMENT_WORKFLOW_SATGE_ID", nullable = false)
+	private RequirementWorkFlowStages requirementWorkFlowStageId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
+	private OrgLocations orgLocationId;
 	
 	@Column(name = "ASSIGN_TO_USER_ID")
 	private Long assignToUserId;
@@ -37,6 +41,15 @@ import javax.persistence.Table;
 	
 	@Column(name = "DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
 	private String 	description;
+	
+	@Column(name = "QUESTIONNAIRE_NAME")
+	private String questionnaireName;
+	
+	@Column(name = "QUESTIONNAIRE_DESC", columnDefinition = "LONGTEXT default NULL")
+	private String 	questionnaireDese;
+	
+	@Column(name = "UUID ")
+	private String uuid;
 	
 	@Column(name = "STATUS")
 	private Byte status;
@@ -63,12 +76,20 @@ import javax.persistence.Table;
 		this.id = id;
 	}
 
-	public RequirementWorkFlow getRequirementWorkFlowId() {
-		return requirementWorkFlowId;
+	public RequirementWorkFlowStages getRequirementWorkFlowStageId() {
+		return requirementWorkFlowStageId;
 	}
 
-	public void setRequirementWorkFlowId(RequirementWorkFlow requirementWorkFlowId) {
-		this.requirementWorkFlowId = requirementWorkFlowId;
+	public void setRequirementWorkFlowStageId(RequirementWorkFlowStages requirementWorkFlowStageId) {
+		this.requirementWorkFlowStageId = requirementWorkFlowStageId;
+	}
+
+	public OrgLocations getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(OrgLocations orgLocationId) {
+		this.orgLocationId = orgLocationId;
 	}
 
 	public Long getAssignToUserId() {
@@ -93,6 +114,30 @@ import javax.persistence.Table;
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getQuestionnaireName() {
+		return questionnaireName;
+	}
+
+	public void setQuestionnaireName(String questionnaireName) {
+		this.questionnaireName = questionnaireName;
+	}
+
+	public String getQuestionnaireDese() {
+		return questionnaireDese;
+	}
+
+	public void setQuestionnaireDese(String questionnaireDese) {
+		this.questionnaireDese = questionnaireDese;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	public Byte getStatus() {

@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,11 +25,21 @@ import javax.persistence.Table;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@Column(name = "STAGE_NAME")
-	private String stageName;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
+	private OrgLocations orgLocationId;
 	
-	@Column(name = "STAGES")
-	private Integer stages;
+	@Column(name = "WORKFLOW_NAME")
+	private String workFlowName;
+	
+	@Column(name = "DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
+	private String description;
+	
+	@Column(name = "NO_OF_STAGES")
+	private Byte noOfStages;
+	
+	@Column(name = "UUID ")
+	private String uuid;
 	
 	@Column(name = "STATUS")
 	private Byte status;
@@ -55,20 +66,44 @@ import javax.persistence.Table;
 		this.id = id;
 	}
 
-	public String getStageName() {
-		return stageName;
+	public OrgLocations getOrgLocationId() {
+		return orgLocationId;
 	}
 
-	public void setStageName(String stageName) {
-		this.stageName = stageName;
+	public void setOrgLocationId(OrgLocations orgLocationId) {
+		this.orgLocationId = orgLocationId;
 	}
 
-	public Integer getStages() {
-		return stages;
+	public String getWorkFlowName() {
+		return workFlowName;
 	}
 
-	public void setStages(Integer stages) {
-		this.stages = stages;
+	public void setWorkFlowName(String workFlowName) {
+		this.workFlowName = workFlowName;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Byte getNoOfStages() {
+		return noOfStages;
+	}
+
+	public void setNoOfStages(Byte noOfStages) {
+		this.noOfStages = noOfStages;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	public Byte getStatus() {
