@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "REQUIREMENT_REFER")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementRefer")
 public class RequirementRefer implements Serializable {
 
 

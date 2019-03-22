@@ -19,6 +19,9 @@ public class CouchbaseConnectionConfig {
 	
 	@Value("${orgLocationsBucket}")
 	private String orgLocationsBucket;
+	
+	@Value("${bulkImportsBucket}")
+	private String bulkImportsBucket;
 
 	@Value("${couchbase.password}")
 	private String password;
@@ -74,6 +77,14 @@ public class CouchbaseConnectionConfig {
 
 	public void setIsCouchbaseEnabled(String isCouchbaseEnabled) {
 		this.isCouchbaseEnabled = isCouchbaseEnabled;
+	}
+
+	public String getBulkImportsBucket() {
+		return bulkImportsBucket;
+	}
+
+	public void setBulkImportsBucket(String bulkImportsBucket) {
+		this.bulkImportsBucket = bulkImportsBucket;
 	}
 
 	

@@ -599,7 +599,8 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	public List<UserRole> getUsersListByUserId(Long userId) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user where userRole.user.id = :userId ";
+		String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user "
+				+ " left join fetch role.roleHierarchy where userRole.user.id = :userId ";
 		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).list();
 		return userRoleList;
 
@@ -1312,12 +1313,11 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			userRoleList = query.setLong("locationId", locationId).setParameterList("roleIds", userRolesList).setLong("varZero", 0).setParameterList("orgRelationsList", orgRelationsList).setString("varString", "").setParameterList("tagsList", tagsList).setParameterList("managerUserIds", managerUserIds).setParameterList("teamsList", teamsList).setParameterList("departmentsList", departmentsList).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
 			
 			
-			String queryCount = "Select count (*) from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1' "+subQuery2+""
+			String queryCount = "Select count (*) from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> '1' "+subQuery2+""
 					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+" "+subQuery3+" "+subQuery4+" "+subQuery5+" "+subQuery6+" "+tagsQuery+" "+employmentTypeQuery+" " ;
 			Query query2 = session.createQuery(queryCount+query1);
 			
-			countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setParameterList("roleIds", userRolesList).setString("varString", "").setParameterList("tagsList", tagsList).setParameterList("orgRelationsList", orgRelationsList).setParameterList("managerUserIds", managerUserIds).setParameterList("teamsList", teamsList).setParameterList("departmentsList", departmentsList).setLong("varZero", 0).list();
-			
+			countlist =query2.setLong("locationId", locationId).setParameterList("roleIds", userRolesList).setString("varString", "").setParameterList("tagsList", tagsList).setParameterList("orgRelationsList", orgRelationsList).setParameterList("managerUserIds", managerUserIds).setParameterList("teamsList", teamsList).setParameterList("departmentsList", departmentsList).setLong("varZero", 0).list();
 			
 
 			  
@@ -1631,6 +1631,19 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("roleId", roleId).list();
 		return userRoleList;
 
+	
+	}
+
+	@Override
+	@Transactional
+	public List<UserRole> getLoginUserLoginAccountsList(Long userId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole left join fetch userRole.user user where user.id = :userId and (userRole.userState = 'ACTIVE' OR userRole.userState = 'NOT_LOGGEDIN') ";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("userId", userId).list();
+		return userRoleList;
+
+	
 	
 	}
 }

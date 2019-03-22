@@ -1010,7 +1010,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				StringBuilder ownerName = new StringBuilder();
 				StringBuilder vendorName = new StringBuilder();
 				List<Long> ownerUserIds = new ArrayList<>();
-				if(null != contracts.getOwnerHierarchyList()){
+				if(null != contracts.getOwnerHierarchyList() && contracts.getOwnerHierarchyList().size() > 0){
 					for(ContractOwnerHierarchy coh : contracts.getOwnerHierarchyList()){
 						ownerUserIds.add(coh.getOwnerUserId().getId());
 						if(null != coh.getOwnerUserId().getFirstName() && null != coh.getOwnerUserId().getLastName()){
@@ -1021,11 +1021,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					}
 					
 				}else{
-					ownerUserIds.add(contracts.getOwnerUserId().getId());
-					if(StringUtils.isNotBlank(contracts.getOwnerUserId().getLastName())){
-						ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
-					}else{
-						ownerName.append(contracts.getOwnerUserId().getFirstName());
+					if(contracts.getOwnerUserId() != null) {
+						ownerUserIds.add(contracts.getOwnerUserId().getId());
+						if(StringUtils.isNotBlank(contracts.getOwnerUserId().getLastName())){
+							ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
+						}else{
+							ownerName.append(contracts.getOwnerUserId().getFirstName());
+						}
 					}
 				}
 				venContractsDto.setOwnerName(ownerName.toString().replaceAll("\\s*,\\s*$", ""));
@@ -1208,7 +1210,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				StringBuilder ownerName = new StringBuilder();
 				StringBuilder vendorName = new StringBuilder();
 				List<Long> ownerUserIds = new ArrayList<>();
-				if(null != contracts.getOwnerHierarchyList()){
+				if(null != contracts.getOwnerHierarchyList() && contracts.getOwnerHierarchyList().size() > 0){
 					for(ContractOwnerHierarchy coh : contracts.getOwnerHierarchyList()){
 						ownerUserIds.add(coh.getOwnerUserId().getId());
 						if(null != coh.getOwnerUserId().getFirstName() && null != coh.getOwnerUserId().getLastName()){
@@ -1220,11 +1222,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					
 
 				}else{
-					ownerUserIds.add(contracts.getOwnerUserId().getId());
-					if(StringUtils.isNotBlank(contracts.getOwnerUserId().getLastName())){
-						ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
-					}else{
-						ownerName.append(contracts.getOwnerUserId().getFirstName());
+					if(contracts.getOwnerUserId() != null) {
+						ownerUserIds.add(contracts.getOwnerUserId().getId());
+						if(StringUtils.isNotBlank(contracts.getOwnerUserId().getLastName())){
+							ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
+						}else{
+							ownerName.append(contracts.getOwnerUserId().getFirstName());
+						}
 					}
 				}
 
@@ -3420,10 +3424,11 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 			 }
 		 
 		 StringBuilder linkBuild = new StringBuilder();
-		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(vmsUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px; float:left;'>Login</div></a>").toString());
+		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px; float:left;'>Login</div></a>").toString());
 		 
 		 StringBuilder signatureBuild = new StringBuilder();
-		 globalVarsMap.put("signatureLink",signatureBuild.append("<a href='").append(sourceleadUrl).append("/").append("ws/docusign?contractUUID=").append(contracts.getContractUUID()).append("&type=public").append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px; float:left;'>Sign Here</div></a>").toString());
+		 Contracts childContract = contractsTemplateDao.getChildContractById(contracts.getId());
+		 globalVarsMap.put("signatureLink",signatureBuild.append("<a href='").append(vmsUrl).append("/").append("ws/docusign?contractUUID=").append(childContract.getContractUUID()).append("&type=public").append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px; float:left;'>Sign Here</div></a>").toString());
 		 
 		 EmailScenario  emailScenario = null;
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
@@ -3455,7 +3460,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 //		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
-	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("contractListbyStatus?"+"contractType="+contracts.getContractType()+"&status=sign").toString();
+	     actionLink = notificationLink.append(vmsUrl).append("/").append("contractListbyStatus?"+"contractType="+contracts.getContractType()+"&status=sign").toString();
 
 //		 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 

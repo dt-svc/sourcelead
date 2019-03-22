@@ -49,7 +49,9 @@ public class ConversionUtil {
 	private static final Logger logger = LoggerFactory.getLogger(ConversionUtil.class);
 	
     //private static final String API_PROVDIER = "http://api.fixer.io/";  this is deprecated from March 6th 2018, 
-    private static final String API_PROVDIER = "http://free.currencyconverterapi.com/api/v5/convert?"; // new Api url added.
+	// new Api url added on 26th Feb 2019 By Ajith (this free apikey limited valid period).
+	// for more info visit https://free.currencyconverterapi.com/
+    private static final String API_PROVDIER = "http://free.currencyconverterapi.com/api/v5/convert?apiKey=8d6c43718e9926de3f24"; 
 	
 	/**
 	 * converting rate into per hour
@@ -99,7 +101,7 @@ public class ConversionUtil {
 			}
 		}
 		return 0;*/
-			String strUrl =API_PROVDIER + "q="+fromCurrencyCode+"_"+toCurrencyCode+"&compact=y";
+			String strUrl =API_PROVDIER + "&q="+fromCurrencyCode+"_"+toCurrencyCode+"&compact=y";
 			URL url;
 			try {
 				url = new URL(strUrl);
@@ -155,7 +157,7 @@ public class ConversionUtil {
 		}
 		return 0;*/
 			
-			String strUrl =API_PROVDIER + "q="+fromCurrencyCode+"_"+toCurrencyCode+"&compact=y";
+			String strUrl =API_PROVDIER + "&q="+fromCurrencyCode+"_"+toCurrencyCode+"&compact=y";
 			URL url;
 			try {
 				url = new URL(strUrl);
@@ -200,7 +202,7 @@ public class ConversionUtil {
 		
 		if ((fromCurrencyCode != null && !fromCurrencyCode.isEmpty()) && (toCurrencyCode != null && !toCurrencyCode.isEmpty())) {
 			
-			String strUrl =API_PROVDIER + "q="+fromCurrencyCode+"_"+toCurrencyCode+"&compact=y";
+			String strUrl =API_PROVDIER + "&q="+fromCurrencyCode+"_"+toCurrencyCode+"&compact=y";
 			URL url;
 			try {
 				url = new URL(strUrl);

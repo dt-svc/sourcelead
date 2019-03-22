@@ -21,6 +21,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
@@ -31,6 +33,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "USER")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "user")
 public class User implements Serializable{
 
 	private static final long serialVersionUID = 1L;

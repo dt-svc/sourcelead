@@ -29,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_CLIENTS")
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "projectClients")
 public class ProjectClients implements Serializable{
 
 	private static final long serialVersionUID = 1L;

@@ -1512,7 +1512,12 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			PayrollCalculatorDTO payrollCalculator = symmetryPayrollCalculator.runUSPayroll(payroll.getCandidate(), totalHours, grossAmount, payroll.getFrequency(), associateTaxDTO,payroll.getPayCheckDate(),ytdTaxes);
 			STEPayrollCalculator STE = payrollCalculator.getsTEPayrollCalculator();
 			String  locationCode = payrollCalculator.getWebServiceLocationCodeV2().getLocationCode();
-			BigDecimal taxes = STE.getFICACalc().add(STE.getMedicareCalc()).add(STE.getFederalCalc()).add(STE.getEICCalc()).asBigDecimal().add(STE.getStateCalc(locationCode).asBigDecimal()).add(STE.getCountyCalc(locationCode).asBigDecimal()).add(STE.getCityCalc(locationCode).asBigDecimal());
+			BigDecimal taxes = STE.getFICACalc().add(STE.getMedicareCalc()).add(STE.getFederalCalc()).add(STE.getEICCalc()).asBigDecimal()
+					.add(STE.getStateCalc(locationCode).asBigDecimal()).add(STE.getCountyCalc(locationCode).asBigDecimal())
+					.add(STE.getCityCalc(locationCode).asBigDecimal()).add(payrollCalculator.getSUI().asBigDecimal())
+                    .add(payrollCalculator.getSDI().asBigDecimal()).add(payrollCalculator.getFLI().asBigDecimal())
+                    .add(payrollCalculator.getHCSF().asBigDecimal()).add(payrollCalculator.getWC().asBigDecimal());;
+			
 			payroll.setTaxes(taxes);
 			BigDecimal totalPay = grossAmount.subtract(taxes);
 			BigDecimal totPay = totalPay.subtract(BigDecimal.valueOf(postTaxDed)).add(BigDecimal.valueOf(postTaxContriSum));
