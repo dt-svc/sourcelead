@@ -1800,7 +1800,6 @@ public class CrowdSourcingRequirementsRestController {
 			String resultJson = null;
 			
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 			
 			List<RequirementRefer> referList = new ArrayList<RequirementRefer>();
 			

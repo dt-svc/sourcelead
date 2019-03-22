@@ -625,7 +625,7 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
 				     result = result + ' <div class="content clearfix">'; 
 				     result = result + submissionDetails;
 				     result = result + ' </div>';
-	       	         result = result +"<h5><a class='btn btn-primary btn-sm' href='/app/dashboard/"+orgLocations+"'> <span title='Back'><i class='fa fa-angle-double-left paddingRight'></i>Back</span> </a> </h5>";
+	       	         result = result +"<h5><a class='btn btn-primary btn-sm' href='${SourceLeadWeb_sourceleadUrl}/dashboard/"+orgLocations+"'> <span title='Back'><i class='fa fa-angle-double-left paddingRight'></i>Back</span> </a> </h5>";
 				     result = result + ' </div>';
 	                 result = result + ' </div>';
                      result = result + ' </div>'; 

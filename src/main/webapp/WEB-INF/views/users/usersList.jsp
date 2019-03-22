@@ -128,7 +128,7 @@ function getUsersSearchResult(searchValue){
 	     </c:if>
       <div class="pull-left"><h2>Associates </h2></div>
       
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Associates List </div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Associates List </div>
     </section>
 
 	<div class="project_wrap">
@@ -332,11 +332,27 @@ function getUsersSearchResult(searchValue){
 		                    <li>
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
-									<span> 
-									<a href="${SourceLeadWeb_atsUrl}/userCreation">Add Associate</a>
-									<a href="${SourceLeadWeb_atsUrl}/addAssociateFromLocations">Add From Loc</a>
+									<span class="ovrShow"> 
+									<a href="<c:url value='${SourceleadWeb_atsUrl}/userCreation'/>">Add Associate</a>
+									<a href="<c:url value='${SourceleadWeb_atsUrl}/addAssociateFromLocations'/>">Add From Loc</a>
 									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
-										<a href="<c:url value='${sourceleadUrl}/uploadForm'/>">Import</a>
+										<%-- <a href="<c:url value='${appPath}/uploadForm'/>">Import</a> --%>
+										<div class="immSub">
+											<a href="#">Import</a>
+											<div class="immSubMenu">
+												<a href="${SourceleadWeb_sourceleadUrl}/uploadForm">Associate Import</a>
+												<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+													<a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateBankForm">Associate Bank Details Import</a>
+												</c:if>
+												
+												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+												    <a href="${SourceleadWeb_atsUrl}/uploadAssociateBankingDetailsForm">Associate Bank Detail</a>
+												    <a href="${SourceleadWeb_atsUrl}/uploadAssociateInformation">Associate Information</a>
+													<a href="${SourceleadWeb_atsUrl}/uploadAssociateSalary">Associate Salary Import</a>
+												</c:if>
+											</div>
+										</div>
+										
 									</sec:authorize>									
 									</span>
 								</div>
@@ -908,7 +924,7 @@ function getUserSummary(userId){
 			       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 			       	    	result = result +"<div class='text-center image-parent'>";
 			       	    	result = result +"<div class='imageParent'>";
-			       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+userRole.user.fileUrl+"' alt='image'>";
+			       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src=\""+userRole.user.fileUrl+"\" alt='image'>";
 			       	    	result = result +"</div>";
 			       	    	
 			       	    	
@@ -1275,7 +1291,7 @@ function dynamicUserListPagination(url){
 		        			   result = result +"<td><div class='proj_show divmax-width dotdotwithImage'>"    
 		        			    result = result +" <a href='<c:url value='/userSummary/"+userRole.userCode+"'/>'' class='UserTextLeft' title = '"+userRole.userName+"'>";
 		        			    if(userRole.fileUrl != null && userRole.fileUrl !="" && userRole.fileUrl != "undefined"){
-				       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs pull-left'  src='"+userRole.fileUrl+"' alt='image'>";
+				       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs pull-left'  src=\""+userRole.fileUrl+"\" alt='image'>";
 		        			    }else{
 					       	    result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs pull-left'  src='/resources/images/userprofileImg.jpg' alt='image'>";
 		        			    }

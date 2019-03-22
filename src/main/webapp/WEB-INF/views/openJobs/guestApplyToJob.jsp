@@ -72,9 +72,10 @@ jQuery(document).ready(function($) {
 	var rate = '${rate}';
 	var noticePeriod = '${noticePeriod}';
 	var visaTypes = '${visaTypes}';
-	var postedOrg='{postedOrg}'
-	if(sourceleadUrl.indexOf("/app")!=-1){
-		sourceleadUrl = sourceleadUrl.split("/app")[0];
+	var postedOrg='{postedOrg}';
+	var atsUrl = '${atsUrl}';
+	if(sourceleadUrl.indexOf("${SourceLeadWeb_sourceleadUrl}")!=-1){
+		sourceleadUrl = sourceleadUrl.split("${SourceLeadWeb_sourceleadUrl}")[0];
 	}
 	getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId); 
 	});
@@ -206,12 +207,14 @@ jQuery(document).ready(function($) {
 
 <script>
 var sourceleadUrl = '${sourceleadUrl}';
-if(sourceleadUrl.indexOf("/app")!=-1){
-	sourceleadUrl = sourceleadUrl.split("/app")[0];
+//var atsUrl ='${SourceLeadWeb_atsUrl}';
+var atsUrl = '${atsUrl}';
+if(sourceleadUrl.indexOf("${SourceLeadWeb_sourceleadUrl}")!=-1){
+	sourceleadUrl = sourceleadUrl.split("${SourceLeadWeb_sourceleadUrl}")[0];
 }
 function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId){
 	var finalDateFormatScript = 'dd-mm-yy'; 
-	 generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript); 
+	 generateOrgSubmissionForm(atsUrl,requirementId,finalDateFormatScript); 
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 		var result = "";
 		result = result + '<form id="guestApplicant_form" name="guestApplicant_form" enctype="multipart/form-data" method="post">';
@@ -367,7 +370,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 	    	var allSkills = $(event.target).val();
 	    	$.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/app/ws/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+		        url: atsUrl+"/ws/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -475,8 +478,8 @@ function uploadAddApplicantCandidateDoc(){
 	 $('#uploadFile').val(this.value.split( '\\' ).pop());
 	 $("#uploadFile").focus();
 	 var sourceleadUrl = '${sourceleadUrl}';
-	 if(sourceleadUrl.indexOf("/app")!=-1){
-	 	sourceleadUrl = sourceleadUrl.split("/app")[0];
+	 if(sourceleadUrl.indexOf("${SourceLeadWeb_sourceleadUrl}")!=-1){
+	 	sourceleadUrl = sourceleadUrl.split("${SourceLeadWeb_sourceleadUrl}")[0];
 	 }
 	 if(validate_fileupload(this.value)){
 		 var docFileSize = $('#uploadFile');
@@ -517,7 +520,7 @@ function uploadAddApplicantCandidateDoc(){
 			        processData: false,
 			        contentType:false,
 		   	        dataType : 'json',
-		   	     url : sourceleadUrl+"/parseResume",
+		   	     url : atsUrl+"/parseResume",
 					success : function(response) {
 						if (response.response === "AWKWARD") {
 						    location.href = "/errorPage";
@@ -591,15 +594,15 @@ function uploadAddApplicantCandidateDoc(){
 	 if(document.getElementById("candidateSubmissionType")){
 		 validation = false;
 	 }
-	 if(sourceleadUrl.indexOf("/app")!=-1){
-			sourceleadUrl = sourceleadUrl.split("/app")[0];
+	 if(sourceleadUrl.indexOf("${SourceLeadWeb_sourceleadUrl}")!=-1){
+			sourceleadUrl = sourceleadUrl.split("${SourceLeadWeb_sourceleadUrl}")[0];
 		}
 	 
 	 if(email != null && email != "" && validation){
 		 $("#save_button").attr("disabled", "disabled");
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateRequirementGuestCandidateEmail?&email="+email+"&requirementId="+requirementId, 
+		        url: atsUrl+"/validateRequirementGuestCandidateEmail?&email="+email+"&requirementId="+requirementId, 
 		        success: function(data) {
 		         	if(data == 'true'){
 			        	  $("#save_button" ).addClass('btn btn-sm btn-primary').val('SUBMIT');
@@ -669,8 +672,8 @@ function validate_fileupload(fileName)
  
 <script>
 function guestCancel(){
-	if(sourceleadUrl.indexOf("/app")!=-1){
-		sourceleadUrl = sourceleadUrl.split("/app")[0];
+	if(sourceleadUrl.indexOf("${SourceLeadWeb_sourceleadUrl}")!=-1){
+		sourceleadUrl = sourceleadUrl.split("${SourceLeadWeb_sourceleadUrl}")[0];
 	}
 	 window.location = sourceleadUrl+"/jobs"
 }
@@ -803,7 +806,7 @@ function addApplicantSubmission(){
 		     processData: false,
 		     contentType:false,
 		     dataType : 'json',
-	    	url : "/saveGuestAddApplicant?&jsonData="+jsonData+"&con="+con,
+	    	url :atsUrl+"/saveGuestAddApplicant?&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
 	        	 window.location = sourceleadUrl+"/jobs"
 	        },
