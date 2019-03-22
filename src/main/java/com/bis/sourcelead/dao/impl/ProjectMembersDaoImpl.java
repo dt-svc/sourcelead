@@ -585,14 +585,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	    	 frequencyQuery = " and pm.projects.invoiceFrequency = :timesheetFrequency ";
 	     }
 	     
-	     String  globalUserQueryForApMechnism = " and "
-	     		+ " ("
-	     		+ "   pah.projectClientsId.orgLocationsId.id = :locationsId OR "
-	     		+ "     ("
-	     		+ "      (pah.projectClientsId.orgLocationsId.id IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = pm.projects.id and subpm.masterCandidateId.id = pm.masterCandidateId.id and subpm.projectMemberCandidteId.designationType = '"+Constants.OFFSHORE_C2C+"' ) "
-	     		+ "       OR :locationsId NOT IN( select subpah.projectClientsId.orgLocationsId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id ) and pah.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId)) "
-	     		+ "   and pah.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId))"
-	     		+ " )";
+	   
 	    		
 	     
 	     if(StringUtils.isEmpty(timesheetFor) || (StringUtils.isNotEmpty(timesheetFor) && !timesheetFor.equalsIgnoreCase("reports"))) {
@@ -610,6 +603,15 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	 								+    "           )"
 	 							    +    "      )";
 	      }
+	     
+	     String  globalUserQueryForApMechnism = " and "
+		     		+ " ("
+		     		+ "   pah.projectClientsId.orgLocationsId.id = :locationsId OR "
+		     		+ "     ("
+		     		+ "      (pah.projectClientsId.orgLocationsId.id IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = pm.projects.id and subpm.masterCandidateId.id = pm.masterCandidateId.id and subpm.projectMemberCandidteId.designationType = '"+Constants.OFFSHORE_C2C+"' ) "
+		     		+ "       OR :locationsId NOT IN( select subpah.projectClientsId.orgLocationsId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id ) and pah.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId)) "
+		     		+ "   and pah.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId))"
+		     		+ " )";
 	     userQuery =  " and ( "
 					+  "        projects.id IN "
 					+ "               ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId  " +globalUserQueryForApMechnism+" and "
