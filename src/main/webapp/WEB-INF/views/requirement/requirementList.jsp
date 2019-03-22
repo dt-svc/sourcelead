@@ -919,7 +919,7 @@ function changeStatus(requirementId, requirementStatus){
 <script>
 
 function exportToPdf(type) {
-	
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	if(type === 1) {
 		var req = $("#noReq").val();
 	 	var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
@@ -954,7 +954,7 @@ function exportToPdf(type) {
 </script>
 <script>
 function exportToExcel(type) {
-	
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	if(type === 1) {
 		var req = $("#noReq").val();
 		var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
