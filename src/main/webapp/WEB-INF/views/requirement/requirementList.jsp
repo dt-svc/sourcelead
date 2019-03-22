@@ -935,8 +935,626 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 		</div>
 	</div>
 </div>
+<<<<<<< HEAD
 </form>
 <!-- advanced search End Block -->
+=======
+</form:form>
+
+<div class="timesheet_out overflow_inherint" id="jobsTabContent">
+		
+<div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon" id="filtersDiv">
+      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="clearList();"></a>
+      		<a href="javascript:void(0)" onclick="columPop();" title="Column Chooser" class="columIcon"></a>
+      		<a href="javascript:void(0)" class="newAdBtn pull-left" title="Advanced Search" onClick="openPop();"> Advanced Search &nbsp; <i class="fa fa-search"></i> </a>
+    
+    
+    
+    <div class="colPop">
+	<div class="colPopMid coldropdown-parent">
+	<div class="clearfix">
+		<div class="row">
+				<div class="col-md-10 mb10 mt5 col-md-offset-2">
+<!-- 				<span class="checkbox-new  pull-left mr">
+					<input id="columnsPickerUnCheckAll" class="checkbox-custom toggle-vis" name="columnsPicker" onclick="checkAllColumns(this);"  type="checkbox">
+					<label for="columnsPickerUnCheckAll" class="checkbox-custom-label">Uncheck All</label>
+				</span> -->
+				<span class="checkbox-new pull-left">
+					<input id="columnsPickerCheckAll" class="checkbox-custom toggle-vis" name="columnsPicker" onclick="checkAllColumns(this);"  type="checkbox">
+					<label for="columnsPickerCheckAll" class="checkbox-custom-label" >Check All</label>
+				</span>
+			</div>
+		</div>
+	<div class="clearfix"></div>
+		<div class="coldropdown-inner">
+		<ul id="jobCustomColumns">
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="a" class="checkbox-custom toggle-vis" name="paidComponent" data-column="2" type="checkbox" checked="" data-name="generatedId">
+					<label for="a" class="checkbox-custom-label" >Generated ID</label>
+				</span>
+			</li>
+			
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="c" class="checkbox-custom toggle-vis" name="paidComponent" data-column="4" type="checkbox" checked="" data-name="process">
+					<label for="c" class="checkbox-custom-label" >Process</label>
+				</span>
+			</li>
+			
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="d" class="checkbox-custom toggle-vis" name="paidComponent" data-column="5" type="checkbox" checked="" data-name="clientName">
+					<label for="d" class="checkbox-custom-label" >Client</label>
+				</span>
+			</li>
+
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="e" class="checkbox-custom toggle-vis" name="paidComponent" data-column="6" type="checkbox" checked="" data-name="payRate">
+					<label for="e" class="checkbox-custom-label" >Pay Rate</label>
+				</span>
+			</li>
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="f" class="checkbox-custom toggle-vis" name="paidComponent" data-column="7" type="checkbox" checked="" data-name="billRate">
+					<label for="f" class="checkbox-custom-label" >Bill Rate</label>
+				</span>
+			</li>
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="g" class="checkbox-custom toggle-vis" name="paidComponent" data-column="8" type="checkbox" checked="" data-name="jobType">
+					<label for="g" class="checkbox-custom-label" >Type</label>
+				</span>
+			</li>
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="h" class="checkbox-custom toggle-vis" name="paidComponent" data-column="9" type="checkbox" checked="" data-name="location">
+					<label for="h" class="checkbox-custom-label" >Location</label>
+				</span>
+			</li>
+			
+							<li>
+				<span class="checkbox-new clearfix">
+					<input id="i" class="checkbox-custom toggle-vis" name="paidComponent" data-column="10" type="checkbox" checked="" data-name="totalApplicants">
+					<label for="i" class="checkbox-custom-label" >Applicants</label>
+				</span>
+			</li>
+				
+							
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="s" class="checkbox-custom toggle-vis" name="paidComponent" data-column="20" type="checkbox" checked="" data-name="owner">
+					<label for="s" class="checkbox-custom-label" >Owner</label>
+				</span>
+			</li>
+			
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="t" class="checkbox-custom toggle-vis"  name="paidComponent" data-column="21" type="checkbox" checked="" data-name="postedOn">
+					<label for="t" class="checkbox-custom-label" >PostedOn</label>
+					</span>
+					</li>
+					
+							<li>
+				<span class="checkbox-new clearfix">
+					<input id="j" class="checkbox-custom toggle-vis" name="paidComponent" data-column="11" type="checkbox" data-name="Shortlisted">
+					<label for="j" class="checkbox-custom-label" >Shortlisted</label>
+				</span>
+			</li>
+			
+										<li>
+				<span class="checkbox-new clearfix">
+					<input id="k" class="checkbox-custom toggle-vis" name="paidComponent" data-column="12" type="checkbox" data-name="submitToClient">
+					<label for="k" class="checkbox-custom-label" >SubmitToClient</label>
+				</span>
+			</li>
+							<li>
+				<span class="checkbox-new clearfix">
+					<input id="l" class="checkbox-custom toggle-vis" name="paidComponent" data-column="13" type="checkbox" data-name="interview">
+					<label for="l" class="checkbox-custom-label" >Interview</label>
+				</span>
+			</li>
+			
+								<li>
+				<span class="checkbox-new clearfix">
+					<input id="m" class="checkbox-custom toggle-vis" name="paidComponent" data-column="14" type="checkbox" data-name="offer">
+					<label for="m" class="checkbox-custom-label" >Offer</label>
+				</span>
+			</li>
+			
+										<li>
+				<span class="checkbox-new clearfix">
+					<input id="n" class="checkbox-custom toggle-vis" name="paidComponent" data-column="15" type="checkbox" data-name="onHold">
+					<label for="n" class="checkbox-custom-label" >OnHold</label>
+				</span>
+			</li>
+			
+							<li>
+				<span class="checkbox-new clearfix">
+					<input id="o" class="checkbox-custom toggle-vis" name="paidComponent" data-column="16" type="checkbox" data-name="noResponse">
+					<label for="o" class="checkbox-custom-label" >NoResponse</label>
+				</span>
+			</li>
+						
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="p" class="checkbox-custom toggle-vis" name="paidComponent" data-column="17" type="checkbox" data-name="joined">
+					<label for="p" class="checkbox-custom-label" >Joined</label>
+				</span>
+			</li>
+			
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="q" class="checkbox-custom toggle-vis" name="paidComponent" data-column="18" type="checkbox" data-name="backOut">
+					<label for="q" class="checkbox-custom-label" >BackOut</label>
+				</span>
+			</li>
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="r" class="checkbox-custom toggle-vis" name="paidComponent" data-column="19" type="checkbox" data-name="rejected">
+					<label for="r" class="checkbox-custom-label" >Rejected</label>
+				</span>
+			</li>
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="u" class="checkbox-custom toggle-vis" name="paidComponent" data-column="22" type="checkbox" data-name="experience">
+					<label for="u" class="checkbox-custom-label" >Experience</label>
+				</span>
+			</li>
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="v" class="checkbox-custom toggle-vis" name="paidComponent" data-column="23" type="checkbox" data-name="noOfPositions">
+					<label for="v" class="checkbox-custom-label" >NoOfPositions</label>
+				</span>
+			</li>
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="w" class="checkbox-custom toggle-vis" name="paidComponent" data-column="24" type="checkbox" data-name="industryName">
+					<label for="w" class="checkbox-custom-label" >IndustryName</label>
+				</span>
+			</li>
+		</div>
+	</div>
+	<div class="colPopFot">
+		<a href="javascript:void(0)" onclick="columHide();">Apply</a>
+		<a href="javascript:void(0)" onclick="columClose();">Cancel</a>
+	</div>
+</div>				
+			</div> 
+    
+      </span>
+      <span class="pull-left refreIcon">
+      		<button type="button" class="btn btn-danger ml pull-left btn-sm" onclick="jobForceDelete();" id="forceDeleteBtn" style="display:none">Delete</button>
+      </span>
+      <ul class="pull-right list-unstyled list-inline">
+      
+					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
+							<div id="filter1ApprovedPop" class="approved_pop">
+								<ul>
+									<c:forEach var="report" items="${add_clientList}">
+										<c:if test="${report.locationId.id == loginOrgLocId}">
+											<li><input id="clientName${report.id}" name="clientNameById" value="${report.id}" onclick="requirementList('list','${SourceLeadWeb_atsUrl}');" type="checkbox"><label
+												title="${report.responderLocationId.org.orgName}">${report.responderLocationId.org.orgName}</label></li>
+											<%-- 			                    	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option> --%>
+										</c:if>
+										<c:if test="${report.responderLocationId.id == loginOrgLocId}">
+											<li><input id="clientName${report.id}" name="clientNameById" value="${report.id}" onclick="requirementList('list','${SourceLeadWeb_atsUrl}');" type="checkbox"><label
+												title="${report.locationId.org.orgName}">${report.locationId.org.orgName}</label></li>
+											<%-- 			                  	 	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option> --%>
+										</c:if>
+									</c:forEach>
+								</ul>
+						 </div>
+					</sec:authorize>  
+					
+					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
+		                    <li>
+								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+								<div class="action-pop">
+									<span> 
+									<a href="${SourceLeadWeb_atsUrl}/requirement">Job</a>
+									<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
+										<a href="${SourceLeadWeb_sourceleadUrl}/uploadJobs">Import</a>
+									</sec:authorize>									
+									</span>
+								</div>
+							</li>						
+						
+					</sec:authorize>	
+									
+				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a></li>
+				
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>	           	   		
+							<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
+							 	<a href="javascript:void(0)" onclick="exportToPdf(1);" title="PDF">Export PDF</a>
+								<a href="javascript:void(0)" onclick="exportToExcel(1);" title="Excel">Export Excel</a>					
+							</sec:authorize>
+						</span>
+					</div>
+				</li>
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dataTableSearch'/><span class="repSearchIcon" onClick="requirementListCheck('','','','${SourceLeadWeb_atsUrl}');"></span></li>
+        </ul>
+      </div>		
+		
+<div class="require_wrap_table datatable_filter">
+	<div id="requirementList"></div>
+</div>
+
+</div>
+	
+	<div class="timesheet_out" id="jobFairTabContent" style="display: none;">
+		<div class="vendor_wrap">
+<div class="positionRelative reportHead clearfix">
+      
+      <ul class="pull-right list-unstyled list-inline">
+					
+					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
+						<li><a href="${SourceLeadWeb_atsUrl}/addJobFair" class="newAdBtn">+ Job Fair</a></li>
+					</sec:authorize>					
+									
+					<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
+						<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+							<div class="newActPop">
+								<span>
+									 	<a href="javascript:void(0)" onclick="exportToPdf(2);" title="PDF">Export PDF</a>
+										<a href="javascript:void(0)" onclick="exportToExcel(2);" title="Excel">Export Excel</a>					
+								</span>
+							</div>
+						</li>
+					</sec:authorize>
+				
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='jobFairDataTableSearch'/><span class="repSearchIcon" onClick="jobFairListCheck();"></span></li>
+        </ul>
+      </div>	
+      	
+			<div class="require_wrap_table datatable_filter">
+				<div id="jobFairList"></div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div class="side_mask">
+  <div class="proj_close" onClick="activeTab();"></div>
+</div>
+	
+	
+</section>
+ <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
+<jsp:include page="addApplicantFromRequirementList.jsp" />
+
+<input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
+
+
+<script>
+function filterPop(){
+	$("#requirementFilterPopup").toggle();
+	$(".sideMask").fadeIn();
+};
+function closeFilter(){
+	$("#requirementFilterPopup").hide();
+	$(".sideMask").fadeOut();
+
+}
+</script>
+<script type="text/javascript">
+
+	function columPop(){
+		$(".colPop").show();
+		$(".colPopFot").show();
+	}
+	function columClose(){
+		$(".colPop").hide();
+	}
+	$("html").click(function(){
+		$(".colPop").hide();
+	});
+	$(".refreIcon, .colPop").click(function(e){
+	 	e.stopPropagation();
+	});		
+		
+	function columHide(){
+		hideColumns=[]; // reset the array object.
+		$(".toggle-vis").each(function() {
+			columClose();// 
+		   var chkdVal= $(this).prop('checked');
+// 		alert("chkdVal "+chkdVal);
+		   var column = table.column($(this).attr('data-column'));
+// 		   alert("column "+column);
+			  if(chkdVal == true){
+// 				  alert("1");
+			         column.visible(true);
+			    }
+			    else{
+// 			    	 alert("2");
+			      column.visible(false);
+			      hideColumns.push($(this).attr('data-column')); // used for hiding the columns when user searched the data.
+			  }
+	    });
+		$(".colPop").hide();
+		
+		reqTable.column(0).visible(false);
+
+	}
+	function checkAllColumns(obj){
+		var id = obj.id;
+		var chkdVal= $('.toggle-vis:input:checkbox').prop('checked');
+		if(chkdVal == true){
+		if(id =='columnsPickerCheckAll'){
+			$('.toggle-vis:input:checkbox').prop('checked',true);
+		}
+		}
+		else{
+			if(id =='columnsPickerCheckAll'){
+				$('.toggle-vis:input:checkbox').prop('checked',false);
+			}
+		} 
+			
+	}
+	</script>
+<!-- 
+
+<script type="text/javascript">
+function changeStatusAuthorisation(requirementId){
+	var status = document.getElementById('changeStatusId' + requirementId).value;
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var userId = '${SourceLeadWeb_userId}';
+	   $.ajax({
+         type : "POST",
+          url: sourceleadUrl+"/changeStatusAuthorisation?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&userId="+userId,        
+          success :function(data) {
+        	  if(data == "true"){
+        		  document.getElementById("changeStatusId" + requirementId).disabled=false;
+        		  
+        	  }else if(data == "false"){
+        		  document.getElementById("changeStatusId" + requirementId).disabled=true;
+        		  
+        	  }
+        	  
+          }
+}); 
+}
+</script>
+ -->
+
+
+<script type="text/javascript">
+function changeStatus(requirementId, requirementStatus){
+	var status = document.getElementById('changeStatusId' + requirementId).value;
+	$("tr").find("td.sorting_1").removeClass("sorting_1");
+	if(status == "FILLEDCLOSED" ||  status == "UNFILLEDCLOSED" || status == "ONHOLD" || status == "OPEN" ){
+		$("#job_"+requirementId).addClass("row-success");
+		location.reload();
+	}else if(status == "CANCEL"){
+		$("#job_"+requirementId).addClass("row-danger");
+		location.reload();
+	}else{
+		$("#job_"+requirementId).addClass("row-warning");
+		location.reload();
+	}
+
+	 var userId ='${SourceLeadWeb_userId}';
+     if(status == "DRAFT"){
+        	 $.ajax({
+             type : "POST",
+        	 url: atsUrl+"/saveChangedStatusFromDraft?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&userId="+userId,
+	        	 success :function(result) {
+	        		 	if (result.response === "SESSION_TIMEDOUT") {
+			  				location.replace(sourceleadUrl);
+		                } else if (result.response === "AWKWARD") {
+		                    location.href = "/errorPage";
+		                } else if (result.response === "SUCCESS") {
+		                	$("#changeStatusId" +requirementId).val(status);
+		  	           	  //location.replace(sourceleadUrl+"/requirementList");	
+		                } else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+		                    showError("Operation failed, please try again");
+		                }
+	         	}
+        	});
+         }else{
+        	 $.ajax({
+             type : "POST",
+        	 url: atsUrl+"/saveChangedStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status,
+	        	 success :function(result) {
+	        		 if (result.response === "SESSION_TIMEDOUT") {
+			  				location.replace(sourceleadUrl);
+		                } else if (result.response === "AWKWARD") {
+		                    location.href = "/errorPage";
+		                } else if (result.response === "SUCCESS") {
+		                	$("#changeStatusId" +requirementId).val(status);
+		   	           	 //location.replace(sourceleadUrl+"/requirementList");
+		                } else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+		                    showError("Operation failed, please try again");
+		                }
+	         	}
+        	});
+         }
+	 /* var statusArray = [];
+	 $("input:checkbox[name=requirementStatus]:checked").each(function () {
+		 statusArray.push($(this).val());
+     });
+	 if(statusArray.indexOf(status) > -1){
+		
+	 }else{
+		 var table = $('#requirementPagination').DataTable();
+		 $('#Row_'+requirementId).remove();
+	 } */
+	 setTM();
+	}
+	function setTM (){
+		  setTimeout(function() { 
+		  $("tr").removeClass("row-info");
+		  $("tr").removeClass("row-success");
+		  $("tr").removeClass("row-warning");
+		  $("tr").removeClass("row-danger");
+		}, 2000);
+	};
+</script>
+<script>
+	$('#mypop').click(function(){
+		$("#exportPop").toggle();
+		$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp();
+ 	});
+	$('#mypopJobFair').click(function(){
+		$("#exportPopJobFair").toggle();
+		$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp();
+ 	});
+	$("html").click(function(){
+		$("#exportPop").hide(200);
+		/* $("#exportPopJobFair").hide(200); */
+	});
+	$("#exportPop, #exportPopJobFair, #mypop").click(function(e) {  
+	    e.stopPropagation();
+	});
+</script>
+<script>
+
+function exportToPdf(type) {
+	
+	if(type === 1) {
+		var req = $("#noReq").val();
+	 	var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
+	  	var status = [];
+		$('input:checkbox[name=requirementStatus]:checked').each(function() {
+			status.push($(this).val());
+	    });
+	 	var clients = [];
+		$('input:checkbox[name=clientNameById]:checked').each(function() {
+			clients.push($(this).attr("data-val"));
+	    });
+		if(requirementEmptyMessage > 0) {
+			window.location.href = atsUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=pdf";
+		} else {
+			var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Jobs List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#empty_requirement_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+		}
+	} else {
+		/* alert("Export JobFair to PDF"); */
+		$(".buttons-pdf").click();
+		window.location.href = atsUrl +"/pdfExportForJobfair?includeInactive=true";
+	}
+}
+</script>
+<script>
+function exportToExcel(type) {
+	
+	if(type === 1) {
+		var req = $("#noReq").val();
+		var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
+	  	var status = [];
+		$('input:checkbox[name=requirementStatus]:checked').each(function() {
+			status.push($(this).val());
+	    });
+	 	var clients = [];
+		$('input:checkbox[name=clientNameById]:checked').each(function() {
+			clients.push($(this).attr("data-val"));
+	    });
+		if(requirementEmptyMessage > 0) {
+			window.location.href = atsUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=xls";	
+		} else {
+			var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Jobs List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#empty_requirement_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+		}
+	} else {
+		/* alert("Export JobFair to Excel"); */
+		window.location.href = atsUrl +"/excelExportForJobfair?includeInactive=true"
+		$(".buttons-excel").click();
+	}
+}
+</script>
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+<script>
+       function msgFadein1() {
+           setTimeout(function(){
+                   $('#selector2').fadeOut('slow'); }, 1000);
+       }
+</script>
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, #exportPop, #exportPopJobFair").slideUp(200);
+	
+	$("html").click(function(){
+		$(".action-pop").slideUp(200);
+	});
+	$(".action, .action-pop").click(function(e){
+	 	e.stopPropagation();
+ 	});	
+}
+</script>
+
+<script>
+	// Close Advanced Search
+		function closePop(){
+			$("div.cand-advsrch-popup").hide();
+			$(".advancedsearch-mask").fadeOut();
+		}
+		function openPop(){
+			 getSourceleadTags();
+			 $("#dataTableSearch").val('');
+			 $("div.cand-advsrch-popup").toggle();
+			 $(".advancedsearch-mask").fadeIn();
+			 $("#requirementFilterPopup").toggle();
+		}
+		function closeAdsrch(){
+			$("div.cand-advsrch-popup").fadeOut();
+			$(".advancedsearch-mask").fadeOut();
+		};
+	</script>
+
+<script>
+  $(function() { 
+	       //Adding Customized Job Title list this method is slead-common.js
+		   tagIt("requirementTitle", 'Press Enter-Key Or Comma(,) Or Tab To Add Title:', 'tagItBykeyForSkills','skills','Job Title');
+	       
+		   //Adding Customized Job Id list this method is slead-common.js
+		   tagIt("jobId", 'Press Enter-Key Or Comma(,) Or Tab To Add Add Requirement ID:', 'tagItBykeyForSkills','skills','Job Id');
+		   
+		 //Adding Customized Job Id list this method is slead-common.js
+		   tagIt("generatedId", 'Press Enter-Key Or Comma(,) Or Tab To Add Add Generated ID:', 'tagItBykeyForSkills','skills','Generated ID');
+		 
+		 //Adding Customized Job Skills list this method is slead-common.js
+		   tagIt("requirementSkills", 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:', 'tagItBykeyForSkills','skills','Skills');
+
 
 <!-- advanced filter code is below -->
 <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="requirementFilterPopup">
