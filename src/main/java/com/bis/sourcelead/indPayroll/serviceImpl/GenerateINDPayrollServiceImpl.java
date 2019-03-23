@@ -296,7 +296,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					Double tdsMonthlyTotal = 0.0;
 					Double tdsExemptionTotal = 0.0;
 					Double tdsEligibilityTotal = 0.0;
-					
+					if(utilDTO.getAssociatePayrollPayheadHistory() != null) {
 					for(AssociatePayrollPayheadHistory ph : utilDTO.getAssociatePayrollPayheadHistory()) {
 						//if L&D in Associate Payroll Payheads
 						if(ph.getPayrollPayhead().getShortCode().equalsIgnoreCase("L&D")) {
@@ -321,9 +321,8 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 							ph.setAnnualy(expenses.multiply(new BigDecimal(12)).setScale(2, BigDecimal.ROUND_HALF_EVEN));
 							isARR = true;
 						}
-						
-						
 					}
+			   }
 					
 					//if L&D not found in Associate Payroll Payheads
 					if(!isLD) {
@@ -339,6 +338,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 						ph.setUpdatedBy(loginUser);
 						ph.setCreatedDate(new Date());
 						ph.setUpdatedDate(new Date());
+						if(utilDTO.getAssociatePayrollPayheadHistory() != null)
 						utilDTO.getAssociatePayrollPayheadHistory().add(ph);
 					}
 					
@@ -356,6 +356,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 						ph.setUpdatedBy(loginUser);
 						ph.setCreatedDate(new Date());
 						ph.setUpdatedDate(new Date());
+						if(utilDTO.getAssociatePayrollPayheadHistory() != null)
 						utilDTO.getAssociatePayrollPayheadHistory().add(ph);
 					}
 					
@@ -373,6 +374,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 						ph.setUpdatedBy(loginUser);
 						ph.setCreatedDate(new Date());
 						ph.setUpdatedDate(new Date());
+						if(utilDTO.getAssociatePayrollPayheadHistory() != null)
 						utilDTO.getAssociatePayrollPayheadHistory().add(ph);
 					}
 					
@@ -476,6 +478,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 						ph.setUpdatedBy(loginUser);
 						ph.setCreatedDate(new Date());
 						ph.setUpdatedDate(new Date());
+						if(utilDTO.getAssociatePayrollPayheadHistory() != null)
 						utilDTO.getAssociatePayrollPayheadHistory().add(ph);
 					}
 					employeePayroll.setNoOfDays(new BigDecimal(applincablePayrollDays));
@@ -485,8 +488,8 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					if(utilDTO != null && utilDTO.getAssociatePayrollPayheadHistory() != null && utilDTO.getAssociatePayrollPayheadHistory().size() > 0) {
 						employeePayroll.setAssociatePayrollPayheadHistory(utilDTO.getAssociatePayrollPayheadHistory().stream().filter(app -> app.getMonthly()!=null && app.getMonthly().compareTo(BigDecimal.ZERO) > 0).collect(Collectors.toSet()));
 					}
-					employeePayroll.setGrossPay(utilDTO.getGrossPay().multiply(payAdjustmentConst).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-					employeePayroll.setNetPay((utilDTO.getNetPay().subtract(new BigDecimal(tdsMonthlyTotal)).subtract(new BigDecimal(loanAdvTotal)).subtract(lopAmount).multiply(payAdjustmentConst).setScale(2, BigDecimal.ROUND_HALF_EVEN)));
+					employeePayroll.setGrossPay(utilDTO.getGrossPay() != null ? utilDTO.getGrossPay().multiply(payAdjustmentConst).setScale(2, BigDecimal.ROUND_HALF_EVEN) : new BigDecimal(0));
+					employeePayroll.setNetPay(((utilDTO.getNetPay() != null ? utilDTO.getNetPay() : new BigDecimal(0)).subtract(new BigDecimal(tdsMonthlyTotal)).subtract(new BigDecimal(loanAdvTotal)).subtract(lopAmount).multiply(payAdjustmentConst).setScale(2, BigDecimal.ROUND_HALF_EVEN)));
 					employeePayroll.setProfessionalTax(utilDTO.getProfessionalTax());
 				    employeePayroll.setTds(new BigDecimal(tdsMonthlyTotal).setScale(2, BigDecimal.ROUND_HALF_EVEN));
 				    employeePayroll.setSubmitForAproverStatus(PayrollConstant.NEW);
