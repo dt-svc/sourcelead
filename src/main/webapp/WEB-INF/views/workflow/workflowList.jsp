@@ -7,8 +7,9 @@
         <h2>Application Workflow</h2>
       </div>
       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
-      <a href="${SourceLeadWeb_sourceleadUrl}/workflowDashboard">WorkFlow DashBoard</a> &raquo;
-      Application Workflow</div>
+      <a href="${SourceLeadWeb_sourceleadUrl}/workflowList">Workflow Dashboard</a> &raquo;
+      Application Workflow
+      </div>
     </section>
     <div class="project_wrap clearfix">
       <div class="timesheet_out" id="payrollRegister" style="display: block;">
@@ -39,7 +40,7 @@
               </thead>
               <tbody>
                 <tr>
-                  <td><div class="tbldata-dotdot-verybig">Default job workflow</div></td>
+                  <td><div class="tbldata-dotdot-verybig"><a href="${SourceLeadWeb_sourceleadUrl}/viewWorkflow" title="view">Default job workflow</a></div></td>
                   <td><div class="tbldata-dotdot-vsm">8</div></td>
                   <td><div class="tbldata-dotdot-vsm">Active</div></td>
                   <td>
@@ -51,7 +52,7 @@
 								<div class="slider round"></div>
 							</label>
                   		</li>
-                  		<li><a href="editworkflow.html"><i class="fa fa-pencil cursorPointer" title="Edit"></i></a></li>
+                  		<li><a href="${SourceLeadWeb_sourceleadUrl}/defaultWorkflow"><i class="fa fa-pencil cursorPointer" title="Edit"></i></a></li>
                   		<li><i class="fa fa-trash cursorPointer" title="Delete"></i></li>
                   		<li><i class="fa fa fa-clone cursorPointer text-primary" title="Clone"></i></li>
                   	</ul>	
@@ -59,7 +60,7 @@
                   </td>
                 </tr>
                  <tr>
-                  <td><div class="tbldata-dotdot-verybig">Executive job workflow</div></td>
+                  <td><div class="tbldata-dotdot-verybig"><a href="${SourceLeadWeb_sourceleadUrl}/viewWorkflow" title="view">Executive job workflow</a></div></td>
                   <td><div class="tbldata-dotdot-vsm">8</div></td>
                   <td><div class="tbldata-dotdot-vsm">In-Active</div></td>
                   <td>
@@ -71,7 +72,7 @@
 								<div class="slider round"></div>
 							</label>
                   		</li>
-                  		<li><a href="editworkflow.html"><i class="fa fa-pencil cursorPointer" title="Edit"></i></a></li>
+                  		<li><a href="${SourceLeadWeb_sourceleadUrl}/defaultWorkflow"><i class="fa fa-pencil cursorPointer" title="Edit"></i></a></li>
                   		<li><i class="fa fa-trash cursorPointer" title="Delete"></i></li>
                   		<li><i class="fa fa fa-clone cursorPointer text-primary" title="Clone"></i></li>
                   	</ul>	
@@ -98,4 +99,4 @@
     </div>
   </section>
 </div>
-<jsp:include page="../masterFooter.jsp" />
+<jsp:include page="../masterFooter.jsp" /> 	

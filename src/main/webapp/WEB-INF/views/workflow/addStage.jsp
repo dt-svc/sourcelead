@@ -1,15 +1,12 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<script src="../js/summernote.min.js"></script>
 <div class="wraper">
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
       <h2>Add Stage</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
-    <a href="${SourceLeadWeb_sourceleadUrl}/defaultWorkflow">Default WorkFlow</a> &raquo;
-    Add Stage</div>
+    <div class="pull-right brud-crum">Home &raquo; Add Stage</div>
   </section>
   <div class="project_wrap clearfix">
     <div class="clearfix mt col-md-6">
@@ -34,13 +31,12 @@
       <h4 class="col-md-9">Assign Taks</h4>
       <div class="col-md-3"> <a href="javascript:void(0)" class="btn btn-primary pull-right btn-sm" onClick="createNewtask();">Create New Taks</a> </div>
     </div>
-    
-    <!-- <div class="clearfix col-md-12 mt">
+    <div class="clearfix col-md-12 mt">
       <table class="table table-striped">
         <thead>
           <tr>
             <th>Title</th>
-            <th>Assign To </th>
+            <th>Assign Top </th>
             <th>Priority </th>
             <th>Description </th>
           </tr>
@@ -61,9 +57,6 @@
         </tbody>
       </table>
     </div>
-     -->
-      <!-- assign tasks starts here -->
-    
 <div id="createNewtask" style="display: none">
 		<div class="clearfix row">
 		  <div class="form-horizontal mt myForm">
@@ -79,7 +72,7 @@
 				<div class="col-md-9">
 				  <select class="sel form-control">
 					<option selected>Select</option>
-					<option >Applicant Owner</option>
+					<option>Applicant Owner</option>
 					<option>Job Owner</option>
 					<option>Primary Recruiter</option>
 				  </select>
@@ -90,7 +83,7 @@
 				<div class="col-md-9">
 				  <select class="sel form-control">
 					<option selected>Select</option>
-					<option>Urgent</option>
+					<option>Urget</option>
 					<option>High</option>
 					<option>Normal</option>
 					<option>Low</option>
@@ -119,9 +112,6 @@
         </div>
       </div>
   </div>
-
-  <!-- assign tasks ends here -->
-
 		<div class="clearfix row">
 		  <div class="form-horizontal mt myForm">
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
@@ -136,7 +126,7 @@
 						<option>Question2</option>
 					  </select>
 					</div>
-					<div class="col-md-1"> <a class="fa fa-plus btn btn-default" href="${SourceLeadWeb_sourceleadUrl}/addQuestionnaire"></a> </div>
+					<div class="col-md-1"> <a class="fa fa-plus btn btn-default" href="addQuestionnaire.html"></a> </div>
 				  </div>
 				</div>
 			  </div>
@@ -155,12 +145,12 @@
 		<div class="clearfix row">
 		  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 			<h4 class="col-md-9">Action Buttons</h4>
-			<div class="col-md-3"> <a href="javascript:void(0)" class="btn btn-primary pull-right btn-sm">Add</a> </div>
 			<div class="clearfix"></div>
 		  </div>
 		  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt myForm">
 			<div class="form-group">
-			  <div class="col-md-12">
+          <label class="col-md-3">Previous Stage</label>
+        <div class="col-md-9">
 				<input type="text" class="form-control">
 			  </div>
 			</div>
@@ -177,12 +167,17 @@
 			  </div>
 			</div>
 		  </div>
-		</div>
+    </div>
+    
+    <div class="clearfix">
+        <h4 class="col-md-2">Email</h4>
+        <div class="col-md-3"> <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="">Add Email</a> </div>
+    </div>
     <div class="footerstyelsNew">
         <div class="clearfix col-md-12 mb">
           <div class="pull-right mr">
             <input value="Save" class="btn btn-primary" type="button">
-            <input value="Cancel" class="btn btn-default ml" type="button" onclick = "cancelAddStage();">
+            <input value="Cancel" class="btn btn-default ml" type="button">
           </div>
         </div>
       </div>
@@ -190,36 +185,8 @@
 </section>
 </div>
 <script>
-function saveWorkflowTask(){
-	$.ajax({
-		type : "POST",
-		url : atsUrl +"",
-		success : function(object) {
-			var result ="";
-			if(object != null && object.length != 0){
-				for(var i = 0; i < object.length; i ++){
-					
-					
-				}
-		}
-		}
-	});
-	
-}
-</script>
-<script>
-function cancelAddStage(){
-	window.location.replace("${SourceLeadWeb_sourceleadUrl}/defaultWorkflow");
-}
-
 function createNewtask() {
 	document.getElementById("createNewtask").style.display = "block";
 }
 </script>
-<script>
-	$(document).ready(function() {
-	  $('#summernote').summernote();
-	});
-</script>
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
-<jsp:include page="../masterFooter.jsp" />
+<jsp:include page="../masterFooter.jsp" /> 
