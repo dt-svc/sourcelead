@@ -244,11 +244,46 @@
             <input type="text" class="form-control" name="projectTasksWeightage"  id="projectTasksWeightage" onblur="performanceManagement.validatePercentageTotalSumValue();" disabled field-name="Project Task Weightate" placeholder="Weightage" data-validation-optional="true">
           </div>
         </div>
+        
+       	<div class="clearfix"></div>
+       	
+   		 <div class="clearfix mb">
+            <div class="col-md-12">
+              <div class="checkbox-new pull-left mt10">
+                <input id="performanceComptencies" class="checkbox-custom" name="performanceComptencies" type="checkbox" onclick="performanceManagement.checkPerformanceComptencies();">
+                <label for="performanceComptencies" class="checkbox-custom-label"></label>
+                <span class="ml10 text-muted">Performance Competencies</span>
+              </div>
+            </div>
+          </div>
+				
+		<div class="clearfix mb">		
+		<div class="col-md-6" id="performanceComptenciesDiv" style="display: none;">
+		  <label class="col-md-3">Competency<span class="text-danger paddingLeft"></span></label>
+		  <div class="col-md-9">
+				<select  multiple class="chosen-select form-control"
+										name="comptencyCategories" data-placeholder="Categories"
+										id="comptencyCategories" field-name="Categories" data-validation-optional="true">
+				</select>
+		  </div>
+		  <input type="hidden" name="jsonComptencyCategoriesString" id="jsonComptencyCategoriesString"/>
+		<div class="clearfix"></div>
+		</div> 
+		</div>
 		
-			<div class="row mxrateerror" id="percentSumDiv">
-										<input type="hidden" name="percentTotalSum"
-											id="percentTotalSum"/>
-									</div>
+		<div class="clearfix mb">
+			<div class="col-md-6">
+				<div class="clearfix" id="selectedComptenciesDiv">
+				</div>
+			</div>
+		</div>
+		<div class="clearfix"></div>	
+		
+		<div class="row mxrateerror" id="percentSumDiv">
+									<input type="hidden" name="percentTotalSum"
+										id="percentTotalSum"/>
+		</div>
+		
 		</div> 
 		  <div class="clearfix"></div>       
 	        <div class="popupFoot text-right">
@@ -275,6 +310,7 @@
     $('#appraisalRoles').chosen();
     $('#appraisalEmpType').chosen();
     $('#appraisalCategories').chosen();
+    $('#comptencyCategories').chosen();
     
     $('.chosen-select').each(function() {
 			var $this = $(this);
