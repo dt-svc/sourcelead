@@ -136,6 +136,10 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 			template.setCategories(performanceAppraisalTemplateDTO.getAppraisalCategories());
 		}
 		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getComptencyCategories())) {
+			template.setCompetencies(performanceAppraisalTemplateDTO.getComptencyCategories());
+		}
+		
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getJsonCategoriesString())) {
 			template.setCategoriesJsonString(performanceAppraisalTemplateDTO.getJsonCategoriesString());
 		}
@@ -205,6 +209,10 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 		   
 		   if(StringUtils.isNotBlank(template.getCategories())) {
 			   templateDTO.setAppraisalCategories(template.getCategories());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getCompetencies())) {
+			   templateDTO.setComptencyCategories(template.getCompetencies());
 		   }
 		   
 		   if(StringUtils.isNotBlank(template.getCategoriesJsonString())) {

@@ -46,10 +46,10 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	
 	private String feedbackCategory;
 	
-	@Required(desc="appraisalCategories", dependsOn = "feedbackCategory", parentValue = "Y")
 	private String appraisalCategories;
 	
-	@Required(desc="jsonCategoriesString",dependsOn = "feedbackCategory", parentValue = "Y")
+	private String comptencyCategories;
+	
 	private String jsonCategoriesString ;
 	
 	private String appraisalGoals;
@@ -248,6 +248,16 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	public void setProjectTasksWeightage(String projectTasksWeightage) {
 		this.projectTasksWeightage = projectTasksWeightage;
 	}
+
+	public String getComptencyCategories() {
+		return comptencyCategories;
+	}
+
+	public void setComptencyCategories(String comptencyCategories) {
+		this.comptencyCategories = comptencyCategories;
+	}
+
+	
 
 	
 }

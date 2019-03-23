@@ -75,6 +75,9 @@ public class PerformanceAppraisalTemplate implements Serializable{
 	@Column(name = "CATEGORIES", columnDefinition = "TEXT default NULL")
 	private String categories;
 	
+	@Column(name = "COMPETENCIES", columnDefinition = "TEXT default NULL")
+	private String competencies;
+	
 	@Column(name = "CATEGORIES_JSON_STRING", columnDefinition = "LONGTEXT default NULL")
 	private String categoriesJsonString ;
 	
@@ -429,8 +432,14 @@ public class PerformanceAppraisalTemplate implements Serializable{
 	public void setProcessPeriodEndDateStr(String processPeriodEndDateStr) {
 		this.processPeriodEndDateStr = processPeriodEndDateStr;
 	}
-	
-	
+
+	public String getCompetencies() {
+		return competencies;
+	}
+
+	public void setCompetencies(String competencies) {
+		this.competencies = competencies;
+	}
 	
 	
 }
