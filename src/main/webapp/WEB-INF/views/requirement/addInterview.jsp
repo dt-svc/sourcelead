@@ -45,7 +45,7 @@ function addInterview(requirementId){
 	var parentRequirement = '${parentRequirement}';
 	var clientSubmissions = '${clientSubmissions}';
 	var result = "";
-	result = result + '<div class="add_inter positionRelative">';
+	result = result + '<div class="add_inter">';
 	result = result + '<div id="interviewLoading"></div>';
 	result = result + '<form id="addInterview_form" name="addInterview_form" style="position:reletive; z-index:100;">';
 	result = result + '<input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';

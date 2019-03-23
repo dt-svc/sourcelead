@@ -113,8 +113,9 @@ public class TicketManagementController {
 			model.addObject("statusList", ticketManagementService.getTicketStatusListByOrgLocationId(orgLocations.getId(), -1, null));
 			model.addObject("ticketSummary", ticketManagementService.getTicketSummaryByUUID(uuid, orgLocations.getId(), orgLocations.getDateFormat(), true));
 			//model.addObject("ticketComment", ticketManagementService.getTicketCommentByTicketId(ticketCommentDTO,ticketId,user.getId(),orgLocations.getId()));
-			model.setViewName("ticketManagement/ticketManagementSummary");
+			model.addObject("loggedInUserId", user.getId());
 			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("ticketManagement/ticketManagementSummary");
 		}
 		return model;
 	}

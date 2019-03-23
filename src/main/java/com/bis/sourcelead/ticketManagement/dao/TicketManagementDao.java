@@ -83,8 +83,12 @@ public interface TicketManagementDao {
 	//public Boolean saveTicketCommentListByTicketId(TicketComment ticketComment);
 
 	public TicketComment getTicketCommentByTicketId(long ticketId);
+	
+	public TicketComment getTicketComment(long ticketCommentId);
 
 	public Boolean saveTicketComment(TicketComment ticketComment);
+
+	public Boolean deleteTicketComment(long ticketCommentId);
 
 	public Ticket getTicketDataById(long ticketId);
 
@@ -117,5 +121,6 @@ public interface TicketManagementDao {
 	public List<Long> getTicketCategoryAssignToIdList(long ticketCategoryId);
 	
 	public void deleteTicketCategoryAssignTo(TicketCategoryAssignTo ticketCategoryAssignTo);
+
 
 }
