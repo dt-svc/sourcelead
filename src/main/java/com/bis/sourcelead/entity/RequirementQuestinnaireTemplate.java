@@ -46,7 +46,7 @@ import javax.persistence.Table;
 	private Integer questionPoints;
 	
 	@Column(name = "NO_OF_ATTEMPT")
-	private Byte noOfAttempt;
+	private Integer noOfAttempt;
 	
 	
 	@Column(name = "TIME_LIMIT_MINUTES ")
@@ -56,7 +56,7 @@ import javax.persistence.Table;
 	private Integer timeLimitSeconds;
 	
 	@Column(name = "STATUS")
-	private Byte status;
+	private Integer status;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -128,11 +128,11 @@ import javax.persistence.Table;
 		this.questionPoints = questionPoints;
 	}
 
-	public Byte getNoOfAttempt() {
+	public Integer getNoOfAttempt() {
 		return noOfAttempt;
 	}
 
-	public void setNoOfAttempt(Byte noOfAttempt) {
+	public void setNoOfAttempt(Integer noOfAttempt) {
 		this.noOfAttempt = noOfAttempt;
 	}
 
@@ -152,11 +152,11 @@ import javax.persistence.Table;
 		this.timeLimitSeconds = timeLimitSeconds;
 	}
 
-	public Byte getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(Byte status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 

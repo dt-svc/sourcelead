@@ -15,6 +15,8 @@ public class RequirementWorkFlowDTO {
 	private String uuid;
 	
 	private String status;
+	
+	private String reqWorkFlowId;
 
 	public long getId() {
 		return id;
@@ -71,5 +73,13 @@ public class RequirementWorkFlowDTO {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-    
+
+	public String getReqWorkFlowId() {
+		return reqWorkFlowId;
+	}
+
+	public void setReqWorkFlowId(String reqWorkFlowId) {
+		this.reqWorkFlowId = reqWorkFlowId;
+	}
+	
 }

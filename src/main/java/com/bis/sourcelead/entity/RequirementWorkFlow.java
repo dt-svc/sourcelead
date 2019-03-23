@@ -36,13 +36,13 @@ import javax.persistence.Table;
 	private String description;
 	
 	@Column(name = "NO_OF_STAGES")
-	private Byte noOfStages;
+	private Integer noOfStages;
 	
 	@Column(name = "UUID ")
 	private String uuid;
 	
 	@Column(name = "STATUS")
-	private Byte status;
+	private Integer status;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -90,11 +90,11 @@ import javax.persistence.Table;
 		this.description = description;
 	}
 
-	public Byte getNoOfStages() {
+	public Integer getNoOfStages() {
 		return noOfStages;
 	}
 
-	public void setNoOfStages(Byte noOfStages) {
+	public void setNoOfStages(Integer noOfStages) {
 		this.noOfStages = noOfStages;
 	}
 
@@ -106,11 +106,11 @@ import javax.persistence.Table;
 		this.uuid = uuid;
 	}
 
-	public Byte getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(Byte status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 
