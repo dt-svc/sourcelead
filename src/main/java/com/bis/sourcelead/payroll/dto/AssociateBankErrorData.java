@@ -2,6 +2,8 @@ package com.bis.sourcelead.payroll.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.IndAssociatePaymentAccountDTO;
+
 public class AssociateBankErrorData {
 	
 	private List<AssociateBankDataDTO> errorData;
@@ -9,6 +11,8 @@ public class AssociateBankErrorData {
 	private int insertedCount;
 	
 	private List<AssociatePfEsiDetailsDTO> pfErrorData;
+	
+	private List<IndAssociatePaymentAccountDTO> bdErrorData;
 
 	public List<AssociateBankDataDTO> getErrorData()
 	{
@@ -36,6 +40,14 @@ public class AssociateBankErrorData {
 
 	public void setPfErrorData(List<AssociatePfEsiDetailsDTO> pfErrorData) {
 		this.pfErrorData = pfErrorData;
+	}
+
+	public List<IndAssociatePaymentAccountDTO> getBdErrorData() {
+		return bdErrorData;
+	}
+
+	public void setBdErrorData(List<IndAssociatePaymentAccountDTO> bdErrorData) {
+		this.bdErrorData = bdErrorData;
 	}
 	
 	
