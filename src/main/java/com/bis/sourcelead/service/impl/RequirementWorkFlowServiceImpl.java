@@ -39,7 +39,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 					requirementWorkFlow = new RequirementWorkFlow();
 				}
 				requirementWorkFlow = saveRequirementWorkFlowDetailsInfo(requirementWorkFlowDTO,user,orgLocations);
-	
+				requirementWorkFlowDao.saveRequirementWorkFlowDetails(requirementWorkFlow, orgLocations);
 			} catch (Exception e) {
 				logger.error("Exception caugth in savePetitionDetails service" + e.getMessage());
 				e.printStackTrace();
@@ -65,13 +65,13 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			}
 		reqWorkFlow.setWorkFlowName(requirementWorkFlowDTO.getWorkFlowName());
 		reqWorkFlow.setDescription(requirementWorkFlowDTO.getDescription());
+		
+		if(requirementWorkFlowDTO.getNoOfStages() != null) {
 		reqWorkFlow.setNoOfStages(Integer.parseInt(requirementWorkFlowDTO.getNoOfStages()));
-		reqWorkFlow.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-		if(requirementWorkFlowDTO.getStatus().equalsIgnoreCase("Active")) {
-			reqWorkFlow.setStatus(Constants.RECORD_ACTIVE);
-		}else {
-			reqWorkFlow.setStatus(Constants.RECORD_INACTIVE);
 		}
+		reqWorkFlow.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		reqWorkFlow.setStatus(Constants.RECORD_ACTIVE);
+		
 		reqWorkFlow.setUpdatedBy(user);
 		reqWorkFlow.setUpdatedDate(currentDate);
 
