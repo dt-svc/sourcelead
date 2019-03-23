@@ -1484,7 +1484,15 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setDesignation(null);
 			}
 			
+		    if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
+			    OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
+				candidate.setWorkLocation(workLocation);
+		    }else {
+		    	candidate.setWorkLocation(orgLocations);
+		    }
+			 
 			if(StringUtils.isNotBlank(candidateDTO.getVendors())){
+				candidateDTO.setWorkLocation(candidate.getWorkLocation());
 				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDTO.getVendors()));
 				candidate.setOrgRelationId(orgRelation);
 				Candidate vendorCandidate =  commonUtil.getVendorCandidateForCandidateCreation(candidateDTO, orgRelation, orgLocations, candidateUser);
@@ -1523,12 +1531,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setMaritalStatus(candidateUser.getMaritalStatus());
 		}
 		
-	    if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
-		    OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
-			candidate.setWorkLocation(workLocation);
-	    }else {
-	    	candidate.setWorkLocation(orgLocations);
-	    }
+	   
 		
 		  
 	    if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
@@ -1765,7 +1768,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							 boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
 							 if(tsflag == false) {
 				    				modules = modules+","+Constants.MODULE_TIMESHEET;
-				    			}
+				    		 }
 							 saveUserRoleActions(vendorOrgLocation);
 							
 							 
@@ -1797,13 +1800,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
     					
 						}
 						
-						Candidate vendorCandidate = null;
-						vendorCandidate = candidateDao.findByCandidateEmail(candidate.getEmail(), orgLocations.getId());
+						Candidate vendorCandidate = candidateDao.findByCandidateEmail(candidate.getEmail(), orgLocations.getId());;
 						if(vendorCandidate == null) {
 							vendorCandidate = new Candidate();
 							MasterCandidate masterCandidate = new MasterCandidate();
 							masterCandidate.setId(candidate.getMasterCandidateId().getId());
-							vendorCandidate.setWorkLocation(orgLocations);
+							vendorCandidate.setWorkLocation(candidate.getWorkLocation());
 							vendorCandidate.setMasterCandidateId(masterCandidate);
 							vendorCandidate.setParentCandidateId(candidate);
 							vendorCandidate.setConsultantUser(candidate.getConsultantUser());
