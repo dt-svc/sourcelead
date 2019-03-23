@@ -66,18 +66,18 @@ function hideandshowHoliday(){
     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/emailreminderConfigurationDashboard'/>"> Email Reminder Configuration</a> &raquo; leave Configuration</div>
   </section>
    
-  <div class="content-area content-new clearfix" style="min-height: 50px;">
+  <div class="project_wrap">
     <div class="col-xs-12 col-sm-6 col-md-6 mt mb">
 			<div class="row">
-				<div class="col-md-3 textBold"> Employee on Leave</div>
-				<div class="col-md-9">
+				<div class="col-md-6 textBold"> Employee on Leave</div>
+				<div class="col-md-6">
 					<div class="checkbox-new">
 						<input id="employeeonLeave" class="checkbox-custom"
 							name="paidComponent" type="checkbox" ${!empty employeeonLeave ? 'checked' : ''} onclick="hideandshow();">
 						<label for="employeeonLeave" class="checkbox-custom-label"></label>
 					</div>
 				</div>
-				<div class="clearfix"></div>
+				<div class="clearfix mb"></div>
 				<c:set var="fIndex" value="0" scope="page" />
 				<div class="clearfix mt" id="employeeonLeaveDiv" ${!empty employeeonLeave ? '' : 'style="display: none;"'}>
 					<form:form id="Leave_Configuration_form" name="Leave_Configuration_form">
@@ -233,15 +233,15 @@ function hideandshowHoliday(){
 
 
 			 <div class="row">
-				<div class="col-md-3 textBold"> Approve Pending Leaves</div>
-				<div class="col-md-9">
+				<div class="col-md-6 textBold"> Approve Pending Leaves</div>
+				<div class="col-md-6">
 					<div class="checkbox-new">
 						<input id="approvePendingLeaves" class="checkbox-custom"
 							name="paidComponent" type="checkbox" ${!empty approvePendingLeaves ? 'checked' : ''} onclick="hideandshowapprovePendingLeaves();">
 						<label for="approvePendingLeaves" class="checkbox-custom-label"></label>
 					</div>
 				</div>
-				<div class="clearfix"></div>
+				<div class="clearfix mb"></div>
 				<c:set var="fIndex" value="0" scope="page" />
 				<div class="clearfix mt" id="approvePendingLeavesDiv" ${!empty approvePendingLeaves ? '' : 'style="display: none;"'}>
 					<form:form id="approve_Pending_Leaves_form" name="approve_Pending_Leaves_form">
@@ -397,15 +397,15 @@ function hideandshowHoliday(){
 			
 			
 			<div class="row">
-				<div class="col-md-3 textBold"> Holiday</div>
-				<div class="col-md-9">
+				<div class="col-md-6 textBold"> Holiday</div>
+				<div class="col-md-6">
 					<div class="checkbox-new">
 						<input id="Holiday" class="checkbox-custom"
 							name="paidComponent" type="checkbox" ${!empty Holiday ? 'checked' : ''} onclick="hideandshowHoliday();">
 						<label for="Holiday" class="checkbox-custom-label"></label>
 					</div>
 				</div>
-				<div class="clearfix"></div>
+				<div class="clearfix mb"></div>
 				<c:set var="fIndex" value="0" scope="page" />
 				<div class="clearfix mt" id="HolidayDiv" ${!empty Holiday ? '' : 'style="display: none;"'}>
 					<form:form id="Holiday_form" name="Holiday_form">
