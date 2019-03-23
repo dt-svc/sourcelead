@@ -500,22 +500,6 @@ public class TimesheetApprovalRestController {
 					 timesheetApprovalDTO.setPageCount(pageCount);
 				 }
 			}
-	        
-	       /* if(projectMembers != null && !projectMembers.getData().isEmpty()){
-	        	if(StringUtils.isNotEmpty(timesheetApprovalDTO.getTimesheetFrequency()) && timesheetApprovalDTO.getTimesheetFrequency().equalsIgnoreCase("Bi-Weekly")){
-		        	for(ProjectMembers pm :projectMembers.getData()){
-		        		 Date biweeklyStrDate = null;
-		        		 biweeklyStrDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndEmployeeStartDate(pm.getProjects(),pm.getProjects().getStartDate());
-		        		 if(CalendarUtil.getNumberOfDays(biweeklyStrDate, actualStartDate)%14==0){
-		        	    	 freshProjectMembers.add(pm);
-		        	     }
-		        	 }
-	        	 }
-	        	 else{
-			        	freshProjectMembers = new HashSet<>(projectMembers.getData());
-			        }
-	         }*/
-			
 	        if(projectMembers.getData() != null && !projectMembers.getData().isEmpty()){
 	        	int tdSpanLength = 6;
 	        	List<TimesheetApprovalSubmissionDetailsDTO> subDetails = new ArrayList<>();
