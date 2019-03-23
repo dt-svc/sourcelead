@@ -23,13 +23,15 @@
         <div class="clearfix"></div>
       </div>
     </div>
+    
+    <form id="requirementWorkFlowForm" name="requirementWorkFlowForm">
 <div class="clearfix backgroundWhite mb">
   <div class="row">
       <div class="clearfix mt col-md-6">
           <div class="form-group clearfix">
             <label class="col-md-3">Name</label>
             <div class="col-md-9">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" id="workFlowName" name="workFlowName">
             </div>
           </div>
         </div>
@@ -37,7 +39,7 @@
           <div class="form-group clearfix">
             <label class="col-md-3">Description</label>
             <div class="col-md-9">
-              <textarea rows="2" class="form-control"></textarea>
+              <textarea rows="2" class="form-control" name="description" id="description" ></textarea>
             </div>
           </div>
         </div>
@@ -152,12 +154,41 @@
 		<div class="footerstyelsNew">
 	<div class="clearfix">
 		<div class="pull-right">
-		<input value="Save" class="btn btn-primary" type="button">
+		 <input type="button" value="Save" id="saveReqWorkFlow" onclick="saveRequirementWorkFlow();" class="btn btn-primary">
 		<input value="Cancel" class="btn btn-default ml" type="button">
 		</div>
 	</div>
 	</div>
+	</form>
     </div>
   </section>
 </div>
+
+<script type="text/javascript">
+function saveRequirementWorkFlow(){
+	alert("AAAA");
+	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+	 alert("sourceleadUrl>>>="+sourceleadUrl);
+      var validationSettings = {
+           errorMessagePosition: 'element',
+           borderColorOnError: '',
+           scrollToTopOnError: true,
+           dateFormat: 'yyyy/mm/dd'
+       };
+      
+	/*  if ($('#requirementWorkFlowForm').validate(false, validationSettings)) { */
+		  var formData = getFormData("requirementWorkFlowForm");
+		 /*  $("#saveReqWorkFlow").attr("disabled", "disabled");
+         $("#saveReqWorkFlow").addClass('button').val('Processing..'); */
+	 $.ajax({
+           type: "POST",
+           data : formData,
+           url:sourceleadUrl+"/saveWorkFlowDetailsPage",
+           success: function (data) {
+           alert("success")
+           },
+       });
+    /*  } */
+}
+</script>
 <jsp:include page="../masterFooter.jsp" /> 	
