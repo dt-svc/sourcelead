@@ -1,6 +1,12 @@
 package com.bis.sourcelead.dao;
 
-public interface RequirementWorkFlowDao {
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementWorkFlow;
 
+public interface RequirementWorkFlowDao {
+	
+	RequirementWorkFlow saveRequirementWorkFlowDetails(RequirementWorkFlow requirementWorkFlow,OrgLocations orgLocations);
+	
+	RequirementWorkFlow  getRequirementWorkFlowById(Long id);
 
 }

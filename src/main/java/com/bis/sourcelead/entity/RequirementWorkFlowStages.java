@@ -40,7 +40,7 @@ import javax.persistence.Table;
 	private String uuid;
 	
 	@Column(name = "STATUS")
-	private Byte status;
+	private Integer status;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -96,11 +96,11 @@ import javax.persistence.Table;
 		this.uuid = uuid;
 	}
 
-	public Byte getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(Byte status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 
