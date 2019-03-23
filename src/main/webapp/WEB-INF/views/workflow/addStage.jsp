@@ -6,7 +6,9 @@
     <div class="pull-left">
       <h2>Add Stage</h2>
     </div>
-    <div class="pull-right brud-crum">Home &raquo; Add Stage</div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+    <a href="${SourceLeadWeb_sourceleadUrl}/workflowList">Application Workflow</a> &raquo;
+    Add Stage</div>
   </section>
   <div class="project_wrap clearfix">
     <div class="clearfix mt col-md-6">
@@ -126,7 +128,7 @@
 						<option>Question2</option>
 					  </select>
 					</div>
-					<div class="col-md-1"> <a class="fa fa-plus btn btn-default" href="addQuestionnaire.html"></a> </div>
+					<div class="col-md-1"> <a class="fa fa-plus btn btn-default" href="${SourceLeadWeb_sourceleadUrl}/addQuestionnaire"></a> </div>
 				  </div>
 				</div>
 			  </div>

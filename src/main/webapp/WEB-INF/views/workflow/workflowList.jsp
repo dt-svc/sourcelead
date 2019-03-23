@@ -7,7 +7,7 @@
         <h2>Application Workflow</h2>
       </div>
       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
-      <a href="${SourceLeadWeb_sourceleadUrl}/workflowList">Workflow Dashboard</a> &raquo;
+      <a href="${SourceLeadWeb_sourceleadUrl}/workflowDashboard">Workflow Dashboard</a> &raquo;
       Application Workflow
       </div>
     </section>
