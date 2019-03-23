@@ -1,4 +1,4 @@
-package com.bis.sourcelead.rest;
+package com.bis.sourcelead.web;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -30,6 +30,14 @@ public class RequirementWorkflowController {
 		modelandview.setViewName("workflow/workflowList");
 		return modelandview;
 	}
+	
+	@RequestMapping(value = "/viewWorkflow")
+	public ModelAndView viewWorkflow(HttpServletRequest request) throws Exception{
+		ModelAndView modelandview = new ModelAndView();
+		modelandview.setViewName("workflow/viewWorkflow");
+		return modelandview;
+	}
+	
 	
 	@RequestMapping(value = "/addStage")
 	public ModelAndView addStage(HttpServletRequest request) throws Exception{
