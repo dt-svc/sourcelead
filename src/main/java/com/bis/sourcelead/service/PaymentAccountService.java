@@ -19,7 +19,5 @@ public interface PaymentAccountService {
 	PaymentAccount getPaymentAccountById(Long id) throws Exception;
 	
 	PaymentAccount getPaymentAccountDetailsByCandidateId(Long candidateId) throws Exception;
-	
-	AssociateBankErrorData saveImportBankDetails(MultipartFile multipartFile, OrgLocations orgLocation) throws Exception;
-	
+
 }
