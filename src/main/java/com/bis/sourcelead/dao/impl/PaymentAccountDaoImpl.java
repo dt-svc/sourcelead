@@ -128,7 +128,7 @@ public class PaymentAccountDaoImpl implements PaymentAccountDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public int saveBankingDetailInPaymentAccount(Long orgLocationId, List<IndAssociatePaymentAccountDTO> list,	Map<String, Long> map) throws Exception {
+	public int saveBankingDetailInPaymentAccount(Long orgLocationId, List<IndAssociatePaymentAccountDTO> list,	Map<String, Long> canMap) throws Exception {
 		List<Integer> listCount = new ArrayList<>();
 		int totalCount = 0;
 		try {
@@ -140,7 +140,7 @@ public class PaymentAccountDaoImpl implements PaymentAccountDao{
 					connection.setAutoCommit(false);
 					CallableStatement stmt = connection.prepareCall("{call insertAssociateBankingDetails(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 					for (IndAssociatePaymentAccountDTO paymentlist : list) {	
-						Long candidateId = map.get(paymentlist.getEmail());
+						Long candidateId = canMap.get(paymentlist.getEmail());
 						if(candidateId !=null) {
 							stmt.setLong(1, candidateId);
 							stmt.setString(2,   paymentlist.getEmail());

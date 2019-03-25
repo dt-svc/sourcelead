@@ -233,6 +233,8 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 		for(Candidate c : candidateList) {
 			canMap.put(c.getEmail().toLowerCase(), c.getId());}
 		
+		
+		
 		Map<String,  List<String>> accGroupByEmailList = new HashMap<String, List<String>>();
 		canMap.forEach((k, v) -> {
 			   accGroupByEmailList.put(k, paymentDetailsList.stream().filter(t -> t.getEmail().equals(k)).map(PaymentAccount::getAccountNumber).collect(Collectors.toList()));  });
@@ -376,12 +378,14 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 				
 				if(accGroupByEmailList != null ) {
 					if("Savings".equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName))) {
-					List<String> accountNum =accGroupByEmailList.get(getCellValueAsString(row.getCell(1),fileName));				
-					 boolean acc = accountNum.contains(getCellValueAsString(row.getCell(4),fileName));
-					 if(acc) {
-						 bankDataDTO.setReason("account already existed with this email");
-							return false;
-					 }
+					List<String> accountNum =accGroupByEmailList.get(getCellValueAsString(row.getCell(1),fileName));	
+					if(accountNum != null && accountNum.size() > 0) {
+						 boolean acc = accountNum.contains(getCellValueAsString(row.getCell(4),fileName));
+						 if(acc) {
+							 bankDataDTO.setReason("account already existed with this email");
+								return false;
+						 }
+					}
 					}else {
 							Boolean flag = false;        
 					    for (PaymentAccount  pList:  paymentDetailsList){ 			
