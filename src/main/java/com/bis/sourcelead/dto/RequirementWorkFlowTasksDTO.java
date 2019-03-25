@@ -20,7 +20,7 @@ public class RequirementWorkFlowTasksDTO {
 	
 	private String uuid;
 	
-	private String status;
+	private Integer status;
 
 	public long getId() {
 		return id;
@@ -94,12 +94,13 @@ public class RequirementWorkFlowTasksDTO {
 		this.uuid = uuid;
 	}
 
-	public String getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
+
 
 }

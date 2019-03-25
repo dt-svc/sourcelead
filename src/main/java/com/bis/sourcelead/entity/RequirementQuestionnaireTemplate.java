@@ -16,7 +16,7 @@ import javax.persistence.Table;
 	
 	@Entity
 	@Table(name = "REQUIREMENT_QUESTIONNAIRE_TEMPLATE")
-	public class RequirementQuestinnaireTemplate implements Serializable{
+	public class RequirementQuestionnaireTemplate implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
@@ -26,8 +26,8 @@ import javax.persistence.Table;
 	private Long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "REQUIREMENT_WORKFLOW_TASKS_ID", nullable = false)
-	private RequirementWorkFlowTasks requirementWorkFlowTaskId;
+	@JoinColumn(name = "REQUIREMENT_QUESTIONNAIRE_ID", nullable = false)
+	private RequirementQuestionnaire requirementQuestionnaireId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
@@ -80,12 +80,12 @@ import javax.persistence.Table;
 		this.id = id;
 	}
 
-	public RequirementWorkFlowTasks getRequirementWorkFlowTaskId() {
-		return requirementWorkFlowTaskId;
+	public RequirementQuestionnaire getRequirementQuestionnaireId() {
+		return requirementQuestionnaireId;
 	}
 
-	public void setRequirementWorkFlowTaskId(RequirementWorkFlowTasks requirementWorkFlowTaskId) {
-		this.requirementWorkFlowTaskId = requirementWorkFlowTaskId;
+	public void setRequirementQuestionnaireId(RequirementQuestionnaire requirementQuestionnaireId) {
+		this.requirementQuestionnaireId = requirementQuestionnaireId;
 	}
 
 	public OrgLocations getOrgLocationId() {

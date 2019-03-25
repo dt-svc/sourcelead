@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dto;
 
+import com.bis.sourcelead.entity.RequirementQuestionnaire;
+
 public class RequirementWorkFlowStagesDTO {
 
 	private long id;
@@ -12,7 +14,9 @@ public class RequirementWorkFlowStagesDTO {
 
 	private String uuid;
 	
-	private String status;
+	private Long requirementQuestionnaireId;
+	
+	private Integer status;
 
 	public long getId() {
 		return id;
@@ -54,12 +58,21 @@ public class RequirementWorkFlowStagesDTO {
 		this.uuid = uuid;
 	}
 
-	public String getStatus() {
+	public Long getRequirementQuestionnaireId() {
+		return requirementQuestionnaireId;
+	}
+
+	public void setRequirementQuestionnaireId(Long requirementQuestionnaireId) {
+		this.requirementQuestionnaireId = requirementQuestionnaireId;
+	}
+
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
+
 
 }
