@@ -800,7 +800,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		    		 vendorCandidate.setCountry(vendorOrgLocations.getCountry());
 		    		 vendorCandidate.setIsAssociate(Constants.YES);
 		    		 vendorCandidate.setEmail(user.getEmail());
-		    		 vendorCandidate.setWorkLocation(vendorOrgLocations);
+		    		 vendorCandidate.setWorkLocation(candidate.getWorkLocation());
 		    		 vendorCandidate.setStatus(Constants.RECORD_ACTIVE);
 		    		 vendorCandidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		    		 vendorCandidate.setCreatedDate(commonUtil.currentDate());
@@ -2080,5 +2080,46 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			storeCandidate(user, orgLocations, masterCandidate,orgRelation,orgspoc,userImport);
 		}
 		
+	}
+	
+	@Override
+	public File getAssociateBankDetailsTemplate()
+	{
+		File file = new File("associatesBankDetails.xls");
+		try {
+			Workbook wb = (Workbook) new HSSFWorkbook();
+			Sheet sheet = wb.createSheet("createAssociates");
+			sheet = setAssociateTemplateHeader(sheet,Constants.ASSOCIATE_BANK_DETAIL_HEADERS);
+			sheet.addValidationData(getDropDownListForCell(Constants.BANK_TYPE_DROPDOWN,2,"xls"));
+			FileOutputStream fos = new FileOutputStream(file);
+				wb.write(fos);
+				fos.close();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return file;	
+	}
+	
+	/**
+	 * create associate bank details template
+	 * @param sheet
+	 * @param associateBankDetailHeaders 
+	 * @return Sheet
+	 */
+	 private Sheet setAssociateTemplateHeader(Sheet sheet, String[] headers)
+	{
+		Row headerSheet = sheet.createRow(0);
+		for(int i=0;i<headers.length;i++) {
+			headerSheet.createCell(i).setCellValue(headers[i]);
+		}
+		return sheet;
+	}
+    @Override
+	public void changeDocumentNamesWithWhiteSpacesToUnderScore(String staticPath) {
+		try {
+			masterCandidateDao.changeDocumentNamesWithWhiteSpacesToUnderScore(staticPath);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
