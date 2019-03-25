@@ -110,23 +110,17 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 			template.setApprovingFromEndDate(null);
 		}
 		
-		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getApplicableFor())) {
-			template.setAppraisalApplicableFor(performanceAppraisalTemplateDTO.getApplicableFor());
-			if(performanceAppraisalTemplateDTO.getApplicableFor().equalsIgnoreCase("Experienced")) {
-				if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getExperienceYears())) {
-					template.setExperienceYears(Integer.valueOf(performanceAppraisalTemplateDTO.getExperienceYears()));
-				}
-				
-				if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getExperienceMonths())) {
-					template.setExperienceMonths(Integer.valueOf(performanceAppraisalTemplateDTO.getExperienceMonths()));
-				}
-			}else {
-				template.setExperienceYears(null);
-				template.setExperienceMonths(null);
-			}
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalProcessStartDate())) {
+			template.setProcessPeriodStartDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getAppraisalProcessStartDate()));
+		}else {
+			template.setProcessPeriodStartDate(null);
 		}
 		
-	
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalProcessEndDate())) {
+			template.setProcessPeriodEndDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getAppraisalProcessEndDate()));
+		}else {
+			template.setProcessPeriodEndDate(null);
+		}
 		
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getDescriptionDisplay())) {
 			template.setDescriptionDisplay(performanceAppraisalTemplateDTO.getDescriptionDisplay());
@@ -140,6 +134,10 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 		
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalCategories())) {
 			template.setCategories(performanceAppraisalTemplateDTO.getAppraisalCategories());
+		}
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getComptencyCategories())) {
+			template.setCompetencies(performanceAppraisalTemplateDTO.getComptencyCategories());
 		}
 		
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getJsonCategoriesString())) {
@@ -192,21 +190,13 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 			   templateDTO.setAppraisalApprovingEndDate(template.getApprovingFromEndDateStr());
 		   }
 		   
-		   if(StringUtils.isNotBlank(template.getCategories())) {
-			   templateDTO.setAppraisalCategories(template.getCategories());
+		   
+		   if(StringUtils.isNotBlank(template.getProcessPeriodStartDateStr())) {
+			   templateDTO.setAppraisalProcessStartDate(template.getProcessPeriodStartDateStr());
 		   }
 		   
-		   if(StringUtils.isNotBlank(template.getCategoriesJsonString())) {
-			   templateDTO.setJsonCategoriesString(template.getCategoriesJsonString());
-		   }
-		   
-		   if(StringUtils.isNotBlank(template.getAppraisalApplicableFor())) {
-			   templateDTO.setApplicableFor(template.getAppraisalApplicableFor());
-			   if(template.getAppraisalApplicableFor().equalsIgnoreCase("Experienced")) {
-				   templateDTO.setExperienceYears(String.valueOf(template.getExperienceYears()));
-				   templateDTO.setExperienceMonths(String.valueOf(template.getExperienceMonths()));
-			   }
-			   
+		   if(StringUtils.isNotBlank(template.getProcessPeriodEndDateStr())) {
+			   templateDTO.setAppraisalProcessEndDate(template.getProcessPeriodEndDateStr());
 		   }
 		   
 		   if(StringUtils.isNotBlank(template.getDescriptionDisplay())) {
@@ -215,6 +205,18 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 		   
 		   if(StringUtils.isNotBlank(template.getDescription())) {
 			   templateDTO.setDescription(template.getDescription());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getCategories())) {
+			   templateDTO.setAppraisalCategories(template.getCategories());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getCompetencies())) {
+			   templateDTO.setComptencyCategories(template.getCompetencies());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getCategoriesJsonString())) {
+			   templateDTO.setJsonCategoriesString(template.getCategoriesJsonString());
 		   }
 		   
 		   
