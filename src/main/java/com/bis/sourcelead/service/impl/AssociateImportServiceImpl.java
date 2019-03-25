@@ -597,7 +597,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			 */
 			private boolean validatePf(String pfNum){
 				String rutNo = pfNum.trim();
-				Pattern pattern = Pattern.compile("[0-9]{15}");
+				Pattern pattern = Pattern.compile("[0-9]{10,25}");
 				Matcher matcher = pattern.matcher(rutNo);
 				return matcher.matches();
 	    	}
@@ -611,7 +611,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			 */
 			private boolean validateEsi(String esiNum){
 				String rutNo = esiNum.trim();
-				Pattern pattern = Pattern.compile("[0-9]{10,15}");
+				Pattern pattern = Pattern.compile("[0-9]{10,17}");
 				Matcher matcher = pattern.matcher(rutNo);
 				return matcher.matches();
 	    	}
