@@ -333,6 +333,7 @@ $(document.body).on('change', '#uploadBtn' ,function(){
 </script>
 <script>
 
+<<<<<<< HEAD
 //inlcuded in jsp due to jstl tags inclusion.
 //inlcuded in jsp due to jstl tags inclusion.
 function getTeamsList(reqId){
@@ -694,6 +695,47 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	};
 	
 }
+=======
+<jsp:include page="requirementTable.jsp" />
+<jsp:include page="requirementAssignedTo.jsp"/>
+<!-- <script type="text/javascript" src="/resources/js/requirementTable.js"></script> -->
+<input type="hidden" name="noReq" id="noReq" />
+<input type="hidden" id="requirementEmptyListMessage" name="requirementEmptyListMessage" />
+<div id="popUp"></div>
+<section class="content-wraper">
+	<section class="content-header clearfix">
+		<div class="pull-left">
+        	<h2>Jobs 
+					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
+						<a href="${SourceLeadWeb_atsUrl}/professionalRequirements" class="jobHeadBtn">Crowdsourcing Jobs</a>
+					</sec:authorize>        	
+        	</h2>
+      	</div>
+		<c:if test="${!empty msg}">
+			<div class="success_pop" id="selector2" style="display: block;">
+				<div class="pull-left"><i class="fa fa-check-circle"></i></div>
+				<div class="pull-left" style="width:325px; padding:10px 0;"><span>${msg}</span></div>
+			</div>
+		</c:if>
+		
+		<%-- <div class="pull-left">
+			<h2 class="pull-left paddingRight">Jobs List</h2>
+			<span class="paddingLeft pull-left">|<a class="paddingLeft"
+				href="<c:url value='${appPath}/professionalRequirements'/>">Crowdsourcing
+					Jobs</a></span>
+		</div> --%>
+		<div class="pull-right brud-crum">
+			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Job List
+		</div>
+	</section>
+	<div class="clearfix">
+	<ul class="project-tabs-menu projecttabs-custom clearfix">
+         <li class="current" id="jobsTab"><a href="javascript:void(0)" onclick="requirementListCheck('','','','${SourceLeadWeb_atsUrl}');">Jobs</a></li>
+         <li id="jobFairTab"><a href="javascript:void(0)"  onclick="jobFairListCheck();">Job Fair</a></li>
+         <div class="clearfix"></div>
+     </ul>
+	</div>
+>>>>>>> c260c83988b6f10109026bc2eb21bd079b51c067
 
 
 </script>
@@ -1425,7 +1467,7 @@ function changeStatus(requirementId, requirementStatus){
 <script>
 
 function exportToPdf(type) {
-	
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	if(type === 1) {
 		var req = $("#noReq").val();
 	 	var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
@@ -1460,7 +1502,7 @@ function exportToPdf(type) {
 </script>
 <script>
 function exportToExcel(type) {
-	
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	if(type === 1) {
 		var req = $("#noReq").val();
 		var requirementEmptyMessage = $("#requirementEmptyListMessage").val();

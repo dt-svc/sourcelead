@@ -263,37 +263,37 @@ var atsUrl = '${SourceLeadWeb_atsUrl}';
 			                    }
 			                    
 			                    if(opt.noOfApplicants != null && opt.noOfApplicants != '' && opt.noOfApplicants != 'undefined') {		                     
-			                   		result = result +"<td><a href='<c:url value='/requirementSummary?type=applicants&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfApplicants+"</div></a></td>";
+			                   		result = result +"<td><a href='${SourceLeadWeb_atsUrl}/requirementSummary?type=applicants&requirementUUID="+opt.requirementUUID+"'><div>"+opt.noOfApplicants+"</div></a></td>";
 			                    } else {
 			                    	result = result +"<td><div>---</div></td>";
 			                    }
 			                    
 			                    if(opt.noOfShortlistedApplicants != null && opt.noOfShortlistedApplicants != '' && opt.noOfShortlistedApplicants != 'undefined') {
-			                    	result = result +"<td><a href='<c:url value='/requirementSummary?type=SHORTLIST&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfShortlistedApplicants+"</div></a></td>";
+			                    	result = result +"<td><a href='${SourceLeadWeb_atsUrl}/requirementSummary?type=SHORTLIST&requirementUUID="+opt.requirementUUID+"'><div>"+opt.noOfShortlistedApplicants+"</div></a></td>";
 			                    } else {
 			                    	result = result +"<td><div>---</div></td>";
 			                    }
 			                    
 			                    if(opt.noOfSubmittedApplicants != null && opt.noOfSubmittedApplicants != '' && opt.noOfSubmittedApplicants != 'undefined') {
-			    	            	result = result +"<td><a href='<c:url value='/requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfSubmittedApplicants+"</div></a></td>";
+			    	            	result = result +"<td><a href='${SourceLeadWeb_atsUrl}/requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+opt.requirementUUID+"'><div>"+opt.noOfSubmittedApplicants+"</div></a></td>";
 			                    } else {
 			                    	result = result +"<td><div>---</div></td>";
 			                    }
 			                    
 			                    if(opt.noOfInterviewedApplicants != null && opt.noOfInterviewedApplicants != '' && opt.noOfInterviewedApplicants != 'undefined') {
-			                    	result = result +"<td><a href='<c:url value='/requirementSummary?type=INTERVIEW&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfInterviewedApplicants+"</div></a></td>";
+			                    	result = result +"<td><a href='${SourceLeadWeb_atsUrl}/requirementSummary?type=INTERVIEW&requirementUUID="+opt.requirementUUID+"'><div>"+opt.noOfInterviewedApplicants+"</div></a></td>";
 			                    } else {
 			                    	result = result +"<td><div>---</div></td>";
 			                    }
 			                    
 			                    if(opt.noOfOfferedApplicants != null && opt.noOfOfferedApplicants != '' && opt.noOfOfferedApplicants != 'undefined') {
-			                    	result = result +"<td><a href='<c:url value='/requirementSummary?type=OFFERMADE&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfOfferedApplicants+"</div></a></td>";
+			                    	result = result +"<td><a href='${SourceLeadWeb_atsUrl}/requirementSummary?type=OFFERMADE&requirementUUID="+opt.requirementUUID+"'><div>"+opt.noOfOfferedApplicants+"</div></a></td>";
 			                    } else {
 			                    	result = result +"<td><div>---</div></td>";
 			                    }
 			                    
 			                    if(opt.noOfJoinedApplicants != null && opt.noOfJoinedApplicants != '' && opt.noOfJoinedApplicants != 'undefined') {
-			    	            	result = result +"<td><a href='<c:url value='/requirementSummary?type=JOINED&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfJoinedApplicants+"</div></a></td>";
+			    	            	result = result +"<td><a href='${SourceLeadWeb_atsUrl}/requirementSummary?type=JOINED&requirementUUID="+opt.requirementUUID+"'><div>"+opt.noOfJoinedApplicants+"</div></a></td>";
 			    	            } else {
 			                    	result = result +"<td><div>---</div></td>";
 			                    }
@@ -307,7 +307,7 @@ var atsUrl = '${SourceLeadWeb_atsUrl}';
 			                    if(checkSize>=10 && i==9) {
 			                       	/* $("#viewmoresDiv").css("display", "block"); */
 			                    	var text = "<div class='pull-right jobMoreBtn' id='viewmoresDiv'>";
-			                    	text += "<a href='/ats/jobsList' class='btn btn-sm btn-primary pull-right' title='View more'> View More</a>";
+			                    	text += "<a href='${SourceLeadWeb_atsUrl}/jobsList' class='btn btn-sm btn-primary pull-right' title='View more'> View More</a>";
 			                       	text += "</div>";
 			                       	$("#requirementListActions").append(text);
 			    	 	   	   	}
