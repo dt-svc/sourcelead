@@ -5,26 +5,33 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
 import com.bis.sourcelead.entity.performance.PerformanceBadges;
+import com.bis.sourcelead.entity.performance.PerformanceCompetencies;
 import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalTemplateService;
 import com.bis.sourcelead.service.performance.PerformanceBadgesService;
+import com.bis.sourcelead.service.performance.PerformanceCompetenciesService;
 import com.bis.sourcelead.service.performance.PerformanceFeedbackTemplateService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -57,7 +64,7 @@ public class PerformanceManagementController {
 	PerformanceAppraisalTemplateService performanceAppraisalTemplateService;
 	
 	@Autowired
-	LookUpDataService lookUpDataService;
+	PerformanceCompetenciesService performanceCompetenciesService;
 	
 	
 	
@@ -143,15 +150,59 @@ public class PerformanceManagementController {
 	}
 	
 	
-	@RequestMapping(value = "/addNewPerformanceCompetence")
-	public ModelAndView addNewPerformanceCompetence(HttpServletRequest request) throws Exception
+	@RequestMapping(value = "/performanceCompetenceList")
+	public ModelAndView performanceCompetenceList(HttpServletRequest request) throws Exception{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("performance/performanceCompetenceList");
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/tagPerformanceCompetence")
+	public ModelAndView tagPerformanceCompetence(HttpServletRequest request) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
-		List<String> skillsList = lookUpDataService.getCategoriesListByCategoryType(Constants.SKILLS);
-		model.addObject("skillsList", skillsList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("performance/addNewPerformanceCompetence");
+		model.setViewName("performance/tagPerformanceCompetence");
 		return model;
+	}
+	
+	
+	@RequestMapping(value = "/validateCompetenceName", method = RequestMethod.GET)
+	@ResponseBody String validateCompetenceName(@RequestParam(value = "competenceName", required = true) String competenceName,
+			@RequestParam(value = "competenceId", required = false) Long competenceId,HttpServletRequest request) throws Exception {
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"orgLocationId");
+		
+		PerformanceCompetencies performanceCompetencies = null;
+		String result = null;
+		
+		if(competenceId != null){
+			performanceCompetencies  = performanceCompetenciesService.getPerformanceCompetenciesById(competenceId);
+			if(performanceCompetencies.getCompetenciesName().equalsIgnoreCase(competenceName)){
+				result = "valid";
+			}else{
+				boolean flag  = performanceCompetenciesService.isCompetenceNameExisted(orgLocationId, competenceName);
+				if(flag == true){
+					result = "invalid";
+				}else{
+					result = "valid";
+				}
+			}
+		}
+		
+		else{
+			boolean flag  = performanceCompetenciesService.isCompetenceNameExisted(orgLocationId, competenceName);
+			if(flag == true){
+				result = "invalid";
+			}else{
+				result = "valid";
+			}
+		}
+		
+		return result;
+		
 	}
 	
 	
