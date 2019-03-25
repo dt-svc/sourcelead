@@ -455,9 +455,9 @@ function addAttachment(entityRowId,from){
 	                 <div class="col-md-4 minHeight">
 							<label>Paid by<span class="text-danger">&nbsp;*</span></label>
 							<select id="paidByREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].paidBy" class="form-control" placeholder="Paid By" field-name="Paid By" data-validation="required">
-							         <option value="" disabled>Select paid By</option>
+							         <option value="">Select paid By</option>
 							         <c:forEach var="paidByType" items="${expEntry.paidByType}">
-							         			<option ${paidByType == 'Company' ? 'selected' : ''} value="${paidByType}">${paidByType}</option>
+							         			<option value="${paidByType}">${paidByType}</option>
 									 </c:forEach>
 							</select> 
 					</div>
