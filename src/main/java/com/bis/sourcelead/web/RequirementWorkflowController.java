@@ -1,15 +1,19 @@
 package com.bis.sourcelead.web;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dto.RequirementWorkFlowDTO;
+import com.bis.sourcelead.dto.RequirementWorkFlowStagesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementWorkFlow;
@@ -108,5 +112,28 @@ public class RequirementWorkflowController {
 	}
 	
 	
+	@RequestMapping(value = "/createRequirementDefaultWorkFlow", method = RequestMethod.GET)
+	public @ResponseBody List<RequirementWorkFlowStagesDTO> createRequirementDefaultWorkFlow(
+			RequirementWorkFlowDTO requirementWorkFlowDTO,
+			HttpServletRequest request) {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<RequirementWorkFlowStagesDTO> requirementWorkFlowStagesDTO= null;
+		try {
+			List<RequirementWorkFlow> requirementWorkFlow = requirementWorkFlowService.getRequirementWorkFlowByOrgLocationId(orgLocations.getId());
+			if (requirementWorkFlow == null || requirementWorkFlow.isEmpty()) {
+				requirementWorkFlowService.saveRequirementWorkFlowStagesByOrgLocationId(orgLocations, user, requirementWorkFlowDTO);
+			}
+			if(requirementWorkFlow.size() >= 1 && !(requirementWorkFlow.isEmpty())) {
+				requirementWorkFlowStagesDTO = requirementWorkFlowService.getRequirementDefaultWorkFlowStages();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return requirementWorkFlowStagesDTO;
+
+	}
 	
 }
