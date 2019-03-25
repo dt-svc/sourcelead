@@ -43,7 +43,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
-import com.bis.sourcelead.dto.AssociateJoineReportDTO;
 import com.bis.sourcelead.dto.DashboardCountsDTO;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.EventsDTO;
