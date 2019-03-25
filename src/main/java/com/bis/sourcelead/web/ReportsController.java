@@ -37,6 +37,7 @@ import com.bis.sourcelead.reportsDTO.TimeToFillDTO;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TeamService;
@@ -83,7 +84,9 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	
 	@Autowired
 	private WageTaxSummaryService wageTaxSummaryService;
-
+	
+	@Autowired
+	private RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
 	@RequestMapping(value = "/applicantsBackoutReport")
 	public ModelAndView applicantBackout(HttpServletRequest request) throws Exception
@@ -825,4 +828,22 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 			 return model;
 				
 		    }
+			
+	@RequestMapping(value = "/offerAcceptanceRate")
+	public ModelAndView offerAcceptanceRateReport(HttpServletRequest request) {
+		ModelAndView model = new ModelAndView();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			if (user != null) {
+				model.addObject("loginOrgLocId", orgLocations.getId());
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				model.setViewName("reports/offerAcceptanceRate");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return model;
+	}
 }

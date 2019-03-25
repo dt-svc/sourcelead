@@ -9937,6 +9937,30 @@ ul.goalsList-list li {
 .dropdownTableDesig table tr td {
 	position: relative;
 }
+.dropdownTableDesig table tr:nth-child(2n+2) {
+	display: none; transition: all 0.3s linear;
+}
+.workflowSVG {
+	background: url("../images/workflowSVG.svg"); background-repeat: no-repeat; background-size: 42px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+	}
+.positionRelativeTop10 {
+position: relative; top: 10px;
+}
+.answerQuestionaire {
+	padding-left: 35px;
+}
+.answerQuestionaire ul li {
+	list-style-position: inside;
+}
+ul.goalscomments-list li:hover {
+	background-color: #fafafa;
+}
+.goals-list .goalsEditDelete {
+	display: none;
+}
+.goals-list:hover .goalsEditDelete {
+	display: block;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
@@ -10377,3 +10401,6 @@ display: block;
  .progressCount {
  font-size: 12px; font-weight: 500; color: #368ee0; display: block; padding: 2px 0px 0px 0px;
  }
+.chartDashboard .amcharts-main-div a {
+	display: block !important;
+}

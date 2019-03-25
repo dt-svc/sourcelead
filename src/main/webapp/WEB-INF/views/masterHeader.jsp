@@ -537,6 +537,10 @@ function preventTabkey(e){
 	            </div>
 	          </li>
          </c:if>
+         
+         <sec:authorize access="hasAnyRole('ROLE_ADD_TICKET','ROLE_VIEW_TICKET')">
+			<li><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/ticketManagementList'/>" title="Ticket Management" ><i class="ticketMgIC"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
+		</sec:authorize>
 		
         <c:if test="${SourceLeadWeb_reportsTabConfigured == 'Y'}"> 
         	 <li><a title="Reports" href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard"><i class="headNavIcon reporIcon"></i></a></li>
