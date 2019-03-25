@@ -39,6 +39,19 @@ import javax.persistence.Table;
 	@Column(name = "STATUS")
 	private Integer status;
 
+	@Column(name = "CREATED_DATE")
+	private Date createdDate;
+	
+	@ManyToOne
+	@JoinColumn(name = "CREATED_BY")
+	private User createdBy;
+
+	@Column(name = "UPDATED_DATE")
+	private Date updatedDate;
+
+	@ManyToOne
+	@JoinColumn(name = "UPDATED_BY")
+	private User updatedBy;
 
 	public Integer getId() {
 		return id;
@@ -86,6 +99,38 @@ import javax.persistence.Table;
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public User getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public User getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(User updatedBy) {
+		this.updatedBy = updatedBy;
 	}
 	
 	

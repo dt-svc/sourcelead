@@ -30,6 +30,11 @@ import javax.persistence.Table;
 	private RequirementWorkFlow requirementWorkFlowId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "REQUIREMENT_QUESTIONNAIRE_ID", nullable = false)
+	private RequirementQuestionnaire requirementQuestionnaireId;
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocationId;
 	
@@ -177,6 +182,14 @@ import javax.persistence.Table;
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public RequirementQuestionnaire getRequirementQuestionnaireId() {
+		return requirementQuestionnaireId;
+	}
+
+	public void setRequirementQuestionnaireId(RequirementQuestionnaire requirementQuestionnaireId) {
+		this.requirementQuestionnaireId = requirementQuestionnaireId;
 	}
 	
 }
