@@ -19,15 +19,15 @@
       <div class="success_pop" id="selector" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
      </div>
-     <div class="pull-right brud-crum"><a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a>&raquo;<a href="<c:url value='/jobsList'/>"> Jobs List  </a>&raquo; <c:if test="${empty requirementId}">Add Job</c:if> <c:if test="${!empty requirementId}">Update Job</c:if> </div>
+     <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a>&raquo;<a href="${SourceLeadWeb_atsUrl}/jobsList"> Jobs List  </a>&raquo; <c:if test="${empty requirementId}">Add Job</c:if> <c:if test="${!empty requirementId}">Update Job</c:if> </div>
     </section>
     
     <div class="newPrDetails newPrDetailsPMO"> 
     <div class="newPrTabs">
     <ul class="newPrTabsMenu">
-				<li><a href="<c:url value='/requirement?requirementUUID=${requirementUUID}'/>">Job Details</a></li>
-				<li><a href="<c:url value='/jobReleaseManagement?requirementUUID=${requirementUUID}'/>">Job Release</a></li>
-				<li class="current"><a href="<c:url value='/jobRecommendations?requirementUUID=${requirementUUID}'/>">Recommendations</a></li>
+				<li><a href="${SourceLeadWeb_atsUrl}/requirement?requirementUUID=${requirementUUID}">Job Details</a></li>
+				<li><a href="${SourceLeadWeb_atsUrl}/jobReleaseManagement?requirementUUID=${requirementUUID}">Job Release</a></li>
+				<li class="current"><a href="${SourceLeadWeb_atsUrl}/jobRecommendations?requirementUUID=${requirementUUID}">Recommendations</a></li>
 				<div class="clearfix mb"></div>
 			  </ul>
 	   <div class="clearfix"></div>
@@ -39,7 +39,7 @@
     <div class="form-footer clearfix row">
               <div class="col-lg-12">
                 <div class="pull-right">
-                  <input type="button" value="Go to list"  class="btn btn-primary ml" onClick="javascript:window.location.href = '<c:url value='/jobsList'/>'"  class="btn btn-default ml">
+                  <input type="button" value="Go to list"  class="btn btn-primary ml" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/jobsList'"  class="btn btn-default ml">
                 </div>
               </div>
     </div>
