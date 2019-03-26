@@ -25,6 +25,7 @@ import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -57,7 +58,9 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
+import com.bis.sourcelead.payroll.dto.AssociateBankErrorData;
 import com.bis.sourcelead.rest.PayrollConfigurationRestController;
+import com.bis.sourcelead.service.AssociateImportService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.PaymentAccountService;
 import com.bis.sourcelead.service.PayrollPayheadService;
@@ -82,7 +85,7 @@ public class AssociateImportController {
 	PayrollPayheadService payrollPayheadService;
 	
 	@Autowired
-	private CandidateService candidateService;
+	AssociateImportService associateImportService;
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -116,7 +119,7 @@ public class AssociateImportController {
 	 */
 	@RequestMapping(value = "/app/uploadbankdetails", method = RequestMethod.POST)
 	@ResponseBody
-	public IndAssociatePaymentAccountDTO uploadbankdetails(MultipartHttpServletRequest request) throws Exception
+	public AssociateBankErrorData uploadbankdetails(MultipartHttpServletRequest request) throws Exception
 	{
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -125,9 +128,9 @@ public class AssociateImportController {
 		if (itrator.hasNext()) {
 			multipartFile = request.getFile(itrator.next());
 		}
-		IndAssociatePaymentAccountDTO response = new IndAssociatePaymentAccountDTO();
+		AssociateBankErrorData response = null;
 		if (multipartFile != null) {
-			response = paymentAccountService.saveImportBankDetails(multipartFile, orgLocation);
+			response = associateImportService.saveImportBankDetails(multipartFile, orgLocation);
 			return response;
 		}
 		return response;
@@ -150,10 +153,100 @@ public class AssociateImportController {
 	            if(key.equalsIgnoreCase("Payment Mode*")) {
 	            	sheet.addValidationData(getDropDownListForCell(Constants.PAYMENT_MODE, cellnum-1, "xls"));
 	            }
-	            
 	        }
 	        try {
 	            File file = new File("Associate_Banking_Template.xls");
+	    		FileOutputStream out = new FileOutputStream(file);
+	    		workbook.write(out);
+	            
+	            out.close();
+	            out.flush();
+	            
+	            String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				StringBuilder fileNameSB = new StringBuilder();
+				response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();
+	        }
+	        catch (Exception e) {
+	            e.printStackTrace();
+	        }
+			
+		}
+	 
+	 /*---Ends here---*/
+	 
+	 
+/*---------------------------------for associate Information import--------------------------------------------------*/
+	 
+	 @PreAuthorize("hasRole('ROLE_USER_BULK_IMPORTS')")
+		@RequestMapping(value = "/app/uploadAssociateInformation")
+		public ModelAndView uploadAssociateInformationForm(HttpServletRequest request) {
+			SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
+					.getAttribute("sessionData");
+			if (sessionData == null) {
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.Users);
+			request.getSession().setAttribute("sessionData", sessionData);
+			ModelAndView model = new ModelAndView();
+			model.setViewName("upload/uploadAssociateInformation");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+
+		}
+	
+	/**
+	 * @rajat
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/app/uploadAssociateInfomation", method = RequestMethod.POST)
+	@ResponseBody
+	public AssociateBankErrorData uploadAssociateInfomation(MultipartHttpServletRequest request) throws Exception
+	{
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		MultipartFile multipartFile = null;
+		Iterator<String> itrator = request.getFileNames();
+		if (itrator.hasNext()) {
+			multipartFile = request.getFile(itrator.next());
+		}
+		AssociateBankErrorData response = null;
+		if (multipartFile != null) {
+			response = associateImportService.saveAssociateInformation(multipartFile, orgLocation);
+			return response;
+		}
+		return response;
+	}
+	
+	
+	// method for creating excel sheet
+	 @RequestMapping(value = "/app/downloadTemplateForAssociateInfomation", method = RequestMethod.GET)
+		public void downloadTemplateForAssociateInfomation(HttpServletRequest request,HttpServletResponse response) throws Exception{
+	        @SuppressWarnings("resource")
+	        HSSFWorkbook workbook = new HSSFWorkbook();
+	        HSSFSheet sheet = workbook.createSheet("AssociateInformationTemplate");
+	        String[] tableColumns = Constants.DATA_MIGRATION_ASSOCIATE_INFO_EXCEL_HEADERS;
+	 
+	        Row row = sheet.createRow(0);
+	        int cellnum = 0;
+	        for (String key : tableColumns) {
+	            Cell cell = row.createCell(cellnum++);
+	            cell.setCellType(Cell.CELL_TYPE_STRING);
+	            cell.setCellValue((String)key);
+	        }	        	        
+	        try {
+	            File file = new File("Associate_Information_Template.xls");
 	    		FileOutputStream out = new FileOutputStream(file);
 	    		workbook.write(out);
 	            
@@ -178,12 +271,13 @@ public class AssociateImportController {
 	        catch (Exception e) {
 	            e.printStackTrace();
 	        }
-			
 		}
 	 
 	 /*   --------Ends here--------   */
 	 
+
 	 
+//------------------import associate salary starts --------------------------------
 	 
 	 @PreAuthorize("hasRole('ROLE_USER_BULK_IMPORTS')")
 		@RequestMapping(value = "/app/uploadAssociateSalary")
@@ -200,7 +294,25 @@ public class AssociateImportController {
 			model.setViewName("upload/uploadAssociateSalaryForm");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
-
+		}
+		
+		@RequestMapping(value = "/app/saveAssociateSalaryDetailsTemplate", method = RequestMethod.POST)
+		@ResponseBody
+		public AssociateSalaryIndDTO saveAssociateSalaryDetailsTemplate(MultipartHttpServletRequest request) throws Exception
+		{
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			MultipartFile multipartFile = null;
+			Iterator<String> itrator = request.getFileNames();
+			if (itrator.hasNext()) {
+				multipartFile = request.getFile(itrator.next());
+			}
+			AssociateSalaryIndDTO response = null;
+			if (multipartFile != null) {
+				response = associateImportService.saveAssociateSalaryDetails(multipartFile, orgLocation, user);
+				return response;
+			}
+			return response;
 		}
 		
 		
@@ -266,190 +378,6 @@ public class AssociateImportController {
 		}
 		
 		
-		@RequestMapping(value = "/app/saveAssociateSalaryDetailsTemplate", method = RequestMethod.POST)
-		@ResponseBody
-		public AssociateSalaryIndDTO saveAssociateSalaryDetailsTemplate(MultipartHttpServletRequest request) throws Exception
-		{
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			MultipartFile multipartFile = null;
-			Iterator<String> itrator = request.getFileNames();
-			if (itrator.hasNext()) {
-				multipartFile = request.getFile(itrator.next());
-			}
-			AssociateSalaryIndDTO response = null;
-			if (multipartFile != null) {
-				response = this.saveAssociateSalaryDetails(multipartFile, orgLocation, user);
-				return response;
-			}
-			return response;
-		}
-		
-	 
-		@SuppressWarnings("unlikely-arg-type")
-		private AssociateSalaryIndDTO saveAssociateSalaryDetails(MultipartFile multipartFile,
-				OrgLocations orgLocation, User user) {
-			String fileName = multipartFile.getOriginalFilename();
-			AssociateSalaryIndDTO response = new AssociateSalaryIndDTO();
-			int recordUpdatedCount = 0;
-			try {
-				File file = new File(multipartFile.getOriginalFilename());
-				multipartFile.transferTo(file);
-				FileInputStream fis = new FileInputStream(file);
-				Workbook workbook;
-				logger.debug("File Extension is: " + multipartFile.getOriginalFilename());
-				
-				
-				List<Candidate> candidateList =  candidateService.getAllCandidatesByLocation(orgLocation.getId());
-				Map<String, Long> mapEmailAndId = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getId));
-				Map<String, String> mapEmailAndAssId = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getGeneratedId));
-				
-				List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
-				Map<String, String> userGroupNameAndUUID = userGroupList.stream().collect(Collectors.toMap(UserGroup::getGroupName, UserGroup::getGroupUUID));
-				
-				List<PayrollPayheadDTO> payHeadDTOList = payrollPayheadService.getPayrollPayheadList(orgLocation).getData();
-				Map<Long, String> mapPayheadIdAndName = payHeadDTOList.stream().collect(Collectors.toMap(PayrollPayheadDTO::getId, PayrollPayheadDTO::getName));
-				Map<String, String> mapPayheadShortCodeAndName = payHeadDTOList.stream().collect(Collectors.toMap(PayrollPayheadDTO::getShortCode, PayrollPayheadDTO::getName));
-				
-				List<AssociateSalaryInd> associateSalaryIndList = payrollPayheadService.getAssociateSalaryIndListByOrgLocationsId(orgLocation.getId());
-				Map<String, String> associateSalaryIndCanEmailAndUUID = new HashMap<String, String>();
-				for (AssociateSalaryInd i : associateSalaryIndList) associateSalaryIndCanEmailAndUUID.put(i.getCandidate().getEmail(), i.getUuid());
-				
-				
-				
-				workbook = WorkbookFactory.create(fis);
-				int numberOfSheets = workbook.getNumberOfSheets();
-				for (int i = 0; i < numberOfSheets; i++) {
-					Sheet sheet = workbook.getSheetAt(i);
-					Iterator<Row> rowIterator = sheet.iterator();
-					
-					// Assuming "column headers" are in the first row
-					Row header_row = sheet.getRow(0);
-					
-					int count =0;
-					while (rowIterator.hasNext()) {
-						AssociateSalaryIndDTO associateSalaryIndDTO = new AssociateSalaryIndDTO();
-						Row row = rowIterator.next();
-							if (row.getRowNum() > 0 && (row.getCell(1) != null && row.getCell(2) != null && row.getCell(3) != null && row.getCell(4) != null  && row.getCell(6) != null)) {
-								String assoId = getCellValueAsString(row.getCell(0), fileName);
-								if (row.getCell(0) != null && StringUtils.isNotBlank(mapEmailAndAssId.get(assoId))) {
-									associateSalaryIndDTO.setCandidateId(Long.parseLong(assoId));
-								}
-								
-								if(mapEmailAndId.get(getCellValueAsString(row.getCell(1), fileName)) != null) {
-									associateSalaryIndDTO.setCandidateId(mapEmailAndId.get(getCellValueAsString(row.getCell(1), fileName)));
-									associateSalaryIndDTO.setUuid(associateSalaryIndCanEmailAndUUID.get(getCellValueAsString(row.getCell(1), fileName)));
-								}else {
-									continue;
-								}
-								
-								if(Arrays.stream(Constants.ASSOCIATE_SALARY_PAYTYPE).anyMatch(getCellValueAsString(row.getCell(2), fileName) :: equals))
-									associateSalaryIndDTO.setPayType(getCellValueAsString(row.getCell(2), fileName));
-								else
-									continue;
-								
-								if(Arrays.stream(Constants.ASSOCIATE_SALARY_PAYFREQUENCY).anyMatch(getCellValueAsString(row.getCell(3), fileName) :: equals))
-									associateSalaryIndDTO.setPayFrequency(getCellValueAsString(row.getCell(3), fileName));
-								else
-									continue;
-								
-								if(userGroupNameAndUUID.get(getCellValueAsString(row.getCell(4), fileName)) != null)
-									associateSalaryIndDTO.setPayGroup(userGroupNameAndUUID.get(getCellValueAsString(row.getCell(4), fileName)));
-								else
-									continue;
-								
-								if(getCellValueAsString(row.getCell(5), fileName) != null) {
-									try{
-										  Integer.parseInt(getCellValueAsString(row.getCell(5), fileName));
-										  associateSalaryIndDTO.setStandardHours(getCellValueAsString(row.getCell(5), fileName));
-										} catch (NumberFormatException e) {
-											associateSalaryIndDTO.setStandardHours(orgLocation.getAverageWorkingHours().toString());
-										}
-								}else {
-									associateSalaryIndDTO.setStandardHours(orgLocation.getAverageWorkingHours().toString());
-								}
-								
-								if(StringUtils.isNumeric(getCellValueAsString(row.getCell(6), fileName))) {
-									associateSalaryIndDTO.setAnnualSal(getCellValueAsString(row.getCell(6), fileName));
-								}else {
-									continue;
-								}
-								
-								switch(associateSalaryIndDTO.getPayFrequency()){
-							     case "Annual":
-							    	 associateSalaryIndDTO.setPerPaySal(String.format("%.02f", Float.parseFloat(associateSalaryIndDTO.getAnnualSal()) / 1));
-							     break;
-
-							     case "Monthly":
-							    	 associateSalaryIndDTO.setPerPaySal(String.format("%.02f", Float.parseFloat(associateSalaryIndDTO.getAnnualSal()) / 12));
-							     break;
-
-							     case "Bi-Weekly":
-							    	 associateSalaryIndDTO.setPerPaySal(String.format("%.02f", Float.parseFloat(associateSalaryIndDTO.getAnnualSal()) / 26));
-							     break;
-
-							     case "Weekly":
-							    	 associateSalaryIndDTO.setPerPaySal(String.format("%.02f", Float.parseFloat(associateSalaryIndDTO.getAnnualSal()) / 52));
-							     break;
-								}
-								
-								associateSalaryIndDTO.setHourlyRate(String.format("%.02f", Float.parseFloat(associateSalaryIndDTO.getPerPaySal()) / Float.parseFloat(associateSalaryIndDTO.getStandardHours())));
-								
-								List<AssociateSalaryPayheadIndDTO> assoSalPayheadIndDTOList = new ArrayList<>();
-								Iterator<Cell> cells = row.cellIterator();
-						        while (cells.hasNext())
-						        {
-						        	Cell cell = cells.next();
-						        	if(cell.getColumnIndex() > 6) {
-						        		AssociateSalaryPayheadIndDTO assoSalPayheadIndDTO = new AssociateSalaryPayheadIndDTO();
-										String header = header_row.getCell(cell.getColumnIndex()).getStringCellValue();
-										
-										for (Long id : mapPayheadIdAndName.keySet())  
-								        { 
-								            if (mapPayheadIdAndName.get(id).equalsIgnoreCase(header)) {
-										        assoSalPayheadIndDTO.setPayrollPayheadId(id);
-										    }
-								        }
-										
-										for (String sc : mapPayheadShortCodeAndName.keySet())  
-								        { 
-								            if (mapPayheadShortCodeAndName.get(sc).equalsIgnoreCase(header)) {
-								            	assoSalPayheadIndDTO.setPayrollPayheadShortCode(sc);
-										    }
-								        }
-										
-										if(StringUtils.isNumeric(getCellValueAsString(row.getCell(cell.getColumnIndex()), fileName))) {
-											assoSalPayheadIndDTO.setChecked(true);
-											assoSalPayheadIndDTO.setMonthly(new BigDecimal(getCellValueAsString(row.getCell(cell.getColumnIndex()), fileName)));
-											assoSalPayheadIndDTO.setAnnualy(new BigDecimal(getCellValueAsString(row.getCell(cell.getColumnIndex()), fileName)).multiply(new BigDecimal(12)));
-										}else {
-											continue;
-										}
-										
-										assoSalPayheadIndDTOList.add(assoSalPayheadIndDTO);
-									}
-						        }
-						        associateSalaryIndDTO.setAssociateSalaryPayheadIndList(assoSalPayheadIndDTOList);
-								
-						        payrollPayheadService.saveAssociateSalaryInd(associateSalaryIndDTO, user, orgLocation);
-						        recordUpdatedCount ++;
-							}else{
-								count = count++;
-								if(count == 5)	
-								 break;
-							}
-					 }				
-				}	
-				response.setRecordUpdatedCount(recordUpdatedCount);
-				fis.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-				response.setRecordUpdatedCount(recordUpdatedCount);
-			}
-			return response;
-		}
-		
-	 
 		private DataValidation getDropDownListForCell(String[] ratePerList, int column, String fileName)
 		{
 			@SuppressWarnings("deprecation")
@@ -459,14 +387,14 @@ public class AssociateImportController {
 			dataValidation.setSuppressDropDownArrow(false);
 			return dataValidation;
 		}
-		
+	
 		/**method for reading data from excel
 		 * Read cell value as String
 		 * @param cell
 		 * @param fileName
 		 * @return String
 		 */
-		private String getCellValueAsString(Cell cell, String fileName) {
+		/*private String getCellValueAsString(Cell cell, String fileName) {
 			String cellValue = "";
 			if(fileName.toLowerCase().endsWith("xls")){
 					HSSFCell hssfCell = (HSSFCell) cell;
@@ -492,5 +420,6 @@ public class AssociateImportController {
 					}
 				}
 				return cellValue;
-			}
+			}*/
 }
+

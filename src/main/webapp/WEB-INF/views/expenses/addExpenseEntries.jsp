@@ -863,15 +863,15 @@ function validate_fileupload(fileName)
 }
 </script>
  <script type="text/javascript">
- function validateUploadFile(id)
+ function validateUploadFile(id, entityId)
 	{
-	      var selectedFile = $('#'+id+'docFile').val();
+		  var selectedFile = $('#'+id+'docFile'+entityId).val();
 		  if(validate_fileupload(selectedFile)){
 			      var docSize = $('#'+id+'docFile'+entityId)[0].files[0].size;
 		           $("#"+id+"docFileuploadFileGroup"+entityId).find('p.jquery_form_error_message').remove();
 		    	  $('input#'+id+'docFile'+entityId).removeAttr( "record-exist record-exist-errormsg");
 	   		      $('#'+id+'docFileuploadFileGroup'+entityId).find('p.jquery_form_error_message').remove(); 
-	   		      fileUpload(""+id+"docFile"+entityId+"", "ticket", "add_expenses_form","expenseEntry["+parseInt(((entityId+1)/2)-1)+"].fileInfo","","");
+	   		      fileUpload(""+id+"docFile"+entityId+"", "expsesDocuments", "add_expenses_form","expenseEntry["+parseInt(((entityId+1)/2)-1)+"].fileInfo","","");
 		  }
 		  else{
 			      $('#'+id+'docFileuploadFileGroup'+entityId).find('p.jquery_form_error_message').remove();

@@ -134,11 +134,14 @@ var uploadflag= true;
 		</div>		<div class="clearfix"></div>
 		</form:form>
 	</div>
-	
+	<div class="require_wrap_table datatable_filter">
+	<h5 id="uploadXlsHistoryDivTitle" style="display: none;">Failed Records</h5>
+		<div id="errorDataDIV"></div>
+        </div>
 	
 	<div id="dataFieldsDiv" style="display: none"></div>
-<div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop">
-	<h5 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Recent Uploads History</h5>
+<div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop" id="recentHistoryDiv">
+	<h5 id="uploadXlsHistoryDivTitle"  style="display: block;">Recent Uploads History</h5>
 	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table>
 	    	<input type="hidden"  id="uploadedPercentage" value="0">
 		</div>
@@ -190,13 +193,15 @@ if ($('#upload_banking_form').validate(false, validationSettings)){
 		    url : sourceleadUrl+"/uploadbankdetails?"+tokenParamName+"="+tokenValue+"", 	   
  		    success : function(json) {
  		    		$("#loading").removeAttr("style");
- 		    	    if(json.recordCount != null && json.recordCount != '')
+ 		    	    if(json.insertedCount != null && json.insertedCount != '')
  		    	    $("#msgDiv").removeAttr("style");
  		 			$("#msgDiv").css({ display: "block" });
- 		 			$("#msgDiv").html("record inserted");
+ 		 			$("#msgDiv").html(json.insertedCount +" Associate are updated");
  			    	msgFadein();
- 		    	    closeImportFile();
- 		    	   resetUpload();
+ 		 			if(json.bdErrorData != null && json.bdErrorData.length >0){
+ 		 				showFailedExcelData(json);
+ 		 				importassociteSel(json);
+ 		 			}
 		 		    },
 		 		   error: function(e){
 			        }
@@ -226,6 +231,70 @@ function cancelFileImport(){
 	}
     </script> 
 
+<script>
+  function showFailedExcelData(json){
+	 /*  var sourceleadUrl = '${sourceleadUrl}';
+	  $.get( sourceleadUrl+ "/getAllSignatoriesByLocationId?${_csrf.parameterName}=${_csrf.token}", function(data) { */
+		  var result = "";
+	    	 result += '<table id="errorDataList" class="display" cellspacing="0" width="100%" >';
+	         result += '<thead>';
+	         result += '  <tr>';
+	         result += '    <th>Assoicate Id</th>';
+	         result += '    <th>Associate Email*</th>';
+	         result += '    <th>Payment Mode</th>';
+	         result += '    <th>Bank name</th>';
+	         result += '    <th>Account number</th>'; 
+	         result += '    <th>IFSC code</th>'; 
+	         result += '    <th>Reson</th>';
+	         result += '  </tr>';
+	         result += '</thead>';
+	         result += '<tbody>';
+	         var data = json.bdErrorData;
+	    	 for(i=0;i < data.length;i++){
+	    		 var report = data[i];
+	    		 result += '<tr>';
+		         result += '<td><div class="tblminwidth-100">'+report.id+'</div></td>';
+		         result += '<td><div class="tblminwidth-175">'+report.email+'</div></td>';
+		         result += '<td><div class="tblminwidth-175">'+report.accountType+'</div></td>';
+		         result += '<td><div class="tblminwidth-175">'+report.bankName+'</div></td>';
+		         result += '<td><div class="tblminwidth-175">'+report.accountNumber+'</div></td>';
+		         result += '<td><div class="tblminwidth-175">'+report.routingNumber+'</div></td>';
+		         result += '<td><div class="tbldata-dotdot-me">'+report.reason+'</div></td>';
+		         result += '  </tr>';
+	    	 }
+	    	
+	         result += '  </tbody>';
+    		 result += '</table> ';
+    		 $("#errorDataDIV").empty();
+    		 $("#errorDataDIV").append(result);
+    		 $("#loading").removeAttr('style');
+    		 excelDataPagination();
+	     /* });  */
+  }
+  
+  function excelDataPagination(){
+		$('#errorDataList').DataTable({ 
+			"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": ""
+	     	}
+	    });
+		$("#errorDataList").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
+
+	}
+  </script>
+  
+  <script>
+function importassociteSel(json){			
+			$("#recentHistoryDiv").hide();
+			$("#uploadXlsHistoryDivTitle").show();
+		}
+</script>
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
