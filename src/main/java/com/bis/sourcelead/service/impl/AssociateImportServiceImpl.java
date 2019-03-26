@@ -651,7 +651,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			 */
 			private boolean validateAccount(String accNum){
 				String acNo = accNum.trim();
-				Pattern pattern = Pattern.compile("[0-9]{10,12}");
+				Pattern pattern = Pattern.compile("[0-9]{9,15}");
 				Matcher matcher = pattern.matcher(acNo);
 				return matcher.matches();
 			}
