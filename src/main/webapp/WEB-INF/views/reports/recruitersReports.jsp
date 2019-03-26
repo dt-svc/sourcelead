@@ -205,6 +205,7 @@ function recruiterReportExport(){
  
  function resetFilter() {
 	 $("ul#myTeamsUL > li input:checkbox").prop("checked",false);
+	 $("ul#myRolesUL > li input:checkbox").prop("checked",false);
 }
  function myTeamsFunction() {
 	    var input, filter, ul, li, a, i;
@@ -755,6 +756,12 @@ function moreActions(){
 	$(".newActPop").slideToggle(200);
 	$(".action-pop").slideUp(200);
 }
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
 function getRecruiterApplicantsList(userCode){
 	var searchValue = $("#usersDataTableSearch").val();
 	 var timePeriod = $('#reportTypeId').val();
