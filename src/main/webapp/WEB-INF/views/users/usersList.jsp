@@ -853,7 +853,8 @@ var validationSettings = {
 		    var form = $('#user_forms')[0];
       		var formData = new FormData(form);  
 			$("#search_user").attr("disabled", "disabled");
-			 $.ajax({
+		
+			$.ajax({
 						 type : "POST",
 		        	     data: formData,
 		        	     processData: false,

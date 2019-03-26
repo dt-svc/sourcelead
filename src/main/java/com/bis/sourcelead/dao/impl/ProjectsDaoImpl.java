@@ -1683,6 +1683,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 	    	}
 	    	   Session session = this.sessionFactory.getCurrentSession();
 				String query = "from Projects pj where pj.orgLocationsId = :orgLocations and pj.projectStatus = 'INPROGRESS' and pj.id  IN(select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id IN( :associatesId ))) ";
+				@SuppressWarnings("unchecked")
 				List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocations", orgLocations).setParameterList("associatesId", data).list();
 				return projectsList;
 	    	   
@@ -1690,6 +1691,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 				e.printStackTrace();
 			}
 			return null;
+			
 		}
 
 	@SuppressWarnings("unchecked")
@@ -1698,7 +1700,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 	public List<Object[]> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO, OrgLocations orgLocations) {
 	try {
 		
-		Session session = this.sessionFactory.getCurrentSession();
+		Session session = this.sessionFactory.getCurrentSession();       
 		 
 //		SimpleDateFormat dateFormat = new SimpleDateFormat(orgLocations.getDateFormat());
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");

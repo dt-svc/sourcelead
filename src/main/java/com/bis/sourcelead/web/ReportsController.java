@@ -1,6 +1,5 @@
 package com.bis.sourcelead.web;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -81,7 +80,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	ProjectMembersService projectMembersService;
 	
 	@Autowired
-	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService; 
 	
 	@RequestMapping(value = "/recruitersReports")
 	public ModelAndView recruitersReports(HttpServletRequest request,HttpServletResponse response) throws Exception {
@@ -92,10 +91,10 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 	 String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 	 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
-		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+	Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
 
 	 
-		Collection<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+	Collection<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 
 	 ModelAndView model = new ModelAndView();
 	 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());	
@@ -106,7 +105,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	 else{
 		 teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId()); 
 	 }
-	 model.addObject("rolesList", rolesList);
+	 model.addObject("rolesList", rolesList);     
      model.addObject("teamsList", teamsList);
 	 model.addObject("userList", userList);
 	 model.addObject("requirementTabAccess", requirementTabAccess);
@@ -114,7 +113,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	 model.addObject("sourceleadUrl", sourceleadUrl);
 	 model.setViewName("reports/recruitersReports");
 	 return model;
-		
+		   
     }
 	
 	@RequestMapping(value = "/myPerformanceReports")
