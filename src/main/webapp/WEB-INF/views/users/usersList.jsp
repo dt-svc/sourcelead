@@ -1289,7 +1289,7 @@ function dynamicUserListPagination(url){
 		    	  		if(userRole.userName !=null && userRole.userName !='' && userRole.userName !='undefined'){
 		        			   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\')">' 
 		        			   result = result +"<td><div class='proj_show divmax-width dotdotwithImage'>"    
-		        			    result = result +" <a href='${SourceleadWeb_atsUrl}/userSummary/"+userRole.userCode+"' class='UserTextLeft' title = '"+userRole.userName+"'>";
+		        			    result = result +" <a href='${SourceLeadWeb_atsUrl}/userSummary/"+userRole.userCode+"' class='UserTextLeft' title = '"+userRole.userName+"'>";
 		        			    if(userRole.fileUrl != null && userRole.fileUrl !="" && userRole.fileUrl != "undefined"){
 				       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs pull-left'  src=\""+userRole.fileUrl+"\" alt='image'>";
 		        			    }else{
