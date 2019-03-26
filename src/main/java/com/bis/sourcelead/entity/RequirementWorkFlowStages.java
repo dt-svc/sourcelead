@@ -30,14 +30,31 @@ import javax.persistence.Table;
 	private RequirementWorkFlow requirementWorkFlowId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "REQUIREMENT_QUESTIONNAIRE_ID", nullable = false)
+	private RequirementQuestionnaire requirementQuestionnaireId;
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocationId;
 	
 	@Column(name = "STAGE_NAME")
 	private String stageName;
 	
+	@Column(name = "DESCRIPTION",  columnDefinition = "LONGTEXT default NULL")
+	private String  description;
+	
+	@Column(name = "SEQ_ORDER")
+	private Integer seqOrder;
+	
 	@Column(name = "UUID ")
 	private String uuid;
+	
+	@Column(name = "CONFIGURE_TYPE")
+	private String configureType;
+	
+	@Column(name = "IS_EDITABLE")
+	private String editable;
 	
 	@Column(name = "STATUS")
 	private Integer status;
@@ -63,7 +80,6 @@ import javax.persistence.Table;
 	public void setId(Long id) {
 		this.id = id;
 	}
-
 	public RequirementWorkFlow getRequirementWorkFlowId() {
 		return requirementWorkFlowId;
 	}
@@ -134,6 +150,46 @@ import javax.persistence.Table;
 
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public Integer getSeqOrder() {
+		return seqOrder;
+	}
+
+	public void setSeqOrder(Integer seqOrder) {
+		this.seqOrder = seqOrder;
+	}
+
+	public String getConfigureType() {
+		return configureType;
+	}
+
+	public void setConfigureType(String configureType) {
+		this.configureType = configureType;
+	}
+
+	public String getEditable() {
+		return editable;
+	}
+
+	public void setEditable(String editable) {
+		this.editable = editable;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public RequirementQuestionnaire getRequirementQuestionnaireId() {
+		return requirementQuestionnaireId;
+	}
+
+	public void setRequirementQuestionnaireId(RequirementQuestionnaire requirementQuestionnaireId) {
+		this.requirementQuestionnaireId = requirementQuestionnaireId;
 	}
 	
 }

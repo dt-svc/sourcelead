@@ -42,12 +42,6 @@ import javax.persistence.Table;
 	@Column(name = "DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
 	private String 	description;
 	
-	@Column(name = "QUESTIONNAIRE_NAME")
-	private String questionnaireName;
-	
-	@Column(name = "QUESTIONNAIRE_DESC", columnDefinition = "LONGTEXT default NULL")
-	private String 	questionnaireDese;
-	
 	@Column(name = "UUID ")
 	private String uuid;
 	
@@ -114,22 +108,6 @@ import javax.persistence.Table;
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public String getQuestionnaireName() {
-		return questionnaireName;
-	}
-
-	public void setQuestionnaireName(String questionnaireName) {
-		this.questionnaireName = questionnaireName;
-	}
-
-	public String getQuestionnaireDese() {
-		return questionnaireDese;
-	}
-
-	public void setQuestionnaireDese(String questionnaireDese) {
-		this.questionnaireDese = questionnaireDese;
 	}
 
 	public String getUuid() {
