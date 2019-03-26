@@ -82,11 +82,24 @@ function releasedToVendorJobsList(){
                	 }else{
                		 result  = result + ' <td><div><span>----</span></div></td>';
                	 }
-               	 if(opt.location != null && opt.location != '' && opt.location != 'undefined'){
-               	 result  = result + ' <td><div><span title="'+opt.location+'">'+opt.location+'</span></div></td>';
-               	 }else{
-               		 result  = result + ' <td><div><span>----</span></div></td>';
-               	 }
+               		result  = result + ' <td>';
+               		result = result +'<div class="positionRelative">';
+	   		         for(var k=0; k<1; k++){
+	   		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+opt.locationsList[k]+'</p>';
+	   		         }
+ 		    	
+	   		        result = result +'<div class="show_Empdetails showjoblist">';
+ 		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
+
+ 		        	result = result +'<div class="emailvalues emailvaluesNew">';
+ 		        	
+						for(var k=0; k<opt.locationsList.length; k++){
+							result = result +'<p><i class="fa fa-map-marker"></i>'+opt.locationsList[k]+'</p>';
+		   		        	
+ 		    	 	}
+ 		        	result = result +'</div>';
+ 		        	result  = result + ' </td>';
+               	 
                	 if(opt.totalApplicants != null && opt.totalApplicants != '' && opt.totalApplicants != 'undefined'){ 
                	 result  = result + '<td><div><span>'+opt.totalApplicants+'</span></div></td>';
                	 }else{

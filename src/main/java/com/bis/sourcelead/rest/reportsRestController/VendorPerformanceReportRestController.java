@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest.reportsRestController;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -244,17 +245,17 @@ public class VendorPerformanceReportRestController {
 							     RequirementSubmissionsCountDTO joinedCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(parentRequirement.getId(), user, orgLocations, "JOINED");
 							     requirement.setJoinedCount(joinedCount.getJoinedCount().toString());
 							     // for requirement location
-							     locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
-								if (locationsList != null && !locationsList.isEmpty()) {
-									for (RequirementLocations locationsJob : locationsList) {
-										if (locationsJob.getLocation() != null && locationsJob.getLocation() != null) {
-											location = requirementBuilder.append(locationsJob.getLocation()).toString();
-										} else {
-											location = "--";
-										}
-									}
-									requirement.setLocation(location);
-								}
+							     List<String> requirementLocationsList = new ArrayList<>();
+									StringBuilder sb = new StringBuilder();
+						    		List<RequirementLocations> locationList = requirementLocationsService.getRequirementLocationsListByRequirementId(parentRequirement.getId());
+						    		locationList.forEach(loclist->{
+						    			requirementLocationsList.add(loclist.getLocation());
+						    			if(sb.length() > 0) 
+						    				sb.append(",");
+						    			sb.append(loclist.getLocation()).toString();
+						    		});
+						    		requirement.setLocation(sb.toString());
+						    		requirement.setLocationsList(requirementLocationsList);
 								requirement.setJobOwner(user.getFullName());
 							} catch (Exception e) {
 								e.printStackTrace();
