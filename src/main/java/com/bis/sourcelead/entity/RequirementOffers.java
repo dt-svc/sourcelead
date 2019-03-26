@@ -77,6 +77,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
 	private String fileName;
 	
+	@Column(name = "OFFER_EXPIRE_DATE")
+	private Date offerExpireDate;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="OFFER_LETTER_TEMPLATE", nullable=false )        
+    private OfferLetterTemplate offerLetterTemplate;
+	
 	@Column(name="STATUS")
 	private Integer status;
 	
@@ -407,5 +415,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.spocId = spocId;
 	}
 
-	
+	public Date getOfferExpireDate() {
+		return offerExpireDate;
+	}
+
+	public OfferLetterTemplate getOfferLetterTemplate() {
+		return offerLetterTemplate;
+	}
+
+	public void setOfferExpireDate(Date offerExpireDate) {
+		this.offerExpireDate = offerExpireDate;
+	}
+
+	public void setOfferLetterTemplate(OfferLetterTemplate offerLetterTemplate) {
+		this.offerLetterTemplate = offerLetterTemplate;
+	}
 }
