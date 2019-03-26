@@ -9804,6 +9804,7 @@ border:none; width: 20px; height: 20px; float: left; margin-right: 10px; cursor:
 .visaCalendarInput.calendar {
 background-size: 15px !important;
 }
+
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;

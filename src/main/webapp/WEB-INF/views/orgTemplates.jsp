@@ -195,7 +195,7 @@
 	
 		<div class="landTempCta">
 		<div class="pull-left mr10">
-	           <i class="fa fa-object-ungroup fa-2x text-info"></i>
+	           <i class="fa fa-envelope-open-o fa-2x text-info"></i>
 	        </div>
 			<div class="pull-left">
 			<h2 class="text-info">Offer Letter</h2>
