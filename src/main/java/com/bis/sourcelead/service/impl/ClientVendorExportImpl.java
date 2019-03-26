@@ -90,7 +90,7 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 				row++;
 			}
 			StringBuilder orgNameBuilder=new StringBuilder();
-			 file = File.createTempFile(orgNameBuilder.append(orgName).append("_Clients_").append(dateFormat.format(new Date())).toString(),".xls");
+			 file = File.createTempFile(orgNameBuilder.append(orgName).append("_Clients_").append(dateFormat.format(new Date())).toString(),".xlsx");
 			 file.setReadable(true);
 			FileOutputStream fos = new FileOutputStream(file);
 			try {
