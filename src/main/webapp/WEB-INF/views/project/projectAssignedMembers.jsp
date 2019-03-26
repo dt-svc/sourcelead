@@ -1547,6 +1547,6 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
         }
     });
 	$('#firstName').val('');
-	$('#lastName').val('');}
+	$('#lastName').val('');
 	$('#employeeEmail').val('');
 </script>

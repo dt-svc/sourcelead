@@ -215,10 +215,6 @@ function getEndClientProjects(){
 }
 </script>
 
-
-
-
-
 <script type="text/javascript">
 function getProjectLevel1Approvers(approverUserId){
 	 var sourceleadUrl ='${sourceleadUrl}';

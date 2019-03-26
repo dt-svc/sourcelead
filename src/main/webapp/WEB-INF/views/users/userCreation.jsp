@@ -31,7 +31,7 @@
 <script>	
 	$(document).ready(function() {
 		var location = "${location}";
-		document.getElementById("createUser_form").reset();
+		document.getElementById("").reset();
 			<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	   		  <c:if test="${sectionOrder.index == 0}">
 				  var sectionId = '${section.id}';

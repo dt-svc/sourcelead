@@ -111,4 +111,6 @@ public interface LeaveDao {
 	 Set<PayrollLopHis> getLeaveByFrequencyInd(Long candidateId, Date freqStartDate, Date freqEndDate, OrgLocations orgLocations, IndEmployeePayroll employeePayroll);
 
     List<Leave> getAllLeavesByLocationIdAndStatusAndAppliedDate(Long locationId, String status, Date appliedDate);
+    
+    List<Leave> getAllLeavesByLocationIdAndStatusAndLeaveStartDate(Long locationId, String status, Date appliedDate);
 }
