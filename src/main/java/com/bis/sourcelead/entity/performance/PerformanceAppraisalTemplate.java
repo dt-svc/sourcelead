@@ -60,14 +60,11 @@ public class PerformanceAppraisalTemplate implements Serializable{
 	@Column(name = "APPROVING_FROM_END_DATE")
 	private Date approvingFromEndDate;
 	
-	@Column(name = "APPRAISAL_APPLICABLE_FOR")
-	private String appraisalApplicableFor;
+	@Column(name = "PROCESS_PERIOD_START_DATE")
+	private Date processPeriodStartDate;
 	
-	@Column(name = "EXPERIENCE_YEARS ")
-	private Integer experienceYears;
-	
-	@Column(name = "EXPERIENCE_MONTHS ")
-	private Integer experienceMonths;
+	@Column(name = "PROCESS_PERIOD_END_DATE")
+	private Date processPeriodEndDate;
 	
 	@Column(name = "DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
 	private String description ;
@@ -77,6 +74,9 @@ public class PerformanceAppraisalTemplate implements Serializable{
 	
 	@Column(name = "CATEGORIES", columnDefinition = "TEXT default NULL")
 	private String categories;
+	
+	@Column(name = "COMPETENCIES", columnDefinition = "TEXT default NULL")
+	private String competencies;
 	
 	@Column(name = "CATEGORIES_JSON_STRING", columnDefinition = "LONGTEXT default NULL")
 	private String categoriesJsonString ;
@@ -128,6 +128,14 @@ public class PerformanceAppraisalTemplate implements Serializable{
 	@Transient
 	@JsonProperty
 	private String approvingFromEndDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String processPeriodStartDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String processPeriodEndDateStr;
 	
 	
 
@@ -219,28 +227,20 @@ public class PerformanceAppraisalTemplate implements Serializable{
 		this.approvingFromEndDate = approvingFromEndDate;
 	}
 
-	public String getAppraisalApplicableFor() {
-		return appraisalApplicableFor;
+	public Date getProcessPeriodStartDate() {
+		return processPeriodStartDate;
 	}
 
-	public void setAppraisalApplicableFor(String appraisalApplicableFor) {
-		this.appraisalApplicableFor = appraisalApplicableFor;
+	public void setProcessPeriodStartDate(Date processPeriodStartDate) {
+		this.processPeriodStartDate = processPeriodStartDate;
 	}
 
-	public Integer getExperienceYears() {
-		return experienceYears;
+	public Date getProcessPeriodEndDate() {
+		return processPeriodEndDate;
 	}
 
-	public void setExperienceYears(Integer experienceYears) {
-		this.experienceYears = experienceYears;
-	}
-
-	public Integer getExperienceMonths() {
-		return experienceMonths;
-	}
-
-	public void setExperienceMonths(Integer experienceMonths) {
-		this.experienceMonths = experienceMonths;
+	public void setProcessPeriodEndDate(Date processPeriodEndDate) {
+		this.processPeriodEndDate = processPeriodEndDate;
 	}
 
 	public String getDescription() {
@@ -406,6 +406,39 @@ public class PerformanceAppraisalTemplate implements Serializable{
 
 	public void setApprovingFromEndDateStr(String approvingFromEndDateStr) {
 		this.approvingFromEndDateStr = approvingFromEndDateStr;
+	}
+
+	public String getProcessPeriodStartDateStr() {
+		if(processPeriodStartDate != null){
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			processPeriodStartDateStr = dateFormat.format(processPeriodStartDate);	
+		}
+		return processPeriodStartDateStr;
+	
+	}
+
+	public void setProcessPeriodStartDateStr(String processPeriodStartDateStr) {
+		this.processPeriodStartDateStr = processPeriodStartDateStr;
+	}
+
+	public String getProcessPeriodEndDateStr() {
+		if(processPeriodEndDate != null){
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			processPeriodEndDateStr = dateFormat.format(processPeriodEndDate);	
+		}
+		return processPeriodEndDateStr;
+	}
+
+	public void setProcessPeriodEndDateStr(String processPeriodEndDateStr) {
+		this.processPeriodEndDateStr = processPeriodEndDateStr;
+	}
+
+	public String getCompetencies() {
+		return competencies;
+	}
+
+	public void setCompetencies(String competencies) {
+		this.competencies = competencies;
 	}
 	
 	
