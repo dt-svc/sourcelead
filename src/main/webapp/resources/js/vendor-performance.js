@@ -34,7 +34,7 @@ $(document).ready(function() {
 		
 		$("#vendorReportsDiv").show();
 		$("#vendorReportsChartDiv").hide();
-	
+		$("#releasedJobsResultDiv").hide();
 		getVendorsReportList();
 	});
 	$("#graphView").click(function() {
@@ -42,7 +42,7 @@ $(document).ready(function() {
 		$("#listView").removeClass("rAct");
 		
 		$("#listViewFilters").hide();
-		
+		$("#releasedJobsResultDiv").hide();
 		$("#vendorReportsChartDiv").show();
 		$("#vendorReportsDiv").hide();
 		
@@ -218,6 +218,7 @@ function getReleasedJobsGraph() {
             		getApplicantBackoutGraph();
             	} else {
             		$("#releaseJobsNoRecordsDiv").show();
+            		$('#releasedJobsResultDiv').hide();
             	}
         		$("#releaseJobsloadingDiv").hide();
             } else if (response.response === "SESSION_TIMEDOUT" || response.indexOf('Sign In') !== -1) {
@@ -228,7 +229,21 @@ function getReleasedJobsGraph() {
 		},
 	});
 }
-
+// released jobs List
+function releasedJobsToVendors() {
+	$("#releasedJobsResultDiv").show();
+	$("#vendorReportsChartDiv").hide();
+	$("#vendorReportsDiv").hide();
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl + "/releasedJobsListByOrgRelationId?orgRelationId="+orgRelationId+"&spocId="+contactUserId,
+		success :function(result) {
+       		$('#releasedJobsResultDiv').empty();
+       		$('#releasedJobsResultDiv').append(result);
+       		releasedToVendorJobsList();
+        }
+	});	
+}
 // Offer acceptance rate
 function getOfferAcceptanceRateGraph() {
 	$("#offerAcceptanceRateloadingDiv").show();

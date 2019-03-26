@@ -1920,8 +1920,10 @@ public class PerformanceReportRestController {
 				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				if(loginUser != null){
 
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
+					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
+					
 					List<ApplicantDeclineDTO> applicantDeclineList = new ArrayList<>();
 					ApplicantDeclineDTO applicantDeclineDTO=new ApplicantDeclineDTO();
 					List<Long> jobIdList = new ArrayList<>();
