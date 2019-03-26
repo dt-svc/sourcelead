@@ -621,7 +621,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			 */
 			private boolean validateUan(String uan){
 				String acNo = uan.trim();
-				Pattern pattern = Pattern.compile("[0-9]{12}");
+				Pattern pattern = Pattern.compile("[0-9]{1,12}");
 				Matcher matcher = pattern.matcher(acNo);
 				return matcher.matches();
 	    	}
