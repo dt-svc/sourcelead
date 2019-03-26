@@ -124,17 +124,20 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 							    InfoDataDTO.setEligibleForEsi("Y");
 							list.add(InfoDataDTO);
 						}else {
-							if(row.getCell(0) != null  && !"".equalsIgnoreCase(row.getCell(0).toString()))
+							if(row.getCell(0) != null  && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 								InfoDataDTO.setUserId(getCellValueAsString(row.getCell(0), fileName));
-							if(row.getCell(1) != null  && !"".equalsIgnoreCase(row.getCell(1).toString()))
+							   }else{InfoDataDTO.setUserId("-");}
+							if(row.getCell(1) != null  && !"".equalsIgnoreCase(row.getCell(1).toString())) 
 								InfoDataDTO.setEmail(getCellValueAsString(row.getCell(1), fileName));
-							if(row.getCell(2) != null  && !"".equalsIgnoreCase(row.getCell(2).toString()))
-								InfoDataDTO.setUanNumber(getCellValueAsString(row.getCell(2), fileName));																	
-							if(row.getCell(3) != null  && !"".equalsIgnoreCase(row.getCell(3).toString()))
+							if(row.getCell(2) != null  && !"".equalsIgnoreCase(row.getCell(2).toString())) {
+								InfoDataDTO.setUanNumber(getCellValueAsString(row.getCell(2), fileName));	
+							   }else{InfoDataDTO.setUanNumber("-");}
+							if(row.getCell(3) != null  && !"".equalsIgnoreCase(row.getCell(3).toString())) {
 								InfoDataDTO.setPfNumber(getCellValueAsString(row.getCell(3), fileName));
+							   }else{InfoDataDTO.setPfNumber("-");}
 							if(row.getCell(4) != null  && !"".equalsIgnoreCase(row.getCell(4).toString())) {
 								InfoDataDTO.setEsinumber(getCellValueAsString(row.getCell(4), fileName));
-							  }else{InfoDataDTO.setEsinumber("-");}
+							   }else{InfoDataDTO.setEsinumber("-");}
 							errorlist.add(InfoDataDTO);
 						}
 					}
@@ -147,7 +150,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			}				
 			insertedCount =  associatePfEsiDao.saveAssociateInformation(orgLocation.getId(), list, canMap);
 			associateBankErrorData.setPfErrorData(errorlist);
-			associateBankErrorData.setInsertedCount(insertedCount);
+			associateBankErrorData.setInsertedCount(list.size());
 			fis.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -162,7 +165,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 	
 	private boolean validateAssociateInfoExeclData(Row row, String fileName, AssociatePfEsiDetailsDTO InfoDataDTO,
 			Map<String, Long> canMap, Map<Long, String> pfeMap) {
-		if(canMap.get(getCellValueAsString(row.getCell(1), fileName).toLowerCase()) != null) {
+		if(canMap.get(getCellValueAsString(row.getCell(1), fileName).toLowerCase().trim()) != null) {
 			if (row.getCell(1) == null || "".equalsIgnoreCase(row.getCell(1).toString())) {
 				InfoDataDTO.setReason("Email Mandatory");
 				return false;
@@ -201,7 +204,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			}
 		}else
 		{
-			InfoDataDTO.setReason("candidate does't existed with given email");	
+			InfoDataDTO.setReason("Associate doesn't exist");	
 			return false;
 		}
 		return true;
@@ -216,10 +219,13 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 					
 		String fileName = multipartFile.getOriginalFilename();
 		AssociateBankErrorData associateBankErrorData = new AssociateBankErrorData();
-		//List<IndAssociatePaymentAccountDTO> list = new ArrayList<>();		
 		List<PaymentAccount> paymentDetailsList =paymentAccountDao.getPaymentAccountDetailsByOrglocationId(orgLocation.getId());
 		List<Candidate> candidateList =  candidateService.getAllAssociateByLocation(orgLocation.getId());
-		Map<String, Long> canMap = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getId));
+		//Map<String, Long> canMap = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getId));
+		Map<String, Long> canMap = new HashMap<>();
+		for(Candidate c : candidateList) {
+			canMap.put(c.getEmail().toLowerCase(), c.getId());
+		}
 		Map<String,  List<String>> accGroupByEmailList = new HashMap<String, List<String>>();
 		canMap.forEach((k, v) -> {
 			   accGroupByEmailList.put(k, paymentDetailsList.stream().filter(t -> t.getEmail().equals(k)).map(PaymentAccount::getAccountNumber).collect(Collectors.toList()));  });
@@ -246,7 +252,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 						isValidated = validateAssociateBankExeclData(row,fileName,bankDataDTO,canMap,accGroupByEmailList,paymentDetailsList);
 						if(isValidated) {
 							if (row.getCell(0) != null  && !"".equalsIgnoreCase(row.getCell(0).toString()))
-								bankDataDTO.setId(Long.parseLong(getCellValueAsString(row.getCell(0), fileName)));	
+								bankDataDTO.setUserId((getCellValueAsString(row.getCell(0), fileName)));	
 							if(row.getCell(1) != null  && !"".equalsIgnoreCase(row.getCell(1).toString()))
 								bankDataDTO.setEmail(getCellValueAsString(row.getCell(1), fileName));
 							if(row.getCell(2) != null  && !"".equalsIgnoreCase(row.getCell(2).toString()))
@@ -267,8 +273,9 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 						    	bankDataDTO.setLastName(getCellValueAsString(row.getCell(9), fileName));
 							   list.add(bankDataDTO);
 						}else {
-							if (row.getCell(0) != null  && !"".equalsIgnoreCase(row.getCell(0).toString()))
-								bankDataDTO.setId(Long.parseLong(getCellValueAsString(row.getCell(0), fileName)));	
+							if (row.getCell(0) != null  && !"".equalsIgnoreCase(row.getCell(0).toString())) {
+								bankDataDTO.setUserId((getCellValueAsString(row.getCell(0), fileName)));
+							     }else{bankDataDTO.setUserId("-");}
 							if(row.getCell(1) != null  && !"".equalsIgnoreCase(row.getCell(1).toString()))
 								bankDataDTO.setEmail(getCellValueAsString(row.getCell(1), fileName));
 							if(row.getCell(2) != null  && !"".equalsIgnoreCase(row.getCell(2).toString()))
@@ -286,10 +293,12 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 						    if(row.getCell(7) != null  && !"".equalsIgnoreCase(row.getCell(7).toString())) {
 						    	bankDataDTO.setRoutingNumber(getCellValueAsString(row.getCell(7), fileName));
 						         }else{bankDataDTO.setRoutingNumber("-");}
-						    if(row.getCell(8) != null  && !"".equalsIgnoreCase(row.getCell(8).toString()))
+						    if(row.getCell(8) != null  && !"".equalsIgnoreCase(row.getCell(8).toString())) {
 						    	bankDataDTO.setFirstName(getCellValueAsString(row.getCell(8), fileName));
-						    if(row.getCell(9) != null  && !"".equalsIgnoreCase(row.getCell(9).toString()))
+						         }else{bankDataDTO.setFirstName("-");}
+						    if(row.getCell(9) != null  && !"".equalsIgnoreCase(row.getCell(9).toString())) {
 						    	bankDataDTO.setLastName(getCellValueAsString(row.getCell(9), fileName));
+						    }else{bankDataDTO.setLastName("-");}
 							    errorlist.add(bankDataDTO);
 						}
 						
@@ -305,7 +314,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 		
 			insertedCount =  paymentAccountDao.saveBankingDetailInPaymentAccount(orgLocation.getId(), list, canMap);
 			associateBankErrorData.setBdErrorData(errorlist);
-			associateBankErrorData.setInsertedCount(insertedCount);
+			associateBankErrorData.setInsertedCount(list.size());
 			fis.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -360,12 +369,14 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 				
 				if(accGroupByEmailList != null ) {
 					if("Savings".equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName))) {
-					List<String> accountNum =accGroupByEmailList.get(getCellValueAsString(row.getCell(1),fileName));				
+					List<String> accountNum =accGroupByEmailList.get(getCellValueAsString(row.getCell(1),fileName));	
+					if(accountNum != null && accountNum.size() > 0) {
 					 boolean acc = accountNum.contains(getCellValueAsString(row.getCell(4),fileName));
 					 if(acc) {
 						 bankDataDTO.setReason("account already existed with this email");
 							return false;
 					 }
+					}
 					}else {
 							Boolean flag = false;        
 					    for (PaymentAccount  pList:  paymentDetailsList){ 			
@@ -383,7 +394,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 				}
 				
 			}else {
-				bankDataDTO.setReason("Associate does't existed with given email");
+				bankDataDTO.setReason("Associate doesn't existed with given email");
 				return false;
 			}
 			
@@ -640,7 +651,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			 */
 			private boolean validateAccount(String accNum){
 				String acNo = accNum.trim();
-				Pattern pattern = Pattern.compile("[0-9]{10,12}");
+				Pattern pattern = Pattern.compile("[0-9]{9,15}");
 				Matcher matcher = pattern.matcher(acNo);
 				return matcher.matches();
 			}
