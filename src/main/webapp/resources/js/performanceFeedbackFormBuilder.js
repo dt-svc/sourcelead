@@ -170,7 +170,7 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId)
     	
     }
     
-    dataValidation = 'data-validation="required validate_Space validate_AlphaNumber';
+    dataValidation = 'data-validation="required validate_Space validate_Name';
    
     
     if (hasRequired) {
