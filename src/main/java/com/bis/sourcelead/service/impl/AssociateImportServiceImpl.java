@@ -157,7 +157,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			}				
 			insertedCount =  associatePfEsiDao.saveAssociateInformation(orgLocation.getId(), list, canMap);
 			associateBankErrorData.setPfErrorData(errorlist);
-			associateBankErrorData.setInsertedCount(insertedCount);
+			associateBankErrorData.setInsertedCount(list.size());
 			fis.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -323,7 +323,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 		
 			insertedCount =  paymentAccountDao.saveBankingDetailInPaymentAccount(orgLocation.getId(), list, canMap);
 			associateBankErrorData.setBdErrorData(errorlist);
-			associateBankErrorData.setInsertedCount(insertedCount);
+			associateBankErrorData.setInsertedCount(list.size());
 			fis.close();
 		} catch (IOException e) {
 			e.printStackTrace();
