@@ -23,6 +23,8 @@ public class Constants {
 	public static final String[] FONT_FAMILY = { "Arial", "Comisc", "Comic Sans MS", "Courier New",
 			"Georgia", "Monotype", "Tahoma", "Times New Roman", "Trebuchet MS", "Verdana",
 			"Impace" };
+	public static final String[] AVAILABLE_ASSOCIATES_REPORT_EXPORT_HEADDERS = {"Employee Name", "Project Name", "Project Duration","Associate Duration", "Availability %","No.of Hours",};
+	
 	public static final String[] FONT_SIZE = { "8px", "9px", "10px", "11px", "12px", "13px", "14px",
 			"15px", "16px", "17px", "18px", "19px", "20px", "21px", "221px", "23px", "24px" };
 	public static final String EMPLOYEE_ID = "Employee ID";

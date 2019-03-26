@@ -196,6 +196,10 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 		expenses.setCreatedDate(CommonUtil.currentDate());
 	}
 	
+	if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
+		expenses.setSubmittedDate(CommonUtil.currentDate());
+		}
+	
 	expenses.setUpdatedDate(CommonUtil.currentDate());
 	if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
 		expenses.setExpenseStatus(Submission_Status.SUBMITTED);

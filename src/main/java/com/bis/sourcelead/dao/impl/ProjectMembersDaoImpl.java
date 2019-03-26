@@ -2101,6 +2101,16 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		return pm;  
 	}
+
+
+	@Override
+	@Transactional
+	public List<Candidate> getAllAvailableAssociates( Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate where  candidate.orgLocationId = :orgLocationId";
+		List<Candidate> list =  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		return list;
+	}
 	
 }
 

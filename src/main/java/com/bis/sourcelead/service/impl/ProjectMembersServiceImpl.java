@@ -2332,6 +2332,11 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 		return projectMembersDao.getAllProjectMembersByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId, isGlobalUser);
 	}
 
+	@Override
+	public List<Candidate> getAllAvailableAssociates(Long orgLocationId) {
+		return projectMembersDao.getAllAvailableAssociates( orgLocationId);
+	}
+
 
 
 }
