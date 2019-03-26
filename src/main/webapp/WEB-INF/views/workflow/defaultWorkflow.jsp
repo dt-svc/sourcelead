@@ -196,6 +196,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 			data : formData,
 			url : sourceleadUrl + "/createRequirementDefaultWorkFlow",
 			success : function(dataList) {
+				console.log(dataList);
 				var result = "";
 				if(dataList != null && dataList.length > 0){
 					 result = result + "<ul class='list-unstyled widgetDivLi'>"; 
