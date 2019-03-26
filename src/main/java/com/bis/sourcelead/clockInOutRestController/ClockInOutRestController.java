@@ -53,5 +53,14 @@ public class ClockInOutRestController {
 		
 	}
 	
+	@RequestMapping(value = "/saveClockInOutTime")
+	public void saveClockInOutTime(HttpServletRequest request) {
+		
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		clockInOutConfigService.saveClockInOutTime(loginOrgLocation,user);
+		
+	}
+	
 
 }

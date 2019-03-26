@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
 
@@ -30,10 +31,13 @@ public class ClockInOut {
 	
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )
-	private OrgRelations orgRelationID;
+	private OrgLocations orgLocations;
 	
-	@Column(name = "CLOCK_DATE")
-	private Date clockDate;
+	@Column(name = "CLOCK_IN_DATE")
+	private Date clockInDate;
+	
+	@Column(name = "CLOCK_OUT_DATE")
+	private Date clockOutDate;
 	
 	@Column(name = "CLOCK_IN_TIME")
 	private Time clockInTime;
@@ -52,12 +56,6 @@ public class ClockInOut {
 	
 	@Column(name = "COMMENTS",columnDefinition = "TEXT default NULL")
 	private String comments;
-	
-	@Column(name = "BREAK_START_TIME")
-	private Time breakStartTime;
-	
-	@Column(name = "BREAK_END_TIME")
-	private Time breakEndTime;
 	
 	@ManyToOne
     @JoinColumn(name="USER_ID", nullable=false )
@@ -80,14 +78,16 @@ public class ClockInOut {
 		return id;
 	}
 
-	public OrgRelations getOrgRelationID()
-	{
-		return orgRelationID;
+	public OrgLocations getOrgLocations() {
+		return orgLocations;
 	}
 
-	public Date getClockDate()
-	{
-		return clockDate;
+	public Date getClockInDate() {
+		return clockInDate;
+	}
+	
+	public Date getClockOutDate() {
+		return clockOutDate;
 	}
 
 	public Time getClockInTime()
@@ -120,16 +120,6 @@ public class ClockInOut {
 		return comments;
 	}
 
-	public Time getBreakStartTime()
-	{
-		return breakStartTime;
-	}
-
-	public Time getBreakEndTime()
-	{
-		return breakEndTime;
-	}
-
 	public User getUserId()
 	{
 		return userId;
@@ -160,14 +150,8 @@ public class ClockInOut {
 		this.id = id;
 	}
 
-	public void setOrgRelationID(OrgRelations orgRelationID)
-	{
-		this.orgRelationID = orgRelationID;
-	}
-
-	public void setClockDate(Date clockDate)
-	{
-		this.clockDate = clockDate;
+	public void setOrgLocations(OrgLocations orgLocations) {
+		this.orgLocations = orgLocations;
 	}
 
 	public void setClockInTime(Time clockInTime)
@@ -200,16 +184,6 @@ public class ClockInOut {
 		this.comments = comments;
 	}
 
-	public void setBreakStartTime(Time breakStartTime)
-	{
-		this.breakStartTime = breakStartTime;
-	}
-
-	public void setBreakEndTime(Time breakEndTime)
-	{
-		this.breakEndTime = breakEndTime;
-	}
-
 	public void setUserId(User userId)
 	{
 		this.userId = userId;
@@ -235,6 +209,13 @@ public class ClockInOut {
 		this.updatedBy = updatedBy;
 	}
 	
-	
+	public void setClockInDate(Date clockInDate) {
+		this.clockInDate = clockInDate;
+	}
+
+	public void setClockOutDate(Date clockOutDate) {
+		this.clockOutDate = clockOutDate;
+	}
+
 	
 }

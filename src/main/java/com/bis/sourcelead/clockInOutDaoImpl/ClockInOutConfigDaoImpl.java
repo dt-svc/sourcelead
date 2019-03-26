@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.clockInOutDao.ClockInOutConfigDao;
+import com.bis.sourcelead.clockInOutEntity.ClockInOut;
 import com.bis.sourcelead.clockInOutEntity.ClockInOutConfig;
 
 @Repository
@@ -61,6 +62,21 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			return clockInOut;
 		}
 		return null;
+	}
+
+	@Override
+	@Transactional
+	public void saveClockInOutTime(ClockInOut clockInOut) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		try {
+			if (clockInOut != null) {
+				session.saveOrUpdate(clockInOut);
+			}
+		} catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		}
 	}
 
 }
