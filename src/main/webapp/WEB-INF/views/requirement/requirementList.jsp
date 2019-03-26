@@ -164,7 +164,7 @@ function statusvalidating(id){
 		<div class="pull-left">
         	<h2>Jobs 
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
-						<a href="<c:url value='/professionalRequirements'/>" class="jobHeadBtn">Crowdsourcing Jobs</a>
+						<a href="${SourceLeadWeb_atsUrl}/professionalRequirements" class="jobHeadBtn">Crowdsourcing Jobs</a>
 					</sec:authorize>        	
         	</h2>
       	</div>
@@ -654,7 +654,7 @@ function statusvalidating(id){
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
 									<span> 
-									<a href="<c:url value='/requirement'/>" >Job</a>
+									<a href="${SourceLeadWeb_atsUrl}/requirement">Job</a>
 									<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
 										<a href="${SourceLeadWeb_sourceleadUrl}/uploadJobs">Import</a>
 									</sec:authorize>									
@@ -919,7 +919,7 @@ function changeStatus(requirementId, requirementStatus){
 <script>
 
 function exportToPdf(type) {
-	
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	if(type === 1) {
 		var req = $("#noReq").val();
 	 	var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
@@ -954,7 +954,7 @@ function exportToPdf(type) {
 </script>
 <script>
 function exportToExcel(type) {
-	
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	if(type === 1) {
 		var req = $("#noReq").val();
 		var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
