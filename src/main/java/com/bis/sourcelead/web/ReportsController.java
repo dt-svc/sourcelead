@@ -846,4 +846,18 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		}
 		return model;
 	}
+	
+	@RequestMapping(value = "/releasedJobsListByOrgRelationId")
+	public ModelAndView releasedJobsListByOrgRelationId(@RequestParam(value="orgRelationId", required=true)Long orgRelationId,
+			@RequestParam(value="spocId", required=true)Long spocId,
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+
+	 ModelAndView model = new ModelAndView();
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.addObject("orgRelationId", orgRelationId);
+	 model.addObject("spocId", spocId);
+	 model.setViewName("reports/releasedToVendorJobsList");
+	 return model;
+ }	
 }
