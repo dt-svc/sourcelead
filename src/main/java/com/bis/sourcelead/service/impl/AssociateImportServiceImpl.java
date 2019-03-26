@@ -621,7 +621,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			 */
 			private boolean validateUan(String uan){
 				String acNo = uan.trim();
-				Pattern pattern = Pattern.compile("[0-9]{12}");
+				Pattern pattern = Pattern.compile("[0-9]{1,12}");
 				Matcher matcher = pattern.matcher(acNo);
 				return matcher.matches();
 	    	}
@@ -634,7 +634,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			 */
 			private boolean validatePf(String pfNum){
 				String rutNo = pfNum.trim();
-				Pattern pattern = Pattern.compile("[0-9]{10,25}");
+				Pattern pattern = Pattern.compile("^[a-zA-Z0-9]{10,25}");
 				Matcher matcher = pattern.matcher(rutNo);
 				return matcher.matches();
 	    	}
