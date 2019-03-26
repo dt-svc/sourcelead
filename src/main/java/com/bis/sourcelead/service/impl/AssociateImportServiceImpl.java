@@ -81,7 +81,11 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 		String fileName = multipartFile.getOriginalFilename();
 		AssociateBankErrorData associateBankErrorData = new AssociateBankErrorData();
 		List<Candidate> candidateList = candidateService.getAllAssociateByLocation(orgLocation.getId());
-		Map<String, Long> canMap = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getId));
+		Map<String, Long> canMap = new HashMap<>();
+		for(Candidate c : candidateList) {
+			canMap.put(c.getEmail().toLowerCase(), c.getId());
+		}
+		//Map<String, Long> canMap = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getId));
 		
 		List<AssociatePfEsiDetails> InfoList = associatePfEsiService.getAllPfEsiDetailsByOrgLocationid(orgLocation.getId());
 		Map<Long, String> pfeMap = new HashMap<Long, String>();
@@ -339,13 +343,13 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 							bankDataDTO.setReason("Invalid MICR Number");
 							return false;
 						}else if (row.getCell(7) == null || "".equalsIgnoreCase(row.getCell(7).toString())) {
-							bankDataDTO.setReason("Routing Number Mandatory");
+							bankDataDTO.setReason("IFSC number Mandatory");
 							return false;					
 						}else if(row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString()) && !routingNum(getCellValueAsString(row.getCell(7), fileName))){
-							bankDataDTO.setReason("Invalid Routing Number");
+							bankDataDTO.setReason("Invalid IFSC Number");
 							return false;
 						}else if (row.getCell(8) == null || "".equalsIgnoreCase(row.getCell(8).toString())) {
-							bankDataDTO.setReason("First NAme mandatory");
+							bankDataDTO.setReason("First Name mandatory");
 							return false;	
 						}else if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
 							bankDataDTO.setReason("Last Name Mandatory");
@@ -591,7 +595,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			 */
 			private boolean validatePf(String pfNum){
 				String rutNo = pfNum.trim();
-				Pattern pattern = Pattern.compile("[0-9]{15}");
+				Pattern pattern = Pattern.compile("[0-9]{10,25}");
 				Matcher matcher = pattern.matcher(rutNo);
 				return matcher.matches();
 	    	}
@@ -605,7 +609,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			 */
 			private boolean validateEsi(String esiNum){
 				String rutNo = esiNum.trim();
-				Pattern pattern = Pattern.compile("[0-9]{10,15}");
+				Pattern pattern = Pattern.compile("[0-9]{10,17}");
 				Matcher matcher = pattern.matcher(rutNo);
 				return matcher.matches();
 	    	}
