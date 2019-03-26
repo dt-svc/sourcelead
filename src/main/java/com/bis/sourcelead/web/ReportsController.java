@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -138,6 +139,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 			 teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId()); 
 		 }
      model.addObject("teamsList", teamsList);
+     
 	 model.addObject("userList", userList);
 	 model.addObject("requirementTabAccess", requirementTabAccess);
 	 model.addObject("sourceleadUrl", sourceleadUrl);
@@ -699,21 +701,15 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	
 	@RequestMapping(value = "/availableAssociatesReport")
 	public ModelAndView availableAassociatesReport(HttpServletRequest request,HttpServletResponse response) throws Exception{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		ModelAndView model = new ModelAndView();
-		//List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
-		List<ProjectMembers>newList = projectMembersService.getAllActiveProjectsByUserIdAndOrgLocationId(user.getId() ,orgLocations.getId());
-		
-		//List<User> pmUserList = (List<User>) list.stream().filter(pm -> pm.getEmployee().getUser());
-		
-		//List<Serializable> newList = Stream.concat(userList.stream(),list.stream()).collect(Collectors.toList());
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		 model.addObject("userList", newList);
-		 model.setViewName("reports/availableAssociates");
+	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	ModelAndView model = new ModelAndView();
+	List<Candidate>empList = projectMembersService.getAllAvailableAssociates(orgLocations.getId());
+	model.addObject("sourceleadUrl", sourceleadUrl);
+	model.addObject("empList", empList);
+	model.setViewName("reports/availableAssociates");
 
-		return model;
-		
+	return model;
+
 	}
 	 
 }

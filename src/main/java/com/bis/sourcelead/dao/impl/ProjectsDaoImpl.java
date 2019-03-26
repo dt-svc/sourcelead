@@ -1674,25 +1674,19 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 
 	@Override
 	@Transactional
-	public List<Projects> getProjectsListByUserIDAndOrgId(String[] associatesId,Long orgLocations) {
-	    try {
-	    	// convert string array to long array
-	    	Long[] data = new Long[associatesId.length];
-	    	for (int i = 0; i < associatesId.length; i++) {
-	    	data[i] = Long.valueOf(associatesId[i]);
-	    	}
-	    	   Session session = this.sessionFactory.getCurrentSession();
-				String query = "from Projects pj where pj.orgLocationsId = :orgLocations and pj.projectStatus = 'INPROGRESS' and pj.id  IN(select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id IN( :associatesId ))) ";
-				@SuppressWarnings("unchecked")
-				List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocations", orgLocations).setParameterList("associatesId", data).list();
-				return projectsList;
-	    	   
-	        } catch (Exception e) {
-				e.printStackTrace();
-			}
-			return null;
-			
-		}
+	public List<Projects> getProjectsListByCanddateIdAndOrgId(String associatesId, Long orglocationId) {
+	try {
+	Long candidateId = Long.valueOf(associatesId);
+	Session session = this.sessionFactory.getCurrentSession();
+	String query = "select pm.projects from ProjectMembers pm where pm.projectMemberCandidteId.id In(:candidateId) ";
+	List<Projects> projectsList = session.createQuery(query.toString()).setParameter("candidateId", candidateId).list();
+	return projectsList;
+
+	} catch (Exception e) {
+	e.printStackTrace();
+	}
+	return null;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
