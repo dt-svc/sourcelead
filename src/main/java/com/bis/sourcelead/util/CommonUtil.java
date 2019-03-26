@@ -1887,10 +1887,13 @@ public class CommonUtil {
 				
 				candidate.setIsAssociate(Constants.NO);
 				candidate.setDesignationType("W-2");
-				
+				candidate.setWorkLocation(candidateDTO.getWorkLocation());
 				candidate.setStatus(1);
 	  			Candidate savedCandidate = candidateService.saveOrUpdateCandidate(candidate);
 	  			candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
+			  }else {
+				  candidate.setWorkLocation(candidateDTO.getWorkLocation());
+				  candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			  }
 			  
 			  return candidate;
