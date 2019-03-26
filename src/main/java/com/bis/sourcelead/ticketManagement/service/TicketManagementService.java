@@ -72,6 +72,10 @@ public interface TicketManagementService {
 	
 	public Boolean saveTicketComment(TicketCommentDTO ticketCommentDTO, User user);
 
+	public TicketCommentDTO getTicketComment(long ticketCommentId, String dateFormat);
+
+	public Boolean deleteTicketComment(long ticketCommentId);
+
 	public TicketDTO getTicketDataById(long ticketId, String dateFormat);
 
 	public Boolean changeTicketManagementStatusDataById(long id, int status, OrgLocations orgLocation);
@@ -85,6 +89,8 @@ public interface TicketManagementService {
 	public List<UserDTO> getCategoryAssignToListByTicketCategoryId(long ticketCategoryId, long userId, Long orgLocationId);
 
 	public boolean changeTicketManagementStatus(long ticketId, int status);
+
+
 
 	
 

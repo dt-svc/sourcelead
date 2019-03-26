@@ -572,7 +572,7 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 	public List<TicketComment> getTicketCommentListByTicketId(Long ticketId, long userId, Long orgLocationId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from TicketComment tc where tc.ticket.id =:ticketId and tc.status = 1 order by tc.id asc";
+			String query = "from TicketComment tc where tc.ticket.id =:ticketId and tc.status = 1 order by tc.id desc";
 			return session.createQuery(query).setLong("ticketId", ticketId).list();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -596,6 +596,17 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 	}
 
 	@Override
+	public TicketComment getTicketComment(long ticketCommentId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(TicketComment.class, ticketCommentId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
 	public Boolean saveTicketComment(TicketComment ticketComment) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -607,6 +618,21 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 		return false;
 	}
 	
+	@Override
+	public Boolean deleteTicketComment(long ticketCommentId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			TicketComment ticketComment = session.get(TicketComment.class, ticketCommentId);
+			if(ticketComment != null) {
+				session.delete(ticketComment);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	@Override
 	public Ticket getTicketDataById(long id) {
 		try {
