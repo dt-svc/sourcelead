@@ -34,7 +34,7 @@
 				<div class="col-md-2">
 					<ul class="list-inline list-unstyled pull-right mb0">
 						<li>
-							<a title="Edit" href="addWorkflow.html"><i class="fa fa-pencil"></i></a>
+							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
 						</li>
 						<li>
 							<a title="Delete" href="addWorkflow.html"><i class="fa fa-trash"></i></a>
@@ -52,7 +52,7 @@
 				<div class="col-md-2">
 					<ul class="list-inline list-unstyled pull-right mb0 mt10">
 						<li>
-							<a title="Edit" href="addWorkflow.html"><i class="fa fa-pencil"></i></a>
+							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
 						</li>
 						<li>
 							<a title="Delete" href="addWorkflow.html"><i class="fa fa-trash"></i></a>
@@ -68,7 +68,7 @@
 				<div class="col-md-2">
 					<ul class="list-inline list-unstyled pull-right mb0 mt10">
 						<li>
-							<a title="Edit" href="addWorkflow.html"><i class="fa fa-pencil"></i></a>
+							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
 						</li>
 						<li>
 							<a title="Delete" href="addWorkflow.html"><i class="fa fa-trash"></i></a>
@@ -84,7 +84,7 @@
 				<div class="col-md-2">
 					<ul class="list-inline list-unstyled pull-right mb0">
 						<li>
-							<a title="Edit" href="addWorkflow.html"><i class="fa fa-pencil"></i></a>
+							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
 						</li>
 						<li>
 							<a title="Delete" href="addWorkflow.html"><i class="fa fa-trash"></i></a>
@@ -100,7 +100,7 @@
 				<div class="col-md-2">
 					<ul class="list-inline list-unstyled pull-right mb0">
 						<li>
-							<a title="Edit" href="addWorkflow.html"><i class="fa fa-pencil"></i></a>
+							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
 						</li>
 						<li>
 							<a title="Delete" href="addWorkflow.html"><i class="fa fa-trash"></i></a>
@@ -117,7 +117,7 @@
 				<div class="col-md-2">
 					<ul class="list-inline list-unstyled pull-right mb0">
 						<li>
-							<a title="Edit" href="addWorkflow.html"><i class="fa fa-pencil"></i></a>
+							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
 						</li>
 						<li>
 							<a title="Delete" href="addWorkflow.html"><i class="fa fa-trash"></i></a>

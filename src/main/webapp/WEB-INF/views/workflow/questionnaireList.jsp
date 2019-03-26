@@ -1,14 +1,13 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <div class="wraper"> 
-  <!-- Content Area -->
-  <section class="content-wraper">
+   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Questionnaire</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
-      <a href="${SourceLeadWeb_sourceleadUrl}/workflowList">Application WorkFlow</a> &raquo;
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a>&raquo; 
+      <a href="${SourceLeadWeb_sourceleadUrl}/workflowList">Application Workflow</a> &raquo;
       Questionnaire</div>
     </section>
     <div class="project_wrap clearfix">
@@ -38,7 +37,7 @@
               <tbody>
                 <tr>
                   <td>
-					  <div class="tbldata-dotdot-me" title="Rajkumar Santhoshi Konidala">Rajkumar Santhoshi Konidala</div>
+					  <div class="tbldata-dotdot-me" title="Rajkumar Santhoshi Konidala"><a href="${SourceLeadWeb_sourceleadUrl}/questionnaire-view.html">Sample</a></div>
 					</td>
                 <td>
 					<div class="tbldata-dotdot-verybig" title="Get more fox in your inbox.  Sign up for user tips, booster packs and internet intel.">
@@ -56,8 +55,8 @@
                   </td>
                 </tr>
 				  <tr>
-                  <td>
-					  <div class="tbldata-dotdot-me" title="Rajkumar Santhoshi Konidala">Rajkumar Santhoshi Konidala</div>
+          <td>
+					  <div class="tbldata-dotdot-me"><a href="questionnaire-view.html">Sample2</a></div>
 					</td>
                 <td>
 					<div class="tbldata-dotdot-verybig" title="Get more fox in your inbox.  Sign up for user tips, booster packs and internet intel.">
@@ -91,9 +90,7 @@
           </nav>
         </div>
       </div>
-      
-      <!-- Content Area Ends--> 
     </div>
   </section>
 </div>
-<jsp:include page="../masterFooter.jsp" />
+<jsp:include page="../masterFooter.jsp" /> 

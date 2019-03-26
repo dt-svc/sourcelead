@@ -48,8 +48,15 @@
     
 
       <div class="clearfix"></div>
+      
+      <!-- dynamic stages content starts here-->
+      
+      <div id = "dynamicWorkflow">
+		
+		<%--
 		<ul class="list-unstyled widgetDivLi">
-		<li class="widgetDiv mb clearfix">
+		
+		 <li class="widgetDiv mb clearfix">
 		<!-- Cardmodel widget -->
 			<div class="row">
 				<div class="col-md-10">
@@ -58,7 +65,7 @@
 				<div class="col-md-2">
 					<ul class="list-inline list-unstyled pull-right mb0">
 						<li>
-							<a title="Edit" href="addWorkflow.html"><i class="fa fa-pencil"></i></a>
+							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
 						</li>
 						<li>
 							<a title="Delete" href="addWorkflow.html"><i class="fa fa-trash"></i></a>
@@ -68,7 +75,8 @@
 		</div>
 		<!-- Cardmdoel Widget ends -->
 		</li>
-		<li class="widgetDiv mb clearfix">
+		
+		 <li class="widgetDiv mb clearfix">
 			<div class="row">
 				<div class="col-md-10">
 					<span class="shortlilstedIC pull-left"></span><h4 class="pull-left mt10 ml">Short List</h4>
@@ -76,7 +84,7 @@
 				<div class="col-md-2">
 					<ul class="list-inline list-unstyled pull-right mb0 mt10">
 						<li>
-							<a title="Edit" href="addWorkflow.html"><i class="fa fa-pencil"></i></a>
+							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
 						</li>
 						<li>
 							<a title="Delete" href="addWorkflow.html"><i class="fa fa-trash"></i></a>
@@ -92,7 +100,7 @@
 				<div class="col-md-2">
 					<ul class="list-inline list-unstyled pull-right mb0 mt10">
 						<li>
-							<a title="Edit" href="addWorkflow.html"><i class="fa fa-pencil"></i></a>
+							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
 						</li>
 						<li>
 							<a title="Delete" href="addWorkflow.html"><i class="fa fa-trash"></i></a>
@@ -108,7 +116,7 @@
 				<div class="col-md-2">
 					<ul class="list-inline list-unstyled pull-right mb0">
 						<li>
-							<a title="Edit" href="addWorkflow.html"><i class="fa fa-pencil"></i></a>
+							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
 						</li>
 						<li>
 							<a title="Delete" href="addWorkflow.html"><i class="fa fa-trash"></i></a>
@@ -124,7 +132,7 @@
 				<div class="col-md-2">
 					<ul class="list-inline list-unstyled pull-right mb0">
 						<li>
-							<a title="Edit" href="addWorkflow.html"><i class="fa fa-pencil"></i></a>
+							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
 						</li>
 						<li>
 							<a title="Delete" href="addWorkflow.html"><i class="fa fa-trash"></i></a>
@@ -141,7 +149,7 @@
 				<div class="col-md-2">
 					<ul class="list-inline list-unstyled pull-right mb0">
 						<li>
-							<a title="Edit" href="addWorkflow.html"><i class="fa fa-pencil"></i></a>
+							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
 						</li>
 						<li>
 							<a title="Delete" href="addWorkflow.html"><i class="fa fa-trash"></i></a>
@@ -149,8 +157,16 @@
 					</ul>
 				</div>
 			</div>
-		</li>
-		</ul>
+		</li> 
+		
+		
+		
+		</ul> --%>
+		</div>
+		
+		 <!-- dynamic stages content ends here-->
+		
+		
 		<div class="footerstyelsNew">
 	<div class="clearfix">
 		<div class="pull-right">
@@ -163,12 +179,53 @@
     </div>
   </section>
 </div>
+<script>
 
+$(document).ready(function() {
+	getDefaultWorkflow();
+	
+});
+var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+</script>
+<script>
+
+	function getDefaultWorkflow() {
+		var formData = getFormData("requirementWorkFlowForm");
+		$.ajax({
+			type : "GET",
+			data : formData,
+			url : sourceleadUrl + "/createRequirementDefaultWorkFlow",
+			success : function(dataList) {
+				var result = "";
+				if(dataList != null && dataList.length > 0){
+					 result = result + "<ul class='list-unstyled widgetDivLi'>"; 
+					for(var i = 0 ; i < dataList.length; i++){
+					result = result + "<li class='widgetDiv mb clearfix'>";
+					result = result + "<div class='row'>";
+					result = result + "<div class='col-md-10'>";
+					result = result + "<span class='submissionShare pull-left'></span><h4 class='pull-left mt10 ml'>"+dataList[i].stageName+"</h4>";
+					result = result + "</div>";
+					result = result + "<div class='col-md-2'>";
+					result = result + "<ul class='list-inline list-unstyled pull-right mb0'>";
+					result = result + "<li>";
+					result = result + "<a title='Edit' href='${SourceLeadWeb_sourceleadUrl}/addStage'><i class='fa fa-pencil'></i></a>";
+					result = result + "</li>";
+					result = result + "<li>";
+					result = result + "<a title='Delete' href='addWorkflow.html'><i class='fa fa-trash'></i></a>";
+					result = result + "</li></ul></div></div></li>";
+					}
+					 result = result + "</ul>"; 
+				}
+				$("#dynamicWorkflow").empty().append(result);
+			},
+		});
+
+	}
+	
+</script>
 <script type="text/javascript">
 function saveRequirementWorkFlow(){
-	alert("AAAA");
-	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-	 alert("sourceleadUrl>>>="+sourceleadUrl);
+	 
       var validationSettings = {
            errorMessagePosition: 'element',
            borderColorOnError: '',
