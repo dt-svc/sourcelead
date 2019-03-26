@@ -83,6 +83,7 @@ var uploadflag= true;
 								<!-- Attach File button -->
 
 								<div class="dropzone">
+								<p class="textSuccess textBold mb0" id="docSuccess" style="display:none;">Data Uploaded Successfully</p>
 									<div class="clearfix"></div>
 									<div class="file-upload clearfix text-center">
 										<div class="col-md-12" id="">
@@ -138,6 +139,10 @@ var uploadflag= true;
 					<div class="clearfix"></div>
 				</form:form>
 	</div>
+	<div class="require_wrap_table datatable_filter">
+		<h5 id="uploadXlsHistoryDivTitle" style="display: none;">Failed Records</h5>
+		<div id="errorDataDIV"></div>
+    </div>
 	<div id="dataFieldsDiv" style="display: none"></div>
 <div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop">
 	<h5 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Recent Uploads History</h5>
@@ -150,7 +155,7 @@ var uploadflag= true;
     <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 </div>
 
-<!-- <script type="text/javascript" src="/resources/js/xlsupload.js"></script> -->
+<script type="text/javascript" src="/resources/js/xlsupload.js"></script>
 
 <script type="text/javascript">
 document.getElementById("uploadBtn").onchange = function () {
@@ -181,15 +186,21 @@ if ($('#upload_salary_form').validate(false, validationSettings)){
     	    dataType : 'json',
 		    url : sourceleadUrl+"/saveAssociateSalaryDetailsTemplate?"+tokenParamName+"="+tokenValue+"", 	   
  		    success : function(json) {
+ 		    			$("#upload_button").prop("disabled", true);
 	 		    		$("#loading").removeAttr("style");
-	 		    	    if(json.recordUpdatedCount != null && json.recordUpdatedCount != '')
+	 		    	    if(json.response != null && json.response != '')
 	 		    	    $("#msgDiv").removeAttr("style");
 	 		 			$("#msgDiv").css({ display: "block" });
-	 		 			$("#msgDiv").html(json.recordUpdatedCount+ " Associates Salary details updated ..!");
+	 		 			$("#msgDiv").html(json.response+ " Associates Salary details updated ..!");
 	 		 			$("#selector11").removeAttr('style');
 	 			    	msgFadein();
-	 		    	    closeImportFile();
-	 		    	    resetUpload();
+	 		    	    //closeImportFile();
+	 		    	   // resetUpload();
+	 		    	   if(json.data.length > 0){
+	 		    		  showFailedExcelData(json);
+	 		    	   }else{
+	 		    		   $("#docSuccess").fadeIn();
+	 		    	   }
 		 		    },
 		 		   error: function(e){
 			        }
@@ -209,6 +220,58 @@ function cancelFileImport(){
 	location.replace(sourceleadUrl+"/usersList");
 }
 </script>
+<script>
+	function msgFadein() {
+		$("#msgDiv").fadeIn(200);
+        $('#msgDiv').delay(2000).fadeOut('slow');
+	}
+    </script> 
+
+<script>
+  function showFailedExcelData(json){
+		  var result = "";
+	    	 result += '<table id="errorDataList" class="display" cellspacing="0" width="100%" >';
+	         result += '<thead>';
+	         result += '  <tr>';
+	         result += '    <th>Associate Email*</th>';
+	         result += '    <th>Error Message</th>';
+	         result += '  </tr>';
+	         result += '</thead>';
+	         result += '<tbody>';
+	         var data = json.data;
+	    	 for(i=0;i < data.length;i++){
+	    		 var report = data[i];
+	    		 result += '<tr>';
+		         result += '<td><div class="tblminwidth-175">'+report.associateEmail+'</div></td>';
+		         result += '<td><div class="tbldata-dotdot-me">'+report.errorMessage+'</div></td>';
+		         result += '  </tr>';
+	    	 }
+	    	
+	         result += '  </tbody>';
+    		 result += '</table> ';
+    		 $("#errorDataDIV").empty();
+    		 $("#errorDataDIV").append(result);
+    		 $("#loading").removeAttr('style');
+    		 excelDataPagination();
+	     /* });  */
+  }
+  
+  function excelDataPagination(){
+		$('#errorDataList').DataTable({ 
+			"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": false,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": ""
+	     	}
+	    });
+		$("#errorDataList").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
+
+	}
+  </script>
 
 
 <!-- Footer Area -->
