@@ -1,6 +1,7 @@
 package com.bis.sourcelead.clockInOutServiceImpl;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,11 @@ import com.bis.sourcelead.clockInOutDao.ClockInOutConfigDao;
 import com.bis.sourcelead.clockInOutEntity.ClockInOutConfig;
 import com.bis.sourcelead.clockInOutService.ClockInOutConfigService;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Requirement;
 
 @Service
 public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
@@ -103,6 +108,18 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	@Override
 	public ClockInOutConfig getClockInOutConfigBasedOnOrgLocationId(Long orgLocationId) {
 		return clockInOutConfigDao.getClockInOutConfigBasedOnOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userI)
+	{
+		return clockInOutConfigDao.getAssignedRequirementListByOrgLocationIDAndUserId(orgLocationId,userType,userI);
+	}
+
+	@Override
+	public ResponseList<Projects> getProjectsListByUserId(ProjectsDTO projectsDTO, Long userId, String clients, String values, Long orgLocationId, String userRole, Long candidateId)
+	{
+		return clockInOutConfigDao.getProjectsListByUserId(projectsDTO,userId,clients,values,orgLocationId,userRole,candidateId);
 	}
 
 }
