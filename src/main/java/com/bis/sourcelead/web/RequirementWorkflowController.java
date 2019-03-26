@@ -124,6 +124,7 @@ public class RequirementWorkflowController {
 			List<RequirementWorkFlow> requirementWorkFlow = requirementWorkFlowService.getRequirementWorkFlowByOrgLocationId(orgLocations.getId());
 			if (requirementWorkFlow == null || requirementWorkFlow.isEmpty()) {
 				requirementWorkFlowService.saveRequirementWorkFlowStagesByOrgLocationId(orgLocations, user, requirementWorkFlowDTO);
+				requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementDefaultWorkFlowStages();
 			}
 			if(requirementWorkFlow.size() >= 1 && !(requirementWorkFlow.isEmpty())) {
 				requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementDefaultWorkFlowStages();
