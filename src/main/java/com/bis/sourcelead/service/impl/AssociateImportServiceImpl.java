@@ -36,6 +36,7 @@ import com.bis.sourcelead.dto.AssociateSalaryIndDTO;
 import com.bis.sourcelead.dto.AssociateSalaryPayheadIndDTO;
 import com.bis.sourcelead.dto.IndAssociatePaymentAccountDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -85,6 +86,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 		for(Candidate c : candidateList) {
 			canMap.put(c.getEmail().toLowerCase(), c.getId());
 		}
+		
 		//Map<String, Long> canMap = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getId));
 		
 		List<AssociatePfEsiDetails> InfoList = associatePfEsiService.getAllPfEsiDetailsByOrgLocationid(orgLocation.getId());
@@ -126,18 +128,18 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 						}else {
 							if(row.getCell(0) != null  && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 								InfoDataDTO.setUserId(getCellValueAsString(row.getCell(0), fileName));
-							   }else{InfoDataDTO.setUserId("-");}
-							if(row.getCell(1) != null  && !"".equalsIgnoreCase(row.getCell(1).toString())) 
+							 }else{InfoDataDTO.setUserId("-");}
+							if(row.getCell(1) != null  && !"".equalsIgnoreCase(row.getCell(1).toString()))
 								InfoDataDTO.setEmail(getCellValueAsString(row.getCell(1), fileName));
 							if(row.getCell(2) != null  && !"".equalsIgnoreCase(row.getCell(2).toString())) {
 								InfoDataDTO.setUanNumber(getCellValueAsString(row.getCell(2), fileName));	
-							   }else{InfoDataDTO.setUanNumber("-");}
+							  }else{InfoDataDTO.setUanNumber("-");}
 							if(row.getCell(3) != null  && !"".equalsIgnoreCase(row.getCell(3).toString())) {
 								InfoDataDTO.setPfNumber(getCellValueAsString(row.getCell(3), fileName));
-							   }else{InfoDataDTO.setPfNumber("-");}
+							  }else{InfoDataDTO.setPfNumber("-");}
 							if(row.getCell(4) != null  && !"".equalsIgnoreCase(row.getCell(4).toString())) {
 								InfoDataDTO.setEsinumber(getCellValueAsString(row.getCell(4), fileName));
-							   }else{InfoDataDTO.setEsinumber("-");}
+							  }else{InfoDataDTO.setEsinumber("-");}
 							errorlist.add(InfoDataDTO);
 						}
 					}
@@ -190,9 +192,10 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 						InfoDataDTO.setReason("Invalid Esi Number");
 						return false;
 				}
-			}
-			else{InfoDataDTO.setReason("Uan number Mandatory");
-	         return false;}
+			}else{
+					InfoDataDTO.setReason("Uan number Mandatory");
+			     	return false;
+			     }
 			
 			if(pfeMap != null ) {
 				Long candidateId = canMap.get(getCellValueAsString(row.getCell(1),fileName));
@@ -206,7 +209,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			}
 		}else
 		{
-			InfoDataDTO.setReason("Associate doesn't exist");	
+			InfoDataDTO.setReason("Associate doesn't exist");
 			return false;
 		}
 		return true;
@@ -226,8 +229,10 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 		//Map<String, Long> canMap = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getId));
 		Map<String, Long> canMap = new HashMap<>();
 		for(Candidate c : candidateList) {
-			canMap.put(c.getEmail().toLowerCase(), c.getId());
-		}
+			canMap.put(c.getEmail().toLowerCase(), c.getId());}
+		
+		
+		
 		Map<String,  List<String>> accGroupByEmailList = new HashMap<String, List<String>>();
 		canMap.forEach((k, v) -> {
 			   accGroupByEmailList.put(k, paymentDetailsList.stream().filter(t -> t.getEmail().equals(k)).map(PaymentAccount::getAccountNumber).collect(Collectors.toList()));  });
@@ -253,7 +258,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 					if (row.getRowNum() > 0 && row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) { // Excluding column names
 						isValidated = validateAssociateBankExeclData(row,fileName,bankDataDTO,canMap,accGroupByEmailList,paymentDetailsList);
 						if(isValidated) {
-							if (row.getCell(0) != null  && !"".equalsIgnoreCase(row.getCell(0).toString()))
+							if (row.getCell(0) != null  && !"".equalsIgnoreCase(row.getCell(0).toString())) 
 								bankDataDTO.setUserId((getCellValueAsString(row.getCell(0), fileName)));	
 							if(row.getCell(1) != null  && !"".equalsIgnoreCase(row.getCell(1).toString()))
 								bankDataDTO.setEmail(getCellValueAsString(row.getCell(1), fileName));
@@ -330,7 +335,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 
 		private boolean validateAssociateBankExeclData(Row row, String fileName, IndAssociatePaymentAccountDTO bankDataDTO, Map<String, Long> map, Map<String,List<String>> accGroupByEmailList ,List<PaymentAccount> paymentDetailsList)
 		{
-			if(map.get(getCellValueAsString(row.getCell(1), fileName)) != null) {
+			if(map.get(getCellValueAsString(row.getCell(1), fileName).toLowerCase().trim()) != null) {
 				if (row.getCell(1) == null || "".equalsIgnoreCase(row.getCell(1).toString())) {
 					bankDataDTO.setReason("Email Mandatory");
 					return false;
@@ -373,11 +378,11 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 					if("Savings".equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName))) {
 					List<String> accountNum =accGroupByEmailList.get(getCellValueAsString(row.getCell(1),fileName));	
 					if(accountNum != null && accountNum.size() > 0) {
-					 boolean acc = accountNum.contains(getCellValueAsString(row.getCell(4),fileName));
-					 if(acc) {
-						 bankDataDTO.setReason("account already existed with this email");
-							return false;
-					 }
+						 boolean acc = accountNum.contains(getCellValueAsString(row.getCell(4),fileName));
+						 if(acc) {
+							 bankDataDTO.setReason("account already existed with this email");
+								return false;
+						 }
 					}
 					}else {
 							Boolean flag = false;        
@@ -396,7 +401,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 				}
 				
 			}else {
-				bankDataDTO.setReason("Associate doesn't existed with given email");
+				bankDataDTO.setReason("Associate doesn't exist");
 				return false;
 			}
 			
@@ -407,10 +412,11 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 //=======================Associate salary import=========================//
 		
 	@Override
-	public AssociateSalaryIndDTO saveAssociateSalaryDetails(MultipartFile multipartFile,
+	public ResponseList<AssociateSalaryIndDTO> saveAssociateSalaryDetails(MultipartFile multipartFile,
 				OrgLocations orgLocation, User user) {
 			String fileName = multipartFile.getOriginalFilename();
-			AssociateSalaryIndDTO response = new AssociateSalaryIndDTO();
+			ResponseList<AssociateSalaryIndDTO> response = new ResponseList<>();
+			List<AssociateSalaryIndDTO> associateSalaryIndDTOList = new ArrayList<AssociateSalaryIndDTO>();
 			int recordUpdatedCount = 0;
 			try {
 				File file = new File(multipartFile.getOriginalFilename());
@@ -451,36 +457,46 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 						AssociateSalaryIndDTO associateSalaryIndDTO = new AssociateSalaryIndDTO();
 						Row row = rowIterator.next();
 							if (row.getRowNum() > 0 && (row.getCell(1) != null && row.getCell(2) != null && row.getCell(3) != null && row.getCell(4) != null  && row.getCell(6) != null)) {
-								String assoId = getCellValueAsString(row.getCell(0), fileName);
+								/*String assoId = getCellValueAsString(row.getCell(0), fileName);
 								if (row.getCell(0) != null && StringUtils.isNotBlank(mapEmailAndAssId.get(assoId))) {
 									associateSalaryIndDTO.setCandidateId(Long.parseLong(assoId));
-								}
+								}*/
 								
-								if(mapEmailAndId.get(getCellValueAsString(row.getCell(1), fileName)) != null) {
-									associateSalaryIndDTO.setCandidateId(mapEmailAndId.get(getCellValueAsString(row.getCell(1), fileName)));
-									associateSalaryIndDTO.setUuid(associateSalaryIndCanEmailAndUUID.get(getCellValueAsString(row.getCell(1), fileName)));
+								if(validateEmail(getCellValueAsString(row.getCell(1), fileName).trim()) && mapEmailAndId.get(getCellValueAsString(row.getCell(1), fileName).trim()) != null) {
+									associateSalaryIndDTO.setAssociateEmail(getCellValueAsString(row.getCell(1), fileName).trim());
+									associateSalaryIndDTO.setCandidateId(mapEmailAndId.get(getCellValueAsString(row.getCell(1), fileName).trim()));
+									associateSalaryIndDTO.setUuid(associateSalaryIndCanEmailAndUUID.get(getCellValueAsString(row.getCell(1), fileName).trim()));
 								}else {
+									associateSalaryIndDTO.setAssociateEmail(getCellValueAsString(row.getCell(1), fileName).trim());
+									associateSalaryIndDTO.setErrorMessage("Invalid Email");
+									associateSalaryIndDTOList.add(associateSalaryIndDTO);
 									continue;
 								}
 								
-								if(Arrays.stream(Constants.ASSOCIATE_SALARY_PAYTYPE).anyMatch(getCellValueAsString(row.getCell(2), fileName) :: equals))
+								if(Arrays.stream(Constants.ASSOCIATE_SALARY_PAYTYPE).anyMatch(getCellValueAsString(row.getCell(2), fileName).trim() :: equals)) {
 									associateSalaryIndDTO.setPayType(getCellValueAsString(row.getCell(2), fileName));
-								else
+								}else {
+									associateSalaryIndDTO.setErrorMessage("Invalid Salary Type");
+									associateSalaryIndDTOList.add(associateSalaryIndDTO);
 									continue;
-								
-								if(Arrays.stream(Constants.ASSOCIATE_SALARY_PAYFREQUENCY).anyMatch(getCellValueAsString(row.getCell(3), fileName) :: equals))
+								}
+								if(Arrays.stream(Constants.ASSOCIATE_SALARY_PAYFREQUENCY).anyMatch(getCellValueAsString(row.getCell(3), fileName).trim() :: equals)) {
 									associateSalaryIndDTO.setPayFrequency(getCellValueAsString(row.getCell(3), fileName));
-								else
+								}else {
+									associateSalaryIndDTO.setErrorMessage("Invalid Salary Freaquency");
+									associateSalaryIndDTOList.add(associateSalaryIndDTO);
 									continue;
-								
-								if(userGroupNameAndUUID.get(getCellValueAsString(row.getCell(4), fileName)) != null)
-									associateSalaryIndDTO.setPayGroup(userGroupNameAndUUID.get(getCellValueAsString(row.getCell(4), fileName)));
-								else
+								}
+								if(row.getCell(4) != null && userGroupNameAndUUID.get(getCellValueAsString(row.getCell(4), fileName).trim()) != null) {
+									associateSalaryIndDTO.setPayGroup(userGroupNameAndUUID.get(getCellValueAsString(row.getCell(4), fileName).trim()));
+								}else {
+									associateSalaryIndDTO.setErrorMessage("Invalid Pay Group");
+									associateSalaryIndDTOList.add(associateSalaryIndDTO);
 									continue;
-								
-								if(getCellValueAsString(row.getCell(5), fileName) != null) {
+								}
+								if(row.getCell(5) != null && getCellValueAsString(row.getCell(5), fileName).trim() != null) {
 									try{
-										  Integer.parseInt(getCellValueAsString(row.getCell(5), fileName));
+										  Integer.parseInt(getCellValueAsString(row.getCell(5), fileName).trim());
 										  associateSalaryIndDTO.setStandardHours(getCellValueAsString(row.getCell(5), fileName));
 										} catch (NumberFormatException e) {
 											associateSalaryIndDTO.setStandardHours(orgLocation.getAverageWorkingHours().toString());
@@ -489,9 +505,11 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 									associateSalaryIndDTO.setStandardHours(orgLocation.getAverageWorkingHours().toString());
 								}
 								
-								if(StringUtils.isNumeric(getCellValueAsString(row.getCell(6), fileName))) {
-									associateSalaryIndDTO.setAnnualSal(getCellValueAsString(row.getCell(6), fileName));
+								if(row.getCell(6) != null && StringUtils.isNumeric(getCellValueAsString(row.getCell(6), fileName).trim())) {
+									associateSalaryIndDTO.setAnnualSal(getCellValueAsString(row.getCell(6), fileName).trim());
 								}else {
+									associateSalaryIndDTO.setErrorMessage("Invalid Annual Salary");
+									associateSalaryIndDTOList.add(associateSalaryIndDTO);
 									continue;
 								}
 								
@@ -538,11 +556,13 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 										    }
 								        }
 										
-										if(StringUtils.isNumeric(getCellValueAsString(row.getCell(cell.getColumnIndex()), fileName))) {
+										if(row.getCell(cell.getColumnIndex()) != null && StringUtils.isNumeric(getCellValueAsString(row.getCell(cell.getColumnIndex()), fileName).trim())) {
 											assoSalPayheadIndDTO.setChecked(true);
-											assoSalPayheadIndDTO.setMonthly(new BigDecimal(getCellValueAsString(row.getCell(cell.getColumnIndex()), fileName)));
-											assoSalPayheadIndDTO.setAnnualy(new BigDecimal(getCellValueAsString(row.getCell(cell.getColumnIndex()), fileName)).multiply(new BigDecimal(12)));
+											assoSalPayheadIndDTO.setMonthly(new BigDecimal(getCellValueAsString(row.getCell(cell.getColumnIndex()), fileName).trim()));
+											assoSalPayheadIndDTO.setAnnualy(new BigDecimal(getCellValueAsString(row.getCell(cell.getColumnIndex()), fileName).trim()).multiply(new BigDecimal(12)));
 										}else {
+											associateSalaryIndDTO.setErrorMessage("Invalid Amount");
+											associateSalaryIndDTOList.add(associateSalaryIndDTO);
 											continue;
 										}
 										
@@ -553,6 +573,10 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 								
 						        payrollPayheadService.saveAssociateSalaryInd(associateSalaryIndDTO, user, orgLocation);
 						        recordUpdatedCount ++;
+							}else if(row.getRowNum() > 0 && row.getCell(1) != null && !validateEmail(getCellValueAsString(row.getCell(1), fileName).trim())) {
+								associateSalaryIndDTO.setAssociateEmail(getCellValueAsString(row.getCell(1), fileName).trim());
+								associateSalaryIndDTO.setErrorMessage("Invalid Email");
+								associateSalaryIndDTOList.add(associateSalaryIndDTO);
 							}else{
 								count = count++;
 								if(count == 5)	
@@ -560,11 +584,13 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 							}
 					 }				
 				}	
-				response.setRecordUpdatedCount(recordUpdatedCount);
+				response.setResponse(String.valueOf(recordUpdatedCount));
+				response.setData(associateSalaryIndDTOList);
 				fis.close();
 			} catch (Exception e) {
 				e.printStackTrace();
-				response.setRecordUpdatedCount(recordUpdatedCount);
+				response.setResponse(String.valueOf(recordUpdatedCount));
+				response.setData(associateSalaryIndDTOList);
 			}
 			return response;
 		}
@@ -595,7 +621,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			 */
 			private boolean validateUan(String uan){
 				String acNo = uan.trim();
-				Pattern pattern = Pattern.compile("[0-9]{12}");
+				Pattern pattern = Pattern.compile("[0-9]{1,12}");
 				Matcher matcher = pattern.matcher(acNo);
 				return matcher.matches();
 	    	}
@@ -632,7 +658,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			public boolean validateBsrMicr(String num) //not the mandatory fields
 			{
 				  String emailId =num.trim();
-				  Pattern pattern = Pattern.compile("/^([a-zA-Z0-9_-]){9,15}$/");
+				  Pattern pattern = Pattern.compile("^[a-zA-Z0-9]{9,15}$");
 				  Matcher matcher = pattern.matcher(emailId);
 				  return matcher.matches();
 				}
