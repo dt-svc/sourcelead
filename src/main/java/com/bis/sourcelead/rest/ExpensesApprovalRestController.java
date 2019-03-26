@@ -583,10 +583,9 @@ public class ExpensesApprovalRestController {
 		//emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
 		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());  
     }
-    private void sendEmailNotificationToaApproverTwo(Expenses expenses, String currencyCode,
-			String firstName, String lastName, String toEmail, User loginUser, User toUser, String status,
+    private void sendEmailNotificationToaApproverTwo(Expenses expenses, String currencyCode,String firstName, String lastName, String toEmail, User loginUser, User toUser, String rejectreson,
 			OrgLocations loginOrgLocation, ProjectMembers projectMembers, String startDate, String endDate,
-			String rejectedReason) throws Exception {
+			String status) throws Exception {
     	 EmailMessage emailMessage = new EmailMessage();
     	 emailMessage.setFirstName(firstName);
 	 	 emailMessage.setLastName(lastName);
