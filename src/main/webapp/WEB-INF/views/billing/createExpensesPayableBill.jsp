@@ -1542,15 +1542,15 @@ function populateInlineItemsGrid(){
 
 
 <script>
-function getExpenses(projectMemberId,expensesFrequency,expenseId){
+function getExpenses(projectMemberId,expensesFrequency,expId){
 	var memberId = $("#projectMemberId").val();
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	if(projectMemberId !=null && projectMemberId !='undefined' && expensesFrequency !=null && expensesFrequency !='undefined'){
 		memberId = projectMemberId
 	}
 	var expenseId = 0;
-	if(expenseId !=null && expenseId !='undefined' && expensesFrequency !=null && expensesFrequency !='undefined'){
-		expenseId = expenseId;
+	if(expId !=null && expId !='undefined' && expensesFrequency !=null && expensesFrequency !='undefined'){
+		expenseId = expId;
 	}
 	$.ajax({
 		type : "GET",
