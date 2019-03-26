@@ -20,14 +20,14 @@
 			<directory>${project.build.directory}/admin/WEB-INF/classes/com/bis/sourcelead/db</directory>
 			<outputDirectory>Sourcelead_Db_Scripts/com/bis/sourcelead/db</outputDirectory>
 		</fileSet>
-		<!-- <fileSet>
+		<fileSet>
 			<directory>src/main/java/com/bis/sourcelead/elk/bin</directory>
 			<outputDirectory>Sourcelead_Db_Scripts/elk_bin</outputDirectory>
-		</fileSet> -->
-		<!-- <fileSet>
+		</fileSet>
+		<fileSet>
 			<directory>${project.build.directory}/admin/WEB-INF/classes/com/bis/sourcelead/elk</directory>
 			<outputDirectory>Sourcelead_Db_Scripts/com/bis/sourcelead/elk</outputDirectory>
-		</fileSet> -->
+		</fileSet>
 		<fileSet>
 			<directory>${project.build.directory}/admin/WEB-INF/classes/com/bis/sourcelead/constants</directory>
 			<outputDirectory>Sourcelead_Db_Scripts/com/bis/sourcelead/constants</outputDirectory>
