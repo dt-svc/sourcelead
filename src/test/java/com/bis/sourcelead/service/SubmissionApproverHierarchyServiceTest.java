@@ -50,7 +50,6 @@ public class SubmissionApproverHierarchyServiceTest {
 		submissionId.setProjectMembers(projectMembers );
 		User approverUserId = new User();
 		approverUserId.setId(1l);
-		submissionId.setApproverUserId(approverUserId );
 		submissionApproverHierarchy.setSubmissionId(submissionId);
 		submissionApproverHierarchy.setUpdatedBy("shiv");
 		submissionApproverHierarchy.setUpdatedDate(new Date());

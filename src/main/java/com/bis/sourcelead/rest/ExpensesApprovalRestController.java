@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -235,19 +236,21 @@ public class ExpensesApprovalRestController {
 			 			//For Approvers of EndClient
 				 		 List<ExpenseProjectApproverHierarchy> approverList =  expenseProjectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(), orgLoc.getId());
 				 		 if(approverList != null && !approverList.isEmpty()){
-
+				 			 List<Long> approverUserIdList = new LinkedList<>();
 				 			 for(ExpenseProjectApproverHierarchy  approver : approverList){
 				 				if(!user.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode())){
-				 					sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user,approver.getApproverUserId(), orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
+				 					approverUserIdList.add(approver.getApproverUserId().getId());
+				 					sendEmailNotificationToAndApproversOfEndClient(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user,approver.getApproverUserId(), endDate, orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
 				 				}
 				 			 }
+				 			 
 				 			 
 				 			 if(eah.getExpenseId() != null && eah.getExpenseId().getProjects() != null && StringUtils.isNotEmpty(eah.getExpenseId().getProjects().getIsReportingManagerAsApprover())
 				 					   &&  eah.getExpenseId().getProjects().getIsReportingManagerAsApprover().equalsIgnoreCase("Y")) {
 				 				   if(projectMembers != null && projectMembers.getProjectMemberCandidteId() != null &&  projectMembers.getProjectMemberCandidteId().getConsultantUser() != null
 				 						   &&  projectMembers.getProjectMemberCandidteId().getConsultantUser()!= null && projectMembers.getProjectMemberCandidteId().getOrgLocationId() != null) {
 				 					   UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(projectMembers.getProjectMemberCandidteId().getConsultantUser().getId(), projectMembers.getProjectMemberCandidteId().getOrgLocationId().getId());
-				 					   if(userRole != null && userRole.getReportingManager() != null) {
+				 					   if(userRole != null && userRole.getReportingManager() != null && !approverUserIdList.contains(userRole.getReportingManager().getId())) {
 				 						  sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,userRole.getReportingManager().getFirstName(), userRole.getReportingManager().getLastName(), userRole.getReportingManager().getEmail(), user,userRole.getReportingManager(),  orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
 				 					   }
 				 				   }
@@ -276,8 +279,15 @@ public class ExpensesApprovalRestController {
 				 		 }
 				 		 if(approverList != null && !approverList.isEmpty()){
 				 			 for(ExpenseProjectApproverHierarchy  approver : approverList){
+				 				 if(eah.getExpenseId().getProjects().getExpenseApprovalType().equalsIgnoreCase(Constants.SEQUENTIAL)) {
+				 					if(approver.getLevel() != null && approver.getLevel() != 1){
+				 					  sendEmailNotificationToaApproverTwo(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user,approver.getApproverUserId(),submissionStatusStr,  orgLoc, projectMembers, startDate, endDate, "approved");
+				 					}
+				 					
+				 				 }
 				 				if(approver.getLevel() != null && approver.getLevel() != 1){
-				 					sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user,approver.getApproverUserId(),  orgLoc, projectMembers, startDate, endDate, "approved", rejectedReason);
+				 				//	sendEmailNotificationToAndApproversOfEndClient(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user,approver.getApproverUserId(),submissionStatusStr,  orgLoc, projectMembers, startDate, endDate, "approved", rejectedReason);
+				 					 sendEmailNotificationToaApproverTwo(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user,approver.getApproverUserId(),submissionStatusStr,  orgLoc, projectMembers, startDate, endDate, "approved");
 				 				}
 				 			 }
 				 		 } 
@@ -298,6 +308,114 @@ public class ExpensesApprovalRestController {
     }
 
    
+
+
+
+	private void sendEmailNotificationToAndApproversOfEndClient(Expenses expenses, String currencyCode,
+			String firstName, String lastName, String toEmail, User loginUser, User approverUserId,String status1, OrgLocations loginOrgLocation,
+			ProjectMembers projectMembers, String startDate, String endDate, String status,
+			String rejectedReason) throws Exception {
+		
+    	EmailMessage emailMessage = new EmailMessage();
+    	 emailMessage.setFirstName(firstName);
+	 	 emailMessage.setLastName(lastName);
+	 	 emailMessage.setToEmail(toEmail);
+	 	 emailMessage.setFromEmail(loginUser.getEmail());
+	 	 emailMessage.setCreatedBy(loginUser.getUserCode());
+	 	 
+	 	 StringBuilder userNameSB = new StringBuilder();
+	 	 emailMessage.setFromName(userNameSB.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+	 	emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 //setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<>();
+		
+		// globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
+		// globalVarsMap.put("loginUserLastName",loginUser.getLastName());
+		 
+		 
+		 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
+			 StringBuilder manager =new StringBuilder();
+			 globalVarsMap.put("managerUser", manager.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 }else{
+			 globalVarsMap.put("managerUser",loginUser.getFirstName());
+		 }
+		 
+		 globalVarsMap.put("employeeUser",projectMembers.getProjectMemberCandidteId().getFullName());
+		 globalVarsMap.put("projectName",projectMembers.getProjects().getProjectName());
+		 globalVarsMap.put("expenseId",expenses.getExpenseId());
+		 globalVarsMap.put("frequencyType",projectMembers.getProjects().getInvoiceFrequency());
+		 globalVarsMap.put("startDate",startDate);
+		 globalVarsMap.put("endDate", endDate);
+		 
+		/* StringBuilder amountCurrencyType = new StringBuilder();
+		 BigDecimal amountCurrencyType1 = new BigDecimal((expenses.getTotalAmount()));*/
+		// BigDecimal amountCurrencyType2 = new BigDecimal((expenses.getExpensesEntries()));
+		// amountCurrencyType1 = amountCurrencyType1.setScale(2,BigDecimal.ROUND_HALF_UP );
+		 
+		 Set<ExpensesEntries> expensesEntriesList = expenses.getExpensesEntries();
+		 for(ExpensesEntries expList: expensesEntriesList) {
+			 
+			 globalVarsMap.put("amount", expList.getSubmittedamount().toString());
+			 globalVarsMap.put("approvedAmount",expenses.getTotalAmount().toString());
+			 
+			
+		 }
+		/* amountCurrencyType.append(amountCurrencyType1).append(" ").append(currencyCode);
+		 globalVarsMap.put("amount",amountCurrencyType1.toString());
+		 globalVarsMap.put("approvedAmount",expenses.getTotalAmount().toString());
+*/
+		 
+		Date todayDate = new Date();
+		 globalVarsMap.put("submitForApprovalDate",commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),todayDate));
+		
+		// globalVarsMap.put("employeeFirstName",sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());
+		// globalVarsMap.put("employeeLastName",sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());
+		
+		 globalVarsMap.put("loginOrg",loginOrgLocation.getOrgLocationName());
+		 
+		 
+		 StringBuilder timeFrequencySB = new StringBuilder();
+		 globalVarsMap.put("timeFrequency",timeFrequencySB.append(startDate).append(" to ").append(endDate).toString());
+		 
+		 globalVarsMap.put("managerFirstName", loginUser.getFirstName());
+		 globalVarsMap.put("managerLastName", loginUser.getLastName());
+		 
+		 if("REJECTED".equalsIgnoreCase(status)){
+			 globalVarsMap.put("rejectedReason",rejectedReason);
+		 }
+		 
+		 StringBuilder loginURLSB = new StringBuilder();
+		 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadLoginUrl).append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 
+		 if("REJECTED".equalsIgnoreCase(status)){
+			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_TEAM_MANAGER_REJECTED_EXPENSE,new ArrayList<EmailAttachment>());
+		 }
+		 if("APPROVED".equalsIgnoreCase(status)){
+			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_TEAM_MANAGER_APPROVED_EXPENSE,new ArrayList<EmailAttachment>());
+		 }
+		
+		 EmailScenario  notificationScenario = null;
+		 String actionLink="";
+		 StringBuilder notificationLink = new StringBuilder();
+		 if("REJECTED".equalsIgnoreCase(status)){
+		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("addApprovalExpense?expenseId="+expenses.getExpenseId()+"&expenseLocationCode="+expenses.getLocationsCode()+"&type=view").toString();
+			 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MANAGER_REJECTED_EXPENSE,Constants.ENTITY_TYPE_NOTIFICATION);
+		 }
+		 if("APPROVED".equalsIgnoreCase(status)){
+		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("addApprovalExpense?expenseId="+expenses.getExpenseId()+"&expenseLocationCode="+expenses.getLocationsCode()+"&type=view").toString();
+
+			 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MANAGER_APPROVED_EXPENSE,Constants.ENTITY_TYPE_NOTIFICATION);
+		 }
+		 // TODO @Rajashekar notificationScenario.getBody() may throw NullPointerException please check it once 
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
+		notificationScenario.setBody(notificationBody);
+		notificationScenario.setOrgCode(loginOrgLocation.getLocationCode());
+		//emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
+		emailScenerioUtil.sendNotification(actionLink, loginUser, approverUserId, loginOrgLocation, notificationScenario,new HashMap<String,String>());  
+    }
+	
+
+
 	private void sendEmailToVendorAtExpensesApprovalStatus(java.math.BigDecimal bigDecimal,ProjectMembers projectMembers, User user,OrgLocations orgLoc,String startDateStr,String endDateStr,
 			String rejectedReason,String currencyCode, String status) throws Exception {
 		
@@ -465,7 +583,62 @@ public class ExpensesApprovalRestController {
 		//emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
 		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());  
     }
-	
+    private void sendEmailNotificationToaApproverTwo(Expenses expenses, String currencyCode,String firstName, String lastName, String toEmail, User loginUser, User toUser, String rejectreson,
+			OrgLocations loginOrgLocation, ProjectMembers projectMembers, String startDate, String endDate,
+			String status) throws Exception {
+    	 EmailMessage emailMessage = new EmailMessage();
+    	 emailMessage.setFirstName(firstName);
+	 	 emailMessage.setLastName(lastName);
+	 	 emailMessage.setToEmail(toEmail);
+	 	 emailMessage.setFromEmail(loginUser.getEmail());
+	 	 emailMessage.setCreatedBy(loginUser.getUserCode());
+	 	 StringBuilder userNameSB = new StringBuilder();
+	 	 emailMessage.setFromName(userNameSB.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+	 	 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 //setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<>();
+		 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
+			 StringBuilder manager =new StringBuilder();
+			 globalVarsMap.put("loginUser", manager.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 }else{
+			 globalVarsMap.put("loginUser",loginUser.getFirstName());
+		 }
+		 globalVarsMap.put("employeeName",projectMembers.getProjectMemberCandidteId().getFullName());
+		 globalVarsMap.put("projectName",projectMembers.getProjects().getProjectName());
+		 globalVarsMap.put("levelTwoApprover",expenses.getExpenseId());
+		 globalVarsMap.put("expenseStartDate",startDate);
+		 globalVarsMap.put("expenseEndDate", endDate);
+		 Set<ExpensesEntries> expensesEntriesList = expenses.getExpensesEntries();
+		 for(ExpensesEntries expList: expensesEntriesList) {
+			 globalVarsMap.put("climedamount",expenses.getTotalAmount().toString());
+		 }
+		Date todayDate = new Date();
+		 globalVarsMap.put("submitForApprovalDate",commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),todayDate));
+		 globalVarsMap.put("loginOrg",loginOrgLocation.getOrgLocationName());
+		 
+		 StringBuilder loginURLSB = new StringBuilder();
+		 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadLoginUrl).append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		
+		 if("APPROVED".equalsIgnoreCase(status)){
+			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.IN_SEQUENTIAL_MECHANISM_MAIL_FROM_APPROVERONE_TO_APPROVERTWO,new ArrayList<EmailAttachment>());
+		 }
+		 EmailScenario  notificationScenario = null;
+		 String actionLink="";
+		 StringBuilder notificationLink = new StringBuilder();
+		 if("APPROVED".equalsIgnoreCase(status)){
+		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("addApprovalExpense?expenseId="+expenses.getExpenseId()+"&expenseLocationCode="+expenses.getLocationsCode()+"&type=view").toString();
+
+			 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.IN_SEQUENTIAL_MECHANISM_MAIL_FROM_APPROVERONE_TO_APPROVERTWO,Constants.ENTITY_TYPE_NOTIFICATION);
+		 }
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
+		notificationScenario.setBody(notificationBody);
+		notificationScenario.setOrgCode(loginOrgLocation.getLocationCode());
+		//emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
+		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());  
+    }
+    
+    
+    
     @RequestMapping(value="/getExpenseAttachmentStatus")
     public String getExpenseAttachmentStatusByCategoryId(@RequestParam(value="categoryId" ,required=true)long categoryId) {
     	 String isAttachemtRequired = expensesCategoryService.getExpenseAttachmentStatusByCategoryId(categoryId);
