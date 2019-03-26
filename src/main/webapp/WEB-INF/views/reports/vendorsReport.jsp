@@ -89,6 +89,7 @@
 	<jsp:include page="vendorPerformanceReport.jsp" flush="true"></jsp:include>
 </div>
 <div id="vendorSpocReportsDiv" class="repoPositiNoCount"></div>
+<div id="releasedJobsResultDiv"></div>
 </section>   
  
       
