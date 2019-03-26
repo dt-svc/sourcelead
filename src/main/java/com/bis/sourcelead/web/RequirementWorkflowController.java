@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.dto.RequirementDefaultWorkFlowStagesDTO;
 import com.bis.sourcelead.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.dto.RequirementWorkFlowStagesDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -113,26 +114,26 @@ public class RequirementWorkflowController {
 	
 	
 	@RequestMapping(value = "/createRequirementDefaultWorkFlow", method = RequestMethod.GET)
-	public @ResponseBody List<RequirementWorkFlowStagesDTO> createRequirementDefaultWorkFlow(
+	public @ResponseBody List<RequirementDefaultWorkFlowStagesDTO> createRequirementDefaultWorkFlow(
 			RequirementWorkFlowDTO requirementWorkFlowDTO,
 			HttpServletRequest request) {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<RequirementWorkFlowStagesDTO> requirementWorkFlowStagesDTO= null;
+		List<RequirementDefaultWorkFlowStagesDTO> requirementDefaultWorkFlowStagesDTO= null;
 		try {
 			List<RequirementWorkFlow> requirementWorkFlow = requirementWorkFlowService.getRequirementWorkFlowByOrgLocationId(orgLocations.getId());
 			if (requirementWorkFlow == null || requirementWorkFlow.isEmpty()) {
 				requirementWorkFlowService.saveRequirementWorkFlowStagesByOrgLocationId(orgLocations, user, requirementWorkFlowDTO);
 			}
 			if(requirementWorkFlow.size() >= 1 && !(requirementWorkFlow.isEmpty())) {
-				requirementWorkFlowStagesDTO = requirementWorkFlowService.getRequirementDefaultWorkFlowStages();
+				requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementDefaultWorkFlowStages();
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		return requirementWorkFlowStagesDTO;
+		return requirementDefaultWorkFlowStagesDTO;
 
 	}
 	
