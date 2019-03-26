@@ -23,6 +23,8 @@ public class Constants {
 	public static final String[] FONT_FAMILY = { "Arial", "Comisc", "Comic Sans MS", "Courier New",
 			"Georgia", "Monotype", "Tahoma", "Times New Roman", "Trebuchet MS", "Verdana",
 			"Impace" };
+	public static final String[] AVAILABLE_ASSOCIATES_REPORT_EXPORT_HEADDERS = {"Employee Name", "Project Name", "Project Duration","Associate Duration", "Availability %","No.of Hours",};
+	
 	public static final String[] FONT_SIZE = { "8px", "9px", "10px", "11px", "12px", "13px", "14px",
 			"15px", "16px", "17px", "18px", "19px", "20px", "21px", "221px", "23px", "24px" };
 	public static final String EMPLOYEE_ID = "Employee ID";
@@ -108,7 +110,7 @@ public class Constants {
 	 * "yyyy-MM-dd HH:mm:ss");
 	 */
 	
-	
+	public static final String DEFAULT = "Default";
 	public static final String ONBOARD_DOCUMENT_BUSNIESS_LICENSE = "Business License";
 	public static final String BANK_CHEQUE = "Bank Cheque";
 	public static final String REGISTRATION_OR_INCORPORATION_OF_RECORDING = "Registration or Incorporation of recording";
@@ -174,6 +176,12 @@ public class Constants {
 	
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE = "MailReopenApprovedMailToEmployee";
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE_NOTIFICATION = "MailReopenApprovedMailToEmployeeNotification";
+	
+	public static final String IN_SEQUENTIAL_MECHANISM_MAIL_FROM_APPROVERONE_TO_APPROVERTWO = "InSequentialMechanismMailFromApproverOneToApproverTwo";
+	public static final String IN_SEQUENTIAL_MECHANISM_MAIL_FROM_APPROVERONE_TO_APPROVERTWO_NOTIFICATION = "InSequentialMechanismMailFromApproverOneToApproverTwo";
+	
+	public static final String IN_PARALLEL_MECHANISM_MAIL_FROM_APPROVERONE_TO_APPROVERTWO = "InSequentialMechanismMailFromApproverOneToApproverTwo";
+	public static final String IN_PARALLEL_MECHANISM_MAIL_FROM_APPROVERONE_TO_APPROVERTWO_NOTIFICATION = "InSequentialMechanismMailFromApproverOneToApproverTwo";
 	
 	public static final String UPDATED_TASK_EMAIL = "UpdatedTaskEmail";
 	public static final String UPDATED_TASK_NOTIFICATION = "UpdatedTaskNotification";
@@ -689,12 +697,19 @@ public class Constants {
 			"DOB", "Marital Status", "Petition Type", "Template", "Date Of Arrival", "Open On", "Status", "Visa No", "Visa Start Date", "Visa End Date", "Visa Status", "Attorney/Company", "Contact Name", "Contact Email", "Receipt No", "Location", "LCA Start Date", 
 			"LCA End Date", "LCA Number", "LCA Rate", "LCA Location", "LCA Title","Job Name","Job Id", "Previous LCA Start Date", "Previous LCA End Date", "Previous LCA Number", "Previous LCA Rate", "Previous LCA Title", "Previous LCA Location" };
 
+	public static final String[] DATA_MIGRATION_ASSOCIATE_BANKING_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","Payment Mode*","Bank Name","Account Number","BSR Number","MICR Code","IFSC Code",
+			"First Name","Last Name",};
 	
-	
-	
+	public static final String[] DATA_MIGRATION_ASSOCIATE_SALARY_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","Pay Type*","Pay Frequency*","Pay Group*","Standard Hours","Annual Salary*"};						
+
 	public static final String[] DATA_MIGRATION_ASSOCIATE_EXCEL_HEADERS = { "Employee Id" , "First Name*", "Last Name", "Middle Name", "Email Id*", "Phone Number", "Extension",
 			"Rate", "Rate Currency", "Rate Per", "Gender*","Marital Status","Date of Join","Date of Birth","Role*","Day hours(HH:MM)","Manager*(Email)", "Employment type*","Vendor(Email)","Vendor Contact(Email)","Grade","Designation*","Shift*","Department*","Send Mail to User","Is Global Manager"};
 
+	public static final String[] PAYMENT_MODE = {"Savings", "Cheque", "Cash"};
+	
+	public static final String[] ASSOCIATE_SALARY_PAYTYPE = {"Salary"};
+	
+	public static final String[] ASSOCIATE_SALARY_PAYFREQUENCY = {"Annually", "Monthly", "Bi-Weekly", "Weekly"};
 
 	public static final String[] REQIREMENT_APPLICANT_HEADERS = { "Applicant Name", "Email","Job", "Client", "Phone Number",  "Job Location",   "Source", "Status","Job Rating" ,"Incentivized"};
 
@@ -1420,6 +1435,8 @@ public class Constants {
 	
 	public static final String[] BANK_TYPE_DROPDOWN = {"Cheque","Direct Deposit"};
 	
-	
+	public static final String PAYMENT_MODE_SAVINGS = "Savings";
+
+	public static final String[] DATA_MIGRATION_ASSOCIATE_INFO_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","UAN Number","PF Number","ESI Number"};						
 	
 }
