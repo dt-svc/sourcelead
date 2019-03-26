@@ -53,115 +53,7 @@
       
       <div id = "dynamicWorkflow">
 		
-		<%--
-		<ul class="list-unstyled widgetDivLi">
 		
-		 <li class="widgetDiv mb clearfix">
-		<!-- Cardmodel widget -->
-			<div class="row">
-				<div class="col-md-10">
-					<span class="submissionShare pull-left"></span><h4 class="pull-left mt10 ml">Submission</h4>
-				</div>
-				<div class="col-md-2">
-					<ul class="list-inline list-unstyled pull-right mb0">
-						<li>
-							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
-						</li>
-						<li>
-							<a title="Delete" href="addWorkflow.html"><i class="fa fa-trash"></i></a>
-						</li>
-					</ul>
-			</div>
-		</div>
-		<!-- Cardmdoel Widget ends -->
-		</li>
-		
-		 <li class="widgetDiv mb clearfix">
-			<div class="row">
-				<div class="col-md-10">
-					<span class="shortlilstedIC pull-left"></span><h4 class="pull-left mt10 ml">Short List</h4>
-				</div>
-				<div class="col-md-2">
-					<ul class="list-inline list-unstyled pull-right mb0 mt10">
-						<li>
-							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
-						</li>
-						<li>
-							<a title="Delete" href="addWorkflow.html"><i class="fa fa-trash"></i></a>
-						</li>
-					</ul>				</div>
-			</div>
-		</li>
-		<li class="widgetDiv mb clearfix">
-			<div class="row">
-				<div class="col-md-10">
-				<span class="shortlilstedIC pull-left"></span><h4 class="pull-left mt10 ml">Submit to Client</h4>
-				</div>
-				<div class="col-md-2">
-					<ul class="list-inline list-unstyled pull-right mb0 mt10">
-						<li>
-							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
-						</li>
-						<li>
-							<a title="Delete" href="addWorkflow.html"><i class="fa fa-trash"></i></a>
-						</li>
-					</ul>				</div>
-			</div>
-		</li>
-		<li class="widgetDiv mb clearfix">
-			<div class="row">
-				<div class="col-md-10">
-				<span class="invterviewIC pull-left"></span><h4 class="pull-left mt10 ml">Interview</h4>
-				</div>
-				<div class="col-md-2">
-					<ul class="list-inline list-unstyled pull-right mb0">
-						<li>
-							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
-						</li>
-						<li>
-							<a title="Delete" href="addWorkflow.html"><i class="fa fa-trash"></i></a>
-						</li>
-					</ul>				</div>
-			</div>
-		</li>
-		<li class="widgetDiv mb clearfix">
-			<div class="row">
-				<div class="col-md-10">
-				<span class="jobOfferIC pull-left"></span><h4 class="pull-left mt10 ml">Offer</h4>
-				</div>
-				<div class="col-md-2">
-					<ul class="list-inline list-unstyled pull-right mb0">
-						<li>
-							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
-						</li>
-						<li>
-							<a title="Delete" href="addWorkflow.html"><i class="fa fa-trash"></i></a>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</li>
-		<li class="widgetDiv mb clearfix">
-			<div class="row">
-				<div class="col-md-10">
-				<span class="joinedIC pull-left"></span><h4 class="pull-left mt10 ml">Joined</h4>
-				</div>
-				<div class="col-md-2">
-					<ul class="list-inline list-unstyled pull-right mb0">
-						<li>
-							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
-						</li>
-						<li>
-							<a title="Delete" href="addWorkflow.html"><i class="fa fa-trash"></i></a>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</li> 
-		
-		
-		
-		</ul> --%>
 		</div>
 		
 		 <!-- dynamic stages content ends here-->
@@ -189,6 +81,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>
 <script>
 
+	var span = "";
 	function getDefaultWorkflow() {
 		var formData = getFormData("requirementWorkFlowForm");
 		$.ajax({
@@ -196,15 +89,16 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 			data : formData,
 			url : sourceleadUrl + "/createRequirementDefaultWorkFlow",
 			success : function(dataList) {
-				console.log(dataList);
 				var result = "";
 				if(dataList != null && dataList.length > 0){
 					 result = result + "<ul class='list-unstyled widgetDivLi'>"; 
 					for(var i = 0 ; i < dataList.length; i++){
+					span = dynamicSpan(dataList[i].stageName);
 					result = result + "<li class='widgetDiv mb clearfix'>";
 					result = result + "<div class='row'>";
 					result = result + "<div class='col-md-10'>";
-					result = result + "<span class='submissionShare pull-left'></span><h4 class='pull-left mt10 ml'>"+dataList[i].stageName+"</h4>";
+					result = result + span 
+					result = result + "<h4 class='pull-left mt10 ml'>"+dataList[i].stageName+"</h4>"; 
 					result = result + "</div>";
 					result = result + "<div class='col-md-2'>";
 					result = result + "<ul class='list-inline list-unstyled pull-right mb0'>";
@@ -223,6 +117,41 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 
 	}
 	
+	function dynamicSpan(stageName){
+		if(stageName != null){
+				if(stageName == "Submission"){
+					return "<span class='submissionShare pull-left'></span>";
+				}
+				if(stageName == "Short List"){
+					return "<span class='shortlilstedIC pull-left'></span>";
+				}
+				if(stageName == "Submit to Client"){
+					return "<span class='shortlilstedIC pull-left'></span>";
+				}
+				if(stageName == "Interview"){
+					return "<span class='invterviewIC pull-left'></span>";
+				}
+				if(stageName == "Offer"){
+					return "<span class='jobOfferIC pull-left'></span>";
+				}
+				if(stageName == "Reject"){
+					return "<span class='submissionShare pull-left'></span>";
+				}
+				if(stageName == "Joined"){
+					return "<span class='joinedIC pull-left'></span>";
+				}
+				if(stageName == "Backout"){
+					return "<span class='submissionShare pull-left'></span>";
+				}
+				if(stageName == "On-hold"){
+					return "<span class='submissionShare pull-left'></span>";
+				}
+				if(stageName == "No Response"){
+					return "<span class='submissionShare pull-left'></span>";
+				}
+			}
+		}
+		
 </script>
 <script type="text/javascript">
 function saveRequirementWorkFlow(){
