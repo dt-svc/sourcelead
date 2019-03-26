@@ -1558,16 +1558,13 @@ $("#searchType").selectpicker('refresh');
                 <div class="clearfix mb" id="jobDIV">
                     <label class="noPad">Jobs <b class="valStar">*</b></label>
                     <div class="clearfix addicon">
-                        <select class="form-control chosen-select">
-                          <option>Jobs 1</option>
-                          <option>Jobs 2</option>
-                          <option>Jobs 3</option>
-                          <option>Jobs 4</option>
+                        <select class="form-control chosen-select" id="jobDropDownDiv" >
                         </select>
                       </div>
                 </div> 
-                <div class="clearfix mb" id="projectTaskDIV">
-                    <label class="noPad">Project Tasks <b class="valStar">*</b></label>
+                <div  id="projectTaskDIV">
+                <div class="clearfix mb">
+                    <label class="noPad">Project1<b class="valStar">*</b></label>
                     <div class="clearfix addicon">
                         <select class="form-control chosen-select">
                           <option>Task 1</option>
@@ -1576,7 +1573,19 @@ $("#searchType").selectpicker('refresh');
                           <option>Task 4</option>
                         </select>
                       </div>
-                </div>                 
+                </div>   
+                 <div class="clearfix mb">
+                    <label class="noPad">Project2 Tasks <b class="valStar">*</b></label>
+                    <div class="clearfix addicon">
+                        <select class="form-control chosen-select">
+                          <option>Task 1</option>
+                          <option>Task 2</option>
+                          <option>Task 3</option>
+                          <option>Task 4</option>
+                        </select>
+                      </div>
+                </div>     
+                </div>          
                 <div class="clearfix mb" id="generalTaskDIV">
                     <label class="noPad">General Tasks <b class="valStar">*</b></label>
                     <div class="clearfix addicon">
@@ -1957,16 +1966,24 @@ function getClockInOutConfiguration(){
 	        		 if(!json.isJobChecked){
 	        			$("#jobDIV").hide();
 	        		 }else{
+	        			 $("#jobDIV").show();
 	        			 getAssignedJobTasks();
 	        		 }
 	        		if(!json.isProjectTasksChecked){
 	        			$("#projectTaskDIV").hide();
+	        		}else{
+	        			$("#projectTaskDIV").show();
+	        			getAssignedProjects();
 	        		}
 	        		if(!json.isGeneralTaskChecked){
 	        			$("#generalTaskDIV").hide();
-	        		} 
+	        		} else{
+	        			$("#generalTaskDIV").show();
+	        		}
 	        		if(!json.isClockInComment){
 	        			$("#commentsDIV").hide();
+	        		}else{
+	        			$("#commentsDIV").show();
 	        		}
 	        	}
 	        	}
@@ -1977,6 +1994,56 @@ function getClockInOutConfiguration(){
 
 <script>
 function getAssignedJobTasks(){
-	
+	$.ajax({
+		 	url: sourceleadUrl + "/getAssignedJobs",
+	        type: 'GET',
+	        success: function (json) {
+	        	var output = "";
+				output = output + "<option value=''>Select Job</option>";
+				if(json.data != null){
+					for (var i=0; i<json.data.length; i++)
+					{
+					var opt = json.data[i];
+					/* if(orgRelationId == opt.id){
+						var selected = 'selected'; */
+						output = output + "<option value='" +opt.id+ "'>"+opt.jobTitle+"</option>";
+					/* }else{
+						output = output + "<option value='" +opt.id+ "' data-Invoice = '"+opt.generateInvoice+"' data-responder_location_id=" + opt.responderId + ">"+opt.orgName+"</option>";
+					} */
+					}
+				}
+			$("#jobDropDownDiv").empty();
+			$("#jobDropDownDiv").append(output);
+			$('#jobDropDownDiv').trigger("chosen:updated");
+	        	}
+	        });
+}
+</script>
+
+<script>
+function getAssignedProjects(){
+	$.ajax({
+	 	url: sourceleadUrl + "/getAssignedJobs",
+        type: 'GET',
+        success: function (json) {
+        /* 	var output = "";
+			output = output + "<option value=''>Select Job</option>";
+			if(json.data != null){
+				for (var i=0; i<json.data.length; i++)
+				{
+				var opt = json.data[i];
+			//	if(orgRelationId == opt.id){
+			//		var selected = 'selected'; 
+					output = output + "<option value='" +opt.id+ "'>"+opt.jobTitle+"</option>";
+			//	 }else{
+			//		output = output + "<option value='" +opt.id+ "' data-Invoice = '"+opt.generateInvoice+"' data-responder_location_id=" + opt.responderId + ">"+opt.orgName+"</option>";
+			//	} 
+				}
+			}
+		$("#jobDropDownDiv").empty();
+		$("#jobDropDownDiv").append(output);
+		$('#jobDropDownDiv').trigger("chosen:updated"); */
+        	}
+        });
 }
 </script>
