@@ -15,11 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.beans.RequirementStagesReport;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.OrgSpocDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.reportsDTO.ApplicantDeclineDTO;
@@ -27,7 +29,10 @@ import com.bis.sourcelead.reportsDTO.ApplicantsBackoutDTO;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -45,6 +50,15 @@ public class VendorPerformanceReportRestController {
 
 	@Autowired
 	RequirementService requirementService;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	private RequirementLocationsService requirementLocationsService;
 
 	@RequestMapping(value = "/getOrgRelationList", method = RequestMethod.POST)
 	public ResponseList<OrgRelationDTO> getVendorList(HttpServletRequest request) {
@@ -199,6 +213,61 @@ public class VendorPerformanceReportRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 		}
+		return response;
+	}
+	
+	@RequestMapping(value = "/getVendorJobsForReleasedJobReportForList", method = RequestMethod.GET)
+	public ResponseList<Requirement> getVendorJobsForReleasedJobReportForList(HttpServletRequest request,
+			@RequestParam(value = "searchValue", required = false) String searchValue,
+			@RequestParam(defaultValue = "0") long orgRelationId, 
+			@RequestParam(defaultValue = "0") long spocId) {
+		ResponseList<Requirement> response = new ResponseList<>();
+		List<Requirement> requirementList = new LinkedList<>();
+		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				List<Requirement> reqList = clientService.getReleasedJobsByOrgRelationId(orgRelationId, spocId, userRole);
+				if (reqList != null && !reqList.isEmpty()) {
+					Long tempId = 0L;
+					
+					for (Requirement requirement : reqList) {
+						List<RequirementLocations> locationsList;
+						String location = "";
+						StringBuilder requirementBuilder = new StringBuilder();
+						if (tempId != requirement.getParentRequirement().getId()) {
+							try {
+								Requirement parentRequirement = requirementService.getRequirementDetailsById(requirement.getParentRequirement().getId());
+								requirement.setRequirementSubmissionStatus(parentRequirement.getRequirementSubmissionStatus());
+								User user = userService.getUserById(parentRequirement.getManagerUserId().getId());
+								//For Applicants Count
+							     RequirementSubmissionsCountDTO totalCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(parentRequirement.getId(), user, orgLocations, "ALL");
+							     requirement.setTotalApplicants(totalCount.getApplicantsCount());
+							     RequirementSubmissionsCountDTO joinedCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(parentRequirement.getId(), user, orgLocations, "JOINED");
+							     requirement.setJoinedCount(joinedCount.getJoinedCount().toString());
+							     // for requirement location
+							     locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+								if (locationsList != null && !locationsList.isEmpty()) {
+									for (RequirementLocations locationsJob : locationsList) {
+										if (locationsJob.getLocation() != null && locationsJob.getLocation() != null) {
+											location = requirementBuilder.append(locationsJob.getLocation()).toString();
+										} else {
+											location = "--";
+										}
+									}
+									requirement.setLocation(location);
+								}
+								requirement.setJobOwner(user.getFullName());
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+
+							requirementList.add(requirement);
+							tempId = requirement.getParentRequirement().getId();
+						}
+					}
+				}
+				response.setData(requirementList);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
 		return response;
 	}
 
