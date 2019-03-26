@@ -192,7 +192,10 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 						InfoDataDTO.setReason("Invalid Esi Number");
 						return false;
 				}
-			}
+			}else{
+					InfoDataDTO.setReason("Uan number Mandatory");
+			     	return false;
+			     }
 			
 			if(pfeMap != null ) {
 				Long candidateId = canMap.get(getCellValueAsString(row.getCell(1),fileName));
@@ -206,7 +209,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			}
 		}else
 		{
-			InfoDataDTO.setReason("candidate doesn't existed with given email");	
+			InfoDataDTO.setReason("Associate doesn't exist");
 			return false;
 		}
 		return true;
