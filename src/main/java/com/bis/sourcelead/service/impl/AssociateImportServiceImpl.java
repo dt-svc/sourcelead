@@ -191,6 +191,8 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 						return false;
 				}
 			}
+			else{InfoDataDTO.setReason("Uan number Mandatory");
+	         return false;}
 			
 			if(pfeMap != null ) {
 				Long candidateId = canMap.get(getCellValueAsString(row.getCell(1),fileName));
@@ -630,7 +632,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			public boolean validateBsrMicr(String num) //not the mandatory fields
 			{
 				  String emailId =num.trim();
-				  Pattern pattern = Pattern.compile("^[a-zA-Z0-9]{9,15}$");
+				  Pattern pattern = Pattern.compile("/^([a-zA-Z0-9_-]){9,15}$/");
 				  Matcher matcher = pattern.matcher(emailId);
 				  return matcher.matches();
 				}
