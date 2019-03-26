@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementWorkFlowDao;
+import com.bis.sourcelead.dto.RequirementDefaultWorkFlowStagesDTO;
 import com.bis.sourcelead.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.dto.RequirementWorkFlowStagesDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -127,18 +128,20 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 
 	@Override
-	public List<RequirementWorkFlowStagesDTO> getRequirementDefaultWorkFlowStages() throws Exception {
+	public List<RequirementDefaultWorkFlowStagesDTO> getRequirementDefaultWorkFlowStages() throws Exception {
 		List<RequirementDefaultWorkFlowStages> requirementDefaultWorkFlowStages = requirementWorkFlowDao.getRequirementDefaultWorkFlowStages();
-		List<RequirementWorkFlowStagesDTO> newDefaultStages = new ArrayList<RequirementWorkFlowStagesDTO>();
+		List<RequirementDefaultWorkFlowStagesDTO> newDefaultStages = new ArrayList<>();
 		
-		for(RequirementDefaultWorkFlowStages source : requirementDefaultWorkFlowStages) {
-			RequirementWorkFlowStagesDTO target = new RequirementWorkFlowStagesDTO();
-			target.setStageName(source.getStageName());
-			target.setId(source.getId());
-			//target.setUuid(source.get);
-			newDefaultStages.add(target);
+		for(RequirementDefaultWorkFlowStages entity : requirementDefaultWorkFlowStages) {
+			RequirementDefaultWorkFlowStagesDTO dto = new RequirementDefaultWorkFlowStagesDTO();
+			dto.setId(entity.getId());
+			dto.setStageName(entity.getStageName());
+			dto.setDescription(entity.getDescription());
+			dto.setSeqOrder(entity.getSeqOrder());
+			dto.setEditable(entity.getEditable());
+			dto.setStatus(entity.getStatus());
+			newDefaultStages.add(dto);
 		}
-		
 		return newDefaultStages;
 	}
 	
