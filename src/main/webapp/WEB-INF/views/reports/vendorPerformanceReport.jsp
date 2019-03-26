@@ -35,6 +35,7 @@
 
 <div class="GraView mt">
 	<!-- Released Jobs -->
+	
 	<div class="clearfix row mt mb">
 		<div class="col-md-12">
 			<div class="projectDashboad clearfix positionRelative" style="height: 220px;">
@@ -42,7 +43,7 @@
 				<div class="col-md-4">
 					<div class="text-center" style="margin-top: 75px;">
 						<h4 class="mt5">Released Jobs</h4>
-						<p class="ml text-muted" id="releasedJobsCount">0</p>
+						<a class="ml text-muted" id="releasedJobsCount" onclick="releasedJobsToVendors();">0</a>
 					</div>
 				</div>
 				<div class="col-md-8">
