@@ -694,7 +694,7 @@ function statusvalidating(id){
       <ul class="pull-right list-unstyled list-inline">
 					
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
-						<li><a href="<c:url value='/addJobFair'/>" class="newAdBtn">+ Job Fair</a></li>
+						<li><a href="${SourceLeadWeb_atsUrl}/addJobFair" class="newAdBtn">+ Job Fair</a></li>
 					</sec:authorize>					
 									
 					<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
