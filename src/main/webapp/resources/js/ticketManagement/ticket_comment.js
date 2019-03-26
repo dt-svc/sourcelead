@@ -1,7 +1,7 @@
 var commentUsers = [], selectedUsers = [];
 var commentConfig = {};
+
 $(document).ready(function() {
-	
 	$.post(sourceleadUrl + "/getUserListByLoginOrgLocationId", {}, function(response) {
 		if (response && response.response === "INVALID_DATA") {
 			showError(response.responseMessage);
@@ -23,7 +23,7 @@ $(document).ready(function() {
 });
 
 function initializeFroalaEditor() {
-	$('#ticketComment').froalaEditor('destroy');
+	/*$('#ticketComment').froalaEditor('destroy');*/
     // Define config for At.JS.
     commentConfig = {
       at: "@",
@@ -33,12 +33,12 @@ function initializeFroalaEditor() {
     }
     
 	// Initialize editor.
-    $('#ticketComment')
+    /*$('#ticketComment')
       .on('froalaEditor.initialized', function (e, editor) {
         editor.$el.atwho(commentConfig);
 
         editor.$el.on('inserted.atwho', function (event, $li, bEvent) {
-          /*editor.$el.find('.atwho-inserted').removeAttr('contenteditable');*/
+          editor.$el.find('.atwho-inserted').removeAttr('contenteditable');
           console.log("inserted.atwho : " + $($li).data("id") + " : " + $($li).find("small").html());
           selectedUsers.push($($li).data("id"));
         })
@@ -52,7 +52,15 @@ function initializeFroalaEditor() {
       })
       .froalaEditor()
 
-      $(".fr-toolbar").hide();
+      $(".fr-toolbar").hide();*/
+//    $("#ticketComment").Editor();
+    
+    $('#ticketComment').atwho(commentConfig);
+    $('#ticketComment').on('inserted.atwho', function (event, $li, bEvent) {
+        //editor.$el.find('.atwho-inserted').removeAttr('contenteditable');
+        console.log("inserted.atwho : " + $($li).data("id") + " : " + $($li).find("small").html());
+        selectedUsers.push($($li).data("id"));
+      })
 }
 
 //================================	TicketComment		==============================================
@@ -149,10 +157,9 @@ function getTicketCommetList(ticketId) {
 	});
 }
 
-function saveTicketComment(ticketId){
-	if ($("#ticketComment_form").validate(false, validationSettings)){
-		var formData = getFormData("ticketComment_form");
-		$.post(sourceleadUrl + "/saveTicketComment?ticketId="+ticketId, formData, function(response) {
+function saveTicketComment(ticketId) {
+	if ($("#ticketComment").html() !== ""){
+		$.post(sourceleadUrl + "/saveTicketComment?ticketId="+ticketId, {id: $("#ticketCommentId").val(), comment : $("#ticketComment").html()}, function(response) {
 			if (response && response.response === "INVALID_DATA") {
 				showError(response.responseMessage);
 			} else if (response.response === "AWKWARD") {
@@ -168,6 +175,8 @@ function saveTicketComment(ticketId){
 				showError("Operation failed, please try again");
 			}
 		});
+	} else {
+		alert("Add Comment text");
 	}
 }
 function closeTicketComment() {
@@ -185,7 +194,7 @@ function editTicketComment(id) {
 		} else if (response.response === "SUCCESS") {
 			var comment = response.object;
 			$("#ticketCommentId").val(comment.id);
-			$("#ticketComment").val(comment.comment);
+			$("#ticketComment").html(comment.comment);
 			$('.fr-element.fr-view').html(comment.comment);
 			$("#ticketCommentPopup, .mask").show();
 			initializeFroalaEditor();
