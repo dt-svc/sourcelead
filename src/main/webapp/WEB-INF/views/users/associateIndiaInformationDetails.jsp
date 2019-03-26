@@ -356,7 +356,7 @@ function validateMinor(){
 			        			  $("#pfNumber").val(json.firstName);
 			        			  $("input[name=enroleDate]").val(json.enroleDate);
 			        			  $("#pfUan").attr("data-validation", "required validate_int validate_length length1-12");
-			        		      $("#pfNumber").attr("data-validation", "required validate_AlphaNumber validate_length length1-19");
+			        		      $("#pfNumber").attr("data-validation", "required validate_AlphaNumber validate_length length10-25");
 			        			 
 			        		}else{
 			        			  pfel.style.display = "none";
@@ -377,7 +377,7 @@ function validateMinor(){
 			        			 document.getElementById("esi").checked = true;
 			        			 $("#esi").val('Y');
 			        			 $("#esinumber").val(json.esinumber);
-			        			 $("#esiNumber").attr("data-validation", "validate_int validate_length length1-17");
+			        			 $("#esiNumber").attr("data-validation", "validate_int validate_length length10-17");
 			        			
 			        		}else{
 			        			 esiEl.style.display = "none";
@@ -404,7 +404,7 @@ function pfFunction() {
     if (checkBox.checked == true){
         pfel.style.display = "block";
         $("#pfUan").attr("data-validation", "required validate_int validate_length length1-12");
-        $("#pfNumber").attr("data-validation", "required validate_AlphaNumber validate_length length1-19");
+        $("#pfNumber").attr("data-validation", "required validate_AlphaNumber validate_length length10-25");
         $("#pf").val('Y');
     } else {
        pfel.style.display = "none";
@@ -424,7 +424,7 @@ function esiFunction() {
     if (checkBox.checked == true){
        esiEl.style.display = "block";
        $("#esi").val('Y');
-       $("#esiNumber").attr("data-validation", "validate_int validate_length length1-17");
+       $("#esiNumber").attr("data-validation", "validate_int validate_length length10-17");
     } else {
        esiEl.style.display = "none";
        $("#esiNumber").val('');
