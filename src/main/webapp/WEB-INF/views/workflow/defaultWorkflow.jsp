@@ -81,7 +81,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>
 <script>
 
-	var span = "";
+	var iconSpan = "";
+	var editAndDeleteAnchor = "";
 	function getDefaultWorkflow() {
 		var formData = getFormData("requirementWorkFlowForm");
 		$.ajax({
@@ -93,28 +94,27 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				if(dataList != null && dataList.length > 0){
 					 result = result + "<ul class='list-unstyled widgetDivLi'>"; 
 					for(var i = 0 ; i < dataList.length; i++){
-					span = dynamicSpan(dataList[i].stageName);
+						
+					//changing dynamic spans based on stage names and anchors for stages based on editable. 
+					iconSpan = dynamicSpan(dataList[i].stageName);
+					editAndDeleteAnchor = dynamicAnchor(dataList[i].editable);
+					
 					result = result + "<li class='widgetDiv mb clearfix'>";
 					result = result + "<div class='row'>";
 					result = result + "<div class='col-md-10'>";
-					result = result + span 
+					result = result + iconSpan
 					result = result + "<h4 class='pull-left mt10 ml'>"+dataList[i].stageName+"</h4>"; 
 					result = result + "</div>";
 					result = result + "<div class='col-md-2'>";
 					result = result + "<ul class='list-inline list-unstyled pull-right mb0'>";
-					result = result + "<li>";
-					result = result + "<a title='Edit' href='${SourceLeadWeb_sourceleadUrl}/addStage'><i class='fa fa-pencil'></i></a>";
-					result = result + "</li>";
-					result = result + "<li>";
-					result = result + "<a title='Delete' href='addWorkflow.html'><i class='fa fa-trash'></i></a>";
-					result = result + "</li></ul></div></div></li>";
+					result = result + editAndDeleteAnchor
+					result = result + "</ul></div></div></li>";
 					}
 					 result = result + "</ul>"; 
 				}
 				$("#dynamicWorkflow").empty().append(result);
 			},
 		});
-
 	}
 	
 	function dynamicSpan(stageName){
@@ -152,6 +152,18 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 			}
 		}
 		
+	function dynamicAnchor(editable){
+		if(editable != null){
+			if(editable == "Y"){
+				return "<li><a title='Edit' href='${SourceLeadWeb_sourceleadUrl}/addStage'><i class='fa fa-pencil'></i></a></li>" +
+						"<li><a title='Delete' href='addWorkflow.html'><i class='fa fa-trash'></i></a></li>"
+			}
+			if(editable == "N"){
+				return "<li></li>";
+			}
+		}
+	}
+	
 </script>
 <script type="text/javascript">
 function saveRequirementWorkFlow(){
