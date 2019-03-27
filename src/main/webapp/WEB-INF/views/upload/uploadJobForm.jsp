@@ -63,7 +63,7 @@ var uploadflag= true;
 					</div>
 					
 						<div class="col-xs-5 col-md-5">
-							<a href="<c:url value='/downloadDataImportTemplate'/>"
+							<a href="${SourceLeadWeb_sourceleadUrl}/downloadDataImportTemplate"
 								class="btn btn-success btn-block" title="Download Job Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Job Template
 							</a>
 						</div>

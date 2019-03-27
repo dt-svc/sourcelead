@@ -201,7 +201,7 @@
 		  
 <div class="welBtns">
 
-	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_atsUrl}/onboardingCandidateTaxDetails'/>'" >
+	<input type="button"  value="Previous" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/onboardingCandidateTaxDetails'" >
 	<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOnboardingCandidateDocs();" class="Brig">
 	<div class="clearfix"></div>
 </div>

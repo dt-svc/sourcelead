@@ -94,7 +94,7 @@
 		  </div>		  
 		  
 <div class="welBtns">
-	<input type="button" onClick="javascript:window.location.href = '<c:url value='${atsUrl}/onboardingCandidateStep3'/>'"  value="Previous"><input type="button" value="Finish" class="Brig">
+	<input type="button" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/onboardingCandidateStep3'"  value="Previous"><input type="button" value="Finish" class="Brig">
 	<div class="clearfix"></div>
 </div>
 		  
