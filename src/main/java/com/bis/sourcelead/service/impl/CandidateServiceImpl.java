@@ -1498,6 +1498,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}else{
 			candidate.setPanNumber(null);
 		}
+		if(StringUtils.isNotBlank(candidateDTO.getAadharNumber())){
+			candidate.setAadharNumber(candidateDTO.getAadharNumber());
+		}else{
+			candidate.setAadharNumber(null);
+		}
 		if(StringUtils.isNotBlank(candidateUser.getMaritalStatus())) {
 			candidate.setMaritalStatus(candidateUser.getMaritalStatus());
 		}
