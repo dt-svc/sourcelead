@@ -1664,5 +1664,31 @@ public class LeaveDaoImpl implements LeaveDao{
 		}
 		return lovLeaves;
 	}
+	
+	@SuppressWarnings("unchecked")
+    @Override
+    @Transactional
+    public List<Leave> getAllLeavesByLocationIdAndStatusAndAppliedDate(Long locationId, String status,
+            Date appliedDate) {
+        java.sql.Date sqlappliedDate = new java.sql.Date(appliedDate.getTime());
+        Session session = this.sessionFactory.getCurrentSession();
+        List<Leave> list = null;
+        String query = "from Leave leave left join fetch leave.leaveType where leave.orgLocations.id =:orgLocationId and leave.status =:status and leave.createdDate =:sqlappliedDate";
+        list = session.createQuery(query).setString("status", status).setLong("orgLocationId", locationId).setDate("sqlappliedDate", sqlappliedDate).list();
+        return list;
+    }
+	
+	@SuppressWarnings("unchecked")
+    @Override
+    @Transactional
+    public List<Leave> getAllLeavesByLocationIdAndStatusAndLeaveStartDate(Long locationId, String status,
+            Date appliedDate) {
+        java.sql.Date sqlappliedDate = new java.sql.Date(appliedDate.getTime());
+        Session session = this.sessionFactory.getCurrentSession();
+        List<Leave> list = null;
+        String query = "from Leave leave left join fetch leave.leaveType where leave.orgLocations.id =:orgLocationId and leave.status =:status and leave.fromDate =:sqlappliedDate";
+        list = session.createQuery(query).setString("status", status).setLong("orgLocationId", locationId).setDate("sqlappliedDate", sqlappliedDate).list();
+        return list;
+    }
 }
 

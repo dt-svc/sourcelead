@@ -41,6 +41,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.MasterCandidate;
+import com.bis.sourcelead.entity.OfferLetterTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -56,6 +57,7 @@ import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.OfferLetterTemplateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
@@ -137,6 +139,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	@Autowired
 	CandidateResumesDao candidateResumesDao;
 
+	@Autowired
+	OfferLetterTemplateService offerLetterTemplateService;
 	
 	@Override
 	public void saveRequirementOffers(JSONObject jsonObj, User loginUser, OrgLocations orgLocations,MultipartHttpServletRequest request) throws Exception {
@@ -201,6 +205,17 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 								if(jsonObj.has(c+"JobOtherType") && !jsonObj.getString(c+"JobOtherType").isEmpty()){
 									requirementOffers.setOtherPositionType(jsonObj.getString(c+"JobOtherType"));
 								}
+								
+								if(!jsonObj.getString("offerExpireDate").isEmpty()) {
+									requirementOffers.setOfferExpireDate(commonUtil.orgLocationDateFormat(submission.getOrgLocations().getDateFormat(),jsonObj.getString("offerExpireDate")));
+								}
+								
+								if(!jsonObj.getString("offerTemplateId").isEmpty()) {
+									OfferLetterTemplate olt = new OfferLetterTemplate();
+									olt.setId(Long.valueOf(jsonObj.getString("offerTemplateId")));
+									requirementOffers.setOfferLetterTemplate(olt);
+								}
+								
 								
                                final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
                    		       final Map files = multiRequest.getFileMap();
@@ -518,6 +533,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             }
             
             StringBuilder linkSB=new StringBuilder();
+            globalVarsMap.put("viewOffer",linkSB.append("<a href='").append(sourceleadUrl).append("/offerLetterTempleateView").append(">View Offer Letter</div></a>").toString());
             globalVarsMap.put("link",linkSB.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
             // setting the Recipient information
             InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -647,9 +663,14 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
          StringBuilder acceptLinkBuilder=new StringBuilder();
          StringBuilder rejectLinkBuilder=new StringBuilder();
          StringBuilder negotiationLinkBuilder=new StringBuilder();
-         globalVarsMap.put("acceptLink",acceptLinkBuilder.append("<a href='").append(atsUrl).append("/").append("ws/acceptOrRejectRequirementOffer?offerStatus=Accepted&offerId=").append(requirementOffers.getId()).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
-         globalVarsMap.put("rejectLink",rejectLinkBuilder.append("<a href='").append(atsUrl).append("/").append("ws/acceptOrRejectRequirementOffer?offerStatus=Rejected&offerId=").append(requirementOffers.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
-         globalVarsMap.put("negotiationLink",negotiationLinkBuilder.append("<a href='").append(atsUrl).append("/ws/acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Negotiate&submissionId=").append(requirementOffers.getSubmissionId().getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>").toString());
+         StringBuilder viewOfferLink = new StringBuilder();
+         globalVarsMap.put("acceptLink",acceptLinkBuilder.append("<a href='").append(atsUrl).append("/").append("ws/acceptOrRejectRequirementOffer?offerStatus=Accepted&offerId=").append(requirementOffers.getId()).append("'style='text-decoration:none;float:left; margin-left:5px;'><div style=' width:160px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px; text-align:center; letter-spacing:0px;'>Accept</div></a>").toString());
+         globalVarsMap.put("rejectLink",rejectLinkBuilder.append("<a href='").append(atsUrl).append("/").append("ws/acceptOrRejectRequirementOffer?offerStatus=Rejected&offerId=").append(requirementOffers.getId()).append("'style='text-decoration:none;float:left;margin-left:10px;'><div style=' width:160px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px; text-align:center; letter-spacing:0px;'>Reject</div></a>").toString());
+         globalVarsMap.put("negotiationLink",negotiationLinkBuilder.append("<a href='").append(atsUrl).append("/ws/acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Negotiate&submissionId=").append(requirementOffers.getSubmissionId().getId()).append("'style='text-decoration:none;float:left;margin-left:10px;'><div style='width:160px; border-radius:30px; background-color:#f0ad4e; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px; text-align:center; letter-spacing:0px;'>Negotiate Rate</div></a>").toString());
+         if(requirementOffers.getOfferLetterTemplate() != null) {
+        	 OfferLetterTemplate  offerLetterTemplate =  offerLetterTemplateService.getOfferLetterTemplateDetailsById(requirementOffers.getOfferLetterTemplate().getId());
+        	 globalVarsMap.put("viewOffer",viewOfferLink.append("<a href='").append(sourceleadUrl).append("/ws/viewOfferLetter?templateUUID="+offerLetterTemplate.getTemplateUUID()+"&tempName="+offerLetterTemplate.getTemplateName()).append("'style='text-decoration:underline; display:block; margin-left:5px; margin-top:-25px;' target='_blank'><div style='width:100%; color:#368ee0; font-size:16px; font-weight:600; margin:10px auto 5px auto; padding:10px 0px; text-align:left; letter-spacing:0px;'>View Offer</div></a>").toString());
+         }
         
         StringBuilder attachmentLinkBuilder=new StringBuilder();
         if(requirementOffers.getFileName() != null && !requirementOffers.getFileName().isEmpty() ){
