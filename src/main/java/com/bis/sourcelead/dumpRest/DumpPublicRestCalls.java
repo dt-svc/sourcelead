@@ -218,7 +218,19 @@ public class DumpPublicRestCalls {
 		}
 		return  count+" Records updated SuccessFully";
 	}
-	
+	@RequestMapping(value = "/ws/updateAllExpensesSubmittedDate", method = RequestMethod.GET)
+	@ResponseBody
+	public String updateAllExpensesSubmittedDate() throws Exception {
+	List<Expenses> expensesList = expensesService.getAllExpenses();
+	int count =0;
+	if(expensesList != null && !expensesList.isEmpty()) {
+	for(Expenses expenses :expensesList) {
+	expenses.setSubmittedDate(expenses.getUpdatedDate());
+	addExpensesDao.storeAddExpensesData(expenses);
+	}
+	} 
+	return count+" Records updated SuccessFully";
+	}
 	/*Expenses expenses = expensesDao.getExpenseById(expenseId);
 	List<String> expenseStatus = new ArrayList<>();
 	expenseStatus =   expenses.getApproverHierarchyList().stream().map(hierarchy -> hierarchy.getExpenseApprovalStatus().getValue()).collect(Collectors.toList());

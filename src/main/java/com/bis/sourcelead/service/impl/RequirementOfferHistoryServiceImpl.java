@@ -62,7 +62,13 @@ public class RequirementOfferHistoryServiceImpl implements RequirementOfferHisto
 				if(offers.getDateOfJoining() != null){
 					requirementOfferHistory.setDateOfJoiningStr((commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),offers.getDateOfJoining())));
 				}
-				
+				if(offers.getOfferLetterTemplate() != null) {
+					requirementOfferHistory.setTemplateUUID(offers.getOfferLetterTemplate().getTemplateUUID());
+					requirementOfferHistory.setTemplateName(offers.getOfferLetterTemplate().getTemplateName());
+				}
+				if(offers.getOfferExpireDate() != null) {
+					requirementOfferHistory.setOfferExpireDate((commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),offers.getOfferExpireDate())));
+				}
 				if(requirementOfferHistory.getSubmissionId().getVendorLocationId() != null){
 					requirementOfferHistory.setIsNotifyToVendorRequired(Constants.YES);
 				}else{

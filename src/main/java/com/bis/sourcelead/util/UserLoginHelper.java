@@ -930,6 +930,10 @@ public class UserLoginHelper {
 			orgLocations.setAverageWorkingHours(Integer.valueOf(orgLocationJson.get("averageWorkingHours").toString()));
 		}
 		
+		if(orgLocationJson.get("workingDaysPerWeek") != null) {
+			orgLocations.setWorkingDaysPerWeek(Integer.valueOf(orgLocationJson.get("workingDaysPerWeek").toString()));
+		}
+		
 		if(orgLocationJson.get("primaryUserId") != null) {
 			orgLocations.setPrimaryUserId(Long.valueOf(orgLocationJson.get("primaryUserId").toString()));
 		}
