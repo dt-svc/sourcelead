@@ -77,6 +77,9 @@ public class CandidateIndexHelper {
 			if(StringUtils.isNotBlank(candidate.getPanNumber())){
 				candidateIndex.setPanNumber(candidate.getPanNumber());
 			}
+			if(StringUtils.isNotBlank(candidate.getAadharNumber())){
+				candidateIndex.setAadharNumber(candidate.getAadharNumber());
+			}
 			
 		if(null != candidate.getConsultantUser()){
 				candidateIndex.setUserId(candidate.getConsultantUser().getId());

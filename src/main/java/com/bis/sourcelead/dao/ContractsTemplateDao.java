@@ -72,4 +72,6 @@ public interface ContractsTemplateDao {
 	List<Contracts> getContractsBylocationIdForReminder(Long locationId, String status, Date date);
 
 	Integer deleteContractOwnerHierarchyListByContractId(Long id);
+	
+	List<Contracts> getAllContractsBasedOnConfigureDate(Date updatedDate) throws Exception;
 }

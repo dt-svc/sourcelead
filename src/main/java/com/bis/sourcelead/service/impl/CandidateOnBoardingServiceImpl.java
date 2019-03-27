@@ -836,7 +836,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	     globalVarsMap.put("date","--"); 
 		 }
 		 
-		 Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		 Timezone timezone = timeZoneService.getTimezone(Long.valueOf(orgLocations.getTimeZoneId()));
 
 			if(task.getTaskTime() != null){
 			   	DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
