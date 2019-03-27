@@ -533,6 +533,11 @@ public class UserServiceImpl implements UserService {
 				}else{
 					candidate.setPanNumber(null);
 				}
+				if(StringUtils.isNotBlank(candidateDTO.getAadharNumber())){
+					candidate.setAadharNumber(candidateDTO.getAadharNumber());
+				}else{
+					candidate.setAadharNumber(null);
+				}
 				if(StringUtils.isNotBlank(addUserDTO.getVendors())){
 					OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(addUserDTO.getVendors()));
 					candidate.setOrgRelationId(orgRelation);
@@ -634,6 +639,11 @@ public class UserServiceImpl implements UserService {
 					}else{
 						candidate.setPanNumber(null);
 					}
+					if(StringUtils.isNotBlank(candidateDTO.getAadharNumber())){
+						candidate.setAadharNumber(candidateDTO.getAadharNumber());
+					}else{
+						candidate.setAadharNumber(null);
+					}
 					candidate.setIsAssociate(Constants.YES);
 					candidateService.addCandidate(candidate);
 					candidateService.saveOrUpdateCandidateElkDocument(candidate);
@@ -656,6 +666,11 @@ public class UserServiceImpl implements UserService {
 					candidate.setPanNumber(candidateDTO.getPanNumber());
 				}else{
 					candidate.setPanNumber(null);
+				}
+				if(StringUtils.isNotBlank(candidateDTO.getAadharNumber())){
+					candidate.setAadharNumber(candidateDTO.getAadharNumber());
+				}else{
+					candidate.setAadharNumber(null);
 				}
 				candidate.setConsultantUser(user);
 				candidate.setIsAssociate(Constants.YES);

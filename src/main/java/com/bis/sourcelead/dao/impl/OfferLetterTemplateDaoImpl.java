@@ -144,5 +144,20 @@ public class OfferLetterTemplateDaoImpl implements OfferLetterTemplateDao{
 				}
 		return flag;
 	}
+
+
+	@Override
+	public List<OfferLetterTemplate> getOfferLetterTemplateListByOrgLocationId(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OfferLetterTemplate>  offerLetterTemplateList = session.createQuery("from OfferLetterTemplate oft where oft.orgLocationId.id =:orgLocationId and oft.templateStatus = '1'").setLong("orgLocationId", orgLocationId).list();
+		return offerLetterTemplateList;
+	}
+
+
+	@Override
+	public OfferLetterTemplate getOfferLetterTemplateDetailsById(Long Id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		return (OfferLetterTemplate) session.get(OfferLetterTemplate.class, Id);
+	}
  
 }
