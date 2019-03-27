@@ -1,6 +1,6 @@
 package com.bis.sourcelead.dto;
 
-public class RequirementWorkFlowDTO {
+public class RequirementWorkFlowDTO extends SearchDTO {
 
 	private long id;
 	

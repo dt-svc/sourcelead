@@ -2,6 +2,8 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.RequirementWorkFlowDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementDefaultWorkFlowStages;
 import com.bis.sourcelead.entity.RequirementWorkFlow;
@@ -20,6 +22,6 @@ public interface RequirementWorkFlowDao {
 	
 	void saveRequirementWorkFlowStagesByOrgLocationId(RequirementWorkFlowStages requirementWorkFlowStages)throws Exception;
 	
-	
+	ResponseList<RequirementWorkFlowDTO> getRequirementWorkFlowsByOrgLocationId(RequirementWorkFlowDTO workFlowDTO, OrgLocations orgLocations)throws Exception;
 
 }

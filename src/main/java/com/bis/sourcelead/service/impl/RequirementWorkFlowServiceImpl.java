@@ -144,6 +144,14 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		}
 		return newDefaultStages;
 	}
+
+
+	@Override
+	public ResponseList<RequirementWorkFlowDTO> getRequirementWorkFlowList(RequirementWorkFlowDTO workFlowDTO, OrgLocations orgLocations) throws Exception {
+		
+		return requirementWorkFlowDao.getRequirementWorkFlowsByOrgLocationId(workFlowDTO, orgLocations);
+		
+	}
 	
 }
 
