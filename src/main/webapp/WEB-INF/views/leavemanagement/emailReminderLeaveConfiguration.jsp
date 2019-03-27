@@ -574,19 +574,22 @@ function hideandshowHoliday(){
 			dateFormat : 'yyyy/mm/dd'
 		};
 		if ($('#'+form).validate(false, validationSettings)) {
-			var emailArray = $('#notifyToDiv_'+form+' :input#notifyTo').val().split(",");
-			var proceed = true;
-			$('#notifyToDiv'+form).find('p.jquery_form_error_message').remove();
-			$.each(emailArray,function(i){
+			var notifyEmail = $('#notifyToDiv_'+form+' :input#notifyTo').val();
+			if(notifyEmail != null && notifyEmail != "" && notifyEmail != 'undefined'){
+				var emailArray = notifyEmail.split(",");
+				var proceed = true;
+				$('#notifyToDiv'+form).find('p.jquery_form_error_message').remove();
+				$.each(emailArray,function(i){
 				var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-			    if(! re.test(String($.trim(emailArray[i])).toLowerCase())){
-			    	proceed = false;
-			    	return false;
-			    }
-			});
-			if(!proceed){
+			    	if(! re.test(String($.trim(emailArray[i])).toLowerCase())){
+			    		proceed = false;
+			    		return false;
+			    	}
+				});
+				if(!proceed){
 				$("#notifyToDiv"+form+" :input#notifyTo").after("<p class='jquery_form_error_message'>Invalid entry</span>");
 				return false;
+				}
 			}
 			
 			$('#'+form+'_btn').prop('disabled', true);
