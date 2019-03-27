@@ -35,7 +35,7 @@ public class Breaks {
 	@Column(name = "BREAK_END_TIME")
 	private Time breakEndTime;
 	
-	@Column(name = "COMMENTS")
+	@Column(name = "COMMENTS",columnDefinition = "TEXT default NULL")
 	private String comments;
 	
 	@Column(name = "CREATED_DATE")
