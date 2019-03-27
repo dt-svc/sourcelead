@@ -72,7 +72,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 						<div class="newActPop" style="display: none;">
 							<span>
-			           	   		<a href="javascript:void(0)" id="applicantExportPdf" onclick="exportByApplicant('Pdf');" title="PDF" style="display: block">Export PDF</a>
+			           	   		<a href="javascript:void(0)" id="applicantExportPdf" onclick="exportByApplicant('Pdf');" title="PDF" style="display: none">Export PDF</a>
 								<a href="javascript:void(0)" id="applicantExportExcel" onclick="exportByApplicant('Excel');" title="Excel" style="display: none">Export Excel</a>  
 								
 								 		<a href="javascript:void(0)" id="recurterExportPdf" onclick="exportByRecruiter('Pdf');" title="PDF" style="display: block">Export PDF</a>
