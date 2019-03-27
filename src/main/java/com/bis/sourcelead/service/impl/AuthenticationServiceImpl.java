@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -16,6 +17,7 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadUserDetailsService;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.entity.TokenInfo;
 import com.bis.sourcelead.service.AuthenticationService;
 import com.bis.sourcelead.service.CandidateService;
@@ -32,8 +34,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	@Autowired
 	private ApplicationContext applicationContext;
-	 /*private static final long MAX_INACTIVE_SESSION_TIME = 5 * 10000;*/
-   
 
 	@Autowired
 	private  AuthenticationManager authenticationManager;
@@ -52,6 +52,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     
     @Autowired
     private CandidateService candidateService;
+    
+    @Autowired
+    private  UserStatsCacheHelper userStatsCacheHelper;
 	 
 	@PostConstruct
 	public void init() {}
@@ -60,14 +63,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	@Override
 	public TokenInfo authenticate(String login, String password,HttpServletRequest request,HttpSession session) throws AuthenticationException {
 		Authentication authentication = new UsernamePasswordAuthenticationToken(login, password);
-		
-			authentication = authenticationManager.authenticate(authentication);
+			try {
+				authentication = authenticationManager.authenticate(authentication);
+			}catch(BadCredentialsException e) {
+				if(!e.getMessage().equalsIgnoreCase("redirect_to_dashboard")) {
+					throw new BadCredentialsException(e.getMessage().toString());
+				}
+			}
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			if (authentication.getPrincipal() != null) {
 				String userName =  (String) authentication.getPrincipal();
 				UserDetails userDetails = sourceleadUserDetailsService.loadUserByUsername(userName);
 				   //tokenManager.getUserTokens(userDetails);
-				TokenInfo newToken = tokenManager.createNewToken(userDetails,request,userService,userRoleService,candidateService);
+				TokenInfo newToken = tokenManager.createNewToken(userDetails,request,userService,userRoleService,candidateService,userStatsCacheHelper);
 				if (newToken == null) {
 					return null;
 				}
@@ -78,7 +86,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	@Override
 	public boolean checkToken(String token,HttpSession session) {
-		UserDetails userDetails = tokenManager.getUserDetails(token,session);
+		UserDetails userDetails = tokenManager.getUserDetails(token,userStatsCacheHelper);
 		if (userDetails == null) {
 			return false;
 		}
