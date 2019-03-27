@@ -1,9 +1,6 @@
 package com.bis.sourcelead.clockInOutRestController;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,12 +20,13 @@ import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.ibm.icu.util.Calendar;
 
 @RestController
 @RequestMapping("/app")
@@ -69,6 +67,17 @@ public class ClockInOutRestController {
 		
 	}
 	
+
+	@RequestMapping(value = "/saveClockInOutTime")
+	public void saveClockInOutTime(HttpServletRequest request) {
+		
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		clockInOutConfigService.saveClockInOutTime(loginOrgLocation,user);
+		
+	}
+	
+
 	/**
 	 * Get Job Assigned to login user 
 	 * @param status
@@ -117,7 +126,7 @@ public class ClockInOutRestController {
 
 	
 	@RequestMapping(value = "/getProjectsByStatusAndClient")
-	public ResponseList<ProjectsDTO> getProjectsByStatusAndClient(ProjectsDTO projectsDTO,@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
+	public ResponseList<Projects> getProjectsByStatusAndClient(ProjectsDTO projectsDTO,@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
 
 	    Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 	    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
@@ -130,6 +139,22 @@ public class ClockInOutRestController {
 		ResponseList<Projects> projectsList = clockInOutConfigService.getProjectsListByUserId(projectsDTO,user.getId(), clients, values,orgLocationId,userRole,candidateId);
 	   
 		return projectsList;
+	}
+	
+	@RequestMapping(value = "/getProjectsTasksByProjectId")
+	public List<ProjectTasks> getProjectsTasksByProjectId(@RequestParam(value="projectId", required=false) Long projectId,HttpServletRequest request) throws Exception {
+
+		return clockInOutConfigService.getProjectsTasksByProjectId(projectId);
+	   
+	}
+	
+	@RequestMapping(value = "/getGeneralTasks")
+	public List<Tasks> getGeneralTasks(HttpServletRequest request) throws Exception {
+
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		return clockInOutConfigService.getGeneralTasks(orgLocationId,userId);
+	   
 	}
 
 }

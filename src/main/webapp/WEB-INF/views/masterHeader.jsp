@@ -1564,24 +1564,16 @@ $("#searchType").selectpicker('refresh');
                 </div> 
                 <div  id="projectTaskDIV">
                 <div class="clearfix mb">
-                    <label class="noPad">Project1<b class="valStar">*</b></label>
+                    <label class="noPad">Project<b class="valStar">*</b></label>
                     <div class="clearfix addicon">
-                        <select class="form-control chosen-select">
-                          <option>Task 1</option>
-                          <option>Task 2</option>
-                          <option>Task 3</option>
-                          <option>Task 4</option>
+                        <select class="form-control chosen-select" id="projectDropDownDiv" onchange="getProjectTasksByProject();">
                         </select>
                       </div>
                 </div>   
                  <div class="clearfix mb">
-                    <label class="noPad">Project2 Tasks <b class="valStar">*</b></label>
+                    <label class="noPad">Project Tasks <b class="valStar">*</b></label>
                     <div class="clearfix addicon">
-                        <select class="form-control chosen-select">
-                          <option>Task 1</option>
-                          <option>Task 2</option>
-                          <option>Task 3</option>
-                          <option>Task 4</option>
+                        <select class="form-control chosen-select" id="projectTaskDropDownDiv">
                         </select>
                       </div>
                 </div>     
@@ -1589,11 +1581,7 @@ $("#searchType").selectpicker('refresh');
                 <div class="clearfix mb" id="generalTaskDIV">
                     <label class="noPad">General Tasks <b class="valStar">*</b></label>
                     <div class="clearfix addicon">
-                        <select class="form-control chosen-select">
-                          <option>Task 1</option>
-                          <option>Task 2</option>
-                          <option>Task 3</option>
-                          <option>Task 4</option>
+                        <select class="form-control chosen-select" id="generalTaskDropDownDiv">
                         </select>
                       </div>
                 </div> 
@@ -1949,6 +1937,7 @@ $(".clockAni").click(function(){
 $("#clPop").click(function() {
 	getClockInOutConfiguration();
 	$(".mask, #clockPop").fadeIn();
+	saveClockInOutTime();
 });
 $(".clPopClose").click(function() {
 	$(".mask, .popupWrap2").fadeOut();
@@ -1979,6 +1968,7 @@ function getClockInOutConfiguration(){
 	        			$("#generalTaskDIV").hide();
 	        		} else{
 	        			$("#generalTaskDIV").show();
+	        			getGeneralTasks();
 	        		}
 	        		if(!json.isClockInComment){
 	        			$("#commentsDIV").hide();
@@ -2023,27 +2013,85 @@ function getAssignedJobTasks(){
 <script>
 function getAssignedProjects(){
 	$.ajax({
-	 	url: sourceleadUrl + "/getAssignedJobs",
+	 	url: sourceleadUrl + "/getProjectsByStatusAndClient",
         type: 'GET',
         success: function (json) {
-        /* 	var output = "";
-			output = output + "<option value=''>Select Job</option>";
+        	var output = "";
+			output = output + "<option value=''>Select Project</option>";
 			if(json.data != null){
 				for (var i=0; i<json.data.length; i++)
 				{
-				var opt = json.data[i];
-			//	if(orgRelationId == opt.id){
-			//		var selected = 'selected'; 
-					output = output + "<option value='" +opt.id+ "'>"+opt.jobTitle+"</option>";
-			//	 }else{
-			//		output = output + "<option value='" +opt.id+ "' data-Invoice = '"+opt.generateInvoice+"' data-responder_location_id=" + opt.responderId + ">"+opt.orgName+"</option>";
-			//	} 
+					var opt = json.data[i];
+					output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
 				}
 			}
-		$("#jobDropDownDiv").empty();
-		$("#jobDropDownDiv").append(output);
-		$('#jobDropDownDiv').trigger("chosen:updated"); */
+		$("#projectDropDownDiv").empty();
+		$("#projectDropDownDiv").append(output);
+		$('#projectDropDownDiv').trigger("chosen:updated"); 
         	}
         });
+}
+</script>
+
+
+<script>
+function getProjectTasksByProject(){
+	
+	var projectId = $("#projectDropDownDiv").val();
+	$.ajax({
+	 	url: sourceleadUrl + "/getProjectsTasksByProjectId?&projectId="+projectId,
+        type: 'GET',
+        success: function (json) {
+        	var output = "";
+			output = output + "<option value=''>Select Project Task</option>";
+			if(json != null){
+				for (var i=0; i<json.length; i++)
+				{
+					var opt = json[i];
+					output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+				}
+			}
+		$("#projectTaskDropDownDiv").empty();
+		$("#projectTaskDropDownDiv").append(output);
+		$('#projectTaskDropDownDiv').trigger("chosen:updated"); 
+        	}
+        });
+}
+</script>
+
+<script>
+function getGeneralTasks(){
+	
+	$.ajax({
+	 	url: sourceleadUrl + "/getGeneralTasks",
+        type: 'GET',
+        success: function (json) {
+        	var output = "";
+			output = output + "<option value=''>Select Task</option>";
+			if(json != null){
+				for (var i=0; i<json.length; i++)
+				{
+					var opt = json[i];
+					output = output + "<option value='" +opt.id+ "'>"+opt.subject+"</option>";
+				}
+			}
+		$("#generalTaskDropDownDiv").empty();
+		$("#generalTaskDropDownDiv").append(output);
+		$('#generalTaskDropDownDiv').trigger("chosen:updated"); 
+        	}
+        });
+}
+</script>
+
+<script>
+function saveClockInOutTime(){
+	 $.ajax({
+		 type : "POST",
+	       url: sourceleadUrl+"/saveClockInOutTime",        
+	       success :function() {
+	    	   
+	       },						     
+	}); 
+	
 }
 </script>

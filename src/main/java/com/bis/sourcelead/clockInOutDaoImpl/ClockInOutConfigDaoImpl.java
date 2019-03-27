@@ -21,18 +21,22 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.clockInOutDao.ClockInOutConfigDao;
+import com.bis.sourcelead.clockInOutEntity.ClockInOut;
 import com.bis.sourcelead.clockInOutEntity.ClockInOutConfig;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.OrgLocationService;
 
+@SuppressWarnings("unchecked")
 @Repository
 public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 	
@@ -90,6 +94,21 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 		return null;
 	}
 
+	@Override
+	@Transactional
+	public void saveClockInOutTime(ClockInOut clockInOut) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		try {
+			if (clockInOut != null) {
+				session.saveOrUpdate(clockInOut);
+			}
+		} catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		}
+	}
+	
 	@Override
 	@Transactional
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId)
@@ -190,22 +209,27 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			List<Long> countlist = null;
 			Integer filterCount = 0;
 			Query queryObj = null;
-			
-			Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
-		   Matcher matcher = pattern.matcher(projectsDTO.getSearchValue());
-		   java.sql.Date sqlDate = null;
-		    if(matcher.matches() == true) {
-						if(projectsDTO.getSearchValue().contains("/")||(projectsDTO.getSearchValue().contains("-"))) {
-							String replacedValue = projectsDTO.getSearchValue().replaceAll("/", "-");
-							    OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationId);
-								SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
-						        java.util.Date utilDate = format.parse(replacedValue);
-						        sqlDate = new java.sql.Date(utilDate.getTime());
-						}
-		    }
+	
 			
 			StringBuilder query1 = new StringBuilder("");
 			if(projectsDTO.getSearchValue() !=null && !"".equalsIgnoreCase(projectsDTO.getSearchValue())) {
+				
+				
+				
+				Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+			   Matcher matcher = pattern.matcher(projectsDTO.getSearchValue());
+			   java.sql.Date sqlDate = null;
+			    if(matcher.matches() == true) {
+							if(projectsDTO.getSearchValue().contains("/")||(projectsDTO.getSearchValue().contains("-"))) {
+								String replacedValue = projectsDTO.getSearchValue().replaceAll("/", "-");
+								    OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationId);
+									SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+							        java.util.Date utilDate = format.parse(replacedValue);
+							        sqlDate = new java.sql.Date(utilDate.getTime());
+							}
+			    }
+				
+				
 			 query1.append(" ps.projectSequeneNumber like '%" + projectsDTO.getSearchValue().replace("'", "") + "%' ")
 					.append("OR ps.projectName like '%" + projectsDTO.getSearchValue().replace("'", "") + "%' ")
 					.append("OR ps.invoiceFrequency like '%" + projectsDTO.getSearchValue().replace("'", "") + "%' ")
@@ -437,6 +461,34 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			
 		}
 		return response;
+	}
+
+	@Transactional
+	@Override
+	public List<ProjectTasks> getProjectsTasksByProjectId(Long projectId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.createQuery("from ProjectTasks pt where pt.projectId.id = :projectId and pt.status = '1' and pt.taskType.name <> 'Done'").setLong("projectId", projectId).list();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Transactional
+	@Override
+	public List<Tasks> getGeneralTasks(Long orgLocationId, Long userId) {
+		
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.createQuery("from Tasks tasks where tasks.assignedUserId =:userId and ((tasks.ownerOrglocationId =:orgLocationId) OR (tasks.assignedOrglocationId =:orgLocationId)) and  tasks.taskStatus = 'Open' ORDER BY tasks.createdDate DESC")
+								   .setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }
