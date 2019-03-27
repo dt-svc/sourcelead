@@ -20,8 +20,10 @@ import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -137,6 +139,22 @@ public class ClockInOutRestController {
 		ResponseList<Projects> projectsList = clockInOutConfigService.getProjectsListByUserId(projectsDTO,user.getId(), clients, values,orgLocationId,userRole,candidateId);
 	   
 		return projectsList;
+	}
+	
+	@RequestMapping(value = "/getProjectsTasksByProjectId")
+	public List<ProjectTasks> getProjectsTasksByProjectId(@RequestParam(value="projectId", required=false) Long projectId,HttpServletRequest request) throws Exception {
+
+		return clockInOutConfigService.getProjectsTasksByProjectId(projectId);
+	   
+	}
+	
+	@RequestMapping(value = "/getGeneralTasks")
+	public List<Tasks> getGeneralTasks(HttpServletRequest request) throws Exception {
+
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		return clockInOutConfigService.getGeneralTasks(orgLocationId,userId);
+	   
 	}
 
 }

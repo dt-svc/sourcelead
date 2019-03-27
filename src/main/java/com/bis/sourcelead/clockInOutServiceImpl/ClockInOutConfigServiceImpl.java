@@ -19,8 +19,10 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 
 @Service
@@ -118,16 +120,14 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 
 	@Override
 	public void saveClockInOutTime(OrgLocations loginOrgLocation, User loginUser) {
-		
+		java.sql.Time timeValue = null;
 		ClockInOut clockInOut = new ClockInOut();
+		try {
 		clockInOut.setOrgLocations(loginOrgLocation);
 		clockInOut.setUserId(loginUser);
-		
 		DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
 		String s = formatter.format(Calendar.getInstance().getTime());
-		java.sql.Time timeValue = null;
-		try {
-			timeValue = new java.sql.Time(formatter.parse(s).getTime());
+		timeValue =  new java.sql.Time(formatter.parse(s).getTime());
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -148,6 +148,16 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	public ResponseList<Projects> getProjectsListByUserId(ProjectsDTO projectsDTO, Long userId, String clients, String values, Long orgLocationId, String userRole, Long candidateId)
 	{
 		return clockInOutConfigDao.getProjectsListByUserId(projectsDTO,userId,clients,values,orgLocationId,userRole,candidateId);
+	}
+
+	@Override
+	public List<ProjectTasks> getProjectsTasksByProjectId(Long projectId) {
+		return clockInOutConfigDao.getProjectsTasksByProjectId(projectId);
+	}
+
+	@Override
+	public List<Tasks> getGeneralTasks(Long orgLocationId, Long userId) {
+		return clockInOutConfigDao.getGeneralTasks(orgLocationId,userId);
 	}
 
 }
