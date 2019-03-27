@@ -1455,10 +1455,14 @@ public class ImmigrationRestController {
 		
 		try {
 			if (user != null && Validator.validate(immLcaDTO)) {
+				Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 				candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
 				immigration = immigrationCommonService.getImmigrationById(Long.parseLong(immigrationId));
 				lca=immigrationCommonService.getLcaByLcaId(Long.parseLong(lcaId));
-				
+				lca.setAvailablePositions(lca.getAvailablePositions()-1); // Decreasing no of available position when assigned to candidate.
+				lca.setUpdatedBy(user);
+				lca.setUpdatedDate(currentDate);
+				immigrationCommonService.updateLcaAvailablePositionsById(lca);
 				LcaHistory lh= new LcaHistory();
 				
 				lh.setLcaId(lca);
@@ -1468,7 +1472,6 @@ public class ImmigrationRestController {
 				lh.setStatus(Constants.RECORD_ACTIVE);
 				lh.setCreatedBy(user);
 				lh.setUpdatedBy(user);
-				Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 				lh.setUpdatedDate(currentDate);
 				lh.setCreatedDate(currentDate);
 				
