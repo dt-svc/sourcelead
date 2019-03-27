@@ -1,17 +1,27 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementWorkFlowDao;
+import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
+import com.bis.sourcelead.dto.RequirementWorkFlowDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementDefaultWorkFlowStages;
 import com.bis.sourcelead.entity.RequirementWorkFlow;
@@ -100,6 +110,60 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 			e.printStackTrace();
 		}
 
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<RequirementWorkFlowDTO> getRequirementWorkFlowsByOrgLocationId(
+			RequirementWorkFlowDTO workFlowDTO, OrgLocations orgLocations) throws Exception {
+		try{
+			Session session = this.sessionFactory.getCurrentSession();
+			List<Long> countlist = null;
+			Integer filterCount = 0;
+			StringBuilder queryEndBuilder = new StringBuilder("");
+			RequirementWorkFlowDTO requirementWorkFlowDTO = null;
+			List<RequirementWorkFlowDTO> requirementWorkFlowDTOList = new ArrayList<>();
+			ResponseList<RequirementWorkFlowDTO> responseList = new ResponseList<>();
+			if(workFlowDTO != null){
+				if (StringUtils.isNotBlank(workFlowDTO.getSortColumn())) {
+					String sortColumnName = workFlowDTO.getSortColumn();
+					if(sortColumnName.equalsIgnoreCase("totalResumePrice")){
+						queryEndBuilder.append(" order by requirementWorkFlow.updatedDate "+workFlowDTO.getSortOrder());
+					}
+				}
+				}
+			String query = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.orgLocationId.id = :orgLocationId";
+			String countQuery = "select count(*) from RequirementWorkFlow requirementWorkFlow  where  requirementWorkFlow.orgLocationId.id =:orgLocationId";
+			Query query1 = session.createQuery(query + queryEndBuilder).setLong("orgLocationId", orgLocations.getId());
+			Query query2 = session.createQuery(countQuery + queryEndBuilder).setLong("orgLocationId", orgLocations.getId());
+			countlist = query2.list();
+			int totalCount = 0;
+			if (workFlowDTO != null) {
+				if (countlist != null && !countlist.isEmpty()) {
+					totalCount = countlist.iterator().next().intValue();
+					filterCount = totalCount;
+				}
+			}
+			responseList.setRecordsTotal(totalCount);
+			if (query.toString() != null && !query.toString().isEmpty()) {
+				responseList.setRecordsFiltered(filterCount);
+			} else {
+				responseList.setRecordsFiltered(totalCount);
+			}
+			List<RequirementWorkFlow> requirementWorkFlow = query1.list();
+			if(requirementWorkFlow != null){
+			for(RequirementWorkFlow workFlow : requirementWorkFlow){
+				requirementWorkFlowDTO = new RequirementWorkFlowDTO();
+				BeanUtils.copyProperties(workFlow, requirementWorkFlowDTO);
+				requirementWorkFlowDTOList.add(requirementWorkFlowDTO);
+				}
+			}
+			responseList.setData(requirementWorkFlowDTOList);
+			return responseList;
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
 	}     
        
 
