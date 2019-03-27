@@ -5,6 +5,7 @@ import java.util.Queue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.couchbase.connection.CouchbaseConnectionConfig;
@@ -14,6 +15,7 @@ import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.datastructures.collections.CouchbaseQueue;
 import com.couchbase.client.java.document.JsonDocument;
 import com.couchbase.client.java.document.json.JsonObject;
+import com.google.gson.Gson;
 
 
 @Component
@@ -110,6 +112,12 @@ public class CouchbaseClient {
 		bulkImportsBucket.upsert(JsonDocument.create(key, arthur));
 	}
 	
+    public void setCustomTokenDocuments(String token, JsonObject value) throws Exception {
+		Bucket customTokenBucket = couchbaseClusterService.openBucket(couchConfig.getCustomTokensBucket(), couchConfig.getPassword());
+		JsonObject arthur = JsonObject.create().put(token, value);
+		customTokenBucket.upsert(JsonDocument.create(token, arthur));
+	}
+	
 	
 	public void setCoucuchbaseQueueDocument(String key, JsonObject value) throws Exception {
 		
@@ -146,6 +154,18 @@ public class CouchbaseClient {
 		if (userLoginSessionStoreBucket.get(key) != null) {
 			Object userSessionObj =  userLoginSessionStoreBucket.get(key).content().toString();
 			return userSessionObj;
+		} else {
+			return null;
+		}
+
+	}
+	
+	
+	public Object getUserDetails(String key) {
+		Bucket customTokenBucket = couchbaseClusterService.openBucket(couchConfig.getCustomTokensBucket(), couchConfig.getPassword());
+		if (customTokenBucket.get(key) != null) {
+			Object userDetailsObj =  customTokenBucket.get(key).content().toString();
+			return userDetailsObj;
 		} else {
 			return null;
 		}
