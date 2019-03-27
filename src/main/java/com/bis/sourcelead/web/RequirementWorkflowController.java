@@ -13,15 +13,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dto.RequirementDefaultWorkFlowStagesDTO;
-import com.bis.sourcelead.dto.RequirementWorkFlowDTO;
-import com.bis.sourcelead.dto.RequirementWorkFlowStagesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementWorkFlow;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
-import com.bis.sourcelead.service.RequirementWorkFlowService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
+import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 
 @Controller
 @RequestMapping("/app")
