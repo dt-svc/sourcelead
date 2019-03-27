@@ -138,4 +138,32 @@ public class RequirementWorkflowController {
 
 	}
 	
+	@RequestMapping(value = "/getWorkflowList", method = RequestMethod.GET)
+	public ResponseList<RequirementWorkFlowDTO> getWorkflowList(
+			RequirementWorkFlowDTO requirementWorkFlowDTO,
+			HttpServletRequest request){
+		ResponseList<RequirementWorkFlowDTO> responseList = new ResponseList<>();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		try {
+			
+			String[] tableColumns = { "workFlowName", "noOfStages", "status", "Action"};
+		  	int sortColumnIndex = -1; 
+	  		String sortColumnOrder = "desc"; 
+	  		if (requirementWorkFlowDTO.getOrder() != null && !requirementWorkFlowDTO.getOrder().isEmpty()) {
+	  		sortColumnIndex = Integer.parseInt(requirementWorkFlowDTO.getOrder().get(0).get("column"));
+	  		sortColumnOrder = requirementWorkFlowDTO.getOrder().get(0).get("dir"); 
+	  		requirementWorkFlowDTO.setSortOrder(sortColumnOrder);
+	  		}
+	  		if (sortColumnIndex != -1){
+	  			requirementWorkFlowDTO.setSortColumn(tableColumns[sortColumnIndex]);
+	  		}
+			responseList = requirementWorkFlowService.getRequirementWorkFlowList(requirementWorkFlowDTO, orgLocations);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return responseList;
+		
+	}
+	
 }
