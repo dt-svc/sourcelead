@@ -48,6 +48,8 @@ public class CandidateDTO extends SearchDTO{
 	private String dateofBirth;
 	
 	private String panNumber;
+	
+	private String aadharNumber;
 
 	@Required(desc = "email")
 	@Email
@@ -1141,6 +1143,14 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setPanNumber(String panNumber) {
 		this.panNumber = panNumber;
+	}
+
+	public String getAadharNumber() {
+		return aadharNumber;
+	}
+
+	public void setAadharNumber(String aadharNumber) {
+		this.aadharNumber = aadharNumber;
 	}
 
 	public Long getUserId() {

@@ -53,6 +53,7 @@ import com.bis.sourcelead.dto.AssociateSalaryIndDTO;
 import com.bis.sourcelead.dto.AssociateSalaryPayheadIndDTO;
 import com.bis.sourcelead.dto.IndAssociatePaymentAccountDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -298,8 +299,9 @@ public class AssociateImportController {
 		
 		@RequestMapping(value = "/app/saveAssociateSalaryDetailsTemplate", method = RequestMethod.POST)
 		@ResponseBody
-		public AssociateSalaryIndDTO saveAssociateSalaryDetailsTemplate(MultipartHttpServletRequest request) throws Exception
-		{
+		public ResponseList<AssociateSalaryIndDTO> saveAssociateSalaryDetailsTemplate(MultipartHttpServletRequest request) throws Exception
+		{	
+			ResponseList<AssociateSalaryIndDTO> response = new ResponseList<>();
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			MultipartFile multipartFile = null;
@@ -307,10 +309,8 @@ public class AssociateImportController {
 			if (itrator.hasNext()) {
 				multipartFile = request.getFile(itrator.next());
 			}
-			AssociateSalaryIndDTO response = null;
 			if (multipartFile != null) {
 				response = associateImportService.saveAssociateSalaryDetails(multipartFile, orgLocation, user);
-				return response;
 			}
 			return response;
 		}
