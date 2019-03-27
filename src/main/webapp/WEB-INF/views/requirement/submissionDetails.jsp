@@ -681,7 +681,7 @@ function getInternalInterviewsList(submissionId){
 	   					     if(submissionId == report.interviewSubmissionId){
 	   					    	 if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
 			   						  if(report.interviewTemplateid != null && report.interviewTemplateid != '' && report.interviewTemplateid != 'undefined'){
-			   							result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback(\''+report.interviewId.id+'\',\''+report.interviewTemplateUUId+'\',\''+report.id+'\',\''+submissionId+'\');"></i>';  
+			   							result = result + '<i style="color:#fff" class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback(\''+report.interviewId.id+'\',\''+report.interviewTemplateUUId+'\',\''+report.id+'\',\''+submissionId+'\');"></i>';  
 			   						  }
 			   					  }
 	   					     }
@@ -1138,6 +1138,9 @@ function getOfferDetails(submissionId){
 	   					     result = result + '<div class="content clearfix" style="display: block;">';
 	   					  	 result = result + '<div id="offerLoading"></div>';
 	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
+	   					     if(report.templateUUID != null && report.templateUUID != "" && report.templateUUID != "undefined"){
+		   					  	 result = result + '<i class="fa fa-eye pull-right viewEyeicon" style="color:#fff !important;" onclick="viewOfferLetter(\''+report.templateUUID+'\',\''+report.templateName+'\');"></i>';	
+	   					     }
 	                    	 result = result + '<h2  class="active">Offer: <span>'+report.offerSourceType+'</span></h2>';
 	                    	 result = result + '<div class="content clearfix">';
 	                    	 result = result + '<div class="interview-type">';
@@ -1256,7 +1259,16 @@ function getOfferDetails(submissionId){
 	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">No Document</p>';
 	                        	 result = result + '</div>';
 	                    	 }
-                    		 
+	                    	 
+	                    	 if(report.offerExpireDate != null && report.offerExpireDate != "" && report.offerExpireDate  != "undefined"){
+		                    	 result = result + '<div class="row clearfix">';
+	                        	 result = result + '<label class="col-md-5">';
+	                        	 result = result + '<strong>Expire Offer Date</strong>';
+	                        	 result = result + '</label>';
+	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerExpireDate+'</p>';
+	                        	 result = result + '</div>';
+	                    	 }
+	                    	 
                     		 result = result + '<div class="row clearfix">';
 	                         result = result + '<label class="col-md-5">';
 	                         result = result + '<strong>Notified to</strong>';
@@ -2775,6 +2787,14 @@ function acceptProposeTime(id,proposeDate,proposeTime,submissionId){
 	 }else{ 
 			return false;
 	 } 
+}
+
+</script>
+
+<script>
+function viewOfferLetter(templateUUId,templateName){
+	var sourceleadUrl ='${sourceleadUrl}';
+	window.open(sourceleadUrl+'/offerLetterTempleateView/'+templateUUId+'/'+templateName+'','_newtab');
 }
 
 </script>

@@ -1436,8 +1436,8 @@ function imageCancel(){
 				<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Candidate <i class="fa fa-caret-down"></i></a>
 				<div class="action-pop">
 					<span> 
-						<a href="${SourceLeadWeb_sourceleadUrl}/candidate">Parse Resume</a>
-                        <a href="${SourceLeadWeb_sourceleadUrl}/addCandidate">Add Manual</a>
+						<a href="${SourceLeadWeb_atsUrl}/candidate">Parse Resume</a>
+                        <a href="${SourceLeadWeb_atsUrl}/addCandidate">Add Manual</a>
                         <a href="${SourceLeadWeb_sourceleadUrl}/bulk-resume-import.html">Bulk Resume Parsing</a>
                         <a href="${SourceLeadWeb_sourceleadUrl}/uploadCandidateForm">Import XLS</a>
 					</span>
