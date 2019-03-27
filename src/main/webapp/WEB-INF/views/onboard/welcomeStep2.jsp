@@ -136,7 +136,7 @@
 				  <div class="form-group">
 				  <label class="col-md-4 control-label">Location <span class="text-danger paddingLeft">*</span></label>
 				  <div class="col-md-8">
-					<input type="text" class="form-control" data-placeholder="Location" id="onBoardLocatin"  name="location" value="${SourceLeadWeb_candidateOnBoarding.location}">
+					<input type="text" class="form-control" data-placeholder="Location" id="onBoardLocatin"  name="location" value="${candidateOnBoarding.location}">
 					<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('onBoardLocatin','onBoardCountry','onBoardState','onBoardCity','onBoardZipCode');"></i>
 				  </div>
 				</div>
@@ -145,7 +145,7 @@
 			  <div class="form-group">
 			  <label class="col-md-4 control-label">Country <span class="text-danger paddingLeft">*</span></label>
 			  <div class="col-md-8">
-				<input type="text" class="form-control"  data-placeholder="Country" id="onBoardCountry"  name="country" value="${SourceLeadWeb_candidateOnBoarding.country}" readonly>
+				<input type="text" class="form-control"  data-placeholder="Country" id="onBoardCountry"  name="country" value="${candidateOnBoarding.country}" readonly>
 			  </div>
 			</div>
 		</div>
@@ -153,7 +153,7 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">State</label>
 			  <div class="col-md-8">
-				 <input type="text" class="form-control" data-placeholder="State"  id="onBoardState" name="state" value="${SourceLeadWeb_candidateOnBoarding.state}" readonly>
+				 <input type="text" class="form-control" data-placeholder="State"  id="onBoardState" name="state" value="${candidateOnBoarding.state}" readonly>
 			  </div>
 			</div>
 		</div>
@@ -161,7 +161,7 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">City</label>
 			  <div class="col-md-8">
-				 <input type="text" class="form-control"  data-placeholder="City" id="onBoardCity" name="city" name="state" value="${SourceLeadWeb_candidateOnBoarding.city}" readonly>
+				 <input type="text" class="form-control"  data-placeholder="City" id="onBoardCity" name="city" name="state" value="${candidateOnBoarding.city}" readonly>
 			  </div>
 			</div>
 		</div>
@@ -400,7 +400,7 @@
 
 		  
 <div class="welBtns">
-	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >
+	<input type="button"  value="Previous" onClick="javascript:window.location.href = '${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'" >
 	<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOnboardingCandidateDetails();" class="Brig">
 	<div class="clearfix"></div>
 </div>
@@ -607,7 +607,6 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId) {
         
     }
   }
-  
   $("#"+countryId).val(address.country).change();
   $("#"+stateId).val(address.state).change();
   $("#"+cityId).val(address.city).change();
