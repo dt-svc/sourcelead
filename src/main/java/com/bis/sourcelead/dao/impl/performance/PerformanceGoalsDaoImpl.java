@@ -226,7 +226,6 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 					+ " GOALS.CREATED_BY = :userId AND "
 					+ " GOALS.PERCENTAGE_DONE = '100' AND "
 				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
-				    + " DATEDIFF(GOALS.END_DATE,CURDATE()) >= 0 AND "
 				    + " OL.ID = :orgLocationId"
 				    + " GROUP BY ASSIGN.GOAL_ID";
 			 
@@ -250,7 +249,6 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 							+ " GOALS.CREATED_BY <> :userId AND "
 							+ " GOALS.PERCENTAGE_DONE = '100' AND "
 						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND "
-						    + " DATEDIFF(GOALS.END_DATE,CURDATE()) >= 0 AND "
 						    + " OL.ID = :orgLocationId"
 						    + " GROUP BY ASSIGN.GOAL_ID";
 					 
