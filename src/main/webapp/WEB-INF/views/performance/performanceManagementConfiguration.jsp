@@ -5,14 +5,14 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
-<script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
-<link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
-<script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
-<link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
-<script type="text/javascript" src="/resources/js/performance/performanceManagement.js"></script>
-<script type="text/javascript" src="/resources/js/performance/performanceFeedbackTemplate.js"></script>
-<script src="/resources/js/performanceFeedbackFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-<script src="/resources/js/performanceFeedbackForm-html-generator.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/summernote.js?staticTime=${staticTime}"></script>
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/editor.js?staticTime=${staticTime}"></script>
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/performance/performanceManagement.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/performance/performanceFeedbackTemplate.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/performanceFeedbackFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/performanceFeedbackForm-html-generator.js" type="text/javascript" ></script> <!-- form builder -->
 
 <script>
 var locationDateFormat = '${SourceLeadWeb_dateFormat}'; 
