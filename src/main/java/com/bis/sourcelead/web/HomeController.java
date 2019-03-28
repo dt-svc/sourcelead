@@ -365,7 +365,7 @@ public class HomeController {
 	 * @return ModelAndView
 	 */
 	@PreAuthorize("hasRole('ROLE_USER_BULK_IMPORTS')")
-	@RequestMapping(value = "/app/uploadForm")
+	@RequestMapping(value = "/uploadForm")
 	public ModelAndView fileUploadForm(HttpServletRequest request) {
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
 				.getAttribute("sessionData");
