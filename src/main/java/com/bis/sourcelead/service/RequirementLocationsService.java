@@ -20,5 +20,7 @@ public interface RequirementLocationsService {
 	void deleteRequirementLocations(RequirementLocations requirementLocations) throws Exception;
 	
 	public List<RequirementLocations> getAllRequirementByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	List<String> getRequirementLocationsStringListByRequirementId(Long requirementId) throws Exception;
 
 }

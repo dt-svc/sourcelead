@@ -143,6 +143,10 @@ public interface LeaveService {
     Set<PayrollLopHis> getLeaveByFrequency(Long candidateId, Date freqStartDate, Date freqEndDate, OrgLocations orgLocation, EmployeePayroll employeePayroll);
     
     Set<PayrollLopHis> getLeaveByFrequencyInd(Long candidateId, Date freqStartDate, Date freqEndDate, OrgLocations orgLocation, IndEmployeePayroll employeePayroll);
+    
+    List<Leave> getAllLeavesByLocationIdAndStatusAndAppliedDate(Long locationId, String status, Date appliedDate);
+	
+	List<Leave> getAllLeavesByLocationIdAndStatusAndLeaveStartDate(Long locationId, String status, Date appliedDate);
 }
 
 

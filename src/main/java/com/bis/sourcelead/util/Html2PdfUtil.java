@@ -10,6 +10,7 @@ import java.io.StringReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +29,7 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -57,6 +59,10 @@ public class Html2PdfUtil {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private RequirementLocationsService requirementLocationsService;
+	
 	
 	public void convertHtml2PdfUsingHtmlWorker(){
 		try {
@@ -346,5 +352,76 @@ public class Html2PdfUtil {
 	            matchPattern.appendTail(sb);
 	        return sb.toString();
 	    }
+
+	public byte[] getOfferLetterPdfBytes(RequirementOffers requirementOffers) throws Exception {
+		String templateContent = replaceOfferLetterPlaceHolders(requirementOffers);
+		ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+  	    Document document = new Document();
+  	    PdfWriter.getInstance(document, byteArray);
+  	    document.open();
+  	    HTMLWorker htmlWorker = new HTMLWorker(document);
+  	    htmlWorker.parse(new StringReader(templateContent));
+  	    document.close();
+  	    byte[] pdfBytes = byteArray.toByteArray();
+		return pdfBytes;
+	}
+
+	private String replaceOfferLetterPlaceHolders(RequirementOffers requirementOffers) throws Exception {
+		Pattern logEntry = Pattern.compile("\\[(.*?)\\]");
+        Matcher matchPattern = logEntry.matcher(requirementOffers.getOfferLetterTemplate().getTemplateContent());
+        StringBuffer sb = new StringBuffer();
+        while(matchPattern.find()) {
+        	Requirement req = requirementOffers.getSubmissionId().getRequirement();
+            if(matchPattern.group().equalsIgnoreCase("[Job id]")){
+            	if(req.getJobId() != null) {
+            		matchPattern.appendReplacement(sb, req.getJobId());
+            	}else {
+            		matchPattern.appendReplacement(sb, "");
+            	}
+            }else if(matchPattern.group().equalsIgnoreCase("[Job title]")) {
+            	matchPattern.appendReplacement(sb, req.getJobTitle());
+            }else if(matchPattern.group().equalsIgnoreCase("[Applicant Name]")) {
+            	matchPattern.appendReplacement(sb, requirementOffers.getSubmissionId().getCandidate().getFullName());
+            }else if(matchPattern.group().equalsIgnoreCase("[Salary]")) {
+            	matchPattern.appendReplacement(sb, requirementOffers.getAmount());
+            }else if(matchPattern.group().equalsIgnoreCase("[Employment Type]")) {
+            	if(req.getJobType() != null) {
+            		matchPattern.appendReplacement(sb, req.getJobType());
+            	}else {
+            		matchPattern.appendReplacement(sb, "");
+            	}
+            }else if(matchPattern.group().equalsIgnoreCase("[Company Address]")) {
+            	if(req.getOrgLocationId().getLocation() != null) {
+            		matchPattern.appendReplacement(sb, req.getOrgLocationId().getLocation());
+            	}else {
+            		matchPattern.appendReplacement(sb, "");
+            	}
+            }else if(matchPattern.group().equalsIgnoreCase("[Date of Join]")) {
+            	matchPattern.appendReplacement(sb, commonUtil.dateStrFromOrgDateFormatter(req.getOrgLocationId().getDateFormat(), requirementOffers.getDateOfJoining()));
+            }else if(matchPattern.group().equalsIgnoreCase("[Job Location]")) {
+            	List<String> locations  = requirementLocationsService.getRequirementLocationsStringListByRequirementId(req.getId());
+            	StringBuffer locationSb = new StringBuffer();
+            	for(String location :locations) {
+            		locationSb.append(location).append("<br>");
+            	}
+            	matchPattern.appendReplacement(sb, locationSb.toString());
+            }else if(matchPattern.group().equalsIgnoreCase("[Job Description]")) {
+            	if(req.getDescription() != null) {
+            		matchPattern.appendReplacement(sb, req.getDescription());
+            	}else {
+            		matchPattern.appendReplacement(sb, "");
+            	}
+
+            }else if(matchPattern.group().equalsIgnoreCase("[Offer Expire Date]")) {
+            	if(requirementOffers.getOfferExpireDate() != null) {
+            		matchPattern.appendReplacement(sb, commonUtil.dateStrFromOrgDateFormatter(req.getOrgLocationId().getDateFormat(), requirementOffers.getOfferExpireDate()));
+            	}else {
+                	matchPattern.appendReplacement(sb, "");
+            	}
+            }
+        }
+        matchPattern.appendTail(sb);
+        return sb.toString();
+	}
 	
 }
