@@ -39,7 +39,7 @@
           <div class="form-group clearfix">
             <label class="col-md-3">Description</label>
             <div class="col-md-9">
-              <textarea rows="2" class="form-control" name="description" id="description" ></textarea>
+              <textarea rows="2" class="form-control" name="description" id="description"></textarea>
             </div>
           </div>
         </div>
@@ -74,21 +74,31 @@
 <script>
 
 $(document).ready(function() {
-	getDefaultWorkflow();
+	getDefaultWorkflowNameAndDescription();
+	getDefaultWorkflowStages();
 	
 });
 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>
 <script>
 
+function getDefaultWorkflowNameAndDescription(){
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl + "/createRequirementDefaultWorkFlow",
+		success : function(dataList) {
+			$("#workFlowName").val(dataList.workFlowName);
+			$("textarea#description").val(dataList.description);
+		}
+		});
+}
+
 	var iconSpan = "";
 	var editAndDeleteAnchor = "";
-	function getDefaultWorkflow() {
-		var formData = getFormData("requirementWorkFlowForm");
+	function getDefaultWorkflowStages() {
 		$.ajax({
 			type : "GET",
-			data : formData,
-			url : sourceleadUrl + "/createRequirementDefaultWorkFlow",
+			url : sourceleadUrl + "/createRequirementDefaultWorkFlowStages",
 			success : function(dataList) {
 				var result = "";
 				if(dataList != null && dataList.length > 0){
@@ -167,7 +177,6 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>
 <script type="text/javascript">
 function saveRequirementWorkFlow(){
-	 
       var validationSettings = {
            errorMessagePosition: 'element',
            borderColorOnError: '',
@@ -184,7 +193,6 @@ function saveRequirementWorkFlow(){
            data : formData,
            url:sourceleadUrl+"/saveWorkFlowDetailsPage",
            success: function (data) {
-           alert("success")
            },
        });
     /*  } */
