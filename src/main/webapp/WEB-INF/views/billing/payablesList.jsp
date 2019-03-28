@@ -815,7 +815,7 @@ function payablePagination(url){
 				    	result = result +'         <td>';
 				    	if(report.invoiceStatus == "Rejected" && report.invoiceParentId != null){
 							'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
-							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+vmsUrl+'/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
 							'</sec:authorize>';
 						}
 				    	else if(report.invoiceStatus == "DRAFT" || (report.invoiceStatus == "Rejected" && report.invoiceParentId == null)){
@@ -830,11 +830,11 @@ function payablePagination(url){
 						}
 				    	else if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked"){
 							'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
-							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+vmsUrl+'/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
 							'</sec:authorize>';
 						}else{
 							'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
-							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+vmsUrl+'/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
 							'</sec:authorize>';
 						}
 						
