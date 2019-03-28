@@ -45,6 +45,9 @@ public class ClockInOut {
 	@Column(name = "CLOCK_OUT_TIME")
 	private Time clockOutTime;
 	
+	@Column(name = "TOTAL_CLOCK_TIME")
+	private Time totalClockTime;
+	
 	@Column(name = "JOBS_TASK_ID")
 	private Long jobsTaskId;
 	
@@ -227,5 +230,13 @@ public class ClockInOut {
 	public void setProjectId(Long projectId) {
 		this.projectId = projectId;
 	}
-	
+
+	public Time getTotalClockTime() {
+		return totalClockTime;
+	}
+
+	public void setTotalClockTime(Time totalClockTime) {
+		this.totalClockTime = totalClockTime;
+	}
+
 }

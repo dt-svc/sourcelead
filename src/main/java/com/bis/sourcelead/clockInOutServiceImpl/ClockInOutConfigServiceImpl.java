@@ -7,10 +7,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.clockInOutDTO.ClockInOutConfigDTO;
+import com.bis.sourcelead.clockInOutDTO.ClockInOutDTO;
 import com.bis.sourcelead.clockInOutDao.ClockInOutConfigDao;
 import com.bis.sourcelead.clockInOutEntity.ClockInOut;
 import com.bis.sourcelead.clockInOutEntity.ClockInOutConfig;
@@ -119,23 +121,36 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	}
 
 	@Override
-	public void saveClockInOutTime(OrgLocations loginOrgLocation, User loginUser) {
-		java.sql.Time timeValue = null;
-		ClockInOut clockInOut = new ClockInOut();
+	public void saveClockInOutTime(ClockInOutDTO clockInOutDTO,OrgLocations loginOrgLocation, User loginUser) {
+		
+		ClockInOut clockInOut = null;
 		try {
-		clockInOut.setOrgLocations(loginOrgLocation);
-		clockInOut.setUserId(loginUser);
-		DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-		String s = formatter.format(Calendar.getInstance().getTime());
-		timeValue =  new java.sql.Time(formatter.parse(s).getTime());
-		} catch (ParseException e) {
+			
+			if(clockInOutDTO.getClockInOutId() != null && clockInOutDTO.getClockInOutId() > 0) {
+				clockInOut = clockInOutConfigDao.getClockInOutById(clockInOutDTO.getClockInOutId());
+			}else {
+				clockInOut = new ClockInOut();
+			}
+			
+			java.sql.Time timeValue = null;
+			 
+			
+			clockInOut.setOrgLocations(loginOrgLocation);
+			clockInOut.setUserId(loginUser);
+			DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+			String s = formatter.format(Calendar.getInstance().getTime());
+			timeValue =  new java.sql.Time(formatter.parse(s).getTime());
+			
+			clockInOut.setClockInTime(timeValue);
+			clockInOut.setJobsTaskId(clockInOutDTO.getJobs());
+			clockInOut.setProjectId(clockInOutDTO.getProjects());
+			clockInOut.setProjectsTaskId(clockInOutDTO.getProjectTasks());
+			clockInOut.setGeneralTaskId(clockInOutDTO.getGeneralTasks());
+			
+			clockInOutConfigDao.saveClockInOutTime(clockInOut);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		clockInOut.setClockInTime(timeValue);
-		
-		clockInOutConfigDao.saveClockInOutTime(clockInOut);
-		
 	}
 	
 	@Override
@@ -158,6 +173,11 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	@Override
 	public List<Tasks> getGeneralTasks(Long orgLocationId, Long userId) {
 		return clockInOutConfigDao.getGeneralTasks(orgLocationId,userId);
+	}
+
+	@Override
+	public ClockInOut getExistedClockTime(Long orgLocationId, Long userId) {
+		return clockInOutConfigDao.getExistedClockTime(orgLocationId,userId);
 	}
 
 }
