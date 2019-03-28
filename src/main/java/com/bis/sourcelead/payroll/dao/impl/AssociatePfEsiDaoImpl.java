@@ -104,7 +104,6 @@ public class AssociatePfEsiDaoImpl implements AssociatePfEsiDao{
 					CallableStatement stmt = connection.prepareCall("{call associateInfoDataProcedure(?,?,?,?,?,?,?,?)}");
 					for (AssociatePfEsiDetailsDTO infoDto : list) {	
 						Long candidateId = canMap.get(infoDto.getEmail());
-						if(candidateId !=null) {
 						stmt.setLong(1,   candidateId);
 						stmt.setString(2, infoDto.getUanNumber());
 						stmt.setString(3, infoDto.getPfNumber());
@@ -116,7 +115,6 @@ public class AssociatePfEsiDaoImpl implements AssociatePfEsiDao{
 						stmt.setString(7,infoDto.getEligibleForEsi());
 						stmt.setString(8,infoDto.getEligibleForPf());
 						stmt.addBatch();
-						}
 					}
 					int[] updateCount = stmt.executeBatch();
 					listCount.add(updateCount.length);
