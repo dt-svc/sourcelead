@@ -9,7 +9,6 @@
 
 <script>
 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-alert(sourceleadUrl);
 var templateId ="1234";
 $(document).ready(function(){
 	customizeFields(sourceleadUrl,templateId);
@@ -122,7 +121,7 @@ $(document).ready(function(){
 	           
 	           
 	           <button type="submit" class="slBtn md colorBtn" id="save_button"  onclick="">Save</button>
-	           <button type="button" class="slBtn md popClose"  onClick="javascript:window.location.href = '<c:url value='${appPath}/performanceManagementConfiguration'/>'"  onclick="" >Cancel</button>
+	           <button type="button" class="slBtn md popClose"  onClick="javascript:window.location.href = '<c:url value='${appPath}/questionnaireList'/>'"  onclick="" >Cancel</button>
 	           
 	           </div>
 
