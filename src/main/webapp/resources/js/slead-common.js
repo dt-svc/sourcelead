@@ -279,7 +279,11 @@ function applyData(data, formId, name, id) {
 		if($("#"+formId+" input[data-id*='"+id+"']").length > 0){
 			$("#"+formId+" input[data-id*='"+id+"']").remove();
 		}
-		var i = id.split("docFile")[1];
+		if(name == 'timesheetSubmission.fileInfo'){
+            var i = id.split("docFile")[0];
+        }else{
+            var i = id.split("docFile")[1];
+        }
 		
 	}
 	else{
