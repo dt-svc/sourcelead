@@ -20,8 +20,8 @@ import com.bis.sourcelead.entity.User;
 
 	
 	@Entity
-	@Table(name = "REQUIREMENT_QUESTIONNAIRE")
-	public class RequirementQuestionnaire implements Serializable{
+	@Table(name = "REQUIREMENT_QUESTIONNAIRE_TEMPLATE")
+	public class RequirementQuestionnaireTemplate implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
@@ -37,12 +37,21 @@ import com.bis.sourcelead.entity.User;
 	@Column(name = "UUID ")
 	private String uuid;
 	
-	@Column(name = "QUESTIONNAIRE_NAME", columnDefinition = "LONGTEXT default NULL")
-	private String 	questionnaireName;
+	@Column(name = "NAME", columnDefinition = "LONGTEXT default NULL")
+	private String 	name;
 	
-	@Column(name = "QUESTIONNAIRE_DESC", columnDefinition = "LONGTEXT default NULL")
-	private String 	questionnaireDesc;
+	@Column(name = "DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
+	private String 	description;
 	
+	@Column(name = "JSON_STRING", columnDefinition = "LONGTEXT default NULL")
+	private String jsonString ;
+	
+	
+	@Column(name = "TIME_LIMIT_MINUTES")
+	private Integer timeLimitMinutes;
+	
+	@Column(name = "TIME_LIMIT_SECONDS")
+	private Integer timeLimitSeconds;
 	
 	@Column(name = "STATUS")
 	private Integer status;
@@ -85,20 +94,46 @@ import com.bis.sourcelead.entity.User;
 		this.uuid = uuid;
 	}
 
-	public String getQuestionnaireName() {
-		return questionnaireName;
+
+
+	public String getName() {
+		return name;
 	}
 
-	public void setQuestionnaireName(String questionnaireName) {
-		this.questionnaireName = questionnaireName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getQuestionnaireDesc() {
-		return questionnaireDesc;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setQuestionnaireDesc(String questionnaireDesc) {
-		this.questionnaireDesc = questionnaireDesc;
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getJsonString() {
+		return jsonString;
+	}
+
+	public void setJsonString(String jsonString) {
+		this.jsonString = jsonString;
+	}
+
+	public Integer getTimeLimitMinutes() {
+		return timeLimitMinutes;
+	}
+
+	public void setTimeLimitMinutes(Integer timeLimitMinutes) {
+		this.timeLimitMinutes = timeLimitMinutes;
+	}
+
+	public Integer getTimeLimitSeconds() {
+		return timeLimitSeconds;
+	}
+
+	public void setTimeLimitSeconds(Integer timeLimitSeconds) {
+		this.timeLimitSeconds = timeLimitSeconds;
 	}
 
 	public Integer getStatus() {

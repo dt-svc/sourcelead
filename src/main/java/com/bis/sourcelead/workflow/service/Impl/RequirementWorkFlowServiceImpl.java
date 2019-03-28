@@ -22,6 +22,7 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.entity.RequirementDefaultWorkFlowStages;
+import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
 import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
@@ -158,6 +159,12 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	public ResponseList<RequirementWorkFlowDTO> getRequirementWorkFlowList(RequirementWorkFlowDTO workFlowDTO, OrgLocations orgLocations) throws Exception {
 		
 		return requirementWorkFlowDao.getRequirementWorkFlowsByOrgLocationId(workFlowDTO, orgLocations);
+		
+	}
+
+	@Override
+	public RequirementQuestionnaireTemplate saveQuestionnaireTemplate(RequirementQuestionnaireTemplate template) throws Exception {
+       return requirementWorkFlowDao.saveQuestionnaireTemplate(template);
 		
 	}
 	

@@ -7,6 +7,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.entity.RequirementDefaultWorkFlowStages;
+import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
 
@@ -24,6 +25,8 @@ public interface RequirementWorkFlowDao {
 	void saveRequirementWorkFlowStagesByOrgLocationId(RequirementWorkFlowStages requirementWorkFlowStages)throws Exception;
 	
 	ResponseList<RequirementWorkFlowDTO> getRequirementWorkFlowsByOrgLocationId(RequirementWorkFlowDTO workFlowDTO, OrgLocations orgLocations)throws Exception;
+
+	RequirementQuestionnaireTemplate saveQuestionnaireTemplate(RequirementQuestionnaireTemplate template) throws Exception;
 	
 	
 
