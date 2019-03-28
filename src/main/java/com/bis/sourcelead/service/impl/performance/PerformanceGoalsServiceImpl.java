@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.performance.PerformanceGoalsDao;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -160,6 +161,11 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 	public PerformanceGoalsDoNutChartCountsDTO getNotStartedGoalsDoNutChartCounts(Long userId, Long orgLocationId)
 			throws Exception {
 		return performanceGoalsDao.getNotStartedGoalsDoNutChartCounts(userId, orgLocationId);
+	}
+
+	@Override
+	public ResponseList<PerformanceGoalsDTO> getPerformanceGoalsList(PerformanceGoalsDTO performanceGoalsDTO,Long userId, Long orgLocationId,String dateFormat) throws Exception {
+		return performanceGoalsDao.getPerformanceGoalsList(performanceGoalsDTO,userId, orgLocationId,dateFormat);
 	}
 
 }

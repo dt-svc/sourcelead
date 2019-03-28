@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dto.PerformanceBadgesDTO;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.performance.PerformanceCompetenciesDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
 import com.bis.sourcelead.entity.UserRole;
@@ -181,4 +183,26 @@ public class PerformanceGoalsRestController {
 			}
 			 return resObj;
 	    }
+	  
+	  
+		 @RequestMapping(value = { "/getPerformanceGoalsList", "/rest/getPerformanceGoalsList" }, method = RequestMethod.GET)
+			public ResponseList<PerformanceGoalsDTO> getPerformanceCompetenceList(PerformanceGoalsDTO performanceGoalsDTO,HttpServletRequest request) throws Exception {
+				
+				Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+				Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+				String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+				
+				String[] tableColumns = { "goalName", "percentageDone", "goalEndDate", "goalActions" };
+				int sortColumnIndex = 1; // by default sorting using updated date
+				String sortColumnOrder = "desc"; // by default descending order
+				if (performanceGoalsDTO.getOrder() != null && !performanceGoalsDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(performanceGoalsDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = performanceGoalsDTO.getOrder().get(0).get("dir");
+				}
+				performanceGoalsDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				performanceGoalsDTO.setSortOrder(sortColumnOrder);
+				ResponseList<PerformanceGoalsDTO> performanceGoalsList = performanceGoalsService.getPerformanceGoalsList(performanceGoalsDTO, userId, orgLocationId,dateFormat);
+				return performanceGoalsList;
+			}
+			 
 }

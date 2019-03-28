@@ -17,9 +17,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.performance.PerformanceGoalsDao;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
-import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
-import com.bis.sourcelead.entity.performance.PerformanceCompetencies;
+import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.performance.PerformanceGoals;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
@@ -397,6 +398,103 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				return totalCountDTO;
 		        
 		
+	}
+
+	@Override
+	public ResponseList<PerformanceGoalsDTO> getPerformanceGoalsList(PerformanceGoalsDTO performanceGoalsDTO,Long userId, Long orgLocationId,String dateFormat) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<BigInteger> countlist = null;
+		Integer filterCount = 0;
+		ResponseList<PerformanceGoalsDTO> response = new ResponseList<>();
+		Query queryObj = null;
+		List<PerformanceGoalsDTO> goalsList = null;
+		String querySeachStr =  "";
+		
+		String goalDateFormat =  "";
+		
+		if("yyyy-MM-dd".equalsIgnoreCase(dateFormat)) {
+			goalDateFormat = "\"%y-%m-%d\"";
+		}else if("dd-MM-yyyy".equalsIgnoreCase(dateFormat)) {
+			goalDateFormat = "\"%d-%m-%y\"";
+		}else if("MM-dd-yyyy".equalsIgnoreCase(dateFormat)) {
+			goalDateFormat = "\"%m-%d-%y\"";
+		}else if("yyyy-dd-MM".equalsIgnoreCase(dateFormat)) {
+			goalDateFormat = "\"%y-%d-%m\"";
+		}
+		
+		  StringBuilder query1 = new StringBuilder("");
+			if(performanceGoalsDTO.getSearchValue() != null && !"".equalsIgnoreCase(performanceGoalsDTO.getSearchValue())) {
+				 query1.append(" Q1.goalName like '%" + performanceGoalsDTO.getSearchValue() + "%' ")
+					.append(" OR Q1.goalStartDate like '%" + performanceGoalsDTO.getSearchValue() + "%' ")
+					.append(" OR Q1.goalEndDate like '%" + performanceGoalsDTO.getSearchValue() + "%' ");
+				 
+			}
+			
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				querySeachStr = " where "+"("+query1.toString()+")";
+			}
+			
+			try {
+			 query = "SELECT Q1.* " + 
+			 		 "FROM (" + 
+					 "SELECT " + 
+					"GOALS.ID AS id, " +
+					"GOALS.GOAL_NAME AS goalName," + 
+					"DATE_FORMAT(GOALS.START_DATE ,"+goalDateFormat+") AS goalStartDate, " + 
+					"DATE_FORMAT(GOALS.END_DATE ,"+goalDateFormat+") AS goalEndDate, " + 
+					"GOALS.PERCENTAGE_DONE AS percentageDone, " +
+					"GOALS.UUID AS uuid " +
+					"FROM " + 
+					"PERFORMANCE_GOALS GOALS, " + 
+					"PERFORMANCE_GOALS_ASSIGN_TO ASSIGN, " + 
+					"ORG_LOCATIONS OL " + 
+					"WHERE OL.ID = ASSIGN.ORG_LOCATION_ID AND " + 
+					"GOALS.ID = ASSIGN.GOAL_ID " + 
+					"AND (GOALS.CREATED_BY = :userId OR ASSIGN.ASSIGNED_USER_ID = :userId) " + 
+					"AND GOALS.ORG_LOCATION_ID = :orgLocationId AND GOALS.STATUS = '1' " + 
+					"GROUP BY  GOALS.ID, "+
+					"DATE_FORMAT(GOALS.CREATED_DATE ,\"%Y-%m-%d\"))Q1 "+querySeachStr;
+		
+			queryObj = session.createSQLQuery(query);
+			queryObj.setParameter("orgLocationId", orgLocationId);
+			queryObj.setParameter("userId", userId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceGoalsDTO.class));
+			queryObj.setFirstResult(performanceGoalsDTO.getStart());
+			queryObj.setMaxResults(performanceGoalsDTO.getLength());
+			goalsList = queryObj.list();
+			
+			String  countQuery = "SELECT COUNT(*) AS TOTAL" + 
+					" FROM" + 
+					"(" + query +
+					")Q2;" ;
+			
+			countlist = session.createSQLQuery(countQuery).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+			filterCount = countlist.iterator().next().intValue();
+			
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+			int totalCount = 0;
+
+			
+			if (performanceGoalsDTO != null) {
+				if(countlist != null && !countlist.isEmpty()) {
+					totalCount = countlist.iterator().next().intValue();
+				}
+			} 
+			response.setRecordsTotal(totalCount);
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				response.setRecordsFiltered(filterCount);
+			}else {
+				response.setRecordsFiltered(totalCount);
+			}
+			
+			response.setData(goalsList);
+			return response;
 	}
 
 }

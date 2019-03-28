@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.performance;
 
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
 import com.bis.sourcelead.entity.performance.PerformanceGoals;
@@ -19,4 +20,6 @@ public interface PerformanceGoalsService {
 	PerformanceGoalsDoNutChartCountsDTO getOverDueGoalsDoNutChartCounts(Long userId,Long orgLocationId) throws Exception;
 	
 	PerformanceGoalsDoNutChartCountsDTO getNotStartedGoalsDoNutChartCounts(Long userId,Long orgLocationId) throws Exception;
+	
+	ResponseList<PerformanceGoalsDTO> getPerformanceGoalsList(PerformanceGoalsDTO performanceGoalsDTO,Long userId,Long orgLocationId,String dateFormat) throws Exception;
 }

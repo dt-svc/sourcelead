@@ -23,6 +23,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			getCompletedGoalsDoNutChart();
 			getOverDueGoalsDoNutChart();
 			getNotStartedGoalsDoNutChart();
+			getGoalsList();
 		 };
 	</script>
 
@@ -100,8 +101,18 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 					<li>
 					<a class="newAdBtn mr5" href="${SourceLeadWeb_pmsUrl}/addNewGoal" >+ Goal</a>
 	  		</li>
-		  	<li class=""><input class="repSearchBar" placeholder="Search" type="text"><span class="repSearchIcon"></span></li>
+	  		<li id="goalsListSearch"><input type="text" class="repSearchBar"  id='goalsDataTableSearch'/><span class="repSearchIcon" onClick="goalsDataTableList();"></span></li>
         </ul>
+     <div class="clearfix"></div>       
+           
+           <div class="candidate_wrap_table datatable_filter positionRelative" style='position:relative; top:-25px;'>
+	          <div id="goalsListLoading"></div>
+	         
+		    <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop">
+		    	<div id="goalsList" class="datatable_filter"></div>
+			</div>	  
+		
+          </div>
 </div> 
 
 	</section>
@@ -520,4 +531,166 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			  ); 
   }
   </script>
+  
+  
+  <script>
+ function getGoalsList(){
+	 var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+	 var locationCode = '${SourceLeadWeb_locationCode}';
+	 
+	 var locationList ='${SourceLeadWeb_dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  goalsListDate = 'YY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  goalsListDate = 'DD-MM-YY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  goalsListDate = 'MM-DD-YY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  goalsListDate = 'YY-DD-MM'; 
+	  }
+	  
+	 $("#goalsListLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  var result = "";
+
+	 	result = result + '<table id="goalsListTable" class="display mt10" cellspacing="0" width="100%" >';
+		result = result + '<thead>';
+		result = result + '<tr>';
+		result = result +'	<th>Gole Name</th>';
+		result = result +'  <th>Percentage</th>';
+	  	result = result +'  <th>End Date<br>(<small class="custom-small">'+goalsListDate+'</small>)</th>';
+	  	result = result +'  <th>Actions</th>';
+		result = result + '</tr>';
+		result = result + '</thead>	';
+	    result = result +"</table>";
+	    $("#goalsList").empty();
+	    $("#goalsList").append(result);
+	    $("#goalsListSearch").show();
+	    goalsDataTableList();
+	   
+ }
+ </script>
+ 
+<script>
+	function goalsDataTableList(){
+		 var pmsUrl = '${SourceLeadWeb_pmsUrl}';
+		 var searchValue = $("#goalsDataTableSearch").val();
+		 searchValue = searchValue ? searchValue : "";
+		 var url = pmsUrl+"/getPerformanceGoalsList?searchValue="+searchValue;
+		 goalsPagination(url);
+		 $("#goalsListLoading").removeAttr("style");
+	}
+</script>
+
+
+<script>
+function goalsPagination(url){
+	var colIndex = 0;
+    $('#goalsListTable').DataTable( { 
+      "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "ajax": $.fn.dataTable.pipeline( {
+    	  url: url,
+          method: 'GET',
+          pages: 1
+        }),
+        "columns": [
+            { "data": "goalName" },
+            { "data": "percentageDone"},
+            { "data": "goalEndDate"},
+            { "data": "goalActions"}
+        ],
+        "columnDefs": [ {
+	    	  	"targets": colIndex++,
+	    	  	"data": "goalName",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		  var result = "";
+	    	  	   	 result = result +"<td>";
+                	 result = result +"<div class='width300px'>";
+                	 result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.goalName+"'>"+opt.goalName;
+                	 result = result +"<p class='text-muted mb0 fontSmall'>"+opt.goalStartDate+"</p>";
+                	 result = result +"</div>"
+                	 result = result +"</td>";
+		             return result;
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "percentageDone",
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  if(opt.percentageDone == null){
+            		  percentageDone = '0';
+            	  }else{
+            		  percentageDone = opt.percentageDone;
+            	  }
+	              result = result +"<div class='tblminwidth-30'>";
+	              result = result +"<div class='progress mb0 progressGoals'>";
+	              result = result +"<div class='progress-bar progress-bar-success' role='progressbar' aria-valuenow='"+percentageDone+"' aria-valuemin='0' aria-valuemax='100' style='width:"+percentageDone+"%'>";
+	              result = result +"</div>";
+	              result = result +"</div>";
+	              result = result +"<p class='mb0 fontSmall mt5'>"+percentageDone+"% Complete (info)</p>";
+	              result = result +"</div>";
+				
+	              return result;
+              		
+              }
+	      
+	          },{
+	        	  "targets": colIndex++,
+	              "data": "goalEndDate",
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	             	  result = result +"<td><div class='tblminwidth-30'><span>"+opt.goalEndDate+"</span></div></td>";
+		              return result;
+	              }
+		     }, {
+		    	  "targets": colIndex++,
+	              "data": "actions",
+	              "sortable": false,
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            	    result = result +'<td>';
+	            	    result = result +'<div class="width150px clearfix">';
+	            	    result = result +'<ul class="list-unstyled list-inline ml clearfix">';
+	            	    result = result +'<li><i class="fa fa-pencil cursorPointer" title="Edit"></i></li>';
+	            	    result = result +'<li><i class="fa fa-trash cursorPointer" title="Delete"></i></li>';
+	            	    result = result +'<li><i class="fa fa-comments cursorPointer text-primary" title="Comment"></i></li>';
+	            	    result = result +'<li><i class="fa fa-level-down cursorPointer textSuccess"  title="Sub Goals"></i></li>';
+	            	    result = result +'</ul>';
+	            	    result = result +'</div>';
+	            	    result = result +'</td>';
+	            	    return result;
+	              }
+		     }],
+		     
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"aaSorting": [[0,'desc']],
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("#goalsListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#goalsDataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+   		    $('#goalsDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+   	    	var searchData = $('#goalsDataTableSearch').val();
+   	    	
+   	 	if(searchData.endsWith("-") || searchData.endsWith("\\") || searchData.endsWith("//") || searchData.endsWith("%")){
+	    		$("#goalsDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+	    	}else{
+	    		goalsDataTableList();
+	    	}
+   	    	$('#goalsDataTableSearch').val(searchData);
+    	   }
+    	});
+}
+
+</script>
   
