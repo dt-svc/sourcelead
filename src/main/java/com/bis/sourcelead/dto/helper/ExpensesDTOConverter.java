@@ -53,6 +53,10 @@ public class ExpensesDTOConverter {
 		if(expenses.getEndDate() != null){
 			expensesDTO.setEndDate(dateFormat.format(expenses.getEndDate()));	
 		}
+		if(expenses.getSubmittedDate() != null) {
+			expensesDTO.setSubmittedDate(dateFormat.format(expenses.getSubmittedDate()));	
+			}
+		
 		expensesDTO.setExpenseLocationCode(expenses.getOrgLocationId().getLocationCode());
 		expensesDTO.setNoOfExpenses(expenses.getNoOfExpenses());
 		TreeMap<Long,ExpensesEntriesDTO> eeDTOMap = new TreeMap<>();

@@ -22,6 +22,7 @@ import com.bis.sourcelead.couchbase.CouchbaseClient;
 import com.bis.sourcelead.couchbase.LoginUserSessionStoreDTO;
 import com.bis.sourcelead.couchbase.OrgLocationCacheDTO;
 import com.bis.sourcelead.couchbase.UserRoleSessionProfileDTO;
+import com.bis.sourcelead.dto.UserDetailsDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -40,6 +41,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.couchbase.client.java.document.json.JsonObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 /** 
  * Purpose : 
@@ -828,6 +830,46 @@ public class UserStatsCacheHelper {
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	
+	
+	public void saveLoginUserSessionStoreToCouchbaseForMobiles(String generatedCustomTocken,UserDetailsDTO userDetailsDTO,HttpServletRequest request) {
+	    ObjectMapper sessionObj = new ObjectMapper();
+        try {
+			String sessionJsonStr = sessionObj.writeValueAsString(userDetailsDTO);
+			JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
+		    sourceLeadSessionManager.setCouchbaseCustomTokenJsonString(generatedCustomTocken, "customTokenStore", jsonObject);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public UserDetailsDTO getUserDetails(String token) {
+
+		JSONObject userDetailsJson = new JSONObject();
+		UserDetailsDTO userDetailsDTO = null;
+		Object sv = null;
+		sv = couchbaseClient.getUserDetails(token);
+		if (sv != null) {
+			JSONParser parser = new JSONParser();
+			try {
+				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
+				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+					String key = (String) iterator.next();
+					Object jsonValue = jsonObject.get(key);
+					userDetailsJson = (JSONObject) parser.parse(jsonValue.toString());
+				}
+				 Gson gson=new Gson();
+			     userDetailsDTO=gson.fromJson(userDetailsJson.toString(),UserDetailsDTO.class);
+				return userDetailsDTO;
+
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return userDetailsDTO;
 	}
 	
 }
