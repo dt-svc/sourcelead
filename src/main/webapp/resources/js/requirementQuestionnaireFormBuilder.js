@@ -63,10 +63,10 @@ function customizeFields(sourceleadUrl,templateId){
         $('.choices ul').sortable();
     });
 
-    //load saved form
+   /* //load saved form
     if(null != templateId && templateId != undefined){
-    	 loadSavedForm(templateId,sourceleadUrl);
-    }
+    	//  loadSavedForm(templateId,sourceleadUrl); // commented existing code.
+    }*/
 };
 
 
