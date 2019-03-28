@@ -93,7 +93,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
     </div>
 		
 <div class="positionRelative reportHead clearfix mt">
-      	<span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh"></a></span>
+      	<span class="pull-left refreIcon"><a onclick="getGoalsList();" class="refeIcon" title="Refresh"></a></span>
       	<ul class="pull-right list-unstyled list-inline">
 						<li>
 								<a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a>
@@ -565,6 +565,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	    $("#goalsList").empty();
 	    $("#goalsList").append(result);
 	    $("#goalsListSearch").show();
+	    $("#goalsDataTableSearch").val('');
 	    goalsDataTableList();
 	   
  }
