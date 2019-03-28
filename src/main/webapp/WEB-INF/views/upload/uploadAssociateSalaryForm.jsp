@@ -198,9 +198,15 @@ if ($('#upload_salary_form').validate(false, validationSettings)){
 	 		    	   // resetUpload();
 	 		    	   if(json.data.length > 0){
 	 		    		  showFailedExcelData(json);
-	 		    	   }else{
-	 		    		   $("#docSuccess").fadeIn();
-	 		    	   }
+	 		    	   }else if(json.response == "0"){
+	 		    		  $("#docSuccess").fadeIn();
+	 		    		 $('#docSuccess').text('Data Updation failed');
+	 		    		 $('#docSuccess').removeClass('textSuccess').addClass('textDanger');
+	 		    		 }else{
+	 		    		 $("#docSuccess").fadeIn();
+	 		    		 $('#docSuccess').text('Data Uploaded Successfully');
+	 		    		 $('#docSuccess').removeClass('textDanger').addClass('textSuccess');
+	 		    		 }
 		 		    },
 		 		   error: function(e){
 			        }
