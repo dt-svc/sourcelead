@@ -133,7 +133,7 @@ function PerformanceGoals(){
 				 
 				 if ($('#addGoal_form').validate(false, validationSettings)){ 
 				        var formData = getFormData1("addGoal_form");
-				        $("#goalsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+				        $("#goalsLoading").attr('style','position:absolute; width:100%; height:150%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				         $.ajax({
 					    	type: "POST",
 					    	data: formData,
@@ -148,7 +148,7 @@ function PerformanceGoals(){
 					        	else if (response.response === "AWKWARD") {
 					        	    location.href = "/errorPage";
 					        	} else if (response.response === "SUCCESS") {
-					        		
+					        		location.replace(pmsUrl+"/performanceGoalsList");
 					        	} else if (response.indexOf('Sign In') !== -1) {
 					        		location.replace(sourceleadUrl);
 					        	} else {
