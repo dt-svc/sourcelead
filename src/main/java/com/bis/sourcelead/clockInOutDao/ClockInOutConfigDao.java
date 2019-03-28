@@ -29,5 +29,9 @@ public interface ClockInOutConfigDao {
 
 	public List<Tasks> getGeneralTasks(Long orgLocationId, Long userId);
 
+	public ClockInOut getExistedClockTime(Long orgLocationId, Long userId);
+
+	public ClockInOut getClockInOutById(Long clockInOutId);
+
 
 }
