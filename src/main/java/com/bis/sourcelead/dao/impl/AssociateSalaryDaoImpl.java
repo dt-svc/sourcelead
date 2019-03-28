@@ -410,12 +410,12 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 				          + " empPayroll.indPaysheetFrequency.userGroup.id =:groupId and empPayroll.indPaysheetFrequency.orgLocation.id = :orgLocationId and "
 			  	          + " empPayroll.indPaysheetFrequency.frequencyStartDate = :startDate and empPayroll.indPaysheetFrequency.frequencyEndDate = :endDate and empPayroll.status = '1' )";
 		if(Constants.ALL_RECORDS.equalsIgnoreCase(payType)) {
-			qry = "from AssociateSalaryInd ass where (ass.stopSalary is null or ass.stopSalary = 'NO') and ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.status = '1' "
+			qry = "from AssociateSalaryInd ass where (ass.stopSalary IS NULL OR ass.stopSalary = 'NO') and ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.status = '1' "
 					+subqry;
 			 assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).setDate("startDate", sqlStartDate)
 						.setDate("endDate", sqlEndDate).list();
 		}else {
-			qry = "from AssociateSalaryInd ass where (ass.stopSalary is null or ass.stopSalary = 'NO') and ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.payType = :payType and ass.status = '1'"+subqry;;
+			qry = "from AssociateSalaryInd ass where (ass.stopSalary IS NULL OR ass.stopSalary = 'NO') and ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.payType = :payType and ass.status = '1'"+subqry;;
 			 assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setDate("startDate", sqlStartDate).setDate("endDate", sqlEndDate).setLong("groupId", groupId).setParameter("payType", payType).list();
 		}
 		 
