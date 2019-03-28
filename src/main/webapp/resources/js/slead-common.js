@@ -276,6 +276,17 @@ function applyData(data, formId, name, id) {
 		var i = name.split('@')[1];
 		  name = name.split('@')[0];
 	}
+	else if(formId == 'timesheet_form'){
+		if($("#"+formId+" input[data-id*='"+id+"']").length > 0){
+			$("#"+formId+" input[data-id*='"+id+"']").remove();
+		}
+		if(name == 'timesheetSubmission.fileInfo'){
+            var i = id.split("docFile")[0];
+        }else{
+            var i = id.split("docFile")[1];
+        }
+		
+	}
 	else{
 		var i = $("#"+formId+" input[type=hidden][name*='"+name+"']").length / 3;
 	}
