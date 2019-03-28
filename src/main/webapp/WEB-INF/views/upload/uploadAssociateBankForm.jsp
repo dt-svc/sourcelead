@@ -217,7 +217,7 @@ function importAssociateBankDetail(){
  		    		$("#loading").removeAttr("style");
  		    	    if(json.updateCount != null && json.updateCount != '')
  		    	    $("#msgDiv").removeAttr("style");
- 		 			$("#msgDiv").css({ display: "block" });
+ 		    	   $("#msgDiv").css({ "display" : "block", "text-align" :"center" });
  		 			$("#msgDiv").html(json.updateCount+ " Associates are updated ..!");
  		 			if(json.errorData != null && json.errorData.length >0){
  		 				showFailedExcelData(json);

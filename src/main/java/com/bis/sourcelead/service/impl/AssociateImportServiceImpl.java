@@ -188,6 +188,9 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 					}else if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString()) && !validatePf(getCellValueAsString(row.getCell(3), fileName))){
 						InfoDataDTO.setReason("Invalid Pf Number");
 						return false;
+					/*}else if (row.getCell(4) == null || "".equalsIgnoreCase(row.getCell(4).toString())) {
+						InfoDataDTO.setReason("Esi Number Mandatory");
+						return false;	*/
 					}else if(row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString()) && !validateEsi(getCellValueAsString(row.getCell(4), fileName))){
 						InfoDataDTO.setReason("Invalid Esi Number");
 						return false;
@@ -376,7 +379,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 				
 				if(accGroupByEmailList != null ) {
 					if("Savings".equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName))) {
-					List<String> accountNum =accGroupByEmailList.get(getCellValueAsString(row.getCell(1),fileName));	
+					List<String> accountNum =accGroupByEmailList.get(getCellValueAsString(row.getCell(1),fileName).toLowerCase());	
 					if(accountNum != null && accountNum.size() > 0) {
 						 boolean acc = accountNum.contains(getCellValueAsString(row.getCell(4),fileName));
 						 if(acc) {
@@ -387,7 +390,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 					}else {
 							Boolean flag = false;        
 					    for (PaymentAccount  pList:  paymentDetailsList){ 			
-					    	if(pList.getEmail().equalsIgnoreCase(getCellValueAsString(row.getCell(1), fileName)) && pList.getAccountType().equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName)))
+					    	if(pList.getEmail().toLowerCase().equalsIgnoreCase(getCellValueAsString(row.getCell(1), fileName).toLowerCase()) && pList.getAccountType().equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName)))
 					    	{			                        				
 					 			flag = true;
 					 		}	
