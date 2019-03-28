@@ -864,16 +864,17 @@ function showPopUp(id,invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,file
 
 <div id="popUp"></div>
 <script>
+
+
+
 function saveReasonforReceivable(invoiceUUID){
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var reason = document.getElementById("reasonForDelete").value;
-	if(reason == null || reason == '' || reason == 'undefined'){
-	      
-		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
-	  	  $("#reasonForRejectDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
-	  	  
-		}else{
-		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
+	if(reason != null && reason != ''){
+		 $("#reasonForRejectDiv").empty();
+		if(reason.length > 250){
+		$("#reasonForRejectDiv").empty().append("<font color='red' style='padding: 5px 10px; '>The Entered values should not be more than 250 characters</font>") ; 
+		}else{	
 		$.ajax({
 		   	type: "POST",
 		   	url: vmsUrl+"/rejectInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&reason="+reason,	    	   
@@ -895,7 +896,9 @@ function saveReasonforReceivable(invoiceUUID){
 		    }
 	   });
 	}
-	  
+	}else{
+		$("#reasonForRejectDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+	}
 }
 </script>
 <script>
