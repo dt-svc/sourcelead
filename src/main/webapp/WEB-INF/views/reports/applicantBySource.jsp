@@ -105,6 +105,8 @@ function reload(){
 function getCustomDates(){
 	 var dateSelection = $("#dateSelection").val(); 
 	 if(dateSelection == 'custom'){
+		 removeErrMsg();
+		 removeErrMsgTo();
 		 document.getElementById("customSearch").style.display="block";
 		 $("#customize_btn").attr("disabled", "disabled");
 		 
