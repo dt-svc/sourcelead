@@ -53,5 +53,7 @@ public interface RolesService {
 	List<RoleDTO> getRolesDTOListByOrgLocationId(Long orgLocationId) throws Exception;
 	
 	List<Roles> getRolesListUsingMultipleIds(String[] roleIds) throws Exception;
+	
+	List<String> getRolesNamesListByRolesId(List<String> roleIds) throws Exception;
 
 }

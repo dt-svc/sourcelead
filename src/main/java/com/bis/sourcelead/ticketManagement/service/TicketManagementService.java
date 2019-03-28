@@ -14,8 +14,6 @@ import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.dto.Response;
 
-
-
 public interface TicketManagementService {
 
 	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations();
@@ -30,7 +28,7 @@ public interface TicketManagementService {
 
 	public List<TicketCategoryDTO> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status, String searchValue);
 
-	public long saveTicketCategory(TicketCategoryDTO ticketCategoryDTO,User user, long userId, OrgLocations loginOrgLocation);
+	public long saveTicketCategory(TicketCategoryDTO ticketCategoryDTO, User user, long userId, OrgLocations loginOrgLocation);
 
 	public TicketCategoryDTO getTicketCategoryDataById(long ticketCategoryId, OrgLocations loginOrgLocation);
 
@@ -69,8 +67,12 @@ public interface TicketManagementService {
 	public TicketDTO getTicketSummaryByUUID(String uuid, Long orgLocationId, String dateFormat, boolean includeAttachments);
 
 	public List<TicketCommentDTO> getTicketCommentListByTicketId(Long ticketId, long userId, Long orgLocationId, String dateFormat);
-	
+
 	public Boolean saveTicketComment(TicketCommentDTO ticketCommentDTO, User user);
+
+	public TicketCommentDTO getTicketComment(long ticketCommentId, String dateFormat);
+
+	public Boolean deleteTicketComment(long ticketCommentId);
 
 	public TicketDTO getTicketDataById(long ticketId, String dateFormat);
 
@@ -81,24 +83,9 @@ public interface TicketManagementService {
 	public Ticket getTicketSnoAndTicketId(String ticketSno, Long ticketId, Long orgLocationsId);
 
 	public Boolean validateTicketId(String ticketSno, Long orgLocationsId);
-	
+
 	public List<UserDTO> getCategoryAssignToListByTicketCategoryId(long ticketCategoryId, long userId, Long orgLocationId);
 
 	public boolean changeTicketManagementStatus(long ticketId, int status);
-
-	
-
-
-
-	
-
-	
-	
-
-	
-
-	
-
-	
 
 }

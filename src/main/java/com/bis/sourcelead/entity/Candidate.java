@@ -304,6 +304,9 @@ public class Candidate implements Serializable {
 	
 	@Column(name = "PAN_NUMBER")
 	private String panNumber;
+	
+	@Column(name = "AADHAR_NUMBER")
+	private String aadharNumber;
 
 	@Column(name = "PLACE_OF_BIRTH")
 	private String placeOfBirth;
@@ -1436,6 +1439,14 @@ public class Candidate implements Serializable {
 
 	public void setPanNumber(String panNumber) {
 		this.panNumber = panNumber;
+	}
+
+	public String getAadharNumber() {
+		return aadharNumber;
+	}
+
+	public void setAadharNumber(String aadharNumber) {
+		this.aadharNumber = aadharNumber;
 	}
 
 	public String getGender() {
