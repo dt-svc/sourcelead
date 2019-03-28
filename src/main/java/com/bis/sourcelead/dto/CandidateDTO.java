@@ -10,6 +10,7 @@ import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Email;
 import com.bis.sourcelead.annotations.Phone;
 import com.bis.sourcelead.annotations.Required;
+import com.bis.sourcelead.entity.OrgLocations;
 public class CandidateDTO extends SearchDTO{
 
 	private Long id;
@@ -24,7 +25,7 @@ public class CandidateDTO extends SearchDTO{
 	
 	private List<FileInfo> uploadedFileInfo;
 
-	//private OrgLocations orgLocationId;
+	private OrgLocations workLocation;
 
 	private String consultantUser;
 
@@ -48,6 +49,8 @@ public class CandidateDTO extends SearchDTO{
 	private String dateofBirth;
 	
 	private String panNumber;
+	
+	private String aadharNumber;
 
 	@Required(desc = "email")
 	@Email
@@ -1143,6 +1146,14 @@ public class CandidateDTO extends SearchDTO{
 		this.panNumber = panNumber;
 	}
 
+	public String getAadharNumber() {
+		return aadharNumber;
+	}
+
+	public void setAadharNumber(String aadharNumber) {
+		this.aadharNumber = aadharNumber;
+	}
+
 	public Long getUserId() {
 		return userId;
 	}
@@ -1277,6 +1288,14 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setMarketPrice(String marketPrice) {
 		this.marketPrice = marketPrice;
+	}
+
+	public OrgLocations getWorkLocation() {
+		return workLocation;
+	}
+
+	public void setWorkLocation(OrgLocations workLocation) {
+		this.workLocation = workLocation;
 	}
 
 

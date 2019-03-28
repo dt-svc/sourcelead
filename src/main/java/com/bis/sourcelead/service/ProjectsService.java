@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.AvailableAssociatesDTO;
 import com.bis.sourcelead.dto.ClientProjectDTO;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
@@ -149,10 +151,16 @@ public interface ProjectsService {
 
 		public ResponseList<ProjectReportDTO> getProjectReportList(ProjectReportDTO projectReportDTO,Long orgLocationId)throws Exception;
 		
+		List<AvailableAssociatesDTO> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO,OrgLocations orgLocations);
+
+		File availableAssociatereportReportListOfExcel(List<AvailableAssociatesDTO> data, User user,
+				OrgLocations orgLocations) throws FileNotFoundException;
 
 		//public File getProjectReportListOfExcel(ProjectReportDTO projectReportDTO, User user, OrgLocations orgLocation,String isGlobalAccess);
 
 		File getProjectReportListOfExcel(List<ProjectReportDTO> projectReportDTO, User user, OrgLocations orgLocation,String isGlobalAccess) throws Exception;
+
+		List<Projects> getProjectsListByCanddateIdAndOrgId(String associates, Long orgLocatonId);
 		
 //		public String getProjectId(OrgLocations orgLocations);
 		

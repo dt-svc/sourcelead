@@ -155,6 +155,12 @@ public class RolesServiceImpl implements RolesService{
 	public List<Roles> getRolesListUsingMultipleIds(String[] roleIds) throws Exception {
 		return rolesDao.getRolesListUsingMultipleIds(roleIds);
 	}
+
+
+	@Override
+	public List<String> getRolesNamesListByRolesId(List<String> roleIds) throws Exception {
+		return rolesDao.getRolesNamesListByRolesId(roleIds);
+	}
 	
 
 }

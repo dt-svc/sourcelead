@@ -9,6 +9,8 @@ public class AssociateSalaryPayheadIndDTO extends CommonDTO {
     private Long associateSalaryIndId;
 	
     private Long payrollPayheadId;
+    
+    private String payrollPayheadShortCode;
 	
 	private BigDecimal monthly;
 	
@@ -50,6 +52,14 @@ public class AssociateSalaryPayheadIndDTO extends CommonDTO {
 
 	public void setPayrollPayheadId(Long payrollPayheadId) {
 		this.payrollPayheadId = payrollPayheadId;
+	}
+
+	public String getPayrollPayheadShortCode() {
+		return payrollPayheadShortCode;
+	}
+
+	public void setPayrollPayheadShortCode(String payrollPayheadShortCode) {
+		this.payrollPayheadShortCode = payrollPayheadShortCode;
 	}
 
 	public BigDecimal getMonthly() {

@@ -3396,4 +3396,18 @@ public class CandidateDaoImpl implements CandidateDao {
 			e.printStackTrace();
 		}		
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllAssociateByLocation(Long orgLocationId) {	
+		try {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candi  where candi.orgLocationId.id =:orgLocationId  and candi.isAssociate ='Y' ";
+		List<Candidate> can = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		return can;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;	
+      }
 }
