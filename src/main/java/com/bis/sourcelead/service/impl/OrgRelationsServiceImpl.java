@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -197,6 +198,31 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		return orgRelationsDao.getAllVendorsByOrgLocationId(orgLocationId);
 	}
 
+	@Override
+	public List<OrgRelationDTO> getAllVendorsDTOListByOrgLocationId(Long orgLocationId) {
+		List<OrgRelationDTO> orgRelationDTOList = new LinkedList<>();
+		try {
+			List<OrgRelations> vendorList = orgRelationsDao.getAllVendorsByOrgLocationId(orgLocationId);
+			if (vendorList != null && !vendorList.isEmpty()) {
+				for (OrgRelations orgRelations : vendorList) {
+					OrgRelationDTO orgRelationDTO = new OrgRelationDTO();
+					orgRelationDTO.setId(orgRelations.getId());
+					if (orgRelations.getResponderLocationId().getId().longValue() == orgLocationId) {
+						orgRelationDTO.setOrgName(orgRelations.getLocationId().getOrgLocationName());
+					}
+					if (orgRelations.getLocationId().getId().longValue() == orgLocationId) {
+						orgRelationDTO.setOrgName(orgRelations.getResponderLocationId().getOrgLocationName());
+					}
+					orgRelationDTO.setOrgLocationId(orgRelations.getLocationId().getId());
+					orgRelationDTOList.add(orgRelationDTO);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return orgRelationDTOList;
+	}
+	
 	@Override
 	public OrgRelations getClientAndVendorOrgDeatilsById(Long orgLocationId, Long orgRelationId) {
 		

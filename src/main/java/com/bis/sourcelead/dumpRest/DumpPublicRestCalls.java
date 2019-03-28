@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -74,6 +76,8 @@ import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UploadFileService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -159,9 +163,17 @@ public class DumpPublicRestCalls {
 	@Autowired
 	PayrollPaySlipIndDao payrollPaySlipIndDao;
 	
-	
 	@Autowired
 	AssetService assetService;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private UploadFileService uploadFileService;
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	@RequestMapping(value = "/ws/dumpAllAppliedLeaveDatesData", method = RequestMethod.GET)
 	@ResponseBody
@@ -665,5 +677,55 @@ public class DumpPublicRestCalls {
 		System.out.println("End the method");
 
     }
+	
+	@RequestMapping(value = "/ws/changeExpenseDocumentFileNames")
+	@ResponseBody
+	public String changeExpensesDocumentNames(HttpServletRequest request) {
+		int count = 0;
+		try {
+			System.out.println("Initiated file name change(s) in Expense Documents Folder");
+			count = expensesEntriesService.changeDocumentNameWithWhiteSpacesToUnderScore(staticPath);
+			System.out.println("Changed " + count + " file(s)");
+			System.out.println("Completed file name change(s) in Expense Documents Folder");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "Name successfully changed for " + count + " file(s)";
+	}
+
+	@RequestMapping(value = "/ws/changeDocumentFileNames")
+	@ResponseBody
+	public String changeDocumentNames(HttpServletRequest request) {
+		try {
+			System.out.println("Initiated file name change(s) in slead-static Folder");
+			uploadFileService.changeDocumentNamesWithWhiteSpacesToUnderScore(staticPath);
+			System.out.println("Completed file name change(s) in slead-static Folder");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "Exception occured while changing document name(s), please check error log";
+		}
+		return "Successfully changed document names in 'slead-static' folder";
+	}
+
+	@RequestMapping(value = "/ws/updateDashboardItemCandidateForInvoice")
+	@ResponseBody
+	public String updateDashboardItemCandidateForInvoice(HttpServletRequest request) {
+		int result = 0;
+		try {
+			System.out.println("-------- Initiated dashboard items updation --------");
+			String itemName = "Candidates for Invoice";
+			String itemSize = "4:1";
+			List<String> rolesList = new LinkedList<>();
+			rolesList.add("ROLE_ADD_INVOICE");
+			rolesList.add("ROLE_VIEW_REQUIREMENT");
+
+			result = userService.addItemToDashboard(itemName, itemSize, rolesList);
+			System.out.println("-------- Completed dashboard items updation --------");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "Exception occured while updating dashboard items";
+		}
+		return "Successfully updated " + result + " records for 'Candidate For Invoice' in dashboard items";
+	}
 	
 }

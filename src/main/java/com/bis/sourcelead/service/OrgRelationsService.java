@@ -39,6 +39,8 @@ public interface OrgRelationsService {
 	
 	List<OrgRelations> getAllVendorsListByOrgLocationId(Long id);
 	
+	List<OrgRelationDTO> getAllVendorsDTOListByOrgLocationId(Long id);
+	
 	List<OrgRelations> getAllVendorsListByOrgName(String  orgName,Long id);
 
 	OrgRelations getClientAndVendorOrgDeatilsById(Long orgLocationId, Long orgRelationId);
