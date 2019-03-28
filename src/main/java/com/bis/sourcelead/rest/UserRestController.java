@@ -770,24 +770,6 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 				return "success";
 			}
 			
-			@RequestMapping(value = "/rest/refreshSessionAttributes", method = RequestMethod.GET)
-	         public int refreshSessionAttributes(@RequestParam(value="userId", required=false) Long userId,@RequestParam(value="locationCode", required=true) String locationCode,HttpServletRequest request) throws Exception {
-	             int output =  HttpServletResponse.SC_NOT_FOUND;
-				 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	             if(loginUser == null && userId != null){
-	            	 loginUser = userService.getUserById(userId);
-	             }
-	             OrgLocations orgLoc = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-	             if(loginUser != null && orgLoc != null){
-	            	 SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLoc);
-	            	 Candidate candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), orgLoc.getId());
-					 SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
-					 output =  HttpServletResponse.SC_OK;
-	             }
-	             return output;
-	         }
-			
-			
 			/**
 			 * to save the reason when we terminate the user from project 
 			 * @param projectMemberId
@@ -983,161 +965,12 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		}
 		
 		 
-		 @RequestMapping(value = "/rest/", method = RequestMethod.POST)
-		 public void authenticate() {
-		 }
+		
 		 
-		 @RequestMapping(value = "/rest/loginUserProfile", method = RequestMethod.GET)
-		 public UserProfileDTO getLoginUserProfile() {
-			 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			 User  user = userService.findByUserName(auth.getName());
-			 List<UserRole> userRoleList = null;
-			 List<OrgLocationDTO> orgLocationsList = new ArrayList<>();
-			 
-	         UserProfileDTO userProfileDTO = new UserProfileDTO();
-	         userProfileDTO.setFirstName(user.getFirstName());
-     	     userProfileDTO.setLastName(user.getLastName());
-     	     userProfileDTO.setUserId(user.getId());
-     	  
-     	     if(StringUtils.isNoneBlank(user.getFileUrl())){
-        	    userProfileDTO.setProfileImageUrl(user.getFileUrl());
-   			 }else{
-   				userProfileDTO.setProfileImageUrl("/resources/images/userprofile-img.png");
-   			 }
-     	     
-	         try {
-	        	    if(user != null){
-	        		     userRoleList = userRoleService.getUserSpocsListByUserId(user.getId());
-	        		     if(null != userRoleList && userRoleList.size() > 0){
-	        		    	 for(UserRole userRole : userRoleList){
-	        		    		 
-		        		    		List<SourceleadActions> actionsList = null;
-		        			        List<String> tabNamesList = null;
-		        			        List<String> tabIconsList = new ArrayList<String>();
-		        			        List<String> actionRolesList = new ArrayList<String>();
-		        			        List<Long> actionIdsList = new ArrayList<Long>();
-		        			        List<Long> modulesId = null;
-		        			        
-		        			        
-	        		    		    OrgLocations orgLocations = userRole.getOrgLocations();
-	        		        	    modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(orgLocations);
-	        		        	    actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
-	        		        	    
-	        		        	    for(SourceleadActions actions : actionsList){
-	        		        	    	actionIdsList.add(actions.getId());
-	        		        	    	//actionRolesList.add(actions.getActionRole());
-	        		        	    }
-	        		        	    
-	        		        	    tabNamesList = tabsService.getTabsNamesListByActionsIds(actionIdsList);
-	        		        	    for(String tabName : tabNamesList){
-	        		        	    	
-	        		        	    	tabName = tabName.substring(0, 1).toLowerCase() + tabName.substring(1);
-	        		        	    	StringBuilder name = new StringBuilder();
-	        		        	    	name.append("ic_").append(tabName).toString();
-	        		        	    	tabIconsList.add(name.toString().replaceAll(" ", "_").toLowerCase());
-	        		        	    }
-	        		        	    
-	        		        	    OrgLocationDTO orgLocationDTO =  getOrgLocationDetails(orgLocations,userRole);
-	        		        	    orgLocationDTO.setMenuList(tabNamesList);
-	        		        	    orgLocationDTO.setMenuIconsList(tabIconsList);
-	        		        	    Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
-	        		        	    orgLocationDTO.setCandidateId(candidate.getId());
-	        		        	    //orgLocationDTO.setRoleActionsList(actionRolesList);
-	        		        	    orgLocationDTO.setUserType(userRole.getUserType());
-	        		        	    orgLocationsList.add(orgLocationDTO);
-	        		    	 }
-	        		     }
-	        		     
-	        		    
-	        	     }
-	        	    
-	               } catch (Exception e) {
-					e.printStackTrace();
-				 }
-	         
-	         userProfileDTO.setOrgLocationsList(orgLocationsList);
-	         
-			return userProfileDTO;
-	         
-		 }
+		
 		 
 		 
-		 private OrgLocationDTO getOrgLocationDetails(OrgLocations orgLocations,UserRole useRole){
-			 OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
-			 orgLocationDTO.setOrgName(orgLocations.getOrgLocationName());
-			 orgLocationDTO.setOrgLocationId(orgLocations.getId());
-			 orgLocationDTO.setOrgId(orgLocations.getOrg().getId());
-			 orgLocationDTO.setLocationCode(orgLocations.getLocationCode());
-			 orgLocationDTO.setOrgCode(orgLocations.getOrg().getOrgCode());
-			 if(orgLocations.getOrg().getDocFile() != null && orgLocations.getOrg().getFileContentType() != null){
-				 orgLocationDTO.setOrgImageUrl(sourceleadUrl+"/displayOrgImage/"+orgLocations.getOrg().getOrgCode());
-			 }else{
-				 orgLocationDTO.setOrgImageUrl(sourceleadUrl+"/resources/images/office-image.jpg");
-			 }
-			 orgLocationDTO.setCountry(orgLocations.getCountry());
-			 orgLocationDTO.setState(orgLocations.getState());
-			 orgLocationDTO.setCity(orgLocations.getCity());
-			 orgLocationDTO.setOrgLocationAddress(orgLocations.getOrgLocationAddress());
-			 orgLocationDTO.setWebsite(orgLocations.getWebsite());
-			 orgLocationDTO.setDateFormat(orgLocations.getDateFormat());
-			 if(useRole.getIsPrimary().equals(1)){
-				 orgLocationDTO.setIsPrimaryOrg(Constants.YES);
-			 }else{
-				 orgLocationDTO.setIsPrimaryOrg(Constants.NO);
-			 }
-			 return orgLocationDTO;
-		 }
-		 
-		 @RequestMapping(value = "/restAuthenticate", method = RequestMethod.POST)
-		 public @ResponseBody RestResponsetUtil restAuthenticate(HttpServletRequest request) throws Exception {
-		 
-			 String json = IOUtils.toString(request.getInputStream());
-			 RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
-			 if(StringUtils.isNotEmpty(json)){
-				 String sourceleadUrl = request.getRequestURL().toString().replace("/restAuthenticate","");
-				 //TODO remove this sysout. Just for rest call testing purpose
-				 System.out.println("sourceleadURL =======> "+sourceleadUrl);
-				 JSONObject jsonObject = new JSONObject(json);
-				 if(jsonObject != null && jsonObject.has("username")&& jsonObject.has("password") 
-				    && StringUtils.isNotEmpty(jsonObject.getString("username"))&& StringUtils.isNotEmpty(jsonObject.getString("password")))
-				 { 		
-					 final String uri = sourceleadUrl+"/rest/";
-	                    RestTemplate restTemplate = new RestTemplate();
-	                    HttpHeaders headers = new HttpHeaders();
-	                    headers.add("X-Username", jsonObject.getString("username"));
-	                    headers.add("X-Password", jsonObject.getString("password"));
-	                    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-	                    HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-	                    ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
-	                     int status = response.getStatusCode().value();
-
-					 if(status == HttpServletResponse.SC_OK){
-						 String header = response.getHeaders().get("X-CustomToken").toString();
-						 String token = header.replaceAll("\\[", "").replaceAll("\\]", "");
-						 resResponsetUtil.setToken(token);
-						 resResponsetUtil.setLoginResponse("Valid User");
-						 //TODO remove this sysout. Just for rest call testing purpose
-						 System.out.println("##### in ServletRESPONSE OK =======> ");
-						 return resResponsetUtil;
-					 }
-					
-					 else if(status == HttpServletResponse.SC_NOT_FOUND){
-						 resResponsetUtil.setLoginResponse("User Not Registered");
-						 return resResponsetUtil;
-					 }
-					 else if(status == HttpServletResponse.SC_MOVED_TEMPORARILY){
-						 resResponsetUtil.setLoginResponse("In-Active User");
-						 return resResponsetUtil;
-					 }
-					 else if(status == HttpServletResponse.SC_UNAUTHORIZED){
-						 resResponsetUtil.setLoginResponse("Invalid UserName Or Password");
-						 return  resResponsetUtil;
-					 }
-				 }
-			 }
-			 resResponsetUtil.setLoginResponse("Invalid Json String");
-			 return resResponsetUtil;
-		 }
+		
 		 
 		 
 		/**
@@ -1503,20 +1336,6 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		   
 		} 
 	 
-	 @RequestMapping(value = "/rest/loginUserImageUrl", method = RequestMethod.GET)
-     public String getLoginUserImageUrl(@RequestParam(value="userId", required=false) Long userId,HttpServletRequest request) throws Exception {
-         User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-         String imageUrl = "";
-         if(loginUser == null){
-                loginUser = userService.getUserById(userId);
-                imageUrl = loginUser.getFileUrl();
-         }else{
-             imageUrl = loginUser.getFileUrl();
-         }
-         if(StringUtils.isBlank(imageUrl))
-             imageUrl ="/resources/images/userprofile-img.png";
-         return imageUrl;
-     }
 	 
 	 
 	 @RequestMapping(value = "/getOrgLocationAssociatesList", method = RequestMethod.GET)
