@@ -325,7 +325,7 @@ function getAllRelationssByOrgLocation(){
 		        	$('#attorneyId').empty();
 		            for(var i=0;i<json.length;i++){
 		            var opt = json[i];
-		            $('#attorneyId').append('<option attrval='+opt.immigrationRelatedId+' value='+opt.orgName+' >'+opt.orgName+'</option>');
+		            $('#attorneyId').append('<option attrval='+opt.immigrationRelatedId+' value="'+opt.orgName+'" >'+opt.orgName+'</option>');
 		            }
 		            $('#attorneyId').trigger("chosen:updated");
 		        }

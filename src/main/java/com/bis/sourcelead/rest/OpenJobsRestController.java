@@ -49,7 +49,6 @@ import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController

@@ -651,8 +651,10 @@ public class CompanyOnboardRestController {
 	@RequestMapping(value = "/skipAndSaveOrglocationSignatory", method = RequestMethod.POST)
 	public @ResponseBody String skipAndSaveOrglocationSignatory(HttpServletRequest request) throws Exception
 	{
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 		loginOrgLocation.setIsCompanyOnboarded(Constants.YES);
 		orgLocationService.updateOrgLocations(loginOrgLocation);
 		SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", loginOrgLocation);

@@ -528,7 +528,7 @@ if(selectedTextInvoice =='percentage'){
 		        	 
 		        	 var selected = 'selected';
 		        	 result = result +'<option disabled selected>--Select Client--</option>';
-		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' data-Invoice ='+json['generateInvoice']+'>'+json['orgName']+'</option>';
+		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' data-Invoice ='+json['generateInvoice']+' data-responder_location_id= '+json['dataResponderLocationId']+'>'+json['orgName']+'</option>';		        	 
 		        	 $("#clientOrgRelationId").empty();
 		           	 $("#clientOrgRelationId").append(result); 
 		           	 $('#clientOrgRelationId').trigger("chosen:updated"); 
@@ -576,13 +576,13 @@ if(selectedTextInvoice =='percentage'){
 		        	 
 		        	$("#savedInvoiceId").val(json['id']);
 		        	
-		        	if(json.customInvoiceId > 0 && json.customInvoiceName != "") {
+		        	/* if(json.customInvoiceId > 0 && json.customInvoiceName != "") {
 		        		$("#invoiceTemplateId").empty();
 		        		$("#invoiceTemplateId").append("<option value='0'>-- Select Invoice Template --</option>");
 		    			$("#invoiceTemplateId").append("<option value='-1' selected>Default Template</option>");
 		    			$("#invoiceTemplateId").append("<option value='" + json.customInvoiceId + "' selected>" + json.customInvoiceName + "</option>");
-		        	}
-		        	
+		        	} */
+		        	getInvoiceTemplateList(json.customInvoiceId);
 		        	var test = json['invoiceParentId'];
 		        	if(json['invoiceStatus'] == "Rejected" && test != null){
 			   			 document.getElementById("sendButtonId").style.display="none";
@@ -2105,25 +2105,27 @@ function getPaymentTerms(){
 	});
 }
 
-function getInvoiceTemplateList() {
-	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+
+function getInvoiceTemplateList(selectedId) {
 	var orgRelationId = $("#clientOrgRelationId").val();
 	var responderLocationId = $("#clientOrgRelationId :selected").data("responder_location_id");
 	$("#invoiceTemplateId").empty("");
 	$.ajax({
-		type : "POST",
-		url: vmsUrl+"/invoiceTemplateList?orgRelationId=" + orgRelationId + "&orgLocationId=" + responderLocationId,
-		success : function(data) {
-			$("#invoiceTemplateId").append("<option value='0'>-- Select Invoice Template --</option>");
-			$("#invoiceTemplateId").append("<option value='-1' selected>Default Template</option>");
-			if(data && data.data != null && data.data.length > 0) {
-				for(var e in data.data) {
-					$("#invoiceTemplateId").append("<option value=" + data.data[e].id + ">" + data.data[e].name + "</option>");
-				}
-			}
-		}
+	type : "POST",
+	url: vmsUrl+"/invoiceTemplateList?orgRelationId=" + orgRelationId + "&orgLocationId=" + responderLocationId,
+	success : function(data) {
+	$("#invoiceTemplateId").append("<option value='0'>-- Select Invoice Template --</option>");
+	$("#invoiceTemplateId").append("<option value='-1' selected>Default Template</option>");
+	if(data && data.data != null && data.data.length > 0) {
+	for(var e in data.data) {
+	$("#invoiceTemplateId").append("<option value=" + data.data[e].id + " "+ (selectedId && selectedId === data.data[e].id ? "selected" : "") +">" + data.data[e].name + "</option>");
+	}
+	}
+	}
 	});
-}
+	}
+
+
 </script>
 <script>
 function getDueDateByFrequency(){

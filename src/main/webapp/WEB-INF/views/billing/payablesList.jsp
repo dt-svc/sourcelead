@@ -64,8 +64,7 @@ $(document).ready(function(){
 			<h2>Bills</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo; Bill List
+			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; Bill List
 		</div>
 	</section>
 	

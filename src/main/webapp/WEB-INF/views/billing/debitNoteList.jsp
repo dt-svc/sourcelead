@@ -28,7 +28,7 @@ $(document).ready(function(){
         <h2>Debit Notes</h2>
       </div>
       
-      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Debit Note List</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Debit Note List</div>
     </section>
     
     

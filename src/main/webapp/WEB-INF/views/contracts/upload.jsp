@@ -5,15 +5,17 @@
 <spring:url value="/resources/css/styles.css" var="cssmy"/>
 <link href="${cssmy}" rel="stylesheet">
 <script src="/resources/js/jquery-1.11.3.min.js"></script>
-<script src="/resources/js/signer.js" type="text/javascript"></script>
+
              
              
-<c:if test='${!empty SourceLeadWeb_sourceleadUrl}'>
+<c:if test='${empty type}'>
+<script src="${SourceLeadWeb_vmsUrl}/resources/js/signer.js" type="text/javascript"></script>
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 </c:if>
 
- <c:if test='${empty SourceLeadWeb_sourceleadUrl}'>
+ <c:if test='${!empty type}'>
+ <script src="${vmsUrl}/resources/js/signer.js" type="text/javascript"></script>
  <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
  <link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
@@ -92,7 +94,7 @@ position: relative;top:8px;
 }
 </style>
 
-<c:if test='${empty SourceLeadWeb_sourceleadUrl}'>
+<c:if test='${!empty type}'>
 <header class="publicpageHeader">
 <div class="clearfix">
 	<div class="publicpage-logo col-md-2 text-center">
@@ -113,8 +115,8 @@ position: relative;top:8px;
     <div class="text-center clearfix" id="hideSig">
       <h2>Create Signature</h2>
     </div>
-    <c:if test='${!empty SourceLeadWeb_sourceleadUrl}'>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/contractListbyStatus'/>">Contracts List</a>&raquo;Create Signature</div>
+    <c:if test='${empty type}'>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;<a href="${SourceLeadWeb_vmsUrl}/contractListbyStatus">Contracts List</a>&raquo;Create Signature</div>
   </c:if>
   </section>
             <div id="addSign">
@@ -195,7 +197,7 @@ position: relative;top:8px;
                                 <button value="Sign This Document" id="btnComplete" class="btn btn-success">Complete</button>
                             </div>
                         </div>
-                        <input type="hidden" id="sourceUrl" value="${sourceleadUrl}">
+                        <input type="hidden" id="sourceUrl" value="${vmsUrl}">
                         <input id="contractOrgLocationId" value="${contract.contractOrgLocationId.id}" type="hidden">
                         <input type="hidden" id="contractId" value="${contract.id}">
                     </div>
@@ -224,6 +226,6 @@ position: relative;top:8px;
 </section>
 
             
- <c:if test='${!empty SourceLeadWeb_sourceleadUrl}'>
+ <c:if test='${empty type}'>
  <jsp:include page="../masterFooter.jsp" />
  </c:if>

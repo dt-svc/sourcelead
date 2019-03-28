@@ -222,8 +222,7 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/viewImmigrationList" })
 	public ModelAndView loadImmigrationList(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
-		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
-				.getAttribute("sessionData");
+		SessionMaintainanceData sessionData = new SessionMaintainanceData();
 		sessionData.setNav(Constants.Immigrations);
 
 		// CandidatePassportVisa candidatePassportVisa =
@@ -251,8 +250,7 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/myImmigration" })
 	public ModelAndView loadMyImmigration(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
-		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
-				.getAttribute("sessionData");
+		SessionMaintainanceData sessionData = new SessionMaintainanceData();
 		sessionData.setNav(Constants.My_Immigration);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("/immigration/myImmigration");
@@ -1123,8 +1121,9 @@ public class ImmigrationRestController {
 
 	@RequestMapping(value = { "/deleteImmigrationTaskList" })
 	public void deleteImmigrationTaskList(HttpServletRequest request,
-			@RequestParam(value = "id", required = false) String id) {
-		immigrationTemplateService.deleteImmigrationTaskList(id);
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "taskName", required = false) String taskName) {
+		immigrationTemplateService.deleteImmigrationTaskList(id, taskName);
 	}
 
 	@RequestMapping(value = { "/savePetitionTemplateDetailsValues" })
@@ -1173,8 +1172,10 @@ public class ImmigrationRestController {
 		ResponseList<String> response = new ResponseList<>();
 		List<String> requiredIds = new LinkedList<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+	
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Org org =(Org) SourceLeadSessionManager.getSessionAttribute(request,"org");	
+		orgLocations.setOrg(org);
 		immigrationDTO.setStaticPath(staticPath);
 		Immigration immigration = null;
 		try {
@@ -1454,10 +1455,14 @@ public class ImmigrationRestController {
 		
 		try {
 			if (user != null && Validator.validate(immLcaDTO)) {
+				Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 				candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
 				immigration = immigrationCommonService.getImmigrationById(Long.parseLong(immigrationId));
 				lca=immigrationCommonService.getLcaByLcaId(Long.parseLong(lcaId));
-				
+				lca.setAvailablePositions(lca.getAvailablePositions()-1); // Decreasing no of available position when assigned to candidate.
+				lca.setUpdatedBy(user);
+				lca.setUpdatedDate(currentDate);
+				immigrationCommonService.updateLcaAvailablePositionsById(lca);
 				LcaHistory lh= new LcaHistory();
 				
 				lh.setLcaId(lca);
@@ -1467,7 +1472,6 @@ public class ImmigrationRestController {
 				lh.setStatus(Constants.RECORD_ACTIVE);
 				lh.setCreatedBy(user);
 				lh.setUpdatedBy(user);
-				Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 				lh.setUpdatedDate(currentDate);
 				lh.setCreatedDate(currentDate);
 				

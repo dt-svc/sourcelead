@@ -11,7 +11,7 @@
 </style>
 <script>
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
-var sourceleadUrl ='${sourceleadUrl}';
+var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>
 <script type="text/javascript">
     var invoiceType = '${invoiceType}';
@@ -40,8 +40,8 @@ $(document).ready(function(){
 
 <section class="content-wraper">
     <section class="content-header clearfix">
-     <div class="pull-right brud-crum" style="display:none" id="invoiceIdBr"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/invoiceList'/>">Receivable List</a> » Invoice View</div>
-      <div class="pull-right brud-crum" style="display:none" id="BillIdBr" ><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/payablesList'/>">Payable List</a> » Bill View</div>
+     <div class="pull-right brud-crum" style="display:none" id="invoiceIdBr"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${SourceLeadWeb_vmsUrl}/invoiceList'/>">Receivable List</a> » Invoice View</div>
+      <div class="pull-right brud-crum" style="display:none" id="BillIdBr" ><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${SourceLeadWeb_vmsUrl}/payablesList'/>">Payable List</a> » Bill View</div>
       
       <div class="" id="invoiceIdHidden" style="display:none">
           <h2 class="mb">Invoice Id: <span id="invoiceIdDiv"></span></h2>
