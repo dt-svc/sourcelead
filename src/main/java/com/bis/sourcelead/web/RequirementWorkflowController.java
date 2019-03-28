@@ -15,11 +15,11 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dto.RequirementDefaultWorkFlowStagesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RequirementWorkFlow;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 
 @Controller
@@ -111,34 +111,36 @@ public class RequirementWorkflowController {
 		return response;
 	}
 	
-	
 	@RequestMapping(value = "/createRequirementDefaultWorkFlow", method = RequestMethod.GET)
-	public @ResponseBody List<RequirementDefaultWorkFlowStagesDTO> createRequirementDefaultWorkFlow(
-			RequirementWorkFlowDTO requirementWorkFlowDTO,
-			HttpServletRequest request) {
+	public @ResponseBody RequirementWorkFlowDTO createRequirementDefaultWorkFlow(
+			RequirementWorkFlowDTO requirementWorkFlowDTO, HttpServletRequest request) {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<RequirementDefaultWorkFlowStagesDTO> requirementDefaultWorkFlowStagesDTO= null;
+		RequirementWorkFlowDTO workFlowDTO = null;
 		try {
-			List<RequirementWorkFlow> requirementWorkFlow = requirementWorkFlowService.getRequirementWorkFlowByOrgLocationId(orgLocations.getId());
-			if (requirementWorkFlow == null || requirementWorkFlow.isEmpty()) {
-				requirementWorkFlowService.saveRequirementWorkFlowStagesByOrgLocationId(orgLocations, user, requirementWorkFlowDTO);
-				requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementDefaultWorkFlowStages();
-			}
-			if(requirementWorkFlow.size() >= 1 && !(requirementWorkFlow.isEmpty())) {
-				requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementDefaultWorkFlowStages();
-			}
-
+			workFlowDTO = requirementWorkFlowService.saveRequirementWorkFlowAndStagesByOrgLocationId(orgLocations, user, requirementWorkFlowDTO);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+		return workFlowDTO;
+	}
+
+	@RequestMapping(value = "/createRequirementDefaultWorkFlowStages", method = RequestMethod.GET)
+	public @ResponseBody List<RequirementDefaultWorkFlowStagesDTO> createRequirementDefaultWorkFlowStages(
+			RequirementWorkFlowDTO requirementWorkFlowDTO, HttpServletRequest request) {
+		List<RequirementDefaultWorkFlowStagesDTO> requirementDefaultWorkFlowStagesDTO = null;
+		try {
+			requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementDefaultWorkFlowStages();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		return requirementDefaultWorkFlowStagesDTO;
 
 	}
 	
 	@RequestMapping(value = "/getWorkflowList", method = RequestMethod.GET)
-	public ResponseList<RequirementWorkFlowDTO> getWorkflowList(
+	public @ResponseBody ResponseList<RequirementWorkFlowDTO> getWorkflowList(
 			RequirementWorkFlowDTO requirementWorkFlowDTO,
 			HttpServletRequest request){
 		ResponseList<RequirementWorkFlowDTO> responseList = new ResponseList<>();
@@ -146,7 +148,7 @@ public class RequirementWorkflowController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		try {
 			
-			String[] tableColumns = { "workFlowName", "noOfStages", "status", "Action"};
+			String[] tableColumns = { "workFlowName", "noOfStages", "status"};
 		  	int sortColumnIndex = -1; 
 	  		String sortColumnOrder = "desc"; 
 	  		if (requirementWorkFlowDTO.getOrder() != null && !requirementWorkFlowDTO.getOrder().isEmpty()) {
