@@ -10,7 +10,7 @@
       <div class="pull-left">
         <h2>Available Associates</h2>
       </div>
-        <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard">Reports Dashboard</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/associateReportsList'/>">Associate Reports</a> &raquo; Available Associates Report  </div>
+        <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard">Reports Dashboard</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/associateReportsList">Associate Reports</a> &raquo; Available Associates Report  </div>
     </section>
     <div class="content-area content-new clearfix backgroundWhite">
     <form name = "availableAssociates" id = "availableAssociatesFormId">
@@ -20,10 +20,10 @@
             <div class="form-group row">
               <label class="col-md-12 paddingRight">Associate Name</label>
               <div class="col-md-12">
-              <select class="chosen-select form-control" data-placeholder="Select Associate" autocomplete="off" onchange="getProjects();" id="associatesId" name="id" field-name="Associate" data-validation="required">
+              <select class="chosen-select form-control" data-placeholder="Select Associate" autocomplete="off" onchange="getProjects();" id="associatesId" name="userIds" field-name="Associate" data-validation="required">
 			          <option selected="selected" disabled>Select Associate</option>
 			            <c:forEach var="option" items="${empList}">
-							<option value="${option.id}">${option.firstName}</option>
+							<option value="${option.candId}">${option.candidateName}</option>
 						</c:forEach>
 			          </select>
               </div>
@@ -237,7 +237,7 @@
   							}
   							
   							total = (totalavailable >= 100 ? 0 : 100 - totalavailable);
-							hours = (totalHours >= orgWorkingHours ? 0 : orgWorkingHours - totalHours);
+							hours = (totalHours >= orgWorkingHours ? 0 : (orgWorkingHours - totalHours).toFixed(2));
   							
 							text += " 	</tbody>";
   							text += " 	<tfoot>";
@@ -274,6 +274,7 @@
       
       <script>
       function reportExport(type){
+    	  alert("hjk");
           var associates =$("#associatesId").val();
     	  var projects = $("#projects").val();
     	  var fromDate = $('#fromDate').val();
@@ -284,7 +285,7 @@
     	       if(projects == null || projects == ''|| projects == 'undefined'){
     		  projects = '';
     	       }
-    	  window.location.href =  sourceleadUrl+"/availableAssociatereportExport?&type="+type+"&userIds="+associates+"&projects="+projects+"&fromDate="+fromDate+"&toDate="+toDate;
+    	  window.location.href =  sourceleadUrl+"/availableAssociatereportExport?&type="+type+"&userIds="+associates+"&projectsIds="+projects+"&fromDate="+fromDate+"&toDate="+toDate;
   	}
       
       </script>
