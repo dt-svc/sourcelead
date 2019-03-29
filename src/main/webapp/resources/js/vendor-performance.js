@@ -35,6 +35,8 @@ $(document).ready(function() {
 		$("#vendorReportsDiv").show();
 		$("#vendorReportsChartDiv").hide();
 		$("#releasedJobsResultDiv").hide();
+		$('#releasedApplicantsDeclineDiv').hide();
+		$('#releasedApplicantsBackOutDiv').hide();
 		getVendorsReportList();
 	});
 	$("#graphView").click(function() {
@@ -43,6 +45,8 @@ $(document).ready(function() {
 		
 		$("#listViewFilters").hide();
 		$("#releasedJobsResultDiv").hide();
+		$('#releasedApplicantsDeclineDiv').hide();
+		$('#releasedApplicantsBackOutDiv').hide();
 		$("#vendorReportsChartDiv").show();
 		$("#vendorReportsDiv").hide();
 		
