@@ -44,6 +44,10 @@
  #remove_user_pop {
  z-index: 170000;
  }
+ .viewEyeicon {
+position: absolute; right:50px; top:0px; color: #fff; cursor: pointer; z-index: 9999;
+padding: 11.74px 4px;
+}
  </style>
  
  
@@ -1139,7 +1143,7 @@ function getOfferDetails(submissionId){
 	   					  	 result = result + '<div id="offerLoading"></div>';
 	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
 	   					     if(report.templateUUID != null && report.templateUUID != "" && report.templateUUID != "undefined"){
-		   					  	 result = result + '<i class="fa fa-eye pull-right viewEyeicon" style="color:#fff !important;" onclick="viewOfferLetter(\''+report.templateUUID+'\',\''+report.templateName+'\');"></i>';	
+		   					  	 result = result + '<i class="fa fa-eye pull-right viewEyeicon" style="color:#fff !important;" onclick="viewOfferLetter(\''+report.offerUUID+'\');"></i>';	
 	   					     }
 	                    	 result = result + '<h2  class="active">Offer: <span>'+report.offerSourceType+'</span></h2>';
 	                    	 result = result + '<div class="content clearfix">';
@@ -2792,9 +2796,9 @@ function acceptProposeTime(id,proposeDate,proposeTime,submissionId){
 </script>
 
 <script>
-function viewOfferLetter(templateUUId,templateName){
+function viewOfferLetter(offerUUID){
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.open(sourceleadUrl+'/offerLetterTempleateView/'+templateUUId+'/'+templateName+'','_newtab');
+	window.open(sourceleadUrl+'/candidateOfferLetterTempleateView?offerUUID='+offerUUID+'','_newtab');
 }
 
 </script>
