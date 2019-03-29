@@ -115,7 +115,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 						isValidated = validateAssociateInfoExeclData(row,fileName,InfoDataDTO,canMap,pfeMap);
 						if(isValidated) {
 							if(row.getCell(1) != null  && !"".equalsIgnoreCase(row.getCell(1).toString()))
-								InfoDataDTO.setEmail(getCellValueAsString(row.getCell(1), fileName));
+								InfoDataDTO.setEmail(getCellValueAsString(row.getCell(1), fileName).toLowerCase());
 							if(row.getCell(2) != null  && !"".equalsIgnoreCase(row.getCell(2).toString()))
 								InfoDataDTO.setUanNumber(getCellValueAsString(row.getCell(2), fileName));																	
 							if(row.getCell(3) != null  && !"".equalsIgnoreCase(row.getCell(3).toString()))
@@ -198,7 +198,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			     }
 			
 			if(pfeMap != null ) {
-				Long candidateId = canMap.get(getCellValueAsString(row.getCell(1),fileName));
+				Long candidateId = canMap.get(getCellValueAsString(row.getCell(1),fileName).toLowerCase());
 				if(pfeMap.get(candidateId) != null) {
 					String uanNum = pfeMap.get(candidateId);
 					if(getCellValueAsString(row.getCell(2), fileName).equalsIgnoreCase(uanNum)){
@@ -261,7 +261,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 							if (row.getCell(0) != null  && !"".equalsIgnoreCase(row.getCell(0).toString())) 
 								bankDataDTO.setUserId((getCellValueAsString(row.getCell(0), fileName)));	
 							if(row.getCell(1) != null  && !"".equalsIgnoreCase(row.getCell(1).toString()))
-								bankDataDTO.setEmail(getCellValueAsString(row.getCell(1), fileName));
+								bankDataDTO.setEmail(getCellValueAsString(row.getCell(1), fileName).toLowerCase());
 							if(row.getCell(2) != null  && !"".equalsIgnoreCase(row.getCell(2).toString()))
 								bankDataDTO.setAccountType(getCellValueAsString(row.getCell(2), fileName));																	
 							if(row.getCell(3) != null  && !"".equalsIgnoreCase(row.getCell(3).toString()))
