@@ -6,6 +6,7 @@ import java.util.List;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
+import com.bis.sourcelead.workflow.dto.RequirementWorkFlowStagesDTO;
 import com.bis.sourcelead.workflow.entity.RequirementDefaultWorkFlowStages;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
@@ -29,6 +30,8 @@ public interface RequirementWorkFlowDao {
 	RequirementQuestionnaireTemplate saveQuestionnaireTemplate(RequirementQuestionnaireTemplate template) throws Exception;
 	
 	RequirementWorkFlow getRequirementWorkFlowByUuid(String Uuid)throws Exception;
+	
+	List<RequirementWorkFlowStages> getRequirementWorkflowStagesByUuid(String uuid)throws Exception;
 	
 	
 
