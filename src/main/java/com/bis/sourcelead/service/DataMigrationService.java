@@ -35,4 +35,6 @@ public interface DataMigrationService {
 	String storeCandidateBulkUploadToCouchbase(CandidateBulkUploadDTO candidateBulkUploadDTO,UploadEntriesDTO uploadEntriesDTO, HttpServletRequest request) throws Exception;
 	
 	void saveCandidateBulkImports(String couchbaseQueueKey, HttpServletRequest request) throws Exception;
+	
+	void bulkUploadEmails(String couchbaseQueueKey, String uploadedSize, String type, HttpServletRequest request) throws Exception;
 }
