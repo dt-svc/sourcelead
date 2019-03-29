@@ -1044,7 +1044,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		if("yes".equalsIgnoreCase(topleave)) {
 	    query = "select lt.NAME AS name,lt.ID AS id from LEAVE_TYPE lt where  lt.STATUS =1  and lt.ORGLOCATION_ID =:orgLocationId"+subQuery1+subQuery3;
 		}else {
-			query = "select lt.NAME AS name,lt.ID AS id from LEAVE_TYPE lt where  lt.STATUS =1 and lt.VISIBLE_IN_BALANCE_LEAVES='Y' and lt.ORGLOCATION_ID =:orgLocationId"+subQuery1+subQuery3;
+			query = "select lt.NAME AS name,lt.ID AS id, lt.DEPARTMENT_IDS AS department from LEAVE_TYPE lt where  lt.STATUS =1 and lt.VISIBLE_IN_BALANCE_LEAVES='Y' and lt.ORGLOCATION_ID =:orgLocationId"+subQuery1+subQuery3;
 		}
 		String query1 ="select d.DEPARTMENT_NAME AS deparmentNames,d.ID AS departmentId from DEPARTMENT d where d.ORG_LOCATION_ID =:orgLocationId";
 		Query queryString1 = session.createSQLQuery(query1);
