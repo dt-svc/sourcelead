@@ -131,7 +131,7 @@ public class PaymentAccountDaoImpl implements PaymentAccountDao{
 					connection.setAutoCommit(false);
 					CallableStatement stmt = connection.prepareCall("{call insertAssociateBankingDetails(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 					for (IndAssociatePaymentAccountDTO paymentlist : list) {	
-						Long candidateId = map.get(paymentlist.getEmail());
+						Long candidateId = map.get(paymentlist.getEmail().trim());
 							stmt.setLong(1, candidateId);
 							stmt.setString(2,   paymentlist.getEmail());
 							stmt.setString(3,   paymentlist.getAccountType());
