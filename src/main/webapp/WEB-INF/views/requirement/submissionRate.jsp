@@ -219,6 +219,7 @@ width: auto;
 	function storeReject() {
 		$('#reject_Rate').attr("disabled", true);
 			var sourceleadUrl = '${sourceleadUrl}';
+			var atsUrl = '${atsUrl}';
 			var submissionId = '${submissionId}';
 			var type = '${type}';
 			var rejectreason = document.getElementById("rejectId").value;
@@ -229,7 +230,7 @@ width: auto;
 				
 				$.ajax({
 							type : "POST",
-							url : sourceleadUrl+"/ws/storeReject?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason+"&type="+type,
+							url : atsUrl+"/ws/storeReject?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason+"&type="+type,
 							success : function(data) {
 								if(data == "success"){
 									$('#rejectIdDiv').empty();
@@ -252,13 +253,14 @@ width: auto;
 		$('#reject_Applicant').attr("disabled", true);
 			var sourceleadUrl = '${sourceleadUrl}';
 			var submissionId = '${submissionId}';
+			var atsUrl = '${atsUrl}';
 			var rejectreason = document.getElementById("rejectApplicantId").value;
 			var frm = $('#reject_form_applicant').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/ws/storeApplicantRejectReason?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason,
+						url : atsUrl+"/ws/storeApplicantRejectReason?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason,
 						success : function(data) {
 							if(data == "success"){
 								$('#rejectApplicantIdDiv').empty();
@@ -286,6 +288,7 @@ width: auto;
 	function storeNegotiation() {
 		var sourceleadUrl = '${sourceleadUrl}';
 			var submissionId = '${submissionId}';
+			var atsUrl = '${atsUrl}';
 			var type = '${type}';
 			if ($('#negotiation_form').validate(false, validationSettings)){
 			$('#negotiationButtonId').addClass('button').val('Processing..').attr('disabled','disabled');
@@ -295,7 +298,7 @@ width: auto;
 						data: formData,
 						processData: false,
 					    contentType:false, 
-						url : sourceleadUrl+'/ws/storeNegotiation?'+tokenParamName+'='+tokenValue+'&submissionId='+submissionId+'&type='+type,
+						url : atsUrl+'/ws/storeNegotiation?'+tokenParamName+'='+tokenValue+'&submissionId='+submissionId+'&type='+type,
 						success : function(data) {
 							if (data.response === "FAILED") {
 					    		showError(data.responseMessage);
@@ -338,11 +341,12 @@ function tagItBykeyForEmails(e){
 	function getNegotiationHistory() {
 			var sourceleadUrl = '${sourceleadUrl}';
 			var submissionId = '${submissionId}';
+			var atsUrl = '${atsUrl}';
 			var actionUsertype = '${type}';
 			var candidateId = '${candidateId}';
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/ws/getRateHistoryBySubmissionIdPublic?&submissionId="+submissionId+"&candidateId="+candidateId,
+						url : atsUrl+"/ws/getRateHistoryBySubmissionIdPublic?&submissionId="+submissionId+"&candidateId="+candidateId,
 						success : function(data) {
 							 if (data.response === "FAILED") {
 						    		showError(data.responseMessage);
