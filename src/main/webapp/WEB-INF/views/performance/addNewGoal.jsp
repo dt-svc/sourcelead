@@ -5,19 +5,26 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="/pms/resources/js/editor.js?staticTime=${staticTime}"></script>
-<link href="/pms/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+<script src="${SourceLeadWeb_pmsUrl}/resources/js/editor.js?staticTime=${staticTime}"></script>
+<link href="${SourceLeadWeb_pmsUrl}/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 
-<script type="text/javascript" src="/pms/resources/js/performanceGoals.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_pmsUrl}/resources/js/performanceGoals.js"></script>
 
 <script>
 var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 var dateFormat = '${SourceLeadWeb_dateFormat}';
 
 window.onload = function () {
+	var goalUUID = '${goalUUID}';
+	if(goalUUID != null && goalUUID != 'undefined' && goalUUID != ''){
+		performanceGoals.getPerformanceGoalsDetails(goalUUID);
+	}else{
+		performanceGoals.goalsAssignedToUsersList();
+	}
+	
 	performanceGoals.goalStartDateAndEndDatePickers(dateFormat);
-	performanceGoals.goalsAssignedToUsersList();
 	performanceGoals.goalsDescriptionEditor();
+	
  };
  
 </script>
@@ -40,6 +47,7 @@ window.onload = function () {
 		    <div class="form-horizontal mt myForm">
 		    	 <form:form id="addGoal_form"  name="addGoal_form" method="post">
 		    	 	 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt"> 
+		    	 	 <input type="hidden" name="goalId" id="goalId" />
 		    	 	 	<div class="form-group">
 				          <label class="col-md-3">Goal Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
 				          <div class="col-md-9"><input type="text" class="form-control" name="goalName" id="goalName" field-name="Goal Name" data-validation="required validate_Space validate_Alphanumeric validate_length length2-200"></div>
@@ -91,7 +99,16 @@ window.onload = function () {
 				 <div class="clearfix"></div>
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
 					  <label class="col-md-3">Attach Documents<span class="text-danger paddingLeft"></span></label>
-						<div class="row mt mb10">
+					<div class="clearfix"></div>
+					<div id="goalsDocumentsId">
+			       		<div class="timesheet_week_comm invoiceDocs clearfix width100percnt pull-left">
+			       			<span>
+			         			 <div id="savedGoalsDocuments" class="pull-left col-md-6"></div>
+			         		</span>
+			           </div>
+			         </div>
+						<div class="clearfix"></div>
+						<div class="clearfix mb10">
 							<div class="col-md-10 paddingRight">
 							<input id="Button1" type="button" value="Add Document" onclick="performanceGoals.addGoalsDocumets();" class="btn btn-sm btn-primary" />
 							</div>

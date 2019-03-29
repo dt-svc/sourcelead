@@ -50,6 +50,8 @@ public class PerformanceGoalsDTO implements Serializable{
 	private String sortOrder;
 	
 	private List<Map<String, String>> order;
+	
+	private List<PerformanceGoalsAttachmentsDTO> attachmentsList;
 
 	public Long getGoalId() {
 		return goalId;
@@ -194,6 +196,14 @@ public class PerformanceGoalsDTO implements Serializable{
 	public void setId(BigInteger id) {
 		this.id = id;
 	}
-	
+
+	public List<PerformanceGoalsAttachmentsDTO> getAttachmentsList() {
+		return attachmentsList;
+	}
+
+	public void setAttachmentsList(List<PerformanceGoalsAttachmentsDTO> attachmentsList) {
+		this.attachmentsList = attachmentsList;
+	}
+
 	
 }

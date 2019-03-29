@@ -28,18 +28,18 @@ public class PerformanceGoalsAssignTo implements Serializable {
 		private Long id;
 		
 		@ManyToOne(fetch = FetchType.LAZY)
-	    @JoinColumn(name="GOAL_ID", nullable=false )        
+	    @JoinColumn(name="GOAL_ID" )        
 	    private PerformanceGoals goalId;
 		
 		@ManyToOne(fetch = FetchType.LAZY)
-	    @JoinColumn(name="ASSIGNED_USER_ID", nullable=false )        
+	    @JoinColumn(name="ASSIGNED_USER_ID")        
 	    private User assignedUserId;
 		
 		@ManyToOne(fetch = FetchType.LAZY)
-	    @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
+	    @JoinColumn(name="ORG_LOCATION_ID")        
 	    private OrgLocations orgLocationId;
 		
-		@Column(name = "PERCENTAGE_DONE ")
+		@Column(name = "PERCENTAGE_DONE")
 		private Integer percentageDone;
 		
 		@Column(name = "UUID")
@@ -52,14 +52,14 @@ public class PerformanceGoalsAssignTo implements Serializable {
 		private Date createdDate;
 		
 		@ManyToOne(fetch = FetchType.LAZY)
-	    @JoinColumn(name="CREATED_BY", nullable=false )        
+	    @JoinColumn(name="CREATED_BY")        
 	    private User createdBy;
 		
 		@Column(name = " UPDATED_DATE ")
 		private Date updatedDate;
 		
 		@ManyToOne(fetch = FetchType.LAZY)
-	    @JoinColumn(name="UPDATED_BY", nullable=false )        
+	    @JoinColumn(name="UPDATED_BY")        
 	    private User updatedBy;
 		
 

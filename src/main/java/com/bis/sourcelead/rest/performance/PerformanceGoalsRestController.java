@@ -1,6 +1,8 @@
 package com.bis.sourcelead.rest.performance;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,9 +19,13 @@ import com.bis.sourcelead.dto.PerformanceBadgesDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.PerformanceCompetenciesDTO;
+import com.bis.sourcelead.dto.performance.PerformanceGoalsAttachmentsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.entity.performance.PerformanceGoals;
+import com.bis.sourcelead.entity.performance.PerformanceGoalsAssignTo;
+import com.bis.sourcelead.entity.performance.PerformanceGoalsAttachments;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.performance.PerformanceGoalsService;
@@ -204,5 +210,59 @@ public class PerformanceGoalsRestController {
 				ResponseList<PerformanceGoalsDTO> performanceGoalsList = performanceGoalsService.getPerformanceGoalsList(performanceGoalsDTO, userId, orgLocationId,dateFormat);
 				return performanceGoalsList;
 			}
+		 
+		 
+		 
+		 @RequestMapping(value = { "/getPerformanceGoalsDetails", "/rest/getPerformanceGoalsDetails"}, method = RequestMethod.GET)
+			public Response<PerformanceGoalsDTO> getPerformanceGoalsDetails(HttpServletRequest request,
+					@RequestParam(value="goalUUID", required = true) String goalUUID){
+			  
+				 Response<PerformanceGoalsDTO> resObj = new Response<>();
+				 PerformanceGoalsDTO performanceGoalsDTO = new PerformanceGoalsDTO();
+				 try {
+					 PerformanceGoals performanceGoals =  performanceGoalsService.getPerformanceGoalsByUUID(goalUUID);
+					 if(performanceGoals != null) {
+						 performanceGoalsDTO.setGoalName(performanceGoals.getGoalName()); 
+						 performanceGoalsDTO.setGoalStartDate(performanceGoals.getGoalStartDateStr());
+						 performanceGoalsDTO.setGoalEndDate(performanceGoals.getGoalEndDateStr());
+						 performanceGoalsDTO.setDescription(performanceGoals.getDescription());
+						 performanceGoalsDTO.setPercentageDone(performanceGoals.getPercentageDone());
+						 performanceGoalsDTO.setGoalId(performanceGoals.getId());
+						 
+						 Set<PerformanceGoalsAssignTo> performanceGoalsAssignToSet = performanceGoals.getPerformanceGoalsAssignTo();
+						 if(performanceGoalsAssignToSet != null && !performanceGoalsAssignToSet.isEmpty()) {
+							 StringBuilder assignToIds = new StringBuilder();
+							 for(PerformanceGoalsAssignTo assignTo : performanceGoalsAssignToSet) {
+								 assignToIds.append(assignTo.getAssignedUserId().getId()).append(",").toString();
+							 }
+							 String assignTo = assignToIds.deleteCharAt(assignToIds.length()-1).toString(); 
+							 performanceGoalsDTO.setGoalsAssignTo(assignTo);
+						 }
+						 
+						 Set<PerformanceGoalsAttachments> performanceGoalsAttachementsSet = performanceGoals.getPerformanceGoalsAttachments();
+						 if(performanceGoalsAttachementsSet != null && !performanceGoalsAttachementsSet.isEmpty()) {
+							 List<PerformanceGoalsAttachmentsDTO> attachmentsDTOList = new ArrayList<>();
+							 for(PerformanceGoalsAttachments attachments : performanceGoalsAttachementsSet) {
+								 PerformanceGoalsAttachmentsDTO attachmentsDTO = new PerformanceGoalsAttachmentsDTO();
+								 attachmentsDTO.setFileName(attachments.getFileName());
+								 attachmentsDTO.setFileUrl(attachments.getFileUrl());
+								 attachmentsDTO.setAttachmentId(attachments.getId());
+								 attachmentsDTO.setUuid(attachments.getUuid());
+								 attachmentsDTOList.add(attachmentsDTO);
+							 }
+							 
+							 performanceGoalsDTO.setAttachmentsList(attachmentsDTOList);
+						 }
+					 }
+					 resObj.setObject(performanceGoalsDTO);
+					 resObj.setResponse(Result.SUCCESS.name());
+					 resObj.setResponseMessage(Result.SUCCESS.getValue());
+				    
+				 }catch (Exception e) {
+					 resObj.setResponse(Result.AWKWARD.name());
+					 resObj.setResponseMessage(Result.AWKWARD.getValue());
+				}
+				 return resObj;
+		    }
 			 
 }

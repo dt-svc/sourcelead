@@ -4,6 +4,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
 import com.bis.sourcelead.entity.performance.PerformanceGoals;
+import com.bis.sourcelead.entity.performance.PerformanceGoalsAssignTo;
 
 public interface PerformanceGoalsService {
 
@@ -22,4 +23,7 @@ public interface PerformanceGoalsService {
 	PerformanceGoalsDoNutChartCountsDTO getNotStartedGoalsDoNutChartCounts(Long userId,Long orgLocationId) throws Exception;
 	
 	ResponseList<PerformanceGoalsDTO> getPerformanceGoalsList(PerformanceGoalsDTO performanceGoalsDTO,Long userId,Long orgLocationId,String dateFormat) throws Exception;
+	
+	PerformanceGoals getPerformanceGoalsByUUID(String goalUUID) throws Exception;
+	
 }

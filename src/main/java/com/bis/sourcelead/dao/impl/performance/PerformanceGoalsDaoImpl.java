@@ -22,6 +22,7 @@ import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
 import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.performance.PerformanceGoals;
+import com.bis.sourcelead.entity.performance.PerformanceGoalsAssignTo;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -100,7 +101,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				    + " ORG_LOCATIONS OL"
 				    
 					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND "
-					+ " GOALS.CREATED_BY = :userId AND "
+					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS = '1' AND "
 				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
 				    + " OL.ID = :orgLocationId"
 				    + " GROUP BY ASSIGN.GOAL_ID";
@@ -123,7 +124,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 						    
 							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND "
 							+ " GOALS.CREATED_BY <> :userId AND "
-						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND "
+						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND ASSIGN.STATUS = '1' AND "
 						    + " OL.ID = :orgLocationId"
 						    + " GROUP BY ASSIGN.GOAL_ID";
 					 
@@ -160,7 +161,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				    + " ORG_LOCATIONS OL"
 				    
 					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND "
-					+ " GOALS.CREATED_BY = :userId AND "
+					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS = '1' AND "
 					+ " (GOALS.PERCENTAGE_DONE > '0' AND GOALS.PERCENTAGE_DONE < '100') AND "
 				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
 				    + " DATEDIFF(GOALS.END_DATE,CURDATE()) >= 0 AND "
@@ -184,7 +185,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 						    + " ORG_LOCATIONS OL"
 						    
 							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND "
-							+ " GOALS.CREATED_BY <> :userId AND "
+							+ " GOALS.CREATED_BY <> :userId AND ASSIGN.STATUS = '1' AND "
 							+ " (GOALS.PERCENTAGE_DONE > '0' AND GOALS.PERCENTAGE_DONE < '100') AND "
 						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND "
 						    + " DATEDIFF(GOALS.END_DATE,CURDATE()) >= 0 AND "
@@ -224,7 +225,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				    + " ORG_LOCATIONS OL"
 				    
 					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND "
-					+ " GOALS.CREATED_BY = :userId AND "
+					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS = '1' AND "
 					+ " GOALS.PERCENTAGE_DONE = '100' AND "
 				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
 				    + " OL.ID = :orgLocationId"
@@ -247,7 +248,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 						    + " ORG_LOCATIONS OL"
 						    
 							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND "
-							+ " GOALS.CREATED_BY <> :userId AND "
+							+ " GOALS.CREATED_BY <> :userId AND ASSIGN.STATUS  ='1' AND "
 							+ " GOALS.PERCENTAGE_DONE = '100' AND "
 						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND "
 						    + " OL.ID = :orgLocationId"
@@ -286,7 +287,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				    + " ORG_LOCATIONS OL"
 				    
 					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND "
-					+ " GOALS.CREATED_BY = :userId AND "
+					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS ='1' AND "
 					+ " ((GOALS.PERCENTAGE_DONE > '0' AND GOALS.PERCENTAGE_DONE < '100') || (GOALS.PERCENTAGE_DONE = '0') || (GOALS.PERCENTAGE_DONE IS NULL)) AND "
 				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
 				    + " DATEDIFF(GOALS.END_DATE,CURDATE()) < 0 AND "
@@ -312,7 +313,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND "
 							+ " GOALS.CREATED_BY <> :userId AND "
 							+ " ((GOALS.PERCENTAGE_DONE > '0' AND GOALS.PERCENTAGE_DONE < '100') || (GOALS.PERCENTAGE_DONE = '0') || (GOALS.PERCENTAGE_DONE IS NULL)) AND "
-						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND "
+						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND ASSIGN.STATUS = '1' AND "
 						    + " DATEDIFF(GOALS.END_DATE,CURDATE()) < 0 AND "
 						    + " OL.ID = :orgLocationId"
 						    + " GROUP BY ASSIGN.GOAL_ID";
@@ -350,7 +351,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				    + " ORG_LOCATIONS OL"
 				    
 					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND "
-					+ " GOALS.CREATED_BY = :userId AND "
+					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS = '1' AND "
 					+ " ((GOALS.PERCENTAGE_DONE = '0') || (GOALS.PERCENTAGE_DONE IS NULL)) AND "
 				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
 				    + " DATEDIFF(GOALS.END_DATE,CURDATE()) >= 0 AND "
@@ -374,7 +375,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 						    + " ORG_LOCATIONS OL"
 						    
 							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND "
-							+ " GOALS.CREATED_BY <> :userId AND "
+							+ " GOALS.CREATED_BY <> :userId AND ASSIGN.STATUS = '1' AND "
 							+ " ((GOALS.PERCENTAGE_DONE = '0') || (GOALS.PERCENTAGE_DONE IS NULL)) AND "
 						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND "
 						    + " DATEDIFF(GOALS.END_DATE,CURDATE()) >= 0 AND "
@@ -453,7 +454,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 					"ORG_LOCATIONS OL " + 
 					"WHERE OL.ID = ASSIGN.ORG_LOCATION_ID AND " + 
 					"GOALS.ID = ASSIGN.GOAL_ID " + 
-					"AND (GOALS.CREATED_BY = :userId OR ASSIGN.ASSIGNED_USER_ID = :userId) " + 
+					"AND (GOALS.CREATED_BY = :userId OR (ASSIGN.ASSIGNED_USER_ID = :userId AND ASSIGN.STATUS = '1')) " + 
 					"AND GOALS.ORG_LOCATION_ID = :orgLocationId AND GOALS.STATUS = '1' " + 
 					"GROUP BY  GOALS.ID, "+
 					"DATE_FORMAT(GOALS.CREATED_DATE ,\"%Y-%m-%d\"))Q1 "+querySeachStr;
@@ -495,6 +496,20 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 			
 			response.setData(goalsList);
 			return response;
+	}
+
+	@Override
+	public PerformanceGoals getPerformanceGoalsByUUID(String goalUUID) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceGoals> performanceGoals = new ArrayList<PerformanceGoals>();
+		logger.debug("getPerformanceGoalsByUUID  start");
+		performanceGoals = session.createQuery("from PerformanceGoals goals where goals.uuid = :goalUUID " ).setString( "goalUUID", goalUUID).list();
+		logger.debug("getPerformanceGoalsByUUID  end");
+		if (performanceGoals.size() > 0) {
+			return performanceGoals.get(0);
+		} else {
+			return null;
+		}
 	}
 
 }

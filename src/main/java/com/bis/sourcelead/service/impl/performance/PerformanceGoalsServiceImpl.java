@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl.performance;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -20,6 +21,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.performance.PerformanceGoals;
 import com.bis.sourcelead.entity.performance.PerformanceGoalsAssignTo;
 import com.bis.sourcelead.entity.performance.PerformanceGoalsAttachments;
+import com.bis.sourcelead.service.performance.PerformanceGoalsAssignToService;
 import com.bis.sourcelead.service.performance.PerformanceGoalsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
@@ -33,7 +35,10 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 	
 	@Autowired
 	CommonUtil commonUtil;
-
+	
+	@Autowired
+	PerformanceGoalsAssignToService performanceGoalsAssignToService;
+ 
 	@Override
 	public PerformanceGoals storePerformanceGoals(PerformanceGoalsDTO performanceGoalsDTO, Long userId,
 			Long orgLocationId,String dateFormat) throws Exception {
@@ -45,10 +50,13 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(orgLocationId);
 		
+		 Set<PerformanceGoalsAssignTo> performanceGoalsAssignToSet = null;
+		
 		if(performanceGoalsDTO.getGoalId() != null) {
 			goals = getPerformanceGoalsById(performanceGoalsDTO.getGoalId());
 			goals.setUpdatedDate(new Date());
 			goals.setUpdatedBy(loginUser);
+			performanceGoalsAssignToSet = goals.getPerformanceGoalsAssignTo();
 		}else {
 			goals = new PerformanceGoals();
 			goals.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -78,6 +86,39 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 			goals.setDescription(performanceGoalsDTO.getDescription());
 		}else {
 			goals.setDescription(null);
+		}
+		
+		
+		
+		if(performanceGoalsAssignToSet != null) {
+			List<Long> goalAssignedUserIds = new ArrayList<>();
+			for(PerformanceGoalsAssignTo assignTo : performanceGoalsAssignToSet) {
+				goalAssignedUserIds.add(assignTo.getAssignedUserId().getId());
+			 }
+			if(StringUtils.isNotBlank(performanceGoalsDTO.getGoalsAssignTo())) {
+				String[] assignedUserIdStr = performanceGoalsDTO.getGoalsAssignTo().split(",");
+				List<Long> assignedUserIds = new ArrayList<>();
+				for(int i=0; i<assignedUserIdStr.length; i++) {
+					assignedUserIds.add(Long.valueOf(assignedUserIdStr[i]));
+				}
+				for(Long element : goalAssignedUserIds) {
+					if(!assignedUserIds.contains(element)) {
+						PerformanceGoalsAssignTo assignTo = performanceGoalsAssignToService.getPerformanceGoalsAssignToByAssignedUserIdAndOrgLocationId(element, performanceGoalsDTO.getGoalId());
+						assignTo.setUpdatedDate(new Date());
+						assignTo.setStatus(Constants.RECORD_INACTIVE);
+						assignTo.setUpdatedBy(loginUser);
+						performanceGoalsAssignToService.savePerformanceGoalsAssignTo(assignTo);
+					}else {
+						if(assignedUserIds.contains(element)) {
+							assignedUserIds.remove(element);
+						}
+					}
+				}
+				
+				performanceGoalsDTO.setGoalsAssignTo(StringUtils.join(assignedUserIds, ','));
+			}
+			
+			
 		}
 		
 		if(StringUtils.isNotBlank(performanceGoalsDTO.getGoalsAssignTo())) {
@@ -166,6 +207,11 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 	@Override
 	public ResponseList<PerformanceGoalsDTO> getPerformanceGoalsList(PerformanceGoalsDTO performanceGoalsDTO,Long userId, Long orgLocationId,String dateFormat) throws Exception {
 		return performanceGoalsDao.getPerformanceGoalsList(performanceGoalsDTO,userId, orgLocationId,dateFormat);
+	}
+
+	@Override
+	public PerformanceGoals getPerformanceGoalsByUUID(String goalUUID) throws Exception {
+		return performanceGoalsDao.getPerformanceGoalsByUUID(goalUUID);
 	}
 
 }

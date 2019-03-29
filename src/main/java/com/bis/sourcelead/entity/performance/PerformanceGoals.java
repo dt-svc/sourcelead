@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity.performance;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,10 +17,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PERFORMANCE_GOALS")
@@ -64,14 +67,14 @@ public class PerformanceGoals implements Serializable{
 		private Date createdDate;
 		
 		@ManyToOne(fetch = FetchType.LAZY)
-	    @JoinColumn(name="CREATED_BY", nullable=false )        
+	    @JoinColumn(name="CREATED_BY")        
 	    private User createdBy;
 		
 		@Column(name = " UPDATED_DATE ")
 		private Date updatedDate;
 		
 		@ManyToOne(fetch = FetchType.LAZY)
-	    @JoinColumn(name="UPDATED_BY", nullable=false )        
+	    @JoinColumn(name="UPDATED_BY")        
 	    private User updatedBy;
 		
 		@OneToMany(mappedBy = "goalId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -81,6 +84,15 @@ public class PerformanceGoals implements Serializable{
 		@OneToMany(mappedBy = "goalId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 		@JsonBackReference
 		private Set<PerformanceGoalsAttachments> performanceGoalsAttachments = new HashSet<PerformanceGoalsAttachments>(0);
+		
+		
+		@Transient
+		@JsonProperty
+	    private String goalStartDateStr;
+		
+		@Transient
+		@JsonProperty
+	    private String goalEndDateStr;
 		
 
 		public Long getId() {
@@ -209,6 +221,33 @@ public class PerformanceGoals implements Serializable{
 
 		public void setPerformanceGoalsAttachments(Set<PerformanceGoalsAttachments> performanceGoalsAttachments) {
 			this.performanceGoalsAttachments = performanceGoalsAttachments;
+		}
+
+		public String getGoalStartDateStr() {
+			String goalStartDateStr = null;
+			if(startDate != null){
+				SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+				goalStartDateStr = dateFormat.format(startDate);	
+			}
+			return goalStartDateStr;
+		}
+
+		public void setGoalStartDateStr(String goalStartDateStr) {
+			this.goalStartDateStr = goalStartDateStr;
+		}
+
+		public String getGoalEndDateStr() {
+			
+			String goalEndDateStr = null;
+			if(endDate != null){
+				SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+				goalEndDateStr = dateFormat.format(endDate);	
+			}
+			return goalEndDateStr;
+		}
+
+		public void setGoalEndDateStr(String goalEndDateStr) {
+			this.goalEndDateStr = goalEndDateStr;
 		}
 		
 
