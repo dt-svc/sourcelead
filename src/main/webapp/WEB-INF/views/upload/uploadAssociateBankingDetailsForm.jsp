@@ -194,7 +194,7 @@ if ($('#upload_banking_form').validate(false, validationSettings)){
  		    		$("#loading").removeAttr("style");
  		    	    if(json.insertedCount != null && json.insertedCount != '')
  		    	    $("#msgDiv").removeAttr("style");
- 		 			$("#msgDiv").css({ display: "block" });
+ 		 			$("#msgDiv").css({ "display" : "block", "text-align" :"center" });
  		 			$("#msgDiv").html(json.insertedCount +" Associate are updated");
  			    	msgFadein();
  		 			if(json.bdErrorData != null && json.bdErrorData.length >0){
