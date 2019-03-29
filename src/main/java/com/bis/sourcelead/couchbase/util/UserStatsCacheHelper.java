@@ -450,6 +450,38 @@ public class UserStatsCacheHelper {
 	
 	
 	
+	public JSONObject getUploadedQueueUserDetails(String queueKey) {
+
+		JSONObject queueDetailsListJson = new JSONObject();
+		Object sv = null;
+		sv = couchbaseClient.getCouchbaseQueueDocumentsList(queueKey);
+		if (sv != null) {
+			JSONParser parser = new JSONParser();
+			try {
+				JSONObject jsonObject = (JSONObject) parser.parse(sv.toString());
+				for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+					String key = (String) iterator.next();
+					Object jsonValue = jsonObject.get(key);
+					JSONObject jsonObjVal = (JSONObject) parser.parse(jsonValue.toString());
+					for (Object okey : jsonObjVal.keySet()) {
+						String keyStr = (String) okey;
+						if (!keyStr.equalsIgnoreCase("queueDocumentsList")) {
+							Object keyvalue = jsonObjVal.get(keyStr);
+							queueDetailsListJson.put(keyStr, keyvalue);
+						}
+
+					}
+				}
+
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return queueDetailsListJson;
+	}
+	
+	
+	
 	@SuppressWarnings("unchecked")
 	public JSONObject getCandidateDocument(String dockey) {
 		JSONObject orgLocationJson = new JSONObject();
