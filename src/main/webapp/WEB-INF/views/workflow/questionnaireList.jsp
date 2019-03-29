@@ -27,10 +27,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                 <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
             </ul>
           </div>
-          <div class="require_wrap_table clearfix">
            <div id ="questionnaireList" class="project_wrap_table datatable_filter"></div>
           </div>
-        </div>
       </div>
     </div>
   </section>
@@ -53,9 +51,9 @@ function getWorkflowQuestionnnaireList(){
   	result = result +"<thead>";
   	result = result +"<tr>"
   	result = result +"<th>Name</th>";
-  /* 	result = result +"<th>Description</th>";
+  	result = result +"<th>Description</th>";
   	result = result +"<th>Created By</th>";
-  	result = result +"<th>Action</th>";   */
+  	result = result +"<th>Action</th>";  
   	result = result +"</tr>";
   	result = result +"</thead>";
   	result = result +"</table>";
@@ -86,11 +84,52 @@ function getDynamicWorkflowQuestionnnaireList(){
 	    	  	"render": function(data, type, workflow, meta) {
 	    	  		var result = "";
               		if(workflow.name != null && workflow.name != '' && workflow.name != "undefined"){
-              			result = result +"<div class ='tbldata-dotdot-me'>"+workflow.name+"</a></div>";
+              			result = result +"<div class ='tbldata-dotdot-me'>"+workflow.name+"</div>";
   	              	}else{
   	            	  		result = result +"<div>---</div>";
   	             	}
   	             	 return result;
+	    	  	}
+	        },{
+	    	  	"targets": colIndex++,
+	    	  	"sortable": false,
+	    	  	"data": "description",
+	    	  	"render": function(data, type, workflow, meta) {
+	    	  		var result = "";
+	    	  		if(workflow.description != null && workflow.description != '' && workflow.description != "undefined"){
+              			result = result +"<div class='tbldata-dotdot-verybig'>"+workflow.description+"</div>";
+  	              	}else{
+  	            	  		result = result +"<div>---</div>";
+  	             	}
+  	             	 return result;
+	    	  	}
+	        },{
+	    	  	"targets": colIndex++,
+	    	  	"sortable": false,
+	    	  	"data": "createdBy",
+	    	  	"render": function(data, type, workflow, meta) {
+	    	  		var result = "";
+	    	  		var workflowStatus;
+	    	  		if(workflow.createdBy != null && workflow.createdBy != '' && workflow.createdBy != "undefined"){
+              			result = result +"<div class='tbldata-dotdot-vsm'>"+workflow.createdBy+"</div>";
+  	              	}else{
+  	            	  		result = result +"<div>---</div>";
+  	             	}
+  	             	 return result;
+	    	  	}
+	        },{
+	    	  	"targets": colIndex++,
+	    	  	"sortable": false,
+	    	  	/* "data": "status", */
+	    	  	"render": function(data, type, workflow, meta) {
+	    	  		var result = "";
+	    	    	result = result +"<div class='width90px'>";
+	    	  		result = result +"<ul class='list-inline list-unstyled'>";
+	    	  		result = result +"<li><a href='editworkflow.html'><i class='fa fa-pencil cursorPointer' title='Edit'></i></a></li>";
+	    	  		result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete'></i></li>"
+	    	  		result = result +"</ul>	";
+	    	  		result = result +"</div>";
+  	             	return result;
 	    	  	}
 	        }
 	        ],

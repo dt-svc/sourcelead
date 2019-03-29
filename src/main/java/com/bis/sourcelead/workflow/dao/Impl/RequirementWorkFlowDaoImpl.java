@@ -266,7 +266,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 					RequirementQuestionnaireTemplateDTO target = new RequirementQuestionnaireTemplateDTO();
 					target.setName(source.getName());
 					target.setDescription(source.getDescription());
-					target.setCreatedBy(source.getCreatedBy().toString());
+					target.setCreatedBy(source.getCreatedBy().getFullName());
 					dtoList.add(target);
 				}
 			}
