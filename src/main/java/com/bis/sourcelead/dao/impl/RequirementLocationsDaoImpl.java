@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
+@Transactional
 public class RequirementLocationsDaoImpl implements RequirementLocationsDao{
 	
 	
@@ -47,7 +48,6 @@ public class RequirementLocationsDaoImpl implements RequirementLocationsDao{
 	private static final Logger logger = LoggerFactory.getLogger(RequirementLocationsDaoImpl.class);
 
 	@Override
-	@Transactional
 	public RequirementLocations saveRequirementLocations(RequirementLocations requirementLocations) throws Exception {
 		
 		logger.debug("Adding UserRole");
@@ -65,7 +65,6 @@ public class RequirementLocationsDaoImpl implements RequirementLocationsDao{
 	}
 
 	@Override
-	@Transactional
 	public List<RequirementLocations> getRequirementLocationsListByRequirementId(Long requirementId) throws Exception {
 		 
 		logger.debug("In getRequirementLocationsListByRequirementId method");
@@ -79,7 +78,6 @@ public class RequirementLocationsDaoImpl implements RequirementLocationsDao{
 	
 
 	@Override
-	@Transactional
 	public List<Object[]> getRequirementLocationsListByRequirementIdMap(List<Long> reqIdsList) throws Exception {
 
 		logger.debug("In getRequirementLocationsListByRequirementId method");
@@ -90,7 +88,6 @@ public class RequirementLocationsDaoImpl implements RequirementLocationsDao{
 
 	}
 	@Override
-	@Transactional
 	public List<String> getRequirementLocationsUUIDByRequirementId(Long requirementId) throws Exception{
 		
 		logger.debug("In getRequirementLocationsUUIDByRequirementId method");
@@ -102,7 +99,6 @@ public class RequirementLocationsDaoImpl implements RequirementLocationsDao{
 	}
 
 	@Override
-	@Transactional
 	public RequirementLocations getRequirementLocationsByLocationUUID(String locationUUID) throws Exception {
 		List<RequirementLocations> location = new ArrayList<RequirementLocations>();
 		Session session = this.sessionFactory.getCurrentSession();
@@ -119,7 +115,6 @@ public class RequirementLocationsDaoImpl implements RequirementLocationsDao{
 	
 
 	@Override
-	@Transactional
 	public void deleteRequirementLocations(RequirementLocations requirementLocations) throws Exception {
 		logger.debug("deleting RequirementLocations");
 		Session session = this.sessionFactory.getCurrentSession();
@@ -135,7 +130,6 @@ public class RequirementLocationsDaoImpl implements RequirementLocationsDao{
 	}
 
 	@Override
-	@Transactional
 	public List<RequirementLocations> getAllRequirementByOrgLocationId(Long orgLocationId) throws Exception
 	{
 		List<RequirementLocations> location = new ArrayList<RequirementLocations>();
@@ -144,6 +138,14 @@ public class RequirementLocationsDaoImpl implements RequirementLocationsDao{
 		List<RequirementLocations> locationlist= session.createQuery("from RequirementLocations rl left join fetch rl.requirementId r where r.id in(select id from Requirement req where req.orgLocationId = :orgLocationId)" ).setCacheable(true).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
 	
 			return locationlist;
+	}
+
+	@Override
+	public List<String> getRequirementLocationsStringListByRequirementId(Long requirementId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select  rl.location from RequirementLocations rl  where rl.requirementId.id = :requirementId ";  
+		List<String> requirementLocationsUUIDList = session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+		return requirementLocationsUUIDList;
 	}
 
 }
