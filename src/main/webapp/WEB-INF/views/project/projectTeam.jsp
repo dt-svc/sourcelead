@@ -971,7 +971,7 @@ function loadProjectMembersDetails(data,candidateName){
 	result = result + '	    <div class="clearfix mb10 col-md-6">';
 	result = result + '	      <label class="clearfix">%Of Work</label>';
 	result = result + '	      <div class="">';
-	result = result + '	        <input type="text" class="form-control inlineField"  id="percentageOfWork" value="'+percentageOfWork+'"  name="percentageOfWork" field-name="%Of Work"  data-validation-optional="true"  data-validation="validate_Space validate_int" onkeyup = "checkValue(this);">';
+	result = result + '	        <input type="text" class="form-control inlineField"  id="percentageOfWork" value="'+percentageOfWork+'"  name="percentageOfWork" field-name="%Of Work"  data-validation-optional="true"  data-validation="validate_Space validate_percentage_of_work" >';
 	result = result + '	      </div>';
 	result = result + '	    </div>';
 	result = result + '	    </div>';
