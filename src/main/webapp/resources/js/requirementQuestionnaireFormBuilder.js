@@ -254,6 +254,23 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId)
        ' </div> ' +
        '</label>' +
 	   '<div class="clearfix"> '
+       
+       
+       includePointsHTML = ''+
+	   '<label class="col-md-5"><div class="col-md-3 lblHeight">Points:</div>' +
+       ' <div class="col-md-9" id="points'+addField.i+'"> ' +
+       '<input type="text" '+readOnly+'  id="points'+addField.i+'" '+dataValidation+' placeholder="Required *" field-name="Help Text" class="field-points form-control input-sm" >' +
+       ' </div> ' +
+       '</label>' +
+	   '<div class="clearfix"> '
+       
+       includeAttemptHTML = ''+
+	   '<label class="col-md-5 mt10"><div class="col-md-3 lblHeight">Attempt:</div>' +
+       ' <div class="col-md-9" id="attempt'+addField.i+'"> ' +
+       '<input type="text" '+readOnly+'  id="attempt'+addField.i+'" '+dataValidation+' placeholder="Required *" field-name="Help Text" class="field-attempt form-control input-sm" >' +
+       ' </div> ' +
+       '</label>' +
+	   '<div class="clearfix"> '
 
     return '' +
         '<div class="field" data-type="' + fieldType + '">' +
@@ -265,10 +282,12 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId)
         includeTextHTML+
         includeRequiredHTML +
         includeHintMsgHTML +
-        includeChoicesHTML +
         includeStarHTML+
         includeScaleHTML+
         includeFileTypeHTML+
+        includePointsHTML+
+        includeAttemptHTML+
+        includeChoicesHTML +
         ' </div> ' +
         '</div>'
         
@@ -496,6 +515,12 @@ $('body').on('submit', '#sjfb', function(e){
            //field hint
             fieldhint = $this.find('.field-hint').val(); 
             
+          //field point
+            fieldPoints = $this.find('.field-points').val(); 
+         
+           //field attempt
+            fieldAttempt = $this.find('.field-attempt').val(); 
+            
             //field type dropdown
             fieldDropDown = $this.find('.field-dropdown').val(); 
 
@@ -541,6 +566,8 @@ $('body').on('submit', '#sjfb', function(e){
             		type: fieldType,
 	                label: fieldLabel,
 	                hint: fieldhint,
+	                points: fieldPoints,
+	                attempt:fieldAttempt,
 	                dropdown : fieldDropDown,
 	                req: fieldReq,
 	                choices: choices,
@@ -570,27 +597,30 @@ $('body').on('submit', '#sjfb', function(e){
         if(templateId == 'undefined' || templateId == null || templateId == ''){
         	templateId = '';
         }
+        var timeLimitMinutes = $("#minutes").val();
+        var timeLimitSeconds = $("#seconds").val();
         //Save form to database
         //Demo doesn't actually save. Download project files for save
         var con2 = JSON.stringify(fields);
         var jsonStringData = encodeURIComponent(con2);
-        
-        
         if(submitTemplate){
-         $( "#save_button" ).addClass('button').val('Processing..');
+        	$("#save_button").attr("disabled", "disabled");
+        	$("#save_button" ).addClass('button').text('Processing..');
+       
       	  $.ajax({
       	    	type: "POST",
-      	        url: sourceleadUrl+"/saveQuestionnaireTemplate?templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
-      	        success: function(result) {
-      	           if (result === "AWKWARD") {
+      	        url: sourceleadUrl+"/saveQuestionnaireTemplate?templateId="+templateId+"&timeLimitMinutes="+timeLimitMinutes+"&timeLimitSeconds="+timeLimitSeconds+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+      	       success: function(result) {
+    	           if (result === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (result === "SUCCESS") {
-		        		performanceManagement.getFeedbackList();
+		        		//performanceManagement.getFeedbackList();
+		        	    location.href = sourceleadUrl+"/questionnaireList"
 		        		$(".mask, #modalTasktype").fadeOut();
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
-      	        },
+    	        },
       	    });   
               return true;
         }else{

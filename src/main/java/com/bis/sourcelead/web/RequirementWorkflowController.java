@@ -25,6 +25,7 @@ import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
@@ -74,12 +75,38 @@ public class RequirementWorkflowController {
 	}
 	
 	@RequestMapping(value = "/questionnaireList")
-	public ModelAndView questionnaireList(HttpServletRequest request) throws Exception{
+	public ModelAndView goToquestionnaireList(HttpServletRequest request) throws Exception{
 		ModelAndView modelandview = new ModelAndView();
 		modelandview.setViewName("workflow/questionnaireList");
 		return modelandview;
 	}
 	
+	
+	@RequestMapping(value = "/getQuestionnaireList")
+	public ResponseList<RequirementQuestionnaireTemplateDTO> getQuestionnaireList(RequirementQuestionnaireTemplateDTO requirementQuestionnaireTemplateDTO,
+			HttpServletRequest request) throws Exception{
+		 ResponseList<RequirementQuestionnaireTemplateDTO>responseList = null;
+		Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+		
+	try {
+			
+			String[] tableColumns = { "name", "description", "createdBy"};
+		  	int sortColumnIndex = -1; 
+	  		String sortColumnOrder = "desc"; 
+	  		if (requirementQuestionnaireTemplateDTO.getOrder() != null && !requirementQuestionnaireTemplateDTO.getOrder().isEmpty()) {
+	  		sortColumnIndex = Integer.parseInt(requirementQuestionnaireTemplateDTO.getOrder().get(0).get("column"));
+	  		sortColumnOrder = requirementQuestionnaireTemplateDTO.getOrder().get(0).get("dir"); 
+	  		requirementQuestionnaireTemplateDTO.setSortOrder(sortColumnOrder);
+	  		}
+	  		if (sortColumnIndex != -1){
+	  			requirementQuestionnaireTemplateDTO.setSortColumn(tableColumns[sortColumnIndex]);
+	  		}
+			responseList = requirementWorkFlowService.getQuestionnaireTemplateListByOrgLocationId(requirementQuestionnaireTemplateDTO, orgLocationId);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return responseList;
+	}
 	@RequestMapping(value = "/addQuestionnaire")
 	public ModelAndView addQuestionnaire(HttpServletRequest request) throws Exception{
 		ModelAndView modelandview = new ModelAndView();
@@ -176,8 +203,10 @@ public class RequirementWorkflowController {
 	}
 // Below methods are related to work flow questionnaire added by SRINIVAS SABBU.
 	@RequestMapping(value = "/saveQuestionnaireTemplate", method = RequestMethod.POST)
-	public String saveQuestionnaireTemplate(@RequestParam(value = "jsonData", required = false) String json,
+	public @ResponseBody String saveQuestionnaireTemplate(@RequestParam(value = "jsonData", required = false) String json,
 			@RequestParam(value = "templateId", required = false) String templateId,
+			@RequestParam(value = "timeLimitMinutes", required = false) Integer timeLimitMinutes,
+			@RequestParam(value = "timeLimitSeconds", required = false) Integer timeLimitSeconds,
 			@RequestParam(value = "jsonStringData", required = false) String jsonStringData, HttpServletRequest request)
 			throws Exception {
 
@@ -209,17 +238,19 @@ public class RequirementWorkflowController {
 			template.setOrgLocationId(orgLocations);
 			template.setJsonString(jsonStringData);
 			template.setStatus(Constants.RECORD_ACTIVE);
-			
+			template.setTimeLimitMinutes(timeLimitMinutes);
+			template.setTimeLimitSeconds(timeLimitSeconds);
 			template.setUpdatedBy(user);
 			template.setUpdatedDate(new Date());
 		 	requirementWorkFlowService.saveQuestionnaireTemplate(template);
 			result = Result.SUCCESS.name();
-
+			System.out.println("result >>>>>>> "+result);
+			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
 			result = Result.AWKWARD.name();
+			return result;
 		}
-		return result;
 
 	}
 	

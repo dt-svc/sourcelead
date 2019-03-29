@@ -25,48 +25,6 @@ $(document).ready(function(){
       Add Questionnaire</div>
     </section>
     <div class="clearfix">
-     <!--  <div class="timesheet_out clearfix minHeightcol5">
-        <div class="mt clearfix"></div>
-        <div class="col-md-5">
-          <label class="clearfix">Name<span class="colorRed PaddingLeft">*</span></label>
-          <div class="clearfix">
-            <input type="text" class="form-control">
-          </div>
-        </div>
-        <div class="col-md-5">
-          <label class="clearfix">Description<span class="colorRed PaddingLeft">*</span></label>
-          <div class="clearfix">
-            <textarea class="form-control" rows="2"></textarea>
-          </div>
-        </div>
-        <div class="clearfix mt mb"></div>
-       <div class="col-md-2">
-						        <div class="dropdown">
-						        <button class="btn btn-success dropdown-toggle btn-block" type="button" data-toggle="dropdown" id="addFiled-dropdown">Add Question &nbsp;&nbsp;
-						        <span class="caret"></span></button>
-							        <ul id="add-field" class="dropdown-menu pull-right">
-								        <li><a id="add-text" data-type="text"  href="javascript:void(0)"><span class="fa fa-text-width">&nbsp;&nbsp;</span>Text Box</a>
-								        <li><a id="add-textarea" data-type="textarea" href="javascript:void(0)"><span class="fa fa-text-width">&nbsp;&nbsp;</span>Text Area</a></li>
-								        <li><a id="add-select" data-type="select"   href="javascript:void(0)"><span class="fa fa-caret-down">&nbsp;&nbsp;&nbsp;</span>Select Box</a></li>
-								        <li><a id="add-checkbox" data-type="checkbox"  href="javascript:void(0)"><span class="fa fa-check-square-o">&nbsp;&nbsp;</span>Check Box</a></li>
-								        <li><a id="add-radio" data-type="radio" href="javascript:void(0)"><span class="fa fa-check-circle-o">&nbsp;&nbsp;</span>Radio Button</a></li>
-								        <li><a id="add-comments" data-type="comments" href="javascript:void(0)"><span class="fa fa-comment-o">&nbsp;&nbsp;</span>Comments</a></li>
-								        <li><a id="add-star" data-type="star" href="javascript:void(0)"><span class="fa fa-star-o">&nbsp;&nbsp;</span>Star</a></li>
-								        <li><a id="add-scale" data-type="scale" href="javascript:void(0)"><span class="fa fa-sliders">&nbsp;&nbsp;</span>Scale</a></li>
-								        <li><a id="add-calendar" data-type="calendar" href="javascript:void(0)"><span class="fa fa-calendar">&nbsp;&nbsp;</span>Calendar</a></li>
-								        <li><a id="add-file" data-type="file" href="javascript:void(0)"><span class="fa fa-cloud-upload">&nbsp;&nbsp;</span>File Upload</a></li>
-							        </ul>
-						        </div>
-					        </div>
-      
- 			<div id="form-fields">
-
-
-      </div>
-      
-      Content Area Ends 
-    </div> -->
-    
     <div class="tab-pane" >
               <div class="form-horizontal assignTemplate">
     
@@ -77,14 +35,33 @@ $(document).ready(function(){
 		            <div class="col-xs-12 col-md-6" id="templateNameDiv">
 		           <label>Name<span class="text-danger">&nbsp;*</label>
 			    	<div class="mt10">
-			    			<input type="text" class="form-control input-sm"  id="templateName" name="templateName" field-name="Name" data-validation="required validate_Space validate_length length2-100">
+			    			<input type="text" class="form-control input-sm"  id="templateName" name="templateName"  field-name="Name" data-validation="required validate_Space validate_length length2-100">
 			    	</div>
 			    	</div>
 			    	
 			    	<div class="col-xs-12 col-md-6">
 			    	 <label>Description<span class="text-danger">&nbsp;*</label>
-			    			 <textarea rows="3" id="templateDescription" name="description" field-name="Description" data-validation="required" class="form-control"></textarea>
+			    			 <textarea rows="3" id="templateDescription" name="description" field-name="Description" data-validation="required" class="mt10 form-control"></textarea>
 			    	 </div>
+			    	 
+			    	 <div class="col-md-6">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="row">
+							<label class="col-md-12 mb5">Time Limit</label>
+							<div class="col-md-6">
+							<input type="text" id ="minutes" class="form-control" placeholder="Minutes" data-validation="validate_Space validate_int validate_length length1-3" data-validation-optional="true">
+							</div>
+							<div class="col-md-6">
+							<input type="text" id ="seconds" class="form-control" placeholder="Seconds" data-validation="validate_Space validate_int validate_length length1-2" data-validation-optional="true"> 
+							</div>
+								</div>
+						</div>  
+						  
+					</div>
+				</div>
+			    	 
+			    	 
 			    	</div>
 			    	
 		    	

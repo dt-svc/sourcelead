@@ -23,6 +23,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
+import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.entity.RequirementDefaultWorkFlowStages;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
@@ -191,6 +192,61 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 		}
 		return requirementQuestionnaireTemplate;
 		
-	}   
+	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<RequirementQuestionnaireTemplateDTO> getQuestionnaireTemplateListByOrgLocationId(RequirementQuestionnaireTemplateDTO questionnaireDto 
+			                                                ,Long orgLocationId) {
+		try{
+			Session session = this.sessionFactory.getCurrentSession();
+			List<Long> countlist = null;
+			Integer filterCount = 0;
+			StringBuilder queryEndBuilder = new StringBuilder("");
+			List<RequirementQuestionnaireTemplateDTO> dtoList = new ArrayList<>();
+			ResponseList<RequirementQuestionnaireTemplateDTO> responseList = new ResponseList<>();
+	/*		if(questionnaireDto != null){
+				if (StringUtils.isNotBlank(questionnaireDto.getSortColumn())) {
+					String sortColumnName = questionnaireDto.getSortColumn();
+					if(sortColumnName.equalsIgnoreCase("totalResumePrice")){
+						queryEndBuilder.append(" order by requirementWorkFlow.updatedDate "+questionnaireDto.getSortOrder());
+					}
+				}
+				}*/
+			String query = " from RequirementQuestionnaireTemplate rq where rq.orgLocationId.id=:orgLocationId";
+			String countQuery = "select count(*)  from RequirementQuestionnaireTemplate rq where rq.orgLocationId.id=:orgLocationId";
+			Query query1 = session.createQuery(query + queryEndBuilder).setLong("orgLocationId", orgLocationId);
+			Query query2 = session.createQuery(countQuery + queryEndBuilder).setLong("orgLocationId", orgLocationId);
+			countlist = query2.list();
+			int totalCount = 0;
+			if (questionnaireDto != null) {
+				if (countlist != null && !countlist.isEmpty()) {
+					totalCount = countlist.iterator().next().intValue();
+					filterCount = totalCount;
+				}
+			}
+			responseList.setRecordsTotal(totalCount);
+			if (query.toString() != null && !query.toString().isEmpty()) {
+				responseList.setRecordsFiltered(filterCount);
+			} else {
+				responseList.setRecordsFiltered(totalCount);
+			}
+			List<RequirementQuestionnaireTemplate> questinnarieList = query1.list();
+			if(questionnaireDto != null){
+				for(RequirementQuestionnaireTemplate source: questinnarieList ) {
+					RequirementQuestionnaireTemplateDTO target = new RequirementQuestionnaireTemplateDTO();
+					target.setName(source.getName());
+					target.setDescription(source.getDescription());
+					target.setCreatedBy(source.getCreatedBy().toString());
+					dtoList.add(target);
+				}
+			}
+			responseList.setData(dtoList);
+			return responseList;
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+   }
 }
