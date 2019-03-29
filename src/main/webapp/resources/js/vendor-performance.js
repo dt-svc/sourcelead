@@ -693,6 +693,38 @@ function getApplicantDeclineGraph() {
      });
 }
 
+//Applicant Decline List
+function releasedJobsToVendorsApplicantDecline() {
+	$("#releasedApplicantsDeclineDiv").show();
+	$("#vendorReportsChartDiv").hide();
+	$("#vendorReportsDiv").hide();
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl + "/releasedJobsApplicantsDeclineListByOrgRelationId?orgRelationId="+orgRelationId+"&spocId="+contactUserId,
+		success :function(result) {
+       		$('#releasedApplicantsDeclineDiv').empty();
+       		$('#releasedApplicantsDeclineDiv').append(result);
+       		vendorJobsApplicantsDeclineList();
+        }
+	});	
+}
+
+//Applicant Backout List
+function releasedJobsToVendorsApplicantBackOut() {
+	$("#releasedApplicantsBackOutDiv").show();
+	$("#vendorReportsChartDiv").hide();
+	$("#vendorReportsDiv").hide();
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl + "/releasedJobsApplicantsBackOutListByOrgRelationId?orgRelationId="+orgRelationId+"&spocId="+contactUserId,
+		success :function(result) {
+       		$('#releasedApplicantsBackOutDiv').empty();
+       		$('#releasedApplicantsBackOutDiv').append(result);
+       		vendorJobsApplicantsBackOutList();
+        }
+	});	
+}
+
 /*Backout Candidates*/
 function getApplicantBackoutGraph() {
 	$("#backoutCandidatesCount").html(0);

@@ -58,6 +58,9 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${atsUrl}")
+	private String atsUrl;
+	
 	@Autowired
 	OrgRelationsService orgRelationsService;
 
@@ -880,5 +883,33 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	 model.setViewName("reports/releasedToVendorJobsList");
 	 return model;
  }	
+	
+	@RequestMapping(value = "/releasedJobsApplicantsDeclineListByOrgRelationId")
+	public ModelAndView releasedJobsApplicantsDeclineListByOrgRelationId(@RequestParam(value="orgRelationId", required=true)Long orgRelationId,
+			@RequestParam(value="spocId", required=true)Long spocId,
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+
+	 ModelAndView model = new ModelAndView();
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.addObject("orgRelationId", orgRelationId);
+	 model.addObject("spocId", spocId);
+	 model.setViewName("reports/vendorJobsApplicantsDeclineList");
+	 return model;
+ }	
+	
+	@RequestMapping(value = "/releasedJobsApplicantsBackOutListByOrgRelationId")
+	public ModelAndView releasedJobsApplicantsBackOutListByOrgRelationId(@RequestParam(value="orgRelationId", required=true)Long orgRelationId,
+			@RequestParam(value="spocId", required=true)Long spocId,
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+
+	 ModelAndView model = new ModelAndView();
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.addObject("orgRelationId", orgRelationId);
+	 model.addObject("spocId", spocId);
+	 model.setViewName("reports/vendorJobsApplicantsBackOutList");
+	 return model;
+ }
 
 }
