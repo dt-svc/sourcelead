@@ -24,10 +24,9 @@
 </script>
  
     <div class="reportHead">
-    	
-    
     	<div class="clearfix"></div>
     	 	<div class="candidate_wrap_table recruiterReports_table fixedColumntable minHeight positionRelative datatable_filter dashboard-widget clearfix">
+              <b>Vendor Backout Candidates</b>
               <div id="releasedApplicantsBackOutList" class="filter_position positionRelative"></div> 
           </div> 
     </div>
