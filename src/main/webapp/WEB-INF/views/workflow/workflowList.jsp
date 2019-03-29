@@ -94,7 +94,7 @@ function getDynamicWorkflowList(){
 	    	  	"render": function(data, type, workflow, meta) {
 	    	  		var result = "";
               		if(workflow.workFlowName != null && workflow.workFlowName != '' && workflow.workFlowName != "undefined"){
-              			result = result +"<div class='tbldata-dotdot-verybig'><a href='${SourceLeadWeb_sourceleadUrl}/viewWorkflow' title='view'>"+workflow.workFlowName+"</a></div>";
+              			result = result +"<div class='tbldata-dotdot-verybig'><a onclick='viewWorkFlow(\""+workflow.uuid+"\")' title='view'>"+workflow.workFlowName+"</a></div>";
   	              	}else{
   	            	  		result = result +"<div>---</div>";
   	             	}
@@ -181,8 +181,8 @@ function changeWorkflowStatus(uuid, status){
 			
 }
 
-function viewWorkFlow(){
-	
+function viewWorkFlow(uuid){
+	location.href = sourceleadUrl+ "/viewWorkflow?uuid="+uuid
 }
 </script>
 
