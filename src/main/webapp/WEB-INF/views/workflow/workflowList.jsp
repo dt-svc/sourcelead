@@ -30,64 +30,9 @@
           </div>
           
           <!-- dynamic content starts here.. -->
-          
-          <div class="require_wrap_table clearfix" id = "dynamicWorkFlowList">
-            <%-- <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Stages</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><div class="tbldata-dotdot-verybig"><a href="${SourceLeadWeb_sourceleadUrl}/viewWorkflow" title="view">Default job workflow</a></div></td>
-                  <td><div class="tbldata-dotdot-vsm">8</div></td>
-                  <td><div class="tbldata-dotdot-vsm">Active</div></td>
-                  <td>
-                  <div class="width215px">
-                  	<ul class="list-inline list-unstyled">
-                  		<li>
-							<label class="switch mr positionRelativeTop10" title="Default">
-								<input checked="" type="checkbox" name="">
-								<div class="slider round"></div>
-							</label>
-                  		</li>
-                  		<li><a href="${SourceLeadWeb_sourceleadUrl}/defaultWorkflow"><i class="fa fa-pencil cursorPointer" title="Edit"></i></a></li>
-                  		<li><i class="fa fa-trash cursorPointer" title="Delete"></i></li>
-                  		<li><i class="fa fa fa-clone cursorPointer text-primary" title="Clone"></i></li>
-                  	</ul>	
-                  </div>
-                  </td>
-                </tr>
-                 <tr>
-                  <td><div class="tbldata-dotdot-verybig"><a href="${SourceLeadWeb_sourceleadUrl}/viewWorkflow" title="view">Executive job workflow</a></div></td>
-                  <td><div class="tbldata-dotdot-vsm">8</div></td>
-                  <td><div class="tbldata-dotdot-vsm">In-Active</div></td>
-                  <td>
-                  <div class="width215px">
-                  	<ul class="list-inline list-unstyled">
-                  		<li>
-							<label class="switch mr positionRelativeTop10" title="Default">
-								<input type="checkbox" name="">
-								<div class="slider round"></div>
-							</label>
-                  		</li>
-                  		<li><a href="${SourceLeadWeb_sourceleadUrl}/defaultWorkflow"><i class="fa fa-pencil cursorPointer" title="Edit"></i></a></li>
-                  		<li><i class="fa fa-trash cursorPointer" title="Delete"></i></li>
-                  		<li><i class="fa fa fa-clone cursorPointer text-primary" title="Clone"></i></li>
-                  	</ul>	
-                  </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table> --%>
+          <div class="project_wrap_table datatable_filter" id = "dynamicWorkFlowList">
+            
             </div>
-          
-          
-          
           <!-- dynamic content ends here.. -->
           
         </div>
@@ -174,27 +119,29 @@ function getDynamicWorkflowList(){
 	    	  	"data": "status",
 	    	  	"render": function(data, type, workflow, meta) {
 	    	  		var result = "";
-	    	  		var workflowStatus;
-	    	  		if(workflow.status != null && workflow.status != '' && workflow.status != "undefined"){
-	    	  				workflowStatus = checkWorkflowStatus(workflow.status);
-              			result = result +"<div class='tbldata-dotdot-vsm'>"+workflowStatus+"</div>";
-  	              	}else{
-  	            	  		result = result +"<div>---</div>";
+	    	  		if(workflow.status != null && workflow.status !== '' && workflow.status != "undefined"){
+	    	  			if(workflow.status == 1){
+	    	  				result = result +"<div class='tbldata-dotdot-vsm'>Active</div>";
+	    	  			}	
+	    	  			else{
+	    	  				result = result +"<div class='tbldata-dotdot-vsm'>In-Active</div>";
+	    	  			}	
+	    	  		}else{
+  	            	  		  result = result +"<div>---</div>"; 
   	             	}
   	             	 return result;
 	    	  	}
 	        },{
 	    	  	"targets": colIndex++,
 	    	  	"sortable": false,
-	    	  	/* "data": "status", */
 	    	  	"render": function(data, type, workflow, meta) {
 	    	  		var result = "";
 	    	  		result = result +"<div class='width215px'>";
 	    	  		result = result +"<ul class='list-inline list-unstyled'>";
 	    	  		result = result +"<li>";
 	    	  		result = result +"<label class='switch mr positionRelativeTop10' title='Default'>"
-	    	  		result = result +"<input type='checkbox' name=''>";
-	    	  		result = result +"<div class='slider round'></div>";
+	    	  		result = result +"<input type='checkbox' name='' "+ (workflow.status == 1 ?'checked':'')+" >";
+	    	  		result = result +"<div class='slider round' onclick = 'changeWorkflowStatus(\""+workflow.uuid+"\", \""+workflow.status+"\");'></div>";
 	    	  		result = result +"</label></li>";
 	    	  		result = result +"<li><a href='${SourceLeadWeb_sourceleadUrl}/defaultWorkflow'><i class='fa fa-pencil cursorPointer' title='Edit'></i></a></li>";
 	    	  		result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete'></i></li>";
@@ -206,6 +153,7 @@ function getDynamicWorkflowList(){
 	        ],
 	        "scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting": [[2,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -216,18 +164,21 @@ function getDynamicWorkflowList(){
 	     }
 	        
 	    } );
-	   /*  $("#workflowListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");  */
+	     $("#workflowListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
 	  
 	        
 }
 
-function checkWorkflowStatus(status){
-	if(status == 1){
-		return "Active"
-	}	
-	if(status == 0){
-		return "In-Active"
-	}
+
+function changeWorkflowStatus(uuid, status){
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl + "/getWorkflowList?uuid="+uuid+"&status="+status,
+		success : function(dataList) {
+			getDynamicWorkflowList();
+		}
+		});
+			
 }
 
 function viewWorkFlow(){

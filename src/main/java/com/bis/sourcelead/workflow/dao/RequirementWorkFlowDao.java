@@ -28,6 +28,8 @@ public interface RequirementWorkFlowDao {
 
 	RequirementQuestionnaireTemplate saveQuestionnaireTemplate(RequirementQuestionnaireTemplate template) throws Exception;
 	
+	RequirementWorkFlow getRequirementWorkFlowByUuid(String Uuid)throws Exception;
+	
 	
 
 }

@@ -158,10 +158,19 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	@Override
 	public ResponseList<RequirementWorkFlowDTO> getRequirementWorkFlowList(RequirementWorkFlowDTO workFlowDTO, OrgLocations orgLocations) throws Exception {
 		
-		return requirementWorkFlowDao.getRequirementWorkFlowsByOrgLocationId(workFlowDTO, orgLocations);
+		RequirementWorkFlow requirementWorkFlow = requirementWorkFlowDao.getRequirementWorkFlowByUuid(workFlowDTO.getUuid());
 		
+		if (workFlowDTO.getUuid() != null && workFlowDTO.getStatus() == 1) {
+			requirementWorkFlow.setStatus(Constants.RECORD_INACTIVE);
+			requirementWorkFlowDao.saveRequirementWorkFlowDetails(requirementWorkFlow, orgLocations);
+		}
+		if (workFlowDTO.getUuid() != null && workFlowDTO.getStatus() == 0) {
+			requirementWorkFlow.setStatus(Constants.RECORD_ACTIVE);
+			requirementWorkFlowDao.saveRequirementWorkFlowDetails(requirementWorkFlow, orgLocations);
+		}
+		return requirementWorkFlowDao.getRequirementWorkFlowsByOrgLocationId(workFlowDTO, orgLocations);
 	}
-
+	
 	@Override
 	public RequirementQuestionnaireTemplate saveQuestionnaireTemplate(RequirementQuestionnaireTemplate template) throws Exception {
        return requirementWorkFlowDao.saveQuestionnaireTemplate(template);
