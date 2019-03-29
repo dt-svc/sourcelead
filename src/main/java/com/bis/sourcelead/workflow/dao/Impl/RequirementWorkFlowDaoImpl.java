@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -158,15 +159,15 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 			}
 			List<RequirementWorkFlow> requirementWorkFlow = query1.list();
 			if(requirementWorkFlow != null){
-			for(RequirementWorkFlow workFlow : requirementWorkFlow){
-				requirementWorkFlowDTO = new RequirementWorkFlowDTO();
-				requirementWorkFlowDTO.setWorkFlowName(workFlow.getWorkFlowName());
-				requirementWorkFlowDTO.setNoOfStages(workFlow.getNoOfStages().toString());
-				requirementWorkFlowDTO.setStatus(workFlow.getStatus());
-				requirementWorkFlowDTO.setUuid(workFlow.getUuid());
-				requirementWorkFlowDTOList.add(requirementWorkFlowDTO);
+				for(RequirementWorkFlow workFlow : requirementWorkFlow){
+					requirementWorkFlowDTO = new RequirementWorkFlowDTO();
+					requirementWorkFlowDTO.setWorkFlowName(workFlow.getWorkFlowName());
+					requirementWorkFlowDTO.setNoOfStages(workFlow.getNoOfStages().toString());
+					requirementWorkFlowDTO.setStatus(workFlow.getStatus());
+					requirementWorkFlowDTO.setUuid(workFlow.getUuid());
+					requirementWorkFlowDTOList.add(requirementWorkFlowDTO);
+					}
 				}
-			}
 			responseList.setData(requirementWorkFlowDTOList);
 			return responseList;
 		}catch(Exception e){
@@ -175,6 +176,20 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 		}
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementWorkFlow getRequirementWorkFlowByUuid(String uuid) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.uuid =:uuid";
+			RequirementWorkFlow requirementWorkFlow = (RequirementWorkFlow)session.createQuery(query).setParameter("uuid", uuid).uniqueResult();
+			return requirementWorkFlow;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+	}
+	}
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public RequirementQuestionnaireTemplate saveQuestionnaireTemplate(RequirementQuestionnaireTemplate requirementQuestionnaireTemplate) throws Exception {
