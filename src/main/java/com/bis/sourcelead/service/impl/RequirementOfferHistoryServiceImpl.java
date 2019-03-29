@@ -59,6 +59,7 @@ public class RequirementOfferHistoryServiceImpl implements RequirementOfferHisto
 		if (offersList != null && !offersList.isEmpty() ) {
 			for (RequirementOfferHistory requirementOfferHistory : offersList) {
 				RequirementOffers offers = requirementOffersDao.getRequirementOfferId(requirementOfferHistory.getOfferId().getId());
+				requirementOfferHistory.setOfferUUID(offers.getOfferUUID());
 				if(offers.getDateOfJoining() != null){
 					requirementOfferHistory.setDateOfJoiningStr((commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),offers.getDateOfJoining())));
 				}
