@@ -132,7 +132,6 @@ public class PaymentAccountDaoImpl implements PaymentAccountDao{
 					CallableStatement stmt = connection.prepareCall("{call insertAssociateBankingDetails(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 					for (IndAssociatePaymentAccountDTO paymentlist : list) {	
 						Long candidateId = map.get(paymentlist.getEmail());
-						if(candidateId !=null) {
 							stmt.setLong(1, candidateId);
 							stmt.setString(2,   paymentlist.getEmail());
 							stmt.setString(3,   paymentlist.getAccountType());
@@ -148,7 +147,6 @@ public class PaymentAccountDaoImpl implements PaymentAccountDao{
 							stmt.setBoolean(13, false);
 							stmt.setString(14,  orgLocationId.toString());	
 							stmt.addBatch();
-						}
 					}
 					int[] updateCount = stmt.executeBatch();
 					listCount.add(updateCount.length);
