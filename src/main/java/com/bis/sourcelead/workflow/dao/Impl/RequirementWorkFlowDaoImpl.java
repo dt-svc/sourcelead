@@ -2,6 +2,7 @@ package com.bis.sourcelead.workflow.dao.Impl;
 
 
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,14 +15,17 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.entity.RequirementDefaultWorkFlowStages;
+import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
 
@@ -31,6 +35,9 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 	
 @Autowired
 private SessionFactory sessionFactory;
+
+@Value("${SourceLead.106}")
+private String duplicateValue;
 
 private static final Logger logger = LoggerFactory.getLogger(RequirementWorkFlowDaoImpl.class);
 
@@ -166,6 +173,24 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementQuestionnaireTemplate saveQuestionnaireTemplate(RequirementQuestionnaireTemplate requirementQuestionnaireTemplate) throws Exception {
+		logger.debug("Adding requirementQuestionnaireTemplate");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (requirementQuestionnaireTemplate != null) {
+				session.saveOrUpdate(requirementQuestionnaireTemplate);
+			}
+			logger.debug("RequirementQuestionnaireTemplate Added Successfully");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"REQUIREMENT_QUESTIONNAIRE_TEMPLATE"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return requirementQuestionnaireTemplate;
+		
 	}   
 
 }

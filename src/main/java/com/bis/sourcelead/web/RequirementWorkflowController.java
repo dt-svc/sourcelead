@@ -1,24 +1,32 @@
 package com.bis.sourcelead.web;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.RequirementDefaultWorkFlowStagesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
+import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 
@@ -166,5 +174,54 @@ public class RequirementWorkflowController {
 		return responseList;
 		
 	}
+// Below methods are related to work flow questionnaire added by SRINIVAS SABBU.
+	@RequestMapping(value = "/saveQuestionnaireTemplate", method = RequestMethod.POST)
+	public String saveQuestionnaireTemplate(@RequestParam(value = "jsonData", required = false) String json,
+			@RequestParam(value = "templateId", required = false) String templateId,
+			@RequestParam(value = "jsonStringData", required = false) String jsonStringData, HttpServletRequest request)
+			throws Exception {
+
+		Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(orgLocationId);
+		Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user = new User();
+		user.setId(userId);
+		String result = null;
+
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
+
+		try {
+			RequirementQuestionnaireTemplate template = null;
+			templateId = ""; // as of now marked as empty value for testing.
+			if (StringUtils.isNotBlank(templateId)) {
+			//   template = performanceFeedbackTemplateService.getPerformanceFeedbackTemplateById(Long.parseLong(templateId));
+			} else {
+				template = new RequirementQuestionnaireTemplate();
+				template.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				template.setCreatedBy(user);
+				template.setCreatedDate(new Date());
+			}
+
+			template.setName(jsonObj.getString("templateName").trim());
+			template.setDescription(jsonObj.getString("description"));
+			template.setOrgLocationId(orgLocations);
+			template.setJsonString(jsonStringData);
+			template.setStatus(Constants.RECORD_ACTIVE);
+			
+			template.setUpdatedBy(user);
+			template.setUpdatedDate(new Date());
+		 	requirementWorkFlowService.saveQuestionnaireTemplate(template);
+			result = Result.SUCCESS.name();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = Result.AWKWARD.name();
+		}
+		return result;
+
+	}
+	
 	
 }
