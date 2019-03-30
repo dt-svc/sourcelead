@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.PerformanceBadgesDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -233,7 +234,9 @@ public class PerformanceGoalsRestController {
 						 if(performanceGoalsAssignToSet != null && !performanceGoalsAssignToSet.isEmpty()) {
 							 StringBuilder assignToIds = new StringBuilder();
 							 for(PerformanceGoalsAssignTo assignTo : performanceGoalsAssignToSet) {
-								 assignToIds.append(assignTo.getAssignedUserId().getId()).append(",").toString();
+								 if(assignTo.getStatus() == Constants.RECORD_ACTIVE) {
+									 assignToIds.append(assignTo.getAssignedUserId().getId()).append(",").toString();
+								 }
 							 }
 							 String assignTo = assignToIds.deleteCharAt(assignToIds.length()-1).toString(); 
 							 performanceGoalsDTO.setGoalsAssignTo(assignTo);

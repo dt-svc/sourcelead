@@ -52,6 +52,8 @@ public class PerformanceGoalsDTO implements Serializable{
 	private List<Map<String, String>> order;
 	
 	private List<PerformanceGoalsAttachmentsDTO> attachmentsList;
+	
+	private String goalType;
 
 	public Long getGoalId() {
 		return goalId;
@@ -203,6 +205,14 @@ public class PerformanceGoalsDTO implements Serializable{
 
 	public void setAttachmentsList(List<PerformanceGoalsAttachmentsDTO> attachmentsList) {
 		this.attachmentsList = attachmentsList;
+	}
+
+	public String getGoalType() {
+		return goalType;
+	}
+
+	public void setGoalType(String goalType) {
+		this.goalType = goalType;
 	}
 
 	

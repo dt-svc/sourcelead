@@ -64,6 +64,7 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 			goals.setCreatedBy(loginUser);
 			goals.setOrgLocationId(orgLocations);
 			goals.setStatus(Constants.RECORD_ACTIVE);
+			goals.setGoalType(Constants.GOAL_TYPE_NEW);
 		}
 		
 		goals.setGoalName(performanceGoalsDTO.getGoalName());
@@ -93,7 +94,9 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 		if(performanceGoalsAssignToSet != null) {
 			List<Long> goalAssignedUserIds = new ArrayList<>();
 			for(PerformanceGoalsAssignTo assignTo : performanceGoalsAssignToSet) {
-				goalAssignedUserIds.add(assignTo.getAssignedUserId().getId());
+				 if(assignTo.getStatus() == Constants.RECORD_ACTIVE) {
+					 goalAssignedUserIds.add(assignTo.getAssignedUserId().getId());
+				 }
 			 }
 			if(StringUtils.isNotBlank(performanceGoalsDTO.getGoalsAssignTo())) {
 				String[] assignedUserIdStr = performanceGoalsDTO.getGoalsAssignTo().split(",");
