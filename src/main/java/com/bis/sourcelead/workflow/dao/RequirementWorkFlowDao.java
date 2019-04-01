@@ -35,6 +35,8 @@ public interface RequirementWorkFlowDao {
 	RequirementWorkFlow getRequirementWorkFlowByUuid(String Uuid)throws Exception;
 	
 	List<RequirementWorkFlowStages> getRequirementWorkflowStagesByUuid(String uuid)throws Exception;
+
+	RequirementQuestionnaireTemplate getQuestionnaireTemplateByLabelName(Long orgLocationId, String questionnaireName);
 	
 	
 

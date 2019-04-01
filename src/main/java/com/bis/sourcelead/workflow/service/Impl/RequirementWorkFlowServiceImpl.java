@@ -204,6 +204,13 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		}
 		return workFlowStagesDTO;
 	}
+
+
+	@Override
+	public RequirementQuestionnaireTemplate getQuestionnaireTemplateByLabelName(Long orgLocationId,
+			String questionnaireName) {
+		return requirementWorkFlowDao.getQuestionnaireTemplateByLabelName(orgLocationId, questionnaireName);
+	}
 	
 }
 

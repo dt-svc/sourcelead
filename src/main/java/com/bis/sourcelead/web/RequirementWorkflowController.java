@@ -258,5 +258,17 @@ public class RequirementWorkflowController {
 
 	}
 	
+	@RequestMapping(value = "/validateQuestionnaireName" , method = RequestMethod.GET)
+	   public @ResponseBody String validateQuestionnaireTemplateLabelName(@RequestParam(value="questionnaireName", required=true) String questinnaireName,HttpServletRequest request) throws Exception {
+		Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");	
+		RequirementQuestionnaireTemplate questionnaireTemplate = requirementWorkFlowService.getQuestionnaireTemplateByLabelName(orgLocationId, questinnaireName);
+		   
+		    if(questionnaireTemplate == null){
+		    	return "Success";
+		    }else{
+		    	return "Existed";
+		    }
+	    
+	   }
 	
 }

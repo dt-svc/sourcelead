@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
@@ -277,4 +278,26 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 			return null;
 		}
    }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementQuestionnaireTemplate getQuestionnaireTemplateByLabelName(Long orgLocationId, String templateName) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession(); 
+			List<RequirementQuestionnaireTemplate> questionnaireTemplate = new ArrayList<RequirementQuestionnaireTemplate>();
+			logger.debug("getQuestionnaireTemplateByLabelName start");
+			questionnaireTemplate = session.createQuery("from RequirementQuestionnaireTemplate rq where rq.orgLocationId =:orgLocationId and rq.name like '%"
+																+ templateName + "%' ").setLong("orgLocationId", orgLocationId).list();
+			logger.debug("getQuestionnaireTemplateByLabelName end");
+			if (questionnaireTemplate.size() > 0) {
+				return questionnaireTemplate.get(0);
+			} else {
+				return null;
+			}
+		} catch (Exception e) {
+			logger.error("Exception caught while getting template list from the database");
+		}
+		return null;
+	}
 }

@@ -416,31 +416,29 @@ function loadSavedForm(templateId,sourceleadUrl) {
 
 
 
-function validateLabelName(i,templateId,sourceleadUrl,labelValidationCheck){
-	var labelName = $("#textLabel"+i).val();
-	if(labelName){
+function validateQuestionnaireName(){
+	var questionnaireName = $("#templateName").val();
+	if(questionnaireName){
 		$.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/validateSubmissionTemplateLabelName?templateId="+templateId+"&labelName="+labelName, 
+	        url: sourceleadUrl+"/validateQuestionnaireName?questionnaireName="+questionnaireName, 
 	        success: function(result) {
 	       	 if(result == 'Success'){
 		    		$("#save_button").removeAttr("disabled");
-		    		$('input#textLabel'+i).removeAttr( "class record-exist record-exist-errormsg");
-					$('#label'+i).find('p.jquery_form_error_message').remove();
-					$('input#textLabel'+i).attr('class','field-label valid form-control');
+		    		$('#templateName').removeAttr( "class record-exist record-exist-errormsg");
+					$('#templateNameDiv').find('p.jquery_form_error_message').remove();
+					$('#templateName').attr('class','field-label valid form-control');
 					$( "#save_button" ).removeAttr("style");
 					$( "#save_button" ).addClass('btn btn-primary mr').val('Save');
-					$( "#save_button" ).click(function() {
-					});
 					
 		    	}
 		    	else if(result == 'Existed'){
 	 		        $("#save_button").attr("disabled", "disabled");
-		    		$('#label'+i).find('p.jquery_form_error_message').remove(); 
-		    		$('input#textLabel'+i).attr('class','field-label error form-control');
-		    		$('input#textLabel'+i).after("<p class='jquery_form_error_message'>Duplicate Field Name</p>");
-		    		$('input#textLabel'+i).attr('record-exist','yes');
-		    		$('input#textLabel'+i).attr('record-exist-errorMsg',' Duplicate Field Name'); 
+		    		$('#templateName').find('p.jquery_form_error_message').remove(); 
+		    		$('#templateName').attr('class','field-label error form-control');
+		    		$('#templateName').after("<p class='jquery_form_error_message'>Duplicate Questionnare Name</p>");
+		    		$('#templateName').attr('record-exist','yes');
+		    		$('#templateName').attr('record-exist-errorMsg',' Duplicate Questionnare Name'); 
 					$("#save_button" ).addClass('btn btn-primary mr').val('Save');
 		    	} 
 	        },

@@ -35,6 +35,8 @@ $(document).ready(function() {
 		$("#vendorReportsDiv").show();
 		$("#vendorReportsChartDiv").hide();
 		$("#releasedJobsResultDiv").hide();
+		$('#releasedApplicantsDeclineDiv').hide();
+		$('#releasedApplicantsBackOutDiv').hide();
 		getVendorsReportList();
 	});
 	$("#graphView").click(function() {
@@ -43,6 +45,8 @@ $(document).ready(function() {
 		
 		$("#listViewFilters").hide();
 		$("#releasedJobsResultDiv").hide();
+		$('#releasedApplicantsDeclineDiv').hide();
+		$('#releasedApplicantsBackOutDiv').hide();
 		$("#vendorReportsChartDiv").show();
 		$("#vendorReportsDiv").hide();
 		
@@ -691,6 +695,38 @@ function getApplicantDeclineGraph() {
             }
      	},
      });
+}
+
+//Applicant Decline List
+function releasedJobsToVendorsApplicantDecline() {
+	$("#releasedApplicantsDeclineDiv").show();
+	$("#vendorReportsChartDiv").hide();
+	$("#vendorReportsDiv").hide();
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl + "/releasedJobsApplicantsDeclineListByOrgRelationId?orgRelationId="+orgRelationId+"&spocId="+contactUserId,
+		success :function(result) {
+       		$('#releasedApplicantsDeclineDiv').empty();
+       		$('#releasedApplicantsDeclineDiv').append(result);
+       		vendorJobsApplicantsDeclineList();
+        }
+	});	
+}
+
+//Applicant Backout List
+function releasedJobsToVendorsApplicantBackOut() {
+	$("#releasedApplicantsBackOutDiv").show();
+	$("#vendorReportsChartDiv").hide();
+	$("#vendorReportsDiv").hide();
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl + "/releasedJobsApplicantsBackOutListByOrgRelationId?orgRelationId="+orgRelationId+"&spocId="+contactUserId,
+		success :function(result) {
+       		$('#releasedApplicantsBackOutDiv').empty();
+       		$('#releasedApplicantsBackOutDiv').append(result);
+       		vendorJobsApplicantsBackOutList();
+        }
+	});	
 }
 
 /*Backout Candidates*/

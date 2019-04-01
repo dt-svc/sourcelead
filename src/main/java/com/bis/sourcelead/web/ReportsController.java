@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.entity.Candidate;
@@ -57,6 +58,9 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${atsUrl}")
+	private String atsUrl;
 	
 	@Autowired
 	OrgRelationsService orgRelationsService;
@@ -858,7 +862,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	public ModelAndView availableAassociatesReport(HttpServletRequest request,HttpServletResponse response) throws Exception{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
-		List<Candidate>empList = projectMembersService.getAllAvailableAssociates(orgLocations.getId());
+		List<CandidateDTO> empList = projectMembersService.getAllAvailableAssociates(orgLocations.getId());
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.addObject("empList", empList);
 		 model.setViewName("reports/availableAssociates");
@@ -880,5 +884,33 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	 model.setViewName("reports/releasedToVendorJobsList");
 	 return model;
  }	
+	
+	@RequestMapping(value = "/releasedJobsApplicantsDeclineListByOrgRelationId")
+	public ModelAndView releasedJobsApplicantsDeclineListByOrgRelationId(@RequestParam(value="orgRelationId", required=true)Long orgRelationId,
+			@RequestParam(value="spocId", required=true)Long spocId,
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+
+	 ModelAndView model = new ModelAndView();
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.addObject("orgRelationId", orgRelationId);
+	 model.addObject("spocId", spocId);
+	 model.setViewName("reports/vendorJobsApplicantsDeclineList");
+	 return model;
+ }	
+	
+	@RequestMapping(value = "/releasedJobsApplicantsBackOutListByOrgRelationId")
+	public ModelAndView releasedJobsApplicantsBackOutListByOrgRelationId(@RequestParam(value="orgRelationId", required=true)Long orgRelationId,
+			@RequestParam(value="spocId", required=true)Long spocId,
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+
+	 ModelAndView model = new ModelAndView();
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.addObject("orgRelationId", orgRelationId);
+	 model.addObject("spocId", spocId);
+	 model.setViewName("reports/vendorJobsApplicantsBackOutList");
+	 return model;
+ }
 
 }

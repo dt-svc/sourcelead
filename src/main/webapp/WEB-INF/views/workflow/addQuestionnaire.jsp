@@ -35,7 +35,7 @@ $(document).ready(function(){
 		            <div class="col-xs-12 col-md-6" id="templateNameDiv">
 		           <label>Name<span class="text-danger">&nbsp;*</label>
 			    	<div class="mt10">
-			    			<input type="text" class="form-control input-sm"  id="templateName" name="templateName"  field-name="Name" data-validation="required validate_Space validate_length length2-100">
+			    			<input type="text" class="form-control input-sm"  id="templateName" onchange="validateQuestionnaireName()";  name="templateName"  field-name="Name" data-validation="required validate_Space validate_length length2-100">
 			    	</div>
 			    	</div>
 			    	
