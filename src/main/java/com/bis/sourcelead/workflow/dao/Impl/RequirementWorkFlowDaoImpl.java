@@ -301,4 +301,19 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 		}
 		return null;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementWorkFlow getRequirementDefaultWorkflow()  {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementWorkFlow requirementWorkFlow ORDER BY requirementWorkFlow.id ASC";
+			RequirementWorkFlow requirementWorkFlow = (RequirementWorkFlow)session.createQuery(query).setMaxResults(1).uniqueResult();
+			return requirementWorkFlow;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+	
+	}
+}
 }

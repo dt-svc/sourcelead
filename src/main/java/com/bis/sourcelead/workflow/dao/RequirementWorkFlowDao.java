@@ -38,6 +38,8 @@ public interface RequirementWorkFlowDao {
 
 	RequirementQuestionnaireTemplate getQuestionnaireTemplateByLabelName(Long orgLocationId, String questionnaireName);
 	
+	RequirementWorkFlow getRequirementDefaultWorkflow()throws Exception;
+	
 	
 
 }

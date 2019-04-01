@@ -1,3 +1,8 @@
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <div class="wraper"> 
@@ -29,9 +34,10 @@
   <div class="row">
       <div class="clearfix mt col-md-6">
           <div class="form-group clearfix">
-            <label class="col-md-3">Name</label>
+            <label class="col-md-3">Name<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-9">
-              <input type="text" class="form-control" id="workFlowName" name="workFlowName">
+              <input type="text" class="form-control" id="workFlowName" name="workFlowName" placeholder="WorkFlow Name" field-name="WorkFlow Name"
+								data-validation="required validate_length length1-100">
             </div>
           </div>
         </div>
@@ -39,31 +45,28 @@
           <div class="form-group clearfix">
             <label class="col-md-3">Description</label>
             <div class="col-md-9">
-              <textarea rows="2" class="form-control" name="description" id="description"></textarea>
+              <textarea rows="2" class="form-control" name="description" id="description" placeholder="Description" field-name="Description"
+								data-validation="validate_length length1-500" data-validation-optional="true"></textarea>
             </div>
           </div>
         </div>
       </div>
     </div>
-    
 
-      <div class="clearfix"></div>
+    <div class="clearfix"></div>
       
       <!-- dynamic stages content starts here-->
-      
-      <div id = "dynamicWorkflow">
-		
-		
+        <div id = "dynamicWorkflow">
 		</div>
+	<!-- dynamic stages content ends here-->
 		
-		 <!-- dynamic stages content ends here-->
-		
-		
-		<div class="footerstyelsNew">
+	<div class="footerstyelsNew">
 	<div class="clearfix">
 		<div class="pull-right">
 		 <input type="button" value="Save" id="saveReqWorkFlow" onclick="saveRequirementWorkFlow();" class="btn btn-primary">
-		<input value="Cancel" class="btn btn-default ml" type="button">
+		 <input type="button" value="Cancel"
+							onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/workflowList'"
+							class="btn btn-default ml">
 		</div>
 	</div>
 	</div>
@@ -74,14 +77,14 @@
 <script>
 
 $(document).ready(function() {
-	getDefaultWorkflowNameAndDescription();
+	//getDefaultWorkflowNameAndDescription();
 	getDefaultWorkflowStages();
 	
 });
 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>
 <script>
-
+var workflowId;
 function getDefaultWorkflowNameAndDescription(){
 	$.ajax({
 		type : "GET",
@@ -89,6 +92,7 @@ function getDefaultWorkflowNameAndDescription(){
 		success : function(dataList) {
 			$("#workFlowName").val(dataList.workFlowName);
 			$("textarea#description").val(dataList.description);
+			workflowId = dataList.id;
 		}
 		});
 }
@@ -107,13 +111,13 @@ function getDefaultWorkflowNameAndDescription(){
 						
 					//changing dynamic spans based on stage names and anchors for stages based on editable. 
 					iconSpan = dynamicSpan(dataList[i].stageName);
-					editAndDeleteAnchor = dynamicAnchor(dataList[i].editable);
+					editAndDeleteAnchor = dynamicAnchor(dataList[i].editable, dataList[i].uuid);
 					
 					result = result + "<li class='widgetDiv mb clearfix'>";
 					result = result + "<div class='row'>";
 					result = result + "<div class='col-md-10'>";
 					result = result + iconSpan
-					result = result + "<h4 class='pull-left mt10 ml'>"+dataList[i].stageName+"</h4>"; 
+					result = result + "<h4 class='pull-left mt10 ml' id = 'noOfStages'>"+dataList[i].stageName+"</h4>"; 
 					result = result + "</div>";
 					result = result + "<div class='col-md-2'>";
 					result = result + "<ul class='list-inline list-unstyled pull-right mb0'>";
@@ -162,11 +166,11 @@ function getDefaultWorkflowNameAndDescription(){
 			}
 		}
 		
-	function dynamicAnchor(editable){
+	function dynamicAnchor(editable, uuid){
 		if(editable != null){
 			if(editable == "Y"){
 				return "<li><a title='Edit' href='${SourceLeadWeb_sourceleadUrl}/addStage'><i class='fa fa-pencil'></i></a></li>" +
-						"<li><a title='Delete' href='addWorkflow.html'><i class='fa fa-trash'></i></a></li>"
+						"<li><a title='Delete' onclick = 'deleteWorkflowStage(\""+uuid+"\");'><i class='fa fa-trash'></i></a></li>"
 			}
 			if(editable == "N"){
 				return "<li></li>";
@@ -174,28 +178,56 @@ function getDefaultWorkflowNameAndDescription(){
 		}
 	}
 	
+	function deleteWorkflowStage(uuid){
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/deleteWorkflowStage?uuid="+uuid,
+			success : function(dataList) {
+				getDefaultWorkflowStages();
+			}
+			});
+	}
+	
 </script>
 <script type="text/javascript">
 function saveRequirementWorkFlow(){
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
       var validationSettings = {
            errorMessagePosition: 'element',
            borderColorOnError: '',
            scrollToTopOnError: true,
            dateFormat: 'yyyy/mm/dd'
        };
-      
-	/*  if ($('#requirementWorkFlowForm').validate(false, validationSettings)) { */
+     
+	  if ($('#requirementWorkFlowForm').validate(false, validationSettings)) {
 		  var formData = getFormData("requirementWorkFlowForm");
-		 /*  $("#saveReqWorkFlow").attr("disabled", "disabled");
-         $("#saveReqWorkFlow").addClass('button').val('Processing..'); */
+		   $("#saveReqWorkFlow").attr("disabled", "disabled");
+           $("#saveReqWorkFlow").addClass('button').val('Processing..'); 
 	 $.ajax({
            type: "POST",
            data : formData,
            url:sourceleadUrl+"/saveWorkFlowDetailsPage",
-           success: function (data) {
+           success: function (result) {
+				if (result.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (result.response === "SUCCESS") {
+	        		if(result.object === "DataMissing") {
+						$("#saveReqWorkFlow").removeAttr("disabled");
+						$("#saveReqWorkFlow").removeAttr('button').val('Save');	
+						showError("Invalid data");
+					}else{
+						
+						location.replace(sourceleadUrl+"/workflowList");	
+						
+					}
+	        	} else if (result.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
            },
        });
-    /*  } */
+     } 
 }
 </script>
 <jsp:include page="../masterFooter.jsp" /> 	
