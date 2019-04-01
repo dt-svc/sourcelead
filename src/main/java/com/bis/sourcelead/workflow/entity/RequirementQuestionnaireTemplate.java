@@ -1,4 +1,6 @@
-package com.bis.sourcelead.entity;
+package com.bis.sourcelead.workflow.entity;
+
+
 
 import java.io.Serializable;
 import java.util.Date;
@@ -13,10 +15,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
+
 	
 	@Entity
-	@Table(name = "REQUIREMENT_WORKFLOW")
-	public class RequirementWorkFlow implements Serializable{
+	@Table(name = "REQUIREMENT_QUESTIONNAIRE_TEMPLATE")
+	public class RequirementQuestionnaireTemplate implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
@@ -29,17 +34,24 @@ import javax.persistence.Table;
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocationId;
 	
-	@Column(name = "WORKFLOW_NAME")
-	private String workFlowName;
-	
-	@Column(name = "DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
-	private String description;
-	
-	@Column(name = "NO_OF_STAGES")
-	private Integer noOfStages;
-	
 	@Column(name = "UUID ")
 	private String uuid;
+	
+	@Column(name = "NAME", columnDefinition = "LONGTEXT default NULL")
+	private String 	name;
+	
+	@Column(name = "DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
+	private String 	description;
+	
+	@Column(name = "JSON_STRING", columnDefinition = "LONGTEXT default NULL")
+	private String jsonString ;
+	
+	
+	@Column(name = "TIME_LIMIT_MINUTES")
+	private Integer timeLimitMinutes;
+	
+	@Column(name = "TIME_LIMIT_SECONDS")
+	private Integer timeLimitSeconds;
 	
 	@Column(name = "STATUS")
 	private Integer status;
@@ -74,12 +86,22 @@ import javax.persistence.Table;
 		this.orgLocationId = orgLocationId;
 	}
 
-	public String getWorkFlowName() {
-		return workFlowName;
+	public String getUuid() {
+		return uuid;
 	}
 
-	public void setWorkFlowName(String workFlowName) {
-		this.workFlowName = workFlowName;
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getDescription() {
@@ -90,20 +112,28 @@ import javax.persistence.Table;
 		this.description = description;
 	}
 
-	public Integer getNoOfStages() {
-		return noOfStages;
+	public String getJsonString() {
+		return jsonString;
 	}
 
-	public void setNoOfStages(Integer noOfStages) {
-		this.noOfStages = noOfStages;
+	public void setJsonString(String jsonString) {
+		this.jsonString = jsonString;
 	}
 
-	public String getUuid() {
-		return uuid;
+	public Integer getTimeLimitMinutes() {
+		return timeLimitMinutes;
 	}
 
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
+	public void setTimeLimitMinutes(Integer timeLimitMinutes) {
+		this.timeLimitMinutes = timeLimitMinutes;
+	}
+
+	public Integer getTimeLimitSeconds() {
+		return timeLimitSeconds;
+	}
+
+	public void setTimeLimitSeconds(Integer timeLimitSeconds) {
+		this.timeLimitSeconds = timeLimitSeconds;
 	}
 
 	public Integer getStatus() {
@@ -145,5 +175,6 @@ import javax.persistence.Table;
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
 	}
+
 	
 }

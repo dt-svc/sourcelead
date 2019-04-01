@@ -28,75 +28,162 @@
                 <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
             </ul>
           </div>
-          <div class="require_wrap_table clearfix">
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Stages</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><div class="tbldata-dotdot-verybig"><a href="${SourceLeadWeb_sourceleadUrl}/viewWorkflow" title="view">Default job workflow</a></div></td>
-                  <td><div class="tbldata-dotdot-vsm">8</div></td>
-                  <td><div class="tbldata-dotdot-vsm">Active</div></td>
-                  <td>
-                  <div class="width215px">
-                  	<ul class="list-inline list-unstyled">
-                  		<li>
-							<label class="switch mr positionRelativeTop10" title="Default">
-								<input checked="" type="checkbox" name="">
-								<div class="slider round"></div>
-							</label>
-                  		</li>
-                  		<li><a href="${SourceLeadWeb_sourceleadUrl}/defaultWorkflow"><i class="fa fa-pencil cursorPointer" title="Edit"></i></a></li>
-                  		<li><i class="fa fa-trash cursorPointer" title="Delete"></i></li>
-                  		<li><i class="fa fa fa-clone cursorPointer text-primary" title="Clone"></i></li>
-                  	</ul>	
-                  </div>
-                  </td>
-                </tr>
-                 <tr>
-                  <td><div class="tbldata-dotdot-verybig"><a href="${SourceLeadWeb_sourceleadUrl}/viewWorkflow" title="view">Executive job workflow</a></div></td>
-                  <td><div class="tbldata-dotdot-vsm">8</div></td>
-                  <td><div class="tbldata-dotdot-vsm">In-Active</div></td>
-                  <td>
-                  <div class="width215px">
-                  	<ul class="list-inline list-unstyled">
-                  		<li>
-							<label class="switch mr positionRelativeTop10" title="Default">
-								<input type="checkbox" name="">
-								<div class="slider round"></div>
-							</label>
-                  		</li>
-                  		<li><a href="${SourceLeadWeb_sourceleadUrl}/defaultWorkflow"><i class="fa fa-pencil cursorPointer" title="Edit"></i></a></li>
-                  		<li><i class="fa fa-trash cursorPointer" title="Delete"></i></li>
-                  		<li><i class="fa fa fa-clone cursorPointer text-primary" title="Clone"></i></li>
-                  	</ul>	
-                  </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <nav>
-            <ul id="paging" class="pagination">
-              <li><a href="#">Previous</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
-              <li class="disabled"><a href="#">6</a></li>
-              <li data-page="last"><a href="#">Next</a></li>
-            </ul>
-            <div class="clearfix"></div>
-          </nav>
+          
+          <!-- dynamic content starts here.. -->
+          <div class="project_wrap_table datatable_filter" id = "dynamicWorkFlowList">
+            
+            </div>
+          <!-- dynamic content ends here.. -->
+          
         </div>
       </div>
     </div>
   </section>
 </div>
+
+<script>
+$(document).ready(function() {
+	getWorkflowList();
+	
+});
+var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+</script>
+
+<script>
+function getWorkflowList(){
+	
+	$("#dynamicWorkFlowList").empty();
+	var result = "";
+  	var searchValue = $("#dynamicUserDataTableSearch").val();
+  	var url = "";
+  	result = result +"<table id='workflowListTable' class='display' cellspacing='0' width='100%'>";
+  	result = result +"<thead>";
+  	result = result +"<tr>"
+  	result = result +"<th>Name</th>";
+  	result = result +"<th>Stages</th>";
+  	result = result +"<th>Status</th>";
+  	result = result +"<th>Action</th>";  
+  	result = result +"</tr>";
+  	result = result +"</thead>";
+  	result = result +"</table>";
+  	$("#dynamicWorkFlowList").html(result);
+	getDynamicWorkflowList();
+}
+
+function getDynamicWorkflowList(){
+	   var colIndex = 0;
+	    $('#workflowListTable').DataTable( { 
+	    	"processing": true,
+	        "serverSide": true,
+	        "searching": false,
+	        "searchHighlight": true,
+	        "ajax": $.fn.dataTable.pipeline( {
+	            url: sourceleadUrl + "/getWorkflowList",
+	            method: 'GET',
+	            pages: 10
+	        }),
+	        "columns": [
+	        	{ "data": "workFlowName" },
+	        	{ "data": "noOfStages" },
+	        	{ "data": "status" }
+	        ],
+	        "columnDefs": [ {
+	    	  	"targets": colIndex++,
+	    	  	"sortable": false,
+	    	  	"data": "workFlowName",
+	    	  	"render": function(data, type, workflow, meta) {
+	    	  		var result = "";
+              		if(workflow.workFlowName != null && workflow.workFlowName != '' && workflow.workFlowName != "undefined"){
+              			result = result +"<div class='tbldata-dotdot-verybig'><a onclick='viewWorkFlow(\""+workflow.uuid+"\")' title='view'>"+workflow.workFlowName+"</a></div>";
+  	              	}else{
+  	            	  		result = result +"<div>---</div>";
+  	             	}
+  	             	 return result;
+	    	  	}
+	        },{
+	    	  	"targets": colIndex++,
+	    	  	"sortable": false,
+	    	  	"data": "noOfStages",
+	    	  	"render": function(data, type, workflow, meta) {
+	    	  		var result = "";
+	    	  		if(workflow.noOfStages != null && workflow.noOfStages != '' && workflow.noOfStages != "undefined"){
+              			result = result +"<div class='tbldata-dotdot-vsm'>"+workflow.noOfStages+"</div>";
+  	              	}else{
+  	            	  		result = result +"<div>---</div>";
+  	             	}
+  	             	 return result;
+	    	  	}
+	        },{
+	    	  	"targets": colIndex++,
+	    	  	"sortable": false,
+	    	  	"data": "status",
+	    	  	"render": function(data, type, workflow, meta) {
+	    	  		var result = "";
+	    	  		if(workflow.status != null && workflow.status !== '' && workflow.status != "undefined"){
+	    	  			if(workflow.status == 1){
+	    	  				result = result +"<div class='tbldata-dotdot-vsm'>Active</div>";
+	    	  			}	
+	    	  			else{
+	    	  				result = result +"<div class='tbldata-dotdot-vsm'>In-Active</div>";
+	    	  			}	
+	    	  		}else{
+  	            	  		  result = result +"<div>---</div>"; 
+  	             	}
+  	             	 return result;
+	    	  	}
+	        },{
+	    	  	"targets": colIndex++,
+	    	  	"sortable": false,
+	    	  	"render": function(data, type, workflow, meta) {
+	    	  		var result = "";
+	    	  		result = result +"<div class='width215px'>";
+	    	  		result = result +"<ul class='list-inline list-unstyled'>";
+	    	  		result = result +"<li>";
+	    	  		result = result +"<label class='switch mr positionRelativeTop10' title='Default'>"
+	    	  		result = result +"<input type='checkbox' name='' "+ (workflow.status == 1 ?'checked':'')+" >";
+	    	  		result = result +"<div class='slider round' onclick = 'changeWorkflowStatus(\""+workflow.uuid+"\", \""+workflow.status+"\");'></div>";
+	    	  		result = result +"</label></li>";
+	    	  		result = result +"<li><a href='${SourceLeadWeb_sourceleadUrl}/defaultWorkflow'><i class='fa fa-pencil cursorPointer' title='Edit'></i></a></li>";
+	    	  		result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete'></i></li>";
+	    	  		result = result +"<li><i class='fa fa fa-clone cursorPointer text-primary' title='Clone'></i></li>";
+	    	  		result = result +"</ul></div>";
+  	             	return result;
+	    	  	}
+	        }
+	        ],
+	        "scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting": [[2,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+	        
+	    } );
+	     $("#workflowListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+	  
+	        
+}
+
+
+function changeWorkflowStatus(uuid, status){
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl + "/getWorkflowList?uuid="+uuid+"&status="+status,
+		success : function(dataList) {
+			getDynamicWorkflowList();
+		}
+		});
+			
+}
+
+function viewWorkFlow(uuid){
+	location.href = sourceleadUrl+ "/viewWorkflow?uuid="+uuid
+}
+</script>
+
 <jsp:include page="../masterFooter.jsp" /> 	

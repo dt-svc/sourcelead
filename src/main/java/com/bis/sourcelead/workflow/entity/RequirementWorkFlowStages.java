@@ -16,7 +16,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RequirementWorkFlow;
 import com.bis.sourcelead.entity.User;
 
 	
@@ -36,8 +35,8 @@ import com.bis.sourcelead.entity.User;
 	private RequirementWorkFlow requirementWorkFlowId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "REQUIREMENT_QUESTIONNAIRE_ID", nullable = false)
-	private RequirementQuestionnaire requirementQuestionnaireId;
+	@JoinColumn(name = "REQUIREMENT_QUESTIONNAIRE_TEMPLATE_ID", nullable = false)
+	private RequirementQuestionnaireTemplate requirementQuestionnaireTemplateId;
 	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -190,12 +189,12 @@ import com.bis.sourcelead.entity.User;
 		this.description = description;
 	}
 
-	public RequirementQuestionnaire getRequirementQuestionnaireId() {
-		return requirementQuestionnaireId;
+	public RequirementQuestionnaireTemplate getRequirementQuestionnaireTemplateId() {
+		return requirementQuestionnaireTemplateId;
 	}
 
-	public void setRequirementQuestionnaireId(RequirementQuestionnaire requirementQuestionnaireId) {
-		this.requirementQuestionnaireId = requirementQuestionnaireId;
+	public void setRequirementQuestionnaireTemplateId(RequirementQuestionnaireTemplate requirementQuestionnaireTemplateId) {
+		this.requirementQuestionnaireTemplateId = requirementQuestionnaireTemplateId;
 	}
 	
 }

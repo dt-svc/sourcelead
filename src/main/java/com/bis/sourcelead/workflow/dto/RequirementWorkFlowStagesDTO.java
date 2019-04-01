@@ -17,6 +17,10 @@ public class RequirementWorkFlowStagesDTO {
 	private Long requirementQuestionnaireId;
 	
 	private Integer status;
+	
+	private String editable;
+	
+	private String workFlowName;
 
 	public long getId() {
 		return id;
@@ -74,5 +78,21 @@ public class RequirementWorkFlowStagesDTO {
 		this.status = status;
 	}
 
+	public String getEditable() {
+		return editable;
+	}
+
+	public void setEditable(String editable) {
+		this.editable = editable;
+	}
+
+	public String getWorkFlowName() {
+		return workFlowName;
+	}
+
+	public void setWorkFlowName(String workFlowName) {
+		this.workFlowName = workFlowName;
+	}
+	
 
 }
