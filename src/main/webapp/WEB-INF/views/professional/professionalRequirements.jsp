@@ -152,15 +152,15 @@ window.onload = function () {
 	    
           </div>
            <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-           <div class="pull-right brud-crum"><a href="${appPath}/professionalDashboard">Home </a> &raquo; Jobs List  </div>
+           <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/professionalDashboard">Home </a> &raquo; Jobs List  </div>
            </c:if>
            
            <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-           <div class="pull-right brud-crum"><a href="${appPath}/recruiterDashboard">Home </a> &raquo; Jobs List  </div>
+           <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/recruiterDashboard">Home </a> &raquo; Jobs List  </div>
            </c:if>
            
            <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-           <div class="pull-right brud-crum"><a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; <a href="${SourceLeadWeb_atsUrl}/jobsList">Jobs List </a> &raquo; Crowdsourcing Jobs</div>
+           <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; <a href="${SourceLeadWeb_atsUrl}/jobsList">Jobs List </a> &raquo; Crowdsourcing Jobs</div>
            </c:if>
           
           <div class="clearfix"></div> 
@@ -950,9 +950,9 @@ function requirementsList(offset){
 			 				result = result +'<div class="OpenJob">';
 			 				
 			 				if(requirements.referUUID != null && requirements.referUUID != 'undefined'){
-			 					result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'/'+requirements.referUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
+			 					result = result +'<a href="${SourceLeadWeb_atsUrl}/requirementProfile/'+requirements.requirementUUID+'/'+requirements.referUUID+'"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
 			 				}else{
-			 					result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
+			 					result = result +'<a href="${SourceLeadWeb_atsUrl}/requirementProfile/'+requirements.requirementUUID+'"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
 			 					
 			 				}
 			 				result = result +'<input type="hidden" id="postedOrg" value=""/>';
@@ -1298,7 +1298,7 @@ function searchRequirement(offset){
 									 				link = atsUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 									 				result = '<section class="openCta">';
 									 				result = result +'<div class="OpenJob">';
-									 				result = result +'<a href="<c:url value="/app/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
+									 				result = result +'<a href="${SourceLeadWeb_atsUrl}/requirementProfile/'+requirements.requirementUUID+'"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
 									 				result = result +'<h4>'+requirements.postedOrg+'</h4>';
 									 				result = result +'<span>';
 									 				result = result +'<b><i class="fa fa-clock-o"></i>'+jobType+'</b>';
