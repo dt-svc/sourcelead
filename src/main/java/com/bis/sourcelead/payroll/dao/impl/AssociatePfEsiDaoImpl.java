@@ -101,7 +101,7 @@ public class AssociatePfEsiDaoImpl implements AssociatePfEsiDao{
 					connection.setAutoCommit(false);
 					CallableStatement stmt = connection.prepareCall("{call associateInfoDataProcedure(?,?,?,?,?,?,?,?)}");
 					for (AssociatePfEsiDetailsDTO infoDto : list) {	
-						Long candidateId = canMap.get(infoDto.getEmail());
+						Long candidateId = canMap.get(infoDto.getEmail().trim());
 						stmt.setLong(1,   candidateId);
 						stmt.setString(2, infoDto.getUanNumber());
 						stmt.setString(3, infoDto.getPfNumber());
