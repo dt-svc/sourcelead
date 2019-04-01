@@ -4,6 +4,8 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.measure.unit.SystemOfUnits;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -17,6 +19,7 @@ import com.bis.sourcelead.dao.performance.PerformanceGoalsAssignToDao;
 import com.bis.sourcelead.entity.performance.PerformanceGoalsAssignTo;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
+import com.itextpdf.kernel.log.SystemOutCounter;
 
 @Repository
 @Transactional
@@ -49,25 +52,6 @@ public class PerformanceGoalsAssignToDaoImpl implements PerformanceGoalsAssignTo
 	private String schema;
 
 	@Override
-	public PerformanceGoalsAssignTo savePerformanceGoalsAssignTo(PerformanceGoalsAssignTo performanceGoalsAssignTo)
-			throws Exception {
-		
-		logger.debug("Adding savePerformanceGoalsAssignTo");
-		Session session = this.sessionFactory.getCurrentSession();
-		try {
-			if (performanceGoalsAssignTo != null) {
-				session.saveOrUpdate(performanceGoalsAssignTo);
-			}
-			logger.debug("savePerformanceGoalsAssignTo Added Successfully");
-		} catch (Exception exception) {
-			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PERFORMANCE_GOALS_ASSIGN_TO"));
-				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
-		}
-		
-		return performanceGoalsAssignTo;
-	}
-	
-	@Override
 	public PerformanceGoalsAssignTo getPerformanceGoalsAssignToByAssignedUserIdAndOrgLocationId(Long assignedUserId,
 			Long goalId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -81,6 +65,28 @@ public class PerformanceGoalsAssignToDaoImpl implements PerformanceGoalsAssignTo
 		} else {
 			return null;
 		}
+	}
+	
+	
+	@Override
+	public PerformanceGoalsAssignTo savePerformanceGoalsAssignTo(PerformanceGoalsAssignTo performanceGoalsAssignTo)
+			throws Exception {
+		
+
+		logger.debug("Adding PerformanceGoalsAssignTo");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (performanceGoalsAssignTo != null) {
+				session.saveOrUpdate(performanceGoalsAssignTo);
+			}
+			logger.debug("PerformanceGoalsAssignTo Added Successfully");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PERFORMANCE_GOALS_ASSIGN_TO"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return performanceGoalsAssignTo;
+		
+		
 	}
 
 }

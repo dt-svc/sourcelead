@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dao.performance.PerformanceGoalsAssignToDao;
 import com.bis.sourcelead.dao.performance.PerformanceGoalsDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ResponseList;
@@ -18,10 +20,10 @@ import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.performance.PerformanceGoals;
 import com.bis.sourcelead.entity.performance.PerformanceGoalsAssignTo;
 import com.bis.sourcelead.entity.performance.PerformanceGoalsAttachments;
-import com.bis.sourcelead.service.performance.PerformanceGoalsAssignToService;
 import com.bis.sourcelead.service.performance.PerformanceGoalsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
@@ -37,7 +39,10 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 	CommonUtil commonUtil;
 	
 	@Autowired
-	PerformanceGoalsAssignToService performanceGoalsAssignToService;
+	PerformanceGoalsAssignToDao performanceGoalsAssignToDao;
+	
+	@Autowired
+	UserRoleDao userRoleDao;
  
 	@Override
 	public PerformanceGoals storePerformanceGoals(PerformanceGoalsDTO performanceGoalsDTO, Long userId,
@@ -65,6 +70,12 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 			goals.setOrgLocationId(orgLocations);
 			goals.setStatus(Constants.RECORD_ACTIVE);
 			goals.setGoalType(Constants.GOAL_TYPE_NEW);
+			
+			if(StringUtils.isNotBlank(performanceGoalsDTO.getGoalType()) && performanceGoalsDTO.getGoalType().equalsIgnoreCase("Sub_Goal")) {
+				PerformanceGoals parentGoal = performanceGoalsDao.getPerformanceGoalsByUUID(performanceGoalsDTO.getGoalUUID());
+				goals.setGoalType(performanceGoalsDTO.getGoalType());
+				goals.setGoalId(parentGoal);
+			}
 		}
 		
 		goals.setGoalName(performanceGoalsDTO.getGoalName());
@@ -106,11 +117,17 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 				}
 				for(Long element : goalAssignedUserIds) {
 					if(!assignedUserIds.contains(element)) {
-						PerformanceGoalsAssignTo assignTo = performanceGoalsAssignToService.getPerformanceGoalsAssignToByAssignedUserIdAndOrgLocationId(element, performanceGoalsDTO.getGoalId());
-						assignTo.setUpdatedDate(new Date());
-						assignTo.setStatus(Constants.RECORD_INACTIVE);
-						assignTo.setUpdatedBy(loginUser);
-						performanceGoalsAssignToService.savePerformanceGoalsAssignTo(assignTo);
+						UserRole userRole = userRoleDao.getUserDetailsByUserIdAndLocationId(element, orgLocationId);
+						if(userRole != null && userRole.getReportingManager() != null && userRole.getReportingManager().getId().equals(userId)) {
+							PerformanceGoalsAssignTo assignTo = performanceGoalsAssignToDao.getPerformanceGoalsAssignToByAssignedUserIdAndOrgLocationId(element, performanceGoalsDTO.getGoalId());
+							assignTo.setUpdatedDate(new Date());
+							assignTo.setStatus(Constants.RECORD_INACTIVE);
+							assignTo.setUpdatedBy(loginUser);
+							Set<PerformanceGoalsAssignTo> goalsAssignedToDeletedSet = new HashSet<>();
+							goalsAssignedToDeletedSet.add(assignTo);
+							goals.setPerformanceGoalsAssignTo(goalsAssignedToDeletedSet);
+							performanceGoalsDao.savePerformanceGoals(goals);
+						}
 					}else {
 						if(assignedUserIds.contains(element)) {
 							assignedUserIds.remove(element);

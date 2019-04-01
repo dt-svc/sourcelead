@@ -16,6 +16,7 @@ var dateFormat = '${SourceLeadWeb_dateFormat}';
 
 window.onload = function () {
 	var goalUUID = '${goalUUID}';
+	
 	if(goalUUID != null && goalUUID != 'undefined' && goalUUID != ''){
 		performanceGoals.getPerformanceGoalsDetails(goalUUID);
 	}else{
@@ -42,12 +43,15 @@ window.onload = function () {
 	</section>
 	
 	<div class="project_wrap">
+	<div id="choicepopUp"></div>
 	 <div id="goalsLoading"></div>
 	 	<div class="clearfix newAddWidth">
 		    <div class="form-horizontal mt myForm">
 		    	 <form:form id="addGoal_form"  name="addGoal_form" method="post">
 		    	 	 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt"> 
 		    	 	 <input type="hidden" name="goalId" id="goalId" />
+		    	 	 <input type="hidden" name="goalType" id="goalType" />
+		    	 	 
 		    	 	 	<div class="form-group">
 				          <label class="col-md-3">Goal Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
 				          <div class="col-md-9"><input type="text" class="form-control" name="goalName" id="goalName" field-name="Goal Name" data-validation="required validate_Space validate_Alphanumeric validate_length length2-200"></div>

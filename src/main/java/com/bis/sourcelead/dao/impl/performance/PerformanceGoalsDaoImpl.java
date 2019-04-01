@@ -100,7 +100,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				    + " PERFORMANCE_GOALS GOALS,"
 				    + " ORG_LOCATIONS OL"
 				    
-					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND "
+					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
 					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS = '1' AND "
 				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
 				    + " OL.ID = :orgLocationId"
@@ -122,7 +122,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 						    + " PERFORMANCE_GOALS GOALS,"
 						    + " ORG_LOCATIONS OL"
 						    
-							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND "
+							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
 							+ " GOALS.CREATED_BY <> :userId AND "
 						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND ASSIGN.STATUS = '1' AND "
 						    + " OL.ID = :orgLocationId"
@@ -160,7 +160,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				    + " PERFORMANCE_GOALS GOALS,"
 				    + " ORG_LOCATIONS OL"
 				    
-					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND "
+					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
 					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS = '1' AND "
 					+ " (GOALS.PERCENTAGE_DONE > '0' AND GOALS.PERCENTAGE_DONE < '100') AND "
 				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
@@ -184,7 +184,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 						    + " PERFORMANCE_GOALS GOALS,"
 						    + " ORG_LOCATIONS OL"
 						    
-							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND "
+							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
 							+ " GOALS.CREATED_BY <> :userId AND ASSIGN.STATUS = '1' AND "
 							+ " (GOALS.PERCENTAGE_DONE > '0' AND GOALS.PERCENTAGE_DONE < '100') AND "
 						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND "
@@ -224,7 +224,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				    + " PERFORMANCE_GOALS GOALS,"
 				    + " ORG_LOCATIONS OL"
 				    
-					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND "
+					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
 					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS = '1' AND "
 					+ " GOALS.PERCENTAGE_DONE = '100' AND "
 				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
@@ -247,7 +247,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 						    + " PERFORMANCE_GOALS GOALS,"
 						    + " ORG_LOCATIONS OL"
 						    
-							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND "
+							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
 							+ " GOALS.CREATED_BY <> :userId AND ASSIGN.STATUS  ='1' AND "
 							+ " GOALS.PERCENTAGE_DONE = '100' AND "
 						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND "
@@ -286,7 +286,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				    + " PERFORMANCE_GOALS GOALS,"
 				    + " ORG_LOCATIONS OL"
 				    
-					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND "
+					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
 					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS ='1' AND "
 					+ " ((GOALS.PERCENTAGE_DONE > '0' AND GOALS.PERCENTAGE_DONE < '100') || (GOALS.PERCENTAGE_DONE = '0') || (GOALS.PERCENTAGE_DONE IS NULL)) AND "
 				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
@@ -310,7 +310,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 						    + " PERFORMANCE_GOALS GOALS,"
 						    + " ORG_LOCATIONS OL"
 						    
-							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND "
+							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
 							+ " GOALS.CREATED_BY <> :userId AND "
 							+ " ((GOALS.PERCENTAGE_DONE > '0' AND GOALS.PERCENTAGE_DONE < '100') || (GOALS.PERCENTAGE_DONE = '0') || (GOALS.PERCENTAGE_DONE IS NULL)) AND "
 						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND ASSIGN.STATUS = '1' AND "
@@ -350,7 +350,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				    + " PERFORMANCE_GOALS GOALS,"
 				    + " ORG_LOCATIONS OL"
 				    
-					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND "
+					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
 					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS = '1' AND "
 					+ " ((GOALS.PERCENTAGE_DONE = '0') || (GOALS.PERCENTAGE_DONE IS NULL)) AND "
 				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
@@ -374,7 +374,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 						    + " PERFORMANCE_GOALS GOALS,"
 						    + " ORG_LOCATIONS OL"
 						    
-							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND "
+							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
 							+ " GOALS.CREATED_BY <> :userId AND ASSIGN.STATUS = '1' AND "
 							+ " ((GOALS.PERCENTAGE_DONE = '0') || (GOALS.PERCENTAGE_DONE IS NULL)) AND "
 						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND "
@@ -447,6 +447,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 					"DATE_FORMAT(GOALS.START_DATE ,"+goalDateFormat+") AS goalStartDate, " + 
 					"DATE_FORMAT(GOALS.END_DATE ,"+goalDateFormat+") AS goalEndDate, " + 
 					"GOALS.PERCENTAGE_DONE AS percentageDone, " +
+					"GOALS.GOAL_TYPE AS goalType, " +
 					"GOALS.UUID AS uuid " +
 					"FROM " + 
 					"PERFORMANCE_GOALS GOALS, " + 

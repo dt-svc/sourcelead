@@ -19,7 +19,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectPlanningResourceRequest;
 import com.bis.sourcelead.entity.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -54,6 +58,10 @@ public class PerformanceGoals implements Serializable{
 		@Column(name = "GOAL_TYPE")
 		private String goalType;
 		
+		@ManyToOne(fetch = FetchType.LAZY)
+	    @JoinColumn(name="GOAL_ID" )        
+	    private PerformanceGoals goalId;
+		
 		@Column(name = "PERCENTAGE_DONE ")
 		private Integer percentageDone;
 		
@@ -77,13 +85,14 @@ public class PerformanceGoals implements Serializable{
 	    @JoinColumn(name="UPDATED_BY")        
 	    private User updatedBy;
 		
-		@OneToMany(mappedBy = "goalId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-		@JsonBackReference
-		private Set<PerformanceGoalsAssignTo> performanceGoalsAssignTo = new HashSet<PerformanceGoalsAssignTo>(0);
 		
-		@OneToMany(mappedBy = "goalId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-		@JsonBackReference
-		private Set<PerformanceGoalsAttachments> performanceGoalsAttachments = new HashSet<PerformanceGoalsAttachments>(0);
+		@OneToMany(cascade = CascadeType.ALL, mappedBy = "goalId")
+		@Fetch(FetchMode.SELECT)
+		private Set<PerformanceGoalsAssignTo> performanceGoalsAssignTo;
+		
+		@OneToMany(cascade = CascadeType.ALL, mappedBy = "goalId")
+		@Fetch(FetchMode.SELECT)
+		private Set<PerformanceGoalsAttachments> performanceGoalsAttachments;
 		
 		
 		@Transient
@@ -248,6 +257,14 @@ public class PerformanceGoals implements Serializable{
 
 		public void setGoalEndDateStr(String goalEndDateStr) {
 			this.goalEndDateStr = goalEndDateStr;
+		}
+
+		public PerformanceGoals getGoalId() {
+			return goalId;
+		}
+
+		public void setGoalId(PerformanceGoals goalId) {
+			this.goalId = goalId;
 		}
 		
 

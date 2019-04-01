@@ -29,6 +29,7 @@ import com.bis.sourcelead.entity.performance.PerformanceGoalsAssignTo;
 import com.bis.sourcelead.entity.performance.PerformanceGoalsAttachments;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.performance.PerformanceGoalsAttachmentsService;
 import com.bis.sourcelead.service.performance.PerformanceGoalsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -44,8 +45,11 @@ public class PerformanceGoalsRestController {
 	@Autowired
 	PerformanceGoalsService performanceGoalsService;
 	
-	  @RequestMapping(value = "/getResourceManagersUsersForGoalsAssignment" , method = RequestMethod.GET)
-	   public List<UserRole> getResourceManagersUsersForGoalsAssignment(HttpServletRequest request) throws Exception {
+	@Autowired
+	PerformanceGoalsAttachmentsService performanceGoalsAttachmentsService;
+	
+	  @RequestMapping(value = "/getReportingManagersUsersForGoalsAssignment" , method = RequestMethod.GET)
+	   public List<UserRole> getReportingManagersUsersForGoalsAssignment(HttpServletRequest request) throws Exception {
 		   Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		   Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		   Long userRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userRoleId");
@@ -78,6 +82,53 @@ public class PerformanceGoalsRestController {
 	    		 response.setResponse(Result.INVALID_DATA.name());
 				 response.setResponseMessage(Result.INVALID_DATA.getValue());
 	    	 }
+			}catch (Exception e) {
+				e.printStackTrace();
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			return response;
+		}
+	  
+	  
+	  
+	  @RequestMapping(value = { "/savePerformanceSubGoals", "/rest/savePerformanceSubGoals" }, method = RequestMethod.POST)
+		public @ResponseBody Response<PerformanceGoalsDTO> savePerformanceSubGoals(PerformanceGoalsDTO performanceGoalsDTO,HttpServletRequest request) throws Exception {
+			  Response<PerformanceGoalsDTO> response = new  Response<>();
+			  Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			  Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			  String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+			try {
+			 if(Validator.validate(performanceGoalsDTO)) {
+				 performanceGoalsDTO.setGoalType("Sub_Goal");
+				 performanceGoalsDTO.setStaticPath(staticPath);
+				 performanceGoalsService.storePerformanceGoals(performanceGoalsDTO, userId, orgLocationId, dateFormat);
+				 response.setResponse(Result.SUCCESS.name());
+				 response.setResponseMessage(Result.SUCCESS.getValue());
+			 }else {
+	    		 response.setResponse(Result.INVALID_DATA.name());
+				 response.setResponseMessage(Result.INVALID_DATA.getValue());
+	    	 }
+			}catch (Exception e) {
+				e.printStackTrace();
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			return response;
+		}
+	  
+	  
+	  
+	  @RequestMapping(value = { "/deletePerformanceGoalsAttachment", "/rest/deletePerformanceGoalsAttachment" }, method = RequestMethod.POST)
+		public @ResponseBody Response<PerformanceGoalsDTO> deletePerformanceGoalsAttachment(@RequestParam(value="attachmentUUID", required=true) String attachmentUUID) throws Exception {
+			  Response<PerformanceGoalsDTO> response = new  Response<>();
+			try {
+				
+				 PerformanceGoalsAttachments attachments = performanceGoalsAttachmentsService.getPerformanceGoalsAttachmentsByUUID(attachmentUUID);
+				 attachments.setStatus(Constants.RECORD_INACTIVE);
+				 performanceGoalsAttachmentsService.savePerformanceGoalsAttachments(attachments);
+				 response.setResponse(Result.SUCCESS.name());
+				 response.setResponseMessage(Result.SUCCESS.getValue());
 			}catch (Exception e) {
 				e.printStackTrace();
 				response.setResponse(Result.AWKWARD.name());
@@ -246,12 +297,15 @@ public class PerformanceGoalsRestController {
 						 if(performanceGoalsAttachementsSet != null && !performanceGoalsAttachementsSet.isEmpty()) {
 							 List<PerformanceGoalsAttachmentsDTO> attachmentsDTOList = new ArrayList<>();
 							 for(PerformanceGoalsAttachments attachments : performanceGoalsAttachementsSet) {
-								 PerformanceGoalsAttachmentsDTO attachmentsDTO = new PerformanceGoalsAttachmentsDTO();
-								 attachmentsDTO.setFileName(attachments.getFileName());
-								 attachmentsDTO.setFileUrl(attachments.getFileUrl());
-								 attachmentsDTO.setAttachmentId(attachments.getId());
-								 attachmentsDTO.setUuid(attachments.getUuid());
-								 attachmentsDTOList.add(attachmentsDTO);
+								 if(attachments.getStatus() == Constants.RECORD_ACTIVE) {
+									 PerformanceGoalsAttachmentsDTO attachmentsDTO = new PerformanceGoalsAttachmentsDTO();
+									 attachmentsDTO.setFileName(attachments.getFileName());
+									 attachmentsDTO.setFileUrl(attachments.getFileUrl());
+									 attachmentsDTO.setAttachmentId(attachments.getId());
+									 attachmentsDTO.setUuid(attachments.getUuid());
+									 attachmentsDTOList.add(attachmentsDTO);
+								 }
+								
 							 }
 							 
 							 performanceGoalsDTO.setAttachmentsList(attachmentsDTOList);

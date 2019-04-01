@@ -58,26 +58,25 @@ public class PerformanceGoalsController {
 					return model;
 	}
 	 
-	 
-	 		 @RequestMapping(value = "/addNewSubGoal")
-	 		 public ModelAndView addNewSubGoal(HttpServletRequest request,
-			 @RequestParam(value="goalUUID", required=false) String goalUUID) throws Exception {
-		    
-				ModelAndView model = new ModelAndView();
-				
-				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-					if(sessionData == null)
-					{
-						sessionData = new SessionMaintainanceData();
-					}
-					sessionData.setNav(Constants.PERFORMANCE);
-					
-					request.getSession().setAttribute("sessionData",sessionData);
-					
-					model.addObject("goalUUID", goalUUID);
-					model.addObject("goalType", "Sub_Goal");
-					model.setViewName("performance/addNewGoal");
-					return model;
-	}
+ 
+	 @RequestMapping(value = "/addNewSubGoal")
+	 public ModelAndView addNewSubGoal(HttpServletRequest request,
+	 @RequestParam(value="goalUUID", required=false) String goalUUID) throws Exception {
+    
+		ModelAndView model = new ModelAndView();
+		
+		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.PERFORMANCE);
+			
+			request.getSession().setAttribute("sessionData",sessionData);
+			
+			model.addObject("goalUUID", goalUUID);
+			model.setViewName("performance/addSubGoal");
+			return model;
+	 }
 
 }

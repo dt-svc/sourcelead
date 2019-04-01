@@ -117,7 +117,7 @@ function PerformanceGoals(){
 				      	    		     result = result +"<i class=''><a class='glyphicon glyphicon-save' target='_blank' href=\""+opt.fileUrl+"\"></a></i>";
 				      					 result = result +"<input type='button' value='"+opt.fileName+"'>";
 				      					 result = result +"</a>";
-				      					 result = result +"<input class='dele' type='button' onClick='projects.removeGoalAttachment("+opt.uuid+");' >";
+				      					 result = result +"<input class='dele' type='button' onClick='performanceGoals.alertMessage(\""+opt.uuid+"\",\""+goalUUID+"\");' >";
 				      					 result = result +"</strong>";
 				        		   }
 				        		   
@@ -132,12 +132,52 @@ function PerformanceGoals(){
 			    });
 		  }
 		  
+		  this.alertMessage = function(attachmentUUID,goalUUID){
+			  var result = "";
+				result = result +"	<div class='project_inn_mask'></div>";
+				result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+				result = result +"		<p>Are you sure to delete</p>";
+				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+				result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='performanceGoals.removeGoalAttachment(\""+attachmentUUID+"\",\""+goalUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='performanceGoals.cancel();'></b>";
+				result = result +"	</div>";
+				$("#choicepopUp").append(result);
+				$("#remove_user_pop").slideDown(200);
+				$(".project_inn_mask").fadeIn(200);
+		  }
 		  
+		  
+		  this.cancel = function(){
+		  	$("#choicepopUp").empty();
+		  	$(".project_inn_mask").fadeOut(200);
+		  }
+		  
+		  
+		  this.removeGoalAttachment = function(attachmentUUID,goalUUID){
+		        $("#goalsLoading").attr('style','position:absolute; width:100%; height:150%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		         $.ajax({
+			    	type: "POST",
+			    	url: pmsUrl+"/deletePerformanceGoalsAttachment?attachmentUUID="+attachmentUUID,
+			        success: function(response) {
+			        	if (response.response === "AWKWARD") {
+			        		$("#goalsLoading").removeAttr('style');
+			        	    location.href = "/errorPage";
+			        	} else if (response.response === "SUCCESS") {
+			        		performanceGoals.cancel();
+			        		location.replace(pmsUrl+"/addNewGoal?goalUUID="+goalUUID);
+			        		$("#goalsLoading").removeAttr('style');
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
+			        },
+			    }); 
+		  }
 		  
 		  this.goalsAssignedToUsersList = function(userIds){
 			  $.ajax({
 			    	type: "GET",
-			        url: pmsUrl+"/getResourceManagersUsersForGoalsAssignment", 
+			        url: pmsUrl+"/getReportingManagersUsersForGoalsAssignment", 
 			        success: function(json) {
 			        	var output = "";
 			        	for (var i=0; i<json.length; i++)
@@ -164,6 +204,7 @@ function PerformanceGoals(){
 		  }
 		  
 		  var fileCounter = 0;
+		 
 		  this.addGoalsDocumets = function(){
 		  	$('<div>').attr('style','float:left; width:325px; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#367fa9; color:#fff; ').append('<input id="file'+fileCounter+'"  type="file" class="pull-left" onchange="performanceGoals.uploadButton('+fileCounter+');"/>' +
 		              '<a id="Button' + fileCounter + '' +
@@ -227,5 +268,66 @@ function PerformanceGoals(){
 					$("#addGoal_form").showHelpOnFocus();
 					$("#addGoal_form").validateOnBlur(false, validationSettings);  
 				});
+			
+			
+			 this.addSubGoalsDocumets = function(){
+				  	$('<div>').attr('style','float:left; width:325px; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#367fa9; color:#fff; ').append('<input id="file'+fileCounter+'"  type="file" class="pull-left" onchange="performanceGoals.subGoalsUploadButton('+fileCounter+');"/>' +
+				              '<a id="Button' + fileCounter + '' +
+				              'value="" onclick = "performanceGoals.removeFileUpload(this)"><i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right"></i></a>').appendTo($('#FileUploadContainer'));
+
+				      		fileCounter++;
+				  }
+			
+			
+			 this.subGoalsUploadButton = function(id){
+				  fileUpload("file"+id+"", "goals", "addSubGoal_form","uploadedFileInfo");
+				  }
+				  
+				  
+				  this.savePerformanceSubGoals  = function (){
+						 var validationSettings = {
+							        errorMessagePosition : 'element',
+							       borderColorOnError : '',
+									scrollToTopOnError : true,
+									dateFormat : 'yyyy/mm/dd' 
+						         }; 
+						 
+						 var editor = $("#txtEditor").val($('.Editor-editor').html()); 
+						 
+						 if ($('#addSubGoal_form').validate(false, validationSettings)){ 
+						        var formData = getFormData1("addSubGoal_form");
+						        $("#goalsLoading").attr('style','position:absolute; width:100%; height:150%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+						         $.ajax({
+							    	type: "POST",
+							    	data: formData,
+					  		        processData: false,
+					  		        contentType:false, 
+							    	url: pmsUrl+"/savePerformanceSubGoals?",
+							        success: function(response) {
+							        	$("#goalsLoading").removeAttr('style');
+							        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+					     	    		    showError(response.responseMessage);
+					     	    		}
+							        	else if (response.response === "AWKWARD") {
+							        	    location.href = "/errorPage";
+							        	} else if (response.response === "SUCCESS") {
+							        		location.replace(pmsUrl+"/performanceGoalsList");
+							        	} else if (response.indexOf('Sign In') !== -1) {
+							        		location.replace(sourceleadUrl);
+							        	} else {
+							        	    showError("Operation failed, please try again");
+							        	}
+							        },
+							    });  
+						        return true;
+						  } else {
+							return false;
+						  }
+					}
+
+					$('body').on('blur', '#addSubGoal_form', function() {
+							$("#addSubGoal_form").showHelpOnFocus();
+							$("#addSubGoal_form").validateOnBlur(false, validationSettings);  
+						});
 		
 }
