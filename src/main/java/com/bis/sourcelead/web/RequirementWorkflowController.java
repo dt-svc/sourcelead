@@ -127,7 +127,6 @@ public class RequirementWorkflowController {
 	@RequestMapping(value = "/editQuestionnaire")
 	public ModelAndView editQuestionnaire(@RequestParam(value = "templateUuid", required = true) String templateUuid, HttpServletRequest request) throws Exception{
 		ModelAndView modelandview = new ModelAndView();
-		System.out.println("templateUuid "+templateUuid );
 		modelandview.addObject("templateUuid",templateUuid);
 		modelandview.setViewName("workflow/addQuestionnaire");
 		return modelandview;
@@ -135,7 +134,6 @@ public class RequirementWorkflowController {
 	 @RequestMapping(value = "/loadSavedQuestionnaireTemplate" , method = RequestMethod.GET)
 	   public @ResponseBody RequirementQuestionnaireTemplate loadSavedquestionnaireTemplate(@RequestParam(value="templateUuid", required=true) String templateUuid,HttpServletRequest request) throws Exception {
 		  RequirementQuestionnaireTemplate questionnaireTemplate = requirementWorkFlowService.getQuestionnaireTemplateById(templateUuid);
-		  System.out.println(questionnaireTemplate.getJsonString());
 			return questionnaireTemplate;
 	    
 	   }
