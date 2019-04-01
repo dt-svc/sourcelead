@@ -4001,9 +4001,9 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 	}
 
 	@Override
-	public List<Projects> getProjectsListByUserIDAndOrgId(String[] associates,Long orgLocations) {
-		// TODO Auto-generated method stub
-		return projectsDao.getProjectsListByUserIDAndOrgId(associates,orgLocations);
+	public List<Projects> getProjectsListByCanddateIdAndOrgId(String associatesId, Long orglocationId) {
+	// TODO Auto-generated method stub
+	return projectsDao.getProjectsListByCanddateIdAndOrgId(associatesId,orglocationId);
 	}
 
 	@Override
