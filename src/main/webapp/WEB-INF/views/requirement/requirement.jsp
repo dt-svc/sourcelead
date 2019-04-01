@@ -2344,7 +2344,7 @@ $(document).ready(function () {
 			<form role="form" id="team_form" name="team_form" method="post">
 				<div class="modal-content" id="assignTeamDiv">
 					<div class="modal-header">
-						<button data-dismiss="modal" class="close" type="button">×</button>
+						<button data-dismiss="modal" class="close" type="button">ï¿½</button>
 						<h4 class="modal-title">Add Team</h4>
 					</div>
 					<div class="modal-body clearfix">
