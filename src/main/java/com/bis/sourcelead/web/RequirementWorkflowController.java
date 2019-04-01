@@ -127,7 +127,7 @@ public class RequirementWorkflowController {
 	
 	
 	@RequestMapping(value = "/saveWorkFlowDetailsPage", method = RequestMethod.POST)
-	public ResponseList<String> saveWorkFlowDetailsPage(
+	public @ResponseBody ResponseList<String> saveWorkFlowDetailsPage(
 			RequirementWorkFlowDTO requirementWorkFlowDTO,HttpServletRequest request) {
 		
 		ResponseList<String> response = new ResponseList<String>();

@@ -70,12 +70,14 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			reqWorkFlow = new RequirementWorkFlow();
 			reqWorkFlow.setCreatedBy(user);
 			reqWorkFlow.setCreatedDate(currentDate);
+			reqWorkFlow.setNoOfStages(10);
 		}
 		if(orgLocations != null){
 			reqWorkFlow.setOrgLocationId(orgLocations);
 			}
 		reqWorkFlow.setWorkFlowName(requirementWorkFlowDTO.getWorkFlowName());
 		reqWorkFlow.setDescription(requirementWorkFlowDTO.getDescription());
+		
 		
 		if(requirementWorkFlowDTO.getNoOfStages() != null) {
 		reqWorkFlow.setNoOfStages(Integer.parseInt(requirementWorkFlowDTO.getNoOfStages()));
