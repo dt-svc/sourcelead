@@ -1172,4 +1172,11 @@ public class PayrollConfigurationRestController {
 			return response;
 	}
 	 
+	 @RequestMapping(value = { "/refreshPayheadsForOrg", "rest/refreshPayheadsForOrg" })
+		public Response<String> refreshPayheadsForOrg(HttpServletRequest request) throws Exception {
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Response<String> response =  payrollPayheadService.refreshPayheadsForOrg(orgLocations.getId());
+			return response;
+	}
+	 
 }
