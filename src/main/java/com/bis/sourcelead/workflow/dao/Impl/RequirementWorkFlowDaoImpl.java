@@ -141,7 +141,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 					}
 				}
 				}
-			String query = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.orgLocationId.id = :orgLocationId";
+			String query = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.orgLocationId.id = :orgLocationId and requirementWorkFlow.status= 1 ORDER BY requirementWorkFlow.id DESC";
 			String countQuery = "select count(*) from RequirementWorkFlow requirementWorkFlow  where  requirementWorkFlow.orgLocationId.id =:orgLocationId";
 			Query query1 = session.createQuery(query + queryEndBuilder).setLong("orgLocationId", orgLocations.getId());
 			Query query2 = session.createQuery(countQuery + queryEndBuilder).setLong("orgLocationId", orgLocations.getId());
