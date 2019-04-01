@@ -1,5 +1,6 @@
 package com.bis.sourcelead.workflow.dto;
 
+import com.bis.sourcelead.annotations.Required;
 import com.bis.sourcelead.dto.SearchDTO;
 
 public class RequirementWorkFlowDTO extends SearchDTO{
@@ -8,6 +9,7 @@ public class RequirementWorkFlowDTO extends SearchDTO{
 	
 	private String orgLocationId;
 
+	@Required(desc = "workFlow name")
 	private String workFlowName;
 
 	private String description;
