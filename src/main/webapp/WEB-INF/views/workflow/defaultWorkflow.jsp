@@ -81,7 +81,7 @@ $(document).ready(function() {
 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>
 <script>
-
+var workflowId;
 function getDefaultWorkflowNameAndDescription(){
 	$.ajax({
 		type : "GET",
@@ -89,6 +89,7 @@ function getDefaultWorkflowNameAndDescription(){
 		success : function(dataList) {
 			$("#workFlowName").val(dataList.workFlowName);
 			$("textarea#description").val(dataList.description);
+			workflowId = dataList.id;
 		}
 		});
 }
@@ -107,13 +108,13 @@ function getDefaultWorkflowNameAndDescription(){
 						
 					//changing dynamic spans based on stage names and anchors for stages based on editable. 
 					iconSpan = dynamicSpan(dataList[i].stageName);
-					editAndDeleteAnchor = dynamicAnchor(dataList[i].editable);
+					editAndDeleteAnchor = dynamicAnchor(dataList[i].editable, dataList[i].uuid);
 					
 					result = result + "<li class='widgetDiv mb clearfix'>";
 					result = result + "<div class='row'>";
 					result = result + "<div class='col-md-10'>";
 					result = result + iconSpan
-					result = result + "<h4 class='pull-left mt10 ml'>"+dataList[i].stageName+"</h4>"; 
+					result = result + "<h4 class='pull-left mt10 ml' id = 'noOfStages'>"+dataList[i].stageName+"</h4>"; 
 					result = result + "</div>";
 					result = result + "<div class='col-md-2'>";
 					result = result + "<ul class='list-inline list-unstyled pull-right mb0'>";
@@ -162,16 +163,26 @@ function getDefaultWorkflowNameAndDescription(){
 			}
 		}
 		
-	function dynamicAnchor(editable){
+	function dynamicAnchor(editable, uuid){
 		if(editable != null){
 			if(editable == "Y"){
 				return "<li><a title='Edit' href='${SourceLeadWeb_sourceleadUrl}/addStage'><i class='fa fa-pencil'></i></a></li>" +
-						"<li><a title='Delete' href='addWorkflow.html'><i class='fa fa-trash'></i></a></li>"
+						"<li><a title='Delete' onclick = 'deleteWorkflowStage(\""+uuid+"\");'><i class='fa fa-trash'></i></a></li>"
 			}
 			if(editable == "N"){
 				return "<li></li>";
 			}
 		}
+	}
+	
+	function deleteWorkflowStage(uuid){
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/deleteWorkflowStage?uuid="+uuid,
+			success : function(dataList) {
+				getDefaultWorkflowStages();
+			}
+			});
 	}
 	
 </script>
@@ -191,8 +202,10 @@ function saveRequirementWorkFlow(){
 	 $.ajax({
            type: "POST",
            data : formData,
-           url:sourceleadUrl+"/saveWorkFlowDetailsPage",
+           url:sourceleadUrl+"/saveWorkFlowDetailsPage?uuid="+workflowId,
            success: function (data) {
+				if(data == "SUCCESS"){
+				}
            },
        });
     /*  } */

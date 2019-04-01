@@ -49,6 +49,13 @@ public class RequirementWorkflowController {
 	@RequestMapping(value = "/defaultWorkflow")
 	public ModelAndView defaultWorkflow(HttpServletRequest request) throws Exception{
 		ModelAndView modelandview = new ModelAndView();
+		Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(orgLocationId);
+		Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user = new User();
+		user.setId(userId);
+		requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
 		modelandview.setViewName("workflow/defaultWorkflow");
 		return modelandview;
 	}
@@ -153,11 +160,9 @@ public class RequirementWorkflowController {
 	@RequestMapping(value = "/createRequirementDefaultWorkFlow", method = RequestMethod.GET)
 	public @ResponseBody RequirementWorkFlowDTO createRequirementDefaultWorkFlow(
 			RequirementWorkFlowDTO requirementWorkFlowDTO, HttpServletRequest request) {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		RequirementWorkFlowDTO workFlowDTO = null;
 		try {
-			workFlowDTO = requirementWorkFlowService.saveRequirementWorkFlowAndStagesByOrgLocationId(orgLocations, user, requirementWorkFlowDTO);
+			workFlowDTO = requirementWorkFlowService.getRequirementDefaultWorkflow();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -165,9 +170,9 @@ public class RequirementWorkflowController {
 	}
 
 	@RequestMapping(value = "/createRequirementDefaultWorkFlowStages", method = RequestMethod.GET)
-	public @ResponseBody List<RequirementDefaultWorkFlowStagesDTO> createRequirementDefaultWorkFlowStages(
+	public @ResponseBody List<RequirementWorkFlowStagesDTO> createRequirementDefaultWorkFlowStages(
 			RequirementWorkFlowDTO requirementWorkFlowDTO, HttpServletRequest request) {
-		List<RequirementDefaultWorkFlowStagesDTO> requirementDefaultWorkFlowStagesDTO = null;
+		List<RequirementWorkFlowStagesDTO> requirementDefaultWorkFlowStagesDTO = null;
 		try {
 			requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementDefaultWorkFlowStages();
 		} catch (Exception e) {
