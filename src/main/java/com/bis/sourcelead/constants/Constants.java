@@ -218,6 +218,9 @@ public class Constants {
 	public static final String ORGDEMO_EMAIL = "orgDemoEmail";
 	public static final String ORGDEMO_NOTIFICATION = "orgDemoNotification";
 	
+	public static final String CANDIDATE_BULK_IMPORT_EMAIL = "CandidateBulkImport";
+	public static final String CANDIDATE_BULK_IMPORT_SUPPORT_EMAIL = "CandidateBulkImportSupport";
+	
 	public static final String PROFILES_ADDED_TO_CART_MAIL= "ProfilesAddedToCartMail";
 	public static final String PROFILES_ADDED_TO_CART_NOTIFICATION = "ProfilesAddedToCartNotification";
 	public static final String ENTITY_TYPE_EMAIL = "Email";
