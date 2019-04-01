@@ -2107,6 +2107,7 @@ function getPaymentTerms(){
 
 
 function getInvoiceTemplateList(selectedId) {
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgRelationId = $("#clientOrgRelationId").val();
 	var responderLocationId = $("#clientOrgRelationId :selected").data("responder_location_id");
 	$("#invoiceTemplateId").empty("");
