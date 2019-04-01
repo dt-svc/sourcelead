@@ -268,6 +268,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 					target.setName(source.getName());
 					target.setDescription(source.getDescription());
 					target.setCreatedBy(source.getCreatedBy().getFullName());
+					target.setUuid(source.getUuid());
 					dtoList.add(target);
 				}
 			}
