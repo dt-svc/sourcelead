@@ -4,6 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <script type="text/javascript">
 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 </script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
   <!-- Header Area -->
@@ -314,6 +315,7 @@ $("#daywiseReportDataTableSearch").keydown(function(e) {
  <script type="text/javascript">
        function getApplicantsJoinedList(){
     	   var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+    	   var atsUrl = '${atsUrl}';
    		   var tab = '${tab}';
     	   var frequency=$("#reportTypeId").val();
     	  var  noApplicantJoinedList=$("#noApplicantJoinedList").val(0); 
@@ -434,7 +436,7 @@ function offerpagination(url){
 	    	  		var result = "";
 	    	  		 if(opt.candidateName !=null && opt.candidateName !='' && opt.candidateName !='undefined'){
 		    	  			result = result + ' <td>';
-							result = result + ' <div title='+opt.candidateName+' class="clearfix mt5 proj_show"><span><a href="'+sourceleadUrl+'/requirementSummary?type=applicants&requirementUUID='+opt.requirementUUID+'&candidateUUID='+opt.candidateUUID+'&submissionId='+opt.submissionId+'" >'+opt.candidateName+'<i class="fa fa-binoculars"></i></a></span></div>';
+							result = result + ' <div title='+opt.candidateName+' class="clearfix mt5 proj_show"><span><a href="'+atsUrl+'/requirementSummary?type=applicants&requirementUUID='+opt.requirementUUID+'&candidateUUID='+opt.candidateUUID+'&submissionId='+opt.submissionId+'" >'+opt.candidateName+'<i class="fa fa-binoculars"></i></a></span></div>';
 							result = result + ' <div title='+opt.email+' class="clearfix mt5 mb5">'+opt.email+'</div>';
 							result = result + ' </td>';
 						}else{
