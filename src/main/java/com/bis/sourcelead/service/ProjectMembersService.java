@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
@@ -171,6 +172,6 @@ public interface ProjectMembersService {
 	
 	ProjectMembers getProjectMembersByMasterCandiateIdAndProjectClientId(Long masterCandidateId,Long projectClientsId) throws Exception;
 
-	public List<Candidate> getAllAvailableAssociates( Long orgLocation);
+	public List<CandidateDTO> getAllAvailableAssociates( Long orgLocation);
 	
 }
