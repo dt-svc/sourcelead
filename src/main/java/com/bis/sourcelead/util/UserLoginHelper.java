@@ -157,6 +157,16 @@ public class UserLoginHelper {
 			Candidate candidate = getCandidateDetails(userRole);
 			SourceLeadSessionManager.setSessionAttribute(req, "candidate", candidate);
 			
+			if(req.getRequestURI().contains("myImmigration")) {
+
+				req.getSession().setAttribute("myImmigrationPage", "Y");
+
+				}else if(req.getRequestURI().contains("viewImmigrationList")) {
+
+				req.getSession().setAttribute("myImmigrationPage", "N");
+				
+				}
+			
 		} catch (NumberFormatException e1) {
 			e1.printStackTrace();
 		} catch (Exception e1) {
