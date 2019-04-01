@@ -115,11 +115,11 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 						isValidated = validateAssociateInfoExeclData(row,fileName,InfoDataDTO,canMap,pfeMap);
 						if(isValidated) {
 							if(row.getCell(1) != null  && !"".equalsIgnoreCase(row.getCell(1).toString()))
-								InfoDataDTO.setEmail(getCellValueAsString(row.getCell(1), fileName));
+								InfoDataDTO.setEmail(getCellValueAsString(row.getCell(1), fileName).toLowerCase());
 							if(row.getCell(2) != null  && !"".equalsIgnoreCase(row.getCell(2).toString()))
 								InfoDataDTO.setUanNumber(getCellValueAsString(row.getCell(2), fileName));																	
 							if(row.getCell(3) != null  && !"".equalsIgnoreCase(row.getCell(3).toString()))
-								InfoDataDTO.setPfNumber(getCellValueAsString(row.getCell(3), fileName));
+								InfoDataDTO.setPfNumber(getCellValueAsString(row.getCell(3), fileName).replaceAll("[^A-Za-z0-9_]" ,""));
 							    InfoDataDTO.setEligibleForPf("Y");
 							if(row.getCell(4) != null  && !"".equalsIgnoreCase(row.getCell(4).toString()))
 								InfoDataDTO.setEsinumber(getCellValueAsString(row.getCell(4), fileName));
@@ -185,7 +185,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 					}else if (row.getCell(3) == null || "".equalsIgnoreCase(row.getCell(3).toString())) {
 						InfoDataDTO.setReason("Pf Number Mandatory");
 						return false;
-					}else if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString()) && !validatePf(getCellValueAsString(row.getCell(3), fileName))){
+					}else if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString()) && !validatePf(getCellValueAsString(row.getCell(3), fileName).replaceAll("[^A-Za-z0-9_]" ,""))){
 						InfoDataDTO.setReason("Invalid Pf Number");
 						return false;
 					}else if(row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString()) && !validateEsi(getCellValueAsString(row.getCell(4), fileName))){
@@ -198,7 +198,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			     }
 			
 			if(pfeMap != null ) {
-				Long candidateId = canMap.get(getCellValueAsString(row.getCell(1),fileName));
+				Long candidateId = canMap.get(getCellValueAsString(row.getCell(1),fileName).toLowerCase());
 				if(pfeMap.get(candidateId) != null) {
 					String uanNum = pfeMap.get(candidateId);
 					if(getCellValueAsString(row.getCell(2), fileName).equalsIgnoreCase(uanNum)){
@@ -261,7 +261,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 							if (row.getCell(0) != null  && !"".equalsIgnoreCase(row.getCell(0).toString())) 
 								bankDataDTO.setUserId((getCellValueAsString(row.getCell(0), fileName)));	
 							if(row.getCell(1) != null  && !"".equalsIgnoreCase(row.getCell(1).toString()))
-								bankDataDTO.setEmail(getCellValueAsString(row.getCell(1), fileName));
+								bankDataDTO.setEmail(getCellValueAsString(row.getCell(1), fileName).toLowerCase());
 							if(row.getCell(2) != null  && !"".equalsIgnoreCase(row.getCell(2).toString()))
 								bankDataDTO.setAccountType(getCellValueAsString(row.getCell(2), fileName));																	
 							if(row.getCell(3) != null  && !"".equalsIgnoreCase(row.getCell(3).toString()))
@@ -376,7 +376,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 				
 				if(accGroupByEmailList != null ) {
 					if("Savings".equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName))) {
-					List<String> accountNum =accGroupByEmailList.get(getCellValueAsString(row.getCell(1),fileName));	
+					List<String> accountNum =accGroupByEmailList.get(getCellValueAsString(row.getCell(1),fileName).toLowerCase());	
 					if(accountNum != null && accountNum.size() > 0) {
 						 boolean acc = accountNum.contains(getCellValueAsString(row.getCell(4),fileName));
 						 if(acc) {
@@ -387,7 +387,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 					}else {
 							Boolean flag = false;        
 					    for (PaymentAccount  pList:  paymentDetailsList){ 			
-					    	if(pList.getEmail().equalsIgnoreCase(getCellValueAsString(row.getCell(1), fileName)) && pList.getAccountType().equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName)))
+					    	if(pList.getEmail().toLowerCase().equalsIgnoreCase(getCellValueAsString(row.getCell(1), fileName).toLowerCase()) && pList.getAccountType().equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName)))
 					    	{			                        				
 					 			flag = true;
 					 		}	
@@ -514,7 +514,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 								}
 								
 								switch(associateSalaryIndDTO.getPayFrequency()){
-							     case "Annual":
+							     case "Annually":
 							    	 associateSalaryIndDTO.setPerPaySal(String.format("%.02f", Float.parseFloat(associateSalaryIndDTO.getAnnualSal()) / 1));
 							     break;
 
@@ -634,7 +634,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			 */
 			private boolean validatePf(String pfNum){
 				String rutNo = pfNum.trim();
-				Pattern pattern = Pattern.compile("^[a-zA-Z0-9]{10,25}");
+				Pattern pattern = Pattern.compile("^[A-Z0-9]{10,25}"); 
 				Matcher matcher = pattern.matcher(rutNo);
 				return matcher.matches();
 	    	}
