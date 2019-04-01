@@ -378,7 +378,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 				}
 				
 				if(accGroupByEmailList != null ) {
-					if("Savings".equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName))) {
+					if("Savings".equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName)) && accGroupByEmailList.containsKey(getCellValueAsString(row.getCell(1), fileName).toLowerCase())) {
 					List<String> accountNum =accGroupByEmailList.get(getCellValueAsString(row.getCell(1),fileName).toLowerCase());	
 					if(accountNum != null && accountNum.size() > 0) {
 						 boolean acc = accountNum.contains(getCellValueAsString(row.getCell(4),fileName));
