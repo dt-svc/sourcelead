@@ -211,6 +211,18 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		requirementWorkFlowDTO.setUuid(defaultWorkflow.getUuid());
 		return requirementWorkFlowDTO;
 	}
+
+
+	@Override
+	public String deleteQuestionnaireTemplateById(String templateUuid) {
+		return requirementWorkFlowDao.deleteQuestionnaireTemplateById(templateUuid);
+	}
+
+
+	@Override
+	public RequirementQuestionnaireTemplate getQuestionnaireTemplateById(String templateUuid) {
+		return requirementWorkFlowDao.getQuestionnaireTemplateById(templateUuid);
+	}
 	
 }
 
