@@ -103,6 +103,10 @@ public class PerformanceGoals implements Serializable{
 		@JsonProperty
 	    private String goalEndDateStr;
 		
+		@Transient
+		@JsonProperty
+	    private String createdDateStr;
+		
 
 		public Long getId() {
 			return id;
@@ -265,6 +269,19 @@ public class PerformanceGoals implements Serializable{
 
 		public void setGoalId(PerformanceGoals goalId) {
 			this.goalId = goalId;
+		}
+
+		public String getCreatedDateStr() {
+			String createdDateStr = null;
+			if(createdDate != null){
+				SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+				createdDateStr = dateFormat.format(createdDate);	
+			}
+			return createdDateStr;
+		}
+
+		public void setCreatedDateStr(String createdDateStr) {
+			this.createdDateStr = createdDateStr;
 		}
 		
 
