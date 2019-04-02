@@ -26,7 +26,11 @@
 		
        <div class="positionRelative reportHead clearfix mb">
         <ul class="pull-right list-unstyled list-inline">
-          <li><a class="newAdBtn mr5" href="${SourceLeadWeb_sourceleadUrl}/addStage" title="Add">+ Add</a></li>
+          <li>
+          <c:if test="${not empty requirementWorkFlowStagesDTO}">
+          <a class="newAdBtn mr5"  href="${SourceLeadWeb_sourceleadUrl}/addStage?uuid=<c:out value="${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}" />" title="Add">+ Add</a>
+          </c:if>
+          </li>
         <li class="">
             <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
             <span class="repSearchIcon" onclick="getDynamciUserList();"></span>

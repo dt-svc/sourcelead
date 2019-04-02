@@ -38,4 +38,6 @@ public interface RequirementWorkFlowService {
 	String deleteQuestionnaireTemplateById(String templateUuid);
 
 	RequirementQuestionnaireTemplate getQuestionnaireTemplateById(String templateUuid);
+	
+	void saveRequirementWorkflowStageByWorkflowId(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, Long id)throws Exception;
 }

@@ -175,6 +175,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			RequirementQuestionnaireTemplateDTO questionnaireDto, Long orgLocationId) {
 		return requirementWorkFlowDao.getQuestionnaireTemplateListByOrgLocationId(questionnaireDto, orgLocationId);
     }
+	
+	
 	public List<RequirementWorkFlowStagesDTO> getRequirementWorkflowStagesByWorkflowUuid(RequirementWorkFlowDTO requirementWorkFlowDTO) throws Exception {
 		List<RequirementWorkFlowStages> requirementWorkFlowStages = requirementWorkFlowDao.getRequirementWorkflowStagesByUuid(requirementWorkFlowDTO.getUuid());
 		RequirementWorkFlow requirementWorkFlow = requirementWorkFlowDao.getRequirementWorkFlowByUuid(requirementWorkFlowDTO.getUuid());
@@ -186,6 +188,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		for(RequirementWorkFlowStages workFlowStages : requirementWorkFlowStages) {
 			requirementWorkFlowStagesDTO = new RequirementWorkFlowStagesDTO();
 			requirementWorkFlowStagesDTO.setWorkFlowName(requirementWorkFlow.getWorkFlowName());
+			requirementWorkFlowStagesDTO.setRequirementWorkFlowUuid(requirementWorkFlow.getUuid());
 			requirementWorkFlowStagesDTO.setStageName(workFlowStages.getStageName());
 			requirementWorkFlowStagesDTO.setEditable(workFlowStages.getEditable());
 			requirementWorkFlowStagesDTO.setUuid(workFlowStages.getUuid());
@@ -222,6 +225,20 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	@Override
 	public RequirementQuestionnaireTemplate getQuestionnaireTemplateById(String templateUuid) {
 		return requirementWorkFlowDao.getQuestionnaireTemplateById(templateUuid);
+	}
+	
+	@Override
+	public void saveRequirementWorkflowStageByWorkflowId(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, Long id) throws Exception {
+		RequirementWorkFlow requirementWorkFlow = requirementWorkFlowDao.getRequirementWorkFlowByUuid(requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid());
+		List<RequirementWorkFlowStages> requirementWorkFlowStages = requirementWorkFlowDao.getRequirementWorkflowStagesByUuid(requirementWorkFlow.getUuid());
+		
+		for (int i = 0; i < requirementWorkFlowStages.size(); i++) {
+			if(requirementWorkFlowStages.get(i).getUuid().equals(requirementWorkFlowStagesDTO.getUuid())) {
+				
+			}
+		
+		//requirementWorkFlowDao.saveRequirementWorkflowStageByWorkflowId()
+		}
 	}
 	
 }
