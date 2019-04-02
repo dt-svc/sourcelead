@@ -25,7 +25,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 }
 </style>
-<c:set var ="myImmigrationPage" value = "${myImmigrationPage}" scope="session"/>
+<%-- <c:set var ="myImmigrationPage" value = "${myImmigrationPage}" scope="session"/> --%>
 <c:set var ="passOnLoadCount" value = "${tabRecordCountMap['Passport']}" scope="request"/>
 <c:set var ="visaOnLoadCount" value = "${tabRecordCountMap['Visa']}" scope="request"/>
 <c:set var ="empOnLoadCount" value  =  "${tabRecordCountMap['Employers']}" scope="request"/>
@@ -258,10 +258,10 @@ $(document).ready(function() {
         immigration.getCandidateResidenceList(candidateId);
         }else if(tab=='#passportsTab'){
         showLoading("immigrationLoadingPassportsTab");
-        immigration.displayPassportDetails(candidateId,'Passport');
+        immigration.displayPassportDetails(candidateId);
         }else if(tab=='#visasTab'){
         showLoading("immigrationLoadingVisasTab");
-        immigration.displayVisaDetails(candidateId,'Visa');
+        immigration.displayVisaDetails(candidateId);
         }else if(tab=='#lcaTab'){
         	showLoading("immigrationLcaLoadingTab");
         	immigration.getLcaDetailsInfo(immigrationId);

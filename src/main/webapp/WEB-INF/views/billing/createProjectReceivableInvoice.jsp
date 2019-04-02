@@ -1415,9 +1415,9 @@ function toDate(selector) {
 		        	 var result = '';
 		        	 var selected = 'selected';
 		        	 result = result +'<option disabled selected>--Select Client--</option>';
-		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' >'+json['orgName']+'</option>';
+		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' data-responder_location_id= '+json['dataResponderLocationId']+'>'+json['orgName']+'</option>';		        	 
 		        	 $("#clientOrgRelationId").empty();
-		           	 $("#clientOrgRelationId").append(result); 
+		        	 $("#clientOrgRelationId").append(result); 
 		           	 $('#clientOrgRelationId').trigger("chosen:updated");
 		           	$("#clientCurrency").val(json['clientCurrency']);
 		           	getClientContactsExisted(json['vendorContactId']);
@@ -1442,7 +1442,7 @@ function toDate(selector) {
 		           		$("#accountDetails").val(json['accountDetails']);
 		           	}
 		           	/* buildLineItemAndTaxAddRows(); */
-		           	
+		           	getInvoiceTemplateList(json.customInvoiceId);
 		           	/* editInvoice(json['invoiceLineItemsList']);*/
 		        	$("#inoviceTotal").val(json['subTotal']);
 		        	$("#subTotal").val(json['subTotal']);
@@ -1763,7 +1763,7 @@ function getPaymentTerms(){
 	});
 }
 
-function getInvoiceTemplateList() {
+function getInvoiceTemplateList(selectedId) {
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgRelationId = $("#clientOrgRelationId").val();
 	var responderLocationId = $("#clientOrgRelationId :selected").data("responder_location_id");
@@ -1772,12 +1772,12 @@ function getInvoiceTemplateList() {
 		type : "POST",
 		url: vmsUrl+"/invoiceTemplateList?orgRelationId=" + orgRelationId + "&orgLocationId=" + responderLocationId,
 		success : function(data) {
-			$("#invoiceTemplateId").append("<option value='0'>-- Select Invoice Template --</option>");
-			$("#invoiceTemplateId").append("<option value='-1' selected>Default Template</option>");
-			if(data && data.data != null && data.data.length > 0) {
-				for(var e in data.data) {
-					$("#invoiceTemplateId").append("<option value=" + data.data[e].id + ">" + data.data[e].name + "</option>");
-				}
+		$("#invoiceTemplateId").append("<option value='0'>-- Select Invoice Template --</option>");
+		$("#invoiceTemplateId").append("<option value='-1' selected>Default Template</option>");
+		if(data && data.data != null && data.data.length > 0) {
+		for(var e in data.data) {
+		$("#invoiceTemplateId").append("<option value=" + data.data[e].id + " "+ (selectedId && selectedId === data.data[e].id ? "selected" : "") +">" + data.data[e].name + "</option>");
+	}
 			}
 		}
 	});

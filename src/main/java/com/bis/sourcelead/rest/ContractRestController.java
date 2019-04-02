@@ -966,7 +966,7 @@ public class ContractRestController {
 							contractsTemplateService.documentsReceivedMailToOwner(contractRequestDocuments.getContractId(), user, org);
 						}
 						if (fileInfo != null) {
-							FileUploadUtil.moveFile(staticPath, fileInfo, "Requested Documents");
+							FileUploadUtil.moveFile(staticPath, fileInfo, "Requested_Documents");
 						}
 					}
 				}
