@@ -383,4 +383,16 @@ public class RequirementWorkflowController {
 			
 			return response;
 		}
+		
+		@RequestMapping(value = "/getRequirementWorkflowStage")
+		public @ResponseBody List<RequirementWorkFlowStagesDTO> getRequirementWorkflowStage(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO){
+			List<RequirementWorkFlowStagesDTO> requirementDefaultWorkFlowStagesDTO = null;
+			try {
+				requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid(requirementWorkFlowStagesDTO.getUuid(), requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			return requirementDefaultWorkFlowStagesDTO;
+		}
 }

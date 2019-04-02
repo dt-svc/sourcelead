@@ -40,4 +40,6 @@ public interface RequirementWorkFlowService {
 	RequirementQuestionnaireTemplate getQuestionnaireTemplateById(String templateUuid);
 	
 	void saveRequirementWorkflowStageByWorkflowId(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, Long id)throws Exception;
+	
+	List<RequirementWorkFlowStagesDTO> getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid(String uuid, String workflowUuid)throws Exception;
 }
