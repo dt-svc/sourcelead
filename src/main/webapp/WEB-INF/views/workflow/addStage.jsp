@@ -1,5 +1,7 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+	<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <div class="wraper">
 <section class="content-wraper">
   <section class="content-header clearfix">
@@ -16,7 +18,7 @@
         <div class="form-group clearfix">
           <label class="col-md-3">Stage Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control">
+            <input type="text" class="form-control" id = "stageName">
           </div>
         </div>
       </div>
@@ -24,7 +26,7 @@
         <div class="form-group clearfix">
           <label class="col-md-3">Description</label>
           <div class="col-md-9">
-            <textarea rows="2"  class="form-control"></textarea>
+            <textarea rows="2"  class="form-control" id = "description"></textarea>
           </div>
         </div>
       </div>
@@ -153,19 +155,30 @@
 			<div class="form-group">
           <label class="col-md-3">Previous Stage</label>
         <div class="col-md-9">
-				<input type="text" class="form-control">
+        
+          <c:if test="${not empty requirementWorkFlowStagesDTO}">  
+         <select class="sel form-control" id = "workflowStageUuid" onchange = "getNextWorkflowStage();">
+         <option selected>Select</option>
+        	<c:forEach var="requirementWorkFlowStages" items="${requirementWorkFlowStagesDTO}">	
+         		<option value="${requirementWorkFlowStages.uuid}">${requirementWorkFlowStages.stageName}</option>
+     		</c:forEach>
+     		</select>
+     		   </c:if>  
 			  </div>
+			  
 			</div>
 			<div class="form-group">
 			  <label class="col-md-3">Next Stage</label>
 			  <div class="col-md-9">
-				<select class="sel form-control">
+			  
+				<select class="sel form-control" >
 				  <option selected>Select</option>
 				  <option>Urget</option>
 				  <option>High</option>
 				  <option>Normal</option>
 				  <option>Low</option>
 				</select>
+				
 			  </div>
 			</div>
 		  </div>
@@ -178,7 +191,11 @@
     <div class="footerstyelsNew">
         <div class="clearfix col-md-12 mb">
           <div class="pull-right mr">
-            <input value="Save" class="btn btn-primary" type="button">
+          
+          <c:if test="${not empty requirementWorkFlowStagesDTO}">  
+            <input value="Save" class="btn btn-primary" type="button" onclick = "saveRequirementWorkflowStage(<c:out value="${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}"/>);">
+		  </c:if>  
+          
             <input value="Cancel" class="btn btn-default ml" type="button">
           </div>
         </div>
@@ -190,5 +207,30 @@
 function createNewtask() {
 	document.getElementById("createNewtask").style.display = "block";
 }
+</script>
+<script>
+function saveRequirementWorkflowStage(){
+	var stageName = $("#stageName").val();
+	var description = $("textarea#description").val();
+	var stageUuid = $("#workflowStageUuid").val();
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl + "/saveRequirementWorkflowStage?stageName="+stageName+"&description="+description+"&stageUuid="+stageUuid,
+		success : function(dataList) {
+			
+		}
+		});
+}
+
+function getNextWorkflowStage(){
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl + "/saveRequirementWorkflowStage?stageName="+stageName+"&description="+description+"&stageUuid="+stageUuid,
+		success : function(dataList) {
+			
+		}
+		});
+}
+
 </script>
 <jsp:include page="../masterFooter.jsp" /> 
