@@ -74,7 +74,9 @@ function getDynamicWorkflowQuestionnnaireList(){
 	            pages: 10
 	        }),
 	        "columns": [
-	        	{ "data": "name"}
+	        	{ "data": "name"},
+	        	{ "data": "description"},
+	        	{ "data": "createdBy"}
 	        	
 	        ],
 	        "columnDefs": [ {
@@ -120,13 +122,13 @@ function getDynamicWorkflowQuestionnnaireList(){
 	        },{
 	    	  	"targets": colIndex++,
 	    	  	"sortable": false,
-	    	  	/* "data": "status", */
+	    	  /* 	 "data": "uuid", */
 	    	  	"render": function(data, type, workflow, meta) {
 	    	  		var result = "";
 	    	    	result = result +"<div class='width90px'>";
 	    	  		result = result +"<ul class='list-inline list-unstyled'>";
-	    	  		result = result +"<li><a href='editworkflow.html'><i class='fa fa-pencil cursorPointer' title='Edit'></i></a></li>";
-	    	  		result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete'></i></li>"
+	    	  		result = result +"<li><a href= "+sourceleadUrl+"/editQuestionnaire?templateUuid="+workflow.uuid+"><i class='fa fa-pencil cursorPointer' title='Edit'></i></a></li>";
+	    	  		result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete' onclick= deleteQuestionnaire('"+workflow.uuid+"')></i></li>"
 	    	  		result = result +"</ul>	";
 	    	  		result = result +"</div>";
   	             	return result;
@@ -148,6 +150,26 @@ function getDynamicWorkflowQuestionnnaireList(){
 	  $("#questionnaireListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
 	  
 	        
+}
+</script>
+<script>
+
+function deleteQuestionnaire(uuid){
+	console.log("delete uuid "+uuid);
+	  $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/deleteQuestionnaireTemplateById?templateUuid="+uuid, 
+	       success: function(result) {
+	           if (result.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (result.response === "SUCCESS") {
+	        		getWorkflowQuestionnnaireList();
+	        		$(".mask, #modalTasktype").fadeOut();
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
+	        },
+	    });
 }
 </script>
 <jsp:include page="../masterFooter.jsp" /> 

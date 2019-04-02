@@ -124,10 +124,23 @@ public class RequirementWorkflowController {
 		modelandview.setViewName("workflow/addQuestionnaire");
 		return modelandview;
 	}
+	@RequestMapping(value = "/editQuestionnaire")
+	public ModelAndView editQuestionnaire(@RequestParam(value = "templateUuid", required = true) String templateUuid, HttpServletRequest request) throws Exception{
+		ModelAndView modelandview = new ModelAndView();
+		modelandview.addObject("templateUuid",templateUuid);
+		modelandview.setViewName("workflow/addQuestionnaire");
+		return modelandview;
+	}
+	 @RequestMapping(value = "/loadSavedQuestionnaireTemplate" , method = RequestMethod.GET)
+	   public @ResponseBody RequirementQuestionnaireTemplate loadSavedquestionnaireTemplate(@RequestParam(value="templateUuid", required=true) String templateUuid,HttpServletRequest request) throws Exception {
+		  RequirementQuestionnaireTemplate questionnaireTemplate = requirementWorkFlowService.getQuestionnaireTemplateById(templateUuid);
+			return questionnaireTemplate;
+	    
+	   }
 	
 	
 	@RequestMapping(value = "/saveWorkFlowDetailsPage", method = RequestMethod.POST)
-	public ResponseList<String> saveWorkFlowDetailsPage(
+	public @ResponseBody ResponseList<String> saveWorkFlowDetailsPage(
 			RequirementWorkFlowDTO requirementWorkFlowDTO,HttpServletRequest request) {
 		
 		ResponseList<String> response = new ResponseList<String>();
@@ -276,4 +289,30 @@ public class RequirementWorkflowController {
 	    
 	   }
 	
+	@RequestMapping(value = "/deleteQuestionnaireTemplateById" , method = RequestMethod.POST)
+	   public @ResponseBody ResponseList<String> deleteQuestionnaireTemplateById(@RequestParam(value="templateUuid", required=true) String templateUuid
+			      ,HttpServletRequest request) throws Exception {
+		Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		ResponseList<String> response = new ResponseList<String>();
+		try {
+			if (templateUuid != null ) {
+				String resp = requirementWorkFlowService.deleteQuestionnaireTemplateById(templateUuid);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else if (userId == null) {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
+		}
+		
+		return response;
+
+	}
 }

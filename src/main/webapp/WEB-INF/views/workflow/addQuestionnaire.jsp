@@ -9,9 +9,9 @@
 
 <script>
 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-var templateId ="1234";
+var templateUuid ='${templateUuid}';
 $(document).ready(function(){
-	customizeFields(sourceleadUrl,templateId);
+	customizeFields(sourceleadUrl,templateUuid);
 });
 </script>
 <div class="wraper"> 

@@ -141,7 +141,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 					}
 				}
 				}
-			String query = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.orgLocationId.id = :orgLocationId";
+			String query = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.orgLocationId.id = :orgLocationId and requirementWorkFlow.status= 1 ORDER BY requirementWorkFlow.id DESC";
 			String countQuery = "select count(*) from RequirementWorkFlow requirementWorkFlow  where  requirementWorkFlow.orgLocationId.id =:orgLocationId";
 			Query query1 = session.createQuery(query + queryEndBuilder).setLong("orgLocationId", orgLocations.getId());
 			Query query2 = session.createQuery(countQuery + queryEndBuilder).setLong("orgLocationId", orgLocations.getId());
@@ -268,6 +268,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 					target.setName(source.getName());
 					target.setDescription(source.getDescription());
 					target.setCreatedBy(source.getCreatedBy().getFullName());
+					target.setUuid(source.getUuid());
 					dtoList.add(target);
 				}
 			}
@@ -315,4 +316,40 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	
 	}
 }
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String deleteQuestionnaireTemplateById(String templateUuid) {
+		logger.debug("Delete RequirementQuestionnaireTemplate templateUuid ---> " + templateUuid);
+
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "delete from RequirementQuestionnaireTemplate rq  where rq.uuid =:templateUuid";
+			 int count= session.createQuery(query.toString()).setString("templateUuid", templateUuid).executeUpdate();
+			 logger.debug("Record deleted count  -->" + count);
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
+			e.printStackTrace();
+		}
+		logger.debug("Deleted record id -->" + templateUuid);
+		return "success";
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementQuestionnaireTemplate getQuestionnaireTemplateById(String templateUuid) {
+		// TODO Auto-generated method stub
+		logger.debug("Delete RequirementQuestionnaireTemplate templateUuid ---> " + templateUuid);
+		RequirementQuestionnaireTemplate template= null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = " from RequirementQuestionnaireTemplate rq  where rq.uuid =:templateUuid";
+			template= (RequirementQuestionnaireTemplate) session.createQuery(query).setString("templateUuid", templateUuid).uniqueResult();
+			 logger.debug("loading RequirementQuestionnaireTemplate  -->" + template.getName());
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while getting  RequirementQuestionnaireTemplate -->" + e.getMessage());
+			e.printStackTrace();
+		}
+		return template;
+	}
 }

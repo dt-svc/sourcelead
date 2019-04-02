@@ -34,4 +34,8 @@ public interface RequirementWorkFlowService {
 	RequirementQuestionnaireTemplate getQuestionnaireTemplateByLabelName(Long orgLocationId,  String questinnaireName);
 
 	RequirementWorkFlowDTO getRequirementDefaultWorkflow()throws Exception;
+
+	String deleteQuestionnaireTemplateById(String templateUuid);
+
+	RequirementQuestionnaireTemplate getQuestionnaireTemplateById(String templateUuid);
 }

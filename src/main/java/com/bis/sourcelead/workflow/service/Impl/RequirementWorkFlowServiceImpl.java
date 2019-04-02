@@ -70,12 +70,14 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			reqWorkFlow = new RequirementWorkFlow();
 			reqWorkFlow.setCreatedBy(user);
 			reqWorkFlow.setCreatedDate(currentDate);
+			reqWorkFlow.setNoOfStages(10);
 		}
 		if(orgLocations != null){
 			reqWorkFlow.setOrgLocationId(orgLocations);
 			}
 		reqWorkFlow.setWorkFlowName(requirementWorkFlowDTO.getWorkFlowName());
 		reqWorkFlow.setDescription(requirementWorkFlowDTO.getDescription());
+		
 		
 		if(requirementWorkFlowDTO.getNoOfStages() != null) {
 		reqWorkFlow.setNoOfStages(Integer.parseInt(requirementWorkFlowDTO.getNoOfStages()));
@@ -208,6 +210,18 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		requirementWorkFlowDTO.setDescription(defaultWorkflow.getDescription());
 		requirementWorkFlowDTO.setUuid(defaultWorkflow.getUuid());
 		return requirementWorkFlowDTO;
+	}
+
+
+	@Override
+	public String deleteQuestionnaireTemplateById(String templateUuid) {
+		return requirementWorkFlowDao.deleteQuestionnaireTemplateById(templateUuid);
+	}
+
+
+	@Override
+	public RequirementQuestionnaireTemplate getQuestionnaireTemplateById(String templateUuid) {
+		return requirementWorkFlowDao.getQuestionnaireTemplateById(templateUuid);
 	}
 	
 }
