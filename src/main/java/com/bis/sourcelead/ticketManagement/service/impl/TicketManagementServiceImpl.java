@@ -772,6 +772,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 			ticketCommentDTO.setId(ticketComment.getId());
 			ticketCommentDTO.setTicketId(ticketComment.getTicket().getId());
 			ticketCommentDTO.setComment(ticketComment.getComment());
+			ticketCommentDTO.setMentionedUserIds(ticketComment.getCommentMentionedUsers());
 			ticketCommentDTO.setStatus(ticketComment.getStatus());
 			
 			long diff = CommonUtil.currentDate().getTime() - ticketComment.getCreatedDate().getTime();
@@ -822,7 +823,14 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 			}
 			ticketComment.setTicket(ticketManagementDao.getTicketById(ticketCommentDTO.getTicketId()));
 			ticketComment.setComment(ticketCommentDTO.getComment());
-			return ticketManagementDao.saveTicketComment(ticketComment);
+			ticketComment.setCommentMentionedUsers(ticketCommentDTO.getMentionedUserIds());
+			boolean result = ticketManagementDao.saveTicketComment(ticketComment);
+			if(result) {
+				for(String userId : ticketCommentDTO.getMentionedUserIds().split(",")) {
+					//send comment email to userId
+				}
+			}
+			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

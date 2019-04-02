@@ -771,7 +771,7 @@ public class TicketManagementRestController {
 		return responseList;
 	}
 	
-	@RequestMapping(value = {"/saveTicketComment", "/rest/saveTicketComment"}, method = RequestMethod.POST)
+	@RequestMapping(value = "/saveTicketComment", method = RequestMethod.POST)
 	@ResponseBody
 	public Response<Boolean> saveTicketComment(HttpServletRequest request, TicketCommentDTO ticketCommentDTO) {
 		Response<Boolean> response = new Response<>();
@@ -791,6 +791,12 @@ public class TicketManagementRestController {
 			response.setResponseMessage(Result.AWKWARD.getValue());
 		}
 		return response;
+	}
+	
+	@RequestMapping(value = {"/rest/saveTicketComment"}, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Boolean> saveTicketCommentForMobile(HttpServletRequest request, @RequestBody TicketCommentDTO ticketCommentDTO) {
+		return saveTicketComment(request, ticketCommentDTO);
 	}
 	
 	@RequestMapping(value = {"/getTicketComment", "/rest/getTicketComment"}, method = RequestMethod.POST)
