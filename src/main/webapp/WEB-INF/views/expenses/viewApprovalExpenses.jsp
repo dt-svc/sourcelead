@@ -151,6 +151,9 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 					<div class="project_details_cta">
 						<strong>Submitted Amount:</strong><span>${expenses.totalsubmittedAmount}</span><div class="clearfix"></div>
 					</div>
+					<div class="project_details_cta">
+                             <strong>Submitted On:</strong><span>${expenses.submittedDate}</span><div class="clearfix"></div>
+                      </div>
 					
 					 <div class="project_details_cta">
 					  <c:if test="${submissionStatus == 'APPROVED'}">
