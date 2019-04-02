@@ -363,4 +363,14 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 		}
 		return associateSalaryHistoryInd;
 	}
+	
+	@Override
+	@Transactional
+	public List<AssociateSalaryInd> getAssociateSalaryIndListByOrgLocationsId(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from AssociateSalaryInd salary where salary.orgLocations.id = :orgLocationId and salary.status = '1' ";  
+		List<AssociateSalaryInd> associateSalaryIndList =  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		return associateSalaryIndList;
+		
+	}
 }
