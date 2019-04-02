@@ -19,12 +19,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
@@ -36,6 +39,7 @@ import com.bis.sourcelead.reports.service.ClientReportService;
 import com.bis.sourcelead.reportsDTO.TimeToFillDTO;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RolesService;
@@ -54,6 +58,9 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${atsUrl}")
+	private String atsUrl;
 	
 	@Autowired
 	OrgRelationsService orgRelationsService;
@@ -84,6 +91,8 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	
 	@Autowired
 	private WageTaxSummaryService wageTaxSummaryService;
+	@Autowired
+	ProjectMembersService projectMembersService;
 	
 	@Autowired
 	private RequirementSubmissionHistoryService requirementSubmissionHistoryService;
@@ -846,4 +855,62 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		}
 		return model;
 	}
+	
+
+
+	@RequestMapping(value = "/availableAssociatesReport")
+	public ModelAndView availableAassociatesReport(HttpServletRequest request,HttpServletResponse response) throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		List<CandidateDTO> empList = projectMembersService.getAllAvailableAssociates(orgLocations.getId());
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.addObject("empList", empList);
+		 model.setViewName("reports/availableAssociates");
+
+		return model;
+		
+	}
+
+	@RequestMapping(value = "/releasedJobsListByOrgRelationId")
+	public ModelAndView releasedJobsListByOrgRelationId(@RequestParam(value="orgRelationId", required=true)Long orgRelationId,
+			@RequestParam(value="spocId", required=true)Long spocId,
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+
+	 ModelAndView model = new ModelAndView();
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.addObject("orgRelationId", orgRelationId);
+	 model.addObject("spocId", spocId);
+	 model.setViewName("reports/releasedToVendorJobsList");
+	 return model;
+ }	
+	
+	@RequestMapping(value = "/releasedJobsApplicantsDeclineListByOrgRelationId")
+	public ModelAndView releasedJobsApplicantsDeclineListByOrgRelationId(@RequestParam(value="orgRelationId", required=true)Long orgRelationId,
+			@RequestParam(value="spocId", required=true)Long spocId,
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+
+	 ModelAndView model = new ModelAndView();
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.addObject("orgRelationId", orgRelationId);
+	 model.addObject("spocId", spocId);
+	 model.setViewName("reports/vendorJobsApplicantsDeclineList");
+	 return model;
+ }	
+	
+	@RequestMapping(value = "/releasedJobsApplicantsBackOutListByOrgRelationId")
+	public ModelAndView releasedJobsApplicantsBackOutListByOrgRelationId(@RequestParam(value="orgRelationId", required=true)Long orgRelationId,
+			@RequestParam(value="spocId", required=true)Long spocId,
+			HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+
+	 ModelAndView model = new ModelAndView();
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.addObject("orgRelationId", orgRelationId);
+	 model.addObject("spocId", spocId);
+	 model.setViewName("reports/vendorJobsApplicantsBackOutList");
+	 return model;
+ }
+
 }

@@ -35,6 +35,7 @@
 
 <div class="GraView mt">
 	<!-- Released Jobs -->
+	
 	<div class="clearfix row mt mb">
 		<div class="col-md-12">
 			<div class="projectDashboad clearfix positionRelative" style="height: 220px;">
@@ -42,7 +43,7 @@
 				<div class="col-md-4">
 					<div class="text-center" style="margin-top: 75px;">
 						<h4 class="mt5">Released Jobs</h4>
-						<p class="ml text-muted" id="releasedJobsCount">0</p>
+						<a class="ml text-muted" id="releasedJobsCount" onclick="releasedJobsToVendors();">0</a>
 					</div>
 				</div>
 				<div class="col-md-8">
@@ -150,7 +151,7 @@
 					<div id="applicantDeclineloadingDiv" style="display:none; position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url(&quot;/resources/images/loading.gif&quot;); background-position:center; background-repeat:no-repeat; background-size:75px;"></div>
 					<div class="clearfix positionRelative mb5 row">
 						<div class="col-md-12">
-							<h4>Applicant Decline<a href="javascript:void(0)" class="ml mt10" id="applicantsDeclineCount">0</a></h4>
+							<h4>Applicant Decline<a href="javascript:void(0)" class="ml mt10" id="applicantsDeclineCount" onclick="releasedJobsToVendorsApplicantDecline();">0</a></h4>
 						</div>
 					</div>
 					<div class="clearfix positionRelative">
@@ -167,7 +168,7 @@
 					<div id="backoutCandidatesloadingDiv" style="display:none; position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url(&quot;/resources/images/loading.gif&quot;); background-position:center; background-repeat:no-repeat; background-size:75px;"></div>
 					<div class="clearfix positionRelative mb5 row">
 						<div class="col-md-12">
-							<h4>Backout Candidates<a href="javascript:void(0)" class="ml mt10" id="backoutCandidatesCount">0</a></h4>
+							<h4>Backout Candidates<a href="javascript:void(0)" class="ml mt10" id="backoutCandidatesCount" onclick="releasedJobsToVendorsApplicantBackOut();">0</a></h4>
 						</div>
 					</div>
 					<div class="clearfix positionRelative">

@@ -77,7 +77,7 @@ gtag('config', 'UA-115098165-1');
 	 <li class="dropdown dropdown-featureshome">
 	 <a data-target="#featureshome" href="javascript:void(0)" id="featuresID">Features
 			  <span class="fa fa-angle-down"></span></a>
-			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom">
+			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom dropdownmenucustom_defualt">
 <!--
 				<li><a href="features.html">Features</a></li>
 -->
@@ -101,7 +101,7 @@ gtag('config', 'UA-115098165-1');
 	<li class="dropdown dropdown-featureshome">
 	 <a data-target="#featureshome" href="javascript:void(0)" id="resourcesID">Resources
 			  <span class="fa fa-angle-down"></span></a>
-			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom">
+			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom dropdownmenucustom_defualt">
 				<li><a class="helpbtn" href="/help.html">Help Manuals</a></li>
 				<li><a href="/blog/all.html" id="blogID">Blog</a></li>
 				<li><a href="/blog/allReleaseNote.html" id="releaseNoteID">Release Note</a></li>

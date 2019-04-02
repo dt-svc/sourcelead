@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest.reportsRestController;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,13 +14,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.beans.RequirementStagesReport;
+import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.OrgSpocDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementLocations;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.reportsDTO.ApplicantDeclineDTO;
@@ -27,7 +32,11 @@ import com.bis.sourcelead.reportsDTO.ApplicantsBackoutDTO;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -45,6 +54,21 @@ public class VendorPerformanceReportRestController {
 
 	@Autowired
 	RequirementService requirementService;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	private RequirementLocationsService requirementLocationsService;
+	
+	@Autowired
+	private RequirementDao requirementDao;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	@RequestMapping(value = "/getOrgRelationList", method = RequestMethod.POST)
 	public ResponseList<OrgRelationDTO> getVendorList(HttpServletRequest request) {
@@ -201,6 +225,61 @@ public class VendorPerformanceReportRestController {
 		}
 		return response;
 	}
+	
+	@RequestMapping(value = "/getVendorJobsForReleasedJobReportForList", method = RequestMethod.GET)
+	public ResponseList<Requirement> getVendorJobsForReleasedJobReportForList(HttpServletRequest request,
+			@RequestParam(value = "searchValue", required = false) String searchValue,
+			@RequestParam(defaultValue = "0") long orgRelationId, 
+			@RequestParam(defaultValue = "0") long spocId) {
+		ResponseList<Requirement> response = new ResponseList<>();
+		List<Requirement> requirementList = new LinkedList<>();
+		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				List<Requirement> reqList = clientService.getReleasedJobsByOrgRelationId(orgRelationId, spocId, userRole);
+				if (reqList != null && !reqList.isEmpty()) {
+					Long tempId = 0L;
+					
+					for (Requirement requirement : reqList) {
+						List<RequirementLocations> locationsList;
+						String location = "";
+						StringBuilder requirementBuilder = new StringBuilder();
+						if (tempId != requirement.getParentRequirement().getId()) {
+							try {
+								Requirement parentRequirement = requirementService.getRequirementDetailsById(requirement.getParentRequirement().getId());
+								requirement.setRequirementSubmissionStatus(parentRequirement.getRequirementSubmissionStatus());
+								User user = userService.getUserById(parentRequirement.getManagerUserId().getId());
+								//For Applicants Count
+							     RequirementSubmissionsCountDTO totalCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(parentRequirement.getId(), user, orgLocations, "ALL");
+							     requirement.setTotalApplicants(totalCount.getApplicantsCount());
+							     RequirementSubmissionsCountDTO joinedCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(parentRequirement.getId(), user, orgLocations, "JOINED");
+							     requirement.setJoinedCount(joinedCount.getJoinedCount().toString());
+							     // for requirement location
+							     List<String> requirementLocationsList = new ArrayList<>();
+									StringBuilder sb = new StringBuilder();
+						    		List<RequirementLocations> locationList = requirementLocationsService.getRequirementLocationsListByRequirementId(parentRequirement.getId());
+						    		locationList.forEach(loclist->{
+						    			requirementLocationsList.add(loclist.getLocation());
+						    			if(sb.length() > 0) 
+						    				sb.append(",");
+						    			sb.append(loclist.getLocation()).toString();
+						    		});
+						    		requirement.setLocation(sb.toString());
+						    		requirement.setLocationsList(requirementLocationsList);
+								requirement.setJobOwner(user.getFullName());
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+
+							requirementList.add(requirement);
+							tempId = requirement.getParentRequirement().getId();
+						}
+					}
+				}
+				response.setData(requirementList);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+		return response;
+	}
 
 	@RequestMapping(value = "/getQualityCandidatesListForVendor")
 	@SuppressWarnings("unchecked")
@@ -263,6 +342,34 @@ public class VendorPerformanceReportRestController {
 			response.setResponseMessage(Result.AWKWARD.getValue());
 		}
 		return response;
+	}
+	
+	@RequestMapping(value = "/getApplicantDeclineListForVendor")
+	@SuppressWarnings("unchecked")
+	public ResponseList<RequirementSubmission>getApplicantDeclineListForVendor(@RequestParam(defaultValue = "0") long orgRelationId, 
+			@RequestParam(defaultValue = "0") long spocId,
+			@RequestParam(value = "status", required = false) String status,
+			HttpServletRequest request){
+				
+		ResponseList<RequirementSubmission> responseList = new ResponseList<>();
+		List<RequirementSubmission> list = new ArrayList<RequirementSubmission>();
+		String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+		List<Long> requirementIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(request, "requirementIdsList");
+	 	List<RequirementSubmission> requirementSubmissionList = requirementDao.getApplicantDeclineCountsForVendor(requirementIdList, orgRelationId, spocId, status);
+	 	requirementSubmissionList.forEach(submission->{
+	 		submission.setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(dateFormat, submission.getCreatedDate()));
+	 		if(submission.getJoinedDate() !=null){
+	 		submission.setJoinedDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat, submission.getJoinedDate()));	
+	 		}
+	 		list.add(submission);
+	 	});
+	 	
+	 	responseList.setData(list);
+	 	responseList.setResponse(Result.SUCCESS.name());
+	 	responseList.setResponseMessage(Result.SUCCESS.getValue());
+		
+		return responseList;
+		
 	}
 
 	@RequestMapping(value = "/getApplicantBackoutCountsForVendor")
