@@ -109,6 +109,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Transient
     private String offerExpireDate;
 	
+	@Transient
+    private String offerUUID;
+	
 	public Long getId() {
 		return id;
 	}
@@ -297,5 +300,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setOfferExpireDate(String offerExpireDate) {
 		this.offerExpireDate = offerExpireDate;
+	}
+
+	public String getOfferUUID() {
+		return offerUUID;
+	}
+
+	public void setOfferUUID(String offerUUID) {
+		this.offerUUID = offerUUID;
 	}
 }

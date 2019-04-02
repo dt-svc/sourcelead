@@ -29,6 +29,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
 import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
@@ -2334,7 +2335,7 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 	}
 
 	@Override
-	public List<Candidate> getAllAvailableAssociates(Long orgLocationId) {
+	public List<CandidateDTO> getAllAvailableAssociates(Long orgLocationId) {
 		return projectMembersDao.getAllAvailableAssociates( orgLocationId);
 	}
 

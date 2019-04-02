@@ -4089,7 +4089,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			}
 
 			if (null != reportList.getEmpStartDate()) {
-				writeRow.createCell(3).setCellValue(reportList.getEmpStartDate()+ " "+ "to" +" "+(reportList.getEmpEndDate()));
+				writeRow.createCell(3).setCellValue(reportList.getEmpStartDate()+ " "+ "to" +" "+(reportList.getEmpEndDate() != null ? reportList.getProjectEndDate() : "--"));
 				createExcelsheet.autoSizeColumn(3);
 			} else {
 				writeRow.createCell(3).setCellValue("--");
@@ -4105,7 +4105,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			}
 
 			if (null != reportList.getHoursperWeek()) {
-				writeRow.createCell(5).setCellValue(reportList.getHoursperWeek());
+				writeRow.createCell(5).setCellValue(reportList.getHoursperWeek().substring(0, 5));
 				createExcelsheet.autoSizeColumn(5);
 			} else {
 				writeRow.createCell(5).setCellValue("--");
