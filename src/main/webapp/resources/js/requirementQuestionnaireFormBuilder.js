@@ -5,13 +5,13 @@
  * SJFB may be freely distributed under the included MIT license (license.txt).
  */
 
-function customizeFields(sourceleadUrl,templateId){
+function customizeFields(sourceleadUrl,templateUuid){
 	
     //If loading a saved form from your database, put the ID here. Example id is "1".
     //Adds new field with animation
     $("#add-field a").click(function(e) {
         e.preventDefault();
-        $(addField($(this).data('type'),'Y','Y',sourceleadUrl,templateId)).appendTo('#form-fields').hide().slideDown('fast');
+        $(addField($(this).data('type'),'Y','Y',sourceleadUrl,templateUuid)).appendTo('#form-fields').hide().slideDown('fast');
         $('#form-fields').sortable();
     });
 
@@ -63,10 +63,10 @@ function customizeFields(sourceleadUrl,templateId){
         $('.choices ul').sortable();
     });
 
-   /* //load saved form
-    if(null != templateId && templateId != undefined){
-    	//  loadSavedForm(templateId,sourceleadUrl); // commented existing code.
-    }*/
+   //load saved form
+    if(null != templateUuid && templateUuid != undefined){
+    	 loadSavedForm(templateUuid,sourceleadUrl); // commented existing code.
+    }
 };
 
 
@@ -355,22 +355,23 @@ function addChoice(labelValue) {
 }
 
 
-function loadSavedForm(templateId,sourceleadUrl) {
-	
+function loadSavedForm(templateUuid,sourceleadUrl) {
     $.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/loadSavedPerformanceFeedbackTemplate?templateId="+templateId, 
+        url: sourceleadUrl+"/loadSavedQuestionnaireTemplate?templateUuid="+templateUuid, 
         success: function(result) {
-        	 $("#templateName").val(result.templateName);
+             $("#templateName").val(result.name);
         	 $("textarea[id='templateDescription']").text(result.description);
-        	 $("#templateId").val(templateId);
+        	 $("#templateId").val(result.id);
+        	 $("#minutes").val(result.timeLimitMinutes);
+        	 $("#seconds").val(result.timeLimitSeconds);
         	 
         	 var data = eval(result.jsonString);
         	 if (data) {
                  //go through each saved field object and render the builder
                  $.each( data, function( k, v ) {
                      //Add the field
-                     $(addField(v['type'],v['isRemoved'],v['isLabelModified'],v['label'],sourceleadUrl,templateId,'N')).appendTo('#form-fields').hide().slideDown('fast');
+                     $(addField(v['type'],v['isRemoved'],v['isLabelModified'],v['label'],sourceleadUrl,templateUuid,'N')).appendTo('#form-fields').hide().slideDown('fast');
                      var $currentField = $('#form-fields .field').last();
 
                      //Add the label
@@ -378,6 +379,10 @@ function loadSavedForm(templateId,sourceleadUrl) {
                      
                     //Add the hint
                      $currentField.find('.field-hint').val(v['hint']);
+                     
+                     $currentField.find('.field-points').val(v['points']);
+                     
+                     $currentField.find('.field-attempt').val(v['attempt']);
                      
                     //Add the type dropdown
                      $currentField.find('.field-dropdown').val(v['dropdown']);

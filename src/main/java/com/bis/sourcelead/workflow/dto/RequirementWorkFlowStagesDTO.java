@@ -8,10 +8,12 @@ public class RequirementWorkFlowStagesDTO {
 	
 	private String orgLocationId;
 
-	private String requirementWorkFlowId;
+	private Long requirementWorkFlowId;
 	
 	private String stageName;
 
+	private String description;
+	
 	private String uuid;
 	
 	private Long requirementQuestionnaireId;
@@ -22,6 +24,10 @@ public class RequirementWorkFlowStagesDTO {
 	
 	private String workFlowName;
 
+	private String requirementWorkFlowUuid;
+	
+	private Integer seqOrder;
+	
 	public long getId() {
 		return id;
 	}
@@ -38,11 +44,11 @@ public class RequirementWorkFlowStagesDTO {
 		this.orgLocationId = orgLocationId;
 	}
 
-	public String getRequirementWorkFlowId() {
+	public Long getRequirementWorkFlowId() {
 		return requirementWorkFlowId;
 	}
 
-	public void setRequirementWorkFlowId(String requirementWorkFlowId) {
+	public void setRequirementWorkFlowId(Long requirementWorkFlowId) {
 		this.requirementWorkFlowId = requirementWorkFlowId;
 	}
 
@@ -93,6 +99,31 @@ public class RequirementWorkFlowStagesDTO {
 	public void setWorkFlowName(String workFlowName) {
 		this.workFlowName = workFlowName;
 	}
+
+	public String getRequirementWorkFlowUuid() {
+		return requirementWorkFlowUuid;
+	}
+
+	public void setRequirementWorkFlowUuid(String requirementWorkFlowUuid) {
+		this.requirementWorkFlowUuid = requirementWorkFlowUuid;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Integer getSeqOrder() {
+		return seqOrder;
+	}
+
+	public void setSeqOrder(Integer seqOrder) {
+		this.seqOrder = seqOrder;
+	}
+	
 	
 
 }

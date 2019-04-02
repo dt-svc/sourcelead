@@ -316,4 +316,70 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	
 	}
 }
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String deleteQuestionnaireTemplateById(String templateUuid) {
+		logger.debug("Delete RequirementQuestionnaireTemplate templateUuid ---> " + templateUuid);
+
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "delete from RequirementQuestionnaireTemplate rq  where rq.uuid =:templateUuid";
+			 int count= session.createQuery(query.toString()).setString("templateUuid", templateUuid).executeUpdate();
+			 logger.debug("Record deleted count  -->" + count);
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
+			e.printStackTrace();
+		}
+		logger.debug("Deleted record id -->" + templateUuid);
+		return "success";
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementQuestionnaireTemplate getQuestionnaireTemplateById(String templateUuid) {
+		// TODO Auto-generated method stub
+		logger.debug("Delete RequirementQuestionnaireTemplate templateUuid ---> " + templateUuid);
+		RequirementQuestionnaireTemplate template= null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = " from RequirementQuestionnaireTemplate rq  where rq.uuid =:templateUuid";
+			template= (RequirementQuestionnaireTemplate) session.createQuery(query).setString("templateUuid", templateUuid).uniqueResult();
+			 logger.debug("loading RequirementQuestionnaireTemplate  -->" + template.getName());
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while getting  RequirementQuestionnaireTemplate -->" + e.getMessage());
+			e.printStackTrace();
+		}
+		return template;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementWorkFlowStages getRequirementWorkFlowStageByUuidAndWorkflowUuid(String uuid, String workflowUuid) throws Exception {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.requirementWorkFlowId.uuid =:workflowUuid and requirementWorkFlowStages.uuid =:uuid";
+			RequirementWorkFlowStages requirementWorkFlowStages = (RequirementWorkFlowStages)session.createQuery(query).setParameter("workflowUuid", workflowUuid).setParameter("uuid", uuid).uniqueResult();
+			return requirementWorkFlowStages;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+	}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementWorkFlowStages> getRequirementWorkflowStagesBySeqOrderAndWorkflowUuid(String workflowUuid, Integer id) throws Exception {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.requirementWorkFlowId.uuid =:workflowUuid "
+					+ "and  requirementWorkFlowStages.seqOrder > "+id+" order by requirementWorkFlowStages.seqOrder ASC "; 
+			List<RequirementWorkFlowStages> requirementWorkFlowStages = session.createQuery(query).setParameter("workflowUuid", workflowUuid).list();
+			return requirementWorkFlowStages;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+	}
+	}
+	
 }

@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.RequirementDefaultWorkFlowStagesDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -79,9 +80,12 @@ public class RequirementWorkflowController {
 	
 	
 	@RequestMapping(value = "/addStage")
-	public ModelAndView addStage(HttpServletRequest request) throws Exception{
+	public ModelAndView addStage(HttpServletRequest request,
+			RequirementWorkFlowDTO requirementWorkFlowDTO) throws Exception{
 		ModelAndView modelandview = new ModelAndView();
+		List<RequirementWorkFlowStagesDTO> requirementWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO);
 		modelandview.setViewName("workflow/addStage");
+		modelandview.addObject("requirementWorkFlowStagesDTO", requirementWorkFlowStagesDTO);
 		return modelandview;
 	}
 	
@@ -124,6 +128,19 @@ public class RequirementWorkflowController {
 		modelandview.setViewName("workflow/addQuestionnaire");
 		return modelandview;
 	}
+	@RequestMapping(value = "/editQuestionnaire")
+	public ModelAndView editQuestionnaire(@RequestParam(value = "templateUuid", required = true) String templateUuid, HttpServletRequest request) throws Exception{
+		ModelAndView modelandview = new ModelAndView();
+		modelandview.addObject("templateUuid",templateUuid);
+		modelandview.setViewName("workflow/addQuestionnaire");
+		return modelandview;
+	}
+	 @RequestMapping(value = "/loadSavedQuestionnaireTemplate" , method = RequestMethod.GET)
+	   public @ResponseBody RequirementQuestionnaireTemplate loadSavedquestionnaireTemplate(@RequestParam(value="templateUuid", required=true) String templateUuid,HttpServletRequest request) throws Exception {
+		  RequirementQuestionnaireTemplate questionnaireTemplate = requirementWorkFlowService.getQuestionnaireTemplateById(templateUuid);
+			return questionnaireTemplate;
+	    
+	   }
 	
 	
 	@RequestMapping(value = "/saveWorkFlowDetailsPage", method = RequestMethod.POST)
@@ -276,4 +293,106 @@ public class RequirementWorkflowController {
 	    
 	   }
 	
+	@RequestMapping(value = "/deleteQuestionnaireTemplateById" , method = RequestMethod.POST)
+	   public @ResponseBody ResponseList<String> deleteQuestionnaireTemplateById(@RequestParam(value="templateUuid", required=true) String templateUuid
+			      ,HttpServletRequest request) throws Exception {
+		Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		ResponseList<String> response = new ResponseList<String>();
+		try {
+			if (templateUuid != null ) {
+				String resp = requirementWorkFlowService.deleteQuestionnaireTemplateById(templateUuid);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else if (userId == null) {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
+		}
+		
+		return response;
+
+	}
+	
+	//delete workflow stages..default workflow
+		/*@RequestMapping(value = "/deleteWorkflowStage")
+		public Response<String> deleteWorkflowStage(HttpServletRequest request, RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO) {
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			OrgLocations orgLocations = new OrgLocations();
+			orgLocations.setId(orgLocationId);
+			Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			User user = new User();
+			user.setId(userId);
+			Response<String> response = new Response<>();
+			if (user != null) {
+				try {
+					if (null != requirementWorkFlowStagesDTO) {
+						requirementWorkFlowService.deleteWorkflowStageByWorkflowId(requirementWorkFlowStagesDTO.getRequirementWorkFlowId(), orgLocations.getId());
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}else {
+						response.setObject("DataMissing");
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+			return response;
+		}*/
+		
+		@RequestMapping(value = "/saveRequirementWorkflowStage")
+		public Response<String> saveRequirementWorkflowStage(HttpServletRequest request,
+				RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO) {
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			OrgLocations orgLocations = new OrgLocations();
+			orgLocations.setId(orgLocationId);
+			Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			User user = new User();
+			user.setId(userId);
+			Response<String> response = new Response<>();
+				try {
+					if (user != null) {
+					if (null != requirementWorkFlowStagesDTO) {
+						requirementWorkFlowService.saveRequirementWorkflowStageByWorkflowId(requirementWorkFlowStagesDTO, orgLocations.getId());
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}
+					else {
+						response.setObject("DataMissing");
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+				} else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+					}catch (Exception e) {
+					e.printStackTrace();
+				}
+			
+			return response;
+		}
+		
+		@RequestMapping(value = "/getRequirementWorkflowStage")
+		public @ResponseBody List<RequirementWorkFlowStagesDTO> getRequirementWorkflowStage(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO){
+			List<RequirementWorkFlowStagesDTO> requirementDefaultWorkFlowStagesDTO = null;
+			try {
+				requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid(requirementWorkFlowStagesDTO.getUuid(), requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			return requirementDefaultWorkFlowStagesDTO;
+		}
 }
