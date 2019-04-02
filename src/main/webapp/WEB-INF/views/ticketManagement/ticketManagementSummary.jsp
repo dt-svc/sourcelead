@@ -168,13 +168,13 @@
     </div>
   </section>
   
-<div class="popupWrap" id="ticketCommentPopup" role="dialog">
+<div class="popupWrap popupWrapFixed" id="ticketCommentPopup" role="dialog">
 	<%-- <form role="form" id="ticketComment_form" name="sourceleadTicketComment_form" method="post"> --%>
 		<input type="hidden" id="ticketCommentId" name="id" value="0"/>
 		<div class="ticketCommentCont">
 			<div class="clearfix">
 				<!-- <textarea rows="8" class="form-control clearfix mb10 valid error" placeholder="Comments here..." id="ticketComment" name="comment" field-name="Comment" data-validation="required validate_length length1-5000" style="border-color: rgb(204, 204, 204);"></textarea> -->
-				<div contenteditable="true" id="ticketComment" style="height: 100px; border: 1px solid #CECECE;"></div>
+				<div contenteditable="true" id="ticketComment" class="tkt_comment_div"></div>
 			</div>
 		</div>
 		<div class="popupFoot text-right">

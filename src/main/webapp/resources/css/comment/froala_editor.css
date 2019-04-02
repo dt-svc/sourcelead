@@ -1404,3 +1404,8 @@ span.fr-sr-only {
     color: #777;
     font-weight: normal;
 }
+
+.tkt_comment_div {
+	height: 150px;
+	overflow: auto;
+}
