@@ -204,8 +204,8 @@ function competencePagination(url){
     $("input[type=search]").hide();
     $("#competenceDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
-   		    $('#onboardDataTableSearch').parent().find('p.jquery_form_error_message').remove();
-   	    	var searchData = $('#onboardDataTableSearch').val();
+   		    $('#competenceDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+   	    	var searchData = $('#competenceDataTableSearch').val();
    	    	
    	 	if(searchData.endsWith("-") || searchData.endsWith("\\") || searchData.endsWith("//") || searchData.endsWith("%")){
 	    		$("#competenceDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
