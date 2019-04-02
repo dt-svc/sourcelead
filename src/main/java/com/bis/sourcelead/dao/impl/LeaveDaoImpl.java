@@ -1044,7 +1044,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		if("yes".equalsIgnoreCase(topleave)) {
 	    query = "select lt.NAME AS name,lt.ID AS id from LEAVE_TYPE lt where  lt.STATUS =1  and lt.ORGLOCATION_ID =:orgLocationId"+subQuery1+subQuery3;
 		}else {
-			query = "select lt.NAME AS name,lt.ID AS id from LEAVE_TYPE lt where  lt.STATUS =1 and lt.VISIBLE_IN_BALANCE_LEAVES='Y' and lt.ORGLOCATION_ID =:orgLocationId"+subQuery1+subQuery3;
+			query = "select lt.NAME AS name,lt.ID AS id, lt.DEPARTMENT_IDS AS department from LEAVE_TYPE lt where  lt.STATUS =1 and lt.VISIBLE_IN_BALANCE_LEAVES='Y' and lt.ORGLOCATION_ID =:orgLocationId"+subQuery1+subQuery3;
 		}
 		String query1 ="select d.DEPARTMENT_NAME AS deparmentNames,d.ID AS departmentId from DEPARTMENT d where d.ORG_LOCATION_ID =:orgLocationId";
 		Query queryString1 = session.createSQLQuery(query1);
@@ -1664,5 +1664,31 @@ public class LeaveDaoImpl implements LeaveDao{
 		}
 		return lovLeaves;
 	}
+	
+	@SuppressWarnings("unchecked")
+    @Override
+    @Transactional
+    public List<Leave> getAllLeavesByLocationIdAndStatusAndAppliedDate(Long locationId, String status,
+            Date appliedDate) {
+        java.sql.Date sqlappliedDate = new java.sql.Date(appliedDate.getTime());
+        Session session = this.sessionFactory.getCurrentSession();
+        List<Leave> list = null;
+        String query = "from Leave leave left join fetch leave.leaveType where leave.orgLocations.id =:orgLocationId and leave.status =:status and leave.createdDate =:sqlappliedDate";
+        list = session.createQuery(query).setString("status", status).setLong("orgLocationId", locationId).setDate("sqlappliedDate", sqlappliedDate).list();
+        return list;
+    }
+	
+	@SuppressWarnings("unchecked")
+    @Override
+    @Transactional
+    public List<Leave> getAllLeavesByLocationIdAndStatusAndLeaveStartDate(Long locationId, String status,
+            Date appliedDate) {
+        java.sql.Date sqlappliedDate = new java.sql.Date(appliedDate.getTime());
+        Session session = this.sessionFactory.getCurrentSession();
+        List<Leave> list = null;
+        String query = "from Leave leave left join fetch leave.leaveType where leave.orgLocations.id =:orgLocationId and leave.status =:status and leave.fromDate =:sqlappliedDate";
+        list = session.createQuery(query).setString("status", status).setLong("orgLocationId", locationId).setDate("sqlappliedDate", sqlappliedDate).list();
+        return list;
+    }
 }
 

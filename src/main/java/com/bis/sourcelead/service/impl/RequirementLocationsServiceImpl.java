@@ -52,6 +52,11 @@ public class RequirementLocationsServiceImpl implements RequirementLocationsServ
 
 	}
 
+	@Override
+	public List<String> getRequirementLocationsStringListByRequirementId(Long requirementId) throws Exception {
+		return requirementLocationsDao.getRequirementLocationsStringListByRequirementId(requirementId);
+	}
+
 	
 
 }

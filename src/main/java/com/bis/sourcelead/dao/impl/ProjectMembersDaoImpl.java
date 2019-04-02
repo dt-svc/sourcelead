@@ -22,6 +22,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -39,6 +41,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
@@ -2086,6 +2089,32 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			pm  = pmList.iterator().next();
 		}
 		return pm;  
+	}
+
+
+	@Override
+	@Transactional
+	public List<CandidateDTO> getAllAvailableAssociates( Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Query queryObj = null;
+		List<CandidateDTO> candidateDTOList = null;
+		
+		String query = "SELECT CAND.ID AS candId,"
+				+ " CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS candidateName"
+				+ " FROM CANDIDATE CAND, "
+				+ " ORG_LOCATIONS OL, "
+				+ " USER_ROLE UR "
+				+ " WHERE CAND.CONSULTANT_USER_ID = UR.USER_ID AND "
+				+ " CAND.ORG_LOCATION_ID = :orgLocationId AND "
+				+ " (UR.USER_STATE = 'ACTIVE' OR UR.USER_STATE = 'NOT_LOGGEDIN')";
+		
+		
+		queryObj = session.createSQLQuery(query);
+		queryObj.setParameter("orgLocationId", orgLocationId);
+		queryObj.setResultTransformer(Transformers.aliasToBean(CandidateDTO.class));
+		candidateDTOList = queryObj.list();
+		
+		return candidateDTOList;
 	}
 	
 }

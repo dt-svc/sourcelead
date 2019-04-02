@@ -121,6 +121,20 @@ public class SourceLeadSessionManager {
 		}
 	}
 	
+	public  void setCouchbaseCustomTokenJsonString(String token, String attribute, JsonObject jsonString) {
+		try {
+			if (token != null && attribute != null) {
+					if (jsonString != null) {
+						couchbaseClient.setCustomTokenDocuments(token, jsonString);
+					} else
+						System.out.println("Json String is NuLL : " + attribute);
+			} else
+				System.out.println("token is NuLL : " +  token);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	public  void setUserLoginSessionJsonString(String sessionId, String attribute, JsonObject jsonString) {
 		String jsonKey = sessionId ;

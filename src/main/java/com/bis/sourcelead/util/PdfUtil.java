@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
+import com.bis.sourcelead.dto.AvailableAssociatesDTO;
 import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.Response;
@@ -3424,5 +3425,135 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 							 userArray[10] = submissionHistory.getSubmissionId().getSubmissionStatus().toString(); 
 							
 							 return userArray;
+						}
+						public File availableAssociatereportReportListOfPdf(java.util.List<AvailableAssociatesDTO> data,User user, OrgLocations orgLocations) {
+							try {
+								long totalBillable = 0l;
+								long totalNonbillable = 0l;
+								String[] headers = Constants.AVAILABLE_ASSOCIATES_REPORT_EXPORT_HEADDERS;
+								Document document = new Document(PageSize.LETTER.rotate());
+
+								StringBuilder sbUser = new StringBuilder();
+								sbUser.append("Available Associate Report")
+										.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date()));
+
+								StringBuilder fileSB = new StringBuilder();
+								File file = File.createTempFile(fileSB.append("Available Associate Report")
+										.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date())).toString(),
+										".pdf");
+
+								file.setReadable(true);
+
+								try {
+									// Get an instance of PdfWriter and create a Table.pdf file as an output.
+									PdfWriter.getInstance(document, new FileOutputStream(file));
+									document.open();
+
+									Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+									BaseColor myColor = WebColors.getRGBColor("#000000");
+									boldFont.setColor(myColor);
+									StringBuilder userStyle = new StringBuilder();
+									userStyle.append(orgLocations.getOrgLocationName()).append(" ").append("- Available Associate Report");
+
+									// Create an instance of PdfPTable. After that we transform the header and
+									PdfPTable table = new PdfPTable(headers.length);
+									Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+									PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(), font));
+									cell1.setColspan(18);
+									headerCellStyle(cell1);
+									table.setWidthPercentage(100);
+									table.setWidths(new int[] { 5, 5, 5, 5, 5,5});
+									table.addCell(cell1);
+									for (int i = 0; i < headers.length; i++) {
+										String header = headers[i];
+										PdfPCell cell = new PdfPCell();
+										cell.setGrayFill(0.9f);
+										cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+										BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+										cell.setBackgroundColor(myBorderColor);
+										table.addCell(cell);
+									}
+									table.completeRow();
+									String isGlobalAccess = null;
+									java.util.List<String[]> reportList = prepareAvailableassociateReportListStringArray(data, headers,orgLocations, user, isGlobalAccess );
+									if (reportList != null && reportList.size() > 0) {
+										for (String[] reportArray : reportList) {
+											for (int i = 0; i < reportArray.length; i++) {
+												String datum = reportArray[i];
+												PdfPCell cell = new PdfPCell();
+												cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+												table.addCell(cell);
+											}
+											table.completeRow();
+										}
+									}
+									document.addTitle("Available Associate Report Table");
+									table.setSpacingBefore(15f);
+									document.add(table);
+									logger.info("Pdf table created !!");
+								} catch (DocumentException e) {
+									logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
+								} catch (FileNotFoundException e) {
+									logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
+								} finally {
+									document.close();
+								}
+								return file;
+							} catch (IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							return null;
+						}
+
+						private java.util.List<String[]> prepareAvailableassociateReportListStringArray(
+								java.util.List<AvailableAssociatesDTO> data, String[] headers, OrgLocations orgLocations,
+								User user, String isGlobalAccess) {
+					
+							java.util.List<String[]> arrayList = new ArrayList<>();
+
+							for (AvailableAssociatesDTO report : data) {
+								String reportArray[] = new String[headers.length];
+								
+								if (report.getEmpName() != null) {
+									reportArray[0] = report.getEmpName();
+								} else {
+									reportArray[0] = "--";
+								}
+								
+								if (report.getProjectName() != null) {
+									reportArray[1] = report.getProjectName();
+								} else {
+									reportArray[1] = "--";
+								}
+
+								if (report.getProjectStartDate() != null) {
+									reportArray[2] = (report.getProjectStartDate()+ "  "+ "to" + " " + (report.getProjectEndDate() != null ? report.getProjectEndDate() : "--"));
+								} else {
+									reportArray[2] = "--";
+								}
+
+								if (report.getEmpStartDate() != null) {
+									reportArray[3] = (report.getEmpStartDate() + "  "+ "to" + " " + (report.getEmpEndDate() != null ? report.getEmpEndDate() : "--"));
+								} else {
+									reportArray[3] = "--";
+								}
+								
+								if (report.getAvailableHours() != null) {
+									reportArray[4] = report.getAvailableHours();
+								} else {
+									reportArray[4] = "--";
+								}
+
+								if (report.getHoursperWeek() != null) {
+									reportArray[5] = report.getHoursperWeek().substring(0, 5);
+								} else {
+									reportArray[5] = "--";
+								}
+
+								
+								arrayList.add(reportArray);
+							}
+							return arrayList;
 						}
 }
