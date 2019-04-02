@@ -439,14 +439,14 @@ function jpagination(url,atsUrl){
            		var result = "";
            	 if(opt.jobId != '' && opt.jobId != null){
        		  	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-       		       	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+       		       	result = result +"<td><a href='${SourceLeadWeb_atsUrl}/requirementSummary?requirementUUID="+opt.requirementUUID+"'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
        		       '</sec:authorize>';
        		       '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
        		       	result = result +"<td><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
        		       '</sec:authorize>';
        		  	 }else{
        		  		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-       		           	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+       		           	result = result +"<td><a href='${SourceLeadWeb_atsUrl}/requirementSummary?requirementUUID="+opt.requirementUUID+"'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
        		           '</sec:authorize>';
        		           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
        		           	result = result +"<td><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
@@ -618,7 +618,7 @@ function jpagination(url,atsUrl){
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
 		         		if(opt.totalApplicants!=null && opt.totalApplicants!='' && opt.totalApplicants!='undefined' && opt.totalApplicants > 0){
-		         			result = result +"<td><a href='<c:url value='/requirementSummary?type=applicants&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.totalApplicants+"</div></a></td>";
+		         			result = result +"<td><a href='${SourceLeadWeb_atsUrl}/requirementSummary?type=applicants&requirementUUID="+opt.requirementUUID+"'><div>"+opt.totalApplicants+"</div></a></td>";
 		         		}
 		         		else{
 		         			result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
@@ -634,7 +634,7 @@ function jpagination(url,atsUrl){
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
 		         		if(opt.shortlistCount!=null && opt.shortlistCount!='' && opt.shortlistCount!='undefined' && opt.shortlistCount > 0){
-		                     result = result +"<td><a href='<c:url value='/requirementSummary?type=SHORTLIST&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.totalApplicants+"</div></a></td>";
+		                     result = result +"<td><a href='${SourceLeadWeb_atsUrl}/requirementSummary?type=SHORTLIST&requirementUUID="+opt.requirementUUID+"'><div>"+opt.totalApplicants+"</div></a></td>";
 // 		         			result = result +"<td><div>"+opt.shortlistCount+"</div></td>";
 		         		}
 		         		else{
@@ -652,7 +652,7 @@ function jpagination(url,atsUrl){
 		         		var result = "";
 		         		if(opt.submitToClientCount!=null && opt.submitToClientCount!='' && opt.submitToClientCount!='undefined' && opt.submitToClientCount > 0){
 		              
-		         			result = result +"<td><a href='<c:url value='/requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.submitToClientCount+"</div></a></td>";
+		         			result = result +"<td><a href='${SourceLeadWeb_atsUrl}/requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+opt.requirementUUID+"'><div>"+opt.submitToClientCount+"</div></a></td>";
 
 		         			// 		         			result = result +"<td><div>"+opt.submitToClientCount+"</div></td>";
 		         		}
@@ -671,7 +671,7 @@ function jpagination(url,atsUrl){
 		         		var result = "";
 		         		if(opt.interviewCount!=null && opt.interviewCount!='' && opt.interviewCount!='undefined' && opt.interviewCount > 0){
 		         			
-		         			result = result +"<td><a href='<c:url value='/requirementSummary?type=INTERVIEW&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.interviewCount+"</div></a></td>";
+		         			result = result +"<td><a href='${SourceLeadWeb_atsUrl}/requirementSummary?type=INTERVIEW&requirementUUID="+opt.requirementUUID+"'><div>"+opt.interviewCount+"</div></a></td>";
 
 // 		         			result = result +"<td><div>"+opt.interviewCount+"</div></td>";
 		         		}
@@ -690,7 +690,7 @@ function jpagination(url,atsUrl){
 		         		var result = "";
 		         		if(opt.offersCount!=null && opt.offersCount!='' && opt.offersCount!='undefined' && opt.offersCount > 0){
 		         			
-		         			result = result +"<td><a href='<c:url value='/requirementSummary?type=OFFERMADE&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.offersCount+"</div></a></td>";
+		         			result = result +"<td><a href='${SourceLeadWeb_atsUrl}/requirementSummary?type=OFFERMADE&requirementUUID="+opt.requirementUUID+"'><div>"+opt.offersCount+"</div></a></td>";
 
 // 		         			result = result +"<td><div>"+opt.offersCount+"</div></td>";
 		         		}
@@ -744,7 +744,7 @@ function jpagination(url,atsUrl){
 		         		var result = "";
 		         		if(opt.joinedCount!=null && opt.joinedCount!='' && opt.joinedCount!='undefined' && opt.joinedCount > 0){
 		         			
-		         			result = result +"<td><a href='<c:url value='/requirementSummary?type=JOINED&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.joinedCount+"</div></a></td>";
+		         			result = result +"<td><a href='${SourceLeadWeb_atsUrl}/requirementSummary?type=JOINED&requirementUUID="+opt.requirementUUID+"'><div>"+opt.joinedCount+"</div></a></td>";
 
 // 		         			result = result +"<td><div>"+opt.joinedCount+"</div></td>";
 		         		}
@@ -764,7 +764,7 @@ function jpagination(url,atsUrl){
 		         		var result = "";
 		         		if(opt.backoutCount!=null && opt.backoutCount!='' && opt.backoutCount!='undefined' && opt.backoutCount > 0){
 		         			
-		         			result = result +"<td><a href='<c:url value='/requirementSummary?type=BACKOUT&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.backoutCount+"</div></a></td>";
+		         			result = result +"<td><a href='${SourceLeadWeb_atsUrl}/requirementSummary?type=BACKOUT&requirementUUID="+opt.requirementUUID+"'><div>"+opt.backoutCount+"</div></a></td>";
 
 // 		         			result = result +"<td><div>"+opt.backoutCount+"</div></td>";
 		         		}
@@ -783,7 +783,7 @@ function jpagination(url,atsUrl){
 		         		var result = "";
 		         		if(opt.rejectedCount!=null && opt.rejectedCount!='' && opt.rejectedCount!='undefined' && opt.joinedCount > 0){
 		         			
-		         			result = result +"<td><a href='<c:url value='/requirementSummary?type=REJECTED&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.rejectedCount+"</div></a></td>";
+		         			result = result +"<td><a href='${SourceLeadWeb_atsUrl}/requirementSummary?type=REJECTED&requirementUUID="+opt.requirementUUID+"'><div>"+opt.rejectedCount+"</div></a></td>";
 
 // 		         			result = result +"<td><div>"+opt.rejectedCount+"</div></td>";
 		         		}
@@ -1129,7 +1129,7 @@ function jpaginationForJobFairs(url){
 	        	   $("#requirementEmptyListMessage").val(2);
 	           		var result = "";
 	       		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-	       		    	result = result +"<td><a href='<c:url value='/jobFairSummary?uuid="+opt.uuid+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+	       		    	result = result +"<td><a href='${SourceLeadWeb_atsUrl}/jobFairSummary?uuid="+opt.uuid+"'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 	       		    '</sec:authorize>';
 		            return result;
 	            }

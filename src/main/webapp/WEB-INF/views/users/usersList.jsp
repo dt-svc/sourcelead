@@ -341,13 +341,16 @@ function getUsersSearchResult(searchValue){
 											<a href="#">Import</a>
 											<div class="immSubMenu">
 												<a href="${SourceleadWeb_sourceleadUrl}/uploadForm">Associate Import</a>
-												<a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateBankForm">Associate Bank Details Import</a>
-												<a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateDeductionContributionDetails">Associate Deduction Contribution Import</a>
+
+												<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+													<a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateBankForm">Associate Bank Details Import</a>
+												   <a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateDeductionContributionDetails">Associate Deduction Contribution Import</a>
+												</c:if>
+
 												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-												    <a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateBankingDetailsForm">Associate Bank Detail</a>
-												   <%--  <a href="${sourceleadUrl}/uploadAssociateInformationForm">Associate Information</a> --%>
-													<a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateSalary">Associate Salary Import</a>
-													
+												    <a href="${SourceleadWeb_atsUrl}/uploadAssociateBankingDetailsForm">Associate Bank Detail</a>
+												    <a href="${SourceleadWeb_atsUrl}/uploadAssociateInformation">Associate Information</a>
+													<a href="${SourceleadWeb_atsUrl}/uploadAssociateSalary">Associate Salary Import</a>
 												</c:if>
 											</div>
 										</div>

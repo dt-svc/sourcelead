@@ -654,7 +654,7 @@ function statusvalidating(id){
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
 									<span> 
-									<a href="<c:url value='/requirement'/>" >Job</a>
+									<a href="${SourceLeadWeb_atsUrl}/requirement">Job</a>
 									<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
 										<a href="${SourceLeadWeb_sourceleadUrl}/uploadJobs">Import</a>
 									</sec:authorize>									
@@ -694,7 +694,7 @@ function statusvalidating(id){
       <ul class="pull-right list-unstyled list-inline">
 					
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
-						<li><a href="<c:url value='/addJobFair'/>" class="newAdBtn">+ Job Fair</a></li>
+						<li><a href="${SourceLeadWeb_atsUrl}/addJobFair" class="newAdBtn">+ Job Fair</a></li>
 					</sec:authorize>					
 									
 					<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
