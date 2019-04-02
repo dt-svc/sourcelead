@@ -793,7 +793,13 @@ public class TicketManagementRestController {
 		return response;
 	}
 	
-	@RequestMapping(value = "/getTicketComment", method = RequestMethod.POST)
+	@RequestMapping(value = {"/rest/saveTicketComment"}, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Boolean> saveTicketCommentForMobile(HttpServletRequest request, @RequestBody TicketCommentDTO ticketCommentDTO) {
+		return saveTicketComment(request, ticketCommentDTO);
+	}
+	
+	@RequestMapping(value = {"/getTicketComment", "/rest/getTicketComment"}, method = RequestMethod.POST)
 	@ResponseBody
 	public Response<TicketCommentDTO> getTicketComment(HttpServletRequest request, @RequestParam(defaultValue = "0") long ticketCommentId) {
 		Response<TicketCommentDTO> response = new Response<>();
@@ -816,7 +822,7 @@ public class TicketManagementRestController {
 		return response;
 	}
 	
-	@RequestMapping(value = "/deleteTicketComment", method = RequestMethod.POST)
+	@RequestMapping(value = {"/deleteTicketComment", "/rest/deleteTicketComment"}, method = RequestMethod.POST)
 	@ResponseBody
 	public Response<Boolean> deleteTicketComment(HttpServletRequest request, @RequestParam(defaultValue = "0") long ticketCommentId) {
 		Response<Boolean> response = new Response<>();
