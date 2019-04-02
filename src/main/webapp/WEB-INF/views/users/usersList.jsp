@@ -328,29 +328,30 @@ function getUsersSearchResult(searchValue){
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
 	                    
-                  <c:if test="${orgLocationsCount > 1}">
+                  <%-- <c:if test="${orgLocationsCount > 1}"> --%>
 		                    <li>
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
 									<span class="ovrShow"> 
-									<a href="<c:url value='${SourceleadWeb_atsUrl}/userCreation'/>">Add Associate</a>
-									<a href="<c:url value='${SourceleadWeb_atsUrl}/addAssociateFromLocations'/>">Add From Loc</a>
+									<a href="${atsUrl}/userCreation">Add Associate</a>
+									<a href="${atsUrl}/addAssociateFromLocations">Add From Loc</a>
 									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
 										<%-- <a href="<c:url value='${appPath}/uploadForm'/>">Import</a> --%>
 										<div class="immSub">
 											<a href="#">Import</a>
 											<div class="immSubMenu">
-												<a href="${SourceleadWeb_sourceleadUrl}/uploadForm">Associate Import</a>
 
+												<a href="${SourceleadWeb_sourceleadUrl}/uploadForm">Associate Import</a>
+								 
 												<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 													<a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateBankForm">Associate Bank Details Import</a>
 												   <a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateDeductionContributionDetails">Associate Deduction Contribution Import</a>
 												</c:if>
 
 												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-												    <a href="${SourceleadWeb_atsUrl}/uploadAssociateBankingDetailsForm">Associate Bank Detail</a>
-												    <a href="${SourceleadWeb_atsUrl}/uploadAssociateInformation">Associate Information</a>
-													<a href="${SourceleadWeb_atsUrl}/uploadAssociateSalary">Associate Salary Import</a>
+												    <a href="${atsUrl}/uploadAssociateBankingDetailsForm">Associate Bank Detail</a>
+												    <a href="${atsUrl}/uploadAssociateInformation">Associate Information</a>
+													<a href="${atsUrl}/uploadAssociateSalary">Associate Salary Import</a>
 												</c:if>
 											</div>
 										</div>
@@ -359,9 +360,9 @@ function getUsersSearchResult(searchValue){
 									</span>
 								</div>
 							</li>
-				</c:if>
+				<%-- </c:if> --%>
 				
-				<c:if test="${orgLocationsCount == 1}">
+				<%-- <c:if test="${orgLocationsCount == 1}">
 				           <sec:authorize access="hasRole('ROLE_USER_BULK_IMPORTS')"> 
 				           <li>
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
@@ -393,7 +394,7 @@ function getUsersSearchResult(searchValue){
 						<li><a class="newAdBtn mr5" href="${SourceLeadWeb_atsUrl}/userCreation">+  Associate</a></li>
 				</sec:authorize>
 							
-				</c:if>	
+				</c:if>	 --%>
 	           
 						
 	       </sec:authorize>
@@ -948,7 +949,7 @@ function getUserSummary(userId){
 			       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
 			       	    	
 			       	     '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\')">' 
-			       	         	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.firstName+" "+lastName+"'> "+userRole.firstName+" "+lastName+" </span> </a> </h4>";
+			       	         	result = result +"<h4><a href='${SourceleadWeb_atsUrl}/userSummary/"+userRole.userId+"''> <span title='"+userRole.firstName+" "+lastName+"'> "+userRole.firstName+" "+lastName+" </span> </a> </h4>";
 			       	    	'</sec:authorize>';
 			       	    	
 			       	     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\')">' 
@@ -1304,7 +1305,7 @@ function dynamicUserListPagination(url){
 		    	  		if(userRole.userName !=null && userRole.userName !='' && userRole.userName !='undefined'){
 		        			   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\')">' 
 		        			   result = result +"<td><div class='proj_show divmax-width dotdotwithImage'>"    
-		        			    result = result +" <a href='<c:url value='/userSummary/"+userRole.userCode+"'/>'' class='UserTextLeft' title = '"+userRole.userName+"'>";
+		        			    result = result +" <a href='${SourceLeadWeb_atsUrl}/userSummary/"+userRole.userCode+"' class='UserTextLeft' title = '"+userRole.userName+"'>";
 		        			    if(userRole.fileUrl != null && userRole.fileUrl !="" && userRole.fileUrl != "undefined"){
 				       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs pull-left'  src=\""+userRole.fileUrl+"\" alt='image'>";
 		        			    }else{

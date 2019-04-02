@@ -164,7 +164,7 @@ function statusvalidating(id){
 		<div class="pull-left">
         	<h2>Jobs 
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
-						<a href="<c:url value='/professionalRequirements'/>" class="jobHeadBtn">Crowdsourcing Jobs</a>
+						<a href="${SourceLeadWeb_atsUrl}/professionalRequirements" class="jobHeadBtn">Crowdsourcing Jobs</a>
 					</sec:authorize>        	
         	</h2>
       	</div>
@@ -919,7 +919,7 @@ function changeStatus(requirementId, requirementStatus){
 <script>
 
 function exportToPdf(type) {
-	
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	if(type === 1) {
 		var req = $("#noReq").val();
 	 	var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
@@ -954,7 +954,7 @@ function exportToPdf(type) {
 </script>
 <script>
 function exportToExcel(type) {
-	
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	if(type === 1) {
 		var req = $("#noReq").val();
 		var requirementEmptyMessage = $("#requirementEmptyListMessage").val();

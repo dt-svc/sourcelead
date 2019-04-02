@@ -216,7 +216,7 @@ $(document).ready(function () {
 		<div class="pull-right brud-crum">
 			<a
 				href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home
-			</a>&raquo;<a href="<c:url value='/jobsList'/>"> Jobs List </a>&raquo;
+			</a>&raquo;<a href="${SourceLeadWeb_atsUrl}/jobsList"> Jobs List </a>&raquo;
 			<c:if test="${empty requirementId}">Add Job</c:if>
 			<c:if test="${!empty requirementId}">Update Job</c:if>
 		</div>
@@ -235,15 +235,10 @@ $(document).ready(function () {
 						<li><a href="#" id="recommendations">Recommendations</a></li>
 					</c:if>
 					<c:if test="${!empty requirementUUID}">
-						<li class="current"><a
-							href="<c:url value='/requirement?requirementUUID=${requirementUUID}'/>">Job
-								Details</a></li>
+						<li class="current"><a href="${SourceLeadWeb_atsUrl}/requirement?requirementUUID=${requirementUUID}">Job Details</a></li>
 						<c:if test="${requirementStatus == 'OPEN'}">
-							<li><a
-								href="<c:url value='/jobReleaseManagement?requirementUUID=${requirementUUID}'/>">Job
-									Release</a></li>
-							<li><a
-								href="<c:url value='/jobRecommendations?requirementUUID=${requirementUUID}'/>">Recommendations</a></li>
+							<li><a href="${SourceLeadWeb_atsUrl}/jobReleaseManagement?requirementUUID=${requirementUUID}">Job Release</a></li>
+							<li><a href="${SourceLeadWeb_atsUrl}/jobRecommendations?requirementUUID=${requirementUUID}">Recommendations</a></li>
 						</c:if>
 						<c:if test="${requirementStatus != 'OPEN'}">
 							<li><a href="#" id="jobRelease">Job Release</a></li>
@@ -2331,7 +2326,7 @@ $(document).ready(function () {
 
 
 						<input type="button" value="Cancel"
-							onClick="javascript:window.location.href = '<c:url value='/jobsList'/>'"
+							onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/jobsList'"
 							class="btn btn-default ml">
 					</div>
 				</div>
@@ -3675,7 +3670,7 @@ var existingValue = document.getElementById('isClientJob').value;
 		 $('#clientRate').val('');
 		 $('#clientMaxRate').val('');
 		 $("#clientCurrencyCode").val('${currencyCode}').trigger('change');
-		 $("#clientRateType").val("").trigger('change');
+		 $("#clientRateType").val("Monthly").trigger('change');
 		 $('#clientDetails').find('p.jquery_form_error_message').remove();
 		 
 		 //$('select[name=clientRateType]').val(1);
