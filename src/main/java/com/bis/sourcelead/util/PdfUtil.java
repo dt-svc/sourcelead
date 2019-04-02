@@ -3546,7 +3546,7 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 								}
 
 								if (report.getHoursperWeek() != null) {
-									reportArray[5] = report.getHoursperWeek();
+									reportArray[5] = report.getHoursperWeek().substring(0, 5);
 								} else {
 									reportArray[5] = "--";
 								}

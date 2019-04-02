@@ -24,6 +24,7 @@ import java.util.List;
 	private String firstName;
 	private String projectName;
 	
+	private String candidateName;
     private Date fromDate;
 	
 	private Date toDate;
@@ -52,6 +53,17 @@ import java.util.List;
 	
 	private String type;
 	
+	
+	
+	
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
 	public String getFirstName() {
 		return firstName;
 	}
