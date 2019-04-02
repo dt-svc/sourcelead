@@ -2,19 +2,25 @@ package com.bis.sourcelead.service.impl;
 
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
+import com.bis.sourcelead.dto.UserDetailsDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.TokenInfo;
 import com.bis.sourcelead.entity.User;
@@ -41,19 +47,19 @@ public class TokenManagerImpl implements TokenManager {
 	//private Map<UserDetails, TokenInfo> tokens = new HashMap<>();
 
 	@Override
-	public TokenInfo createNewToken(UserDetails userDetails,HttpServletRequest request,UserService userService,UserRoleService userRoleService,CandidateService candidateService) {
-		HttpSession session = request.getSession();
-		Map<String, UserDetails> validUsers = (Map<String, UserDetails>) session.getAttribute("validUsers");
-		Map<UserDetails, TokenInfo> tokens = (Map<UserDetails, TokenInfo>) session.getAttribute("tokens");
+	public TokenInfo createNewToken(UserDetails userDetails,HttpServletRequest request,UserService userService,UserRoleService userRoleService,CandidateService candidateService,UserStatsCacheHelper userStatsCacheHelper) {
+		//HttpSession session = request.getSession();
+		/*Map<UserDetails, TokenInfo> tokens = (Map<UserDetails, TokenInfo>) session.getAttribute("tokens");
 		if(validUsers == null){
 			validUsers = new HashMap<>();
 		}
 		if(tokens == null){
 			tokens = new HashMap<>();
-		}
+		}*/
 		
-		String token;
-		Collection<TokenInfo> tokenInfoList = null;
+		String token = generateToken();;
+		TokenInfo tokenInfo = new TokenInfo(token, userDetails);
+		/*Collection<TokenInfo> tokenInfoList = null;
 		TokenInfo tokenInfo = null;
 		if(tokens != null && !tokens.isEmpty()){
 			tokenInfoList = getUserTokens(userDetails,session);
@@ -63,8 +69,8 @@ public class TokenManagerImpl implements TokenManager {
 			tokenInfo = tokenInfoList.iterator().next();
 			token = tokenInfo.getToken();
 		}
-		else{
-			do {
+		else{*/
+		/*	do {
 				token = generateToken();
 			} while (validUsers.containsKey(token));
 			 tokenInfo = new TokenInfo(token, userDetails);
@@ -73,8 +79,16 @@ public class TokenManagerImpl implements TokenManager {
 			if (previous != null) {
 				System.out.println(" *** SERIOUS PROBLEM HERE - we generated the same token (randomly?)!");
 				return null;
-			}
-			tokens.put(userDetails, tokenInfo);
+			}*/
+		    UserDetailsDTO userDetailsDTO = new UserDetailsDTO();
+		    userDetailsDTO.setUsername(userDetails.getUsername());
+		    userDetailsDTO.setPassword(userDetails.getPassword());
+		    if(userDetails.getAuthorities() != null) {
+		    	List<String> roles = userDetails.getAuthorities().stream().map(ga -> ga.getAuthority()).collect(Collectors.toList());
+		    	userDetailsDTO.setRoles(roles);
+		    }
+			userStatsCacheHelper.saveLoginUserSessionStoreToCouchbaseForMobiles(token, userDetailsDTO, request);
+			//tokens.put(userDetails, tokenInfo);
 			//(user.getId());
 			User user = userService.findByUserName(userDetails.getUsername());
 			
@@ -86,11 +100,11 @@ public class TokenManagerImpl implements TokenManager {
 				SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
 			} catch (Exception e) {}
 			SourceLeadSessionManager.setSessionAttribute(request, "user", user);
-		}
+		//}
 
 		
-		session.setAttribute("validUsers", validUsers);
-		session.setAttribute("tokens", tokens);
+		//session.setAttribute("validUsers", validUsers);
+	   //	session.setAttribute("tokens", tokens);
 		return tokenInfo;
 	}
 
@@ -122,23 +136,32 @@ public class TokenManagerImpl implements TokenManager {
 	}
 
 	@Override
-	public UserDetails getUserDetails(String token,HttpSession session) {
-		Map<String, UserDetails> validUsers = (Map<String, UserDetails>) session.getAttribute("validUsers");
-		if(validUsers == null || validUsers.isEmpty()){
-			validUsers = new HashMap<>();
-		}
-		return validUsers.get(token);
+	public UserDetails getUserDetails(String token,UserStatsCacheHelper userStatsCacheHelper) {
+		UserDetailsDTO userDetailsDTO =  userStatsCacheHelper.getUserDetails(token);
+		return new org.springframework.security.core.userdetails.User(userDetailsDTO.getUsername(), userDetailsDTO.getPassword(), true, true, true, true, buildUserAuthority(userDetailsDTO.getRoles()));
 	}
 
-	@Override
+	/*@Override
 	public Collection<TokenInfo> getUserTokens(UserDetails userDetails,HttpSession session) {
 		Map<UserDetails, TokenInfo> tokens = (Map<UserDetails, TokenInfo>) session.getAttribute("tokens");
 		return Arrays.asList(tokens.get(userDetails));
-	}
+	}*/
 
 	@Override
 	public Map<String, UserDetails> getValidUsers(HttpSession session) {
 		Map<String, UserDetails> validUsers = (Map<String, UserDetails>) session.getAttribute("validUsers");
 		return Collections.unmodifiableMap(validUsers);
 	}
+	
+	
+	private List<GrantedAuthority> buildUserAuthority(List<String> roles) {
+    	Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
+    	if(roles != null && !roles.isEmpty()){
+    		for (String role : roles) {
+    			setAuths.add(new SimpleGrantedAuthority(role));
+    		}
+    	}
+    	List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);
+    	return Result;
+   }
 }

@@ -157,6 +157,16 @@ public class UserLoginHelper {
 			Candidate candidate = getCandidateDetails(userRole);
 			SourceLeadSessionManager.setSessionAttribute(req, "candidate", candidate);
 			
+			if(req.getRequestURI().contains("myImmigration")) {
+
+				req.getSession().setAttribute("myImmigrationPage", "Y");
+
+				}else if(req.getRequestURI().contains("viewImmigrationList")) {
+
+				req.getSession().setAttribute("myImmigrationPage", "N");
+				
+				}
+			
 		} catch (NumberFormatException e1) {
 			e1.printStackTrace();
 		} catch (Exception e1) {
@@ -928,6 +938,10 @@ public class UserLoginHelper {
 		
 		if(orgLocationJson.get("averageWorkingHours") != null) {
 			orgLocations.setAverageWorkingHours(Integer.valueOf(orgLocationJson.get("averageWorkingHours").toString()));
+		}
+		
+		if(orgLocationJson.get("workingDaysPerWeek") != null) {
+			orgLocations.setWorkingDaysPerWeek(Integer.valueOf(orgLocationJson.get("workingDaysPerWeek").toString()));
 		}
 		
 		if(orgLocationJson.get("primaryUserId") != null) {

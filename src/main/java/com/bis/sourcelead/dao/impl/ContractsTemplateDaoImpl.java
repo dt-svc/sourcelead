@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -434,9 +435,9 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		}*/
 		
 		String subquery1 = "";
-		if("WAITING_FOR_APPROVER".equalsIgnoreCase(contractStatus)){
+		if("WAITING_FOR_APPROVER".equalsIgnoreCase(contractStatus) || "WAITING_TO_SEND".equalsIgnoreCase(contractStatus)){
 			subquery1 += " (contracts.templateSubmissionStatus = 'WAITING_FOR_APPROVER' or contracts.templateSubmissionStatus = 'WAITING_TO_SEND') ";
-		}else if("WAITING_TO_BE_SIGNED".equalsIgnoreCase(contractStatus)){
+		}else if("WAITING_TO_BE_SIGNED".equalsIgnoreCase(contractStatus) || "PENDING".equalsIgnoreCase(contractStatus)){
 			subquery1 += " (contracts.templateSubmissionStatus = 'WAITING_TO_BE_SIGNED' or contracts.templateSubmissionStatus = 'PENDING') ";
 		}else{
 			subquery1 += " contracts.templateSubmissionStatus = '"+contractStatus+"'";
@@ -882,5 +883,21 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		Query q = session.createQuery("delete ContractOwnerHierarchy coh where coh.contract.id =:id").setLong("id", id);
 		status = q.executeUpdate();
 		return status;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Contracts> getAllContractsBasedOnConfigureDate(Date updatedDate) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		Calendar c = Calendar.getInstance(); 
+		c.setTime(updatedDate); 
+		c.add(Calendar.DATE, 1);
+		Date nextUpdatedDate = c.getTime();
+		
+		@SuppressWarnings("unchecked")
+		List<Contracts>  contractsList = session.createQuery("from Contracts ct left join fetch ct.contactUser where ct.endDate BETWEEN :updatedDate and :nextUpdatedDate ").setParameter("updatedDate", updatedDate).setParameter("nextUpdatedDate", nextUpdatedDate).list();
+		return contractsList;
 	}
 }

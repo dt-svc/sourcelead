@@ -218,6 +218,10 @@ public class UserRole implements Serializable {
 	@Transient
 	@JsonProperty
 	private String panNumber;
+	
+	@Transient
+	@JsonProperty
+	private String aadharNumber;
 
 	@Transient
 	@JsonProperty
@@ -1104,6 +1108,14 @@ public class UserRole implements Serializable {
 
 	public void setPanNumber(String panNumber) {
 		this.panNumber = panNumber;
+	}
+
+	public String getAadharNumber() {
+		return aadharNumber;
+	}
+
+	public void setAadharNumber(String aadharNumber) {
+		this.aadharNumber = aadharNumber;
 	}
 
 	public String getOrgName()

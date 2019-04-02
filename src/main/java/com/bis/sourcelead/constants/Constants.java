@@ -23,6 +23,8 @@ public class Constants {
 	public static final String[] FONT_FAMILY = { "Arial", "Comisc", "Comic Sans MS", "Courier New",
 			"Georgia", "Monotype", "Tahoma", "Times New Roman", "Trebuchet MS", "Verdana",
 			"Impace" };
+	public static final String[] AVAILABLE_ASSOCIATES_REPORT_EXPORT_HEADDERS = {"Employee Name", "Project Name", "Project Duration","Associate Duration", "Availability %","No.of Hours",};
+	
 	public static final String[] FONT_SIZE = { "8px", "9px", "10px", "11px", "12px", "13px", "14px",
 			"15px", "16px", "17px", "18px", "19px", "20px", "21px", "221px", "23px", "24px" };
 	public static final String EMPLOYEE_ID = "Employee ID";
@@ -108,7 +110,7 @@ public class Constants {
 	 * "yyyy-MM-dd HH:mm:ss");
 	 */
 	
-	
+	public static final String DEFAULT = "Default";
 	public static final String ONBOARD_DOCUMENT_BUSNIESS_LICENSE = "Business License";
 	public static final String BANK_CHEQUE = "Bank Cheque";
 	public static final String REGISTRATION_OR_INCORPORATION_OF_RECORDING = "Registration or Incorporation of recording";
@@ -175,6 +177,12 @@ public class Constants {
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE = "MailReopenApprovedMailToEmployee";
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE_NOTIFICATION = "MailReopenApprovedMailToEmployeeNotification";
 	
+	public static final String IN_SEQUENTIAL_MECHANISM_MAIL_FROM_APPROVERONE_TO_APPROVERTWO = "InSequentialMechanismMailFromApproverOneToApproverTwo";
+	public static final String IN_SEQUENTIAL_MECHANISM_MAIL_FROM_APPROVERONE_TO_APPROVERTWO_NOTIFICATION = "InSequentialMechanismMailFromApproverOneToApproverTwo";
+	
+	public static final String IN_PARALLEL_MECHANISM_MAIL_FROM_APPROVERONE_TO_APPROVERTWO = "InSequentialMechanismMailFromApproverOneToApproverTwo";
+	public static final String IN_PARALLEL_MECHANISM_MAIL_FROM_APPROVERONE_TO_APPROVERTWO_NOTIFICATION = "InSequentialMechanismMailFromApproverOneToApproverTwo";
+	
 	public static final String UPDATED_TASK_EMAIL = "UpdatedTaskEmail";
 	public static final String UPDATED_TASK_NOTIFICATION = "UpdatedTaskNotification";
 	
@@ -209,6 +217,9 @@ public class Constants {
 	
 	public static final String ORGDEMO_EMAIL = "orgDemoEmail";
 	public static final String ORGDEMO_NOTIFICATION = "orgDemoNotification";
+	
+	public static final String CANDIDATE_BULK_IMPORT_EMAIL = "CandidateBulkImport";
+	public static final String CANDIDATE_BULK_IMPORT_SUPPORT_EMAIL = "CandidateBulkImportSupport";
 	
 	public static final String PROFILES_ADDED_TO_CART_MAIL= "ProfilesAddedToCartMail";
 	public static final String PROFILES_ADDED_TO_CART_NOTIFICATION = "ProfilesAddedToCartNotification";
@@ -1429,11 +1440,15 @@ public class Constants {
 	public static final String[] BANK_TYPE_DROPDOWN = {"Cheque","Direct Deposit"};
 	
 	public static final String PAYMENT_MODE_SAVINGS = "Savings";
-
-	public static final String[] DATA_MIGRATION_ASSOCIATE_INFO_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","UAN Number","PF Number","ESI Number"};	
 	
 	public static final String GOAL_TYPE_NEW  = "New_Goal";
 	
 	public static final String GOAL_TYPE_SUB_GOAL  = "Sub_Goal";
+
+	public static final String[] DATA_MIGRATION_ASSOCIATE_INFO_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","UAN Number","PF Number","ESI Number"};
+	
+	public static final String EMPLOYEE_ON_LEAVE = "EmployeeOnLeave";
+	public static final String APPROVE_PENDING_LEAVES="approvePendingLeaves";
+
 	
 }

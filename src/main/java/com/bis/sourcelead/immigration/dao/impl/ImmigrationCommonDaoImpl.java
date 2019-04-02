@@ -3271,4 +3271,32 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	    int result = query.executeUpdate();
 	    return result;
 	}
+	
+	@Override
+	@Transactional
+	public Lca updateLcaAvailablePositionsById(Lca lca)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		if(lca.getId() != null ) {
+			session.saveOrUpdate(lca);
+	   }
+	    return lca;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Lca getLcaNumber(String lcaNo) throws Exception {
+		
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Lca lca where lca.lcaNo = :lcaNo and lca.status = 1";
+		List<Lca> lcaNumbersList =  session.createQuery(query) .setString("lcaNo", lcaNo).list();
+		Lca lca = null;
+		if(lcaNumbersList != null && !lcaNumbersList.isEmpty())
+		{
+			lca = (Lca) lcaNumbersList.iterator().next();
+		}
+		return lca;
+		
+		
+	}
 }	
