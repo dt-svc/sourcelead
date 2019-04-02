@@ -1428,4 +1428,7 @@ public class Constants {
 	
 	public static final String PAYMENT_MODE_SAVINGS = "Savings";
 	
+	public static final String TICKET_COMMENT_EMAIL = "NewTicketCommentEmail";
+	public static final String TICKET_COMMENT_NOTIFICATION ="NewTicketCommentNotification";
+	
 }

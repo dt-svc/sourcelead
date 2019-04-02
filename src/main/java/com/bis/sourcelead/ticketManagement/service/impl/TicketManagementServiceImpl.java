@@ -813,12 +813,70 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 			}
 			ticketComment.setTicket(ticketManagementDao.getTicketById(ticketCommentDTO.getTicketId()));
 			ticketComment.setComment(ticketCommentDTO.getComment());
+			//send ticket comment email & notification
+			
+			User toUser = userDao.getUserById(Long.parseLong(assignUserId));
+			// TicketComment toUser=ticketManagementDao.getTicketCommentListByTicketId();
+			sendTicketCommentEmailToUser(user,ticketComment,toUser);
 			return ticketManagementDao.saveTicketComment(ticketComment);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return false;
 	}
+
+	private void sendTicketCommentEmailToUser(User loginUser, TicketComment ticketComment, User toUser) {
+		try {
+			EmailMessage emailMessage = new EmailMessage();
+			emailMessage.setFirstName(loginUser.getFirstName());
+			emailMessage.setLastName(loginUser.getLastName());
+			//emailMessage.setToEmail(toUser != null ? toUser.getEmail() : notifyToEmail);
+			emailMessage.setFromEmail(loginUser.getEmail());
+			emailMessage.setCreatedBy(loginUser.getUserCode());
+			StringBuilder msgBuild = new StringBuilder();
+			emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
+			// setting the class filed values
+			Map<String, String> globalVarsMap = new HashMap<String, String>();
+			if (toUser != null) {
+				if (toUser.getLastName() != null && toUser.getLastName() != "") {
+					StringBuilder fNameBulid = new StringBuilder();
+					globalVarsMap.put("UserName", fNameBulid.append(toUser.getFirstName()).append(" ").append(toUser.getLastName()).toString());
+				} else {
+					globalVarsMap.put("UserName", toUser.getFirstName());
+				}
+			} else {
+				globalVarsMap.put("UserName", "");
+			}
+
+			globalVarsMap.put("TicketTitle", ticketComment.getTicket().getTicketType().getName());
+			globalVarsMap.put("TicketId", ticketComment.getTicket().getGeneratedId());
+			globalVarsMap.put("Type", ticketComment.getTicket().getTicketType().getName());
+			globalVarsMap.put("Category", ticketComment.getTicket().getTicketCategory().getName());
+			globalVarsMap.put("Status", ticketComment.getTicket().getTicketPriority().getName());
+			globalVarsMap.put("Comment", ticketComment.getComment());
+
+			StringBuilder loginBuilder = new StringBuilder();
+			globalVarsMap.put("Login", loginBuilder.append("<a href='").append(sourceleadUrl).append("/ticketSummary?uuid=" + ticketComment.getTicket().getUuid()).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>View Ticket</div></a>").toString());
+
+			if (StringUtils.isNotBlank(loginUser.getFirstName())) {
+				StringBuilder loginUserBuild = new StringBuilder();
+				globalVarsMap.put("LoginUser", loginUserBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			} else {
+				globalVarsMap.put("LoginUser", loginUser.getFirstName());
+			}
+			if (StringUtils.isNotBlank(ticketComment.getTicket().getOrgLocations().getOrgLocationName())) {
+				globalVarsMap.put("LoginOrg", ticketComment.getTicket().getOrgLocations().getOrgLocationName());
+			}
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, ticketComment.getTicket().getOrgLocations().getOrg(),null, Constants.TICKET_COMMENT_EMAIL, new ArrayList<EmailAttachment>());
+		
+		}
+		 catch (Exception e) {
+				e.printStackTrace();
+			}
+	}
+	
 
 	@Override
 	public TicketDTO getTicketDataById(long ticketId, String dateFormat) {
@@ -1090,6 +1148,8 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		}
 	}
 	
+		
+		
 	/*
 	 * @Override public TicketDTO getTicketDataById(long ticketId, OrgLocations
 	 * loginOrgLocation, String dateFormat) { TicketDTO ticketDTO = new TicketDTO();
@@ -1117,4 +1177,8 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	 * 
 	 * } } catch (Exception e) { e.printStackTrace(); } return ticketDTO; }
 	 */
+
+	
 }
+
+			
