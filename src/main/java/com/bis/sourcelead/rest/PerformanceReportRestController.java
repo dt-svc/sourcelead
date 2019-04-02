@@ -1004,7 +1004,10 @@ public class PerformanceReportRestController {
 			try{
 				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				if(loginUser != null){
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					
+					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
+					
 					List<ApplicantsBySourceDTO> applicantBySourceList = new ArrayList<>();
 					List<Long> jobIdList = new ArrayList<>();
 					DecimalFormat df = new DecimalFormat("#.00");
@@ -1432,7 +1435,10 @@ public class PerformanceReportRestController {
 				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				if(loginUser != null){
 					
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
+					
+					
 					List<Long> jobIdList = new ArrayList<>();
 					if(StringUtils.isNotBlank(jobFilterDTO.getJobIds())) {
 						String[] jobIds = jobFilterDTO.getJobIds().split(",");
@@ -1526,7 +1532,9 @@ public class PerformanceReportRestController {
 			try{
 				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				if(loginUser != null){
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					
+					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
 
 					List<ApplicantsBackoutDTO> applicantsBackoutList = new ArrayList<>();
 					ApplicantsBackoutDTO applicantsBackoutDTO=new ApplicantsBackoutDTO();
@@ -1920,8 +1928,10 @@ public class PerformanceReportRestController {
 				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				if(loginUser != null){
 
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
+					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
+					
 					List<ApplicantDeclineDTO> applicantDeclineList = new ArrayList<>();
 					ApplicantDeclineDTO applicantDeclineDTO=new ApplicantDeclineDTO();
 					List<Long> jobIdList = new ArrayList<>();
@@ -2003,7 +2013,8 @@ public class PerformanceReportRestController {
 				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				if(loginUser != null){
 
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
 
 					List<ApplicantDeclineDTO> applicantDeclineList = new ArrayList<>();
 					ApplicantDeclineDTO applicantDeclineDTO=new ApplicantDeclineDTO();

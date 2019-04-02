@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +30,7 @@ import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
 import com.bis.sourcelead.dto.OrgLocationIndiaBankingDetailsDTO;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailConfigurationFromMail;
+import com.bis.sourcelead.entity.EmailReminder;
 import com.bis.sourcelead.entity.EmailScenarioConfiguration;
 import com.bis.sourcelead.entity.LetterHead;
 import com.bis.sourcelead.entity.LookUpData;
@@ -691,4 +693,75 @@ public class OrgSettingsController {
 			model.setViewName("offerLetter/viewOfferLetterTemplate");
 			return model;
 		}
+	    
+	    @RequestMapping(value = "/jobsConfigureEmails")
+	   	public ModelAndView reminderJobsConfigureEmails(HttpServletRequest request) throws Exception {
+	   	    ModelAndView model = new ModelAndView();
+	   	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			//get job related reminders
+			List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByTabsIdAndOrgLocationId(8l , orgLocations.getId());
+			//model.addObject("emailReminderList", emailReminderList);
+			
+			for(EmailReminder emailReminder : emailReminderList) {
+				emailReminder.setEmailReminderHierarchyList(emailReminder.getEmailReminderHierarchyList().stream().filter(h->h.getStatus() != 0).collect(Collectors.toList()));
+				if(emailReminder.getScenarionName().equalsIgnoreCase("ApplicantJoining")) {
+					model.addObject("applicantJoining", emailReminder);
+				}
+				
+				
+			}
+			
+	   		model.setViewName("jobsConfigureEmails");
+	   		model.addObject("sourceleadUrl", sourceleadUrl);
+	   		return model;
+	       }
+	    
+	    @RequestMapping(value = "/emailReminderLeaveConfiguration")
+	   	public ModelAndView reminderLeaveConfigureEmails(HttpServletRequest request) throws Exception {
+	   	    ModelAndView model = new ModelAndView();
+	   	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			//get job related reminders
+			List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByTabsIdAndOrgLocationId(31l , orgLocations.getId());
+			//model.addObject("emailReminderList", emailReminderList);
+			
+			for(EmailReminder emailReminder : emailReminderList) {
+				emailReminder.setEmailReminderHierarchyList(emailReminder.getEmailReminderHierarchyList().stream().filter(h->h.getStatus() != 0).collect(Collectors.toList()));
+				if(emailReminder.getScenarionName().equalsIgnoreCase("HolidayRemainder")) {
+					model.addObject("Holiday", emailReminder);
+				}
+				else if(emailReminder.getScenarionName().equalsIgnoreCase("approvePendingLeaves")) {
+					model.addObject("approvePendingLeaves", emailReminder);
+				}
+			
+			  else {
+			  model.addObject("employeeonLeave", emailReminder); 
+			  }
+			}
+	   		model.setViewName("emailReminderLeaveConfiguration");
+	   		model.addObject("sourceleadUrl", sourceleadUrl);
+	   		return model;
+	       }
+	    
+	    @RequestMapping(value = "/contractConfigureEmails")
+	   	public ModelAndView reminderContractsConfigureEmails(HttpServletRequest request) throws Exception {
+	   	    ModelAndView model = new ModelAndView();
+	   	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			//get contracts related reminders
+			List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByTabsIdAndOrgLocationId(16l , orgLocations.getId());
+			//model.addObject("emailReminderList", emailReminderList);
+			
+			for(EmailReminder emailReminder : emailReminderList) {
+				emailReminder.setEmailReminderHierarchyList(emailReminder.getEmailReminderHierarchyList().stream().filter(h->h.getStatus() != 0).collect(Collectors.toList()));
+				if(emailReminder.getScenarionName().equalsIgnoreCase("contractExpiryRemainder")) {
+					model.addObject("contractExpire", emailReminder);
+				}
+			}
+	   		model.setViewName("contractConfigureEmails");
+	   		model.addObject("sourceleadUrl", sourceleadUrl);
+	   		return model;
+	       }
+
 }

@@ -344,4 +344,12 @@ public class DataMigrationCommonRestController {
 		return "Success";
 	
 	}
+	
+	@RequestMapping(value = {"/bulkUploadEmails","/rest/bulkUploadEmails"}, method = RequestMethod.POST)
+	public void bulkUploadEmails(@RequestParam(value = "couchbaseQueueKey", required = true) String couchbaseQueueKey, 
+			@RequestParam(value = "uploadedSize", required = true) String uploadedSize, @RequestParam(value = "type", required = true) String type, 
+			HttpServletRequest request) throws Exception
+	{
+		dataMigrationService.bulkUploadEmails(couchbaseQueueKey,uploadedSize,type,request);
+	}
 }
