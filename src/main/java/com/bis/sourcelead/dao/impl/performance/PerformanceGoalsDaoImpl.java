@@ -1,0 +1,516 @@
+package com.bis.sourcelead.dao.impl.performance;
+
+import java.math.BigInteger;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.bis.sourcelead.dao.performance.PerformanceGoalsDao;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
+import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
+import com.bis.sourcelead.entity.SubmissionRequirementListView;
+import com.bis.sourcelead.entity.performance.PerformanceGoals;
+import com.bis.sourcelead.entity.performance.PerformanceGoalsAssignTo;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.util.CommonUtil;
+
+@Repository
+@Transactional
+public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
+	
+	
+	private static final Logger logger = LoggerFactory.getLogger(PerformanceGoalsDaoImpl.class);
+
+	@Autowired
+	private SessionFactory sessionFactory;
+	
+	@Autowired
+	CommonUtil commonUtil;
+	
+	@Value("${SourceLead.100}")
+	private String notFound;
+
+	@Value("${SourceLead.101}")
+	private String noRecords;
+
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
+
+	@Value("${jdbc.schema}")
+	private String schema;
+
+	@Override
+	public PerformanceGoals savePerformanceGoals(PerformanceGoals performanceGoals) throws Exception {
+		logger.debug("Adding PerformanceCompetencies");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (performanceGoals != null) {
+				session.saveOrUpdate(performanceGoals);
+			}
+			logger.debug("PerformanceGoals Added Successfully");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PERFORMANCE_GOALS"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return performanceGoals;
+	}
+
+	@Override
+	public PerformanceGoals getPerformanceGoalsById(Long goalId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceGoals> performanceGoals = new ArrayList<PerformanceGoals>();
+		logger.debug("getPerformanceGoalsById  start");
+		performanceGoals = session.createQuery("from PerformanceGoals goals where goals.id = :id " ).setLong( "id", goalId).list();
+		logger.debug("getPerformanceGoalsById  end");
+		if (performanceGoals.size() > 0) {
+			return performanceGoals.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public PerformanceGoalsDoNutChartCountsDTO getTotalGoalsDoNutChartCounts(Long userId, Long orgLocationId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		PerformanceGoalsDoNutChartCountsDTO totalCountDTO = new PerformanceGoalsDoNutChartCountsDTO();
+		String selfQuery ="SELECT"
+				+ " COUNT(DISTINCT ASSIGN.GOAL_ID) AS REQ_COUNT"
+				+ " FROM"
+				    + " PERFORMANCE_GOALS_ASSIGN_TO ASSIGN,"
+				    + " PERFORMANCE_GOALS GOALS,"
+				    + " ORG_LOCATIONS OL"
+				    
+					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
+					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS = '1' AND "
+				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
+				    + " OL.ID = :orgLocationId"
+				    + " GROUP BY ASSIGN.GOAL_ID";
+			 
+		        
+				Query selfQueryString = session.createSQLQuery(selfQuery);
+				selfQueryString.setParameter("userId", userId).setParameter("orgLocationId", orgLocationId);
+				BigInteger selfCount  = (BigInteger) selfQueryString.uniqueResult();
+				if(selfCount == null) {
+					selfCount = new BigInteger("0");
+				}
+				
+				
+				String assignedQuery ="SELECT"
+						+ " COUNT(DISTINCT ASSIGN.GOAL_ID) AS REQ_COUNT"
+						+ " FROM"
+						    + " PERFORMANCE_GOALS_ASSIGN_TO ASSIGN,"
+						    + " PERFORMANCE_GOALS GOALS,"
+						    + " ORG_LOCATIONS OL"
+						    
+							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
+							+ " GOALS.CREATED_BY <> :userId AND "
+						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND ASSIGN.STATUS = '1' AND "
+						    + " OL.ID = :orgLocationId"
+						    + " GROUP BY ASSIGN.GOAL_ID";
+					 
+				        
+						Query assignedQueryString = session.createSQLQuery(assignedQuery);
+						assignedQueryString.setParameter("userId", userId).setParameter("orgLocationId", orgLocationId);
+						BigInteger assignedCount  = (BigInteger) assignedQueryString.uniqueResult();
+						
+						if(assignedCount == null) {
+							assignedCount = new BigInteger("0");
+						}
+				
+						BigInteger totalCount = selfCount.add(assignedCount);
+						totalCountDTO.setGoalCount(totalCount);
+						totalCountDTO.setSelfCount(selfCount);
+						totalCountDTO.setAssignedCount(assignedCount);
+						
+				return totalCountDTO;
+		        
+		
+	}
+
+	@Override
+	public PerformanceGoalsDoNutChartCountsDTO getInprogressGoalsDoNutChartCounts(Long userId, Long orgLocationId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		PerformanceGoalsDoNutChartCountsDTO totalCountDTO = new PerformanceGoalsDoNutChartCountsDTO();
+		String selfQuery ="SELECT"
+				+ " COUNT(DISTINCT ASSIGN.GOAL_ID) AS REQ_COUNT"
+				+ " FROM"
+				    + " PERFORMANCE_GOALS_ASSIGN_TO ASSIGN,"
+				    + " PERFORMANCE_GOALS GOALS,"
+				    + " ORG_LOCATIONS OL"
+				    
+					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
+					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS = '1' AND "
+					+ " (GOALS.PERCENTAGE_DONE > '0' AND GOALS.PERCENTAGE_DONE < '100') AND "
+				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
+				    + " DATEDIFF(GOALS.END_DATE,CURDATE()) >= 0 AND "
+				    + " OL.ID = :orgLocationId"
+				    + " GROUP BY ASSIGN.GOAL_ID";
+			 
+		        
+				Query selfQueryString = session.createSQLQuery(selfQuery);
+				selfQueryString.setParameter("userId", userId).setParameter("orgLocationId", orgLocationId);
+				BigInteger selfCount  = (BigInteger) selfQueryString.uniqueResult();
+				if(selfCount == null) {
+					selfCount = new BigInteger("0");
+				}
+				
+				
+				String assignedQuery ="SELECT"
+						+ " COUNT(DISTINCT ASSIGN.GOAL_ID) AS REQ_COUNT"
+						+ " FROM"
+						    + " PERFORMANCE_GOALS_ASSIGN_TO ASSIGN,"
+						    + " PERFORMANCE_GOALS GOALS,"
+						    + " ORG_LOCATIONS OL"
+						    
+							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
+							+ " GOALS.CREATED_BY <> :userId AND ASSIGN.STATUS = '1' AND "
+							+ " (GOALS.PERCENTAGE_DONE > '0' AND GOALS.PERCENTAGE_DONE < '100') AND "
+						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND "
+						    + " DATEDIFF(GOALS.END_DATE,CURDATE()) >= 0 AND "
+						    + " OL.ID = :orgLocationId"
+						    + " GROUP BY ASSIGN.GOAL_ID";
+					 
+				        
+						Query assignedQueryString = session.createSQLQuery(assignedQuery);
+						assignedQueryString.setParameter("userId", userId).setParameter("orgLocationId", orgLocationId);
+						BigInteger assignedCount  = (BigInteger) assignedQueryString.uniqueResult();
+						
+						if(assignedCount == null) {
+							assignedCount = new BigInteger("0");
+						}
+				
+						BigInteger totalCount = selfCount.add(assignedCount);
+						totalCountDTO.setGoalCount(totalCount);
+						totalCountDTO.setSelfCount(selfCount);
+						totalCountDTO.setAssignedCount(assignedCount);
+						
+				return totalCountDTO;
+		        
+		
+	}
+
+	@Override
+	public PerformanceGoalsDoNutChartCountsDTO getCompletedGoalsDoNutChartCounts(Long userId, Long orgLocationId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		PerformanceGoalsDoNutChartCountsDTO totalCountDTO = new PerformanceGoalsDoNutChartCountsDTO();
+		String selfQuery ="SELECT"
+				+ " COUNT(DISTINCT ASSIGN.GOAL_ID) AS REQ_COUNT"
+				+ " FROM"
+				    + " PERFORMANCE_GOALS_ASSIGN_TO ASSIGN,"
+				    + " PERFORMANCE_GOALS GOALS,"
+				    + " ORG_LOCATIONS OL"
+				    
+					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
+					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS = '1' AND "
+					+ " GOALS.PERCENTAGE_DONE = '100' AND "
+				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
+				    + " OL.ID = :orgLocationId"
+				    + " GROUP BY ASSIGN.GOAL_ID";
+			 
+		        
+				Query selfQueryString = session.createSQLQuery(selfQuery);
+				selfQueryString.setParameter("userId", userId).setParameter("orgLocationId", orgLocationId);
+				BigInteger selfCount  = (BigInteger) selfQueryString.uniqueResult();
+				if(selfCount == null) {
+					selfCount = new BigInteger("0");
+				}
+				
+				
+				String assignedQuery ="SELECT"
+						+ " COUNT(DISTINCT ASSIGN.GOAL_ID) AS REQ_COUNT"
+						+ " FROM"
+						    + " PERFORMANCE_GOALS_ASSIGN_TO ASSIGN,"
+						    + " PERFORMANCE_GOALS GOALS,"
+						    + " ORG_LOCATIONS OL"
+						    
+							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
+							+ " GOALS.CREATED_BY <> :userId AND ASSIGN.STATUS  ='1' AND "
+							+ " GOALS.PERCENTAGE_DONE = '100' AND "
+						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND "
+						    + " OL.ID = :orgLocationId"
+						    + " GROUP BY ASSIGN.GOAL_ID";
+					 
+				        
+						Query assignedQueryString = session.createSQLQuery(assignedQuery);
+						assignedQueryString.setParameter("userId", userId).setParameter("orgLocationId", orgLocationId);
+						BigInteger assignedCount  = (BigInteger) assignedQueryString.uniqueResult();
+						
+						if(assignedCount == null) {
+							assignedCount = new BigInteger("0");
+						}
+				
+						BigInteger totalCount = selfCount.add(assignedCount);
+						totalCountDTO.setGoalCount(totalCount);
+						totalCountDTO.setSelfCount(selfCount);
+						totalCountDTO.setAssignedCount(assignedCount);
+						
+				return totalCountDTO;
+		        
+		
+	}
+
+	@Override
+	public PerformanceGoalsDoNutChartCountsDTO getOverDueGoalsDoNutChartCounts(Long userId, Long orgLocationId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		PerformanceGoalsDoNutChartCountsDTO totalCountDTO = new PerformanceGoalsDoNutChartCountsDTO();
+		String selfQuery ="SELECT"
+				+ " COUNT(DISTINCT ASSIGN.GOAL_ID) AS REQ_COUNT"
+				+ " FROM"
+				    + " PERFORMANCE_GOALS_ASSIGN_TO ASSIGN,"
+				    + " PERFORMANCE_GOALS GOALS,"
+				    + " ORG_LOCATIONS OL"
+				    
+					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
+					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS ='1' AND "
+					+ " ((GOALS.PERCENTAGE_DONE > '0' AND GOALS.PERCENTAGE_DONE < '100') || (GOALS.PERCENTAGE_DONE = '0') || (GOALS.PERCENTAGE_DONE IS NULL)) AND "
+				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
+				    + " DATEDIFF(GOALS.END_DATE,CURDATE()) < 0 AND "
+				    + " OL.ID = :orgLocationId"
+				    + " GROUP BY ASSIGN.GOAL_ID";
+			 
+		        
+				Query selfQueryString = session.createSQLQuery(selfQuery);
+				selfQueryString.setParameter("userId", userId).setParameter("orgLocationId", orgLocationId);
+				BigInteger selfCount  = (BigInteger) selfQueryString.uniqueResult();
+				if(selfCount == null) {
+					selfCount = new BigInteger("0");
+				}
+				
+				
+				String assignedQuery ="SELECT"
+						+ " COUNT(DISTINCT ASSIGN.GOAL_ID) AS REQ_COUNT"
+						+ " FROM"
+						    + " PERFORMANCE_GOALS_ASSIGN_TO ASSIGN,"
+						    + " PERFORMANCE_GOALS GOALS,"
+						    + " ORG_LOCATIONS OL"
+						    
+							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
+							+ " GOALS.CREATED_BY <> :userId AND "
+							+ " ((GOALS.PERCENTAGE_DONE > '0' AND GOALS.PERCENTAGE_DONE < '100') || (GOALS.PERCENTAGE_DONE = '0') || (GOALS.PERCENTAGE_DONE IS NULL)) AND "
+						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND ASSIGN.STATUS = '1' AND "
+						    + " DATEDIFF(GOALS.END_DATE,CURDATE()) < 0 AND "
+						    + " OL.ID = :orgLocationId"
+						    + " GROUP BY ASSIGN.GOAL_ID";
+					 
+				        
+						Query assignedQueryString = session.createSQLQuery(assignedQuery);
+						assignedQueryString.setParameter("userId", userId).setParameter("orgLocationId", orgLocationId);
+						BigInteger assignedCount  = (BigInteger) assignedQueryString.uniqueResult();
+						
+						if(assignedCount == null) {
+							assignedCount = new BigInteger("0");
+						}
+				
+						BigInteger totalCount = selfCount.add(assignedCount);
+						totalCountDTO.setGoalCount(totalCount);
+						totalCountDTO.setSelfCount(selfCount);
+						totalCountDTO.setAssignedCount(assignedCount);
+						
+				return totalCountDTO;
+		        
+		
+	}
+
+	@Override
+	public PerformanceGoalsDoNutChartCountsDTO getNotStartedGoalsDoNutChartCounts(Long userId, Long orgLocationId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		PerformanceGoalsDoNutChartCountsDTO totalCountDTO = new PerformanceGoalsDoNutChartCountsDTO();
+		String selfQuery ="SELECT"
+				+ " COUNT(DISTINCT ASSIGN.GOAL_ID) AS REQ_COUNT"
+				+ " FROM"
+				    + " PERFORMANCE_GOALS_ASSIGN_TO ASSIGN,"
+				    + " PERFORMANCE_GOALS GOALS,"
+				    + " ORG_LOCATIONS OL"
+				    
+					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
+					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS = '1' AND "
+					+ " ((GOALS.PERCENTAGE_DONE = '0') || (GOALS.PERCENTAGE_DONE IS NULL)) AND "
+				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
+				    + " DATEDIFF(GOALS.END_DATE,CURDATE()) >= 0 AND "
+				    + " OL.ID = :orgLocationId"
+				    + " GROUP BY ASSIGN.GOAL_ID";
+			 
+		        
+				Query selfQueryString = session.createSQLQuery(selfQuery);
+				selfQueryString.setParameter("userId", userId).setParameter("orgLocationId", orgLocationId);
+				BigInteger selfCount  = (BigInteger) selfQueryString.uniqueResult();
+				if(selfCount == null) {
+					selfCount = new BigInteger("0");
+				}
+				
+				
+				String assignedQuery ="SELECT"
+						+ " COUNT(DISTINCT ASSIGN.GOAL_ID) AS REQ_COUNT"
+						+ " FROM"
+						    + " PERFORMANCE_GOALS_ASSIGN_TO ASSIGN,"
+						    + " PERFORMANCE_GOALS GOALS,"
+						    + " ORG_LOCATIONS OL"
+						    
+							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
+							+ " GOALS.CREATED_BY <> :userId AND ASSIGN.STATUS = '1' AND "
+							+ " ((GOALS.PERCENTAGE_DONE = '0') || (GOALS.PERCENTAGE_DONE IS NULL)) AND "
+						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND "
+						    + " DATEDIFF(GOALS.END_DATE,CURDATE()) >= 0 AND "
+						    + " OL.ID = :orgLocationId"
+						    + " GROUP BY ASSIGN.GOAL_ID";
+					 
+				        
+						Query assignedQueryString = session.createSQLQuery(assignedQuery);
+						assignedQueryString.setParameter("userId", userId).setParameter("orgLocationId", orgLocationId);
+						BigInteger assignedCount  = (BigInteger) assignedQueryString.uniqueResult();
+						
+						if(assignedCount == null) {
+							assignedCount = new BigInteger("0");
+						}
+				
+						BigInteger totalCount = selfCount.add(assignedCount);
+						totalCountDTO.setGoalCount(totalCount);
+						totalCountDTO.setSelfCount(selfCount);
+						totalCountDTO.setAssignedCount(assignedCount);
+						
+				return totalCountDTO;
+		        
+		
+	}
+
+	@Override
+	public ResponseList<PerformanceGoalsDTO> getPerformanceGoalsList(PerformanceGoalsDTO performanceGoalsDTO,Long userId, Long orgLocationId,String dateFormat) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<BigInteger> countlist = null;
+		Integer filterCount = 0;
+		ResponseList<PerformanceGoalsDTO> response = new ResponseList<>();
+		Query queryObj = null;
+		List<PerformanceGoalsDTO> goalsList = null;
+		String querySeachStr =  "";
+		
+		String goalDateFormat =  "";
+		
+		if("yyyy-MM-dd".equalsIgnoreCase(dateFormat)) {
+			goalDateFormat = "\"%y-%m-%d\"";
+		}else if("dd-MM-yyyy".equalsIgnoreCase(dateFormat)) {
+			goalDateFormat = "\"%d-%m-%y\"";
+		}else if("MM-dd-yyyy".equalsIgnoreCase(dateFormat)) {
+			goalDateFormat = "\"%m-%d-%y\"";
+		}else if("yyyy-dd-MM".equalsIgnoreCase(dateFormat)) {
+			goalDateFormat = "\"%y-%d-%m\"";
+		}
+		
+		  StringBuilder query1 = new StringBuilder("");
+			if(performanceGoalsDTO.getSearchValue() != null && !"".equalsIgnoreCase(performanceGoalsDTO.getSearchValue())) {
+				 query1.append(" Q1.goalName like '%" + performanceGoalsDTO.getSearchValue() + "%' ")
+					.append(" OR Q1.goalStartDate like '%" + performanceGoalsDTO.getSearchValue() + "%' ")
+					.append(" OR Q1.goalEndDate like '%" + performanceGoalsDTO.getSearchValue() + "%' ");
+				 
+			}
+			
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				querySeachStr = " where "+"("+query1.toString()+")";
+			}
+			
+			try {
+			 query = "SELECT Q1.* " + 
+			 		 "FROM (" + 
+					 "SELECT " + 
+					"GOALS.ID AS id, " +
+					"GOALS.GOAL_NAME AS goalName," + 
+					"DATE_FORMAT(GOALS.START_DATE ,"+goalDateFormat+") AS goalStartDate, " + 
+					"DATE_FORMAT(GOALS.END_DATE ,"+goalDateFormat+") AS goalEndDate, " + 
+					"GOALS.PERCENTAGE_DONE AS percentageDone, " +
+					"GOALS.GOAL_TYPE AS goalType, " +
+					"GOALS.UUID AS uuid " +
+					"FROM " + 
+					"PERFORMANCE_GOALS GOALS, " + 
+					"PERFORMANCE_GOALS_ASSIGN_TO ASSIGN, " + 
+					"ORG_LOCATIONS OL " + 
+					"WHERE OL.ID = ASSIGN.ORG_LOCATION_ID AND " + 
+					"GOALS.ID = ASSIGN.GOAL_ID " + 
+					"AND (GOALS.CREATED_BY = :userId OR (ASSIGN.ASSIGNED_USER_ID = :userId AND ASSIGN.STATUS = '1')) " + 
+					"AND GOALS.ORG_LOCATION_ID = :orgLocationId AND GOALS.STATUS = '1' " + 
+					"GROUP BY  GOALS.ID, "+
+					"DATE_FORMAT(GOALS.CREATED_DATE ,\"%Y-%m-%d\"))Q1 "+querySeachStr;
+		
+			queryObj = session.createSQLQuery(query);
+			queryObj.setParameter("orgLocationId", orgLocationId);
+			queryObj.setParameter("userId", userId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceGoalsDTO.class));
+			queryObj.setFirstResult(performanceGoalsDTO.getStart());
+			queryObj.setMaxResults(performanceGoalsDTO.getLength());
+			goalsList = queryObj.list();
+			
+			String  countQuery = "SELECT COUNT(*) AS TOTAL" + 
+					" FROM" + 
+					"(" + query +
+					")Q2;" ;
+			
+			countlist = session.createSQLQuery(countQuery).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+			filterCount = countlist.iterator().next().intValue();
+			
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+			int totalCount = 0;
+
+			
+			if (performanceGoalsDTO != null) {
+				if(countlist != null && !countlist.isEmpty()) {
+					totalCount = countlist.iterator().next().intValue();
+				}
+			} 
+			response.setRecordsTotal(totalCount);
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				response.setRecordsFiltered(filterCount);
+			}else {
+				response.setRecordsFiltered(totalCount);
+			}
+			
+			response.setData(goalsList);
+			return response;
+	}
+
+	@Override
+	public PerformanceGoals getPerformanceGoalsByUUID(String goalUUID) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceGoals> performanceGoals = new ArrayList<PerformanceGoals>();
+		logger.debug("getPerformanceGoalsByUUID  start");
+		performanceGoals = session.createQuery("from PerformanceGoals goals where goals.uuid = :goalUUID " ).setString( "goalUUID", goalUUID).list();
+		logger.debug("getPerformanceGoalsByUUID  end");
+		if (performanceGoals.size() > 0) {
+			return performanceGoals.get(0);
+		} else {
+			return null;
+		}
+	}
+
+}
