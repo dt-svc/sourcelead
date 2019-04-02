@@ -27,7 +27,8 @@
                <a href="${SourceLeadWeb_pmsUrl}/payrollPayhead" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Add</a>
          </li>
       <li>
-      <a href="${SourceLeadWeb_pmsUrl}/payrollSalarySetup" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Salary Setup</a><small class="text-muted ml">|</small>
+            <a class="addcon-pop" onclick="refreshPayheads()"><i class="fa fa-refresh paddingRight"></i>Refresh Payheads</a><small class="text-muted ml">|</small>
+      		<a href="${SourceLeadWeb_pmsUrl}/payrollSalarySetup" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Salary Setup</a><small class="text-muted ml">|</small>
       </li>
         <li></li>
         <div class="clearfix"></div>
@@ -224,6 +225,21 @@ function payheadListPagination(url,pmsUrl){
    	    	$('#payheadDataTableSearch').val(searchData);
     	   }
     	});
+}
+
+</script>
+
+<script>
+function refreshPayheads(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	$("#payheadListLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$.ajax({
+		type : "GET",
+		url: pmsUrl+"/refreshPayheadsForOrg",
+		success :function(json) {
+			payrollPayheadList();
+		},
+	});
 }
 
 </script>
