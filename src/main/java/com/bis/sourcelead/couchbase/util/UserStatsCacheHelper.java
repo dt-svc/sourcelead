@@ -606,6 +606,11 @@ public class UserStatsCacheHelper {
 		 orgLocationDTO.setFax(orgLocations.getFax());
 		 orgLocationDTO.setDateFormat(orgLocations.getDateFormat());
 		 orgLocationDTO.setWebsite(orgLocations.getWebsite());
+		 
+		 if(orgLocations.getCreatedDate() != null) {
+			 orgLocationDTO.setCreatedDate(orgLocations.getCreatedDate().toString());
+		 }
+		 
 		 if(StringUtils.isNotBlank(orgLocations.getWeekOffDays())) {
 			 orgLocationDTO.setWeekOffDays(orgLocations.getWeekOffDays());
 		 }else {
