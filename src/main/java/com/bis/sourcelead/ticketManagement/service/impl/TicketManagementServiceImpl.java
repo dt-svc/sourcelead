@@ -808,7 +808,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public Boolean saveTicketComment(TicketCommentDTO ticketCommentDTO, User user) {
+	public Boolean saveTicketComment(TicketCommentDTO ticketCommentDTO, User user, OrgLocations orgLocations) {
 		try {
 			TicketComment ticketComment = null;
 			if (ticketCommentDTO.getId() > 0) {
@@ -828,6 +828,9 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 			if(result) {
 				for(String userId : ticketCommentDTO.getMentionedUserIds().split(",")) {
 					//send comment email to userId
+					User toUser = userDao.getUserById(Long.parseLong(userId));
+					if(userId != null)
+						sendTicketCommentEmailToUser(user, ticketComment, toUser, orgLocations);
 				}
 			}
 			return result;
@@ -835,6 +838,70 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 			e.printStackTrace();
 		}
 		return false;
+	}
+	
+	private void sendTicketCommentEmailToUser(User loginUser, TicketComment ticketComment, User toUser, OrgLocations orgLocations) {
+		try {
+			EmailMessage emailMessage = new EmailMessage();
+			emailMessage.setFirstName(loginUser.getFirstName());
+			emailMessage.setLastName(loginUser.getLastName());
+			emailMessage.setToEmail(toUser.getEmail());
+			emailMessage.setFromEmail(loginUser.getEmail());
+			emailMessage.setCreatedBy(loginUser.getUserCode());
+			StringBuilder msgBuild = new StringBuilder();
+			emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
+			// setting the class filed values
+			Map<String, String> globalVarsMap = new HashMap<String, String>();
+
+			if (toUser.getLastName() != null && toUser.getLastName() != "") {
+				StringBuilder fNameBulid = new StringBuilder();
+				globalVarsMap.put("UserName", fNameBulid.append(toUser.getFirstName()).append(" ").append(toUser.getLastName()).toString());
+			} else {
+				globalVarsMap.put("UserName", toUser.getFirstName());
+			}
+
+			globalVarsMap.put("TicketTitle", ticketComment.getTicket().getTitle());
+//			globalVarsMap.put("TicketId", ticketComment.getTicket().getGeneratedId());
+			globalVarsMap.put("TicketType", ticketComment.getTicket().getTicketType().getName());
+			globalVarsMap.put("CategoryName", ticketComment.getTicket().getTicketCategory().getName());
+			globalVarsMap.put("Status", ticketComment.getTicket().getTicketStatus().getName());
+			globalVarsMap.put("Comment", ticketComment.getComment());
+
+			StringBuilder loginBuilder = new StringBuilder();
+			globalVarsMap.put("Login", loginBuilder.append("<a href='").append(sourceleadUrl)
+					.append("/ticketSummary?uuid=" + ticketComment.getTicket().getUuid())
+					.append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>View Ticket</div></a>")
+					.toString());
+
+			if (StringUtils.isNotBlank(loginUser.getFirstName())) {
+				StringBuilder loginUserBuild = new StringBuilder();
+				globalVarsMap.put("LoginUser", loginUserBuild.append(loginUser.getFirstName()).append(" ")
+						.append(loginUser.getLastName()).toString());
+			} else {
+				globalVarsMap.put("LoginUser", loginUser.getFirstName());
+			}
+			if (StringUtils.isNotBlank(ticketComment.getTicket().getOrgLocations().getOrgLocationName())) {
+				globalVarsMap.put("LoginOrg", ticketComment.getTicket().getOrgLocations().getOrgLocationName());
+			}
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.TICKET_COMMENT_EMAIL, new ArrayList<EmailAttachment>());
+
+			/* send notification */
+			// find required notification scenarios
+			EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TICKET_COMMENT_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+
+			// set notification body
+			String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+			notificationScenario.setBody(notificationbody);
+
+			// calling the sendEmail method of emailScenerioUtil
+			StringBuilder notificationLink = new StringBuilder();
+			String actionLink = notificationLink.append(sourceleadUrl).append("/ticketSummary?uuid=" + ticketComment.getTicket().getUuid()).toString();
+			emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, orgLocations, notificationScenario, new HashMap<String, String>());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
