@@ -670,10 +670,16 @@ public class OrgSettingsController {
 			
 			for(EmailReminder emailReminder : emailReminderList) {
 				emailReminder.setEmailReminderHierarchyList(emailReminder.getEmailReminderHierarchyList().stream().filter(h->h.getStatus() != 0).collect(Collectors.toList()));
-				if(emailReminder.getScenarionName().equalsIgnoreCase("employeeholiday")) {
+				if(emailReminder.getScenarionName().equalsIgnoreCase("HolidayRemainder")) {
 					model.addObject("Holiday", emailReminder);
 				}
-
+				else if(emailReminder.getScenarionName().equalsIgnoreCase("approvePendingLeaves")) {
+					model.addObject("approvePendingLeaves", emailReminder);
+				}
+			
+			  else {
+			  model.addObject("employeeonLeave", emailReminder); 
+			  }
 			}
 	   		model.setViewName("leavemanagement/emailReminderLeaveConfiguration");
 	   		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -691,8 +697,8 @@ public class OrgSettingsController {
 			
 			for(EmailReminder emailReminder : emailReminderList) {
 				emailReminder.setEmailReminderHierarchyList(emailReminder.getEmailReminderHierarchyList().stream().filter(h->h.getStatus() != 0).collect(Collectors.toList()));
-				if(emailReminder.getScenarionName().equalsIgnoreCase("ApplicantJoining")) {
-					model.addObject("Contracts", emailReminder);
+				if(emailReminder.getScenarionName().equalsIgnoreCase("contractExpiryRemainder")) {
+					model.addObject("contractExpire", emailReminder);
 				}
 			}
 	   		model.setViewName("contracts/contractConfigureEmails");
