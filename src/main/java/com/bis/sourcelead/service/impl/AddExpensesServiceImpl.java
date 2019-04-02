@@ -196,6 +196,10 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 		expenses.setCreatedDate(CommonUtil.currentDate());
 	}
 	
+	if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
+		expenses.setSubmittedDate(CommonUtil.currentDate());
+		}
+	
 	expenses.setUpdatedDate(CommonUtil.currentDate());
 	if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
 		expenses.setExpenseStatus(Submission_Status.SUBMITTED);
@@ -349,7 +353,9 @@ private void storeExpenseApprovers(String status,Expenses expenses,HashMap<Integ
 	 }
 	 
 	 if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
-		managers.remove(2);
+		 if(expenses.getProjects().getExpenseApprovalType().equalsIgnoreCase(Constants.SEQUENTIAL)) {
+			 managers.remove(2);
+		 }
 		 if(managers != null && !managers.isEmpty()){
 				expenses.setProjectManagerUserList(new ArrayList(managers.values()));
 		 }
