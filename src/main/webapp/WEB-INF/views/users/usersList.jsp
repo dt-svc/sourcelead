@@ -340,12 +340,13 @@ function getUsersSearchResult(searchValue){
 											<a href="#">Import</a>
 											<div class="immSubMenu">
 												<a href="<c:url value='${sourceleadUrl}/uploadForm'/>">Associate Import</a>
-												<a href="<c:url value='${sourceleadUrl}/uploadAssociateBankForm'/>">Associate Bank Deatils Import</a>
+												<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+												<a href="<c:url value='${sourceleadUrl}/uploadAssociateBankForm'/>">Associate Bank Details Import</a>
+													</c:if>
 												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
 												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateBankingDetailsForm'/>">Associate Bank Detail</a>
-												   <%--  <a href="<c:url value='${sourceleadUrl}/uploadAssociateInformationForm'/>">Associate Information</a> --%>
+												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateInformation'/>">Associate Information</a> 
 													<a href="<c:url value='${sourceleadUrl}/uploadAssociateSalary'/>">Associate Salary Import</a>
-													
 												</c:if>
 											</div>
 										</div>
@@ -853,7 +854,8 @@ var validationSettings = {
 		    var form = $('#user_forms')[0];
       		var formData = new FormData(form);  
 			$("#search_user").attr("disabled", "disabled");
-			 $.ajax({
+		
+			$.ajax({
 						 type : "POST",
 		        	     data: formData,
 		        	     processData: false,

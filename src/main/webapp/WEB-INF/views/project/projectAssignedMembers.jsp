@@ -121,6 +121,16 @@
         
 	</div>
 </div>
+    
+    <div id="divTaskTd9" style="display: none; float: left;">
+	<div class="changeRate_div estRate_div">
+      
+         <div class="pull-left inputRate">
+         	<input class="form-control input-sm" type="text" id="REPLACEROWIDpercentageOfWork" name="projectMembers[REPLACEROWID].percentageOfWork" data-validation-optional="true" data-validation="validate_int validate_Space validate_length length1-15" field-name="percentageOfWork">
+         </div>
+        
+	</div>
+</div>
                   
  <div id="divTaskTd8" style="display: none; float: left;">
        <a class="text-danger tblminwidth-50" title="Remove row"
@@ -811,10 +821,16 @@ function toggleAssociates(source) {
 			cell6.innerHTML = divTaskTd7Str;
 			
 			var cell7 = row.insertCell(7);
+			var divTaskTd9Str = document.getElementById("divTaskTd9").innerHTML;
+			divTaskTd9Str = divTaskTd9Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divTaskTd9Str = divTaskTd9Str.replace(/PRICECALCULATION/g,("")); 
+			cell7.innerHTML = divTaskTd9Str;
+			
+			var cell8 = row.insertCell(8);
 			var divTaskTd8Str = document.getElementById("divTaskTd8").innerHTML;
 			divTaskTd8Str = divTaskTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divTaskTd8Str = divTaskTd8Str.replace(/PRICECALCULATION/g,("")); 
-			cell7.innerHTML = divTaskTd8Str;
+			cell8.innerHTML = divTaskTd8Str;
 			
 			 $("#norecordsfound").empty();
 			
@@ -1009,10 +1025,20 @@ function toggleAssociates(source) {
 		    				}
 		    				
 		    				var cell7 = row.insertCell(7);
+		    				var divTaskTd9Str = document.getElementById("divTaskTd9").innerHTML;
+		    				divTaskTd9Str = divTaskTd9Str.replace(/REPLACEROWID/g, (maxRowNum));
+		    				divTaskTd9Str = divTaskTd9Str.replace(/PRICECALCULATION/g,("")); 
+		    				cell7.innerHTML = divTaskTd9Str;
+		    				
+		    				if(opt.percentageOfWork != null && opt.percentageOfWork != '' && opt.percentageOfWork != 'undefined'){
+		      					$('#'+maxRowNum+'percentageOfWork').val(opt.percentageOfWork);
+		    				}
+		    				
+		    				var cell8 = row.insertCell(8);
 		    				var divTaskTd8Str = document.getElementById("divTaskTd8").innerHTML;
 		    				divTaskTd8Str = divTaskTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
 		    				divTaskTd8Str = divTaskTd8Str.replace(/PRICECALCULATION/g,("")); 
-		    				cell7.innerHTML = divTaskTd8Str;
+		    				cell8.innerHTML = divTaskTd8Str;
 		    				
 		    				
 		        		}
@@ -1120,6 +1146,7 @@ function getAssignedMembers(){
 	 result = result +'<th>End Date <br>(<small class="custom-small">'+reqAssociateDate+'</small>)</th>';
 	 result = result +'<th>Est Hours</th>';
 	 result = result +'<th>Est Budget</th>';
+	 result = result +'<th>% Of Work</th>';
 	 result = result +'<th>Action</th>';
 	 result = result +'</tr>';
 	 result = result +'</thead>';
@@ -1520,6 +1547,6 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
         }
     });
 	$('#firstName').val('');
-	$('#lastName').val('');}
+	$('#lastName').val('');
 	$('#employeeEmail').val('');
 </script>

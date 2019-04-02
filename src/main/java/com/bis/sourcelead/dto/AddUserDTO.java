@@ -147,6 +147,8 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private String panNumber;
 		
+		private String aadharNumber;
+		
 		private String phoneNumber;
 		
 		private String extensionNumber;
@@ -641,6 +643,14 @@ import com.bis.sourcelead.entity.UserRole;
 
 		public void setPanNumber(String panNumber) {
 			this.panNumber = panNumber;
+		}
+
+		public String getAadharNumber() {
+			return aadharNumber;
+		}
+
+		public void setAadharNumber(String aadharNumber) {
+			this.aadharNumber = aadharNumber;
 		}
 
 		public String getPhoneNumber() {

@@ -57,7 +57,9 @@ public class EmailReminderServiceImpl implements EmailReminderService {
 		tab.setId(emailReminderDTO.getTabsId());
 		emailReminder.setTabsId(tab);
 		emailReminder.setStatus(Constants.RECORD_ACTIVE);
-		emailReminder.setNotifyTo(emailReminderDTO.getNotifyTo().trim().toLowerCase());
+		if(StringUtils.isNotBlank(emailReminderDTO.getNotifyTo())) {
+			emailReminder.setNotifyTo(emailReminderDTO.getNotifyTo().trim().toLowerCase());
+		}
 		emailReminder.setScenarioId(emailReminderDTO.getScenarioId());
 		emailReminder.setScenarionName(emailReminderDTO.getScenarioName());
 		

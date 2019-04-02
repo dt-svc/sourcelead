@@ -482,10 +482,30 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			    response.setPreDed(preDList);
 			    response.setPostDed(preDList);
 			    response.setContribution(preDList);
-			    response.setMyPayroll(list);
 			    response.setPayItem(preDList);
+			    paySum.setFederalWithholding(federalWithholding);
+				paySum.setFicaWithholding(fica);
+				paySum.setMedicareWithholding(medicare);
+				paySum.setEarnedIncCredit(advancedEarnedIC);
+				paySum.setStateWithholding(stateWithholding);
+				paySum.setCountyWithholding(countyWithholding);
+				paySum.setLocalTax(localTax);
+				paySum.setTotalTax(empTotalTax);
+				paySum.setEmployerFICA(emplrFUTA);
+				paySum.setEmployerMedicare(emplrMedicare);
+				paySum.setEmployerFUTA(emplrFUTA);
+				paySum.setEmployerSUTA(emplrSUTA);
+				paySum.setEmployerRUIA(emplrRUIA);
+				paySum.setEmployerSutaSurchargeTax(emplrSUTASuracharge);
+				paySum.setEmployerSDI(emplrSDI);
+				paySum.setEmployerTransitTaxes(emplrTransitTaxes);
+				paySum.setEmployerWyomingWcTax(emplrWyomingWC);
+				paySum.setEmployerOregonWcTax(emplrOregonWC);
+				paySum.setEmployerTotalPay(emplrTotalTax);
 				response.setConfirmPayTotalSum(paySum);
 				List<AssociateLoanAndAdvancesDTO> loanAdvance = new ArrayList<>();
+				list = new ArrayList<>();
+				response.setMyPayroll(list);
 				response.setLoanAdvance(loanAdvance);
 			}
 		} catch (Exception e) {

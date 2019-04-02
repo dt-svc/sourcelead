@@ -89,7 +89,7 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 		
 		AssociateBankData assBankData = null;
 		try {
-			List<AssociateBankData> assBankDataList = session.createQuery("from AssociateBankData assBankData where assBankData.orgLocationId.id =:orgLocationId").setLong("orgLocationId", locationId).list();
+			List<AssociateBankData> assBankDataList = session.createQuery("from AssociateBankData assBankData where assBankData.orgLocationId.id =:orgLocationId and assBankData.defaultAccount = :defaultAccount").setBoolean("defaultAccount", true).setLong("orgLocationId", locationId).list();
 		    if(assBankDataList != null && assBankDataList.size() >0) {
 		    	assBankData = assBankDataList.get(0);
 		    }
