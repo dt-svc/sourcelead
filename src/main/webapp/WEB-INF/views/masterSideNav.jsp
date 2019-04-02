@@ -358,7 +358,9 @@
 	         
           	  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN'}">
           			 <li class="${sessionData.nav == 'Taxes' ? 'navActive' : ''}"><a href="${SourceLeadWeb_sourceleadUrl}/stateTax/list" title="Taxes"><span class="navIcons finIcon"></span><b>Taxes</b></a></li>
-       	 	  </c:if>	
+       	 	  </c:if>
+       	 	  
+       	 	  <li class="${sessionData.nav == 'Taxes' ? 'navActive' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceGoalsList" title="Goals"><span class="navIcons finIcon"></span><b>Goals</b></a></li>	
 	            	
 			
           	

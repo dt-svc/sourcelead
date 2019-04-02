@@ -362,14 +362,16 @@ function loadSavedForm(templateUuid,sourceleadUrl) {
         success: function(result) {
              $("#templateName").val(result.name);
         	 $("textarea[id='templateDescription']").text(result.description);
-        	 $("#templateId").val(templateId);
+        	 $("#templateId").val(result.id);
+        	 $("#minutes").val(result.timeLimitMinutes);
+        	 $("#seconds").val(result.timeLimitSeconds);
         	 
         	 var data = eval(result.jsonString);
         	 if (data) {
                  //go through each saved field object and render the builder
                  $.each( data, function( k, v ) {
                      //Add the field
-                     $(addField(v['type'],v['isRemoved'],v['isLabelModified'],v['label'],sourceleadUrl,templateId,'N')).appendTo('#form-fields').hide().slideDown('fast');
+                     $(addField(v['type'],v['isRemoved'],v['isLabelModified'],v['label'],sourceleadUrl,templateUuid,'N')).appendTo('#form-fields').hide().slideDown('fast');
                      var $currentField = $('#form-fields .field').last();
 
                      //Add the label
@@ -377,6 +379,10 @@ function loadSavedForm(templateUuid,sourceleadUrl) {
                      
                     //Add the hint
                      $currentField.find('.field-hint').val(v['hint']);
+                     
+                     $currentField.find('.field-points').val(v['points']);
+                     
+                     $currentField.find('.field-attempt').val(v['attempt']);
                      
                     //Add the type dropdown
                      $currentField.find('.field-dropdown').val(v['dropdown']);
