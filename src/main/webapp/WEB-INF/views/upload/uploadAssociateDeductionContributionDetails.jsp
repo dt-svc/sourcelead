@@ -85,15 +85,15 @@ var uploadflag= true;
 								<label class="bg-default"> <i aria-hidden="true"
 									class="fa fa-paperclip" title="Attach file"></i> <br /> <input
 									type="file" name="file" field-name="File Upload"
-									style="display: none;" id="uploadBtn"
+									style="display: none;" id="uploadBton"
 									data-validation="required validate_importFile" multiple>
 								</label>
 								<div class="clearfix"></div>
-								<label id="newUploadFile"></label> 
-								<input type="text" hidden readonly id="dataFilePath" value="">
+								<label id="newUploadFiles"></label> 
+								<input type="text" hidden readonly id="dataFilePaths" value="">
 							</div>
 							<div class="center-div">
-								<input id="uploadFile" placeholder="" disabled="disabled"
+								<input id="uploadFiles" placeholder="" disabled="disabled"
 									style="width: 100%;" />
 							</div>
 						</div>
@@ -146,9 +146,9 @@ var uploadflag= true;
 <script type="text/javascript" src="/resources/js/xlsupload.js"></script>
 
 <script type="text/javascript">
-document.getElementById("uploadBtn").onchange = function () {
-	$('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));
-	fileUpload("uploadBtn", "dataMigration");
+document.getElementById("uploadBton").onchange = function () {
+	$('#newUploadFiles').text($(this).val().replace(/C:\\fakepath\\/i, ''));
+	fileUpload("uploadBton", "dataMigration");
 };
 </script>
 
@@ -190,7 +190,7 @@ function importAssociateDeductionContributionDetail(){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
             };
-	var fileUrl = $("#dataFilePath").val();
+	var fileUrl = $("#dataFilePaths").val();
 	var uploadType = "associateUpload";
 	var headerPosition = $("#headerPosition").val();
 
@@ -203,6 +203,7 @@ function importAssociateDeductionContributionDetail(){
 	var jsonData = encodeURIComponent(con);
 	var form = $('#upload_job_form')[0];
 	var formData = new FormData(form); 
+	if (($('#upload_job_form').validate(false, validationSettings))){
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 		   	type: "POST",
@@ -214,7 +215,6 @@ function importAssociateDeductionContributionDetail(){
     	    dataType : 'json',
     	    url: sourceleadUrl+"/saveAssociateDedAndContriDetailTemplate?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition, 	   
  		    success : function(json) {
- 		    	alert(json)
  		    		$("#loading").removeAttr("style");
  		    	    if(json.updateCount != null && json.updateCount != '')
  		    	    	alert(json.updateCount)
@@ -230,7 +230,16 @@ function importAssociateDeductionContributionDetail(){
 		 		   error: function(e){
 			        }
 			 });
+	}else{
+		return false;	
+	}
 }
+
+$('body').on('blur', '#upload_job_form', function() {
+	$("#upload_job_form").showHelpOnFocus();
+	$("#upload_job_form").validateOnBlur(false, validationSettings);
+	
+});
 </script>
 
 
