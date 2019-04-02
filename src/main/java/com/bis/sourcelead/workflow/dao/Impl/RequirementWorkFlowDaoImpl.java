@@ -352,4 +352,34 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 		}
 		return template;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementWorkFlowStages getRequirementWorkFlowStageByUuidAndWorkflowUuid(String uuid, String workflowUuid) throws Exception {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.requirementWorkFlowId.uuid =:workflowUuid and requirementWorkFlowStages.uuid =:uuid";
+			RequirementWorkFlowStages requirementWorkFlowStages = (RequirementWorkFlowStages)session.createQuery(query).setParameter("workflowUuid", workflowUuid).setParameter("uuid", uuid).uniqueResult();
+			return requirementWorkFlowStages;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+	}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementWorkFlowStages> getRequirementWorkflowStagesBySeqOrderAndWorkflowUuid(String workflowUuid, Integer id) throws Exception {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.requirementWorkFlowId.uuid =:workflowUuid "
+					+ "and  requirementWorkFlowStages.seqOrder > "+id+" order by requirementWorkFlowStages.seqOrder ASC "; 
+			List<RequirementWorkFlowStages> requirementWorkFlowStages = session.createQuery(query).setParameter("workflowUuid", workflowUuid).list();
+			return requirementWorkFlowStages;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+	}
+	}
+	
 }

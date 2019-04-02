@@ -240,6 +240,29 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		//requirementWorkFlowDao.saveRequirementWorkflowStageByWorkflowId()
 		}
 	}
+
+
+	@Override
+	public List<RequirementWorkFlowStagesDTO> getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid(String uuid, String workflowUuid) throws Exception {
+		
+		RequirementWorkFlowStages requirementWorkFlowStages = requirementWorkFlowDao.getRequirementWorkFlowStageByUuidAndWorkflowUuid(uuid, workflowUuid);
+		RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO = new RequirementWorkFlowStagesDTO();
+		if(requirementWorkFlowStages != null) {
+		requirementWorkFlowStagesDTO.setSeqOrder(requirementWorkFlowStages.getSeqOrder());
+		}
+		List<RequirementWorkFlowStages> workFlowStagesbySeqOrder = requirementWorkFlowDao.getRequirementWorkflowStagesBySeqOrderAndWorkflowUuid(workflowUuid, requirementWorkFlowStagesDTO.getSeqOrder());
+		List<RequirementWorkFlowStagesDTO> workFlowStagesDTO = new ArrayList<>();
+		
+		for(RequirementWorkFlowStages workFlowStages : workFlowStagesbySeqOrder) {
+			requirementWorkFlowStagesDTO = new RequirementWorkFlowStagesDTO();
+			requirementWorkFlowStagesDTO.setStageName(workFlowStages.getStageName());
+			requirementWorkFlowStagesDTO.setEditable(workFlowStages.getEditable());
+			requirementWorkFlowStagesDTO.setUuid(workFlowStages.getUuid());
+			workFlowStagesDTO.add(requirementWorkFlowStagesDTO);
+		}	
+		
+		return workFlowStagesDTO;
+	}
 	
 }
 
