@@ -25,5 +25,9 @@ public interface PayrollContributionService {
 
 	PayrollContributionDTO getContributionAmount(long contributionId);
 
-
+	/*
+	 * @Author Samreen
+	 * to get payrollcontribution by deduction Id
+	 */
+	PayrollContribution getContributionByDeductionTypeAndLocationId(String deductionType, Long locationId);
 }

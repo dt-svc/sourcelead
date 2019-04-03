@@ -22,8 +22,17 @@ public class AssociateContributionDTO {
 	private String saveType;
 	
 	private List<ContributionDTO> contributionDTOList;
-
 	
+	private String emailId;
+	
+	public String getEmailId() {
+		return emailId;
+	}
+
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
+	}
+
 	public String getId()
 	{
 		return id;

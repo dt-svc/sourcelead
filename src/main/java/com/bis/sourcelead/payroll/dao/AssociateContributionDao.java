@@ -1,8 +1,11 @@
 package com.bis.sourcelead.payroll.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
+import com.bis.sourcelead.payroll.dto.AssociateContributionDTO;
 import com.bis.sourcelead.payroll.entity.AssociateContribution;
 
 public interface AssociateContributionDao {
@@ -18,5 +21,9 @@ public interface AssociateContributionDao {
 	AssociateContribution findContributionByUserIdContributionId(Long userId, Long contributionId);
 
 	void deleteAssociateContributionByCandidateIdAndOrgLocationId(Long candidateId, Long orgLocationId);
+
+	int saveAssociateDedAndContriDetails(Long id, List<AssociateBankDataDTO> list, Map<String, Long> canMap);
+
+	List<AssociateContributionDTO> getAssociateDedDataListByOrgLocationId(Long id);
 
 }

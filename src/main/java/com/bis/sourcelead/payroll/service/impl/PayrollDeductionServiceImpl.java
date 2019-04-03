@@ -188,4 +188,9 @@ public class PayrollDeductionServiceImpl  implements PayrollDeductionService{
 		return payrollDeduction;
 	}
 
+	@Override
+	public PayrollDeduction getDeductionByDeductionTypeAndLocationId(String deductionType, Long orgLocationId) {
+		return payrollDeductionDao.getDeductionByDeductionTypeAndLocationId(deductionType,orgLocationId);
+	}
+
 }
