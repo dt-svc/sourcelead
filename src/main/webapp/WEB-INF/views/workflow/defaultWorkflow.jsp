@@ -56,7 +56,7 @@
     <div class="clearfix"></div>
       
       <!-- dynamic stages content starts here-->
-        <div id = "dynamicWorkflow">
+        <div id ="dynamicWorkflow">
 		</div>
 	<!-- dynamic stages content ends here-->
 		
@@ -169,8 +169,8 @@ function getDefaultWorkflowNameAndDescription(){
 	function dynamicAnchor(editable, uuid){
 		if(editable != null){
 			if(editable == "Y"){
-				return "<li><a title='Edit' href='${SourceLeadWeb_sourceleadUrl}/addStage'><i class='fa fa-pencil'></i></a></li>" +
-						"<li><a title='Delete' onclick = 'deleteWorkflowStage(\""+uuid+"\");'><i class='fa fa-trash'></i></a></li>"
+				 /* "<li><a title='Edit' href='${SourceLeadWeb_sourceleadUrl}/addStage'><i class='fa fa-pencil'></i></a></li>" + */
+				return	"<li><a title='Delete' onclick ='deleteWorkflowStage(\""+uuid+"\");'><i class='fa fa-trash'></i></a></li>"
 			}
 			if(editable == "N"){
 				return "<li></li>";

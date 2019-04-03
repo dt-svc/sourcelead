@@ -48,6 +48,17 @@ public interface RequirementWorkFlowDao {
 	
 	List<RequirementWorkFlowStages> getRequirementWorkflowStagesBySeqOrderAndWorkflowUuid(String workflowUuid, Integer id)throws Exception;
 	
+	// delete workflow stage
+    RequirementWorkFlowStages getRequirementWorkFlowStagesByUuid(String uuid)throws Exception;
+	
+	String deleteRequirementWorkFlowStagesByOrgLocationIdAndUuid(String uuid);
+	
+	RequirementWorkFlowStages saveRequirementWorkFlowStages(RequirementWorkFlowStages requirementWorkFlowStages)throws Exception;
+	
+	List<RequirementWorkFlowStages> getRequirementWorkFlowStagesListByOrgLocationId(Long orgLocationId);
+
+	void deleteRequirementWorkFlowStagesByuuid(String uuid);
+	
 	
 
 }
