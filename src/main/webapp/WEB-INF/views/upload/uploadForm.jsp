@@ -57,7 +57,7 @@ var uploadflag= true;
 					</div>
 					
 						<div class="col-xs-5 col-md-5">
-							<a href="<c:url value='${appPath}/downloadDataImportTemplateForAssociate'/>"
+							<a href="${sourceleadUrl}/downloadDataImportTemplateForAssociate"
 								class="btn btn-success btn-block" title="Download Associate Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Associate Template
 							</a>
 						</div>
