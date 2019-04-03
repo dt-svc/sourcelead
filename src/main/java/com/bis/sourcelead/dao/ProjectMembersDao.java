@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -154,5 +155,5 @@ public interface ProjectMembersDao {
 			
 	ProjectMembers getProjectMembersByMasterCandiateIdAndProjectClientId(Long masterCandidateId,Long projectClientsId) throws Exception;
 
-	public List<Candidate> getAllAvailableAssociates( Long orgLocationId);
+	public List<CandidateDTO> getAllAvailableAssociates( Long orgLocationId);
 }
