@@ -340,11 +340,14 @@ function getUsersSearchResult(searchValue){
 										<div class="immSub">
 											<a href="#">Import</a>
 											<div class="immSubMenu">
-												<a href="${SourceleadWeb_sourceleadUrl}/uploadForm">Associate Importsss ${SourceleadWeb_sourceleadUrl}</a>
+
+												<a href="${SourceleadWeb_sourceleadUrl}/uploadForm">Associate Import</a>
+								 
 												<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 													<a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateBankForm">Associate Bank Details Import</a>
+												   <a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateDeductionContributionDetails">Associate Deduction Contribution Import</a>
 												</c:if>
-												
+
 												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
 												    <a href="${atsUrl}/uploadAssociateBankingDetailsForm">Associate Bank Detail</a>
 												    <a href="${atsUrl}/uploadAssociateInformation">Associate Information</a>
@@ -364,10 +367,23 @@ function getUsersSearchResult(searchValue){
 				           <li>
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
-									<span> 
+									<span class="ovrShow"> 
 									<a href="${SourceLeadWeb_atsUrl}/userCreation">Add Associate</a>
 									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
+									<div class="immSub">
 										<a href="${SourceLeadWeb_sourceleadUrl}/uploadForm">Import</a>
+											<div class="immSubMenu">
+												<a href="${SourceleadWeb_sourceleadUrl}/uploadForm" title="Associate Import">Associate Import</a>
+												<a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateBankForm" title="Associate Bank Details Import">Associate Bank Details Import</a>
+												<a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateDeductionContributionDetails" title="Associate Deduction Contribution Import">Associate Deduction Contribution Import</a>
+												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+												    <a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateBankingDetailsForm" title="Associate Bank Detail">Associate Bank Detail</a>
+												   <%--  <a href="${sourceleadUrl}/uploadAssociateInformationForm">Associate Information</a> --%>
+													<a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateSalary" title="Associate Salary Import">Associate Salary Import</a>
+													
+												</c:if>
+											</div>
+									</div>
 									</sec:authorize>									
 									</span>
 								</div>
