@@ -177,6 +177,7 @@ function viewHolidaysTablePagination(){
     $('#viewHolidaysTableId').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+    	"columnDefs": [ { orderable: false, targets: [1,2]}],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
