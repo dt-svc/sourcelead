@@ -608,7 +608,7 @@ function goalsPagination(url){
 	    	  		  var result = "";
 	    	  	   	 result = result +"<td>";
                 	 result = result +"<div class='width300px'>";
-                	 result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.goalName+"'>"+opt.goalName;
+                	 result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.goalName+"'><a href='"+pmsUrl+"/goalSummary?goalUUID="+opt.uuid+"'>"+opt.goalName+"</a>";
                 	 result = result +"<p class='text-muted mb0 fontSmall'>"+opt.goalStartDate+"</p>";
                 	 result = result +"</div>"
                 	 result = result +"</td>";

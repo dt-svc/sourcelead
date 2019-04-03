@@ -280,6 +280,7 @@ public class PerformanceGoalsRestController {
 						 performanceGoalsDTO.setDescription(performanceGoals.getDescription());
 						 performanceGoalsDTO.setPercentageDone(performanceGoals.getPercentageDone());
 						 performanceGoalsDTO.setGoalId(performanceGoals.getId());
+						 performanceGoalsDTO.setCreatedDate(performanceGoals.getCreatedDateStr());
 						 
 						 Set<PerformanceGoalsAssignTo> performanceGoalsAssignToSet = performanceGoals.getPerformanceGoalsAssignTo();
 						 if(performanceGoalsAssignToSet != null && !performanceGoalsAssignToSet.isEmpty()) {
