@@ -268,4 +268,6 @@ public interface RequirementService {
 	
 	public ApplicantsBackoutDTO getApplicantBackoutCountsForVendor(List<Long> requirementIdList, long orgRelationId, long spocId);
 	
+	public long getVendorSubmittedCandidates(long requirementId, long orgRelationId, long spocId,String status);
+	
 }
