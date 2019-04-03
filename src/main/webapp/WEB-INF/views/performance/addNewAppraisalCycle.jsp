@@ -99,7 +99,7 @@
 							</div>
 						</label>
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
-							<textarea id="txtEditor" name="description"   value="" class="form-control newContrtextarea"  data-validation-optional="true"></textarea>
+							<textarea id="txtEditor" name="description"   value="" class="form-control newContrtextarea"  data-validation-optional="true validate_length length1-5000"></textarea>
 						</div>
 				</div>
 			</div>
