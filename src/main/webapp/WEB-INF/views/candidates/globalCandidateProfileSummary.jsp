@@ -13,7 +13,7 @@
       <div class="pull-left">
         <h2>Profie Summary</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo;<a href="<c:url value='/globalMarketplacePage'/>"> Global Marketplace List</a> &raquo; Profie Summary</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo;<a href="${SourceLeadWeb_atsUrl}/globalMarketplacePage"> Global Marketplace List</a> &raquo; Profie Summary</div>
     </section>
     <div class="clearfix">
     	<div class="clerfix row mt10">

@@ -710,9 +710,9 @@
 
         if ($('#addcandidate_form').validate(false, validationSettings)) {
             var form = $('#addcandidate_form')[0];
-            /* var formData = new FormData(form); */
-           /*  var formData = getFormData("addcandidate_form"); */
-            var formData = $($('#addcandidate_form')[0]).serialize();
+            var formData = new FormData(form); 
+             var formData = getFormData("addcandidate_form"); 
+             /* var formData = $($('#addcandidate_form')[0]).serialize(); */
             //It will escape all the special characters
             $("#store_candidate").attr("disabled", "disabled");
             $("#store_candidate").addClass('button').val('Processing..');
