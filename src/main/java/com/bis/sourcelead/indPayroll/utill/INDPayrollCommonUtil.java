@@ -943,36 +943,36 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	@SuppressWarnings("static-access")
 	public Double calculatePTforAssociate(AssociateSalaryInd assoSal, Date freqStartDate, Date freqEndDate) {
 		Double ptAmount = 0.0;
-		
-		AssociateSalaryPayheadInd asph = assoSal.getAssociateSalaryPayheadIndList().stream().filter(h -> h.getPayrollPayhead().getShortCode().equalsIgnoreCase("BA")).findAny().get();
-		
-		if(asph != null) {
-			String financialYear = "";
-			Calendar c = Calendar.getInstance();
-			c.setTime(freqEndDate);
-			String fromYear = "";
-			String toYear = "";
-			if(c.get(Calendar.MONTH) <= 3) {
-				toYear = c.get(Calendar.YEAR) + "";
-				c.roll(Calendar.YEAR, -1);
-				fromYear = c.get(Calendar.YEAR) + "";
-			}else {
-				fromYear = c.get(Calendar.YEAR) + "";
-				c.roll(Calendar.YEAR, 1);
-				toYear = c.get(Calendar.YEAR) + "";
-			}
-			financialYear = fromYear + "-" + toYear;
-			
-			StateTaxDTO taxDTO = taxService.getStateTaxByStateNameAndFinancialYear(asph.getPayrollPayhead().getOrgLocationId().getState(), financialYear);
-			try {
-				if(taxDTO != null) {
-					ProfessionalTaxDTO ptDTO = taxDTO.getProfessionalTaxList().stream().filter(t -> new BigDecimal(t.getAmountFrom()).compareTo(asph.getMonthly()) <= 0 && new BigDecimal(t.getAmountTo()).compareTo(asph.getMonthly()) >= 0 ).findAny().get();
-					if(ptDTO != null)
-						ptAmount = Double.valueOf(ptDTO.getAmount());
+		if(assoSal != null && assoSal.getAssociateSalaryPayheadIndList() != null && assoSal.getAssociateSalaryPayheadIndList().size()>0) {
+			AssociateSalaryPayheadInd asph = assoSal.getAssociateSalaryPayheadIndList().stream().filter(h -> h.getPayrollPayhead().getShortCode().equalsIgnoreCase("BA")).findAny().get();
+			if(asph != null) {
+				String financialYear = "";
+				Calendar c = Calendar.getInstance();
+				c.setTime(freqEndDate);
+				String fromYear = "";
+				String toYear = "";
+				if(c.get(Calendar.MONTH) <= 3) {
+					toYear = c.get(Calendar.YEAR) + "";
+					c.roll(Calendar.YEAR, -1);
+					fromYear = c.get(Calendar.YEAR) + "";
+				}else {
+					fromYear = c.get(Calendar.YEAR) + "";
+					c.roll(Calendar.YEAR, 1);
+					toYear = c.get(Calendar.YEAR) + "";
 				}
-			}catch (Exception e) {
-				//e.printStackTrace();
-				return ptAmount;
+				financialYear = fromYear + "-" + toYear;
+				
+				StateTaxDTO taxDTO = taxService.getStateTaxByStateNameAndFinancialYear(asph.getPayrollPayhead().getOrgLocationId().getState(), financialYear);
+				try {
+					if(taxDTO != null && taxDTO.getProfessionalTaxList().size()>0) {
+						ProfessionalTaxDTO ptDTO = taxDTO.getProfessionalTaxList().stream().filter(t -> new BigDecimal(t.getAmountFrom()).compareTo(assoSal.getAnnualSalary()) <= 0 && new BigDecimal(t.getAmountTo()).compareTo(assoSal.getAnnualSalary()) >= 0 ).findAny().get();
+						if(ptDTO != null)
+							ptAmount = Double.valueOf(ptDTO.getAmount());
+					}
+				}catch (Exception e) {
+					//e.printStackTrace();
+					return ptAmount;
+				}
 			}
 		}
 		return ptAmount;

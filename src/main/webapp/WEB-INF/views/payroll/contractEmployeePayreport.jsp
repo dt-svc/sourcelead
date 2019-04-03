@@ -56,6 +56,9 @@
             </ul>
           </div>
           <div class="require_wrap_table tableFirstSecond clearfix datatable_filter">
+          
+           				<div id="popUp"></div>
+	                 <input type="hidden" id="contractEmpDataLength" value="0"/>
             <div id="conEmpReportTableDiv"></div>
           </div>
         </div>
@@ -82,20 +85,67 @@ function exportPayrollRegisterReportExcel(){
 	var searchValue = $("#payrollRegisterSearch").val();
 	var freqStartDate = $('#fromDate').val();
 	var freqEndDate = $('#toDate').val();
-	if(freqStartDate != null && freqStartDate != '' && freqStartDate != 'undefined' && freqEndDate != null && freqEndDate != '' && freqEndDate != 'undefined'){
-		window.location.href = sourceleadUrl+ "/getContractEmployeeReportExport?${_csrf.parameterName}=${_csrf.token}&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&exportType=excel&searchValue="+searchValue;
-	}
+	
+	  var contractEmpDataLength = $("#contractEmpDataLength").val();
+	  
+	  if(contractEmpDataLength > 0){
+		  if(freqStartDate != null && freqStartDate != '' && freqStartDate != 'undefined' && freqEndDate != null && freqEndDate != '' && freqEndDate != 'undefined'){
+				window.location.href = sourceleadUrl+ "/getContractEmployeeReportExport?${_csrf.parameterName}=${_csrf.token}&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&exportType=excel&searchValue="+searchValue;
+			}
+	   }else{
+		   
+		   var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='contract_employee_popup' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Contract Employee Report List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelContract();' style='width : 100%'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#contract_employee_popup").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	   }
+	
 }
+
 </script>
 <script>
 function exportPayrollRegisterReportPdf(){
 	var searchValue = $("#payrollRegisterSearch").val();
 	var freqStartDate = $('#fromDate').val();
 	var freqEndDate = $('#toDate').val();
-	if(freqStartDate != null && freqStartDate != '' && freqStartDate != 'undefined' && freqEndDate != null && freqEndDate != '' && freqEndDate != 'undefined'){
-		window.location.href = sourceleadUrl+ "/getContractEmployeeReportExport?${_csrf.parameterName}=${_csrf.token}&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&exportType=pdf&searchValue="+searchValue;
-	}
+	
+  var contractEmpDataLength = $("#contractEmpDataLength").val();
+	  
+	  if(contractEmpDataLength > 0){
+			if(freqStartDate != null && freqStartDate != '' && freqStartDate != 'undefined' && freqEndDate != null && freqEndDate != '' && freqEndDate != 'undefined'){
+				window.location.href = sourceleadUrl+ "/getContractEmployeeReportExport?${_csrf.parameterName}=${_csrf.token}&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&exportType=pdf&searchValue="+searchValue;
+			}
+	   }else{
+		   
+		   var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='contract_employee_popup' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Contract Employee Report List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelContract();' style='width : 100%'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#contract_employee_popup").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+		   
+	   }
+
 }
+</script>
+
+<script>
+
+function cancelContract(){
+ 	$("#popUp").empty();
+ 	$(".project_inn_mask").fadeOut(200);
+ }
+
 </script>
 <script type="text/javascript">
 function getContractEmployeeReport(){
@@ -137,6 +187,7 @@ function getContractEmployeeReportList(url){
         result = result +"</table>";
      $("#conEmpReportTableDiv").append(result);
      conEmpReportPagination(url); 
+     $("#contractEmpDataLength").val(0);
 }
 
 function conEmpReportPagination(url){
@@ -163,6 +214,7 @@ function conEmpReportPagination(url){
 	    	  	"targets": colIndex++,
 	    	  	"data": "assId",
 	    	  	"render": function(data, type, opt, meta) {
+	    	  		$("#contractEmpDataLength").val(1);
 	    	  		 var result = "";
 		    	  		if(opt.empId !=null && opt.empId != '' && opt.empId !='undefined'){
 		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.empId+'" >'+opt.empId+'</div>';

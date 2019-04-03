@@ -336,6 +336,7 @@ function cancelTicketPriority() {
 	if(document.getElementById("addTicketPriorityForm") !== null) {
 		document.getElementById("addTicketPriorityForm").reset();
 		$("#addTicketPriorityForm").find("input[data-id='uploadBtn']").remove();
+		$("#addTicketPriorityForm").find("p[class='jquery_form_error_message']").remove();
 		$("#refreshImage").val(false);
 	}
 	$(".mask, #modalTasktype").fadeOut();

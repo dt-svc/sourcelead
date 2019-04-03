@@ -72,7 +72,7 @@ public interface TicketManagementDao {
 
 	public Boolean changeTicketStatusDataById(long id, int status, OrgLocations orgLocation);
 
-	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId, int status, String userRole);
+	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId, int status, String userRole, String searchValue);
 
 	public Ticket getTicketSummaryByUUID(String uuid, Long orgLocationId);
 
@@ -83,8 +83,12 @@ public interface TicketManagementDao {
 	//public Boolean saveTicketCommentListByTicketId(TicketComment ticketComment);
 
 	public TicketComment getTicketCommentByTicketId(long ticketId);
+	
+	public TicketComment getTicketComment(long ticketCommentId);
 
 	public Boolean saveTicketComment(TicketComment ticketComment);
+
+	public Boolean deleteTicketComment(long ticketCommentId);
 
 	public Ticket getTicketDataById(long ticketId);
 
@@ -117,5 +121,6 @@ public interface TicketManagementDao {
 	public List<Long> getTicketCategoryAssignToIdList(long ticketCategoryId);
 	
 	public void deleteTicketCategoryAssignTo(TicketCategoryAssignTo ticketCategoryAssignTo);
+
 
 }

@@ -336,5 +336,7 @@ public interface CandidateService {
 	public void updateMarketWalletAmount(Double balanceAmountValue, Long id);
 	
 	public void deleteCandidateFromMarketplaceByCandidateUuid(String candidateUuid)throws Exception;
+	
+	public List<Candidate> getAllAssociateByLocation(Long orgLocationId)throws Exception;
 
 }

@@ -24,6 +24,7 @@ import com.bis.sourcelead.dto.AssociateJoineReportDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.TicketDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.Employees;
@@ -1113,4 +1114,84 @@ public class DynamicReport {
 		}
 		return dataSource;
 	}
+	public File ticketManagementPdfExport(ResponseList<TicketDTO> responseList, OrgLocations orgLocations) throws IOException {
+		 File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("ticket_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
+			file.setReadable(true);
+			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orgLocations.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							col.column("Ticket Id", "Ticket Id", type.stringType()),
+							col.column("Ticket Title", "Ticket Title", type.stringType()),
+							col.column("Status", "Status", type.stringType()),
+							col.column("Priority", "Priority", type.stringType()),
+							col.column("Requested By", "Requested By", type.stringType()),
+							col.column("AssignedTo", "AssignedTo", type.stringType()))
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(createTicketDataSource(responseList)).toPdf(pdfExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+	
+	public File ticketManagementExcelExport(ResponseList<TicketDTO> responseList, OrgLocations orgLocations) throws IOException {
+		 File file = null;
+			try {
+			    StringBuilder fileSB = new StringBuilder();
+				file = File.createTempFile(fileSB.append("ticket_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
+				file.setReadable(true);
+				JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
+                     .setIgnorePageMargins(true)
+                     .setWhitePageBackground(false)
+                     .setRemoveEmptySpaceBetweenColumns(true);
+
+				report().setTemplate(Templates.reportTemplate)
+						.setColumnTitleStyle(Templates.columnTitleStyle)
+						.addProperty(JasperProperty.EXPORT_XLS_FREEZE_ROW, "1")
+						.ignorePageWidth()
+						.ignorePagination()
+						.columns(
+								col.column("Ticket Id", "Ticket Id", type.stringType()),
+								col.column("Ticket Title", "Ticket Title", type.stringType()),
+								col.column("Status", "Status", type.stringType()),
+								col.column("Priority", "Priority", type.stringType()),
+								col.column("Requested By", "Requested By", type.stringType()),
+								col.column("AssignedTo", "AssignedTo", type.stringType()))
+						.setDataSource(createTicketDataSource(responseList)).toXls(xlsExporter);
+			} catch (DRException e) {
+				e.printStackTrace();
+			}
+		return file;
+ }
+	
+	private DRDataSource createTicketDataSource(ResponseList<TicketDTO> responseList) {
+		DRDataSource dataSource = new DRDataSource( "Ticket Id", "Ticket Title","Status","Priority", "Requested By","AssignedTo");
+		for(TicketDTO history:responseList.getData()) {
+		
+			String ticketId = history.getGeneratedId();
+			
+			String ticketTitle = history.getTitle();
+			
+			String status = history.getTicketStatus();
+			
+			String priority = history.getTicketPriority();
+			
+			String requestedBy = history.getCreatedBy();
+			
+			String assignedTo = history.getAssignedTo().toString();
+			
+			assignedTo = assignedTo.replace("[", " ");
+			
+			assignedTo = assignedTo.replace("]", " ");
+			
+			dataSource.add(ticketId,ticketTitle,status,priority,requestedBy,assignedTo);
+		}
+		return dataSource;
+	}
+	
+	
 }

@@ -66,7 +66,7 @@
 			<div class="clearfix mb">
 				<label class="noPad">Description</label>
 				<div class="clearfix">
-					<textarea placeholder="Description" name="description" id="ticketTypeDesc" class="form-control" rows="2"></textarea>
+					<textarea placeholder="Description" name="description" id="ticketTypeDesc" class="form-control" rows="2" data-validation="validate_length length0-1000"></textarea>
 				</div>
 			</div>
 		</div>

@@ -1928,7 +1928,6 @@ function validate_fileupload(fileName)
 <script type="text/javascript">
 function validateUploadFile(rowId,attNumber,item)
 {
-	alert(attNumber);
 	  $('#'+rowId+'uploadFile'+attNumber).val(item.value.replace(/C:\\fakepath\\/i, ''));
 	  var selectedFile = $('#'+rowId+'docFile'+attNumber).val();
 	  if(validate_fileupload(selectedFile)){

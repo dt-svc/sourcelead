@@ -54,7 +54,7 @@ public class EmailReminderDaoImpl implements EmailReminderDao {
 	@Transactional
 	public List<EmailReminder> getEmailReminderList(String scenarioName) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from EmailReminder e  where e.scenarionName =:scenarioName and e.status = '1' "; 
+		String query = "from EmailReminder e left join fetch e.orgLocationsId where e.scenarionName =:scenarioName and e.status = '1' "; 
 		List<EmailReminder> emailReminderList = session.createQuery(query).setString("scenarioName", scenarioName).list();
 		return emailReminderList;
 	}

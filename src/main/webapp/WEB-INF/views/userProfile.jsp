@@ -114,7 +114,7 @@ function getBankDetails(){
     $('#unsubscribe').hide();
     $('#mylinkaccounts').hide();
     $("#taxDate").hide();
-//     $('#myBankDetails').show();
+     $('#myBankDetails').show();
     $('.tabsMenu_tabs_inn').show();
       associateBankData();
 }

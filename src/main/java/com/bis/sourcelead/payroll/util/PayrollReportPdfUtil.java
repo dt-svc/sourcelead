@@ -343,219 +343,228 @@ public class PayrollReportPdfUtil {
 
 		file.setReadable(true);
 		
-		Document document = new Document(PageSize.A4.rotate());
-		PdfWriter.getInstance(document, new FileOutputStream(file));
-		document.open();
-		
-		
-		CheckRegisterReportDTO registerDTO = checkRegData.get(0);
-    	
-    	PdfHeaderDTO headerDTO = new PdfHeaderDTO();
-    	
-    	headerDTO.setCheckDate(registerDTO.getPayCheckDate());
-    	headerDTO.setGroupName(registerDTO.getPayGroupName());
-    	headerDTO.setOrgName(orgLocation.getOrgLocationName());
-    	headerDTO.setPayPeriod(registerDTO.getPayFrequency());
-    	headerDTO.setPayrollType(registerDTO.getType());
-    	headerDTO.setPeriodBeginDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), registerDTO.getFreqStartDate()));
-    	headerDTO.setPeriodEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), registerDTO.getFreqEndDate()));
-    	headerDTO.setReportType("DIRECT DEPOSIT REGISTER");
-    	headerDTO.setRunDate(registerDTO.getRunDate());
-    	headerDTO.setRunNumber(Integer.parseInt(registerDTO.getRunNo()));
-    	
-    	createHeaderTable(document,headerDTO,orgLocation);
-		
-		PdfPTable bodyTable = new PdfPTable(1);
-		Font greyFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
-		bodyTable.setTotalWidth(document.getPageSize().getWidth() - 80);
-		bodyTable.setLockedWidth(true);
-		PdfPCell bodyCell = new PdfPCell();
-		bodyCell.setPhrase(new Paragraph("Employee Direct Deposits",greyFont));
-		bodyCell.setBackgroundColor(new BaseColor(220,220,220));
-		bodyCell.setPaddingTop(5f);
-		bodyCell.setPaddingBottom(5f);
-		bodyCell.setBorderWidth(1);
-		bodyCell.setBorder(Rectangle.BOTTOM);
-		bodyCell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
-		bodyTable.addCell(bodyCell);
-		
-		/*PdfPTable bodyTable1 = new PdfPTable(3);
-		bodyTable1.setTotalWidth(document.getPageSize().getWidth() - 80);
-		bodyTable1.setLockedWidth(true);
-		Stream.of("Bank: BANK OF AMERICA, N.A.", "Routing Transit #: 064000020", "Account #: 444006063283")
-	      .forEach(columnTitle -> {
-	        PdfPCell header = new PdfPCell();
-	        header.setBackgroundColor(new BaseColor(246,246,246));
-	        header.setBorderWidth(1);
-	        header.setBorder(Rectangle.BOTTOM);
-	        header.setPaddingTop(5f);
-	        header.setPaddingBottom(5f);
-	        header.setPhrase(new Paragraph(columnTitle,boldFont));
-	        header.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
-	        bodyTable1.addCell(header);
-	    });*/
-		
-		PdfPTable bodyTable2 = new PdfPTable(7);
-		bodyTable2.setTotalWidth(document.getPageSize().getWidth() - 80);
-		bodyTable2.setLockedWidth(true);
-		Stream.of(Constants.DIRECT_DEPOSIT_HEADER)
-	      .forEach(columnTitle -> {
-	        PdfPCell header = new PdfPCell();
-	        header.setPhrase(new Paragraph(columnTitle,boldFont));
-	        header.setBorder(Rectangle.BOTTOM);
-	        header.setPaddingTop(5f);
-	        header.setPaddingBottom(5f);
-	        header.setBorderWidth(1);
-	        header.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
-	        bodyTable2.addCell(header);
-	    });
-		bodyTable2.setSpacingAfter(10f);
-		
-		PdfPTable detailTable = new PdfPTable(7);
-		detailTable.setTotalWidth(document.getPageSize().getWidth() - 80);
-		detailTable.setLockedWidth(true);
-		BigDecimal totalDeposit = BigDecimal.ZERO;
-		for (CheckRegisterReportDTO checkRegisterReportDTO : checkRegData) {
-			PdfPCell detailCell0 = new PdfPCell();
-			detailCell0.addElement(new Paragraph(checkRegisterReportDTO.getEmpId().toString(),detailFont));
-			detailCell0.setBorder(Rectangle.NO_BORDER);
-			detailCell0.setColspan(1);
-			detailCell0.setPaddingLeft(45f);
-			detailTable.addCell(detailCell0);
+		try {
 			
-			PdfPCell detailCell1 = new PdfPCell();
-			StringBuilder name = new StringBuilder();
-			if(checkRegisterReportDTO.getLastName() != null) {
-				name.append(checkRegisterReportDTO.getFirstName()).append(" ").append(checkRegisterReportDTO.getLastName());
-			}else {
-				name.append(checkRegisterReportDTO.getFirstName());
+			if(checkRegData != null && checkRegData.size() >0) {
+			Document document = new Document(PageSize.A4.rotate());
+			PdfWriter.getInstance(document, new FileOutputStream(file));
+			document.open();
+			
+			
+			CheckRegisterReportDTO registerDTO = checkRegData.get(0);
+	    	
+	    	PdfHeaderDTO headerDTO = new PdfHeaderDTO();
+	    	
+	    	headerDTO.setCheckDate(registerDTO.getPayCheckDate());
+	    	headerDTO.setGroupName(registerDTO.getPayGroupName());
+	    	headerDTO.setOrgName(orgLocation.getOrgLocationName());
+	    	headerDTO.setPayPeriod(registerDTO.getPayFrequency());
+	    	headerDTO.setPayrollType(registerDTO.getType());
+	    	headerDTO.setPeriodBeginDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), registerDTO.getFreqStartDate()));
+	    	headerDTO.setPeriodEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), registerDTO.getFreqEndDate()));
+	    	headerDTO.setReportType("DIRECT DEPOSIT REGISTER");
+	    	headerDTO.setRunDate(registerDTO.getRunDate());
+	    	headerDTO.setRunNumber(Integer.parseInt(registerDTO.getRunNo()));
+	    	
+	    	createHeaderTable(document,headerDTO,orgLocation);
+			
+			PdfPTable bodyTable = new PdfPTable(1);
+			Font greyFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
+			bodyTable.setTotalWidth(document.getPageSize().getWidth() - 80);
+			bodyTable.setLockedWidth(true);
+			PdfPCell bodyCell = new PdfPCell();
+			bodyCell.setPhrase(new Paragraph("Employee Direct Deposits",greyFont));
+			bodyCell.setBackgroundColor(new BaseColor(220,220,220));
+			bodyCell.setPaddingTop(5f);
+			bodyCell.setPaddingBottom(5f);
+			bodyCell.setBorderWidth(1);
+			bodyCell.setBorder(Rectangle.BOTTOM);
+			bodyCell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+			bodyTable.addCell(bodyCell);
+			
+			/*PdfPTable bodyTable1 = new PdfPTable(3);
+			bodyTable1.setTotalWidth(document.getPageSize().getWidth() - 80);
+			bodyTable1.setLockedWidth(true);
+			Stream.of("Bank: BANK OF AMERICA, N.A.", "Routing Transit #: 064000020", "Account #: 444006063283")
+		      .forEach(columnTitle -> {
+		        PdfPCell header = new PdfPCell();
+		        header.setBackgroundColor(new BaseColor(246,246,246));
+		        header.setBorderWidth(1);
+		        header.setBorder(Rectangle.BOTTOM);
+		        header.setPaddingTop(5f);
+		        header.setPaddingBottom(5f);
+		        header.setPhrase(new Paragraph(columnTitle,boldFont));
+		        header.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+		        bodyTable1.addCell(header);
+		    });*/
+			
+			PdfPTable bodyTable2 = new PdfPTable(7);
+			bodyTable2.setTotalWidth(document.getPageSize().getWidth() - 80);
+			bodyTable2.setLockedWidth(true);
+			Stream.of(Constants.DIRECT_DEPOSIT_HEADER)
+		      .forEach(columnTitle -> {
+		        PdfPCell header = new PdfPCell();
+		        header.setPhrase(new Paragraph(columnTitle,boldFont));
+		        header.setBorder(Rectangle.BOTTOM);
+		        header.setPaddingTop(5f);
+		        header.setPaddingBottom(5f);
+		        header.setBorderWidth(1);
+		        header.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+		        bodyTable2.addCell(header);
+		    });
+			bodyTable2.setSpacingAfter(10f);
+			
+			PdfPTable detailTable = new PdfPTable(7);
+			detailTable.setTotalWidth(document.getPageSize().getWidth() - 80);
+			detailTable.setLockedWidth(true);
+			BigDecimal totalDeposit = BigDecimal.ZERO;
+			for (CheckRegisterReportDTO checkRegisterReportDTO : checkRegData) {
+				PdfPCell detailCell0 = new PdfPCell();
+				detailCell0.addElement(new Paragraph(checkRegisterReportDTO.getEmpId().toString(),detailFont));
+				detailCell0.setBorder(Rectangle.NO_BORDER);
+				detailCell0.setColspan(1);
+				detailCell0.setPaddingLeft(45f);
+				detailTable.addCell(detailCell0);
+				
+				PdfPCell detailCell1 = new PdfPCell();
+				StringBuilder name = new StringBuilder();
+				if(checkRegisterReportDTO.getLastName() != null) {
+					name.append(checkRegisterReportDTO.getFirstName()).append(" ").append(checkRegisterReportDTO.getLastName());
+				}else {
+					name.append(checkRegisterReportDTO.getFirstName());
+				}
+				detailCell1.addElement(new Paragraph(name.toString(),detailFont));
+				detailCell1.setBorder(Rectangle.NO_BORDER);
+				detailCell1.setColspan(1);
+				detailCell1.setPaddingLeft(30f);
+				detailTable.addCell(detailCell1);
+				
+				PdfPCell detailCell2 = new PdfPCell();
+				if(checkRegisterReportDTO.getDepartmentId() != null)
+					detailCell2.addElement(new Paragraph(checkRegisterReportDTO.getDepartmentId(),detailFont));
+				else
+					detailCell2.addElement(new Paragraph("--",detailFont));
+				detailCell2.setBorder(Rectangle.NO_BORDER);
+				detailCell2.setColspan(1);
+				detailCell2.setPaddingLeft(35f);
+				detailTable.addCell(detailCell2);
+				
+				PdfPCell detailCell3 = new PdfPCell();
+				if(checkRegisterReportDTO.getRoutingNum() != null)
+					detailCell3.addElement(new Paragraph(checkRegisterReportDTO.getRoutingNum(),detailFont));
+				else
+					detailCell3.addElement(new Paragraph("--",detailFont));
+				detailCell3.setBorder(Rectangle.NO_BORDER);
+				detailCell3.setColspan(1);
+				detailCell3.setPaddingLeft(35f);
+				detailTable.addCell(detailCell3);
+				
+				PdfPCell detailCell4 = new PdfPCell();
+				if(checkRegisterReportDTO.getAccountNum() != null)
+					detailCell4.addElement(new Paragraph(checkRegisterReportDTO.getAccountNum(),detailFont));
+				else
+					detailCell4.addElement(new Paragraph("--",detailFont));
+				detailCell4.setBorder(Rectangle.NO_BORDER);
+				detailCell4.setColspan(1);
+				detailCell4.setPaddingLeft(35f);
+				detailTable.addCell(detailCell4);
+				
+				PdfPCell detailCell5 = new PdfPCell();
+				detailCell5.addElement(new Paragraph("$ "+String.valueOf(checkRegisterReportDTO.getNetPay()),detailFont));
+				detailCell5.setBorder(Rectangle.NO_BORDER);
+				detailCell5.setColspan(1);
+				detailCell5.setPaddingLeft(45f);
+				detailTable.addCell(detailCell5);
+				
+				PdfPCell detailCell6 = new PdfPCell();
+				detailCell6.addElement(new Paragraph("--",detailFont));
+				detailCell6.setBorder(Rectangle.NO_BORDER);
+				detailCell6.setColspan(1);
+				detailCell6.setPaddingLeft(40f);
+				detailTable.addCell(detailCell6);
+				totalDeposit = totalDeposit.add(checkRegisterReportDTO.getNetPay());
 			}
-			detailCell1.addElement(new Paragraph(name.toString(),detailFont));
-			detailCell1.setBorder(Rectangle.NO_BORDER);
-			detailCell1.setColspan(1);
-			detailCell1.setPaddingLeft(30f);
-			detailTable.addCell(detailCell1);
 			
-			PdfPCell detailCell2 = new PdfPCell();
-			if(checkRegisterReportDTO.getDepartmentId() != null)
-				detailCell2.addElement(new Paragraph(checkRegisterReportDTO.getDepartmentId(),detailFont));
-			else
-				detailCell2.addElement(new Paragraph("--",detailFont));
-			detailCell2.setBorder(Rectangle.NO_BORDER);
-			detailCell2.setColspan(1);
-			detailCell2.setPaddingLeft(35f);
-			detailTable.addCell(detailCell2);
+			PdfPTable detailTable1 = new PdfPTable(1);
+			detailTable1.setTotalWidth(document.getPageSize().getWidth() - 350);
+			detailTable1.setLockedWidth(true);
+			PdfPCell footerCell = new PdfPCell();
 			
-			PdfPCell detailCell3 = new PdfPCell();
-			if(checkRegisterReportDTO.getRoutingNum() != null)
-				detailCell3.addElement(new Paragraph(checkRegisterReportDTO.getRoutingNum(),detailFont));
-			else
-				detailCell3.addElement(new Paragraph("--",detailFont));
-			detailCell3.setBorder(Rectangle.NO_BORDER);
-			detailCell3.setColspan(1);
-			detailCell3.setPaddingLeft(35f);
-			detailTable.addCell(detailCell3);
+			Chunk glue = new Chunk(new VerticalPositionMark());
+			Paragraph p = new Paragraph(orgLocation.getOrgLocationName(),boldFont);
+			p.add(new Chunk(glue));
+			p.add(String.valueOf("$ "+totalDeposit));
+			footerCell.addElement(p);
 			
-			PdfPCell detailCell4 = new PdfPCell();
-			if(checkRegisterReportDTO.getAccountNum() != null)
-				detailCell4.addElement(new Paragraph(checkRegisterReportDTO.getAccountNum(),detailFont));
-			else
-				detailCell4.addElement(new Paragraph("--",detailFont));
-			detailCell4.setBorder(Rectangle.NO_BORDER);
-			detailCell4.setColspan(1);
-			detailCell4.setPaddingLeft(35f);
-			detailTable.addCell(detailCell4);
+			footerCell.setBackgroundColor(new BaseColor(220,220,220));
+			footerCell.setPaddingTop(5f);
+			footerCell.setPaddingBottom(5f);
+			footerCell.setBorderWidth(1);
+			footerCell.setBorder(Rectangle.NO_BORDER);
 			
-			PdfPCell detailCell5 = new PdfPCell();
-			detailCell5.addElement(new Paragraph("$ "+String.valueOf(checkRegisterReportDTO.getNetPay()),detailFont));
-			detailCell5.setBorder(Rectangle.NO_BORDER);
-			detailCell5.setColspan(1);
-			detailCell5.setPaddingLeft(45f);
-			detailTable.addCell(detailCell5);
 			
-			PdfPCell detailCell6 = new PdfPCell();
-			detailCell6.addElement(new Paragraph("--",detailFont));
-			detailCell6.setBorder(Rectangle.NO_BORDER);
-			detailCell6.setColspan(1);
-			detailCell6.setPaddingLeft(40f);
-			detailTable.addCell(detailCell6);
-			totalDeposit = totalDeposit.add(checkRegisterReportDTO.getNetPay());
+			detailTable1.addCell(footerCell);
+			
+			
+			PdfPTable detailTable2 = new PdfPTable(1);
+			detailTable2.setTotalWidth(document.getPageSize().getWidth() - 350);
+			detailTable2.setLockedWidth(true);
+			PdfPCell footerCell1 = new PdfPCell();
+			
+			Chunk glue1 = new Chunk(new VerticalPositionMark());
+			/*Paragraph p1 = new Paragraph("Number of Employees",boldFont);
+			p1.add(new Chunk(glue1));
+			p1.add("--");
+			footerCell1.addElement(p1);*/
+			
+			Paragraph p2 = new Paragraph("Number of Direct Deposits",boldFont);
+			p2.add(new Chunk(glue1));
+			p2.add(String.valueOf(checkRegData.size()));
+			footerCell1.addElement(p2);
+			
+		/*	Paragraph p3 = new Paragraph("Number of Prenote Accounts",boldFont);
+			p3.add(new Chunk(glue1));
+			p3.add("9");
+			footerCell1.addElement(p3);*/
+			
+			footerCell1.setPaddingTop(5f);
+			footerCell1.setPaddingBottom(5f);
+			footerCell1.setBorderWidth(1);
+			footerCell1.setBorder(Rectangle.NO_BORDER);
+			
+			detailTable2.addCell(footerCell1);
+			
+			
+			
+			PdfPTable detailTable3 = new PdfPTable(2);
+			detailTable3.setTotalWidth(document.getPageSize().getWidth() - 80);
+			detailTable3.setLockedWidth(true);
+			Stream.of("", "")
+		      .forEach(columnTitle -> {
+		        PdfPCell header = new PdfPCell();
+		        header.setPhrase(new Paragraph(columnTitle,boldFont));
+		        header.setBorder(Rectangle.BOTTOM);
+		        header.setPaddingTop(5f);
+		        header.setPaddingBottom(5f);
+		        header.setBorderWidth(1);
+		        header.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+		        detailTable3.addCell(header);
+		    });
+			
+			document.add(bodyTable);
+//			document.add(bodyTable1);
+			document.add(bodyTable2);
+			document.add(detailTable);
+			document.add(detailTable1);
+			document.add(detailTable2);
+			document.add(detailTable3);
+			document.close();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
-		PdfPTable detailTable1 = new PdfPTable(1);
-		detailTable1.setTotalWidth(document.getPageSize().getWidth() - 350);
-		detailTable1.setLockedWidth(true);
-		PdfPCell footerCell = new PdfPCell();
-		
-		Chunk glue = new Chunk(new VerticalPositionMark());
-		Paragraph p = new Paragraph(orgLocation.getOrgLocationName(),boldFont);
-		p.add(new Chunk(glue));
-		p.add(String.valueOf("$ "+totalDeposit));
-		footerCell.addElement(p);
-		
-		footerCell.setBackgroundColor(new BaseColor(220,220,220));
-		footerCell.setPaddingTop(5f);
-		footerCell.setPaddingBottom(5f);
-		footerCell.setBorderWidth(1);
-		footerCell.setBorder(Rectangle.NO_BORDER);
-		
-		
-		detailTable1.addCell(footerCell);
-		
-		
-		PdfPTable detailTable2 = new PdfPTable(1);
-		detailTable2.setTotalWidth(document.getPageSize().getWidth() - 350);
-		detailTable2.setLockedWidth(true);
-		PdfPCell footerCell1 = new PdfPCell();
-		
-		Chunk glue1 = new Chunk(new VerticalPositionMark());
-		/*Paragraph p1 = new Paragraph("Number of Employees",boldFont);
-		p1.add(new Chunk(glue1));
-		p1.add("--");
-		footerCell1.addElement(p1);*/
-		
-		Paragraph p2 = new Paragraph("Number of Direct Deposits",boldFont);
-		p2.add(new Chunk(glue1));
-		p2.add(String.valueOf(checkRegData.size()));
-		footerCell1.addElement(p2);
-		
-	/*	Paragraph p3 = new Paragraph("Number of Prenote Accounts",boldFont);
-		p3.add(new Chunk(glue1));
-		p3.add("9");
-		footerCell1.addElement(p3);*/
-		
-		footerCell1.setPaddingTop(5f);
-		footerCell1.setPaddingBottom(5f);
-		footerCell1.setBorderWidth(1);
-		footerCell1.setBorder(Rectangle.NO_BORDER);
-		
-		detailTable2.addCell(footerCell1);
-		
-		
-		
-		PdfPTable detailTable3 = new PdfPTable(2);
-		detailTable3.setTotalWidth(document.getPageSize().getWidth() - 80);
-		detailTable3.setLockedWidth(true);
-		Stream.of("", "")
-	      .forEach(columnTitle -> {
-	        PdfPCell header = new PdfPCell();
-	        header.setPhrase(new Paragraph(columnTitle,boldFont));
-	        header.setBorder(Rectangle.BOTTOM);
-	        header.setPaddingTop(5f);
-	        header.setPaddingBottom(5f);
-	        header.setBorderWidth(1);
-	        header.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
-	        detailTable3.addCell(header);
-	    });
-		
-		document.add(bodyTable);
-//		document.add(bodyTable1);
-		document.add(bodyTable2);
-		document.add(detailTable);
-		document.add(detailTable1);
-		document.add(detailTable2);
-		document.add(detailTable3);
-		document.close();
 		return file;
 	}
 

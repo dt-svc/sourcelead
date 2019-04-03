@@ -73,13 +73,13 @@
           <div class="clearfix mb">
             <label class="noPad">Notify to</label>
             <div class="clearfix">
-                <textarea class="form-control" rows="4" id="notifyTo" name="notifyTo" placeholder="Enter multiple Email Id's separated by commas(,)" data-validation="validate_length length0-500"></textarea>
+                <textarea class="form-control" rows="4" id="notifyTo" name="notifyTo" placeholder="Enter multiple Email Id's separated by commas(,)" data-validation="validate_length length0-1000"></textarea>
             </div>
         </div>
             <div class="clearfix mb">
                 <label class="noPad">Description</label>
                 <div class="clearfix">
-					<textarea placeholder="Description" name="description" id="ticketCategoryDesc" class="form-control" rows="2"></textarea>
+					<textarea placeholder="Description" name="description" id="ticketCategoryDesc" class="form-control" rows="2" data-validation="validate_length length0-1000"></textarea>
                 </div>
             </div>
 
