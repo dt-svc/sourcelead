@@ -21,9 +21,9 @@
 .reportBtns {
 </style>
 <script type="text/javascript">
-window.onload = function() { 
+/* window.onload = function() { 
 	getVendorsReportList();
-	}
+	} */
 </script>
 
 
@@ -42,7 +42,11 @@ window.onload = function() {
     
     
 <div class="reportHead">
-    	<ul class="clearfix pull-right">
+			<div class="listGridWrap reqListBtn">
+				<a title="Graphical View" id="graphView" class="btn btn-default rAct"><i class="fa fa-pie-chart"></i></a> 
+				<a title="List View" id="listView" class="btn btn-default"><i class="fa fa-list"></i></a>
+			</div>
+    	<ul class="clearfix pull-right" id="listViewFilters" style="display: none;">
     		<li>
         <div class="dropdown-select positionRelative repSelWrap clearfix">
 			<select class="form-control repSelFiled" id="vendorreportTypeId" onChange="flushVendorCustomDates(); custVendorDates();">
@@ -81,8 +85,12 @@ window.onload = function() {
 <section class="candidate_wrap_table recruiterReports_table minHeight">
 <div id ="vendorLoderDiv"></div>
 <div id="vendorReportsDiv" class="datatable_filter repDataSearch repDataSearchFil"></div>
+<div id="vendorReportsChartDiv">
+	<jsp:include page="vendorPerformanceReport.jsp" flush="true"></jsp:include>
+</div>
 <div id="vendorSpocReportsDiv" class="repoPositiNoCount"></div>
-</section>    
+<div id="releasedJobsResultDiv"></div>
+</section>   
  
       
 

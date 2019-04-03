@@ -387,6 +387,8 @@ public class LeaveManagementReportsRestController {
  		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		orgLocations.setOrg(org);
 
+		hrLeaveReportDTO.setSortColumn("name");
+		hrLeaveReportDTO.setSortOrder("desc");
  		hrLeaveReportDTO.setLoginUserId(loginUser.getId());
 
 		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("LeaveReport ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());

@@ -34,6 +34,9 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu1" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
 				<sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
+				<li><a href='${appPath}/offerAcceptanceRate'>Offer Acceptance Rate</a></li>
+				</sec:authorize>
+				<sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/applicantsjoinedlist'>Applicants Joined Report</a></li>
 				</sec:authorize>
 				 <sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
@@ -257,6 +260,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					<sec:authorize access="hasRole('ROLE_ASSOCIATE_JOINED_REPORT')">
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/associateJoineReports'>Associate Joined Report</a></li>
 				</sec:authorize>  
+				<li><a href='${appPath}/availableAssociatesReport'>Available Associate Report</a></li> 
 					<!--<li><a href="#">Bank Report</a></li>
 					 <li><a href="#">Performance</a></li>
 					<li><a href="#">Payrol</a></li>
@@ -413,6 +417,10 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
             <div class="newRepListCta">
                 <h2><a href="javascript:void(0)">Performance Reports</a></h2>
                 <ul class="repSearchList">
+                
+                <sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
+				<li><a href='${appPath}/offerAcceptanceRate'>Offer Acceptance Rate</a></li>
+				</sec:authorize>
                 
                 <sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/applicantsjoinedlist'>Applicants Joined Report</a></li>
@@ -580,7 +588,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					</sec:authorize>  
 					<sec:authorize access="hasRole('ROLE_ASSOCIATE_JOINED_REPORT')">
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/associateJoineReports'>Associate Joined Report</a></li>
-				</sec:authorize>             
+				</sec:authorize>    
+				<li><a href='${appPath}/availableAssociatesReport'>Available Associate Report</a></li>           
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div> 
