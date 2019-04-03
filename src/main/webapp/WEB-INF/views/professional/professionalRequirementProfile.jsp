@@ -31,11 +31,11 @@ $(document).ready(function() {
       <h2>Job Details</h2>
     </div>
     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='/professionalRequirements'/>">Jobs List </a> &raquo; Job Details</div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_atsUrl}/professionalRequirements">Jobs List </a> &raquo; Job Details</div>
     </c:if>
     
     <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='/jobsList'/>">Jobs List </a> &raquo; <a href="<c:url value='/professionalRequirements'/>">Crowdsourcing Jobs List </a> &raquo; Job Details</div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_atsUrl}/jobsList">Jobs List </a> &raquo; <a href="${SourceLeadWeb_atsUrl}/professionalRequirements">Crowdsourcing Jobs List </a> &raquo; Job Details</div>
     </c:if>
   
   </section>

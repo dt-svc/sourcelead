@@ -7,7 +7,7 @@
 		<div class="pull-left">
 			<h2>Job Fair</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="<c:url value='/jobsList?viewTab=jobFair'/>"> Job Fairs </a> &raquo; JobFair</div>
+		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="${SourceLeadWeb_atsUrl}/jobsList?viewTab=jobFair"> Job Fairs </a> &raquo; JobFair</div>
 	</section>
 	
 	
@@ -62,7 +62,7 @@
 					<div class="col-md-5">
 						<label class="clearfix">Description</label>
 						<div class="clearfix positionRelative">
-							<textarea class="form-control" rows="4" id="description" placeholder="Short note about the fair">${jobFair.description}</textarea>
+							<textarea class="form-control" rows="4" id="jobFairDescription" placeholder="Short note about the fair">${jobFair.description}</textarea>
 						</div>
 					</div>
 					
@@ -503,7 +503,7 @@
 						id: id,
 						name : $("#fairName").val(),
 						budget : $("#budget").val(),
-						description : $("#description").val(),
+						description : $("#jobFairDescription").val(),
 						venue : $("#venue").val(),
 						startDate : $("#startDate").val(),
 						endDate : $("#endDate").val(),

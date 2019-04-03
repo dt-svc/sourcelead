@@ -640,6 +640,7 @@ function prepareDynamicAssetList(url){
 	result = result + '<thead>';
 	result = result + '<tr">';
 	result = result +'	<th>ID</th>';
+	result = result +'	<th>Name</th>';
 	result = result +'	<th>Serial Number</th>';
    	result = result +'  <th>Category</th>';
    	result = result +'  <th>Model</th>';
@@ -677,6 +678,18 @@ function projectAssetPaginations(url){
 			   	result = result+'<td><div class="tbldata-dotdot" title="'+report.id+'">'+report.id+'</div></td>';
 
 	             return result;
+	  	      }
+       		 },{
+	  	  	"targets": colIndex++,
+		  	"data": "",
+		  	"render": function(data, type, report) {
+		  		var result = "";
+		  		if(report.name != null && report.name != "") {
+				   	result = result+'<td><div class="tbldata-dotdot" title="'+report.name+'">'+report.name+'</div></td>';
+		  		} else {
+		  			result = result+'<td><div class="tbldata-dotdot">--</div></td>';	  			
+		  		}
+	            return result;
 	  	      }
 	  		},{
     	  	"targets": colIndex++,
