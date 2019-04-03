@@ -1756,7 +1756,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 			for (long id : availableAssociatesDTO.getUserIds()) {
 				userIds += (userIds.isEmpty() ? "" : ", ") + id;
 			}
-			query += " and pm.employee.user.id in (" + userIds + ")";
+			query += " and pm.projectMemberCandidteId.id in (" + userIds + ")";
 		}
 		
 		System.out.println(query);
