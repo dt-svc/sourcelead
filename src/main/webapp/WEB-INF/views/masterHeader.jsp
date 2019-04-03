@@ -189,6 +189,7 @@ z-index: 1000000000 !important;
 <script type="text/javascript">
 $(document).ready(function(){
 	updateMarketplaceCartCountAndPrice();
+	getExistedClockTime();
 });
 </script>
 <!-- notification related include jsp -->
@@ -1531,7 +1532,8 @@ $("#searchType").selectpicker('refresh');
   
   <div class="popupWrap popupWrap2" id="clockPop" >
       <div class="popupHead"><span>Clock in/Out</span><i class="closePop pull-right clPopClose"></i></div>
-        <form id="#" name="" action="" method="post">
+        <form id="clock_inout_form" name="clock_inout_form">
+            <input type="hidden" id="clockInOutId" name="clockInOutId">
           <div class="clockWrap">
             <div class="clockIn clearfix">
               <div class="clockTime pull-left"><p>Clock In</p> <b>04 : 40</b></div>
@@ -1562,7 +1564,7 @@ $("#searchType").selectpicker('refresh');
                 <div class="clearfix mb" id="jobDIV">
                     <label class="noPad">Jobs <b class="valStar">*</b></label>
                     <div class="clearfix addicon">
-                        <select class="form-control chosen-select" id="jobDropDownDiv" >
+                        <select class="form-control chosen-select" id="jobDropDownDiv" name="jobs">
                         </select>
                       </div>
                 </div> 
@@ -1570,14 +1572,14 @@ $("#searchType").selectpicker('refresh');
                 <div class="clearfix mb">
                     <label class="noPad">Project<b class="valStar">*</b></label>
                     <div class="clearfix addicon">
-                        <select class="form-control chosen-select" id="projectDropDownDiv" onchange="getProjectTasksByProject();">
+                        <select class="form-control chosen-select" id="projectDropDownDiv" name="projects" onchange="getProjectTasksByProject();">
                         </select>
                       </div>
                 </div>   
                  <div class="clearfix mb">
                     <label class="noPad">Project Tasks <b class="valStar">*</b></label>
                     <div class="clearfix addicon">
-                        <select class="form-control chosen-select" id="projectTaskDropDownDiv">
+                        <select class="form-control chosen-select" id="projectTaskDropDownDiv" name="projectTasks">
                         </select>
                       </div>
                 </div>     
@@ -1585,14 +1587,14 @@ $("#searchType").selectpicker('refresh');
                 <div class="clearfix mb" id="generalTaskDIV">
                     <label class="noPad">General Tasks <b class="valStar">*</b></label>
                     <div class="clearfix addicon">
-                        <select class="form-control chosen-select" id="generalTaskDropDownDiv">
+                        <select class="form-control chosen-select" id="generalTaskDropDownDiv" name="generalTasks">
                         </select>
                       </div>
                 </div> 
                 <div class="clearfix" id="commentsDIV">
                     <label class="noPad">Comments <b class="valStar">*</b></label>
                     <div class="clearfix addicon">
-                        <textarea rows="3" class="form-control"></textarea>
+                        <textarea rows="3" class="form-control" name="comments"></textarea>
                     </div>
                 </div> 
                 <div><a class="timeEnt">Time Entry</a></div>              
@@ -2089,9 +2091,11 @@ function getGeneralTasks(){
 
 <script>
 function saveClockInOutTime(){
+	var formData = getFormData("clock_inout_form");
 	 $.ajax({
 		 type : "POST",
-	       url: sourceleadUrl+"/saveClockInOutTime",        
+		 data : formData,
+// 	       url: sourceleadUrl+"/saveClockInOutTime",        
 	       success :function() {
 	    	   
 	       },						     
@@ -2099,3 +2103,16 @@ function saveClockInOutTime(){
 	
 }
 </script>
+
+<script>
+function getExistedClockTime(){
+	 $.ajax({
+		 type : "GET",
+// 	       url: sourceleadUrl+"/getExistedClockTime",        
+	       success :function() {
+	    	   
+	       },						     
+	}); 
+}
+</script>
+

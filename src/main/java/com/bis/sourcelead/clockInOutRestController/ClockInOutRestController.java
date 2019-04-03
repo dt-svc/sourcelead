@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.clockInOutDTO.ClockInOutConfigDTO;
+import com.bis.sourcelead.clockInOutDTO.ClockInOutDTO;
+import com.bis.sourcelead.clockInOutEntity.ClockInOut;
 import com.bis.sourcelead.clockInOutEntity.ClockInOutConfig;
 import com.bis.sourcelead.clockInOutService.ClockInOutConfigService;
 import com.bis.sourcelead.constants.Constants;
@@ -69,11 +71,11 @@ public class ClockInOutRestController {
 	
 
 	@RequestMapping(value = "/saveClockInOutTime")
-	public void saveClockInOutTime(HttpServletRequest request) {
+	public void saveClockInOutTime(ClockInOutDTO clockInOutDTO,HttpServletRequest request) {
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		clockInOutConfigService.saveClockInOutTime(loginOrgLocation,user);
+		clockInOutConfigService.saveClockInOutTime(clockInOutDTO,loginOrgLocation,user);
 		
 	}
 	
@@ -154,6 +156,15 @@ public class ClockInOutRestController {
 		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		return clockInOutConfigService.getGeneralTasks(orgLocationId,userId);
+	   
+	}
+	
+	@RequestMapping(value = "/getExistedClockTime")
+	public ClockInOut getExistedClockTime(HttpServletRequest request) throws Exception {
+
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		return clockInOutConfigService.getExistedClockTime(orgLocationId,userId);
 	   
 	}
 

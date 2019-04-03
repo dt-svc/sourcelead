@@ -491,4 +491,43 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 		return null;
 	}
 
+	@Transactional
+	@Override
+	public ClockInOut getExistedClockTime(Long orgLocationId, Long userId) {
+		
+		List<ClockInOut> clockList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			clockList = session.createQuery("from ClockInOut clk where clk.orgLocations.id = :orgLocationId and clk.userId.id = :userId and clk.clockOutTime is NULL")
+			.setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(clockList != null && clockList.size() > 0) {
+			return clockList.get(0);
+		}else {
+			return null;
+		}
+	}
+
+	@Transactional
+	@Override
+	public ClockInOut getClockInOutById(Long clockInOutId) {
+		
+		List<ClockInOut> clockList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			clockList = session.createQuery("from ClockInOut clk where clk.id = :clockInOutId")
+			.setLong("clockInOutId", clockInOutId).list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(clockList != null && clockList.size() > 0) {
+			return clockList.get(0);
+		}else {
+			return null;
+		}
+	}
+
 }
