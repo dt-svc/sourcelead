@@ -51,6 +51,8 @@ function initializeFroalaEditor() {
 
       })
       .froalaEditor()
+      
+      selectedUsers.splice($.inArray(3164, selectedUsers), 1);
 
       $(".fr-toolbar").hide();*/
 //    $("#ticketComment").Editor();
@@ -58,9 +60,16 @@ function initializeFroalaEditor() {
     $('#ticketComment').atwho(commentConfig);
     $('#ticketComment').on('inserted.atwho', function (event, $li, bEvent) {
         //editor.$el.find('.atwho-inserted').removeAttr('contenteditable');
-        console.log("inserted.atwho : " + $($li).data("id") + " : " + $($li).find("small").html());
+//        console.log("inserted.atwho : " + $($li).data("id") + " : " + $($li).find("small").html());
         selectedUsers.push($($li).data("id"));
-      })
+      }).on('reposition.atwho', function (event, offset) {
+    	  var removeUser = $("#ticketComment").find("span[class='atwho-query']").data("id");
+    	  if(removeUser) {
+	    	  selectedUsers.splice($.inArray(removeUser, selectedUsers), 1);
+	    	  /*console.log("reposition.atwho : " + removeUser);
+	    	  console.log("selected Users : " + selectedUsers.toString());*/
+    	  }
+        })
 }
 
 //================================	TicketComment		==============================================
@@ -159,7 +168,7 @@ function getTicketCommetList(ticketId) {
 
 function saveTicketComment(ticketId) {
 	if ($("#ticketComment").html() !== ""){
-		$.post(sourceleadUrl + "/saveTicketComment?ticketId="+ticketId, {id: $("#ticketCommentId").val(), comment : $("#ticketComment").html()}, function(response) {
+		$.post(sourceleadUrl + "/saveTicketComment?ticketId="+ticketId, {id: $("#ticketCommentId").val(), comment : $("#ticketComment").html(), mentionedUserIds : selectedUsers.toString()}, function(response) {
 			if (response && response.response === "INVALID_DATA") {
 				showError(response.responseMessage);
 			} else if (response.response === "AWKWARD") {
@@ -181,8 +190,9 @@ function saveTicketComment(ticketId) {
 }
 function closeTicketComment() {
 	$("#add-comment").fadeOut();
-	 document.getElementById("ticketComment_form").reset();
-	 $("ticketComment_form").validate().resetForm();
+	document.getElementById("ticketComment_form").reset();
+	$("ticketComment_form").validate().resetForm();
+	selectedUsers = [];
 }
 
 function editTicketComment(id) {
@@ -196,8 +206,13 @@ function editTicketComment(id) {
 			$("#ticketCommentId").val(comment.id);
 			$("#ticketComment").html(comment.comment);
 			$('.fr-element.fr-view').html(comment.comment);
+			if(comment.mentionedUserIds !== null && comment.mentionedUserIds !== "") {
+				for(var e in comment.mentionedUserIds.split(",")) {
+					selectedUsers.push(parseInt(comment.mentionedUserIds.split(",")[e]));
+				}
+			}
 			$("#ticketCommentPopup, .mask").show();
-			initializeFroalaEditor();
+			/*initializeFroalaEditor();*/
 		} else if (response.indexOf('Sign In') !== -1) {
 			location.replace(sourceleadUrl);
 		} else {

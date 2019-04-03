@@ -21,6 +21,7 @@ public class TicketCommentDTO implements Serializable {
 	private long updatedById;
 	private String updatedByName;
 	private String updatedDate;
+	private String mentionedUserIds;
 
 	public long getId() {
 		return id;
@@ -116,6 +117,14 @@ public class TicketCommentDTO implements Serializable {
 
 	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public String getMentionedUserIds() {
+		return mentionedUserIds;
+	}
+
+	public void setMentionedUserIds(String mentionedUserIds) {
+		this.mentionedUserIds = mentionedUserIds;
 	}
 
 	public static long getSerialversionuid() {
