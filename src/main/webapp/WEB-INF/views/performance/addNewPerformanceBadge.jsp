@@ -33,7 +33,7 @@
 	            <div class="clearfix mb" id="badgeDescriptionDiv">
 	                <label class="noPad">Description<span class="text-danger">&nbsp;*</span></label>
 	                <div class="clearfix">
-						<textarea field-name="Description" id="badgeDescription"  name="description" class="form-control" data-validation="required validate_Space" rows="2"></textarea>
+						<textarea field-name="Description" id="badgeDescription"  name="description" class="form-control" data-validation="required validate_Space validate_length length1-5000" rows="2"></textarea>
 	                </div>
 	            </div>
 	

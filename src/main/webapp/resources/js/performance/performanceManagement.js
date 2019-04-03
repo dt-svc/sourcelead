@@ -354,16 +354,13 @@ function PerformanceManagement(){
  	  
    }
    
-   this.closeCompetencePopup = function(){
+   this.closeBadgePopup = function(){
 	 	  $(".mask, #modalTasktype").fadeOut();
 	 	  $('#badgeNameDiv').find('p.jquery_form_error_message').remove();
 	 	  $('#badgeImageDiv').find('p.jquery_form_error_message').remove();
 	 	  $('#badgeDescriptionDiv').find('p.jquery_form_error_message').remove();
 	 	  $('#uploadBtn').val('');
-	 	  
-	 	     $("#badgeId").val('');
-	 		 $("#badgeName").val('');
-	 		 $("textarea[id='badgeDescription']").text('');
+	 		 document.getElementById("performance_badge_form").reset();
 	 		 document.getElementById("badgeImg").src = '/resources/images/rewards_badges.svg';
 	 	  
 	   }
@@ -372,10 +369,9 @@ function PerformanceManagement(){
 	      $(".mask, #competenceModalTasktype").fadeOut();
 	 	  $('#competenceNameDiv').find('p.jquery_form_error_message').remove();
 	 	  $('#competenceDescriptionDiv').find('p.jquery_form_error_message').remove();
-	 	  
-	 	     $("#competenceId").val('');
-	 		 $("#competenceName").val('');
-	 		 $("textarea[id='competenceDescription']").text('');
+	 	  document.getElementById("competence_form").reset();
+
+	 		
    }
    
    
@@ -1139,6 +1135,7 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 		  $('#projectTasksWeightageDiv').find('p.jquery_form_error_message').remove(); 
 		  $('#projectTasksWeightage').removeAttr("data-validation"); 
 	   	  $('#projectTasksWeightage').attr('data-validation-optional',"true");
+	   	  $('#projectTasksWeightage').val('');
 	   	  $("#projectTasksWeightage").attr("disabled", "disabled");
 	  }
   }
@@ -1246,6 +1243,7 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 				        		 if (data) {
 				        			  $.each( data, function( k, v ) {
 				        				  
+				        				  
 				        				  if(v['type'] == "feedbackTemplate"){
 				        					  percentageMap.set(v['templateId'],v['percentage'])
 				        					  document.getElementById("feedbackCategory").checked = true; 
@@ -1287,8 +1285,18 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 				        		 }
 			        		}
 			        		 
-			        		 performanceManagement.feedbackCategoriesList(response.object.appraisalCategories,percentageMap);
-			        		 performanceManagement.appraisalCompetenciesList(response.object.comptencyCategories,competenciesPercentageMap);
+			        		 if(percentageMap.size > 0){
+			        			 performanceManagement.feedbackCategoriesList(response.object.appraisalCategories,percentageMap);
+			        		 }else{
+			        			 performanceManagement.feedbackCategoriesList();
+			        		 }
+			        		
+			        		 if(competenciesPercentageMap.size > 0){
+			        			 performanceManagement.appraisalCompetenciesList(response.object.comptencyCategories,competenciesPercentageMap);
+			        		 }else{
+			        			 performanceManagement.appraisalCompetenciesList();
+			        		 }
+			        		
 			        		 
 			        		 $("#appraisalDetailsLoading").removeAttr('style');
 			        	} else if (response.indexOf('Sign In') !== -1) {
