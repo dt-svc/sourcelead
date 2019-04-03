@@ -329,5 +329,65 @@ function PerformanceGoals(){
 							$("#addSubGoal_form").showHelpOnFocus();
 							$("#addSubGoal_form").validateOnBlur(false, validationSettings);  
 						});
+					
+					
+					
+					 this.getPerformanceGoalsSummaryDetails = function(goalUUID){
+						  $("#goalsDetailsLoading").attr('style','position:absolute; width:100%; height:150%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+						  $.ajax({
+						    	type: "GET",
+						        url: pmsUrl+"/getPerformanceGoalsDetails?goalUUID="+goalUUID, 
+						        success: function(response) {
+						        	if (response.response === "AWKWARD") {
+						        		location.href = "/errorPage";
+						        	} else if (response.response === "SUCCESS") {
+						        		$("#goalName").html(response.object.goalName);
+						        		
+						        		if(response.object.goalStartDate != null 
+						        				 && response.object.goalStartDate != ''
+						        					 && response.object.goalStartDate != 'undefined'){
+						        			 $("#goalStartDate").html(response.object.goalStartDate);
+						        		 }
+						        		
+						        		 if(response.object.goalEndDate != null 
+						        				 && response.object.goalEndDate != ''
+						        					 && response.object.goalEndDate != 'undefined'){
+						        			 $("#goalEndDate").html(response.object.goalEndDate);
+						        		 }
+						        		 
+						        		 if(response.object.createdDate != null 
+						        				 && response.object.createdDate != ''
+						        					 && response.object.createdDate != 'undefined'){
+						        			 $("#createdDate").html(response.object.createdDate);
+						        		 }
+						        		 
+						        		var percentage = 0;
+						        		 if(response.object.percentageDone != null 
+						        				 && response.object.percentageDone != ''
+						        					 && response.object.percentageDone != 'undefined'){
+						        			 $("#goalPercentage").html(response.object.percentageDone+" Complete (info)");
+						        			 percentage = response.object.percentageDone;
+						        		 }else{
+						        			 $("#goalPercentage").html("0 Complete (info)");
+						        		 }
+						        		
+						        		 var result = "";
+						        		 result = result+'<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="'+percentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+percentage+'%"></div>';
+						        		
+						        		 $("#progressBar").empty();
+								         $("#progressBar").html(result);
+								         
+								         var goalEdit = "";
+								         goalEdit = goalEdit+'<a href='+pmsUrl+'/addNewGoal?goalUUID='+goalUUID+'><i class="fa fa-pencil paddingRight"></i>Edit</a>';
+						        		
+								         $("#goaledit").empty();
+								         $("#goaledit").html(goalEdit);
+								         
+						        		 
+						        		$("#goalsDetailsLoading").removeAttr('style');
+						        	}
+						        },
+						    });
+					  }
 		
 }
