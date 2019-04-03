@@ -2896,9 +2896,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			marketPlace.setCreatedBy(user);
 			marketPlace.setUpdatedDate(new Date());
 			marketPlace.setUpdatedBy(user);
+			candidateDao.storeCandidate(candidate);
 			saveOrUpdateCandidateElkDocument(candidate);
 			candidateDao.saveMarketPlace(marketPlace);
-			candidateDao.storeCandidate(candidate);
 		}
 	}
 
