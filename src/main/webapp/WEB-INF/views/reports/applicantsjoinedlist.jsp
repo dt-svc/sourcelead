@@ -4,6 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <script type="text/javascript">
 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 </script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
   <!-- Header Area -->
@@ -72,7 +73,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 						<div class="newActPop" style="display: none;">
 							<span>
-			           	   		<a href="javascript:void(0)" id="applicantExportPdf" onclick="exportByApplicant('Pdf');" title="PDF" style="display: block">Export PDF</a>
+			           	   		<a href="javascript:void(0)" id="applicantExportPdf" onclick="exportByApplicant('Pdf');" title="PDF" style="display: none">Export PDF</a>
 								<a href="javascript:void(0)" id="applicantExportExcel" onclick="exportByApplicant('Excel');" title="Excel" style="display: none">Export Excel</a>  
 								
 								 		<a href="javascript:void(0)" id="recurterExportPdf" onclick="exportByRecruiter('Pdf');" title="PDF" style="display: block">Export PDF</a>
@@ -314,6 +315,7 @@ $("#daywiseReportDataTableSearch").keydown(function(e) {
  <script type="text/javascript">
        function getApplicantsJoinedList(){
     	   var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+    	   var atsUrl = '${atsUrl}';
    		   var tab = '${tab}';
     	   var frequency=$("#reportTypeId").val();
     	  var  noApplicantJoinedList=$("#noApplicantJoinedList").val(0); 
@@ -434,7 +436,7 @@ function offerpagination(url){
 	    	  		var result = "";
 	    	  		 if(opt.candidateName !=null && opt.candidateName !='' && opt.candidateName !='undefined'){
 		    	  			result = result + ' <td>';
-							result = result + ' <div title='+opt.candidateName+' class="clearfix mt5 proj_show"><span><a href="'+sourceleadUrl+'/requirementSummary?type=applicants&requirementUUID='+opt.requirementUUID+'&candidateUUID='+opt.candidateUUID+'&submissionId='+opt.submissionId+'" >'+opt.candidateName+'<i class="fa fa-binoculars"></i></a></span></div>';
+							result = result + ' <div title='+opt.candidateName+' class="clearfix mt5 proj_show"><span><a href="'+atsUrl+'/requirementSummary?type=applicants&requirementUUID='+opt.requirementUUID+'&candidateUUID='+opt.candidateUUID+'&submissionId='+opt.submissionId+'" >'+opt.candidateName+'<i class="fa fa-binoculars"></i></a></span></div>';
 							result = result + ' <div title='+opt.email+' class="clearfix mt5 mb5">'+opt.email+'</div>';
 							result = result + ' </td>';
 						}else{

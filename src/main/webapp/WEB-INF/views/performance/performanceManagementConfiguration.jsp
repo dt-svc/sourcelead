@@ -5,14 +5,14 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
-<script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
-<link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
-<script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
-<link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
-<script type="text/javascript" src="/resources/js/performance/performanceManagement.js"></script>
-<script type="text/javascript" src="/resources/js/performance/performanceFeedbackTemplate.js"></script>
-<script src="/resources/js/performanceFeedbackFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-<script src="/resources/js/performanceFeedbackForm-html-generator.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/summernote.js?staticTime=${staticTime}"></script>
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/editor.js?staticTime=${staticTime}"></script>
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/performance/performanceManagement.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/performance/performanceFeedbackTemplate.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/performanceFeedbackFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/performanceFeedbackForm-html-generator.js" type="text/javascript" ></script> <!-- form builder -->
 
 <script>
 var locationDateFormat = '${SourceLeadWeb_dateFormat}'; 
@@ -29,42 +29,37 @@ var locationDateFormat = '${SourceLeadWeb_dateFormat}';
     </section>
     
 <div class="clearfix"></div>
+   
+   
    <div class="reportNewDash clearfix">
-	  <div class="leaveConfigure newRepGrid clerfixs">
-			<div class="col-md-4 perfDashCta">
-				<img src="/resources/images/per-manage.svg" alt=""/>
-				<h3>Appraisal Cycle</h3>
-				<span><a onclick="performanceManagement.addNewAppraisalCycle();" class="colB">Add</a><a onclick="performanceManagement.viewAppraisalCycle();" class="">View</a></span>
-			</div>
-			<div class="col-md-4 perfDashCta">
-				<img src="/resources/images/per-manage.svg" alt=""/>
-				<h3>Performance Template</h3>
-				<span><a href="#" class="colB">Add</a><a href="#" class="">View</a></span>
-			</div>
-			<div class="col-md-4 perfDashCta">
-				<img src="/resources/images/per-manage.svg" alt=""/>
-				<h3>Goals</h3>
-				<span><a href="#" class="colB">Add</a><a href="#" class="">View</a></span>
-			</div>
-			<div class="col-md-4 perfDashCta">
-				<img src="/resources/images/per-manage.svg" alt=""/>
-				<h3>Feedback</h3>
-				<span><a onclick="performanceManagement.addFeedbackTemplate();" class="colB">Add</a><a onclick="performanceManagement.getFeedbackList();" class="">View</a></span>
-			</div>
-			<div class="col-md-4 perfDashCta">
-				<img src="/resources/images/per-manage.svg" alt=""/>
-				<h3>Competence</h3>
-				<span><a onclick="performanceManagement.addNewPerformanceCompetence();" class="colB">Add</a><a href="performanceManagement.performanceCompetenceList()" class="">View</a></span>
-			</div>
-			<div class="col-md-4 perfDashCta">
-				<img src="/resources/images/per-manage.svg" alt=""/>
-				<h3>Rewards & Badges</h3>
-				<span><a onclick="performanceManagement.addBadgePopup();" class="colB">Add</a><a onclick="performanceManagement.getBadgesList();" class="">View</a></span>
-			</div>															
-		</div>	
+		  <div class="leaveConfigure newRepGrid clerfixs">
+				<div class="col-md-3 perfDashCta">
+					<img src="/resources/images/appraisalCycle.svg" alt=""/>
+					<h3>Appraisal Cycle</h3>
+					<span><a onclick="performanceManagement.addNewAppraisalCycle();" class="colB">Add</a><a onclick="performanceManagement.viewAppraisalCycle();" class="">View</a></span>
+				</div>
+				<div class="col-md-3 perfDashCta">
+					<img src="/resources/images/feedBack.svg" alt=""/>
+					<h3>Feedback</h3>
+					<span><a onclick="performanceManagement.addFeedbackTemplate();" class="colB">Add</a><a onclick="performanceManagement.getFeedbackList();" class="">View</a></span>
+				</div>
+				<div class="col-md-3 perfDashCta">
+					<img src="/resources/images/competenceA.svg" alt=""/>
+					<h3>Competence</h3>
+					<span><a onclick="performanceManagement.addNewCompetence();" class="colB">Add</a><a onclick="performanceManagement.performanceCompetenceList();" class="">View</a></span>
+				</div>
+				<div class="col-md-3 perfDashCta">
+					<img src="/resources/images/award.svg" alt=""/>
+					<h3>Rewards &amp; Badges</h3>
+					<span>
+						<span><a onclick="performanceManagement.addBadgePopup();" class="colB">Add</a><a onclick="performanceManagement.getBadgesList();" class="">View</a></span>
+					</span>
+				</div>															
+	    	</div>
 	</div>
     
-<jsp:include page="../performance/addNewPerformanceBadge.jsp" />      
+<jsp:include page="../performance/addNewPerformanceBadge.jsp" />   
+<jsp:include page="../performance/addNewPerformanceCompetence.jsp" />     
 </section>
 
 

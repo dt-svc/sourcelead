@@ -1,23 +1,17 @@
 <!--   HTML   -->	  
 <jsp:include page="../staticHeader.jsp" />   
-<div class="clearfix innerpagesBanner">
-  <div class="container text-center">
-  <div class="row">
-  		<div class="col-md-12">
-  	<h2 class="text-center">Vendor Management System</h2>
-  	<div class="clearfix mt mb"><img src="/resources/static-web/images/vmsicons.png" alt="img"></div>
-  	<p>
-  		We at Sourcelead identify your business need and help recruitment firms design integrated business model. Analyze the requirement,<br>Increase your revenues, and expand your business horizons with Sourcelead VMS solution.
-  	</p>
-  		</div>
-  </div>
-  </div>
-		<div class="thim-click-to-bottom">
-		<a href="#features" class="scroll">
-		<i class="fa  fa-chevron-down"></i>
-		</a>
+    <div class="featuresbanner vms-banner clearfix">
+				<div class="container">
+						<div class="row">
+						<div class="col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-6 col-md-6 col-md-offset-6 col-lg-6 col-lg-offset-6 bannerStyles paddingTop125px animated bounceIn">
+					<h2>Vendor Management System</h2>
+					<p>
+					We at Sourcelead identify your business need and help recruitment firms design integrated business model. Analyze the requirement,<br>Increase your revenues, and expand your business horizons with Sourcelead VMS solution.
+					</p>
+								</div>
+						</div>
+						</div>
 		</div>
-  </div>
 <div class="clearfix"></div>
 
  <section class="container-fluid container-area-white">
@@ -54,14 +48,18 @@
 	<div class="clearfix text-center col-md-12 headerintro mt"></div>
 <div id="features" class="clearfix"></div>
 </section>
+ 
  <section class="container-fluid container-area-grey">
- <h2 class="text-center colorlogo mb">Features</h2>
 <div class="container productfeatures">
 	
-	<div class="col-md-4">
+	<div class="col-md-6">
+		<div class="row">
+			<div class="col-md-3">
 	<div class="featuresImages">
 		<img src="/resources/static-web/images/vms-automation.png" alt="Image" class="animated bounceIn">
 	</div>
+	</div>
+	<div class="col-md-9">
 		<h4>Integrate and Automate</h4>
 		<ul class="list-styles">
 		<li>Customized data integration options</li>
@@ -69,10 +67,17 @@
 		<li>Load the Candidate database using VMS directly into ATS</li>
 		</ul>
 	</div>
-	<div class="col-md-4">
+	</div>
+	</div>
+	
+		<div class="col-md-6">
+		<div class="row">
+			<div class="col-md-3">
 		<div class="featuresImages">
 		<img src="/resources/static-web/images/vms-publish.png" alt="Image" class="animated bounceIn">
 	</div>
+	</div>
+	<div class="col-md-9">
 		<h4>Hotlist Campaigns</h4>
 		<ul class="list-styles">
 			<li>Publish the hotlist candidates to the clients</li>
@@ -80,10 +85,19 @@
 			<li>Opportunity enhancement for both  the candidate and the clients</li>
 		</ul>
 	</div>
-	<div class="col-md-4">
+	</div>
+	</div>
+	
+<div class="clearfix"></div>	
+
+<div class="col-md-6">
+		<div class="row">
+			<div class="col-md-3">
 	<div class="featuresImages">
 		<img src="/resources/static-web/images/vms-seamless.png" alt="Image" class="animated bounceIn">
 	</div>
+	</div>
+	<div class="col-md-9">
 		<h4>Seamless Data Sync</h4>
 		<ul class="list-styles">
 			<li>Builds higher levels of efficiency between the vendors and clients </li>
@@ -93,10 +107,17 @@
 		</ul>
 	</div>
 	
-	<div class="col-md-4">
+	</div>
+</div>
+	
+		<div class="col-md-6">
+		<div class="row">
+			<div class="col-md-3">
 	<div class="featuresImages">
 		<img src="/resources/static-web/images/vms-businessConnection.png" alt="Image" class="animated bounceIn">
 	</div>
+	</div>
+	<div class="col-md-9">
 		<h4>Make the Business Connection</h4>
 		<ul class="list-styles">
 			<li>Improves your client and customer relationship</li>
@@ -104,10 +125,19 @@
 			<li>Real-time insight into the VMS activity</li>
 		</ul>
 	</div>
-	<div class="col-md-4">
+	</div>
+	</div>
+	
+	<div class="clearfix"></div>
+	
+	<div class="col-md-6">
+		<div class="row">
+			<div class="col-md-3">
 	<div class="featuresImages">
 		<img src="/resources/static-web/images/vms-reports.png" alt="Image" class="animated bounceIn">
 	</div>
+	</div>
+	<div class="col-md-9">
 		<h4>Reports and ROI</h4>
 		<ul class="list-styles">
 			<li>Generate Vendor Reports </li>
@@ -116,10 +146,19 @@
 			<li>Fasten the speed of process workflows </li>
 		</ul>
 	</div>
-	<div class="col-md-4">
+	</div>
+	</div>
+	
+	
+	<div class="col-md-6">
+		<div class="row">
+			<div class="col-md-3">
 	<div class="featuresImages">
 		<img src="/resources/static-web/images/vms-multi.png" alt="Image" class="animated bounceIn">
 	</div>
+	<div class="clearfix"></div>
+	</div>
+	<div class="col-md-9">
 		<h4>Multi-tier Architecture</h4>
 		<ul class="list-styles">
 			<li>The multi-tier MSP model enables you to streamline the contingent  human capital management </li>
@@ -128,6 +167,9 @@
 			<li>Helps divert the available time and resources for new business possibilities</li>
 		</ul>
 	</div>
+	</div>
+	</div>
+	
 </div>
 </section>
 
