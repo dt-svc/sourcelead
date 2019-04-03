@@ -6,7 +6,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -19,10 +18,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
@@ -34,6 +31,7 @@ import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
 
 
 @Repository
+@Transactional
 public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 	
 @Autowired
@@ -45,7 +43,6 @@ private String duplicateValue;
 private static final Logger logger = LoggerFactory.getLogger(RequirementWorkFlowDaoImpl.class);
 
 @Override
-@Transactional(rollbackFor = { Exception.class })
 public RequirementWorkFlow saveRequirementWorkFlowDetails(RequirementWorkFlow requirementWorkFlow,
 		OrgLocations orgLocations) {
 	logger.debug("saveRequirementWorkFlowDetails starts");
@@ -64,7 +61,6 @@ public RequirementWorkFlow saveRequirementWorkFlowDetails(RequirementWorkFlow re
 }
 
 @Override
-@Transactional(rollbackFor = { Exception.class })
 public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	
 	RequirementWorkFlow requirementWorkFlow = null;
@@ -81,7 +77,6 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 
 
 	@Override
-	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementWorkFlow> getRequirementWorkFlowByOrgLocationId(Long orgLocationId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -96,7 +91,6 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	}
 
 	@Override
-	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementDefaultWorkFlowStages> getRequirementDefaultWorkFlowStages() {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -110,7 +104,6 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	}
 
 	@Override
-	@Transactional(rollbackFor = { Exception.class })
 	public void saveRequirementWorkFlowStagesByOrgLocationId(RequirementWorkFlowStages requirementWorkFlowStages){
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -122,7 +115,6 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	}     
        
 	@Override
-	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<RequirementWorkFlowDTO> getRequirementWorkFlowsByOrgLocationId(
 			RequirementWorkFlowDTO workFlowDTO, OrgLocations orgLocations) throws Exception {
 		try{
@@ -179,7 +171,6 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	}
 
 	@Override
-	@Transactional(rollbackFor = { Exception.class })
 	public RequirementWorkFlow getRequirementWorkFlowByUuid(String uuid) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -193,7 +184,6 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	}
 	
 	@Override
-	@Transactional(rollbackFor = { Exception.class })
 	public RequirementQuestionnaireTemplate saveQuestionnaireTemplate(RequirementQuestionnaireTemplate requirementQuestionnaireTemplate) throws Exception {
 		logger.debug("Adding requirementQuestionnaireTemplate");
 		Session session = this.sessionFactory.getCurrentSession();
@@ -211,7 +201,6 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	}
 
 	@Override
-	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementWorkFlowStages> getRequirementWorkflowStagesByUuid(String uuid) throws Exception {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -225,7 +214,6 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	}   
 	@SuppressWarnings("unchecked")
 	@Override
-	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<RequirementQuestionnaireTemplateDTO> getQuestionnaireTemplateListByOrgLocationId(RequirementQuestionnaireTemplateDTO questionnaireDto 
 			                                                ,Long orgLocationId) {
 		try{
@@ -282,7 +270,6 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Transactional(rollbackFor = { Exception.class })
 	public RequirementQuestionnaireTemplate getQuestionnaireTemplateByLabelName(Long orgLocationId, String templateName) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession(); 
@@ -303,7 +290,6 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	}
 	
 	@Override
-	@Transactional(rollbackFor = { Exception.class })
 	public RequirementWorkFlow getRequirementDefaultWorkflow()  {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -318,7 +304,6 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 }
 
 	@Override
-	@Transactional(rollbackFor = { Exception.class })
 	public String deleteQuestionnaireTemplateById(String templateUuid) {
 		logger.debug("Delete RequirementQuestionnaireTemplate templateUuid ---> " + templateUuid);
 
@@ -336,7 +321,6 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	}
 
 	@Override
-	@Transactional(rollbackFor = { Exception.class })
 	public RequirementQuestionnaireTemplate getQuestionnaireTemplateById(String templateUuid) {
 		// TODO Auto-generated method stub
 		logger.debug("Delete RequirementQuestionnaireTemplate templateUuid ---> " + templateUuid);
@@ -380,6 +364,70 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 			e.printStackTrace();
 			return null;
 	}
+	}
+	
+	//delete workflow stage
+	@Override
+	public RequirementWorkFlowStages getRequirementWorkFlowStagesByUuid(String uuid) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementWorkFlowStages stages where stages.uuid =:uuid";
+		RequirementWorkFlowStages requirementWorkFlowStages = (RequirementWorkFlowStages)session.createQuery(query).setParameter("uuid", uuid).uniqueResult();
+		return requirementWorkFlowStages;
+	}
+
+	@Override
+	public String deleteRequirementWorkFlowStagesByOrgLocationIdAndUuid(String uuid) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			RequirementWorkFlowStages stage = session.get(RequirementWorkFlowStages.class, uuid);
+			stage.setStatus(0);
+			session.saveOrUpdate(stage);
+			session.flush();
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
+			e.printStackTrace();
+		}
+		return "success";
+	}
+
+	@Override
+	public RequirementWorkFlowStages saveRequirementWorkFlowStages(RequirementWorkFlowStages requirementWorkFlowStages)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if(requirementWorkFlowStages != null) {
+				session.saveOrUpdate(requirementWorkFlowStages);
+			}
+		} catch (Exception exception) {
+			logger.error("Exception caught while  saveCandidateLcaJobDetails information " + exception.getMessage());
+			exception.printStackTrace();
+		}
+		return requirementWorkFlowStages;
+	}
+
+	@Override
+	public List<RequirementWorkFlowStages> getRequirementWorkFlowStagesListByOrgLocationId(Long orgLocationId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.requirementWorkFlowId.orgLocationId.id =:orgLocationId and requirementWorkFlowStages.status = 1 ";
+			List<RequirementWorkFlowStages> requirementWorkFlowStages = session.createQuery(query).setParameter("orgLocationId", orgLocationId).list();
+			return requirementWorkFlowStages;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+	}
+	}
+	
+	
+	@Override
+	public void deleteRequirementWorkFlowStagesByuuid(String uuid) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "delete from RequirementWorkFlowStages stage where stage.uuid = :uuid";
+			session.createQuery(query).setParameter("uuid", uuid).executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

@@ -264,6 +264,37 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		return workFlowStagesDTO;
 	}
 	
+	//delete workflow stage 
+	
+	@Override
+	public RequirementWorkFlowStages getRequirementWorkFlowStagesByUuid(String uuid) throws Exception {
+		return requirementWorkFlowDao.getRequirementWorkFlowStagesByUuid(uuid);
+	}
+
+	@Override
+	public String deleteRequirementWorkFlowStagesByOrgLocationIdAndUuid(String uuid) {
+		return requirementWorkFlowDao.deleteRequirementWorkFlowStagesByOrgLocationIdAndUuid(uuid);
+	}
+
+
+	@Override
+	public RequirementWorkFlowStages saveRequirementWorkFlowStages(RequirementWorkFlowStages requirementWorkFlowStages)
+			throws Exception {
+		return requirementWorkFlowDao.saveRequirementWorkFlowStages(requirementWorkFlowStages);
+	}
+
+
+	@Override
+	public List<RequirementWorkFlowStages> getRequirementWorkFlowStagesListByOrgLocationId(Long orgLocationId) {
+		return requirementWorkFlowDao.getRequirementWorkFlowStagesListByOrgLocationId(orgLocationId);
+	}
+
+
+	@Override
+	public void deleteRequirementWorkFlowStagesByuuid(String uuid) {
+		requirementWorkFlowDao.deleteRequirementWorkFlowStagesByuuid(uuid);
+	}
+	
 }
 
 
