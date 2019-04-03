@@ -15,7 +15,9 @@ padding: 0px 240px 8px 0px;
       <div class="pull-left">
         <h2>Performance Competence</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/performanceManagementConfiguration">Performance Management</a> &raquo; Performance Competence <span id = "fname"></a> </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; 
+      <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/settings'/>">Settings</a> &raquo;
+      <a href="${SourceLeadWeb_sourceleadUrl}/performanceManagementConfiguration">Performance Management</a> &raquo; Performance Competence <span id = "fname"></a> </div>
 </section>
 
 <div class="clearfix">
@@ -204,8 +206,8 @@ function competencePagination(url){
     $("input[type=search]").hide();
     $("#competenceDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
-   		    $('#onboardDataTableSearch').parent().find('p.jquery_form_error_message').remove();
-   	    	var searchData = $('#onboardDataTableSearch').val();
+   		    $('#competenceDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+   	    	var searchData = $('#competenceDataTableSearch').val();
    	    	
    	 	if(searchData.endsWith("-") || searchData.endsWith("\\") || searchData.endsWith("//") || searchData.endsWith("%")){
 	    		$("#competenceDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");

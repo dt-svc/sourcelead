@@ -5,9 +5,8 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
-<div class="mask"></div>
 <div class="popupWrap" id="competenceModalTasktype">
-      <div class="popupHead"><span>Add Competence</span><i class="closePop pull-right popClose" onclick="performanceManagement.closeCompetencePopup();"></i></div>
+      <div class="popupHead"><span>Add Competency</span><i class="closePop pull-right popClose" onclick="performanceManagement.closeCompetencePopup();"></i></div>
          <div id="competenceLoading"></div>
         <form:form id="competence_form" name="competence_form" method="post">
 	        <div class="popupContent">
@@ -23,7 +22,7 @@
 	            <div class="clearfix mb" id="competenceDescriptionDiv">
 	                <label class="noPad">Description<span class="text-danger">&nbsp;*</span></label>
 	                <div class="clearfix">
-						<textarea field-name="Description" id="competenceDescription"  name="description" class="form-control" data-validation="required validate_Space" rows="2"></textarea>
+						<textarea field-name="Description" id="competenceDescription"  name="description" class="form-control" data-validation="required validate_Space validate_length length1-5000" rows="2"></textarea>
 	                </div>
 	            </div>
 	
