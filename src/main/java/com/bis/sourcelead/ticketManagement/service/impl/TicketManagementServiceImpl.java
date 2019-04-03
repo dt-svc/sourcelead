@@ -114,9 +114,13 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public boolean saveTicketType(TicketTypeDTO ticketTypeDTO, long userId, OrgLocations loginOrgLocation) {
+	public long saveTicketType(TicketTypeDTO ticketTypeDTO, long userId, OrgLocations loginOrgLocation) {
 		try {
 			TicketType ticketType = null;
+			long savedTicketTypeId = ticketManagementDao.getTicketTypeIdByNameAndOrgLocationId(ticketTypeDTO.getName(), loginOrgLocation.getId());
+			if(savedTicketTypeId > 0 && savedTicketTypeId != ticketTypeDTO.getId()) {
+				return -1;
+			}
 			if (ticketTypeDTO.getId() > 0) {
 				ticketType = ticketManagementDao.getTicketTypeById(ticketTypeDTO.getId());
 				ticketType.setUpdatedBy(userId);
@@ -135,7 +139,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return 0;
 	}
 
 	@Override
@@ -199,9 +203,13 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		return ticketCategoryDTOList;
 	}
 
-	public Boolean saveTicketCategory(TicketCategoryDTO ticketCategoryDTO, User user, long userId, OrgLocations loginOrgLocation) {
+	public long saveTicketCategory(TicketCategoryDTO ticketCategoryDTO, User user, long userId, OrgLocations loginOrgLocation) {
 		try {
 			TicketCategory ticketCategory = null;
+			long savedTicketCategoryId = ticketManagementDao.getTicketCategoryIdByNameAndOrgLocationId(ticketCategoryDTO.getName(), loginOrgLocation.getId());
+			if(savedTicketCategoryId > 0 && savedTicketCategoryId != ticketCategoryDTO.getId()) {
+				return -1;
+			}
 			if (ticketCategoryDTO.getId() > 0) {
 				ticketCategory = ticketManagementDao.getTicketCategoryById(ticketCategoryDTO.getId());
 				ticketCategory.setUpdatedBy(userId);
@@ -260,7 +268,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return 0;
 	}
 
 	@Override
@@ -330,9 +338,13 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public Boolean saveTicketPriority(TicketPriorityDTO ticketPriorityDTO, long userId, OrgLocations loginOrgLocation) {
+	public long saveTicketPriority(TicketPriorityDTO ticketPriorityDTO, long userId, OrgLocations loginOrgLocation) {
 		try {
 			TicketPriority ticketpriority = null;
+			long savedTicketPriorityId = ticketManagementDao.getTicketPriorityIdByNameAndOrgLocationId(ticketPriorityDTO.getName(), loginOrgLocation.getId());
+			if(savedTicketPriorityId > 0 && savedTicketPriorityId != ticketPriorityDTO.getId()) {
+				return -1;
+			}
 			if (ticketPriorityDTO.getId() > 0) {
 				ticketpriority = ticketManagementDao.getTicketPriorityById(ticketPriorityDTO.getId());
 				ticketpriority.setUpdatedBy(userId);
@@ -363,7 +375,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return 0;
 	}
 
 	@Override
@@ -427,9 +439,13 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public Boolean saveTicketStatus(TicketStatusDTO ticketStatusDTO, long userId, OrgLocations orgLocations) {
+	public long saveTicketStatus(TicketStatusDTO ticketStatusDTO, long userId, OrgLocations orgLocations) {
 		try {
 			TicketStatus ticketStatus = null;
+			long savedTicketStatusId = ticketManagementDao.getTicketStatusIdByNameAndOrgLocationId(ticketStatusDTO.getName(), orgLocations.getId());
+			if(savedTicketStatusId > 0 && savedTicketStatusId != ticketStatusDTO.getId()) {
+				return -1;
+			}
 			if (ticketStatusDTO.getId() > 0) {
 				ticketStatus = ticketManagementDao.getTicketStatusById(ticketStatusDTO.getId());
 				ticketStatus.setUpdatedBy(userId);
@@ -449,7 +465,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return 0;
 	}
 
 	@Override
@@ -617,11 +633,11 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId,int status, String dateFormat, String userRole) {
+	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId,int status, String dateFormat, String userRole, String searchValue) {
 		List<TicketDTO> ticketDTOList = new LinkedList<>();
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-			List<Ticket> ticketManagementList = ticketManagementDao.getTicketManagementListByOrgLocationId(orgLocationId,userId,status, userRole);
+			List<Ticket> ticketManagementList = ticketManagementDao.getTicketManagementListByOrgLocationId(orgLocationId,userId,status, userRole, searchValue);
 			if (ticketManagementList != null && !ticketManagementList.isEmpty()) {
 				for (Ticket ticketManagement : ticketManagementList) {
 					TicketDTO ticketDTO = new TicketDTO();
@@ -741,38 +757,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 			List<TicketComment> ticketCommentList = ticketManagementDao.getTicketCommentListByTicketId(ticketId, userId, orgLocationId);
 			if (ticketCommentList != null && !ticketCommentList.isEmpty()) {
 				for (TicketComment ticketComment : ticketCommentList) {
-					TicketCommentDTO ticketCommentDTO = new TicketCommentDTO();
-					ticketCommentDTO.setId(ticketComment.getId());
-					ticketCommentDTO.setTicketId(ticketComment.getTicket().getId());
-					ticketCommentDTO.setComment(ticketComment.getComment());
-					ticketCommentDTO.setStatus(ticketComment.getStatus());
-					
-					long diff = CommonUtil.currentDate().getTime() - ticketComment.getCreatedDate().getTime();
-					long diffSeconds = diff / 1000 % 60;
-					long diffMinutes = diff / (60 * 1000) % 60;
-					long diffHours = diff / (60 * 60 * 1000) % 24;
-					long diffDays = diff / (24 * 60 * 60 * 1000);
-					StringBuilder timeBuilder = new StringBuilder();
-					if (diffDays == 0 && diffHours == 0 && diffMinutes == 0) {
-						ticketCommentDTO.setCreatedDateString(timeBuilder.append(diffSeconds).append("seconds ago").toString());
-					} else if (diffDays == 0 && diffHours == 0) {
-						ticketCommentDTO.setCreatedDateString(timeBuilder.append(diffMinutes).append(" minutes ago").toString());
-					} else if (diffDays == 0) {
-						ticketCommentDTO.setCreatedDateString(timeBuilder.append(diffHours).append(" hours ").append(diffMinutes).append(" minutes ago").toString());
-					} else {
-						ticketCommentDTO.setCreatedDateString(timeBuilder.append(diffDays).append(" days ").append(diffHours).append(" hours ago").toString());
-					}
-					
-					SimpleDateFormat sdf = new SimpleDateFormat(dateFormat + " hh:mm:ss aa");
-					ticketCommentDTO.setCreatedDate(sdf.format(ticketComment.getCreatedDate()));
-					ticketCommentDTO.setCreatedById(ticketComment.getCreatedBy().getId());
-					ticketCommentDTO.setCreatedByName(ticketComment.getCreatedBy().getFullName());
-					if(ticketComment.getUpdatedBy() != null) {
-						ticketCommentDTO.setUpdatedById(ticketComment.getUpdatedBy().getId());
-						ticketCommentDTO.setUpdatedByName(ticketComment.getUpdatedBy().getFullName());
-						ticketCommentDTO.setUpdatedDate(sdf.format(ticketComment.getUpdatedDate()));
-					}
-					ticketCommentDTOList.add(ticketCommentDTO);
+					ticketCommentDTOList.add(getTicketCommentDTO(ticketComment, dateFormat));
 				}
 			}
 		} catch (Exception e) {
@@ -780,13 +765,54 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		}
 		return ticketCommentDTOList;
 	}
+	
+	private TicketCommentDTO getTicketCommentDTO(TicketComment ticketComment, String dateFormat) {
+		TicketCommentDTO ticketCommentDTO = new TicketCommentDTO();
+		try {
+			ticketCommentDTO.setId(ticketComment.getId());
+			ticketCommentDTO.setTicketId(ticketComment.getTicket().getId());
+			ticketCommentDTO.setComment(ticketComment.getComment());
+			ticketCommentDTO.setMentionedUserIds(ticketComment.getCommentMentionedUsers());
+			ticketCommentDTO.setStatus(ticketComment.getStatus());
+			
+			long diff = CommonUtil.currentDate().getTime() - ticketComment.getCreatedDate().getTime();
+			long diffSeconds = diff / 1000 % 60;
+			long diffMinutes = diff / (60 * 1000) % 60;
+			long diffHours = diff / (60 * 60 * 1000) % 24;
+			long diffDays = diff / (24 * 60 * 60 * 1000);
+			StringBuilder timeBuilder = new StringBuilder();
+			if (diffDays == 0 && diffHours == 0 && diffMinutes == 0) {
+				ticketCommentDTO.setCreatedDateString(timeBuilder.append(diffSeconds).append("seconds ago").toString());
+			} else if (diffDays == 0 && diffHours == 0) {
+				ticketCommentDTO.setCreatedDateString(timeBuilder.append(diffMinutes).append(" minutes ago").toString());
+			} else if (diffDays == 0) {
+				ticketCommentDTO.setCreatedDateString(timeBuilder.append(diffHours).append(" hours ").append(diffMinutes).append(" minutes ago").toString());
+			} else {
+				ticketCommentDTO.setCreatedDateString(timeBuilder.append(diffDays).append(" days ").append(diffHours).append(" hours ago").toString());
+			}
+			
+			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat + " hh:mm:ss aa");
+			ticketCommentDTO.setCreatedDate(sdf.format(ticketComment.getCreatedDate()));
+			ticketCommentDTO.setCreatedById(ticketComment.getCreatedBy().getId());
+			ticketCommentDTO.setCreatedByName(ticketComment.getCreatedBy().getFullName());
+			ticketCommentDTO.setCreatedByImageURL(ticketComment.getCreatedBy().getFileUrl());
+			if(ticketComment.getUpdatedBy() != null) {
+				ticketCommentDTO.setUpdatedById(ticketComment.getUpdatedBy().getId());
+				ticketCommentDTO.setUpdatedByName(ticketComment.getUpdatedBy().getFullName());
+				ticketCommentDTO.setUpdatedDate(sdf.format(ticketComment.getUpdatedDate()));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ticketCommentDTO;
+	}
 
 	@Override
-	public Boolean saveTicketComment(TicketCommentDTO ticketCommentDTO, User user) {
+	public Boolean saveTicketComment(TicketCommentDTO ticketCommentDTO, User user, OrgLocations orgLocations) {
 		try {
 			TicketComment ticketComment = null;
 			if (ticketCommentDTO.getId() > 0) {
-				ticketComment = ticketManagementDao.getTicketCommentByTicketId(ticketCommentDTO.getTicketId());
+				ticketComment = ticketManagementDao.getTicketComment(ticketCommentDTO.getId());
 				ticketComment.setUpdatedBy(user);
 				ticketComment.setUpdatedDate(new Date());
 			} else {
@@ -797,7 +823,105 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 			}
 			ticketComment.setTicket(ticketManagementDao.getTicketById(ticketCommentDTO.getTicketId()));
 			ticketComment.setComment(ticketCommentDTO.getComment());
-			return ticketManagementDao.saveTicketComment(ticketComment);
+			ticketComment.setCommentMentionedUsers(ticketCommentDTO.getMentionedUserIds());
+			boolean result = ticketManagementDao.saveTicketComment(ticketComment);
+			if(result) {
+				for(String userId : ticketCommentDTO.getMentionedUserIds().split(",")) {
+					//send comment email to userId
+					User toUser = userDao.getUserById(Long.parseLong(userId));
+					if(userId != null)
+						sendTicketCommentEmailToUser(user, ticketComment, toUser, orgLocations);
+				}
+			}
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	private void sendTicketCommentEmailToUser(User loginUser, TicketComment ticketComment, User toUser, OrgLocations orgLocations) {
+		try {
+			EmailMessage emailMessage = new EmailMessage();
+			emailMessage.setFirstName(loginUser.getFirstName());
+			emailMessage.setLastName(loginUser.getLastName());
+			emailMessage.setToEmail(toUser.getEmail());
+			emailMessage.setFromEmail(loginUser.getEmail());
+			emailMessage.setCreatedBy(loginUser.getUserCode());
+			StringBuilder msgBuild = new StringBuilder();
+			emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
+			// setting the class filed values
+			Map<String, String> globalVarsMap = new HashMap<String, String>();
+
+			if (toUser.getLastName() != null && toUser.getLastName() != "") {
+				StringBuilder fNameBulid = new StringBuilder();
+				globalVarsMap.put("UserName", fNameBulid.append(toUser.getFirstName()).append(" ").append(toUser.getLastName()).toString());
+			} else {
+				globalVarsMap.put("UserName", toUser.getFirstName());
+			}
+
+			globalVarsMap.put("TicketTitle", ticketComment.getTicket().getTitle());
+//			globalVarsMap.put("TicketId", ticketComment.getTicket().getGeneratedId());
+			globalVarsMap.put("TicketType", ticketComment.getTicket().getTicketType().getName());
+			globalVarsMap.put("CategoryName", ticketComment.getTicket().getTicketCategory().getName());
+			globalVarsMap.put("Status", ticketComment.getTicket().getTicketStatus().getName());
+			globalVarsMap.put("Comment", ticketComment.getComment());
+
+			StringBuilder loginBuilder = new StringBuilder();
+			globalVarsMap.put("Login", loginBuilder.append("<a href='").append(sourceleadUrl)
+					.append("/ticketSummary?uuid=" + ticketComment.getTicket().getUuid())
+					.append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>View Ticket</div></a>")
+					.toString());
+
+			if (StringUtils.isNotBlank(loginUser.getFirstName())) {
+				StringBuilder loginUserBuild = new StringBuilder();
+				globalVarsMap.put("LoginUser", loginUserBuild.append(loginUser.getFirstName()).append(" ")
+						.append(loginUser.getLastName()).toString());
+			} else {
+				globalVarsMap.put("LoginUser", loginUser.getFirstName());
+			}
+			if (StringUtils.isNotBlank(ticketComment.getTicket().getOrgLocations().getOrgLocationName())) {
+				globalVarsMap.put("LoginOrg", ticketComment.getTicket().getOrgLocations().getOrgLocationName());
+			}
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.TICKET_COMMENT_EMAIL, new ArrayList<EmailAttachment>());
+
+			/* send notification */
+			// find required notification scenarios
+			EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TICKET_COMMENT_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+
+			// set notification body
+			String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+			notificationScenario.setBody(notificationbody);
+
+			// calling the sendEmail method of emailScenerioUtil
+			StringBuilder notificationLink = new StringBuilder();
+			String actionLink = notificationLink.append(sourceleadUrl).append("/ticketSummary?uuid=" + ticketComment.getTicket().getUuid()).toString();
+			emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, orgLocations, notificationScenario, new HashMap<String, String>());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public TicketCommentDTO getTicketComment(long ticketCommentId, String dateFormat) {
+		TicketCommentDTO ticketCommentDTO = new TicketCommentDTO();
+		try {
+			TicketComment ticketComment = ticketManagementDao.getTicketComment(ticketCommentId);
+			if(ticketComment != null) {
+				ticketCommentDTO = getTicketCommentDTO(ticketComment, dateFormat);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ticketCommentDTO;
+	}
+	
+	@Override
+	public Boolean deleteTicketComment(long ticketCommentId) {
+		try {
+			return ticketManagementDao.deleteTicketComment(ticketCommentId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

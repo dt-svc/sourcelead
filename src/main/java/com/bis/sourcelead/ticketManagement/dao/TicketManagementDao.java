@@ -22,23 +22,31 @@ public interface TicketManagementDao {
 
 	public TicketType getTicketTypeById(long id);
 	
+	public long getTicketTypeIdByNameAndOrgLocationId(String name, long orgLocationsId);
+	
+	public long getTicketCategoryIdByNameAndOrgLocationId(String name, long orgLocationsId);
+
+	public long getTicketPriorityIdByNameAndOrgLocationId(String name, long orgLocationsId);
+
+	public long getTicketStatusIdByNameAndOrgLocationId(String name, long orgLocationsId);
+	
 	public TicketPriority getTicketPriorityById(long id);
 	
 	public TicketCategory getTicketCategoryById(long id);
 
-	public boolean saveTicketType(TicketType ticketType);
+	public long saveTicketType(TicketType ticketType);
 
 	public boolean deleteTicketTypeDataById(long id);
 
 	public List<TicketCategory> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status, String searchValue);
 
-	public Boolean saveTicketCategory(TicketCategory ticketCategory);
+	public long saveTicketCategory(TicketCategory ticketCategory);
 
 	public Boolean deleteTicketCategoryDataById(long id);
 
 	public List<TicketPriority> getTicketPriorityListByOrgLocationId(Long orgLocationId, int status, String searchValue);
 
-	public Boolean saveTicketPriority(TicketPriority ticketpriority);
+	public long saveTicketPriority(TicketPriority ticketpriority);
 
 	public Boolean deleteTicketPriorityDataById(long id);
 
@@ -46,7 +54,7 @@ public interface TicketManagementDao {
 
 	public TicketStatus getTicketStatusById(long id);
 
-	public Boolean saveTicketStatus(TicketStatus ticketStatus);
+	public long saveTicketStatus(TicketStatus ticketStatus);
 
 	public Boolean deleteTicketStatusDataById(long id);
 
@@ -64,7 +72,7 @@ public interface TicketManagementDao {
 
 	public Boolean changeTicketStatusDataById(long id, int status, OrgLocations orgLocation);
 
-	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId, int status, String userRole);
+	public List<Ticket> getTicketManagementListByOrgLocationId(Long orgLocationId,long userId, int status, String userRole, String searchValue);
 
 	public Ticket getTicketSummaryByUUID(String uuid, Long orgLocationId);
 
@@ -75,8 +83,12 @@ public interface TicketManagementDao {
 	//public Boolean saveTicketCommentListByTicketId(TicketComment ticketComment);
 
 	public TicketComment getTicketCommentByTicketId(long ticketId);
+	
+	public TicketComment getTicketComment(long ticketCommentId);
 
 	public Boolean saveTicketComment(TicketComment ticketComment);
+
+	public Boolean deleteTicketComment(long ticketCommentId);
 
 	public Ticket getTicketDataById(long ticketId);
 
@@ -109,5 +121,6 @@ public interface TicketManagementDao {
 	public List<Long> getTicketCategoryAssignToIdList(long ticketCategoryId);
 	
 	public void deleteTicketCategoryAssignTo(TicketCategoryAssignTo ticketCategoryAssignTo);
-	
+
+
 }

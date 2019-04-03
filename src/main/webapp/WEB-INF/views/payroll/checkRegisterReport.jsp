@@ -106,7 +106,12 @@ $(document).ready(function(){
 		<span class='repSearchIcon' onClick='payCheckDateSearch();'></span></li>
 		</ul>
 		</div>
+		 <div class="require_wrap_table tableFirstSecond clearfix datatable_filter">
+		 
+		 	<div id="popUp"></div>
+	          <input type="hidden" id="checkRegisterDataLength" value="0"/>
           <div id="checkRegisterReportDIV" class="datatable_filter"></div>
+          </div>
       </div>
       
       <!-- Content Area Ends--> 
@@ -241,6 +246,7 @@ function checkRegisterReports(){
 		searchValue = searchValue ? searchValue : "";
 		var url = sourceleadUrl+"/getCheckRegisterReports?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&depositType=Cheque";
 		checkRegisterReportsList(url);	
+		$("#checkRegisterDataLength").val(0);
 }
 
 </script>
@@ -300,6 +306,7 @@ function checkRegisterReports(){
 										"data" : "empId",
 										"sortable": false,
 										"render" : function(data, type, opt,meta) {
+											$("#checkRegisterDataLength").val(1);
 											var result = "";
 											if(opt.employeeId != null && opt.employeeId != '' && opt.employeeId != 'undefined'){
 												result = result+ ' <td><div class="tblminwidth-75">'+opt.employeeId+'</div></td>';
@@ -400,14 +407,35 @@ function exportToPdf(){
 	var searchValue = $("#dataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	var depositType = 'Cheque';
-	/* alert("groupId = "+groupId);
-	alert("freqStartDate = "+freqStartDate);
-	alert("freqEndDate = "+freqEndDate);
-	alert("contributionId = "+freqEndDate);
-	alert("searchValue = "+searchValue); */
 	
-	window.location.href = sourceleadUrl+"/exportToPdfCheckRegisterReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&depositType="+depositType;
+	 var checkRegisterDataLength = $("#checkRegisterDataLength").val();
+	 
+	  if(checkRegisterDataLength > 0){
+			window.location.href = sourceleadUrl+"/exportToPdfCheckRegisterReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&depositType="+depositType;
+
+	   }else{
+		   var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='check_register_popup' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Check Register List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelRegister();' style='width : 100%'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#check_register_popup").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	   }
+	
 }
+</script>
+
+<script>
+
+function cancelRegister(){
+ 	$("#popUp").empty();
+ 	$(".project_inn_mask").fadeOut(200);
+ }
+
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

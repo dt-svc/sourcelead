@@ -542,7 +542,8 @@
 					</sec:authorize>  
 					<sec:authorize access="hasRole('ROLE_ASSOCIATE_JOINED_REPORT')">
 				<li><a href='${appPath}/associateJoineReports'>Associate Joined Report</a></li>
-				</sec:authorize>             
+				</sec:authorize>      
+				<li><a href='${appPath}/availableAssociatesReport'>Available Associate Report</a></li>       
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div> 

@@ -923,6 +923,11 @@ public class UsersListRestController {
 			  }else {
 				  userRole.setPanNumber("");
 			  }
+			  if(candidate.getAadharNumber() != null) {
+				  userRole.setAadharNumber(candidate.getAadharNumber());
+			  }else {
+				  userRole.setAadharNumber("");
+			  }
 		  }
 		  
 		 
@@ -2423,6 +2428,9 @@ public class UsersListRestController {
 			
 			if(StringUtils.isNotBlank(addUserDTO.getPanNumber())){
 				   candidate.setPanNumber(addUserDTO.getPanNumber());
+			}
+			if(StringUtils.isNotBlank(addUserDTO.getAadharNumber())){
+				   candidate.setAadharNumber(addUserDTO.getAadharNumber());
 			}
 			   
 			candidateService.saveOrUpdateCandidate(candidate);

@@ -73,7 +73,7 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 			if (Validator.validate(associateBankDataDTO)) {
 				Candidate candidate = candidateDao.getCandidateByConsultantUserId(Long.parseLong(associateBankDataDTO.getUserId()),orgLocation.getId());
 				if(associateBankDataDTO.getId() != null){
-					associateBankData = associateBankDataDao.findAssociateBankDataByCandidateId(candidate.getId(),orgLocation);
+					associateBankData = associateBankDataDao.findAssociateBankDataById(associateBankDataDTO.getId());
 					associateBankData.setUpdatedBy(loginUser.getUserCode());
 					associateBankData.setUpdatedDate(new Date());
 				}else {

@@ -22,7 +22,7 @@ public interface TicketManagementService {
 
 	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue);
 
-	public boolean saveTicketType(TicketTypeDTO ticketTypeDTO, long userId, OrgLocations loginOrgLocation);
+	public long saveTicketType(TicketTypeDTO ticketTypeDTO, long userId, OrgLocations loginOrgLocation);
 
 	public TicketTypeDTO getTicketTypeDataById(long id, long userId, OrgLocations loginOrgLocation);
 
@@ -30,7 +30,7 @@ public interface TicketManagementService {
 
 	public List<TicketCategoryDTO> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status, String searchValue);
 
-	public Boolean saveTicketCategory(TicketCategoryDTO ticketCategoryDTO,User user, long userId, OrgLocations loginOrgLocation);
+	public long saveTicketCategory(TicketCategoryDTO ticketCategoryDTO,User user, long userId, OrgLocations loginOrgLocation);
 
 	public TicketCategoryDTO getTicketCategoryDataById(long ticketCategoryId, OrgLocations loginOrgLocation);
 
@@ -38,7 +38,7 @@ public interface TicketManagementService {
 
 	public List<TicketPriorityDTO> getTicketPriorityListByOrgLocationId(Long orgLocationId, int status, String searchValue);
 
-	public Boolean saveTicketPriority(TicketPriorityDTO ticketPriorityDTO, long userId, OrgLocations loginOrgLocation);
+	public long saveTicketPriority(TicketPriorityDTO ticketPriorityDTO, long userId, OrgLocations loginOrgLocation);
 
 	public TicketPriorityDTO getTicketPriorityDataById(long ticketPriorityId, OrgLocations loginOrgLocation);
 
@@ -46,7 +46,7 @@ public interface TicketManagementService {
 
 	public List<TicketStatusDTO> getTicketStatusListByOrgLocationId(Long orgLocationId, int status, String searchValue);
 
-	public Boolean saveTicketStatus(TicketStatusDTO ticketStatusDTO, long userId, OrgLocations loginOrgLocation);
+	public long saveTicketStatus(TicketStatusDTO ticketStatusDTO, long userId, OrgLocations loginOrgLocation);
 
 	public TicketStatusDTO getTicketStatusDataById(long ticketPriorityId, OrgLocations loginOrgLocation);
 
@@ -64,13 +64,17 @@ public interface TicketManagementService {
 
 	public Boolean changeTicketStatusDataById(long id, int status, OrgLocations orgLocation);
 
-	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId, long userId, int status, String dateFormat, String userRole);
+	public List<TicketDTO> getTicketManagementListByOrgLocationId(Long orgLocationId, long userId, int status, String dateFormat, String userRole, String searchValue);
 
 	public TicketDTO getTicketSummaryByUUID(String uuid, Long orgLocationId, String dateFormat, boolean includeAttachments);
 
 	public List<TicketCommentDTO> getTicketCommentListByTicketId(Long ticketId, long userId, Long orgLocationId, String dateFormat);
 	
-	public Boolean saveTicketComment(TicketCommentDTO ticketCommentDTO, User user);
+	public Boolean saveTicketComment(TicketCommentDTO ticketCommentDTO, User user, OrgLocations orgLocations);
+
+	public TicketCommentDTO getTicketComment(long ticketCommentId, String dateFormat);
+
+	public Boolean deleteTicketComment(long ticketCommentId);
 
 	public TicketDTO getTicketDataById(long ticketId, String dateFormat);
 
@@ -85,6 +89,8 @@ public interface TicketManagementService {
 	public List<UserDTO> getCategoryAssignToListByTicketCategoryId(long ticketCategoryId, long userId, Long orgLocationId);
 
 	public boolean changeTicketManagementStatus(long ticketId, int status);
+
+
 
 	
 

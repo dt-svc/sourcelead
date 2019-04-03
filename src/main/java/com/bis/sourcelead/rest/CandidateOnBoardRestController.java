@@ -1873,6 +1873,10 @@ public class CandidateOnBoardRestController {
 				}
 				
 				candidateOnBoardingService.saveCandidateOnBoarding(candidateOnBoarding);
+				
+				candidateOnBoarding.setJoiningDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),
+						candidateOnBoarding.getStartDate()));
+				
 				SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
 				response.setObject("success");
 				response.setResponse(Result.SUCCESS.name());

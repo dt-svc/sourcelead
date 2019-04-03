@@ -240,5 +240,7 @@ public interface ImmigrationCommonService {
 	
 	ImmigrationVisaDTO getCandidateVisaDetailsByCandidateIdAndVisaNumber(Long candidateId,String visaNumber);
 	ImmigrationVisaDTO getCandidateActiveVisaDetailsByVisaNumberAndCountry(Long candidateId, String visaNumber, String country);
-
+	
+	Lca updateLcaAvailablePositionsById(Lca lca);
+	public Lca getLcaNumber(String lcaNo) throws Exception;
 }

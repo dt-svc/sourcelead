@@ -1587,7 +1587,8 @@ function toDate(selector) {
 		        	 var result = '';
 		        	 var selected = 'selected';
 		        	 result = result +'<option disabled selected>--Select Client--</option>';
-		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' >'+json['orgName']+'</option>';
+		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' data-responder_location_id= '+json['dataResponderLocationId']+'>'+json['orgName']+'</option>';
+
 		        	 $("#clientOrgRelationId").empty();
 		           	 $("#clientOrgRelationId").append(result); 
 		           	 $('#clientOrgRelationId').trigger("chosen:updated");
@@ -1627,6 +1628,8 @@ function toDate(selector) {
 		        	editTax(json['invoiceTaxList'])
 		        	
 		        	getSavedAttachments(json['invoiceDocumentsList']);
+		        	
+		        	getInvoiceTemplateList(json.customInvoiceId);
 		        	
 		        	$("#grandTotal").val(json['total']);
 		        	$("#conversionFrom").val(json['total']);
@@ -1940,7 +1943,7 @@ function getPaymentTerms(){
 	});
 }
 
-function getInvoiceTemplateList() {
+function getInvoiceTemplateList(selectedId) {
 	var orgRelationId = $("#clientOrgRelationId").val();
 	var responderLocationId = $("#clientOrgRelationId :selected").data("responder_location_id");
 	$("#invoiceTemplateId").empty("");
@@ -1952,7 +1955,7 @@ function getInvoiceTemplateList() {
 			$("#invoiceTemplateId").append("<option value='-1' selected>Default Template</option>");
 			if(data && data.data != null && data.data.length > 0) {
 				for(var e in data.data) {
-					$("#invoiceTemplateId").append("<option value=" + data.data[e].id + ">" + data.data[e].name + "</option>");
+					$("#invoiceTemplateId").append("<option value=" + data.data[e].id + " "+ (selectedId && selectedId === data.data[e].id ? "selected" : "") +">" + data.data[e].name + "</option>");
 				}
 			}
 		}

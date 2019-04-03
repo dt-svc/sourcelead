@@ -3057,5 +3057,12 @@ public class LeaveServiceImpl implements LeaveService {
 
 		return leaveDao.getAllLeavesByLocationIdAndStatusAndAppliedDate(locationId, status, appliedDate);
 	}
+	
+	@Override
+	public List<Leave> getAllLeavesByLocationIdAndStatusAndLeaveStartDate(Long locationId, String status,
+			Date appliedDate) {
+
+		return leaveDao.getAllLeavesByLocationIdAndStatusAndLeaveStartDate(locationId, status, appliedDate);
+	}
 
 }

@@ -16,8 +16,8 @@ public interface PaymentAccountDao {
 	
 	boolean getisActivePaymentAccountExistedByCandidateId(Long candidateId) throws Exception;
 
-	int saveBankingDetailInPaymentAccount(Long orgLocationId, List<IndAssociatePaymentAccountDTO> list, Map<String, Long> map, List<PaymentAccount> paymentListsss)  throws Exception;
-
-	List<PaymentAccount> getPaymentAccountDetailsByOrglocationId(Long id);
+	int saveBankingDetailInPaymentAccount(Long orgLocationId, List<IndAssociatePaymentAccountDTO> list, Map<String, Long> map)  throws Exception;
+	
+	List<PaymentAccount> getPaymentAccountDetailsByOrglocationId(Long id) throws Exception;
 }
 
