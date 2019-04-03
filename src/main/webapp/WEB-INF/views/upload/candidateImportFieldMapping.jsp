@@ -93,6 +93,8 @@
 			    		
 			    		if(uploadedSize <= 2000000){
 			    			storeCandidateBulkUpload(couchbaseQueueKey);
+			    		}else{ 
+			    			bulkUploadEmails(couchbaseQueueKey,uploadedSize,"Candidtate");
 			    		}
 			    		
 			    	}
@@ -116,6 +118,19 @@
 	});
 </script>
 
+<script>
+function bulkUploadEmails(couchbaseQueueKey,uploadedSize,type){
+	 $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/bulkUploadEmails?couchbaseQueueKey="+couchbaseQueueKey+"&uploadedSize="+uploadedSize+"&type="+type, 
+	        success: function(result) {
+	        	var dateFormat ='${SourceLeadWeb_dateFormat}';	
+	        	xlsupload.getFailureUploadStats("Candidates",dateFormat);
+	        },
+	    });
+}
+
+</script>
 
 <script>
 function storeCandidateBulkUpload(couchbaseQueueKey){
