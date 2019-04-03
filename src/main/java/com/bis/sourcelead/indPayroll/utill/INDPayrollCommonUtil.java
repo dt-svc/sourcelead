@@ -965,7 +965,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				StateTaxDTO taxDTO = taxService.getStateTaxByStateNameAndFinancialYear(asph.getPayrollPayhead().getOrgLocationId().getState(), financialYear);
 				try {
 					if(taxDTO != null && taxDTO.getProfessionalTaxList().size()>0) {
-						ProfessionalTaxDTO ptDTO = taxDTO.getProfessionalTaxList().stream().filter(t -> new BigDecimal(t.getAmountFrom()).compareTo(asph.getMonthly()) <= 0 && new BigDecimal(t.getAmountTo()).compareTo(asph.getMonthly()) >= 0 ).findAny().get();
+						ProfessionalTaxDTO ptDTO = taxDTO.getProfessionalTaxList().stream().filter(t -> new BigDecimal(t.getAmountFrom()).compareTo(assoSal.getAnnualSalary()) <= 0 && new BigDecimal(t.getAmountTo()).compareTo(assoSal.getAnnualSalary()) >= 0 ).findAny().get();
 						if(ptDTO != null)
 							ptAmount = Double.valueOf(ptDTO.getAmount());
 					}

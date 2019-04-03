@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
+import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
 import com.bis.sourcelead.payroll.entity.AssociatePfEsiDetails;
 
 public interface AssociatePfEsiDao {
@@ -17,5 +18,5 @@ public interface AssociatePfEsiDao {
 
 	List<AssociatePfEsiDetails> getAllPfEsiDetailsByOrgLocationid(Long id);
 
-	int saveAssociateInformation(Long id, List<AssociateBankDataDTO> list, Map<String, Long> canMap);
+	int saveAssociateInformation(Long id, List<AssociatePfEsiDetailsDTO> list, Map<String, Long> canMap);
 }

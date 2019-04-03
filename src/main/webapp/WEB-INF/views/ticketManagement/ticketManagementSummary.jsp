@@ -4,7 +4,23 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+
+<link type="text/css" rel="stylesheet" href="/resources/css/comment/froala_editor.css"/>
+<link type="text/css" rel="stylesheet" href="/resources/css/comment/jquery.atwho.css"/>
+
+
+<script type="text/javascript" src="/resources/js/editor.js"></script>
+<link href="/resources/css/editor.css" type="text/css" rel="stylesheet" />
+
+
+<!-- <script type="text/javascript" src="/resources/js/comment/jquery.atwho.min.js"></script> -->
+<script type="text/javascript" src="/resources/js/comment/jquery.atwho.js"></script>
+<script type="text/javascript" src="/resources/js/comment/jquery.caret.min.js"></script>
+<!-- <script type="text/javascript" src="/resources/js/comment/froala_editor.min.js"></script> -->
+
 <script type="text/javascript" src="/resources/js/ticketManagement/ticket.js"></script>
+<script type="text/javascript" src="/resources/js/ticketManagement/ticket_comment.js"></script>
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -17,11 +33,11 @@
         <div class="project_side_wrap_inn_tabs">
           <ul class="project-tabs-menu project-tabs-menu-custom">
             <li class="current"><a href="#tab-1">Details</a></li>
-            <%-- <li class=""><a href="#tab-2" onclick="getTicketCommetList('${ticketSummary.id}');">Comment</a></li> --%>
+            <li class=""><a href="#tab-2" onclick="getTicketCommetList('${ticketSummary.id}');">Comment</a></li>
             <div class="clearfix"></div>
           </ul>
           <div class="project_tabs project_wrap">
-            <div id="tab-1" class="project_tabs_inn" style="display: block">
+            <div id="tab-1" class="project_tabs_inn" style="display: block;">
               <div class="project_tabs_inn_table">
                 <div class="project_details col2Custom">
 					<div class="useredit">
@@ -123,11 +139,11 @@
 			
 			<!-- Comments Section -->
              <div id="tab-2" class="project_tabs_inn">
-              <div class="project_tabs_inn_table">
+              <div class="project_tabs_inn_table clearfix">
                 <div class="clearfix col-md-12">
                   <div class="clearfix mt">
                     <button type="button" id="addComment" class="btn btn-primary pull-right btn-sm mr">Add Comment</button>
-                    <div class="add-ticketcomment" style="display: none;" id="add-comment">
+                    <%-- <div class="add-ticketcomment" style="display: none;" id="add-comment">
                       <form role="form" id="ticketComment_form" name="sourceleadTicketComment_form" method="post">
 	                        <textarea rows="3" class="form-control clearfix mb10 valid error" placeholder="Comments here..." id="ticketComment" name="comment" field-name="Comment" data-validation="required validate_length length1-5000" style="border-color: rgb(204, 204, 204);"></textarea>
 	                        <span class="clearfix pull-right">
@@ -135,14 +151,14 @@
 	                        <input type="button" value="Cancel" class="btn btn-sm btn-default" onclick="closeTicketComment()" style="border-color: rgb(204, 204, 204);">
 	                        </span>
                       </form>
-                    </div>
-                  </div>
-					
+                    </div> --%>
+					</div>
 					<!-- Comments Section -->
-					<div id="ticketCommentListDivId"></div>
-					
+					<!-- <div id="ticketCommentListDivId"></div> -->
+					<div>
+						<ul id="ticketCommentListDivId" class="list-unstyled goalscomments-list"></ul>
+					</div>
 					<!-- Comments Section Ends -->
-					
                 </div>
               </div>
             </div>
@@ -151,6 +167,23 @@
       </div>
     </div>
   </section>
+  
+<div class="popupWrap popupWrapFixed" id="ticketCommentPopup" role="dialog">
+	<%-- <form role="form" id="ticketComment_form" name="sourceleadTicketComment_form" method="post"> --%>
+		<input type="hidden" id="ticketCommentId" name="id" value="0"/>
+		<div class="ticketCommentCont">
+			<div class="clearfix">
+				<!-- <textarea rows="8" class="form-control clearfix mb10 valid error" placeholder="Comments here..." id="ticketComment" name="comment" field-name="Comment" data-validation="required validate_length length1-5000" style="border-color: rgb(204, 204, 204);"></textarea> -->
+				<div contenteditable="true" id="ticketComment" class="tkt_comment_div"></div>
+			</div>
+		</div>
+		<div class="popupFoot text-right">
+			<button type="button" class="slBtn md colorBtn" onclick="saveTicketComment('${ticketSummary.id}');">Save</button>
+			<button type="button" class="slBtn md popClose" onclick="closeTicketComment();">Cancel</button>
+		</div>
+	<%-- </form> --%>
+</div>
+					
   <script> 
       $("#tab-1").show();
       $(".project-tabs-menu a").click(function(event) {
@@ -161,16 +194,20 @@
           $(".project_tabs_inn").not(tab).css("display", "none");
           $(tab).fadeIn();
       });
+      var loggedInUserId = "${loggedInUserId}";
 </script>
 <script>
 $(document).ready(function(){
 	$(".add-ticketcomment").attr('style', "right:30px !important; top:45px");
 });
 $("#addComment").click(function(){
-	$("#add-comment").show();
+	$("#ticketCommentPopup, .mask").show();
 });
 function closeTicketComment(){
-	$("#add-comment").hide();
+	$("#ticketCommentId").val(0);
+	$("#ticketComment").val("");
+	$('.fr-element.fr-view').html("");
+	$("#ticketCommentPopup, .mask").hide();
 }
 </script>
    <jsp:include page="../masterFooter.jsp" />

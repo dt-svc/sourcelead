@@ -778,7 +778,59 @@ public class TicketManagementRestController {
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
-				response.setObject(ticketManagementService.saveTicketComment(ticketCommentDTO, user));
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				response.setObject(ticketManagementService.saveTicketComment(ticketCommentDTO, user, loginOrgLocation));
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+	
+	@RequestMapping(value = {"/rest/saveTicketComment"}, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Boolean> saveTicketCommentForMobile(HttpServletRequest request, @RequestBody TicketCommentDTO ticketCommentDTO) {
+		return saveTicketComment(request, ticketCommentDTO);
+	}
+	
+	@RequestMapping(value = {"/getTicketComment", "/rest/getTicketComment"}, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<TicketCommentDTO> getTicketComment(HttpServletRequest request, @RequestParam(defaultValue = "0") long ticketCommentId) {
+		Response<TicketCommentDTO> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				response.setObject(ticketManagementService.getTicketComment(ticketCommentId, loginOrgLocation.getDateFormat()));
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+	
+	@RequestMapping(value = {"/deleteTicketComment", "/rest/deleteTicketComment"}, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Boolean> deleteTicketComment(HttpServletRequest request, @RequestParam(defaultValue = "0") long ticketCommentId) {
+		Response<Boolean> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				response.setObject(ticketManagementService.deleteTicketComment(ticketCommentId));
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -837,7 +889,7 @@ public class TicketManagementRestController {
 		return responseList;
 	}
 	
-	@RequestMapping(value = "/rest/getUserListByLoginOrgLocationId", method = RequestMethod.POST)
+	@RequestMapping(value = {"/getUserListByLoginOrgLocationId", "/rest/getUserListByLoginOrgLocationId"}, method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseList<User> getAllUsersByOrgLocationId(HttpServletRequest request) {
 		ResponseList<User> responseList = new ResponseList<>(); 
