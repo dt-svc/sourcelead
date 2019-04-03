@@ -530,6 +530,7 @@ function getEmploymentType(){
  <script>
  function getAddApplicantVendorContactList(orgRelationId,spocId){
 	 
+	 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	 var orgRelationID = '';
 	 if(orgRelationId != null && orgRelationId != 'undefined' && orgRelationId != ''){
 		 orgRelationID = orgRelationId;
@@ -538,7 +539,7 @@ function getEmploymentType(){
 	 }
 		 $.ajax({
 			    type: "POST",
-		        url: atsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        url: vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 		        success: function(json) {
 		        	$('#vendorContact').empty();
 		        	$('#vendorContact').append('<option value="">--Select Vendor contact--</option>');
