@@ -58,9 +58,9 @@ public class SecurityConfig  {
     	
         protected void configure(HttpSecurity http) throws Exception {
         	 http
-        	 .antMatcher("/pms/rest/**").addFilterBefore(customTokenAuthenticationFilter, BasicAuthenticationFilter.class).sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint) 
+        	 .antMatcher("/rest/**").addFilterBefore(customTokenAuthenticationFilter, BasicAuthenticationFilter.class).sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint) 
                  .and()
-                 .authorizeRequests().antMatchers("/pms/rest/**").fullyAuthenticated()
+                 .authorizeRequests().antMatchers("/rest/**").fullyAuthenticated()
                  .and().anonymous()
                   .and()
                    .securityContext()
