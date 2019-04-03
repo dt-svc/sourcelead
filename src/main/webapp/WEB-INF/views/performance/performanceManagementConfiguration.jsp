@@ -24,7 +24,9 @@ var locationDateFormat = '${SourceLeadWeb_dateFormat}';
 	      <!-- <h2>Submission Templates</h2> -->
 	      <h2 class="pull-left">Performance Management Configuration</h2>
 	    </div>
-	    <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Performance Management Configuration</div>
+	    <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; 
+	    <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/settings'/>">Settings</a> &raquo;
+	    Performance Management Configuration</div>
 	 	<div class="clearfix"></div>
     </section>
     
@@ -45,7 +47,7 @@ var locationDateFormat = '${SourceLeadWeb_dateFormat}';
 				</div>
 				<div class="col-md-3 perfDashCta">
 					<img src="/resources/images/competenceA.svg" alt=""/>
-					<h3>Competence</h3>
+					<h3>Competency</h3>
 					<span><a onclick="performanceManagement.addNewCompetence();" class="colB">Add</a><a onclick="performanceManagement.performanceCompetenceList();" class="">View</a></span>
 				</div>
 				<div class="col-md-3 perfDashCta">
