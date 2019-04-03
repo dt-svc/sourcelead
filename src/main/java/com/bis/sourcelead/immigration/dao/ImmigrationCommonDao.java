@@ -308,4 +308,7 @@ public interface ImmigrationCommonDao {
 	ImmigrationVisaDTO getCandidateVisaDetailsByVisaNumberAndCountry(Long candidateId, String visaNumber, String country);
 
 	int deleteImmigrationNotesByImmigrationId(Long immigrationId);
+	
+	Lca updateLcaAvailablePositionsById(Lca lca);
+	public Lca getLcaNumber(String lcaNo) throws Exception;
 }

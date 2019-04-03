@@ -114,6 +114,18 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "BILLING_STATUS")
 	private String billingStatus;
 	
+	@Column(name = "SUBMITTED_DATE")
+	@JsonBackReference
+	private Date submittedDate;
+	
+	public Date getSubmittedDate() {
+		return submittedDate;
+	}
+
+	public void setSubmittedDate(Date submittedDate) {
+		this.submittedDate = submittedDate;
+	}
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_ID", nullable=false)
 	@JsonBackReference
