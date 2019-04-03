@@ -12,14 +12,14 @@
         <div class="pull-left">
             <h2>Job Board Configuration</h2>
         </div>
-        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; Job Board Configuration</div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <a href="<c:url value='${SourceLeadWeb_atsUrl}/goToSettings'/>">Settings</a>&raquo; Job Board Configuration</div>
     </section>
     
 <div class="project_wrap">  
                     
     <div class="positionRelative reportHead clearfix">
     	<ul class="pull-right list-unstyled list-inline">
-    		<li><button data-toggle="modal" type="button" class="newAdBtn mr5" onclick="location.href = '${sourceleadUrl}/manage-job-board-accounts';">Manage Job Board Accounts</button></li>
+    		<li><button data-toggle="modal" type="button" class="newAdBtn mr5" onclick="location.href = '${SourceLeadWeb_sourceleadUrl}/manage-job-board-accounts';">Manage Job Board Accounts</button></li>
     	</ul>
     </div>
   
