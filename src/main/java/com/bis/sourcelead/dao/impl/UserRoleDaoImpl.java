@@ -751,7 +751,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<UserRole> getAllAssignedUsersByReportingManagerId(Long reportingManagerId, Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from UserRole userRole where userRole.reportingManager.id = :reportingManagerId and userRole.orgLocations.id = :locationId ";
+		String query = "from UserRole userRole where userRole.reportingManager.id = :reportingManagerId and userRole.orgLocations.id = :locationId and userRole.userState <> 'NOT_LOGGEDIN' ";
 		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong( "reportingManagerId", reportingManagerId).setLong("locationId", orgLocationId).list();
 		return userRoleList;
 	}
@@ -1313,12 +1313,11 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			userRoleList = query.setLong("locationId", locationId).setParameterList("roleIds", userRolesList).setLong("varZero", 0).setParameterList("orgRelationsList", orgRelationsList).setString("varString", "").setParameterList("tagsList", tagsList).setParameterList("managerUserIds", managerUserIds).setParameterList("teamsList", teamsList).setParameterList("departmentsList", departmentsList).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
 			
 			
-			String queryCount = "Select count (*) from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1' "+subQuery2+""
+			String queryCount = "Select count (*) from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> '1' "+subQuery2+""
 					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+" "+subQuery3+" "+subQuery4+" "+subQuery5+" "+subQuery6+" "+tagsQuery+" "+employmentTypeQuery+" " ;
 			Query query2 = session.createQuery(queryCount+query1);
 			
-			countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setParameterList("roleIds", userRolesList).setString("varString", "").setParameterList("tagsList", tagsList).setParameterList("orgRelationsList", orgRelationsList).setParameterList("managerUserIds", managerUserIds).setParameterList("teamsList", teamsList).setParameterList("departmentsList", departmentsList).setLong("varZero", 0).list();
-			
+			countlist =query2.setLong("locationId", locationId).setParameterList("roleIds", userRolesList).setString("varString", "").setParameterList("tagsList", tagsList).setParameterList("orgRelationsList", orgRelationsList).setParameterList("managerUserIds", managerUserIds).setParameterList("teamsList", teamsList).setParameterList("departmentsList", departmentsList).setLong("varZero", 0).list();
 			
 
 			  

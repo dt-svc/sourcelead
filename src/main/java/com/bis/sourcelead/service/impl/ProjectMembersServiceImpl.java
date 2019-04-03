@@ -29,6 +29,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
 import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
@@ -1674,6 +1675,7 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 			orgRelations.setResponderLocationId(clientOrgLocation);
 			orgRelations.setInitiatorType("Vendor");
 			orgRelations.setResponderType("Client");
+			orgRelations.setGenerateInvoice("Bulk");
 			orgRelations.setInitiatorLevel("Tier-5");
 			orgRelations.setResponderLevel("Tier-5");
 			orgRelations.setStatus("ACTIVE");
@@ -2330,6 +2332,11 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 	public ProjectMembers getAllProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId,
 			Long projectId, Long locationId, String isGlobalUser) throws Exception {
 		return projectMembersDao.getAllProjectMembersByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId, isGlobalUser);
+	}
+
+	@Override
+	public List<CandidateDTO> getAllAvailableAssociates(Long orgLocationId) {
+		return projectMembersDao.getAllAvailableAssociates( orgLocationId);
 	}
 
 

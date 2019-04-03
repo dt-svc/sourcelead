@@ -87,6 +87,19 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 	
 	@Override
 	@Transactional
+	public List<PayrollPayhead> getAllPayrollPayheadListByOrgLocationId(Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = " FROM PayrollPayhead payhead WHERE  payhead.orgLocationId.id=:orgLocationId ";
+		
+		List<PayrollPayhead> payrollPayheadList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		
+		return payrollPayheadList;
+	}
+	
+	@Override
+	@Transactional
 	public List<PayrollPayhead> getPayrollPayheadListByPayheadComponentType(OrgLocations orgLocations, String component) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
@@ -362,5 +375,15 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return associateSalaryHistoryInd;
+	}
+	
+	@Override
+	@Transactional
+	public List<AssociateSalaryInd> getAssociateSalaryIndListByOrgLocationsId(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from AssociateSalaryInd salary where salary.orgLocations.id = :orgLocationId and salary.status = '1' ";  
+		List<AssociateSalaryInd> associateSalaryIndList =  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		return associateSalaryIndList;
+		
 	}
 }

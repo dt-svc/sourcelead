@@ -3,9 +3,11 @@ package com.bis.sourcelead.dao;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.AvailableAssociatesDTO;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.reportsDTO.ProjectReportDTO;
@@ -108,5 +110,9 @@ public interface ProjectsDao {
 	List<ProjectsDTO> getProjectListForDaywiseReports(Long orgLocationsId,Long orgId,String isGlobalManager,Long userId,String type,String userRole) throws Exception;
 
 	public List<Projects> getProjectReportList(ProjectReportDTO projectReportDTO, Long orgLocationId);
+
+	List<Object[]> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO, OrgLocations orgLocations);
+
+	public List<Projects> getProjectsListByCanddateIdAndOrgId(String associates, Long orglocationId);
 
 }

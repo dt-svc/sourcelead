@@ -1,7 +1,10 @@
 package com.bis.sourcelead.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -157,6 +160,16 @@ public class UserLoginHelper {
 			Candidate candidate = getCandidateDetails(userRole);
 			SourceLeadSessionManager.setSessionAttribute(req, "candidate", candidate);
 			
+			if(req.getRequestURI().contains("myImmigration")) {
+
+				req.getSession().setAttribute("myImmigrationPage", "Y");
+
+				}else if(req.getRequestURI().contains("viewImmigrationList")) {
+
+				req.getSession().setAttribute("myImmigrationPage", "N");
+				
+				}
+			
 		} catch (NumberFormatException e1) {
 			e1.printStackTrace();
 		} catch (Exception e1) {
@@ -284,6 +297,7 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationLoginSecurity", orgLocations.get("orgLocationLoginSecurity"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "countryCode", orgLocations.get("countryCode"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "currencyCode", orgLocations.get("currencyCode"));
+		  SourceLeadSessionManager.setSessionAttribute(req, "createdDate", orgLocations.get("createdDate"));
 		  
 		  String redirectURL = (String) req.getSession().getAttribute("redirectURL");
 			 if(redirectURL != null) {
@@ -400,6 +414,11 @@ public class UserLoginHelper {
 			SourceLeadSessionManager.setSessionAttribute(req, "paryrollTabCount", paryrollTabCount);
 			SourceLeadSessionManager.setSessionAttribute(req, "actionsList", actionsList);
 			
+			/*List<Long> jobIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(req, "requirementIdsList");
+			if(jobIdList != null) {
+				SourceLeadSessionManager.setSessionAttribute(req, "requirementIdsList", jobIdList);
+				System.out.println("jobIdList>>>>>"+jobIdList.size());
+			}*/
 			
 			
 			if(userSession.get("loginUserAccounts") != null) {
@@ -898,7 +917,7 @@ public class UserLoginHelper {
 		
 	}
 	
-	public OrgLocations getLoginOrgLocationDetails(JSONObject orgLocationJson) {
+	public OrgLocations getLoginOrgLocationDetails(JSONObject orgLocationJson) throws Exception {
 		
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(Long.valueOf(orgLocationJson.get("orgLocationId").toString()));
@@ -916,13 +935,22 @@ public class UserLoginHelper {
 		orgLocations.setCountry(orgLocationJson.get("country").toString());
 		orgLocations.setOrgId(Long.valueOf(orgLocationJson.get("orgId").toString()));
 		orgLocations.setOrgLocationName(orgLocationJson.get("orgLocationName").toString());
-		
+		if(orgLocationJson.get("createdDate").toString() != null) {
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			 Date date = formatter.parse(orgLocationJson.get("createdDate").toString());
+			orgLocations.setCreatedDate(date);
+		}
+	 
 		if(orgLocationJson.get("orgShortCode") != null) {
 			orgLocations.setGeneratedUserId(orgLocationJson.get("orgShortCode").toString());
 		}
 		
 		if(orgLocationJson.get("averageWorkingHours") != null) {
 			orgLocations.setAverageWorkingHours(Integer.valueOf(orgLocationJson.get("averageWorkingHours").toString()));
+		}
+		
+		if(orgLocationJson.get("workingDaysPerWeek") != null) {
+			orgLocations.setWorkingDaysPerWeek(Integer.valueOf(orgLocationJson.get("workingDaysPerWeek").toString()));
 		}
 		
 		if(orgLocationJson.get("primaryUserId") != null) {

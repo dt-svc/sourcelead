@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
@@ -217,6 +218,10 @@ public class UserRole implements Serializable {
 	@Transient
 	@JsonProperty
 	private String panNumber;
+	
+	@Transient
+	@JsonProperty
+	private String aadharNumber;
 
 	@Transient
 	@JsonProperty
@@ -469,6 +474,19 @@ public class UserRole implements Serializable {
 	}
 
 	public String getUserName() {
+		String userName = null;;
+		
+		if(user != null)
+			if(StringUtils.isNotEmpty(user.getFirstName()) && StringUtils.isEmpty(user.getLastName()) && StringUtils.isEmpty(user.getMiddelName())){
+				userName = user.getFirstName();
+			}else if(StringUtils.isNotEmpty(user.getFirstName()) && StringUtils.isNotEmpty(user.getLastName()) && StringUtils.isEmpty(user.getMiddelName())){
+				userName = user.getFirstName() +" "+user.getLastName();
+			}else if(StringUtils.isNotEmpty(user.getFirstName()) && StringUtils.isEmpty(user.getLastName()) && StringUtils.isNotEmpty(user.getMiddelName())){
+				userName = user.getFirstName() +" "+user.getMiddelName();
+			}else if(StringUtils.isNotEmpty(user.getFirstName()) && StringUtils.isNotEmpty(user.getLastName()) && StringUtils.isNotEmpty(user.getMiddelName())){
+				userName = user.getFirstName()+" "+user.getMiddelName()+" "+user.getLastName();
+			}
+	
 		return userName;
 	}
 
@@ -845,6 +863,9 @@ public class UserRole implements Serializable {
 	}
 
 	public Long getUserId() {
+		if(user != null) {
+			userId = user.getId();
+		}
 		return userId;
 	}
 
@@ -1087,6 +1108,14 @@ public class UserRole implements Serializable {
 
 	public void setPanNumber(String panNumber) {
 		this.panNumber = panNumber;
+	}
+
+	public String getAadharNumber() {
+		return aadharNumber;
+	}
+
+	public void setAadharNumber(String aadharNumber) {
+		this.aadharNumber = aadharNumber;
 	}
 
 	public String getOrgName()

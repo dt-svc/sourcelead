@@ -19,6 +19,14 @@ public class AssociateBankDataDTO {
 	
 	private String userId;
 	
+    private String emailId;
+	
+	private String reason;
+	
+	private String associateId;
+	
+	private String candidateId;
+	
 	public Long getId()
 	{
 		return id;
@@ -88,4 +96,37 @@ public class AssociateBankDataDTO {
 	{
 		this.associateBankDataUUID = associateBankDataUUID;
 	}
+
+	public String getEmailId() {
+		return emailId;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public String getAssociateId() {
+		return associateId;
+	}
+
+	public String getCandidateId() {
+		return candidateId;
+	}
+
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	public void setAssociateId(String associateId) {
+		this.associateId = associateId;
+	}
+
+	public void setCandidateId(String candidateId) {
+		this.candidateId = candidateId;
+	}
+	
 }

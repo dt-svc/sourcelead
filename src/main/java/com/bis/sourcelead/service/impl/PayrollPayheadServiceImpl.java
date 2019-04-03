@@ -15,6 +15,7 @@ import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.AssociateSalaryIndDTO;
 import com.bis.sourcelead.dto.AssociateSalaryPayheadIndDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
@@ -376,4 +377,29 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 		return payrollPayheadDao.saveAssociateSalaryHistoryInd(associateSalaryHistoryInd);
 	}
 	
+	@Override
+	public List<AssociateSalaryInd> getAssociateSalaryIndListByOrgLocationsId(Long orgLocationId) throws Exception {
+		return payrollPayheadDao.getAssociateSalaryIndListByOrgLocationsId(orgLocationId);
+	}
+	
+	@Override
+	public Response<String> refreshPayheadsForOrg(Long orgLocationId) throws Exception {
+		Response<String> response = new Response<>();
+		OrgLocations sourceLeadorgLocation = new OrgLocations();
+		sourceLeadorgLocation.setId(1l);
+		List<PayrollPayhead> defaultPayheadList = payrollPayheadDao.getPayrollPayheadList(sourceLeadorgLocation);
+		List<PayrollPayhead> payheadList = payrollPayheadDao.getAllPayrollPayheadListByOrgLocationId(orgLocationId);
+		for(PayrollPayhead pph : defaultPayheadList) {
+			if(payheadList.stream().filter(ph -> ph.getShortCode().equalsIgnoreCase(pph.getShortCode())).findAny().orElse(null) == null) {
+				OrgLocations orgLoc = new OrgLocations();
+				orgLoc.setId(orgLocationId);
+				pph.setId(null);
+				pph.setCreatedDate(new Date());
+				pph.setUpdatedDate(new Date());
+				pph.setOrgLocationId(orgLoc);
+				payrollPayheadDao.savePayrollPayhead(pph);
+			}
+		}
+		return response;
+	}
 }
