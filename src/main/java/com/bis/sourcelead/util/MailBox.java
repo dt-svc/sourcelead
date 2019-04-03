@@ -66,14 +66,21 @@ public class MailBox {
 			// Folder[] f = store.getDefaultFolder().listSubscribed();
 			/*int temp = 1;*/
 			for (Folder folder : f) {
-				/*System.out.println((temp++) + " " + fd.getName());*/
-				if (folder.getName().equalsIgnoreCase("INBOX") || folder.isSubscribed()) {
+				/*if (folder.getName().equalsIgnoreCase("INBOX") || folder.isSubscribed()) {
 					Flags seen = new Flags(Flags.Flag.SEEN);
 					FlagTerm unseenFlagTerm = new FlagTerm(seen, false);
 					folder.open(Folder.READ_ONLY);
 					Message[] messages = folder.search(unseenFlagTerm);
 					folderList.add(folder.getName() + "<<>>" + folder.getFullName().replaceAll("&", "-and-") + "<<>>" + messages.length);
+				}*/
+				int unreadCount = 0;
+				try {
+					unreadCount = folder.getUnreadMessageCount();
+				} catch (Exception e) {
+
 				}
+				//System.out.println(folder.getName() + "<<>>" + folder.getFullName().replaceAll("&", "-and-") + "<<>>" + unreadCount + " " + (folder.getParent() != null ? folder.getParent().getName() : ""));
+				folderList.add(folder.getName() + "<<>>" + folder.getFullName().replaceAll("&", "-and-") + "<<>>" + unreadCount + " " + (folder.getParent() != null ? folder.getParent().getName() : ""));
 			}
 			// close the store and folder objects
 			store.close();

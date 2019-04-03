@@ -66,18 +66,18 @@ function hideandshowHoliday(){
     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/emailreminderConfigurationDashboard'/>"> Email Reminder Configuration</a> &raquo; leave Configuration</div>
   </section>
    
-  <div class="content-area content-new clearfix" style="min-height: 50px;">
+  <div class="project_wrap">
     <div class="col-xs-12 col-sm-6 col-md-6 mt mb">
 			<div class="row">
-				<div class="col-md-3 textBold"> Employee on Leave</div>
-				<div class="col-md-9">
+				<div class="col-md-6 textBold"> Employee on Leave</div>
+				<div class="col-md-6">
 					<div class="checkbox-new">
 						<input id="employeeonLeave" class="checkbox-custom"
 							name="paidComponent" type="checkbox" ${!empty employeeonLeave ? 'checked' : ''} onclick="hideandshow();">
 						<label for="employeeonLeave" class="checkbox-custom-label"></label>
 					</div>
 				</div>
-				<div class="clearfix"></div>
+				<div class="clearfix mb"></div>
 				<c:set var="fIndex" value="0" scope="page" />
 				<div class="clearfix mt" id="employeeonLeaveDiv" ${!empty employeeonLeave ? '' : 'style="display: none;"'}>
 					<form:form id="Leave_Configuration_form" name="Leave_Configuration_form">
@@ -233,15 +233,15 @@ function hideandshowHoliday(){
 
 
 			 <div class="row">
-				<div class="col-md-3 textBold"> Approve Pending Leaves</div>
-				<div class="col-md-9">
+				<div class="col-md-6 textBold"> Approve Pending Leaves</div>
+				<div class="col-md-6">
 					<div class="checkbox-new">
 						<input id="approvePendingLeaves" class="checkbox-custom"
 							name="paidComponent" type="checkbox" ${!empty approvePendingLeaves ? 'checked' : ''} onclick="hideandshowapprovePendingLeaves();">
 						<label for="approvePendingLeaves" class="checkbox-custom-label"></label>
 					</div>
 				</div>
-				<div class="clearfix"></div>
+				<div class="clearfix mb"></div>
 				<c:set var="fIndex" value="0" scope="page" />
 				<div class="clearfix mt" id="approvePendingLeavesDiv" ${!empty approvePendingLeaves ? '' : 'style="display: none;"'}>
 					<form:form id="approve_Pending_Leaves_form" name="approve_Pending_Leaves_form">
@@ -397,15 +397,15 @@ function hideandshowHoliday(){
 			
 			
 			<div class="row">
-				<div class="col-md-3 textBold"> Holiday</div>
-				<div class="col-md-9">
+				<div class="col-md-6 textBold"> Holiday</div>
+				<div class="col-md-6">
 					<div class="checkbox-new">
 						<input id="Holiday" class="checkbox-custom"
 							name="paidComponent" type="checkbox" ${!empty Holiday ? 'checked' : ''} onclick="hideandshowHoliday();">
 						<label for="Holiday" class="checkbox-custom-label"></label>
 					</div>
 				</div>
-				<div class="clearfix"></div>
+				<div class="clearfix mb"></div>
 				<c:set var="fIndex" value="0" scope="page" />
 				<div class="clearfix mt" id="HolidayDiv" ${!empty Holiday ? '' : 'style="display: none;"'}>
 					<form:form id="Holiday_form" name="Holiday_form">
@@ -533,7 +533,7 @@ function hideandshowHoliday(){
 									</c:if>
 								<div id="reminderParent_Holiday_form" class="clearfix"></div>
 	
-									<div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb">
+									<%-- <div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb">
 										<label class="col-md-3">Notify To<span class="text-danger paddingLeft">*</span></label>
 										<div class="col-md-9" id="notifyToDiv_Holiday_form">
 											<input type="text" class="form-control" name="notifyTo" id="notifyTo" value="${Holiday.notifyTo}" placeholder="Enter email ids separated by commas" field-name="Notify To" data-validation="required validate_Space">
@@ -541,7 +541,7 @@ function hideandshowHoliday(){
 										<input type="text" style="display: none;" class="form-control" name="scenarioName" id="scenarionName" value="HolidayRemainder">
 										<input type="text" style="display: none;" class="form-control" name="tabsId" id="tabsId" value="31">
 										<input type="text" style="display: none;" class="form-control" name="id" value="${Holiday.id}">
-									</div>
+									</div> --%>
 								</div>
 							</div>
 							<div class="clearfix"></div>
@@ -574,19 +574,22 @@ function hideandshowHoliday(){
 			dateFormat : 'yyyy/mm/dd'
 		};
 		if ($('#'+form).validate(false, validationSettings)) {
-			var emailArray = $('#notifyToDiv_'+form+' :input#notifyTo').val().split(",");
-			var proceed = true;
-			$('#notifyToDiv'+form).find('p.jquery_form_error_message').remove();
-			$.each(emailArray,function(i){
+			var notifyEmail = $('#notifyToDiv_'+form+' :input#notifyTo').val();
+			if(notifyEmail != null && notifyEmail != "" && notifyEmail != 'undefined'){
+				var emailArray = notifyEmail.split(",");
+				var proceed = true;
+				$('#notifyToDiv'+form).find('p.jquery_form_error_message').remove();
+				$.each(emailArray,function(i){
 				var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-			    if(! re.test(String($.trim(emailArray[i])).toLowerCase())){
-			    	proceed = false;
-			    	return false;
-			    }
-			});
-			if(!proceed){
+			    	if(! re.test(String($.trim(emailArray[i])).toLowerCase())){
+			    		proceed = false;
+			    		return false;
+			    	}
+				});
+				if(!proceed){
 				$("#notifyToDiv"+form+" :input#notifyTo").after("<p class='jquery_form_error_message'>Invalid entry</span>");
 				return false;
+				}
 			}
 			
 			$('#'+form+'_btn').prop('disabled', true);
