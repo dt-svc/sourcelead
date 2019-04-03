@@ -390,7 +390,7 @@ function getProjectMemberByVendor(pid,projectMemberName){
 			{
 			var opt = json.data[i];
 			var selected = "";
-			  if(projectMemberName = opt.empName && projectMemberName != null && projectMemberName !='' && projectMemberName !="undefined" ){
+			  if(projectMemberName == opt.empName && projectMemberName != null && projectMemberName !='' && projectMemberName !="undefined" ){
 				 selected = 'selected';
 			}  
 			output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.empName+"</option>";
