@@ -1004,7 +1004,7 @@ function toDate(selector) {
 		           		checkedvalue(json['expensesInvoices']);
 		           		getProjectsList(json['projectName']);
 		           		getProjectMemberByVendor(json['projectId'],json['projectMemberName']); 
-		           		getExpenses(json['memberId'],json['expensesFrequency']);
+		           		getExpenses(json['memberId'],json['expensesFrequency'],json['expId']);
 		           		editExpensesDetailsEdit(json['invoiceLineItemsList']); 
 		           		
 		           	}else{
@@ -1601,14 +1601,18 @@ function populateInlineItemsGrid(){
 
 
 <script>
-function getExpenses(projectMemberId,expensesFrequency){
+function getExpenses(projectMemberId,expensesFrequency,expId){
 	var memberId = $("#projectMemberId").val();
 	if(projectMemberId !=null && projectMemberId !='undefined' && expensesFrequency !=null && expensesFrequency !='undefined'){
 		memberId = projectMemberId
 	}
+	var expenseId = 0;
+	if(expId !=null && expId !='undefined' && expensesFrequency !=null && expensesFrequency !='undefined'){
+	expenseId = expId;
+	}
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getExpensesByProjectMemberId?"+tokenParamName+"="+tokenValue+"&memberId="+memberId+"&invoiceType=payable",
+		url: sourceleadUrl+"/getExpensesByProjectMemberId?"+tokenParamName+"="+tokenValue+"&memberId="+memberId+"&expenseId="+expenseId+"&invoiceType=payable",
 		success :function(json) {
 			var output = "";
 			output = output + "<option value=''>--Select Expenses--</option>";
@@ -1617,7 +1621,7 @@ function getExpenses(projectMemberId,expensesFrequency){
 				{
 				var opt = json.data[i];
 				var selected = "";
-				 if(expensesFrequency = opt.dateFrequency && expensesFrequency !=null && expensesFrequency != '' && expensesFrequency !='undefined'){
+				 if(expensesFrequency == opt.dateFrequency && expensesFrequency !=null && expensesFrequency != '' && expensesFrequency !='undefined'){
 					selected = 'selected';
 				} 
 				output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.dateFrequency+"</option>";
