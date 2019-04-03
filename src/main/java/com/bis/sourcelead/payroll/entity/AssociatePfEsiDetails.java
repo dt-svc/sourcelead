@@ -54,9 +54,6 @@ public class AssociatePfEsiDetails implements Serializable{
 	@Column(name = "PF_NUMBER")
 	private String pfNumber;
 	
-	@Column(name = "AADHAR_NUMBER")
-	private String aadharNumber;
-	
 	@Column(name = "ENROLLED_DATE")
 	private Date enroleDate;
 
@@ -188,13 +185,5 @@ public class AssociatePfEsiDetails implements Serializable{
 
 	public void setCandidateId(Candidate candidateId) {
 		this.candidateId = candidateId;
-	}
-
-	public String getAadharNumber() {
-		return aadharNumber;
-	}
-
-	public void setAadharNumber(String aadharNumber) {
-		this.aadharNumber = aadharNumber;
 	}
 }

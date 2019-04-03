@@ -53,10 +53,19 @@
 				<div class="col-md-5">
 					<label class="clearfix">Type<span class="text-danger">&nbsp;*</span></label>
 					<div class="clearfix dropdown-select">
-						<select class="form-control chosen-select" id="type" name="type" field-name="Type" data-validation="required">
-							<option value="Earnings" ${payrollPayhead.type  == 'Earnings'  ? 'selected' :''}>Earning</option>
-							<option value="Deduction" ${payrollPayhead.type  == 'Deduction'  ? 'selected' :''}>Deduction</option>
-						</select>
+						<c:if test="${!empty payrollPayhead && !empty payrollPayhead.type && payrollPayhead.type != ''}">
+							<select class="form-control sel" id="editType" field-name="Type" data-validation="required" ${!empty payrollPayhead && !empty payrollPayhead.type  ? 'disabled' :''}>
+								<option value="Earnings" ${payrollPayhead.type  == 'Earnings'  ? 'selected' :''}>Earning</option>
+								<option value="Deduction" ${payrollPayhead.type  == 'Deduction'  ? 'selected' :''}>Deduction</option>
+							</select>
+							<input type="text" name="type" value="${payrollPayhead.type}" style="display: none;">
+						</c:if>
+						<c:if test="${empty payrollPayhead || payrollPayhead.type == ''}">
+							<select class="form-control chosen-select" id="type" name="type" field-name="Type" data-validation="required" ${!empty payrollPayhead && !empty payrollPayhead.type  ? 'disabled' :''}>
+								<option value="Earnings" ${payrollPayhead.type  == 'Earnings'  ? 'selected' :''}>Earning</option>
+								<option value="Deduction" ${payrollPayhead.type  == 'Deduction'  ? 'selected' :''}>Deduction</option>
+							</select>
+						</c:if>
 					</div>
 				</div>
 				<div class="col-md-5">
@@ -363,11 +372,13 @@ function findPayheadByNameOrShortCode(name, shortCode, listType){
             	if(result.error == "true"){
             		if(listType == "ByName"){
             			$('#payheadNameDiv').find('p.jquery_form_error_message').remove();
-                		$("input#payheadName").after("<p class='jquery_form_error_message'>Payhead already existed</p>");
+                		$("input#payheadName").after("<p class='jquery_form_error_message'>"+name+" payhead is already existed</p>");
+                		$("#payheadName").val("");
             		}
             		if(listType == "ByShortCode"){
             			$('#payheadShortCodeDiv').find('p.jquery_form_error_message').remove();
-                		$("input#shortCode").after("<p class='jquery_form_error_message'>Short code already existed</p>");
+                		$("input#shortCode").after("<p class='jquery_form_error_message'>"+shortCode+" short code already existed</p>");
+                		$("#shortCode").val("");
             		}
             	}else{
             		$('#savePayheadBtn').removeAttr("disabled");

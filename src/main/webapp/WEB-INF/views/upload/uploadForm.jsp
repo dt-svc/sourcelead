@@ -69,7 +69,7 @@ var uploadflag= true;
 				<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 					<!-- Download File button -->
 					<div class="clearfix mb row">
-					<div class="col-xs-2 col-md-2 col-md-offset-4">
+					<div class="col-xs-2 col-md-3">
 						<input type="text" class="form-control" placeholder="Header Index" id="headerPosition" name="headerPosition"  field-name="Header index" data-validation="required validate_Space validate_length length1-6 validate_int">
 					</div>			
 						<div class="col-xs-2 col-md-2">
@@ -78,9 +78,9 @@ var uploadflag= true;
 							</a>
 						</div>				
 						
-						<div class="col-xs-4 col-md-4">
+						<div class="col-xs-2 col-md-5">
 							<div class="btn-group btn-group-justified">
-								<div class="btn-group" id="import1">
+								<div class="btn-group" id="import">
 									<input type="button" class="btn btn-primary" id="upload_button"
 										name="upload_button" onclick="fetchFieldsWithMatchedColumn();"
 										value="Import">
@@ -160,7 +160,7 @@ var uploadflag= true;
 	
 		<div id="associateBnkdet" style="display:none;">
 			Associate banking details        
-			</div>>
+			</div>
 	
 			
 	<!--      Dropdown div for Associate information      -->		
@@ -302,50 +302,6 @@ function cancelFileImport(){
 	}
     </script> 
 	
-	<script type="text/javascript">
-function importAssoBankingdeatils(){
-	var validationSettings = {
-            errorMessagePosition : 'element',
-            borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-            };
-if ($('#upload_banking_form').validate(false, validationSettings)){
-	var frm = $('#upload_banking_form').serializeFormJSON();
-	var con = JSON.stringify(frm);
-	con = con.replace(/[{}]/g, "");
-	
-	
-	//It will escape all the special characters
-	var jsonData = encodeURIComponent(con);
-	var form = $('#upload_banking_form')[0];
-	var formData = new FormData(form); 
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 $.ajax({
-		   	type: "POST",
-		   	data: formData,
-    	    contentType : 'application/json; charset=utf-8',
-    	    enctype: 'multipart/form-data',
-	        processData: false,
-	        contentType:false,
-    	    dataType : 'json',
-		    url : sourceleadUrl+"/uploadbankdetails?"+tokenParamName+"="+tokenValue+"", 	   
- 		    success : function(json) {
- 		    		$("#loading").removeAttr("style");
- 		    	    if(json.recordCount != null && json.recordCount != '')
- 		    	    $("#msgDiv").removeAttr("style");
- 		 			$("#msgDiv").css({ display: "block" });
- 		 			$("#msgDiv").html(json.recordCount+ " Associates Bank details updated ..!");
- 			    	msgFadein();
- 		    	    closeImportFile();
- 		    	   resetUpload();
-		 		    },
-		 		   error: function(e){
-			        }
-			 });
-			 
-}}
-</script>
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->

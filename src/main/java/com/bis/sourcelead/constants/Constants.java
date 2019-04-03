@@ -171,7 +171,8 @@ public class Constants {
 	public static final String MAIL_TEAM_MANAGER_APPROVED_EXPENSE = "ExpensesApprovalManagerEmailToEmployee";
 	public static final String MAIL_TEAM_MANAGER_REJECTED_EXPENSE = "ExpensesApprovalRejectedEmailToEmployee";
 	public static final String MAIL_APPROVERS_REOPEN_EXPENSE = "ExpensesReopenEmailToSuperAdmin";
-	
+	public static final String MAIL_TO_LEVELTWO_APPROVER_WHILE_LEVENONE_APPROVEEXPENSES_INSEQUENTIALMECHANISM ="InSequentialMechanismMailFromApproverOneToApproverTwo";
+	public static final String MAIL_TO_LEVELTWO_APPROVER_WHILE_LEVENONE_APPROVEEXPENSES_INSEQUENTIALMECHANISM_NOTIFICATION = "InSequentialMechanismMailFromApproverOneToApproverTwo";
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE = "MailReopenApprovedMailToEmployee";
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE_NOTIFICATION = "MailReopenApprovedMailToEmployeeNotification";
 	
@@ -1427,5 +1428,10 @@ public class Constants {
 	public static final String TICKET_UPDATE_NOTIFICATION = "ChangeTicketStatusNotification";
 	
 	public static final String PAYMENT_MODE_SAVINGS = "Savings";
+	
+	public static final String[] DATA_MIGRATION_ASSOCIATE_INFO_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","UAN Number","PF Number","ESI Number"};						
+
+	public static final String TICKET_COMMENT_EMAIL = "NewTicketCommentEmail";
+	public static final String TICKET_COMMENT_NOTIFICATION ="NewTicketCommentNotification";
 	
 }

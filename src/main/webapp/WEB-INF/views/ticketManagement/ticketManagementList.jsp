@@ -19,6 +19,16 @@
             <sec:authorize access="hasRole('ROLE_ADD_TICKET')">
               <li><a href="/app/addTicket" class="newAdBtn mr5" title="Add" id="addPop">+ Add</a></li>
             </sec:authorize>
+            <sec:authorize access="hasRole('ROLE_VIEW_TICKET')">
+			  <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+							<div class="newActPop" style="display: none;">
+								<span>
+										<a href="javascript:void(0)" onclick="exportTicketManagementSheet('Pdf');" title="PDF" style="display: block">Export PDF</a>
+										<a href="javascript:void(0)" onclick="exportTicketManagementSheet('Excel');" title="Excel" style="display: block">Export Excel</a>					
+								</span>
+							</div>
+				</li>
+			</sec:authorize>
               <li class="">
                 <input class="repSearchBar" placeholder="Search" id="ticketListSearch" type="text">
                 <span class="repSearchIcon" onclick="getTicketManagementList();"></span></li>
@@ -301,5 +311,22 @@
 	   $("#ticketManagementListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 	   $("input[type=search]").hide();
 	}
+	
+	function exportTicketManagementSheet(exportType){
+		window.location.href = sourceleadUrl+"/getTicketManagementExportListByOrgLocationId?"+tokenParamName+"="+tokenValue+"&exportType="+exportType;
+	}
+	
+	function newActions(){
+		$(".newActPop").slideToggle(200);
+		$(".action-pop").slideUp(200);
+	}
+	
+	$("html").click(function(){
+		$(".newActPop").slideUp(200);
+	});
+	
+	$(".overIcon, .newActPop").click(function(e){
+	 	e.stopPropagation();
+	});
 </script>
 <jsp:include page="../masterFooter.jsp" />	 
