@@ -54,7 +54,7 @@ $(document).ready(function(){
               <label class="col-md-12">Month<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
                   <select class="form-control chosen-select" id="salaryMonthName" name="salaryMonthName">
-                        <option>Select Month</option>
+                        <option value="">Select Month</option>
 						<option>January</option>
 						<option>Feburary</option>
 						<option>March</option>
@@ -163,7 +163,8 @@ function runIndPayrollTYDReport(){
 			success : function(json) {
 				$("#payrollReportLoading").removeAttr("style");
 				 $("#payrollYTDSummaryTableDiv").empty();
-				 var result = "";
+				if(json.length > 0 ){
+				var result = "";
 				result = result + '<table id="payrollRegisterTable" class="display" cellspacing="0" width="100%" >';
 				result = result + '<thead>';
 				result = result + '<tr>';
@@ -238,6 +239,11 @@ function runIndPayrollTYDReport(){
 		        result = result +"</table>";
 		     $("#payrollYTDSummaryTableDiv").append(result);
 		     indPayrollSalaryStatementPagination();
+				}else{
+					var result = "";
+					result = result + '<div class="dataTables_empty"></div>';
+					$("#payrollYTDSummaryTableDiv").append(result);
+				}
 			}
 		  });
 		
