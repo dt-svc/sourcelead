@@ -19,6 +19,10 @@ public class BulkImportCacheDTO implements Serializable{
 
 	private String createdDate; 
 	
+	private String userName;
+	
+	private String orgName;
+	
 	public List<String> getQueueDocumentsList() {
 		return queueDocumentsList;
 	}
@@ -65,6 +69,22 @@ public class BulkImportCacheDTO implements Serializable{
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
 	}
 	
 	

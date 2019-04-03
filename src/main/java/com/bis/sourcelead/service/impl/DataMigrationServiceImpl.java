@@ -79,6 +79,9 @@ import com.bis.sourcelead.entity.CandidatePassport;
 import com.bis.sourcelead.entity.CandidateVisa;
 import com.bis.sourcelead.entity.CandidateVisaHistory;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -98,6 +101,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CouchbaseClusterService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.DataMigrationService;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -114,6 +118,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.XlsBulkUploadHistroyService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.DataMigrationCommonUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -200,6 +205,15 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	
 	@Autowired
 	XlsBulkUploadHistroyService xlsBulkUploadHistroyService;
+	
+	@Autowired
+	private EmailScenarioService emailScenarioService;
+	    
+	@Autowired
+	private EmailScenerioUtil emailScenerioUtil;
+	
+	@Value("${env}")
+	 private String environment;
 	
 	int candidateIndexKey = 0;
 	List<Candidate> uploadedCandidatesList = null;
@@ -1397,6 +1411,8 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 
 		 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		 String loginUserFullName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserFullName");
+		 String orgLocationName = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationName");
 		
 		 String ac = StringUtils.removeEnd(staticPath, "/slead-static");
 		 InputStream inputStream = new FileInputStream(new File(ac + uploadEntriesDTO.getExportFilePath().replace("/dataMigration/", "/temp/")));
@@ -1476,6 +1492,8 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			importDTO.setUserId(user.getId().toString());
 			importDTO.setOrgLocationId(String.valueOf(orgLocationId));
 			importDTO.setEmail(user.getEmail());
+			importDTO.setUserName(loginUserFullName);
+			importDTO.setOrgName(orgLocationName);
 			importDTO.setQueueDocumentsList(doucumentQueueIdsList);
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 		    LocalDateTime now = LocalDateTime.now();  
@@ -1598,6 +1616,45 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			e.printStackTrace();
 		}
     }
+
+	@Override
+	public void bulkUploadEmails(String couchbaseQueueKey, String uploadedSize, String type, HttpServletRequest request)
+			throws Exception {
+		org.json.simple.JSONObject queueDetails =  userStatsCacheHelper.getUploadedQueueUserDetails(couchbaseQueueKey);
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 if (environment.equalsIgnoreCase("prod")) {
+			 EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(queueDetails.get("userName").toString());
+			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+			 String[] toEmails = {"support@sourcelead.com","info@sourcelead.com"};
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 for(String toEmail : toEmails) {
+				 if(toEmail.equalsIgnoreCase("info@sourcelead.com")) {
+					 globalVarsMap.put("userName",queueDetails.get("userName").toString());
+					 emailMessage.setFromEmail(toEmail);
+					 emailMessage.setToEmail("support@sourcelead.com");
+					 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.CANDIDATE_BULK_IMPORT_EMAIL,new ArrayList<EmailAttachment>());
+				 }else if(toEmail.equalsIgnoreCase("support@sourcelead.com")){
+					 Double mb = (double)Double.parseDouble(uploadedSize)/(1024*1024);
+					 emailMessage.setFromEmail("support@sourcelead.com");
+					 emailMessage.setToEmail(queueDetails.get("email").toString());
+					 globalVarsMap.put("userName",queueDetails.get("userName").toString());
+					 globalVarsMap.put("orgName",queueDetails.get("orgName").toString());
+					 globalVarsMap.put("fileSize",String.format("%.2f", mb));
+					 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.CANDIDATE_BULK_IMPORT_SUPPORT_EMAIL,new ArrayList<EmailAttachment>());
+				 }
+			 }
+		 }else {
+			 EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(queueDetails.get("userName").toString());
+			 emailMessage.setFromEmail("qa@sourcelead.com");
+			 emailMessage.setToEmail(queueDetails.get("email").toString());
+			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("userName",queueDetails.get("userName").toString());
+			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.CANDIDATE_BULK_IMPORT_EMAIL,new ArrayList<EmailAttachment>());
+		 }
+	}
 }
 
 
