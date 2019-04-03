@@ -1461,6 +1461,5 @@ public class Constants {
 	public static final String EMPLOYEE_ON_LEAVE = "EmployeeOnLeave";
 	public static final String APPROVE_PENDING_LEAVES="approvePendingLeaves";
 
-	public static final String[] DATA_MIGRATION_ASSOCIATE_INFO_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","UAN Number","PF Number","ESI Number"};						
 	
 }
