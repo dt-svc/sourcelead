@@ -63,6 +63,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${atsUrl}")
+	private String atsUrl;
+	
 	@Autowired
 	RolesService rolesService;
 	
@@ -103,6 +106,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		ModelAndView model = new ModelAndView();
 		model.setViewName("users/usersList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("atsUrl", atsUrl);
 		if(searchResult !=null && searchValue !=null){
 			model.addObject("searchResult", searchResult);
 			model.addObject("searchValue", searchValue);

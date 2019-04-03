@@ -83,10 +83,10 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 				<div class="action-pop">
 					<span> 
 			           <sec:authorize access="hasRole('ROLE_CREATE_ON_BOARD_USER')">
-				          <a href="<c:url value='/candidateOnBoardCreation'/>" title="Create onboard">Create onboard</a> 
+				          <a href="${SourceLeadWeb_atsUrl}/candidateOnBoardCreation" title="Create onboard">Create onboard</a> 
 			          	</sec:authorize>
 			          	<sec:authorize access="hasRole('ROLE_CREATE_OFF_BOARD_USER')">
-				          <a href="<c:url value='/candidateOffBoardCreation'/>" title="Create offboard">Create offboard</a>
+				          <a href="${SourceLeadWeb_atsUrl}/candidateOffBoardCreation" title="Create offboard">Create offboard</a>
 			          	</sec:authorize>					
 					</span>
 				</div>
