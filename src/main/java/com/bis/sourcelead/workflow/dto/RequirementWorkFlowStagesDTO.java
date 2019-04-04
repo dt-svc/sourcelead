@@ -16,7 +16,7 @@ public class RequirementWorkFlowStagesDTO {
 	
 	private String uuid;
 	
-	private Long requirementQuestionnaireId;
+	private Long requirementQuestionnaireTemplateId;
 	
 	private Integer status;
 	
@@ -68,12 +68,12 @@ public class RequirementWorkFlowStagesDTO {
 		this.uuid = uuid;
 	}
 
-	public Long getRequirementQuestionnaireId() {
-		return requirementQuestionnaireId;
+	public Long getRequirementQuestionnaireTemplateId() {
+		return requirementQuestionnaireTemplateId;
 	}
 
-	public void setRequirementQuestionnaireId(Long requirementQuestionnaireId) {
-		this.requirementQuestionnaireId = requirementQuestionnaireId;
+	public void setRequirementQuestionnaireTemplateId(Long requirementQuestionnaireTemplateId) {
+		this.requirementQuestionnaireTemplateId = requirementQuestionnaireTemplateId;
 	}
 
 	public Integer getStatus() {
