@@ -22,9 +22,8 @@ public class Breaks {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="CLOCK_INOUT_ID", nullable=false )   
-	private ClockInOut clockInOutId;
+	@Column(name = "CLOCK_INOUT_ID")
+	private Long clockInOutId;
 	
 	@Column(name = "BREAK_DATE")
 	private Date breakDate;
@@ -34,6 +33,9 @@ public class Breaks {
 	
 	@Column(name = "BREAK_END_TIME")
 	private Time breakEndTime;
+	
+	@Column(name = "TOTAL_BREAK_TIME")
+	private Time totalBreakTime;
 	
 	@Column(name = "COMMENTS",columnDefinition = "TEXT default NULL")
 	private String comments;
@@ -58,11 +60,11 @@ public class Breaks {
 		this.id = id;
 	}
 
-	public ClockInOut getClockInOutId() {
+	public Long getClockInOutId() {
 		return clockInOutId;
 	}
 
-	public void setClockInOutId(ClockInOut clockInOutId) {
+	public void setClockInOutId(Long clockInOutId) {
 		this.clockInOutId = clockInOutId;
 	}
 
@@ -128,6 +130,14 @@ public class Breaks {
 
 	public void setUpdatedBy(Long updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public Time getTotalBreakTime() {
+		return totalBreakTime;
+	}
+
+	public void setTotalBreakTime(Time totalBreakTime) {
+		this.totalBreakTime = totalBreakTime;
 	}
 	
 	

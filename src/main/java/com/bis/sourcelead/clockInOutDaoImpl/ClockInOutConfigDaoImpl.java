@@ -14,13 +14,16 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.clockInOutDTO.ClockInOutUserTimeEntryDTO;
 import com.bis.sourcelead.clockInOutDao.ClockInOutConfigDao;
+import com.bis.sourcelead.clockInOutEntity.Breaks;
 import com.bis.sourcelead.clockInOutEntity.ClockInOut;
 import com.bis.sourcelead.clockInOutEntity.ClockInOutConfig;
 import com.bis.sourcelead.constants.Constants;
@@ -34,6 +37,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
+import com.bis.sourcelead.payroll.dto.IntiateUSPayrollDTO;
 import com.bis.sourcelead.service.OrgLocationService;
 
 @SuppressWarnings("unchecked")
@@ -96,7 +100,7 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 
 	@Override
 	@Transactional
-	public void saveClockInOutTime(ClockInOut clockInOut) {
+	public ClockInOut saveClockInOutTime(ClockInOut clockInOut) {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		
@@ -107,6 +111,7 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 		} catch (Exception exception) {
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}
+		return clockInOut;
 	}
 	
 	@Override
@@ -528,6 +533,93 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 		}else {
 			return null;
 		}
+	}
+
+	@Override
+	@Transactional
+	public Breaks saveBreakTime(Breaks breaks) {
+	Session session = this.sessionFactory.getCurrentSession();
+		
+		try {
+			if (breaks != null) {
+				session.saveOrUpdate(breaks);
+			}
+		} catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		}
+		return breaks;
+	}
+
+	@Override
+	@Transactional
+	public Breaks getBreakById(Long breakId) {
+		List<Breaks> breaksList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			breaksList = session.createQuery("from Breaks brk where brk.id = :breakId")
+			.setLong("breakId", breakId).list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(breaksList != null && breaksList.size() > 0) {
+			return breaksList.get(0);
+		}else {
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional
+	public Breaks getExistedBreakTime(Long clockInOutId) {
+		List<Breaks> breaksList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			breaksList = session.createQuery("from Breaks brk where brk.clockInOutId = :clockInOutId and brk.breakEndTime is NULL")
+			.setLong("clockInOutId", clockInOutId).list();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(breaksList != null && breaksList.size() > 0) {
+			return breaksList.get(0);
+		}else {
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional
+	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(Long orgLocationId, Long userId) {
+		
+		ResponseList<ClockInOutUserTimeEntryDTO> resList = new ResponseList<>();
+		List<ClockInOutUserTimeEntryDTO> clockInOutList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append("SELECT clk.CLOCK_IN_TIME as clockInTime, ") 
+			  .append("clk.CLOCK_OUT_TIME as clockOutTime, ")
+			  .append("clk.CLOCK_IN_DATE as clockInDate, ")
+			  .append("clk.CLOCK_OUT_DATE as clockOutDate, ")
+			  .append("clk.TOTAL_CLOCK_TIME as totalTime, ")
+			  .append("task.TASK_NAME as projectTaskName, ")
+			  .append("clk.COMMENTS as comments ")
+			  .append("FROM CLOCK_INOUT clk ")
+			  .append("LEFT JOIN PROJECT_TASKS task ON clk.PROJECTS_TASK_ID = task.ID ")
+			  .append("where clk.USER_ID = :userId ")
+			  .append("AND clk.ORG_LOCATION_ID = :orgLocationId ");
+			Query queryObj = session.createSQLQuery(sb.toString());
+			queryObj.setLong("orgLocationId", orgLocationId);
+			queryObj.setLong("userId", userId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(ClockInOutUserTimeEntryDTO.class));
+			clockInOutList = queryObj.list();
+			resList.setData(clockInOutList);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return resList;
+		
 	}
 
 }

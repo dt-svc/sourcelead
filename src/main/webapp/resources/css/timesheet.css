@@ -1066,9 +1066,6 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .add_inter table tr td.one {
     width:150px;
     }  
-.add_inter .positionRelative {
-    display:inline-block; width:90px;
-    }
 .add_inter .chosen-container {
     width:220px !important;
     }
@@ -8544,6 +8541,9 @@ bottom: auto !important; top: 55px !important;
     position: absolute; top:-10px; right:-165px; width: 170px; opacity:0; visibility:hidden; 
     background-color: #fff; box-shadow: 0px 0px 6px rgba(0,0,0,0.2);
 }
+.immSubMenu a {
+    padding: 9px 12px; display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
 .immSub:hover .immSubMenu {opacity:1; visibility:visible;}
 .pad20 { padding: 20px;}
 
@@ -8656,9 +8656,8 @@ bottom: auto !important; top: 55px !important;
     padding: 15px 10px 10px;
 }
 .clheadtime {
-    position: absolute; left: 2px; top: 18px; font-size: 15px; font-weight: 500; color: #666;
+    position: absolute; left: -30px; top: 18px; font-size: 15px; font-weight: 500; color: #666;
 }
-
 .clockListWrap { 
     background-color: #fff; padding: 0px 0px; box-shadow: 0px 2px 4px rgba(0,0,0,0.1); border-radius: 3px;
 }
@@ -8666,8 +8665,8 @@ bottom: auto !important; top: 55px !important;
     padding: 8px 0px 0px 0px;
 }
 .cllistInn ul li {
-    float: left; list-style-type: none; padding: 9px 15px; text-align: center; width: 14%;
-    overflow: hidden; white-space: nowrap; 
+    float: left; list-style-type: none; padding: 9px 15px; text-align: center; width: 14%; overflow: hidden; white-space: nowrap;
+    text-overflow: ellipsis;
 }
 .cllistInn ul li:first-child + li { width: 10%;}
 .cllistInn ul li:first-child + li + li { width: 16%;}
@@ -8695,9 +8694,9 @@ bottom: auto !important; top: 55px !important;
     background-color: #f5f5f5; border-top: 1px solid #ededed;
 }
 .clDate { float: left; padding: 8px 0px 0px 10px;}
-.cl1, .cl2 {background: #fff; padding: 30px 25px;}
-.cl1 div { width: 60%; height: 320px;}
-.cl2 div { width: 100%; height: 320px;}
+.repclo {background: #fff; padding: 30px 25px;}
+.timRep { width: 60%; height: 320px;}
+.timRep { width: 100%; height: 320px;}
 .clDate i {
     float: left; background-color: #ededed; width: 30px; height: 30px; text-align: center; line-height: 30px;
     color: #787878; border-radius: 3px; cursor: pointer;
@@ -8705,13 +8704,69 @@ bottom: auto !important; top: 55px !important;
 .clDate i:hover { background-color: #dedede;}
 .clDate p { float: left; line-height: 30px; margin: 0px 0px; padding: 0px 10px; font-size: 15px; font-weight: 500; color: #454545;}
 .timeEnt {
-    display: inline-block; background-color: #0079bf; padding: 9px 20px; margin: 15px 5px 0px 5px; color: #fff;
-     border-radius: 3px;
+    display: inline-block; background-color: #0079bf; padding: 9px 20px; margin: 15px 5px 0px 5px; color: #fff; border-radius: 3px;
 }
 .timeEnt:hover {color: #fff;}
 .timeEntCan { background-color: #ccc; color: #454545;}
 .timeEntCan:hover {color: #333;}
 
+.ticketCommentCont { padding: 15px;}
+.ticketCommentCont textarea{ border: 1px solid #CECECE; resize: none; width: 100%; height: 200px;}
 
-.clPop { padding: 0px 0px 0px 35px;}
+.clPop { padding: 0px 0px 0px 53px;}
 .clPop:hover { background-color: #fff !important;}
+.popupHead b { font-size: 18px; font-weight: 500; display: inline-block; padding: 0px 0px 0px 5px; color: #2a69c1;}
+
+.timeRepList {
+    padding: 8px 5px 8px 15px; margin: 0px 0px;
+}
+.timeRepList a {
+    padding: 6px 12px; display: inline-block; background-color: #f5f5f5; border: 1px solid #ccc; color: #666; border-radius: 2px;
+    margin: 0px 3px 0px 0px;
+}
+.timeRepList a.act {
+    background-color: #0079bf; color: #fff; border: 1px solid #0079bf;
+}
+.timeRepList a i { display: inline-block;}
+
+.CliFoot {
+    background-color: #fff; margin: 0px 0px 3px; padding: 0px 0px; border-radius: 3px; box-shadow: 0px 1px 3px rgba(0,0,0,0.1);
+    padding: 8px 15px; 
+}
+.CliFoot p {  padding: 8px 0px 0px 0px; margin: 0px 0px; font-size: 14px; color: #666;}
+.CliFoot ul { padding: 0px 0px; margin: 0px 0px;}
+
+.cllist table {
+    padding: 0px 0px; margin: 4px 0px 0px 0px; width: 100%;
+}
+.cllist thead tr{
+    background-color: #6C7686 !important; font-weight: 500; color: #FFF; padding: 0px; font-size: 14px;
+    margin: 0px 0px 0px; padding: 9px 15px;
+}
+.cllist thead th {
+    padding: 9px 15px; text-align: center; 
+}
+.cllist tbody tr {
+    background-color: #fff; margin: 0px 0px 3px; padding: 0px 0px; border-radius: 3px; box-shadow: 0px 1px 3px rgba(0,0,0,0.1);
+    border-bottom: 3px solid #ededed;
+}
+.cllist tbody td {
+    padding: 5px 15px; text-align: center; height: 46px;
+}
+.subTab { background-color: #f1f1f1 !important; display: none;}
+
+
+.clockTable { background-color: #fff; padding: 0px 0px; box-shadow: 0px 2px 4px rgba(0,0,0,0.1); border-radius: 3px; min-height: 300px;}
+.clockTable { width:100%;}  
+.clockTable table {
+    width:100%; font-size:14px; font-weight:400; border-bottom:1px solid #CCC; border:none;}
+       
+.clockTable table tr th {
+    background-color:#6C7686 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 15px; height:40px;
+    border-right:1px solid #989898 !important; -moz-border-right:1px solid #989898; font-size: 13px;}  
+.clockTable table tr td {
+    color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; height:42px; font-weight:400;}
+
+
+
+

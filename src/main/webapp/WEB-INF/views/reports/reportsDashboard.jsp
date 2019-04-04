@@ -257,6 +257,10 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					<sec:authorize access="hasRole('ROLE_ASSOCIATE_JOINED_REPORT')">
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/associateJoineReports'>Associate Joined Report</a></li>
 				</sec:authorize>  
+				
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/associateClockInSummaryReport'>Associate Clock-In Summary Report</a></li>
+				
+				
 					<!--<li><a href="#">Bank Report</a></li>
 					 <li><a href="#">Performance</a></li>
 					<li><a href="#">Payrol</a></li>
@@ -580,7 +584,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					</sec:authorize>  
 					<sec:authorize access="hasRole('ROLE_ASSOCIATE_JOINED_REPORT')">
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/associateJoineReports'>Associate Joined Report</a></li>
-				</sec:authorize>             
+				</sec:authorize>    
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div> 

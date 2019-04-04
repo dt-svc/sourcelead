@@ -7,6 +7,8 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+
+
  <c:if test="${staticTime == null || staticTime == 0 }">
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
@@ -183,13 +185,98 @@ z-index: 1000000000 !important;
 .pac-container::after {
 	display:none;
 }
+
+
+
+
+
+
+.blink {
+  animation: blinkAnimation 1s infinite;
+  -webkit-animation: blinkAnimation 1s infinite;
+  -moz-animation: blinkAnimation 1s infinite;
+  -ms-animation: blinkAnimation 1s infinite;
+}
+
+
+@keyframes blinkAnimation {
+    0 {
+        opacity: 1
+    }
+
+    50% {
+        opacity: 0
+    }
+
+    100% {
+        opacity: 1
+    }
+}
+
+@-webkit-keyframes blinkAnimation {
+    0 {
+        opacity: 1
+    }
+
+    50% {
+        opacity: 0
+    }
+
+    100% {
+        opacity: 1
+    }
+}
+
+@-moz-keyframes blinkAnimation {
+    0 {
+        opacity: 1
+    }
+
+    50% {
+        opacity: 0
+    }
+
+    100% {
+        opacity: 1
+    }
+}
+
+@-o-keyframes blinkAnimation {
+    0 {
+        opacity: 1
+    }
+
+    50% {
+        opacity: 0
+    }
+
+    100% {
+        opacity: 1
+    }
+}
+
+@keyframes blinkAnimation {
+    0 {
+        opacity: 1
+    }
+
+    50% {
+        opacity: 0
+    }
+
+    100% {
+        opacity: 1
+    }
+}
+
+
 </style>
 
 
 <script type="text/javascript">
 $(document).ready(function(){
 	updateMarketplaceCartCountAndPrice();
-	getExistedClockTime();
+// 	getExistedClockTime();
 });
 </script>
 <!-- notification related include jsp -->
@@ -303,6 +390,10 @@ function preventTabkey(e){
 </script>
 
 <body>
+
+
+
+
 <c:url var="logoutUrl" value="${SourceLeadWeb_sourceleadLogoutUrl}"/>
 <form action="${logoutUrl}" method="post" id="logoutForm">
   <input type="hidden" name="userSessionId" value="${userLoginSession.id}"/>
@@ -479,7 +570,9 @@ function preventTabkey(e){
 <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
 
 		<li id="clPop" class="clPop"><a href="javascript:void(0)" title="Clock In">
-            <label class="clheadtime">04:05</label><i class="clockAni"><div class="clockAniAct"></div></i></a></li>
+            <label class="clheadtime" id="stopwatch">00:00:00</label><i class="clockAni"><div class="clockAniAct"></div></i></a>
+            
+            </li>
 
             <li><a id="orgPopId" href="javascript:void(0)" title="Locations"><i class="headNavIcon"></i></a>
             
@@ -1527,16 +1620,30 @@ $("#searchType").selectpicker('refresh');
   <!--  Clock In Popup   -->
   
   <div class="popupWrap popupWrap2" id="clockPop" >
-      <div class="popupHead"><span>Clock in/Out</span><i class="closePop pull-right clPopClose"></i></div>
+      <div class="popupHead"><span>Clock In</span><i class="closePop pull-right clPopClose"></i></div>
         <form id="clock_inout_form" name="clock_inout_form">
             <input type="hidden" id="clockInOutId" name="clockInOutId">
+             <input type="hidden" id="breakId" name="breakId">
           <div class="clockWrap">
             <div class="clockIn clearfix">
-              <div class="clockTime pull-left"><p>Clock In</p> <b>04 : 40</b></div>
-              <div class="pull-right">
-                <a href="javascript:void(0)"><img src="/resources/images/break.png">Break</a>
-                <a class="ClockOut" href="javascript:void(0)"><img src="/resources/images/clock.png">Clock Out</a>
-              </div>
+              <div class="clockTime pull-left"><p>Clock In</p> <b id="stopwatchPop">00:00:00</b></div>
+              
+             <div class="pull-right">
+             	<a id="start" onclick="obj.event('start');" class="CloIn" href="javascript:void(0)"><img src="/resources/images/clock.png">Start</a>
+             	<a id="pause" onclick="obj.event('pause');" class="braIn" href="javascript:void(0)"><img src="/resources/images/break.png">Start Break</a>
+                <a id="play" onclick="obj.event('play');" class="braOut" href="javascript:void(0)"><img src="/resources/images/break.png">End Break</a>
+                <a id="reset" onclick="obj.event('reset');" class="CloOut" href="javascript:void(0)"><img src="/resources/images/clock.png">Clock Out</a>
+              </div> 
+              
+<div class="clearfix"></div>              
+<!--<div>
+  <input type="button" id="start" value="Start" onclick="obj.event('start');"/>
+  <input type="button" id="pause" value="Start Break" onclick="obj.event('pause');"/>
+   <input type="button" id="play" value="End Break" onclick="obj.event('play');"/>-->
+<!--     <input type="button" id="stop" value="Stop" onclick="obj.event('stop')"/>  -->
+ <!--  <input type="button" id="reset" value="Clock Out" onclick="obj.event('reset');"/>
+</div>  -->            
+              
             </div>
             <div class="subClock clearfix">
               <div class="subClockCta">
@@ -1558,42 +1665,42 @@ $("#searchType").selectpicker('refresh');
             </div>
             <div class="clockinn">
                 <div class="clearfix mb" id="jobDIV">
-                    <label class="noPad">Jobs <b class="valStar">*</b></label>
+                    <label class="noPad">Jobs</label>
                     <div class="clearfix addicon">
-                        <select class="form-control chosen-select" id="jobDropDownDiv" name="jobs">
+                        <select class="form-control chosen-select" id="jobDropDownDiv" name="jobs" onchange="updateClockInOutTime();">
                         </select>
                       </div>
                 </div> 
                 <div  id="projectTaskDIV">
                 <div class="clearfix mb">
-                    <label class="noPad">Project<b class="valStar">*</b></label>
+                    <label class="noPad">Project</label>
                     <div class="clearfix addicon">
-                        <select class="form-control chosen-select" id="projectDropDownDiv" name="projects" onchange="getProjectTasksByProject();">
+                        <select class="form-control chosen-select" id="projectDropDownDiv" name="projects" onchange="getProjectTasksByProject();updateClockInOutTime();">
                         </select>
                       </div>
                 </div>   
                  <div class="clearfix mb">
-                    <label class="noPad">Project Tasks <b class="valStar">*</b></label>
+                    <label class="noPad">Project Tasks</label>
                     <div class="clearfix addicon">
-                        <select class="form-control chosen-select" id="projectTaskDropDownDiv" name="projectTasks">
+                        <select class="form-control chosen-select" id="projectTaskDropDownDiv" name="projectTasks" onchange="updateClockInOutTime();">
                         </select>
                       </div>
                 </div>     
                 </div>          
                 <div class="clearfix mb" id="generalTaskDIV">
-                    <label class="noPad">General Tasks <b class="valStar">*</b></label>
+                    <label class="noPad">General Tasks</label>
                     <div class="clearfix addicon">
-                        <select class="form-control chosen-select" id="generalTaskDropDownDiv" name="generalTasks">
+                        <select class="form-control chosen-select" id="generalTaskDropDownDiv" name="generalTasks" onchange="updateClockInOutTime();">
                         </select>
                       </div>
                 </div> 
                 <div class="clearfix" id="commentsDIV">
-                    <label class="noPad">Comments <b class="valStar">*</b></label>
+                    <label class="noPad">Comments</label>
                     <div class="clearfix addicon">
-                        <textarea rows="3" class="form-control" name="comments"></textarea>
+                        <textarea rows="3" class="form-control" name="comments" onblur="updateClockInOutTime();"></textarea>
                     </div>
                 </div> 
-                <div><a class="timeEnt">Time Entry</a></div>              
+                <div><a class="timeEnt" href="${SourceLeadWeb_sourceleadUrl}/employeeInOutTime">Time Entry</a></div>              
             </div>
           </div>
         
@@ -1939,7 +2046,6 @@ $(".clockAni").click(function(){
 $("#clPop").click(function() {
 	getClockInOutConfiguration();
 	$(".mask, #clockPop").fadeIn();
-	saveClockInOutTime();
 });
 $(".clPopClose").click(function() {
 	$(".mask, .popupWrap2").fadeOut();
@@ -1954,6 +2060,7 @@ function getClockInOutConfiguration(){
 	        type: 'GET',
 	        success: function (json) {
 	        	if(json != null){
+	        		getExistedClockTime();
 	        		 if(!json.isJobChecked){
 	        			$("#jobDIV").hide();
 	        		 }else{
@@ -1985,7 +2092,7 @@ function getClockInOutConfiguration(){
 </script>
 
 <script>
-function getAssignedJobTasks(){
+function getAssignedJobTasks(obj){
 	$.ajax({
 		 	url: sourceleadUrl + "/getAssignedJobs",
 	        type: 'GET',
@@ -1996,12 +2103,15 @@ function getAssignedJobTasks(){
 					for (var i=0; i<json.data.length; i++)
 					{
 					var opt = json.data[i];
-					/* if(orgRelationId == opt.id){
-						var selected = 'selected'; */
+					if(obj != null && obj != '' && obj != 'undefined'){
+						 if(obj.jobsTaskId == opt.id){
+								output = output + "<option value='" +opt.id+ "' selected>"+opt.jobTitle+"</option>";
+							 }else{
+								output = output + "<option value='" +opt.id+ "'>"+opt.jobTitle+"</option>";
+							}
+					}else{
 						output = output + "<option value='" +opt.id+ "'>"+opt.jobTitle+"</option>";
-					/* }else{
-						output = output + "<option value='" +opt.id+ "' data-Invoice = '"+opt.generateInvoice+"' data-responder_location_id=" + opt.responderId + ">"+opt.orgName+"</option>";
-					} */
+					}
 					}
 				}
 			$("#jobDropDownDiv").empty();
@@ -2013,7 +2123,7 @@ function getAssignedJobTasks(){
 </script>
 
 <script>
-function getAssignedProjects(){
+function getAssignedProjects(obj){
 	$.ajax({
 	 	url: sourceleadUrl + "/getProjectsByStatusAndClient",
         type: 'GET',
@@ -2024,20 +2134,30 @@ function getAssignedProjects(){
 				for (var i=0; i<json.data.length; i++)
 				{
 					var opt = json.data[i];
-					output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
+					if(obj != null && obj != '' && obj != 'undefined'){
+						if(obj.projectId == opt.id){
+							output = output + "<option value='" +opt.id+ "' selected>"+opt.projectName+"</option>";
+					}else{
+							output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
+					}
+					}else{
+							output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
+					}
 				}
 			}
+			
 		$("#projectDropDownDiv").empty();
 		$("#projectDropDownDiv").append(output);
 		$('#projectDropDownDiv').trigger("chosen:updated"); 
         	}
         });
+	getProjectTasksByProject(obj);
 }
 </script>
 
 
 <script>
-function getProjectTasksByProject(){
+function getProjectTasksByProject(obj){
 	
 	var projectId = $("#projectDropDownDiv").val();
 	$.ajax({
@@ -2050,7 +2170,16 @@ function getProjectTasksByProject(){
 				for (var i=0; i<json.length; i++)
 				{
 					var opt = json[i];
-					output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+					if(obj != null && obj != '' && obj != 'undefined'){
+						if(obj.projectsTaskId == opt.id){
+							output = output + "<option value='" +opt.id+ "' selected>"+opt.taskName+"</option>";
+						}else{
+							output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+					}
+					}else{
+						output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+					}
+				
 				}
 			}
 		$("#projectTaskDropDownDiv").empty();
@@ -2062,7 +2191,7 @@ function getProjectTasksByProject(){
 </script>
 
 <script>
-function getGeneralTasks(){
+function getGeneralTasks(data){
 	
 	$.ajax({
 	 	url: sourceleadUrl + "/getGeneralTasks",
@@ -2074,7 +2203,16 @@ function getGeneralTasks(){
 				for (var i=0; i<json.length; i++)
 				{
 					var opt = json[i];
-					output = output + "<option value='" +opt.id+ "'>"+opt.subject+"</option>";
+					if(obj != null && obj != '' && obj != 'undefined'){
+						if(obj.generalTaskId == opt.id){
+							output = output + "<option value='" +opt.id+ "' selected>"+opt.subject+"</option>";
+						}else{
+							output = output + "<option value='" +opt.id+ "'>"+opt.subject+"</option>";
+					}
+					}else{
+						output = output + "<option value='" +opt.id+ "'>"+opt.subject+"</option>";
+					}
+				
 				}
 			}
 		$("#generalTaskDropDownDiv").empty();
@@ -2086,14 +2224,23 @@ function getGeneralTasks(){
 </script>
 
 <script>
-function saveClockInOutTime(){
+function saveClockInOutTime(type,totalTime){
 	var formData = getFormData("clock_inout_form");
 	 $.ajax({
 		 type : "POST",
 		 data : formData,
-// 	       url: sourceleadUrl+"/saveClockInOutTime",        
-	       success :function() {
+	       url: sourceleadUrl+"/saveClockInOutTime?&type="+type+"&totalTime="+totalTime,        
+	       success :function(data) {
 	    	   
+	    	   if(type == 'ClockIn'){
+	    		   $("#clockInOutId").val(data.id);
+	    		   $('#reset,#pause').attr("disabled",false);
+	    	       $('#start,#play').attr("disabled",true);
+	    	   }else{
+	    		   $("#clockInOutId").val('');
+	    		   $('#reset,#play,#pause').attr("disabled",true);
+	    		   $('#start').attr("disabled",false);
+	    	   }
 	       },						     
 	}); 
 	
@@ -2104,9 +2251,186 @@ function saveClockInOutTime(){
 function getExistedClockTime(){
 	 $.ajax({
 		 type : "GET",
-// 	       url: sourceleadUrl+"/getExistedClockTime",        
-	       success :function() {
-	    	   
+	       url: sourceleadUrl+"/getExistedClockTime",        
+	       success :function(data) {
+	    	   if(data != null && data != '' && data != 'undefined'){
+	    		   $("#clockInOutId").val(data.id);
+		    	   getAssignedJobTasks(data);
+		    	   getAssignedProjects(data);
+		    	   getGeneralTasks(data);
+		    	   $('#start').attr("disabled",true);
+		    	   $('#reset,#play, #pause').attr("disabled",false);
+		    	   
+		    	   getExistedBreakTime(data.id);
+	    	   }else{
+	    		   $('#reset,#play, #pause').attr("disabled",true);
+	    		   $('#start').attr("disabled",false);
+	    	   }
+	    	  
+	       },						     
+	}); 
+}
+</script>
+
+
+<script>
+function getExistedBreakTime(clockInOutId){
+	 $.ajax({
+		 type : "GET",
+	       url: sourceleadUrl+"/getExistedBreakTime?&clockInOutId="+clockInOutId,        
+	       success :function(data) {
+	    	   $("#breakId").val(data.id);
+	    	   $('#start,#pause').attr("disabled",true);
+	    	   $('#reset,#play').attr("disabled",false);
+	       },						     
+	}); 
+}
+</script>
+
+
+<script type="text/javascript">
+    obj = {
+  element : '',
+  currentSec: 0,
+  refreshInterval:0,
+  init: function () {
+// 	  $('#reset,#play, #pause').attr("disabled",true);
+	  
+    obj.element = $('#stopwatch, #stopwatchPop');
+//     localStorage.setItem('stopwatch_sec', 0);
+
+    var currTime = new Date().getTime() / 1000;
+    currTime = parseInt(currTime);
+    var storedTime = localStorage.getItem('stopwatch_time');
+    var sleepedSec = storedTime==null ? 0 : currTime - parseInt(storedTime);
+    obj.currentSec = localStorage.getItem('stopwatch_sec');
+    obj.currentSec = obj.currentSec ? parseInt(obj.currentSec) + sleepedSec : 0;
+    var pauseValue = localStorage.getItem('pauseValue');
+    if(obj.currentSec && pauseValue != 'pause') {
+       obj.refresh();
+       $('#reset').attr("disabled",true);
+    }
+    
+    if(pauseValue == 'pause') {
+    	var pauseData = localStorage.getItem('pauseData');
+    	 obj.element.addClass('blink');
+    	 obj.refresh(pauseValue,pauseData);
+    }
+    
+  },
+    event: function (type) {
+      switch(type) {
+        case 'start':
+          obj.element.removeAttr('class');
+          obj.currentSec = 0;
+          obj.refresh();
+          localStorage.setItem('pauseValue', null);
+          localStorage.setItem('pauseData', null);
+          saveClockInOutTime('ClockIn');
+        break;
+        case 'play':
+            obj.element.removeAttr('class');
+            localStorage.setItem('pauseValue', null);
+            localStorage.setItem('pauseData', null);
+            
+            var pauseTime = localStorage.getItem('total_Time');
+            var stringArray = pauseTime.split(":");
+            obj.currentSec = stringArray[2];            
+            obj.refresh('play');
+            saveBreakTime('play');
+          break;
+        case 'pause':
+          obj.element.addClass('blink');
+          localStorage.setItem('pauseValue', 'pause');
+          var totalTime = localStorage.getItem('total_Time');
+          localStorage.setItem('pauseData', totalTime);
+          clearTimeout(obj.refreshInterval);
+          saveBreakTime('pause');
+        break;
+        case 'reset':
+        	clearTimeout(obj.refreshInterval);
+        	var totalTime = localStorage.getItem('total_Time');
+          localStorage.setItem('stopwatch_time', null);
+          localStorage.setItem('stopwatch_sec', 0);
+          obj.currentSec = 0;
+          obj.element.html('00:00:00');
+          localStorage.setItem('pauseValue', null);
+          localStorage.setItem('pauseData', null);
+          localStorage.setItem('playValue', null);
+          
+//           $('div > input').attr("disabled",false);
+          saveClockInOutTime('ClockOut',totalTime);
+        break;
+       
+      }
+  },
+    refresh: function(pauseValue,pauseData) {
+    	
+      var sec = '';
+      sec = obj.currentSec++;
+      var hour = parseInt(sec/3600);
+      sec = sec % 3600;
+      var min = parseInt(sec/60);
+      sec = sec % 60;
+
+      
+      if(pauseValue == 'pause'){
+          obj.element.html(pauseData);
+          localStorage.setItem('total_Time',pauseData);
+      }else{
+    	  localStorage.setItem('stopwatch_sec', obj.currentSec);
+          obj.element.html((hour > 9 ? hour : '0' + hour) + ':' + (min > 9 ? min : '0' + min) + ':' + (sec > 9 ? sec : '0' + sec));
+          localStorage.setItem('total_Time',(hour > 9 ? hour : '0' + hour) + ':' + (min > 9 ? min : '0' + min) + ':' + (sec > 9 ? sec : '0' + sec));
+          var currTime = new Date().getTime() / 1000;
+          currTime = parseInt(currTime);
+          localStorage.setItem('stopwatch_time', currTime);
+
+          obj.refreshInterval = setTimeout('obj.refresh()', 1000);
+      }
+      
+    }
+}
+
+
+$('document').ready(function () {
+  obj.init();
+});
+
+
+</script>
+
+<script>
+
+function updateClockInOutTime(){
+	var formData = getFormData("clock_inout_form");
+	 $.ajax({
+		 type : "POST",
+		 data : formData,
+	       url: sourceleadUrl+"/updateClockInOutTime",        
+	       success :function(data) {
+// 	    	   $("#clockInOutId").val(data.id);
+	       },						     
+	}); 
+}
+</script>
+
+<script>
+function saveBreakTime(type){
+	var formData = getFormData("clock_inout_form");
+	 $.ajax({
+		 type : "POST",
+		 data : formData,
+	       url: sourceleadUrl+"/saveBreakTime?&type="+type,        
+	       success :function(data) {
+	    	   if(type == 'pause'){
+	    		   $("#breakId").val(data.id);
+	    		   $('#start,#pause').attr("disabled",true);
+	    		   $('#reset,#play').attr("disabled",false);
+	    	   }else{
+	    		   $("#breakId").val('');
+	    		   $('#start,#play').attr("disabled",true);
+	    		   $('#reset,#pause').attr("disabled",false);
+	    	   }
 	       },						     
 	}); 
 }

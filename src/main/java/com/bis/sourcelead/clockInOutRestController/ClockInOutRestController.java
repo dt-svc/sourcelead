@@ -1,6 +1,7 @@
 package com.bis.sourcelead.clockInOutRestController;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,6 +15,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.clockInOutDTO.ClockInOutConfigDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutDTO;
+import com.bis.sourcelead.clockInOutDTO.ClockInOutUserTimeEntryDTO;
+import com.bis.sourcelead.clockInOutEntity.Breaks;
 import com.bis.sourcelead.clockInOutEntity.ClockInOut;
 import com.bis.sourcelead.clockInOutEntity.ClockInOutConfig;
 import com.bis.sourcelead.clockInOutService.ClockInOutConfigService;
@@ -51,7 +54,7 @@ public class ClockInOutRestController {
 	}
 	
 	
-	@RequestMapping(value = "/saveClockInOutConfigure")
+	@RequestMapping(value = {"/saveClockInOutConfigure","/rest/saveClockInOutConfigure"},method = RequestMethod.POST)
 	public ClockInOutConfig saveClockInOutConfigure(ClockInOutConfigDTO clockInOutConfigDTO,HttpServletRequest request) {
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -61,7 +64,7 @@ public class ClockInOutRestController {
 		
 	}
 	
-	@RequestMapping(value = "/getClockInOutConfigData")
+	@RequestMapping(value = {"/getClockInOutConfigData","/rest/getClockInOutConfigData"})
 	public ClockInOutConfig getClockInOutConfigData(HttpServletRequest request) {
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -70,12 +73,12 @@ public class ClockInOutRestController {
 	}
 	
 
-	@RequestMapping(value = "/saveClockInOutTime")
-	public void saveClockInOutTime(ClockInOutDTO clockInOutDTO,HttpServletRequest request) {
+	@RequestMapping(value = {"/saveClockInOutTime","/rest/saveClockInOutTime"},method = RequestMethod.POST)
+	public ClockInOut saveClockInOutTime(ClockInOutDTO clockInOutDTO,HttpServletRequest request) {
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		clockInOutConfigService.saveClockInOutTime(clockInOutDTO,loginOrgLocation,user);
+		return clockInOutConfigService.saveClockInOutTime(clockInOutDTO,loginOrgLocation,user);
 		
 	}
 	
@@ -91,7 +94,7 @@ public class ClockInOutRestController {
 	 * 
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getAssignedJobs",method = RequestMethod.GET)
+	@RequestMapping(value = {"/getAssignedJobs","/rest/getAssignedJobs"},method = RequestMethod.GET)
 	public ResponseList<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(@RequestParam(value = "status", required = false) String status, @RequestParam(value = "clients", required = false) String clients, @RequestParam(defaultValue = "false") boolean isWalkIn, @RequestParam(defaultValue = "-1") int walkInDay, HttpServletRequest request) throws Exception
 	{
 		ResponseList<Requirement> response = new ResponseList<>();
@@ -127,7 +130,7 @@ public class ClockInOutRestController {
 	}
 
 	
-	@RequestMapping(value = "/getProjectsByStatusAndClient")
+	@RequestMapping(value = {"/getProjectsByStatusAndClient","/rest/getProjectsByStatusAndClient"})
 	public ResponseList<Projects> getProjectsByStatusAndClient(ProjectsDTO projectsDTO,@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
 
 	    Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
@@ -143,14 +146,14 @@ public class ClockInOutRestController {
 		return projectsList;
 	}
 	
-	@RequestMapping(value = "/getProjectsTasksByProjectId")
+	@RequestMapping(value = {"/getProjectsTasksByProjectId","/rest/getProjectsTasksByProjectId"})
 	public List<ProjectTasks> getProjectsTasksByProjectId(@RequestParam(value="projectId", required=false) Long projectId,HttpServletRequest request) throws Exception {
 
 		return clockInOutConfigService.getProjectsTasksByProjectId(projectId);
 	   
 	}
 	
-	@RequestMapping(value = "/getGeneralTasks")
+	@RequestMapping(value = {"/getGeneralTasks","/rest/getGeneralTasks"})
 	public List<Tasks> getGeneralTasks(HttpServletRequest request) throws Exception {
 
 		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
@@ -159,13 +162,59 @@ public class ClockInOutRestController {
 	   
 	}
 	
-	@RequestMapping(value = "/getExistedClockTime")
+	@RequestMapping(value = {"/getExistedClockTime","/rest/getExistedClockTime"})
 	public ClockInOut getExistedClockTime(HttpServletRequest request) throws Exception {
 
 		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		return clockInOutConfigService.getExistedClockTime(orgLocationId,userId);
 	   
+	}
+	
+	@RequestMapping(value = {"/updateClockInOutTime","/rest/updateClockInOutTime"},method = RequestMethod.POST)
+	public void updateClockInOutTime(ClockInOutDTO clockInOutDTO,HttpServletRequest request) {
+		
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		clockInOutConfigService.updateClockInOutTime(clockInOutDTO,loginOrgLocation,user);
+		
+	}
+	
+	@RequestMapping(value = {"/saveBreakTime","/rest/saveBreakTime"},method = RequestMethod.POST)
+	public Breaks saveBreakTime(ClockInOutDTO clockInOutDTO,HttpServletRequest request) {
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		return clockInOutConfigService.saveBreakTime(clockInOutDTO,userId);
+		
+	}
+	
+	@RequestMapping(value = {"/getExistedBreakTime","/rest/getExistedBreakTime"})
+	public Breaks getExistedBreakTime(@RequestParam(value="clockInOutId", required=false) Long clockInOutId) {
+		return clockInOutConfigService.getExistedBreakTime(clockInOutId);
+		
+	}
+	
+	@RequestMapping(value = "/employeeInOutTime")
+	public ModelAndView timeEntry() {
+		ModelAndView model = new ModelAndView();
+		model.setViewName("clockInOut/employeeInOutTime");
+		return model;
+	}
+	
+	@RequestMapping(value = "/associateClockInSummaryReport")
+	public ModelAndView associateClockInSummaryReport() {
+		ModelAndView model = new ModelAndView();
+		model.setViewName("clockInOut/associateClockInSummaryReport");
+		return model;
+	}
+	
+	@RequestMapping(value = {"/getUserTimeEntries","/rest/getUserTimeEntries"})
+	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(HttpServletRequest request) {
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+		return clockInOutConfigService.getUserTimeEntries(orgLocationId,userId,dateFormat);
+		
 	}
 
 }
