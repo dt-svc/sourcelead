@@ -508,12 +508,12 @@ public class ReportRestController {
 				List<RecruiterJobsReportView> rjrvList = requirementSubmissionHistoryService.getSubmissionApplicantCountsForRecruiterJobreports(orgLocations.getId(), recruiterUser, searchDates, reqDTO.getId());
 				
 				double  applicantSubmittedApplicantCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantSubmissionCount().doubleValue()));
+				double  applicantRejectedCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantRejectedCount().doubleValue()));
 				double  applicantShortlistCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantShortlistedCount().doubleValue()));
 				double  applicantSubmittedCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantSubmittedClientCount().doubleValue()));
 				double  applicantInterviewCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantInterviewCount().doubleValue()));
 				double  applicantOfferCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantOfferMadeCount().doubleValue()));
 				double  applicantJoinedCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantJoinedCount().doubleValue()));
-				double  applicantRejectedCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantRejectedCount().doubleValue()));
 				double  applicantBackoutCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantBackOutCount().doubleValue()));
 
 				reqDTO.setNoOfApplicants(String.valueOf(applicantSubmittedApplicantCount));
@@ -2637,17 +2637,17 @@ public class ReportRestController {
 	}
 		 
 			
-			@RequestMapping(value = "/getProjectsList")
-			@ResponseBody
-			public ResponseList<Projects> getProjectList(@RequestParam(value="associatesId", required=false) String associatesId,HttpServletRequest request,HttpServletResponse response)throws Exception{
-				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				String[] associates = associatesId.split(",");
-				ResponseList<Projects> list = new ResponseList<Projects>();
-				List<Projects> projectsList = projectsService.getProjectsListByUserIDAndOrgId(associates,orgLocations.getId());
-				list.setData(projectsList);
-				return list;
-				
-			}
+	@RequestMapping(value = "/getProjectsList")
+	@ResponseBody
+	public ResponseList<Projects> getProjectList(@RequestParam(value="associatesId", required=false) String associatesId,HttpServletRequest request,HttpServletResponse response)throws Exception{
+	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	//String associates = associatesId.split(",");
+	ResponseList<Projects> list = new ResponseList<Projects>();
+	List<Projects> projectsList = projectsService.getProjectsListByCanddateIdAndOrgId(associatesId,orgLocations.getId());
+	list.setData(projectsList);
+	return list;
+
+	}
 			
 	@RequestMapping(value = "/prepareReport")
 	public ResponseList<AvailableAssociatesDTO> prepareReport(AvailableAssociatesDTO availableAssociatesDTO,

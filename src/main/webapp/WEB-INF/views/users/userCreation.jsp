@@ -31,7 +31,7 @@
 <script>	
 	$(document).ready(function() {
 		var location = "${location}";
-		document.getElementById("createUser_form").reset();
+		document.getElementById("").reset();
 			<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	   		  <c:if test="${sectionOrder.index == 0}">
 				  var sectionId = '${section.id}';
@@ -328,6 +328,13 @@
 		                  <label class="col-md-3">PAN Number<span class="text-danger">&nbsp;*</span></label>
 		                  <div class="col-md-9">
 		                    <input type="text" class="form-control" id="panNumber" name="panNumber" field-name="PAN Number" data-validation="required validate_Space validate_Alphanumeric fixed_length length10" value="">
+		                    </div>
+		                </div>
+		                
+		                <div class="form-group">
+		                  <label class="col-md-3">Aadhar Number<span class="text-danger">&nbsp;*</span></label>
+		                  <div class="col-md-9">
+		                    <input type="text" class="form-control" id="aadharNumber" name="aadharNumber" field-name="Aadhar Number" data-validation="required validate_int fixed_length length12" value="">
 		                    </div>
 		                </div>
 		          </c:if>

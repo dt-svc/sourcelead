@@ -2217,5 +2217,9 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 			Long projectClientsId) throws Exception {
 		return projectMembersDao.getProjectMembersByMasterCandiateIdAndProjectClientId(masterCandidateId, projectClientsId);
 	}
+	@Override
+	public List<Candidate> getAllAvailableAssociates(Long orgLocationId) {
+	return projectMembersDao.getAllAvailableAssociates( orgLocationId);
+	}
 
 }

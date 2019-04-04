@@ -315,5 +315,18 @@
 	function exportTicketManagementSheet(exportType){
 		window.location.href = sourceleadUrl+"/getTicketManagementExportListByOrgLocationId?"+tokenParamName+"="+tokenValue+"&exportType="+exportType;
 	}
+	
+	function newActions(){
+		$(".newActPop").slideToggle(200);
+		$(".action-pop").slideUp(200);
+	}
+	
+	$("html").click(function(){
+		$(".newActPop").slideUp(200);
+	});
+	
+	$(".overIcon, .newActPop").click(function(e){
+	 	e.stopPropagation();
+	});
 </script>
 <jsp:include page="../masterFooter.jsp" />	 

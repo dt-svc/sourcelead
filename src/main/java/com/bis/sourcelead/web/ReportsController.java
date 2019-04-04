@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,10 +21,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
@@ -31,6 +35,7 @@ import com.bis.sourcelead.indPayroll.utill.INDPayrollCommonUtil;
 import com.bis.sourcelead.reportsDTO.TimeToFillDTO;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RolesService;
@@ -73,7 +78,10 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	INDPayrollCommonUtil iNDPayrollCommonUtil;
 	
 	@Autowired
-	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	ProjectMembersService projectMembersService;
+	
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService; 
 	
 	@RequestMapping(value = "/recruitersReports")
 	public ModelAndView recruitersReports(HttpServletRequest request,HttpServletResponse response) throws Exception {
@@ -84,10 +92,10 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 	 String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 	 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
-		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+	Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
 
 	 
-		Collection<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+	Collection<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 
 	 ModelAndView model = new ModelAndView();
 	 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());	
@@ -98,7 +106,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	 else{
 		 teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId()); 
 	 }
-	 model.addObject("rolesList", rolesList);
+	 model.addObject("rolesList", rolesList);     
      model.addObject("teamsList", teamsList);
 	 model.addObject("userList", userList);
 	 model.addObject("requirementTabAccess", requirementTabAccess);
@@ -106,7 +114,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	 model.addObject("sourceleadUrl", sourceleadUrl);
 	 model.setViewName("reports/recruitersReports");
 	 return model;
-		
+		   
     }
 	
 	@RequestMapping(value = "/myPerformanceReports")
@@ -131,6 +139,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 			 teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId()); 
 		 }
      model.addObject("teamsList", teamsList);
+     
 	 model.addObject("userList", userList);
 	 model.addObject("requirementTabAccess", requirementTabAccess);
 	 model.addObject("sourceleadUrl", sourceleadUrl);
@@ -687,20 +696,62 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 			e.printStackTrace();
 		}
 		return model;
-	}
+		}
 	
 	
 	@RequestMapping(value = "/availableAssociatesReport")
 	public ModelAndView availableAassociatesReport(HttpServletRequest request,HttpServletResponse response) throws Exception{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ModelAndView model = new ModelAndView();
-		List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		 model.addObject("userList", userList);
-		 model.setViewName("reports/availableAssociates");
+	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	ModelAndView model = new ModelAndView();
+	List<Candidate>empList = projectMembersService.getAllAvailableAssociates(orgLocations.getId());
+	model.addObject("sourceleadUrl", sourceleadUrl);
+	model.addObject("empList", empList);
+	model.setViewName("reports/availableAssociates");
 
-		return model;
-		
+	return model;
+
 	}
-	 
+	
+	@RequestMapping(value = "/releasedJobsListByOrgRelationId")
+	public ModelAndView releasedJobsListByOrgRelationId(
+			@RequestParam(value = "orgRelationId", required = true) Long orgRelationId,
+			@RequestParam(value = "spocId", required = true) Long spocId, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("orgRelationId", orgRelationId);
+		model.addObject("spocId", spocId);
+		model.setViewName("reports/releasedToVendorJobsList");
+		return model;
+	}
+
+	@RequestMapping(value = "/releasedJobsApplicantsDeclineListByOrgRelationId")
+	public ModelAndView releasedJobsApplicantsDeclineListByOrgRelationId(
+			@RequestParam(value = "orgRelationId", required = true) Long orgRelationId,
+			@RequestParam(value = "spocId", required = true) Long spocId, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("orgRelationId", orgRelationId);
+		model.addObject("spocId", spocId);
+		model.setViewName("reports/vendorJobsApplicantsDeclineList");
+		return model;
+	}
+
+	@RequestMapping(value = "/releasedJobsApplicantsBackOutListByOrgRelationId")
+	public ModelAndView releasedJobsApplicantsBackOutListByOrgRelationId(
+			@RequestParam(value = "orgRelationId", required = true) Long orgRelationId,
+			@RequestParam(value = "spocId", required = true) Long spocId, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("orgRelationId", orgRelationId);
+		model.addObject("spocId", spocId);
+		model.setViewName("reports/vendorJobsApplicantsBackOutList");
+		return model;
+	}
+	
 }

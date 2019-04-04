@@ -345,7 +345,7 @@ function cnfToSaveAssociateSalaryInd(){
 			 url : sourceleadUrl+"/saveAssociateSalaryInd?"+tokenParamName+"="+tokenValue,
 			 success : function(result) {
 			  		if(status == "NEW" || status == "NODATA"){
-			  			location.reload();
+				  			location.replace(sourceleadUrl+ "/usersList");
 			  		}else{
 			  			$('#editAssociateBtn').css('display','block');
 				  		$('#associateSalary_form input').attr('disabled','true');

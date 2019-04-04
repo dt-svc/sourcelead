@@ -326,7 +326,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			throws Exception {
 		 Response<AddUserDTO> resObj = new Response<>();
 		 if(Validator.validate(addUserDTO) || Validator.validate(candidateDTO)){
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		User user =  (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		addUserDTO.setDateFormat(orgLocations.getDateFormat());

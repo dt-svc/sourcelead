@@ -614,6 +614,13 @@ window.onload = function () {
 						result = result + ' 		</div>';
 						result = result + '<div class="clearfix"></div>';
 					}
+					
+					if(json.aadharNumber != null && json.aadharNumber !='' && json.aadharNumber !='undefined'){
+						result = result + '			<div class="project_details_cta">';
+						result = result + '				 <strong>Aadhar Number:</strong><span class="fix">'+json.aadharNumber+'</span><div class="clearfix"></div>';
+						result = result + ' 		</div>';
+						result = result + '<div class="clearfix"></div>';
+					}
 				}
 				
 		if(json.reportingManager != null && json.reportingManager.id == '${SourceLeadWeb_userId}'){
@@ -2069,6 +2076,11 @@ $("#editRoleDetailsList").empty();
 						result = result + ' <div class="user_summary_edit_cta" >';
 						result = result + ' <label>PAN Number<span class="text-danger">&nbsp;*</span></label>';
 						result = result + ' <input type="text" value="'+json.panNumber+'"  id="panNumber" name="panNumber" field-name="PAN Number" data-validation="required validate_Space fixed_length length10"/>';
+						result = result + ' </div>';
+						
+						result = result + ' <div class="user_summary_edit_cta" >';
+						result = result + ' <label>Aadhar Number<span class="text-danger">&nbsp;*</span></label>';
+						result = result + ' <input type="text" value="'+json.aadharNumber+'"  id="aadharNumber" name="aadharNumber" field-name="Aadhar Number" data-validation="required validate_int fixed_length length12"/>';
 						result = result + ' </div>';
 					}
 					
