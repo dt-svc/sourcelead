@@ -235,18 +235,20 @@ function getReleasedJobsGraph() {
 }
 // released jobs List
 function releasedJobsToVendors() {
-	$("#releasedJobsResultDiv").show();
-	$("#vendorReportsChartDiv").hide();
-	$("#vendorReportsDiv").hide();
-	$.ajax({
-		type : "POST",
-		url : sourceleadUrl + "/releasedJobsListByOrgRelationId?orgRelationId="+orgRelationId+"&spocId="+contactUserId,
-		success :function(result) {
-       		$('#releasedJobsResultDiv').empty();
-       		$('#releasedJobsResultDiv').append(result);
-       		releasedToVendorJobsList();
-        }
-	});	
+	if($("#releasedJobsCount").html() != "" && parseInt($("#releasedJobsCount").html()) > 0) {
+		$("#releasedJobsResultDiv").show();
+		$("#vendorReportsChartDiv").hide();
+		$("#vendorReportsDiv").hide();
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl + "/releasedJobsListByOrgRelationId?orgRelationId="+orgRelationId+"&spocId="+contactUserId,
+			success :function(result) {
+	       		$('#releasedJobsResultDiv').empty();
+	       		$('#releasedJobsResultDiv').append(result);
+	       		releasedToVendorJobsList();
+	        }
+		});	
+	}
 }
 // Offer acceptance rate
 function getOfferAcceptanceRateGraph() {
@@ -551,7 +553,7 @@ function getQualityCandidatesGraph() {
 	            		"percentPrecision": 0,
 	            		"allLabels": [],
 	            		"balloon": {},
-	            		"legend": {
+	            		/*"legend": {
 	            			"enabled": true,
 	            			"align": "center",
 	            			"autoMargins": false,
@@ -561,10 +563,10 @@ function getQualityCandidatesGraph() {
 	            			"markerSize": 15,
 	            			"position": "right",
 	            			"useMarkerColorForLabels": false,
-	            			"valueText": "[[value]] [[percents]]%",
+	            			"valueText": "[[value]]  ([[percents]])%",
 	            			"valueWidth": 100
 	            		},
-	            		"titles": [],
+	            		"titles": [],*/
 	            		"dataProvider": [
 	            			{
 	            				"category": "Hired",
@@ -699,34 +701,38 @@ function getApplicantDeclineGraph() {
 
 //Applicant Decline List
 function releasedJobsToVendorsApplicantDecline() {
-	$("#releasedApplicantsDeclineDiv").show();
-	$("#vendorReportsChartDiv").hide();
-	$("#vendorReportsDiv").hide();
-	$.ajax({
-		type : "POST",
-		url : sourceleadUrl + "/releasedJobsApplicantsDeclineListByOrgRelationId?orgRelationId="+orgRelationId+"&spocId="+contactUserId,
-		success :function(result) {
-       		$('#releasedApplicantsDeclineDiv').empty();
-       		$('#releasedApplicantsDeclineDiv').append(result);
-       		vendorJobsApplicantsDeclineList();
-        }
-	});	
+	if($("#applicantsDeclineCount").html() != "" && parseInt($("#applicantsDeclineCount").html()) > 0) {
+		$("#releasedApplicantsDeclineDiv").show();
+		$("#vendorReportsChartDiv").hide();
+		$("#vendorReportsDiv").hide();
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl + "/releasedJobsApplicantsDeclineListByOrgRelationId?orgRelationId="+orgRelationId+"&spocId="+contactUserId,
+			success :function(result) {
+	       		$('#releasedApplicantsDeclineDiv').empty();
+	       		$('#releasedApplicantsDeclineDiv').append(result);
+	       		vendorJobsApplicantsDeclineList();
+	        }
+		});	
+	}
 }
 
 //Applicant Backout List
 function releasedJobsToVendorsApplicantBackOut() {
-	$("#releasedApplicantsBackOutDiv").show();
-	$("#vendorReportsChartDiv").hide();
-	$("#vendorReportsDiv").hide();
-	$.ajax({
-		type : "POST",
-		url : sourceleadUrl + "/releasedJobsApplicantsBackOutListByOrgRelationId?orgRelationId="+orgRelationId+"&spocId="+contactUserId,
-		success :function(result) {
-       		$('#releasedApplicantsBackOutDiv').empty();
-       		$('#releasedApplicantsBackOutDiv').append(result);
-       		vendorJobsApplicantsBackOutList();
-        }
-	});	
+	if($("#backoutCandidatesCount").html() != "" && parseInt($("#backoutCandidatesCount").html()) > 0) { 
+		$("#releasedApplicantsBackOutDiv").show();
+		$("#vendorReportsChartDiv").hide();
+		$("#vendorReportsDiv").hide();
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl + "/releasedJobsApplicantsBackOutListByOrgRelationId?orgRelationId="+orgRelationId+"&spocId="+contactUserId,
+			success :function(result) {
+	       		$('#releasedApplicantsBackOutDiv').empty();
+	       		$('#releasedApplicantsBackOutDiv').append(result);
+	       		vendorJobsApplicantsBackOutList();
+	        }
+		});	
+	}
 }
 
 /*Backout Candidates*/
