@@ -1516,12 +1516,18 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		
 	 XlsBulkUploadHistroy history = xlsBulkUploadHistroyService.getXlsBulkUploadHistroyByDocumentKey(documentKey);
 	 if(history != null) {
+		try {
+			
+		 history.setUploadStatus("InProgress");
+		 xlsBulkUploadHistroyService.storeXlsBulkUploadHistroy(history);
+		 
 		 ApplicationContext ctx = new AnnotationConfigApplicationContext(CouchbasePropertyPathConfiguration.class);
 	     CouchbaseConnectionConfig couchConfig = ctx.getBean(CouchbaseConnectionConfig.class);
 	     Bucket bucket = couchbaseClusterService.openBucket(couchConfig.getBulkImportsBucket(), couchConfig.getPassword());
 	     
 	     List<String> queueDocumentsList =  userStatsCacheHelper.getCouchbaseQueueDocumentsList(documentKey);
 	     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	     User uploadedUser = history.getCreatedBy();
 	     
 		 List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(history.getOrgLocationId().getId());
 	   
@@ -1541,7 +1547,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 									if(candidateDTO.getCountry() == null || candidateDTO.getCountry().isEmpty()) {
 										candidateDTO.setCountry(history.getOrgLocationId().getCountry());
 									}
-									candidateService.saveCandidateBulkImports(candidateDTO, history.getOrgLocationId(), user, vendorsList);
+									candidateService.saveCandidateBulkImports(candidateDTO, history.getOrgLocationId(), uploadedUser, vendorsList);
 									 bucket.remove(docs.toString());
 								}else {
 									BulkImportFailureCacheDTO failureCacheDTO = new BulkImportFailureCacheDTO();
@@ -1565,9 +1571,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				
 				BulkImportFailureDocumentsCacheDTO failureDocsDTO = new BulkImportFailureDocumentsCacheDTO();
 				failureDocsDTO.setDocumentType("Candidates Upload Failure");
-				failureDocsDTO.setUserId(user.getId().toString());
+				failureDocsDTO.setUserId(uploadedUser.getId().toString());
 				failureDocsDTO.setOrgLocationId(String.valueOf(history.getOrgLocationId().getId()));
-				failureDocsDTO.setEmail(user.getEmail());
+				failureDocsDTO.setEmail(uploadedUser.getEmail());
 				failureDocsDTO.setFailureList(failureList);
 				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 			    LocalDateTime now = LocalDateTime.now();  
@@ -1586,10 +1592,22 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				xlsBulkUploadHistroyService.storeXlsBulkUploadHistroy(history);
 				
 			} catch (Exception e) {
+				history.setUploadStatus("New");
+				xlsBulkUploadHistroyService.storeXlsBulkUploadHistroy(history);
 				e.printStackTrace();
 			}
-			
 		}
+	    
+	    history.setUploadStatus("Completed");
+		history.setUpdatedBy(user);
+		history.setUpdatedDate(new Date());
+		xlsBulkUploadHistroyService.storeXlsBulkUploadHistroy(history);
+	    
+	 }catch (Exception e) {
+		 history.setUploadStatus("New");
+		 xlsBulkUploadHistroyService.storeXlsBulkUploadHistroy(history);
+		 e.printStackTrace();
+	}
 	    
 	} 
 }
