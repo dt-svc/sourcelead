@@ -3670,7 +3670,7 @@ var existingValue = document.getElementById('isClientJob').value;
 		 $('#clientRate').val('');
 		 $('#clientMaxRate').val('');
 		 $("#clientCurrencyCode").val('${currencyCode}').trigger('change');
-		 $("#clientRateType").val("").trigger('change');
+		 $("#clientRateType").val("Monthly").trigger('change');
 		 $('#clientDetails').find('p.jquery_form_error_message').remove();
 		 
 		 //$('select[name=clientRateType]').val(1);

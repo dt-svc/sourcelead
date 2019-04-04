@@ -25,7 +25,7 @@
 		result = result + '   <p class="text-muted">You dont have permission to access this page.</p>';
 		result = result + '   <p class="positionRelative move-btn btn-group mt">';
 		result = result + '   <i class="fa fa-home btn btn-primary"></i>';
-		result = result + '   <a href="<c:url value='/dashboard'/>" type="button" class="btn btn-primary">Take me home<span>&nbsp;&nbsp;<i class="fa fa-angle-double-right"></i>';
+		result = result + '   <a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}" type="button" class="btn btn-primary">Take me home<span>&nbsp;&nbsp;<i class="fa fa-angle-double-right"></i>';
 		result = result + '   </span></a>';
 		result = result + '   </p>';
 		result = result + ' </div>';
@@ -1101,7 +1101,7 @@ function imageCancel(){
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
 			<div class="RePop">
 				<ul>
-					<li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
+					<li><a href="${SourceLeadWeb_atsUrl}/candidateListForReports"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				</ul>
 			</div>
 		</div>   --%> 
@@ -1436,8 +1436,8 @@ function imageCancel(){
 				<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Candidate <i class="fa fa-caret-down"></i></a>
 				<div class="action-pop">
 					<span> 
-						<a href="${SourceLeadWeb_sourceleadUrl}/candidate">Parse Resume</a>
-                        <a href="${SourceLeadWeb_sourceleadUrl}/addCandidate">Add Manual</a>
+						<a href="${SourceLeadWeb_atsUrl}/candidate">Parse Resume</a>
+                        <a href="${SourceLeadWeb_atsUrl}/addCandidate">Add Manual</a>
                         <a href="${SourceLeadWeb_sourceleadUrl}/bulk-resume-import.html">Bulk Resume Parsing</a>
                         <a href="${SourceLeadWeb_sourceleadUrl}/uploadCandidateForm">Import XLS</a>
 					</span>

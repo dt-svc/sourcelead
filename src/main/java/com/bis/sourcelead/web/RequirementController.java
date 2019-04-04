@@ -1639,26 +1639,4 @@ private Sheet createXlsSheet(HSSFWorkbook createExcelworkbook,HSSFSheet createEx
 	return createExcelsheet;	
 }
 
-@RequestMapping(value = "/jobsConfigureEmails")
-public ModelAndView reminderJobsConfigureEmails(HttpServletRequest request) throws Exception {
-    ModelAndView model = new ModelAndView();
-    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-    
-    //get job related reminders
-    List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByTabsIdAndOrgLocationId(8l , orgLocations.getId());
-    //model.addObject("emailReminderList", emailReminderList);
-    
-    for(EmailReminder emailReminder : emailReminderList) {
-        if(emailReminder.getScenarionName().equalsIgnoreCase("ApplicantJoining")) {
-            model.addObject("emailReminder", emailReminder);
-        }
-        
-    }
-    
-    model.setViewName("requirement/jobsConfigureEmails");
-    model.addObject("sourceleadUrl", sourceleadUrl);
-    return model;
-   }
-
-
 }

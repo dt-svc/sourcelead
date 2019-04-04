@@ -18,9 +18,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.context.SecurityContextRepository;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Controller;
 
+import com.bis.sourcelead.security.CustomTokenAuthenticationFilter;
 import com.bis.sourcelead.security.JWTSecurityContextRepository;
 
 /**
@@ -56,9 +56,9 @@ public class SecurityConfig  {
     	
         protected void configure(HttpSecurity http) throws Exception {
         	 http
-        	 .antMatcher("/ats/rest/**").addFilterBefore(customTokenAuthenticationFilter, BasicAuthenticationFilter.class).sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint) 
+        	 .antMatcher("/rest/**").addFilterBefore(customTokenAuthenticationFilter, BasicAuthenticationFilter.class).sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint) 
                  .and()
-                 .authorizeRequests().antMatchers("/ats/rest/**").fullyAuthenticated()
+                 .authorizeRequests().antMatchers("/rest/**").fullyAuthenticated()
                  .and().anonymous()
                   .and()
                    .securityContext()
