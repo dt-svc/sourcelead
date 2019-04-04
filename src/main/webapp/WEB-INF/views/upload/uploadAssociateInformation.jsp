@@ -188,7 +188,7 @@ function importAssociateBankDetail(){
  		    		$("#loading").removeAttr("style");
  		    	    if(json.insertedCount != null && json.insertedCount != '')
  		    	    $("#msgDiv").removeAttr("style");
- 		 			$("#msgDiv").css({ display: "block" });
+ 		    	   $("#msgDiv").css({ "display" : "block", "text-align" :"center" });
  		 			$("#msgDiv").html(json.insertedCount+ " Associates are updated");
  		 			msgFadein();
  		 			if(json.pfErrorData != null && json.pfErrorData.length >0){

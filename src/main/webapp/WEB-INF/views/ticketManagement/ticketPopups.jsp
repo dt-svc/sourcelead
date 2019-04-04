@@ -28,3 +28,12 @@
 		<input class='u_can_color' type='button' value='Cancel' onClick='closeDeletePopup()'>
 	</b>
 </div>
+
+<div id='deleteCommentPopup' class='remove_user_pop remove_user_pop_a'>
+	<p>Delete Ticket Comment?</p>
+	<div>&nbsp;&nbsp;&nbsp;</div>
+	<b>
+		<input id='confirmDeleteCommentId' type='button' value='Ok' onclick='deleteTicketComment()' class="pull-left">
+		<input class='u_can_color' type='button' value='Cancel' onClick='closeDeleteCommentPopup()'>
+	</b>
+</div>

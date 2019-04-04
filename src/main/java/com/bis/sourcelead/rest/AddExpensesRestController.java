@@ -73,7 +73,7 @@ public class AddExpensesRestController {
 	private CountriesService countriesService;
 	
 	
-	@Autowired
+   	@Autowired
 	private CommonUtil commonUtil;
 	
 	@Autowired
@@ -155,10 +155,10 @@ public class AddExpensesRestController {
 			@RequestParam(value="reason", required=false) String reason, HttpServletRequest request) throws Exception {
 			
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    OrgLocations orgLoc = (OrgLocations)SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		    User reopenedUser = userService.getUserById(reOpenedUserId);
-			if(expenseId != null && null != type && "accept".equalsIgnoreCase(type)){
+			if(expenseId != null && null != type && "accept".equalsIgnoreCase(type)){                                                                                                                                                                                       
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,type,Constants.YES);
 			    //send mail & notification logic
 			  	//submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,type,reopenedUser);
@@ -179,15 +179,8 @@ public class AddExpensesRestController {
 				expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,orgLoc,type,reopenedUser,loginUser, sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
 
 			}
-			
-			
-		
-	}
+}
 	
-	
-	
-	 	  
-
 	@RequestMapping(value = "/notifyReopenExpense", method = RequestMethod.POST)
 	public @ResponseBody void notifyReopenExpense(@RequestParam(value="expenseId", required=false) Long expenseId,
 			@RequestParam(value="reason", required=false) String reason, HttpServletRequest request) throws Exception {
@@ -213,7 +206,6 @@ public class AddExpensesRestController {
 			}
 		
 	}
-	
 	@RequestMapping(value = "/getClientByProjectId", method = RequestMethod.GET)
 	public @ResponseBody String getClientByProjectId(@RequestParam(value = "projectId", required = false) String projectId,
 			@RequestParam(value = "locationCode") String locationCode) throws Exception {
@@ -494,9 +486,7 @@ public class AddExpensesRestController {
 				notificationScenario.setOrgCode(orgLoc.getOrg().getOrgCode());
 				String actionLink = "";
 				emailScenerioUtil.sendNotification(actionLink,loginUser,pah.getApproverUserId(), orgLoc, notificationScenario,new HashMap<String,String>()) ;
-		 	   
-			
-		}
+		 	   }
 	
 		@RequestMapping(value = "/changeStatusToBillable",method=RequestMethod.POST)
 		@ResponseBody

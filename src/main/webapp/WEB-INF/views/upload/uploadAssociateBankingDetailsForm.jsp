@@ -2,7 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
@@ -157,7 +157,7 @@ var uploadflag= true;
 <script type="text/javascript">
 document.getElementById("uploadBtn1").onchange = function () {
 	$('#newUploadFile1').text($(this).val().replace(/C:\\fakepath\\/i, ''));
-	fileUpload("uploadBtn1", "dataMigration");
+	fileUpload("uploadBtn1", "temp");
 };
 
 </script>
@@ -165,19 +165,18 @@ document.getElementById("uploadBtn1").onchange = function () {
 
 	<script type="text/javascript">
 function importAssoBankingDetails(){
-	var validationSettings = {
+	/* var validationSettings = {
             errorMessagePosition : 'element',
             borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
-            };
+            }; */
 if ($('#upload_banking_form').validate(false, validationSettings)){
 	var frm = $('#upload_banking_form').serializeFormJSON();
 	var con = JSON.stringify(frm);
 	con = con.replace(/[{}]/g, "");
 	
 	
-	//It will escape all the special characters
 	var jsonData = encodeURIComponent(con);
 	var form = $('#upload_banking_form')[0];
 	var formData = new FormData(form); 
@@ -195,7 +194,7 @@ if ($('#upload_banking_form').validate(false, validationSettings)){
  		    		$("#loading").removeAttr("style");
  		    	    if(json.insertedCount != null && json.insertedCount != '')
  		    	    $("#msgDiv").removeAttr("style");
- 		 			$("#msgDiv").css({ display: "block" });
+ 		 			$("#msgDiv").css({ "display" : "block", "text-align" :"center" });
  		 			$("#msgDiv").html(json.insertedCount +" Associate are updated");
  			    	msgFadein();
  		 			if(json.bdErrorData != null && json.bdErrorData.length >0){
@@ -217,9 +216,7 @@ $('body').on('blur', '#upload_banking_form', function() {
 
 <script type="text/javascript">
 function cancelFileImport(){
-	/* $("#jobFieldsDiv").attr("style","display:none");
-	$('#jobFileImportDiv').removeAttr("style");
-	$('#jobFieldsDiv').empty(); */
+
 	location.replace(sourceleadUrl+"/usersList");
 }
 </script>
@@ -253,7 +250,7 @@ function cancelFileImport(){
 	    	 for(i=0;i < data.length;i++){
 	    		 var report = data[i];
 	    		 result += '<tr>';
-		         result += '<td><div class="tblminwidth-100">'+report.id+'</div></td>';
+		         result += '<td><div class="tblminwidth-100">'+report.userId+'</div></td>';
 		         result += '<td><div class="tblminwidth-175">'+report.email+'</div></td>';
 		         result += '<td><div class="tblminwidth-175">'+report.accountType+'</div></td>';
 		         result += '<td><div class="tblminwidth-175">'+report.bankName+'</div></td>';
